@@ -1,42 +1,16 @@
 <template>
     <v-container fluid>
         <v-layout wrap row class="align-center justify-center" v-if="!loading">
-            <v-flex xs2 class="ma-1" v-if="userPermissions.indexOf('caixa') > -1">
-                <v-card @click.native="onSalesSelected()">
-                    <v-layout row wrap>
-                        <v-flex xs12>
-                            <v-icon size="72">attach_money</v-icon>
-                        </v-flex>
-                        <v-flex xs12>
-            <span class="text-center headline">
-              Caixa
-            </span>
-                        </v-flex>
+            <v-flex xs2 class="ma-1"
+                    :key="page.title"
+                    v-for="page in pages">
+                <v-card class="card" :to="page.external_url ? '' : page.to" @click="page.external_url ? goToExternalUrl(page.external_url) : ''">
+                    <v-layout column row>
+                        <v-icon size="72">{{page.icon}}</v-icon>
+                        <span class="text-center my-headline">
+                        {{page.title}}
+                    </span>
                     </v-layout>
-                </v-card>
-            </v-flex>
-            <v-flex xs2 class="ma-1" v-if="userPermissions.indexOf('caixa') > -1">
-                <v-card class="card" @click.native="$router.push('/prontuarios')">
-                    <v-icon size="72">enhanced_encryption</v-icon>
-                    <v-card-title>
-                        Prontuarios
-                    </v-card-title>
-                </v-card>
-            </v-flex>
-            <v-flex xs2 class="ma-1">
-                <v-card class="card" @click.native="$router.push('/relatorio')">
-                    <v-icon size="72">report</v-icon>
-                    <v-card-title>
-                        Relatórios
-                    </v-card-title>
-                </v-card>
-            </v-flex>
-            <v-flex xs2 class="text-center">
-                <v-card class="card" to="/exames">
-                <v-icon size="72">insert_drive_file</v-icon>
-                <v-card-title>
-                    Exames
-                </v-card-title>
                 </v-card>
             </v-flex>
         </v-layout>
@@ -56,10 +30,47 @@
 
         data() {
             return {
-                loading: false
+                loading: false,
+                pages: [
+                    {
+                        title: 'Caixa',
+                        icon: 'attach_money',
+                        to: '/caixa'
+                    },
+                    {
+                        title: 'Prontuarios',
+                        to: '/prontuario',
+                        icon: 'enhanced_encryption'
+                    },
+                    {
+                        title: 'Relatórios',
+                        to: '/relatorio',
+                        icon: 'report'
+                    },
+                    {
+                        title: 'Exames',
+                        to: '/exames',
+                        icon: 'insert_drive_file'
+                    },
+                    {
+                        title: 'Agenda Médica',
+                        to: '/exames',
+                        external_url: 'https://agenda-medica.firebaseapp.com',
+                        icon: 'calendar_today'
+                    },
+                    {
+                        title: 'Senhas',
+                        to: '/exames',
+                        external_url: 'https://prosaudesenhas.firebaseapp.com',
+                        icon: 'filter_4'
+                    }
+                ]
             }
         },
         methods: {
+            goToExternalUrl(url) {
+                window.open(url)
+            },
             onSalesSelected() {
                 this.$router.push('/caixa')
             }
