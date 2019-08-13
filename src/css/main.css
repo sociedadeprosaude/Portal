@@ -1,0 +1,13 @@
+.my-headline {
+    font-weight: 900;
+    font-size: 32px;
+    color: #505050;
+}
+
+.v-card {
+    border-radius: 16px;
+}
+
+.v-data-table {
+    border-radius: 16px;
+}

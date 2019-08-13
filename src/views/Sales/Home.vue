@@ -1,7 +1,7 @@
 <template>
-  <v-container fluid>
+  <v-container class="pa-4">
     <v-layout row wrap class="mb-3">
-      <v-flex xs12 sm8>
+      <v-flex xs12 sm8 class="text-left">
         <img src="@/assets/logo-pro-saude.png" height="100px">
       </v-flex>
       <v-flex xs12 sm4>
@@ -20,14 +20,18 @@
               max-width="290px"
               min-width="290px"
             >
+              <template
+                      v-slot:activator="{ on }"
+              >
               <v-text-field
-                slot="activator"
+                v-on="on"
                 v-model="computedDateFormatted"
                 label="Data"
                 persistent-hint
                 prepend-icon="event"
                 readonly
               ></v-text-field>
+              </template>
               <v-date-picker locale="pt-br" v-model="selectedDate" no-title @input="selectDate"></v-date-picker>
             </v-menu>
           </v-flex>
@@ -35,12 +39,16 @@
           <v-flex xs2>
 
             <v-menu>
+              <template
+                      v-slot:activator="{ on }"
+              >
               <v-btn
-                slot="activator"
+                      v-on="on"
                 icon
               >
                 <v-icon>more_vert</v-icon>
               </v-btn>
+              </template>
 
               <v-list>
                 <v-list-tile
@@ -60,14 +68,14 @@
     </v-layout>
     <v-layout row wrap>
       <v-flex xs12 sm5>
-        <v-card class="mb-2">
+        <v-card class="mb-2 px-3">
           <v-card-title>
-            <h1>
+            <span class="my-headline">
               Nova Entrada
-            </h1>
+            </span>
           </v-card-title>
           <v-layout row wrap>
-            <v-flex xs4 ma-3>
+            <v-flex xs4 pa-3 pl-5>
               <v-combobox
                 v-model="intakeCategory"
                 :items="intakeCategories"
@@ -92,7 +100,7 @@
           </v-flex>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn flat class="primary_dark--text" @click.native="addIntake">
+            <v-btn text class="primary_dark--text" @click.native="addIntake">
               Adicionar
             </v-btn>
           </v-card-actions>
@@ -108,7 +116,7 @@
             </h1>
           </v-card-title>
           <v-layout row wrap>
-            <v-flex xs4 ma-3>
+            <v-flex xs4 pa-3 pl-5>
               <v-combobox
                 v-model="expenseCategory"
                 :items="expenseCategories"
@@ -133,7 +141,7 @@
           </v-flex>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn flat class="primary_dark--text" @click.native="addExpense">
+            <v-btn text class="primary_dark--text" @click.native="addExpense">
               Adicionar
             </v-btn>
           </v-card-actions>
@@ -148,7 +156,7 @@
     <v-data-table
       :headers="headers"
       :items="intakes"
-      hide-actions
+      hide-default-footer
       no-data-text="Nenhuma entrada hoje"
       class="elevation-1"
     >
@@ -157,7 +165,7 @@
           <td>{{ props.item.category }}</td>
           <td>{{ props.item.value }}</td>
           <td class="text-xs-right">
-            <v-btn flat class="primary_dark--text" @click.native="handleItemClick(props.item, 'deleteIntake')">
+            <v-btn text class="primary_dark--text" @click.native="handleItemClick(props.item, 'deleteIntake')">
               <v-icon>delete</v-icon>
             </v-btn>
           </td>
@@ -197,7 +205,7 @@
     <v-data-table
       :headers="headers"
       :items="expenses"
-      hide-actions
+      hide-default-footer
       no-data-text="Nenhuma despeja hoje"
       class="elevation-1"
     >
@@ -206,7 +214,7 @@
           <td>{{ props.item.category }}</td>
           <td>{{ props.item.value }}</td>
           <td class="text-xs-right">
-            <v-btn flat class="primary_dark--text" @click.native="handleItemClick(props.item, 'deleteExpense')">
+            <v-btn text class="primary_dark--text" @click.native="handleItemClick(props.item, 'deleteExpense')">
               <v-icon>delete</v-icon>
             </v-btn>
           </td>

@@ -33,11 +33,6 @@
           </v-card-actions>
         </v-card>
       </v-flex>
-      <v-flex xs12 class="mt-4 text-xs-center">
-        <v-btn round class="white" to="/exames">
-          Exames
-        </v-btn>
-      </v-flex>
     </v-layout>
   </v-container>
 </template>

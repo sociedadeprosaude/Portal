@@ -31,6 +31,14 @@
                     </v-card-title>
                 </v-card>
             </v-flex>
+            <v-flex xs2 class="text-center">
+                <v-card class="card" to="/exames">
+                <v-icon size="72">insert_drive_file</v-icon>
+                <v-card-title>
+                    Exames
+                </v-card-title>
+                </v-card>
+            </v-flex>
         </v-layout>
         <v-layout row wrap v-else class="align-center">
             <v-flex xs12>

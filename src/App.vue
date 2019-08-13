@@ -1,6 +1,6 @@
 <template>
     <v-app id="app">
-        <v-content>
+        <v-content class="primary">
             <router-view/>
         </v-content>
     </v-app>
@@ -27,9 +27,4 @@
     #nav a.router-link-exact-active {
         color: #42b983;
     }
-
-  .headline {
-    font-weight: bold;
-    font-size: 32px;
-  }
 </style>

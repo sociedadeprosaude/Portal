@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-layout row wrap>
+    <v-layout row wrap class="ma-0 pa-4">
       <v-flex xs12>
         <v-layout row wrap>
           <v-flex xs12 md9 class="pr-3">
@@ -37,6 +37,7 @@
             <v-list>
               <v-divider></v-divider>
               <v-list-tile
+                      :key="exam"
                 v-for="exam in selectedExams"
               >
                 <v-layout row wrap>
@@ -47,7 +48,7 @@
                         <v-btn
                           style="min-width: 0; min-height: 0"
                           @click="selectedExams.splice(selectedExams.indexOf(exam), 1)"
-                          round flat class="white">
+                          rounded flat class="white">
                           <v-icon>delete</v-icon>
                         </v-btn>
                       </v-layout>
@@ -63,7 +64,7 @@
               <v-spacer></v-spacer>
               <v-btn
                 @click="saveBudget()"
-                round class="primary dark"> Salvar
+                rounded class="primary dark"> Salvar
               </v-btn>
             </v-card-actions>
             <v-alert
@@ -82,7 +83,7 @@
         </v-card>
       </v-flex>
       <v-flex xs12 class="text-xs-center mt-3">
-        <v-btn round class="white" @click="$router.push('/registered_exams')">Orçamentos cadastrados</v-btn>
+        <v-btn rounded class="white" @click="$router.push('/registered_exams')">Orçamentos cadastrados</v-btn>
       </v-flex>
     </v-layout>
   </v-container>

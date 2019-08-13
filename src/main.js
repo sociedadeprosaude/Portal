@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import vuetify from '@/plugins/vuetify'
+// import vuetify from '@/plugins/vuetify'
 import 'vuetify/dist/vuetify.min.css'
+import './css/main.css'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -29,10 +30,29 @@ Vue.filter('dateFilter', DateFilter)
 
 Vue.config.productionTip = false
 
+const vuetifyOptions = {
+  iconfont: 'md',
+  theme: {
+    themes: {
+      light: {
+        primary: '#81d4fa',
+        primary_light: '#b6ffff',
+        primary_dark: '#4ba3c7',
+        secondary: '#424242',
+        accent: '#82B1FF',
+        error: '#FF5252',
+        info: '#2196F3',
+        success: '#4CAF50',
+        warning: '#FFC107'
+      },
+    },
+  },
+}
+
 new Vue({
   router,
   store,
-  vuetify,
+  vuetify: new Vuetify(vuetifyOptions),
   render: h => h(App),
   created() {
     firebase.initializeApp({

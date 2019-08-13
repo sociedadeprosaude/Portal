@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === 'development') {
   var AUTH_URL = 'http://caixa.instituicaoprosaude.com:83/'
 }
 
-export const store = new Vuex.Store({
+const store = new Vuex.Store({
   modules: {
     Patients,
     Prontuario,
@@ -279,3 +279,5 @@ export const store = new Vuex.Store({
     }
   }
 })
+
+export default store
