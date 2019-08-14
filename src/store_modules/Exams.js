@@ -1,91 +1,118 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import moment from 'moment'
 import * as firebase from "firebase";
 
 const state = {
-  doctorsList: [],
-  examsList: [],
-  budgetCodeList: []
+    doctorsList: [],
+    examsList: [],
+    budgetCodeList: []
 }
 
 const mutations = {
-  setExamsList(state, payload) {
-    state.examsList = payload
-  },
-  setDoctorsList(state, payload) {
-    state.doctorsList = payload
-  },
-  setBudgetCodeList(state, payload) {
-    state.budgetCodeList = payload
-  }
+    setExamsList(state, payload) {
+        state.examsList = payload
+    },
+    setDoctorsList(state, payload) {
+        state.doctorsList = payload
+    },
+    setBudgetCodeList(state, payload) {
+        state.budgetCodeList = payload
+    }
 }
 
 const actions = {
-  getDoctorsList({commit}) {
-    firebase.database().ref('analise-exames/').child('doctors').on('value', function (snapshot) {
-      let doctorsList = []
-      for (let key in snapshot.val()) {
-        doctorsList.push(
-          snapshot.val()[key])
-      }
-      commit('setDoctorsList', doctorsList)
-    })
-  },
-  getExamsList({commit}) {
-    firebase.database().ref('analise-exames/').child('exams').on('value', function (snapshot) {
-      let examsList = []
-      for (let key in snapshot.val()) {
-        examsList.push(snapshot.val()[key])
-      }
-      commit('setExamsList', examsList)
-    })
-  },
-  addBudget({commit}, payload) {
-    if (!this.getters.doctors.includes(payload.doctor)) {
-      firebase.database().ref('analise-exames/').child('doctors').push(payload.doctor)
-    }
-    for (let item in payload.budget) {
-      if (!this.getters.exams.includes(payload.budget[item])) {
-        firebase.database().ref('analise-exames/').child('exams').push(payload.budget[item])
-      }
-    }
-    firebase.database().ref('analise-exames/').child('budget').child(payload.doctor)
-      .child(data)
-      .set(moment().format('DD-MM-YYYY HH:mm'))
-    return database.child('budget').child(payload.doctor)
-      .child(payload.budgetNumber)
-      .set(payload.budget)
-  },
-  getBudgets({commit}, payload) {
-    firebase.database().ref('analise-exames/').child('budget')
-      .once('value')
-      .then((snap) => {
-        let budgetCodeList = []
-        for (let key in snap.val()) {
-          for (let budgetKey in snap.val()[key]) {
-            budgetCodeList.push(budgetKey)
-          }
+    getDoctorsList({commit}) {
+        firebase.database().ref('analise-exames/').child('doctors').on('value', function (snapshot) {
+            let doctorsList = []
+            for (let key in snapshot.val()) {
+                doctorsList.push(
+                    snapshot.val()[key])
+            }
+            commit('setDoctorsList', doctorsList)
+        })
+    },
+    getExamsList({commit}) {
+        firebase.database().ref('analise-exames/').child('exams').on('value', function (snapshot) {
+            let examsList = []
+            for (let key in snapshot.val()) {
+                examsList.push(snapshot.val()[key])
+            }
+            commit('setExamsList', examsList)
+        })
+    },
+    addBudget({}, payload) {
+        if (!this.getters.doctors.includes(payload.doctor)) {
+            firebase.database().ref('analise-exames/').child('doctors').push(payload.doctor)
         }
-        commit('setBudgetCodeList', budgetCodeList)
-      })
-  }
+        for (let item in payload.budget) {
+            if (!this.getters.exams.includes(payload.budget[item])) {
+                firebase.database().ref('analise-exames/').child('exams').push(payload.budget[item])
+            }
+        }
+        let budgetObj = {
+            'doctor': payload.doctor,
+            'date': moment().format('DD-MM-YYYY HH:mm'),
+            colaborator: payload.colaborator,
+            'exams': payload.budget,
+            'verified': false
+        }
+        return firebase.database().ref('analise-exames/').child('budgets').child(payload.budgetNumber)
+            .set(budgetObj)
+    },
+    getBudgets({commit}) {
+        firebase.database().ref('analise-exames/').child('budgets')
+            .on('value', (snap) => {
+                let budgetCodeList = []
+                for (let key in snap.val()) {
+                    budgetCodeList.push({
+                        code: key,
+                        verified: snap.val()[key].verified
+                    })
+                }
+                commit('setBudgetCodeList', budgetCodeList)
+            })
+    },
+    registerBudget({}, payload) {
+        firebase.database().ref('analise-exames/').child('budgets').child(payload.budgetCode)
+          .child('verified')
+          .set(payload.verified)
+      if (payload.verified) {
+        firebase.database().ref('analise-exames/').child('budgets').child(payload.budgetCode)
+            .child('verified_by')
+            .set(payload.user.name)
+        firebase.database().ref('analise-exames/').child('budgets').child(payload.budgetCode)
+            .child('verification')
+            .set({
+              user: payload.user,
+              date: moment().format('YYYY-MM-DD HH:mm:SS')
+            })
+      } else {
+        firebase.database().ref('analise-exames/').child('budgets').child(payload.budgetCode)
+            .child('verified_by').remove()
+        firebase.database().ref('analise-exames/').child('budgets').child(payload.budgetCode)
+            .child('verification')
+            .remove()
+      }
+    }
+
 }
 
 const getters = {
-  exams(state) {
-    return state.examsList
-  },
-  doctors(state) {
-    return state.doctorsList
-  },
-  registeredBudgetCodes(state) {
-    return state.budgetCodeList
-  }
+    exams(state) {
+        return state.examsList
+    },
+    doctors(state) {
+        return state.doctorsList
+    },
+    registeredBudgetCodes(state) {
+        return state.budgetCodeList
+    }
 }
 
 export default {
-  state,
-  mutations,
-  actions,
-  getters
+    state,
+    mutations,
+    actions,
+    getters
 }

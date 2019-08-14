@@ -22,7 +22,7 @@
             <v-flex xs2 class="ma-1">
                 <v-card class="card" to="/login">
                     <v-layout column row>
-                        <v-icon size="72">attach_money</v-icon>
+                        <v-icon size="72">exit_to_app</v-icon>
                         <span class="text-center my-headline">
                         Sair
                     </span>
@@ -95,7 +95,7 @@
                     },
                     {
                         title: 'Agenda Médica',
-                        permission: 'Agenda Medica',
+                        permission: 'Agenda Médica',
                         external_url: 'https://agenda-medica.firebaseapp.com',
                         icon: 'calendar_today'
                     },
@@ -109,7 +109,7 @@
                         title: 'Colaboradores',
                         permission: 'Colaboradores',
                         to: '/labor',
-                        icon: 'filter_4'
+                        icon: 'supervisor_account'
                     }
                 ]
             }

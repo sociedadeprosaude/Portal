@@ -28,6 +28,11 @@
         >
         </v-combobox>
       </v-flex>
+      <v-flex xs12 class="my-2 text-right">
+        <v-btn rounded @click="clearForm()">
+          Limpar tudo
+        </v-btn>
+      </v-flex>
       <v-flex xs12>
         <v-card min-height="73vh">
           <v-card-title>
@@ -36,29 +41,31 @@
           <v-card-text>
             <v-list>
               <v-divider></v-divider>
-              <v-list-tile
+              <v-card
+                      class="ml-3"
+                      flat
                       :key="exam"
                 v-for="exam in selectedExams"
               >
-                <v-layout row wrap>
+                <v-layout row wrap class="align-center">
                   <v-flex xs12>
-                    <v-list-tile-title class="my-2" style="font-weight: bold">
+                    <v-card-title class="my-2" style="font-weight: bold">
                       <v-layout row wrap>
-                        <span>{{exam}}</span>
+                        <span class="my-sub-headline">{{exam}}</span>
                         <v-btn
                           style="min-width: 0; min-height: 0"
                           @click="selectedExams.splice(selectedExams.indexOf(exam), 1)"
-                          rounded flat class="white">
+                          rounded text class="white">
                           <v-icon>delete</v-icon>
                         </v-btn>
                       </v-layout>
-                    </v-list-tile-title>
+                    </v-card-title>
                   </v-flex>
                   <v-flex xs12>
                     <v-divider></v-divider>
                   </v-flex>
                 </v-layout>
-              </v-list-tile>
+              </v-card>
             </v-list>
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -111,6 +118,9 @@
       },
       doctors() {
         return this.$store.getters.doctors
+      },
+      user() {
+        return this.$store.getters.user
       }
     },
     watch: {
@@ -125,6 +135,10 @@
       }
     },
     methods: {
+      clearForm() {
+        this.selectedDoctor = undefined
+        this.selectedExams = []
+      },
       saveBudget() {
         if (!this.selectedDoctor) {
           this.errorMessage = 'Escolha um médico.'
@@ -153,7 +167,8 @@
         let payload = {
           doctor: this.selectedDoctor,
           budget: this.selectedExams,
-          budgetNumber: this.numBudget
+          budgetNumber: this.numBudget,
+          colaborator: this.user.name
         }
         this.loading = true
         this.$store.dispatch('addBudget', payload).then(() => {
