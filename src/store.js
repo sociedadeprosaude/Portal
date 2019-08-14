@@ -9,6 +9,7 @@ import Prontuario from '@/store_modules/Prontuario'
 import Reports from '@/store_modules/Reports'
 import Exams from '@/store_modules/Exams'
 import Auth from '@/store_modules/Auth'
+import Labor from '@/store_modules/Labor'
 
 Vue.use(Vuex)
 
@@ -25,7 +26,8 @@ const store = new Vuex.Store({
     Patients,
     Prontuario,
     Reports,
-    Exams
+    Exams,
+    Labor
   },
   state: {
     categories: [],
@@ -116,27 +118,27 @@ const store = new Vuex.Store({
         router.go()
       })
     },
-    getUser({commit}) {
-      return new Promise((resolve, reject) => {
-        commit('setLoading', true)
-        axios.get(AUTH_URL + "auth/user", {
-          params: {
-            credential: localStorage.getItem('credential')
-          }
-        })
-            .then(response => {
-              commit('setUser', response.data)
-              commit('setLoading', false)
-              resolve(response.data)
-            })
-            .catch(error => {
-              if (error.response.status === 401) {
-                router.push('/login')
-              }
-              console.log(error.response.status)
-            })
-      })
-    },
+    // getUser({commit}) {
+    //   return new Promise((resolve, reject) => {
+    //     commit('setLoading', true)
+    //     axios.get(AUTH_URL + "auth/user", {
+    //       params: {
+    //         credential: localStorage.getItem('credential')
+    //       }
+    //     })
+    //         .then(response => {
+    //           commit('setUser', response.data)
+    //           commit('setLoading', false)
+    //           resolve(response.data)
+    //         })
+    //         .catch(error => {
+    //           if (error.response.status === 401) {
+    //             router.push('/login')
+    //           }
+    //           console.log(error.response.status)
+    //         })
+    //   })
+    // },
     addUser({commit}, payload) {
       return new Promise((resolve, reject) => {
         axios.post(AUTH_URL + "auth/user/adicionar", payload)

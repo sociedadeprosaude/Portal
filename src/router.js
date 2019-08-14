@@ -8,6 +8,7 @@ import Login from '@/views/Auth/Login'
 import Register from '@/views/Auth/Register'
 import Exams from '@/views/Exams/Home'
 import RegisteredExames from '@/views/Exams/RegisteredExams'
+import Labor from '@/views/Labor/Home'
 
 
 Vue.use(Router)
@@ -68,6 +69,14 @@ let router =  new Router({
       path: '/registered_exams',
       name: 'ExamesRegistrados',
       component: RegisteredExames,
+      meta : {
+        requiresAuth: false
+      }
+    },
+    {
+      path: '/labor',
+      name: 'labor',
+      component: Labor,
       meta : {
         requiresAuth: false
       }

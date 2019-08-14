@@ -1,18 +1,21 @@
 import firebase from "firebase";
 
 const state = {
-    user: {}
+    user: {},
+    permissions: []
 }
 
 const mutations = {
     setUser(state, payload) {
         state.user = payload
     },
+    setPermissionsList(state, payload) {
+        state.permissions = payload
+    },
 }
 
 const actions = {
     async registerUser({commit}, user) {
-        console.log(user)
         user = {
             ...user,
             status: 'pending'
@@ -26,18 +29,33 @@ const actions = {
         commit('setUser', user)
         return
     },
-    setUser({commit}, user) {
-        firebase.database().ref('colaboradores/').child(user.email).on((user) => {
-            commit('setUser', user)
+    async getUser({commit}, user) {
+        return firebase.database().ref('colaboradores/').child(user.uid).once('value',(user) => {
+            commit('setUser', user.val())
+            return user
         })
-        return
     },
+    async setUserPermissions({}, payload) {
+        try {
+            firebase.database().ref('colaboradores/').child(payload.user.uid).child('permissions').set(payload.permissions)
+        } catch (e) {
+            console.log(e)
+        }
+    },
+    getPermissionList({commit}) {
+        firebase.database().ref('permissions/').once('value',(permissions) => {
+            commit('setPermissionsList', permissions.val())
+        })
+    }
 }
 
 const getters = {
-    user(state) {
-        return state.user
+    permissionsList(state) {
+        return state.permissions
     },
+    user (state) {
+        return state.user
+    }
 }
 
 export default {

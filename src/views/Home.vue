@@ -1,10 +1,16 @@
 <template>
     <v-container fluid>
         <v-layout wrap row class="justify-center" v-if="!loading">
-            <v-flex xs2 class="ma-1"
+            <v-flex xs12 v-if="filteredPages.length === 0">
+                <v-card>
+                    <v-card-title>Você ainda não tem permissões</v-card-title>
+                </v-card>
+            </v-flex>
+            <v-flex class="ma-1"
                     :key="page.title"
-                    v-for="page in pages">
-                <v-card class="card" :to="page.external_url ? '' : page.to" @click="page.external_url ? goToExternalUrl(page.external_url) : ''">
+                    v-for="page in filteredPages">
+                <v-card class="card" min-width="200" :to="page.external_url ? '' : page.to"
+                        @click="page.external_url ? goToExternalUrl(page.external_url) : ''">
                     <v-layout column row>
                         <v-icon size="72">{{page.icon}}</v-icon>
                         <span class="text-center my-headline">
@@ -13,11 +19,22 @@
                     </v-layout>
                 </v-card>
             </v-flex>
+            <v-flex xs2 class="ma-1">
+                <v-card class="card" to="/login">
+                    <v-layout column row>
+                        <v-icon size="72">attach_money</v-icon>
+                        <span class="text-center my-headline">
+                        Sair
+                    </span>
+                    </v-layout>
+                </v-card>
+            </v-flex>
         </v-layout>
         <v-layout row wrap v-else class="align-center">
             <v-flex xs12>
                 <v-progress-circular
-                        class="black--text"
+                        size="64"
+                        class="white--text"
                         indeterminate
                 ></v-progress-circular>
             </v-flex>
@@ -26,47 +43,72 @@
 </template>
 
 <script>
+    import firebase from 'firebase'
+
     export default {
 
+        mounted() {
+            //   let perm = [
+            //       'Caixa',
+            //       'Prontuarios',
+            //       'Relatórios',
+            //       'Exames',
+            //       'Agenda Médica',
+            //       'Senhas',
+            //       'Colaboradores'
+            //   ]
+            // firebase.database().ref('permissions/') .set(perm)
+            let user = firebase.auth().currentUser
+            if (!user) {
+                this.$router.push('login')
+                return
+            }
+            this.getUser(user)
+        },
         data() {
             return {
-                loading: false,
+                loading: true,
                 pages: [
                     {
                         title: 'Caixa',
                         icon: 'attach_money',
+                        permission: 'Caixa',
                         to: '/caixa'
                     },
                     {
                         title: 'Prontuarios',
                         to: '/prontuario',
+                        permission: 'Prontuarios',
                         icon: 'enhanced_encryption'
                     },
                     {
                         title: 'Relatórios',
                         to: '/relatorio',
+                        permission: 'Relatórios',
                         icon: 'report'
                     },
                     {
                         title: 'Exames',
                         to: '/exames',
+                        permission: 'Exames',
                         icon: 'insert_drive_file'
                     },
                     {
                         title: 'Agenda Médica',
-                        to: '/exames',
+                        permission: 'Agenda Medica',
                         external_url: 'https://agenda-medica.firebaseapp.com',
                         icon: 'calendar_today'
                     },
                     {
                         title: 'Senhas',
-                        to: '/exames',
+                        permission: 'Senhas',
                         external_url: 'https://prosaudesenhas.firebaseapp.com',
                         icon: 'filter_4'
                     },
                     {
-                        title: 'Sair',
-                        to: '/login',
+                        title: 'Colaboradores',
+                        permission: 'Colaboradores',
+                        to: '/labor',
                         icon: 'filter_4'
                     }
                 ]
@@ -78,14 +120,21 @@
             },
             onSalesSelected() {
                 this.$router.push('/caixa')
+            },
+            async getUser(user) {
+                await this.$store.dispatch('getUser', user)
+                this.loading = false
             }
         },
         computed: {
-            userPermissions() {
-                return [
-                    'caixa',
-                    'prontuario'
-                ]
+            filteredPages() {
+                if (!this.user.permissions) return []
+                return this.pages.filter(a => {
+                    return this.user.permissions.indexOf(a.permission) > -1
+                })
+            },
+            user() {
+                return this.$store.getters.user
             }
         },
     }
