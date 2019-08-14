@@ -5,6 +5,7 @@ import Caixa from '@/views/Sales/Home'
 import Prontuarios from '@/views/Prontuarios/Home'
 import Account from '@/views/Auth/Account'
 import Login from '@/views/Auth/Login'
+import Register from '@/views/Auth/Register'
 import Exams from '@/views/Exams/Home'
 import RegisteredExames from '@/views/Exams/RegisteredExams'
 
@@ -25,6 +26,11 @@ let router =  new Router({
       path: '/login',
       name: 'Login',
       component: Login,
+    },
+    {
+      path: '/cadastro',
+      name: 'Register',
+      component: Register,
     },
     {
       path: '/caixa',

@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-layout wrap row class="align-center justify-center" v-if="!loading">
+        <v-layout wrap row class="justify-center" v-if="!loading">
             <v-flex xs2 class="ma-1"
                     :key="page.title"
                     v-for="page in pages">
@@ -62,6 +62,11 @@
                         title: 'Senhas',
                         to: '/exames',
                         external_url: 'https://prosaudesenhas.firebaseapp.com',
+                        icon: 'filter_4'
+                    },
+                    {
+                        title: 'Sair',
+                        to: '/login',
                         icon: 'filter_4'
                     }
                 ]

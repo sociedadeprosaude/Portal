@@ -7,6 +7,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import axios from 'axios'
+import constants from '@/utils/constants'
 import DateFilter from './filters/date'
 
 import './registerServiceWorker'
@@ -55,14 +56,13 @@ new Vue({
   vuetify: new Vuetify(vuetifyOptions),
   render: h => h(App),
   created() {
-    firebase.initializeApp({
-      apiKey: "AIzaSyCdvs5C8J_t9WPQlcZGuuLJ57hwM9_s9BQ",
-      authDomain: "prosaude-36f66.firebaseapp.com",
-      databaseURL: "https://prosaude-36f66.firebaseio.com",
-      projectId: "prosaude-36f66",
-      storageBucket: "prosaude-36f66.appspot.com",
-      messagingSenderId: "86942539576",
-      appId: "1:86942539576:web:9bf02a0a4d8e94b9"
+    firebase.initializeApp(constants.FIREBASE_CONFIG)
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.$router.push('/')
+      } else {
+        this.$router.push('/login')
+      }
     })
   },
 }).$mount('#app')

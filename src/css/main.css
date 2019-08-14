@@ -4,8 +4,14 @@
     color: #505050;
 }
 
+.my-sub-headline {
+    font-weight: 900;
+    font-size: 16px;
+    color: #505050;
+}
+
 .v-card {
-    border-radius: 16px;
+    border-radius: 8px;
 }
 
 .v-data-table {

@@ -8,6 +8,7 @@ import Patients from '@/store_modules/Patients'
 import Prontuario from '@/store_modules/Prontuario'
 import Reports from '@/store_modules/Reports'
 import Exams from '@/store_modules/Exams'
+import Auth from '@/store_modules/Auth'
 
 Vue.use(Vuex)
 
@@ -20,6 +21,7 @@ if (process.env.NODE_ENV === 'development') {
 
 const store = new Vuex.Store({
   modules: {
+    Auth,
     Patients,
     Prontuario,
     Reports,
@@ -274,9 +276,9 @@ const store = new Vuex.Store({
     isAuthenticated(state) {
       return !!state.token
     },
-    user(state) {
-      return state.user
-    }
+    // user(state) {
+    //   return state.user
+    // }
   }
 })
 

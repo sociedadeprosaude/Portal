@@ -1,81 +1,104 @@
 <template>
-  <v-container fluid>
-    <v-layout row wrap align-center justify-center>
-      <v-flex xs8 sm4 class="text-xs-center">
-        <img src="../../assets/logo-pro-saude.png" height="100px" class="mb-5 mt-5">
-        <v-card >
-          <v-card-text>
-            <v-text-field
-            slot="activator"
-            v-model="credential"
-            label="Email ou Nome de Usuario"
-            persistent-hint
-            :error="credentialError"
-            prepend-icon="email"
-            ></v-text-field>
-          <v-text-field
-            slot="activator"
-            v-model="password"
-            label="Senha"
-            type="password"
-            persistent-hint
-            :error="passwordError"
-            prepend-icon="fingerprint"
-          ></v-text-field>
-          </v-card-text>
-          <v-card-actions>
-
-            <v-progress-linear :indeterminate="true" v-if="loading"></v-progress-linear>
-            <v-spacer></v-spacer>
-            <v-btn flat class="primary_dark--text" @click.native="Login">
-              Entrar
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-flex>
-    </v-layout>
-  </v-container>
+    <v-container fluid fill-height>
+        <v-layout row wrap align-center justify-center style="margin-bottom: 30vh">
+            <v-flex xs8 sm4 class="text-xs-center">
+                <img src="../../assets/logo-pro-saude.png" width="300px" class="mb-5 mt-5">
+                <v-card style="min-width: 300px" class="mb-5">
+                    <v-card-text>
+                        <v-text-field
+                                slot="activator"
+                                v-model="email"
+                                label="Email"
+                                persistent-hint
+                                :error="credentialError"
+                                prepend-icon="email"
+                        ></v-text-field>
+                        <v-text-field
+                                slot="activator"
+                                v-model="password"
+                                label="Senha"
+                                type="password"
+                                persistent-hint
+                                :error="passwordError"
+                                prepend-icon="fingerprint"
+                        ></v-text-field>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-layout row wrap>
+                          <v-flex xs12>
+                            <v-progress-linear :indeterminate="true" v-if="loading"></v-progress-linear>
+                          </v-flex>
+                          <v-flex xs6>
+                            <v-btn text class="primary_dark--text" to="/cadastro">
+                              Cadastre-se
+                            </v-btn>
+                          </v-flex>
+                            <v-spacer></v-spacer>
+                          <v-flex xs6 class="text-right pr-3">
+                            <v-btn text class="primary_dark--text" @click.native="signIn">
+                                Entrar
+                            </v-btn>
+                          </v-flex>
+                        </v-layout>
+                    </v-card-actions>
+                </v-card>
+                <v-fade-transition mode="out-in">
+                    <v-card v-show="errorMessage" style="min-width: 300px">
+                        <v-layout row wrap class="align-center">
+                            <v-flex class="my-sub-headline text-center">
+                                {{errorMessage}}
+                            </v-flex>
+                        </v-layout>
+                    </v-card>
+                </v-fade-transition>
+            </v-flex>
+        </v-layout>
+    </v-container>
 </template>
 
 <script>
+    import firebase from 'firebase'
+
     export default {
         name: "Login",
-      data() {
-          return {
-            credential: '',
-            credentialError: false,
-            password: '',
-            passwordError: false,
-            loading: false
-          }
-      },
-      methods: {
-          Login() {
-            if (this.credential.length === 0) {
-              this.credentialError = true
-              return
+        data() {
+            return {
+                email: '',
+                credentialError: false,
+                password: '',
+                passwordError: false,
+                loading: false,
+                errorMessage: undefined
             }
-            if (this.password.length === 0) {
-              this.passwordError = true
-              return
-            }
-            let payload = {
-              credential: this.credential,
-              password: this.password
-            }
-            this.loading = true
-            this.$store.dispatch('login', payload)
-              .then(response => {
+        },
+        methods: {
+            async signIn() {
+                try {
+                    this.loading = true
+                    let user = await firebase.auth().signInWithEmailAndPassword(this.email, this.password)
+                    console.log(user)
+                } catch (e) {
+                    switch (e.code) {
+                        case 'auth/user-not-found':
+                            this.errorMessage = 'Usuário não cadastrado'
+                            break
+                        case 'auth/wrong-password':
+                            this.errorMessage = 'Senha incorreta'
+                            break
+                    }
+                    setTimeout(() => {
+                        this.errorMessage = undefined
+                    }, 2000)
+                }
                 this.loading = false
-                this.$router.push('/')
-              })
-              .catch(error => {
-                this.loading = false
-              })
-
-          }
-      }
-      // components: {VTextField}
+            }
+        },
+        mounted() {
+            if (firebase.auth().currentUser) {
+                firebase.auth().signOut()
+            }
+        }
+        // components: {VTextField}
     }
 </script>
 
