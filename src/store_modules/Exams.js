@@ -60,9 +60,13 @@ const actions = {
         return firebase.database().ref('analise-exames/').child('budgets').child(payload.budgetNumber)
             .set(budgetObj)
     },
-    getBudgets({commit}) {
+    getBudgets({commit}, payload) {
         firebase.database().ref('analise-exames/').child('budgets')
-            .on('value', (snap) => {
+            .orderByKey()
+            .startAt(payload)
+            .limitToFirst(50)
+            .once('value')
+            .then((snap) => {
                 let budgetCodeList = []
                 for (let key in snap.val()) {
                     budgetCodeList.push({

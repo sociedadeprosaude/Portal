@@ -3,10 +3,11 @@
         <v-layout row wrap>
             <v-flex xs12 class="mx-4">
                 <v-text-field
+                        id="search"
                         label="Solo"
                         placeholder="Codigo do recibo"
                         solo
-                        v-model="search"
+                        v-model="searchText"
                 ></v-text-field>
             </v-flex>
             <v-flex xs2
@@ -30,14 +31,17 @@
         name: "RegisteredExams",
         data() {
             return {
-                search: ''
+                search: '',
+                searchText: '',
+                typingTimer: undefined
             }
         },
         computed: {
             registeredBudgetCodes() {
-                return this.$store.getters.registeredBudgetCodes.filter((a) => {
-                    return a.code.includes(this.search)
-                })
+                return this.$store.getters.registeredBudgetCodes
+                //     .filter((a) => {
+                //     return a.code.includes(this.search)
+                // })
             },
             user() {
                 return this.$store.getters.user
@@ -53,7 +57,22 @@
             }
         },
         mounted() {
-            this.$store.dispatch('getBudgets')
+            this.$store.dispatch('getBudgets', '')
+            let self = this
+            window.addEventListener('keyup', function (e) {
+                if (e.target.id === 'search') {
+                    clearTimeout(self.typingTimer)
+                    self.typingTimer = setTimeout(() => {
+                        self.$store.dispatch('getBudgets', self.searchText)
+                        self.search = self.searchText
+                    }, 1000);
+                }
+            })
+            window.addEventListener('keydown', function (e) {
+                if (e.target.id === 'search') {
+                    clearTimeout(self.typingTimer)
+                }
+            })
         }
     }
 </script>
