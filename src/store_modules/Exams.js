@@ -65,8 +65,7 @@ const actions = {
             .orderByKey()
             .startAt(payload)
             .limitToFirst(50)
-            .once('value')
-            .then((snap) => {
+            .on('value', (snap) => {
                 let budgetCodeList = []
                 for (let key in snap.val()) {
                     budgetCodeList.push({
