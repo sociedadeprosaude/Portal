@@ -17,3 +17,8 @@
 .v-data-table {
     border-radius: 16px;
 }
+
+.layout {
+    margin: 0;
+    padding: 0;
+}

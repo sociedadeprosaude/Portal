@@ -15,6 +15,10 @@ import * as firebase from "firebase";
 
 Vue.use(Vuetify)
 
+// Moment.js
+window.moment = require('moment')
+window.moment.locale('pt-br')
+
 if (process.env.NODE_ENV === 'development') {
   // axios.defaults.baseURL = 'http://prosaude.caixa'
   axios.defaults.baseURL = 'http://caixa.instituicaoprosaude.com:82'

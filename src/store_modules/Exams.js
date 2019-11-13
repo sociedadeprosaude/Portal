@@ -1,12 +1,13 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import moment from 'moment'
-import * as firebase from "firebase";
+import firebase from "firebase";
 
 const state = {
     doctorsList: [],
     examsList: [],
-    budgetCodeList: []
+    budgetCodeList: [],
+    budgetList: []
 }
 
 const mutations = {
@@ -18,6 +19,9 @@ const mutations = {
     },
     setBudgetCodeList(state, payload) {
         state.budgetCodeList = payload
+    },
+    setBudgetList(state, payload) {
+        state.budgetList = payload
     }
 }
 
@@ -76,6 +80,15 @@ const actions = {
                 commit('setBudgetCodeList', budgetCodeList)
             })
     },
+    getBudgetsByDate({commit}, payload) {
+        return firebase.database().ref('analise-exames/').child('budgets')
+            .orderByChild('date')
+            // .startAt(payload.initialDate)
+            .once('value')
+            .then((snap) => {
+                commit('setBudgetList', snap.val())
+            })
+    },
     registerBudget({}, payload) {
         firebase.database().ref('analise-exames/').child('budgets').child(payload.budgetCode)
           .child('verified')
@@ -88,7 +101,7 @@ const actions = {
             .child('verification')
             .set({
               user: payload.user,
-              date: moment().format('YYYY-MM-DD HH:mm:SS')
+              date: moment().format('YYYY-MM-DD HH:mm:ss')
             })
       } else {
         firebase.database().ref('analise-exames/').child('budgets').child(payload.budgetCode)
@@ -110,6 +123,9 @@ const getters = {
     },
     registeredBudgetCodes(state) {
         return state.budgetCodeList
+    },
+    budgetList(state) {
+        return state.budgetList
     }
 }
 
