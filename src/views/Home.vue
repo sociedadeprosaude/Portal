@@ -1,6 +1,9 @@
 <template>
     <v-container fluid>
         <v-layout wrap row class="justify-center" v-if="!loading">
+            <v-flex xs12>
+                <select-patient-card></select-patient-card>
+            </v-flex>
             <v-flex xs12 v-if="filteredPages.length === 0">
                 <v-card>
                     <v-card-title>Você ainda não tem permissões</v-card-title>
@@ -44,8 +47,13 @@
 
 <script>
     import firebase from 'firebase'
+    import SelectPatientCard from "../components/SelectPatientCard";
 
     export default {
+
+        components: {
+            SelectPatientCard
+        },
 
         mounted() {
             //   let perm = [

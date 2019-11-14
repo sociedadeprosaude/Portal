@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/views/Home'
-import Caixa from '@/views/Sales/Home'
-import Prontuarios from '@/views/Prontuarios/Home'
 import Account from '@/views/Auth/Account'
 import Login from '@/views/Auth/Login'
 import Register from '@/views/Auth/Register'
@@ -35,25 +33,9 @@ let router =  new Router({
       component: Register,
     },
     {
-      path: '/caixa',
-      name: 'Caixa',
-      component: Caixa,
-      meta : {
-        requiresAuth: true
-      }
-    },
-    {
       path: '/conta',
       name: 'Conta',
       component: Account,
-      meta : {
-        requiresAuth: true
-      }
-    },
-    {
-      path: '/prontuarios',
-      name: 'Prontuarios',
-      component: Prontuarios,
       meta : {
         requiresAuth: true
       }

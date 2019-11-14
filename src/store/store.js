@@ -1,15 +1,16 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
-import router from './router'
+import router from '../router'
 import constants from '@/utils/constants'
 
-import Patients from '@/store_modules/Patients'
-import Prontuario from '@/store_modules/Prontuario'
-import Reports from '@/store_modules/Reports'
-import Exams from '@/store_modules/Exams'
-import Auth from '@/store_modules/Auth'
-import Labor from '@/store_modules/Labor'
+import Patients from '@/store/modules/Patients'
+import Reports from '@/store/modules/Reports'
+import Exams from '@/store/modules/Exams'
+import Auth from '@/store/modules/Auth'
+import Labor from '@/store/modules/Labor'
+
+import Localization from "./modules/Localization";
 
 Vue.use(Vuex)
 
@@ -24,10 +25,11 @@ const store = new Vuex.Store({
   modules: {
     Auth,
     Patients,
-    Prontuario,
     Reports,
     Exams,
-    Labor
+    Labor,
+
+    Localization
   },
   state: {
     categories: [],
