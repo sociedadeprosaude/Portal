@@ -2,21 +2,20 @@
     <v-container>
         <v-layout row wrap>
             <v-flex xs12>
-                <v-card class="pa-3">
-                    <v-flex xs12 class="text-right">
-                        <v-btn rounded color="primary" dark class="mb-2" @click="addDoctor()">
-                            ADICIONAR MEDICO
-                            <v-icon right>person_add</v-icon>
-                        </v-btn>
-                    </v-flex>
-                    <v-text-field
-                            v-model="search"
-                            append-icon="search"
-                            label="Pesquisa"
-                            single-line
-                            hide-details
-                    ></v-text-field>
-                </v-card>
+<!--                <v-card class="pa-3">-->
+<!--                    <v-flex xs12 class="text-right">-->
+<!--                        <v-btn rounded color="primary" dark class="mb-2" @click="addDoctor()">-->
+<!--                            ADICIONAR MEDICO-->
+<!--                            <v-icon right>person_add</v-icon>-->
+<!--                        </v-btn>-->
+<!--                    </v-flex>-->
+<!--                    <v-text-field-->
+<!--                            v-model="search"-->
+<!--                            label="Pesquisa"-->
+<!--                            single-line-->
+<!--                            hide-details-->
+<!--                    ></v-text-field>-->
+<!--                </v-card>-->
             </v-flex>
 
             <v-flex xs12 class="my-4">
@@ -25,8 +24,19 @@
                         :headers="headers"
                         :items="doctorsArray"
                         :search="search"
+                        item-key="name"
                         class="elevation-1"
                 >
+                    <template v-slot:top>
+                        <v-flex xs12 class="text-right pa-2">
+                            <v-btn rounded color="primary" dark class="mb-2" @click="addDoctor()">
+                                ADICIONAR MEDICO
+                                <v-icon right>person_add</v-icon>
+                            </v-btn>
+                        </v-flex>
+                        <v-text-field append-icon="search"
+                                      v-model="search" label="Pesquisa" class="mx-4"></v-text-field>
+                    </template>
                     <template v-slot:item.action="{ item }">
                         <v-icon
                                 small
@@ -142,7 +152,8 @@
                 <v-divider></v-divider>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <submit-button text="Apagar" :loading="loading" :success="success" @reset="success = false" @click="deleteItem(selectedDoctor)">
+                    <submit-button text="Apagar" :loading="loading" :success="success" @reset="success = false"
+                                   @click="deleteItem(selectedDoctor)">
                     </submit-button>
                 </v-card-actions>
             </v-card>
