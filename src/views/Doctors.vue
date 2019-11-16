@@ -2,20 +2,20 @@
     <v-container>
         <v-layout row wrap>
             <v-flex xs12>
-<!--                <v-card class="pa-3">-->
-<!--                    <v-flex xs12 class="text-right">-->
-<!--                        <v-btn rounded color="primary" dark class="mb-2" @click="addDoctor()">-->
-<!--                            ADICIONAR MEDICO-->
-<!--                            <v-icon right>person_add</v-icon>-->
-<!--                        </v-btn>-->
-<!--                    </v-flex>-->
-<!--                    <v-text-field-->
-<!--                            v-model="search"-->
-<!--                            label="Pesquisa"-->
-<!--                            single-line-->
-<!--                            hide-details-->
-<!--                    ></v-text-field>-->
-<!--                </v-card>-->
+                <!--                <v-card class="pa-3">-->
+                <!--                    <v-flex xs12 class="text-right">-->
+                <!--                        <v-btn rounded color="primary" dark class="mb-2" @click="addDoctor()">-->
+                <!--                            ADICIONAR MEDICO-->
+                <!--                            <v-icon right>person_add</v-icon>-->
+                <!--                        </v-btn>-->
+                <!--                    </v-flex>-->
+                <!--                    <v-text-field-->
+                <!--                            v-model="search"-->
+                <!--                            label="Pesquisa"-->
+                <!--                            single-line-->
+                <!--                            hide-details-->
+                <!--                    ></v-text-field>-->
+                <!--                </v-card>-->
             </v-flex>
 
             <v-flex xs12 class="my-4">
@@ -29,10 +29,16 @@
                 >
                     <template v-slot:top>
                         <v-flex xs12 class="text-right pa-2">
-                            <v-btn rounded color="primary" dark class="mb-2" @click="addDoctor()">
-                                ADICIONAR MEDICO
-                                <v-icon right>person_add</v-icon>
-                            </v-btn>
+                            <v-layout row wrap>
+                                <v-btn rounded color="primary" dark class="mb-2" @click="$router.back()">
+                                    <v-icon>close</v-icon>
+                                </v-btn>
+                                <v-spacer></v-spacer>
+                                <v-btn rounded color="primary" dark class="mb-2" @click="addDoctor()">
+                                    ADICIONAR MEDICO
+                                    <v-icon right>person_add</v-icon>
+                                </v-btn>
+                            </v-layout>
                         </v-flex>
                         <v-text-field append-icon="search"
                                       v-model="search" label="Pesquisa" class="mx-4"></v-text-field>
