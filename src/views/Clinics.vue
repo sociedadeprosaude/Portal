@@ -535,7 +535,7 @@
             },
 
             back() {
-                this.$router.push('/Cadastrar')
+                this.$router.back()
             },
 
             async save() {
