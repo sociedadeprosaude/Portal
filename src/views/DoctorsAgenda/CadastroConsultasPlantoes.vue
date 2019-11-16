@@ -10,7 +10,9 @@
                                         label="Especialidade"
                                         prepend-icon="school"
                                         v-model="especialidade"
-                                        :items="especialidadeOptions"
+                                        :items="specialties"
+                                        item-text="name"
+                                        return-object
                                         outline
                                         chips
                                         color="pink"
@@ -22,14 +24,31 @@
                             <v-select
                                     prepend-icon="account_circle"
                                     v-model="medicos"
-                                    :items="medicosOptions"
+                                    :items="doctors"
+                                    item-text="name"
+                                    return-object
                                     label="Médico"
+                                    no-data-text="Nenhum médico para esta especialidade"
                                     outline
                                     chips
                                     color="purple"
                                     clearable
                             ></v-select>
                         </v-flex>
+                            <v-flex xs12 sm12>
+                                <v-select
+                                        prepend-icon="account_circle"
+                                        v-model="clinic"
+                                        :items="clinics"
+                                        item-text="name"
+                                        label="Clínica"
+                                        no-data-text="Nenhum médico para esta especialidade"
+                                        outline
+                                        chips
+                                        color="purple"
+                                        clearable
+                                ></v-select>
+                            </v-flex>
                     </v-layout>
                 </v-container>
             </template>
@@ -163,8 +182,8 @@
                 <v-btn
                         @click="save"
                         color="success"
-                        round
-                        :disabled="!formIsValid,loader"
+                        rounded
+                        :disabled="!formIsValid"
                         :loading="loader"
 
                 >
@@ -232,7 +251,8 @@
             semana:[],
             vagas:'',
             medicos: '',
-            especialidade: '',
+            especialidade: undefined,
+            clinic: undefined,
             times:'',
             medicosOptions: [],
             timesOptions: [
@@ -273,11 +293,11 @@
             ],
         }),
         computed:{
-            especialidadeOptions(){
-                return this.$store.getters.especialidades
+            specialties(){
+                return this.$store.getters.specialties
             },
             formIsValid () {
-                return this.medicos && this.dataStart && this.semana.length > 0 && this.vagas && this.especialidade && this.times && this.dataTheEnd
+                return this.medicos && this.dataStart && this.semana.length > 0 && this.vagas && this.especialidade && this.times && this.dataTheEnd && this.clinic
             },
             computedDateFormattedStart () {
                 return this.formatDate(this.dataStart)
@@ -299,20 +319,35 @@
             },
             mensagem(){
                 return this.$store.getters.onMensagem
+            },
+            doctors () {
+                let doctors = Object.values(this.$store.getters.doctors)
+                if(this.especialidade) {
+                   doctors = doctors.filter((a) => {
+                        for (let spe in a.specialties) {
+                            if (a.specialties[spe].name === this.especialidade.name) {
+                                return true
+                            }
+                        }
+                        return false
+                        // return a.specialties.indexOf(this.especialidade.name) > -1
+                    })
+                }
+                return doctors
+            },
+            clinics() {
+                return this.$store.getters.clinics
             }
         },
         mounted() {
-            this.$store.dispatch('loadEspecialidades')
-            this.$store.dispatch('loadMedicos')
+            this.$store.dispatch('getSpecialties')
+            this.$store.dispatch('getDoctors')
+            this.$store.dispatch('getClinics')
             this.dataStart = moment().format('YYYY-MM-DD')
             this.dataTheEnd = moment().format('YYYY-MM-DD')
-            this.$store.dispatch('stopSnack',false)
             this.dateFormatted = moment().format('YYYY-MM-DD')
         },
         watch: {
-            especialidade: function(value){
-                this.medicosOptions = this.$store.getters.medicosPorEspecialidade(value)
-            },
             menu1 (val) {
                 val && setTimeout(() => (this.$refs.picker.activePicker = 'MONTH'))
             },
@@ -368,8 +403,19 @@
                 this.times = ''
             },
             save () {
-                this.$store.dispatch('setLoader',{loader:true,view:"CadastroConsultasPlantoes"})
-                setTimeout(() => (this.saveDatesTimeVacancy()), 1000)
+                let consultation = {
+                    start_date: this.dataStart,
+                    final_date: this.dataTheEnd,
+                    specialty: this.especialidade,
+                    hour: this.times,
+                    clinic: this.clinic,
+                    doctor: this.medicos,
+                    vacancy: this.vagas,
+                    weekDays: this.semana
+                }
+
+                this.$store.dispatch('createConsultation', consultation)
+                // setTimeout(() => (this.saveDatesTimeVacancy()), 1000)
             }
         }
     }

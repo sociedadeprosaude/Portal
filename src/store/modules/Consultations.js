@@ -29,6 +29,28 @@ const actions = {
             throw e
         }
     },
+    async createConsultation({commit}, consultation) {
+        let startDate = moment(consultation.start_date, 'YYYY-MM-DD')
+        let finalDate = moment(consultation.final_date, 'YYYY-MM-DD')
+        let daysDiff = finalDate.diff(startDate, 'days')
+        let routineId = moment().valueOf()
+        for (let i = 0; i <= daysDiff; i++) {
+            let day = moment(consultation.start_date, 'YYYY-MM-DD').add(i, 'days')
+            if (consultation.weekDays.indexOf(day.weekday()) > -1) {
+                for (let j = 0; j < consultation.vacancy; j++) {
+                    let consultObject = {
+                        specialty: consultation.specialty,
+                        date: day.format('YYYY-MM-DD') + ' ' + consultation.hour,
+                        routine_id: routineId,
+                        clinic: consultation.clinic,
+                        doctor: consultation.doctor,
+                    }
+                    await firebase.firestore().collection('consultations').add(consultObject)
+                }
+            }
+        }
+        return
+    }
 }
 
 const getters = {
