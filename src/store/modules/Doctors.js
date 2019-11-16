@@ -41,6 +41,14 @@ const actions = {
             throw e
         }
     },
+    async addSpecialty({}, specialty) {
+        try {
+            let speRef = await firebase.firestore().collection('specialties').add(specialty)
+            return speRef
+        } catch (e) {
+            throw e
+        }
+    },
     async getSpecialties({commit}) {
         try {
             let specialtySnapt = await firebase.firestore().collection('specialties').get()

@@ -34,6 +34,9 @@
                                     <v-icon>close</v-icon>
                                 </v-btn>
                                 <v-spacer></v-spacer>
+                                <v-btn rounded color="primary" dark class="mb-2 mx-2" @click="addSpecialtyDialog()">
+                                    <v-icon>class</v-icon>
+                                </v-btn>
                                 <v-btn rounded color="primary" dark class="mb-2" @click="addDoctor()">
                                     ADICIONAR MEDICO
                                     <v-icon right>person_add</v-icon>
@@ -164,6 +167,34 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="createSpecialtyDialog" max-width="500px">
+            <v-card>
+                <v-card-title>
+                    Adicionar Especialidade Médica
+                    <v-spacer></v-spacer>
+                    <v-btn text @click="createSpecialtyDialog = false">
+                        <v-icon>close</v-icon>
+                    </v-btn>
+                </v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                    <v-layout row wrap class="align-center justify-center">
+                        <v-flex xs12>
+                            <v-text-field
+                            v-model="specialty"
+                            label="Especialidade"></v-text-field>
+                        </v-flex>
+                    </v-layout>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <submit-button text="Adicionar" :loading="loading" :success="success" @reset="success = false"
+                                   @click="addSpecialty">
+                    </submit-button>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-container>
 
 </template>
@@ -182,7 +213,9 @@
             createDoctorDialog: false,
             editDoctorDialog: false,
             confirmDeletionDialog: false,
+            createSpecialtyDialog: false,
             selectedDoctor: undefined,
+            specialty: undefined,
             loading: false,
             success: false,
             search: '',
@@ -264,6 +297,21 @@
         },
 
         methods: {
+            addSpecialtyDialog() {
+                this.createSpecialtyDialog = true
+            },
+            async addSpecialty() {
+                this.loading = true
+                this.$store.dispatch('addSpecialty', {
+                    name: this.specialty
+                })
+                this.success = true
+                this.loading = false
+                setTimeout(() => {
+                    this.specialty = undefined
+                    this.createSpecialtyDialog = false
+                }, 1000)
+            },
             addDoctor() {
                 this.selectedDoctor = undefined
                 this.createDoctorDialog = true
