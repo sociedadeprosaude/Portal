@@ -9,6 +9,8 @@ import RegisteredExames from '@/views/Exams/RegisteredExams'
 import Labor from '@/views/Labor/Home'
 import Reports from '@/views/Reports'
 
+import Doctors from '@/views/Doctors'
+
 
 Vue.use(Router)
 
@@ -68,6 +70,15 @@ let router =  new Router({
       path: '/labor',
       name: 'labor',
       component: Labor,
+      meta : {
+        requiresAuth: false
+      }
+    },
+
+    {
+      path: '/doctors',
+      name: 'doctors',
+      component: Doctors,
       meta : {
         requiresAuth: false
       }

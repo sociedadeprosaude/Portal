@@ -11,31 +11,36 @@ const mutations = {
 }
 
 const actions = {
-  async searchPatient ({commit, getters}, searchFields) {
+  async searchUser ({commit, getters}, searchFields) {
     let usersRef = firestore().collection('users')
     for (let field in searchFields) {
       if (!searchFields[field]) continue
       usersRef = usersRef.where(field, field === 'name' ? '>=' : '==', searchFields[field].toUpperCase())
-      console.log(field, searchFields[field])
     }
     let querySnapshot = await usersRef.get()
     let users = []
     querySnapshot.forEach(function(doc) {
       users.push(doc.data())
     })
-    console.log(users)
     return users
   },
-  async addPatient ({commit}, patient) {
+  async addUser ({commit}, patient) {
     try {
       for (let data in patient) {
         if (!patient[data]) {
           delete patient[data]
         }
       }
-      console.log(patient)
       let user = await firebase.firestore().collection('users').doc(patient.cpf).set(patient)
       return user
+    } catch (e) {
+      throw e
+    }
+  },
+  async deleteUser ({}, user) {
+    try {
+      await firebase.firestore().collection('users').doc(user.cpf).delete()
+      return
     } catch (e) {
       throw e
     }

@@ -182,7 +182,7 @@
         },
         data() {
             return {
-                addPatient: true,
+                addPatient: false,
                 name: undefined,
                 cpf: undefined,
                 numAss: undefined,
@@ -240,18 +240,19 @@
                     birth_date: this.birthDate,
                     sex: this.sex,
                     telephones: this.telephones,
-                    addresses: this.addresses
+                    addresses: this.addresses,
+                    type: 'patient'
                 }
-                this.$store.dispatch('addPatient', patient)
+                this.$store.dispatch('addUser', patient)
                 this.loading = false
             },
             async searchPatient() {
-                let users = await this.$store.dispatch('searchPatient', {
+                let users = await this.$store.dispatch('searchUser', {
                     name: this.name,
                     cpf: this.cpf,
-                    associate_number: this.numAss
+                    associate_number: this.numAss,
+                    type: 'patient'
                 })
-                console.log(users)
             }
         }
     }

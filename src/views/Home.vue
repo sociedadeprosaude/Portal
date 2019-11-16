@@ -78,16 +78,16 @@
                 loading: true,
                 pages: [
                     {
+                        title: 'Médicos',
+                        icon: 'attach_money',
+                        permission: 'Caixa',
+                        to: '/doctors'
+                    },
+                    {
                         title: 'Caixa',
                         icon: 'attach_money',
                         permission: 'Caixa',
                         to: '/caixa'
-                    },
-                    {
-                        title: 'Prontuarios',
-                        to: '/prontuario',
-                        permission: 'Prontuarios',
-                        icon: 'enhanced_encryption'
                     },
                     {
                         title: 'Relatórios',

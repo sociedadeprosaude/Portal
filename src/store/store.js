@@ -4,13 +4,14 @@ import axios from 'axios'
 import router from '../router'
 import constants from '@/utils/constants'
 
-import Patients from '@/store/modules/Patients'
+import Users from '@/store/modules/Users'
 import Reports from '@/store/modules/Reports'
 import Exams from '@/store/modules/Exams'
 import Auth from '@/store/modules/Auth'
 import Labor from '@/store/modules/Labor'
 
-import Localization from "./modules/Localization";
+import Localization from "./modules/Localization"
+import Doctors from "./modules/Doctors";
 
 Vue.use(Vuex)
 
@@ -24,12 +25,13 @@ if (process.env.NODE_ENV === 'development') {
 const store = new Vuex.Store({
   modules: {
     Auth,
-    Patients,
+    Users,
     Reports,
     Exams,
     Labor,
 
-    Localization
+    Localization,
+    Doctors
   },
   state: {
     categories: [],
@@ -141,15 +143,15 @@ const store = new Vuex.Store({
     //         })
     //   })
     // },
-    addUser({commit}, payload) {
-      return new Promise((resolve, reject) => {
-        axios.post(AUTH_URL + "auth/user/adicionar", payload)
-            .then(response => {
-              resolve(response.data)
-            })
-      })
-    }
-    ,
+    // addUser({commit}, payload) {
+    //   return new Promise((resolve, reject) => {
+    //     axios.post(AUTH_URL + "auth/user/adicionar", payload)
+    //         .then(response => {
+    //           resolve(response.data)
+    //         })
+    //   })
+    // }
+    // ,
     getCategories({commit, getters}) {
       axios.get('api/despesas/categorias')
           .then(response => {

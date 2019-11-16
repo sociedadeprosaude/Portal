@@ -118,7 +118,7 @@ const getters = {
     exams(state) {
         return state.examsList
     },
-    doctors(state) {
+    doctorss(state) {
         return state.doctorsList
     },
     registeredBudgetCodes(state) {
