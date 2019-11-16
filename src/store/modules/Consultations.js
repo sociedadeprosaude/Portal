@@ -3,11 +3,15 @@ import moment from 'moment'
 
 const state = {
     consultations: {},
+    consultationsByDate: {},
 }
 
 const mutations = {
     setConsultations(state, payload) {
-        state.doctors = payload
+        state.consultations = payload
+    },
+    setConsultationsByDate(state, payload) {
+        state.consultationsByDate = payload
     },
 }
 
@@ -20,9 +24,20 @@ const actions = {
                 .where('date', '<=', moment().add(10, 'days').format('YYYY-MM-DD 23:59:59'))
                 .get()
             let consultations = {}
+            let consultationsByDate = {}
             consultationsSnap.forEach(function (document) {
                 consultations[document.id] = document.data()
+                let date = document.data().date.split(' ')[0]
+                if (!consultationsByDate[date])
+                    consultationsByDate[date] = {}
+                if (!consultationsByDate[date][document.data().doctor.cpf])
+                    consultationsByDate[date][document.data().doctor.cpf] = []
+                consultationsByDate[date][document.data().doctor.cpf].push({
+                    ...document.data(),
+                    id: document.id
+                })
             })
+            commit('setConsultationsByDate', consultationsByDate)
             commit('setConsultations', consultations)
             return consultations
         } catch (e) {
@@ -56,6 +71,9 @@ const actions = {
 const getters = {
     consultations(state) {
         return state.consultations
+    },
+    consultationsByDate(state) {
+        return state.consultationsByDate
     },
 }
 
