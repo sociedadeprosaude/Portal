@@ -1,11 +1,27 @@
 <template>
     <v-app id="app">
-        <v-content class="primary">
+        <v-slide-y-transition>
+            <agenda-toolbar v-if="doctorsAgendaToobar"></agenda-toolbar>
+        </v-slide-y-transition>
+        <v-content :class="['primary', doctorsAgendaToobar ? 'mt-10' : '']">
             <router-view/>
         </v-content>
     </v-app>
 </template>
+<script>
+    import AgendaToolbar from "./components/doctorsAgenda/AgendaToolbar";
 
+    export default {
+        components: {
+            AgendaToolbar
+        },
+        computed: {
+            doctorsAgendaToobar() {
+                return this.$store.getters.showDoctorsAgendaToolbar
+            }
+        }
+    }
+</script>
 <style>
     #app {
         font-family: 'Avenir', Helvetica, Arial, sans-serif;

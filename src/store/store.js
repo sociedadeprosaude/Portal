@@ -13,6 +13,8 @@ import Labor from '@/store/modules/Labor'
 import Localization from "./modules/Localization"
 import Doctors from "./modules/Doctors"
 import Clinics from "./modules/Clinics"
+import Consultations from "./modules/Consultations";
+import LayoutControl from "./modules/local/LayoutControl";
 
 Vue.use(Vuex)
 
@@ -33,7 +35,9 @@ const store = new Vuex.Store({
     Localization,
     Doctors,
     Clinics,
-    Exams
+    Exams,
+    Consultations,
+    LayoutControl
   },
   state: {
     categories: [],
