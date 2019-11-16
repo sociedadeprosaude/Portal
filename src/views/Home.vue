@@ -90,6 +90,12 @@
                         to: '/clinics'
                     },
                     {
+                        title: 'Exames',
+                        icon: 'attach_money',
+                        permission: 'Caixa',
+                        to: '/exams'
+                    },
+                    {
                         title: 'Caixa',
                         icon: 'attach_money',
                         permission: 'Caixa',
@@ -101,12 +107,12 @@
                         permission: 'Relatórios',
                         icon: 'report'
                     },
-                    {
-                        title: 'Exames',
-                        to: '/exames',
-                        permission: 'Exames',
-                        icon: 'insert_drive_file'
-                    },
+                    // {
+                    //     title: 'Exames',
+                    //     to: '/exames',
+                    //     permission: 'Exames',
+                    //     icon: 'insert_drive_file'
+                    // },
                     {
                         title: 'Agenda Médica',
                         permission: 'Agenda Médica',

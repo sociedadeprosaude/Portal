@@ -4,8 +4,7 @@ import Home from '@/views/Home'
 import Account from '@/views/Auth/Account'
 import Login from '@/views/Auth/Login'
 import Register from '@/views/Auth/Register'
-import Exams from '@/views/Exams/Home'
-import RegisteredExames from '@/views/Exams/RegisteredExams'
+import Exams from '@/views/Exams'
 import Labor from '@/views/Labor/Home'
 import Reports from '@/views/Reports'
 
@@ -52,17 +51,9 @@ let router =  new Router({
       }
     },
     {
-      path: '/exames',
+      path: '/exams',
       name: 'Exames',
       component: Exams,
-      meta : {
-        requiresAuth: false
-      }
-    },
-    {
-      path: '/registered_exams',
-      name: 'ExamesRegistrados',
-      component: RegisteredExames,
       meta : {
         requiresAuth: false
       }

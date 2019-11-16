@@ -12,7 +12,7 @@ import Labor from '@/store/modules/Labor'
 
 import Localization from "./modules/Localization"
 import Doctors from "./modules/Doctors"
-import Clinics from "./modules/Clinics";
+import Clinics from "./modules/Clinics"
 
 Vue.use(Vuex)
 
@@ -28,12 +28,12 @@ const store = new Vuex.Store({
     Auth,
     Users,
     Reports,
-    Exams,
     Labor,
 
     Localization,
     Doctors,
-    Clinics
+    Clinics,
+    Exams
   },
   state: {
     categories: [],
