@@ -10,6 +10,7 @@ import Labor from '@/views/Labor/Home'
 import Reports from '@/views/Reports'
 
 import Doctors from '@/views/Doctors'
+import Clinics from "@/views/Clinics";
 
 
 Vue.use(Router)
@@ -79,6 +80,14 @@ let router =  new Router({
       path: '/doctors',
       name: 'doctors',
       component: Doctors,
+      meta : {
+        requiresAuth: false
+      }
+    },
+    {
+      path: '/clinics',
+      name: 'clinics',
+      component: Clinics,
       meta : {
         requiresAuth: false
       }

@@ -11,7 +11,8 @@ import Auth from '@/store/modules/Auth'
 import Labor from '@/store/modules/Labor'
 
 import Localization from "./modules/Localization"
-import Doctors from "./modules/Doctors";
+import Doctors from "./modules/Doctors"
+import Clinics from "./modules/Clinics";
 
 Vue.use(Vuex)
 
@@ -31,7 +32,8 @@ const store = new Vuex.Store({
     Labor,
 
     Localization,
-    Doctors
+    Doctors,
+    Clinics
   },
   state: {
     categories: [],

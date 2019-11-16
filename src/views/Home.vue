@@ -84,6 +84,12 @@
                         to: '/doctors'
                     },
                     {
+                        title: 'Clinicas',
+                        icon: 'attach_money',
+                        permission: 'Caixa',
+                        to: '/clinics'
+                    },
+                    {
                         title: 'Caixa',
                         icon: 'attach_money',
                         permission: 'Caixa',
