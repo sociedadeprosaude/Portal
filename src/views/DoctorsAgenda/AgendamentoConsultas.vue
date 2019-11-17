@@ -49,7 +49,7 @@
                 </v-flex>
                 <v-container fluid grid-list-sm class="py-0 my-3">
                     <v-layout row wrap>
-                        <v-flex v-for="(consultas, j) in consultaGroup" :key="j" xs4>
+                        <v-flex v-for="(consulta, j) in consultaGroup" :key="j" xs4>
                             <v-card class="elevation-12" dark style="border-radius:20px">
                                 <v-card-text class="white text--primary">
                                     <v-container class="py-0 px-0">
@@ -65,15 +65,15 @@
                                             <v-flex id="teste" xs10 sm10 md10 lg10 hidden-xs-only class="pl-3 py-2">
                                                 <div style="height:60px">
                                                     <h4>
-                                                        <span class="subheading font-weight-bold">{{consultas.doctor.name}}</span>
+                                                        <span class="subheading font-weight-bold">{{consulta.doctor.name}}</span>
                                                         <br/>
                                                         <span
                                                                 class="body-2 font-weight-bold grey--text"
-                                                        >{{consultas.specialty.name}}</span>
+                                                        >{{consulta.specialty.name}}</span>
                                                         <br/>
                                                         <span
                                                                 class="body-2 font-weight-bold grey--text"
-                                                        >CRM-AM: {{consultas.doctor.crm}}</span>
+                                                        >CRM-AM: {{consulta.doctor.crm}}</span>
                                                     </h4>
                                                 </div>
                                             </v-flex>
@@ -81,12 +81,12 @@
                                             <v-flex class="my-0" xs12>
                                                 <v-layout row wrap>
                                                     <v-chip class="mx-2" color="primary_dark" text-color="white">
-                                                        {{consultas.date.split(' ')[1]}}
+                                                        {{consulta.date.split(' ')[1]}}
                                                     </v-chip>
                                                     <v-chip
                                                             color="primary_dark"
                                                             text-color="white"
-                                                    >Vagas : {{consultas.vagas}}
+                                                    >Vagas : {{consulta.vagas}}
                                                     </v-chip>
                                                 </v-layout>
                                             </v-flex>
@@ -102,7 +102,7 @@
                                                         rounded
                                                         color="primary_dark"
                                                         class="mx-0"
-                                                        @click="scheduleAppointment = {crm:consulta.crm,medico:consulta.nome, data:consulta.data,hora:consulta.hora}"
+                                                        @click="scheduleAppointment(consulta)"
                                                 >Agendar
                                                 </v-btn>
                                             </v-flex>
@@ -119,7 +119,7 @@
         <v-flex v-if="!showAlert" xs4 class="text-center">
             <v-layout row wrap class="align-center justify-center">
                 <v-flex xs12 class="text-center">
-                    <select-patient-card max-width="1000px"></select-patient-card>
+                    <select-patient-card ref="patientCard" max-width="1000px"></select-patient-card>
                 </v-flex>
                 <v-flex xs12 class="text-center">
                     <v-date-picker landscape full-width class="mx-4" v-model="date" :allowed-dates="allowedDates"
@@ -422,8 +422,8 @@
             },
             consultas() {
                 let consultas = this.formatConsultationsArray(this.$store.getters.consultations).filter((a) => {
-                  return this.especialidade ? this.especialidade.name === a.specialty.name : true
-                  && this.selectedDoctor ? this.selectedDoctor.cpf ?  this.selectedDoctor.cpf === a.doctor.cpf : true : true
+                    return this.especialidade ? this.especialidade.name === a.specialty.name : true
+                    && this.selectedDoctor ? this.selectedDoctor.cpf ? this.selectedDoctor.cpf === a.doctor.cpf : true : true
                 })
                 return consultas;
             },
@@ -438,29 +438,9 @@
                     return Object.values(docs)
                 }
             },
-            pacienteSelecionado() {
+            selectdPatient() {
                 let paciente = this.$store.getters.selectedPatient;
-                if (paciente === null) {
-                    paciente = {nome: null, num_associado: null};
-                    return null;
-                }
                 return paciente;
-            },
-
-            scheduleAppointment: {
-                get: function () {
-                    return this.index_Selecionado;
-                },
-                set: function (index) {
-                    if (this.pacienteSelecionado !== null) {
-                        if (this.especialidade !== "") {
-                            this.index_Selecionado = {...this.pacienteSelecionado, ...index};
-                            this.dialog = true;
-                        }
-                    } else {
-                        this.dialogPaciente = true;
-                    }
-                }
             },
             loader() {
                 return this.$store.getters.statusLoaderAC;
@@ -512,10 +492,6 @@
             //-----------------------------------------------------------------------------------------------------
         },
         watch: {
-            pacienteSelecionado(val) {
-                if (this.$store.getters.selectedPatient != null)
-                    this.dialogPaciente = false;
-            },
             medico(value) {
                 this.dates = [];
                 this.$store.dispatch("loadAppointment", {
@@ -543,6 +519,18 @@
             window.addEventListener("scroll", this.handleScroll);
         },
         methods: {
+            scheduleAppointment(consultation) {
+              console.log(consultation)
+              if (!this.selectedPatient) {
+                console.log(this.$refs)
+                this.$refs.patientCard.$el.classList.add('shaking-ease-anim')
+                setTimeout(() => {
+                  this.$refs.patientCard.$el.classList.remove('shaking-ease-anim')
+                }, 1000)
+                return
+              }
+              this.dialog = true
+            },
             formatConsultationsArray(consultations) {
                 let newArray = []
                 for (let consultation in consultations) {
@@ -550,10 +538,12 @@
                     if (inArrayIndex === -1) {
                         newArray.push({
                             ...consultations[consultation],
-                            vagas: consultations[consultation].user ? 0 : 1
+                            vagas: consultations[consultation].user ? 0 : 1,
+                            consultations: [consultations[consultation]]
                         })
                     } else {
                         newArray[inArrayIndex].vagas++
+                        newArray[inArrayIndex].consultations.push(consultations[consultation])
                     }
                 }
                 return newArray
@@ -567,15 +557,15 @@
                 return -1
             },
             consultasByDate(consultations) {
-              let res = {}
-              for(let cons in consultations) {
-                let targetDate = consultations[cons].date.split(' ')[0]
-                if (!res[targetDate]) {
-                  res[targetDate] = []
+                let res = {}
+                for (let cons in consultations) {
+                    let targetDate = consultations[cons].date.split(' ')[0]
+                    if (!res[targetDate]) {
+                        res[targetDate] = []
+                    }
+                    res[targetDate].push(consultations[cons])
                 }
-                res[targetDate].push(consultations[cons])
-              }
-              return res
+                return res
             },
             async initialConfig() {
                 this.loading = true
