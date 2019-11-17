@@ -34,7 +34,7 @@
                                 <v-list-tile-title>Nome: {{selectedPatient.nome}}</v-list-tile-title>
                                 <v-list-tile-sub-title v-if="selectedPatient.cpf !== ''">CPF: {{selectedPatient.cpf}}
                                 </v-list-tile-sub-title>
-                                <v-list-tile-sub-title v-else>Número: {{selectedPatient.id}}</v-list-tile-sub-title>
+                                <v-list-tile-sub-title v-else>Número: {{selectedPatient.association_number}}</v-list-tile-sub-title>
                                 <v-spacer></v-spacer>
                             </v-list-tile-content>
                         </v-list-tile>
@@ -93,7 +93,7 @@
         },
         computed: {
             selectedPatient() {
-                this.$store.getters.selectedPatient
+                return this.$store.getters.selectedPatient
             }
         }
     }

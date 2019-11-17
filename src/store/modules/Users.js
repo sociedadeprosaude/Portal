@@ -2,10 +2,12 @@ import axios from 'axios'
 import firebase, {firestore} from "firebase";
 
 const state = {
+  selectedPatient: undefined
 }
 
 const mutations = {
   setSelectedPatient(state, payload) {
+    console.log('selection', payload)
     state.selectedPatient = payload
   },
 }
@@ -20,7 +22,9 @@ const actions = {
     let querySnapshot = await usersRef.get()
     let users = []
     querySnapshot.forEach(function(doc) {
-      users.push(doc.data())
+      if (doc.data().association_number) {
+        users.push(doc.data())
+      }
     })
     return users
   },

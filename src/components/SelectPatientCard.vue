@@ -8,7 +8,15 @@
                             <v-flex xs8 class="text-left">
                                 <span class="my-headline white--text">Buscar Paciente</span>
                             </v-flex>
-                            <v-flex xs4 class="text-right">
+                            <v-flex xs2 class="text-right">
+                                <v-btn
+                                        v-if="selectedPatient"
+                                        @click="selectUser(undefined)"
+                                        rounded text class="white--text transparent">
+                                    <v-icon>delete</v-icon>
+                                </v-btn>
+                            </v-flex>
+                            <v-flex xs2 class="text-right">
                                 <v-btn
                                         @click="addPatient = !addPatient"
                                         rounded text class="white--text transparent">
@@ -19,22 +27,44 @@
                                 <v-text-field
                                         prepend-icon="account_circle"
                                         v-model="name"
+                                        :disabled="selectedPatient !== undefined"
                                         label="Nome"></v-text-field>
                             </v-flex>
                             <v-flex sm5 xs12>
                                 <v-text-field
                                         v-model="cpf"
+                                        :disabled="selectedPatient !== undefined"
                                         label="CPF"></v-text-field>
                             </v-flex>
                             <v-spacer></v-spacer>
                             <v-flex sm5 xs12>
                                 <v-text-field
                                         v-model="numAss"
+                                        :disabled="selectedPatient !== undefined"
                                         label="Nun. Associado"></v-text-field>
                             </v-flex>
                             <v-flex xs12 class="text-right">
-                                <v-btn @click="searchPatient()" v-if="!loading">Buscar</v-btn>
-                                <v-progress-circular indeterminate color="white" v-else></v-progress-circular>
+                                <submit-button @reset="success = false" @click="searchPatient()" :loading="loading"
+                                               text="Buscar"></submit-button>
+                            </v-flex>
+                            <v-divider></v-divider>
+                            <v-flex xs12>
+                                <v-card v-for="user in foundUsers" :key="user.cpf" class="my-2" @click="selectUser(user)">
+                                    <v-layout row wrap class="align-center">
+                                        <v-flex xs4>
+                                            <span>{{user.name}}</span>
+                                        </v-flex>
+                                        <v-flex xs4>
+                                            <span>CPF: {{user.cpf}}</span>
+                                        </v-flex>
+                                        <v-flex xs4 v-if="user.association_number">
+                                            <span>Numero de Associado: {{user.association_number}}</span>
+                                        </v-flex>
+                                        <v-flex xs4 v-if="user.crm">
+                                            <span>CRM: {{user.crm}}</span>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-card>
                             </v-flex>
                         </v-layout>
                     </v-card>
@@ -128,11 +158,13 @@
                                             <v-text-field
                                                     :error="address.cepError"
                                                     label="CEP" class="ml-3" v-model="address.cep"
-                                                          v-mask="mask.cep"></v-text-field>
-                                            <v-btn v-if="!address.loading" @click="getAddressByCep(address)" class="transparent" text>
+                                                    v-mask="mask.cep"></v-text-field>
+                                            <v-btn v-if="!address.loading" @click="getAddressByCep(address)"
+                                                   class="transparent" text>
                                                 <v-icon>search</v-icon>
                                             </v-btn>
-                                            <v-progress-circular indeterminate color="white" v-else></v-progress-circular>
+                                            <v-progress-circular indeterminate color="white"
+                                                                 v-else></v-progress-circular>
                                         </v-layout>
                                     </v-flex>
                                     <v-spacer></v-spacer>
@@ -162,8 +194,8 @@
                                 </v-layout>
                             </v-flex>
                             <v-flex xs12 class="text-right">
-                                <v-btn @click="registerPatient()" v-if="!loading">Salvar</v-btn>
-                                <v-progress-circular indeterminate color="white" v-else></v-progress-circular>
+                                <submit-button @reset="success = false" @click="registerPatient()" :loading="loading"
+                                               text="Salvar"></submit-button>
                             </v-flex>
                         </v-layout>
                     </v-card>
@@ -175,14 +207,23 @@
 
 <script>
     import {mask} from 'vue-the-mask'
+    import SubmitButton from "./SubmitButton";
 
     export default {
         directives: {
             mask,
         },
         props: {
-          maxWidth: {
-              default: '400px'
+            maxWidth: {
+                default: '400px'
+            }
+        },
+        components: {
+            SubmitButton
+        },
+        computed: {
+          selectedPatient() {
+              return this.$store.getters.selectedPatient
           }
         },
         data() {
@@ -206,7 +247,9 @@
                     cep: '##.###-###',
                 },
                 states: ['AC', 'AL', 'AM'],
-                cities: {'AC': [], 'AL': [], 'AM': ['Iranduba', 'Manaus', 'Parintins']}
+                cities: {'AC': [], 'AL': [], 'AM': ['Iranduba', 'Manaus', 'Parintins']},
+                foundUsers: [],
+                success: false
             }
         },
         methods: {
@@ -239,25 +282,35 @@
                 this.loading = true
                 let patient = {
                     name: this.name.toUpperCase(),
-                    cpf: this.cpf.replace(/\./g,'').replace('-', ''),
+                    cpf: this.cpf.replace(/\./g, '').replace('-', ''),
                     email: this.email,
                     association_number: this.numAss,
                     birth_date: this.birthDate,
                     sex: this.sex,
                     telephones: this.telephones,
                     addresses: this.addresses,
-                    type: 'patient'
+                    type: 'PATIENT'
                 }
                 this.$store.dispatch('addUser', patient)
+                this.success = true
                 this.loading = false
             },
+            selectUser(user) {
+                this.$store.commit('setSelectedPatient', user)
+                this.foundUsers = []
+                this.name = user.name
+                this.cpf = user.cpf
+                this.numAss = user.association_number
+            },
             async searchPatient() {
+                this.loading = true
                 let users = await this.$store.dispatch('searchUser', {
                     name: this.name,
                     cpf: this.cpf,
                     associate_number: this.numAss,
-                    type: 'patient'
                 })
+                this.foundUsers = users
+                this.loading = false
             }
         }
     }

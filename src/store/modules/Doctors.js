@@ -15,19 +15,19 @@ const mutations = {
 }
 
 const actions = {
-    async searchUser({commit, getters}, searchFields) {
-        let usersRef = firestore().collection('users')
-        for (let field in searchFields) {
-            if (!searchFields[field]) continue
-            usersRef = usersRef.where(field, field === 'name' ? '>=' : '==', searchFields[field].toUpperCase())
-        }
-        let querySnapshot = await usersRef.get()
-        let users = []
-        querySnapshot.forEach(function (doc) {
-            users.push(doc.data())
-        })
-        return users
-    },
+    // async searchUser({commit, getters}, searchFields) {
+    //     let usersRef = firestore().collection('users')
+    //     for (let field in searchFields) {
+    //         if (!searchFields[field]) continue
+    //         usersRef = usersRef.where(field, field === 'name' ? '>=' : '==', searchFields[field].toUpperCase())
+    //     }
+    //     let querySnapshot = await usersRef.get()
+    //     let users = []
+    //     querySnapshot.forEach(function (doc) {
+    //         users.push(doc.data())
+    //     })
+    //     return users
+    // },
     async getDoctors({commit}) {
         try {
             let doctorsSnap = await firebase.firestore().collection('users').where('type', '==', 'doctor').get()
