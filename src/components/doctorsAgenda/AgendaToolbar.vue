@@ -13,7 +13,7 @@
                 </v-list-item>
             </v-list>
         </v-navigation-drawer>
-        <v-app-bar color="blue" dark fixed class="hidden-print-only">
+        <v-app-bar color="primary_dark" dark fixed class="hidden-print-only">
             <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
             <v-toolbar-title>
                 <router-link class="hidden-xs-only" to="/" tag="span" style="cursor: pointer">

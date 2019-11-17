@@ -3,7 +3,7 @@
         <v-layout row wrap>
             <v-flex xs12 class="my-4">
                 <v-expand-transition mode="out-in">
-                    <v-card class="primary_dark pa-2" max-width="400px" v-if="!addPatient">
+                    <v-card class="primary_dark pa-2" :max-width="maxWidth" v-if="!addPatient">
                         <v-layout row wrap>
                             <v-flex xs8 class="text-left">
                                 <span class="my-headline white--text">Buscar Paciente</span>
@@ -179,6 +179,11 @@
     export default {
         directives: {
             mask,
+        },
+        props: {
+          maxWidth: {
+              default: '400px'
+          }
         },
         data() {
             return {

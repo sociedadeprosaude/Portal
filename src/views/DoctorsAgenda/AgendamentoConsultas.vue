@@ -1,55 +1,43 @@
 <template>
     <v-layout row wrap>
-
-        <template>
-            <v-container id="top" class="py-0 mt-5">
-                <v-layout align-center row wrap>
-
-                    <v-flex xs3>
-                        <v-select
-                                prepend-icon="school"
-                                v-model="especialidade"
-                                :items="specialties"
-                                item-text="name"
-                                return-object
-                                label="Especialidade"
-                                outline
-                                chips
-                                color="blue"
-                        ></v-select>
-                    </v-flex>
-                    <v-flex xs4 class="ml-3">
-                        <v-select
-                                prepend-icon="person"
-                                v-model="selectedDoctor"
-                                :items="doctors"
-                                return-object
-                                item-text="name"
-                                label="Médicos"
-                                outline
-                                chips
-                                color="blue"
-                        ></v-select>
-                    </v-flex>
-                </v-layout>
-            </v-container>
-        </template>
-        <v-flex xs12 class="ml-10">
-            <v-container>
-
-                <v-alert type="warning" :value="showAlert">Não há consultas para {{this.especialidade}}</v-alert>
-            </v-container>
-        </v-flex>
-        <v-flex xs9>
+        <v-flex xs8>
+            <v-layout align-center row wrap class="ml-6">
+                <v-flex xs3>
+                    <v-select
+                            prepend-icon="school"
+                            v-model="especialidade"
+                            :items="specialties"
+                            item-text="name"
+                            return-object
+                            label="Especialidade"
+                            outline
+                            chips
+                            color="blue"
+                    ></v-select>
+                </v-flex>
+                <v-flex xs4 class="ml-3">
+                    <v-select
+                            prepend-icon="person"
+                            v-model="selectedDoctor"
+                            :items="doctors"
+                            return-object
+                            item-text="name"
+                            label="Médicos"
+                            outline
+                            chips
+                            color="blue"
+                    ></v-select>
+                </v-flex>
+            </v-layout>
             <v-container
                     style="width:100%"
                     class="align-center justify-center hidden-xs-only py-0"
-                    v-for="(consultaGroup, i) in consultas"
+                    v-for="(consultaGroup, i) in consultasByDate(consultas)"
                     :key="i"
 
             >
                 <v-flex xs12>
-                    <div v-bind:id="'group-' + consultaGroup.date">
+                    <div v-bind:id="'group-' + i">
                         <v-card dark color="primary_dark" class="title">
                             <v-card-text
                                     class="px-3 text-left my-sub-headline"
@@ -77,15 +65,15 @@
                                             <v-flex id="teste" xs10 sm10 md10 lg10 hidden-xs-only class="pl-3 py-2">
                                                 <div style="height:60px">
                                                     <h4>
-                                                        <span class="subheading font-weight-bold">{{consultas[0].doctor.name}}</span>
-                                                      <br/>
-                                                      <span
-                                                              class="body-2 font-weight-bold grey--text"
-                                                      >{{consultas[0].specialty.name}}</span>
+                                                        <span class="subheading font-weight-bold">{{consultas.doctor.name}}</span>
                                                         <br/>
                                                         <span
                                                                 class="body-2 font-weight-bold grey--text"
-                                                        >CRM-AM: {{consultas[0].doctor.crm}}</span>
+                                                        >{{consultas.specialty.name}}</span>
+                                                        <br/>
+                                                        <span
+                                                                class="body-2 font-weight-bold grey--text"
+                                                        >CRM-AM: {{consultas.doctor.crm}}</span>
                                                     </h4>
                                                 </div>
                                             </v-flex>
@@ -93,12 +81,12 @@
                                             <v-flex class="my-0" xs12>
                                                 <v-layout row wrap>
                                                     <v-chip class="mx-2" color="primary_dark" text-color="white">
-                                                        {{consultas[0].date.split(' ')[1]}}
+                                                        {{consultas.date.split(' ')[1]}}
                                                     </v-chip>
                                                     <v-chip
                                                             color="primary_dark"
                                                             text-color="white"
-                                                    >Vagas : {{getConsultationsVacancy(consultas)}}
+                                                    >Vagas : {{consultas.vagas}}
                                                     </v-chip>
                                                 </v-layout>
                                             </v-flex>
@@ -127,11 +115,17 @@
                 </v-container>
             </v-container>
         </v-flex>
-      <v-divider vertical></v-divider>
-        <v-flex v-if="!showAlert" xs2 class="ml-3">
-            <div style="position:fixed; top:25%">
-                <v-date-picker v-model="date" :allowed-dates="allowedDates" locale="pt-br"></v-date-picker>
-            </div>
+        <!--      <v-divider vertical></v-divider>-->
+        <v-flex v-if="!showAlert" xs4 class="text-center">
+            <v-layout row wrap class="align-center justify-center">
+                <v-flex xs12 class="text-center">
+                    <select-patient-card max-width="1000px"></select-patient-card>
+                </v-flex>
+                <v-flex xs12 class="text-center">
+                    <v-date-picker landscape full-width class="mx-4" v-model="date" :allowed-dates="allowedDates"
+                                   locale="pt-br"></v-date-picker>
+                </v-flex>
+            </v-layout>
         </v-flex>
         <template>
             <v-container>
@@ -194,7 +188,7 @@
                                                 <v-text-field
                                                         readonly
                                                         prepend-icon="school"
-                                                        v-model="this.especialidade"
+                                                        v-model="especialidade"
                                                         label="Especialidade"
                                                 ></v-text-field>
                                             </v-flex>
@@ -354,11 +348,12 @@
 
 <script>
     import Pacientes from "./Patient";
+    import SelectPatientCard from "../../components/SelectPatientCard";
 
     var moment = require("moment");
     // import * as easings from "vuetify/es5/util/easing-patterns";
     export default {
-        components: {Pacientes},
+        components: {Pacientes, SelectPatientCard},
 
         data: () => ({
             y: "top",
@@ -398,6 +393,7 @@
             pacientes: "",
             timeout: 4000,
             especialidadeOption: "",
+            especialidade: undefined,
             showAlert: false,
             snackDialogDone: false,
             snack: false,
@@ -425,25 +421,21 @@
                 return this.formatDate(this.index_Selecionado.data);
             },
             consultas() {
-                let consultas = this.$store.getters.consultationsByDate
-
+                let consultas = this.formatConsultationsArray(this.$store.getters.consultations).filter((a) => {
+                  return this.especialidade ? this.especialidade.name === a.specialty.name : true
+                  && this.selectedDoctor ? this.selectedDoctor.cpf ?  this.selectedDoctor.cpf === a.doctor.cpf : true : true
+                })
                 return consultas;
             },
             doctors: {
-                set: function (val) {
-                    this.selectedDoctor = val
-                },
                 get: function () {
-                    if (this.selectedDoctor) {
-                        return this.selectedDoctor
-                    }
-                    let doctors = {
+                    let docs = {
                         0: {
                             name: 'Todos'
                         },
                         ...this.$store.getters.doctors
                     }
-                    return Object.values(doctors)
+                    return Object.values(docs)
                 }
             },
             pacienteSelecionado() {
@@ -491,15 +483,15 @@
             mensagem() {
                 return this.$store.getters.onMensagem;
             },
-            especialidade: {
-                set: function (value) {
-                    this.especialidadeOption = value;
-                    this.dates = [];
-                },
-                get: function () {
-                    return this.especialidadeOption;
-                }
-            },
+            // especialidade: {
+            //     set: function (value) {
+            //         this.especialidadeOption = value;
+            //         this.dates = [];
+            //     },
+            //     get: function () {
+            //         return this.especialidadeOption;
+            //     }
+            // },
             //------------------------------------------Scroll-------------------------------------------------
             target() {
                 const value = this[this.type];
@@ -551,10 +543,39 @@
             window.addEventListener("scroll", this.handleScroll);
         },
         methods: {
-            getConsultationsVacancy(consultas) {
-                return consultas.filter((a) => {
-                    return !a.user
-                }).length
+            formatConsultationsArray(consultations) {
+                let newArray = []
+                for (let consultation in consultations) {
+                    let inArrayIndex = this.checkConsultationIsInArray(newArray, consultations[consultation])
+                    if (inArrayIndex === -1) {
+                        newArray.push({
+                            ...consultations[consultation],
+                            vagas: consultations[consultation].user ? 0 : 1
+                        })
+                    } else {
+                        newArray[inArrayIndex].vagas++
+                    }
+                }
+                return newArray
+            },
+            checkConsultationIsInArray(array, consultation) {
+                for (let i in array) {
+                    if (array[i].date === consultation.date && array[i].doctor.name === consultation.doctor.name) {
+                        return i
+                    }
+                }
+                return -1
+            },
+            consultasByDate(consultations) {
+              let res = {}
+              for(let cons in consultations) {
+                let targetDate = consultations[cons].date.split(' ')[0]
+                if (!res[targetDate]) {
+                  res[targetDate] = []
+                }
+                res[targetDate].push(consultations[cons])
+              }
+              return res
             },
             async initialConfig() {
                 this.loading = true
@@ -563,7 +584,7 @@
                 await this.$store.dispatch("getSpecialties")
                 // this.$store.dispatch("stopSnack", false);
                 //this.$store.dispatch('setLoader',{loader:false,view:"AgendamentoConsulta"})
-                this.especialidade = "Clinico Geral"
+                // this.especialidade = "Clinico Geral"
                 this.loading = false
             },
             backTop() {
@@ -589,7 +610,7 @@
                 }
             },
             allowedDates(val) {
-                return Object.keys(this.consultas).indexOf(val) !== -1;
+                return Object.keys(this.consultasByDate(this.consultas)).indexOf(val) !== -1;
             },
             daydate(date) {
                 var dateMoment = moment(date);
@@ -622,7 +643,6 @@
                     num_recibo: this.num_recibo
                 });
 
-                console.log(consulta);
                 this.$store.dispatch("scheduleAppointment", {
                     pacienteSelecionado: this.pacienteSelecionado,
                     status: this.status,
