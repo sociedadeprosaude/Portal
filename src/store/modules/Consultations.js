@@ -69,6 +69,23 @@ const actions = {
             }
         }
         return
+    },
+    async addConsultationAppointmentToUser({commit}, payload) {
+        try {
+            await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').add(payload.consultation)
+        } catch (e) {
+            throw e
+        }
+    },
+    async addUserToConsultation({commit}, payload) {
+        try {
+            let obj = {
+                user: payload.user,
+            }
+            await firebase.firestore().collection('consultations').doc(payload.consultation.id).update(obj)
+        } catch (e) {
+            throw e
+        }
     }
 }
 

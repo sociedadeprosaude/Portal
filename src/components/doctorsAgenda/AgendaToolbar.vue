@@ -28,16 +28,16 @@
             <v-toolbar-items>
                 <v-flex class="mt-2">
                     <v-card class="transparent" flat v-if="selectedPatient">
-                        <v-list-tile>
+                        <v-list-item>
                             <v-icon left>person</v-icon>
-                            <v-list-tile-content>
-                                <v-list-tile-title>Nome: {{selectedPatient.nome}}</v-list-tile-title>
-                                <v-list-tile-sub-title v-if="selectedPatient.cpf !== ''">CPF: {{selectedPatient.cpf}}
-                                </v-list-tile-sub-title>
-                                <v-list-tile-sub-title v-else>Número: {{selectedPatient.association_number}}</v-list-tile-sub-title>
+                            <v-list-item-content>
+                                <v-list-item-title>Nome: {{selectedPatient.name}}</v-list-item-title>
+                                <v-list-item-subtitle v-if="selectedPatient.cpf !== ''">CPF: {{selectedPatient.cpf}}
+                                </v-list-item-subtitle>
+                                <v-list-tile-subtitle v-else>Número: {{selectedPatient.association_number}}</v-list-tile-subtitle>
                                 <v-spacer></v-spacer>
-                            </v-list-tile-content>
-                        </v-list-tile>
+                            </v-list-item-content>
+                        </v-list-item>
                     </v-card>
                 </v-flex>
 

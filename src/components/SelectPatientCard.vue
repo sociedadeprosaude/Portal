@@ -223,6 +223,12 @@
         },
         computed: {
           selectedPatient() {
+              let user = this.$store.getters.selectedPatient
+              if (user) {
+                  this.name = user.name
+                  this.cpf = user.cpf
+                  this.numAss = user.association_number
+              }
               return this.$store.getters.selectedPatient
           }
         },
@@ -298,9 +304,6 @@
             selectUser(user) {
                 this.$store.commit('setSelectedPatient', user)
                 this.foundUsers = []
-                this.name = user.name
-                this.cpf = user.cpf
-                this.numAss = user.association_number
             },
             async searchPatient() {
                 this.loading = true
