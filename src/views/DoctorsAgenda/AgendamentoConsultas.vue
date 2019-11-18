@@ -571,7 +571,6 @@
                         return !a.user
                     })
                 }
-                console.log(form.user, consultation)
                 this.createConsultationForm = form
             },
             formatConsultationsArray(consultations) {
@@ -594,7 +593,6 @@
                         return !a.user
                     }).length
                 }
-                console.log(newArray)
                 return newArray
             },
             checkConsultationIsInArray(array, consultation) {
