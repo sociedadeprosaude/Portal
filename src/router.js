@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import store from "./store/store";
+import store from "./store/store"
 import Home from '@/views/Home'
 import Account from '@/views/Auth/Account'
 import Login from '@/views/Auth/Login'
@@ -10,9 +10,10 @@ import Labor from '@/views/Labor/Home'
 import Reports from '@/views/Reports'
 
 import Doctors from '@/views/Doctors'
-import Clinics from "@/views/Clinics";
+import Clinics from "@/views/Clinics"
 
-import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes";
+import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
+import CashierRoutes from "./routes/CashierRoutes";
 
 
 Vue.use(Router)
@@ -86,7 +87,7 @@ let mainRoutes = [
   },
 ]
 
-let routes = mainRoutes.concat(DoctorsAgendaRoutes)
+let routes = mainRoutes.concat(DoctorsAgendaRoutes, CashierRoutes)
 let router =  new Router({
   routes: routes
 })
