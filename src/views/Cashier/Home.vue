@@ -35,16 +35,16 @@ export default {
     }),
   methods:{
       cadastro(){
-        this.$router.push('/Cadastrar')
+        this.$router.push('/caixa/Cadastrar')
       },
       orcamento(){
-        this.$router.push('/Orçamento')
+        this.$router.push('/caixa/Orçamento')
       },
       relatorio(){
-        this.$router.push('/Relatorio')
+        this.$router.push('/caixa/Relatorio')
       },
       saidas(){
-        this.$router.push('/Saidas')
+        this.$router.push('/caixa/Saidas')
       }
   }
 };
