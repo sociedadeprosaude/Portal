@@ -118,7 +118,7 @@
                             <v-layout align-center justify-center>
                                 <v-btn
                                         color="error"
-                                        @click="clear()"
+                                        @click="clearConsultation()"
                                 >
                                     <v-icon>
                                         delete
@@ -127,7 +127,7 @@
                                 </v-btn>
                                 <v-spacer></v-spacer>
                                 <v-btn
-                                        @click="save()"
+                                        @click="editConsultation()"
                                         color="warning"
                                 >
                                     <v-icon>
@@ -204,7 +204,7 @@
                             <v-layout align-center justify-center>
                                 <v-btn
                                         color="error"
-                                        @click="clear()"
+                                        @click="clearExam()"
                                 >
                                     <v-icon>
                                         delete
@@ -213,7 +213,7 @@
                                 </v-btn>
                                 <v-spacer></v-spacer>
                                 <v-btn
-                                        @click="save()"
+                                        @click="editExam()"
                                         color="warning"
                                 >
                                     <v-icon>
@@ -231,7 +231,11 @@
                                 <v-layout align-center justify-center wrap>
                                     <v-flex>
                                         <v-alert type="warning">
-                                            Selecione uma das Opções acima para <strong>EDITAR</strong> ou <strong>DELATAR</strong> Consultas ou Exames.
+                                            Selecione uma das Opções acima para
+                                            <strong>EDITAR</strong>
+                                            ou
+                                            <strong>DELATAR</strong>
+                                            Consultas ou Exames.
                                         </v-alert>
                                     </v-flex>
                                 </v-layout>
@@ -246,32 +250,110 @@
 </template>
 
 <script>
+    import {mask} from 'vue-the-mask';
     export default {
+        directives: {mask},
         data: () => ({
-
             option:'',
             options: [
                 'Consultas',
                 'Exames'
             ],
+            cost: null,
+            sale: null,
+            obs: null,
+            consultations: null,
+            doctors: [],
+            doctorsOptions: [],
+            payment:'Consultas',
+            paymentOptions: [
+                'Consultas',
+                'Dia'
+            ],
         }),
-
         computed: {
-
+            consultationsOptions(){
+                return this.$store.getters.especialidades
+            },
+            formIsValidConsultation() {
+                return this.sale && this.cost && this.consultations && this.doctors.length > 0
+            },
+            formIsValidExam() {
+                return this.sale && this.cost && this.exams.length > 0
+            },
             selectedClinic() {
                 return this.$store.getters.selectedClinic;
             },
+            listExam () {
+                return this.$store.getters.allExam;
+            },
+        },
+
+        mounted() {
+            this.$store.dispatch('loadEspecialidades');
+            this.$store.dispatch('loadMedicos');
+            this.$store.dispatch('loadExam');
+        },
+
+        watch: {
+            consultations: function (value) {
+                this.doctorsOptions = this.$store.getters.medicosPorEspecialidade(value)
+            }
         },
 
         methods:{
 
-            save(){
-                //
-            }
-        },
+            editConsultation(){
+                for (let i in this.doctors){
+                    let consultationData = {
+                        clinic: this.selectedClinic.nome,
+                        consultation: this.consultations.toUpperCase(),
+                        doctor:this.doctors[i],
+                        cost:this.cost,
+                        sale:this.sale,
+                        obs:this.obs,
+                        payment: this.payment,
+                    };
+                    this.$store.dispatch('addAppointment', consultationData);
+                    this.$store.dispatch('addClinicInAppointment', consultationData);
+                }
+                this.clearConsultation()
+            },
+
+            editExam(){
+                for (let i in this.exams){
+                    let examData = {
+                        clinic: this.selectedClinic.nome,
+                        exam: this.exams[i].nome,
+                        cost:this.cost,
+                        sale:this.sale,
+                        obs:this.obs,
+                    };
+                    this.$store.dispatch('addExam', examData);
+                    this.$store.dispatch('addClinicInExam', examData);
+                }
+                this.clearExam()
+            },
+
+            clearConsultation () {
+                this.cost = null;
+                this.sale =  null;
+                this.obs =  null;
+                this.consultations = null;
+                this.doctors = [];
+                this.payment = 'Consultas';
+                this.$store.dispatch('selectClinic', null);
+            },
+
+            clearExam () {
+                this.cost = null;
+                this.sale =  null;
+                this.obs =  null;
+                this.exams = [];
+                this.$store.dispatch('selectClinic', null);
+            },
+        }
     }
 </script>
-
 <style scoped>
-
 </style>

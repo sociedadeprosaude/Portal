@@ -20,10 +20,10 @@
                         <v-list-item v-for="(item,index) in listProducts" :key="index">
                             <v-chip-group>
                             <v-chip v-if="item.type ==='appointment' " color="green" text-color="white">
-                                <strong>{{item.product}} | {{item.doctor}} | R$ {{item.cost}} | R$ {{item.sale}}</strong>
+                                <v-icon>assignment</v-icon>:<strong>{{item.product}} | {{item.doctor}} | R$ {{item.cost}} | R$ {{item.sale}}</strong>
                             </v-chip>
                             <v-chip v-else color="purple" text-color="white">
-                                <strong>{{item.product}} | R$ {{item.cost}} | R$ {{item.sale}}</strong>
+                                <v-icon>poll</v-icon>:<strong>{{item.product}} | R$ {{item.cost}} | R$ {{item.sale}}</strong>
                             </v-chip>
                             </v-chip-group>
                         </v-list-item>
@@ -86,12 +86,6 @@
                     sale:'80.00',
                 },
                 {
-                    type:'exam',
-                    product:'SANGUE',
-                    cost:'40.00',
-                    sale:'70.00',
-                },
-                {
                     type:'appointment',
                     product:'DERMATOLOGIA',
                     doctor:'JONATAS REIS',
@@ -99,17 +93,23 @@
                     sale:'80.00',
                 },
                 {
+                    type:'appointment',
+                    product:'DERMATOLOGIA',
+                    doctor:'ADRIA CASTRO',
+                    cost:'50.00',
+                    sale:'80.00',
+                },
+                {
                     type:'exam',
                     product:'SANGUE',
                     cost:'40.00',
                     sale:'70.00',
                 },
                 {
-                    type:'appointment',
-                    product:'DERMATOLOGIA',
-                    doctor:'ADRIA CASTRO',
-                    cost:'50.00',
-                    sale:'80.00',
+                    type:'exam',
+                    product:'SANGUE',
+                    cost:'40.00',
+                    sale:'70.00',
                 },
                 {
                     type:'exam',
