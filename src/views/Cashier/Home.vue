@@ -1,5 +1,16 @@
 <template>
   <v-container fluid>
+    <v-layout align-left justify-left>
+      <v-btn
+              @click="back"
+              color="error"
+              rounded
+              class="mb-2 elevation-6"
+      >
+        <v-icon left>arrow_back</v-icon>
+        VOLTAR
+      </v-btn>
+    </v-layout>
     <v-layout row wrap>
       <v-flex xs3 class= "text-center" >
         <v-btn fab large dark class="botao" color="#2962FF" @click="cadastro">
@@ -45,7 +56,10 @@ export default {
       },
       saidas(){
         this.$router.push('/caixa/Saidas')
-      }
+      },
+      back(){
+      this.$router.push('/')
+      },
   }
 };
 </script>

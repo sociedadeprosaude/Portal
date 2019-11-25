@@ -15,6 +15,7 @@ import Doctors from "./modules/Doctors"
 import Clinics from "./modules/Clinics"
 import Consultations from "./modules/Consultations";
 import LayoutControl from "./modules/local/LayoutControl";
+import Saidas from "./modules/Saidas"
 
 Vue.use(Vuex)
 
@@ -37,7 +38,8 @@ const store = new Vuex.Store({
     Clinics,
     Exams,
     Consultations,
-    LayoutControl
+    LayoutControl,
+    Saidas
   },
   state: {
     categories: [],
