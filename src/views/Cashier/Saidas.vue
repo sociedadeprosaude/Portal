@@ -1,5 +1,16 @@
 <template>
     <v-container full-width>
+        <v-layout align-left justify-left>
+            <v-btn
+                    @click="back"
+                    color="error"
+                    rounded
+                    class="mb-2 elevation-6"
+            >
+                <v-icon left>arrow_back</v-icon>
+                VOLTAR
+            </v-btn>
+        </v-layout>
         <v-layout row wrap>
             <v-flex xs12>
                 <v-card>
@@ -92,7 +103,7 @@
         }),
         methods: {
             enviar(){
-                this.$store.dispatch('Saida',{descricao:this.descricao, categoria:this.categoria, valor: this.valor, codigo:this.data}).then(() =>{
+                this.$store.dispatch('AddSaida',{descricao:this.descricao, categoria:this.categoria, valor: this.valor, codigo:this.data}).then(() =>{
                     this.aviso=true
                 });
                 this.descricao='';
@@ -100,13 +111,18 @@
                 this.categoria='';
             },
             adicionarCategoria(){
-                this.$store.dispatch('Categoria',{categoria: this.categoriaNova, codigo: this.data});
+                this.$store.dispatch('AddCategorie',{categoria: this.categoriaNova}).then(() => {
+                    this.$store.dispatch('LoadCategories');
+                });
                 this.verificador= !this.verificador;
-                this.categoriaNova= ''
-            }
+                this.categoriaNova= '';
+            },
+            back(){
+                this.$router.push('/caixa')
+            },
         },
         mounted() {
-            this.$store.dispatch('PegarCategorias')
+            this.$store.dispatch('LoadCategories')
         },
         computed: {
          Categorias(){

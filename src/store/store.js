@@ -17,6 +17,8 @@ import Clinics from "./modules/Clinics"
 import Consultations from "./modules/Consultations";
 import LayoutControl from "./modules/local/LayoutControl";
 import Specialties from "./modules/Specialties";
+import Saidas from "./modules/Saidas"
+
 
 Vue.use(Vuex);
 
@@ -43,6 +45,8 @@ const store = new Vuex.Store({
 
     Bundles,
     Specialties,
+    Saidas,
+
   },
   state: {
     categories: [],
