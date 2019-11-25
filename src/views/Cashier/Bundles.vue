@@ -1,331 +1,310 @@
 <template>
-    <v-content>
-        <v-container>
-
-            <v-layout align-left justify-left>
-                <v-btn
-                        @click="back"
-                        color="error"
-                        rounded
-                        class="mb-2 elevation-6"
-                >
-                    <v-icon left>arrow_back</v-icon>
-                    VOLTAR
-                </v-btn>
-            </v-layout>
-
-            <v-layout align-center justify-center row wrap>
-                <v-container fluid class="center-card">
-                    <v-card xs12 sm12 class="round-card">
-                        <v-card-title class="ml-2 mr-3">
-                            <p v-if="searchPackage" class="title font-italic font-weight-bold"> PACOTES </p>
-                            <p v-if="registerPackage" class="title font-italic font-weight-bold">CADASTRAR NOVO PACOTE</p>
-                            <v-spacer></v-spacer>
-                            <v-btn v-if="registerPackage" color="primary" small fab
-                                   @click="registerPackage= !registerPackage, searchPackage= !searchPackage">
-                                <v-icon >keyboard_arrow_up</v-icon>
+    <v-container>
+        <v-layout row wrap>
+            <v-flex xs12 class="my-4">
+                <v-card class="round-card">
+                    <v-flex xs12 class="text-right pa-2" v-if="searchPackage" >
+                        <v-layout row wrap>
+                            <v-btn rounded color="primary" dark class="mb-2" @click="$router.back()">
+                                <v-icon>close</v-icon>
                             </v-btn>
-                        </v-card-title>
-                        <v-card-text>
-                            <v-flex xs12 v-if="searchPackage" >
-                                <v-layout>
-                                    <v-flex xs11 >
-                                        <v-combobox v-model="searchData" :items="listPackage" item-text="nome" :disabled="selectedPackage !== null"
-                                                    hide-selected hide-no-data :clearable="true" style="justify-content: center"
-                                                    :loading="isLoading" :search-input.sync="searchData" filled single-line
-                                                    full-width return-object @click:clear="clearSearch" shaped outlined
+                            <v-spacer></v-spacer>
+                            <v-btn rounded color="primary" dark class="mb-2"
+                                   @click="registerPackage= !registerPackage, searchPackage= !searchPackage">
+                                ADICIONAR PACOTE
+                                <v-icon right>add</v-icon>
+                            </v-btn>
+                        </v-layout>
+                    </v-flex>
 
-                                        >
-                                            <template v-slot:no-data>
-                                                <v-list-item>
-                                                    <v-list-item-content>
-                                                        <v-list-item-title>
-                                                            Sem resultado para "<strong>{{ searchData }}</strong>"
-                                                        </v-list-item-title>
-                                                    </v-list-item-content>
-                                                </v-list-item>
-                                            </template>
-                                        </v-combobox>
-                                    </v-flex>
-                                    <v-flex xs1 class="text-center">
-                                        <v-btn v-if="selectedPackage" style="justify-content: center" text icon color="blue lighten-2"
-                                               @click="clearSearch">
-                                            <v-icon>close</v-icon>
-                                        </v-btn>
-                                        <v-btn v-else style="justify-content: center" text icon color="blue lighten-2"
-                                               @click="registerPackage= !registerPackage, searchPackage= !searchPackage">
-                                            <v-icon v-if="searchPackage">add</v-icon>
-                                        </v-btn>
-                                    </v-flex>
-                                </v-layout>
+                    <v-card-text>
+                        <v-flex xs12 v-if="searchPackage" >
+                            <v-layout>
+                                <v-flex xs12>
+                                    <v-combobox v-model="searchData" :items="listPackage" item-text="nome"
+                                                hide-selected hide-no-data :clearable="true" style="justify-content: center"
+                                                :loading="isLoading" :search-input.sync="searchData" filled single-line
+                                                full-width return-object @click:clear="clearSearch" shaped outlined
+                                    >
+                                        <template v-slot:no-data>
+                                            <v-list-item>
+                                                <v-list-item-content>
+                                                    <v-list-item-title>
+                                                        Sem resultado para "<strong>{{ searchData }}</strong>"
+                                                    </v-list-item-title>
+                                                </v-list-item-content>
+                                            </v-list-item>
+                                        </template>
+                                    </v-combobox>
+                                </v-flex>
+                            </v-layout>
 
-                                <v-card v-if="selectedPackage" class="round-card">
-                                    <v-card-title>
-                                        <h4 class="font-italic font-weight-bold primary--text">{{editedPackage.nome}}</h4>
-                                    </v-card-title>
-                                    <v-card-text class="mt-3">
+                            <v-card v-if="selectedPackage" class="round-card">
+                                <v-card-title>
+                                    <h4 class="font-italic font-weight-bold primary--text">{{editedPackage.nome}}</h4>
+                                </v-card-title>
+                                <v-card-text class="mt-3">
+                                    <v-card>
+                                        <v-card-text>
+                                            <v-list-item v-for="(item,index) in listProducts" :key="index">
+                                                <v-chip v-if="item.type ==='appointment' " color="green" text-color="white">
+                                                    <strong>{{item.product}} | {{item.clinic}} | R$ {{item.price}}</strong>
+                                                    <v-btn class="ml-1" small icon @click="removeProduct(index)">
+                                                        <v-icon>cancel</v-icon>
+                                                    </v-btn>
+                                                </v-chip>
+                                                <v-chip v-else color="purple" text-color="white">
+                                                    <strong>{{item.product}} | {{item.clinic}} | R$ {{item.price}}</strong>
+                                                    <v-btn class="ml-1" mall icon @click="removeProduct(index)">
+                                                        <v-icon>cancel</v-icon>
+                                                    </v-btn>
+                                                </v-chip>
+                                            </v-list-item>
+                                        </v-card-text>
+                                    </v-card>
+                                    <v-dialog v-model="dialogEditProduct" hide-overlay width="550px">
                                         <v-card>
-                                            <v-card-text>
-                                                <v-list-item v-for="(item,index) in listProducts" :key="index">
-                                                    <v-chip v-if="item.type ==='appointment' " color="green" text-color="white">
-                                                        <strong>{{item.product}} | {{item.clinic}} | R$ {{item.price}}</strong>
-                                                        <v-btn class="ml-1" small icon @click="removeProduct(index)">
-                                                            <v-icon>cancel</v-icon>
-                                                        </v-btn>
-                                                    </v-chip>
-                                                    <v-chip v-else color="purple" text-color="white">
-                                                        <strong>{{item.product}} | {{item.clinic}} | R$ {{item.price}}</strong>
-                                                        <v-btn class="ml-1" mall icon @click="removeProduct(index)">
-                                                            <v-icon>cancel</v-icon>
-                                                        </v-btn>
-                                                    </v-chip>
-                                                </v-list-item>
-                                            </v-card-text>
+                                            <v-card-title>
+                                                <h5>Deseja excluir produto {{editedProduct.product}} do pacote {{editedPackage.nome}} ?</h5>
+                                            </v-card-title>
+                                            <v-card-actions>
+                                                <v-spacer></v-spacer>
+                                                <v-btn class="red--text" text @click="deleteItemFromPackage(editedProduct, editedPackage, index)">SIM</v-btn>
+                                                <v-btn class="primary--text" text @click="dialogEditProduct = false">CANCELAR</v-btn>
+                                            </v-card-actions>
                                         </v-card>
-                                        <v-dialog v-model="dialogEditProduct" hide-overlay width="550px">
-                                            <v-card>
-                                                <v-card-title>
-                                                    <h5>Deseja excluir produto {{editedProduct.product}} do pacote {{editedPackage.nome}} ?</h5>
-                                                </v-card-title>
-                                                <v-card-actions>
-                                                    <v-spacer></v-spacer>
-                                                    <v-btn class="red--text" text @click="deleteItemFromPackage(editedProduct, editedPackage, index)">SIM</v-btn>
-                                                    <v-btn class="primary--text" text @click="dialogEditProduct = false">CANCELAR</v-btn>
-                                                </v-card-actions>
+                                    </v-dialog>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="blue darken-1" text @click="save">Salvar<v-icon right>done_all</v-icon></v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-flex>
+                        <v-flex xs12 v-if="registerPackage">
+                            <v-form v-model="validRegister" lazy-validation>
+                                <v-layout row wrap>
+                                    <v-flex xs11>
+                                        <v-text-field required label=" nome" v-model="editedPackage.nome"
+                                                      prepend-inner-icon="folder" :rules="rules.campoObrigatorio"
+                                                      primary solo :clearable="true">
+                                        </v-text-field>
+                                    </v-flex>
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="primary" small fab
+                                           @click="registerPackage= !registerPackage, searchPackage= !searchPackage">
+                                        <v-icon >close</v-icon>
+                                    </v-btn>
+                                    <v-flex xs5>
+                                        <v-radio-group :mandatory="false" row class="justify-center">
+                                            <v-btn outlined text :color="buttonExam" class="button-select" rounded
+                                                   @click="selectExam">Exames
+                                            </v-btn>
+                                            <v-btn outlined text :color="buttonAppointment" class="button-select mx-2" rounded
+                                                   @click="selectAppointment">Consultas
+                                            </v-btn>
+                                            <v-btn outlined text :color="buttonClinic" class="button-select mx-2" rounded
+                                                   @click="selectClinic">Clinicas
+                                            </v-btn>
+                                        </v-radio-group>
+                                    </v-flex>
+                                    <v-text-field v-model="search" required solo primary :clearable="true"
+                                                  placeholder="Escolha a categoria"
+                                    ></v-text-field>
+                                </v-layout>
+                                <v-card-text>
+                                        <v-flex v-for="(item,index) in categories" :key="index">
+                                            <v-card class="mt-3">
+                                                <v-card-title v-text="item.nome"></v-card-title>
+                                                <v-card-text>
+                                                    <v-slide-group v-if="categorySelect === 'clinic' && item.exames" show-arrows>
+                                                        <v-slide-item
+                                                                v-for="(n,index) in item.exames"  v-slot:default="{ active, toggle }" :key="index">
+                                                            <v-btn class="mx-2"
+                                                                   :input-value="active"
+                                                                   active-class="blue white--text"
+                                                                   depressed
+                                                                   rounded
+                                                                   @mousedown="toggle"
+
+                                                                   @click="addProducts(item.nome, n.nome, 'exam', n.venda, n.custo)"
+                                                            >
+                                                                {{ n.nome}} | {{n.venda}}
+                                                            </v-btn>
+                                                        </v-slide-item>
+                                                    </v-slide-group>
+                                                    <v-slide-group v-if="categorySelect === 'exam'" show-arrows>
+                                                        <v-slide-item
+                                                                v-for="(n,i) in item.clinicas" :key="i" v-slot:default="{ active, toggle }" >
+                                                            <v-btn class="mx-2"
+                                                                   :input-value="active"
+                                                                   active-class="blue white--text"
+                                                                   depressed
+                                                                   rounded
+                                                                   @mousedown="toggle"
+
+                                                                   @click="addProducts(n.nome,item.nome, categorySelect, n.venda,n.custo)"
+                                                            >
+                                                                {{ n.nome }} | {{n.venda}}
+                                                            </v-btn>
+                                                        </v-slide-item>
+                                                    </v-slide-group>
+                                                    <v-slide-group v-if="categorySelect === 'appointment'" show-arrows>
+                                                        <v-slide-item
+                                                                v-for="(n,i) in item.combo" v-slot:default="{ active, toggle }" :key="i">
+                                                            <v-btn class="mx-2"
+                                                                   :input-value="active"
+                                                                   active-class="blue white--text"
+                                                                   depressed
+                                                                   rounded
+                                                                   @mousedown="toggle"
+                                                                   @click="addProducts(n.clinica , n , categorySelect, n.venda,n.custo)"
+                                                            >
+                                                                {{ n.clinica }} | {{n.nome}} | {{n.venda}}
+                                                            </v-btn>
+                                                        </v-slide-item>
+                                                    </v-slide-group>
+                                                </v-card-text>
+                                                <v-card-text>
+                                                    <v-slide-group v-if="categorySelect === 'clinic' && item.consultas" show-arrows>
+                                                        <v-slide-item
+                                                                v-for="(n,index) in combo"  v-slot:default="{ active, toggle }" :key="index">
+                                                            <v-btn class="mx-2"
+                                                                   :input-value="active"
+                                                                   active-class="blue white--text"
+                                                                   depressed
+                                                                   rounded
+                                                                   @mousedown="toggle"
+                                                                   @click="addProducts(item.nome, n.nome, 'appointment', n.venda,n.custo)"
+                                                            >
+                                                                {{ n.produto}} | {{n.nome}} | {{n.venda}}
+                                                            </v-btn>
+                                                        </v-slide-item>
+                                                    </v-slide-group>
+                                                </v-card-text>
                                             </v-card>
-                                        </v-dialog>
-                                    </v-card-text>
-                                    <v-card-actions>
-                                        <v-spacer></v-spacer>
-                                        <v-btn color="blue darken-1" text @click="save">Salvar<v-icon right>done_all</v-icon></v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-flex>
-                            <v-flex xs12 v-if="registerPackage">
-                                <v-card grid-list-x1 fluid class="mt-4">
-                                    <v-form v-model="validRegister" lazy-validation>
-                                        <v-card-title>
-                                            <v-flex xs10 >
-                                                <v-text-field required rounded label="nome" v-model="editedPackage.nome"
-                                                              prepend-icon="folder" :rules="rules.campoObrigatorio"
-                                                              outlined color="#009688"  :clearable="true">
-                                                </v-text-field>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <p></p>
+                                        </v-flex>
+                                        <v-layout row>
+                                            <v-flex xs2>
                                                 <v-text-field
-                                                        v-model="search" prepend-icon="search" required
-                                                        outlined rounded color="#009688" :clearable="true"
-                                                        placeholder="Escolha a categoria"
+                                                        prepend-icon="attach_money"
+                                                        outlined
+                                                        label="Preço de Custo"
+                                                        placeholder="ex.: 50.00"
+                                                        v-model="cost"
+                                                        prefix="R$"
+                                                        readonly
+                                                        rounded
+                                                        color="#009688"
                                                 ></v-text-field>
                                             </v-flex>
                                             <v-spacer></v-spacer>
-                                            <v-radio-group :mandatory="false" class="mr-5">
-                                                <v-btn outlined text :color="buttonExam" class="button-select" rounded
-                                                       @click="selectExam">Exames
-                                                </v-btn>
-                                                <v-btn outlined text :color="buttonAppointment" class="button-select" rounded
-                                                       @click="selectAppointment">Consultas
-                                                </v-btn>
-                                                <v-btn outlined text :color="buttonClinic" class="button-select" rounded
-                                                       @click="selectClinic">Clinicas
-                                                </v-btn>
-                                            </v-radio-group>
-                                        </v-card-title>
-                                        <v-card-text>
-                                            <v-flex v-for="(item,index) in categories" :key="index">
-                                                <v-card class="mt-3">
-                                                    <v-card-title v-text="item.nome"></v-card-title>
-                                                    <v-card-text>
-                                                        <v-slide-group v-if="categorySelect === 'clinic' && item.exames" show-arrows>
-                                                            <v-slide-item 
-                                                                          v-for="(n,index) in item.exames"  v-slot:default="{ active, toggle }" :key="index">
-                                                                <v-btn class="mx-2"
-                                                                       :input-value="active"
-                                                                       active-class="blue white--text"
-                                                                       depressed
-                                                                       rounded
-                                                                       @mousedown="toggle"
-
-                                                                       @click="addProducts(item.nome, n.nome, 'exam', n.venda, n.custo)"
-                                                                >
-                                                                    {{ n.nome}} | {{n.venda}}
-                                                                </v-btn>
-                                                            </v-slide-item>
-                                                        </v-slide-group>
-                                                        <v-slide-group v-if="categorySelect === 'exam'" show-arrows>
-                                                            <v-slide-item 
-                                                                          v-for="(n,i) in item.clinicas" :key="i" v-slot:default="{ active, toggle }" >
-                                                                <v-btn class="mx-2"
-                                                                       :input-value="active"
-                                                                       active-class="blue white--text"
-                                                                       depressed
-                                                                       rounded
-                                                                       @mousedown="toggle"
-
-                                                                       @click="addProducts(n.nome,item.nome, categorySelect, n.venda,n.custo)"
-                                                                >
-                                                                    {{ n.nome }} | {{n.venda}}
-                                                                </v-btn>
-                                                            </v-slide-item>
-                                                        </v-slide-group>
-                                                        <v-slide-group v-if="categorySelect === 'appointment'" show-arrows>
-                                                            <v-slide-item 
-                                                                          v-for="(n,i) in item.combo" v-slot:default="{ active, toggle }" :key="i">
-                                                                <v-btn class="mx-2"
-                                                                       :input-value="active"
-                                                                       active-class="blue white--text"
-                                                                       depressed
-                                                                       rounded
-                                                                       @mousedown="toggle"
-                                                                       @click="addProducts(n.clinica , n , categorySelect, n.venda,n.custo)"
-                                                                >
-                                                                    {{ n.clinica }} | {{n.nome}} | {{n.venda}}
-                                                                </v-btn>
-                                                            </v-slide-item>
-                                                        </v-slide-group>
-                                                    </v-card-text>
-                                                    <v-card-text>
-                                                        <v-slide-group v-if="categorySelect === 'clinic' && item.consultas" show-arrows>
-                                                            <v-slide-item 
-                                                                          v-for="(n,index) in combo"  v-slot:default="{ active, toggle }" :key="index">
-                                                                <v-btn class="mx-2"
-                                                                       :input-value="active"
-                                                                       active-class="blue white--text"
-                                                                       depressed
-                                                                       rounded
-                                                                       @mousedown="toggle"
-                                                                       @click="addProducts(item.nome, n.nome, 'appointment', n.venda,n.custo)"
-                                                                >
-                                                                    {{ n.produto}} | {{n.nome}} | {{n.venda}}
-                                                                </v-btn>
-                                                            </v-slide-item>
-                                                        </v-slide-group>
-                                                    </v-card-text>
-                                                </v-card>
+                                            <v-flex xs2>
+                                                <v-text-field
+                                                        prepend-icon="monetization_on"
+                                                        outlined
+                                                        label="Preço de Venda"
+                                                        placeholder="ex.: 80.00"
+                                                        v-model="sale"
+                                                        prefix="R$"
+                                                        readonly
+                                                        rounded
+                                                        color="#009688"
+                                                ></v-text-field>
                                             </v-flex>
-                                            <v-flex xs12>
-                                                <p></p>
-                                            </v-flex>
-                                            <v-layout row>
-                                                <v-flex xs2>
-                                                    <v-text-field
-                                                            prepend-icon="attach_money"
-                                                            outlined
-                                                            label="Preço de Custo"
-                                                            placeholder="ex.: 50.00"
-                                                            v-model="cost"
-                                                            prefix="R$"
-                                                            readonly
-                                                            rounded
-                                                            color="#009688"
-                                                    ></v-text-field>
-                                                </v-flex>
-                                                <v-spacer></v-spacer>
-                                                <v-flex xs2>
-                                                    <v-text-field
-                                                            prepend-icon="monetization_on"
-                                                            outlined
-                                                            label="Preço de Venda"
-                                                            placeholder="ex.: 80.00"
-                                                            v-model="sale"
-                                                            prefix="R$"
-                                                            readonly
-                                                            rounded
-                                                            color="#009688"
-                                                    ></v-text-field>
-                                                </v-flex>
-                                                <v-spacer></v-spacer>
-                                                <v-flex xs2>
-                                                    <v-text-field
-                                                            prepend-icon="looks_6"
-                                                            outlined
-                                                            clearable
-                                                            label="Desconto %"
-                                                            v-model="discountPercentage"
-                                                            suffix="%"
-                                                            rounded
-                                                            color="#009688"
-                                                    ></v-text-field>
-                                                </v-flex>
-                                                <v-spacer></v-spacer>
-                                                <v-flex xs3>
-                                                    <v-text-field
-                                                            prepend-icon="money_off"
-                                                            outlined
-                                                            clearable
-                                                            label="Desconto R$"
-                                                            v-model="discountMoney"
-                                                            prefix="R$"
-                                                            rounded
-                                                            color="#009688"
-                                                    ></v-text-field>
-                                                </v-flex>
-                                                <v-spacer></v-spacer>
-                                                <v-flex xs2>
-                                                    <v-text-field
-                                                            prepend-icon="fiber_new"
-                                                            outlined
-                                                            label="Valor Total"
-                                                            prefix="R$"
-                                                            v-model="total"
-                                                            rounded
-                                                            readonly
-                                                            color="#009688"
-                                                    ></v-text-field>
-                                                </v-flex>
-                                            </v-layout>
-
-                                        </v-card-text>
-                                        <v-card-actions>
                                             <v-spacer></v-spacer>
-                                            <v-btn outlined rounded text color="primary" :disabled="!formRegister" @click="validateRegister()" class="ma-3">
-                                                Cadastrar Pacote
-                                            </v-btn>
-                                            <v-dialog v-model="sucessRegister" hide-overlay max-width="500px">
-                                                <v-card color="white">
-                                                    <v-card-title class="text-xs-center ma-1">
-                                                        <h4>Pacote cadastrado com sucesso!<v-icon right>how_to_reg</v-icon></h4>
-                                                    </v-card-title>
-                                                    <v-card-actions>
-                                                        <v-spacer></v-spacer>
-                                                        <v-btn color="primary" text @click="endRegister()" router-link to="/" >Finalizar</v-btn>
-                                                    </v-card-actions>
-                                                </v-card>
-                                            </v-dialog>
-                                        </v-card-actions>
-                                    </v-form>
-                                </v-card>
-                            </v-flex>
-                        </v-card-text>
-                    </v-card>
+                                            <v-flex xs2>
+                                                <v-text-field
+                                                        prepend-icon="looks_6"
+                                                        outlined
+                                                        clearable
+                                                        label="Desconto %"
+                                                        v-model="discountPercentage"
+                                                        suffix="%"
+                                                        rounded
+                                                        color="#009688"
+                                                ></v-text-field>
+                                            </v-flex>
+                                            <v-spacer></v-spacer>
+                                            <v-flex xs3>
+                                                <v-text-field
+                                                        prepend-icon="money_off"
+                                                        outlined
+                                                        clearable
+                                                        label="Desconto R$"
+                                                        v-model="discountMoney"
+                                                        prefix="R$"
+                                                        rounded
+                                                        color="#009688"
+                                                ></v-text-field>
+                                            </v-flex>
+                                            <v-spacer></v-spacer>
+                                            <v-flex xs2>
+                                                <v-text-field
+                                                        prepend-icon="fiber_new"
+                                                        outlined
+                                                        label="Valor Total"
+                                                        prefix="R$"
+                                                        v-model="total"
+                                                        rounded
+                                                        readonly
+                                                        color="#009688"
+                                                ></v-text-field>
+                                            </v-flex>
+                                        </v-layout>
 
-                    <v-layout v-if="registerPackage" align-center justify-center row wrap>
-                        <v-container fluid class="center-card">
-                            <v-card xs12 sm12 class="round-card elevation-3">
-                                <v-card-title class="headline">Itens selecionados</v-card-title>
-                                <v-card-text>
-                                    <v-list-item v-for="(item,index) in listProducts" :key="index">
-                                        <v-chip v-if="item.type ==='appointment' " color="green" text-color="white">
-                                            <strong>{{item.product}} | {{item.clinic}} | R$ {{item.price}}</strong>
-                                            <v-btn class="ml-1" small icon @click="removeProduct(index)">
-                                                <v-icon>cancel</v-icon>
-                                            </v-btn>
-                                        </v-chip>
-                                        <v-chip v-else color="purple" text-color="white">
-                                            <strong>{{item.product}} | {{item.clinic}} | R$ {{item.price}}</strong>
-                                            <v-btn class="ml-1" mall icon @click="removeProduct(index)">
-                                                <v-icon>cancel</v-icon>
-                                            </v-btn>
-                                        </v-chip>
-                                    </v-list-item>
-                                </v-card-text>
-                            </v-card>
-                        </v-container>
-                    </v-layout>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn outlined rounded text color="primary" :disabled="!formRegister" @click="validateRegister()" class="ma-3">
+                                            Cadastrar Pacote
+                                        </v-btn>
+                                        <v-dialog v-model="sucessRegister" hide-overlay max-width="500px">
+                                            <v-card color="white">
+                                                <v-card-title class="text-xs-center ma-1">
+                                                    <h4>Pacote cadastrado com sucesso!<v-icon right>how_to_reg</v-icon></h4>
+                                                </v-card-title>
+                                                <v-card-actions>
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn color="primary" text @click="endRegister()" router-link to="/" >Finalizar</v-btn>
+                                                </v-card-actions>
+                                            </v-card>
+                                        </v-dialog>
+                                    </v-card-actions>
+                                </v-form>
+                        </v-flex>
+                    </v-card-text>
 
-                </v-container>
-
-            </v-layout>
-        </v-container>
-    </v-content>
+                </v-card>
+                <v-layout v-if="registerPackage" align-center justify-center row wrap>
+                    <v-container fluid class="center-card">
+                        <v-card xs12 sm12 class="round-card elevation-3">
+                            <v-card-title class="headline">Itens selecionados</v-card-title>
+                            <v-card-text>
+                                <v-list-item v-for="(item,index) in listProducts" :key="index">
+                                    <v-chip v-if="item.type ==='appointment' " color="green" text-color="white">
+                                        <strong>{{item.product}} | {{item.clinic}} | R$ {{item.price}}</strong>
+                                        <v-btn class="ml-1" small icon @click="removeProduct(index)">
+                                            <v-icon>cancel</v-icon>
+                                        </v-btn>
+                                    </v-chip>
+                                    <v-chip v-else color="purple" text-color="white">
+                                        <strong>{{item.product}} | {{item.clinic}} | R$ {{item.price}}</strong>
+                                        <v-btn class="ml-1" mall icon @click="removeProduct(index)">
+                                            <v-icon>cancel</v-icon>
+                                        </v-btn>
+                                    </v-chip>
+                                </v-list-item>
+                            </v-card-text>
+                        </v-card>
+                    </v-container>
+                </v-layout>
+            </v-flex>
+         </v-layout>
+    </v-container>
 </template>
 
 <script>
@@ -372,11 +351,11 @@
 
             listPackage () {
                 this.isLoading = false;
-                return this.$store.getters.package;
+                return this.$store.getters.bundle;
             },
 
             allPackage () {
-                return this.$store.getters.allPackage;
+                return this.$store.getters.bundle;
             },
 
             formRegister () {
@@ -384,7 +363,7 @@
             },
 
             selectedPackage () {
-                let pacoteSelecionado = this.$store.getters.selectedPackage;
+                let pacoteSelecionado = this.$store.getters.selectedBundle;
                 this.editedPackage = Object.assign({}, pacoteSelecionado);
                 console.log('pacoteSelecionado', pacoteSelecionado);
                 return pacoteSelecionado;
@@ -466,11 +445,9 @@
         },
 
         mounted() {
-            this.$store.dispatch('loadExam').then(()=>{
-                this.selectExam()
-            });
-            this.$store.dispatch('loadAppointment');
-            this.$store.dispatch('loadClinic');
+           this.$store.dispatch('loadExam');
+           this.$store.dispatch('loadSpecialties');
+           // this.$store.dispatch('loadClinic');
             
         },
 
@@ -641,7 +618,9 @@
                 this.buttonAppointment = this.noSelect;
                 this.buttonClinic = this.noSelect;
                 this.categorySelect = 'exam';
-                this.items= this.$store.getters.allExam;
+                this.items= this.$store.getters.exams;
+
+                console.log('items', this.items);
             },
 
             selectAppointment () {
@@ -650,7 +629,9 @@
                 this.buttonExam = this.noSelect;
                 this.buttonClinic = this.noSelect;
                 this.categorySelect = 'appointment';
-                this.items= this.$store.getters.allAppointment;
+                this.items= this.$store.getters.specialties;
+
+                console.log('items', this.items);
                 this.combo = [];
 
 

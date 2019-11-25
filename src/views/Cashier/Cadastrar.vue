@@ -63,7 +63,7 @@
                 this.$router.push('/Consultas')
             },
             exames(){
-                this.$router.push('/Exames')
+                this.$router.push('/Exams')
             },
             pacotes () {
                 this.$router.push('/Bundles')

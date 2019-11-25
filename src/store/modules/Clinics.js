@@ -2,13 +2,13 @@ import firebase, {firestore} from "firebase";
 
 const state = {
     clinics: [],
-}
+};
 
 const mutations = {
     setClinics(state, payload) {
         state.clinics = payload
     },
-}
+};
 
 const actions = {
     async getClinics({commit}) {
@@ -20,7 +20,7 @@ const actions = {
                     id: document.id,
                     ...document.data()
                 })
-            })
+            });
             commit('setClinics', clinics)
             return clinics
         } catch (e) {
@@ -53,13 +53,13 @@ const actions = {
             throw e
         }
     },
-}
+};
 
 const getters = {
     clinics(state) {
         return state.clinics
     },
-}
+};
 
 export default {
     state,

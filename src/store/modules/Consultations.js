@@ -4,7 +4,7 @@ import moment from 'moment'
 const state = {
     consultations: [],
     consultationsByDate: {},
-}
+};
 
 const mutations = {
     setConsultations(state, payload) {
@@ -13,7 +13,7 @@ const mutations = {
     // setConsultationsByDate(state, payload) {
     //     state.consultationsByDate = payload
     // },
-}
+};
 
 const actions = {
 
@@ -87,7 +87,7 @@ const actions = {
             throw e
         }
     }
-}
+};
 
 const getters = {
     consultations(state) {
@@ -96,7 +96,7 @@ const getters = {
     // consultationsByDate(state) {
     //     return state.consultationsByDate
     // },
-}
+};
 
 export default {
     state,
