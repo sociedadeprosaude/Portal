@@ -12,6 +12,7 @@ import AgendarRetorno from "../views/DoctorsAgenda/AgendarRetorno";
 import Cids from "../views/DoctorsAgenda/Cids";
 import Declaration from "../views/DoctorsAgenda/Declaration";
 import Teste from "../views/DoctorsAgenda/testescrolling";
+import Patient from "../views/DoctorsAgenda/Patient";
 
 export default [
     {
@@ -31,8 +32,8 @@ export default [
     },
     {
         path: '/agenda/Pacientes',
-        name: 'Pacientes',
-        component: Pacientes
+        name: 'Patient',
+        component: Patient
     },
     {
         path: '/agenda/DeletarConsultas',

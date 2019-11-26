@@ -9,6 +9,7 @@ import Reports from '@/store/modules/Reports'
 import Exams from '@/store/modules/Exams'
 import Auth from '@/store/modules/Auth'
 import Labor from '@/store/modules/Labor'
+import Patient from './modules/Patient'
 
 import Localization from "./modules/Localization"
 import Bundles from "./modules/Bundles";
@@ -47,6 +48,7 @@ const store = new Vuex.Store({
     Specialties,
     Saidas,
 
+    Patient,
   },
   state: {
     categories: [],
