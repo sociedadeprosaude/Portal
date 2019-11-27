@@ -3,7 +3,7 @@
         <v-slide-y-transition>
             <agenda-toolbar v-if="doctorsAgendaToobar"></agenda-toolbar>
         </v-slide-y-transition>
-        <v-content :class="['', doctorsAgendaToobar ? 'mt-12 pt-6' : '']">
+        <v-content :class="['grey', doctorsAgendaToobar ? 'mt-12 pt-6' : '']">
             <router-view/>
         </v-content>
     </v-app>
