@@ -12,6 +12,7 @@
             </v-btn>
         </v-layout>
         <v-layout row wrap>
+            <v-content>
             <v-flex xs12>
                 <v-card>
                     <v-layout wrap>
@@ -49,13 +50,14 @@
                             </v-text-field>
                         </v-flex>
                         <v-flex rigth>
-                            <v-btn
-                                    @click="enviar"
-                            >Enviar</v-btn>
+                            <submit-button text="Enviar" :loading="loading" :success="success" @reset="success = false"
+                                           @click="enviar()">
+                            </submit-button>
                         </v-flex>
                     </v-layout>
                 </v-card>
             </v-flex>
+            </v-content>
             <v-dialog
              v-model="verificador"
             >
@@ -65,15 +67,9 @@
                     v-model="categoriaNova"
                     >
                     </v-text-field>
-                    <v-btn @click="adicionarCategoria()">
-                        <v-icon>add</v-icon>
-                    </v-btn>
-                </v-card>
-            </v-dialog>
-            <v-dialog v-model="aviso">
-                <v-card color="green" dark>
-                    <v-card-title>Sucesso</v-card-title>
-                    <v-card-text color="white">Saida cadastrada com sucesso</v-card-text>
+                    <submit-button text="Adicionar" :loading="loading" :success="success" @reset="success = false"
+                                   @click="adicionarCategoria()">
+                    </submit-button>
                 </v-card>
             </v-dialog>
         </v-layout>
@@ -83,9 +79,12 @@
 <script>
     import Vue from 'vue'
     import moment from 'moment'
+    import SubmitButton from "../../components/SubmitButton";
+
 
 
     export default {
+        components: {SubmitButton},
         data: () => ({
             descricao:'',
             categoria:'',
@@ -93,6 +92,8 @@
             verificador:false,
             categoriaNova:'',
             aviso:false,
+            loading: false,
+            success: false,
             data: moment().format("YYYY-MM-DD HH:mm:ss"),
             rules: {
                 valor: value =>{
@@ -103,8 +104,10 @@
         }),
         methods: {
             enviar(){
+                this.loading = true;
                 this.$store.dispatch('AddSaida',{descricao:this.descricao, categoria:this.categoria, valor: this.valor, codigo:this.data}).then(() =>{
-                    this.aviso=true
+                    this.success = true;
+                    this.loading = false;
                 });
                 this.descricao='';
                 this.valor=0;
@@ -112,8 +115,14 @@
             },
             adicionarCategoria(){
                 this.$store.dispatch('AddCategorie',{categoria: this.categoriaNova}).then(() => {
+                    this.success = true;
+                    this.loading = false;
                     this.$store.dispatch('LoadCategories');
                 });
+                setTimeout(() => {
+                    this.categoriaNova = '';
+                    this.verificador = false;
+                }, 1000)
                 this.verificador= !this.verificador;
                 this.categoriaNova= '';
             },

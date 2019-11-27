@@ -45,7 +45,7 @@ const actions = {
         } catch (e) {
             throw e
         }
-    },
+    }
 };
 
 const getters = {

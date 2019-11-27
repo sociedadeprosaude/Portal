@@ -86,7 +86,16 @@ const actions = {
         } catch (e) {
             throw e
         }
+    },
+    async SearchCosultation({commit}){
+        try {
+            firebase.firestore().collection('consultations').doc()
+        }
+        catch(e) {
+            throw e
+        }
     }
+
 };
 
 const getters = {
