@@ -64,8 +64,6 @@
                 drawer: false,
                 dialog: false,
                 menuItems: [
-                    {icon: 'group_add', title: 'Busca de Médicos', link: '/agenda/Medicos'},
-                    {icon: 'group_add', title: 'Busca de Pacientes', link: '/agenda/Pacientes'},
                     {
                         icon: 'calendar_today',
                         title: 'Cadastro de Plantões & Consultas',
@@ -73,7 +71,6 @@
                     },
                     {icon: 'delete_forever', title: 'Apagar Consultas do dia', link: '/agenda/DeletarConsultas'},
                     {icon: 'event_note', title: 'Agendamento de Consultas', link: '/agenda/agendamento'},
-                    {icon: 'event', title: 'Vizualizar Consultas de Médicos', link: '/agenda/ConsultasMedicos'},
                     {
                         icon: 'date_range',
                         title: 'Gerenciamento de Consultas do Médico',
