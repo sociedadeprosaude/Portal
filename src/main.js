@@ -59,15 +59,15 @@ const vuetifyOptions = {
   theme: {
     themes: {
       light: {
-        primary: '#81d4fa',
+        primary: '#2196f3',
+        secondary: '#03a9f4',
+        accent: '#00bcd4',
+        error: '#f44336',
+        warning: '#ffc107',
+        info: '#e91e63',
+        success: '#4caf50',
         primary_light: '#b6ffff',
         primary_dark: '#4ba3c7',
-        secondary: '#424242',
-        accent: '#82B1FF',
-        error: '#FF5252',
-        info: '#2196F3',
-        success: '#4CAF50',
-        warning: '#FFC107'
       },
     },
   },

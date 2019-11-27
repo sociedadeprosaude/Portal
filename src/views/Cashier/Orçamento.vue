@@ -10,6 +10,7 @@
                                 <v-text-field
                                         label="Pesquisa"
                                         v-model="search"
+                                        id="search"
                                         single-line
                                         prepend-icon="search"
                                 ></v-text-field>
@@ -598,6 +599,7 @@
             categorySelect: '',
             consultas: [],
             exames: [],
+            typingTimer: undefined,
             pacotes: [],
             pedido: [],
             medicoDia: [],
@@ -672,26 +674,14 @@
             selectExam() {
                 this.categorySelect = 'exam';
                 this.items = [];
-                setTimeout(() => {
-                        this.items = this.$store.getters.allExam;
-                    }, 200
-                );
             },
             selectAppointment() {
                 this.categorySelect = 'appointment';
                 this.items = [];
-                setTimeout(() => {
-                        this.items = this.$store.getters.allAppointment;
-                    }, 200
-                );
             },
             selectPackage() {
                 this.categorySelect = 'package';
                 this.items = [];
-                setTimeout(() => {
-                    this.items = this.$store.getters.allPackage;
-                    }, 200
-                );
             },
             imprimir() {
                 if (this.codigo === '') {
@@ -977,23 +967,42 @@
             }
         },
         mounted() {
-            this.$store.dispatch('loadExam').then(()=>{
-                this.selectExam();
+            let self = this;
+            window.addEventListener('keyup', function (e) {
+                if (e.target.id === 'search') {
+                    clearTimeout(self.typingTimer);
+                    self.typingTimer = setTimeout(() => {
+                        if(self.categorySelect === 'exam' ){
+                            console.log('exames aqui');
+                        }
+                        if(self.categorySelect === 'appointment' ){
+                            self.$store.dispatch("loadSpecialties");
+                            self.items= self.$store.getters.specialties;
+
+                        }
+                        if(self.categorySelect === 'package' ){
+                            console.log('pacotes aqui');
+                        }//funcao de pesquisar
+                    }, 1000);
+                }
             });
-            this.$store.dispatch('loadAppointment');
-            this.$store.dispatch('loadPackage');
-            
+            window.addEventListener('keydown', function (e) {
+                if (e.target.id === 'search') {
+                    clearTimeout(self.typingTimer)
+                }
+            })
 
         },
         computed: {
             pedid() {
                 return this.$store.getters.pedido;
             },
-            categories: function () {
+    /*        categories: function () {
                 const products = [];
                 console.log("ITEMS=>",this.items);
                 if (this.categorySelect === 'appointment') {
                     if (this.items) {
+                        console.log(this.items)
                         for (let i in this.items) {
                             products[i] = ({
                                 nome: this.items[i].nome,
@@ -1062,7 +1071,7 @@
                         return p
                     }
                 }
-            },
+            } */
         },
         watch: {
             desconto1: function () {

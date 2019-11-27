@@ -15,16 +15,14 @@ const mutations = {
 const actions = {
     async AddSaida({commit},payload) {
             try {
-            firebase.firestore().collection('saidas/').doc(payload.codigo).set({...payload});
+           let res =  await firebase.firestore().collection('saidas/').doc(payload.codigo).set({...payload});
             } catch (e) {
                 throw e
             }
     },
     async AddCategorie({commit},payload){
         try {
-            console.log("adicionando categoria");
-            console.log(payload.categoria);
-            firebase.firestore().collection('saidas/saidas/categories').doc(payload.categoria).set({categoria:payload.categoria});
+            let res = await firebase.firestore().collection('saidas/saidas/categories').doc(payload.categoria).set({categoria:payload.categoria});
         }
         catch (e) {
             throw e
