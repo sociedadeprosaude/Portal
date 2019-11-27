@@ -14,7 +14,7 @@
     <v-layout row wrap>
       <v-flex xs3 class= "text-center" >
         <v-btn fab large dark class="botao" color="#2962FF" @click="pacotes">
-          <v-icon size="80" >folder</v-icon>
+          <v-icon size="80" >create_new_folder</v-icon>
         </v-btn>
         <p class="word">Pacotes</p>
       </v-flex>
