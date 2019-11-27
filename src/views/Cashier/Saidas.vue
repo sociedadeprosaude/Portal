@@ -105,20 +105,18 @@
         methods: {
             enviar(){
                 this.loading = true;
-                this.$store.dispatch('AddSaida',{descricao:this.descricao, categoria:this.categoria, valor: this.valor, codigo:this.data}).then(() =>{
-                    this.success = true;
-                    this.loading = false;
-                });
+                this.$store.dispatch('AddSaida',{descricao:this.descricao, categoria:this.categoria, valor: this.valor, codigo:this.data})
+                this.success = true;
+                this.loading = false;
                 this.descricao='';
                 this.valor=0;
                 this.categoria='';
             },
             adicionarCategoria(){
-                this.$store.dispatch('AddCategorie',{categoria: this.categoriaNova}).then(() => {
-                    this.success = true;
-                    this.loading = false;
-                    this.$store.dispatch('LoadCategories');
-                });
+                this.$store.dispatch('AddCategorie',{categoria: this.categoriaNova})
+                this.success = true;
+                this.loading = false;
+                this.$store.dispatch('LoadCategories');
                 setTimeout(() => {
                     this.categoriaNova = '';
                     this.verificador = false;
