@@ -437,7 +437,8 @@
                 return this.$store.getters.clinics;
             },
 
-            clinicSelected() {
+            clinicSelected () {
+                console.log(this.$store.getters.selectedClinic);
                 return this.$store.getters.selectedClinic;
             },
 
