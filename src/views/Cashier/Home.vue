@@ -13,10 +13,10 @@
     </v-layout>
     <v-layout row wrap>
       <v-flex xs3 class= "text-center" >
-        <v-btn fab large dark class="botao" color="#2962FF" @click="cadastro">
-          <v-icon size="80" >add</v-icon>
+        <v-btn fab large dark class="botao" color="#2962FF" @click="pacotes">
+          <v-icon size="80" >folder</v-icon>
         </v-btn>
-        <p class="word">Cadastrar</p>
+        <p class="word">Pacotes</p>
       </v-flex>
       <v-flex xs3 class="text-center">
         <v-btn fab dark class="botao" color="#2962FF" @click="orcamento">
@@ -45,8 +45,8 @@ export default {
     data: () => ({
     }),
   methods:{
-      cadastro(){
-        this.$router.push('/caixa/Cadastrar')
+      pacotes(){
+        this.$router.push('/caixa/Bundles')
       },
       orcamento(){
         this.$router.push('/caixa/Orçamento')
