@@ -136,113 +136,7 @@
                                         </v-layout>
                                     </v-list>
                             </v-expansion-panel-content>
-                            
-                            <!-- <v-expansion-panel-header class="elevation-6" hide-actions v-model="panel">
-                                <template v-slot:header>
-                                    <v-layout align-center row spacer>
 
-                                        <v-flex sm6 md3 hidden-xs-only :class="`${color}--text`">
-                                            <strong>Paciente:</strong>
-                                            <v-chip small :color="color" text-color="white">
-                                                <v-avatar>
-                                                    <v-icon>account_circle</v-icon>
-                                                </v-avatar>
-                                                {{patient.name}}
-                                            </v-chip>
-                                        </v-flex>
-
-                                        <v-flex sm6 md3 hidden-xs-only :class="`${color}--text`">
-                                            <strong>Nº do Associado:</strong>
-                                            <v-chip small :color="color" text-color="white">
-                                                <v-avatar>
-                                                    <v-icon>payment</v-icon>
-                                                </v-avatar>
-                                                {{patient.association_number}}
-                                            </v-chip>
-                                        </v-flex>
-
-                                        <v-flex row wrap xs5 sm3 :class="`${color}--text`">
-                                            <strong>Consultas: </strong>
-                                            <v-chip small :color="color" text-color="white">
-                                                <v-avatar>
-                                                    <v-icon>event</v-icon>
-                                                </v-avatar>
-                                            {{qtdConsultas}}
-                                            </v-chip>
-                                        </v-flex>
-
-                                        <v-flex row wrap xs5 sm3 :class="`${color}--text`">
-                                            <strong>Retornos: </strong>
-                                            <v-chip small :color="color" text-color="white">
-                                                <v-avatar>
-                                                    <v-icon>restore</v-icon>
-                                                </v-avatar>
-                                                {{qtdRetornos}}
-                                            </v-chip>
-                                        </v-flex>
-                                    </v-layout>
-                                </template> -->
-
-                                <!-- <v-card>
-                                    <v-divider></v-divider>
-                                     
-                                    <v-list three-line subheader>
-                                        <v-layout row wrap>
-                                            <v-flex sm3
-                                                    xs12
-                                                    v-for="item in patient.consultations"
-                                                    :key="item.cpf"
-                                            >
-                                                <v-list-tile @click="visualizarConsulta = {
-                                                            idConsultation:item.id,
-                                                            idPaciente: patient.key,
-                                                            paciente: patient.nome,
-                                                            cartaoId: patient.cartaoId,
-                                                            cpf:patient.cpf,
-                                                            data: item.data_inicial.split('T')[0],
-                                                            hora: item.data_inicial.split('T')[1],
-                                                            crm: item.crm,
-                                                            especialidade: item.especialidade,
-                                                            status: item.status,
-                                                            modalidade: item.modalidade,
-                                                            medico:item.nome,
-                                                            num_recibo:item.num_recibo,
-                                                            pacienteObj:patient,
-                                                            retorno:item.retorno
-                                                        }"
-                                                >
-                                                    <v-list-tile-content>
-                                                        <v-list-tile-title>
-                                                            <span :class="`${color}--text`" style="font-weight: bolder">
-                                                                {{item.doctor.name}}
-                                                            </span>
-                                                        </v-list-tile-title>
-                                                        <v-list-tile-sub-title>
-                                                            {{item.specialty.name}} -
-                                                            {{item.doctor.crm}}
-                                                        </v-list-tile-sub-title>
-                                                        <v-list-tile-action-text>
-                                                            {{item.date.split(' ')[0] | dateFilter}} -
-                                                            {{item.date.split(' ')[1]}}
-                                                        </v-list-tile-action-text>
-                                                    </v-list-tile-content>
-
-                                                    <v-list-tile-action>
-                                                        <v-btn icon ripple flat>
-                                                            <v-icon v-if="item.modalidade === 'Retorno'" :color="color">restore</v-icon>
-                                                            <v-icon v-if="item.modalidade === 'Retorno' && item.status === 'Cancelado'" color="warning">alarm_off</v-icon>
-                                                            <v-icon v-if="item.modalidade === 'Consulta'" :color="color">event</v-icon>
-                                                            <v-icon v-if="item.modalidade === 'Consulta' && item.status === 'Cancelado'" color="warning">event_busy</v-icon>
-                                                            <v-icon v-if="item.status === 'Pago'" color="success">attach_money</v-icon>
-                                                            <v-icon v-if="item.status === 'Aguardando pagamento'" color="error">money_off</v-icon>
-                                                        </v-btn>
-                                                    </v-list-tile-action>
-                                                </v-list-tile>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-list>
-                                </v-card> -->
-                            </v-expansion-panel-header>
                         </v-expansion-panel>
                         </v-expansion-panels>
                     </v-layout>
@@ -554,7 +448,10 @@
 
             },
             apagar() {
-                this.$store.dispatch('eraseAppointment', {...this.index_Selecionado,view:'GerenciamentoConsultaPaciente'})
+                this.$store.dispatch('eraseAppointment', {
+                    idConsultation:this.index_Selecionado.idConsultation,
+                    idPatient:this.index_Selecionado.cpf
+                })
                 this.clear()
 
             },

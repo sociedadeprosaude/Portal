@@ -140,7 +140,78 @@ const actions = {
         catch(e) {
             throw e
         }
-    }
+    },
+
+    async eraseAppointment ({commit},payload){ // apagarConsulta
+
+        try{
+            let FieldValue = firebase.firestore.FieldValue
+            await firebase.firestore().collection('consultations').doc(payload.idConsultation).update({
+               user:FieldValue.delete()
+            })
+            await firebase.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.idConsultation).update({status:'Cancelado'})
+        }catch(e){
+            throw e
+        }
+
+        /* return new Promise((resolve, reject) => {
+            console.log('/consultas/' + payload.especialidade + '/' + payload.idConsultation + '/paciente');
+            console.log('/pacientes/' + payload.idPaciente + '/consultas/' + payload.idConsultation)
+            if(payload.pacienteObj.retorno != undefined){
+                console.log('Retorno imprimindo')
+                console.log(payload.pacienteObj.retorno)
+                firebase.database().ref('/consultas/' + payload.especialidade + '/' + payload.pacienteObj.retorno.id + '/paciente')
+                .remove();
+                firebase.database().ref('/pacientes/' + payload.idPaciente + '/consultas/' + payload.pacienteObj.retorno.id)
+                .remove();
+            }else if(payload.retorno != undefined){
+                console.log('Retorno imprimindo também aqui')
+                console.log(payload.pacienteObj.retorno)
+                firebase.database().ref('/consultas/' + payload.especialidade + '/' + payload.retorno.id + '/paciente')
+                .remove();
+                firebase.database().ref('/pacientes/' + payload.idPaciente + '/consultas/' + payload.retorno.id)
+                .remove();
+            }
+            firebase.database().ref('/consultas/' + payload.especialidade + '/' + payload.idConsultation + '/paciente')
+                .remove();
+            firebase.database().ref('/pacientes/' + payload.idPaciente + '/consultas/' + payload.idConsultation)
+                .update({crm: payload.crm, data_inicial: payload.data + 'T' + payload.hora, especialidade: payload.especialidade,
+                        modalidade:payload.modalidade, nome:payload.medico, num_recibo:payload.num_recibo, status: 'Cancelado'},
+                    function(error) {
+                        if (error) {
+                            commit('setLoader',{loader:false,view:view,message:'Ocorreu um erro ao apagar a consulta'});
+                            reject(
+                                console.log('Ocorreu um erro e as consultas não puderam ser apagadas')
+                            );
+                        } else {
+                            var view = ''
+                            if(payload.view == undefined){
+                                view = 'GerenciamentoConsulta'
+                                
+                            }else{
+                                view = payload.view
+                            }
+                            commit('setLoader',{loader:false,view:view,message:"Consulta apagada com sucesso"});
+                            resolve(
+                                console.log('As consultas foram apagadas com sucesso!')
+
+                            );
+                        }
+                    }
+                );
+
+            if(payload.modalidade === 'Retorno'){
+                console.log('Imprimindo PacienteObj')
+                console.log(payload.pacienteObj)
+                console.log('/consultas/' + payload.especialidade + '/' + payload.pacienteObj.consulta_anterior + '/paciente/retorno');
+                firebase.database().ref('/consultas/' + payload.especialidade + '/' + payload.pacienteObj.consulta_anterior + '/paciente/retorno').remove();
+                firebase.database().ref('/pacientes/' + payload.pacienteObj.key + '/consultas/' + payload.pacienteObj.consulta_anterior + '/retorno').remove();
+           
+            }
+
+        }); */
+
+    },
 
 };
 
