@@ -133,6 +133,15 @@ const actions = {
 
         }); */
     },
+    async SearchCosultation({commit}){
+        try {
+            firebase.firestore().collection('consultations').doc()
+        }
+        catch(e) {
+            throw e
+        }
+    }
+
 };
 
 const getters = {

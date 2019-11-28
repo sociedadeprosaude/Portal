@@ -79,25 +79,25 @@
                 pages: [
                     {
                         title: 'Médicos',
-                        icon: 'attach_money',
+                        icon: 'group',
                         permission: 'Caixa',
                         to: '/doctors'
                     },
                     {
                         title: 'Clinicas',
-                        icon: 'attach_money',
+                        icon: 'location_city',
                         permission: 'Caixa',
                         to: '/clinics'
                     },
                     {
                         title: 'Exames',
-                        icon: 'attach_money',
+                        icon: 'poll',
                         permission: 'Caixa',
                         to: '/exams'
                     },
                     {
                         title: 'Caixa',
-                        icon: 'attach_money',
+                        icon: 'monetization_on',
                         permission: 'Caixa',
                         to: '/caixa'
                     },

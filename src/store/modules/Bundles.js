@@ -7,11 +7,11 @@ const state = {
 
 const mutations = {
 
-    setBundles (payload, state){
+    setBundles (state, payload){
         state.bundles = payload;
     },
 
-    setSelectedBundle (payload, state){
+    setSelectedBundle (state, payload){
         state.selectedBundle = payload;
     }
 };
@@ -90,6 +90,8 @@ const actions = {
 
                 });
 
+
+                console.log(allPackages);
                 commit('setBundles', allPackages);
 
                 if (data) resolve (data);

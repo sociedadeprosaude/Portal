@@ -6,7 +6,7 @@ const state = {
 
 const mutations = {
 
-    setSpecialties (payload, state){
+    setSpecialties (state, payload){
         state.specialties= payload;
     },
 

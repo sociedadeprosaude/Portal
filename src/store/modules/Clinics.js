@@ -2,12 +2,22 @@ import firebase, {firestore} from "firebase";
 
 const state = {
     clinics: [],
+    allClinics: [],
+    selectedClinic: null,
 };
 
 const mutations = {
     setClinics(state, payload) {
         state.clinics = payload
     },
+
+    setAllClinics (state, payload){
+        state.allClinics = payload;
+    },
+
+    setSelectedClinic (state, payload){
+        state.selectedClinic = payload;
+    }
 };
 
 const actions = {
@@ -54,13 +64,23 @@ const actions = {
         }
     },
 
-    
+    selectClinic ({commit}, payload) {
+        commit('setSelectedClinic' , payload);
+    },
 };
 
 const getters = {
     clinics(state) {
         return state.clinics
     },
+
+    allClinics (state) {
+        return state.allClinics;
+    },
+
+    selectedClinic (state){
+        return state.selectedClinic;
+    }
 };
 
 export default {
