@@ -95,11 +95,12 @@
                                                             cpf:patient.cpf,
                                                             data: item.date.split(' ')[0],
                                                             hora: item.date.split(' ')[1],
-                                                            crm: item.crm,
+                                                            crm: item.doctor.crm,
                                                             especialidade: item.specialty.name,
                                                             status: item.status,
                                                             modalidade: item.type,
                                                             medico:item.doctor.name,
+                                                            doctor:item.doctor,
                                                             num_recibo:item.invoice,
                                                             pacienteObj:patient,
                                                             //retorno:item.retorno -> É preciso fazer essa parte
@@ -450,7 +451,8 @@
             apagar() {
                 this.$store.dispatch('eraseAppointment', {
                     idConsultation:this.index_Selecionado.idConsultation,
-                    idPatient:this.index_Selecionado.cpf
+                    idPatient:this.index_Selecionado.cpf,
+                    type:this.index_Selecionado.modalidade
                 })
                 this.clear()
 

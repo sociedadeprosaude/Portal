@@ -1,4 +1,4 @@
-import firebase, {firestore} from "firebase";
+import firebase, { firestore } from "firebase";
 import moment from 'moment'
 
 const state = {
@@ -17,7 +17,7 @@ const mutations = {
 
 const actions = {
 
-    async getConsultations({commit}) {
+    async getConsultations({ commit }) {
         try {
             let consultationsSnap = await firebase.firestore().collection('consultations')
                 .where('date', '>=', moment().format('YYYY-MM-DD HH:mm:ss'))
@@ -48,7 +48,7 @@ const actions = {
             throw e
         }
     },
-    async createConsultation({commit}, consultation) {
+    async createConsultation({ commit }, consultation) {
         let startDate = moment(consultation.start_date, 'YYYY-MM-DD')
         let finalDate = moment(consultation.final_date, 'YYYY-MM-DD')
         let daysDiff = finalDate.diff(startDate, 'days')
@@ -70,33 +70,45 @@ const actions = {
         }
         return
     },
-    async addConsultationAppointmentToUser({commit}, payload) {
+
+
+    async addConsultationAppointmentToUser({ commit }, payload) {
         try {
             await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.id).set(payload.consultation)
-        } catch (e) {
-            throw e
-        }
-    },
-    async addUserToConsultation({commit}, payload) {
-        try {
-            let obj = {
-                user: payload.user,
+            if (payload.consultation.type == "Retorno") {
+                await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.previousConsultation).update({ regress: payload.consultation.id })
             }
-            await firebase.firestore().collection('consultations').doc(payload.consultation.id).update(obj)
         } catch (e) {
             throw e
         }
     },
-    async updateAppointment ({commit},payload){ //atualizarConsulta
+    async addUserToConsultation({ commit }, payload) {
+        try {
+
+            let obj = payload.consultation.type == "Retorno" ? { 
+                user: payload.user, 
+                previousConsultation: payload.consultation.previousConsultation 
+            }
+            :{user: payload.user}
+
+            await firebase.firestore().collection('consultations').doc(payload.consultation.id).update(obj)
+            if (payload.consultation.type == "Retorno") {
+                await firebase.firestore().collection('consultations').doc(payload.consultation.previousConsultation).update({ regress: payload.consultation.id })
+            }
+        } catch (e) {
+            throw e
+        }
+    },
+    async updateAppointment({ commit }, payload) { //atualizarConsulta
         console.log(payload)
         try {
             let obj = {
                 invoice: payload.invoice,
-                status:payload.status
+                status: payload.status
             }
             await firebase.firestore().collection('consultations').doc(payload.idConsultation).update(obj)
             await firebase.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.idConsultation)
-            .update(obj)
+                .update(obj)
         } catch (e) {
             throw e
         }
@@ -133,24 +145,34 @@ const actions = {
 
         }); */
     },
-    async SearchCosultation({commit}){
+    async SearchCosultation({ commit }) {
         try {
             firebase.firestore().collection('consultations').doc()
         }
-        catch(e) {
+        catch (e) {
             throw e
         }
     },
 
-    async eraseAppointment ({commit},payload){ // apagarConsulta
+    async eraseAppointment({ commit }, payload) { // apagarConsulta
 
-        try{
+        try {
             let FieldValue = firebase.firestore.FieldValue
             await firebase.firestore().collection('consultations').doc(payload.idConsultation).update({
-               user:FieldValue.delete()
+                user: FieldValue.delete()
             })
-            await firebase.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.idConsultation).update({status:'Cancelado'})
-        }catch(e){
+            await firebase.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.idConsultation).update({ status: 'Cancelado' })
+
+            /* if(payload.type === 'Retorno'){
+                console.log('Imprimindo PacienteObj')
+                console.log(payload.pacienteObj)
+                console.log('/consultas/' + payload.especialidade + '/' + payload.pacienteObj.consulta_anterior + '/paciente/retorno');
+                firebase.database().ref('/consultas/' + payload.especialidade + '/' + payload.pacienteObj.consulta_anterior + '/paciente/retorno').remove();
+                firebase.database().ref('/pacientes/' + payload.pacienteObj.key + '/consultas/' + payload.pacienteObj.consulta_anterior + '/retorno').remove();
+           
+            } */
+
+        } catch (e) {
             throw e
         }
 
@@ -200,14 +222,7 @@ const actions = {
                     }
                 );
 
-            if(payload.modalidade === 'Retorno'){
-                console.log('Imprimindo PacienteObj')
-                console.log(payload.pacienteObj)
-                console.log('/consultas/' + payload.especialidade + '/' + payload.pacienteObj.consulta_anterior + '/paciente/retorno');
-                firebase.database().ref('/consultas/' + payload.especialidade + '/' + payload.pacienteObj.consulta_anterior + '/paciente/retorno').remove();
-                firebase.database().ref('/pacientes/' + payload.pacienteObj.key + '/consultas/' + payload.pacienteObj.consulta_anterior + '/retorno').remove();
-           
-            }
+            
 
         }); */
 
