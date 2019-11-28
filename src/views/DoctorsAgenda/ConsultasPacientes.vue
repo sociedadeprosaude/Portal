@@ -103,26 +103,33 @@
                                                             doctor:item.doctor,
                                                             num_recibo:item.invoice,
                                                             pacienteObj:patient,
-                                                            //retorno:item.retorno -> É preciso fazer essa parte
-                                                        }"
+                                                            consultation:item
+                                                        }"    
                                                 >
-                                                    <v-list-tile-content>
+                                                <v-card class="py-1">
+                                                    <v-list-tile-content >
                                                         <v-list-tile-title>
                                                             <span :class="`${color}--text`" style="font-weight: bolder">
-                                                                {{item.doctor.name}}
+                                                                Dr(a). {{item.doctor.name}}
                                                             </span>
                                                         </v-list-tile-title>
-                                                        <v-list-tile-sub-title>
-                                                            {{item.specialty.name}} -
-                                                            {{item.doctor.crm}}
+                                                        
+                                                        <br>
+                                                        <v-list-tile-sub-title class="text-left">
+                                                            {{item.specialty.name}}
                                                         </v-list-tile-sub-title>
+                                                        <br>
+                                                        <v-list-tile-sub-title>
+                                                            CRM: {{item.doctor.crm}}
+                                                        </v-list-tile-sub-title>
+                                                        <br>
                                                         <v-list-tile-action-text>
                                                             {{item.date.split(' ')[0] | dateFilter}} -
                                                             {{item.date.split(' ')[1]}}
                                                         </v-list-tile-action-text>
                                                     </v-list-tile-content>
-
-                                                    <v-list-tile-action>
+                                                    <br>
+                                                    <v-list-tile-action class="ml-1">
                                                         <v-btn icon ripple flat>
                                                             <v-icon v-if="item.type === 'Retorno'" :color="color">restore</v-icon>
                                                             <v-icon v-if="item.type === 'Retorno' && item.status === 'Cancelado'" color="warning">alarm_off</v-icon>
@@ -132,6 +139,7 @@
                                                             <v-icon v-if="item.status === 'Aguardando pagamento'" color="error">money_off</v-icon>
                                                         </v-btn>
                                                     </v-list-tile-action>
+                                                </v-card>
                                                 </v-list-tile>
                                             </v-flex>
                                         </v-layout>
@@ -240,7 +248,7 @@
                                                 round
                                                 dark
                                                 :to="{ name: 'AgendarRetorno', params: { q: {...this.index_Selecionado,consultaPaciente:true}}}"
-                                                :disabled="status_Selecionado === 'Pago' && !index_Selecionado.retorno ? false : true"
+                                                :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress ? false : true"
                                                 v-if="index_Selecionado.modalidade !== 'Retorno'"
                                         >Retorno
                                             <v-icon>refresh</v-icon>
@@ -452,7 +460,9 @@
                 this.$store.dispatch('eraseAppointment', {
                     idConsultation:this.index_Selecionado.idConsultation,
                     idPatient:this.index_Selecionado.cpf,
-                    type:this.index_Selecionado.modalidade
+                    type:this.index_Selecionado.modalidade,
+                    regress:this.index_Selecionado.consultation.regress,
+                    previousConsultation:this.index_Selecionado.consultation.previousConsultation
                 })
                 this.clear()
 

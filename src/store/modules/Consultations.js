@@ -112,38 +112,6 @@ const actions = {
         } catch (e) {
             throw e
         }
-
-        /* return new Promise((resolve, reject) => {
-
-            firebase.database().ref('/consultas/' + payload.especialidade + '/' + payload.idConsultation + '/paciente')
-                .update({...payload.pacienteObj});
-            firebase.database().ref('/pacientes/' + payload.idPaciente + '/consultas/' + payload.idConsultation)
-                .update({crm:payload.crm,data_inicial:payload.data+'T'+payload.hora, especialidade:payload.especialidade,
-                    modalidade:payload.modalidade,nome:payload.medico,num_recibo:payload.num_recibo,status:payload.status},
-
-                    function(error) {
-                        if (error) {
-                          commit('setLoader',{loader:false,view:"GerenciamentoConsulta",message:'Ocorreu um erro ao atualizar a consulta'});
-                          reject(
-                              console.log('Ocorreu um erro e as novas informações não foram processadas!')
-                          );
-                        } else {
-                          var view = ''
-                          if(payload.view == undefined){
-                                view = 'GerenciamentoConsulta'
-                                
-                          }else{
-                                view = payload.view
-                          } 
-                          
-                          commit('setLoader',{loader:false,view:view,message:"Consulta atualizada com sucesso"});
-                          resolve(
-                              console.log('os dados das consultas foram atualizados')
-                          );
-                        }
-                      });
-
-        }); */
     },
     async SearchCosultation({ commit }) {
         try {
@@ -156,6 +124,8 @@ const actions = {
 
     async eraseAppointment({ commit }, payload) { // apagarConsulta
 
+        console.log(payload)
+
         try {
             let FieldValue = firebase.firestore.FieldValue
             await firebase.firestore().collection('consultations').doc(payload.idConsultation).update({
@@ -163,69 +133,33 @@ const actions = {
             })
             await firebase.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.idConsultation).update({ status: 'Cancelado' })
 
-            /* if(payload.type === 'Retorno'){
-                console.log('Imprimindo PacienteObj')
-                console.log(payload.pacienteObj)
-                console.log('/consultas/' + payload.especialidade + '/' + payload.pacienteObj.consulta_anterior + '/paciente/retorno');
-                firebase.database().ref('/consultas/' + payload.especialidade + '/' + payload.pacienteObj.consulta_anterior + '/paciente/retorno').remove();
-                firebase.database().ref('/pacientes/' + payload.pacienteObj.key + '/consultas/' + payload.pacienteObj.consulta_anterior + '/retorno').remove();
-           
-            } */
+            //Para consultas que são do tipo Retorno
+            if(payload.type === 'Retorno'){
+                console.log('É um retorno')
+                await firebase.firestore().collection('consultations').doc(payload.previousConsultation).update({
+                    regress: FieldValue.delete()
+                })
+                await firebase.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.previousConsultation).update({
+                    regress: FieldValue.delete()
+                })
+            }
+
+            //Para consultas do tipo Consulta e possuem um retorno associado. É necessário remover o agendamento do retorno associado
+            if(payload.regress != undefined){
+
+                console.log('É uma consulta e possui um retorno')
+
+                await firebase.firestore().collection('consultations').doc(payload.regress).update({
+                    user: FieldValue.delete(),
+                    previousConsultation:FieldValue.delete()
+                })
+                await firebase.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.regress).update({ status: 'Cancelado' })
+    
+            }
 
         } catch (e) {
             throw e
         }
-
-        /* return new Promise((resolve, reject) => {
-            console.log('/consultas/' + payload.especialidade + '/' + payload.idConsultation + '/paciente');
-            console.log('/pacientes/' + payload.idPaciente + '/consultas/' + payload.idConsultation)
-            if(payload.pacienteObj.retorno != undefined){
-                console.log('Retorno imprimindo')
-                console.log(payload.pacienteObj.retorno)
-                firebase.database().ref('/consultas/' + payload.especialidade + '/' + payload.pacienteObj.retorno.id + '/paciente')
-                .remove();
-                firebase.database().ref('/pacientes/' + payload.idPaciente + '/consultas/' + payload.pacienteObj.retorno.id)
-                .remove();
-            }else if(payload.retorno != undefined){
-                console.log('Retorno imprimindo também aqui')
-                console.log(payload.pacienteObj.retorno)
-                firebase.database().ref('/consultas/' + payload.especialidade + '/' + payload.retorno.id + '/paciente')
-                .remove();
-                firebase.database().ref('/pacientes/' + payload.idPaciente + '/consultas/' + payload.retorno.id)
-                .remove();
-            }
-            firebase.database().ref('/consultas/' + payload.especialidade + '/' + payload.idConsultation + '/paciente')
-                .remove();
-            firebase.database().ref('/pacientes/' + payload.idPaciente + '/consultas/' + payload.idConsultation)
-                .update({crm: payload.crm, data_inicial: payload.data + 'T' + payload.hora, especialidade: payload.especialidade,
-                        modalidade:payload.modalidade, nome:payload.medico, num_recibo:payload.num_recibo, status: 'Cancelado'},
-                    function(error) {
-                        if (error) {
-                            commit('setLoader',{loader:false,view:view,message:'Ocorreu um erro ao apagar a consulta'});
-                            reject(
-                                console.log('Ocorreu um erro e as consultas não puderam ser apagadas')
-                            );
-                        } else {
-                            var view = ''
-                            if(payload.view == undefined){
-                                view = 'GerenciamentoConsulta'
-                                
-                            }else{
-                                view = payload.view
-                            }
-                            commit('setLoader',{loader:false,view:view,message:"Consulta apagada com sucesso"});
-                            resolve(
-                                console.log('As consultas foram apagadas com sucesso!')
-
-                            );
-                        }
-                    }
-                );
-
-            
-
-        }); */
-
     },
 
 };
