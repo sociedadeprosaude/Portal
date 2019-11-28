@@ -123,10 +123,10 @@
 
                                                     <v-list-tile-action>
                                                         <v-btn icon ripple flat>
-                                                            <v-icon v-if="item.modalidade === 'Retorno'" :color="color">restore</v-icon>
-                                                            <v-icon v-if="item.modalidade === 'Retorno' && item.status === 'Cancelado'" color="warning">alarm_off</v-icon>
-                                                            <v-icon v-if="item.modalidade === 'Consulta'" :color="color">event</v-icon>
-                                                            <v-icon v-if="item.modalidade === 'Consulta' && item.status === 'Cancelado'" color="warning">event_busy</v-icon>
+                                                            <v-icon v-if="item.type === 'Retorno'" :color="color">restore</v-icon>
+                                                            <v-icon v-if="item.type === 'Retorno' && item.status === 'Cancelado'" color="warning">alarm_off</v-icon>
+                                                            <v-icon v-if="item.type === 'Consulta'" :color="color">event</v-icon>
+                                                            <v-icon v-if="item.type === 'Consulta' && item.status === 'Cancelado'" color="warning">event_busy</v-icon>
                                                             <v-icon v-if="item.status === 'Pago'" color="success">attach_money</v-icon>
                                                             <v-icon v-if="item.status === 'Aguardando pagamento'" color="error">money_off</v-icon>
                                                         </v-btn>
@@ -536,33 +536,26 @@
             clearRecibo() {
                 this.index_Selecionado.num_recibo = ''
             },
-            call() {
-
-                this.$store.dispatch('eraseAppointment', {...this.index_Selecionado,view:'GerenciamentoConsultaPaciente'})
-                this.clear()
-            },
-            call_atualizar() {
-                this.index_Selecionado.pacienteObj.status = this.index_Selecionado.status
-                this.index_Selecionado.pacienteObj.num_recibo = this.index_Selecionado.num_recibo
-                this.$store.dispatch('updateAppointment', {
-                    ...this.index_Selecionado,view:'GerenciamentoConsultaPaciente'
-                })
-                this.clear()
-            },
             clear() {
                 this.num_recibo = ''
                 this.status = 'Aguardando pagamento'
             },
             atualizar() {
-                this.mensage_progress = 'Atualizando...'
-                this.$store.dispatch('setLoader', {loader: true, view: "GerenciamentoConsultaPaciente"})
-                setTimeout(() => (this.call_atualizar()), 1000)
+    
+                this.index_Selecionado.pacienteObj.status = this.index_Selecionado.status
+                this.index_Selecionado.pacienteObj.invoice = this.index_Selecionado.invoice
+                this.$store.dispatch('updateAppointment', {
+                    status: this.index_Selecionado.status,
+                    invoice: this.index_Selecionado.num_recibo,
+                    idConsultation: this.index_Selecionado.idConsultation,
+                    idPatient: this.index_Selecionado.cpf
+                })
+                this.clear()
 
             },
             apagar() {
-                this.mensage_progress = 'Apagando...'
-                this.$store.dispatch('setLoader', {loader: true, view: "GerenciamentoConsultaPaciente"})
-                setTimeout(() => (this.call()), 1000)
+                this.$store.dispatch('eraseAppointment', {...this.index_Selecionado,view:'GerenciamentoConsultaPaciente'})
+                this.clear()
 
             },
             modalidades(item) {

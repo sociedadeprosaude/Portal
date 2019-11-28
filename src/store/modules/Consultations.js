@@ -72,7 +72,7 @@ const actions = {
     },
     async addConsultationAppointmentToUser({commit}, payload) {
         try {
-            await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').add(payload.consultation)
+            await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.id).set(payload.consultation)
         } catch (e) {
             throw e
         }
@@ -86,7 +86,53 @@ const actions = {
         } catch (e) {
             throw e
         }
-    }
+    },
+    async updateAppointment ({commit},payload){ //atualizarConsulta
+        console.log(payload)
+        try {
+            let obj = {
+                invoice: payload.invoice,
+                status:payload.status
+            }
+            await firebase.firestore().collection('consultations').doc(payload.idConsultation).update(obj)
+            await firebase.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.idConsultation)
+            .update(obj)
+        } catch (e) {
+            throw e
+        }
+
+        /* return new Promise((resolve, reject) => {
+
+            firebase.database().ref('/consultas/' + payload.especialidade + '/' + payload.idConsultation + '/paciente')
+                .update({...payload.pacienteObj});
+            firebase.database().ref('/pacientes/' + payload.idPaciente + '/consultas/' + payload.idConsultation)
+                .update({crm:payload.crm,data_inicial:payload.data+'T'+payload.hora, especialidade:payload.especialidade,
+                    modalidade:payload.modalidade,nome:payload.medico,num_recibo:payload.num_recibo,status:payload.status},
+
+                    function(error) {
+                        if (error) {
+                          commit('setLoader',{loader:false,view:"GerenciamentoConsulta",message:'Ocorreu um erro ao atualizar a consulta'});
+                          reject(
+                              console.log('Ocorreu um erro e as novas informações não foram processadas!')
+                          );
+                        } else {
+                          var view = ''
+                          if(payload.view == undefined){
+                                view = 'GerenciamentoConsulta'
+                                
+                          }else{
+                                view = payload.view
+                          } 
+                          
+                          commit('setLoader',{loader:false,view:view,message:"Consulta atualizada com sucesso"});
+                          resolve(
+                              console.log('os dados das consultas foram atualizados')
+                          );
+                        }
+                      });
+
+        }); */
+    },
 };
 
 const getters = {
