@@ -44,6 +44,9 @@ const actions = {
           delete patient[data]
         }
       }
+      if (patient.type){
+        patient.type = patient.type.toLowerCase()
+      }
       let user = await firebase.firestore().collection('users').doc(patient.cpf).set(patient)
       return user
     } catch (e) {

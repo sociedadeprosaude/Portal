@@ -28,6 +28,20 @@ const actions = {
     //     })
     //     return users
     // },
+    async addDoctor ({commit}, doctor) {
+        try {
+            for (let data in doctor) {
+                if (!doctor[data]) {
+                    delete doctor[data]
+                }
+            }
+            doctor.type = "doctor"
+            let user = await firebase.firestore().collection('users').doc(doctor.cpf).set(doctor)
+            return user
+        } catch (e) {
+            throw e
+        }
+    },
     async getDoctors({commit}) {
         try {
             let doctorsSnap = await firebase.firestore().collection('users').where('type', '==', 'doctor').get()
