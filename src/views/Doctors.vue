@@ -1,22 +1,6 @@
 <template>
     <v-container>
         <v-layout row wrap>
-            <v-flex xs12>
-                <!--                <v-card class="pa-3">-->
-                <!--                    <v-flex xs12 class="text-right">-->
-                <!--                        <v-btn rounded color="primary" dark class="mb-2" @click="addDoctor()">-->
-                <!--                            ADICIONAR MEDICO-->
-                <!--                            <v-icon right>person_add</v-icon>-->
-                <!--                        </v-btn>-->
-                <!--                    </v-flex>-->
-                <!--                    <v-text-field-->
-                <!--                            v-model="search"-->
-                <!--                            label="Pesquisa"-->
-                <!--                            single-line-->
-                <!--                            hide-details-->
-                <!--                    ></v-text-field>-->
-                <!--                </v-card>-->
-            </v-flex>
 
             <v-flex xs12 class="my-4">
 
@@ -43,75 +27,18 @@
                                 </v-btn>
                             </v-layout>
                         </v-flex>
-                        <v-text-field append-icon="search"
-                                      v-model="search" label="Pesquisa" class="mx-4"></v-text-field>
+                        <v-text-field append-icon="search" v-model="search" label="Pesquisa" class="mx-4"></v-text-field>
                     </template>
+
                     <template v-slot:item.action="{ item }">
-                        <v-icon
-                                small
-                                class="mr-2"
-                                @click="editItem(item)"
-                        >
-                            edit
-                        </v-icon>
-                        <v-icon
-                                small
-                                @click="confirmDeletion(item)"
-                        >
-                            delete
-                        </v-icon>
+                        <v-btn fab text class="warning mr-2" small>
+                            <v-icon color="white" @click="editItem(item)">edit</v-icon>
+                        </v-btn>
+
+                        <v-btn fab text class="error mx-0" small>
+                            <v-icon color="white" @click="confirmDeletion(item)">delete</v-icon>
+                        </v-btn>
                     </template>
-                    <!--                    <template>-->
-                    <!--                        <td>-->
-                    <!--                            <span>{{ state.item.name }}</span>-->
-                    <!--                        </td>-->
-                    <!--                        <td>{{ state.item.crm }}</td>-->
-                    <!--                        <td>{{getSpecialties(state.item)}}</td>-->
-                    <!--                      <td class="justify-center layout px-0">-->
-                    <!--                        <v-btn icon class="mx-0">-->
-                    <!--                          <v-icon color="teal">add</v-icon>-->
-                    <!--                        </v-btn>-->
-                    <!--                        <v-btn icon class="mx-0">-->
-                    <!--                          <v-icon color="teal">edit</v-icon>-->
-                    <!--                        </v-btn>-->
-                    <!--                        <v-btn icon class="mx-0">-->
-                    <!--                          <v-icon color="pink">delete</v-icon>-->
-                    <!--                        </v-btn>-->
-                    <!--                      </td>-->
-
-
-                    <!--                        <v-tooltip top>-->
-                    <!--                            <template v-slot:activator="{ on }">-->
-                    <!--                                <v-btn @click="editItem(state.item)" dark icon color="orange" v-on="on">-->
-                    <!--                                    <v-icon>-->
-                    <!--                                        edit-->
-                    <!--                                    </v-icon>-->
-                    <!--                                </v-btn>-->
-                    <!--                            </template>-->
-                    <!--                            <span>Editar</span>-->
-                    <!--                        </v-tooltip>-->
-
-                    <!--                        <v-tooltip top>-->
-                    <!--                            <template v-slot:activator="{ on }">-->
-                    <!--                                <v-btn-->
-                    <!--                                        dark-->
-                    <!--                                        icon-->
-                    <!--                                        :loading="loader"-->
-                    <!--                                        color="red"-->
-                    <!--                                        v-on="on"-->
-                    <!--                                        @click="deleteItem(state.item)"-->
-                    <!--                                >-->
-                    <!--                                    <v-icon>-->
-                    <!--                                        delete-->
-                    <!--                                    </v-icon>-->
-                    <!--                                    <template v-slot:loader>-->
-                    <!--                                        <span>...</span>-->
-                    <!--                                    </template>-->
-                    <!--                                </v-btn>-->
-                    <!--                            </template>-->
-                    <!--                            <span>Apagar</span>-->
-                    <!--                        </v-tooltip>-->
-                    <!--                    </template>-->
 
                     <template v-slot:no-results>
                         <v-alert :value="true" color="error" icon="warning">
@@ -121,22 +48,8 @@
 
                 </v-data-table>
             </v-flex>
-
-            <v-snackbar
-                    v-model="snackbar"
-                    :bottom="y === 'bottom'"
-                    :left="x === 'left'"
-                    color="success"
-                    :multi-line="mode === 'multi-line'"
-                    :right="x === 'right'"
-                    :top="y === 'top'"
-                    :vertical="mode === 'vertical'"
-            >
-                {{this.mensagem}}
-                <v-spacer></v-spacer>
-                <v-icon dark>done_outline</v-icon>
-            </v-snackbar>
         </v-layout>
+
         <v-dialog v-model="createDoctorDialog" max-width="500px">
             <create-doctor-card @close="createDoctorDialog = false"></create-doctor-card>
         </v-dialog>
@@ -146,7 +59,7 @@
         <v-dialog v-if="selectedDoctor" v-model="confirmDeletionDialog" max-width="500px">
             <v-card>
                 <v-card-title>
-                    Deletar o médico?
+                    Deletar o médico ?
                     <v-spacer></v-spacer>
                     <v-btn text @click="confirmDeletionDialog = false">
                         <v-icon>close</v-icon>
@@ -179,14 +92,40 @@
                 <v-divider></v-divider>
                 <v-card-text>
                     <v-layout row wrap class="align-center justify-center">
+                        <strong>CADASTRADAS:</strong>
+                        <v-flex>
+                            <v-select
+                                    :items="options"
+                                    item-text="name"
+                                    item-value="name"
+                                    return-object
+                                    multiple
+                                    v-model="options"
+                                    chips
+                                    outlined
+                                    rounded
+                                    readonly
+                            >
+                                <template v-slot:selection="data">
+                                    <v-chip
+                                            :key="JSON.stringify(data.item)"
+                                            :selected="data.selected"
+                                            :disabled="data.disabled"
+                                            class="v-chip--select-multi"
+                                            @click.stop="data.parent.selectedIndex = data.index"
+                                            @input="data.parent.selectItem(data.item)"
+                                            text-color="white"
+                                            color="info"
+                                    >{{ data.item.name }}</v-chip>
+                                </template>
+                            </v-select>
+                        </v-flex>
+                        <v-divider></v-divider>
                         <v-flex xs12>
-                            <v-text-field
-                            v-model="specialty"
-                            label="Especialidade"></v-text-field>
+                            <v-text-field repend-icon="school" v-model="specialty" label="Especialidade" outlined rounded filled></v-text-field>
                         </v-flex>
                     </v-layout>
                 </v-card-text>
-                <v-divider></v-divider>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <submit-button text="Adicionar" :loading="loading" :success="success" @reset="success = false"
@@ -202,13 +141,11 @@
 <script>
     import CreateDoctorCard from "../components/CreateDoctorCard";
     import SubmitButton from "../components/SubmitButton";
-
     export default {
         components: {
             SubmitButton,
             CreateDoctorCard
         },
-
         data: () => ({
             createDoctorDialog: false,
             editDoctorDialog: false,
@@ -219,16 +156,6 @@
             loading: false,
             success: false,
             search: '',
-            y: 'top',
-            x: null,
-            mode: '',
-            pagination: {
-                rowsPerPage: -1,
-            },
-            maskCRM: '######',
-            rulesform: [
-                aux => !!aux || 'Preencher o Campo é Obrigatório.'
-            ],
             dialog: false,
             headers: [
                 {
@@ -244,7 +171,10 @@
         }),
 
         computed: {
-
+            options() {
+                let specialties = this.$store.getters.specialties
+                return specialties
+            },
             doctors() {
                 return this.$store.getters.doctors
             },
@@ -260,24 +190,6 @@
                 }
                 return array
             },
-            loader() {
-                return this.$store.getters.statusLoaderDoc
-            },
-            snackbar: {
-                get() {
-                    let snack = this.$store.getters.onSnackbarDoc;
-                    if (snack) {
-                        this.dialog = false
-                    }
-                    return snack;
-                },
-                set(value) {
-
-                }
-            },
-            mensagem() {
-                return this.$store.getters.onMensagem;
-            }
         },
 
         watch: {
@@ -292,8 +204,7 @@
 
         mounted() {
             this.$store.dispatch('getDoctors')
-
-            //this.$store.dispatch('setLoader',{loader:false,view:"Medicos"})
+            this.$store.dispatch('getSpecialties')
         },
 
         methods: {
