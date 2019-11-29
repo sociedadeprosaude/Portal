@@ -50,6 +50,39 @@
                                 </v-card-text>
                             </v-card>
                         </v-flex>
+                        <v-flex xs12 v-if="registerPackage">
+                            <v-form v-model="validRegister" lazy-validation>
+                                <v-layout row wrap>
+                                    <v-flex xs11>
+                                        <v-text-field required label=" nome" v-model="editedPackage.nome"
+                                                      prepend-inner-icon="folder" :rules="rules.campoObrigatorio"
+                                                      primary solo :clearable="true">
+                                        </v-text-field>
+                                    </v-flex>
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="primary" small fab
+                                           @click="registerPackage= !registerPackage, searchPackage= !searchPackage">
+                                        <v-icon >close</v-icon>
+                                    </v-btn>
+                                    <v-flex xs5>
+                                        <v-radio-group :mandatory="false" row class="justify-center">
+                                            <v-btn outlined text :color="buttonExam" class="button-select" rounded
+                                                   @click="selectExam">Exames
+                                            </v-btn>
+                                            <v-btn outlined text :color="buttonAppointment" class="button-select mx-2" rounded
+                                                   @click="selectAppointment">Consultas
+                                            </v-btn>
+                                            <v-btn outlined text :color="buttonClinic" class="button-select mx-2" rounded
+                                                   @click="selectClinic">Clinicas
+                                            </v-btn>
+                                        </v-radio-group>
+                                    </v-flex>
+                                    <v-text-field v-model="search" required solo primary :clearable="true"
+                                                  placeholder="Escolha a categoria" item-value="nome"
+                                    ></v-text-field>
+                                </v-layout>
+                            </v-form>
+                        </v-flex>
                     </v-card-text>
                 </v-card>
             </v-flex>
@@ -63,13 +96,30 @@
             searchData: null,
             isLoading: false,
 
+            search: null,
+            validRegister: true,
+            categorySelect: null,
+
+            listProducts: [], items: [],
+
             editedPackage: {
-                name: '', exams: [], specialties: [],
+                id: '', name: '', exams: [], specialties: [], cost: '', sale: '',
             },
 
             defaultPackage: {
-                name: '', exams: [], specialties: [],
+                id: '', name: '', exams: [], specialties: [], cost: '', sale: '',
             },
+
+            rules: {
+                campoObrigatorio: [
+                    v => !!v || 'O CAMPO É OBRIGATÓRIO!'
+                ],
+            },
+
+            color: {
+                buttonAppointment:'#9EA9D5', buttonExam:'#009688', buttonClinic: '#9EA9D5',
+                colorSelect:'#009688', noSelect: '#9EA9D5',
+            }
 
         }),
 
@@ -78,14 +128,63 @@
                 return this.$store.getters.bundles;
             },
 
-
             selectedPackage () {
                 return this.$store.getters.selectedBundle;
-            }
+            },
+
+            formRegister () {
+                return this.editedPackage.name && this.editedPackage.sale && this.editedPackage.cost;
+            },
+
+            categories: function () {
+                if (!this.search) { return []}
+
+                let search = this.search.toLowerCase();
+                let products = [];
+
+                if (this.items) {
+                    if (this.categorySelect === 'clinic') {
+                        for (let i in this.items) {
+                            let obj = {
+                                name: this.items[i].name
+                            };
+                            if (this.items[i].specialties.length > 0){
+                                obj = {...obj, specialties: this.items[i].specialties }
+                            }
+                            if (this.items[i].exams.length > 0){
+                                obj = {...obj, exams: this.items[i].exams}
+                            }
+                            products[i] = (obj);
+                        }
+                    } else if (this.categorySelect === 'exam') {
+                        for (let i in this.items) {
+                            products[i] = ({
+                                name: this.items[i].name,
+                                rules: this.items[i].rules,
+                                clinics: this.items[i].clinics,
+                            });
+                        }
+                    } else {
+                        for (let i in this.items){
+
+                        }
+                    }
+
+                    let p = products.filter(item => {
+                        const text = item.name.toLowerCase();
+                        return text.indexOf(search) >-1;
+                    });
+
+                    return p;
+                }
+            },
         },
 
         mounted () {
             this.$store.dispatch('loadBundle');
+            this.$store.dispatch('loadExam');
+            this.$store.dispatch('loadSpecialties');
+            this.$store.dispatch('getClinics');
         },
 
         methods: {
@@ -95,7 +194,19 @@
                 this.searchData = null;
                 this.editedPackage= Object.assign({}, this.defaultPackage);
                 this.$store.dispatch('selectedBundle', null);
-            }
+            },
+
+            validateRegister () {
+                  const packageData = {
+                      name: this.capitalize(this.editedPackage.name),
+                      cost: this.cost,
+                      sale: this.sale,
+                      exams: this.exams,
+                      specialties: this.specialties,
+                  };
+
+                  this.$store.dispatch('addBundle', packageData);
+            },
         },
 
         watch: {
