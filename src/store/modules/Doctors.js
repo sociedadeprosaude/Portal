@@ -53,11 +53,12 @@ const actions = {
             return doctors
         } catch (e) {
             throw e
-        }
+        }s
     },
     async addSpecialty({}, specialty) {
+        console.log('###', specialty);
         try {
-            let speRef = await firebase.firestore().collection('specialties').add(specialty)
+            let speRef = await firebase.firestore().collection('specialties').doc(specialty.name).set(specialty);
             return speRef
         } catch (e) {
             throw e

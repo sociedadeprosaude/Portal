@@ -156,6 +156,76 @@
                                             </v-card-text>
                                         </v-card>
                                     </v-flex>
+                                    <v-layout row>
+                                        <v-flex xs2>
+                                            <v-text-field
+                                                    prepend-icon="attach_money"
+                                                    outlined
+                                                    label="Preço de Custo"
+                                                    placeholder="ex.: 50.00"
+                                                    v-model="cost"
+                                                    prefix="R$"
+                                                    readonly
+                                                    rounded
+                                                    color="#009688"
+                                            ></v-text-field>
+                                        </v-flex>
+                                        <v-spacer></v-spacer>
+                                        <v-flex xs2>
+                                            <v-text-field
+                                                    prepend-icon="monetization_on"
+                                                    outlined
+                                                    label="Preço de Venda"
+                                                    placeholder="ex.: 80.00"
+                                                    v-model="price"
+                                                    prefix="R$"
+                                                    readonly
+                                                    rounded
+                                                    color="#009688"
+                                            ></v-text-field>
+                                        </v-flex>
+                                        <v-spacer></v-spacer>
+                                        <v-flex xs2>
+                                            <v-text-field
+                                                    prepend-icon="looks_6"
+                                                    outlined
+                                                    clearable
+                                                    label="Desconto %"
+                                                    v-model="discountPercentage"
+                                                    suffix="%"
+                                                    rounded
+                                                    color="#009688"
+                                            ></v-text-field>
+                                        </v-flex>
+                                        <v-spacer></v-spacer>
+                                        <v-flex xs3>
+                                            <v-text-field
+                                                    prepend-icon="money_off"
+                                                    outlined
+                                                    clearable
+                                                    label="Desconto R$"
+                                                    v-model="discountMoney"
+                                                    prefix="R$"
+                                                    rounded
+                                                    color="#009688"
+                                            ></v-text-field>
+                                        </v-flex>
+                                        <v-spacer></v-spacer>
+                                        <v-flex xs2>
+                                            <v-text-field
+                                                    prepend-icon="fiber_new"
+                                                    outlined
+                                                    label="Valor Total"
+                                                    prefix="R$"
+                                                    v-model.number="total"
+                                                    rounded
+                                                    readonly
+                                                    color="#009688"
+                                            ></v-text-field>
+                                            {{ typeof(total) }}
+                                            {{total | moneyFilter}}
+                                        </v-flex>
+                                    </v-layout>
                                 </v-card-text>
                             </v-form>
                         </v-flex>
@@ -178,12 +248,14 @@
 
             listProducts: [], items: [], action: false,
 
+            cost: 0, price: 0, discountPercentage: '', discountMoney: '', total: 0,
+
             editedPackage: {
-                id: '', name: '', exams: [], specialties: [], cost: '', sale: '', discountPercentage: '', discountMoney: '',
+                id: '', name: '', exams: [], specialties: [],
             },
 
             defaultPackage: {
-                id: '', name: '', exams: [], specialties: [], cost: '', sale: '', discountPercentage: 0, discountMoney: 0,
+                id: '', name: '', exams: [], specialties: [],
             },
 
             rules: {
@@ -397,9 +469,19 @@
 
         watch: {
 
-            discountPercentage : function () {
-
+            discountPercentage: function () {
+                this.discountMoney = ((this.discountPercentage * this.price) / 100).toFixed(0);
+                this.total = Math.round (this.price - this.discountMoney)
             },
+
+            discountMoney: function () {
+                this.discountPercentage = Math.round ((this.discountMoney * 100) / this.price)
+            },
+
+            price: function (val) {
+                this.total = (val - this.discountMoney)
+            },
+
             searchData () { //pesquisa por filtro de status e por delimitação de nome
                 if (this.searchData){
                     this.isLoading = true;
