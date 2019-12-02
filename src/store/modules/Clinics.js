@@ -24,14 +24,15 @@ const actions = {
     async getClinics({commit}) {
         try {
             let clinicsSnap = await firebase.firestore().collection('clinics').get()
-            let clinics = []
+            let clinics = [];
             clinicsSnap.forEach(function (document) {
                 clinics.push({
                     id: document.id,
                     ...document.data()
                 })
             });
-            commit('setClinics', clinics)
+            commit('setClinics', clinics);
+            console.log(clinics);
             return clinics
         } catch (e) {
             throw e

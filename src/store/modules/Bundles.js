@@ -32,11 +32,7 @@ const actions = {
             } else {
                 bundleRef = await firebase.firestore().collection('packages').add(bundle);
             }
-            for (let i in bundle.exams){
-                firebase.firestore().collection('package/exams').add(bundle.exams);
 
-                )
-            }
             return bundleRef;
 
         } catch (e) {

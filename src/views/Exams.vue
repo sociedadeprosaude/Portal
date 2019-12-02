@@ -32,7 +32,7 @@
                                     <v-combobox v-model="searchData" :items="listExam" :disabled="selectedExam !== null"
                                                 hide-selected hide-no-data :clearable="true" style="justify-content: center" :loading="isLoading"
                                                 :search-input.sync="searchData" filled single-line full-width return-object
-                                                @click:clear="clearSearch" shaped outlined item-text="nome"
+                                                @click:clear="clearSearch" shaped outlined item-text="name"
                                     >
                                         <template v-slot:no-data>
                                             <v-list-item>
@@ -58,12 +58,12 @@
                             </v-layout>
                             <v-card v-if="selectedExam" class="round-card">
                                 <v-card-title>
-                                    <h4 class="font-italic font-weight-bold primary--text">{{editedExam.nome}}</h4>
+                                    <h4 class="font-italic font-weight-bold primary--text">{{editedExam.name}}</h4>
                                 </v-card-title>
                                 <v-card-text>
                                     <v-layout wrap>
                                         <v-flex xs12 sm12>
-                                            <v-textarea label=" Regras " v-model="editedExam.regras" outlined
+                                            <v-textarea label=" Regras " v-model="editedExam.rules" outlined
                                                         prepend-icon="report_problem" class="mt-5">
                                             </v-textarea>
                                         </v-flex>
@@ -81,12 +81,12 @@
                                     <v-card-text>
                                         <v-layout wrap >
                                             <v-flex xs12 sm12>
-                                                <v-text-field required label="Nome" v-model="editedExam.nome" prepend-icon="description"
+                                                <v-text-field required label="Nome" v-model="editedExam.name" prepend-icon="description"
                                                               :rules="rules.campoObrigatorio" class="ml-3 mr-3">
                                                 </v-text-field>
                                             </v-flex>
                                             <v-flex xs12 sm12>
-                                                <v-textarea label="Regras" v-model="editedExam.regras" class="ml-3 mr-3"
+                                                <v-textarea label="Regras" v-model="editedExam.rules" class="ml-3 mr-3"
                                                             prepend-icon="report_problem">
                                                 </v-textarea>
                                             </v-flex>
@@ -137,14 +137,14 @@
             loading: false,
             success: false,
             searchExam: true, registerExam: false, searchData: null, isLoading:false,
-            validRegister: true, editData: false, parameter: 'nome', success:false,
+            validRegister: true, editData: false, parameter: 'name', success:false,
 
             editedExam: {
-                id:'', nome: '', regras: '',
+                id:'', name: '', rules: '',
             },
 
             defaultExam: {
-                id:'', nome: '', regras: '',
+                id:'', name: '', rules: '',
             },
 
             rules: {
@@ -166,7 +166,7 @@
             },
 
             formRegister () {
-                return this.editedExam.nome;
+                return this.editedExam.name;
 
             },
 
@@ -201,11 +201,11 @@
                         if (this.listExam.length > 0) {
 
                             for (let key in this.listExam) {
-                                if (this.searchData === this.listExam[key].nome || this.searchData.nome === this.listExam[key].nome) {
+                                if (this.searchData === this.listExam[key].name || this.searchData.name === this.listExam[key].name) {
                                     this.searchExam = true;
                                     this.registerExam = false;
                                     this.$store.dispatch('selectExam', {... this.$store.getters.exam[key]});
-                                    this.editedExam.nome = data;
+                                    this.editedExam.name = data;
                                     this.editedExam = Object.assign({}, this.selectedExam);
                                     console.log(this.editedExam);
 
@@ -228,7 +228,7 @@
                 if (this.selectedExam === null){
                     alert("Exame não cadastrado");
                     this.editedExam = Object.assign({}, this.defaultExam);
-                    this.editedExam.nome = this.searchData;
+                    this.editedExam.name = this.searchData;
                 }
             },
 
@@ -251,8 +251,8 @@
             async registerProduct () {
                 const examData = {
                     id: '',
-                    nome: this.capitalize(this.editedExam.nome),
-                    regras: this.editedExam.regras,
+                    name: this.capitalize(this.editedExam.name),
+                    rules: this.editedExam.rules,
                 };
                 await this.$store.dispatch('addExam', examData);
                 this.success = true
@@ -286,8 +286,8 @@
 
                 const examData = {
                     id: '',
-                    nome: this.capitalize(this.editedExam.nome),
-                    regras: this.editedExam.regras,
+                    name: this.capitalize(this.editedExam.name),
+                    rules: this.editedExam.rules,
                 };
                 this.$store.dispatch('loadExam').then(() => {
                     this.$store.dispatch('updateDataExam', examData);

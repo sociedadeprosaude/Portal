@@ -16,10 +16,27 @@ const mutations = {
 const actions = {
     async loadExam({commit}) {
         try {
-            let examsSnap = await firebase.firestore().collection('exams').get()
-            let exams = {};
+            let examsSnap = await firebase.firestore().collection('exams').get();
+            let exams = [];
             examsSnap.forEach(function (document) {
-                exams[document.id] = document.data()
+
+                let clinics = [];
+                firebase.firestore().collection('exams/' + document.data().name + '/clinics').get().then((data) => {
+                    data.forEach((doc) => {
+                       clinics.push({
+                           clinic : doc.data().clinic,
+                           cost: doc.data().cost,
+                           price: doc.data().price,
+                       });
+                    });
+                });
+
+                exams.push({
+                    name: document.data().name,
+                    rules: document.data().rules,
+                    clinics: clinics,
+                });
+
             });
             console.log(exams);
             commit('setExams', exams);
@@ -36,11 +53,8 @@ const actions = {
                 }
             }
             let examRef;
-            if (exam.id) {
-                examRef = await firebase.firestore().collection('exams').doc(exam.id).set(exam)
-            } else {
-                examRef = await firebase.firestore().collection('exams').add(exam)
-            }
+            examRef = await firebase.firestore().collection('exams').doc(exam.name).set(exam);
+
             return examRef
         } catch (e) {
             throw e
