@@ -6,30 +6,15 @@
         <v-card-text>
             <v-container grid-list-md>
                 <v-layout align-center justify-center wrap>
-                    <!--
                     <v-flex xs12>
                         <v-text-field
                                 prepend-icon="business"
                                 label="Clinicas"
                                 outlined
                                 readonly
-                                v-model="this.selectedClinic.nome"
+                                v-model="this.selectedClinic.name"
                                 hide-details
                         ></v-text-field>
-                    </v-flex>
-                    -->
-                    <v-flex xs12>
-                        <v-select
-                                prepend-icon="assignment"
-                                :items="clinics"
-                                label="Clinica"
-                                item-text="name"
-                                outlined
-                                v-model="clinic"
-                                clearable
-                                chips
-                                hide-details
-                        ></v-select>
                     </v-flex>
                     <v-flex xs12>
                         <v-select
@@ -137,7 +122,6 @@
     export default {
         directives: {mask},
         data: () => ({
-            clinic: '',
             cost: null,
             sale: null,
             obs: null,
@@ -174,15 +158,11 @@
                 }
                 return doctors
             },
-            clinics() {
-                return this.$store.getters.clinics
-            }
         },
 
         mounted() {
             this.$store.dispatch('getSpecialties')
             this.$store.dispatch('getDoctors')
-            this.$store.dispatch('getClinics')
         },
 
         watch: {
@@ -194,8 +174,8 @@
 
                 for (let i in this.doctors){
                     let consultationData = {
-                        //clinic: this.selectedClinic.nome,
-                        clinic: this.clinic,
+                        clinic: this.selectedClinic.name,
+                        //clinic: this.clinic,
                         consultation: this.consultations,
                         doctor:this.doctor[i],
                         cost:this.cost,
@@ -216,8 +196,7 @@
                 this.consultations = null;
                 this.doctor = [];
                 this.payment = 'Consultas';
-                this.clinic = null;
-                //this.$store.dispatch('selectClinic', null);
+                this.$store.dispatch('selectClinic', null);
             },
 
 

@@ -13,7 +13,7 @@
                                 label="Clinicas"
                                 outlined
                                 readonly
-                                v-model="selectedClinic.nome"
+                                v-model="selectedClinic.name"
                                 hide-details
                         ></v-text-field>
                     </v-flex>
