@@ -6,6 +6,7 @@
         <v-card-text>
             <v-container grid-list-md>
                 <v-layout align-center justify-center wrap>
+                    <!--
                     <v-flex xs12>
                         <v-text-field
                                 prepend-icon="business"
@@ -16,10 +17,26 @@
                                 hide-details
                         ></v-text-field>
                     </v-flex>
+                    -->
                     <v-flex xs12>
                         <v-select
                                 prepend-icon="assignment"
-                                :items="consultationsOptions"
+                                :items="clinics"
+                                label="Clinica"
+                                item-text="name"
+                                outlined
+                                v-model="clinic"
+                                clearable
+                                chips
+                                hide-details
+                        ></v-select>
+                    </v-flex>
+                    <v-flex xs12>
+                        <v-select
+                                prepend-icon="assignment"
+                                :items="specialties"
+                                return-object
+                                item-text="name"
                                 label="Consultas"
                                 outlined
                                 v-model="consultations"
@@ -32,10 +49,13 @@
                         <v-select
                                 multiple
                                 prepend-icon="assignment_ind"
-                                :items="doctorsOptions"
+                                :items="doctors"
+                                item-text="name"
+                                return-object
+                                no-data-text="Nenhum médico para esta especialidade"
                                 label="Médicos"
                                 outlined
-                                v-model="doctors"
+                                v-model="doctor"
                                 clearable
                                 chips
                                 hide-details
@@ -114,18 +134,15 @@
 
 <script>
     import {mask} from 'vue-the-mask';
-
     export default {
-
         directives: {mask},
         data: () => ({
-
+            clinic: '',
             cost: null,
             sale: null,
             obs: null,
-            consultations: null,
-            doctors: [],
-            doctorsOptions: [],
+            consultations: undefined,
+            doctor: [],
             payment:'Consultas',
             paymentOptions: [
                 'Consultas',
@@ -133,26 +150,43 @@
             ],
         }),
         computed: {
-            consultationsOptions(){
-                return this.$store.getters.especialidades
+            specialties(){
+                return this.$store.getters.specialties
             },
             formIsValid() {
                 return this.sale && this.cost && this.consultations && this.doctors.length > 0
             },
             selectedClinic() {
                 return this.$store.getters.selectedClinic;
+            },
+            doctors () {
+                let doctors = Object.values(this.$store.getters.doctors)
+                if(this.consultations) {
+                    doctors = doctors.filter((a) => {
+                        for (let spe in a.specialties) {
+                            if (a.specialties[spe].name === this.consultations.name) {
+                                return true
+                            }
+                        }
+                        return false
+                        // return a.specialties.indexOf(this.especialidade.name) > -1
+                    })
+                }
+                return doctors
+            },
+            clinics() {
+                return this.$store.getters.clinics
             }
         },
 
         mounted() {
-            this.$store.dispatch('loadEspecialidades');
-            this.$store.dispatch('loadMedicos');
+            this.$store.dispatch('getSpecialties')
+            this.$store.dispatch('getDoctors')
+            this.$store.dispatch('getClinics')
         },
 
         watch: {
-            consultations: function (value) {
-                this.doctorsOptions = this.$store.getters.medicosPorEspecialidade(value)
-            }
+            //
         },
 
         methods:{
@@ -160,17 +194,16 @@
 
                 for (let i in this.doctors){
                     let consultationData = {
-                        clinic: this.selectedClinic.nome,
-                        consultation: this.consultations.toUpperCase(),
-                        doctor:this.doctors[i],
+                        //clinic: this.selectedClinic.nome,
+                        clinic: this.clinic,
+                        consultation: this.consultations,
+                        doctor:this.doctor[i],
                         cost:this.cost,
                         sale:this.sale,
                         obs:this.obs,
                         payment: this.payment,
                     };
-                    console.log(consultationData);
                     this.$store.dispatch('addAppointment', consultationData);
-                    this.$store.dispatch('addClinicInAppointment', consultationData);
                 }
 
                 this.clear()
@@ -181,10 +214,10 @@
                 this.sale =  null;
                 this.obs =  null;
                 this.consultations = null;
-                this.doctors = [];
+                this.doctor = [];
                 this.payment = 'Consultas';
-                this.$store.dispatch('selectClinic', null);
-
+                this.clinic = null;
+                //this.$store.dispatch('selectClinic', null);
             },
 
 

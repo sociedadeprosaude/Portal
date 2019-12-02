@@ -256,11 +256,6 @@
         },
 
         data: () => ({
-            loading: false,
-            success: false,
-            y: 'top',
-            x: null,
-            mode: '',
             moment: moment,
             maskVAGAS:'##',
             dataStart:'',
@@ -362,31 +357,6 @@
         },
 
         methods: {
-            saveDatesTimeVacancy () {
-                var dataInicio = moment(this.dataStart,'YYYY-MM-DD')
-                var dataFim = moment(this.dataTheEnd,'YYYY-MM-DD')
-                var num_dias = dataFim.diff(dataInicio,'days')
-                var datas = []
-
-                if(this.semana.indexOf(dataInicio.day()) != -1){
-                    datas.push(dataInicio.format('YYYY-MM-DD'))
-                }
-                for (let index = 0; index < num_dias; index++) {
-                    if(this.semana.indexOf(dataInicio.add(1,'day').day()) != -1){
-                        datas.push(dataInicio.format('YYYY-MM-DD'))
-                    }
-                }
-                var medico = this.$store.getters.medico({especialidade: this.especialidade,medico:this.medicos})
-                const medicoInfos = {
-                    datas: datas,
-                    horas: this.times,
-                    vagas: this.vagas,
-                    medico: medico,
-                    espMed: this.especialidade
-                }
-                this.$store.dispatch('addDatesTimeVacancy', medicoInfos)
-                this.clear()
-            },
             save1 (dataStart) {
                 this.$refs.menu1.save1(dataStart)
             },
