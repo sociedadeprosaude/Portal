@@ -7,29 +7,76 @@
             <v-container grid-list-md>
                 <v-layout align-center justify-center wrap>
                     <v-flex xs12>
-                        <v-text-field
-                                prepend-icon="business"
-                                label="Clinicas"
+                        <v-select
+                                prepend-icon="assignment"
+                                :items="clinics"
+                                label="Clinica"
+                                item-text="name"
                                 outlined
-                                readonly
-                                v-model="selectedClinic.nome"
+                                v-model="clinic"
+                                clearable
+                                chips
                                 hide-details
-                        ></v-text-field>
+                        ></v-select>
                     </v-flex>
-                    <v-flex>
+                    <v-flex xs12>
                         <v-combobox
-                                multiple
                                 prepend-icon="poll"
                                 :items="listExam"
                                 item-text="nome"
                                 label="Exames"
                                 outlined
-                                v-model="exams"
+                                v-model="newExam"
                                 clearable
                                 chips
                                 hide-details
                         ></v-combobox>
                     </v-flex>
+
+                    <v-flex>
+                        <v-flex xs12>
+                        <v-btn v-on:click="addToList" color="success">
+                            <v-icon>add</v-icon>
+                            adcionar na lista de exames
+                        </v-btn>
+                        </v-flex>
+                        <v-flex>
+                        <v-btn v-on:click="deleteFromList" color="error">
+                            <v-icon>delete_forever</v-icon>
+                            Limpar lista
+                        </v-btn>
+                        </v-flex>
+                    </v-flex>
+                    <v-flex xs12>
+                    <strong>EXAMES SELECIONADOS:</strong>
+                    </v-flex>
+                    <v-flex>
+                        <v-select
+                                :items="exams"
+                                item-text="name"
+                                item-value="name"
+                                return-object
+                                multiple
+                                v-model="exams"
+                                chips
+                                outlined
+                                readonly
+                        >
+                            <template v-slot:selection="data">
+                                <v-chip
+                                        :key="JSON.stringify(data.item)"
+                                        :selected="data.selected"
+                                        :disabled="data.disabled"
+                                        class="v-chip--select-multi"
+                                        @click.stop="data.parent.selectedIndex = data.index"
+                                        @input="data.parent.selectItem(data.item)"
+                                        text-color="white"
+                                        color="info"
+                                >{{ data.item }}</v-chip>
+                            </template>
+                        </v-select>
+                    </v-flex>
+
                     <v-flex xs6>
                         <v-text-field
                                 prepend-icon="attach_money"
@@ -94,10 +141,19 @@
     export default {
         directives: {mask},
         data: () => ({
+            clinic: '',
             cost: null,
             sale: null,
             obs: null,
             exams: [],
+            newExam: null,
+            listExam:[
+                'sangue',
+                'fezes',
+                'urina',
+                'gravidez',
+                'testosterona',
+            ]
         }),
         computed: {
             formIsValid() {
@@ -107,34 +163,42 @@
             selectedClinic() {
                 return this.$store.getters.selectedClinic;
             },
-
+            clinics() {
+                return this.$store.getters.clinics
+            },
+/*
             listExam () {
                 return this.$store.getters.allExam;
             },
-
+ */
         },
 
         mounted() {
-
-            this.$store.dispatch('loadExam');
+            //this.$store.dispatch('loadExam');
+            this.$store.dispatch('getClinics')
         },
 
         methods:{
-
+            addToList () {
+                this.exams.push(this.newExam);
+                this.newExam = '';
+            },
+            deleteFromList () {
+                this.exams= [];
+            },
             save(){
 
 
                 for (let i in this.exams){
                     let examData = {
-                        clinic: this.selectedClinic.nome,
+                        //clinic: this.selectedClinic.nome,
+                        clinic: this.clinic,
                         exam: this.exams[i].nome,
                         cost:this.cost,
                         sale:this.sale,
                         obs:this.obs,
                     };
-
                     this.$store.dispatch('addExam', examData);
-                    this.$store.dispatch('addClinicInExam', examData);
                 }
 
                 this.clear()
@@ -145,7 +209,8 @@
                 this.sale =  null;
                 this.obs =  null;
                 this.exams = [];
-                this.$store.dispatch('selectClinic', null);
+                this.clinic = null
+                //this.$store.dispatch('selectClinic', null);
             },
         }
     }

@@ -272,13 +272,13 @@
                             <Consultations ></Consultations>
                         </v-dialog>
 
-                        <v-dialog v-model="Exam" width="500px" text hide-overlay>
+                        <v-dialog v-model="Exam" width="500px">
                             <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" small dark fab color="black" class="mr-2" @click="selectClinic(item)">
+                                <v-btn v-on="on" small dark fab color="black" class="mr-2">
                                     <v-icon>poll</v-icon>
                                 </v-btn>
                             </template>
-                            <Exams v-if="clinicSelected"></Exams>
+                            <Exams></Exams>
                         </v-dialog>
 
                         <v-dialog v-model="Product" width="500px" text hide-overlay>
