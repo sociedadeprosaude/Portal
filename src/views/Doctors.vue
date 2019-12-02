@@ -203,6 +203,7 @@
         },
 
         mounted() {
+            this.$store.dispatch('getClinics')
             this.$store.dispatch('getDoctors')
             this.$store.dispatch('getSpecialties')
         },
@@ -214,7 +215,7 @@
             async addSpecialty() {
                 this.loading = true
                 this.$store.dispatch('addSpecialty', {
-                    name: this.specialty
+                    name: this.specialty.toUpperCase()
                 })
                 this.success = true
                 this.loading = false

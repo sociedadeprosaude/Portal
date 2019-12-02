@@ -260,14 +260,16 @@
                                 delete
                             </v-icon>
                         </v-btn>
-
-                        <v-dialog v-model="Consultation" width="500px" text hide-overlay>
+                        <!--text hide-overlay-->
+                        <v-dialog v-model="Consultation" width="500px">
                             <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" small dark fab color="black" class="mr-2" @click="selectClinic(item)">
+                                <!--<v-btn v-on="on" small dark fab color="black" class="mr-2" @click="selectClinic(item)">-->
+                                <v-btn v-on="on" small dark fab color="black" class="mr-2">
                                     <v-icon>assignment</v-icon>
                                 </v-btn>
                             </template>
-                            <Consultations v-if="clinicSelected"></Consultations>
+                            <!--<Consultations v-if="clinicSelected"></Consultations>-->
+                            <Consultations ></Consultations>
                         </v-dialog>
 
                         <v-dialog v-model="Exam" width="500px" text hide-overlay>

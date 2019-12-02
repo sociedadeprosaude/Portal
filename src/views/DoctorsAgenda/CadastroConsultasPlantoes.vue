@@ -209,40 +209,6 @@
                         <span>Aguarde...</span>
                     </template>
                 </v-btn>
-                <v-dialog
-                        v-model="loader"
-                        hide-overlay
-                        persistent
-                        width="300"
-                >
-                    <v-card
-                            color="success"
-                            dark
-                    >
-                        <v-card-text>
-                            Salvando...
-                            <v-progress-linear
-                                    indeterminate
-                                    color="white"
-                                    class="mb-0"
-                            ></v-progress-linear>
-                        </v-card-text>
-                    </v-card>
-                </v-dialog>
-                <v-snackbar
-                        v-model="snackbar"
-                        :bottom="y === 'bottom'"
-                        :left="x === 'left'"
-                        color="success"
-                        :multi-line="mode === 'multi-line'"
-                        :right="x === 'right'"
-                        :top="y === 'top'"
-                        :vertical="mode === 'vertical'"
-                >
-                    {{this.mensagem}}
-                    <v-spacer></v-spacer>
-                    <v-icon dark>event_available</v-icon>
-                </v-snackbar>
             </v-layout>
 
             </v-card>
@@ -256,9 +222,6 @@
     export default {
 
         data: () => ({
-            y: 'top',
-            x: null,
-            mode: '',
             moment: moment,
             maskVAGAS:'##',
             dataStart:'',
@@ -360,31 +323,6 @@
         },
 
         methods: {
-            saveDatesTimeVacancy () {
-                var dataInicio = moment(this.dataStart,'YYYY-MM-DD')
-                var dataFim = moment(this.dataTheEnd,'YYYY-MM-DD')
-                var num_dias = dataFim.diff(dataInicio,'days')
-                var datas = []
-
-                if(this.semana.indexOf(dataInicio.day()) != -1){
-                    datas.push(dataInicio.format('YYYY-MM-DD'))
-                }
-                for (let index = 0; index < num_dias; index++) {
-                    if(this.semana.indexOf(dataInicio.add(1,'day').day()) != -1){
-                        datas.push(dataInicio.format('YYYY-MM-DD'))
-                    }
-                }
-                var medico = this.$store.getters.medico({especialidade: this.especialidade,medico:this.medicos})
-                const medicoInfos = {
-                    datas: datas,
-                    horas: this.times,
-                    vagas: this.vagas,
-                    medico: medico,
-                    espMed: this.especialidade
-                }
-                this.$store.dispatch('addDatesTimeVacancy', medicoInfos)
-                this.clear()
-            },
             save1 (dataStart) {
                 this.$refs.menu1.save1(dataStart)
             },

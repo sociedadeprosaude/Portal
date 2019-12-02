@@ -184,7 +184,7 @@
                     // sex: this.sex,
                     // telephones: this.telephones,
                     // addresses: this.addresses,
-                    //type: 'DOCTOR'
+                    type: 'doctor'
                 }
                 await this.$store.dispatch('addDoctor', doctor)
                 await this.$store.dispatch('getDoctors')
