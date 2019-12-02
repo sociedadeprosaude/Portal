@@ -145,7 +145,7 @@
                 return this.$store.getters.selectedClinic;
             },
             doctors () {
-                let doctors = Object.values(this.$store.getters.doctors)
+                let doctors = Object.values(this.$store.getters.doctors);
                 if(this.consultations) {
                     doctors = doctors.filter((a) => {
                         for (let spe in a.specialties) {
@@ -162,8 +162,8 @@
         },
 
         mounted() {
-            this.$store.dispatch('getSpecialties')
-            this.$store.dispatch('getDoctors')
+            this.$store.dispatch('getSpecialties');
+            this.$store.dispatch('getDoctors');
         },
 
         watch: {
@@ -177,10 +177,12 @@
                     let consultationData = {
                         clinic: this.selectedClinic.name,
                         //clinic: this.clinic,
-                        consultation: this.consultations,
+                        specialtie: this.consultations,
                         doctor:this.doctor[i],
+                        crm: this.doctor[i].crm,
+                        cpf: this.doctor[i].cpf,
                         cost:this.cost,
-                        sale:this.sale,
+                        price:this.sale,
                         obs:this.obs,
                         payment: this.payment,
                     };
