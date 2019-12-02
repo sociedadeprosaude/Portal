@@ -945,15 +945,16 @@
                     clearTimeout(self.typingTimer);
                     self.typingTimer = setTimeout(() => {
                         if(self.categorySelect === 'exam' ){
-                            self.items= self.$store.dispatch("loadSelectedExams", self.search)
+                            self.$store.dispatch("loadSelectedExams", self.search).then(() => {
+                                self.items= self.$store.getters.examsSelected;
+                            });
                             console.log('exames aqui');
                         }
                         if(self.categorySelect === 'appointment' ){
-                            self.$store.dispatch("loadSpecialties");
-                            self.items = self.$store.getters.specialties;
-                            console.log("items:", self.items);
-
-                        }
+                            self.$store.dispatch("loadSpecialties").then(() => {
+                                self.items = self.$store.getters.specialties;
+                            })
+                        };
                         if(self.categorySelect === 'package' ){
                             console.log('pacotes aqui');
                         }//funcao de pesquisar
