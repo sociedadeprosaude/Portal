@@ -65,6 +65,33 @@ const actions = {
         }
     },
 
+    addAppointment ({commit}, payload) {
+
+        let appointmentData = {
+            clinic: payload.clinic,
+            nome: payload.consultation,
+            obs: payload.obs,
+            custo: payload.cost,
+            venda: payload.sale,
+            medico: payload.doctor,
+            payment: payload.payment,
+        };
+
+        let info = {
+            nome: payload.consultation,
+        };
+        /*
+        firebase.firestore().collection('clinics/' + payload.clinic.id + '/specialties/')
+            .doc(payload.consultation).set(info);
+
+        firebase.firestore().collection('clinics/' + payload.clinic.id + '/specialties/'
+            + payload.consultation + '/doctors/').doc(payload.doctor).set(appointmentData);
+
+        firebase.firestore().collection('specialties/' + payload.consultation + '/doctors/')
+            .doc(payload.doctor).set(appointmentData);
+         */
+    },
+
     selectClinic ({commit}, payload) {
         commit('setSelectedClinic' , payload);
     },
