@@ -68,6 +68,7 @@ const vuetifyOptions = {
         success: '#4caf50',
         primary_light: '#b6ffff',
         primary_dark: '#4ba3c7',
+        background: '#DFDFDF'
       },
     },
   },
