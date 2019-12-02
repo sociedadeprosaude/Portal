@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <v-layout row wrap>
-            <v-card>
+            <v-card class="pa-2">
                 <template>
                     <v-container fluid grid-list-xl>
                         <v-layout align-center wrap>
@@ -179,20 +179,15 @@
             </template>
 
             <v-layout align-end justify-end>
-                <v-btn
+                <submit-button
                         @click="save"
-                        color="success"
-                        rounded
                         :disabled="!formIsValid"
-                        :loading="loader"
+                        :loading="loading"
+                        :success="success"
+                        text="Salvar"
 
                 >
-                    SALVAR
-                    <v-icon right>check</v-icon>
-                    <template v-slot:loader>
-                        <span>Aguarde...</span>
-                    </template>
-                </v-btn>
+                </submit-button>
                 <v-dialog
                         v-model="loader"
                         hide-overlay
@@ -236,10 +231,17 @@
 </template>
 
 <script>
+    import SubmitButton from "../../components/SubmitButton";
     var moment = require('moment');
     export default {
 
+        components: {
+          SubmitButton
+        },
+
         data: () => ({
+            loading: false,
+            success: false,
             y: 'top',
             x: null,
             mode: '',
@@ -402,7 +404,8 @@
                 this.especialidade = ''
                 this.times = ''
             },
-            save () {
+            async save () {
+                this.loading = true
                 let consultation = {
                     start_date: this.dataStart,
                     final_date: this.dataTheEnd,
@@ -414,8 +417,10 @@
                     weekDays: this.semana
                 }
 
-                this.$store.dispatch('createConsultation', consultation)
+                await this.$store.dispatch('createConsultation', consultation)
                 // setTimeout(() => (this.saveDatesTimeVacancy()), 1000)
+                this.success = true
+                this.loading = false
             }
         }
     }
