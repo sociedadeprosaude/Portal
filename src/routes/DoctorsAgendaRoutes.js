@@ -1,10 +1,7 @@
 import AgendamentoConsultas from "../views/DoctorsAgenda/AgendamentoConsultas";
 import CadastroConsultasPlantoes from "../views/DoctorsAgenda/CadastroConsultasPlantoes";
-import Medicos from "../views/DoctorsAgenda/Medicos";
-import Pacientes from "../views/DoctorsAgenda/Pacientes";
 import DeletarConsultas from "../views/DoctorsAgenda/DeletarConsultas";
 import GerenciamentoConsultas from "../views/DoctorsAgenda/GerenciamentoConsultas";
-import ConsultasMedicos from "../views/DoctorsAgenda/ConsultasMedicos";
 import ConsultasPacientes from "../views/DoctorsAgenda/ConsultasPacientes";
 import ConsultasCanceladas from "../views/DoctorsAgenda/ConsultasCanceladas";
 import RemarcarConsultas from "../views/DoctorsAgenda/RemarcarConsultas";
@@ -12,6 +9,7 @@ import AgendarRetorno from "../views/DoctorsAgenda/AgendarRetorno";
 import Cids from "../views/DoctorsAgenda/Cids";
 import Declaration from "../views/DoctorsAgenda/Declaration";
 import Teste from "../views/DoctorsAgenda/testescrolling";
+import Patient from "../views/DoctorsAgenda/Patient";
 
 export default [
     {
@@ -25,16 +23,6 @@ export default [
         component: CadastroConsultasPlantoes
     },
     {
-        path: '/agenda/Medicos',
-        name: 'Medicos',
-        component: Medicos
-    },
-    {
-        path: '/agenda/Pacientes',
-        name: 'Pacientes',
-        component: Pacientes
-    },
-    {
         path: '/agenda/DeletarConsultas',
         name: 'DeletarConsultas',
         component: DeletarConsultas
@@ -43,11 +31,6 @@ export default [
         path: '/agenda/GerenciamentoConsultas',
         name: 'GerenciamentoConsultas',
         component: GerenciamentoConsultas
-    },
-    {
-        path: '/agenda/ConsultasMedicos',
-        name: 'ConsultasMedicos',
-        component: ConsultasMedicos
     },
     {
         path: '/agenda/ConsultasPacientes',

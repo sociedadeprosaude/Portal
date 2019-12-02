@@ -8,6 +8,7 @@ import Register from '@/views/Auth/Register'
 import Exams from '@/views/Exams'
 import Labor from '@/views/Labor/Home'
 import Reports from '@/views/Reports'
+import Bundles from '@/views/Cashier/Bundles'
 
 import Doctors from '@/views/Doctors'
 import Clinics from "@/views/Clinics"
@@ -16,7 +17,7 @@ import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
 import CashierRoutes from "./routes/CashierRoutes";
 
 
-Vue.use(Router)
+Vue.use(Router);
 let mainRoutes = [
   {
     path: '/',
@@ -84,6 +85,15 @@ let mainRoutes = [
     meta : {
       requiresAuth: false
     }
+  },
+  {
+    path: '/bundles',
+    name: 'bundles',
+    component : Bundles,
+    meta: {
+      requiresAuth: false,
+    }
+
   },
 ]
 

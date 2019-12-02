@@ -1,11 +1,22 @@
 <template>
   <v-container fluid>
+    <v-layout align-left justify-left>
+      <v-btn
+              @click="back"
+              color="error"
+              rounded
+              class="mb-2 elevation-6"
+      >
+        <v-icon left>arrow_back</v-icon>
+        VOLTAR
+      </v-btn>
+    </v-layout>
     <v-layout row wrap>
       <v-flex xs3 class= "text-center" >
-        <v-btn fab large dark class="botao" color="#2962FF" @click="cadastro">
-          <v-icon size="80" >add</v-icon>
+        <v-btn fab large dark class="botao" color="#2962FF" @click="pacotes">
+          <v-icon size="80" >create_new_folder</v-icon>
         </v-btn>
-        <p class="word">Cadastrar</p>
+        <p class="word">Pacotes</p>
       </v-flex>
       <v-flex xs3 class="text-center">
         <v-btn fab dark class="botao" color="#2962FF" @click="orcamento">
@@ -34,18 +45,21 @@ export default {
     data: () => ({
     }),
   methods:{
-      cadastro(){
-        this.$router.push('/Cadastrar')
+      pacotes(){
+        this.$router.push('/caixa/Bundles')
       },
       orcamento(){
-        this.$router.push('/Orçamento')
+        this.$router.push('/caixa/Orçamento')
       },
       relatorio(){
-        this.$router.push('/Relatorio')
+        this.$router.push('/caixa/Relatorio')
       },
       saidas(){
-        this.$router.push('/Saidas')
-      }
+        this.$router.push('/caixa/Saidas')
+      },
+      back(){
+      this.$router.push('/')
+      },
   }
 };
 </script>

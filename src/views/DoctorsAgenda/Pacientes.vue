@@ -533,7 +533,7 @@
 
                 }
 
-                this.$store.dispatch('createPatient', pacienteData)
+                this.$store.dispatch('addUser', pacienteData)
             },
 
             salvarAlteracoes(){

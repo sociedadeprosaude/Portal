@@ -5,23 +5,24 @@ import firebase from "firebase";
 
 const state = {
     exams: []
-}
+};
 
 const mutations = {
     setExams(state, payload) {
         state.exams = payload
     },
-}
+};
 
 const actions = {
-    async getDoctorsList({commit}) {
+    async loadExam({commit}) {
         try {
             let examsSnap = await firebase.firestore().collection('exams').get()
-            let exams = {}
+            let exams = {};
             examsSnap.forEach(function (document) {
                 exams[document.id] = document.data()
-            })
-            commit('setExams', exams)
+            });
+            console.log(exams);
+            commit('setExams', exams);
             return exams
         } catch (e) {
             throw e
@@ -34,7 +35,7 @@ const actions = {
                     delete exam[data]
                 }
             }
-            let examRef
+            let examRef;
             if (exam.id) {
                 examRef = await firebase.firestore().collection('exams').doc(exam.id).set(exam)
             } else {
@@ -44,14 +45,14 @@ const actions = {
         } catch (e) {
             throw e
         }
-    },
-}
+    }
+};
 
 const getters = {
     exams(state) {
         return state.exams
     },
-}
+};
 
 export default {
     state,

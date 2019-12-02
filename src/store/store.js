@@ -9,14 +9,19 @@ import Reports from '@/store/modules/Reports'
 import Exams from '@/store/modules/Exams'
 import Auth from '@/store/modules/Auth'
 import Labor from '@/store/modules/Labor'
+import Patient from './modules/Patient'
 
 import Localization from "./modules/Localization"
+import Bundles from "./modules/Bundles";
 import Doctors from "./modules/Doctors"
 import Clinics from "./modules/Clinics"
 import Consultations from "./modules/Consultations";
 import LayoutControl from "./modules/local/LayoutControl";
+import Specialties from "./modules/Specialties";
+import Saidas from "./modules/Saidas"
 
-Vue.use(Vuex)
+
+Vue.use(Vuex);
 
 if (process.env.NODE_ENV === 'development') {
   // var AUTH_URL = 'http://prosaude.auth/'
@@ -37,7 +42,13 @@ const store = new Vuex.Store({
     Clinics,
     Exams,
     Consultations,
-    LayoutControl
+    LayoutControl,
+
+    Bundles,
+    Specialties,
+    Saidas,
+
+    Patient,
   },
   state: {
     categories: [],
@@ -51,10 +62,10 @@ const store = new Vuex.Store({
   },
   mutations: {
     setToken(state, payload) {
-      state.token = payload.token
-      state.tokenStatus = payload.status
+      state.token = payload.token;
+      state.tokenStatus = payload.status;
       if (payload.status === constants.TOKEN_STATUS_VALID) {
-        localStorage.setItem('token', payload.token)
+        localStorage.setItem('token', payload.token);
         axios.defaults.headers.common['token'] = payload.token
       } else {
         localStorage.removeItem('token')
@@ -117,14 +128,14 @@ const store = new Vuex.Store({
               resolve(response)
             })
             .catch(error => {
-              console.log(error)
+              console.log(error);
               reject(error)
             })
       })
     },
     logout({commit}) {
       return new Promise((resolve, reject) => {
-        localStorage.removeItem('token')
+        localStorage.removeItem('token');
         router.go()
       })
     },

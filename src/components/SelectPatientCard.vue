@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container >
         <v-layout row wrap>
             <v-flex xs12 class="my-4">
                 <v-expand-transition mode="out-in">
@@ -25,23 +25,34 @@
                             </v-flex>
                             <v-flex xs12>
                                 <v-text-field
+                                        outlined
+                                        rounded
+                                        filled
                                         prepend-icon="account_circle"
                                         v-model="name"
                                         :disabled="selectedPatient !== undefined"
                                         label="Nome"></v-text-field>
                             </v-flex>
-                            <v-flex sm5 xs12>
+                            <v-flex xs12>
                                 <v-text-field
+                                        prepend-icon="credit_card"
+                                        outlined
+                                        rounded
+                                        filled
                                         v-model="cpf"
                                         :disabled="selectedPatient !== undefined"
                                         label="CPF"></v-text-field>
                             </v-flex>
                             <v-spacer></v-spacer>
-                            <v-flex sm5 xs12>
+                            <v-flex xs12>
                                 <v-text-field
+                                        prepend-icon="credit_card"
+                                        outlined
+                                        rounded
+                                        filled
                                         v-model="numAss"
                                         :disabled="selectedPatient !== undefined"
-                                        label="Nun. Associado"></v-text-field>
+                                        label="Numero do Associado"></v-text-field>
                             </v-flex>
                             <v-flex xs12 class="text-right">
                                 <submit-button @reset="success = false" @click="searchPatient()" :loading="loading"
@@ -85,12 +96,18 @@
                             </v-flex>
                             <v-flex sm6 xs12 class="px-3">
                                 <v-text-field
+                                        outlined
+                                        rounded
+                                        filled
                                         prepend-icon="account_circle"
                                         v-model="name"
                                         label="Nome"></v-text-field>
                             </v-flex>
                             <v-flex sm3 xs12 class="px-3">
                                 <v-text-field
+                                        outlined
+                                        rounded
+                                        filled
                                         v-model="birthDate"
                                         v-mask="mask.date"
                                         prepend-icon="date_range"
@@ -98,21 +115,30 @@
                             </v-flex>
                             <v-flex sm3 xs12 class="px-3">
                                 <v-text-field
+                                        outlined
+                                        rounded
+                                        filled
                                         v-mask="mask.cpf"
                                         v-model="cpf"
                                         label="CPF"></v-text-field>
                             </v-flex>
                             <v-flex sm4 xs12 class="px-3">
                                 <v-text-field
+                                        outlined
+                                        rounded
+                                        filled
                                         v-model="email"
                                         prepend-icon="email"
                                         label="Email"></v-text-field>
                             </v-flex>
                             <v-flex sm3 xs12 class="px-3">
-                                <v-select label="Sexo" :items="['Feminino' , 'Masculino']" v-model="sex"></v-select>
+                                <v-select outlined rounded filled label="Sexo" :items="['Feminino' , 'Masculino']" v-model="sex"></v-select>
                             </v-flex>
                             <v-flex sm4 xs12>
                                 <v-text-field
+                                        outlined
+                                        rounded
+                                        filled
                                         v-model="numAss"
                                         label="Nun. Associado"></v-text-field>
                             </v-flex>
@@ -120,6 +146,9 @@
                                 <v-layout row wrap class="align-center" v-for="(tel, index) in telephones" :key="index">
                                     <v-flex xs10>
                                         <v-text-field
+                                                outlined
+                                                rounded
+                                                filled
                                                 v-model="telephones[index]"
                                                 v-mask="mask.telephone"
                                                 prepend-icon="phone"

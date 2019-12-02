@@ -18,9 +18,12 @@
                                 prepend-icon="person"
                                 v-model="name"
                                 label="Nome do Médico(a)"
+                                outlined
+                                rounded
+                                filled
                         ></v-text-field>
                     </v-flex>
-                    <v-flex xs12 sm6>
+                    <v-flex xs12>
                         <v-text-field
                                 :disabled="doctor !== undefined"
                                 clearable
@@ -29,16 +32,22 @@
                                 prepend-icon="credit_card"
                                 v-model="cpf"
                                 label="CPF"
+                                outlined
+                                rounded
+                                filled
                         ></v-text-field>
                     </v-flex>
-                    <v-flex xs12 sm6>
+                    <v-flex xs12>
                         <v-text-field
                                 clearable
                                 v-mask="maskCRM"
                                 :rules="rulesform"
                                 prepend-icon="credit_card"
                                 v-model="crm"
-                                label="Número do CRM"
+                                label="CRM"
+                                outlined
+                                rounded
+                                filled
                         ></v-text-field>
                     </v-flex>
                     <v-flex>
@@ -51,11 +60,26 @@
                                 return-object
                                 label="Especialidade(s)"
                                 multiple
-                                outline
                                 v-model="specialties"
                                 clearable
                                 chips
-                        ></v-select>
+                                outlined
+                                rounded
+                                filled
+                        >
+                            <template v-slot:selection="data">
+                                <v-chip
+                                        :key="JSON.stringify(data.item)"
+                                        :selected="data.selected"
+                                        :disabled="data.disabled"
+                                        class="v-chip--select-multi"
+                                        @click.stop="data.parent.selectedIndex = data.index"
+                                        @input="data.parent.selectItem(data.item)"
+                                        text-color="white"
+                                        color="info"
+                                >{{ data.item.name }}</v-chip>
+                            </template>
+                        </v-select>
                     </v-flex>
                 </v-layout>
             </v-container>
@@ -85,20 +109,6 @@
                         :success="success"
                         :loading="loading" @click="save"></submit-button>
             </v-flex>
-            <!--            <v-btn-->
-            <!--                    :disabled="!formIsValid"-->
-            <!--                    :loading="loader"-->
-            <!--                    color="success"-->
-            <!--                    rounded-->
-            <!--                    @click="save"-->
-            <!--            >-->
-            <!--                Salvar-->
-            <!--                <v-icon right>done</v-icon>-->
-            <!--                <template v-slot:loader>-->
-            <!--                    <span>Aguarde...</span>-->
-            <!--                </template>-->
-            <!--            </v-btn>-->
-
         </v-card-actions>
     </v-card>
 </template>
@@ -159,10 +169,8 @@
                 this.$emit('close')
             },
             erase() {
-
             },
             edit() {
-
             },
             async save() {
                 this.loading = true
@@ -176,9 +184,9 @@
                     // sex: this.sex,
                     // telephones: this.telephones,
                     // addresses: this.addresses,
-                    type: 'DOCTOR'
+                    //type: 'DOCTOR'
                 }
-                await this.$store.dispatch('addUser', doctor)
+                await this.$store.dispatch('addDoctor', doctor)
                 await this.$store.dispatch('getDoctors')
                 this.success = true
                 this.loading = false
@@ -191,5 +199,4 @@
 </script>
 
 <style scoped>
-
 </style>

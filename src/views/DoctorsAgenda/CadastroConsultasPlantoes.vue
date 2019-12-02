@@ -13,7 +13,9 @@
                                         :items="specialties"
                                         item-text="name"
                                         return-object
-                                        outline
+                                        outlined
+                                        rounded
+                                        filled
                                         chips
                                         color="pink"
                                         clearable
@@ -29,7 +31,9 @@
                                     return-object
                                     label="Médico"
                                     no-data-text="Nenhum médico para esta especialidade"
-                                    outline
+                                    outlined
+                                    rounded
+                                    filled
                                     chips
                                     color="purple"
                                     clearable
@@ -43,7 +47,9 @@
                                         item-text="name"
                                         label="Clínica"
                                         no-data-text="Nenhum médico para esta especialidade"
-                                        outline
+                                        outlined
+                                        rounded
+                                        filled
                                         chips
                                         color="purple"
                                         clearable
@@ -75,7 +81,9 @@
                                             label="Data Inicial"
                                             prepend-icon="event"
                                             readonly
-                                            outline
+                                            outlined
+                                            rounded
+                                            filled
                                             clearable
                                             v-on="on"
                                     ></v-text-field>
@@ -108,7 +116,9 @@
                                             label="Data Final"
                                             prepend-icon="event"
                                             readonly
-                                            outline
+                                            outlined
+                                            rounded
+                                            filled
                                             clearable
                                             v-on="on"
                                     ></v-text-field>
@@ -131,7 +141,9 @@
                                     label="Dias da Semana"
                                     hint="Selecione os dias da semana que o médico irá atender"
                                     persistent-hint
-                                    outline
+                                    outlined
+                                    rounded
+                                    filled
                                     multiple
                                     chips
                                     color="blue"
@@ -152,7 +164,9 @@
                                     :items="timesOptions"
                                     label="Horários"
                                     attach
-                                    outline
+                                    outlined
+                                    rounded
+                                    filled
                                     hint="Selecione o horario que o médico irá atender"
                                     persistent-hint
                                     chips
@@ -168,7 +182,9 @@
                                     :mask="maskVAGAS"
                                     label="Número de Vagas"
                                     placeholder="exemplo: 22"
-                                    outline
+                                    outlined
+                                    rounded
+                                    filled
                                     chips
                                     color="red"
                                     clearable
@@ -307,21 +323,7 @@
             computedDateFormattedTheEnd () {
                 return this.formatDate(this.dataTheEnd)
             },
-            loader(){
-                return this.$store.getters.statusLoaderCadastroC
-            },
-            snackbar(){
 
-                var snack = this.$store.getters.onSnackbarCadastroC
-
-                if(snack){
-                    this.dialog = false
-                }
-                return snack;
-            },
-            mensagem(){
-                return this.$store.getters.onMensagem
-            },
             doctors () {
                 let doctors = Object.values(this.$store.getters.doctors)
                 if(this.especialidade) {
@@ -337,6 +339,7 @@
                 }
                 return doctors
             },
+
             clinics() {
                 return this.$store.getters.clinics
             }
@@ -416,7 +419,6 @@
                     vacancy: this.vagas,
                     weekDays: this.semana
                 }
-
                 await this.$store.dispatch('createConsultation', consultation)
                 // setTimeout(() => (this.saveDatesTimeVacancy()), 1000)
                 this.success = true
