@@ -66,13 +66,13 @@
                                     </v-btn>
                                     <v-flex xs5>
                                         <v-radio-group :mandatory="false" row class="justify-center">
-                                            <v-btn outlined text :color="buttonExam" class="button-select" rounded
+                                            <v-btn outlined text :color="color.buttonExam" class="button-select" rounded
                                                    @click="selectExam">Exames
                                             </v-btn>
-                                            <v-btn outlined text :color="buttonAppointment" class="button-select mx-2" rounded
+                                            <v-btn outlined text :color="color.buttonAppointment" class="button-select mx-2" rounded
                                                    @click="selectAppointment">Consultas
                                             </v-btn>
-                                            <v-btn outlined text :color="buttonClinic" class="button-select mx-2" rounded
+                                            <v-btn outlined text :color="color.buttonClinic" class="button-select mx-2" rounded
                                                    @click="selectClinic">Clinicas
                                             </v-btn>
                                         </v-radio-group>
@@ -81,6 +81,14 @@
                                                   placeholder="Escolha a categoria" item-value="nome"
                                     ></v-text-field>
                                 </v-layout>
+                                <v-card-text>
+                                    <v-flex v-for="(item, index) in categories" :key="index" >
+                                        <v-card class="mt-3">
+                                            <v-card-title v-text="item.nome"></v-card-title>
+
+                                        </v-card>
+                                    </v-flex>
+                                </v-card-text>
                             </v-form>
                         </v-flex>
                     </v-card-text>
@@ -100,14 +108,14 @@
             validRegister: true,
             categorySelect: null,
 
-            listProducts: [], items: [],
+            listProducts: [], items: [], combo: [],
 
             editedPackage: {
-                id: '', name: '', exams: [], specialties: [], cost: '', sale: '',
+                id: '', name: '', exams: [], specialties: [], cost: '', sale: '', discountPercentage: '', discountMoney: '',
             },
 
             defaultPackage: {
-                id: '', name: '', exams: [], specialties: [], cost: '', sale: '',
+                id: '', name: '', exams: [], specialties: [], cost: '', sale: '', discountPercentage: 0, discountMoney: 0,
             },
 
             rules: {
@@ -125,6 +133,7 @@
 
         computed: {
             listPackage (){
+                //this.isLoading = false;
                 return this.$store.getters.bundles;
             },
 
@@ -137,10 +146,13 @@
             },
 
             categories: function () {
-                if (!this.search) { return []}
+
+                if (!this.search) { return [] }
 
                 let search = this.search.toLowerCase();
                 let products = [];
+
+                console.log('#### items', this.items);
 
                 if (this.items) {
                     if (this.categorySelect === 'clinic') {
@@ -156,25 +168,51 @@
                             }
                             products[i] = (obj);
                         }
-                    } else if (this.categorySelect === 'exam') {
+                    } else if (this.categorySelect === 'exam') { //exams
                         for (let i in this.items) {
-                            products[i] = ({
+                            let obj = {
                                 name: this.items[i].name,
                                 rules: this.items[i].rules,
-                                clinics: this.items[i].clinics,
-                            });
-                        }
-                    } else {
-                        for (let i in this.items){
+                            };
+                            let clinics = [];
+                            for (let clinic in this.items[i].clinics) {
+                                clinics [clinic] = ({
+                                    cost: this.items[i].clinics[clinic].cost,
+                                    price: this.items[i].clinics[clinic].sale,
+                                    clinic: this.items[i].clinics[clinic].clinic,
+                                });
+                            }
 
+                            obj = {...obj, clinics : clinics};
+                            products[i] = (obj);
+                        }
+                    } else { //specialities
+                        for (let i in this.items){
+                            let obj = {
+                                name: this.items[i].name,
+                            };
+                            let doctors = [];
+                            for (let doctor in this.items[i].doctors){
+                                doctors [doctor] = ({
+                                    payment_method: this.items[i].doctors[doctor].payment_method,
+                                    doctor: this.items[i].doctors[doctor].doctor,
+                                    cost: this.items[i].doctors[doctor].cost,
+                                    price: this.items[i].doctors[doctor].price,
+                                });
+                            }
+
+                            obj = {...obj, doctors: doctors};
+                            products [i] = (obj);
                         }
                     }
 
+                    console.log(products);
                     let p = products.filter(item => {
                         const text = item.name.toLowerCase();
                         return text.indexOf(search) >-1;
                     });
 
+                    console.log('p' ,p);
                     return p;
                 }
             },
@@ -182,7 +220,9 @@
 
         mounted () {
             this.$store.dispatch('loadBundle');
-            this.$store.dispatch('loadExam');
+            this.$store.dispatch('loadExam').then(() => {
+                this.selectExam();
+            });
             this.$store.dispatch('loadSpecialties');
             this.$store.dispatch('getClinics');
         },
@@ -206,6 +246,34 @@
                   };
 
                   this.$store.dispatch('addBundle', packageData);
+            },
+
+            selectExam () {
+                this.color.buttonExam = this.color.colorSelect;
+                this.color.buttonAppointment = this.color.noSelect;
+                this.color.buttonClinic = this.color.noSelect;
+                this.categorySelect = 'exam';
+                this.items= this.$store.getters.exams;
+
+            },
+
+            selectAppointment () {
+
+                this.color.buttonAppointment = this.color.colorSelect;
+                this.color.buttonExam = this.color.noSelect;
+                this.color.buttonClinic = this.color.noSelect;
+                this.categorySelect = 'appointment';
+                this.items= this.$store.getters.specialties;
+
+            },
+
+            selectClinic () {
+                this.color.buttonClinic = this.color.colorSelect;
+                this.color.buttonExam = this.color.noSelect;
+                this.color.buttonAppointment = this.color.noSelect;
+                this.categorySelect = 'clinic';
+                this.items = this.$store.getters.clinics;
+
             },
         },
 
