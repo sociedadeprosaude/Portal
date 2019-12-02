@@ -7,17 +7,14 @@
             <v-container grid-list-md>
                 <v-layout align-center justify-center wrap>
                     <v-flex xs12>
-                        <v-select
-                                prepend-icon="assignment"
-                                :items="clinics"
-                                label="Clinica"
-                                item-text="name"
+                        <v-text-field
+                                prepend-icon="business"
+                                label="Clinicas"
                                 outlined
-                                v-model="clinic"
-                                clearable
-                                chips
+                                readonly
+                                v-model="this.selectedClinic.name"
                                 hide-details
-                        ></v-select>
+                        ></v-text-field>
                     </v-flex>
                     <v-flex xs12>
                         <v-combobox
@@ -32,18 +29,17 @@
                                 hide-details
                         ></v-combobox>
                     </v-flex>
-
                     <v-flex>
                         <v-flex xs12>
                         <v-btn v-on:click="addToList" color="success">
                             <v-icon>add</v-icon>
-                            adcionar na lista de exames
+                            adicionar na lista de exames
                         </v-btn>
                         </v-flex>
                         <v-flex>
                         <v-btn v-on:click="deleteFromList" color="error">
                             <v-icon>delete_forever</v-icon>
-                            Limpar lista
+                            Limpar lista de exames
                         </v-btn>
                         </v-flex>
                     </v-flex>
@@ -140,7 +136,6 @@
     export default {
         directives: {mask},
         data: () => ({
-            clinic: '',
             cost: null,
             sale: null,
             obs: null,
@@ -158,12 +153,8 @@
             formIsValid() {
                 return this.sale && this.cost && this.exams.length > 0
             },
-
             selectedClinic() {
                 return this.$store.getters.selectedClinic;
-            },
-            clinics() {
-                return this.$store.getters.clinics
             },
 /*
             listExam () {
@@ -174,7 +165,6 @@
 
         mounted() {
             //this.$store.dispatch('loadExam');
-            this.$store.dispatch('getClinics')
         },
 
         methods:{
@@ -190,8 +180,7 @@
 
                 for (let i in this.exams){
                     let examData = {
-                        //clinic: this.selectedClinic.nome,
-                        clinic: this.clinic,
+                        clinic: this.selectedClinic.name,
                         exam: this.exams[i].nome,
                         cost:this.cost,
                         sale:this.sale,
@@ -208,8 +197,7 @@
                 this.sale =  null;
                 this.obs =  null;
                 this.exams = [];
-                this.clinic = null
-                //this.$store.dispatch('selectClinic', null);
+                this.$store.dispatch('selectClinic', null);
             },
         }
     }

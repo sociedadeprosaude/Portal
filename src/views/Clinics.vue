@@ -260,25 +260,23 @@
                                 delete
                             </v-icon>
                         </v-btn>
-                        <!--text hide-overlay-->
-                        <v-dialog v-model="Consultation" width="500px">
+
+                        <v-dialog v-model="Consultation" width="500px" text hide-overlay>
                             <template v-slot:activator="{ on }">
-                                <!--<v-btn v-on="on" small dark fab color="black" class="mr-2" @click="selectClinic(item)">-->
-                                <v-btn v-on="on" small dark fab color="black" class="mr-2">
+                                <v-btn v-on="on" small dark fab color="black" class="mr-2" @click="selectClinic(item)">
                                     <v-icon>assignment</v-icon>
                                 </v-btn>
                             </template>
-                            <!--<Consultations v-if="clinicSelected"></Consultations>-->
-                            <Consultations ></Consultations>
+                            <Consultations v-if="clinicSelected"></Consultations>
                         </v-dialog>
 
-                        <v-dialog v-model="Exam" width="500px">
+                        <v-dialog v-model="Exam" width="500px" text hide-overlay>
                             <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" small dark fab color="black" class="mr-2">
+                                <v-btn v-on="on" small dark fab color="black" class="mr-2" @click="selectClinic(item)">
                                     <v-icon>poll</v-icon>
                                 </v-btn>
                             </template>
-                            <Exams></Exams>
+                            <Exams v-if="clinicSelected"></Exams>
                         </v-dialog>
 
                         <v-dialog v-model="Product" width="500px" text hide-overlay>
@@ -323,7 +321,6 @@
     import Products from "../components/clinics/Products";
     import Configurations from "../components/clinics/Configurations";
     import SubmitButton from "../components/SubmitButton";
-
     export default {
         components: {Configurations, Products, Consultations, Exams, SubmitButton},
         directives: {mask},

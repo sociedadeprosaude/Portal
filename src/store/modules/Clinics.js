@@ -10,11 +10,9 @@ const mutations = {
     setClinics(state, payload) {
         state.clinics = payload
     },
-
     setAllClinics (state, payload){
         state.allClinics = payload;
     },
-
     setSelectedClinic (state, payload){
         state.selectedClinic = payload;
     }
