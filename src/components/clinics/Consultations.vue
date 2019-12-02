@@ -112,6 +112,7 @@
                 >
                     SALVAR
                 </v-btn>
+                {{payment}}
             </v-layout>
         </v-card-actions>
     </v-card>
@@ -127,10 +128,10 @@
             obs: null,
             consultations: undefined,
             doctor: [],
-            payment:'Consultas',
+            payment:'',
             paymentOptions: [
-                'Consultas',
-                'Dia'
+                { text: 'Consultas', value: 'unit'},
+                { text: 'Dia', value: 'daily'},
             ],
         }),
         computed: {
