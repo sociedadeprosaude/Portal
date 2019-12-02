@@ -84,8 +84,76 @@
                                 <v-card-text>
                                     <v-flex v-for="(item, index) in categories" :key="index" >
                                         <v-card class="mt-3">
-                                            <v-card-title v-text="item.nome"></v-card-title>
+                                            <v-card-title class="justify-center">
+                                                <h3 class="primary--text">{{item.name}}</h3>
+                                            </v-card-title>
+                                            <v-card-text>
+                                                <v-slide-group v-if="categorySelect === 'exam'" show-arrows multiple>
+                                                    <v-slide-item
+                                                            v-for="(n,i) in item.clinics" :key="i" v-slot:default="{ active, toggle }" >
+                                                        <v-btn class="mx-2"
+                                                               :input-value="active"
+                                                               active-class="blue white--text"
+                                                               depressed
+                                                               rounded
+                                                               @mousedown="toggle"
+                                                               @click="addExam(n.clinic, item.name, categorySelect, n.price, n.cost)"
+                                                        >
+                                                            {{ n.clinic }} | {{ n.price }}
+                                                        </v-btn>
+                                                    </v-slide-item>
+                                                </v-slide-group>
+                                                <v-slide-group v-if="categorySelect === 'appointment'" show-arrows multiple>
+                                                    <v-slide-item
+                                                            v-for="(n,i) in item.doctors" v-slot:default="{ active, toggle }" :key="i">
+                                                        <v-btn class="mx-2"
+                                                               :input-value="active"
+                                                               active-class="blue white--text"
+                                                               depressed
+                                                               rounded
+                                                               @mousedown="toggle"
+                                                               @click="addSpecialties('PRO-SAUDE' , item , n, categorySelect, n.price, n.cost)"
+                                                        >
+                                                            {{n.doctor}} | {{n.price}}
+                                                        </v-btn>
+                                                    </v-slide-item>
+                                                </v-slide-group>
+                                            </v-card-text>
+                                            <v-card-text>
+                                                <v-slide-group v-if="categorySelect === 'clinic' && item.exams" show-arrows>
+                                                    <v-slide-item
+                                                            v-for="(n,index) in item.exames"  v-slot:default="{ active, toggle }" :key="index">
+                                                        <v-btn class="mx-2"
+                                                               :input-value="active"
+                                                               active-class="blue white--text"
+                                                               depressed
+                                                               rounded
+                                                               @mousedown="toggle"
 
+                                                               @click="addProducts(item.nome, n.nome, 'exam', n.venda, n.custo)"
+                                                        >
+                                                            {{ n.nome}} | {{n.venda}}
+                                                        </v-btn>
+                                                    </v-slide-item>
+                                                </v-slide-group>
+                                            </v-card-text>
+                                            <v-card-text>
+                                                <v-slide-group v-if="categorySelect === 'clinic' && item.consultas" show-arrows>
+                                                    <v-slide-item
+                                                            v-for="(n,index) in combo"  v-slot:default="{ active, toggle }" :key="index">
+                                                        <v-btn class="mx-2"
+                                                               :input-value="active"
+                                                               active-class="blue white--text"
+                                                               depressed
+                                                               rounded
+                                                               @mousedown="toggle"
+                                                               @click="addProducts(item.nome, n.nome, 'appointment', n.venda,n.custo)"
+                                                        >
+                                                            {{ n.produto}} | {{n.nome}} | {{n.venda}}
+                                                        </v-btn>
+                                                    </v-slide-item>
+                                                </v-slide-group>
+                                            </v-card-text>
                                         </v-card>
                                     </v-flex>
                                 </v-card-text>
@@ -108,7 +176,7 @@
             validRegister: true,
             categorySelect: null,
 
-            listProducts: [], items: [], combo: [],
+            listProducts: [], items: [], action: false,
 
             editedPackage: {
                 id: '', name: '', exams: [], specialties: [], cost: '', sale: '', discountPercentage: '', discountMoney: '',
@@ -152,8 +220,6 @@
                 let search = this.search.toLowerCase();
                 let products = [];
 
-                console.log('#### items', this.items);
-
                 if (this.items) {
                     if (this.categorySelect === 'clinic') {
                         for (let i in this.items) {
@@ -178,7 +244,7 @@
                             for (let clinic in this.items[i].clinics) {
                                 clinics [clinic] = ({
                                     cost: this.items[i].clinics[clinic].cost,
-                                    price: this.items[i].clinics[clinic].sale,
+                                    price: this.items[i].clinics[clinic].price,
                                     clinic: this.items[i].clinics[clinic].clinic,
                                 });
                             }
@@ -212,7 +278,6 @@
                         return text.indexOf(search) >-1;
                     });
 
-                    console.log('p' ,p);
                     return p;
                 }
             },
@@ -275,10 +340,66 @@
                 this.items = this.$store.getters.clinics;
 
             },
+
+            addExam (clinic, product, type, price, cost) {
+                this.item = {
+                    product: product,
+                    clinic: clinic,
+                    type: type,
+                    price:  parseFloat(price),
+                    cost:parseFloat(cost)
+                };
+                this.addProduct(this.item);
+            },
+
+            addSpecialties (clinic, product, doctor, type, price, cost) {
+                this.item = {
+                    product: product.name,
+                    doctor: doctor.doctor,
+                    clinic: clinic,
+                    type: type,
+                    price:  parseFloat(price),
+                    cost:parseFloat(cost)
+                };
+                this.addProduct(this.item);
+            },
+
+            addProduct (item){
+
+                console.log(item);
+                if (this.listProducts){
+                    for (let key in this.listProducts) {
+                        if (item.product === this.listProducts[key].product && item.clinic === this.listProducts[key].clinic
+                            && item.price === this.listProducts[key].price && this.item.cost === this.listProducts[key].cost
+                            && ((item.type === "appointment" && item.doctor === this.listProducts[key].doctor) ||
+                                (item.type !== "appointment"))){
+
+                            this.action = true;
+                            this.listProducts.splice(key,1);
+
+                        } else {
+                            this.action = false;
+                        }
+                    }
+                }
+
+                if (this.action === false){ this.listProducts.push({...item}) }
+                console.log(this.listProducts);
+                this.sale = 0;
+                this.cost = 0;
+                for (let key in this.listProducts) {
+                    this.sale += this.listProducts[key].price;
+                    this.cost += this.listProducts[key].cost;
+                }
+                this.action = false;
+            },
         },
 
         watch: {
 
+            discountPercentage : function () {
+
+            },
             searchData () { //pesquisa por filtro de status e por delimitação de nome
                 if (this.searchData){
                     this.isLoading = true;
