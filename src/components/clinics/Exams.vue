@@ -60,7 +60,6 @@
                                 v-model="exams"
                                 chips
                                 outlined
-                                readonly
                         >
                             <template v-slot:selection="data">
                                 <v-chip
