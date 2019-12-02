@@ -59,6 +59,37 @@ const actions = {
         } catch (e) {
             throw e
         }
+    },
+    async loadSelectedExams({commit},payload){
+        payload= payload.toUpperCase();
+        try {
+            let examsSnap = await firebase.firestore().collection('exams').where('name', '>=', payload).get();
+            let exams = [];
+            examsSnap.forEach(function (document) {
+
+                let clinics = [];
+                firebase.firestore().collection('exams/' + document.data().name + '/clinics').get().then((data) => {
+                    data.forEach((doc) => {
+                        clinics.push({
+                            clinic : doc.data().clinic,
+                            cost: doc.data().cost,
+                            price: doc.data().price,
+                        });
+                    });
+                });
+
+                exams.push({
+                    name: document.data().name,
+                    rules: document.data().rules,
+                    clinics: clinics,
+                });
+
+            });
+            console.log('exams: ',exams);
+            return exams
+        } catch (e) {
+            throw e
+        }
     }
 };
 
