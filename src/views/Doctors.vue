@@ -258,7 +258,7 @@
             async deleteItem(item) {
                 let doctor = this.doctors[item.cpf]
                 this.loading = true
-                await this.$store.dispatch('deleteUser', doctor)
+                await this.$store.dispatch('deleteDoctor', doctor)
                 await this.$store.dispatch('getDoctors')
                 this.success = true
                 this.loading = false

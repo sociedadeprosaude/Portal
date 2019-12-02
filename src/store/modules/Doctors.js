@@ -47,6 +47,17 @@ const actions = {
             throw e
         }
     },
+    async deleteDoctor ({}, doctor) {
+        try {
+            await firebase.firestore().collection('users').doc(doctor.cpf).delete()
+            for (let spec in doctor.specialties) {
+                await firebase.firestore().collection('specialties').doc(doctor.specialties[spec].name).collection('doctors').doc(doctor.cpf).delete()
+            }
+            return
+        } catch (e) {
+            throw e
+        }
+    },
     async getDoctors({commit}) {
         try {
             let doctorsSnap = await firebase.firestore().collection('users').where('type', '==', 'doctor').get()

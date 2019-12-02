@@ -45,11 +45,10 @@ const actions = {
 
                 });
 
-                console.log(allSpecialties);
-                commit('setSpecialties', allSpecialties);
+                commit('setSpecialties', allSpecialties)
 
-                if (data) resolve (data);
-                else reject(console.log('erro ao carregar dados de pacotes', data));
+                if (data) resolve (data)
+                else reject(console.log('erro ao carregar dados de pacotes', data))
 
             });
         });
