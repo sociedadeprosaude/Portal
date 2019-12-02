@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <v-layout row wrap>
-            <v-card>
+            <v-card class="pa-2">
                 <template>
                     <v-container fluid grid-list-xl>
                         <v-layout align-center wrap>
@@ -195,20 +195,49 @@
             </template>
 
             <v-layout align-end justify-end>
-                <v-btn
+                <submit-button
                         @click="save"
-                        color="success"
-                        rounded
                         :disabled="!formIsValid"
-                        :loading="loader"
+                        :loading="loading"
+                        :success="success"
+                        text="Salvar"
 
                 >
-                    SALVAR
-                    <v-icon right>check</v-icon>
-                    <template v-slot:loader>
-                        <span>Aguarde...</span>
-                    </template>
-                </v-btn>
+                </submit-button>
+                <v-dialog
+                        v-model="loader"
+                        hide-overlay
+                        persistent
+                        width="300"
+                >
+                    <v-card
+                            color="success"
+                            dark
+                    >
+                        <v-card-text>
+                            Salvando...
+                            <v-progress-linear
+                                    indeterminate
+                                    color="white"
+                                    class="mb-0"
+                            ></v-progress-linear>
+                        </v-card-text>
+                    </v-card>
+                </v-dialog>
+                <v-snackbar
+                        v-model="snackbar"
+                        :bottom="y === 'bottom'"
+                        :left="x === 'left'"
+                        color="success"
+                        :multi-line="mode === 'multi-line'"
+                        :right="x === 'right'"
+                        :top="y === 'top'"
+                        :vertical="mode === 'vertical'"
+                >
+                    {{this.mensagem}}
+                    <v-spacer></v-spacer>
+                    <v-icon dark>event_available</v-icon>
+                </v-snackbar>
             </v-layout>
 
             </v-card>
@@ -218,8 +247,13 @@
 </template>
 
 <script>
+    import SubmitButton from "../../components/SubmitButton";
     var moment = require('moment');
     export default {
+
+        components: {
+          SubmitButton
+        },
 
         data: () => ({
             moment: moment,
@@ -343,7 +377,8 @@
                 this.especialidade = ''
                 this.times = ''
             },
-            save () {
+            async save () {
+                this.loading = true
                 let consultation = {
                     start_date: this.dataStart,
                     final_date: this.dataTheEnd,
@@ -354,7 +389,10 @@
                     vacancy: this.vagas,
                     weekDays: this.semana
                 }
-                this.$store.dispatch('createConsultation', consultation)
+                await this.$store.dispatch('createConsultation', consultation)
+                // setTimeout(() => (this.saveDatesTimeVacancy()), 1000)
+                this.success = true
+                this.loading = false
             }
         }
     }

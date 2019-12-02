@@ -27,7 +27,7 @@
                 if (val) {
                     setTimeout(() => {
                         this.$emit('reset')
-                        // this.success = false
+                        this.success = false
                     }, 1000)
                 }
             }
