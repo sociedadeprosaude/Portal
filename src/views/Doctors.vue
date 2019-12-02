@@ -203,9 +203,9 @@
         },
 
         mounted() {
-            this.$store.dispatch('getClinics')
-            this.$store.dispatch('getDoctors')
-            this.$store.dispatch('getSpecialties')
+            this.$store.dispatch('getClinics');
+            this.$store.dispatch('getDoctors');
+            this.$store.dispatch('getSpecialties');
         },
 
         methods: {
@@ -213,29 +213,29 @@
                 this.createSpecialtyDialog = true
             },
             async addSpecialty() {
-                this.loading = true
+                this.loading = true;
                 this.$store.dispatch('addSpecialty', {
                     name: this.specialty.toUpperCase()
-                })
-                this.success = true
-                this.loading = false
+                });
+                this.success = true;
+                this.loading = false;
                 setTimeout(() => {
-                    this.specialty = undefined
+                    this.specialty = undefined;
                     this.createSpecialtyDialog = false
                 }, 1000)
             },
             addDoctor() {
-                this.selectedDoctor = undefined
+                this.selectedDoctor = undefined;
                 this.createDoctorDialog = true
             },
             getSpecialties(item) {
-                if (!item.specialties) return ''
-                let especialidades = ''
+                if (!item.specialties) return '';
+                let especialidades = '';
                 for (const key in item.specialties) {
                     especialidades += item.specialties[key].name + ', '
                 }
                 //Remo os ultimos dois caracteres do objeto, no caso um espaço e vírgula.
-                especialidades = especialidades.slice(0, especialidades.length - 2)
+                especialidades = especialidades.slice(0, especialidades.length - 2);
                 return especialidades
             },
             initialize() {

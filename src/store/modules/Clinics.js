@@ -65,29 +65,32 @@ const actions = {
 
     addAppointment ({commit}, payload) {
 
-        let appointmentData = {
+        let data = {
             clinic: payload.clinic,
-            nome: payload.consultation,
-            obs: payload.obs,
-            custo: payload.cost,
-            venda: payload.sale,
-            medico: payload.doctor,
-            payment: payload.payment,
+            doctor: payload.doctor,
+            specialtie: payload.specialtie,
+            rules: payload.obs,
+            cost: payload.cost,
+            price: payload.price,
+            payment_method: payload.payment,
+            crm: payload.crm,
+            cpf: payload.cpf
+
+
         };
 
         let info = {
-            nome: payload.consultation,
+            nome: payload.specialtie,
         };
-        /*
-        firebase.firestore().collection('clinics/' + payload.clinic.id + '/specialties/')
-            .doc(payload.consultation).set(info);
 
-        firebase.firestore().collection('clinics/' + payload.clinic.id + '/specialties/'
-            + payload.consultation + '/doctors/').doc(payload.doctor).set(appointmentData);
+        firebase.firestore().collection('clinics/' + payload.clinic + '/specialties/' + payload.specialtie
+            + '/doctors').doc(payload.crm).set(data);
 
-        firebase.firestore().collection('specialties/' + payload.consultation + '/doctors/')
-            .doc(payload.doctor).set(appointmentData);
-         */
+        firebase.firestore().collection('clinics/' + payload.clinic.id + '/specialties').doc(payload.specialtie)
+            .set(info);
+
+        firebase.firestore().collection('users/' + payload.doctor + '/specialties').doc(payload.specialtie)
+            .set(data);
     },
 
     selectClinic ({commit}, payload) {

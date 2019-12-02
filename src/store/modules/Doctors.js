@@ -60,11 +60,11 @@ const actions = {
     },
     async getDoctors({commit}) {
         try {
-            let doctorsSnap = await firebase.firestore().collection('users').where('type', '==', 'doctor').get()
-            let doctors = {}
+            let doctorsSnap = await firebase.firestore().collection('users').where('type', '==', 'doctor').get();
+            let doctors = {};
             doctorsSnap.forEach(function (document) {
                 doctors[document.id] = document.data()
-            })
+            });
             commit('setDoctors', doctors)
             return doctors
         } catch (e) {
@@ -72,8 +72,9 @@ const actions = {
         }
     },
     async addSpecialty({}, specialty) {
+        console.log('###', specialty);
         try {
-            let speRef = await firebase.firestore().collection('specialties').add(specialty)
+            let speRef = await firebase.firestore().collection('specialties').doc(specialty.name).set(specialty);
             return speRef
         } catch (e) {
             throw e
