@@ -36,19 +36,24 @@ const actions = {
                 }
             }
             doctor.type = "doctor"
-            let user = await firebase.firestore().collection('users').doc(doctor.cpf).set(doctor)
-            return user
+            await firebase.firestore().collection('users').doc(doctor.cpf).set(doctor)
+            let docCopy = Object.assign({}, doctor)
+            delete docCopy.specialties
+            for (let spec in doctor.specialties) {
+                await firebase.firestore().collection('specialties').doc(doctor.specialties[spec].name).collection('doctors').doc(doctor.cpf).set(docCopy)
+            }
+            return
         } catch (e) {
             throw e
         }
     },
     async getDoctors({commit}) {
         try {
-            let doctorsSnap = await firebase.firestore().collection('users').where('type', '==', 'doctor').get()
-            let doctors = {}
+            let doctorsSnap = await firebase.firestore().collection('users').where('type', '==', 'doctor').get();
+            let doctors = {};
             doctorsSnap.forEach(function (document) {
                 doctors[document.id] = document.data()
-            })
+            });
             commit('setDoctors', doctors)
             return doctors
         } catch (e) {
@@ -56,8 +61,9 @@ const actions = {
         }
     },
     async addSpecialty({}, specialty) {
+        console.log('###', specialty);
         try {
-            let speRef = await firebase.firestore().collection('specialties').add(specialty)
+            let speRef = await firebase.firestore().collection('specialties').doc(specialty.name).set(specialty);
             return speRef
         } catch (e) {
             throw e

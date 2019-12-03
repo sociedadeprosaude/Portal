@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <v-layout row wrap>
-            <v-card>
+            <v-card class="pa-2">
                 <template>
                     <v-container fluid grid-list-xl>
                         <v-layout align-center wrap>
@@ -195,20 +195,15 @@
             </template>
 
             <v-layout align-end justify-end>
-                <v-btn
+                <submit-button
                         @click="save"
-                        color="success"
-                        rounded
                         :disabled="!formIsValid"
-                        :loading="loader"
+                        :loading="loading"
+                        :success="success"
+                        text="Salvar"
 
                 >
-                    SALVAR
-                    <v-icon right>check</v-icon>
-                    <template v-slot:loader>
-                        <span>Aguarde...</span>
-                    </template>
-                </v-btn>
+                </submit-button>
                 <v-dialog
                         v-model="loader"
                         hide-overlay
@@ -252,13 +247,15 @@
 </template>
 
 <script>
+    import SubmitButton from "../../components/SubmitButton";
     var moment = require('moment');
     export default {
 
+        components: {
+          SubmitButton
+        },
+
         data: () => ({
-            y: 'top',
-            x: null,
-            mode: '',
             moment: moment,
             maskVAGAS:'##',
             dataStart:'',
@@ -360,31 +357,6 @@
         },
 
         methods: {
-            saveDatesTimeVacancy () {
-                var dataInicio = moment(this.dataStart,'YYYY-MM-DD')
-                var dataFim = moment(this.dataTheEnd,'YYYY-MM-DD')
-                var num_dias = dataFim.diff(dataInicio,'days')
-                var datas = []
-
-                if(this.semana.indexOf(dataInicio.day()) != -1){
-                    datas.push(dataInicio.format('YYYY-MM-DD'))
-                }
-                for (let index = 0; index < num_dias; index++) {
-                    if(this.semana.indexOf(dataInicio.add(1,'day').day()) != -1){
-                        datas.push(dataInicio.format('YYYY-MM-DD'))
-                    }
-                }
-                var medico = this.$store.getters.medico({especialidade: this.especialidade,medico:this.medicos})
-                const medicoInfos = {
-                    datas: datas,
-                    horas: this.times,
-                    vagas: this.vagas,
-                    medico: medico,
-                    espMed: this.especialidade
-                }
-                this.$store.dispatch('addDatesTimeVacancy', medicoInfos)
-                this.clear()
-            },
             save1 (dataStart) {
                 this.$refs.menu1.save1(dataStart)
             },
@@ -405,7 +377,8 @@
                 this.especialidade = ''
                 this.times = ''
             },
-            save () {
+            async save () {
+                this.loading = true
                 let consultation = {
                     start_date: this.dataStart,
                     final_date: this.dataTheEnd,
@@ -416,7 +389,10 @@
                     vacancy: this.vagas,
                     weekDays: this.semana
                 }
-                this.$store.dispatch('createConsultation', consultation)
+                await this.$store.dispatch('createConsultation', consultation)
+                // setTimeout(() => (this.saveDatesTimeVacancy()), 1000)
+                this.success = true
+                this.loading = false
             }
         }
     }

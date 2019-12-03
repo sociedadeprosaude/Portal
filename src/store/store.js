@@ -31,25 +31,24 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const store = new Vuex.Store({
+
   modules: {
     Auth,
     Users,
     Reports,
     Labor,
-
     Localization,
     Doctors,
     Clinics,
     Exams,
     Consultations,
     LayoutControl,
-
     Bundles,
     Specialties,
     Saidas,
-
     Patient,
   },
+
   state: {
     categories: [],
     expenses: [],
@@ -60,6 +59,7 @@ const store = new Vuex.Store({
     expensesIntakesListener: false,
     token: localStorage.getItem('token'),
   },
+
   mutations: {
     setToken(state, payload) {
       state.token = payload.token;
@@ -116,15 +116,12 @@ const store = new Vuex.Store({
   },
   actions: {
     login({commit}, payload) {
-      console.log('aqui 3')
       return new Promise((resolve, reject) => {
-        console.log('aqui 4')
         axios.post(AUTH_URL + 'auth/authenticate', payload)
             .then(response => {
-              console.log('aqui 5')
-              commit('setToken', response.data)
-              localStorage.setItem('credential', payload.credential)
-              this.dispatch('getUser')
+              commit('setToken', response.data);
+              localStorage.setItem('credential', payload.credential);
+              this.dispatch('getUser');
               resolve(response)
             })
             .catch(error => {
@@ -187,7 +184,7 @@ const store = new Vuex.Store({
               resolve(response.data.expenses)
             })
             .catch(error => {
-              console.log(error)
+              console.log(error);
               reject(error)
             })
       })
@@ -201,7 +198,7 @@ const store = new Vuex.Store({
               resolve(response.data.intakes)
             })
             .catch(error => {
-              console.log(error)
+              console.log(error);
               reject(error)
             })
       })
@@ -209,7 +206,7 @@ const store = new Vuex.Store({
     addIntake({commit, getters}, payload) {
       axios.post('api/entrada/adicionar', payload)
           .then(response => {
-            commit('addIntake', response.data.intake)
+            commit('addIntake', response.data.intake);
             if (getters.categoriesNames.indexOf(response.data.intake.category) < 0) {
               this.dispatch('getCategories')
             }
@@ -221,7 +218,7 @@ const store = new Vuex.Store({
     addExpense({commit, getters}, payload) {
       axios.post('api/despesa/adicionar', payload)
           .then(response => {
-            commit('addExpensive', response.data.expense)
+            commit('addExpensive', response.data.expense);
             if (getters.categoriesNames.indexOf(response.data.expense.category) < 0) {
               this.dispatch('getCategories')
             }
@@ -260,8 +257,8 @@ const store = new Vuex.Store({
     startExpensesIntakesListener({commit, getters}, payload) {
       window.setTimeout(requestInfo => {
         if (getters.expensesIntakesListener) {
-          this.dispatch('getExpenses', getters.currentDate)
-          this.dispatch('getIntakes', getters.currentDate)
+          this.dispatch('getExpenses', getters.currentDate);
+          this.dispatch('getIntakes', getters.currentDate);
           this.dispatch('startExpensesIntakesListener')
         }
       }, 5000)
@@ -303,6 +300,6 @@ const store = new Vuex.Store({
     //   return state.user
     // }
   }
-})
+});
 
 export default store

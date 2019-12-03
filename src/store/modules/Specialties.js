@@ -28,7 +28,6 @@ const actions = {
                         .then((data) => {
                             data.forEach((doc) => {
                                 doctors.push({
-                                    clinic: doc.data().clinic,
                                     price: doc.data().price,
                                     cost: doc.data().cost,
                                     doctor: doc.data().doctor,

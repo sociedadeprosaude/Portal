@@ -12,14 +12,16 @@
                                 label="Clinicas"
                                 outlined
                                 readonly
-                                v-model="this.selectedClinic.nome"
+                                v-model="this.selectedClinic.name"
                                 hide-details
                         ></v-text-field>
                     </v-flex>
                     <v-flex xs12>
                         <v-select
                                 prepend-icon="assignment"
-                                :items="consultationsOptions"
+                                :items="specialties"
+                                return-object
+                                item-text="name"
                                 label="Consultas"
                                 outlined
                                 v-model="consultations"
@@ -32,10 +34,13 @@
                         <v-select
                                 multiple
                                 prepend-icon="assignment_ind"
-                                :items="doctorsOptions"
+                                :items="doctors"
+                                item-text="name"
+                                return-object
+                                no-data-text="Nenhum médico para esta especialidade"
                                 label="Médicos"
                                 outlined
-                                v-model="doctors"
+                                v-model="doctor"
                                 clearable
                                 chips
                                 hide-details
@@ -107,6 +112,7 @@
                 >
                     SALVAR
                 </v-btn>
+                {{payment}}
             </v-layout>
         </v-card-actions>
     </v-card>
@@ -114,63 +120,75 @@
 
 <script>
     import {mask} from 'vue-the-mask';
-
     export default {
-
         directives: {mask},
         data: () => ({
-
             cost: null,
             sale: null,
             obs: null,
-            consultations: null,
-            doctors: [],
-            doctorsOptions: [],
-            payment:'Consultas',
+            consultations:'',
+            doctor: [],
+            payment:'',
             paymentOptions: [
-                'Consultas',
-                'Dia'
+                { text: 'Consultas', value: 'unit'},
+                { text: 'Dia', value: 'daily'},
             ],
         }),
         computed: {
-            consultationsOptions(){
-                return this.$store.getters.especialidades
+            specialties(){
+                return this.$store.getters.specialties;
             },
             formIsValid() {
                 return this.sale && this.cost && this.consultations && this.doctors.length > 0
             },
             selectedClinic() {
                 return this.$store.getters.selectedClinic;
-            }
+            },
+            doctors () {
+                let doctors = Object.values(this.$store.getters.doctors);
+                if(this.consultations) {
+                    doctors = doctors.filter((a) => {
+                        for (let spe in a.specialties) {
+                            if (a.specialties[spe].name === this.consultations.name) {
+                                return true
+                            }
+                        }
+                        return false
+                        // return a.specialties.indexOf(this.especialidade.name) > -1
+                    })
+                }
+                return doctors
+            },
         },
 
         mounted() {
-            this.$store.dispatch('loadEspecialidades');
-            this.$store.dispatch('loadMedicos');
+            this.$store.dispatch('getSpecialties');
+            this.$store.dispatch('getDoctors');
         },
 
         watch: {
-            consultations: function (value) {
-                this.doctorsOptions = this.$store.getters.medicosPorEspecialidade(value)
-            }
+            //
         },
 
         methods:{
             save(){
+                for (let i in this.doctor){
 
-                for (let i in this.doctors){
-                    let consultationData = {
-                        clinic: this.selectedClinic.nome,
-                        consultation: this.consultations.toUpperCase(),
-                        doctor:this.doctors[i],
+                    console.log('#',this.consultations);
+                    console.log('name', this.consultations.name);
+
+                    let data = {
+                        clinic: this.selectedClinic.name,
+                        specialtie: this.consultations.name,
+                        doctor:this.doctor[i].name,
+                        crm: this.doctor[i].crm,
+                        cpf: this.doctor[i].cpf,
                         cost:this.cost,
-                        sale:this.sale,
+                        price:this.sale,
                         obs:this.obs,
                         payment: this.payment,
                     };
-                    console.log(consultationData);
-                    this.$store.dispatch('addAppointment', consultationData);
-                    this.$store.dispatch('addClinicInAppointment', consultationData);
+                    this.$store.dispatch('addAppointment', data);
                 }
 
                 this.clear()
@@ -181,10 +199,9 @@
                 this.sale =  null;
                 this.obs =  null;
                 this.consultations = null;
-                this.doctors = [];
+                this.doctor = [];
                 this.payment = 'Consultas';
                 this.$store.dispatch('selectClinic', null);
-
             },
 
 

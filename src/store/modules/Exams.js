@@ -4,22 +4,43 @@ import moment from 'moment'
 import firebase from "firebase";
 
 const state = {
-    exams: []
+    exams: [],
+    examesSelected: []
 };
 
 const mutations = {
     setExams(state, payload) {
         state.exams = payload
     },
+    setExamsSelected(state, payload){
+        state.examesSelected= payload
+    }
 };
 
 const actions = {
     async loadExam({commit}) {
         try {
-            let examsSnap = await firebase.firestore().collection('exams').get()
-            let exams = {};
+            let examsSnap = await firebase.firestore().collection('exams').get();
+            let exams = [];
             examsSnap.forEach(function (document) {
-                exams[document.id] = document.data()
+
+                let clinics = [];
+                firebase.firestore().collection('exams/' + document.data().name + '/clinics').get().then((data) => {
+                    data.forEach((doc) => {
+                       clinics.push({
+                           clinic : doc.data().clinic,
+                           cost: doc.data().cost,
+                           price: doc.data().price,
+                       });
+                    });
+                });
+
+                exams.push({
+                    name: document.data().name,
+                    rules: document.data().rules,
+                    clinics: clinics,
+                });
+
             });
             console.log(exams);
             commit('setExams', exams);
@@ -36,15 +57,45 @@ const actions = {
                 }
             }
             let examRef;
-            if (exam.id) {
-                examRef = await firebase.firestore().collection('exams').doc(exam.id).set(exam)
-            } else {
-                examRef = await firebase.firestore().collection('exams').add(exam)
-            }
+            examRef = await firebase.firestore().collection('exams').doc(exam.name).set(exam);
+
             return examRef
         } catch (e) {
             throw e
         }
+    },
+    async loadSelectedExams({commit},payload){
+        return new Promise( async (resolve,reject) => {
+            payload= payload.toUpperCase();
+            try {
+                let examsSnap = await firebase.firestore().collection('exams').where('name', '>=', payload).get();
+                let exams = [];
+                examsSnap.forEach(function (document) {
+
+                    let clinics = [];
+                    firebase.firestore().collection('exams/' + document.data().name + '/clinics').get().then((data) => {
+                        data.forEach((doc) => {
+                            clinics.push({
+                                clinic : doc.data().clinic,
+                                cost: doc.data().cost,
+                                price: doc.data().price,
+                            });
+                        });
+                    });
+
+                    exams.push({
+                        name: document.data().name,
+                        rules: document.data().rules,
+                        clinics: clinics,
+                    });
+
+                });
+                commit('setExamsSelected', exams);
+                resolve()
+            } catch (e) {
+                throw e
+            }
+        })
     }
 };
 
@@ -52,6 +103,9 @@ const getters = {
     exams(state) {
         return state.exams
     },
+    examsSelected(state){
+        return state.examesSelected
+    }
 };
 
 export default {

@@ -321,7 +321,6 @@
     import Products from "../components/clinics/Products";
     import Configurations from "../components/clinics/Configurations";
     import SubmitButton from "../components/SubmitButton";
-
     export default {
         components: {Configurations, Products, Consultations, Exams, SubmitButton},
         directives: {mask},

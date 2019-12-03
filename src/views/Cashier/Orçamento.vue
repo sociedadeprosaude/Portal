@@ -33,12 +33,11 @@
                         <v-container>
                             <v-layout row wrap>
                                 <v-flex class="ml-2" lg10>
-                                    <v-card v-for="item in categories" class="my-3">
-                                        
-                                        <v-card-title class="pt-2 " v-text="item.nome"></v-card-title>
+                                    <v-card v-for="item in items" class="my-3">
+                                        <v-card-title class="pt-2 " v-text="item.name"></v-card-title>
                                         <v-card-text v-if="categorySelect === 'exam'">
                                             <v-slide-group  show-arrows>
-                                                <v-slide-item v-for="n in item.clinicas" v-slot:default="{ active, toggle }">
+                                                <v-slide-item v-for="n in item.clinics" v-slot:default="{ active, toggle }">
                                                     <v-btn class="mx-2"
                                                         :input-value="active"
                                                         active-class="blue white--text"
@@ -47,24 +46,24 @@
                                                         
                                                         @click="addProducts(item, n.venda, n.custo,n.nome)"
                                                     >
-                                                        {{ n.nome }} | R${{n.venda}}
+                                                        {{ n.name }} | R${{n.price}}
                                                     </v-btn>
                                                 </v-slide-item>
                                             </v-slide-group>
                                         </v-card-text>
                                         <v-card-text v-if="categorySelect === 'appointment'">
                                             <v-slide-group show-arrows>
-                                                <v-slide-item v-for="n in item.medicos" v-slot:default="{ active, toggle }">
+                                                <v-slide-item v-for="n in item.doctors" v-slot:default="{ active, toggle }">
                                                     <v-btn class="mx-2"
                                                         :input-value="active"
                                                         active-class="blue white--text"
                                                         depressed
                                                         rounded
                                                         
-                                                        @click="addProducts(item, n.venda, n.custo,n.clinica, n)"
+                                                        @click="addProducts(item, n.price, n.cost,n.clinica, n)"
 
                                                     >
-                                                        {{n.clinica}} | {{n.nome}} | R${{n.venda}}
+                                                        {{n.doctor}}
                                                     </v-btn>
                                                 </v-slide-item>
                                             </v-slide-group>
@@ -91,11 +90,8 @@
                                                     <v-slide-group  show-arrows>
                                                         <v-slide-item v-for="n in item.consultas" v-slot:default="{ active, toggle }">
                                                             <v-btn class="mx-2 blue white--text"
-                                                            
                                                                 depressed
                                                                 rounded
-                                                                
-                                                                
                                                             >
                                                                 {{ n.produto }} | R${{n.preco}}
                                                             </v-btn>
@@ -107,7 +103,6 @@
                                                 Total R${{item.total}}
                                                 <v-btn class="ml-5" outlined rounded color="primary" @click="addProducts(item, item.total, item.custo)">Selecionar</v-btn>
                                             </div>
-                                           
                                         </v-card-text>
                                     </v-card>
                                 </v-flex>
@@ -122,12 +117,12 @@
                     <v-layout row wrap class="mx-3 align-center">
                         <v-flex sm11 xs12>
                             <v-text-field
-                                    label="Digitar Codigo"
+                                    label="Digitar Nome do Paciente"
                                     v-model="codigo"
                             ></v-text-field>
                         </v-flex>
                         <v-flex sm1 xs2 class="text-center">
-                            <v-icon @click="pesquisarCodigo()">search</v-icon>
+                            <v-icon @click="pesquisarUsuario()">search</v-icon>
                         </v-flex>
                         <v-flex xs12 class="text-right">
                             <v-btn outlined class="mr-5" color="primary" @click="gerarCodigo()">Gerar Codigo</v-btn>
@@ -269,12 +264,12 @@
                     <v-layout row wrap class="mx-3 align-center">
                         <v-flex  xs10>
                             <v-text-field
-                                    label="Digitar Codigo"
+                                    label="Digitar Nome do Paciente"
                                     v-model="codigo"
                             ></v-text-field>
                         </v-flex>
                         <v-flex xs2 class="text-center">
-                            <v-icon @click="pesquisarCodigo()">search</v-icon>
+                            <v-icon @click="pesquisarUsuario()">search</v-icon>
                         </v-flex>
                          <v-flex xs6 class="text-right">
                             <v-btn outlined class="mr-2" color="primary" @click="sheet = !sheet">Pesquisar</v-btn>
@@ -291,7 +286,6 @@
                                         <v-card v-for="(item,index) in exames" class="mt-2" :key="item.nome">
                                             <v-card-title class="py-2">
                                                 <span class="subtitle-1 font-weight-medium">{{item.nome}}</span>
-
                                                 <v-spacer></v-spacer>
                                                 <span class="subtitle-1 font-weight-light">
                                                 <v-btn small icon @click="removeExame(index)">
@@ -326,7 +320,6 @@
                                                     R$ {{item.preco}}
                                                 </p>
                                             </v-card-text>
-
                                         </v-card>
                                     </v-flex>
                                     <v-divider></v-divider>
@@ -347,7 +340,6 @@
                                                     R$ {{item.preco}}
                                                 </p>
                                             </v-card-text>
-
                                         </v-card>
                                     </v-flex>
                                 </v-layout>
@@ -450,7 +442,7 @@
                                 </v-card-title>
                             </v-flex>
                             <v-fade-transition>
-                                <v-flex v-for="item in categories" class="my-3">
+                                <v-flex v-for="item in items" class="my-3">
                                     <v-card>
                                         <v-card-title v-text="item.nome"></v-card-title>
                                         <v-card-text v-if="categorySelect !== 'appointment'">
@@ -462,7 +454,6 @@
                                                         depressed
                                                         rounded
                                                         @click="addProducts(item, n.venda, n.custo,n.nome)"
-
                                                     >
                                                         {{ n.nome }} | {{n.venda}}
                                                     </v-btn>
@@ -471,16 +462,15 @@
                                         </v-card-text>
                                         <v-card-text v-if="categorySelect === 'appointment'">
                                             <v-slide-group multiple show-arrows>
-                                                <v-slide-item v-for="n in item.medicos" v-slot:default="{ active, toggle }">
+                                                <v-slide-item v-for="n in item.doctors" v-slot:default="{ active, toggle }">
                                                     <v-btn class="mx-2"
                                                         :input-value="active"
                                                         active-class="blue white--text"
                                                         depressed
                                                         rounded
                                                         @click="addProducts(item, n.venda, n.custo,n.clinica, n)"
-
                                                     >
-                                                        {{n.clinica}} | {{n.nome}} | {{n.venda}}
+                                                        {{n.clinica}} | {{n.doctor}} | {{n.price}}
                                                     </v-btn>
                                                 </v-slide-item>
                                             </v-slide-group>
@@ -507,11 +497,11 @@
                                                     <v-slide-group  show-arrows>
                                                         <v-slide-item v-for="n in item.consultas" v-slot:default="{ active, toggle }">
                                                             <v-btn class="mx-2 blue white--text"
-                                                            
+
                                                                 depressed
                                                                 rounded
-                                                                
-                                                                
+
+
                                                             >
                                                                 {{ n.produto }} | R${{n.preco}}
                                                             </v-btn>
@@ -523,15 +513,12 @@
                                                 Total R${{item.total}}
                                                 <v-btn class="ml-5" outlined rounded color="primary" @click="addProducts(item, item.total, item.custo)">Selecionar</v-btn>
                                             </div>
-                                           
                                         </v-card-text>
-
                                     </v-card>
                                 </v-flex>
                             </v-fade-transition>
-
                         </v-card>
-                    </v-container>    
+                    </v-container>
                 </v-sheet>
             </v-bottom-sheet>
 
@@ -697,21 +684,8 @@
                 });
                 window.print();
             },
-            gerarCodigo() {
-                if (this.codigo === '') {
-                    this.codigo = this.now.toString();
-                    this.$store.dispatch('CadastrarVenda', {
-                        consultas: this.consultas,
-                        exames: this.exames,
-                        pacotes: this.pacotes,
-                        codigo: this.codigo,
-                        preco: this.total,
-                        custo: this.totalCusto
-                    });
-                }
-            },
-            pesquisarCodigo() {
-                this.$store.dispatch('PesquisarCodigo', this.codigo).then(() => {
+            pesquisarUsuario() {
+                this.$store.dispatch('searchPatient', this.codigo).then(() => {
                     this.categorySelect = 'appointment';
                     for (this.i = 0; this.i < this.pedid[0].consultas.length; this.i++) {
                         this.addProducts(this.pedid[0].consultas[this.i], this.pedid[0].consultas[this.i].preco, this.pedid[0].consultas[this.i].custo,this.pedid[0].consultas[this.i].clinica)
@@ -871,7 +845,6 @@
                             recebimento: total.pagamento,
                             recebeu: ''
                         };
-                        console.log('consulta: ', product);
                         if (this.consultas) {
                             let tamanho = this.consultas.length;
                             Vue.set(this.consultas, tamanho, product);
@@ -890,7 +863,6 @@
                                     custo: custo,
                                     clinica: clinica
                                 };
-                                console.log("medico: ", medico);
                                 if(this.medicoDia){
                                     let tamanho= this.medicoDia.length;
                                     Vue.set(this.medicoDia, tamanho, medico)
@@ -973,13 +945,16 @@
                     clearTimeout(self.typingTimer);
                     self.typingTimer = setTimeout(() => {
                         if(self.categorySelect === 'exam' ){
+                            self.$store.dispatch("loadSelectedExams", self.search).then(() => {
+                                self.items= self.$store.getters.examsSelected;
+                            });
                             console.log('exames aqui');
                         }
                         if(self.categorySelect === 'appointment' ){
-                            self.$store.dispatch("loadSpecialties");
-                            self.items= self.$store.getters.specialties;
-
-                        }
+                            self.$store.dispatch("loadSpecialties").then(() => {
+                                self.items = self.$store.getters.specialties;
+                            })
+                        };
                         if(self.categorySelect === 'package' ){
                             console.log('pacotes aqui');
                         }//funcao de pesquisar
@@ -997,81 +972,7 @@
             pedid() {
                 return this.$store.getters.pedido;
             },
-    /*        categories: function () {
-                const products = [];
-                console.log("ITEMS=>",this.items);
-                if (this.categorySelect === 'appointment') {
-                    if (this.items) {
-                        console.log(this.items)
-                        for (let i in this.items) {
-                            products[i] = ({
-                                nome: this.items[i].nome,
-                                regras: this.items[i].regras,
-                                clinica: this.items[i].clinicas[0],
-                                medicos: this.items[i].clinicas[0].medicos
-                            });
-                        }
-                        const search = this.search.toLowerCase();
-                        if (!search) {
-                            return []
-                        }
-                        var p =  products.filter(item => {
-                            
-                            const text = item.nome.toLowerCase();
-                            return text.indexOf(search) > -1
-                        });
-                        return p
-                    }
-                } else if(this.categorySelect === 'exam') {
-                    if (this.items) {
-                        for (let i in this.items) {
-                            products[i] = ({
-                                nome: this.items[i].nome,
-                                regras: this.items[i].regras,
-                                clinicas: this.items[i].clinicas
-                            })
-                        }
-                        const search = this.search.toLowerCase();
-                        if (!search) {
-                            return []
-                        }
-                        var p =  products.filter(item => {
-                            
-                            const text = item.nome.toLowerCase();
-                            return text.indexOf(search) > -1
-                        });
-                        return p
-                    }
-                }else{
-                    if (this.items) {
-                        for (let i in this.items) {
-                            var payload = {
-                                nome: this.items[i].nome,
-                                custo: this.items[i].custo,
-                                dinheiro:this.items[i].dinheiro,
-                                porcentagem:this.items[i].porcentagem,
-                                total:this.items[i].total,
-                                venda:this.items[i].venda,
-                            };
 
-                            if(this.items[i].exames) payload = {...payload,exames:this.items[i].exames}
-                            if(this.items[i].consultas) payload = {...payload,consultas:this.items[i].consultas}
-                            products[i] = payload
-                            console.log('->',payload)
-                        }
-                        const search = this.search.toLowerCase();
-                        if (!search) {
-                            return []
-                        }
-                        var p =  products.filter(item => {
-                            
-                            const text = item.nome.toLowerCase();
-                            return text.indexOf(search) > -1
-                        });
-                        return p
-                    }
-                }
-            } */
         },
         watch: {
             desconto1: function () {

@@ -66,13 +66,13 @@
                                     </v-btn>
                                     <v-flex xs5>
                                         <v-radio-group :mandatory="false" row class="justify-center">
-                                            <v-btn outlined text :color="buttonExam" class="button-select" rounded
+                                            <v-btn outlined text :color="color.buttonExam" class="button-select" rounded
                                                    @click="selectExam">Exames
                                             </v-btn>
-                                            <v-btn outlined text :color="buttonAppointment" class="button-select mx-2" rounded
+                                            <v-btn outlined text :color="color.buttonAppointment" class="button-select mx-2" rounded
                                                    @click="selectAppointment">Consultas
                                             </v-btn>
-                                            <v-btn outlined text :color="buttonClinic" class="button-select mx-2" rounded
+                                            <v-btn outlined text :color="color.buttonClinic" class="button-select mx-2" rounded
                                                    @click="selectClinic">Clinicas
                                             </v-btn>
                                         </v-radio-group>
@@ -81,6 +81,152 @@
                                                   placeholder="Escolha a categoria" item-value="nome"
                                     ></v-text-field>
                                 </v-layout>
+                                <v-card-text>
+                                    <v-flex v-for="(item, index) in categories" :key="index" >
+                                        <v-card class="mt-3">
+                                            <v-card-title class="justify-center">
+                                                <h3 class="primary--text">{{item.name}}</h3>
+                                            </v-card-title>
+                                            <v-card-text>
+                                                <v-slide-group v-if="categorySelect === 'exam'" show-arrows multiple>
+                                                    <v-slide-item
+                                                            v-for="(n,i) in item.clinics" :key="i" v-slot:default="{ active, toggle }" >
+                                                        <v-btn class="mx-2"
+                                                               :input-value="active"
+                                                               active-class="blue white--text"
+                                                               depressed
+                                                               rounded
+                                                               @mousedown="toggle"
+                                                               @click="addExam(n.clinic, item.name, categorySelect, n.price, n.cost)"
+                                                        >
+                                                            {{ n.clinic }} | {{ n.price }}
+                                                        </v-btn>
+                                                    </v-slide-item>
+                                                </v-slide-group>
+                                                <v-slide-group v-if="categorySelect === 'appointment'" show-arrows multiple>
+                                                    <v-slide-item
+                                                            v-for="(n,i) in item.doctors" v-slot:default="{ active, toggle }" :key="i">
+                                                        <v-btn class="mx-2"
+                                                               :input-value="active"
+                                                               active-class="blue white--text"
+                                                               depressed
+                                                               rounded
+                                                               @mousedown="toggle"
+                                                               @click="addSpecialties('PRO-SAUDE' , item , n, categorySelect, n.price, n.cost)"
+                                                        >
+                                                            {{n.doctor}} | {{n.price}}
+                                                        </v-btn>
+                                                    </v-slide-item>
+                                                </v-slide-group>
+                                            </v-card-text>
+                                            <v-card-text>
+                                                <v-slide-group v-if="categorySelect === 'clinic' && item.exams" show-arrows>
+                                                    <v-slide-item
+                                                            v-for="(n,index) in item.exames"  v-slot:default="{ active, toggle }" :key="index">
+                                                        <v-btn class="mx-2"
+                                                               :input-value="active"
+                                                               active-class="blue white--text"
+                                                               depressed
+                                                               rounded
+                                                               @mousedown="toggle"
+
+                                                               @click="addProducts(item.nome, n.nome, 'exam', n.venda, n.custo)"
+                                                        >
+                                                            {{ n.nome}} | {{n.venda}}
+                                                        </v-btn>
+                                                    </v-slide-item>
+                                                </v-slide-group>
+                                            </v-card-text>
+                                            <v-card-text>
+                                                <v-slide-group v-if="categorySelect === 'clinic' && item.consultas" show-arrows>
+                                                    <v-slide-item
+                                                            v-for="(n,index) in combo"  v-slot:default="{ active, toggle }" :key="index">
+                                                        <v-btn class="mx-2"
+                                                               :input-value="active"
+                                                               active-class="blue white--text"
+                                                               depressed
+                                                               rounded
+                                                               @mousedown="toggle"
+                                                               @click="addProducts(item.nome, n.nome, 'appointment', n.venda,n.custo)"
+                                                        >
+                                                            {{ n.produto}} | {{n.nome}} | {{n.venda}}
+                                                        </v-btn>
+                                                    </v-slide-item>
+                                                </v-slide-group>
+                                            </v-card-text>
+                                        </v-card>
+                                    </v-flex>
+                                    <v-layout row>
+                                        <v-flex xs2>
+                                            <v-text-field
+                                                    prepend-icon="attach_money"
+                                                    outlined
+                                                    label="Preço de Custo"
+                                                    placeholder="ex.: 50.00"
+                                                    v-model="cost"
+                                                    prefix="R$"
+                                                    readonly
+                                                    rounded
+                                                    color="#009688"
+                                            ></v-text-field>
+                                        </v-flex>
+                                        <v-spacer></v-spacer>
+                                        <v-flex xs2>
+                                            <v-text-field
+                                                    prepend-icon="monetization_on"
+                                                    outlined
+                                                    label="Preço de Venda"
+                                                    placeholder="ex.: 80.00"
+                                                    v-model="price"
+                                                    prefix="R$"
+                                                    readonly
+                                                    rounded
+                                                    color="#009688"
+                                            ></v-text-field>
+                                        </v-flex>
+                                        <v-spacer></v-spacer>
+                                        <v-flex xs2>
+                                            <v-text-field
+                                                    prepend-icon="looks_6"
+                                                    outlined
+                                                    clearable
+                                                    label="Desconto %"
+                                                    v-model="discountPercentage"
+                                                    suffix="%"
+                                                    rounded
+                                                    color="#009688"
+                                            ></v-text-field>
+                                        </v-flex>
+                                        <v-spacer></v-spacer>
+                                        <v-flex xs3>
+                                            <v-text-field
+                                                    prepend-icon="money_off"
+                                                    outlined
+                                                    clearable
+                                                    label="Desconto R$"
+                                                    v-model="discountMoney"
+                                                    prefix="R$"
+                                                    rounded
+                                                    color="#009688"
+                                            ></v-text-field>
+                                        </v-flex>
+                                        <v-spacer></v-spacer>
+                                        <v-flex xs2>
+                                            <v-text-field
+                                                    prepend-icon="fiber_new"
+                                                    outlined
+                                                    label="Valor Total"
+                                                    prefix="R$"
+                                                    v-model.number="total"
+                                                    rounded
+                                                    readonly
+                                                    color="#009688"
+                                            ></v-text-field>
+                                            {{ typeof(total) }}
+                                            {{total | moneyFilter}}
+                                        </v-flex>
+                                    </v-layout>
+                                </v-card-text>
                             </v-form>
                         </v-flex>
                     </v-card-text>
@@ -100,14 +246,16 @@
             validRegister: true,
             categorySelect: null,
 
-            listProducts: [], items: [],
+            listProducts: [], items: [], action: false,
+
+            cost: 0, price: 0, discountPercentage: '', discountMoney: '', total: 0,
 
             editedPackage: {
-                id: '', name: '', exams: [], specialties: [], cost: '', sale: '',
+                id: '', name: '', exams: [], specialties: [],
             },
 
             defaultPackage: {
-                id: '', name: '', exams: [], specialties: [], cost: '', sale: '',
+                id: '', name: '', exams: [], specialties: [],
             },
 
             rules: {
@@ -125,6 +273,7 @@
 
         computed: {
             listPackage (){
+                //this.isLoading = false;
                 return this.$store.getters.bundles;
             },
 
@@ -137,7 +286,8 @@
             },
 
             categories: function () {
-                if (!this.search) { return []}
+
+                if (!this.search) { return [] }
 
                 let search = this.search.toLowerCase();
                 let products = [];
@@ -156,20 +306,45 @@
                             }
                             products[i] = (obj);
                         }
-                    } else if (this.categorySelect === 'exam') {
+                    } else if (this.categorySelect === 'exam') { //exams
                         for (let i in this.items) {
-                            products[i] = ({
+                            let obj = {
                                 name: this.items[i].name,
                                 rules: this.items[i].rules,
-                                clinics: this.items[i].clinics,
-                            });
-                        }
-                    } else {
-                        for (let i in this.items){
+                            };
+                            let clinics = [];
+                            for (let clinic in this.items[i].clinics) {
+                                clinics [clinic] = ({
+                                    cost: this.items[i].clinics[clinic].cost,
+                                    price: this.items[i].clinics[clinic].price,
+                                    clinic: this.items[i].clinics[clinic].clinic,
+                                });
+                            }
 
+                            obj = {...obj, clinics : clinics};
+                            products[i] = (obj);
+                        }
+                    } else { //specialities
+                        for (let i in this.items){
+                            let obj = {
+                                name: this.items[i].name,
+                            };
+                            let doctors = [];
+                            for (let doctor in this.items[i].doctors){
+                                doctors [doctor] = ({
+                                    payment_method: this.items[i].doctors[doctor].payment_method,
+                                    doctor: this.items[i].doctors[doctor].doctor,
+                                    cost: this.items[i].doctors[doctor].cost,
+                                    price: this.items[i].doctors[doctor].price,
+                                });
+                            }
+
+                            obj = {...obj, doctors: doctors};
+                            products [i] = (obj);
                         }
                     }
 
+                    console.log(products);
                     let p = products.filter(item => {
                         const text = item.name.toLowerCase();
                         return text.indexOf(search) >-1;
@@ -182,7 +357,9 @@
 
         mounted () {
             this.$store.dispatch('loadBundle');
-            this.$store.dispatch('loadExam');
+            this.$store.dispatch('loadExam').then(() => {
+                this.selectExam();
+            });
             this.$store.dispatch('loadSpecialties');
             this.$store.dispatch('getClinics');
         },
@@ -207,9 +384,103 @@
 
                   this.$store.dispatch('addBundle', packageData);
             },
+
+            selectExam () {
+                this.color.buttonExam = this.color.colorSelect;
+                this.color.buttonAppointment = this.color.noSelect;
+                this.color.buttonClinic = this.color.noSelect;
+                this.categorySelect = 'exam';
+                this.items= this.$store.getters.exams;
+
+            },
+
+            selectAppointment () {
+
+                this.color.buttonAppointment = this.color.colorSelect;
+                this.color.buttonExam = this.color.noSelect;
+                this.color.buttonClinic = this.color.noSelect;
+                this.categorySelect = 'appointment';
+                this.items= this.$store.getters.specialties;
+
+            },
+
+            selectClinic () {
+                this.color.buttonClinic = this.color.colorSelect;
+                this.color.buttonExam = this.color.noSelect;
+                this.color.buttonAppointment = this.color.noSelect;
+                this.categorySelect = 'clinic';
+                this.items = this.$store.getters.clinics;
+
+            },
+
+            addExam (clinic, product, type, price, cost) {
+                this.item = {
+                    product: product,
+                    clinic: clinic,
+                    type: type,
+                    price:  parseFloat(price),
+                    cost:parseFloat(cost)
+                };
+                this.addProduct(this.item);
+            },
+
+            addSpecialties (clinic, product, doctor, type, price, cost) {
+                this.item = {
+                    product: product.name,
+                    doctor: doctor.doctor,
+                    clinic: clinic,
+                    type: type,
+                    price:  parseFloat(price),
+                    cost:parseFloat(cost)
+                };
+                this.addProduct(this.item);
+            },
+
+            addProduct (item){
+
+                console.log(item);
+                if (this.listProducts){
+                    for (let key in this.listProducts) {
+                        if (item.product === this.listProducts[key].product && item.clinic === this.listProducts[key].clinic
+                            && item.price === this.listProducts[key].price && this.item.cost === this.listProducts[key].cost
+                            && ((item.type === "appointment" && item.doctor === this.listProducts[key].doctor) ||
+                                (item.type !== "appointment"))){
+
+                            this.action = true;
+                            this.listProducts.splice(key,1);
+
+                        } else {
+                            this.action = false;
+                        }
+                    }
+                }
+
+                if (this.action === false){ this.listProducts.push({...item}) }
+                console.log(this.listProducts);
+                this.sale = 0;
+                this.cost = 0;
+                for (let key in this.listProducts) {
+                    this.sale += this.listProducts[key].price;
+                    this.cost += this.listProducts[key].cost;
+                }
+                this.action = false;
+            },
         },
 
         watch: {
+
+            discountPercentage: function () {
+                this.discountMoney = ((this.discountPercentage * this.price) / 100).toFixed(0);
+                this.total = Math.round (this.price - this.discountMoney)
+            },
+
+            discountMoney: function () {
+                this.discountPercentage = Math.round ((this.discountMoney * 100) / this.price)
+            },
+
+            price: function (val) {
+                this.total = (val - this.discountMoney)
+            },
 
             searchData () { //pesquisa por filtro de status e por delimitação de nome
                 if (this.searchData){
