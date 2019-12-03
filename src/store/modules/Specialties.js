@@ -19,22 +19,23 @@ const actions = {
             firebase.firestore().collection('specialties').get().then((data) => {
 
                 let allSpecialties = [];
-                data.forEach((doc) => {
+                data.forEach((specDoc) => {
 
-                    let specialtie = doc.data();
+                    let specialtie = specDoc.data();
                     let doctors = [];
 
                     firebase.firestore().collection('specialties/' + specialtie.name + '/doctors').get()
                         .then((data) => {
                             data.forEach((doc) => {
                                 doctors.push({
+                                    ...doc.data(),
                                     price: doc.data().price,
                                     cost: doc.data().cost,
-                                    doctor: doc.data().doctor,
                                     payment_method: doc.data().payment_method,
                                 });
                             });
                         });
+
 
 
                     allSpecialties.push({

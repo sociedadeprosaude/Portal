@@ -2,16 +2,18 @@
     <v-container fluid class=" fill-height">
         <v-layout row wrap>
 
-            <v-flex class="hidden-print-only d-none d-md-block" lg9>
+            <v-flex class="hidden-print-only" sm9>
                 <v-card class="elevation-0">
-                    <v-flex>
+                    <v-flex xs12>
                         <v-card-title>
                             <v-flex xs6>
                                 <v-text-field
                                         label="Pesquisa"
                                         v-model="search"
+                                        :loading="loading"
                                         id="search"
                                         single-line
+                                        :disabled="!categorySelect"
                                         prepend-icon="search"
                                 ></v-text-field>
                             </v-flex>
@@ -30,21 +32,22 @@
                         </v-card-title>
                     </v-flex>
                     <v-fade-transition>
-                        <v-container>
+                        <v-flex xs12>
                             <v-layout row wrap>
-                                <v-flex class="ml-2" lg10>
+                                <v-flex class="ml-2" sm12>
                                     <v-card v-for="item in items" class="my-3">
                                         <v-card-title class="pt-2 " v-text="item.name"></v-card-title>
                                         <v-card-text v-if="categorySelect === 'exam'">
-                                            <v-slide-group  show-arrows>
-                                                <v-slide-item v-for="n in item.clinics" v-slot:default="{ active, toggle }">
+                                            <v-slide-group show-arrows>
+                                                <v-slide-item v-for="n in item.clinics"
+                                                              v-slot:default="{ active, toggle }">
                                                     <v-btn class="mx-2"
-                                                        :input-value="active"
-                                                        active-class="blue white--text"
-                                                        depressed
-                                                        rounded
-                                                        
-                                                        @click="addProducts(item, n.venda, n.custo,n.nome)"
+                                                           :input-value="active"
+                                                           active-class="blue white--text"
+                                                           depressed
+                                                           rounded
+
+                                                           @click="addProducts(item, n.venda, n.custo,n.nome)"
                                                     >
                                                         {{ n.name }} | R${{n.price}}
                                                     </v-btn>
@@ -53,14 +56,15 @@
                                         </v-card-text>
                                         <v-card-text v-if="categorySelect === 'appointment'">
                                             <v-slide-group show-arrows>
-                                                <v-slide-item v-for="n in item.doctors" v-slot:default="{ active, toggle }">
+                                                <v-slide-item v-for="n in item.doctors"
+                                                              v-slot:default="{ active, toggle }">
                                                     <v-btn class="mx-2"
-                                                        :input-value="active"
-                                                        active-class="blue white--text"
-                                                        depressed
-                                                        rounded
-                                                        
-                                                        @click="addProducts(item, n.price, n.cost,n.clinica, n)"
+                                                           :input-value="active"
+                                                           active-class="blue white--text"
+                                                           depressed
+                                                           rounded
+
+                                                           @click="addProducts(item, n.price, n.cost,n.clinica, n)"
 
                                                     >
                                                         {{n.doctor}}
@@ -70,13 +74,15 @@
                                         </v-card-text>
                                         <v-card-text v-if="categorySelect === 'package'">
                                             <v-card class="elevation-0 py-0" v-if="item.exames">
-                                                <v-card-title class="py-0 subtitle-1 font-weight-regular">Exames</v-card-title>
+                                                <v-card-title class="py-0 subtitle-1 font-weight-regular">Exames
+                                                </v-card-title>
                                                 <v-card-text>
-                                                    <v-slide-group  show-arrows>
-                                                        <v-slide-item v-for="n in item.exames" v-slot:default="{ active, toggle }">
+                                                    <v-slide-group show-arrows>
+                                                        <v-slide-item v-for="n in item.exames"
+                                                                      v-slot:default="{ active, toggle }">
                                                             <v-btn class="mx-2 blue white--text"
-                                                                depressed
-                                                                rounded
+                                                                   depressed
+                                                                   rounded
                                                             >
                                                                 {{ n.produto }} | R${{n.preco}}
                                                             </v-btn>
@@ -85,13 +91,15 @@
                                                 </v-card-text>
                                             </v-card>
                                             <v-card class="elevation-0 mt-0 py-0" v-if="item.consultas">
-                                                <v-card-title class="py-0 subtitle-1 font-weight-regular">Consultas</v-card-title>
+                                                <v-card-title class="py-0 subtitle-1 font-weight-regular">Consultas
+                                                </v-card-title>
                                                 <v-card-text>
-                                                    <v-slide-group  show-arrows>
-                                                        <v-slide-item v-for="n in item.consultas" v-slot:default="{ active, toggle }">
+                                                    <v-slide-group show-arrows>
+                                                        <v-slide-item v-for="n in item.consultas"
+                                                                      v-slot:default="{ active, toggle }">
                                                             <v-btn class="mx-2 blue white--text"
-                                                                depressed
-                                                                rounded
+                                                                   depressed
+                                                                   rounded
                                                             >
                                                                 {{ n.produto }} | R${{n.preco}}
                                                             </v-btn>
@@ -101,309 +109,319 @@
                                             </v-card>
                                             <div class="py-0 subtitle-1 font-weight-bold text-right">
                                                 Total R${{item.total}}
-                                                <v-btn class="ml-5" outlined rounded color="primary" @click="addProducts(item, item.total, item.custo)">Selecionar</v-btn>
+                                                <v-btn class="ml-5" outlined rounded color="primary"
+                                                       @click="addProducts(item, item.total, item.custo)">Selecionar
+                                                </v-btn>
                                             </div>
                                         </v-card-text>
                                     </v-card>
                                 </v-flex>
                             </v-layout>
-                        </v-container>
+                        </v-flex>
                     </v-fade-transition>
                 </v-card>
             </v-flex>
             <v-flex class="hidden-print-only d-none d-md-block" lg3>
                 <v-card id="carrinho" class="ml-5 elevation-2 ">
                     <v-container>
-                    <v-layout row wrap class="mx-3 align-center">
-                        <v-flex sm11 xs12>
-                            <v-text-field
-                                    label="Digitar Nome do Paciente"
-                                    v-model="codigo"
-                            ></v-text-field>
-                        </v-flex>
-                        <v-flex sm1 xs2 class="text-center">
-                            <v-icon @click="pesquisarUsuario()">search</v-icon>
-                        </v-flex>
-                        <v-flex xs12 class="text-right">
-                            <v-btn outlined class="mr-5" color="primary" @click="gerarCodigo()">Gerar Codigo</v-btn>
-                        </v-flex>
-                        <v-flex xs12 class="mt-4 v-card"
-                                style="overflow:auto; height:50vh; box-shadow: inset 0px 0px 5px grey;">
-                            <v-container>
-                                <v-layout row wrap>
-                                    <v-flex xs12 v-if="exames.length > 0">
-                                        <p>Exames</p>
-                                        <v-card v-for="(item,index) in exames" class="mt-2" :key="item.nome">
-                                            <v-card-title class="py-2">
-                                                <span class="subtitle-1 font-weight-medium">{{item.nome}}</span>
+                        <v-layout row wrap class="mx-3 align-center">
+                            <v-flex sm11 xs12>
+                                <v-text-field
+                                        label="Digitar Nome do Paciente"
+                                        v-model="codigo"
+                                ></v-text-field>
+                            </v-flex>
+                            <v-flex sm1 xs2 class="text-center">
+                                <v-icon @click="pesquisarUsuario()">search</v-icon>
+                            </v-flex>
+                            <v-flex xs12 class="text-right">
+                                <v-btn outlined class="mr-5" color="primary" @click="gerarCodigo()">Gerar Codigo</v-btn>
+                            </v-flex>
+                            <v-flex xs12 class="mt-4 v-card"
+                                    style="overflow:auto; height:50vh; box-shadow: inset 0px 0px 5px grey;">
+                                <v-container>
+                                    <v-layout row wrap>
+                                        <v-flex xs12 v-if="exames.length > 0">
+                                            <p>Exames</p>
+                                            <v-card v-for="(item,index) in exames" class="mt-2" :key="item.nome">
+                                                <v-card-title class="py-2">
+                                                    <span class="subtitle-1 font-weight-medium">{{item.nome}}</span>
 
-                                                <v-spacer></v-spacer>
-                                                <span class="subtitle-1 font-weight-light">
+                                                    <v-spacer></v-spacer>
+                                                    <span class="subtitle-1 font-weight-light">
                                                 <v-btn small icon @click="removeExame(index)">
                                                     <v-icon>cancel</v-icon>
                                                 </v-btn>
                                             </span>
-                                            </v-card-title>
-                                            <v-card-text class="pt-1 pb-0">
-                                                {{item.clinica}}
-                                                <p class="text-right">
-                                                    R$ {{item.preco}}
-                                                </p>
-                                            </v-card-text>
-                                        </v-card>
-                                    </v-flex>
-                                    <v-divider></v-divider>
-                                    <v-flex xs12 v-if="consultas.length > 0">
-                                        <p>Consultas</p>
-                                        <v-card v-for="(item,index) in consultas" class="mt-2" :key="item.nome">
-                                            <v-card-title class="py-2">
-                                                <span class="subtitle-1 font-weight-medium">{{item.nome}}</span>
-                                                <v-spacer></v-spacer>
-                                                <span class="subtitle-1 font-weight-light">
+                                                </v-card-title>
+                                                <v-card-text class="pt-1 pb-0">
+                                                    {{item.clinica}}
+                                                    <p class="text-right">
+                                                        R$ {{item.preco}}
+                                                    </p>
+                                                </v-card-text>
+                                            </v-card>
+                                        </v-flex>
+                                        <v-divider></v-divider>
+                                        <v-flex xs12 v-if="consultas.length > 0">
+                                            <p>Consultas</p>
+                                            <v-card v-for="(item,index) in consultas" class="mt-2" :key="item.nome">
+                                                <v-card-title class="py-2">
+                                                    <span class="subtitle-1 font-weight-medium">{{item.nome}}</span>
+                                                    <v-spacer></v-spacer>
+                                                    <span class="subtitle-1 font-weight-light">
                                                 <v-btn small icon @click="removeConsults(index)">
                                                     <v-icon>cancel</v-icon>
                                                 </v-btn>
                                             </span>
-                                            </v-card-title>
-                                            <v-card-text class="pt-1 pb-0">
-                                                {{item.clinica}}
-                                                <p class="text-right">
-                                                    R$ {{item.preco}}
-                                                </p>
-                                            </v-card-text>
+                                                </v-card-title>
+                                                <v-card-text class="pt-1 pb-0">
+                                                    {{item.clinica}}
+                                                    <p class="text-right">
+                                                        R$ {{item.preco}}
+                                                    </p>
+                                                </v-card-text>
 
-                                        </v-card>
-                                    </v-flex>
-                                    <v-divider></v-divider>
-                                    <v-flex xs12 v-if="pacotes.length > 0">
-                                        <p>Pacotes</p>
-                                        <v-card v-for="(item,index) in pacotes" class="mt-2" :key="item.nome">
-                                            <v-card-title class="py-2">
-                                                <span class="subtitle-1 font-weight-medium">{{item.nome}}</span>
-                                                <v-spacer></v-spacer>
-                                                <span class="subtitle-1 font-weight-light">
+                                            </v-card>
+                                        </v-flex>
+                                        <v-divider></v-divider>
+                                        <v-flex xs12 v-if="pacotes.length > 0">
+                                            <p>Pacotes</p>
+                                            <v-card v-for="(item,index) in pacotes" class="mt-2" :key="item.nome">
+                                                <v-card-title class="py-2">
+                                                    <span class="subtitle-1 font-weight-medium">{{item.nome}}</span>
+                                                    <v-spacer></v-spacer>
+                                                    <span class="subtitle-1 font-weight-light">
                                                 <v-btn small icon @click="removePackages(index)">
                                                     <v-icon>cancel</v-icon>
                                                 </v-btn>
                                             </span>
-                                            </v-card-title>
-                                            <v-card-text class="pt-1 pb-0">
-                                                <p class="text-right">
-                                                    R$ {{item.preco}}
-                                                </p>
-                                            </v-card-text>
+                                                </v-card-title>
+                                                <v-card-text class="pt-1 pb-0">
+                                                    <p class="text-right">
+                                                        R$ {{item.preco}}
+                                                    </p>
+                                                </v-card-text>
 
-                                        </v-card>
-                                    </v-flex>
-                                    
-                                </v-layout>
-                            </v-container>
-                        </v-flex>
-                        
-                        
-                        <v-spacer></v-spacer>
-                        <v-layout row wrap>
-                            <v-flex xs12>
-                                <v-select class="mt-5" label="forma de pagamento" :items="FormasDePagamento"
-                                          v-model="formaPagamento"></v-select>
+                                            </v-card>
+                                        </v-flex>
+
+                                    </v-layout>
+                                </v-container>
                             </v-flex>
-                            <v-flex>
-                                <v-flex xs6 v-if="formaPagamento === 'credito'">
-                                    <v-select :items="quantParcelas" v-model="parcelas"
-                                              label="quantidade de parcelas"></v-select>
-                                </v-flex>
-                                <v-layout wrap>
-                                    <v-flex xs5>
-                                        <v-text-field label="Desconto: %" v-model="desconto1"></v-text-field>
-                                    </v-flex>
-                                    <v-spacer></v-spacer>
-                                    <v-flex xs5>
-                                        <v-text-field label="Desconto: R$ " v-model="desconto2"></v-text-field>
-                                    </v-flex>
-                                </v-layout>
-                            </v-flex>
-                            <v-flex xs6>
-                                <v-layout column wrap>
-                                    <v-flex xs12>
-                                        <span>Subtotal: R$ {{this.total.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                        <span>Desconto: R$ {{this.desconto2.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                        <h6 class="title font-weight-bold"> Total: R$
-                                            {{this.totalNovo.toLocaleString('en-us', {minimumFractionDigits: 2})}}</h6>
-                                    </v-flex>
-                                </v-layout>
-                            </v-flex>
+
+
                             <v-spacer></v-spacer>
-                            <v-flex xs6>
-                                <v-layout row wrap class="align-end fill-height">
-                                    <v-flex xs6 class="text-right">
-                                        <v-btn outlined class="mr-5" color="primary" @click="imprimir()">Imprimir
-                                        </v-btn>
+                            <v-layout row wrap>
+                                <v-flex xs12>
+                                    <v-select class="mt-5" label="forma de pagamento" :items="FormasDePagamento"
+                                              v-model="formaPagamento"></v-select>
+                                </v-flex>
+                                <v-flex>
+                                    <v-flex xs6 v-if="formaPagamento === 'credito'">
+                                        <v-select :items="quantParcelas" v-model="parcelas"
+                                                  label="quantidade de parcelas"></v-select>
                                     </v-flex>
-                                    <v-flex xs6 class="text-right">
-                                        <v-btn outlined color="primary" @click="pagar2()">Pagar</v-btn>
-                                    </v-flex>
-                                    <v-flex xs12 class="text-right">
-                                        <v-btn outlined color="primary" @click="limpar()">Novo Orçamento</v-btn>
-                                    </v-flex>
-                                </v-layout>
-                            </v-flex>
+                                    <v-layout wrap>
+                                        <v-flex xs5>
+                                            <v-text-field label="Desconto: %" v-model="desconto1"></v-text-field>
+                                        </v-flex>
+                                        <v-spacer></v-spacer>
+                                        <v-flex xs5>
+                                            <v-text-field label="Desconto: R$ " v-model="desconto2"></v-text-field>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                                <v-flex xs6>
+                                    <v-layout column wrap>
+                                        <v-flex xs12>
+                                            <span>Subtotal: R$ {{this.total.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <span>Desconto: R$ {{this.desconto2.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <h6 class="title font-weight-bold"> Total: R$
+                                                {{this.totalNovo.toLocaleString('en-us', {minimumFractionDigits:
+                                                2})}}</h6>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                                <v-spacer></v-spacer>
+                                <v-flex xs6>
+                                    <v-layout row wrap class="align-end fill-height">
+                                        <v-flex xs6 class="text-right">
+                                            <v-btn outlined class="mr-5" color="primary" @click="imprimir()">Imprimir
+                                            </v-btn>
+                                        </v-flex>
+                                        <v-flex xs6 class="text-right">
+                                            <v-btn outlined color="primary" @click="pagar2()">Pagar</v-btn>
+                                        </v-flex>
+                                        <v-flex xs12 class="text-right">
+                                            <v-btn outlined color="primary" @click="limpar()">Novo Orçamento</v-btn>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                            </v-layout>
                         </v-layout>
-                    </v-layout>
                     </v-container>
                 </v-card>
             </v-flex>
 
             <v-flex class="d-print-none d-md-none" xs12>
                 <v-container>
-                <v-card class=" elevation-2 " style="width:100%; height:100%">
-                    <v-container>
-                    <v-layout row wrap class="mx-3 align-center">
-                        <v-flex  xs10>
-                            <v-text-field
-                                    label="Digitar Nome do Paciente"
-                                    v-model="codigo"
-                            ></v-text-field>
-                        </v-flex>
-                        <v-flex xs2 class="text-center">
-                            <v-icon @click="pesquisarUsuario()">search</v-icon>
-                        </v-flex>
-                         <v-flex xs6 class="text-right">
-                            <v-btn outlined class="mr-2" color="primary" @click="sheet = !sheet">Pesquisar</v-btn>
-                        </v-flex>
-                        <v-flex xs6 class="text-right">
-                            <v-btn outlined class="mr-0" color="primary" @click="gerarCodigo()">Gerar Codigo</v-btn>
-                        </v-flex>
-                        <v-flex xs12 class="mt-4 v-card"
-                                style="overflow:auto; height:50vh; box-shadow: inset 0px 0px 5px grey;">
-                            <v-container>
-                                <v-layout row wrap>
-                                    <v-flex xs12 v-if="exames.length > 0">
-                                        <p>Exames</p>
-                                        <v-card v-for="(item,index) in exames" class="mt-2" :key="item.nome">
-                                            <v-card-title class="py-2">
-                                                <span class="subtitle-1 font-weight-medium">{{item.nome}}</span>
-                                                <v-spacer></v-spacer>
-                                                <span class="subtitle-1 font-weight-light">
+                    <v-card class=" elevation-2 " style="width:100%; height:100%">
+                        <v-container>
+                            <v-layout row wrap class="mx-3 align-center">
+                                <v-flex xs10>
+                                    <v-text-field
+                                            label="Digitar Nome do Paciente"
+                                            v-model="codigo"
+                                    ></v-text-field>
+                                </v-flex>
+                                <v-flex xs2 class="text-center">
+                                    <v-icon @click="pesquisarUsuario()">search</v-icon>
+                                </v-flex>
+                                <v-flex xs6 class="text-right">
+                                    <v-btn outlined class="mr-2" color="primary" @click="sheet = !sheet">Pesquisar
+                                    </v-btn>
+                                </v-flex>
+                                <v-flex xs6 class="text-right">
+                                    <v-btn outlined class="mr-0" color="primary" @click="gerarCodigo()">Gerar Codigo
+                                    </v-btn>
+                                </v-flex>
+                                <v-flex xs12 class="mt-4 v-card"
+                                        style="overflow:auto; height:50vh; box-shadow: inset 0px 0px 5px grey;">
+                                    <v-container>
+                                        <v-layout row wrap>
+                                            <v-flex xs12 v-if="exames.length > 0">
+                                                <p>Exames</p>
+                                                <v-card v-for="(item,index) in exames" class="mt-2" :key="item.nome">
+                                                    <v-card-title class="py-2">
+                                                        <span class="subtitle-1 font-weight-medium">{{item.nome}}</span>
+                                                        <v-spacer></v-spacer>
+                                                        <span class="subtitle-1 font-weight-light">
                                                 <v-btn small icon @click="removeExame(index)">
                                                     <v-icon>cancel</v-icon>
                                                 </v-btn>
                                             </span>
-                                            </v-card-title>
-                                            <v-card-text class="pt-1 pb-0">
-                                                {{item.clinica}}
-                                                <p class="text-right">
-                                                    R$ {{item.preco}}
-                                                </p>
-                                            </v-card-text>
-                                        </v-card>
-                                    </v-flex>
-                                    <v-divider></v-divider>
-                                    <v-flex xs12 v-if="consultas.length > 0">
-                                        <p>Consultas</p>
-                                        <v-card v-for="(item,index) in consultas" class="mt-2" :key="item.nome">
-                                            <v-card-title class="py-2">
-                                                <span class="subtitle-1 font-weight-medium">{{item.nome}}</span>
-                                                <v-spacer></v-spacer>
-                                                <span class="subtitle-1 font-weight-light">
+                                                    </v-card-title>
+                                                    <v-card-text class="pt-1 pb-0">
+                                                        {{item.clinica}}
+                                                        <p class="text-right">
+                                                            R$ {{item.preco}}
+                                                        </p>
+                                                    </v-card-text>
+                                                </v-card>
+                                            </v-flex>
+                                            <v-divider></v-divider>
+                                            <v-flex xs12 v-if="consultas.length > 0">
+                                                <p>Consultas</p>
+                                                <v-card v-for="(item,index) in consultas" class="mt-2" :key="item.nome">
+                                                    <v-card-title class="py-2">
+                                                        <span class="subtitle-1 font-weight-medium">{{item.nome}}</span>
+                                                        <v-spacer></v-spacer>
+                                                        <span class="subtitle-1 font-weight-light">
                                                 <v-btn small icon @click="removeConsults(index)">
                                                     <v-icon>cancel</v-icon>
                                                 </v-btn>
                                             </span>
-                                            </v-card-title>
-                                            <v-card-text class="pt-1 pb-0">
-                                                {{item.clinica}}
-                                                <p class="text-right">
-                                                    R$ {{item.preco}}
-                                                </p>
-                                            </v-card-text>
-                                        </v-card>
-                                    </v-flex>
-                                    <v-divider></v-divider>
-                                    <v-flex xs12 v-if="pacotes.length > 0">
-                                        <p>Pacotes</p>
-                                        <v-card v-for="(item,index) in pacotes" class="mt-2" :key="item.nome">
-                                            <v-card-title class="py-2">
-                                                <span class="subtitle-1 font-weight-medium">{{item.nome}}</span>
-                                                <v-spacer></v-spacer>
-                                                <span class="subtitle-1 font-weight-light">
+                                                    </v-card-title>
+                                                    <v-card-text class="pt-1 pb-0">
+                                                        {{item.clinica}}
+                                                        <p class="text-right">
+                                                            R$ {{item.preco}}
+                                                        </p>
+                                                    </v-card-text>
+                                                </v-card>
+                                            </v-flex>
+                                            <v-divider></v-divider>
+                                            <v-flex xs12 v-if="pacotes.length > 0">
+                                                <p>Pacotes</p>
+                                                <v-card v-for="(item,index) in pacotes" class="mt-2" :key="item.nome">
+                                                    <v-card-title class="py-2">
+                                                        <span class="subtitle-1 font-weight-medium">{{item.nome}}</span>
+                                                        <v-spacer></v-spacer>
+                                                        <span class="subtitle-1 font-weight-light">
                                                 <v-btn small icon @click="removePackages(index)">
                                                     <v-icon>cancel</v-icon>
                                                 </v-btn>
                                             </span>
-                                            </v-card-title>
-                                            <v-card-text class="pt-1 pb-0">
-                                                <p class="text-right">
-                                                    R$ {{item.preco}}
-                                                </p>
-                                            </v-card-text>
-                                        </v-card>
-                                    </v-flex>
-                                </v-layout>
-                            </v-container>
-                        </v-flex>
-                        <v-spacer></v-spacer>
-                        <v-layout row wrap>
-                            <v-flex xs12>
-                                <v-select label="Forma de Pagamento" :items="FormasDePagamento"
-                                          v-model="formaPagamento"></v-select>
-                            </v-flex>
-                            <v-flex>
-                                <v-flex xs6 v-if="formaPagamento === 'credito'">
-                                    <v-select :items="quantParcelas" v-model="parcelas"
-                                              label="quantidade de parcelas"></v-select>
+                                                    </v-card-title>
+                                                    <v-card-text class="pt-1 pb-0">
+                                                        <p class="text-right">
+                                                            R$ {{item.preco}}
+                                                        </p>
+                                                    </v-card-text>
+                                                </v-card>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-container>
                                 </v-flex>
-                                <v-layout wrap>
-                                    <v-flex xs5>
-                                        <v-text-field label="Desconto: %" v-model="desconto1" required></v-text-field>
+                                <v-spacer></v-spacer>
+                                <v-layout row wrap>
+                                    <v-flex xs12>
+                                        <v-select label="Forma de Pagamento" :items="FormasDePagamento"
+                                                  v-model="formaPagamento"></v-select>
+                                    </v-flex>
+                                    <v-flex>
+                                        <v-flex xs6 v-if="formaPagamento === 'credito'">
+                                            <v-select :items="quantParcelas" v-model="parcelas"
+                                                      label="quantidade de parcelas"></v-select>
+                                        </v-flex>
+                                        <v-layout wrap>
+                                            <v-flex xs5>
+                                                <v-text-field label="Desconto: %" v-model="desconto1"
+                                                              required></v-text-field>
+                                            </v-flex>
+                                            <v-spacer></v-spacer>
+                                            <v-flex xs5>
+                                                <v-text-field label="Desconto: R$ " v-model="desconto2"
+                                                              required></v-text-field>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-flex>
+                                    <v-flex xs12>
+                                        <v-layout column wrap>
+                                            <v-flex xs12>
+                                                <span>Subtotal: R$ {{this.total.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
+                                            </v-flex>
+                                            <v-flex xs12>
+                                                <span>Desconto: R$ {{this.desconto2.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
+                                            </v-flex>
+                                            <v-flex xs12>
+                                                <h6 class="title font-weight-bold"> Total: R$
+                                                    {{this.totalNovo.toLocaleString('en-us', {minimumFractionDigits:
+                                                    2})}}</h6>
+                                            </v-flex>
+                                        </v-layout>
                                     </v-flex>
                                     <v-spacer></v-spacer>
-                                    <v-flex xs5>
-                                        <v-text-field label="Desconto: R$ " v-model="desconto2" required></v-text-field>
-                                    </v-flex>
-                                </v-layout>
-                            </v-flex>
-                            <v-flex xs12>
-                                <v-layout column wrap>
-                                    <v-flex xs12>
-                                        <span>Subtotal: R$ {{this.total.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                        <span>Desconto: R$ {{this.desconto2.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                        <h6 class="title font-weight-bold"> Total: R$
-                                            {{this.totalNovo.toLocaleString('en-us', {minimumFractionDigits: 2})}}</h6>
-                                    </v-flex>
-                                </v-layout>
-                            </v-flex>
-                            <v-spacer></v-spacer>
-                            <v-flex class="mt-5" xs12>
-                                <v-layout row wrap class="align-end fill-height">
-                                    <v-flex xs2 class="text-left">
-                                        <v-btn v-if="total > 0" icon text class="mr-2">
-                                        <a v-bind:href="'https://api.whatsapp.com/send?text='+ encodeURIComponent(shareOrcamento())" style="text-decoration:none">
+                                    <v-flex class="mt-5" xs12>
+                                        <v-layout row wrap class="align-end fill-height">
+                                            <v-flex xs2 class="text-left">
+                                                <v-btn v-if="total > 0" icon text class="mr-2">
+                                                    <a v-bind:href="'https://api.whatsapp.com/send?text='+ encodeURIComponent(shareOrcamento())"
+                                                       style="text-decoration:none">
 
-                                            <v-icon>share</v-icon>
-                                        </a>
-                                        </v-btn>
-                                    </v-flex>
-                                    <v-flex xs5 class="text-right">
-                                        <v-btn outlined class="mr-5" color="primary" @click="imprimir()">Imprimir
-                                        </v-btn>
-                                    </v-flex>
-                                    <v-flex xs5 class="text-right">
-                                        <v-btn outlined color="primary" @click="pagar2()">Pagar</v-btn>
+                                                        <v-icon>share</v-icon>
+                                                    </a>
+                                                </v-btn>
+                                            </v-flex>
+                                            <v-flex xs5 class="text-right">
+                                                <v-btn outlined class="mr-5" color="primary" @click="imprimir()">
+                                                    Imprimir
+                                                </v-btn>
+                                            </v-flex>
+                                            <v-flex xs5 class="text-right">
+                                                <v-btn outlined color="primary" @click="pagar2()">Pagar</v-btn>
+                                            </v-flex>
+                                        </v-layout>
                                     </v-flex>
                                 </v-layout>
-                            </v-flex>
-                        </v-layout>
-                    </v-layout>
-                    </v-container>
-                </v-card>
+                            </v-layout>
+                        </v-container>
+                    </v-card>
                 </v-container>
             </v-flex>
 
@@ -423,20 +441,22 @@
                                     </v-flex>
                                     <v-flex xs4>
                                         <v-btn outlined class="botao"
-                                        :color="categorySelect === 'exam' ? 'primary' : 'primary_light'" rounded
-                                        @click="selectExam">Exames
+                                               :color="categorySelect === 'exam' ? 'primary' : 'primary_light'" rounded
+                                               @click="selectExam">Exames
                                         </v-btn>
                                     </v-flex>
                                     <v-flex xs4>
                                         <v-btn outlined class="botao"
-                                            :color="categorySelect === 'appointment' ? 'primary' : 'primary_light'" rounded
-                                            @click="selectAppointment">Consultas
+                                               :color="categorySelect === 'appointment' ? 'primary' : 'primary_light'"
+                                               rounded
+                                               @click="selectAppointment">Consultas
                                         </v-btn>
                                     </v-flex>
                                     <v-flex xs4 class="pl-2">
                                         <v-btn outlined class="botao"
-                                            :color="categorySelect === 'package' ? 'primary' : 'primary_light'" rounded
-                                            @click="selectPackage">Pacotes
+                                               :color="categorySelect === 'package' ? 'primary' : 'primary_light'"
+                                               rounded
+                                               @click="selectPackage">Pacotes
                                         </v-btn>
                                     </v-flex>
                                 </v-card-title>
@@ -446,14 +466,15 @@
                                     <v-card>
                                         <v-card-title v-text="item.nome"></v-card-title>
                                         <v-card-text v-if="categorySelect !== 'appointment'">
-                                            <v-slide-group >
-                                                <v-slide-item v-for="n in item.clinicas" v-slot:default="{ active, toggle }">
+                                            <v-slide-group>
+                                                <v-slide-item v-for="n in item.clinicas"
+                                                              v-slot:default="{ active, toggle }">
                                                     <v-btn class="mx-2"
-                                                        :input-value="active"
-                                                        active-class="blue white--text"
-                                                        depressed
-                                                        rounded
-                                                        @click="addProducts(item, n.venda, n.custo,n.nome)"
+                                                           :input-value="active"
+                                                           active-class="blue white--text"
+                                                           depressed
+                                                           rounded
+                                                           @click="addProducts(item, n.venda, n.custo,n.nome)"
                                                     >
                                                         {{ n.nome }} | {{n.venda}}
                                                     </v-btn>
@@ -462,13 +483,14 @@
                                         </v-card-text>
                                         <v-card-text v-if="categorySelect === 'appointment'">
                                             <v-slide-group multiple show-arrows>
-                                                <v-slide-item v-for="n in item.doctors" v-slot:default="{ active, toggle }">
+                                                <v-slide-item v-for="n in item.doctors"
+                                                              v-slot:default="{ active, toggle }">
                                                     <v-btn class="mx-2"
-                                                        :input-value="active"
-                                                        active-class="blue white--text"
-                                                        depressed
-                                                        rounded
-                                                        @click="addProducts(item, n.venda, n.custo,n.clinica, n)"
+                                                           :input-value="active"
+                                                           active-class="blue white--text"
+                                                           depressed
+                                                           rounded
+                                                           @click="addProducts(item, n.venda, n.custo,n.clinica, n)"
                                                     >
                                                         {{n.clinica}} | {{n.doctor}} | {{n.price}}
                                                     </v-btn>
@@ -477,13 +499,15 @@
                                         </v-card-text>
                                         <v-card-text v-if="categorySelect == 'package'">
                                             <v-card class="elevation-0 py-0" v-if="item.exames">
-                                                <v-card-title class="py-0 subtitle-1 font-weight-regular">Exames</v-card-title>
+                                                <v-card-title class="py-0 subtitle-1 font-weight-regular">Exames
+                                                </v-card-title>
                                                 <v-card-text>
-                                                    <v-slide-group  show-arrows>
-                                                        <v-slide-item v-for="n in item.exames" v-slot:default="{ active, toggle }">
+                                                    <v-slide-group show-arrows>
+                                                        <v-slide-item v-for="n in item.exames"
+                                                                      v-slot:default="{ active, toggle }">
                                                             <v-btn class="mx-2 blue white--text"
-                                                                depressed
-                                                                rounded
+                                                                   depressed
+                                                                   rounded
                                                             >
                                                                 {{ n.produto }} | R${{n.preco}}
                                                             </v-btn>
@@ -492,14 +516,16 @@
                                                 </v-card-text>
                                             </v-card>
                                             <v-card class="elevation-0 mt-0 py-0" v-if="item.consultas">
-                                                <v-card-title class="py-0 subtitle-1 font-weight-regular">Consultas</v-card-title>
+                                                <v-card-title class="py-0 subtitle-1 font-weight-regular">Consultas
+                                                </v-card-title>
                                                 <v-card-text>
-                                                    <v-slide-group  show-arrows>
-                                                        <v-slide-item v-for="n in item.consultas" v-slot:default="{ active, toggle }">
+                                                    <v-slide-group show-arrows>
+                                                        <v-slide-item v-for="n in item.consultas"
+                                                                      v-slot:default="{ active, toggle }">
                                                             <v-btn class="mx-2 blue white--text"
 
-                                                                depressed
-                                                                rounded
+                                                                   depressed
+                                                                   rounded
 
 
                                                             >
@@ -511,7 +537,9 @@
                                             </v-card>
                                             <div class="py-0 subtitle-1 font-weight-bold text-right">
                                                 Total R${{item.total}}
-                                                <v-btn class="ml-5" outlined rounded color="primary" @click="addProducts(item, item.total, item.custo)">Selecionar</v-btn>
+                                                <v-btn class="ml-5" outlined rounded color="primary"
+                                                       @click="addProducts(item, item.total, item.custo)">Selecionar
+                                                </v-btn>
                                             </div>
                                         </v-card-text>
                                     </v-card>
@@ -577,13 +605,15 @@
 <script>
     import Vue from 'vue'
     import moment from 'moment'
+
     export default {
         data: () => ({
-            sheet:false,
+            sheet: false,
             colorSelect: 'primary',
             search: '',
-            items: '',
-            categorySelect: '',
+            loading: false,
+            // items: '',
+            categorySelect: undefined,
             consultas: [],
             exames: [],
             typingTimer: undefined,
@@ -611,25 +641,25 @@
             totalNovo: 0,
         }),
         methods: {
-            shareOrcamento(){
-                var text="";
-                if(this.exames.length > 0){
+            shareOrcamento() {
+                var text = "";
+                if (this.exames.length > 0) {
                     text = "Exames\n";
                     for (let index = 0; index < this.exames.length; index++) {
-                        text += "\t" + this.exames[index].nome + "\n\tClinica: " + this.exames[index].clinica + "\n\tPreço: " + this.exames[index].preco + "\n"  
+                        text += "\t" + this.exames[index].nome + "\n\tClinica: " + this.exames[index].clinica + "\n\tPreço: " + this.exames[index].preco + "\n"
                     }
                 }
-                if(this.consultas.length > 0){
-                    text += this.exames.length ? "\n\nConsultas\n":"Consultas\n";
+                if (this.consultas.length > 0) {
+                    text += this.exames.length ? "\n\nConsultas\n" : "Consultas\n";
                     for (let index = 0; index < this.consultas.length; index++) {
-                        text += "\t" + this.consultas[index].nome + "\n\tClinica: " + this.consultas[index].clinica + "\n\tPreço: " + this.consultas[index].preco + "\n"  
-                        
+                        text += "\t" + this.consultas[index].nome + "\n\tClinica: " + this.consultas[index].clinica + "\n\tPreço: " + this.consultas[index].preco + "\n"
+
                     }
                 }
 
-                text += "\n\nSubtotal: R$" + this.total.toLocaleString('en-us', {minimumFractionDigits:2});
-                text += "\nDesconto: R$" + this.desconto2.toLocaleString('en-us', {minimumFractionDigits:2});
-                text += "\nTotal: R$" + this.totalNovo.toLocaleString('en-us', {minimumFractionDigits:2});
+                text += "\n\nSubtotal: R$" + this.total.toLocaleString('en-us', {minimumFractionDigits: 2});
+                text += "\nDesconto: R$" + this.desconto2.toLocaleString('en-us', {minimumFractionDigits: 2});
+                text += "\nTotal: R$" + this.totalNovo.toLocaleString('en-us', {minimumFractionDigits: 2});
                 return text
             },
             removeExame(index) {
@@ -639,7 +669,7 @@
             removeConsults(index) {
                 this.total -= parseFloat(this.consultas[index].preco);
                 this.consultas.splice(index, 1);
-                this.medicoDia.splice(index,1);
+                this.medicoDia.splice(index, 1);
             },
             removePackages(index) {
                 this.total -= parseFloat(this.pacotes[index].preco);
@@ -660,15 +690,15 @@
             },
             selectExam() {
                 this.categorySelect = 'exam';
-                this.items = [];
+                // this.items = [];
             },
             selectAppointment() {
                 this.categorySelect = 'appointment';
-                this.items = [];
+                // this.items = [];
             },
             selectPackage() {
                 this.categorySelect = 'package';
-                this.items = [];
+                // this.items = [];
             },
             imprimir() {
                 if (this.codigo === '') {
@@ -688,12 +718,12 @@
                 this.$store.dispatch('searchPatient', this.codigo).then(() => {
                     this.categorySelect = 'appointment';
                     for (this.i = 0; this.i < this.pedid[0].consultas.length; this.i++) {
-                        this.addProducts(this.pedid[0].consultas[this.i], this.pedid[0].consultas[this.i].preco, this.pedid[0].consultas[this.i].custo,this.pedid[0].consultas[this.i].clinica)
+                        this.addProducts(this.pedid[0].consultas[this.i], this.pedid[0].consultas[this.i].preco, this.pedid[0].consultas[this.i].custo, this.pedid[0].consultas[this.i].clinica)
                     }
                     console.log('mostrando', this.pedid[0].exames);
                     this.categorySelect = 'exam'
                     for (this.i = 0; this.i < this.pedid[0].exames.length; this.i++) {
-                        this.addProducts(this.pedid[0].exames[this.i], this.pedid[0].exames[this.i].preco, this.pedid[0].exames[this.i].custo,this.pedid[0].exames[this.i].clinica)
+                        this.addProducts(this.pedid[0].exames[this.i], this.pedid[0].exames[this.i].preco, this.pedid[0].exames[this.i].custo, this.pedid[0].exames[this.i].clinica)
                     }
                 }).catch(() => {
                     this.aviso = true;
@@ -755,10 +785,9 @@
                         this.desconto1 = '';
                         this.desconto2 = '';
                         this.card = false;
-                        this.medicoDia= [];
+                        this.medicoDia = [];
                     })
-                }
-                else{
+                } else {
                     if (this.formaPagamento === 'credito') {
                         this.taxa = 2.4 + (0.3 * parseInt(this.parcelas))
                     }
@@ -793,10 +822,10 @@
                     }).then(() => {
                         this.aviso2 = true;
                     });
-                    this.card=false
+                    this.card = false
                 }
             },
-            limpar(){
+            limpar() {
                 this.i = 0;
                 this.exames = [];
                 this.consultas = [];
@@ -806,19 +835,19 @@
                 this.search = '';
                 this.desconto1 = '';
                 this.desconto2 = '';
-                this.medicoDia= [];
+                this.medicoDia = [];
                 this.totalCusto = 0;
-                this.formaPagamento= '';
+                this.formaPagamento = '';
 
             },
-            addProducts(item, preco, custo,clinica, total) {
-                
+            addProducts(item, preco, custo, clinica, total) {
+
                 if (this.categorySelect === 'exam') {
                     let product = {
                         nome: item.nome,
                         preco: preco,
                         custo: custo,
-                        clinica:clinica
+                        clinica: clinica
                     };
                     if (this.exames) {
                         let tamanho = this.exames.length;
@@ -833,14 +862,14 @@
                     }
                 }
                 if (this.categorySelect === 'appointment') {
-                    console.log('item: ',item);
+                    console.log('item: ', item);
                     console.log('total: ', total);
-                    if(total.recebeu === undefined){
+                    if (total.recebeu === undefined) {
                         let product = {
                             nome: item.nome,
                             preco: preco,
                             custo: custo,
-                            clinica:clinica,
+                            clinica: clinica,
                             medico: total.nome,
                             recebimento: total.pagamento,
                             recebeu: ''
@@ -852,10 +881,9 @@
                             Vue.set(this.pedido, tamanho2, product);
                             this.total = parseInt(this.total) + parseInt(product.preco);
                             this.totalNovo = this.total - this.desconto2;
-                            if(product.recebimento === 'Consultas') {
+                            if (product.recebimento === 'Consultas') {
                                 this.totalCusto = parseInt(this.totalCusto) + parseInt(product.custo);
-                            }
-                            else{
+                            } else {
                                 let medico = {
                                     nome: total.nome,
                                     consulta: item.nome,
@@ -863,24 +891,22 @@
                                     custo: custo,
                                     clinica: clinica
                                 };
-                                if(this.medicoDia){
-                                    let tamanho= this.medicoDia.length;
+                                if (this.medicoDia) {
+                                    let tamanho = this.medicoDia.length;
                                     Vue.set(this.medicoDia, tamanho, medico)
-                                }
-                                else{
+                                } else {
                                     this.medicoDia[0] = medico;
                                 }
                             }
                         } else {
                             this.consultas[0] = product;
                         }
-                    }
-                    else{
+                    } else {
                         let product = {
                             nome: item.nome,
                             preco: preco,
                             custo: custo,
-                            clinica:clinica,
+                            clinica: clinica,
                             medico: total.nome,
                             recebimento: total.pagamento,
                             recebeu: total.recebeu
@@ -893,10 +919,9 @@
                             Vue.set(this.pedido, tamanho2, product);
                             this.total = parseInt(this.total) + parseInt(product.preco);
                             this.totalNovo = this.total - this.desconto2;
-                            if(product.recebimento === 'Consultas') {
+                            if (product.recebimento === 'Consultas') {
                                 this.totalCusto = parseInt(this.totalCusto) + parseInt(product.custo);
-                            }
-                            else{
+                            } else {
                                 let medico = {
                                     nome: total.nome,
                                     consulta: item.nome,
@@ -905,11 +930,10 @@
                                     clinica: clinica
                                 };
                                 console.log("medico: ", medico);
-                                if(this.medicoDia){
-                                    let tamanho= this.medicoDia.length;
+                                if (this.medicoDia) {
+                                    let tamanho = this.medicoDia.length;
                                     Vue.set(this.medicoDia, tamanho, medico)
-                                }
-                                else{
+                                } else {
                                     this.medicoDia[0] = medico;
                                 }
                             }
@@ -935,7 +959,7 @@
                             this.pacotes[0] = product;
                         }
                     }
-                    }
+                }
             }
         },
         mounted() {
@@ -944,18 +968,21 @@
                 if (e.target.id === 'search') {
                     clearTimeout(self.typingTimer);
                     self.typingTimer = setTimeout(() => {
-                        if(self.categorySelect === 'exam' ){
+                        self.loading = true
+                        if (self.categorySelect === 'exam') {
                             self.$store.dispatch("loadSelectedExams", self.search).then(() => {
-                                self.items= self.$store.getters.examsSelected;
+                                // self.items = self.$store.getters.examsSelected;
                             });
                             console.log('exames aqui');
                         }
-                        if(self.categorySelect === 'appointment' ){
+                        if (self.categorySelect === 'appointment') {
                             self.$store.dispatch("loadSpecialties").then(() => {
-                                self.items = self.$store.getters.specialties;
+                                // self.items = self.$store.getters.specialties;
+                                console.log(self.items)
+                                self.loading = false
                             })
-                        };
-                        if(self.categorySelect === 'package' ){
+                        }
+                        if (self.categorySelect === 'package') {
                             console.log('pacotes aqui');
                         }//funcao de pesquisar
                     }, 1000);
@@ -972,6 +999,30 @@
             pedid() {
                 return this.$store.getters.pedido;
             },
+            specialties() {
+                let specialties = this.$store.getters.specialties
+                for (let spec in specialties) {
+                    specialties[spec].doctors = specialties[spec].doctors.filter((a) => {
+                        return a.cost
+                    })
+                }
+                specialties = this.$store.getters.specialties.filter((a) => {
+                    return a.doctors.length > 0
+                })
+                console.log('spe', specialties)
+                return specialties
+            },
+            exams() {
+                return this.$store.getters.examsSelected
+            },
+            items() {
+                switch (this.categorySelect) {
+                    case 'exam':
+                        return this.exams
+                    case 'appointment':
+                        return this.specialties
+                }
+            }
 
         },
         watch: {
@@ -994,15 +1045,18 @@
         size: auto;
         margin: 0mm
     }
+
     .preco {
         margin-top: -20px;
     }
+
     #carrinho {
         position: absolute;
         right: 0;
         margin-right: 2%;
         width: 30%;
     }
+
     .botao {
         margin-right: 6px;
     }
