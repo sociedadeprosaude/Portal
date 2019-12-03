@@ -35,7 +35,7 @@ const actions = {
             for (let i in bundle.exams){
                 firebase.firestore().collection('package/exams').add(bundle.exams);
 
-                )
+                
             }
             return bundleRef;
 

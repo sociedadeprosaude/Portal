@@ -27,7 +27,7 @@
                             outline
                             chips
                             color="blue"
-                            readonly
+                            
                     ></v-select>
                 </v-flex>
             </v-layout>
@@ -632,7 +632,7 @@
                 }
                 this.especialidade = this.query.especialidade
                 this.pacienteSelecionado = this.query.pacienteObj
-                this.selectedDoctor = this.query.doctor
+                this.selectedDoctor = this.query.doctor.name
                 this.status = this.query.status
                 this.num_recibo = this.query.num_recibo 
                 this.loading = false
