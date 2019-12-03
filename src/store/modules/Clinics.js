@@ -65,6 +65,8 @@ const actions = {
 
     addAppointment ({commit}, payload) {
 
+        console.log('payload', payload);
+
         let data = {
             clinic: payload.clinic,
             doctor: payload.doctor,
@@ -76,20 +78,19 @@ const actions = {
             crm: payload.crm,
             cpf: payload.cpf
 
-
         };
 
         let info = {
-            nome: payload.specialtie,
+            name: payload.specialtie,
         };
 
         firebase.firestore().collection('clinics/' + payload.clinic + '/specialties/' + payload.specialtie
-            + '/doctors').doc(payload.crm).set(data);
+            + '/doctors').doc(payload.cpf).set(data);
 
-        firebase.firestore().collection('clinics/' + payload.clinic.id + '/specialties').doc(payload.specialtie)
+        firebase.firestore().collection('clinics/' + payload.clinic + '/specialties').doc(payload.specialtie)
             .set(info);
 
-        firebase.firestore().collection('users/' + payload.doctor + '/specialties').doc(payload.specialtie)
+        firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie)
             .set(data);
     },
 

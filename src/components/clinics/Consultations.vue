@@ -126,7 +126,7 @@
             cost: null,
             sale: null,
             obs: null,
-            consultations: undefined,
+            consultations:'',
             doctor: [],
             payment:'',
             paymentOptions: [
@@ -136,7 +136,7 @@
         }),
         computed: {
             specialties(){
-                return this.$store.getters.specialties
+                return this.$store.getters.specialties;
             },
             formIsValid() {
                 return this.sale && this.cost && this.consultations && this.doctors.length > 0
@@ -172,13 +172,15 @@
 
         methods:{
             save(){
+                for (let i in this.doctor){
 
-                for (let i in this.doctors){
-                    let consultationData = {
+                    console.log('#',this.consultations);
+                    console.log('name', this.consultations.name);
+
+                    let data = {
                         clinic: this.selectedClinic.name,
-                        //clinic: this.clinic,
-                        specialtie: this.consultations,
-                        doctor:this.doctor[i],
+                        specialtie: this.consultations.name,
+                        doctor:this.doctor[i].name,
                         crm: this.doctor[i].crm,
                         cpf: this.doctor[i].cpf,
                         cost:this.cost,
@@ -186,7 +188,7 @@
                         obs:this.obs,
                         payment: this.payment,
                     };
-                    this.$store.dispatch('addAppointment', consultationData);
+                    this.$store.dispatch('addAppointment', data);
                 }
 
                 this.clear()

@@ -48,6 +48,37 @@ const actions = {
             throw e
         }
     },
+    async getScheduledConsultations({ commit }) {
+        try {
+            let consultationsSnap = await firebase.firestore().collection('consultations')
+                .where('date', '>=', moment().format('YYYY-MM-DD HH:mm:ss'))
+                .where('date', '<=', moment().add(10, 'days').format('YYYY-MM-DD 23:59:59'))
+                .get()
+            let consultations = []
+            let consultationsByDate = {}
+            consultationsSnap.forEach(function (document) {
+                consultations.push({
+                    ...document.data(),
+                    id: document.id
+                })
+                // consultations[document.id] = document.data()
+                // let date = document.data().date.split(' ')[0]
+                // if (!consultationsByDate[date])
+                //     consultationsByDate[date] = {}
+                // if (!consultationsByDate[date][document.data().doctor.cpf])
+                //     consultationsByDate[date][document.data().doctor.cpf] = []
+                // consultationsByDate[date][document.data().doctor.cpf].push({
+                //     ...document.data(),
+                //     id: document.id
+                // })
+            })
+            // commit('setConsultationsByDate', consultationsByDate)
+            commit('setConsultations', consultations)
+            return consultations
+        } catch (e) {
+            throw e
+        }
+    },
     async createConsultation({ commit }, consultation) {
         let startDate = moment(consultation.start_date, 'YYYY-MM-DD')
         let finalDate = moment(consultation.final_date, 'YYYY-MM-DD')
@@ -87,9 +118,12 @@ const actions = {
 
             let obj = payload.consultation.type == "Retorno" ? { 
                 user: payload.user, 
+                type:payload.consultation.type,
+                status:payload.consultation.status,
                 previousConsultation: payload.consultation.previousConsultation 
             }
-            :{user: payload.user}
+            :{user: payload.user,type:payload.consultation.type,status:payload.consultation.status,}
+
 
             await firebase.firestore().collection('consultations').doc(payload.consultation.id).update(obj)
             if (payload.consultation.type == "Retorno") {
