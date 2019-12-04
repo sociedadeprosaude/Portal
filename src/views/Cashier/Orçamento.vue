@@ -912,17 +912,16 @@
                 if (e.target.id === 'search') {
                     clearTimeout(self.typingTimer);
                     self.typingTimer = setTimeout(() => {
-                        self.loading = true
+                        self.loading = true;
                         if (self.categorySelect === 'exam') {
                             self.$store.dispatch("loadSelectedExams", self.search).then(() => {
-                                // self.items = self.$store.getters.examsSelected;
                             });
                             console.log('exames aqui');
                         }
                         if (self.categorySelect === 'appointment') {
                             self.$store.dispatch("loadSpecialties").then(() => {
-                                self.items = self.$store.getters.specialties;
-                                console.log(self.items)
+                                self.$store.dispatch("loadSpecialties");
+                                console.log(self.items);
                                 self.loading = false
                             })
                         }
@@ -944,24 +943,21 @@
                 return this.$store.getters.pedido;
             },
             specialties() {
-                this.$store.dispatch('loadSpecialties').then( () => {
-                    console.log('rodei');
-                    let specialties = this.$store.getters.specialties;
-                    console.log('especialidades: ', specialties)
-                    for (let spec in specialties) {
-                        specialties[spec].doctors = specialties[spec].doctors.filter((a) => {
-                            return a.cost
-                        })
-                    }
-                    specialties = this.$store.getters.specialties.filter((a) => {
-                        return a.doctors.length > 0
+                let specialties = this.$store.getters.specialties;
+                console.log('especialidades: ', specialties);
+                for (let spec in specialties) {
+                    specialties[spec].doctors = specialties[spec].doctors.filter((a) => {
+                        return a.cost
                     })
-                    console.log('spe', specialties)
-                    return specialties
-                })
+                }
+                specialties = this.$store.getters.specialties.filter((a) => {
+                    return a.doctors.length > 0
+                });
+                console.log('spe', specialties);
+                return specialties
             },
             exams() {
-                return this.$store.getters.examsSelected
+                return this.$store.getters.examsSelected;
             },
             items() {
                 switch (this.categorySelect) {
