@@ -72,8 +72,9 @@ const actions = {
             price: payload.sale,
             obs: payload.obs,
         };
-        firebase.firestore().collection('clinics/' + payload.clinic + '/exams')
-            .doc(payload.exam).set(examData);
+        firebase.firestore().collection('clinics/' + payload.clinic + '/exams').doc(payload.exam).set(examData);
+
+        firebase.firestore().collection('exams/' + payload.exam + '/clinics').doc(payload.clinic).set(examData);
     },
 
     async loadSelectedExams({commit},payload){
