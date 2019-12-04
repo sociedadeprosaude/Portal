@@ -5,11 +5,12 @@ export default {
 
   TOKEN_STATUS_VALID: 'valid',
   DEBIT: 'Débito',
-  DEBIT_VARIATION: 'Debito',
   CREDIT: 'Crédito',
-  CREDIT_VARIATION: 'Credito',
+  MONEY: 'DINHEIRO',
+  CREDIT_INITIAL_TAX: 0.0314,
+  CREDIT_PARCEL_TAX: 0.006,
+  DEBIT_INITIAL_TAX: 0.0299,
   CATEGORY_PAYBACK: 'Devolução',
-  CATEGORY_PAYBACK_VARIATION: 'Devolucao',
   FIREBASE_CONFIG: {
     apiKey: "AIzaSyCdvs5C8J_t9WPQlcZGuuLJ57hwM9_s9BQ",
     authDomain: "prosaude-36f66.firebaseapp.com",

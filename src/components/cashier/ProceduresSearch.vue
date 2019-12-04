@@ -55,7 +55,7 @@
                                 <v-card-text v-if="categorySelect === 'appointment'">
                                     <v-slide-group show-arrows>
                                         <v-slide-item v-for="n in item.doctors"
-                                                      :key="n.name"
+                                                      :key="n.crm"
                                                       v-slot:default="{ active, toggle }">
                                             <v-btn class="mx-2"
                                                    :input-value="active"
@@ -169,6 +169,8 @@
                     case 'appointment':
                         delete holder.doctors
                         holder.doctor = selection
+                        holder.cost = selection.cost
+                        holder.price = selection.price
                         break
                     case 'exam':
                         break

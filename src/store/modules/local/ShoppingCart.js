@@ -20,7 +20,7 @@ const actions = {
 
 const getters = {
     getShoppingCartItems(state) {
-        return state.doctors
+        return state.items
     },
     getShoppingCartItemsByCategory(state) {
         let consultations = state.items.filter((a) => {

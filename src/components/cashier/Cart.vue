@@ -99,40 +99,48 @@
                             </v-flex>
                             <v-layout wrap>
                                 <v-flex xs5>
-                                    <v-text-field label="Desconto: %" v-model="desconto1"></v-text-field>
+                                    <v-text-field label="Desconto: %" v-model="percentageDiscount"></v-text-field>
                                 </v-flex>
                                 <v-spacer></v-spacer>
                                 <v-flex xs5>
-                                    <v-text-field label="Desconto: R$ " v-model="desconto2"></v-text-field>
+                                    <v-text-field
+                                            disabled
+                                            label="Desconto: R$ " v-model="moneyDiscount"></v-text-field>
                                 </v-flex>
                             </v-layout>
                         </v-flex>
-                        <v-flex xs6>
-                            <v-layout column wrap>
-                                <v-flex xs12>
-                                    <span>Subtotal: R$ {{this.total.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
+                        <v-flex xs12 class="my-4">
+                            <v-layout row wrap>
+                                <v-flex xs6>
+                                    <span>Subtotal: R$ {{this.subTotal.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
+                                </v-flex>
+                                <v-flex xs6>
+                                    <span>Desconto: R$ {{this.moneyDiscount.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
                                 </v-flex>
                                 <v-flex xs12>
-                                    <span>Desconto: R$ {{this.desconto2.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
+                                    <v-divider></v-divider>
                                 </v-flex>
                                 <v-flex xs12>
                                     <h6 class="title font-weight-bold"> Total: R$
                                         {{this.totalNovo.toLocaleString('en-us', {minimumFractionDigits:
                                         2})}}</h6>
                                 </v-flex>
+                                <v-flex xs12>
+                                    <v-divider></v-divider>
+                                </v-flex>
                             </v-layout>
                         </v-flex>
                         <v-spacer></v-spacer>
-                        <v-flex xs6>
+                        <v-flex xs12>
                             <v-layout row wrap class="align-end fill-height">
-                                <v-flex xs6 class="text-right">
-                                    <v-btn outlined class="mr-5" color="primary" @click="imprimir()">Imprimir
+                                <v-flex xs6 class="text-center">
+                                    <v-btn outlined color="primary" @click="imprimir()">Imprimir
                                     </v-btn>
                                 </v-flex>
-                                <v-flex xs6 class="text-right">
+                                <v-flex xs6 class="text-center">
                                     <v-btn outlined color="primary" @click="pagar2()">Pagar</v-btn>
                                 </v-flex>
-                                <v-flex xs12 class="text-right">
+                                <v-flex xs12 class="text-center mt-4">
                                     <v-btn outlined color="primary" @click="limpar()">Novo Orçamento</v-btn>
                                 </v-flex>
                             </v-layout>
@@ -145,42 +153,54 @@
 </template>
 
 <script>
+    import constants from "../../utils/constants";
+
     export default {
         name: "Cart",
         data() {
             return {
                 codigo: undefined,
                 formaPagamento: '',
-                total: 0,
+                moneyDiscout: 0,
+
                 totalCusto: 0,
-                desconto1: 0,
-                desconto2: 0,
-                FormasDePagamento: ["dinheiro", "credito", "debito"],
+                percentageDiscount: 0,
+                moneyDiscount: 0,
+                FormasDePagamento: ["Dinheiro", "Crédito", "Débito"],
                 totalNovo: 0,
             }
         },
         computed: {
-            exames () {
+            exames() {
                 return this.$store.getters.getShoppingCartItemsByCategory.exams
             },
-            consultas () {
+            consultas() {
+                console.log(this.$store.getters.getShoppingCartItemsByCategory.consultations)
                 return this.$store.getters.getShoppingCartItemsByCategory.consultations
             },
-            pacotes () {
+            pacotes() {
                 return this.$store.getters.getShoppingCartItemsByCategory.packages
+            },
+            subTotal() {
+                let itens = this.$store.getters.getShoppingCartItems
+                let total = 0
+                for (let item in itens) {
+                    total += itens[item].price
+                }
+                return total
+            },
+            total() {
+                return this.subTotal - this.moneyDiscout
             }
         },
         watch: {
-            desconto1: function () {
-                this.desconto2 = ((this.desconto1 * this.total) / 100);
-                this.totalNovo = this.total - this.desconto2
+            percentageDiscount: function () {
+                this.moneyDiscount = ((this.percentageDiscount * this.total) / 100);
+                this.totalNovo = this.total - this.moneyDiscount
             },
-            desconto2: function () {
-                this.desconto1 = ((this.desconto2 * 100) / this.total);
+            moneyDiscount: function () {
+                this.percentageDiscount = ((this.moneyDiscount * 100) / this.total);
             },
-            total: function (val) {
-                this.totalNovo = val - this.desconto2;
-            }
         },
         methods: {
             removeItem(item) {
@@ -203,7 +223,7 @@
                 }
 
                 text += "\n\nSubtotal: R$" + this.total.toLocaleString('en-us', {minimumFractionDigits: 2});
-                text += "\nDesconto: R$" + this.desconto2.toLocaleString('en-us', {minimumFractionDigits: 2});
+                text += "\nDesconto: R$" + this.moneyDiscount.toLocaleString('en-us', {minimumFractionDigits: 2});
                 text += "\nTotal: R$" + this.totalNovo.toLocaleString('en-us', {minimumFractionDigits: 2});
                 return text
             },
@@ -267,22 +287,22 @@
                     //falar para digitar nome de usuario
                     //aviso
                 } else {
-                    if (this.formaPagamento === 'credito') {
-                        this.taxa = 2.4 + (0.3 * parseInt(this.parcelas))
+                    if (this.formaPagamento === this.formaPagamento[1]) {
+                        this.taxa = constants.CREDIT_INITIAL_TAX + (constants.CREDIT_PARCEL_TAX * parseInt(this.parcelas))
                     }
-                    if (this.formaPagamento === 'debito') {
-                        this.taxa = 1.7 / 100
+                    if (this.formaPagamento === this.formaPagamento[2]) {
+                        this.taxa = constants.DEBIT_INITIAL_TAX
                     }
-                    if (this.formaPagamento === 'dinheiro') {
+                    if (this.formaPagamento === this.formaPagamento[0]) {
                         this.taxa = 0
                     }
-                    if (this.desconto1 !== 0) {
-                        this.desconto = this.desconto1
+                    if (this.percentageDiscount !== 0) {
+                        this.desconto = this.percentageDiscount
                     }
-                    if (this.desconto2 !== 0) {
-                        this.desconto = this.desconto2
+                    if (this.moneyDiscount !== 0) {
+                        this.desconto = this.moneyDiscount
                     }
-                    if (this.desconto1 !== 0 && this.desconto2 !== 0) {
+                    if (this.percentageDiscount !== 0 && this.moneyDiscount !== 0) {
                         this.desconto = this.total - this.totalNovo
                     }
                     this.$store.dispatch('AddSale', {
@@ -310,8 +330,8 @@
                 this.total = 0;
                 this.codigo = '';
                 this.search = '';
-                this.desconto1 = '';
-                this.desconto2 = '';
+                this.percentageDiscount = '';
+                this.moneyDiscount = '';
                 this.medicoDia = [];
                 this.totalCusto = 0;
                 this.formaPagamento = '';

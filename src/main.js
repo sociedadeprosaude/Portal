@@ -34,6 +34,7 @@ const options = {
 Vue.use(VueHtmlToPaper, options);
 
 Vue.use(Vuetify)
+Vue.use(constants)
 
 Vue.use(VCurrencyField, {
   locale: 'pt-BR',
