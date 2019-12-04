@@ -64,6 +64,18 @@ const actions = {
             throw e
         }
     },
+
+    async addExamToClinic({commit}, payload) {
+        let examData = {
+            name: payload.exam,
+            cost: payload.cost,
+            price: payload.sale,
+            obs: payload.obs,
+        };
+        firebase.firestore().collection('clinics/' + payload.clinic + '/exams')
+            .doc(payload.exam).set(examData);
+    },
+
     async loadSelectedExams({commit},payload){
         return new Promise( async (resolve,reject) => {
             payload= payload.toUpperCase();
