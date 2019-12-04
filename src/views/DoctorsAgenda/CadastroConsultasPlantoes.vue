@@ -201,43 +201,7 @@
                         :loading="loading"
                         :success="success"
                         text="Salvar"
-
-                >
-                </submit-button>
-                <v-dialog
-                        v-model="loader"
-                        hide-overlay
-                        persistent
-                        width="300"
-                >
-                    <v-card
-                            color="success"
-                            dark
-                    >
-                        <v-card-text>
-                            Salvando...
-                            <v-progress-linear
-                                    indeterminate
-                                    color="white"
-                                    class="mb-0"
-                            ></v-progress-linear>
-                        </v-card-text>
-                    </v-card>
-                </v-dialog>
-                <v-snackbar
-                        v-model="snackbar"
-                        :bottom="y === 'bottom'"
-                        :left="x === 'left'"
-                        color="success"
-                        :multi-line="mode === 'multi-line'"
-                        :right="x === 'right'"
-                        :top="y === 'top'"
-                        :vertical="mode === 'vertical'"
-                >
-                    {{this.mensagem}}
-                    <v-spacer></v-spacer>
-                    <v-icon dark>event_available</v-icon>
-                </v-snackbar>
+                ></submit-button>
             </v-layout>
 
             </v-card>
@@ -250,13 +214,13 @@
     import SubmitButton from "../../components/SubmitButton";
     var moment = require('moment');
     export default {
-
         components: {
           SubmitButton
         },
-
         data: () => ({
             moment: moment,
+            loading: false,
+            success: false,
             maskVAGAS:'##',
             dataStart:'',
             dataTheEnd:'',
@@ -267,7 +231,6 @@
             especialidade: undefined,
             clinic: undefined,
             times:'',
-            medicosOptions: [],
             timesOptions: [
                 { text: '06:00'},
                 { text: '06:30'},
@@ -390,7 +353,6 @@
                     weekDays: this.semana
                 }
                 await this.$store.dispatch('createConsultation', consultation)
-                // setTimeout(() => (this.saveDatesTimeVacancy()), 1000)
                 this.success = true
                 this.loading = false
             }

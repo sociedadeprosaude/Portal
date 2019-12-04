@@ -9,29 +9,39 @@
                     <v-layout align-center wrap>
                         <v-flex xs12 sm4>
                             <v-select
+                                    label="Especialidade"
                                     prepend-icon="school"
                                     v-model="especialidade"
-                                    :items="especialidadeOptions"
-                                    label="Especialidade"
-                                    outline
+                                    :items="specialties"
+                                    item-text="name"
+                                    return-object
+                                    outlined
+                                    rounded
+                                    filled
                                     chips
                                     color="pink"
                                     clearable
                             ></v-select>
                         </v-flex>
+                        <v-spacer></v-spacer>
                         <v-flex xs12 sm4>
                             <v-select
                                     prepend-icon="account_circle"
-                                    v-model="medico"
-                                    :items="medicosOptions"
+                                    v-model="doctor"
+                                    :items="doctors"
+                                    item-text="name"
+                                    return-object
                                     label="Médico"
-                                    outline
+                                    no-data-text="Nenhum médico para esta especialidade"
+                                    outlined
+                                    rounded
+                                    filled
                                     chips
                                     color="purple"
                                     clearable
                             ></v-select>
                         </v-flex>
-                        <v-flex sm4>
+                        <v-flex xs12 sm4>
                             <v-menu
                                     ref="menu"
                                     v-model="menu"
@@ -51,8 +61,10 @@
                                             outline
                                             hint="Selecione o dia para deletar as consultas do mesmo."
                                             persistent-hint
-                                            color="red"
+                                            color="error"
                                             clearable
+                                            rounded
+                                            filled
                                             readonly
                                             v-on="on"
                                     ></v-text-field>
@@ -60,7 +72,7 @@
                                 <v-date-picker
                                         ref="picker"
                                         v-model="date"
-                                        min="2019-01-01"
+                                        :min="new Date().toISOString().substr(0, 10)"
                                         locale="pt-br"
                                         color="red"
                                         @change="save"
@@ -68,60 +80,25 @@
                             </v-menu>
                         </v-flex>
                     </v-layout>
-                </v-container>
-            </template>
 
-                <v-layout align-end justify-end>
+                    <v-layout align-center justify-center>
                         <v-btn
-                                @click="saves"
+                                @click="deleteConsultasDia"
                                 color="error"
-                                round
-                                :disabled="!formIsValid || loader"
-                                :loading="loader"
+                                rounded
+                                :disabled="!formIsValid"
                         >
                             DELETAR
                             <v-icon right>delete_forever</v-icon>
-                            <template v-slot:loader>
-                                <span>Aguarde...</span>
-                            </template>
                         </v-btn>
-                    <v-dialog
-                            v-model="loader"
-                            hide-overlay
-                            persistent
-                            width="300"
-                    >
-                        <v-card
-                                color="error"
-                                dark
-                        >
-                            <v-card-text>
-                                Deletando...
-                                <v-progress-linear
-                                        indeterminate
-                                        color="white"
-                                        class="mb-0"
-                                ></v-progress-linear>
-                            </v-card-text>
-                        </v-card>
-                    </v-dialog>
-                    <v-snackbar
-                            v-model="snackbar"
-                            :bottom="y === 'bottom'"
-                            :left="x === 'left'"
-                            color="success"
-                            :multi-line="mode === 'multi-line'"
-                            :right="x === 'right'"
-                            :top="y === 'top'"
-                            :vertical="mode === 'vertical'"
-                    >
-                        {{this.mensagem}}
-                        <v-spacer></v-spacer>
-                        <v-icon dark>event_busy</v-icon>
-                    </v-snackbar>
-                </v-layout>
+                    </v-layout>
+
+                </v-container>
+            </template>
 
 
+
+<!--
                 <template>
                     <v-container class="align-center justify-center">
                         <v-layout column align-center justify-center wrap>
@@ -239,6 +216,7 @@
                         </v-layout>
                     </v-container>
                 </template>
+                -->
 
             </v-card>
 
@@ -249,143 +227,90 @@
 <script>
     var moment = require('moment');
     export default {
-
         data: () => ({
-            y: 'top',
-            x: null,
-            mode: '',
             moment: moment,
             menu: false,
-            date_choose: '',
+            especialidade: undefined,
+            doctor: null,
+            date: null,
             dateFormatted: '',
-            medicoChoose:'',
-            especialidade_choose:'',
-            messages: [],
-            medicosOptions: [],
+            loading: false,
+            success: false,
         }),
+
         computed:{
-            especialidadeOptions() {
-                return this.$store.getters.get_especialidades;
-            },
-            menssagens:{
-                set(val){
-                    this.messages = val
 
-                },
-                get(){
+            formIsValid () {
+                return this.date  && this.doctor && this.especialidade
+            },
 
-                    return this.$store.getters.consultationsBySpecialties({data:this.date,especialidade:this.especialidade})
+            specialties(){
+                return this.$store.getters.specialties
+            },
 
+            doctors () {
+                let doctors = Object.values(this.$store.getters.doctors)
+                if(this.especialidade) {
+                    doctors = doctors.filter((a) => {
+                        for (let spe in a.specialties) {
+                            if (a.specialties[spe].name === this.especialidade.name) {
+                                return true
+                            }
+                        }
+                        return false
+                        // return a.specialties.indexOf(this.especialidade.name) > -1
+                    })
                 }
+                return doctors
+            },
 
-            },
-            especialidade:{
-                get(){
-                    return this.especialidade_choose
-                },
-                set(val){
-                    this.medicosOptions = this.$store.getters.medicosPorEspecialidade(val)
-                    this.especialidade_choose = val
-                    if(this.medico != ''){
-                        this.$store.dispatch('loadScheduledAppointmentbyDoctor', {especialidade: val,medico:this.medico})
-                    }else{
-                        this.$store.dispatch('loadScheduledAppointment', {especialidade: val})
-                    }
-                    
-                }
-            },
-            
-            medico:{
-                get(){
-                    return this.medicoChoose
-                },
-                set(val){
-                    console.log('->' + val)
-                    this.medicoChoose = val
-                    this.$store.dispatch('loadScheduledAppointmentbyDoctor', {especialidade: this.especialidade,medico:val})
-                }
-            },
-            date:{
-                get(){
-                    return this.date_choose;
-                },
-                set(val){
-                    this.date_choose = val
-                     if(this.medico != ''){
-                        this.$store.dispatch('loadScheduledAppointmentbyDoctor', {especialidade: this.especialidade,medico:this.medico})
-                    }else{
-                        this.$store.dispatch('loadScheduledAppointment', {especialidade: this.especialidade})
-                    }
-                }
-            },
             computedDateFormatted () {
                 return this.formatDate(this.date)
             },
-            especialidadeOptions(){
-                return this.$store.getters.especialidades
-            },
-            formIsValid () {
-                return this.date  && this.medico && this.especialidade 
-            },
-            loader(){
-                return this.$store.getters.statusLoaderDC
-            },
-            snackbar(){
-
-                var snack = this.$store.getters.onSnackbarDC
-
-                if(snack){
-                    this.dialog = false
-                }
-                return snack;
-            },
-            mensagem(){
-                return this.$store.getters.onMensagem
-            }
         },
         async mounted() {
-            await this.$store.dispatch('loadEspecialidades')
-            await this.$store.dispatch('loadMedicos')
-            this.especialidade = 'Clinico Geral'
-            
-            this.$store.dispatch('stopSnack',false)
+            this.$store.dispatch('getSpecialties')
+            this.$store.dispatch('getDoctors')
             this.date = moment().format('YYYY-MM-DD')
             this.dateFormatted = moment().format('YYYY-MM-DD')
-            
         },
+
         watch: {
             menu (val) {
                 val && setTimeout(() => (this.$refs.picker.activePicker = 'MONTH'))
             }
         },
+
         methods: {
+
             save (date) {
                 this.$refs.menu.save(date)
             },
+
             formatDate (date) {
                 if (!date) return null
                 const [year, month, day] = date.split('-')
                 return `${day}/${month}/${year}`
             },
+
             deleteConsultasDia () {
+
                 var deletar = {
-                    data: this.date,
-                    medico: this.medico,
+                    date: this.date,
+                    doctor: this.doctor,
                     especialidade: this.especialidade
                 }
-                this.$store.dispatch('removeAppointmentByDay', deletar)
+
+                console.log(deletar)
+                //this.$store.dispatch('removeAppointmentByDay', deletar)
                 this.clear()
 
             },
+
             clear () {
                 this.date = moment().format('YYYY-MM-DD');
-                this.medicos = '';
-                this.especialidade = '';
-            },
-
-            saves () {
-                this.$store.dispatch('setLoader',{loader:true,view:"DeletarConsultas"});
-                setTimeout(() => (this.deleteConsultasDia()), 1000);
+                this.doctor = null;
+                this.especialidade = undefined;
             },
         },
     }
