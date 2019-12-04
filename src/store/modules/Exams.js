@@ -64,6 +64,26 @@ const actions = {
             throw e
         }
     },
+
+    async addExamToClinic({commit}, payload) {
+        let examData = {
+            name: payload.exam,
+            cost: payload.cost,
+            price: payload.sale,
+            obs: payload.obs,
+            clinic: payload.clinic.name,
+            telephone: payload.clinic.telephone,
+            address: payload.clinic.address,
+            cnpj: payload.clinic.cnpj,
+            //email: payload.clinic.email,
+            agenda: payload.clinic.agenda,
+
+        };
+        firebase.firestore().collection('clinics/' + examData+ '/exams').doc(payload.exam).set(examData);
+
+        firebase.firestore().collection('exams/' + payload.exam + '/clinics').doc(examData.clinic).set(examData);
+    },
+
     async loadSelectedExams({commit},payload){
         return new Promise( async (resolve,reject) => {
             payload= payload.toUpperCase();
@@ -90,6 +110,7 @@ const actions = {
                     });
 
                 });
+                console.log('exames:', exams)
                 commit('setExamsSelected', exams);
                 resolve()
             } catch (e) {

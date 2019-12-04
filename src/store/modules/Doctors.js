@@ -3,7 +3,7 @@ import firebase, {firestore} from "firebase";
 const state = {
     doctors: {},
     specialties: []
-}
+};
 
 const mutations = {
     setDoctors(state, payload) {
@@ -12,7 +12,7 @@ const mutations = {
     setSpecialties(state, payload) {
         state.specialties = payload
     }
-}
+};
 
 const actions = {
     // async searchUser({commit, getters}, searchFields) {
@@ -38,7 +38,7 @@ const actions = {
             doctor.type = "doctor"
             await firebase.firestore().collection('users').doc(doctor.cpf).set(doctor)
             let docCopy = Object.assign({}, doctor)
-            delete docCopy.specialties
+            delete docCopy.specialties;
             for (let spec in doctor.specialties) {
                 let holder = {
                     ...docCopy,
@@ -107,7 +107,7 @@ const actions = {
             throw e
         }
     }
-}
+};
 
 const getters = {
     doctors(state) {
@@ -116,7 +116,7 @@ const getters = {
     specialties(state) {
         return state.specialties
     }
-}
+};
 
 export default {
     state,

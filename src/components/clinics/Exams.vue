@@ -1,4 +1,4 @@
-    <template>
+<template>
     <v-card width="500">
         <v-card-title class="headline grey lighten-2" primary-title>
             <span class="headline">Cadastro de Exames</span>
@@ -20,7 +20,8 @@
                         <v-combobox
                                 prepend-icon="poll"
                                 :items="listExam"
-                                item-text="nome"
+                                item-text="name"
+                                return-object
                                 label="Exames"
                                 outlined
                                 v-model="newExam"
@@ -67,7 +68,7 @@
                                         @input="data.parent.selectItem(data.item)"
                                         text-color="white"
                                         color="info"
-                                >{{ data.item }}</v-chip>
+                                >{{ data.item.name }}</v-chip>
                             </template>
                         </v-select>
                     </v-flex>
@@ -141,13 +142,6 @@
             obs: null,
             exams: [],
             newExam: null,
-            listExam:[
-                'sangue',
-                'fezes',
-                'urina',
-                'gravidez',
-                'testosterona',
-            ]
         }),
         computed: {
             formIsValid() {
@@ -156,37 +150,36 @@
             selectedClinic() {
                 return this.$store.getters.selectedClinic;
             },
-/*
             listExam () {
-                return this.$store.getters.allExam;
+                return this.$store.getters.exams;
             },
- */
         },
 
         mounted() {
-            //this.$store.dispatch('loadExam');
+            this.$store.dispatch('loadExam');
         },
 
         methods:{
             addToList () {
                 this.exams.push(this.newExam);
-                this.newExam = '';
+                this.newExam = null;
             },
             deleteFromList () {
                 this.exams= [];
             },
+
             save(){
-
-
+                console.log(this.exams);
                 for (let i in this.exams){
                     let examData = {
-                        clinic: this.selectedClinic.name,
-                        exam: this.exams[i].nome,
+                        clinic: this.selectedClinic,
+                        exam: this.exams[i].name,
                         cost:this.cost,
                         sale:this.sale,
                         obs:this.obs,
                     };
-                    this.$store.dispatch('addExam', examData);
+                    console.log(examData);
+                    this.$store.dispatch('addExamToClinic', examData);
                 }
 
                 this.clear()

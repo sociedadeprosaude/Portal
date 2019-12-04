@@ -173,10 +173,6 @@
         methods:{
             save(){
                 for (let i in this.doctor){
-
-                    console.log('#',this.consultations);
-                    console.log('name', this.consultations.name);
-
                     let data = {
                         clinic: this.selectedClinic.name,
                         specialtie: this.consultations.name,
@@ -190,7 +186,6 @@
                     };
                     this.$store.dispatch('addAppointment', data);
                 }
-
                 this.clear()
             },
 

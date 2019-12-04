@@ -47,9 +47,9 @@
                                                            depressed
                                                            rounded
 
-                                                           @click="addProducts(item, n.venda, n.custo,n.nome)"
+                                                           @click="addProducts(item, n.price, n.cost,n.clinic)"
                                                     >
-                                                        {{ n.name }} | R${{n.price}}
+                                                        R${{n.price}} | {{n.clinic}}
                                                     </v-btn>
                                                 </v-slide-item>
                                             </v-slide-group>
@@ -64,7 +64,7 @@
                                                            depressed
                                                            rounded
 
-                                                           @click="addProducts(item, n.price, n.cost,n.clinica, n)"
+                                                           @click="addProducts(item, n.price, n.cost,n.clinic, n)"
 
                                                     >
                                                         {{n.doctor}}
@@ -145,8 +145,7 @@
                                             <p>Exames</p>
                                             <v-card v-for="(item,index) in exames" class="mt-2" :key="item.nome">
                                                 <v-card-title class="py-2">
-                                                    <span class="subtitle-1 font-weight-medium">{{item.nome}}</span>
-
+                                                    <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
                                                     <v-spacer></v-spacer>
                                                     <span class="subtitle-1 font-weight-light">
                                                 <v-btn small icon @click="removeExame(index)">
@@ -155,9 +154,9 @@
                                             </span>
                                                 </v-card-title>
                                                 <v-card-text class="pt-1 pb-0">
-                                                    {{item.clinica}}
+                                                    {{item.clinic}}
                                                     <p class="text-right">
-                                                        R$ {{item.preco}}
+                                                        R$ {{item.price}}
                                                     </p>
                                                 </v-card-text>
                                             </v-card>
@@ -176,7 +175,7 @@
                                             </span>
                                                 </v-card-title>
                                                 <v-card-text class="pt-1 pb-0">
-                                                    {{item.clinica}}
+                                                    {{item.clinic}}
                                                     <p class="text-right">
                                                         R$ {{item.preco}}
                                                     </p>
@@ -242,8 +241,7 @@
                                         </v-flex>
                                         <v-flex xs12>
                                             <h6 class="title font-weight-bold"> Total: R$
-                                                {{this.totalNovo.toLocaleString('en-us', {minimumFractionDigits:
-                                                2})}}</h6>
+                                                {{this.totalNovo.toLocaleString('en-us', {minimumFractionDigits: 2})}}</h6>
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
@@ -622,7 +620,7 @@
             medicoDia: [],
             total: 0,
             totalCusto: 0,
-            codigo: '',
+            codigo: undefined,
             desconto1: 0,
             desconto2: 0,
             aviso: false,
@@ -721,72 +719,18 @@
                         this.addProducts(this.pedid[0].consultas[this.i], this.pedid[0].consultas[this.i].preco, this.pedid[0].consultas[this.i].custo, this.pedid[0].consultas[this.i].clinica)
                     }
                     console.log('mostrando', this.pedid[0].exames);
-                    this.categorySelect = 'exam'
+                    this.categorySelect = 'exams';
                     for (this.i = 0; this.i < this.pedid[0].exames.length; this.i++) {
-                        this.addProducts(this.pedid[0].exames[this.i], this.pedid[0].exames[this.i].preco, this.pedid[0].exames[this.i].custo, this.pedid[0].exames[this.i].clinica)
+                        this.addProducts(this.pedid[0].exames[this.i], this.pedid[0].exames[this.i].price, this.pedid[0].exames[this.i].cost, this.pedid[0].exames[this.i].clinic)
                     }
                 }).catch(() => {
                     this.aviso = true;
                 })
             },
             pagar2() {
-                if (this.codigo === '') {
-                    this.codigo = this.now.toString();
-                    console.log('codigo: ', this.codigo);
-                    this.$store.dispatch('CadastrarVenda', {
-                        consultas: this.consultas,
-                        exames: this.exames,
-                        pacotes: this.pacotes,
-                        codigo: this.now.toString(),
-                        preco: this.total,
-                        custo: this.totalCusto
-                    }).then(() => {
-                        if (this.formaPagamento === 'credito') {
-                            this.taxa = 2.4 + (0.3 * parseInt(this.parcelas))
-                        }
-                        if (this.formaPagamento === 'debito') {
-                            this.taxa = 1.7 / 100
-                        }
-                        if (this.formaPagamento === 'dinheiro') {
-                            this.taxa = 0
-                        }
-                        if (this.desconto1 !== 0) {
-                            this.desconto = this.desconto1
-                        }
-                        if (this.desconto2 !== 0) {
-                            this.desconto = this.desconto2
-                        }
-                        if (this.desconto1 !== 0 && this.desconto2 !== 0) {
-                            this.desconto = this.total - this.totalNovo
-                        }
-                        this.$store.dispatch('Pagar', {
-                            consultas: this.consultas,
-                            exames: this.exames,
-                            pacotes: this.pacotes,
-                            codigo: this.codigo,
-                            preco: this.total,
-                            pagamento: this.formaPagamento,
-                            parcelas: this.parcelas,
-                            taxa: this.taxa,
-                            desconto: this.desconto,
-                            data: this.data,
-                            custo: this.totalCusto,
-                            medicoDia: this.medicoDia
-                        }).then(() => {
-                            this.aviso2 = true;
-                        });
-                        this.i = 0;
-                        this.exames = [];
-                        this.consultas = [];
-                        this.pacotes = [];
-                        this.total = 0;
-                        this.codigo = '';
-                        this.search = '';
-                        this.desconto1 = '';
-                        this.desconto2 = '';
-                        this.card = false;
-                        this.medicoDia = [];
-                    })
+                if (this.codigo === '' || this.codigo === undefined) {
+                    //falar para digitar nome de usuario
+                    //aviso
                 } else {
                     if (this.formaPagamento === 'credito') {
                         this.taxa = 2.4 + (0.3 * parseInt(this.parcelas))
@@ -806,12 +750,12 @@
                     if (this.desconto1 !== 0 && this.desconto2 !== 0) {
                         this.desconto = this.total - this.totalNovo
                     }
-                    this.$store.dispatch('Pagar', {
+                    this.$store.dispatch('AddSale', {
                         consultas: this.consultas,
                         exames: this.exames,
                         pacotes: this.pacotes,
                         codigo: this.codigo,
-                        preco: this.total,
+                        price: this.total,
                         pagamento: this.formaPagamento,
                         parcelas: this.parcelas,
                         taxa: this.taxa,
@@ -844,19 +788,19 @@
 
                 if (this.categorySelect === 'exam') {
                     let product = {
-                        nome: item.nome,
-                        preco: preco,
-                        custo: custo,
-                        clinica: clinica
+                        name: item.name,
+                        price: preco,
+                        cost: custo,
+                        clinic: clinica
                     };
                     if (this.exames) {
                         let tamanho = this.exames.length;
                         Vue.set(this.exames, tamanho, product);
                         let tamanho2 = this.pedido.length;
                         Vue.set(this.pedido, tamanho2, product);
-                        this.total = parseInt(this.total) + parseInt(product.preco);
-                        this.totalNovo = this.total - this.desconto2
-                        this.totalCusto = parseInt(this.totalCusto) + parseInt(product.custo);
+                        this.total = parseInt(this.total) + parseInt(product.price);
+                        this.totalNovo = this.total - this.desconto2;
+                        this.totalCusto = parseInt(this.totalCusto) + parseInt(product.cost);
                     } else {
                         this.exames[0] = product;
                     }
@@ -867,9 +811,9 @@
                     if (total.recebeu === undefined) {
                         let product = {
                             nome: item.nome,
-                            preco: preco,
-                            custo: custo,
-                            clinica: clinica,
+                            price: preco,
+                            cost: custo,
+                            clinic: clinica,
                             medico: total.nome,
                             recebimento: total.pagamento,
                             recebeu: ''
@@ -879,17 +823,17 @@
                             Vue.set(this.consultas, tamanho, product);
                             let tamanho2 = this.pedido.length;
                             Vue.set(this.pedido, tamanho2, product);
-                            this.total = parseInt(this.total) + parseInt(product.preco);
+                            this.total = parseInt(this.total) + parseInt(product.proce);
                             this.totalNovo = this.total - this.desconto2;
                             if (product.recebimento === 'Consultas') {
-                                this.totalCusto = parseInt(this.totalCusto) + parseInt(product.custo);
+                                this.totalCusto = parseInt(this.totalCusto) + parseInt(product.cost);
                             } else {
                                 let medico = {
-                                    nome: total.nome,
+                                    name: total.nome,
                                     consulta: item.nome,
                                     data: this.data2,
-                                    custo: custo,
-                                    clinica: clinica
+                                    cost: custo,
+                                    clinic: clinica
                                 };
                                 if (this.medicoDia) {
                                     let tamanho = this.medicoDia.length;
@@ -903,10 +847,10 @@
                         }
                     } else {
                         let product = {
-                            nome: item.nome,
-                            preco: preco,
-                            custo: custo,
-                            clinica: clinica,
+                            name: item.nome,
+                            price: preco,
+                            cost: custo,
+                            clinic: clinica,
                             medico: total.nome,
                             recebimento: total.pagamento,
                             recebeu: total.recebeu
@@ -917,17 +861,17 @@
                             Vue.set(this.consultas, tamanho, product);
                             let tamanho2 = this.pedido.length;
                             Vue.set(this.pedido, tamanho2, product);
-                            this.total = parseInt(this.total) + parseInt(product.preco);
+                            this.total = parseInt(this.total) + parseInt(product.price);
                             this.totalNovo = this.total - this.desconto2;
                             if (product.recebimento === 'Consultas') {
-                                this.totalCusto = parseInt(this.totalCusto) + parseInt(product.custo);
+                                this.totalCusto = parseInt(this.totalCusto) + parseInt(product.cost);
                             } else {
                                 let medico = {
-                                    nome: total.nome,
+                                    name: total.nome,
                                     consulta: item.nome,
                                     data: this.data2,
-                                    custo: custo,
-                                    clinica: clinica
+                                    cost: custo,
+                                    clinic: clinica
                                 };
                                 console.log("medico: ", medico);
                                 if (this.medicoDia) {
@@ -943,18 +887,18 @@
                     }
                     if (this.categorySelect === 'package') {
                         let product = {
-                            nome: item.nome,
-                            preco: preco,
-                            custo: custo
+                            name: item.nome,
+                            price: preco,
+                            cost: custo
                         };
                         if (this.pacotes) {
                             let tamanho = this.pacotes.length;
                             Vue.set(this.pacotes, tamanho, product);
                             let tamanho2 = this.pedido.length;
                             Vue.set(this.pedido, tamanho2, product);
-                            this.total = parseInt(this.total) + parseInt(product.preco);
+                            this.total = parseInt(this.total) + parseInt(product.price);
                             this.totalNovo = this.total - this.desconto2
-                            this.totalCusto = parseInt(this.totalCusto) + parseInt(product.custo);
+                            this.totalCusto = parseInt(this.totalCusto) + parseInt(product.cost);
                         } else {
                             this.pacotes[0] = product;
                         }
@@ -977,7 +921,7 @@
                         }
                         if (self.categorySelect === 'appointment') {
                             self.$store.dispatch("loadSpecialties").then(() => {
-                                // self.items = self.$store.getters.specialties;
+                                self.items = self.$store.getters.specialties;
                                 console.log(self.items)
                                 self.loading = false
                             })
@@ -1000,17 +944,21 @@
                 return this.$store.getters.pedido;
             },
             specialties() {
-                let specialties = this.$store.getters.specialties
-                for (let spec in specialties) {
-                    specialties[spec].doctors = specialties[spec].doctors.filter((a) => {
-                        return a.cost
+                this.$store.dispatch('loadSpecialties').then( () => {
+                    console.log('rodei');
+                    let specialties = this.$store.getters.specialties;
+                    console.log('especialidades: ', specialties)
+                    for (let spec in specialties) {
+                        specialties[spec].doctors = specialties[spec].doctors.filter((a) => {
+                            return a.cost
+                        })
+                    }
+                    specialties = this.$store.getters.specialties.filter((a) => {
+                        return a.doctors.length > 0
                     })
-                }
-                specialties = this.$store.getters.specialties.filter((a) => {
-                    return a.doctors.length > 0
+                    console.log('spe', specialties)
+                    return specialties
                 })
-                console.log('spe', specialties)
-                return specialties
             },
             exams() {
                 return this.$store.getters.examsSelected

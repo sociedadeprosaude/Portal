@@ -19,6 +19,7 @@ import Consultations from "./modules/Consultations";
 import LayoutControl from "./modules/local/LayoutControl";
 import Specialties from "./modules/Specialties";
 import Saidas from "./modules/Saidas"
+import Budget from "./modules/Budget"
 
 
 Vue.use(Vuex);
@@ -47,6 +48,7 @@ const store = new Vuex.Store({
     Specialties,
     Saidas,
     Patient,
+    Budget
   },
 
   state: {

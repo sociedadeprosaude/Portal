@@ -307,6 +307,7 @@
                             products[i] = (obj);
                         }
                     } else if (this.categorySelect === 'exam') { //exams
+                        console.log(this.items);
                         for (let i in this.items) {
                             let obj = {
                                 name: this.items[i].name,
