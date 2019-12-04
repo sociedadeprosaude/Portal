@@ -169,17 +169,19 @@
             },
 
             save(){
+                console.log(this.exams);
                 for (let i in this.exams){
                     let examData = {
-                        clinic: this.selectedClinic.name,
+                        clinic: this.selectedClinic,
                         exam: this.exams[i].name,
                         cost:this.cost,
                         sale:this.sale,
                         obs:this.obs,
                     };
-                    console.log(examData)
+                    console.log(examData);
                     this.$store.dispatch('addExamToClinic', examData);
                 }
+
                 this.clear()
             },
 

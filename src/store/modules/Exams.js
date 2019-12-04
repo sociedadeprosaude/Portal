@@ -71,10 +71,17 @@ const actions = {
             cost: payload.cost,
             price: payload.sale,
             obs: payload.obs,
-        };
-        firebase.firestore().collection('clinics/' + payload.clinic + '/exams').doc(payload.exam).set(examData);
+            clinic: payload.clinic.name,
+            telephone: payload.clinic.telephone,
+            address: payload.clinic.address,
+            cnpj: payload.clinic.cnpj,
+            //email: payload.clinic.email,
+            agenda: payload.clinic.agenda,
 
-        firebase.firestore().collection('exams/' + payload.exam + '/clinics').doc(payload.clinic).set(examData);
+        };
+        firebase.firestore().collection('clinics/' + examData+ '/exams').doc(payload.exam).set(examData);
+
+        firebase.firestore().collection('exams/' + payload.exam + '/clinics').doc(examData.clinic).set(examData);
     },
 
     async loadSelectedExams({commit},payload){
