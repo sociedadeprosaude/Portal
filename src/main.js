@@ -11,6 +11,8 @@ import axios from 'axios'
 import constants from '@/utils/constants'
 import DateFilter from './filters/date'
 import MoneyFilter from './filters/money'
+import VCurrencyField from 'v-currency-field'
+
 
 import './registerServiceWorker'
 import * as firebase from "firebase";
@@ -32,6 +34,15 @@ const options = {
 Vue.use(VueHtmlToPaper, options);
 
 Vue.use(Vuetify)
+
+Vue.use(VCurrencyField, {
+  locale: 'pt-BR',
+  decimalLength: 2,
+  autoDecimalMode: true,
+  min: null,
+  max: null,
+  defaultValue: 0
+})
 
 // Moment.js
 window.moment = require('moment')
