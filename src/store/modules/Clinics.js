@@ -19,6 +19,7 @@ const mutations = {
 };
 
 const actions = {
+
     async getClinics({commit}) {
         try {
             let clinicsSnap = await firebase.firestore().collection('clinics').get()
@@ -36,6 +37,7 @@ const actions = {
             throw e
         }
     },
+
     async addClinic({commit}, clinic) {
         try {
             for (let data in clinic) {
@@ -43,7 +45,7 @@ const actions = {
                     delete clinic[data]
                 }
             }
-            let clinicRef
+            let clinicRef;
             if (clinic.id) {
                 clinicRef = await firebase.firestore().collection('clinics').doc(clinic.id).set(clinic)
             } else {
@@ -54,6 +56,7 @@ const actions = {
             throw e
         }
     },
+
     async deleteClinic({}, clinic) {
         try {
             await firebase.firestore().collection('clinics').doc(clinic.id).delete()
@@ -91,6 +94,9 @@ const actions = {
             .set(info);
 
         firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie)
+            .set(data);
+
+        firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf)
             .set(data);
     },
 
