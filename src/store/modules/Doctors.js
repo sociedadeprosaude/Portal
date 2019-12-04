@@ -65,7 +65,7 @@ const actions = {
             doctorsSnap.forEach(function (document) {
                 doctors[document.id] = document.data()
             });
-            commit('setDoctors', doctors)
+            commit('setDoctors', doctors);
             return doctors
         } catch (e) {
             throw e
