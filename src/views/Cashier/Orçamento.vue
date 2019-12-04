@@ -10,6 +10,8 @@
             </v-flex>
 
 
+
+
             <!--            <v-flex class="d-print-none d-md-none" xs12>-->
             <!--                <v-container>-->
             <!--                    <v-card class=" elevation-2 " style="width:100%; height:100%">-->
@@ -347,7 +349,6 @@
 </template>
 
 <script>
-    import Vue from 'vue'
     import moment from 'moment'
     import ProceduresSearch from "../../components/cashier/ProceduresSearch";
     import Cart from "../../components/cashier/Cart";
@@ -505,8 +506,7 @@
         computed: {
             pedid() {
                 return this.$store.getters.pedido;
-            },
-
+            }
         },
     }
 </script>
