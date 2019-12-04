@@ -18,6 +18,7 @@
                     </v-flex>
                     <v-flex xs12>
                         <v-combobox
+                                prepend-inner-icon="search"
                                 prepend-icon="poll"
                                 :items="listExam"
                                 item-text="name"
