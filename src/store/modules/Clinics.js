@@ -39,6 +39,8 @@ const actions = {
     },
 
     async addClinic({commit}, clinic) {
+
+        console.log(clinic);
         try {
             for (let data in clinic) {
                 if (!clinic[data]) {
