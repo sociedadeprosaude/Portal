@@ -213,11 +213,11 @@
                             <v-spacer></v-spacer>
                             <v-layout row wrap>
                                 <v-flex xs12>
-                                    <v-select class="mt-5" label="forma de pagamento" :items="FormasDePagamento"
+                                    <v-select class="mt-5" label="Forma de pagamento" :items="FormasDePagamento"
                                               v-model="formaPagamento"></v-select>
                                 </v-flex>
                                 <v-flex>
-                                    <v-flex xs6 v-if="formaPagamento === 'credito'">
+                                    <v-flex xs6 v-if="formaPagamento === 'Crédito'">
                                         <v-select :items="quantParcelas" v-model="parcelas"
                                                   label="quantidade de parcelas"></v-select>
                                     </v-flex>
@@ -363,7 +363,7 @@
                                                   v-model="formaPagamento"></v-select>
                                     </v-flex>
                                     <v-flex>
-                                        <v-flex xs6 v-if="formaPagamento === 'credito'">
+                                        <v-flex xs6 v-if="formaPagamento === 'Crédito'">
                                             <v-select :items="quantParcelas" v-model="parcelas"
                                                       label="quantidade de parcelas"></v-select>
                                         </v-flex>
@@ -630,7 +630,7 @@
             data: moment().format("YYYY-MM-DD HH:mm:ss"),
             data2: moment().format("YYYY-MM-DD"),
             i: 0,
-            FormasDePagamento: ["dinheiro", "credito", "debito"],
+            FormasDePagamento: ["Dinheiro", "Crédito", "Débito"],
             parcelas: '',
             quantParcelas: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
             formaPagamento: '',
@@ -674,16 +674,16 @@
                 this.pacotes.splice(index, 1)
             },
             gerarCodigo() {
-                if (this.codigo === '') {
+                if (this.codigo === '' || !this.codigo) {
                     this.codigo = this.now.toString();
-                    this.$store.dispatch('CadastrarVenda', {
+                    /* this.$store.dispatch('CadastrarVenda', {
                         consultas: this.consultas,
                         exames: this.exames,
                         pacotes: this.pacotes,
                         codigo: this.codigo,
                         preco: this.total,
                         custo: this.totalCusto
-                    });
+                    }); */
                 }
             },
             selectExam() {
@@ -728,17 +728,20 @@
                 })
             },
             pagar2() {
-                if (this.codigo === '' || this.codigo === undefined) {
+                
+                if (this.codigo === '' || !this.codigo) {
                     //falar para digitar nome de usuario
                     //aviso
-                } else {
-                    if (this.formaPagamento === 'credito') {
+                    this.gerarCodigo()
+
+                } //else {
+                    if (this.formaPagamento === 'Crédito') {
                         this.taxa = 2.4 + (0.3 * parseInt(this.parcelas))
                     }
-                    if (this.formaPagamento === 'debito') {
+                    if (this.formaPagamento === 'Débito') {
                         this.taxa = 1.7 / 100
                     }
-                    if (this.formaPagamento === 'dinheiro') {
+                    if (this.formaPagamento === 'Dinheiro') {
                         this.taxa = 0
                     }
                     if (this.desconto1 !== 0) {
@@ -750,24 +753,26 @@
                     if (this.desconto1 !== 0 && this.desconto2 !== 0) {
                         this.desconto = this.total - this.totalNovo
                     }
+                    var user = this.$store.getters.selectedPatient
                     this.$store.dispatch('AddSale', {
-                        consultas: this.consultas,
-                        exames: this.exames,
-                        pacotes: this.pacotes,
-                        codigo: this.codigo,
+                        consultations: this.consultas,
+                        exams: this.exames,
+                        package_id: this.pacotes,
+                        invoice: this.codigo,
                         price: this.total,
-                        pagamento: this.formaPagamento,
+                        form_payment: this.formaPagamento,
                         parcelas: this.parcelas,
-                        taxa: this.taxa,
-                        desconto: this.desconto,
-                        data: this.data,
-                        custo: this.totalCusto,
-                        medicoDia: this.medicoDia
+                        rate: this.taxa,
+                        dicount: this.desconto,
+                        date: this.data,
+                        cost: this.totalCusto,
+                        /* medicoDia: this.medicoDia */
+                        user:user
                     }).then(() => {
                         this.aviso2 = true;
                     });
                     this.card = false
-                }
+                //}
             },
             limpar() {
                 this.i = 0;
@@ -908,20 +913,22 @@
         },
         mounted() {
             let self = this;
+            this.formaPagamento = 'Dinheiro'
             window.addEventListener('keyup', function (e) {
                 if (e.target.id === 'search') {
                     clearTimeout(self.typingTimer);
                     self.typingTimer = setTimeout(() => {
-                        self.loading = true;
+                        self.loading = true
                         if (self.categorySelect === 'exam') {
                             self.$store.dispatch("loadSelectedExams", self.search).then(() => {
+                                // self.items = self.$store.getters.examsSelected;
                             });
                             console.log('exames aqui');
                         }
                         if (self.categorySelect === 'appointment') {
                             self.$store.dispatch("loadSpecialties").then(() => {
-                                self.$store.dispatch("loadSpecialties");
-                                console.log(self.items);
+                                self.items = self.$store.getters.specialties;
+                                console.log(self.items)
                                 self.loading = false
                             })
                         }
@@ -943,21 +950,24 @@
                 return this.$store.getters.pedido;
             },
             specialties() {
-                let specialties = this.$store.getters.specialties;
-                console.log('especialidades: ', specialties);
-                for (let spec in specialties) {
-                    specialties[spec].doctors = specialties[spec].doctors.filter((a) => {
-                        return a.cost
+                this.$store.dispatch('loadSpecialties').then( () => {
+                    console.log('rodei');
+                    let specialties = this.$store.getters.specialties;
+                    console.log('especialidades: ', specialties)
+                    for (let spec in specialties) {
+                        specialties[spec].doctors = specialties[spec].doctors.filter((a) => {
+                            return a.cost
+                        })
+                    }
+                    specialties = this.$store.getters.specialties.filter((a) => {
+                        return a.doctors.length > 0
                     })
-                }
-                specialties = this.$store.getters.specialties.filter((a) => {
-                    return a.doctors.length > 0
-                });
-                console.log('spe', specialties);
-                return specialties
+                    console.log('spe', specialties)
+                    return specialties
+                })
             },
             exams() {
-                return this.$store.getters.examsSelected;
+                return this.$store.getters.examsSelected
             },
             items() {
                 switch (this.categorySelect) {
