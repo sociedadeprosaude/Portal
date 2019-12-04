@@ -22,7 +22,7 @@ const actions = {
 
     async getClinics({commit}) {
         try {
-            let clinicsSnap = await firebase.firestore().collection('clinics').get()
+            let clinicsSnap = await firebase.firestore().collection('clinics').get();
             let clinics = [];
             clinicsSnap.forEach(function (document) {
                 clinics.push({
@@ -40,7 +40,7 @@ const actions = {
 
     async addClinic({commit}, clinic) {
 
-        console.log(clinic);
+
         try {
             for (let data in clinic) {
                 if (!clinic[data]) {
@@ -48,8 +48,8 @@ const actions = {
                 }
             }
             let clinicRef;
-            if (clinic.id) {
-                clinicRef = await firebase.firestore().collection('clinics').doc(clinic.id).set(clinic)
+            if (clinic.name) {
+                clinicRef = await firebase.firestore().collection('clinics').doc(clinic.name).set(clinic)
             } else {
                 clinicRef = await firebase.firestore().collection('clinics').add(clinic)
             }
@@ -61,7 +61,7 @@ const actions = {
 
     async deleteClinic({}, clinic) {
         try {
-            await firebase.firestore().collection('clinics').doc(clinic.id).delete()
+            await firebase.firestore().collection('clinics').doc(clinic.name).delete()
             return
         } catch (e) {
             throw e
