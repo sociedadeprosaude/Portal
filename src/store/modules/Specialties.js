@@ -45,8 +45,8 @@ const actions = {
                     });
 
                 });
-
-                commit('setSpecialties', allSpecialties)
+                console.log('especialidades: ', allSpecialties)
+                commit('setSpecialties', allSpecialties);
 
                 if (data) resolve (data)
                 else reject(console.log('erro ao carregar dados de pacotes', data))
