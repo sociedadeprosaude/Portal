@@ -113,9 +113,6 @@ const getters = {
     doctors(state) {
         return state.doctors
     },
-    specialties(state) {
-        return state.specialties
-    }
 };
 
 export default {

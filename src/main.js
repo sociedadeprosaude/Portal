@@ -48,12 +48,14 @@ Vue.use(VCurrencyField, {
 window.moment = require('moment')
 window.moment.locale('pt-br')
 
-if (process.env.NODE_ENV === 'development') {
-  // axios.defaults.baseURL = 'http://prosaude.caixa'
-  axios.defaults.baseURL = 'http://caixa.instituicaoprosaude.com:82'
-} else {
-  axios.defaults.baseURL = 'http://caixa.instituicaoprosaude.com:82'
-}
+// if (window.location.href.includes('localhost')) {
+//   process.env.NODE_ENV = 'development'
+//   console.log(process.env.NODE_ENV)
+// }
+// if (process.env.NODE_ENV === 'development') {
+//
+// } else {
+// }
 
 const token = localStorage.getItem('token')
 if (token) {

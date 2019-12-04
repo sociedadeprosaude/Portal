@@ -20,6 +20,7 @@ import LayoutControl from "./modules/local/LayoutControl";
 import Specialties from "./modules/Specialties";
 import Saidas from "./modules/Saidas"
 import Budget from "./modules/Budget"
+import ShoppingCart from "./modules/local/ShoppingCart";
 
 
 Vue.use(Vuex);
@@ -48,7 +49,8 @@ const store = new Vuex.Store({
     Specialties,
     Saidas,
     Patient,
-    Budget
+    Budget,
+    ShoppingCart
   },
 
   state: {
