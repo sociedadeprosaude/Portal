@@ -389,6 +389,7 @@
                 this.medicos = ''
                 this.especialidade = ''
                 this.times = ''
+                this.clinic = undefined
             },
             async save () {
                 this.loading = true
