@@ -13,7 +13,9 @@
                                         :items="specialties"
                                         item-text="name"
                                         return-object
-                                        outline
+                                        outlined
+                                        rounded
+                                        filled
                                         chips
                                         color="pink"
                                         clearable
@@ -29,7 +31,9 @@
                                         return-object
                                         label="Médico"
                                         no-data-text="Nenhum médico para esta especialidade"
-                                        outline
+                                        outlined
+                                        rounded
+                                        filled
                                         chips
                                         color="purple"
                                         clearable
@@ -43,7 +47,9 @@
                                         item-text="name"
                                         label="Clínica"
                                         no-data-text="Nenhum médico para esta especialidade"
-                                        outline
+                                        outlined
+                                        rounded
+                                        filled
                                         chips
                                         color="purple"
                                         clearable
@@ -75,7 +81,9 @@
                                                 label="Data Inicial"
                                                 prepend-icon="event"
                                                 readonly
-                                                outline
+                                                outlined
+                                                rounded
+                                                filled
                                                 clearable
                                                 v-on="on"
                                         ></v-text-field>
@@ -108,7 +116,9 @@
                                                 label="Data Final"
                                                 prepend-icon="event"
                                                 readonly
-                                                outline
+                                                outlined
+                                                rounded
+                                                filled
                                                 clearable
                                                 v-on="on"
                                         ></v-text-field>
@@ -131,7 +141,9 @@
                                         label="Dias da Semana"
                                         hint="Selecione os dias da semana que o médico irá atender"
                                         persistent-hint
-                                        outline
+                                        outlined
+                                        rounded
+                                        filled
                                         multiple
                                         chips
                                         color="blue"
@@ -152,7 +164,9 @@
                                         :items="timesOptions"
                                         label="Horários"
                                         attach
-                                        outline
+                                        outlined
+                                        rounded
+                                        filled
                                         hint="Selecione o horario que o médico irá atender"
                                         persistent-hint
                                         chips
@@ -168,7 +182,9 @@
                                         :mask="maskVAGAS"
                                         label="Número de Vagas"
                                         placeholder="exemplo: 22"
-                                        outline
+                                        outlined
+                                        rounded
+                                        filled
                                         chips
                                         color="red"
                                         clearable
@@ -354,30 +370,6 @@
             }
         },
         methods: {
-            saveDatesTimeVacancy () {
-                var dataInicio = moment(this.dataStart,'YYYY-MM-DD')
-                var dataFim = moment(this.dataTheEnd,'YYYY-MM-DD')
-                var num_dias = dataFim.diff(dataInicio,'days')
-                var datas = []
-                if(this.semana.indexOf(dataInicio.day()) != -1){
-                    datas.push(dataInicio.format('YYYY-MM-DD'))
-                }
-                for (let index = 0; index < num_dias; index++) {
-                    if(this.semana.indexOf(dataInicio.add(1,'day').day()) != -1){
-                        datas.push(dataInicio.format('YYYY-MM-DD'))
-                    }
-                }
-                var medico = this.$store.getters.medico({especialidade: this.especialidade,medico:this.medicos})
-                const medicoInfos = {
-                    datas: datas,
-                    horas: this.times,
-                    vagas: this.vagas,
-                    medico: medico,
-                    espMed: this.especialidade
-                }
-                this.$store.dispatch('addDatesTimeVacancy', medicoInfos)
-                this.clear()
-            },
             save1 (dataStart) {
                 this.$refs.menu1.save1(dataStart)
             },
@@ -411,9 +403,9 @@
                     weekDays: this.semana
                 }
                 await this.$store.dispatch('createConsultation', consultation)
-                // setTimeout(() => (this.saveDatesTimeVacancy()), 1000)
                 this.success = true
                 this.loading = false
+                this.clear()
             }
         }
     }
