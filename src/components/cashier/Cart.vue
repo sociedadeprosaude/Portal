@@ -89,11 +89,11 @@
                     <v-spacer></v-spacer>
                     <v-layout row wrap>
                         <v-flex xs12>
-                            <v-select class="mt-5" label="forma de pagamento" :items="FormasDePagamento"
+                            <v-select class="mt-5" label="Forma de pagamento" :items="FormasDePagamento"
                                       v-model="formaPagamento"></v-select>
                         </v-flex>
                         <v-flex>
-                            <v-flex xs6 v-if="formaPagamento === 'credito'">
+                            <v-flex xs6 v-if="formaPagamento === 'Crédito'">
                                 <v-select :items="quantParcelas" v-model="parcelas"
                                           label="quantidade de parcelas"></v-select>
                             </v-flex>
@@ -160,9 +160,10 @@
         data() {
             return {
                 codigo: undefined,
-                formaPagamento: '',
+                formaPagamento: 'Dinheiro',
                 moneyDiscout: 0,
-
+                now: moment().valueOf(),
+                data: moment().format("YYYY-MM-DD HH:mm:ss"),
                 totalCusto: 0,
                 percentageDiscount: 0,
                 moneyDiscount: 0,
@@ -241,16 +242,16 @@
                 this.pacotes.splice(index, 1)
             },
             gerarCodigo() {
-                if (this.codigo === '') {
+                if (this.codigo === '' || !this.codigo) {
                     this.codigo = this.now.toString();
-                    this.$store.dispatch('CadastrarVenda', {
+                    /* this.$store.dispatch('CadastrarVenda', {
                         consultas: this.consultas,
                         exames: this.exames,
                         pacotes: this.pacotes,
                         codigo: this.codigo,
                         preco: this.total,
                         custo: this.totalCusto
-                    });
+                    }); */
                 }
             },
             imprimir() {
@@ -286,7 +287,8 @@
                 if (this.codigo === '' || this.codigo === undefined) {
                     //falar para digitar nome de usuario
                     //aviso
-                } else {
+                    this.gerarCodigo()
+                } //else {
                     if (this.formaPagamento === this.formaPagamento[1]) {
                         this.taxa = constants.CREDIT_INITIAL_TAX + (constants.CREDIT_PARCEL_TAX * parseInt(this.parcelas))
                     }
@@ -305,24 +307,27 @@
                     if (this.percentageDiscount !== 0 && this.moneyDiscount !== 0) {
                         this.desconto = this.total - this.totalNovo
                     }
+                    var user = this.$store.getters.selectedPatient
                     this.$store.dispatch('AddSale', {
-                        consultas: this.consultas,
-                        exames: this.exames,
-                        pacotes: this.pacotes,
-                        codigo: this.codigo,
-                        price: this.total,
-                        pagamento: this.formaPagamento,
-                        parcelas: this.parcelas,
-                        taxa: this.taxa,
-                        desconto: this.desconto,
-                        data: this.data,
-                        custo: this.totalCusto,
-                        medicoDia: this.medicoDia
+                        consultations: this.consultas,
+                        exams: this.exames,
+                        package_id: this.pacotes,
+                        invoice: this.codigo,
+                        price: this.totalNovo,
+                        form_payment: this.formaPagamento,
+                        /* parcelas: this.parcelas,
+                        rate: this.taxa, */
+                        percentageDiscount: this.percentageDiscount,
+                        moneyDiscount: this.moneyDiscount,
+                        date: this.data,
+                        cost: this.totalCusto,
+                        /* medicoDia: this.medicoDia */
+                        user:user
                     }).then(() => {
                         this.aviso2 = true;
                     });
                     this.card = false
-                }
+                //}
             },
             limpar() {
                 this.i = 0;
