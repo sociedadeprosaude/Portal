@@ -1,16 +1,5 @@
 <template>
     <v-container>
-        <v-layout align-left justify-left>
-            <v-btn
-                    @click="back"
-                    color="error"
-                    rounded
-                    class="mb-2 elevation-6"
-            >
-                <v-icon left>arrow_back</v-icon>
-                VOLTAR
-            </v-btn>
-        </v-layout>
         <v-layout row wrap>
             <v-flex>
                 <v-data-table
@@ -21,6 +10,224 @@
                         class="elevation-6"
                 >
                     <template v-slot:top>
+                        <v-flex xs12 class="text-right pa-2">
+                            <v-layout row wrap>
+
+                                <v-btn
+                                        @click="back"
+                                        color="primary"
+                                        rounded
+                                        class="mb-2 elevation-6"
+                                ><v-icon>close</v-icon>
+                                </v-btn>
+
+                                <v-spacer></v-spacer>
+
+                                <v-dialog v-model="dialog" persistent width="500px">
+                                    <template v-slot:activator="{ on }">
+                                        <v-btn rounded color="primary" dark class="mb-2 elevation-6" v-on="on">
+                                            <v-icon left>add</v-icon>
+                                            Nova Clinica
+                                        </v-btn>
+                                    </template>
+                                    <v-card>
+                                        <v-card-title class="headline grey lighten-2" primary-title>
+                                            <span class="headline">{{ formTitle }}</span>
+                                        </v-card-title>
+
+                                        <v-card-text>
+                                            <v-container grid-list-md>
+                                                <v-layout wrap>
+
+                                                    <v-flex xs6>
+                                                        <v-text-field
+                                                                v-model="editedItem.name"
+                                                                label="Nome da Clinica"
+                                                                placeholder="Nome da Clinica"
+                                                                outlined
+                                                                clearable
+                                                                hide-details
+                                                        ></v-text-field>
+                                                    </v-flex>
+                                                    <v-flex xs6>
+                                                        <v-text-field
+                                                                v-mask="mask.cnpj"
+                                                                v-model="editedItem.cnpj"
+                                                                label="CNPJ"
+                                                                placeholder="CNPJ"
+                                                                outlined
+                                                                clearable
+                                                                hide-details
+                                                        ></v-text-field>
+                                                    </v-flex>
+                                                    <v-flex xs6>
+                                                        <v-text-field
+                                                                v-mask="mask.telephone"
+                                                                v-model="editedItem.telephone[0]"
+                                                                label="Telefone"
+                                                                placeholder="Telefone"
+                                                                outlined
+                                                                clearable
+                                                                hide-details
+                                                        ></v-text-field>
+                                                    </v-flex>
+                                                    <v-flex xs6>
+                                                        <v-text-field
+                                                                v-model="cep"
+                                                                v-mask="mask.cep"
+                                                                label="CEP"
+                                                                placeholder="CEP"
+                                                                outlined
+                                                                clearable
+                                                                hide-details
+                                                        ></v-text-field>
+                                                    </v-flex>
+                                                    <v-flex xs12>
+                                                        <v-alert
+                                                                v-model="alertCEP"
+                                                                dense
+                                                                outlined
+                                                                dismissible
+                                                                type="warning"
+                                                        >
+                                                            O CEP não foi localizado
+                                                        </v-alert>
+                                                    </v-flex>
+                                                    <v-flex xs12>
+                                                        <v-text-field
+                                                                v-model="editedItem.address.street"
+                                                                label="Logradouro"
+                                                                placeholder="Logradouro"
+                                                                outlined
+                                                                hide-details
+                                                                clearable
+                                                        ></v-text-field>
+                                                    </v-flex>
+                                                    <v-flex xs4>
+                                                        <v-text-field
+                                                                v-model="editedItem.address.number"
+                                                                label="Nº"
+                                                                placeholder="ex.: 157"
+                                                                outlined
+                                                                hide-details
+                                                                clearable
+                                                        ></v-text-field>
+                                                    </v-flex>
+                                                    <v-flex xs8>
+                                                        <v-text-field
+                                                                v-model="editedItem.address.neighborhood"
+                                                                label="Bairro"
+                                                                placeholder="Bairro"
+                                                                outlined
+                                                                hide-details
+                                                                clearable
+                                                        ></v-text-field>
+                                                    </v-flex>
+
+                                                    <v-flex xs12>
+                                                        <v-text-field
+                                                                v-model="editedItem.address.complement"
+                                                                label="Complemento"
+                                                                placeholder="Complemento"
+                                                                outlined
+                                                                hide-details
+                                                                clearable
+                                                        ></v-text-field>
+                                                    </v-flex>
+                                                    <v-flex xs7>
+                                                        <v-select
+                                                                :items="stateOptions"
+                                                                label="Estado"
+                                                                placeholder="Estado"
+                                                                v-model="editedItem.address.state"
+                                                                outlined
+                                                                chips
+                                                                hide-details
+                                                                clearable
+                                                        ></v-select>
+                                                    </v-flex>
+                                                    <v-flex xs5>
+                                                        <v-text-field
+                                                                label="Cidade"
+                                                                placeholder="Cidade"
+                                                                v-model="editedItem.address.city"
+                                                                outlined
+                                                                chips
+                                                                hide-details
+                                                                clearable
+                                                        ></v-text-field>
+                                                    </v-flex>
+                                                    <p class="text-justify">Horario de Funcionamento de Segunda-Feira a
+                                                        Sexta-Feira:</p>
+                                                    <v-flex xs6>
+                                                        <v-text-field
+                                                                v-model="editedItem.startWeek"
+                                                                label="Abre as:"
+                                                                placeholder="Ex.: 08:00"
+                                                                outlined
+                                                                v-mask="mask.time"
+                                                                clearable
+                                                                hide-details
+                                                        ></v-text-field>
+                                                    </v-flex>
+                                                    <v-spacer></v-spacer>
+                                                    <v-flex xs6>
+                                                        <v-text-field
+                                                                v-model="editedItem.endWeek"
+                                                                label="Fecha as:"
+                                                                placeholder="Ex.: 18:00"
+                                                                outlined
+                                                                v-mask="mask.time"
+                                                                clearable
+                                                                hide-details
+                                                        ></v-text-field>
+                                                    </v-flex>
+                                                    <p class="text-justify">Horario de Funcionamento de Sábado:</p>
+                                                    <v-flex xs6>
+                                                        <v-text-field
+                                                                v-model="editedItem.startSaturday"
+                                                                label="Abre as:"
+                                                                placeholder="Ex.: 06:00"
+                                                                outlined
+                                                                v-mask="mask.time"
+                                                                clearable
+                                                                hide-details
+                                                        ></v-text-field>
+                                                    </v-flex>
+                                                    <v-spacer></v-spacer>
+                                                    <v-flex xs6>
+                                                        <v-text-field
+                                                                v-model="editedItem.endSaturday"
+                                                                label="Fecha as:"
+                                                                placeholder="Ex.: 12:00"
+                                                                outlined
+                                                                v-mask="mask.time"
+                                                                clearable
+                                                                hide-details
+                                                        ></v-text-field>
+                                                    </v-flex>
+                                                </v-layout>
+                                            </v-container>
+                                        </v-card-text>
+                                        <v-divider></v-divider>
+                                        <v-card-actions>
+                                            <v-btn color="error" @click="close">Cancelar</v-btn>
+                                            <v-spacer></v-spacer>
+                                            <submit-button
+                                                    color="success"
+                                                    @click="save"
+                                                    :disabled="!formIsValid"
+                                                    text="Salvar"
+                                                    :loading="loading"
+                                                    :success="success"
+                                            >
+                                            </submit-button>
+                                        </v-card-actions>
+                                    </v-card>
+                                </v-dialog>
+
+                            </v-layout>
+                        </v-flex>
                         <v-toolbar flat color="white">
                             <v-spacer></v-spacer>
                             <template>
@@ -37,225 +244,17 @@
                                     </v-flex>
                                 </v-container>
                             </template>
-                            <v-spacer></v-spacer>
-                            <v-divider
-                                    class="mx-4"
-                                    inset
-                                    vertical
-                            ></v-divider>
-                            <v-dialog v-model="dialog" persistent width="500px">
-                                <template v-slot:activator="{ on }">
-                                    <v-btn rounded color="black" dark class="mb-2 elevation-6" v-on="on">
-                                        <v-icon left>add</v-icon>
-                                        Nova Clinica
-                                    </v-btn>
-                                </template>
-                                <v-card>
-                                    <v-card-title class="headline grey lighten-2" primary-title>
-                                        <span class="headline">{{ formTitle }}</span>
-                                    </v-card-title>
-
-                                    <v-card-text>
-                                        <v-container grid-list-md>
-                                            <v-layout wrap>
-
-                                                <v-flex xs6>
-                                                    <v-text-field
-                                                            v-model="editedItem.name"
-                                                            label="Nome da Clinica"
-                                                            placeholder="Nome da Clinica"
-                                                            outlined
-                                                            clearable
-                                                            hide-details
-                                                    ></v-text-field>
-                                                </v-flex>
-                                                <v-flex xs6>
-                                                    <v-text-field
-                                                            v-mask="mask.cnpj"
-                                                            v-model="editedItem.cnpj"
-                                                            label="CNPJ"
-                                                            placeholder="CNPJ"
-                                                            outlined
-                                                            clearable
-                                                            hide-details
-                                                    ></v-text-field>
-                                                </v-flex>
-                                                <v-flex xs6>
-                                                    <v-text-field
-                                                            v-mask="mask.telephone"
-                                                            v-model="editedItem.telephone[0]"
-                                                            label="Telefone"
-                                                            placeholder="Telefone"
-                                                            outlined
-                                                            clearable
-                                                            hide-details
-                                                    ></v-text-field>
-                                                </v-flex>
-                                                <v-flex xs6>
-                                                    <v-text-field
-                                                            v-model="cep"
-                                                            v-mask="mask.cep"
-                                                            label="CEP"
-                                                            placeholder="CEP"
-                                                            outlined
-                                                            clearable
-                                                            hide-details
-                                                    ></v-text-field>
-                                                </v-flex>
-                                                <v-flex xs12>
-                                                    <v-alert
-                                                            v-model="alertCEP"
-                                                            dense
-                                                            outlined
-                                                            dismissible
-                                                            type="warning"
-                                                    >
-                                                        O CEP não foi localizado
-                                                    </v-alert>
-                                                </v-flex>
-                                                <v-flex xs12>
-                                                    <v-text-field
-                                                            v-model="editedItem.address.street"
-                                                            label="Logradouro"
-                                                            placeholder="Logradouro"
-                                                            outlined
-                                                            hide-details
-                                                            clearable
-                                                    ></v-text-field>
-                                                </v-flex>
-                                                <v-flex xs4>
-                                                    <v-text-field
-                                                            v-model="editedItem.address.number"
-                                                            label="Nº"
-                                                            placeholder="ex.: 157"
-                                                            outlined
-                                                            hide-details
-                                                            clearable
-                                                    ></v-text-field>
-                                                </v-flex>
-                                                <v-flex xs8>
-                                                    <v-text-field
-                                                            v-model="editedItem.address.neighborhood"
-                                                            label="Bairro"
-                                                            placeholder="Bairro"
-                                                            outlined
-                                                            hide-details
-                                                            clearable
-                                                    ></v-text-field>
-                                                </v-flex>
-
-                                                <v-flex xs12>
-                                                    <v-text-field
-                                                            v-model="editedItem.address.complement"
-                                                            label="Complemento"
-                                                            placeholder="Complemento"
-                                                            outlined
-                                                            hide-details
-                                                            clearable
-                                                    ></v-text-field>
-                                                </v-flex>
-                                                <v-flex xs7>
-                                                    <v-select
-                                                            :items="stateOptions"
-                                                            label="Estado"
-                                                            placeholder="Estado"
-                                                            v-model="editedItem.address.state"
-                                                            outlined
-                                                            chips
-                                                            hide-details
-                                                            clearable
-                                                    ></v-select>
-                                                </v-flex>
-                                                <v-flex xs5>
-                                                    <v-text-field
-                                                            label="Cidade"
-                                                            placeholder="Cidade"
-                                                            v-model="editedItem.address.city"
-                                                            outlined
-                                                            chips
-                                                            hide-details
-                                                            clearable
-                                                    ></v-text-field>
-                                                </v-flex>
-                                                <p class="text-justify">Horario de Funcionamento de Segunda-Feira a
-                                                    Sexta-Feira:</p>
-                                                <v-flex xs6>
-                                                    <v-text-field
-                                                            v-model="editedItem.startWeek"
-                                                            label="Abre as:"
-                                                            placeholder="Ex.: 08:00"
-                                                            outlined
-                                                            v-mask="mask.time"
-                                                            clearable
-                                                            hide-details
-                                                    ></v-text-field>
-                                                </v-flex>
-                                                <v-spacer></v-spacer>
-                                                <v-flex xs6>
-                                                    <v-text-field
-                                                            v-model="editedItem.endWeek"
-                                                            label="Fecha as:"
-                                                            placeholder="Ex.: 18:00"
-                                                            outlined
-                                                            v-mask="mask.time"
-                                                            clearable
-                                                            hide-details
-                                                    ></v-text-field>
-                                                </v-flex>
-                                                <p class="text-justify">Horario de Funcionamento de Sábado:</p>
-                                                <v-flex xs6>
-                                                    <v-text-field
-                                                            v-model="editedItem.startSaturday"
-                                                            label="Abre as:"
-                                                            placeholder="Ex.: 06:00"
-                                                            outlined
-                                                            v-mask="mask.time"
-                                                            clearable
-                                                            hide-details
-                                                    ></v-text-field>
-                                                </v-flex>
-                                                <v-spacer></v-spacer>
-                                                <v-flex xs6>
-                                                    <v-text-field
-                                                            v-model="editedItem.endSaturday"
-                                                            label="Fecha as:"
-                                                            placeholder="Ex.: 12:00"
-                                                            outlined
-                                                            v-mask="mask.time"
-                                                            clearable
-                                                            hide-details
-                                                    ></v-text-field>
-                                                </v-flex>
-                                            </v-layout>
-                                        </v-container>
-                                    </v-card-text>
-                                    <v-divider></v-divider>
-                                    <v-card-actions>
-                                        <v-btn color="error" @click="close">Cancelar</v-btn>
-                                        <v-spacer></v-spacer>
-                                        <submit-button
-                                                color="success"
-                                                @click="save"
-                                                :disabled="!formIsValid"
-                                                text="Salvar"
-                                                :loading="loading"
-                                                :success="success"
-                                        >
-                                        </submit-button>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-dialog>
                         </v-toolbar>
                     </template>
 
                     <template v-slot:item.action="{ item }">
 
-                        <v-btn @click="editItem(item)" small dark fab color="black" class="mr-2">
+                        <v-btn @click="editItem(item)" small dark fab color="warning" class="mr-2">
                             <v-icon>
                                 edit
                             </v-icon>
                         </v-btn>
-                        <v-btn @click="deleteItem(item)" small dark fab color="black" class="mr-2">
+                        <v-btn @click="deleteItem(item)" small dark fab color="error" class="mr-2">
                             <v-icon>
                                 delete
                             </v-icon>
@@ -263,7 +262,7 @@
 
                         <v-dialog v-model="Consultation" width="500px" text hide-overlay>
                             <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" small dark fab color="black" class="mr-2" @click="selectClinic(item)">
+                                <v-btn v-on="on" small dark fab color="primary" class="mr-2" @click="selectClinic(item)">
                                     <v-icon>assignment</v-icon>
                                 </v-btn>
                             </template>
@@ -272,7 +271,7 @@
 
                         <v-dialog v-model="Exam" width="500px" text hide-overlay>
                             <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" small dark fab color="black" class="mr-2" @click="selectClinic(item)">
+                                <v-btn v-on="on" small dark fab color="primary" class="mr-2" @click="selectClinic(item)">
                                     <v-icon>poll</v-icon>
                                 </v-btn>
                             </template>
@@ -281,7 +280,7 @@
 
                         <v-dialog v-model="Product" width="500px" text hide-overlay>
                             <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" small dark fab color="black" class="mr-2" @click="selectClinic(item)">
+                                <v-btn v-on="on" small dark fab color="primary" class="mr-2" @click="selectClinic(item)">
                                     <v-icon>playlist_add_check</v-icon>
                                 </v-btn>
                             </template>
@@ -290,7 +289,7 @@
 
                         <v-dialog v-model="Configuration" width="500px" text hide-overlay>
                             <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" small dark fab color="black" class="mr-2" @click="selectClinic(item)">
+                                <v-btn v-on="on" small dark fab color="primary" class="mr-2" @click="selectClinic(item)">
                                     <v-icon>build</v-icon>
                                 </v-btn>
                             </template>

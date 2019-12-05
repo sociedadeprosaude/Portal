@@ -3,12 +3,10 @@
     <v-layout align-left justify-left>
       <v-btn
               @click="back"
-              color="error"
+              color="primary"
               rounded
               class="mb-2 elevation-6"
-      >
-        <v-icon left>arrow_back</v-icon>
-        VOLTAR
+      ><v-icon>close</v-icon>
       </v-btn>
     </v-layout>
     <v-layout row wrap>

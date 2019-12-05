@@ -14,7 +14,6 @@
                     <v-flex xs12>
                         <v-text-field
                                 clearable
-                                :rules="rulesform"
                                 prepend-icon="person"
                                 v-model="name"
                                 label="Nome do Médico(a)"
@@ -28,7 +27,6 @@
                                 :disabled="doctor !== undefined"
                                 clearable
                                 v-mask="maskCPF"
-                                :rules="rulesform"
                                 prepend-icon="credit_card"
                                 v-model="cpf"
                                 label="CPF"
@@ -41,7 +39,6 @@
                         <v-text-field
                                 clearable
                                 v-mask="maskCRM"
-                                :rules="rulesform"
                                 prepend-icon="credit_card"
                                 v-model="crm"
                                 label="CRM"
@@ -52,7 +49,6 @@
                     </v-flex>
                     <v-flex>
                         <v-select
-                                :rules="rulesform"
                                 prepend-icon="school"
                                 :items="specialtyOptions"
                                 item-text="name"
@@ -187,9 +183,6 @@
                 maskCRM: '######',
                 maskCPF: '###.###.###-##',
                 paymentMethod: 'consultation',
-                rulesform: [
-                    aux => !!aux || 'Preencher o Campo é Obrigatório.'
-                ],
                 name: undefined,
                 crm: undefined,
                 cpf: undefined,
@@ -210,7 +203,14 @@
         },
         methods: {
             close() {
+                this.clear()
                 this.$emit('close')
+            },
+            clear () {
+                this.name = undefined
+                this.crm = undefined
+                this.cpf = undefined
+                this.specialties = undefined
             },
             erase() {
             },
