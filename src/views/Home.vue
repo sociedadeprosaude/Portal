@@ -66,12 +66,12 @@
             //       'Colaboradores'
             //   ]
             // firebase.database().ref('permissions/') .set(perm)
-            let user = firebase.auth().currentUser
-            if (!user) {
-                this.$router.push('login')
-                return
-            }
-            this.getUser(user)
+                let user = firebase.auth().currentUser
+                if (!user) {
+                    this.$router.push('login')
+                    return
+                }
+                this.getUser(user)
         },
         data() {
             return {

@@ -11,6 +11,8 @@ import axios from 'axios'
 import constants from '@/utils/constants'
 import DateFilter from './filters/date'
 import MoneyFilter from './filters/money'
+import VCurrencyField from 'v-currency-field'
+
 
 import './registerServiceWorker'
 import * as firebase from "firebase";
@@ -32,17 +34,29 @@ const options = {
 Vue.use(VueHtmlToPaper, options);
 
 Vue.use(Vuetify)
+Vue.use(constants)
+
+Vue.use(VCurrencyField, {
+  locale: 'pt-BR',
+  decimalLength: 2,
+  autoDecimalMode: true,
+  min: null,
+  max: null,
+  defaultValue: 0
+})
 
 // Moment.js
 window.moment = require('moment')
 window.moment.locale('pt-br')
 
-if (process.env.NODE_ENV === 'development') {
-  // axios.defaults.baseURL = 'http://prosaude.caixa'
-  axios.defaults.baseURL = 'http://caixa.instituicaoprosaude.com:82'
-} else {
-  axios.defaults.baseURL = 'http://caixa.instituicaoprosaude.com:82'
-}
+// if (window.location.href.includes('localhost')) {
+//   process.env.NODE_ENV = 'development'
+//   console.log(process.env.NODE_ENV)
+// }
+// if (process.env.NODE_ENV === 'development') {
+//
+// } else {
+// }
 
 const token = localStorage.getItem('token')
 if (token) {

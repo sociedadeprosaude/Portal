@@ -14,7 +14,6 @@
                     <v-flex xs12>
                         <v-text-field
                                 clearable
-                                :rules="rulesform"
                                 prepend-icon="person"
                                 v-model="name"
                                 label="Nome do Médico(a)"
@@ -28,7 +27,6 @@
                                 :disabled="doctor !== undefined"
                                 clearable
                                 v-mask="maskCPF"
-                                :rules="rulesform"
                                 prepend-icon="credit_card"
                                 v-model="cpf"
                                 label="CPF"
@@ -41,7 +39,6 @@
                         <v-text-field
                                 clearable
                                 v-mask="maskCRM"
-                                :rules="rulesform"
                                 prepend-icon="credit_card"
                                 v-model="crm"
                                 label="CRM"
@@ -52,9 +49,8 @@
                     </v-flex>
                     <v-flex>
                         <v-select
-                                :rules="rulesform"
                                 prepend-icon="school"
-                                :items="options"
+                                :items="specialtyOptions"
                                 item-text="name"
                                 item-value="name"
                                 return-object
@@ -70,16 +66,60 @@
                             <template v-slot:selection="data">
                                 <v-chip
                                         :key="JSON.stringify(data.item)"
-                                        :selected="data.selected"
+                                        :input-value="data.selected"
                                         :disabled="data.disabled"
                                         class="v-chip--select-multi"
                                         @click.stop="data.parent.selectedIndex = data.index"
                                         @input="data.parent.selectItem(data.item)"
                                         text-color="white"
                                         color="info"
-                                >{{ data.item.name }}</v-chip>
+                                >{{ data.item.name }}
+                                </v-chip>
                             </template>
                         </v-select>
+                    </v-flex>
+                    <v-flex xs12 v-for="spec in specialties" :key="spec.name">
+                        <v-layout row wrap class="align-center">
+                            <v-flex xs6 class="text-left">
+                                <span class="my-sub-headline">
+                                    {{spec.name}}
+                                </span>
+                            </v-flex>
+                            <v-flex xs6>
+                                <v-radio-group v-model="spec.payment_method">
+                                    <v-layout row wrap>
+                                        <v-flex xs4>
+                                            <v-radio
+                                                    label="Consulta"
+                                                    value="unit"
+                                            ></v-radio>
+                                        </v-flex>
+                                        <v-spacer></v-spacer>
+                                        <v-flex xs4>
+                                            <v-radio
+                                                    label="Dia"
+                                                    value="daily"
+                                            ></v-radio>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-radio-group>
+                            </v-flex>
+                            <v-flex xs4>
+                                <v-currency-field
+                                        label="Custo"
+                                        prefix="R$"
+                                        v-model="spec.cost"
+                                ></v-currency-field>
+                            </v-flex>
+                            <v-spacer></v-spacer>
+                            <v-flex xs4>
+                                <v-currency-field
+                                        prefix="R$"
+                                        v-model="spec.price"
+                                        label="Venda"
+                                ></v-currency-field>
+                            </v-flex>
+                        </v-layout>
                     </v-flex>
                 </v-layout>
             </v-container>
@@ -127,7 +167,7 @@
             SubmitButton
         },
         beforeDestroy() {
-          this.doctor = undefined
+            this.doctor = undefined
         },
         mounted() {
             this.$store.dispatch('getSpecialties')
@@ -142,9 +182,7 @@
             return {
                 maskCRM: '######',
                 maskCPF: '###.###.###-##',
-                rulesform: [
-                    aux => !!aux || 'Preencher o Campo é Obrigatório.'
-                ],
+                paymentMethod: 'unit',
                 name: undefined,
                 crm: undefined,
                 cpf: undefined,
@@ -155,18 +193,24 @@
             }
         },
         computed: {
-            options() {
-              let specialties = this.$store.getters.specialties
-                return specialties
+            specialtyOptions() {
+                return this.$store.getters.specialties
             },
             formIsValid() {
                 return this.name && this.crm && this.specialties && this.cpf
-                    && this.name.length > 0 && this.crm.length > 0  && this.specialties.length > 0  && this.cpf.length > 0
+                    && this.name.length > 0 && this.crm.length > 0 && this.specialties.length > 0 && this.cpf.length > 0
             },
         },
         methods: {
             close() {
+                this.clear()
                 this.$emit('close')
+            },
+            clear () {
+                this.name = undefined
+                this.crm = undefined
+                this.cpf = undefined
+                this.specialties = undefined
             },
             erase() {
             },

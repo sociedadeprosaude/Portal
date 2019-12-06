@@ -13,6 +13,7 @@
     "firebase": "^6.3.5",
     "moment": "^2.24.0",
     "register-service-worker": "^1.6.2",
+    "v-currency-field": "^3.0.6",
     "vue": "^2.6.10",
     "vue-html-to-paper": "^1.1.1",
     "vue-pdf": "^4.0.7",

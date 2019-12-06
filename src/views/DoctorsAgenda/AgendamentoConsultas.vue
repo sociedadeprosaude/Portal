@@ -2,7 +2,7 @@
     <v-layout row wrap>
         <v-flex xs8>
             <v-layout align-center row wrap class="ml-6">
-                <v-flex xs3>
+                <v-flex xs5>
                     <v-select
                             prepend-icon="school"
                             v-model="especialidade"
@@ -10,12 +10,13 @@
                             item-text="name"
                             return-object
                             label="Especialidade"
-                            outline
+                            outlined
+                            rounded
                             chips
                             color="blue"
                     ></v-select>
                 </v-flex>
-                <v-flex xs4 class="ml-3">
+                <v-flex xs5 class="ml-3">
                     <v-select
                             prepend-icon="person"
                             v-model="selectedDoctor"
@@ -23,7 +24,8 @@
                             return-object
                             item-text="name"
                             label="Médicos"
-                            outline
+                            outlined
+                            rounded
                             chips
                             color="blue"
                     ></v-select>
@@ -399,6 +401,7 @@
             num_recibo: "",
             type: "",
             createConsultationForm: undefined,
+            invoiceFound:undefined,
             attendance: "Aguardando Atendimento",
             attendanceOptions: [
                 {text: "Aguardando Atendimento"},
@@ -552,7 +555,7 @@
             window.addEventListener("scroll", this.handleScroll);
         },
         methods: {
-            scheduleAppointment(consultation) {
+            scheduleAppointment(consultation){
                 if (!this.selectedPatient) {
                     this.$refs.patientCard.$el.classList.add('shaking-ease-anim')
                     setTimeout(() => {
@@ -563,7 +566,7 @@
                 this.fillConsultationForm(consultation)
                 this.dialog = true
             },
-            fillConsultationForm(consultation) {
+            async fillConsultationForm(consultation) {
                 let patient = this.selectedPatient
                 let form = {
                     user: patient,
@@ -571,6 +574,23 @@
                         return !a.user
                     })
                 }
+                this.$store.dispatch('thereIsIntakes',{
+                    user:patient,
+                    doctor:form.consultation.doctor,
+                    specialty:form.consultation.specialty})
+                .then((obj)=>{
+                    console.log(obj)
+                    this.invoiceFound = obj
+                    this.num_recibo = obj.invoice
+                    this.status = 'Pago'
+                })
+                .catch((error)=>{
+                    console.log(error)
+                    this.invoiceFound = undefined
+                    this.num_recibo = ''
+                    this.status = 'Aguardando pagamento'
+                })
+                
                 this.createConsultationForm = form
             },
             formatConsultationsArray(consultations) {

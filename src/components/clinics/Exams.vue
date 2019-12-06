@@ -18,6 +18,7 @@
                     </v-flex>
                     <v-flex xs12>
                         <v-combobox
+                                prepend-inner-icon="search"
                                 prepend-icon="poll"
                                 :items="listExam"
                                 item-text="name"
@@ -32,13 +33,13 @@
                     </v-flex>
                     <v-flex>
                         <v-flex xs12>
-                        <v-btn v-on:click="addToList" color="success">
+                        <v-btn v-on:click="addToList" :disabled="!addIsValid" color="success">
                             <v-icon>add</v-icon>
                             adicionar na lista de exames
                         </v-btn>
                         </v-flex>
                         <v-flex>
-                        <v-btn v-on:click="deleteFromList" color="error">
+                        <v-btn v-on:click="deleteFromList" :disabled="!deleteIsValid" color="error">
                             <v-icon>delete_forever</v-icon>
                             Limpar lista de exames
                         </v-btn>
@@ -146,6 +147,12 @@
         computed: {
             formIsValid() {
                 return this.sale && this.cost && this.exams.length > 0
+            },
+            addIsValid() {
+                return this.newExam
+            },
+            deleteIsValid(){
+                return this.exams.length > 0
             },
             selectedClinic() {
                 return this.$store.getters.selectedClinic;

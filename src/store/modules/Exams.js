@@ -79,7 +79,7 @@ const actions = {
             agenda: payload.clinic.agenda,
 
         };
-        firebase.firestore().collection('clinics/' + examData+ '/exams').doc(payload.exam).set(examData);
+        firebase.firestore().collection('clinics/' + payload.clinic.name + '/exams').doc(payload.exam).set(examData);
 
         firebase.firestore().collection('exams/' + payload.exam + '/clinics').doc(examData.clinic).set(examData);
     },
@@ -110,6 +110,7 @@ const actions = {
                     });
 
                 });
+                console.log('exames:', exams)
                 commit('setExamsSelected', exams);
                 resolve()
             } catch (e) {
