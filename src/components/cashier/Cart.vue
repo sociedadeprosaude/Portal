@@ -305,9 +305,7 @@
                 return budget
             },
             saveBudget(budget) {
-                console.log(budget)
                 this.selectedBudget = Object.assign({}, budget)
-                console.log(this.selectedBudget)
                 this.$store.dispatch('addBudget', budget)
                 
             },
@@ -317,10 +315,8 @@
                     return
                 }
                 if (!this.selectedBudget) {
-                    console.log('Entrou no select')
                     this.saveBudget(this.generateBudget())
                 }
-                console.log(this.selectedBudget)
                 this.$store.dispatch('addIntake', this.selectedBudget,
                 ).then(() => {
                     this.aviso2 = true;

@@ -489,9 +489,10 @@
                 return this.formatDate(this.index_Selecionado.data)
             },
             consultas() {
+                console.log(this.especialidade)
                 let consultas = this.formatConsultationsArray(this.$store.getters.consultations).filter((a) => {
                     
-                    return this.especialidade && this.date ? this.especialidade === a.specialty.name && this.date === a.date.split(' ')[0] && !(a.user === undefined)  : false
+                    return this.especialidade && this.date ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && !(a.user === undefined)  : false
                 })
                 return consultas;
             },
@@ -577,7 +578,7 @@
             async initialConfig() {
                 this.loading = true
                 await this.$store.dispatch("getSpecialties")
-                this.especialidade = this.specialties[0]['name']
+                this.especialidade = this.specialties[0]
                 await this.$store.dispatch('getDoctors')
                 await this.$store.dispatch('getConsultations')
                 
@@ -619,6 +620,7 @@
             },
 
             consultasByDoctors(consultations) {
+                console.log('jkkjhkjhkjhkj')
                 let res = {}
                 for (let cons in consultations) {
                     let targetDate = consultations[cons].doctor.cpf
