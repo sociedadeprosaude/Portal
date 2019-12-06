@@ -94,94 +94,6 @@
 
                     </v-container>
                 </template>
-<!--
-                <v-container fluid class="align-center justify-center">
-                    <v-row justify="center" align-center justify-center wrap>
-                        <v-subheader>Hoje: {{date | dateFilter}}</v-subheader>
-
-                        <v-expansion-panels popout>
-                            <v-expansion-panel
-                                    v-for="(doctor, i) in doctors"
-                                    :key="i"
-                                    hide-actions
-                                    class="elevation-6"
-                            >
-                                <v-expansion-panel-header>
-                                    <v-row align="center" class="spacer" no-gutters>
-
-                                        <v-col cols="1" xs="2">
-                                            <v-icon color="primary">person</v-icon>:
-                                        </v-col>
-                                        <v-col class="hidden-xs-only" xs="3">
-                                            <strong  v-html="doctor"></strong>
-                                        </v-col>
-
-                                        <v-col cols="3" xs="2">
-                                            <v-icon color="primary">payment</v-icon>:
-                                            <strong v-html="especialidade"></strong>
-                                        </v-col>
-
-                                        <v-col cols="1" xs="2">
-                                            <v-icon color="primary">event</v-icon>:
-                                            <strong v-html="doctor.consultas"></strong>
-                                        </v-col>
-
-                                        <v-col cols="1" xs="2">
-                                            <v-icon color="primary">restore</v-icon>:
-                                            <strong v-html="doctor.retornos"></strong>
-                                        </v-col>
-
-                                    </v-row>
-                                </v-expansion-panel-header>
-
-                                <v-expansion-panel-content>
-                                    <v-divider></v-divider>
-                                    <v-card>
-                                        <v-list three-line subheader>
-                                            <v-layout wrap>
-                                                <v-flex sm3
-                                                        xs12
-                                                        v-for="(patient, i) in patients"
-                                                        :key="i"
-                                                        v-if="patient.status === 'Pago'"
-                                                >
-                                                    <v-list-item
-                                                            @click="Attendances"
-                                                            :disabled="patient.attendance === 'Atendimento Realizado' ? true : false"
-                                                    >
-                                                        <v-list-tile-content>
-                                                            <v-list-tile-title>
-                                                                <span :class="`${patient.color}--text`" style="font-weight: bolder">{{patient.paciente}}</span>
-                                                            </v-list-tile-title>
-                                                            <v-list-tile-sub-title>
-                                                                {{patient.cpf}} -
-                                                                {{patient.telefone}}
-                                                            </v-list-tile-sub-title>
-                                                            <v-list-tile-action-text>
-                                                                {{patient.data | dateFilter}} -
-                                                                {{patient.hora}}
-                                                            </v-list-tile-action-text>
-                                                        </v-list-tile-content>
-
-                                                        <v-list-tile-action>
-                                                            <v-btn icon ripple text>
-                                                                <v-icon v-if="patient.modalidade === 'Retorno'" :color="patient.color">restore</v-icon>
-                                                                <v-icon v-if="patient.modalidade === 'Consulta'" :color="patient.color">event</v-icon>
-                                                                <v-icon v-if="patient.attendance === 'Atendimento Realizado'" color="success">how_to_reg</v-icon>
-                                                                <v-icon v-if="patient.attendance === 'Aguardando Atendimento'" color="warning">how_to_reg</v-icon>
-                                                            </v-btn>
-                                                        </v-list-tile-action>
-                                                    </v-list-item>
-                                                </v-flex>
-                                            </v-layout>
-                                        </v-list>
-                                    </v-card>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
-                    </v-row>
-                </v-container>
-                -->
             </v-card>
 
         </v-layout>
@@ -192,100 +104,6 @@
     var moment = require('moment');
     export default {
         data: () => ({
-
-            //START DUMMY=====================
-            /*patients: [
-                {
-                    color: 'primary',
-                    paciente: 'JACKSON KELVIN DE SOUZA',
-                    cpf:'01972524275',
-                    telefone:'092999984796',
-                    data: '2019-09-27',
-                    hora: '08:30',
-                    status: 'Pago',
-                    modalidade: 'Consulta',
-                    attendance:'Atendimento Realizado',
-                },
-                {
-                    color: 'primary',
-                    paciente: 'JACKSON KELVIN DE SOUZA',
-                    cpf:'01972524275',
-                    telefone:'092999984796',
-                    data: '2019-09-27',
-                    hora: '08:30',
-                    status: 'Pago',
-                    modalidade: 'Retorno',
-                    attendance:'Atendimento Realizado',
-                },
-                {
-                    color: 'primary',
-                    paciente: 'JACKSON KELVIN DE SOUZA',
-                    cpf:'01972524275',
-                    telefone:'092999984796',
-                    data: '2019-09-27',
-                    hora: '08:30',
-                    status: 'Aguardando pagamento',
-                    modalidade: 'Consulta',
-                    attendance:'Aguardando Atendimento',
-                },
-                {
-                    color: 'primary',
-                    paciente: 'JACKSON KELVIN DE SOUZA',
-                    cpf:'01972524275',
-                    telefone:'092999984796',
-                    data: '2019-09-27',
-                    hora: '08:30',
-                    status: 'Aguardando pagamento',
-                    modalidade: 'Retorno',
-                    attendance:'Aguardando Atendimento',
-                },
-                {
-                    color: 'primary',
-                    paciente: 'JACKSON KELVIN DE SOUZA',
-                    cpf:'01972524275',
-                    telefone:'092999984796',
-                    data: '2019-09-27',
-                    hora: '08:30',
-                    status: 'Pago',
-                    modalidade: 'Consulta',
-                    attendance:'Aguardando Atendimento',
-                },
-                {
-                    color: 'primary',
-                    paciente: 'JACKSON KELVIN DE SOUZA',
-                    cpf:'01972524275',
-                    telefone:'092999984796',
-                    data: '2019-09-27',
-                    hora: '08:30',
-                    status: 'Pago',
-                    modalidade: 'Retorno',
-                    attendance:'Aguardando Atendimento',
-                },
-                {
-                    color: 'primary',
-                    paciente: 'JACKSON KELVIN DE SOUZA',
-                    cpf:'01972524275',
-                    telefone:'092999984796',
-                    data: '2019-09-27',
-                    hora: '08:30',
-                    status: 'Aguardando pagamento',
-                    modalidade: 'Consulta',
-                    attendance:'Aguardando Atendimento',
-                },
-                {
-                    color: 'primary',
-                    paciente: 'JACKSON KELVIN DE SOUZA',
-                    cpf:'01972524275',
-                    telefone:'092999984796',
-                    data: '2019-09-27',
-                    hora: '08:30',
-                    status: 'Aguardando pagamento',
-                    modalidade: 'Retorno',
-                    attendance:'Aguardando Atendimento',
-                },
-            ],
-             */
-            //END DUMMY====================================
             moment: moment,
             menu: false,
             especialidade: undefined,
@@ -355,7 +173,7 @@
 
                 var deletar = {
                     date: this.date,
-                    name: this.doctor,
+                    doctor: this.doctor,
                     specialtie: this.especialidade
                 }
 
