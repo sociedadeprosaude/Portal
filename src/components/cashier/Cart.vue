@@ -287,7 +287,8 @@
                     discount: this.moneyDiscount,
                     total: this.total,
                     payment_method: this.formaPagamento,
-                    cost: this.cost
+                    cost: this.cost,
+                    user: this.$store.getters.selectedPatient
                 }
                 return budget
             },
@@ -304,10 +305,8 @@
                 if (!this.selectedBudget) {
                     this.saveBudget(this.generateBudget())
                 }
-                this.$store.dispatch('addSale', {
-                    budget: this.selectedBudget,
-                    user: user
-                }).then(() => {
+                this.$store.dispatch('addIntake', this.selectedBudget,
+                ).then(() => {
                     this.aviso2 = true;
                 });
                 this.card = false
