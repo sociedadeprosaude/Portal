@@ -1,4 +1,5 @@
 import firebase from "firebase";
+import functions from "../../utils/functions";
 
 const state = {
 
@@ -10,8 +11,60 @@ const mutations = {
 };
 
 const actions = {
-    async AddSale({commit},payload){
-        
+    async addBudget(context, payload) {
+        let originalPayload = Object.assign({}, payload)
+        functions.removeUndefineds(payload)
+        // console.log(payload)
+        // return
+        let specialties = payload.specialties ? Object.assign({}, payload.specialties) : undefined
+        let exams = payload.exams ? Object.assign({}, payload.exams) : undefined
+        let user = payload.user ? Object.assign({}, payload.user) : undefined
+        delete payload.specialties
+        delete payload.exams
+        delete payload.user
+
+        functions.removeUndefineds(specialties)
+        functions.removeUndefineds(exams)
+
+
+        await firebase.firestore().collection('budgets').doc(payload.id.toString()).set(payload)
+        if (specialties) {
+            await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('specialties').add(specialties)
+        }
+        if (exams) {
+            await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('exams').add(exams)
+        }
+        if (user) {
+            await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('user').add(user)
+            context.dispatch('addBudgetToUser', originalPayload)
+        }
+    },
+
+    async addBudgetToUser({}, payload) {
+        functions.removeUndefineds(payload)
+        // console.log(payload)
+        // return
+        let specialties = payload.specialties ? Object.assign({}, payload.specialties) : undefined
+        let exams = payload.exams ? Object.assign({}, payload.exams) : undefined
+        let user = payload.user ? Object.assign({}, payload.user) : undefined
+        delete payload.specialties
+        delete payload.exams
+        delete payload.user
+
+        functions.removeUndefineds(specialties)
+        functions.removeUndefineds(exams)
+
+        let userRef = firebase.firestore().collection('users').doc(user.cpf)
+        await userRef.collection('budgets').doc(payload.id.toString()).set(payload)
+        if (specialties) {
+            await userRef.collection('budgets').doc(payload.id.toString()).collection('specialties').add(specialties)
+        }
+        if (exams) {
+            await userRef.collection('budgets').doc(payload.id.toString()).collection('exams').add(exams)
+        }
+    },
+    async addSale({commit},payload){
+
         firebase.firestore().collection('intakes').doc(payload.invoice).set({
             package_id: payload.package_id,
             invoice: payload.invoice,
@@ -42,7 +95,7 @@ const actions = {
             })
         })
 
-        
+
         /* firebase.firestore().collection('users').doc(payload.user.cpf).collection('intakes').add({
             package_id: payload.package_id,
             invoice: payload.invoice,
@@ -54,7 +107,7 @@ const actions = {
             cost: payload.cost,
             /* medicoDia: this.medicoDia
         }).then(()=>{
-            
+
         }) */
         /* firebase.firestore().collection('users/' + payload.cpf + '/consultations').set(payload.consultations);
         firebase.firestore().collection('users/' + payload.cpf + '/exams').set(payload.exams);
@@ -76,12 +129,12 @@ const actions = {
                     }else{
                         reject('Invoice not found!')
                     }
-                    
+
                 }).catch(()=>{
                     reject('Error!')
                 })
         })
-        
+
     }
 
 };

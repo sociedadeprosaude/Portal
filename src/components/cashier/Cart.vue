@@ -178,7 +178,6 @@
                 return this.$store.getters.getShoppingCartItemsByCategory.exams
             },
             consultas() {
-                console.log(this.$store.getters.getShoppingCartItemsByCategory.consultations)
                 return this.$store.getters.getShoppingCartItemsByCategory.consultations
             },
             pacotes() {
@@ -249,18 +248,19 @@
                 this.pacotes.splice(index, 1)
             },
             imprimir() {
-                if (this.codigo === '') {
-                    this.codigo = this.now.toString();
-                }
-                this.$store.dispatch('CadastrarVenda', {
-                    consultas: this.consultas,
-                    exames: this.exames,
-                    pacotes: this.pacotes,
-                    codigo: this.codigo,
-                    preco: this.total,
-                    custo: this.totalCusto
-                });
-                window.print();
+                // if (this.codigo === '') {
+                //     this.codigo = this.now.toString();
+                // }
+                // this.$store.dispatch('CadastrarVenda', {
+                //     consultas: this.consultas,
+                //     exames: this.exames,
+                //     pacotes: this.pacotes,
+                //     codigo: this.codigo,
+                //     preco: this.total,
+                //     custo: this.totalCusto
+                // });
+                // window.print();
+                this.saveBudget(this.generateBudget())
             },
             pesquisarUsuario() {
                 this.$store.dispatch('searchPatient', this.codigo).then(() => {
@@ -281,8 +281,8 @@
                 let id = this.now
                 let budget = {
                     id: id,
-                    specialties: this.specialties,
-                    exams: this.exams,
+                    specialties: this.consultas.length > 0 ? this.consultas : undefined ,
+                    exams: this.exames.length > 0 ? this.exames : undefined,
                     subTotal: this.subTotal,
                     discount: this.moneyDiscount,
                     total: this.total,
@@ -292,6 +292,7 @@
                 return budget
             },
             saveBudget(budget) {
+                console.log(budget)
                 this.$store.dispatch('addBudget', budget)
                 this.selectedBudget = budget
             },
@@ -303,7 +304,7 @@
                 if (!this.selectedBudget) {
                     this.saveBudget(this.generateBudget())
                 }
-                this.$store.dispatch('AddSale', {
+                this.$store.dispatch('addSale', {
                     budget: this.selectedBudget,
                     user: user
                 }).then(() => {
