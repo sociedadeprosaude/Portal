@@ -401,7 +401,7 @@
             num_recibo: "",
             type: "",
             createConsultationForm: undefined,
-            invoiceFound:undefined,
+            payment_numberFound:undefined,
             attendance: "Aguardando Atendimento",
             attendanceOptions: [
                 {text: "Aguardando Atendimento"},
@@ -580,13 +580,13 @@
                     specialty:form.consultation.specialty})
                 .then((obj)=>{
                     console.log(obj)
-                    this.invoiceFound = obj
-                    this.num_recibo = obj.invoice
+                    this.payment_numberFound = obj
+                    this.num_recibo = obj.payment_number
                     this.status = 'Pago'
                 })
                 .catch((error)=>{
                     console.log(error)
-                    this.invoiceFound = undefined
+                    this.payment_numberFound = undefined
                     this.num_recibo = ''
                     this.status = 'Aguardando pagamento'
                 })
@@ -720,13 +720,13 @@
                     ...form.user,
                     status: this.status,
                     type: this.modalidade,
-                    invoice: this.num_recibo
+                    payment_number: this.num_recibo
                 }
                 form.consultation = {
                     ...form.consultation,
                     status: this.status,
                     type: this.modalidade,
-                    invoice: this.num_recibo
+                    payment_number: this.num_recibo
                 }
                 // return
                 this.loading = true

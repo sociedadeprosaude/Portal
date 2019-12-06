@@ -713,14 +713,14 @@
                     ...form.user,
                     status: this.status,
                     type: this.modalidade,
-                    invoice: this.num_recibo,
+                    payment_number: this.num_recibo,
                     
                 }
                 form.consultation = {
                     ...form.consultation,
                     status: this.status,
                     type: this.modalidade,
-                    invoice: this.num_recibo,
+                    payment_number: this.num_recibo,
                     previousConsultation:this.query.idConsultation
                 }
                 // return

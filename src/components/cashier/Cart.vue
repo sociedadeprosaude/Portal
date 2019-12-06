@@ -28,7 +28,7 @@
                         <v-layout row wrap>
                             <v-flex xs12 v-if="exames.length > 0">
                                 <p>Exames</p>
-                                <v-card v-for="(item,index) in exames" class="mt-2" :key="item.name">
+                                <v-card v-for="(item) in exames" class="mt-2" :key="item.name">
                                     <v-card-title class="py-2">
                                         <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
                                         <v-spacer></v-spacer>
@@ -49,7 +49,7 @@
                             <v-divider></v-divider>
                             <v-flex xs12 v-if="consultas.length > 0">
                                 <p>Consultas</p>
-                                <v-card v-for="(item,index) in consultas" class="ma-2" :key="item.doctor.name">
+                                <v-card v-for="(item) in consultas" class="ma-2" :key="item.doctor.name">
                                     <v-card-title class="py-2">
                                         <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
                                         <v-spacer></v-spacer>
@@ -71,7 +71,7 @@
                             <v-divider></v-divider>
                             <v-flex xs12 v-if="pacotes.length > 0">
                                 <p>Pacotes</p>
-                                <v-card v-for="(item,index) in pacotes" class="mt-2" :key="item.nome">
+                                <v-card v-for="(item) in pacotes" class="mt-2" :key="item.nome">
                                     <v-card-title class="py-2">
                                         <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
                                         <v-spacer></v-spacer>
@@ -305,8 +305,11 @@
                 return budget
             },
             saveBudget(budget) {
+                console.log(budget)
+                this.selectedBudget = Object.assign({}, budget)
+                console.log(this.selectedBudget)
                 this.$store.dispatch('addBudget', budget)
-                this.selectedBudget = budget
+                
             },
             pay() {
                 let user = this.$store.getters.selectedPatient
@@ -314,8 +317,10 @@
                     return
                 }
                 if (!this.selectedBudget) {
+                    console.log('Entrou no select')
                     this.saveBudget(this.generateBudget())
                 }
+                console.log(this.selectedBudget)
                 this.$store.dispatch('addIntake', this.selectedBudget,
                 ).then(() => {
                     this.aviso2 = true;

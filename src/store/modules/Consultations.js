@@ -106,7 +106,7 @@ const actions = {
         console.log(payload)
         try {
             let obj = {
-                invoice: payload.invoice,
+                payment_number: payload.payment_number,
                 status: payload.status
             }
             await firebase.firestore().collection('consultations').doc(payload.idConsultation).update(obj)

@@ -101,7 +101,7 @@
                                                             modalidade: item.type,
                                                             medico:item.doctor.name,
                                                             doctor:item.doctor,
-                                                            num_recibo:item.invoice,
+                                                            num_recibo:item.payment_number,
                                                             pacienteObj:patient,
                                                             consultation:item
                                                         }"    
@@ -446,10 +446,10 @@
             atualizar() {
     
                 this.index_Selecionado.pacienteObj.status = this.index_Selecionado.status
-                this.index_Selecionado.pacienteObj.invoice = this.index_Selecionado.invoice
+                this.index_Selecionado.pacienteObj.payment_number = this.index_Selecionado.payment_number
                 this.$store.dispatch('updateAppointment', {
                     status: this.index_Selecionado.status,
-                    invoice: this.index_Selecionado.num_recibo,
+                    payment_number: this.index_Selecionado.num_recibo,
                     idConsultation: this.index_Selecionado.idConsultation,
                     idPatient: this.index_Selecionado.cpf
                 })

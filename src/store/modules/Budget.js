@@ -38,6 +38,7 @@ const actions = {
             await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('user').add(user)
             context.dispatch('addBudgetToUser', originalPayload)
         }
+        payload = Object.assign({}, originalPayload)
     },
 
     async addBudgetToUser({}, payload) {
@@ -78,7 +79,9 @@ const actions = {
         functions.removeUndefineds(specialties)
         functions.removeUndefineds(exams)
 
-
+        console.log(payload)
+        console.log(specialties)
+        console.log(exams)
         await firebase.firestore().collection('intakes').doc(payload.id.toString()).set(payload)
         if (specialties) {
             await firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('specialties').add(specialties)
@@ -90,6 +93,7 @@ const actions = {
             await firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('user').add(user)
             context.dispatch('addIntakeToUser', originalPayload)
         }
+        payload = Object.assign({}, originalPayload)
     },
     async addIntakeToUser({}, payload) {
         functions.removeUndefineds(payload)
