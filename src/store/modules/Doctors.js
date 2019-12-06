@@ -76,14 +76,13 @@ const actions = {
             doctorsSnap.forEach(function (document) {
                 doctors[document.id] = document.data()
             });
-            commit('setDoctors', doctors)
+            commit('setDoctors', doctors);
             return doctors
         } catch (e) {
             throw e
         }
     },
     async addSpecialty({}, specialty) {
-        console.log('###', specialty);
         try {
             let speRef = await firebase.firestore().collection('specialties').doc(specialty.name).set(specialty);
             return speRef

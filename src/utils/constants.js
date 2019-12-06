@@ -1,16 +1,23 @@
 export default {
-  CATEGORY_RAW_INTAKE: 'Total Bruto',
-  CATEGORY_LIQUID_COST: 'Custo Líquido',
-  CATEGORY_LIQUID_COST_VARIATION: 'Custo Liquido',
-
   TOKEN_STATUS_VALID: 'valid',
-  DEBIT: 'Débito',
-  CREDIT: 'Crédito',
-  MONEY: 'DINHEIRO',
-  CREDIT_INITIAL_TAX: 0.0314,
-  CREDIT_PARCEL_TAX: 0.006,
-  DEBIT_INITIAL_TAX: 0.0299,
-  CATEGORY_PAYBACK: 'Devolução',
+  PAYMENT_METHODS: {
+    debit: {
+      name: 'Débito',
+      INITIAL_TAX:0.0299,
+      PARCEL_TAX: 0,
+    },
+    credit: {
+      name: 'Crédito',
+      INITIAL_TAX:0.0314,
+      PARCEL_TAX: 0.006,
+    },
+    money: {
+      name: 'Dinheiro',
+      INITIAL_TAX:0,
+      PARCEL_TAX: 0,
+    }
+  },
+
   FIREBASE_CONFIG: {
     apiKey: "AIzaSyCdvs5C8J_t9WPQlcZGuuLJ57hwM9_s9BQ",
     authDomain: "prosaude-36f66.firebaseapp.com",

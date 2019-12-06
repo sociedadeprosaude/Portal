@@ -401,6 +401,7 @@
             num_recibo: "",
             type: "",
             createConsultationForm: undefined,
+            invoiceFound:undefined,
             attendance: "Aguardando Atendimento",
             attendanceOptions: [
                 {text: "Aguardando Atendimento"},
@@ -554,7 +555,7 @@
             window.addEventListener("scroll", this.handleScroll);
         },
         methods: {
-            scheduleAppointment(consultation) {
+            scheduleAppointment(consultation){
                 if (!this.selectedPatient) {
                     this.$refs.patientCard.$el.classList.add('shaking-ease-anim')
                     setTimeout(() => {
@@ -565,7 +566,7 @@
                 this.fillConsultationForm(consultation)
                 this.dialog = true
             },
-            fillConsultationForm(consultation) {
+            async fillConsultationForm(consultation) {
                 let patient = this.selectedPatient
                 let form = {
                     user: patient,
@@ -573,6 +574,23 @@
                         return !a.user
                     })
                 }
+                this.$store.dispatch('thereIsIntakes',{
+                    user:patient,
+                    doctor:form.consultation.doctor,
+                    specialty:form.consultation.specialty})
+                .then((obj)=>{
+                    console.log(obj)
+                    this.invoiceFound = obj
+                    this.num_recibo = obj.invoice
+                    this.status = 'Pago'
+                })
+                .catch((error)=>{
+                    console.log(error)
+                    this.invoiceFound = undefined
+                    this.num_recibo = ''
+                    this.status = 'Aguardando pagamento'
+                })
+                
                 this.createConsultationForm = form
             },
             formatConsultationsArray(consultations) {
