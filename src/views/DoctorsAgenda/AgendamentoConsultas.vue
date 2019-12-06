@@ -14,6 +14,7 @@
                             rounded
                             chips
                             color="blue"
+                            clearable
                     ></v-select>
                 </v-flex>
                 <v-flex xs5 class="ml-3">
@@ -28,6 +29,7 @@
                             rounded
                             chips
                             color="blue"
+                            clearable
                     ></v-select>
                 </v-flex>
             </v-layout>
@@ -457,21 +459,43 @@
                 // return this.formatDate(this.index_Selecionado.data);
             },
             consultas() {
+                console.log(this.selectedDoctor)
                 let consultas = this.formatConsultationsArray(this.$store.getters.consultations).filter((a) => {
-                    return this.especialidade ? this.especialidade.name === a.specialty.name : true
-                    && this.selectedDoctor ? this.selectedDoctor.cpf ? this.selectedDoctor.cpf === a.doctor.cpf : true : true
+                    return this.especialidade && this.selectedDoctor ? this.especialidade.name === a.specialty.name && this.selectedDoctor.cpf === a.doctor.cpf : true
+                    && this.especialidade ? this.especialidade.name ? this.especialidade.name === a.specialty.name : true : true
                 })
                 return consultas;
             },
             doctors: {
                 get: function () {
-                    let docs = {
+                    /* let docs = {
                         0: {
                             name: 'Todos'
                         },
                         ...this.$store.getters.doctors
                     }
-                    return Object.values(docs)
+                    return Object.values(docs) */
+
+                    let docArray = Object.values(this.$store.getters.doctors)
+                    docArray = docArray.filter((doctor) => {
+                        if(!this.especialidade) {
+                            return true
+                        }
+                        var find = false
+                        doctor.specialties.forEach((specialty)=>{
+                            console.log(doctor.name,specialty.name)
+                            if(specialty.name === this.especialidade.name){
+                                find = true
+                                return true
+                            }
+                                
+                        })
+                        
+                        return find
+                    })
+                    console.log(docArray)
+                    //docArray.unshift({name:'Todos'})
+                    return docArray
                 }
             },
             selectedPatient() {
