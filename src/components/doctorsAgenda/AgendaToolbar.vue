@@ -40,7 +40,7 @@
                         </v-list-item>
                     </v-card>
                 </v-flex>
-
+<!--
                 <v-dialog v-model="dialog" width="1000">
                     <template v-slot:activator="{ on }">
                         <v-btn color="transparent" v-on="on" class="elevation-0">
@@ -51,6 +51,7 @@
                     </template>
                     <pacientes></pacientes>
                 </v-dialog>
+                -->
             </v-toolbar-items>
         </v-app-bar>
     </v-container>
