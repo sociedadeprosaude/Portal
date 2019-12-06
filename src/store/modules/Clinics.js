@@ -74,7 +74,7 @@ const actions = {
 
         let data = {
             clinic: payload.clinic,
-            doctor: payload.doctor,
+            name: payload.doctor,
             specialtie: payload.specialtie,
             rules: payload.obs,
             cost: payload.cost,

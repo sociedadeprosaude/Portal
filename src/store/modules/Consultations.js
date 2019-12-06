@@ -165,6 +165,33 @@ const actions = {
         }
     },
 
+    async removeAppointmentByDay({ commit }, payload) { // ApagarTodasAsConsultasDoDiaDoMedico
+
+        console.log(payload)
+
+        /*
+        let start = moment(payload.date).format('YYYY-MM-DDT00:00');
+        let end = moment(payload.date).format('YYYY-MM-DDT23:59');
+
+        return new Promise((resolve, reject) => {
+            firebase.database().ref('/consultas/' + payload.especialidade + "/").orderByChild('data_inicial')
+                .startAt(start).endAt(end).on('value', function (snapshot) {
+
+                let obj = snapshot.val();
+                for (const key in obj) {
+                    if (obj[key].medico.nome === payload.medico) {
+                        firebase.database().ref('/consultas/' + payload.especialidade + '/' + key).remove();
+                        if (obj[key].paciente !== undefined) {
+
+                            firebase.database().ref('/pacientes/' + obj[key].paciente.key + '/consultas/' + key).remove();
+                            firebase.database().ref('/cancelados/').child(key).set({...obj[key]});
+                        }
+                    }
+                }
+            });
+        });
+         */
+    },
 };
 
 const getters = {
