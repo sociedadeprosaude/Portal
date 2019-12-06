@@ -11,6 +11,9 @@ const mutations = {
     },
     removeShoppingCartItem(state, payload) {
         state.items.splice(state.items.indexOf(payload), 1)
+    },
+    clearShoppingCartItens(state) {
+        state.items = []
     }
 };
 

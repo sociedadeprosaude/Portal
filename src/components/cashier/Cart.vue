@@ -122,7 +122,7 @@
                                 </v-flex>
                                 <v-flex xs12>
                                     <h6 class="title font-weight-bold"> Total: R$
-                                        {{this.totalNovo.toLocaleString('en-us', {minimumFractionDigits:
+                                        {{this.total.toLocaleString('en-us', {minimumFractionDigits:
                                         2})}}</h6>
                                 </v-flex>
                                 <v-flex xs12>
@@ -138,10 +138,10 @@
                                     </v-btn>
                                 </v-flex>
                                 <v-flex xs6 class="text-center">
-                                    <v-btn outlined color="primary" @click="pagar2()">Pagar</v-btn>
+                                    <v-btn outlined color="primary" @click="pay()">Pagar</v-btn>
                                 </v-flex>
                                 <v-flex xs12 class="text-center mt-4">
-                                    <v-btn outlined color="primary" @click="limpar()">Novo Orçamento</v-btn>
+                                    <v-btn outlined color="primary" @click="clearCart()">Novo Orçamento</v-btn>
                                 </v-flex>
                             </v-layout>
                         </v-flex>
@@ -169,6 +169,8 @@
                 moneyDiscount: 0,
                 FormasDePagamento: ["Dinheiro", "Crédito", "Débito"],
                 totalNovo: 0,
+
+                selectedBudget: undefined
             }
         },
         computed: {
@@ -182,6 +184,14 @@
             pacotes() {
                 return this.$store.getters.getShoppingCartItemsByCategory.packages
             },
+            cost() {
+                let itens = this.$store.getters.getShoppingCartItems
+                let total = 0
+                for (let item in itens) {
+                    total += itens[item].cost
+                }
+                return total
+            },
             subTotal() {
                 let itens = this.$store.getters.getShoppingCartItems
                 let total = 0
@@ -191,16 +201,13 @@
                 return total
             },
             total() {
-                return this.subTotal - this.moneyDiscout
+                return this.subTotal - this.moneyDiscount
             }
         },
         watch: {
             percentageDiscount: function () {
-                this.moneyDiscount = ((this.percentageDiscount * this.total) / 100);
-                this.totalNovo = this.total - this.moneyDiscount
-            },
-            moneyDiscount: function () {
-                this.percentageDiscount = ((this.moneyDiscount * 100) / this.total);
+                this.moneyDiscount = ((this.percentageDiscount * this.subTotal) / 100);
+                // this.totalNovo = this.total - this.moneyDiscount
             },
         },
         methods: {
@@ -241,19 +248,6 @@
                 this.total -= parseFloat(this.pacotes[index].preco);
                 this.pacotes.splice(index, 1)
             },
-            gerarCodigo() {
-                if (this.codigo === '' || !this.codigo) {
-                    this.codigo = this.now.toString();
-                    /* this.$store.dispatch('CadastrarVenda', {
-                        consultas: this.consultas,
-                        exames: this.exames,
-                        pacotes: this.pacotes,
-                        codigo: this.codigo,
-                        preco: this.total,
-                        custo: this.totalCusto
-                    }); */
-                }
-            },
             imprimir() {
                 if (this.codigo === '') {
                     this.codigo = this.now.toString();
@@ -283,64 +277,44 @@
                     this.aviso = true;
                 })
             },
-            pagar2() {
-                if (this.codigo === '' || this.codigo === undefined) {
-                    //falar para digitar nome de usuario
-                    //aviso
-                    this.gerarCodigo()
-                } //else {
-                    if (this.formaPagamento === this.formaPagamento[1]) {
-                        this.taxa = constants.CREDIT_INITIAL_TAX + (constants.CREDIT_PARCEL_TAX * parseInt(this.parcelas))
-                    }
-                    if (this.formaPagamento === this.formaPagamento[2]) {
-                        this.taxa = constants.DEBIT_INITIAL_TAX
-                    }
-                    if (this.formaPagamento === this.formaPagamento[0]) {
-                        this.taxa = 0
-                    }
-                    if (this.percentageDiscount !== 0) {
-                        this.desconto = this.percentageDiscount
-                    }
-                    if (this.moneyDiscount !== 0) {
-                        this.desconto = this.moneyDiscount
-                    }
-                    if (this.percentageDiscount !== 0 && this.moneyDiscount !== 0) {
-                        this.desconto = this.total - this.totalNovo
-                    }
-                    var user = this.$store.getters.selectedPatient
-                    this.$store.dispatch('AddSale', {
-                        consultations: this.consultas,
-                        exams: this.exames,
-                        package_id: this.pacotes,
-                        invoice: this.codigo,
-                        price: this.totalNovo,
-                        form_payment: this.formaPagamento,
-                        /* parcelas: this.parcelas,
-                        rate: this.taxa, */
-                        percentageDiscount: this.percentageDiscount,
-                        moneyDiscount: this.moneyDiscount,
-                        date: this.data,
-                        cost: this.totalCusto,
-                        /* medicoDia: this.medicoDia */
-                        user:user
-                    }).then(() => {
-                        this.aviso2 = true;
-                    });
-                    this.card = false
+            generateBudget() {
+                let id = this.now
+                let budget = {
+                    id: id,
+                    specialties: this.specialties,
+                    exams: this.exams,
+                    subTotal: this.subTotal,
+                    discount: this.moneyDiscount,
+                    total: this.total,
+                    payment_method: this.formaPagamento,
+                    cost: this.cost
+                }
+                return budget
+            },
+            saveBudget(budget) {
+                this.$store.dispatch('addBudget', budget)
+                this.selectedBudget = budget
+            },
+            pay() {
+                let user = this.$store.getters.selectedPatient
+                if (!user) {
+                    return
+                }
+                if (!this.selectedBudget) {
+                    this.saveBudget(this.generateBudget())
+                }
+                this.$store.dispatch('AddSale', {
+                    budget: this.selectedBudget,
+                    user: user
+                }).then(() => {
+                    this.aviso2 = true;
+                });
+                this.card = false
                 //}
             },
-            limpar() {
-                this.i = 0;
-                this.pacotes = [];
-                this.total = 0;
-                this.codigo = '';
-                this.search = '';
-                this.percentageDiscount = '';
-                this.moneyDiscount = '';
-                this.medicoDia = [];
-                this.totalCusto = 0;
-                this.formaPagamento = '';
-
+            clearCart() {
+                this.$store.commit('clearShoppingCartItens')
+                this.selectedBudget = undefined
             },
         }
     }

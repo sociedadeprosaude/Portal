@@ -83,7 +83,7 @@
                                                            depressed
                                                            rounded
                                                     >
-                                                        {{ n.produto }} | R${{n.preco}}
+                                                        {{ n.name }} | R${{n.preco}}
                                                     </v-btn>
                                                 </v-slide-item>
                                             </v-slide-group>
@@ -95,12 +95,13 @@
                                         <v-card-text>
                                             <v-slide-group show-arrows>
                                                 <v-slide-item v-for="n in item.consultas"
+                                                              :key="n.id"
                                                               v-slot:default="{ active, toggle }">
                                                     <v-btn class="mx-2 blue white--text"
                                                            depressed
                                                            rounded
                                                     >
-                                                        {{ n.produto }} | R${{n.preco}}
+                                                        {{ n.name }} | R${{n.preco}}
                                                     </v-btn>
                                                 </v-slide-item>
                                             </v-slide-group>
@@ -176,7 +177,6 @@
                         break
                     default:
                 }
-                console.log(holder)
                 this.$store.commit('addShoppingCartItem', holder)
             }
         },

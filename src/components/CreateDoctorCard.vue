@@ -91,7 +91,7 @@
                                         <v-flex xs4>
                                             <v-radio
                                                     label="Consulta"
-                                                    value="consultation"
+                                                    value="unit"
                                             ></v-radio>
                                         </v-flex>
                                         <v-spacer></v-spacer>
@@ -182,7 +182,7 @@
             return {
                 maskCRM: '######',
                 maskCPF: '###.###.###-##',
-                paymentMethod: 'consultation',
+                paymentMethod: 'unit',
                 name: undefined,
                 crm: undefined,
                 cpf: undefined,
