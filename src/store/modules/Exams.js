@@ -110,7 +110,6 @@ const actions = {
                     });
 
                 });
-                console.log('exames:', exams)
                 commit('setExamsSelected', exams);
                 resolve()
             } catch (e) {

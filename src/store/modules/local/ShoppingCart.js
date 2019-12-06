@@ -28,20 +28,20 @@ const getters = {
     getShoppingCartItemsByCategory(state) {
         let consultations = state.items.filter((a) => {
             return a.doctor
-        })
+        });
         let exams = state.items.filter((a) => {
-            return a.clinic
-        })
+            return a.clinics
+        });
         let packages = state.items.filter((a) => {
-            return !a.doctor && !a.clinic
-        })
+            return !a.doctor && !a.clinics
+        });
         return {
             consultations: consultations,
             exams: exams,
             packages: packages
         }
     }
-}
+};
 
 export default {
     state,

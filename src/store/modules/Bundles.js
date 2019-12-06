@@ -18,7 +18,16 @@ const mutations = {
 
 const actions = {
 
-    async addBundle (bundle){
+    async addBundle ({commit}, bundle){
+
+        console.log("##########", bundle);
+        let dataBundle = {
+            name : bundle.name,
+            cost: bundle.cost,
+            price: bundle.price,
+            discountMoney: bundle.discountMoney,
+            discountPercentage: bundle.discountPercentage,
+        };
 
         try {
             for (let data in bundle){
@@ -27,14 +36,23 @@ const actions = {
                 }
             }
             let bundleRef;
-            if (bundle.id){
-                bundleRef = await firebase.firestore().collection('packages').doc(bundle.id).set({bundle});
+            if (bundle.name){
+                bundleRef = await firebase.firestore().collection('packages').doc(bundle.name).set(dataBundle);
             } else {
                 bundleRef = await firebase.firestore().collection('packages').add(bundle);
             }
-            
+
+            console.log("troco", bundle.exams);
             for (let i in bundle.exams){
-                firebase.firestore().collection('package/exams').add(bundle.exams);
+
+                let examData = {
+                    product: bundle.exams[i].product,
+                    clinic: bundle.exams[i].clinic,
+                    price: bundle.exams[i].price,
+                    cost: bundle.exams[i].cost,
+                };
+                firebase.firestore().collection('packages/' + bundle.name + '/exams').doc(bundle.exams[i].product)
+                    .set(examData);
 
             }
 

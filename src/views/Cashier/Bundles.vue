@@ -11,7 +11,7 @@
                             </v-btn>
                             <v-spacer></v-spacer>
                             <v-btn rounded color="primary" dark class="mb-2"
-                                   @click="registerPackage =! registerPackage, searchPackage =! searchPackage">
+                                   @click="registerPackage =! registerPackage, searchPackage =! searchPackage, clearSearch()">
                                 ADICIONAR PACOTE
                                 <v-icon right>add</v-icon>
                             </v-btn>
@@ -54,7 +54,7 @@
                             <v-form v-model="validRegister" lazy-validation>
                                 <v-layout row wrap>
                                     <v-flex xs11>
-                                        <v-text-field required label=" nome" v-model="editedPackage.nome"
+                                        <v-text-field required label=" nome" v-model="editedPackage.name"
                                                       prepend-inner-icon="folder" :rules="rules.campoObrigatorio"
                                                       primary solo :clearable="true">
                                         </v-text-field>
@@ -156,7 +156,7 @@
                                             </v-card-text>
                                         </v-card>
                                     </v-flex>
-                                    <v-layout row>
+                                    <v-layout row class="mt-5">
                                         <v-flex xs2>
                                             <v-text-field
                                                     prepend-icon="attach_money"
@@ -227,10 +227,42 @@
                                         </v-flex>
                                     </v-layout>
                                 </v-card-text>
+                                <v-card-actions>
+                                    <v-btn outlined rounded text color="primary" :disabled="!formRegister" @click="validateRegister()" class="ma-3">
+                                        Cadastrar Pacote
+                                    </v-btn>
+                                </v-card-actions>
                             </v-form>
                         </v-flex>
                     </v-card-text>
                 </v-card>
+
+                <v-layout v-if="registerPackage" align-center justify-center row wrap>
+                    <v-container fluid class="center-card">
+                        <v-card xs12 sm12 class="round-card elevation-3">
+                            <v-card-title class="headline">Itens selecionados</v-card-title>
+                            <v-card-text>
+                                <v-list-item v-for="(item,index) in editedPackage.exams" :key="index">
+                                    <v-chip color="purple" text-color="white">
+                                        <strong>{{item.product}} | {{item.clinic}} | R$ {{item.price}}</strong>
+                                        <v-btn class="ml-1" mall icon @click="removeExam(index)">
+                                            <v-icon>cancel</v-icon>
+                                        </v-btn>
+                                    </v-chip>
+                                </v-list-item>
+                                <v-list-item v-for="(item,index) in editedPackage.specialties" :key="index">
+                                    <v-chip color="green" text-color="white">
+                                        <strong>{{item.product}} | {{item.clinic}} | R$ {{item.price}}</strong>
+                                        <v-btn class="ml-1" small icon @click="removeSpecialtie(index)">
+                                            <v-icon>cancel</v-icon>
+                                        </v-btn>
+                                    </v-chip>
+                                </v-list-item >
+                            </v-card-text>
+                        </v-card>
+                    </v-container>
+                </v-layout>
+
             </v-flex>
         </v-layout>
     </v-container>
@@ -273,16 +305,18 @@
 
         computed: {
             listPackage (){
-                //this.isLoading = false;
+                this.isLoading = false;
                 return this.$store.getters.bundles;
             },
 
             selectedPackage () {
+                let pac =this.$store.getters.selectedBundle;
+                this.editedPackage = Object.assign({}, pac);
                 return this.$store.getters.selectedBundle;
             },
 
             formRegister () {
-                return this.editedPackage.name && this.editedPackage.sale && this.editedPackage.cost;
+                return this.editedPackage.name && this.price && this.cost;
             },
 
             categories: function () {
@@ -376,15 +410,25 @@
 
             validateRegister () {
                   const packageData = {
-                      name: this.capitalize(this.editedPackage.name),
+                      name: this.editedPackage.name.toUpperCase(),
                       cost: this.cost,
-                      sale: this.sale,
-                      exams: this.exams,
-                      specialties: this.specialties,
+                      price: this.price,
+                      discountMoney: this.discountMoney,
+                      discountPercentage: this.discountPercentage,
+                      exams: this.editedPackage.exams,
+                      specialties: this.editedPackage.specialties,
                   };
 
-                  this.$store.dispatch('addBundle', packageData);
+                  console.log('pac' , packageData);
+
+                  this.$store.dispatch('addBundle', packageData).then(() => {
+
+                      this.clearSearch();
+                      this.registerPackage = false;
+                      this.searchPackage = true;
+                  });
             },
+
 
             selectExam () {
                 this.color.buttonExam = this.color.colorSelect;
@@ -414,6 +458,19 @@
 
             },
 
+            costAndPrice () {
+                this.price = 0;
+                this.cost = 0;
+                for (let key in this.editedPackage.exams) {
+                    this.price += this.editedPackage.exams[key].price;
+                    this.cost += this.editedPackage.exams[key].cost;
+                }
+                for (let key in this.editedPackage.specialties) {
+                    this.price += this.editedPackage.specialties[key].price;
+                    this.cost += this.editedPackage.specialties[key].cost;
+                }
+            },
+
             addExam (clinic, product, type, price, cost) {
                 this.item = {
                     product: product,
@@ -422,7 +479,28 @@
                     price:  parseFloat(price),
                     cost:parseFloat(cost)
                 };
-                this.addProduct(this.item);
+
+                if (this.editedPackage.exams){
+                    for (let key in this.editedPackage.exams) {
+                        if (this.item.product === this.editedPackage.exams[key].product
+                            && this.item.clinic === this.editedPackage.exams[key].clinic
+                            && this.item.price === this.editedPackage.exams[key].price
+                            && this.item.cost === this.editedPackage.exams[key].cost){
+
+                                this.action = true;
+                                this.editedPackage.exams.splice(key, 1);
+
+                        } else {
+
+                                this.action = false;
+                        }
+                    }
+                }
+
+                if (this.action === false){ this.editedPackage.exams.push({...this.item}) }
+
+                this.costAndPrice();
+                this.action = false;
             },
 
             addSpecialties (clinic, product, doctor, type, price, cost) {
@@ -434,38 +512,46 @@
                     price:  parseFloat(price),
                     cost:parseFloat(cost)
                 };
-                this.addProduct(this.item);
-            },
 
-            addProduct (item){
+                if (this.editedPackage.specialties){
+                    for (let key in this.editedPackage.specialties) {
+                        if (this.item.product === this.editedPackage.specialties[key].product
+                            && this.item.clinic === this.editedPackage.specialties[key].clinic
+                            && this.item.price === this.editedPackage.specialties[key].price
+                            && this.item.cost === this.editedPackage.specialties[key].cost
+                            && this.item.doctor === this.editedPackage.specialties[key].doctor){
 
-                console.log(item);
-                if (this.listProducts){
-                    for (let key in this.listProducts) {
-                        if (item.product === this.listProducts[key].product && item.clinic === this.listProducts[key].clinic
-                            && item.price === this.listProducts[key].price && this.item.cost === this.listProducts[key].cost
-                            && ((item.type === "appointment" && item.doctor === this.listProducts[key].doctor) ||
-                                (item.type !== "appointment"))){
-
-                            this.action = true;
-                            this.listProducts.splice(key,1);
+                                this.action = true;
+                                this.editedPackage.exams.splice(key, 1);
 
                         } else {
-                            this.action = false;
+
+                                this.action = false;
                         }
                     }
                 }
 
-                if (this.action === false){ this.listProducts.push({...item}) }
-                console.log(this.listProducts);
-                this.sale = 0;
-                this.cost = 0;
-                for (let key in this.listProducts) {
-                    this.sale += this.listProducts[key].price;
-                    this.cost += this.listProducts[key].cost;
-                }
+                if (this.action === false){ this.editedPackage.specialties.push({...this.item}) }
+
+                this.costAndPrice();
                 this.action = false;
+
             },
+
+            removeExam (index) {
+                this.sale -= this.editedPackage.exams[index].price;
+                this.cost -= this.editedPackage.exams[index].cost;
+
+                this.editedPackage.exams.splice(index,1);
+            },
+
+            removeSpecialtie (index) {
+                this.sale -= this.editedPackage.specialties[index].price;
+                this.cost -= this.editedPackage.specialties[index].cost;
+
+                this.editedPackage.specialties.splice(index,1);
+            }
+
         },
 
         watch: {

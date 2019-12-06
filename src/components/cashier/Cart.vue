@@ -28,7 +28,7 @@
                         <v-layout row wrap>
                             <v-flex xs12 v-if="exames.length > 0">
                                 <p>Exames</p>
-                                <v-card v-for="(item,index) in exames" class="mt-2" :key="item.nome">
+                                <v-card v-for="(item,index) in exames" class="mt-2" :key="item.name">
                                     <v-card-title class="py-2">
                                         <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
                                         <v-spacer></v-spacer>
@@ -39,9 +39,9 @@
                                             </span>
                                     </v-card-title>
                                     <v-card-text class="pt-1 pb-0">
-                                        {{item.clinic}}
+                                        {{item.clinics[0].clinic}}
                                         <p class="text-right">
-                                            R$ {{item.price}}
+                                            R$ {{item.clinics[0].price}}
                                         </p>
                                     </v-card-text>
                                 </v-card>
@@ -73,7 +73,7 @@
                                 <p>Pacotes</p>
                                 <v-card v-for="(item,index) in pacotes" class="mt-2" :key="item.nome">
                                     <v-card-title class="py-2">
-                                        <span class="subtitle-1 font-weight-medium">{{item.nome}}</span>
+                                        <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
                                         <v-spacer></v-spacer>
                                         <span class="subtitle-1 font-weight-light">
                                                 <v-btn small icon @click="removeItem(item)">
@@ -83,7 +83,7 @@
                                     </v-card-title>
                                     <v-card-text class="pt-1 pb-0">
                                         <p class="text-right">
-                                            R$ {{item.preco}}
+                                            R$ {{item.price}}
                                         </p>
                                     </v-card-text>
 
@@ -182,12 +182,16 @@
         },
         computed: {
             exames() {
+                console.log('oi',this.$store.getters.getShoppingCartItemsByCategory.exams);
                 return this.$store.getters.getShoppingCartItemsByCategory.exams
             },
             consultas() {
+                console.log('oi',this.$store.getters.getShoppingCartItemsByCategory.consultations);
+
                 return this.$store.getters.getShoppingCartItemsByCategory.consultations
             },
             pacotes() {
+                console.log('nao entrei');
                 return this.$store.getters.getShoppingCartItemsByCategory.packages
             },
             cost() {
@@ -199,8 +203,8 @@
                 return total
             },
             subTotal() {
-                let itens = this.$store.getters.getShoppingCartItems
-                let total = 0
+                let itens = this.$store.getters.getShoppingCartItems;
+                let total = 0;
                 for (let item in itens) {
                     total += itens[item].price
                 }
