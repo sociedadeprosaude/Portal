@@ -75,7 +75,7 @@
                                     </v-card-title>
                                     <v-card-text class="pt-1 pb-0">
                                         <p class="text-right">
-                                            R$ {{item.preco}}
+                                            R$ {{item.price}}
                                         </p>
                                     </v-card-text>
 
