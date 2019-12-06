@@ -151,9 +151,9 @@
             items() {
                 switch (this.categorySelect) {
                     case 'exam':
-                        return this.exams
+                        return this.exams;
                     case 'appointment':
-                        return this.specialties
+                        return this.specialties;
                     default:
                         return []
                 }
@@ -164,25 +164,25 @@
                 this.categorySelect = category
             },
             addProduct(product, selection, type) {
-                let holder = Object.assign({}, product)
+                let holder = Object.assign({}, product);
                 switch (type) {
                     case 'appointment':
-                        delete holder.doctors
-                        holder.doctor = selection
-                        holder.cost = selection.cost
-                        holder.price = selection.price
-                        break
+                        delete holder.doctors;
+                        holder.doctor = selection;
+                        holder.cost = selection.cost;
+                        holder.price = selection.price;
+                        break;
                     case 'exam':
-                        break
+                        break;
                     default:
                 }
-                console.log(holder)
+                console.log(holder);
                 this.$store.commit('addShoppingCartItem', holder)
             }
         },
         mounted() {
-            let self = this
-            self.$store.dispatch("loadSpecialties")
+            let self = this;
+            self.$store.dispatch("loadSpecialties");
             window.addEventListener('keyup', function (e) {
                 if (e.target.id === 'search') {
                     clearTimeout(self.typingTimer);
@@ -197,7 +197,7 @@
                         }//funcao de pesquisar
                     }, 1000);
                 }
-            })
+            });
             window.addEventListener('keydown', function (e) {
                 if (e.target.id === 'search') {
                     clearTimeout(self.typingTimer)
