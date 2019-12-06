@@ -88,7 +88,30 @@ const actions = {
         }
         if (user) {
             await firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('user').add(user)
-            context.dispatch('addBudgetToUser', originalPayload)
+            context.dispatch('addIntakeToUser', originalPayload)
+        }
+    },
+    async addIntakeToUser({}, payload) {
+        functions.removeUndefineds(payload)
+        // console.log(payload)
+        // return
+        let specialties = payload.specialties ? Object.assign({}, payload.specialties) : undefined
+        let exams = payload.exams ? Object.assign({}, payload.exams) : undefined
+        let user = payload.user ? Object.assign({}, payload.user) : undefined
+        delete payload.specialties
+        delete payload.exams
+        delete payload.user
+
+        functions.removeUndefineds(specialties)
+        functions.removeUndefineds(exams)
+
+        let userRef = firebase.firestore().collection('users').doc(user.cpf)
+        await userRef.collection('intakes').doc(payload.id.toString()).set(payload)
+        if (specialties) {
+            await userRef.collection('intakes').doc(payload.id.toString()).collection('specialties').add(specialties)
+        }
+        if (exams) {
+            await userRef.collection('intakes').doc(payload.id.toString()).collection('exams').add(exams)
         }
     },
  //    async addSale({commit},payload){

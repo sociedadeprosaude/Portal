@@ -3,17 +3,25 @@
         <v-card id="carrinho" class="ml-5 elevation-2 ">
             <v-container>
                 <v-layout row wrap class="mx-3 align-center">
-                    <v-flex sm11 xs12>
-                        <v-text-field
-                                label="Digitar Nome do Paciente"
-                                v-model="codigo"
-                        ></v-text-field>
+                    <v-flex xs12>
+                        <v-flex xs6 class="text-center">
+                            <v-btn
+                                    rounded
+                                    class="primary"
+                            >
+                                <v-icon>person_add</v-icon>
+                            </v-btn>
+                        </v-flex>
                     </v-flex>
-                    <v-flex sm1 xs2 class="text-center">
-                        <v-icon @click="pesquisarUsuario()">search</v-icon>
+                    <v-flex xs6 class="text-center">
+                        <v-btn
+                                rounded
+                                class="primary">
+                            <v-icon>search</v-icon>
+                        </v-btn>
                     </v-flex>
-                    <v-flex xs12 class="text-right">
-                        <v-btn outlined class="mr-5" color="primary" @click="gerarCodigo()">Gerar Codigo</v-btn>
+                    <v-flex xs12 class="text-center mt-3">
+                        <v-btn outlined color="primary" @click="gerarCodigo()">Gerar Codigo</v-btn>
                     </v-flex>
                     <v-flex xs12 class="mt-4 v-card"
                             style="overflow:auto; height:50vh; box-shadow: inset 0px 0px 5px grey;">
@@ -159,7 +167,6 @@
         name: "Cart",
         data() {
             return {
-                codigo: undefined,
                 formaPagamento: 'Dinheiro',
                 moneyDiscout: 0,
                 now: moment().valueOf(),
@@ -281,19 +288,19 @@
                 let id = this.now
                 let budget = {
                     id: id,
-                    specialties: this.consultas.length > 0 ? this.consultas : undefined ,
+                    specialties: this.consultas.length > 0 ? this.consultas : undefined,
                     exams: this.exames.length > 0 ? this.exames : undefined,
                     subTotal: this.subTotal,
                     discount: this.moneyDiscount,
                     total: this.total,
                     payment_method: this.formaPagamento,
+                    data: moment().format('YYYY-MM-DD HH:mm:ss'),
                     cost: this.cost,
                     user: this.$store.getters.selectedPatient
                 }
                 return budget
             },
             saveBudget(budget) {
-                console.log(budget)
                 this.$store.dispatch('addBudget', budget)
                 this.selectedBudget = budget
             },
