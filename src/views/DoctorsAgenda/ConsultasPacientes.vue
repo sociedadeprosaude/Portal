@@ -388,7 +388,6 @@
                         this.qtdRetornos = 0    
                         console.log({...val})
                         for (const key in val.consultations) {
-                            if(val.consultations[key].status !== 'Cancelado'){
                                 
                                 if(val.consultations[key].type === 'Consulta' ){
                                 this.qtdConsultas += 1
@@ -396,7 +395,7 @@
                                     this.qtdRetornos += 1
                                 }
                                 consultas.push(val.consultations[key])
-                            }
+                            
                         }
                         val.consultations = consultas
                     }
