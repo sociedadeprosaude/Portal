@@ -748,6 +748,8 @@
                     type: this.modalidade,
                     payment_number: this.num_recibo
                 }
+                if(this.payment_numberFound)
+                    form = {...form,payment_numberFound:this.payment_numberFound}
                 // return
                 this.loading = true
                 await this.$store.dispatch('addConsultationAppointmentToUser', form)

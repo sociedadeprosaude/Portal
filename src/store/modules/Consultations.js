@@ -78,6 +78,12 @@ const actions = {
             if (payload.consultation.type == "Retorno") {
                 await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.previousConsultation).update({regress: payload.consultation.id})
             }
+
+            if(payload.payment_numberFound){
+                console.log('Tem que altera intake')
+                firebase.firestore().collection('users').doc(payload.user.cpf).collection('intakes').doc(payload.payment_numberFound.payment_number)
+                .collection('specialties').doc(payload.payment_numberFound.uid).update({used:true})
+            }
         } catch (e) {
             throw e
         }
