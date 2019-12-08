@@ -177,7 +177,6 @@
                         break;
                     default:
                 }
-                console.log(holder);
                 this.$store.commit('addShoppingCartItem', holder)
             }
         },
