@@ -18,10 +18,10 @@ const actions = {
         // return
         let specialties = payload.specialties ? Object.assign({}, payload.specialties) : undefined
         let exams = payload.exams ? Object.assign({}, payload.exams) : undefined
-        let user = payload.user ? Object.assign({}, payload.user) : undefined
+        // let user = payload.user ? Object.assign({}, payload.user) : undefined
         delete payload.specialties
         delete payload.exams
-        delete payload.user
+        // delete payload.user
 
         functions.removeUndefineds(specialties)
         functions.removeUndefineds(exams)
@@ -33,21 +33,41 @@ const actions = {
             spec.forEach( (s) => {
                 firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('specialties').doc(s.id).delete()
             })
-            await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('specialties').add(specialties)
+            for (let spec in specialties) {
+                await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('specialties').add(specialties[spec])
+            }
         }
         if (exams) {
             let spec = await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('exams').get()
             spec.forEach((s) => {
                 firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('exams').doc(s.id).delete()
             })
-            await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('exams').add(exams)
-
+            for (let exam in exams) {
+                await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('specialties').add(exams[exam])
+            }
         }
-        if (user) {
-            await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('user').doc(user.cpf).set(user)
+        if (payload.user) {
+            // await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('user').doc(user.cpf).set(user)
             context.dispatch('addBudgetToUser', originalPayload)
         }
         payload = Object.assign({}, originalPayload)
+    },
+    async getBudget({}, budgetId) {
+        let budget = (await firebase.firestore().collection('budgets').doc(budgetId).get()).data()
+        let specialtiesCol = await firebase.firestore().collection('budgets').doc(budgetId).collection('specialties').get()
+        let examsCol = await firebase.firestore().collection('budgets').doc(budgetId).collection('exams').get()
+        let specialties = []
+        let exams = []
+        specialtiesCol.forEach((s) => {
+            specialties.push(s.data())
+        })
+        examsCol.forEach((e) => {
+            exams.push(e.data())
+        })
+        budget['specialties'] = specialties
+        budget['exams'] = exams
+
+        return budget
     },
 
     async addBudgetToUser({}, payload) {
@@ -66,11 +86,24 @@ const actions = {
 
         let userRef = firebase.firestore().collection('users').doc(user.cpf)
         await userRef.collection('budgets').doc(payload.id.toString()).set(payload)
+
         if (specialties) {
-            await userRef.collection('budgets').doc(payload.id.toString()).collection('specialties').add(specialties)
+            let spec = await userRef.collection('budgets').doc(payload.id.toString()).collection('specialties').get()
+            spec.forEach( (s) => {
+                userRef.collection('budgets').doc(payload.id.toString()).collection('specialties').doc(s.id).delete()
+            })
+            for (let spec in specialties) {
+                await userRef.collection('budgets').doc(payload.id.toString()).collection('specialties').add(specialties[spec])
+            }
         }
         if (exams) {
-            await userRef.collection('budgets').doc(payload.id.toString()).collection('exams').add(exams)
+            let spec = await userRef.collection('budgets').doc(payload.id.toString()).collection('exams').get()
+            spec.forEach((s) => {
+                userRef.collection('budgets').doc(payload.id.toString()).collection('exams').doc(s.id).delete()
+            })
+            for (let exam in exams) {
+                await userRef.collection('budgets').doc(payload.id.toString()).collection('specialties').add(exams[exam])
+            }
         }
     },
     async addIntake(context, payload) {

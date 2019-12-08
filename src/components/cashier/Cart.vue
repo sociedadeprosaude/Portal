@@ -16,10 +16,37 @@
                             </v-flex>
                             <v-flex xs6 class="text-center">
                                 <v-btn
+                                        @click="searchBudgetBtn = !searchBudgetBtn"
                                         rounded
                                         class="primary">
                                     <v-icon>search</v-icon>
                                 </v-btn>
+                            </v-flex>
+                            <v-flex xs12 v-if="searchBudgetBtn">
+                                <v-layout row wrap class="align-center">
+                                    <v-flex xs10>
+                                    <v-text-field
+                                            label="Num. do Orçamento"
+                                            v-model="searchBudgetNumber"
+                                            type="number"
+                                    ></v-text-field>
+                                    </v-flex>
+                                    <v-flex xs2 class="text-center">
+                                        <v-btn
+                                                v-if="!searchBudgetLoading"
+                                                rounded
+                                                class="primary"
+                                                style="min-width: 0; width: 64px"
+                                                @click="searchBudget"
+                                        >
+                                            <v-icon>search</v-icon>
+                                        </v-btn>
+                                        <v-progress-circular class="primary--text" indeterminate v-else></v-progress-circular>
+                                    </v-flex>
+                                    <v-flex xs12 v-if="searchBudgetError">
+                                        <span class="error--text">{{searchBudgetError}}</span>
+                                    </v-flex>
+                                </v-layout>
                             </v-flex>
                             <v-flex xs12 v-if="patient" class="my-3 text-left" style="font-size: 0.8em">
                                 <v-layout row wrap>
@@ -40,7 +67,7 @@
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
-                            <v-flex xs12 v-if="selectedBudget" class="my-1 text-left" style="font-size: 0.8em">
+                            <v-flex xs12 v-if="selectedBudget" class="mt-3 text-left" style="font-size: 0.8em">
                                 <v-layout row wrap>
                                     <v-flex xs12>
                                         <v-divider></v-divider>
@@ -53,9 +80,9 @@
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
-<!--                            <v-flex xs12 class="text-center mt-3">-->
-<!--                                <v-btn outlined color="primary" @click="gerarCodigo()">Gerar Codigo</v-btn>-->
-<!--                            </v-flex>-->
+                            <!--                            <v-flex xs12 class="text-center mt-3">-->
+                            <!--                                <v-btn outlined color="primary" @click="gerarCodigo()">Gerar Codigo</v-btn>-->
+                            <!--                            </v-flex>-->
                             <v-flex xs12 class="mt-4 v-card"
                                     style="overflow:auto; height:50vh; box-shadow: inset 0px 0px 5px grey;">
                                 <v-layout row wrap>
@@ -211,6 +238,10 @@
         },
         data() {
             return {
+                searchBudgetError: undefined,
+                searchBudgetNumber: undefined,
+                searchBudgetLoading: false,
+                searchBudgetBtn: false,
                 searchPatient: false,
                 formaPagamento: 'Dinheiro',
                 moneyDiscout: 0,
@@ -269,6 +300,24 @@
             },
         },
         methods: {
+            async searchBudget() {
+                this.searchBudgetLoading = true
+                let budget = await this.$store.dispatch('getBudget', this.searchBudgetNumber)
+                if (budget) {
+                    this.selectedBudget = budget
+                    for (let exam in budget.exams) {
+                        this.$store.commit('addShoppingCartItem', budget.exams[exam])
+                    }
+                    for (let spec in budget.specialties) {
+                        this.$store.commit('addShoppingCartItem', budget.specialties[spec])
+                    }
+                    this.$store.commit('setSelectedPatient', budget.user)
+                    this.searchBudgetBtn = false
+                } else {
+                    this.searchBudgetError = 'Orçamento não encontrado'
+                }
+                this.searchBudgetLoading = false
+            },
             removeItem(item) {
                 this.$store.commit('removeShoppingCartItem', item)
             },
