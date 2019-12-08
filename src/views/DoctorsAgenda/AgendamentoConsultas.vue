@@ -598,21 +598,17 @@
                         return !a.user
                     })
                 }
+                this.payment_numberFound = undefined
+                this.num_recibo = ''
+                this.status = 'Aguardando pagamento'
                 this.$store.dispatch('thereIsIntakes',{
                     user:patient,
                     doctor:form.consultation.doctor,
                     specialty:form.consultation.specialty})
                 .then((obj)=>{
-                    console.log(obj)
                     this.payment_numberFound = obj
                     this.num_recibo = obj.payment_number
                     this.status = 'Pago'
-                })
-                .catch((error)=>{
-                    console.log(error)
-                    this.payment_numberFound = undefined
-                    this.num_recibo = ''
-                    this.status = 'Aguardando pagamento'
                 })
                 
                 this.createConsultationForm = form
