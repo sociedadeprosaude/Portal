@@ -181,18 +181,24 @@ const actions = {
     thereIsIntakes({commit},payload){
         console.log(payload.specialty.name)
         return new Promise((resolve,reject)=>{
-            firebase.firestore().collection('users').doc(payload.user.cpf).collection('intakes').
+            firebase.firestore().collection('users').doc(payload.user.cpf).collection('intakes')/* .
                 where('type', '==','specialty').where('used','==',false).where('name','==',payload.specialty.name)
-                .where('doctor.cpf','==',payload.doctor.cpf)
+                .where('doctor.cpf','==',payload.doctor.cpf) */
                 .get()
                 .then((snap)=>{
-                    if(!snap.empty){
+                    /* if(!snap.empty){
                         snap.forEach((doc)=>{
                             resolve({id: doc.id,...doc.data()})
                         })
                     }else{
                         reject('Invoice not found!')
-                    }
+                    } */
+
+                    snap.forEach((intake)=>{
+                        let data = intake.data()
+                        payment_number = intake.id
+
+                    })
 
                 }).catch(()=>{
                     reject('Error!')
