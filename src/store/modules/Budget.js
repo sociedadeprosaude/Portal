@@ -113,29 +113,40 @@ const actions = {
         // return
         let specialties = payload.specialties ? Object.assign({}, payload.specialties) : undefined
         let exams = payload.exams ? Object.assign({}, payload.exams) : undefined
-        let user = payload.user ? Object.assign({}, payload.user) : undefined
+        // let user = payload.user ? Object.assign({}, payload.user) : undefined
         delete payload.specialties
         delete payload.exams
-        delete payload.user
+        // delete payload.user
 
         functions.removeUndefineds(specialties)
         functions.removeUndefineds(exams)
 
-        console.log(payload)
-        console.log(specialties)
-        console.log(exams)
+
         await firebase.firestore().collection('intakes').doc(payload.id.toString()).set(payload)
         if (specialties) {
-            await firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('specialties').add(specialties)
+            let spec = await firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('specialties').get()
+            spec.forEach( (s) => {
+                firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('specialties').doc(s.id).delete()
+            })
+            for (let spec in specialties) {
+                await firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('specialties').add(specialties[spec])
+            }
         }
         if (exams) {
-            await firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('exams').add(exams)
+            let spec = await firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('exams').get()
+            spec.forEach((s) => {
+                firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('exams').doc(s.id).delete()
+            })
+            for (let exam in exams) {
+                await firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('specialties').add(exams[exam])
+            }
         }
-        if (user) {
-            await firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('user').add(user)
+        if (payload.user) {
+            // await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('user').doc(user.cpf).set(user)
             context.dispatch('addIntakeToUser', originalPayload)
         }
         payload = Object.assign({}, originalPayload)
+
     },
     async addIntakeToUser({}, payload) {
         functions.removeUndefineds(payload)
@@ -154,10 +165,22 @@ const actions = {
         let userRef = firebase.firestore().collection('users').doc(user.cpf)
         await userRef.collection('intakes').doc(payload.id.toString()).set(payload)
         if (specialties) {
-            await userRef.collection('intakes').doc(payload.id.toString()).collection('specialties').add(specialties)
+            let spec = await userRef.collection('intakes').doc(payload.id.toString()).collection('specialties').get()
+            spec.forEach( (s) => {
+                userRef.collection('intakes').doc(payload.id.toString()).collection('specialties').doc(s.id).delete()
+            })
+            for (let spec in specialties) {
+                await userRef.collection('intakes').doc(payload.id.toString()).collection('specialties').add(specialties[spec])
+            }
         }
         if (exams) {
-            await userRef.collection('intakes').doc(payload.id.toString()).collection('exams').add(exams)
+            let spec = await userRef.collection('intakes').doc(payload.id.toString()).collection('exams').get()
+            spec.forEach((s) => {
+                userRef.collection('intakes').doc(payload.id.toString()).collection('exams').doc(s.id).delete()
+            })
+            for (let exam in exams) {
+                await userRef.collection('intakes').doc(payload.id.toString()).collection('specialties').add(exams[exam])
+            }
         }
     },
  //    async addSale({commit},payload){
