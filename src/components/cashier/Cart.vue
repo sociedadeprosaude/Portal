@@ -1,172 +1,217 @@
 <template>
-    <v-flex class="hidden-print-only d-none d-md-block" xs12>
-        <v-card id="carrinho" class="ml-5 elevation-2 ">
-            <v-container>
-                <v-layout row wrap class="mx-3 align-center">
-                    <v-flex xs12>
-                        <v-flex xs6 class="text-center">
-                            <v-btn
-                                    rounded
-                                    class="primary"
-                            >
-                                <v-icon>person_add</v-icon>
-                            </v-btn>
-                        </v-flex>
-                    </v-flex>
-                    <v-flex xs6 class="text-center">
-                        <v-btn
-                                rounded
-                                class="primary">
-                            <v-icon>search</v-icon>
-                        </v-btn>
-                    </v-flex>
-                    <v-flex xs12 class="text-center mt-3">
-                        <v-btn outlined color="primary" @click="gerarCodigo()">Gerar Codigo</v-btn>
-                    </v-flex>
-                    <v-flex xs12 class="mt-4 v-card"
-                            style="overflow:auto; height:50vh; box-shadow: inset 0px 0px 5px grey;">
-                        <v-layout row wrap>
-                            <v-flex xs12 v-if="exames.length > 0">
-                                <p>Exames</p>
-                                <v-card v-for="(item) in exames" class="mt-2" :key="item.name">
-                                    <v-card-title class="py-2">
-                                        <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
-                                        <v-spacer></v-spacer>
-                                        <span class="subtitle-1 font-weight-light">
+    <v-container class="ma-0 pa-0">
+        <v-layout row wrap>
+            <v-flex class="hidden-print-only d-none d-md-block" xs12>
+                <v-card id="carrinho" class="ml-5 elevation-2 ">
+                    <v-container>
+                        <v-layout row wrap class="mx-3 align-center">
+                            <v-flex xs6 class="text-center">
+                                <v-btn
+                                        @click="searchPatient = !searchPatient"
+                                        rounded
+                                        class="primary"
+                                >
+                                    <v-icon>person_add</v-icon>
+                                </v-btn>
+                            </v-flex>
+                            <v-flex xs6 class="text-center">
+                                <v-btn
+                                        rounded
+                                        class="primary">
+                                    <v-icon>search</v-icon>
+                                </v-btn>
+                            </v-flex>
+                            <v-flex xs12 v-if="patient" class="my-3 text-left" style="font-size: 0.8em">
+                                <v-layout row wrap>
+                                    <v-flex xs12>
+                                        <v-divider></v-divider>
+                                    </v-flex>
+                                    <v-flex xs12>
+                                        <span>{{patient.name}}</span>
+                                    </v-flex>
+                                    <v-flex xs12>
+                                        <span>CPF: {{patient.cpf}}</span>
+                                    </v-flex>
+                                    <v-flex xs12>
+                                        <span>Num. Assoc.: {{patient.associate_number}}</span>
+                                    </v-flex>
+                                    <v-flex xs12>
+                                        <v-divider></v-divider>
+                                    </v-flex>
+                                </v-layout>
+                            </v-flex>
+                            <v-flex xs12 v-if="selectedBudget" class="my-1 text-left" style="font-size: 0.8em">
+                                <v-layout row wrap>
+                                    <v-flex xs12>
+                                        <v-divider></v-divider>
+                                    </v-flex>
+                                    <v-flex xs12>
+                                        <span>Orçamento: {{selectedBudget.id}}</span>
+                                    </v-flex>
+                                    <v-flex xs12>
+                                        <v-divider></v-divider>
+                                    </v-flex>
+                                </v-layout>
+                            </v-flex>
+<!--                            <v-flex xs12 class="text-center mt-3">-->
+<!--                                <v-btn outlined color="primary" @click="gerarCodigo()">Gerar Codigo</v-btn>-->
+<!--                            </v-flex>-->
+                            <v-flex xs12 class="mt-4 v-card"
+                                    style="overflow:auto; height:50vh; box-shadow: inset 0px 0px 5px grey;">
+                                <v-layout row wrap>
+                                    <v-flex xs12 v-if="exames.length > 0">
+                                        <p>Exames</p>
+                                        <v-card v-for="(item) in exames" class="mt-2" :key="item.name">
+                                            <v-card-title class="py-2">
+                                                <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
+                                                <v-spacer></v-spacer>
+                                                <span class="subtitle-1 font-weight-light">
                                                 <v-btn small icon @click="removeItem(item)">
                                                     <v-icon>cancel</v-icon>
                                                 </v-btn>
                                             </span>
-                                    </v-card-title>
-                                    <v-card-text class="pt-1 pb-0">
-                                        {{item.clinics[0].clinic}}
-                                        <p class="text-right">
-                                            R$ {{item.clinics[0].price}}
-                                        </p>
-                                    </v-card-text>
-                                </v-card>
-                            </v-flex>
-                            <v-divider></v-divider>
-                            <v-flex xs12 v-if="consultas.length > 0">
-                                <p>Consultas</p>
-                                <v-card v-for="(item) in consultas" class="ma-2" :key="item.doctor.name">
-                                    <v-card-title class="py-2">
-                                        <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
-                                        <v-spacer></v-spacer>
-                                        <span class="subtitle-1 font-weight-light">
+                                            </v-card-title>
+                                            <v-card-text class="pt-1 pb-0">
+                                                {{item.clinics[0].clinic}}
+                                                <p class="text-right">
+                                                    R$ {{item.clinics[0].price}}
+                                                </p>
+                                            </v-card-text>
+                                        </v-card>
+                                    </v-flex>
+                                    <v-divider></v-divider>
+                                    <v-flex xs12 v-if="consultas.length > 0">
+                                        <p>Consultas</p>
+                                        <v-card v-for="(item) in consultas" class="ma-2" :key="item.doctor.name">
+                                            <v-card-title class="py-2">
+                                                <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
+                                                <v-spacer></v-spacer>
+                                                <span class="subtitle-1 font-weight-light">
                                                 <v-btn small icon @click="removeItem(item)">
                                                     <v-icon>cancel</v-icon>
                                                 </v-btn>
                                             </span>
-                                    </v-card-title>
-                                    <v-card-text class="pt-1 pb-0">
-                                        {{item.doctor.name}}
-                                        <p class="text-right">
-                                            R$ {{item.doctor.price}}
-                                        </p>
-                                    </v-card-text>
+                                            </v-card-title>
+                                            <v-card-text class="pt-1 pb-0">
+                                                {{item.doctor.name}}
+                                                <p class="text-right">
+                                                    R$ {{item.doctor.price}}
+                                                </p>
+                                            </v-card-text>
 
-                                </v-card>
-                            </v-flex>
-                            <v-divider></v-divider>
-                            <v-flex xs12 v-if="pacotes.length > 0">
-                                <p>Pacotes</p>
-                                <v-card v-for="(item) in pacotes" class="mt-2" :key="item.nome">
-                                    <v-card-title class="py-2">
-                                        <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
-                                        <v-spacer></v-spacer>
-                                        <span class="subtitle-1 font-weight-light">
+                                        </v-card>
+                                    </v-flex>
+                                    <v-divider></v-divider>
+                                    <v-flex xs12 v-if="pacotes.length > 0">
+                                        <p>Pacotes</p>
+                                        <v-card v-for="(item) in pacotes" class="mt-2" :key="item.nome">
+                                            <v-card-title class="py-2">
+                                                <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
+                                                <v-spacer></v-spacer>
+                                                <span class="subtitle-1 font-weight-light">
                                                 <v-btn small icon @click="removeItem(item)">
                                                     <v-icon>cancel</v-icon>
                                                 </v-btn>
                                             </span>
-                                    </v-card-title>
-                                    <v-card-text class="pt-1 pb-0">
-                                        <p class="text-right">
-                                            R$ {{item.price}}
-                                        </p>
-                                    </v-card-text>
+                                            </v-card-title>
+                                            <v-card-text class="pt-1 pb-0">
+                                                <p class="text-right">
+                                                    R$ {{item.price}}
+                                                </p>
+                                            </v-card-text>
 
-                                </v-card>
+                                        </v-card>
+                                    </v-flex>
+
+                                </v-layout>
                             </v-flex>
 
-                        </v-layout>
-                    </v-flex>
 
-
-                    <v-spacer></v-spacer>
-                    <v-layout row wrap>
-                        <v-flex xs12>
-                            <v-select class="mt-5" label="Forma de pagamento" :items="FormasDePagamento"
-                                      v-model="formaPagamento"></v-select>
-                        </v-flex>
-                        <v-flex>
-                            <v-flex xs6 v-if="formaPagamento === 'Crédito'">
-                                <v-select :items="quantParcelas" v-model="parcelas"
-                                          label="quantidade de parcelas"></v-select>
-                            </v-flex>
-                            <v-layout wrap>
-                                <v-flex xs5>
-                                    <v-text-field label="Desconto: %" v-model="percentageDiscount"></v-text-field>
+                            <v-spacer></v-spacer>
+                            <v-layout row wrap>
+                                <v-flex xs12>
+                                    <v-select class="mt-5" label="Forma de pagamento" :items="FormasDePagamento"
+                                              v-model="formaPagamento"></v-select>
+                                </v-flex>
+                                <v-flex>
+                                    <v-flex xs6 v-if="formaPagamento === 'Crédito'">
+                                        <v-select :items="quantParcelas" v-model="parcelas"
+                                                  label="quantidade de parcelas"></v-select>
+                                    </v-flex>
+                                    <v-layout wrap>
+                                        <v-flex xs5>
+                                            <v-text-field label="Desconto: %"
+                                                          v-model="percentageDiscount"></v-text-field>
+                                        </v-flex>
+                                        <v-spacer></v-spacer>
+                                        <v-flex xs5>
+                                            <v-text-field
+                                                    disabled
+                                                    label="Desconto: R$ " v-model="moneyDiscount"></v-text-field>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                                <v-flex xs12 class="my-4">
+                                    <v-layout row wrap>
+                                        <v-flex xs6>
+                                            <span>Subtotal: R$ {{this.subTotal.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
+                                        </v-flex>
+                                        <v-flex xs6>
+                                            <span>Desconto: R$ {{this.moneyDiscount.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <v-divider></v-divider>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <h6 class="title font-weight-bold"> Total: R$
+                                                {{this.total.toLocaleString('en-us', {minimumFractionDigits:
+                                                2})}}</h6>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <v-divider></v-divider>
+                                        </v-flex>
+                                    </v-layout>
                                 </v-flex>
                                 <v-spacer></v-spacer>
-                                <v-flex xs5>
-                                    <v-text-field
-                                            disabled
-                                            label="Desconto: R$ " v-model="moneyDiscount"></v-text-field>
+                                <v-flex xs12>
+                                    <v-layout row wrap class="align-end fill-height">
+                                        <v-flex xs6 class="text-center">
+                                            <v-btn outlined color="primary" @click="imprimir()">Imprimir
+                                            </v-btn>
+                                        </v-flex>
+                                        <v-flex xs6 class="text-center">
+                                            <v-btn outlined color="primary" @click="pay()">Pagar</v-btn>
+                                        </v-flex>
+                                        <v-flex xs12 class="text-center mt-4">
+                                            <v-btn outlined color="primary" @click="clearCart()">Novo Orçamento</v-btn>
+                                        </v-flex>
+                                    </v-layout>
                                 </v-flex>
                             </v-layout>
-                        </v-flex>
-                        <v-flex xs12 class="my-4">
-                            <v-layout row wrap>
-                                <v-flex xs6>
-                                    <span>Subtotal: R$ {{this.subTotal.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
-                                </v-flex>
-                                <v-flex xs6>
-                                    <span>Desconto: R$ {{this.moneyDiscount.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
-                                </v-flex>
-                                <v-flex xs12>
-                                    <v-divider></v-divider>
-                                </v-flex>
-                                <v-flex xs12>
-                                    <h6 class="title font-weight-bold"> Total: R$
-                                        {{this.total.toLocaleString('en-us', {minimumFractionDigits:
-                                        2})}}</h6>
-                                </v-flex>
-                                <v-flex xs12>
-                                    <v-divider></v-divider>
-                                </v-flex>
-                            </v-layout>
-                        </v-flex>
-                        <v-spacer></v-spacer>
-                        <v-flex xs12>
-                            <v-layout row wrap class="align-end fill-height">
-                                <v-flex xs6 class="text-center">
-                                    <v-btn outlined color="primary" @click="imprimir()">Imprimir
-                                    </v-btn>
-                                </v-flex>
-                                <v-flex xs6 class="text-center">
-                                    <v-btn outlined color="primary" @click="pay()">Pagar</v-btn>
-                                </v-flex>
-                                <v-flex xs12 class="text-center mt-4">
-                                    <v-btn outlined color="primary" @click="clearCart()">Novo Orçamento</v-btn>
-                                </v-flex>
-                            </v-layout>
-                        </v-flex>
-                    </v-layout>
-                </v-layout>
-            </v-container>
-        </v-card>
-    </v-flex>
+                        </v-layout>
+                    </v-container>
+                </v-card>
+            </v-flex>
+        </v-layout>
+        <v-dialog v-model="searchPatient"
+        >
+            <select-patient-card max-width="100%"></select-patient-card>
+        </v-dialog>
+    </v-container>
 </template>
 
 <script>
     import constants from "../../utils/constants";
+    import SelectPatientCard from "../SelectPatientCard";
 
     export default {
         name: "Cart",
+        components: {
+            SelectPatientCard
+        },
         data() {
             return {
+                searchPatient: false,
                 formaPagamento: 'Dinheiro',
                 moneyDiscout: 0,
                 now: moment().valueOf(),
@@ -181,12 +226,15 @@
             }
         },
         computed: {
+            patient() {
+                return this.$store.getters.selectedPatient
+            },
             exames() {
-                console.log('oi',this.$store.getters.getShoppingCartItemsByCategory.exams);
+                console.log('oi', this.$store.getters.getShoppingCartItemsByCategory.exams);
                 return this.$store.getters.getShoppingCartItemsByCategory.exams
             },
             consultas() {
-                console.log('oi',this.$store.getters.getShoppingCartItemsByCategory.consultations);
+                console.log('oi', this.$store.getters.getShoppingCartItemsByCategory.consultations);
 
                 return this.$store.getters.getShoppingCartItemsByCategory.consultations
             },
@@ -206,7 +254,7 @@
                 let itens = this.$store.getters.getShoppingCartItems;
                 let total = 0;
                 for (let item in itens) {
-                    total += itens[item].price
+                    total += parseFloat(itens[item].price)
                 }
                 return total
             },
@@ -307,7 +355,7 @@
             saveBudget(budget) {
                 this.selectedBudget = Object.assign({}, budget)
                 this.$store.dispatch('addBudget', budget)
-                
+
             },
             pay() {
                 let user = this.$store.getters.selectedPatient

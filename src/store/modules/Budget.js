@@ -29,13 +29,22 @@ const actions = {
 
         await firebase.firestore().collection('budgets').doc(payload.id.toString()).set(payload)
         if (specialties) {
+            let spec = await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('specialties').get()
+            spec.forEach( (s) => {
+                firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('specialties').doc(s.id).delete()
+            })
             await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('specialties').add(specialties)
         }
         if (exams) {
+            let spec = await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('exams').get()
+            spec.forEach((s) => {
+                firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('exams').doc(s.id).delete()
+            })
             await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('exams').add(exams)
+
         }
         if (user) {
-            await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('user').add(user)
+            await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('user').doc(user.cpf).set(user)
             context.dispatch('addBudgetToUser', originalPayload)
         }
         payload = Object.assign({}, originalPayload)
