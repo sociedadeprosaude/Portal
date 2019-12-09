@@ -174,6 +174,9 @@
                         holder.price = selection.price;
                         break;
                     case 'exam':
+                        holder.clinic = selection;
+                        holder.cost = selection.cost;
+                        holder.price = selection.price;
                         break;
                     default:
                 }

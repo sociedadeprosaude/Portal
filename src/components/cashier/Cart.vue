@@ -191,8 +191,7 @@
                                         </v-flex>
                                         <v-flex xs12>
                                             <h6 class="title font-weight-bold"> Total: R$
-                                                {{this.total.toLocaleString('en-us', {minimumFractionDigits:
-                                                2})}}</h6>
+                                                {{this.total.toLocaleString('en-us', {minimumFractionDigits: 2})}}</h6>
                                         </v-flex>
                                         <v-flex xs12>
                                             <v-divider></v-divider>
@@ -274,7 +273,7 @@
                 return this.$store.getters.getShoppingCartItemsByCategory.packages
             },
             cost() {
-                let itens = this.$store.getters.getShoppingCartItems
+                let itens = this.$store.getters.getShoppingCartItems;
                 let total = 0
                 for (let item in itens) {
                     total += itens[item].cost
@@ -285,12 +284,14 @@
                 let itens = this.$store.getters.getShoppingCartItems;
                 let total = 0;
                 for (let item in itens) {
+                    console.log('item',itens[item]);
+                    console.log('preco',itens[item].price);
                     total += parseFloat(itens[item].price)
                 }
                 return total
             },
             total() {
-                return this.subTotal - this.moneyDiscount
+                return parseFloat(this.subTotal) - parseFloat(this.moneyDiscount)
             }
         },
         watch: {
