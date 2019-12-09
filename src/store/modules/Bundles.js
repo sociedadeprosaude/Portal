@@ -20,7 +20,6 @@ const actions = {
 
     async addBundle ({commit}, bundle){
 
-        console.log("##########", bundle);
         let dataBundle = {
             name : bundle.name,
             cost: bundle.cost,
@@ -42,11 +41,10 @@ const actions = {
                 bundleRef = await firebase.firestore().collection('packages').add(bundle);
             }
 
-            console.log("troco", bundle.exams);
             for (let i in bundle.exams){
 
                 let examData = {
-                    product: bundle.exams[i].product,
+                    name: bundle.exams[i].product,
                     clinic: bundle.exams[i].clinic,
                     price: bundle.exams[i].price,
                     cost: bundle.exams[i].cost,
@@ -54,6 +52,12 @@ const actions = {
                 firebase.firestore().collection('packages/' + bundle.name + '/exams').doc(bundle.exams[i].product)
                     .set(examData);
 
+            }
+
+            for (let i in bundle.specialties) {
+                let specialtieData = {
+                    name: bundle
+                };
             }
 
             return bundleRef;

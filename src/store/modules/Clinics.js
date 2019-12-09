@@ -25,10 +25,34 @@ const actions = {
             let clinicsSnap = await firebase.firestore().collection('clinics').get();
             let clinics = [];
             clinicsSnap.forEach(function (document) {
+
+                console.log(document.data().name);
+
+
+                let examsSnap = firebase.firestore().collection('clinics/' + document.data().name + '/exams').get();
+                console.log(examsSnap);
+
+                let exams = [];
+                examsSnap.forEach(function (doc) {
+                    exams.push({
+                        ...doc.data(),
+                    });
+                });
+
+                let specialtiesSnap = firebase.firestore().collection('clinics/' + document.data().name + '/specialties').get();
+                let specialties  = [];
+                specialtiesSnap.forEach (function (doc) {
+                    specialties.push({
+                        ...doc.data(),
+                    });
+                });
+
                 clinics.push({
                     id: document.id,
+                    exams : exams,
+                    specialties: specialties,
                     ...document.data()
-                })
+                });
             });
             commit('setClinics', clinics);
             console.log(clinics);
