@@ -3,12 +3,16 @@ import moment from 'moment'
 
 const state = {
     consultations: [],
+    consultationsCanceled: [],
     consultationsByDate: {},
 };
 
 const mutations = {
     setConsultations(state, payload) {
         state.consultations = payload
+    },
+    setConsultationsCanceled(state, payload) {
+        state.consultationsCanceled = payload
     },
     // setConsultationsByDate(state, payload) {
     //     state.consultationsByDate = payload
@@ -48,6 +52,27 @@ const actions = {
             throw e
         }
     },
+
+    async getConsultationsCanceled({commit}) {
+        try {
+            let canceledSnap = await firebase.firestore().collection('canceled')
+                .get()
+            let consultationsCanceled = []
+            canceledSnap.forEach(function (document) {
+                //console.log(document.data())
+                consultationsCanceled.push({
+                    ...document.data(),
+                    id: document.id
+                })
+            })
+            //console.log(consultationsCanceled)
+            commit('setConsultationsCanceled', consultationsCanceled)
+            return consultationsCanceled
+        } catch (e) {
+            throw e
+        }
+    },
+
     async createConsultation({commit}, consultation) {
         let startDate = moment(consultation.start_date, 'YYYY-MM-DD')
         let finalDate = moment(consultation.final_date, 'YYYY-MM-DD')
@@ -205,6 +230,9 @@ const actions = {
 const getters = {
     consultations(state) {
         return state.consultations
+    },
+    consultationsCanceled(state) {
+        return state.consultationsCanceled
     },
     // consultationsByDate(state) {
     //     return state.consultationsByDate

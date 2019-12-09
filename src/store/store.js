@@ -207,18 +207,6 @@ const store = new Vuex.Store({
             })
       })
     },
-    addIntake({commit, getters}, payload) {
-      axios.post('api/entrada/adicionar', payload)
-          .then(response => {
-            commit('addIntake', response.data.intake);
-            if (getters.categoriesNames.indexOf(response.data.intake.category) < 0) {
-              this.dispatch('getCategories')
-            }
-          })
-          .catch(error => {
-            console.log(error)
-          })
-    },
     addExpense({commit, getters}, payload) {
       axios.post('api/despesa/adicionar', payload)
           .then(response => {

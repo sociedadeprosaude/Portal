@@ -99,9 +99,9 @@
                                             </span>
                                             </v-card-title>
                                             <v-card-text class="pt-1 pb-0">
-                                                {{item.clinics[0].clinic}}
+                                                {{item.clinic.clinic}}
                                                 <p class="text-right">
-                                                    R$ {{item.clinics[0].price}}
+                                                    R$ {{item.clinic.price}}
                                                 </p>
                                             </v-card-text>
                                         </v-card>
@@ -191,8 +191,7 @@
                                         </v-flex>
                                         <v-flex xs12>
                                             <h6 class="title font-weight-bold"> Total: R$
-                                                {{this.total.toLocaleString('en-us', {minimumFractionDigits:
-                                                2})}}</h6>
+                                                {{this.total.toLocaleString('en-us', {minimumFractionDigits: 2})}}</h6>
                                         </v-flex>
                                         <v-flex xs12>
                                             <v-divider></v-divider>
@@ -274,10 +273,10 @@
                 return this.$store.getters.getShoppingCartItemsByCategory.packages
             },
             cost() {
-                let itens = this.$store.getters.getShoppingCartItems
+                let itens = this.$store.getters.getShoppingCartItems;
                 let total = 0
                 for (let item in itens) {
-                    total += itens[item].cost
+                    total += parseFloat(itens[item].cost)
                 }
                 return total
             },
@@ -285,12 +284,12 @@
                 let itens = this.$store.getters.getShoppingCartItems;
                 let total = 0;
                 for (let item in itens) {
-                    total += parseFloat(itens[item].price)
+                    total += parseFloat(itens[item].price);
                 }
                 return total
             },
             total() {
-                return this.subTotal - this.moneyDiscount
+                return parseFloat(this.subTotal) - parseFloat(this.moneyDiscount)
             }
         },
         watch: {
@@ -407,15 +406,19 @@
 
             },
             pay() {
-                let user = this.$store.getters.selectedPatient
+                let user = this.$store.getters.selectedPatient;
                 if (!user) {
+                    console.log('Sem usuario escolhido');
                     return
                 }
                 if (!this.selectedBudget) {
+                    console.log('Sem orçamento selecionado');
                     this.saveBudget(this.generateBudget())
                 }
+                console.log('selected Budget', this.selectedBudget)
                 this.$store.dispatch('addIntake', this.selectedBudget,
                 ).then(() => {
+                    console.log('foi');
                     this.aviso2 = true;
                 });
                 this.card = false

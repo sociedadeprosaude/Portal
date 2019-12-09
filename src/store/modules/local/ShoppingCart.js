@@ -30,10 +30,10 @@ const getters = {
             return a.doctor
         });
         let exams = state.items.filter((a) => {
-            return a.clinics
+            return a.clinic
         });
         let packages = state.items.filter((a) => {
-            return !a.doctor && !a.clinics
+            return !a.doctor && !a.clinic
         });
         return {
             consultations: consultations,
