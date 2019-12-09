@@ -114,7 +114,7 @@
                                                                @mousedown="toggle"
                                                                @click="addSpecialties('PRO-SAUDE' , item , n, categorySelect, n.price, n.cost)"
                                                         >
-                                                            {{n.doctor}} | {{n.price}}
+                                                            {{n.name}} | {{n.price}}
                                                         </v-btn>
                                                     </v-slide-item>
                                                 </v-slide-group>
@@ -326,6 +326,8 @@
                 let search = this.search.toLowerCase();
                 let products = [];
 
+                console.log(this.items);
+
                 if (this.items) {
                     if (this.categorySelect === 'clinic') {
                         for (let i in this.items) {
@@ -368,7 +370,7 @@
                             for (let doctor in this.items[i].doctors){
                                 doctors [doctor] = ({
                                     payment_method: this.items[i].doctors[doctor].payment_method,
-                                    doctor: this.items[i].doctors[doctor].doctor,
+                                    name: this.items[i].doctors[doctor].name,
                                     cost: this.items[i].doctors[doctor].cost,
                                     price: this.items[i].doctors[doctor].price,
                                 });
