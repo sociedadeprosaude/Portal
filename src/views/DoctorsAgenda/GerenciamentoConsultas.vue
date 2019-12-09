@@ -134,14 +134,16 @@
                                 </v-expansion-panel-header>
 
                                 <v-expansion-panel-content>
+                                    <v-divider></v-divider>
+                                    <v-card class="elevation-6">
                                     <v-list three-line subheader>
-                                        <v-layout row wrap>
+                                        <v-layout wrap>
                                             <v-flex sm3
                                                     xs12
                                                     v-for="item in consultation.consultations"
                                                     :key="item.id"
                                             >
-                                                <v-list-tile
+                                                <v-list-item
                                                      @click="visualizarConsulta = {
                                                             idConsultation:item.id,
                                                             idPaciente: item.user.cpf,
@@ -161,14 +163,12 @@
                                                             consultation:item
                                                         }" 
                                                 >
-                                                <v-card class="py-2">
                                                     <v-list-tile-content >
                                                         <v-list-tile-title class="primary--text">
                                                             <span  style="font-weight: bolder">
                                                                 {{item.user.name}}
                                                             </span>
                                                         </v-list-tile-title>
-                                                        
                                                         <br>
                                                         <v-list-tile-sub-title class="text-left">
                                                             CPF: {{item.user.cpf}}
@@ -192,11 +192,11 @@
                                                             <v-icon v-if="item.status === 'Aguardando pagamento'" color="error">money_off</v-icon>
                                                         </v-btn>
                                                     </v-list-tile-action>
-                                                </v-card>
-                                                </v-list-tile>
+                                                </v-list-item>
                                             </v-flex>
                                         </v-layout>
                                     </v-list>
+                                    </v-card>
                             </v-expansion-panel-content>
                             </v-expansion-panel>
                         </v-expansion-panels>
@@ -217,32 +217,32 @@
                                         <v-container grid-list-md>
                                             <v-layout wrap>
                                                 <v-flex xs12 sm6>
-                                                    <v-text-field readonly prepend-icon="person" label="Nome do Paciente" v-model="index_Selecionado.paciente">
+                                                    <v-text-field readonly hide-details outlined prepend-icon="person" label="Nome do Paciente" v-model="index_Selecionado.paciente">
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
-                                                    <v-text-field readonly prepend-icon="credit_card" label="CPF" v-model="index_Selecionado.cpf">
+                                                    <v-text-field readonly hide-details outlined prepend-icon="credit_card" label="CPF" v-model="index_Selecionado.cpf">
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex xs12 sm12 md12 lg12><v-divider ></v-divider></v-flex>
                                                 <v-flex xs12 sm6>
-                                                    <v-text-field readonly prepend-icon="person" label="Nome do Médico" v-model="index_Selecionado.medico">
+                                                    <v-text-field readonly hide-details outlined prepend-icon="person" label="Nome do Médico" v-model="index_Selecionado.medico">
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
-                                                    <v-text-field readonly prepend-icon="credit_card" v-model="index_Selecionado.crm" label="CRM">
+                                                    <v-text-field readonly hide-details outlined prepend-icon="credit_card" v-model="index_Selecionado.crm" label="CRM">
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
-                                                    <v-text-field readonly prepend-icon="school" label="Especialidade" v-model="especialidade">
+                                                    <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="especialidade.name">
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
-                                                    <v-text-field readonly prepend-icon="event" label="Dia da Consulta" v-model="computedDateFormattedSelecionado">
+                                                    <v-text-field readonly hide-details outlined prepend-icon="event" label="Dia da Consulta" v-model="computedDateFormattedSelecionado">
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
-                                                    <v-text-field readonly prepend-icon="access_alarm" label="Hora da Consulta" v-model="index_Selecionado.hora">
+                                                    <v-text-field readonly hide-details outlined prepend-icon="access_alarm" label="Hora da Consulta" v-model="index_Selecionado.hora">
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
@@ -252,6 +252,8 @@
                                                             :items="statusOptions"
                                                             label="Status"
                                                             chips
+                                                            outlined
+                                                            hide-details
                                                     ></v-select>
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
@@ -259,6 +261,8 @@
                                                             prepend-icon="assignment"
                                                             v-model="index_Selecionado.modalidade"
                                                             readonly
+                                                            outlined
+                                                            hide-details
                                                             label="Modalidade"
                                                     ></v-text-field>
                                                 </v-flex>
@@ -269,6 +273,8 @@
                                                             label="Nº do Recibo"
                                                             v-model="index_Selecionado.num_recibo"
                                                             type="number"
+                                                            outlined
+                                                            hide-details
                                                             :disabled="index_Selecionado.status === 'Pago' ? false : true"
                                                     ></v-text-field>
                                                 </v-flex>
@@ -280,6 +286,8 @@
                                                             :items="attendanceOptions"
                                                             label="Atendimento"
                                                             chips
+                                                            outlined
+                                                            hide-details
                                                             :disabled="status_Selecionado.status === 'Pago' && index_Selecionado.num_recibo !== ''"
                                                     ></v-select>
                                                 </v-flex>
