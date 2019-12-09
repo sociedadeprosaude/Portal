@@ -276,7 +276,7 @@
                 let itens = this.$store.getters.getShoppingCartItems;
                 let total = 0
                 for (let item in itens) {
-                    total += itens[item].cost
+                    total += parseFloat(itens[item].cost)
                 }
                 return total
             },
@@ -284,9 +284,7 @@
                 let itens = this.$store.getters.getShoppingCartItems;
                 let total = 0;
                 for (let item in itens) {
-                    console.log('item',itens[item]);
-                    console.log('preco',itens[item].price);
-                    total += parseFloat(itens[item].price)
+                    total += parseFloat(itens[item].price);
                 }
                 return total
             },
@@ -408,15 +406,19 @@
 
             },
             pay() {
-                let user = this.$store.getters.selectedPatient
+                let user = this.$store.getters.selectedPatient;
                 if (!user) {
+                    console.log('Sem usuario escolhido');
                     return
                 }
                 if (!this.selectedBudget) {
+                    console.log('Sem orçamento selecionado');
                     this.saveBudget(this.generateBudget())
                 }
+                console.log('selected Budget', this.selectedBudget)
                 this.$store.dispatch('addIntake', this.selectedBudget,
                 ).then(() => {
+                    console.log('foi');
                     this.aviso2 = true;
                 });
                 this.card = false
