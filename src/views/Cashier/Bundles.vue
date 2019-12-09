@@ -69,9 +69,11 @@
                                             <v-btn outlined text :color="color.buttonExam" class="button-select" rounded
                                                    @click="selectExam">Exames
                                             </v-btn>
+                                            <!--
                                             <v-btn outlined text :color="color.buttonAppointment" class="button-select mx-2" rounded
                                                    @click="selectAppointment">Consultas
                                             </v-btn>
+                                            -->
                                             <v-btn outlined text :color="color.buttonClinic" class="button-select mx-2" rounded
                                                    @click="selectClinic">Clinicas
                                             </v-btn>
@@ -88,7 +90,7 @@
                                                 <h3 class="primary--text">{{item.name}}</h3>
                                             </v-card-title>
                                             <v-card-text>
-                                                <v-slide-group v-if="categorySelect === 'exam'" show-arrows multiple>
+                                                <v-slide-group v-if="categorySelect === 'exam'" show-arrows >
                                                     <v-slide-item
                                                             v-for="(n,i) in item.clinics" :key="i" v-slot:default="{ active, toggle }" >
                                                         <v-btn class="mx-2"
@@ -103,6 +105,7 @@
                                                         </v-btn>
                                                     </v-slide-item>
                                                 </v-slide-group>
+                                                <!--
                                                 <v-slide-group v-if="categorySelect === 'appointment'" show-arrows multiple>
                                                     <v-slide-item
                                                             v-for="(n,i) in item.doctors" v-slot:default="{ active, toggle }" :key="i">
@@ -118,11 +121,12 @@
                                                         </v-btn>
                                                     </v-slide-item>
                                                 </v-slide-group>
+                                                -->
                                             </v-card-text>
                                             <v-card-text>
-                                                <v-slide-group v-if="categorySelect === 'clinic' && item.exams" show-arrows>
+                                                <v-slide-group v-if="categorySelect === 'clinic' && item.exams" show-arrows multiple>
                                                     <v-slide-item
-                                                            v-for="(n,index) in item.exames"  v-slot:default="{ active, toggle }" :key="index">
+                                                            v-for="(n,index) in item.exams"  v-slot:default="{ active, toggle }" :key="index">
                                                         <v-btn class="mx-2"
                                                                :input-value="active"
                                                                active-class="blue white--text"
@@ -130,17 +134,18 @@
                                                                rounded
                                                                @mousedown="toggle"
 
-                                                               @click="addProducts(item.nome, n.nome, 'exam', n.venda, n.custo)"
+                                                               @click="addExam(n.clinic, item.name, categorySelect, n.price, n.cost)"
                                                         >
-                                                            {{ n.nome}} | {{n.venda}}
+                                                            {{ n.name}} | {{n.price}}
                                                         </v-btn>
                                                     </v-slide-item>
                                                 </v-slide-group>
                                             </v-card-text>
+                                            <!--
                                             <v-card-text>
-                                                <v-slide-group v-if="categorySelect === 'clinic' && item.consultas" show-arrows>
+                                                <v-slide-group v-if="categorySelect === 'clinic' && item.specialties" show-arrows multiple>
                                                     <v-slide-item
-                                                            v-for="(n,index) in combo"  v-slot:default="{ active, toggle }" :key="index">
+                                                            v-for="(n,index) in doctors"  v-slot:default="{ active, toggle }" :key="index">
                                                         <v-btn class="mx-2"
                                                                :input-value="active"
                                                                active-class="blue white--text"
@@ -154,6 +159,7 @@
                                                     </v-slide-item>
                                                 </v-slide-group>
                                             </v-card-text>
+                                            -->
                                         </v-card>
                                     </v-flex>
                                     <v-layout row class="mt-5">
@@ -335,7 +341,7 @@
                                 name: this.items[i].name
                             };
                             if (this.items[i].specialties.length > 0){
-                                obj = {...obj, specialties: this.items[i].specialties }
+                                obj = {...obj, specialties: this.items[i].specialties};
                             }
                             if (this.items[i].exams.length > 0){
                                 obj = {...obj, exams: this.items[i].exams}
@@ -381,7 +387,7 @@
                         }
                     }
 
-                    console.log(products);
+                    console.log('product: ', products);
                     let p = products.filter(item => {
                         const text = item.name.toLowerCase();
                         return text.indexOf(search) >-1;
@@ -398,7 +404,7 @@
                 this.selectExam();
             });
             this.$store.dispatch('loadSpecialties');
-            this.$store.dispatch('getClinics');
+            this.$store.dispatch('loadClinics');
         },
 
         methods: {

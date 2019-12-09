@@ -25,35 +25,26 @@ const actions = {
             let clinicsSnap = await firebase.firestore().collection('clinics').get();
             let clinics = [];
             clinicsSnap.forEach(function (document) {
-
-                console.log(document.data().name);
-
-
-                let examsSnap = firebase.firestore().collection('clinics/' + document.data().name + '/exams').get();
-                console.log(examsSnap);
-
-                let exams = [];
-                examsSnap.forEach(function (doc) {
-                    exams.push({
-                        ...doc.data(),
-                    });
-                });
-
-                let specialtiesSnap = firebase.firestore().collection('clinics/' + document.data().name + '/specialties').get();
-                let specialties  = [];
-                specialtiesSnap.forEach (function (doc) {
-                    specialties.push({
-                        ...doc.data(),
-                    });
-                });
-
                 clinics.push({
                     id: document.id,
-                    exams : exams,
-                    specialties: specialties,
                     ...document.data()
                 });
             });
+
+            let exams = [];
+            for (let clinic in clinics){
+                let examsSnap = await firebase.firestore().collection('clinics').doc(clinics[clinic].name)
+                    .collection('exams').get();
+
+                examsSnap.forEach(function (doc) {
+                    exams.push({
+                        id: doc.id,
+                        ...doc.data(),
+                    });
+                });
+            }
+
+            console.log('#exams', exams);
             commit('setClinics', clinics);
             console.log(clinics);
             return clinics
@@ -128,6 +119,85 @@ const actions = {
 
     selectClinic ({commit}, payload) {
         commit('setSelectedClinic' , payload);
+    },
+
+    loadClinics ({commit}) {
+        return new Promise((resolve, reject) => {
+
+            firebase.firestore().collection('clinics').get().then((doc) => {
+
+                let clinics = [];
+                doc.forEach((doc) => {
+
+                    let specialties = [];
+                    let nameClinic = doc.data().name;
+
+                    firebase.firestore().collection('clinics').doc(nameClinic).collection('specialties')
+                        .get().then((data) => {
+
+                        data.forEach((doc) => {
+
+                            let doctors = [];
+                            let nameSpecialtie = doc.data().name;
+
+                            firebase.firestore().collection('clinics').doc(nameClinic).collection('specialties').doc(nameSpecialtie).collection('doctors')
+                                .get().then((info) => {
+
+                                info.forEach((doc) => {
+                                    doctors.push({
+                                        cost: doc.data().cost,
+                                        cpf: doc.data().cpf,
+                                        crm: doc.data().crm,
+                                        name: doc.data().name,
+                                        payment_method: doc.data().payment_method,
+                                        price: doc.data().price,
+                                        rules: doc.data().rules,
+                                        specialtie: doc.data().specialtie,
+                                    });
+                                });
+                            });
+
+                            specialties.push({
+                                name: doc.data().name,
+                                doctors: doctors,
+                            });
+
+                        });
+                    });
+
+                    let exams = [];
+                    firebase.firestore().collection('clinics').doc(nameClinic).collection('exams')
+                        .get().then((data) => {
+                        data.forEach((doc) => {
+                            exams.push({
+                                name: doc.data().name,
+                                cost: doc.data().cost,
+                                price: doc.data().price,
+                                obs: doc.data().obs,
+                            });
+                        });
+                    });
+
+                    clinics.push({
+
+                        id: doc.data().id,
+                        ...doc.data(),
+                        exams: exams,
+                        specialties: specialties,
+                    });
+                });
+
+                console.log("carregando");
+                console.log(clinics);
+                commit('setClinics', clinics);
+
+                if (doc) {
+                    resolve(doc)
+                } else {
+                    reject(console.log('erro ao carregar dados das clinicas', doc))
+                }
+            })
+        })
     },
 };
 
