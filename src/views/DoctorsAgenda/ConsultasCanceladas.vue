@@ -1,7 +1,14 @@
 <template>
     <v-container>
-        <v-layout align-center row wrap>
+        <v-layout align-center justify-center row wrap>
             <v-card>
+
+                <v-flex v-for="(option, i) in options" :key="i">
+                    <strong>{{option.doctor.name}}</strong>
+                    <v-text-field v-html="option.doctor.name"></v-text-field>
+                </v-flex>
+
+                <!--
                 <template>
                     <v-container fluid grid-list-xl>
                         <v-layout align-center wrap>
@@ -219,15 +226,10 @@
                                             <v-spacer></v-spacer>
                                             <v-btn color="error"
                                                    round
-                                                   :disabled="loader"
-                                                   :loading="loader"
                                                    @click="apagar"
                                             >
                                                 Apagar
                                                 <v-icon right>delete</v-icon>
-                                                <template v-slot:loader>
-                                                    <span>Aguarde...</span>
-                                                </template>
                                             </v-btn>
                                             <v-spacer></v-spacer>
                                             <v-btn
@@ -237,30 +239,7 @@
                                                     :to="{ name: 'RemarcarConsultas', params: { q: {...index_Selecionado}}}"
                                             >Remarcar
                                                 <v-icon right>assignment_turned_in</v-icon>
-                                                <template v-slot:loader>
-                                                    <span>Aguarde...</span>
-                                                </template>
                                             </v-btn>
-                                            <v-dialog
-                                                    v-model="loader"
-                                                    hide-overlay
-                                                    persistent
-                                                    width="300"
-                                            >
-                                                <v-card
-                                                        color="primary"
-                                                        dark
-                                                >
-                                                    <v-card-text>
-                                                        {{this.mensage_progress}}
-                                                        <v-progress-linear
-                                                                indeterminate
-                                                                color="white"
-                                                                class="mb-0"
-                                                        ></v-progress-linear>
-                                                    </v-card-text>
-                                                </v-card>
-                                            </v-dialog>
                                         </v-card-actions>
                                     </v-card>
                                 </v-dialog>
@@ -268,35 +247,25 @@
                         </v-layout>
                     </v-container>
                 </template>
-                <v-snackbar
-                        v-model="snackbar"
-                        :bottom="y === 'bottom'"
-                        :left="x === 'left'"
-                        color="success"
-                        :multi-line="mode === 'multi-line'"
-                        :right="x === 'right'"
-                        :top="y === 'top'"
-                        :timeout="timeout"
-                        :vertical="mode === 'vertical'"
-                >
-                    {{this.mensagem}}
-                    <v-spacer></v-spacer>
-                    <v-icon dark>done_outline</v-icon>
-                </v-snackbar>
+                -->
             </v-card>
         </v-layout>
     </v-container>
 </template>
 
 <script>
+    var moment = require('moment');
     export default {
         data: () => ({
-            y: 'top',
-            x: null,
-            mode: '',
-            panel: [true],
+            //--------------------
+            moment: moment,
             menu: false,
+            dateFormatted: '',
+            date: null,
             dialog: false,
+            //-------------
+            /*
+            panel: [true],
             alert: false,
             menssagem:'',
             especialidade_choose:'',
@@ -304,51 +273,32 @@
             status_Selecionado:'',
             timeout:4000,
             mensage_progress:''
+            */
         }),
         computed: {
+            formIsValid() {
+                return this.sale && this.cost && this.exams.length > 0
+            },
             computedDateFormatted () {
-                return this.formatDate(this.index_Selecionado.data)
+                return this.formatDate(this.date)
             },
-            menssagens:{
-                set(val){
-                    this.messages = val
-                },
-                get(){
-                    return this.$store.getters.canceledConsultations({especialidade:this.especialidade})
-                }
+            options() {
+                let cancel = this.$store.getters.consultationsCanceled
+                return cancel
             },
-            visualizarConsulta:{
-                get: function(){
-                    return this.index_Selecionado;
-                },
-                set: function (index) {
-                    this.status_Selecionado = index.status
-                    this.index_Selecionado = {...index}
-                    console.log(this.index_Selecionado)
-                    this.dialog = true
-                }
-            },
-            loader(){
-                return this.$store.getters.statusLoaderCC
-            },
-            snackbar(){
-
-                var snack = this.$store.getters.onSnackbarCC
-
-                if(snack){
-                    this.dialog = false
-                }
-                return snack;
-            },
-            mensagem(){
-                return this.$store.getters.onMensagem
+            /*
+            canceleds () {
+                this.$store.getters.consultationsCanceled
             }
+            */
         },
         async mounted() {
-            this.$store.dispatch('stopSnack',false)
-            await this.$store.dispatch('loadConsultasCanceladas')
+            this.$store.dispatch('getConsultationsCanceled')
+            this.date = moment().format('YYYY-MM-DD')
+            this.dateFormatted = moment().format('YYYY-MM-DD')
         },
         watch: {
+            //
         },
         methods: {
             formatDate (date) {
@@ -356,6 +306,7 @@
                 const [year, month, day] = date.split('-')
                 return `${day}/${month}/${year}`
             },
+            /*
             call(){
                 this.$store.dispatch('erase',{... this.index_Selecionado})
             },
@@ -364,6 +315,7 @@
                 this.$store.dispatch('setLoader',{loader:true,view:"ConsultaCancelada"})
                 setTimeout(() => (this.call()), 1000)
             }
+             */
         },
     }
 </script>

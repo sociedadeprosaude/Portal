@@ -282,8 +282,6 @@
                 } else {
                     this.desserts.push(this.editedItem)
                 }
-
-                this.createMedico();
                 this.close()
             }
         }

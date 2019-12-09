@@ -198,66 +198,6 @@
                                         </v-layout>
                                     </v-list>
                             </v-expansion-panel-content>
-
-                                <!-- <v-card>
-                                    <v-divider></v-divider>
-                                    <v-list three-line subheader>
-                                        <v-layout row wrap>
-                                            <v-flex sm3
-                                                    xs12
-                                                    v-for="item in message.pacientes"
-                                                    :key="item.paciente"
-                                            >
-                                            <v-card class="mt-2 ml-2 elevation-5 py-2 px-1" style="border-radius:15px" >
-                                                <v-list-tile
-                                                        @click="visualizarConsulta = {
-                                                            idConsultation:item.idConsultation,
-                                                            idPaciente: item.idPaciente,
-                                                            paciente: item.paciente,
-                                                            id: item.id,
-                                                            cpf:item.cpf,
-                                                            telefone: item.telefone,
-                                                            data: item.data,
-                                                            hora: item.hora,
-                                                            crm: message.crm,
-                                                            status: item.status,
-                                                            modalidade: item.modalidade,
-                                                            medico:message.medico,
-                                                            num_recibo:item.num_recibo,
-                                                            pacienteObj:item.pacienteObj
-                                                        }" 
-                                                >
-                                                    <v-list-tile-content>
-                                                        <v-list-tile-title>
-                                                            <span :class="`${message.color}--text`" style="font-weight: bolder">{{item.paciente}}</span>
-                                                        </v-list-tile-title>
-                                                        <v-list-tile-sub-title>
-                                                            {{item.cpf}}
-                                                        </v-list-tile-sub-title>
-                                                        <v-list-tile-sub-title>
-                                                            {{item.telefone}}
-                                                        </v-list-tile-sub-title>
-                                                        <v-list-tile-action-text>
-                                                            {{item.data | dateFilter}} -
-                                                            {{item.hora}}
-                                                        </v-list-tile-action-text>
-                                                    </v-list-tile-content>
-
-                                                    <v-list-tile-action>
-                                                        <v-btn icon ripple flat>
-                                                            <v-icon v-if="item.modalidade === 'Retorno'" :color="message.color">restore</v-icon>
-                                                            <v-icon v-if="item.modalidade === 'Consulta'" :color="message.color">event</v-icon>
-                                                            <v-icon v-if="item.status === 'Pago'" color="success">attach_money</v-icon>
-                                                            <v-icon v-if="item.status === 'Aguardando pagamento'" color="error">money_off</v-icon>
-                                                        </v-btn>
-                                                    </v-list-tile-action>
-                                                </v-list-tile>
-                                            </v-card>
-                                            </v-flex>
-                                            
-                                        </v-layout>
-                                    </v-list>
-                                </v-card> -->
                             </v-expansion-panel>
                         </v-expansion-panels>
                     </v-layout>
