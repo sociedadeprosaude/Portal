@@ -99,9 +99,9 @@
                                             </span>
                                             </v-card-title>
                                             <v-card-text class="pt-1 pb-0">
-                                                {{item.clinics[0].clinic}}
+                                                {{item.clinic.clinic}}
                                                 <p class="text-right">
-                                                    R$ {{item.clinics[0].price}}
+                                                    R$ {{item.clinic.price}}
                                                 </p>
                                             </v-card-text>
                                         </v-card>

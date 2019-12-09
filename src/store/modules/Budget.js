@@ -125,25 +125,26 @@ const actions = {
 
         await firebase.firestore().collection('intakes').doc(payload.id.toString()).set(payload);
         if (specialties) {
-            console.log('consultas existem');
-            console.log('specialties', specialties);
             let spec = await firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('specialties').get()
             spec.forEach((s) => {
                 firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('specialties').doc(s.id).delete()
             })
             for (let spec in specialties) {
+                if(specialties[spec].doctor.rules === null){
+                    delete specialties[spec].doctor.rules
+                }
                 await firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('specialties').add(specialties[spec])
             }
         }
         if (exams) {
-            console.log('exames existem');
-            console.log('exams', exams);
-            console.log('payload', payload)
             let spec = await firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('exams').get()
             spec.forEach((s) => {
                 firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('exams').doc(s.id).delete()
             })
             for (let exam in exams) {
+                if(exams[exam].rules === undefined){
+                    delete exams[exam].rules;
+                }
                 await firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('exams').add(exams[exam])
             }
         }
