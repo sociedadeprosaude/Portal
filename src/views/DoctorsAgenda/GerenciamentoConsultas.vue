@@ -156,7 +156,7 @@
                                                             modalidade: item.type,
                                                             medico:item.doctor.name,
                                                             doctor:item.doctor,
-                                                            num_recibo:item.invoice,
+                                                            num_recibo:item.payment_number,
                                                             pacienteObj:item.user,
                                                             consultation:item
                                                         }" 
@@ -489,9 +489,10 @@
                 return this.formatDate(this.index_Selecionado.data)
             },
             consultas() {
+                console.log(this.especialidade)
                 let consultas = this.formatConsultationsArray(this.$store.getters.consultations).filter((a) => {
                     
-                    return this.especialidade && this.date ? this.especialidade === a.specialty.name && this.date === a.date.split(' ')[0] && !(a.user === undefined)  : false
+                    return this.especialidade && this.date ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && !(a.user === undefined)  : false
                 })
                 return consultas;
             },
@@ -577,7 +578,7 @@
             async initialConfig() {
                 this.loading = true
                 await this.$store.dispatch("getSpecialties")
-                this.especialidade = this.specialties[0]['name']
+                this.especialidade = this.specialties[0]
                 await this.$store.dispatch('getDoctors')
                 await this.$store.dispatch('getConsultations')
                 
@@ -619,6 +620,7 @@
             },
 
             consultasByDoctors(consultations) {
+                console.log('jkkjhkjhkjhkj')
                 let res = {}
                 for (let cons in consultations) {
                     let targetDate = consultations[cons].doctor.cpf
@@ -669,10 +671,10 @@
             atualizar() {
     
                 this.index_Selecionado.pacienteObj.status = this.index_Selecionado.status
-                this.index_Selecionado.pacienteObj.invoice = this.index_Selecionado.invoice
+                this.index_Selecionado.pacienteObj.payment_number = this.index_Selecionado.payment_number
                 this.$store.dispatch('updateAppointment', {
                     status: this.index_Selecionado.status,
-                    invoice: this.index_Selecionado.num_recibo,
+                    payment_number: this.index_Selecionado.num_recibo,
                     idConsultation: this.index_Selecionado.idConsultation,
                     idPatient: this.index_Selecionado.cpf
                 })

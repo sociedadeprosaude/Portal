@@ -14,6 +14,7 @@
                             rounded
                             chips
                             color="blue"
+                            clearable
                     ></v-select>
                 </v-flex>
                 <v-flex xs5 class="ml-3">
@@ -28,6 +29,7 @@
                             rounded
                             chips
                             color="blue"
+                            clearable
                     ></v-select>
                 </v-flex>
             </v-layout>
@@ -401,7 +403,7 @@
             num_recibo: "",
             type: "",
             createConsultationForm: undefined,
-            invoiceFound:undefined,
+            payment_numberFound:undefined,
             attendance: "Aguardando Atendimento",
             attendanceOptions: [
                 {text: "Aguardando Atendimento"},
@@ -457,21 +459,43 @@
                 // return this.formatDate(this.index_Selecionado.data);
             },
             consultas() {
+                console.log(this.selectedDoctor)
                 let consultas = this.formatConsultationsArray(this.$store.getters.consultations).filter((a) => {
-                    return this.especialidade ? this.especialidade.name === a.specialty.name : true
-                    && this.selectedDoctor ? this.selectedDoctor.cpf ? this.selectedDoctor.cpf === a.doctor.cpf : true : true
+                    return this.especialidade && this.selectedDoctor ? this.especialidade.name === a.specialty.name && this.selectedDoctor.cpf === a.doctor.cpf : true
+                    && this.especialidade ? this.especialidade.name ? this.especialidade.name === a.specialty.name : true : true
                 })
                 return consultas;
             },
             doctors: {
                 get: function () {
-                    let docs = {
+                    /* let docs = {
                         0: {
                             name: 'Todos'
                         },
                         ...this.$store.getters.doctors
                     }
-                    return Object.values(docs)
+                    return Object.values(docs) */
+
+                    let docArray = Object.values(this.$store.getters.doctors)
+                    docArray = docArray.filter((doctor) => {
+                        if(!this.especialidade) {
+                            return true
+                        }
+                        var find = false
+                        doctor.specialties.forEach((specialty)=>{
+                            console.log(doctor.name,specialty.name)
+                            if(specialty.name === this.especialidade.name){
+                                find = true
+                                return true
+                            }
+                                
+                        })
+                        
+                        return find
+                    })
+                    console.log(docArray)
+                    //docArray.unshift({name:'Todos'})
+                    return docArray
                 }
             },
             selectedPatient() {
@@ -574,21 +598,17 @@
                         return !a.user
                     })
                 }
+                this.payment_numberFound = undefined
+                this.num_recibo = ''
+                this.status = 'Aguardando pagamento'
                 this.$store.dispatch('thereIsIntakes',{
                     user:patient,
                     doctor:form.consultation.doctor,
                     specialty:form.consultation.specialty})
                 .then((obj)=>{
-                    console.log(obj)
-                    this.invoiceFound = obj
-                    this.num_recibo = obj.invoice
+                    this.payment_numberFound = obj
+                    this.num_recibo = obj.payment_number
                     this.status = 'Pago'
-                })
-                .catch((error)=>{
-                    console.log(error)
-                    this.invoiceFound = undefined
-                    this.num_recibo = ''
-                    this.status = 'Aguardando pagamento'
                 })
                 
                 this.createConsultationForm = form
@@ -720,14 +740,16 @@
                     ...form.user,
                     status: this.status,
                     type: this.modalidade,
-                    invoice: this.num_recibo
+                    payment_number: this.num_recibo
                 }
                 form.consultation = {
                     ...form.consultation,
                     status: this.status,
                     type: this.modalidade,
-                    invoice: this.num_recibo
+                    payment_number: this.num_recibo
                 }
+                if(this.payment_numberFound)
+                    form = {...form,payment_numberFound:this.payment_numberFound}
                 // return
                 this.loading = true
                 await this.$store.dispatch('addConsultationAppointmentToUser', form)
