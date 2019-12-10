@@ -484,8 +484,6 @@
                         this.index_Selecionado = {...index}
                         console.log(this.index_Selecionado)
                         this.dialog = true
-
-                        //this.$store.dispatch('agendarConsulta',{pacienteSelecionado: this.pacienteSelecionado, idConsulta: idConsulta, especialidade:this.especialidade})
                     }
                     else{
                         alert('Escolha uma especialidade!')
@@ -512,9 +510,7 @@
         mounted() {
             this.initialConfig()  
             this.date = moment().format('YYYY-MM-DD')
-            //this.$store.dispatch('stopSnack',false)
             this.dateFormatted = moment().format('YYYY-MM-DD')
-            //this.$store.dispatch('setLoader',{loader:false,view:"RetornoConsulta"})
         },
         watch: {
             menu(val) {
@@ -528,10 +524,6 @@
                 this.especialidade = this.specialties[0]
                 await this.$store.dispatch('getDoctors')
                 await this.$store.dispatch('getConsultations',moment().subtract(10,'days').format('YYYY-MM-DD'))
-                
-                // this.$store.dispatch("stopSnack", false);
-                //this.$store.dispatch('setLoader',{loader:false,view:"AgendamentoConsulta"})
-                // this.especialidade = "Clinico Geral"
                 this.loading = false
             },
 
