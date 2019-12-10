@@ -209,7 +209,10 @@
                                             </v-btn>
                                         </v-flex>
                                         <v-flex xs6 class="text-center">
-                                            <submit-button text="Pagar" :loading="paymentLoading" :success="paymentSuccess" color="primary" @click="pay()">Pagar</submit-button>
+                                            <submit-button text="Pagar" :loading="paymentLoading"
+                                                           :success="paymentSuccess" color="primary" @click="pay()">
+                                                Pagar
+                                            </submit-button>
                                         </v-flex>
                                         <v-flex xs12 class="text-center mt-4">
                                             <v-btn outlined color="primary" @click="clearCart()">Novo Orçamento</v-btn>
@@ -226,6 +229,9 @@
         >
             <select-patient-card max-width="100%"></select-patient-card>
         </v-dialog>
+        <v-dialog fullscreen v-model="budgetToPrintDialog">
+            <budget-to-print @close="budgetToPrintDialog = false" :budget="budgetToPrint"></budget-to-print>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -233,12 +239,14 @@
     import constants from "../../utils/constants";
     import SelectPatientCard from "../SelectPatientCard";
     import SubmitButton from "../SubmitButton";
+    import BudgetToPrint from "./BudgetToPrint";
 
     export default {
         name: "Cart",
         components: {
             SelectPatientCard,
-            SubmitButton
+            SubmitButton,
+            BudgetToPrint
         },
         data() {
             return {
@@ -258,6 +266,8 @@
                 moneyDiscount: 0,
                 FormasDePagamento: ["Dinheiro", "Crédito", "Débito"],
                 totalNovo: 0,
+                budgetToPrint: undefined,
+                budgetToPrintDialog: false
 
                 // selectedBudget: undefined
             }
@@ -387,6 +397,8 @@
                 // });
                 // window.print();
                 this.saveBudget(this.generateBudget())
+                this.budgetToPrint = this.selectedBudget
+                this.budgetToPrintDialog = true
             },
             pesquisarUsuario() {
                 this.$store.dispatch('searchPatient', this.codigo).then(() => {
