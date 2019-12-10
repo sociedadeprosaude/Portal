@@ -21,10 +21,10 @@ const mutations = {
 
 const actions = {
 
-    async getConsultations({commit}) {
+    async getConsultations({commit},payload) {
         try {
             let consultationsSnap = await firebase.firestore().collection('consultations')
-                .where('date', '>=', moment().format('YYYY-MM-DD HH:mm:ss'))
+                .where('date', '>=', payload)
                 .where('date', '<=', moment().add(10, 'days').format('YYYY-MM-DD 23:59:59'))
                 .get()
             let consultations = []

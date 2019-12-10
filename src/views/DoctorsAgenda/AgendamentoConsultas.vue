@@ -657,7 +657,7 @@
             async initialConfig() {
                 this.loading = true
                 await this.$store.dispatch('getDoctors')
-                await this.$store.dispatch('getConsultations')
+                await this.$store.dispatch('getConsultations',moment().format('YYYY-MM-DD HH:mm:ss'))
                 await this.$store.dispatch("getSpecialties")
                 // this.$store.dispatch("stopSnack", false);
                 //this.$store.dispatch('setLoader',{loader:false,view:"AgendamentoConsulta"})

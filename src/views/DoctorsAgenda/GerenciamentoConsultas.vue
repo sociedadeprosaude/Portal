@@ -527,7 +527,7 @@
                 await this.$store.dispatch("getSpecialties")
                 this.especialidade = this.specialties[0]
                 await this.$store.dispatch('getDoctors')
-                await this.$store.dispatch('getConsultations')
+                await this.$store.dispatch('getConsultations',moment().subtract(10,'days').format('YYYY-MM-DD'))
                 
                 // this.$store.dispatch("stopSnack", false);
                 //this.$store.dispatch('setLoader',{loader:false,view:"AgendamentoConsulta"})
