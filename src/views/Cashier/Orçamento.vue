@@ -1,15 +1,16 @@
 <template>
     <v-container fluid class=" fill-height">
         <v-layout row wrap>
-            <v-flex sm8>
+            <v-flex sm3 v-if="patient">
+                <intakes-history></intakes-history>
+            </v-flex>
+            <v-flex>
                 <procedures-search></procedures-search>
             </v-flex>
             <v-spacer></v-spacer>
             <v-flex sm3>
                 <cart></cart>
             </v-flex>
-
-
 
 
             <!--            <v-flex class="d-print-none d-md-none" xs12>-->
@@ -296,42 +297,42 @@
             <!--                </v-sheet>-->
             <!--            </v-bottom-sheet>-->
 
-<!--            <v-flex class="hidden-screen-only">-->
-<!--                <v-card>-->
-<!--                    <v-flex>-->
-<!--                        <span>Nome do paciente: Nome</span>-->
-<!--                    </v-flex>-->
-<!--                    <v-flex>-->
-<!--                        <span>Código: {{this.now.toString()}}</span>-->
-<!--                    </v-flex>-->
-<!--                    <v-flex>-->
-<!--                        <span>Data: {{this.data}}</span>-->
-<!--                    </v-flex>-->
-<!--                    <p>Exames</p>-->
-<!--                    <v-flex v-for="item in exames" :key="item.nome">-->
-<!--                        <p class="ma-0">{{item.nome}}</p>-->
-<!--                        <p class="text-right preco">{{item.preco}}</p>-->
-<!--                    </v-flex>-->
-<!--                    <v-divider></v-divider>-->
-<!--                    <p>Consultas</p>-->
-<!--                    <v-flex v-for="item in consultas" :key="item.nome">-->
-<!--                        <p class="ma-0">{{item.nome}}</p>-->
-<!--                        <p class="text-right preco">{{item.preco}}</p>-->
-<!--                    </v-flex>-->
-<!--                    <v-divider></v-divider>-->
-<!--                    <p>Pacotes</p>-->
-<!--                    <v-flex v-for="item in pacotes" :key="item.nome">-->
+            <!--            <v-flex class="hidden-screen-only">-->
+            <!--                <v-card>-->
+            <!--                    <v-flex>-->
+            <!--                        <span>Nome do paciente: Nome</span>-->
+            <!--                    </v-flex>-->
+            <!--                    <v-flex>-->
+            <!--                        <span>Código: {{this.now.toString()}}</span>-->
+            <!--                    </v-flex>-->
+            <!--                    <v-flex>-->
+            <!--                        <span>Data: {{this.data}}</span>-->
+            <!--                    </v-flex>-->
+            <!--                    <p>Exames</p>-->
+            <!--                    <v-flex v-for="item in exames" :key="item.nome">-->
+            <!--                        <p class="ma-0">{{item.nome}}</p>-->
+            <!--                        <p class="text-right preco">{{item.preco}}</p>-->
+            <!--                    </v-flex>-->
+            <!--                    <v-divider></v-divider>-->
+            <!--                    <p>Consultas</p>-->
+            <!--                    <v-flex v-for="item in consultas" :key="item.nome">-->
+            <!--                        <p class="ma-0">{{item.nome}}</p>-->
+            <!--                        <p class="text-right preco">{{item.preco}}</p>-->
+            <!--                    </v-flex>-->
+            <!--                    <v-divider></v-divider>-->
+            <!--                    <p>Pacotes</p>-->
+            <!--                    <v-flex v-for="item in pacotes" :key="item.nome">-->
 
-<!--                        <p class="ma-0">{{item.nome}}</p>-->
-<!--                        <p class="text-right preco">{{item.preco}}</p>-->
-<!--                    </v-flex>-->
-<!--                    <v-divider></v-divider>-->
-<!--                    <v-spacer></v-spacer>-->
-<!--                    <v-flex>-->
-<!--                        <span>Valor total: {{this.total}}</span>-->
-<!--                    </v-flex>-->
-<!--                </v-card>-->
-<!--            </v-flex>-->
+            <!--                        <p class="ma-0">{{item.nome}}</p>-->
+            <!--                        <p class="text-right preco">{{item.preco}}</p>-->
+            <!--                    </v-flex>-->
+            <!--                    <v-divider></v-divider>-->
+            <!--                    <v-spacer></v-spacer>-->
+            <!--                    <v-flex>-->
+            <!--                        <span>Valor total: {{this.total}}</span>-->
+            <!--                    </v-flex>-->
+            <!--                </v-card>-->
+            <!--            </v-flex>-->
             <v-dialog v-model="aviso">
                 <v-card dark color="red">
                     <v-card-title>Error</v-card-title>
@@ -352,6 +353,7 @@
     import moment from 'moment'
     import ProceduresSearch from "../../components/cashier/ProceduresSearch";
     import Cart from "../../components/cashier/Cart";
+    import IntakesHistory from "../../components/cashier/IntakesHistory";
 
     export default {
         data: () => ({
@@ -378,7 +380,8 @@
         }),
         components: {
             ProceduresSearch,
-            Cart
+            Cart,
+            IntakesHistory
         },
         methods: {
             // addProducts(item, preco, custo, clinica, total) {
@@ -506,6 +509,9 @@
         computed: {
             pedid() {
                 return this.$store.getters.pedido;
+            },
+            patient() {
+                return this.$store.getters.selectedPatient
             }
         },
     }

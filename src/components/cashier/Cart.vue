@@ -252,25 +252,27 @@
                 FormasDePagamento: ["Dinheiro", "Crédito", "Débito"],
                 totalNovo: 0,
 
-                selectedBudget: undefined
+                // selectedBudget: undefined
             }
         },
         computed: {
+            selectedBudget() {
+              return this.$store.getters.selectedBudget
+            },
             patient() {
                 console.log(this.$store.getters.selectedPatient)
                 return this.$store.getters.selectedPatient
             },
             exames() {
-                console.log('oi', this.$store.getters.getShoppingCartItemsByCategory.exams);
+                // return this.$store.getters.selectedBudget.exams
                 return this.$store.getters.getShoppingCartItemsByCategory.exams
             },
             consultas() {
-                console.log('oi', this.$store.getters.getShoppingCartItemsByCategory.consultations);
-
+                // return this.$store.getters.selectedBudget.consultations
                 return this.$store.getters.getShoppingCartItemsByCategory.consultations
             },
             pacotes() {
-                console.log('nao entrei');
+                // return this.$store.getters.selectedBudget.packages
                 return this.$store.getters.getShoppingCartItemsByCategory.packages
             },
             cost() {
@@ -304,12 +306,21 @@
                 this.searchBudgetLoading = true
                 let budget = await this.$store.dispatch('getBudget', this.searchBudgetNumber)
                 if (budget) {
-                    this.selectedBudget = budget
+                    this.$store.commit('setSelectedBudget', budget)
+                    // this.selectedBudget = budget
                     for (let exam in budget.exams) {
                         this.$store.commit('addShoppingCartItem', budget.exams[exam])
                     }
                     for (let spec in budget.specialties) {
                         this.$store.commit('addShoppingCartItem', budget.specialties[spec])
+                    }
+                    let intakes = await this.$store.dispatch('getUserIntakes', budget.user)
+                    if(intakes) {
+                        budget.user.intakes = intakes
+                    }
+                    let budgets = await this.$store.dispatch('getUserBudgets', budget.user)
+                    if(budgets) {
+                        budget.user.budgets = budgets
                     }
                     this.$store.commit('setSelectedPatient', budget.user)
                     this.searchBudgetBtn = false
@@ -395,28 +406,26 @@
                     discount: this.moneyDiscount,
                     total: this.total,
                     payment_method: this.formaPagamento,
-                    data: moment().format('YYYY-MM-DD HH:mm:ss'),
+                    date: moment().format('YYYY-MM-DD HH:mm:ss'),
                     cost: this.cost,
                     user: this.$store.getters.selectedPatient
                 }
                 return budget
             },
             saveBudget(budget) {
-                this.selectedBudget = Object.assign({}, budget)
+                this.$store.commit('setSelectedBudget', budget)
+                // this.selectedBudget = Object.assign({}, budget)
                 this.$store.dispatch('addBudget', budget)
 
             },
             pay() {
                 let user = this.$store.getters.selectedPatient;
                 if (!user) {
-                    console.log('Sem usuario escolhido');
                     return
                 }
                 if (!this.selectedBudget) {
-                    console.log('Sem orçamento selecionado');
                     this.saveBudget(this.generateBudget())
                 }
-                console.log('selected Budget', this.selectedBudget)
                 this.$store.dispatch('addIntake', this.selectedBudget,
                 ).then(() => {
                     console.log('foi');
@@ -427,7 +436,8 @@
             },
             clearCart() {
                 this.$store.commit('clearShoppingCartItens')
-                this.selectedBudget = undefined
+                this.$store.commit('setSelectedBudget', undefined)
+                // this.selectedBudget = undefined
             },
         }
     }

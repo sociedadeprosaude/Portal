@@ -201,6 +201,15 @@ const actions = {
         })
         return intakes
     },
+    async getUserBudgets(context, user) {
+        let userRef = firebase.firestore().collection('users').doc(user.cpf)
+        let budgetsSnap = await userRef.collection('budgets').get()
+        let budgets = []
+        budgetsSnap.forEach((doc) => {
+            budgets.push(doc.data())
+        })
+        return budgets
+    },
     //    async addSale({commit},payload){
     //
     //        firebase.firestore().collection('intakes').doc(payload.invoice).set({

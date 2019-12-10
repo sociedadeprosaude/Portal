@@ -1,8 +1,12 @@
 const state = {
     items: [],
+    budget: undefined
 };
 
 const mutations = {
+    setSelectedBudget(state, payload) {
+        state.budget = payload
+    },
     setShoppingCartItems(state, payload) {
         state.items = payload
     },
@@ -22,6 +26,9 @@ const actions = {
 };
 
 const getters = {
+    selectedBudget(state) {
+        return state.budget
+    },
     getShoppingCartItems(state) {
         return state.items
     },
