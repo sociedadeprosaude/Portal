@@ -89,7 +89,7 @@
         name: "IntakesHistory",
         data() {
             return {
-                option: 'intakes'
+                option: 'budgets'
             }
         },
         methods: {
@@ -112,11 +112,19 @@
                 return this.$store.getters.selectedPatient
             },
             intakes() {
-                return this.patient.intakes
+                return this.patient.intakes.sort((a, b) => {
+                    if(a.data < b.data) {
+                        return 1
+                    }
+                    return -1
+                })
             },
             budgets() {
                 return this.patient.budgets.sort((a, b) => {
-                    return
+                     if(a.data < b.data) {
+                         return 1
+                     }
+                     return -1
                 })
             }
         }
