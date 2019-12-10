@@ -459,10 +459,14 @@
                 // return this.formatDate(this.index_Selecionado.data);
             },
             consultas() {
+                console.log('Search Consultations')
                 let consultas = this.formatConsultationsArray(this.$store.getters.consultations).filter((a) => {
-                    return this.especialidade ? this.especialidade === a.specialty.name : true
-                    && this.selectedDoctor ? this.selectedDoctor.cpf ? this.selectedDoctor.cpf === a.doctor.cpf : true : true
+
+                   
+                    return this.especialidade && this.selectedDoctor ? this.especialidade.name === a.specialty.name &&
+                           this.selectedDoctor.cpf === a.doctor.cpf :  true
                 })
+                console.log(consultas)
                 return consultas;
             },
             doctors: {
@@ -632,7 +636,7 @@
                 }
                 this.especialidade = this.query.especialidade
                 this.pacienteSelecionado = this.query.pacienteObj
-                this.selectedDoctor = this.query.doctor.name
+                this.selectedDoctor = this.query.doctor
                 this.status = this.query.status
                 this.num_recibo = this.query.num_recibo 
                 this.loading = false
