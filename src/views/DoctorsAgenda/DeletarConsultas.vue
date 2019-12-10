@@ -314,11 +314,11 @@
             },
 
             consultas() {
-                console.log(this.especialidade)
-                let consultas = this.formatConsultationsArray(this.$store.getters.consultations).filter((a) => {
+                let consultas = this.$store.getters.consultations.filter((a) => {
 
-                    return this.especialidade && this.date ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && !(a.user === undefined)  : false
+                    return this.especialidade && this.date ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && a.user : false
                 })
+                console.log(consultas)
                 return consultas;
             },
 

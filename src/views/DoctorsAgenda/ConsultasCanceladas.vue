@@ -3,11 +3,6 @@
         <v-layout align-center justify-center row wrap>
             <v-card>
 
-                <v-flex v-for="(option, i) in options" :key="i">
-                    <strong>{{option.doctor.name}}</strong>
-                    <v-text-field v-html="option.doctor.name"></v-text-field>
-                </v-flex>
-
                 <template>
                     <v-container fluid grid-list-xl>
                         <v-layout align-center wrap>
@@ -38,112 +33,133 @@
                         </v-layout>
                     </v-container>
                 </template>
-<!--
+
+                =================
                 <template>
-                    <v-container class="align-center justify-center">
+                    <v-container class="align-center justify-center py-0">
                         <v-layout column align-center justify-center wrap>
-                            <v-subheader>Gerenciamento de Consultas e Retonos Canceladas pela Clínica de Todas as Especilidades</v-subheader>
-                            <v-expansion-panel v-model="panel" expand>
-                                <v-expansion-panel-content
-                                        v-for="(message, i) in menssagens"
+                            <v-subheader ><b>Data: {{date | dateFilter}} - {{daydate(date)}}</b></v-subheader>
+
+                            <v-expansion-panels>
+                                <v-expansion-panel
+                                        v-for="(consultation, i) in consultas"
                                         :key="i"
                                         class="elevation-6"
                                         hide-actions
+                                        v-model="panel"
                                 >
-                                    <template v-slot:header>
+                                    <v-expansion-panel-header>
                                         <v-layout align-center row spacer>
 
-                                            <v-flex row wrap :class="`${message.color}--text`">
-                                                <v-chip small :color="message.color" text-color="white">
+                                            <v-flex xs6 hidden-xs-only>
+                                                <strong>Médico:</strong>
+                                                <v-chip small color="blue" text-color="white">
                                                     <v-avatar>
-                                                        <v-icon>settings</v-icon>
+                                                        <v-icon>account_circle</v-icon>
                                                     </v-avatar>
-                                                    Gerenciamento de Consultas Canceladas de Todas as Especilidades
+                                                    {{consultation.doctor.name}}
                                                 </v-chip>
                                             </v-flex>
 
-                                            <v-flex row wrap xs5 sm3 :class="`${message.color}--text`">
+                                            <v-flex xs2 hidden-xs-only >
+                                                <strong>CRM-AM:</strong>
+                                                <v-chip small color="blue" text-color="white">
+                                                    <v-avatar>
+                                                        <v-icon>payment</v-icon>
+                                                    </v-avatar>
+                                                    {{consultation.doctor.crm}}
+                                                </v-chip>
+                                            </v-flex>
+
+                                            <v-flex row wrap xs2 class="text-xs-right blue--text">
                                                 <strong>Consultas: </strong>
-                                                <v-chip small :color="message.color" text-color="white">
+                                                <v-chip small color="blue" text-color="white">
                                                     <v-avatar>
                                                         <v-icon>event</v-icon>
                                                     </v-avatar>
-                                                    {{message.consultas}}
+                                                    {{consultation.numConsultations}}
                                                 </v-chip>
                                             </v-flex>
 
-                                            <v-flex row wrap xs5 sm3 :class="`${message.color}--text`">
+                                            <v-flex row wrap xs2  class="text-xs-right blue--text" >
                                                 <strong>Retornos: </strong>
-                                                <v-chip small :color="message.color" text-color="white">
+                                                <v-chip small color="blue" text-color="white">
                                                     <v-avatar>
                                                         <v-icon>restore</v-icon>
                                                     </v-avatar>
-                                                    {{message.retornos}}
+                                                    {{consultation.numRegress}}
                                                 </v-chip>
                                             </v-flex>
-
                                         </v-layout>
-                                    </template>
-                                <v-card>
-                                    <v-divider></v-divider>
-                                    <v-list three-line subheader>
-                                        <v-layout row wrap>
-                                            <v-flex sm3
-                                                    xs12
-                                                    v-for="item in message.pacientes"
-                                                    :key="item.paciente"
-                                            >
-                                                <v-list-tile
-                                                        @click="visualizarConsulta = {
-                                                            idConsultation:item.idConsultation,
-                                                            idPaciente: item.idPaciente,
-                                                            paciente: item.paciente,
-                                                            telefone: item.telefone,
-                                                            cpf:item.cpf,
-                                                            especialidade:item.especialidade,
-                                                            id: item.id,
-                                                            data: item.data,
-                                                            hora: item.hora,
-                                                            crm: message.crm,
-                                                            status: item.status,
-                                                            modalidade: item.modalidade,
-                                                            medico:message.medico,
-                                                            num_recibo:item.num_recibo,
-                                                            especialidade:item.especialidade,
-                                                            pacienteObj:item.pacienteObj
-                                                        }"
-                                                    >
-                                                        <v-list-tile-content>
-                                                            <v-list-tile-title>
-                                                                <span :class="`${message.color}--text`" style="font-weight: bolder">{{item.paciente}}</span>
-                                                            </v-list-tile-title>
-                                                            <v-list-tile-sub-title>
-                                                                {{item.cpf}}
-                                                            </v-list-tile-sub-title>
-                                                            <v-list-tile-sub-title>
-                                                                {{item.telefone}}
-                                                            </v-list-tile-sub-title>
-                                                            <v-list-tile-action-text>
-                                                                {{item.data | dateFilter}} -
-                                                                {{item.hora}}
-                                                            </v-list-tile-action-text>
-                                                        </v-list-tile-content>
+                                    </v-expansion-panel-header>
 
-                                                        <v-list-tile-action>
-                                                            <v-btn icon ripple flat>
-                                                                <v-icon v-if="item.modalidade === 'Retorno'" :color="message.color">restore</v-icon>
-                                                                <v-icon v-if="item.modalidade === 'Consulta'" :color="message.color">event</v-icon>
-                                                                <v-icon v-if="item.status === 'Pago'" color="success">attach_money</v-icon>
-                                                                <v-icon v-if="item.status === 'Aguardando pagamento'" color="error">money_off</v-icon>
-                                                            </v-btn>
-                                                        </v-list-tile-action>
-                                                    </v-list-tile>
-                                                </v-flex>
-                                            </v-layout>
-                                        </v-list>
-                                    </v-card>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
+                                    <v-expansion-panel-content>
+                                        <v-divider></v-divider>
+                                        <v-card class="elevation-3">
+                                            <v-list three-line subheader>
+                                                <v-layout wrap>
+                                                    <v-flex sm3
+                                                            xs12
+                                                            v-for="item in consultation.consultations"
+                                                            :key="item.id"
+                                                    >
+                                                        <v-list-item
+                                                                @click="visualizarConsulta = {
+                                                            idConsultation:item.id,
+                                                            idPaciente: item.user.cpf,
+                                                            paciente: item.user.name,
+                                                            cartaoId: item.user.association_number,
+                                                            cpf:item.user.cpf,
+                                                            data: item.date.split(' ')[0],
+                                                            hora: item.date.split(' ')[1],
+                                                            crm: item.doctor.crm,
+                                                            especialidade: item.specialty,
+                                                            status: item.status,
+                                                            modalidade: item.type,
+                                                            medico:item.doctor.name,
+                                                            doctor:item.doctor,
+                                                            num_recibo:item.payment_number,
+                                                            pacienteObj:item.user,
+                                                            consultation:item
+                                                        }"
+                                                        >
+                                                            <v-list-tile-content>
+                                                                <v-list-tile-title class="primary--text">
+                                                            <span  style="font-weight: bolder">
+                                                                {{item.user.name}}
+                                                            </span>
+                                                                </v-list-tile-title>
+                                                                <br>
+                                                                <v-list-tile-sub-title class="text-left">
+                                                                    CPF: {{item.user.cpf}}
+                                                                </v-list-tile-sub-title>
+                                                                <br>
+                                                                <v-list-tile-sub-title>
+                                                                    Telefone: {{item.user.telephones[0]}}
+                                                                </v-list-tile-sub-title>
+                                                                <br>
+                                                                <v-list-tile-action-text>
+                                                                    {{item.date.split(' ')[0] | dateFilter}} -
+                                                                    {{item.date.split(' ')[1]}}
+                                                                </v-list-tile-action-text>
+                                                            </v-list-tile-content>
+                                                            <br>
+                                                            <v-list-tile-action class="ml-2">
+                                                                <v-btn icon ripple text>
+                                                                    <v-icon v-if="item.type === 'Retorno'" color="primary">restore</v-icon>
+                                                                    <v-icon v-if="item.type === 'Consulta'" color="primary">event</v-icon>
+                                                                    <v-icon v-if="item.status === 'Pago'" color="success">attach_money</v-icon>
+                                                                    <v-icon v-if="item.status === 'Aguardando pagamento'" color="error">money_off</v-icon>
+                                                                </v-btn>
+                                                            </v-list-tile-action>
+                                                        </v-list-item>
+                                                    </v-flex>
+                                                </v-layout>
+                                            </v-list>
+                                        </v-card>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                            </v-expansion-panels>
                         </v-layout>
                     </v-container>
                 </template>
@@ -155,90 +171,149 @@
                                 <v-dialog v-model="dialog" width="500">
                                     <v-card>
                                         <v-card-title class="headline grey lighten-2" primary-title>
-                                            Informações
+                                            Atualizar Informações
                                         </v-card-title>
                                         <v-card-text>
                                             <v-container grid-list-md>
                                                 <v-layout wrap>
                                                     <v-flex xs12 sm6>
-                                                        <v-text-field readonly prepend-icon="person" label="Nome do Paciente" v-model="index_Selecionado.paciente">
+                                                        <v-text-field readonly hide-details outlined prepend-icon="person" label="Nome do Paciente" v-model="index_Selecionado.paciente">
                                                         </v-text-field>
                                                     </v-flex>
                                                     <v-flex xs12 sm6>
-                                                        <v-text-field readonly prepend-icon="credit_card" label="CPF" v-model="index_Selecionado.cpf">
+                                                        <v-text-field readonly hide-details outlined prepend-icon="credit_card" label="CPF" v-model="index_Selecionado.cpf">
                                                         </v-text-field>
                                                     </v-flex>
                                                     <v-flex xs12 sm12 md12 lg12><v-divider ></v-divider></v-flex>
                                                     <v-flex xs12 sm6>
-                                                        <v-text-field readonly prepend-icon="person" label="Nome do Médico" v-model="index_Selecionado.medico">
+                                                        <v-text-field readonly hide-details outlined prepend-icon="person" label="Nome do Médico" v-model="index_Selecionado.medico">
                                                         </v-text-field>
                                                     </v-flex>
                                                     <v-flex xs12 sm6>
-                                                        <v-text-field readonly prepend-icon="credit_card" v-model="index_Selecionado.crm" label="CRM">
+                                                        <v-text-field readonly hide-details outlined prepend-icon="credit_card" v-model="index_Selecionado.crm" label="CRM">
                                                         </v-text-field>
                                                     </v-flex>
                                                     <v-flex xs12 sm6>
-                                                        <v-text-field readonly prepend-icon="school" label="Especialidade" v-model="index_Selecionado.especialidade">
+                                                        <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="especialidade.name">
                                                         </v-text-field>
                                                     </v-flex>
                                                     <v-flex xs12 sm6>
-                                                        <v-text-field readonly prepend-icon="event" label="Dia da Consulta" v-model="computedDateFormatted">
+                                                        <v-text-field readonly hide-details outlined prepend-icon="event" label="Dia da Consulta" v-model="computedDateFormattedSelecionado">
                                                         </v-text-field>
                                                     </v-flex>
                                                     <v-flex xs12 sm6>
-                                                        <v-text-field readonly prepend-icon="access_alarm" label="Hora da Consulta" v-model="index_Selecionado.hora">
+                                                        <v-text-field readonly hide-details outlined prepend-icon="access_alarm" label="Hora da Consulta" v-model="index_Selecionado.hora">
                                                         </v-text-field>
                                                     </v-flex>
                                                     <v-flex xs12 sm6>
-                                                        <v-text-field
+                                                        <v-select
                                                                 prepend-icon="assignment_turned_in"
                                                                 v-model="index_Selecionado.status"
+                                                                :items="statusOptions"
                                                                 label="Status"
                                                                 chips
-                                                        ></v-text-field>
+                                                                outlined
+                                                                hide-details
+                                                        ></v-select>
                                                     </v-flex>
                                                     <v-flex xs12 sm6>
                                                         <v-text-field
                                                                 prepend-icon="assignment"
                                                                 v-model="index_Selecionado.modalidade"
                                                                 readonly
+                                                                outlined
+                                                                hide-details
                                                                 label="Modalidade"
                                                         ></v-text-field>
                                                     </v-flex>
                                                     <v-flex xs12 sm6>
                                                         <v-text-field
+                                                                @click:clear="clearRecibo"
                                                                 prepend-icon="receipt"
                                                                 label="Nº do Recibo"
                                                                 v-model="index_Selecionado.num_recibo"
-                                                                readonly
+                                                                type="number"
+                                                                outlined
+                                                                hide-details
+                                                                :disabled="index_Selecionado.status === 'Pago' ? false : true"
                                                         ></v-text-field>
+                                                    </v-flex>
+                                                    <v-flex xs12 sm12 md12 lg12><v-divider ></v-divider></v-flex>
+                                                    <v-flex xs12>
+                                                        <v-select
+                                                                prepend-icon="device_unknown"
+                                                                v-model="attendance"
+                                                                :items="attendanceOptions"
+                                                                label="Atendimento"
+                                                                chips
+                                                                outlined
+                                                                hide-details
+                                                                :disabled="status_Selecionado.status === 'Pago' && index_Selecionado.num_recibo !== ''"
+                                                        ></v-select>
                                                     </v-flex>
                                                 </v-layout>
                                             </v-container>
                                         </v-card-text>
                                         <v-divider></v-divider>
                                         <v-card-actions>
-                                            <v-btn color="warning" round @click="dialog = false">
+                                            <v-btn color="warning" rounded @click="dialog = false">
                                                 Voltar
-                                                <v-icon right>clear</v-icon>
+                                                <v-icon>clear</v-icon>
                                             </v-btn>
                                             <v-spacer></v-spacer>
-                                            <v-btn color="error"
-                                                   round
-                                                   @click="apagar"
+                                            <v-btn
+                                                    color="error"
+                                                    rounded
+                                                    :loading="this.mensage_progress == 'Apagando...' && loader"
+                                                    :disabled="index_Selecionado.status === 'Cancelado' ? false : true"
+                                                    @click="apagar()"
                                             >
                                                 Apagar
-                                                <v-icon right>delete</v-icon>
+                                                <v-icon>delete</v-icon>
+                                            </v-btn>
+                                            <v-spacer></v-spacer>
+                                            <v-btn
+                                                    color="blue"
+                                                    rounded
+                                                    dark
+                                                    :to="{ name: 'AgendarRetorno', params: { q: {...this.index_Selecionado}}}"
+                                                    :disabled="status_Selecionado === 'Pago' && !index_Selecionado.pacienteObj.retorno ? false : true"
+                                                    v-if="index_Selecionado.modalidade !== 'Retorno'"
+                                            >Retorno
+                                                <v-icon>refresh</v-icon>
                                             </v-btn>
                                             <v-spacer></v-spacer>
                                             <v-btn
                                                     color="success"
-                                                    round
-                                                    dark
-                                                    :to="{ name: 'RemarcarConsultas', params: { q: {...index_Selecionado}}}"
-                                            >Remarcar
-                                                <v-icon right>assignment_turned_in</v-icon>
+                                                    rounded
+                                                    :disabled="loader"
+                                                    :loading="this.mensage_progress == 'Atualizando...' && loader"
+                                                    @click="atualizar()"
+                                                    v-if="index_Selecionado.status === 'Pago' && index_Selecionado.num_recibo !== ''"
+                                            >Atualizar
+                                                <v-icon>done</v-icon>
                                             </v-btn>
+                                            <v-spacer></v-spacer>
+                                            <v-dialog
+                                                    v-model="loader"
+                                                    hide-overlay
+                                                    persistent
+                                                    width="300"
+                                            >
+                                                <v-card
+                                                        color="primary"
+                                                        dark
+                                                >
+                                                    <v-card-text>
+                                                        {{this.mensage_progress}}
+                                                        <v-progress-linear
+                                                                indeterminate
+                                                                color="white"
+                                                                class="mb-0"
+                                                        ></v-progress-linear>
+                                                    </v-card-text>
+                                                </v-card>
+                                            </v-dialog>
                                         </v-card-actions>
                                     </v-card>
                                 </v-dialog>
@@ -246,7 +321,8 @@
                         </v-layout>
                     </v-container>
                 </template>
-                -->
+                ==============
+
             </v-card>
         </v-layout>
     </v-container>
@@ -257,15 +333,41 @@
     export default {
         data: () => ({
             //--------------------
-            moment: moment,
             menu: false,
             dateFormatted: '',
             date: null,
             dialog: false,
             //-------------
-            /*
-           //
-            */
+            panel:[true],
+            date_choose: '',
+            alert: false,
+            index_Selecionado: {},
+            status_Selecionado:'',
+            attendance:'Aguardando Atendimento',
+            semanaOptions: [
+                "Domingo",
+                "Segunda-feira",
+                "Terça-feira",
+                "Quarta-feira",
+                "Quinta-feira",
+                "Sexta-feira",
+                "Sábado"
+            ],
+            attendanceOptions:
+                [
+                    {text: 'Aguardando Atendimento'},
+                    {text: 'Atendimento Realizado'},
+                ],
+            statusOptions:
+                [
+                    {text: 'Aguardando pagamento'},
+                    {text: 'Pago'},
+                    {text: 'Cancelado'},
+                ],
+            messages: [],
+            timeout:4000,
+            mensage_progress:'',
+            especialidade:'',
         }),
         computed: {
             formIsValid() {
@@ -274,15 +376,22 @@
             computedDateFormatted () {
                 return this.formatDate(this.date)
             },
-            options() {
-                let cancel = this.$store.getters.consultationsCanceled
-                return cancel
+            visualizarConsulta: {
+                get: function () {
+                    return this.index_Selecionado;
+                },
+                set: function (index) {
+                    this.status_Selecionado = index.status
+                    this.index_Selecionado = {...index}
+                    console.log(this.index_Selecionado)
+                    this.dialog = true
+                }
             },
-            /*
-            canceleds () {
-                this.$store.getters.consultationsCanceled
-            }
-            */
+            consultas() {
+                let consultas = this.$store.getters.consultationsCanceled
+                console.log(consultas)
+                return consultas;
+            },
         },
         async mounted() {
             this.$store.dispatch('getConsultationsCanceled')
@@ -290,13 +399,22 @@
             this.dateFormatted = moment().format('YYYY-MM-DD')
         },
         watch: {
-            //
+            menu(val) {
+                val && setTimeout(() => (this.$refs.picker.activePicker = 'MONTH'))
+            }
         },
         methods: {
             formatDate (date) {
                 if (!date) return null
                 const [year, month, day] = date.split('-')
                 return `${day}/${month}/${year}`
+            },
+            daydate(date) {
+                var dateMoment = moment(date);
+                return this.semanaOptions[dateMoment.day()];
+            },
+            save(date) {
+                this.$refs.menu.save(date)
             },
             /*
             call(){
