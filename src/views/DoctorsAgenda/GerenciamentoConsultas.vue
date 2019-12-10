@@ -135,7 +135,7 @@
 
                                 <v-expansion-panel-content>
                                     <v-divider></v-divider>
-                                    <v-card class="elevation-6">
+                                    <v-card class="elevation-3">
                                     <v-list three-line subheader>
                                         <v-layout wrap>
                                             <v-flex sm3
@@ -163,7 +163,7 @@
                                                             consultation:item
                                                         }" 
                                                 >
-                                                    <v-list-tile-content >
+                                                    <v-list-tile-content>
                                                         <v-list-tile-title class="primary--text">
                                                             <span  style="font-weight: bolder">
                                                                 {{item.user.name}}
@@ -184,8 +184,8 @@
                                                         </v-list-tile-action-text>
                                                     </v-list-tile-content>
                                                     <br>
-                                                    <v-list-tile-action class="ml-1">
-                                                        <v-btn icon ripple flat>
+                                                    <v-list-tile-action class="ml-2">
+                                                        <v-btn icon ripple text>
                                                             <v-icon v-if="item.type === 'Retorno'" color="primary">restore</v-icon>
                                                             <v-icon v-if="item.type === 'Consulta'" color="primary">event</v-icon>
                                                             <v-icon v-if="item.status === 'Pago'" color="success">attach_money</v-icon>
@@ -372,7 +372,7 @@
                     :timeout="timeout"
                     :vertical="mode === 'vertical'"
             >
-                {{this.mensagem}}<!-- 
+                {{this.mensagem}}<!--
                 <v-icon dark>done_all</v-icon> -->
                 <v-icon dark>done_outline</v-icon>
                 <!-- <v-icon dark>done</v-icon> -->
@@ -396,7 +396,6 @@
             menu: false,
             dialog: false,
             alert: false,
-            especialidade_choose:'',
             index_Selecionado: {},
             status_Selecionado:'',
             attendance:'Aguardando Atendimento',
@@ -558,6 +557,7 @@
                 }
                 return newArray
             },
+
             checkConsultationIsInArray(array, consultation) {
                 for (let i in array) {
                     if (array[i].date === consultation.date && array[i].doctor.name === consultation.doctor.name) {
