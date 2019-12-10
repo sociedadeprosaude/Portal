@@ -1,5 +1,6 @@
 import firebase from "firebase";
 import functions from "../../utils/functions";
+import moment from "moment";
 
 const state = {};
 
@@ -172,10 +173,23 @@ const actions = {
             spec.forEach((s) => {
                 userRef.collection('intakes').doc(payload.id.toString()).collection('specialties').doc(s.id).delete()
             })
+            
             for (let spec in specialties) {
+                var used = false
+                let consultations = await userRef.collection('consultations').where('specialty.name','==',specialties[spec].name).where('status','==','Aguardando pagamento')
+                .get()
+                
+                consultations.forEach((c)=>{
+                    console.log('kj')
+                    used = true
+                    userRef.collection('consultations').doc(c.id).update({status: 'Pago',payment_number:payload.id.toString()})
+                    firebase.firestore().collection('consultations').doc(c.id).update({status: 'Pago',payment_number:payload.id.toString()})
+                })
+
+                console.log('pagando')
                 await userRef.collection('intakes').doc(payload.id.toString()).collection('specialties').add({
                     ...specialties[spec],
-                    used: false
+                    used: used
                 })
             }
         }
