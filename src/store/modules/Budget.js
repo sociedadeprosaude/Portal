@@ -1,14 +1,9 @@
 import firebase from "firebase";
 import functions from "../../utils/functions";
 
-const state = {
+const state = {};
 
-};
-
-const mutations = {
-
-
-};
+const mutations = {};
 
 const actions = {
     async addBudget(context, payload) {
@@ -52,7 +47,7 @@ const actions = {
         }
         payload = Object.assign({}, originalPayload)
     },
-    async getBudget({ }, budgetId) {
+    async getBudget({}, budgetId) {
         let budget = (await firebase.firestore().collection('budgets').doc(budgetId).get()).data()
         let specialtiesCol = await firebase.firestore().collection('budgets').doc(budgetId).collection('specialties').get()
         let examsCol = await firebase.firestore().collection('budgets').doc(budgetId).collection('exams').get()
@@ -70,7 +65,7 @@ const actions = {
         return budget
     },
 
-    async addBudgetToUser({ }, payload) {
+    async addBudgetToUser({}, payload) {
         functions.removeUndefineds(payload)
         // console.log(payload)
         // return
@@ -130,7 +125,7 @@ const actions = {
                 firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('specialties').doc(s.id).delete()
             })
             for (let spec in specialties) {
-                if(specialties[spec].doctor.rules === null){
+                if (specialties[spec].doctor.rules === null) {
                     delete specialties[spec].doctor.rules
                 }
                 await firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('specialties').add(specialties[spec])
@@ -142,7 +137,7 @@ const actions = {
                 firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('exams').doc(s.id).delete()
             })
             for (let exam in exams) {
-                if(exams[exam].rules === undefined){
+                if (exams[exam].rules === undefined) {
                     delete exams[exam].rules;
                 }
                 await firebase.firestore().collection('intakes').doc(payload.id.toString()).collection('exams').add(exams[exam])
@@ -178,7 +173,10 @@ const actions = {
                 userRef.collection('intakes').doc(payload.id.toString()).collection('specialties').doc(s.id).delete()
             })
             for (let spec in specialties) {
-                await userRef.collection('intakes').doc(payload.id.toString()).collection('specialties').add({...specialties[spec],used:false})
+                await userRef.collection('intakes').doc(payload.id.toString()).collection('specialties').add({
+                    ...specialties[spec],
+                    used: false
+                })
             }
         }
         if (exams) {
@@ -187,9 +185,21 @@ const actions = {
                 userRef.collection('intakes').doc(payload.id.toString()).collection('exams').doc(s.id).delete()
             })
             for (let exam in exams) {
-                await userRef.collection('intakes').doc(payload.id.toString()).collection('exams').add({...exams[exam],used:false})
+                await userRef.collection('intakes').doc(payload.id.toString()).collection('exams').add({
+                    ...exams[exam],
+                    used: false
+                })
             }
         }
+    },
+    async getUserIntakes(context, user) {
+        let userRef = firebase.firestore().collection('users').doc(user.cpf)
+        let intakesSnap = await userRef.collection('intakes').get()
+        let intakes = []
+        intakesSnap.forEach((doc) => {
+            intakes.push(doc.data())
+        })
+        return intakes
     },
     //    async addSale({commit},payload){
     //
@@ -242,7 +252,7 @@ const actions = {
     // */
     //    },
 
-    thereIsIntakes({ commit }, payload) {
+    thereIsIntakes({commit}, payload) {
         console.log(payload.specialty.name)
         return new Promise((resolve, reject) => {
             firebase.firestore().collection('users').doc(payload.user.cpf).collection('intakes')/* .
@@ -263,35 +273,32 @@ const actions = {
                         let payment_number = intake.id
                         firebase.firestore().collection('users').doc(payload.user.cpf).collection('intakes')
                             .doc(payment_number).collection('specialties').where('name', '==', payload.specialty.name)
-                            .where('used','==',false)
+                            .where('used', '==', false)
                             .where('doctor.cpf', '==', payload.doctor.cpf).get().then((specialties) => {
-                                if (!specialties.empty) {
-                                    found = true
-                                    console.log('Encontrou',found)
-                                    specialties.forEach((doc) => {
-                                        resolve({ uid: doc.id, ...doc.data(),payment_number:payment_number })
-                                    })
-                                    
-                                }
-                            })
+                            if (!specialties.empty) {
+                                found = true
+                                console.log('Encontrou', found)
+                                specialties.forEach((doc) => {
+                                    resolve({uid: doc.id, ...doc.data(), payment_number: payment_number})
+                                })
+
+                            }
+                        })
                     })
                     console.log(found)
-                   /*  if(!found)
-                        reject('Payment Number not found') */
+                    /*  if(!found)
+                         reject('Payment Number not found') */
 
                 }).catch(() => {
-                    reject('Error!')
-                })
+                reject('Error!')
+            })
         })
 
     }
 
 };
 
-const getters = {
-
-
-};
+const getters = {};
 
 export default {
     state,

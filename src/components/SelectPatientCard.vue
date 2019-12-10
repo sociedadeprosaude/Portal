@@ -330,7 +330,11 @@
                 this.success = true
                 this.loading = false
             },
-            selectUser(user) {
+            async selectUser(user) {
+                let intakes = await this.$store.dispatch('getUserIntakes', user)
+                if(intakes) {
+                    user.intakes = intakes
+                }
                 this.$store.commit('setSelectedPatient', user)
                 this.foundUsers = []
             },

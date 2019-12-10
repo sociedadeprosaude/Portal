@@ -257,6 +257,7 @@
         },
         computed: {
             patient() {
+                console.log(this.$store.getters.selectedPatient)
                 return this.$store.getters.selectedPatient
             },
             exames() {
