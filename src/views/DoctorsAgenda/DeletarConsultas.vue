@@ -100,7 +100,7 @@
                                    justify-center
                                    align-center
                         >
-                            <v-container class="align-center justify-center py-0" v-if="consultation.doctor.name === doctor.name && consultasByDoctors(consultas).length != 0">
+                            <v-container class="align-center justify-center py-0" v-if="consultation.doctor.name === doctor.name">
                                 <v-layout row align-center justify-center wrap>
                                     <v-spacer></v-spacer>
                                     <v-flex xs12 sm12 md12 lg12></v-flex>
