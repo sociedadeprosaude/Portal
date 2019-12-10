@@ -153,7 +153,7 @@
                                                             data: item.date.split(' ')[0],
                                                             hora: item.date.split(' ')[1],
                                                             crm: item.doctor.crm,
-                                                            especialidade: item.specialty.name,
+                                                            especialidade: item.specialty,
                                                             status: item.status,
                                                             modalidade: item.type,
                                                             medico:item.doctor.name,
@@ -316,7 +316,7 @@
                                                 color="blue"
                                                 rounded
                                                 dark
-                                                :to="{ name: 'AgendarRetorno', params: { q: {...this.index_Selecionado,especialidade:this.especialidade}}}"
+                                                :to="{ name: 'AgendarRetorno', params: { q: {...this.index_Selecionado}}}"
                                                 :disabled="status_Selecionado === 'Pago' && !index_Selecionado.pacienteObj.retorno ? false : true"
                                                 v-if="index_Selecionado.modalidade !== 'Retorno'"
                                         >Retorno
@@ -527,7 +527,7 @@
                 await this.$store.dispatch("getSpecialties")
                 this.especialidade = this.specialties[0]
                 await this.$store.dispatch('getDoctors')
-                await this.$store.dispatch('getConsultations')
+                await this.$store.dispatch('getConsultations',moment().subtract(10,'days').format('YYYY-MM-DD'))
                 
                 // this.$store.dispatch("stopSnack", false);
                 //this.$store.dispatch('setLoader',{loader:false,view:"AgendamentoConsulta"})
