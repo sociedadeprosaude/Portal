@@ -25,11 +25,11 @@
                             <v-flex xs12 v-if="searchBudgetBtn">
                                 <v-layout row wrap class="align-center">
                                     <v-flex xs10>
-                                    <v-text-field
-                                            label="Num. do Orçamento"
-                                            v-model="searchBudgetNumber"
-                                            type="number"
-                                    ></v-text-field>
+                                        <v-text-field
+                                                label="Num. do Orçamento"
+                                                v-model="searchBudgetNumber"
+                                                type="number"
+                                        ></v-text-field>
                                     </v-flex>
                                     <v-flex xs2 class="text-center">
                                         <v-btn
@@ -41,7 +41,8 @@
                                         >
                                             <v-icon>search</v-icon>
                                         </v-btn>
-                                        <v-progress-circular class="primary--text" indeterminate v-else></v-progress-circular>
+                                        <v-progress-circular class="primary--text" indeterminate
+                                                             v-else></v-progress-circular>
                                     </v-flex>
                                     <v-flex xs12 v-if="searchBudgetError">
                                         <span class="error--text">{{searchBudgetError}}</span>
@@ -54,13 +55,15 @@
                                         <v-divider></v-divider>
                                     </v-flex>
                                     <v-flex xs12>
-                                        <span>{{patient.name}}</span>
+                                        <span class="font-weight-bold">{{patient.name}}</span>
                                     </v-flex>
                                     <v-flex xs12>
-                                        <span>CPF: {{patient.cpf}}</span>
+                                        <span class="grey--text">CPF:</span>
+                                        <span class="font-weight-bold"> {{patient.cpf}}</span>
                                     </v-flex>
                                     <v-flex xs12>
-                                        <span>Num. Assoc.: {{patient.associate_number}}</span>
+                                        <span class="grey--text">Num. Assoc.:</span>
+                                        <span class="font-weight-bold"> {{patient.association_number}}</span>
                                     </v-flex>
                                     <v-flex xs12>
                                         <v-divider></v-divider>
@@ -206,7 +209,7 @@
                                             </v-btn>
                                         </v-flex>
                                         <v-flex xs6 class="text-center">
-                                            <v-btn outlined color="primary" @click="pay()">Pagar</v-btn>
+                                            <submit-button text="Pagar" :loading="paymentLoading" :success="paymentSuccess" color="primary" @click="pay()">Pagar</submit-button>
                                         </v-flex>
                                         <v-flex xs12 class="text-center mt-4">
                                             <v-btn outlined color="primary" @click="clearCart()">Novo Orçamento</v-btn>
@@ -229,14 +232,18 @@
 <script>
     import constants from "../../utils/constants";
     import SelectPatientCard from "../SelectPatientCard";
+    import SubmitButton from "../SubmitButton";
 
     export default {
         name: "Cart",
         components: {
-            SelectPatientCard
+            SelectPatientCard,
+            SubmitButton
         },
         data() {
             return {
+                paymentLoading: false,
+                paymentSuccess: false,
                 searchBudgetError: undefined,
                 searchBudgetNumber: undefined,
                 searchBudgetLoading: false,
@@ -257,7 +264,7 @@
         },
         computed: {
             selectedBudget() {
-              return this.$store.getters.selectedBudget
+                return this.$store.getters.selectedBudget
             },
             patient() {
                 console.log(this.$store.getters.selectedPatient)
@@ -315,11 +322,11 @@
                         this.$store.commit('addShoppingCartItem', budget.specialties[spec])
                     }
                     let intakes = await this.$store.dispatch('getUserIntakes', budget.user)
-                    if(intakes) {
+                    if (intakes) {
                         budget.user.intakes = intakes
                     }
                     let budgets = await this.$store.dispatch('getUserBudgets', budget.user)
-                    if(budgets) {
+                    if (budgets) {
                         budget.user.budgets = budgets
                     }
                     this.$store.commit('setSelectedPatient', budget.user)
@@ -418,7 +425,8 @@
                 this.$store.dispatch('addBudget', budget)
 
             },
-            pay() {
+            async pay() {
+                this.paymentLoading = true
                 let user = this.$store.getters.selectedPatient;
                 if (!user) {
                     return
@@ -426,11 +434,14 @@
                 if (!this.selectedBudget) {
                     this.saveBudget(this.generateBudget())
                 }
-                this.$store.dispatch('addIntake', this.selectedBudget,
-                ).then(() => {
-                    console.log('foi');
-                    this.aviso2 = true;
-                });
+                await this.$store.dispatch('addIntake', this.selectedBudget,)
+                let intakes = await this.$store.dispatch('getUserIntakes', user)
+                let budgets = await this.$store.dispatch('getUserBudgets', user)
+                user.intakes = intakes
+                user.budgets = budgets
+                this.$store.commit('setSelectedPatient', user)
+                this.paymentLoading = false
+                this.paymentSuccess = true
                 this.card = false
                 //}
             },

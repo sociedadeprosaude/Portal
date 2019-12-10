@@ -7,6 +7,7 @@ const state = {
 
 const mutations = {
   async setSelectedPatient(state, payload) {
+    console.log(payload)
     if(payload){
       var snapshot = await firebase.firestore().collection('users/'+payload.cpf+'/consultations').get()
       var consultations = [];
@@ -14,7 +15,6 @@ const mutations = {
         consultations.push({...consultation.data()})
       });
       payload = {...payload,consultations:consultations}
-      console.log(payload)
     }
 
     state.selectedPatient = payload
@@ -65,7 +65,7 @@ const actions = {
 
   },
   async setSelectedPatient ({commit}, payload) {
-    
+
     commit('setSelectedPatient', payload)
     if (payload.name) this.dispatch('getPatientProntuario', payload)
   }

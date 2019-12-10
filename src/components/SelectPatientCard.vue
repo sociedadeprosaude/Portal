@@ -331,13 +331,15 @@
                 this.loading = false
             },
             async selectUser(user) {
-                let intakes = await this.$store.dispatch('getUserIntakes', user)
-                if(intakes) {
-                    user.intakes = intakes
-                }
-                let budgets = await this.$store.dispatch('getUserBudgets', user)
-                if(budgets) {
-                    user.budgets = budgets
+                if (user) {
+                    let intakes = await this.$store.dispatch('getUserIntakes', user)
+                    if (intakes) {
+                        user.intakes = intakes
+                    }
+                    let budgets = await this.$store.dispatch('getUserBudgets', user)
+                    if (budgets) {
+                        user.budgets = budgets
+                    }
                 }
                 this.$store.commit('setSelectedPatient', user)
                 this.foundUsers = []

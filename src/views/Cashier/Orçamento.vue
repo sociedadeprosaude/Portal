@@ -1,13 +1,12 @@
 <template>
     <v-container fluid class=" fill-height">
-        <v-layout row wrap>
+        <v-layout row wrap class="justify-center">
             <v-flex sm3 v-if="patient">
                 <intakes-history></intakes-history>
             </v-flex>
             <v-flex>
                 <procedures-search></procedures-search>
             </v-flex>
-            <v-spacer></v-spacer>
             <v-flex sm3>
                 <cart></cart>
             </v-flex>

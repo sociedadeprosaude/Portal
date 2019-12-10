@@ -25,11 +25,11 @@
                 </v-flex>
                 <div v-if="option === 'intakes'">
                     <v-flex xs12 v-for="intake in intakes" :key="intake.id">
-                        <v-card class=" my-2 pa-2">
+                        <v-card :class="['my-2 pa-2', diffByNow(intake) < 30000 ? 'green' : '']">
                             <v-layout row wrap>
                                 <v-flex xs12 class="text-left">
                             <span class="my-sub-headline">
-                                {{intake.data | dateFilter}}
+                                {{intake.date | dateFilter}}
                             </span>
                                 </v-flex>
                                 <v-flex xs12 class="text-left">
@@ -57,7 +57,7 @@
                             <v-layout row wrap>
                                 <v-flex xs10 class="text-left">
                             <span class="my-sub-headline">
-                                {{budget.data | dateFilter}}
+                                {{budget.date | dateFilter}}
                             </span>
                                 </v-flex>
                                 <v-flex xs2>
@@ -111,6 +111,11 @@
                 }
                 this.loading = false
                 // this.$store.commit('setSelectedPatient', budget.user)
+            },
+            diffByNow(product) {
+                let now = moment()
+                let date = moment(product.date, 'YYYY-MM-DD HH:mm:ss')
+                return now.valueOf() - date.valueOf()
             }
         },
         computed: {
@@ -119,7 +124,7 @@
             },
             intakes() {
                 return this.patient.intakes.sort((a, b) => {
-                    if (a.data < b.data) {
+                    if (a.date < b.date) {
                         return 1
                     }
                     return -1
@@ -127,7 +132,7 @@
             },
             budgets() {
                 return this.patient.budgets.sort((a, b) => {
-                    if (a.data < b.data) {
+                    if (a.date < b.date) {
                         return 1
                     }
                     return -1
