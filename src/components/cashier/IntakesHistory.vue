@@ -55,10 +55,13 @@
                     <v-flex xs12 v-for="budget in budgets" :key="budget.id">
                         <v-card ripple class=" my-2 pa-2" @click="selectBudget(budget)">
                             <v-layout row wrap>
-                                <v-flex xs12 class="text-left">
+                                <v-flex xs10 class="text-left">
                             <span class="my-sub-headline">
                                 {{budget.data | dateFilter}}
                             </span>
+                                </v-flex>
+                                <v-flex xs2>
+                                    <v-progress-circular indeterminate v-if="loading" class="primary--text"></v-progress-circular>
                                 </v-flex>
                                 <v-flex xs12 class="text-left">
                             <span class="my-sub-headline">
@@ -89,23 +92,26 @@
         name: "IntakesHistory",
         data() {
             return {
-                option: 'budgets'
+                option: 'budgets',
+                loading: false
             }
         },
         methods: {
-          async selectBudget(budget) {
-              budget = await this.$store.dispatch('getBudget', budget.id.toString())
-
-              this.$store.commit('setSelectedBudget', budget)
-              // this.selectedBudget = budget
-              for (let exam in budget.exams) {
-                  this.$store.commit('addShoppingCartItem', budget.exams[exam])
-              }
-              for (let spec in budget.specialties) {
-                  this.$store.commit('addShoppingCartItem', budget.specialties[spec])
-              }
-              // this.$store.commit('setSelectedPatient', budget.user)
-          }
+            async selectBudget(budget) {
+                this.loading = true
+                budget = await this.$store.dispatch('getBudget', budget.id.toString())
+                this.$store.commit('clearShoppingCartItens')
+                this.$store.commit('setSelectedBudget', budget)
+                // this.selectedBudget = budget
+                for (let exam in budget.exams) {
+                    this.$store.commit('addShoppingCartItem', budget.exams[exam])
+                }
+                for (let spec in budget.specialties) {
+                    this.$store.commit('addShoppingCartItem', budget.specialties[spec])
+                }
+                this.loading = false
+                // this.$store.commit('setSelectedPatient', budget.user)
+            }
         },
         computed: {
             patient() {
@@ -113,7 +119,7 @@
             },
             intakes() {
                 return this.patient.intakes.sort((a, b) => {
-                    if(a.data < b.data) {
+                    if (a.data < b.data) {
                         return 1
                     }
                     return -1
@@ -121,10 +127,10 @@
             },
             budgets() {
                 return this.patient.budgets.sort((a, b) => {
-                     if(a.data < b.data) {
-                         return 1
-                     }
-                     return -1
+                    if (a.data < b.data) {
+                        return 1
+                    }
+                    return -1
                 })
             }
         }

@@ -87,8 +87,8 @@
                                     style="overflow:auto; height:50vh; box-shadow: inset 0px 0px 5px grey;">
                                 <v-layout row wrap>
                                     <v-flex xs12 v-if="exames.length > 0">
-                                        <p>Exames</p>
-                                        <v-card v-for="(item) in exames" class="mt-2" :key="item.name">
+                                        <p class="my-headline">Exames</p>
+                                        <v-card v-for="(item) in exames" class="ma-2" :key="item.name">
                                             <v-card-title class="py-2">
                                                 <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
                                                 <v-spacer></v-spacer>
@@ -108,7 +108,7 @@
                                     </v-flex>
                                     <v-divider></v-divider>
                                     <v-flex xs12 v-if="consultas.length > 0">
-                                        <p>Consultas</p>
+                                        <p class="my-headline">Consultas</p>
                                         <v-card v-for="(item) in consultas" class="ma-2" :key="item.doctor.name">
                                             <v-card-title class="py-2">
                                                 <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
@@ -130,7 +130,7 @@
                                     </v-flex>
                                     <v-divider></v-divider>
                                     <v-flex xs12 v-if="pacotes.length > 0">
-                                        <p>Pacotes</p>
+                                        <p class="my-headline">Pacotes</p>
                                         <v-card v-for="(item) in pacotes" class="mt-2" :key="item.nome">
                                             <v-card-title class="py-2">
                                                 <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
