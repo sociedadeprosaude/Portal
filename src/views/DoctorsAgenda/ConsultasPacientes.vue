@@ -80,6 +80,8 @@
                             </v-expansion-panel-header>
 
                             <v-expansion-panel-content>
+                                <v-divider></v-divider>
+                                <v-card class="elevation-3">
                                     <v-list three-line subheader>
                                         <v-layout row wrap>
                                             <v-flex sm3
@@ -87,7 +89,7 @@
                                                     v-for="item in patient.consultations"
                                                     :key="item.cpf"
                                             >
-                                                <v-list-tile @click="visualizarConsulta = {
+                                                <v-list-item @click="visualizarConsulta = {
                                                             idConsultation:item.id,
                                                             idPaciente: patient.cpf,
                                                             paciente: patient.name,
@@ -106,14 +108,13 @@
                                                             consultation:item
                                                         }"    
                                                 >
-                                                <v-card class="py-1">
                                                     <v-list-tile-content >
                                                         <v-list-tile-title>
                                                             <span :class="`${color}--text`" style="font-weight: bolder">
                                                                 Dr(a). {{item.doctor.name}}
                                                             </span>
                                                         </v-list-tile-title>
-                                                        
+
                                                         <br>
                                                         <v-list-tile-sub-title class="text-left">
                                                             {{item.specialty.name}}
@@ -139,11 +140,11 @@
                                                             <v-icon v-if="item.status === 'Aguardando pagamento'" color="error">money_off</v-icon>
                                                         </v-btn>
                                                     </v-list-tile-action>
-                                                </v-card>
-                                                </v-list-tile>
+                                                </v-list-item>
                                             </v-flex>
                                         </v-layout>
                                     </v-list>
+                                </v-card>
                             </v-expansion-panel-content>
 
                         </v-expansion-panel>
@@ -167,32 +168,32 @@
                                         <v-container grid-list-md>
                                             <v-layout wrap>
                                                 <v-flex xs12 sm6>
-                                                    <v-text-field readonly prepend-icon="person" label="Nome do Paciente" v-model="index_Selecionado.paciente">
+                                                    <v-text-field readonly hide-details outlined prepend-icon="person" label="Nome do Paciente" v-model="index_Selecionado.paciente">
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
-                                                    <v-text-field readonly prepend-icon="credit_card" label="CPF" v-model="index_Selecionado.cpf">
+                                                    <v-text-field readonly hide-details outlined prepend-icon="credit_card" label="CPF" v-model="index_Selecionado.cpf">
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex xs12 sm12 md12 lg12><v-divider ></v-divider></v-flex>
                                                 <v-flex xs12 sm6>
-                                                    <v-text-field readonly prepend-icon="person" label="Nome do Médico" v-model="index_Selecionado.medico">
+                                                    <v-text-field readonly hide-details outlined prepend-icon="person" label="Nome do Médico" v-model="index_Selecionado.medico">
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
-                                                    <v-text-field readonly prepend-icon="credit_card" v-model="index_Selecionado.crm" label="CRM">
+                                                    <v-text-field readonly hide-details outlined prepend-icon="credit_card" v-model="index_Selecionado.crm" label="CRM">
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
-                                                    <v-text-field readonly prepend-icon="school" label="Especialidade" v-model="index_Selecionado.especialidade">
+                                                    <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="index_Selecionado.especialidade">
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
-                                                    <v-text-field readonly prepend-icon="event" label="Dia da Consulta" v-model="computedDateFormattedSelecionado">
+                                                    <v-text-field readonly hide-details outlined prepend-icon="event" label="Dia da Consulta" v-model="computedDateFormattedSelecionado">
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
-                                                    <v-text-field readonly prepend-icon="access_alarm" label="Hora da Consulta" v-model="index_Selecionado.hora">
+                                                    <v-text-field readonly hide-details outlined prepend-icon="access_alarm" label="Hora da Consulta" v-model="index_Selecionado.hora">
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
@@ -202,6 +203,8 @@
                                                             :items="statusOptions"
                                                             label="Status"
                                                             chips
+                                                            hide-details
+                                                            outlined
                                                     ></v-select>
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
@@ -209,6 +212,8 @@
                                                             prepend-icon="assignment"
                                                             v-model="index_Selecionado.modalidade"
                                                             readonly
+                                                            hide-details
+                                                            outlined
                                                             label="Modalidade"
                                                     ></v-text-field>
                                                 </v-flex>
@@ -220,6 +225,8 @@
                                                             v-model="index_Selecionado.num_recibo"
                                                             type="number"
                                                             :disabled="index_Selecionado.status === 'Pago' ? false : true"
+                                                            hide-details
+                                                            outlined
                                                     ></v-text-field>
                                                 </v-flex>
                                             </v-layout>
@@ -227,14 +234,14 @@
                                     </v-card-text>
                                     <v-divider></v-divider>
                                     <v-card-actions>
-                                        <v-btn color="warning" round @click="dialog = false">
+                                        <v-btn color="warning" rounded @click="dialog = false">
                                             Voltar
                                             <v-icon>clear</v-icon>
                                         </v-btn>
                                         <v-spacer></v-spacer>
                                         <v-btn
                                                 color="error"
-                                                round
+                                                rounded
                                                 :loading="this.mensage_progress == 'Apagando...' && loader"
                                                 :disabled="index_Selecionado.status === 'Cancelado' ? false : true"
                                                 @click="apagar()"
@@ -245,7 +252,7 @@
                                         <v-spacer></v-spacer>
                                         <v-btn
                                                 color="blue"
-                                                round
+                                                rounded
                                                 dark
                                                 :to="{ name: 'AgendarRetorno', params: { q: {...this.index_Selecionado,consultaPaciente:true}}}"
                                                 :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress ? false : true"
@@ -256,7 +263,7 @@
                                         <v-spacer></v-spacer>
                                         <v-btn
                                                 color="success"
-                                                round
+                                                rounded
                                                 :disabled="loader"
                                                 :loading="this.mensage_progress == 'Atualizando...' && loader"
                                                 @click="atualizar()"

@@ -8,30 +8,29 @@
                     <v-text-field v-html="option.doctor.name"></v-text-field>
                 </v-flex>
 
-                <!--
                 <template>
                     <v-container fluid grid-list-xl>
                         <v-layout align-center wrap>
                             <v-flex sm3>
-                                    <v-btn flat>
+                                    <v-btn text>
                                         <v-icon color="blue">event</v-icon>:
                                         <v-chip small text-color="white" color="blue">Consulta</v-chip>
                                     </v-btn>
                             </v-flex>
                             <v-flex sm3>
-                                    <v-btn flat>
+                                    <v-btn text>
                                         <v-icon color="blue">restore</v-icon>:
                                         <v-chip small text-color="white" color="blue">Retorno</v-chip>
                                     </v-btn>
                             </v-flex>
                             <v-flex sm2>
-                                    <v-btn flat>
+                                    <v-btn text>
                                         <v-icon color="success">attach_money</v-icon>:
                                         <v-chip small text-color="white" color="success">Pago</v-chip>
                                     </v-btn>
                             </v-flex>
                             <v-flex sm4>
-                                    <v-btn flat>
+                                    <v-btn text>
                                         <v-icon color="error">money_off</v-icon>:
                                         <v-chip small text-color="white" color="error">Aguardando Pagamento</v-chip>
                                     </v-btn>
@@ -39,11 +38,11 @@
                         </v-layout>
                     </v-container>
                 </template>
-
+<!--
                 <template>
                     <v-container class="align-center justify-center">
                         <v-layout column align-center justify-center wrap>
-                            <v-subheader>Gerenciamento de Consultas Canceladas de Todas as Especilidades</v-subheader>
+                            <v-subheader>Gerenciamento de Consultas e Retonos Canceladas pela Clínica de Todas as Especilidades</v-subheader>
                             <v-expansion-panel v-model="panel" expand>
                                 <v-expansion-panel-content
                                         v-for="(message, i) in menssagens"
@@ -265,14 +264,7 @@
             dialog: false,
             //-------------
             /*
-            panel: [true],
-            alert: false,
-            menssagem:'',
-            especialidade_choose:'',
-            index_Selecionado: {},
-            status_Selecionado:'',
-            timeout:4000,
-            mensage_progress:''
+           //
             */
         }),
         computed: {
