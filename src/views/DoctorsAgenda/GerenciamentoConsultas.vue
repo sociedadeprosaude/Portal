@@ -436,11 +436,11 @@
                 return this.formatDate(this.index_Selecionado.data)
             },
             consultas() {
-                console.log(this.especialidade)
-                let consultas = this.formatConsultationsArray(this.$store.getters.consultations).filter((a) => {
-                    
-                    return this.especialidade && this.date ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && !(a.user === undefined)  : false
+                let consultas = this.$store.getters.consultations.filter((a) => {
+
+                    return this.especialidade && this.date ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && a.user : false
                 })
+                console.log(consultas)
                 return consultas;
             },
             /* menssagens:{
@@ -568,7 +568,7 @@
             },
 
             consultasByDoctors(consultations) {
-                console.log('jkkjhkjhkjhkj')
+                //console.log('By Doctors')
                 let res = {}
                 for (let cons in consultations) {
                     let targetDate = consultations[cons].doctor.cpf
@@ -583,6 +583,7 @@
 
                     
                 }
+                
                 return res                
             },
 

@@ -46,6 +46,7 @@ const actions = {
                 // })
             })
             // commit('setConsultationsByDate', consultationsByDate)
+            //console.log('GetConsultations')
             commit('setConsultations', consultations)
             return consultations
         } catch (e) {
@@ -115,14 +116,15 @@ const actions = {
     },
     async addUserToConsultation({commit}, payload) {
         try {
-
+            console.log(payload.consultation.id)
             let obj = payload.consultation.type == "Retorno" ? {
                     user: payload.user,
                     type: payload.consultation.type,
                     status: payload.consultation.status,
+                    payment_number:payload.consultation.payment_number,
                     previousConsultation: payload.consultation.previousConsultation
                 }
-                : {user: payload.user, type: payload.consultation.type, status: payload.consultation.status,}
+                : {user: payload.user, type: payload.consultation.type, status: payload.consultation.status,payment_number:payload.consultation.payment_number}
 
 
             await firebase.firestore().collection('consultations').doc(payload.consultation.id).update(obj)
