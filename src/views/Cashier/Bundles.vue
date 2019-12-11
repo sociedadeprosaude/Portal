@@ -1,110 +1,89 @@
 <template>
-    <v-container>
-        <v-layout row wrap>
-            <v-flex xs12 class="my-4">
-                <v-card class="round-card">
+    <v-container fluid class=" fill-height">
+        <v-layout row wrap class="justify-center">
+            <v-flex class="my-4">
+                <v-card class="round-card ml-5 elevation-2">
                     <v-flex xs12 class="text-right pa-2" v-if="searchPackage">
-                        <v-layout row wrap>
-                            <v-btn rounded color="primary" dark class="mb-2"
+                        <v-layout row wrap >
+                            <v-combobox v-model="searchData" :items="listPackage" item-text="name"
+                                        :clearable="true" :loading="isLoading" :search-input.sync="search"
+                                         filled  full-width
+                                        @click:clear = "clearSearch" outlined class="mr-2 ml-2"
+                                        :disabled="!searchPackage">
+                                <template v-slot:no-data>
+                                    <v-list-item>
+                                        <v-list-item-content>
+                                            <v-list-item-title>
+                                                Sem resultado para "<strong> {{ search }} </strong>"
+                                            </v-list-item-title>
+                                        </v-list-item-content>
+                                    </v-list-item>
+                                </template>
+                            </v-combobox>
+                            <v-btn small fab color="primary" dark class="mb-2 mr-2"
+                                   @click="registerPackage =! registerPackage, searchPackage =! searchPackage, clearSearch()">
+                                <v-icon>add</v-icon>
+                            </v-btn>
+                            <v-btn small fab color="primary" dark class="mb-2 mr-2"
                                    @click="$router.back()">
                                 <v-icon>close</v-icon>
                             </v-btn>
-                            <v-spacer></v-spacer>
-                            <v-btn rounded color="primary" dark class="mb-2"
-                                   @click="registerPackage =! registerPackage, searchPackage =! searchPackage, clearSearch()">
-                                ADICIONAR PACOTE
-                                <v-icon right>add</v-icon>
-                            </v-btn>
                         </v-layout>
                     </v-flex>
-                    <v-card-text>
-                        <v-flex xs12 v-if="searchPackage">
-                            <v-layout>
-                                <v-flex xs12>
-                                    <v-combobox v-model="searchData" :items="listPackage" item-text="name"
-                                                hide-selected hide-no-data :clearable="true" :loading="isLoading"
-                                                :search-input.sync="searchData" filled single-line full-width
-                                                return-object @click:clear = "clearSearch" outlined
-                                                style="justify-content: center">
-                                        <template v-slot:no-data>
-                                            <v-list-item>
-                                                <v-list-item-content>
-                                                    <v-list-item-title>
-                                                        Sem resultado para "<strong>{{ searchData }}</strong>"
-                                                    </v-list-item-title>
-                                                </v-list-item-content>
-                                            </v-list-item>
-                                        </template>
-                                    </v-combobox>
+                    <v-card-text v-if="registerPackage">
+                        <v-form v-model="validRegister" lazy-validation>
+                            <v-layout row wrap>
+                                <v-flex sm8 >
+                                    <v-text-field required label="nome" v-model="editedPackage.name"
+                                                  prepend-inner-icon="folder" :rules="rules.campoObrigatorio"
+                                                  primary solo :clearable="true">
+                                    </v-text-field>
                                 </v-flex>
-                            </v-layout>
-
-                            <v-card v-if="selectedPackage" class="round-card">
-                                <v-card-title>
-                                    <h4 class="font-italic font-weight-bold primary--text">
-                                        {{editedPackage.name}}
-                                    </h4>
-                                </v-card-title>
-                                <v-card-text class="mt-3">
-                                    
-                                </v-card-text>
-                            </v-card>
-                        </v-flex>
-                        <v-flex xs12 v-if="registerPackage">
-                            <v-form v-model="validRegister" lazy-validation>
-                                <v-layout row wrap>
-                                    <v-flex xs11>
-                                        <v-text-field required label=" nome" v-model="editedPackage.name"
-                                                      prepend-inner-icon="folder" :rules="rules.campoObrigatorio"
-                                                      primary solo :clearable="true">
-                                        </v-text-field>
-                                    </v-flex>
-                                    <v-spacer></v-spacer>
-                                    <v-btn color="primary" small fab
-                                           @click="registerPackage= !registerPackage, searchPackage= !searchPackage">
-                                        <v-icon >close</v-icon>
+                                <v-spacer></v-spacer>
+                                <v-radio-group row class="ma-1">
+                                    <v-btn outlined text :color="color.buttonExam" class="button-select" rounded
+                                           @click="selectExam">Exames
                                     </v-btn>
-                                    <v-flex xs5>
-                                        <v-radio-group :mandatory="false" row class="justify-center">
-                                            <v-btn outlined text :color="color.buttonExam" class="button-select" rounded
-                                                   @click="selectExam">Exames
-                                            </v-btn>
-                                            <!--
-                                            <v-btn outlined text :color="color.buttonAppointment" class="button-select mx-2" rounded
-                                                   @click="selectAppointment">Consultas
-                                            </v-btn>
-                                            -->
-                                            <v-btn outlined text :color="color.buttonClinic" class="button-select mx-2" rounded
-                                                   @click="selectClinic">Clinicas
-                                            </v-btn>
-                                        </v-radio-group>
-                                    </v-flex>
-                                    <v-text-field v-model="search" required solo primary :clearable="true"
-                                                  placeholder="Escolha a categoria" item-value="nome"
-                                    ></v-text-field>
-                                </v-layout>
-                                <v-card-text>
-                                    <v-flex v-for="(item, index) in categories" :key="index" >
-                                        <v-card class="mt-3">
-                                            <v-card-title class="justify-center">
-                                                <h3 class="primary--text">{{item.name}}</h3>
-                                            </v-card-title>
-                                            <v-card-text>
-                                                <v-slide-group v-if="categorySelect === 'exam'" show-arrows >
-                                                    <v-slide-item
-                                                            v-for="(n,i) in item.clinics" :key="i" v-slot:default="{ active, toggle }" >
-                                                        <v-btn class="mx-2"
-                                                               :input-value="active"
-                                                               active-class="blue white--text"
-                                                               depressed
-                                                               rounded
-                                                               @mousedown="toggle"
-                                                               @click="addExam(n.clinic, item.name, categorySelect, n.price, n.cost)"
+                                    <!--
+                                    <v-btn outlined text :color="color.buttonAppointment" class="button-select mx-2" rounded
+                                           @click="selectAppointment">Consultas
+                                    </v-btn>
+                                    -->
+                                    <v-btn outlined text :color="color.buttonClinic" class="button-select mx-2" rounded
+                                           @click="selectClinic">Clinicas
+                                    </v-btn>
+                                </v-radio-group>
+                                <v-spacer></v-spacer>
+                                <v-btn color="primary" small fab
+                                       @click="registerPackage= !registerPackage, searchPackage= !searchPackage">
+                                    <v-icon >close</v-icon>
+                                </v-btn>
+
+                                <v-text-field v-model="search" required solo primary :clearable="true"
+                                              placeholder="Escolha a categoria" item-value="nome"
+                                ></v-text-field>
+                            </v-layout>
+                            <v-card-text>
+                                <v-flex v-for="(item, index) in categories" :key="index" >
+                                    <v-card class="mt-1">
+                                        <v-card-title class="justify-center">
+                                            <h3 class="primary--text">{{item.name}}</h3>
+                                        </v-card-title>
+                                        <v-card-text>
+                                            <v-slide-group v-if="categorySelect === 'exam'"  show-arrows >
+                                                <v-slide-item
+                                                        v-for="(n,i) in item.clinics" :key="i" v-slot:default="{ active }" >
+                                                    <v-btn class="mx-2"
+                                                           :input-value="active"
+                                                           active-class="blue white--text"
+                                                           depressed
+                                                           rounded
+                                                           @click="addExam(n.clinic, item.name, categorySelect, n.price, n.cost)"
                                                         >
                                                             {{ n.clinic }} | {{ n.price }}
-                                                        </v-btn>
-                                                    </v-slide-item>
-                                                </v-slide-group>
+                                                    </v-btn>
+                                                </v-slide-item>
+                                            </v-slide-group>
                                                 <!--
                                                 <v-slide-group v-if="categorySelect === 'appointment'" show-arrows multiple>
                                                     <v-slide-item
@@ -123,16 +102,16 @@
                                                 </v-slide-group>
                                                 -->
                                             </v-card-text>
-                                            <v-card-text>
+                                        <v-card-text>
                                                 <v-slide-group v-if="categorySelect === 'clinic' && item.exams" show-arrows multiple>
                                                     <v-slide-item
-                                                            v-for="(n,index) in item.exams"  v-slot:default="{ active, toggle }" :key="index">
+                                                            v-for="(n,index) in item.exams"  v-slot:default="{ active}" :key="index">
                                                         <v-btn class="mx-2"
                                                                :input-value="active"
                                                                active-class="blue white--text"
                                                                depressed
                                                                rounded
-                                                               @mousedown="toggle"
+
 
                                                                @click="addExam(n.clinic, item.name, categorySelect, n.price, n.cost)"
                                                         >
@@ -141,7 +120,7 @@
                                                     </v-slide-item>
                                                 </v-slide-group>
                                             </v-card-text>
-                                            <!--
+                                        <!--
                                             <v-card-text>
                                                 <v-slide-group v-if="categorySelect === 'clinic' && item.specialties" show-arrows multiple>
                                                     <v-slide-item
@@ -160,115 +139,113 @@
                                                 </v-slide-group>
                                             </v-card-text>
                                             -->
-                                        </v-card>
-                                    </v-flex>
-                                    <v-layout row class="mt-5">
-                                        <v-flex xs2>
-                                            <v-text-field
-                                                    prepend-icon="attach_money"
-                                                    outlined
-                                                    label="Preço de Custo"
-                                                    placeholder="ex.: 50.00"
-                                                    v-model="cost"
-                                                    prefix="R$"
-                                                    readonly
-                                                    rounded
-                                                    color="#009688"
-                                            ></v-text-field>
-                                        </v-flex>
-                                        <v-spacer></v-spacer>
-                                        <v-flex xs2>
-                                            <v-text-field
-                                                    prepend-icon="monetization_on"
-                                                    outlined
-                                                    label="Preço de Venda"
-                                                    placeholder="ex.: 80.00"
-                                                    v-model="price"
-                                                    prefix="R$"
-                                                    readonly
-                                                    rounded
-                                                    color="#009688"
-                                            ></v-text-field>
-                                        </v-flex>
-                                        <v-spacer></v-spacer>
-                                        <v-flex xs2>
-                                            <v-text-field
-                                                    prepend-icon="looks_6"
-                                                    outlined
-                                                    clearable
-                                                    label="Desconto %"
-                                                    v-model="discountPercentage"
-                                                    suffix="%"
-                                                    rounded
-                                                    color="#009688"
-                                            ></v-text-field>
-                                        </v-flex>
-                                        <v-spacer></v-spacer>
-                                        <v-flex xs3>
-                                            <v-text-field
-                                                    prepend-icon="money_off"
-                                                    outlined
-                                                    clearable
-                                                    label="Desconto R$"
-                                                    v-model="discountMoney"
-                                                    prefix="R$"
-                                                    rounded
-                                                    color="#009688"
-                                            ></v-text-field>
-                                        </v-flex>
-                                        <v-spacer></v-spacer>
-                                        <v-flex xs2>
-                                            <v-text-field
-                                                    prepend-icon="fiber_new"
-                                                    outlined
-                                                    label="Valor Total"
-                                                    prefix="R$"
-                                                    v-model.number="total"
-                                                    rounded
-                                                    readonly
-                                                    color="#009688"
-                                            ></v-text-field>
-                                            {{ typeof(total) }}
-                                            {{total | moneyFilter}}
-                                        </v-flex>
-                                    </v-layout>
-                                </v-card-text>
-                                <v-card-actions>
-                                    <v-btn outlined rounded text color="primary" :disabled="!formRegister" @click="validateRegister()" class="ma-3">
-                                        Cadastrar Pacote
-                                    </v-btn>
-                                </v-card-actions>
-                            </v-form>
-                        </v-flex>
+                                    </v-card>
+                                </v-flex>
+                            </v-card-text>
+                        </v-form>
                     </v-card-text>
                 </v-card>
+            </v-flex>
 
-                <v-layout v-if="registerPackage" align-center justify-center row wrap>
-                    <v-container fluid class="center-card">
-                        <v-card xs12 sm12 class="round-card elevation-3">
-                            <v-card-title class="headline">Itens selecionados</v-card-title>
-                            <v-card-text>
-                                <v-list-item v-for="(item,index) in editedPackage.exams" :key="index">
-                                    <v-chip color="purple" text-color="white">
-                                        <strong>{{item.product}} | {{item.clinic}} | R$ {{item.price}}</strong>
-                                        <v-btn class="ml-1" mall icon @click="removeExam(index)">
-                                            <v-icon>cancel</v-icon>
-                                        </v-btn>
-                                    </v-chip>
-                                </v-list-item>
-                                <v-list-item v-for="(item,index) in editedPackage.specialties" :key="index">
-                                    <v-chip color="green" text-color="white">
-                                        <strong>{{item.product}} | {{item.clinic}} | R$ {{item.price}}</strong>
-                                        <v-btn class="ml-1" small icon @click="removeSpecialtie(index)">
-                                            <v-icon>cancel</v-icon>
-                                        </v-btn>
-                                    </v-chip>
-                                </v-list-item >
-                            </v-card-text>
-                        </v-card>
+            <v-flex sm3>
+                <v-card class="ml-5 elevation-2">
+                    <v-container>
+                        <v-layout  row wrap class="mx-3 align-center">
+                            <v-flex xs12 class="v-card mt-3 mb-3"
+                                    style="overflow:auto; height:50vh; box-shadow: inset 0px 0px 5px grey;">
+                                <v-layout row wrap>
+                                    <v-flex xs12 v-if="editedPackage.exams.length > 0">
+                                        <p class="my-headline">Exames</p>
+                                        <v-card v-for="(item) in editedPackage.exams" class="ma-2" :key="item.product">
+                                            <v-card-title class="py-2">
+                                                <span class="subtitle-1 font-weight-medium">{{item.product}}</span>
+                                                <v-spacer></v-spacer>
+                                                <span class="subtitle-1 font-weight-light">
+                                                <v-btn small icon @click="removeExam(item)">
+                                                    <v-icon>cancel</v-icon>
+                                                </v-btn>
+                                            </span>
+                                            </v-card-title>
+                                            <v-card-text class="pt-1 pb-0">
+                                                {{item.clinic}}
+                                                <p class="text-right">
+                                                    R$ {{item.price}}
+                                                </p>
+                                            </v-card-text>
+                                        </v-card>
+                                    </v-flex>
+                                </v-layout>
+                            </v-flex>
+
+                            <v-spacer></v-spacer>
+                            <v-layout row wrap class="mt-2">
+                                <v-flex xs5>
+                                    <v-text-field
+                                            outlined
+                                            label="Custo R$"
+                                            v-model="cost"
+                                            prefix="R$"
+                                            readonly
+                                    ></v-text-field>
+                                </v-flex>
+                                <v-spacer></v-spacer>
+                                <v-flex xs5>
+                                    <v-text-field
+                                            outlined
+                                            label="Venda R$"
+                                            v-model="price"
+                                            prefix="R$"
+                                    ></v-text-field>
+                                </v-flex>
+                                <v-flex>
+                                    <v-layout wrap>
+                                        <v-flex xs5>
+                                            <v-text-field
+                                                    label="Desconto: %"
+                                                    v-model="discountPercentage"
+                                                    clearable
+                                            ></v-text-field>
+                                        </v-flex>
+                                        <v-spacer></v-spacer>
+                                        <v-flex xs5>
+                                            <v-text-field
+                                                    disabled
+                                                    label="Desconto: R$ "
+                                                    v-model="discountMoney"
+                                            ></v-text-field>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                                <v-flex xs12 class="my-4">
+                                    <v-layout row wrap>
+                                        <v-flex xs12>
+                                            <v-divider></v-divider>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <h6 class="title font-weight-bold"> Total:
+                                                {{this.total | moneyFilter}}</h6>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <v-divider></v-divider>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                                <v-spacer></v-spacer>
+
+                                <v-flex xs12>
+                                    <v-layout row wrap class="align-end fill-height">
+                                        <v-flex xs12 class="text-center mt-4">
+                                            <v-btn outlined color="primary" :disabled="!formRegister" @click="validateRegister()">
+                                                Salvar Pacote</v-btn>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                            </v-layout>
+                        </v-layout>
                     </v-container>
-                </v-layout>
 
+
+                </v-card>
             </v-flex>
         </v-layout>
     </v-container>
@@ -286,7 +263,7 @@
 
             listProducts: [], items: [], action: false,
 
-            cost: 0, price: 0, discountPercentage: '', discountMoney: '', total: 0,
+            cost: 0, price: 0, discountPercentage: 0, discountMoney: 0,
 
             editedPackage: {
                 id: '', name: '', exams: [], specialties: [],
@@ -311,7 +288,6 @@
 
         computed: {
             listPackage (){
-                this.isLoading = false;
                 return this.$store.getters.bundles;
             },
 
@@ -396,6 +372,11 @@
                     return p;
                 }
             },
+
+            total() {
+                return parseFloat(this.price) - parseFloat(this.discountMoney);
+            }
+
         },
 
         mounted () {
@@ -414,33 +395,39 @@
                 this.searchData = null;
                 this.editedPackage= Object.assign({}, this.defaultPackage);
                 this.$store.dispatch('selectedBundle', null);
+                this.editedPackage.exams = [];
+                this.cost = 0;
+                this.price = 0;
             },
 
             validateRegister () {
-                  const packageData = {
+
+                for (let exam in this.editedPackage.exams) {
+                    this.editedPackage.exams[exam].price = this.editedPackage.exams[exam].price - this.discountMoney
+                }
+
+                const packageData = {
                       name: this.editedPackage.name.toUpperCase(),
                       cost: this.cost,
                       price: this.price,
                       discountMoney: this.discountMoney,
                       discountPercentage: this.discountPercentage,
                       exams: this.editedPackage.exams,
-                      specialties: this.editedPackage.specialties,
-                  };
+                      //specialties: this.editedPackage.specialties,
+                };
 
-                  console.log('pac' , packageData);
+                this.$store.dispatch('addBundle', packageData).then(() => {
+                    this.clearSearch();
+                    this.registerPackage = false;
+                    this.searchPackage = true;
+                });
 
-                  this.$store.dispatch('addBundle', packageData).then(() => {
-
-                      this.clearSearch();
-                      this.registerPackage = false;
-                      this.searchPackage = true;
-                  });
             },
 
 
             selectExam () {
                 this.color.buttonExam = this.color.colorSelect;
-                this.color.buttonAppointment = this.color.noSelect;
+                //this.color.buttonAppointment = this.color.noSelect;
                 this.color.buttonClinic = this.color.noSelect;
                 this.categorySelect = 'exam';
                 this.items= this.$store.getters.exams;
@@ -460,7 +447,7 @@
             selectClinic () {
                 this.color.buttonClinic = this.color.colorSelect;
                 this.color.buttonExam = this.color.noSelect;
-                this.color.buttonAppointment = this.color.noSelect;
+                //this.color.buttonAppointment = this.color.noSelect;
                 this.categorySelect = 'clinic';
                 this.items = this.$store.getters.clinics;
 
@@ -490,13 +477,23 @@
 
                 if (this.editedPackage.exams){
                     for (let key in this.editedPackage.exams) {
-                        if (this.item.product === this.editedPackage.exams[key].product
-                            && this.item.clinic === this.editedPackage.exams[key].clinic
-                            && this.item.price === this.editedPackage.exams[key].price
-                            && this.item.cost === this.editedPackage.exams[key].cost){
 
-                                this.action = true;
-                                this.editedPackage.exams.splice(key, 1);
+                        if (this.item.product === this.editedPackage.exams[key].product &&
+                            this.item.clinic === this.editedPackage.exams[key].clinic){
+
+                            this.action = true;
+                            this.editedPackage.exams.splice(key, 1);
+                        }
+
+                        if (this.item.product === this.editedPackage.exams[key].product &&
+                            this.item.clinic !== this.editedPackage.exams[key].clinic ){
+
+                            this.action = true;
+                            this.editedPackage.exams[key].product = this.item.product;
+                            this.editedPackage.exams[key].clinic = this.item.clinic;
+                            this.editedPackage.exams[key].price = this.item.price;
+                            this.editedPackage.exams[key].cost = this.item.cost;
+
 
                         } else {
 
@@ -546,11 +543,24 @@
 
             },
 
-            removeExam (index) {
-                this.sale -= this.editedPackage.exams[index].price;
-                this.cost -= this.editedPackage.exams[index].cost;
+            removeExam (exam) {
 
-                this.editedPackage.exams.splice(index,1);
+                console.log(exam);
+                console.log('price', this.price);
+
+                this.price -= exam.price;
+                this.cost -= exam.cost;
+
+                for (let i in this.editedPackage.exams) {
+                    if (this.editedPackage.exams[i].product === exam.product
+                        && this.editedPackage.exams[i].clinic === exam.clinic){
+
+                        this.editedPackage.exams.splice(i,1);
+                    }
+                }
+
+
+                console.log(this.editedPackage.exams);
             },
 
             removeSpecialtie (index) {
@@ -564,34 +574,29 @@
 
         watch: {
 
+
             discountPercentage: function () {
-                this.discountMoney = ((this.discountPercentage * this.price) / 100).toFixed(0);
-                this.total = Math.round (this.price - this.discountMoney)
+                this.discountMoney = ((this.discountPercentage * this.price) / 100);
+                //this.total = (this.price - this.discountMoney)
             },
 
-            discountMoney: function () {
-                this.discountPercentage = Math.round ((this.discountMoney * 100) / this.price)
-            },
 
-            price: function (val) {
-                this.total = (val - this.discountMoney)
-            },
 
             searchData () { //pesquisa por filtro de status e por delimitação de nome
                 if (this.searchData){
                     this.isLoading = true;
-                    const data = this.searchData.toUpperCase();
-                    if (this.listPackage.length > 0){
-                        for (let key in this.listPackage) {
-                            if (data === this.listPackage[key].nome) {
-                                this.searchPackage = true;
-                                this.registerPackage= false;
-                                this.$store.dispatch('selectedBundle', {...this.$store.getters.bundles[key]});
-                                this.editedPackage = Object.assign({}, this.selectedBundle);
-                                this.editedPackage.name = data;
-                            }
-                        }
-                    }
+                    const data = this.searchData.name.toUpperCase();
+
+                    this.searchPackage = false;
+                    this.registerPackage= true;
+
+                    
+                    //this.$store.dispatch('selectedBundle', this.searchData);
+                    this.editedPackage = Object.assign({}, this.searchData);
+                    this.editedPackage.name = data;
+
+                    console.log('================', this.editedPackage);
+
 
                 } else {
                     this.$store.dispatch('selectedBundle', null);
@@ -606,16 +611,4 @@
         border-radius: 20px;
     }
 
-    .title {
-        color: #757575;
-        font-size: 20px;
-    }
-
-    .center-card {
-        height: 100%;
-        justify-content: center;
-        align-content: center;
-        align-items: center;
-
-    }
 </style>

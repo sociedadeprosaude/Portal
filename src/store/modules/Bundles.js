@@ -107,11 +107,10 @@ const actions = {
                     allPackages.push({
                         name:bundle.name,
                         id: bundle.id,
-                        cost: bundle.id,
-                        price: bundle.id,
-                        moneyValue: bundle.moneyValue,
-                        percentageValue: bundle.percentageValue,
-                        total: bundle.total,
+                        cost: bundle.cost,
+                        price: bundle.price,
+                        moneyValue: bundle.discountMoney,
+                        percentageValue: bundle.discountPercentage,
                         exams: exams,
                         specialties: specialties,
                     });
