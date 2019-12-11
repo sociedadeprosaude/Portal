@@ -209,7 +209,9 @@
                                             </v-btn>
                                         </v-flex>
                                         <v-flex xs6 class="text-center">
-                                            <submit-button text="Pagar" :loading="paymentLoading"
+                                            <submit-button
+                                                    :disabled="!patient"
+                                                    text="Pagar" :loading="paymentLoading"
                                                            :success="paymentSuccess" color="primary" @click="pay()">
                                                 Pagar
                                             </submit-button>
