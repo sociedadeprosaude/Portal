@@ -23,13 +23,24 @@ const actions = {
 
     async getConsultations({commit},payload) {
         try {
+            let consultations = []
+            let consultationsByDate = {}
             let consultationsSnap = await firebase.firestore().collection('consultations')
                 .where('date', '>=', payload)
                 .where('date', '<=', moment().add(10, 'days').format('YYYY-MM-DD 23:59:59'))
-                .get()
-            let consultations = []
-            let consultationsByDate = {}
-            consultationsSnap.forEach(function (document) {
+                .onSnapshot((querySnapshot)=>{
+                    consultations = []
+                    querySnapshot.forEach((document)=>{
+                        consultations.push({
+                            ...document.data(),
+                            id: document.id
+                        })
+                    })
+                    commit('setConsultations', consultations)
+                })
+
+                //.get()
+           /*  consultationsSnap.forEach(function (document) {
                 consultations.push({
                     ...document.data(),
                     id: document.id
@@ -44,10 +55,10 @@ const actions = {
                 //     ...document.data(),
                 //     id: document.id
                 // })
-            })
+            }) */
             // commit('setConsultationsByDate', consultationsByDate)
             //console.log('GetConsultations')
-            commit('setConsultations', consultations)
+            //commit('setConsultations', consultations)
             return consultations
         } catch (e) {
             throw e
