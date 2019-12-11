@@ -102,9 +102,9 @@
                                             </span>
                                             </v-card-title>
                                             <v-card-text class="pt-1 pb-0">
-                                                {{item.clinic.clinic}}
+                                                {{item.clinic}}
                                                 <p class="text-right">
-                                                    R$ {{item.clinic.price}}
+                                                    R$ {{item.price}}
                                                 </p>
                                             </v-card-text>
                                         </v-card>
@@ -282,6 +282,7 @@
             },
             exames() {
                 // return this.$store.getters.selectedBudget.exams
+                console.log(this.$store.getters.getShoppingCartItemsByCategory.exams);
                 return this.$store.getters.getShoppingCartItemsByCategory.exams
             },
             consultas() {

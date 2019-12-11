@@ -82,7 +82,7 @@
                                                 label="Dia para Deletar"
                                                 prepend-icon="event_busy"
                                                 outline
-                                                hint="Selecione o dia para deletar as consultas do mesmo."
+                                                hint="Selecione o diak para deletar as consultas do mesmo."
                                                 persistent-hint
                                                 color="error"
                                                 clearable
@@ -116,6 +116,19 @@
                                 <v-icon right>delete_forever</v-icon>
                             </v-btn>
                         </v-layout>
+                        
+                        <v-container v-if="consultas && consultas.lenght == 0">
+                                <v-layout
+                                        row
+                                        wrap
+                                        justify-center
+                                        align-center
+                                >
+                                    <v-alert type="error">
+                                        Não há Consultas ou Retornos Marcados para a especialidade:
+                                    </v-alert>
+                                </v-layout>
+                        </v-container>
 
                         <v-layout
                                    v-for="(consultation, i) in consultasByDoctors(consultas)"
@@ -125,7 +138,7 @@
                                    justify-center
                                    align-center
                         >
-                            <v-container class="align-center justify-center py-0" v-if="consultation.doctor.name === doctor.name">
+                            <v-container class="align-center justify-center py-0">
                                 <v-layout row align-center justify-center wrap>
                                     <v-spacer></v-spacer>
                                     <v-flex xs12 sm12 md12 lg12></v-flex>
@@ -237,21 +250,6 @@
                                 </v-layout>
                             </v-container>
 
-                            <!--v-else-if="consultation.doctor.name === doctor.name && consultasByDoctors(consultas).length == 0"-->
-                            <!--
-                            <v-container v-else>
-                                <v-layout
-                                        row
-                                        wrap
-                                        justify-center
-                                        align-center
-                                >
-                                    <v-alert type="error">
-                                        Não há Consultas ou Retornos Marcados para a especialidade: <strong>{{especialidade.name}}</strong> com o Médico: <strong>{{doctor.name}}</strong> no Dia: <strong>{{date | dateFilter}} - {{daydate(date)}}</strong>
-                                    </v-alert>
-                                </v-layout>
-                            </v-container>
-                            -->
 
                         </v-layout>
 
@@ -266,6 +264,7 @@
     var moment = require('moment');
     export default {
         data: () => ({
+            teste:0,
             moment: moment,
             menu: false,
             panel:[true],
@@ -340,7 +339,7 @@
             consultas() {
                 let consultas = this.$store.getters.consultations.filter((a) => {
 
-                    return this.especialidade && this.date ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && a.user : false
+                    return this.especialidade && this.date && this.doctor ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && this.doctor.cpf == a.doctor.cpf && a.user : false
                 })
                 return consultas;
             },
@@ -402,6 +401,7 @@
             },
 
             consultasByDoctors(consultations) {
+
                 let res = {}
                 for (let cons in consultations) {
                     let targetDate = consultations[cons].doctor.cpf

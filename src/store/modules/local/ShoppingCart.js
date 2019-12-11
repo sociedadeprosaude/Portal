@@ -5,6 +5,7 @@ const state = {
 
 const mutations = {
     setSelectedBudget(state, payload) {
+        console.log('SetSelectedBudget',payload)
         state.budget = payload
     },
     setShoppingCartItems(state, payload) {
