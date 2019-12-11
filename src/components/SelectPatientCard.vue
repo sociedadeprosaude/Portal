@@ -5,8 +5,16 @@
                 <v-expand-transition mode="out-in">
                     <v-card class="primary_dark pa-2" :max-width="maxWidth" v-if="!addPatient">
                         <v-layout row wrap>
-                            <v-flex xs8 class="text-left">
+                            <v-flex xs6 class="text-left">
                                 <span class="my-headline white--text">Buscar Paciente</span>
+                            </v-flex>
+                            <v-flex xs2 class="text-right">
+                                <v-btn
+                                        v-if="selectedPatient"
+                                        @click="showUserCard(selectedPatient)"
+                                        rounded text class="white--text transparent">
+                                    <v-icon>credit_card</v-icon>
+                                </v-btn>
                             </v-flex>
                             <v-flex xs2 class="text-right">
                                 <v-btn
@@ -231,12 +239,16 @@
                 </v-expand-transition>
             </v-flex>
         </v-layout>
+        <v-dialog v-model="patientCard">
+            <patient-card :user="selectedPatient"></patient-card>
+        </v-dialog>
     </v-container>
 </template>
 
 <script>
     import {mask} from 'vue-the-mask'
     import SubmitButton from "./SubmitButton";
+    import PatientCard from "./PatientCard";
 
     export default {
         directives: {
@@ -248,7 +260,8 @@
             }
         },
         components: {
-            SubmitButton
+            SubmitButton,
+            PatientCard
         },
         computed: {
           selectedPatient() {
@@ -263,6 +276,7 @@
         },
         data() {
             return {
+                patientCard: false,
                 addPatient: false,
                 name: undefined,
                 cpf: undefined,
@@ -288,6 +302,9 @@
             }
         },
         methods: {
+            showUserCard(user) {
+                this.patientCard = !this.patientCard
+            },
             validateFiedls() {
                 if (!this.name || this.name.length === 0) {
                     this.formError = 'Nome não pode ser vazio'
