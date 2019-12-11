@@ -7,17 +7,19 @@ const state = {
 
 const mutations = {
   async setSelectedPatient(state, payload) {
-    console.log(payload)
+    var consultations
     if(payload){
-      var snapshot = await firebase.firestore().collection('users/'+payload.cpf+'/consultations').get()
-      var consultations = [];
-      snapshot.forEach((consultation)=>{
-        consultations.push({...consultation.data()})
-      });
-      payload = {...payload,consultations:consultations}
+      await firebase.firestore().collection('users').doc(payload.cpf).collection('consultations')
+      .onSnapshot((querySnapshot)=>{
+        consultations = []
+        querySnapshot.forEach((consultation)=>{
+          consultations.push({...consultation.data()})
+        })
+        payload = {...payload,consultations:consultations}
+        state.selectedPatient = payload
+      })
+      
     }
-
-    state.selectedPatient = payload
   },
 };
 
@@ -65,7 +67,6 @@ const actions = {
 
   },
   async setSelectedPatient ({commit}, payload) {
-
     commit('setSelectedPatient', payload)
     if (payload.name) this.dispatch('getPatientProntuario', payload)
   }
