@@ -65,10 +65,20 @@ const actions = {
         }
     },
 
-    async getConsultationsCanceled({commit}) {
+    async getConsultationsCanceled({commit}) {//pegar todas as consultas deletadas pela clinica
         try {
             let canceledSnap = await firebase.firestore().collection('canceled')
-                .get()
+                .onSnapshot((querySnapshot)=>{
+                    let consultationsCanceled = []
+                    querySnapshot.forEach((document)=>{
+                        consultationsCanceled.push({
+                            ...document.data(),
+                            id: document.id
+                        })
+                    })
+                    commit('setConsultationsCanceled', consultationsCanceled)
+                })
+                /*.get()
             let consultationsCanceled = []
             canceledSnap.forEach(function (document) {
                 //console.log(document.data())
@@ -77,9 +87,10 @@ const actions = {
                     id: document.id
                 })
             })
-            //console.log(consultationsCanceled)
+            console.log(consultationsCanceled)
             commit('setConsultationsCanceled', consultationsCanceled)
             return consultationsCanceled
+                 */
         } catch (e) {
             throw e
         }
@@ -169,9 +180,7 @@ const actions = {
     },
 
     async eraseAppointment({commit}, payload) { // apagarConsulta
-
-        console.log(payload)
-
+        //console.log(payload)
         try {
             let FieldValue = firebase.firestore.FieldValue
             await firebase.firestore().collection('consultations').doc(payload.idConsultation).update({
@@ -208,11 +217,20 @@ const actions = {
         }
     },
 
+    async removeAppointmentForever({commit}, payload){//apagar consulta de cancelados para semopre.
+        //console.log(payload.idConsultation)
+        try {
+        firebase.firestore().collection('canceled').doc(payload.idConsultation).delete()
+        } catch (e) {
+            throw e
+        }
+    },
+
     async removeAppointmentByDay({commit}, payload) { // ApagarTodasAsConsultasDoDiaDoMedico
 
         let start = moment(payload.date, 'YYYY-MM-DD').format('YYYY-MM-DD 00:00');
         let end = moment(payload.date, 'YYYY-MM-DD').format('YYYY-MM-DD 23:59');
-        console.log(payload.date)
+        //console.log(payload.date)
         try {
             let snapshot = await firebase.firestore().collection('consultations')
                 .where('doctor.cpf', "==", payload.doctor.cpf)
