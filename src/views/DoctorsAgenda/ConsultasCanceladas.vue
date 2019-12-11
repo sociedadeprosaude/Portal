@@ -79,7 +79,7 @@
                                                                     data: item.date.split(' ')[0],
                                                                     hora: item.date.split(' ')[1],
                                                                     crm: item.doctor.crm,
-                                                                    especialidade: item.specialty,
+                                                                    especialidade: item.specialty.name,
                                                                     status: item.status,
                                                                     modalidade: item.type,
                                                                     medico:item.doctor.name,
@@ -136,7 +136,7 @@
                                 <v-dialog v-model="dialog" width="500">
                                     <v-card>
                                         <v-card-title class="headline grey lighten-2" primary-title>
-                                            Atualizar Informações
+                                            Informações
                                         </v-card-title>
                                         <v-card-text>
                                             <v-container grid-list-md>
@@ -159,7 +159,7 @@
                                                         </v-text-field>
                                                     </v-flex>
                                                     <v-flex xs12 sm6>
-                                                        <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="especialidade.name">
+                                                        <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="index_Selecionado.especialidade">
                                                         </v-text-field>
                                                     </v-flex>
                                                     <v-flex xs12 sm6>
@@ -171,52 +171,18 @@
                                                         </v-text-field>
                                                     </v-flex>
                                                     <v-flex xs12 sm6>
-                                                        <v-select
-                                                                prepend-icon="assignment_turned_in"
-                                                                v-model="index_Selecionado.status"
-                                                                :items="statusOptions"
-                                                                label="Status"
-                                                                chips
-                                                                outlined
-                                                                hide-details
-                                                                readonly
-                                                        ></v-select>
+                                                        <v-text-field prepend-icon="assignment_turned_in" v-model="index_Selecionado.status" label="Status" chips outlined hide-details readonly>
+                                                        </v-text-field>
                                                     </v-flex>
                                                     <v-flex xs12 sm6>
-                                                        <v-text-field
-                                                                prepend-icon="assignment"
-                                                                v-model="index_Selecionado.modalidade"
-                                                                readonly
-                                                                outlined
-                                                                hide-details
-                                                                label="Modalidade"
-                                                        ></v-text-field>
+                                                        <v-text-field prepend-icon="assignment" v-model="index_Selecionado.modalidade" readonly outlined hide-details label="Modalidade">
+                                                        </v-text-field>
                                                     </v-flex>
                                                     <v-flex xs12 sm6>
-                                                        <v-text-field
-                                                                @click:clear="clearRecibo"
-                                                                prepend-icon="receipt"
-                                                                label="Nº do Recibo"
-                                                                v-model="index_Selecionado.num_recibo"
-                                                                type="number"
-                                                                outlined
-                                                                hide-details
-                                                                readonly
+                                                        <v-text-field prepend-icon="receipt" label="Nº do Recibo" v-model="index_Selecionado.num_recibo" outlined hide-details readonly
                                                         ></v-text-field>
                                                     </v-flex>
-                                                    <v-flex xs12 sm12 md12 lg12><v-divider ></v-divider></v-flex>
-                                                    <v-flex xs12>
-                                                        <v-select
-                                                                prepend-icon="device_unknown"
-                                                                v-model="attendance"
-                                                                :items="attendanceOptions"
-                                                                label="Atendimento"
-                                                                chips
-                                                                outlined
-                                                                hide-details
-                                                                readonly
-                                                        ></v-select>
-                                                    </v-flex>
+                                                    <!--<v-flex xs12 sm12 md12 lg12><v-divider ></v-divider></v-flex>-->
                                                 </v-layout>
                                             </v-container>
                                         </v-card-text>
@@ -255,7 +221,7 @@
             especialidade:'',
         }),
         computed: {
-            computedDateFormatted () {
+            computedDateFormattedSelecionado() {
                 return this.formatDate(this.index_Selecionado.data)
             },
             visualizarConsulta:{
@@ -288,6 +254,7 @@
 
             apagar () {
                 this.$store.dispatch('removeAppointmentForever',{... this.index_Selecionado})
+                this.dialog = false
             }
         },
     };
