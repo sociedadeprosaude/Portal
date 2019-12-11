@@ -72,10 +72,8 @@
                                         v-model="menu"
                                         :close-on-content-click="false"
                                         :nudge-right="40"
-                                        lazy
                                         transition="scale-transition"
                                         offset-y
-                                        full-width
                                         min-width="290px"
                                 >
                                     <template v-slot:activator="{ on }">
@@ -325,7 +323,6 @@
                             }
                         }
                         return false
-                        // return a.specialties.indexOf(this.especialidade.name) > -1
                     })
                 }
                 return doctors
@@ -353,13 +350,10 @@
                 },
                 set(val){
                     this.date_choose = val
-                    //this.$store.dispatch('loadScheduledAppointment', {especialidade: this.especialidade})
-
                 }
             },
         },
         async mounted() {
-            //this.especialidade = this.specialties[0]
             await this.$store.dispatch('getConsultations')
             await this.$store.dispatch('getSpecialties')
             await this.$store.dispatch('getDoctors')
@@ -407,7 +401,7 @@
             },
 
             consultasByDoctors(consultations) {
-                
+
                 let res = {}
                 for (let cons in consultations) {
                     let targetDate = consultations[cons].doctor.cpf
