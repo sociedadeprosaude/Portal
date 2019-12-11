@@ -60,8 +60,8 @@
         methods:{
 
             load() {
-                this.items = this.$store.getters.clinics;
-                console.log(this.items)
+                //this.items = this.$store.getters.clinics;
+                //console.log(this.items)
                 /*
                 let val = this.$store.getters.clinics;
                 console.log(val)
