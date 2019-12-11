@@ -25,7 +25,7 @@
                 </v-flex>
                 <div v-if="option === 'intakes'">
                     <v-flex xs12 v-for="intake in intakes" :key="intake.id">
-                        <v-card :class="['my-2 pa-2', diffByNow(intake) < 30000 ? 'green' : '']">
+                        <v-card :class="['my-2 pa-2', diffByNow(intake) < 30000 ? 'green' : '']" @click="receipt(intake)">
                             <v-layout row wrap>
                                 <v-flex xs12 class="text-left">
                             <span class="my-sub-headline">
@@ -84,16 +84,24 @@
                 </div>
             </v-layout>
         </v-card>
+        <v-flex v-if="recep" class="hidden-screen-only">
+            <receipt :budgets="this.item"></receipt>
+        </v-flex>
     </v-container>
 </template>
 
 <script>
+
+    import Receipt from "./Receipt";
     export default {
         name: "IntakesHistory",
+        components: {Receipt},
         data() {
             return {
                 option: 'budgets',
-                loading: false
+                loading: false,
+                recep:false,
+                item:[],
             }
         },
         methods: {
@@ -110,12 +118,20 @@
                     this.$store.commit('addShoppingCartItem', budget.specialties[spec])
                 }
                 this.loading = false
+                console.log('budgets:', budget)
                 // this.$store.commit('setSelectedPatient', budget.user)
             },
             diffByNow(product) {
                 let now = moment()
                 let date = moment(product.date, 'YYYY-MM-DD HH:mm:ss')
                 return now.valueOf() - date.valueOf()
+            },
+            receipt(intake){
+                this.recep=true;
+                this.item=intake;
+                console.log('intake: ',intake);
+                console.log('item: ',this.item);
+                window.print();
             }
         },
         computed: {
