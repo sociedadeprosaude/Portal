@@ -18,7 +18,9 @@ const mutations = {
         payload = {...payload,consultations:consultations}
         state.selectedPatient = payload
       })
-      
+
+    } else {
+      state.selectedPatient = payload
     }
   },
 };
