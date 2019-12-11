@@ -431,15 +431,23 @@
                 }
                 return budget
             },
-            saveBudget(budget) {
+            async updateBudgetsIntakes() {
+                let user = this.patient;
+                let intakes = await this.$store.dispatch('getUserIntakes', user)
+                let budgets = await this.$store.dispatch('getUserBudgets', user)
+                user.intakes = intakes
+                user.budgets = budgets
+                this.$store.commit('setSelectedPatient', user)
+            },
+            async saveBudget(budget) {
                 this.$store.commit('setSelectedBudget', budget)
                 // this.selectedBudget = Object.assign({}, budget)
-                this.$store.dispatch('addBudget', budget)
-
+                await this.$store.dispatch('addBudget', budget)
+                this.updateBudgetsIntakes()
             },
             async pay() {
                 this.paymentLoading = true
-                let user = this.$store.getters.selectedPatient;
+                let user = this.patient;
                 if (!user) {
                     return
                 }
@@ -447,11 +455,7 @@
                     this.saveBudget(this.generateBudget())
                 }
                 await this.$store.dispatch('addIntake', this.selectedBudget,)
-                let intakes = await this.$store.dispatch('getUserIntakes', user)
-                let budgets = await this.$store.dispatch('getUserBudgets', user)
-                user.intakes = intakes
-                user.budgets = budgets
-                this.$store.commit('setSelectedPatient', user)
+                this.updateBudgetsIntakes()
                 this.paymentLoading = false
                 this.paymentSuccess = true
                 this.card = false
