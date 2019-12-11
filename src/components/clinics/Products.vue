@@ -16,18 +16,24 @@
                                 hide-details
                         ></v-text-field>
                     </v-flex>
+                    <v-btn @click="load">
+                        carregar
+                    </v-btn>
                     <v-card-text>
-                        <v-list-item v-for="(item,index) in listProducts" :key="index">
-                            <v-chip-group>
-                            <v-chip v-if="item.type ==='appointment' " color="green" text-color="white">
+                        <v-list-item v-for="(item,index) in items" :key="index">
+                            <v-chip-group v-model="selected">
+                                <!--
+                            <v-chip color="green" text-color="white">
                                 <v-icon>assignment</v-icon>:<strong>{{item.product}} | {{item.doctor}} | R$ {{item.cost}} | R$ {{item.sale}}</strong>
                             </v-chip>
-                            <v-chip v-else color="purple" text-color="white">
-                                <v-icon>poll</v-icon>:<strong>{{item.product}} | R$ {{item.cost}} | R$ {{item.sale}}</strong>
+                            -->
+                            <v-chip color="purple" text-color="white">
+                                <v-icon>poll</v-icon>:<strong>{{item.exams.name}} | R$ {{item.exams.cost}} | R$ {{item.exams.price}}</strong>
                             </v-chip>
                             </v-chip-group>
                         </v-list-item>
                     </v-card-text>
+                    {{selected}}
                 </v-layout>
             </v-container>
         </v-card-text>
@@ -37,100 +43,39 @@
 <script>
     export default {
         data: () => ({
-            //
-            listProducts:[
-                {
-                    type:'appointment',
-                    product:'DERMATOLOGIA',
-                    doctor:'JONATAS REIS',
-                    cost:'50.00',
-                    sale:'80.00',
-                },
-                {
-                    type:'exam',
-                    product:'SANGUE',
-                    cost:'40.00',
-                    sale:'70.00',
-                },
-                {
-                    type:'appointment',
-                    product:'DERMATOLOGIA',
-                    doctor:'ADRIA CASTRO',
-                    cost:'50.00',
-                    sale:'80.00',
-                },
-                {
-                    type:'exam',
-                    product:'SANGUE',
-                    cost:'40.00',
-                    sale:'70.00',
-                },
-                {
-                    type:'appointment',
-                    product:'DERMATOLOGIA',
-                    doctor:'JONATAS REIS',
-                    cost:'50.00',
-                    sale:'80.00',
-                },
-                {
-                    type:'exam',
-                    product:'SANGUE',
-                    cost:'40.00',
-                    sale:'70.00',
-                },
-                {
-                    type:'appointment',
-                    product:'DERMATOLOGIA',
-                    doctor:'ADRIA CASTRO',
-                    cost:'50.00',
-                    sale:'80.00',
-                },
-                {
-                    type:'appointment',
-                    product:'DERMATOLOGIA',
-                    doctor:'JONATAS REIS',
-                    cost:'50.00',
-                    sale:'80.00',
-                },
-                {
-                    type:'appointment',
-                    product:'DERMATOLOGIA',
-                    doctor:'ADRIA CASTRO',
-                    cost:'50.00',
-                    sale:'80.00',
-                },
-                {
-                    type:'exam',
-                    product:'SANGUE',
-                    cost:'40.00',
-                    sale:'70.00',
-                },
-                {
-                    type:'exam',
-                    product:'SANGUE',
-                    cost:'40.00',
-                    sale:'70.00',
-                },
-                {
-                    type:'exam',
-                    product:'SANGUE',
-                    cost:'40.00',
-                    sale:'70.00',
-                },
-            ]
+            selected: undefined,
+            items: [],
         }),
 
         computed: {
-
             selectedClinic() {
                 return this.$store.getters.selectedClinic;
             },
         },
 
+        mounted () {
+            this.$store.dispatch('loadClinics');
+        },
+
         methods:{
 
-            save(){
-                //
+            load() {
+                this.items = this.$store.getters.clinics;
+                console.log(this.items)
+                /*
+                let val = this.$store.getters.clinics;
+                console.log(val)
+                let lista = []
+                for (const key in val.exams) {
+
+                    if(val.exams.length !== 0 ){
+                        lista.push(val.exams[key])
+                    }else{
+                        lista.push(val.specialities[key])
+                    }
+                }
+                return lista
+                 */
             }
         },
     }
