@@ -232,6 +232,9 @@
         <v-dialog fullscreen v-model="budgetToPrintDialog">
             <budget-to-print @close="budgetToPrintDialog = false" :budget="budgetToPrint"></budget-to-print>
         </v-dialog>
+        <v-flex class="hidden-screen-only">
+            <receipt :budgets="selectedBudget"></receipt>
+        </v-flex>
     </v-container>
 </template>
 
@@ -240,10 +243,12 @@
     import SelectPatientCard from "../SelectPatientCard";
     import SubmitButton from "../SubmitButton";
     import BudgetToPrint from "./BudgetToPrint";
+    import Receipt from "./Receipt";
 
     export default {
         name: "Cart",
         components: {
+            Receipt,
             SelectPatientCard,
             SubmitButton,
             BudgetToPrint
@@ -282,7 +287,6 @@
             },
             exames() {
                 // return this.$store.getters.selectedBudget.exams
-                console.log(this.$store.getters.getShoppingCartItemsByCategory.exams);
                 return this.$store.getters.getShoppingCartItemsByCategory.exams
             },
             consultas() {
@@ -460,7 +464,7 @@
                 this.paymentLoading = false
                 this.paymentSuccess = true
                 this.card = false
-                //}
+                window.print();
             },
             clearCart() {
                 this.$store.commit('clearShoppingCartItens')

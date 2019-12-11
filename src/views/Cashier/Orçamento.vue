@@ -1,16 +1,18 @@
 <template>
     <v-container fluid class=" fill-height">
         <v-layout row wrap class="justify-center">
-            <v-flex sm3 v-if="patient">
+            <v-flex sm3 v-if="patient" class="hidden-print-only">
                 <intakes-history></intakes-history>
             </v-flex>
-            <v-flex>
+            <v-flex class="hidden-print-only">
                 <procedures-search></procedures-search>
             </v-flex>
-            <v-flex sm3>
+            <v-flex sm3 class="hidden-print-only">
                 <cart></cart>
             </v-flex>
-
+            <v-flex class="hidden-screen-only">
+                <receipt></receipt>
+            </v-flex>
 
             <!--            <v-flex class="d-print-none d-md-none" xs12>-->
             <!--                <v-container>-->
@@ -332,6 +334,7 @@
             <!--                    </v-flex>-->
             <!--                </v-card>-->
             <!--            </v-flex>-->
+
             <v-dialog v-model="aviso">
                 <v-card dark color="red">
                     <v-card-title>Error</v-card-title>
@@ -353,6 +356,7 @@
     import ProceduresSearch from "../../components/cashier/ProceduresSearch";
     import Cart from "../../components/cashier/Cart";
     import IntakesHistory from "../../components/cashier/IntakesHistory";
+    import Receipt from "../../components/cashier/Receipt";
 
     export default {
         data: () => ({
@@ -378,6 +382,7 @@
             desconto: 0,
         }),
         components: {
+            Receipt,
             ProceduresSearch,
             Cart,
             IntakesHistory
