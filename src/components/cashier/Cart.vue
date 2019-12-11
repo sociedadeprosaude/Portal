@@ -432,8 +432,8 @@
                 return budget
             },
             saveBudget(budget) {
-                this.$store.commit('setSelectedBudget', budget)
-                // this.selectedBudget = Object.assign({}, budget)
+                this.$store.commit('setSelectedBudget',  Object.assign({}, budget))
+                //this.selectedBudget = Object.assign({}, budget)
                 this.$store.dispatch('addBudget', budget)
 
             },
