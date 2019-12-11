@@ -74,47 +74,23 @@
                                             </v-slide-group>
                                         </v-card-text>
                                         <v-card-text v-if="categorySelect === 'package'">
-                                            <v-card class="elevation-0 py-0" v-if="item.exames">
-                                                <v-card-title class="py-0 subtitle-1 font-weight-regular">Exames
-                                                </v-card-title>
-                                                <v-card-text>
-                                                    <v-slide-group show-arrows>
-                                                        <v-slide-item v-for="n in item.exames"
-                                                                      v-slot:default="{ active, toggle }">
-                                                            <v-btn class="mx-2 blue white--text"
-                                                                   depressed
-                                                                   rounded
-                                                            >
-                                                                {{ n.name }} | R${{n.preco}}
-                                                            </v-btn>
-                                                        </v-slide-item>
-                                                    </v-slide-group>
-                                                </v-card-text>
-                                            </v-card>
-                                            <v-card class="elevation-0 mt-0 py-0" v-if="item.consultas">
-                                                <v-card-title class="py-0 subtitle-1 font-weight-regular">Consultas
-                                                </v-card-title>
-                                                <v-card-text>
-                                                    <v-slide-group show-arrows>
-                                                        <v-slide-item v-for="n in item.consultas"
-                                                                      :key="n.id"
-                                                                      v-slot:default="{ active, toggle }">
-                                                            <v-btn class="mx-2 blue white--text"
-                                                                   depressed
-                                                                   rounded
-                                                            >
-                                                                {{ n.name }} | R${{n.preco}}
-                                                            </v-btn>
-                                                        </v-slide-item>
-                                                    </v-slide-group>
-                                                </v-card-text>
-                                            </v-card>
-                                            <div class="py-0 subtitle-1 font-weight-bold text-right">
-                                                Total R${{item.total}}
-                                                <v-btn class="ml-5" outlined rounded color="primary"
-                                                       @click="addProduct(item, item.total, item.custo)">Selecionar
+                                            <v-slide-group show-arrows>
+                                                <v-slide-item
+                                                        v-slot:default="{ active, toggle }"
+                                                >
+
+                                                <v-btn class="mx-2"
+                                                       :input-value="active"
+                                                       active-class="blue white--text"
+                                                       depressed
+                                                       rounded
+
+                                                       @click="selectBudget(item)"
+                                                >
+                                                    Selecionar
                                                 </v-btn>
-                                            </div>
+                                                </v-slide-item>
+                                            </v-slide-group>
                                         </v-card-text>
                                     </v-card>
                                 </v-flex>
@@ -153,12 +129,17 @@
             exams() {
                 return this.$store.getters.examsSelected;
             },
+            package(){
+              return this.$store.getters.bundles;
+            },
             items() {
                 switch (this.categorySelect) {
                     case 'exam':
                         return this.exams;
                     case 'appointment':
                         return this.specialties;
+                    case 'package':
+                        return  this.package;
                     default:
                         return []
                 }
@@ -167,6 +148,18 @@
         methods: {
             selectCategory(category) {
                 this.categorySelect = category
+            },
+            async selectBudget(budget) {
+                this.loading = true;
+                this.$store.commit('setSelectedBudget', budget)
+                for (let exam in budget.exams) {
+                    console.log('exams', budget.exams[exam])
+                    this.$store.commit('addShoppingCartItem', budget.exams[exam])
+                }
+                for (let spec in budget.specialties) {
+                    this.$store.commit('addShoppingCartItem', budget.specialties[spec])
+                }
+                this.loading = false
             },
             addProduct(product, selection, type) {
                 let holder = Object.assign({}, product);
@@ -179,7 +172,7 @@
                         break;
                     case 'exam':
                         delete holder.clinics;
-                        holder.clinic = selection;
+                        holder.clinic = selection.clinic;
                         holder.cost = selection.cost;
                         holder.price = selection.price;
                         break;
@@ -195,14 +188,13 @@
                 if (e.target.id === 'search') {
                     clearTimeout(self.typingTimer);
                     self.typingTimer = setTimeout(() => {
-                        // self.loading = true;
                         if (self.categorySelect === 'exam') {
                             self.$store.dispatch("loadSelectedExams", self.search).then(() => {
                             });
                         }
                         if (self.categorySelect === 'package') {
-                            console.log('pacotes aqui')
-                        }//funcao de pesquisar
+                            self.$store.dispatch("loadBundle");
+                        }
                     }, 1000);
                 }
             });
