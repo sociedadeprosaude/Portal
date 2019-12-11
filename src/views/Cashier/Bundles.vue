@@ -156,9 +156,9 @@
                                 <v-layout row wrap>
                                     <v-flex xs12 v-if="editedPackage.exams.length > 0">
                                         <p class="my-headline">Exames</p>
-                                        <v-card v-for="(item) in editedPackage.exams" class="ma-2" :key="item.product">
+                                        <v-card v-for="(item) in editedPackage.exams" class="ma-2" :key="item.name">
                                             <v-card-title class="py-2">
-                                                <span class="subtitle-1 font-weight-medium">{{item.product}}</span>
+                                                <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
                                                 <v-spacer></v-spacer>
                                                 <span class="subtitle-1 font-weight-light">
                                                 <v-btn small icon @click="removeExam(item)">
@@ -468,7 +468,7 @@
 
             addExam (clinic, product, type, price, cost) {
                 this.item = {
-                    product: product,
+                    name: product,
                     clinic: clinic,
                     type: type,
                     price:  parseFloat(price),
@@ -478,18 +478,18 @@
                 if (this.editedPackage.exams){
                     for (let key in this.editedPackage.exams) {
 
-                        if (this.item.product === this.editedPackage.exams[key].product &&
+                        if (this.item.name === this.editedPackage.exams[key].name &&
                             this.item.clinic === this.editedPackage.exams[key].clinic){
 
                             this.action = true;
                             this.editedPackage.exams.splice(key, 1);
                         }
 
-                        if (this.item.product === this.editedPackage.exams[key].product &&
+                        if (this.item.name === this.editedPackage.exams[key].name &&
                             this.item.clinic !== this.editedPackage.exams[key].clinic ){
 
                             this.action = true;
-                            this.editedPackage.exams[key].product = this.item.product;
+                            this.editedPackage.exams[key].name= this.item.name;
                             this.editedPackage.exams[key].clinic = this.item.clinic;
                             this.editedPackage.exams[key].price = this.item.price;
                             this.editedPackage.exams[key].cost = this.item.cost;
@@ -552,7 +552,7 @@
                 this.cost -= exam.cost;
 
                 for (let i in this.editedPackage.exams) {
-                    if (this.editedPackage.exams[i].product === exam.product
+                    if (this.editedPackage.exams[i].name === exam.name
                         && this.editedPackage.exams[i].clinic === exam.clinic){
 
                         this.editedPackage.exams.splice(i,1);
@@ -590,7 +590,7 @@
                     this.searchPackage = false;
                     this.registerPackage= true;
 
-                    
+
                     //this.$store.dispatch('selectedBundle', this.searchData);
                     this.editedPackage = Object.assign({}, this.searchData);
                     this.editedPackage.name = data;
