@@ -19,7 +19,20 @@
                                         chips
                                         color="pink"
                                         clearable
-                                ></v-select>
+                                >
+                                    <template v-slot:selection="data">
+                                        <v-chip
+                                                :key="JSON.stringify(data.item)"
+                                                :selected="data.selected"
+                                                :disabled="data.disabled"
+                                                class="v-chip--select-multi"
+                                                @click.stop="data.parent.selectedIndex = data.index"
+                                                @input="data.parent.selectItem(data.item)"
+                                                text-color="white"
+                                                color="info"
+                                        >{{ data.item.name }}</v-chip>
+                                    </template>
+                                </v-select>
                             </v-flex>
                             <v-spacer></v-spacer>
                             <v-flex xs12 sm6>
@@ -37,7 +50,20 @@
                                         chips
                                         color="purple"
                                         clearable
-                                ></v-select>
+                                >
+                                    <template v-slot:selection="data">
+                                        <v-chip
+                                                :key="JSON.stringify(data.item)"
+                                                :selected="data.selected"
+                                                :disabled="data.disabled"
+                                                class="v-chip--select-multi"
+                                                @click.stop="data.parent.selectedIndex = data.index"
+                                                @input="data.parent.selectItem(data.item)"
+                                                text-color="white"
+                                                color="info"
+                                        >{{ data.item.name }}</v-chip>
+                                    </template>
+                                </v-select>
                             </v-flex>
                             <v-flex xs12 sm12>
                                 <v-select
@@ -53,7 +79,20 @@
                                         chips
                                         color="purple"
                                         clearable
-                                ></v-select>
+                                >
+                                    <template v-slot:selection="data">
+                                        <v-chip
+                                                :key="JSON.stringify(data.item)"
+                                                :selected="data.selected"
+                                                :disabled="data.disabled"
+                                                class="v-chip--select-multi"
+                                                @click.stop="data.parent.selectedIndex = data.index"
+                                                @input="data.parent.selectItem(data.item)"
+                                                text-color="white"
+                                                color="info"
+                                        >{{ data.item.name }}</v-chip>
+                                    </template>
+                                </v-select>
                             </v-flex>
                         </v-layout>
                     </v-container>
@@ -148,7 +187,20 @@
                                         chips
                                         color="blue"
                                         clearable
-                                ></v-select>
+                                >
+                                    <template v-slot:selection="data">
+                                        <v-chip
+                                                :key="JSON.stringify(data.item)"
+                                                :selected="data.selected"
+                                                :disabled="data.disabled"
+                                                class="v-chip--select-multi"
+                                                @click.stop="data.parent.selectedIndex = data.index"
+                                                @input="data.parent.selectItem(data.item)"
+                                                text-color="white"
+                                                color="info"
+                                        >{{ data.item.text }}</v-chip>
+                                    </template>
+                                </v-select>
                             </v-flex>
                         </v-layout>
                     </v-container>
@@ -172,7 +224,20 @@
                                         chips
                                         color="green"
                                         clearable
-                                ></v-select>
+                                >
+                                    <template v-slot:selection="data">
+                                        <v-chip
+                                                :key="JSON.stringify(data.item)"
+                                                :selected="data.selected"
+                                                :disabled="data.disabled"
+                                                class="v-chip--select-multi"
+                                                @click.stop="data.parent.selectedIndex = data.index"
+                                                @input="data.parent.selectItem(data.item)"
+                                                text-color="white"
+                                                color="info"
+                                        >{{ data.item.text }}</v-chip>
+                                    </template>
+                                </v-select>
                             </v-flex>
                             <v-spacer></v-spacer>
                             <v-flex xs12 sm6 md6>

@@ -211,7 +211,7 @@
                                         </v-card-text>
                                         <v-divider></v-divider>
                                         <v-card-actions>
-                                            <v-btn color="error" @click="close">Cancelar</v-btn>
+                                            <v-btn rounded color="error" @click="close">Cancelar</v-btn>
                                             <v-spacer></v-spacer>
                                             <submit-button
                                                     color="success"
@@ -220,8 +220,7 @@
                                                     text="Salvar"
                                                     :loading="loading"
                                                     :success="success"
-                                            >
-                                            </submit-button>
+                                            ></submit-button>
                                         </v-card-actions>
                                     </v-card>
                                 </v-dialog>

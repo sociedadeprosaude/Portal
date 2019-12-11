@@ -20,7 +20,20 @@
                                         chips
                                         color="pink"
                                         clearable
-                                ></v-select>
+                                >
+                                    <template v-slot:selection="data">
+                                        <v-chip
+                                                :key="JSON.stringify(data.item)"
+                                                :selected="data.selected"
+                                                :disabled="data.disabled"
+                                                class="v-chip--select-multi"
+                                                @click.stop="data.parent.selectedIndex = data.index"
+                                                @input="data.parent.selectItem(data.item)"
+                                                text-color="white"
+                                                color="info"
+                                        >{{ data.item.name }}</v-chip>
+                                    </template>
+                                </v-select>
                             </v-flex>
                             <v-spacer></v-spacer>
                             <v-flex xs12 sm4>
@@ -38,7 +51,20 @@
                                         chips
                                         color="purple"
                                         clearable
-                                ></v-select>
+                                >
+                                    <template v-slot:selection="data">
+                                        <v-chip
+                                                :key="JSON.stringify(data.item)"
+                                                :selected="data.selected"
+                                                :disabled="data.disabled"
+                                                class="v-chip--select-multi"
+                                                @click.stop="data.parent.selectedIndex = data.index"
+                                                @input="data.parent.selectItem(data.item)"
+                                                text-color="white"
+                                                color="info"
+                                        >{{ data.item.name }}</v-chip>
+                                    </template>
+                                </v-select>
                             </v-flex>
                             <v-flex xs12 sm4>
                                 <v-menu
@@ -63,6 +89,7 @@
                                                 color="error"
                                                 clearable
                                                 rounded
+                                                outlined
                                                 filled
                                                 readonly
                                                 v-on="on"
@@ -404,6 +431,7 @@
                 var dateMoment = moment(date);
                 return this.semanaOptions[dateMoment.day()];
             },
+
             save(date) {
                 this.$refs.menu.save(date)
             },

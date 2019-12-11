@@ -19,7 +19,7 @@
                                 </v-btn>
                                 <v-spacer></v-spacer>
                                 <v-btn rounded color="primary" dark class="mb-2 mx-2" @click="addSpecialtyDialog()">
-                                    <v-icon>class</v-icon>
+                                    <v-icon>add</v-icon><v-icon>school</v-icon>
                                 </v-btn>
                                 <v-btn rounded color="primary" dark class="mb-2" @click="addDoctor()">
                                     ADICIONAR MEDICO

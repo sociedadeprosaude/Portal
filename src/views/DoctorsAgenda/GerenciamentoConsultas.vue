@@ -14,10 +14,25 @@
                                     item-text="name"
                                     return-object
                                     label="Especialidade"
-                                    outline
+                                    outlined
+                                    rounded
+                                    filled
                                     chips
                                     color="blue"
-                            ></v-select>
+                            >
+                                <template v-slot:selection="data">
+                                    <v-chip
+                                            :key="JSON.stringify(data.item)"
+                                            :selected="data.selected"
+                                            :disabled="data.disabled"
+                                            class="v-chip--select-multi"
+                                            @click.stop="data.parent.selectedIndex = data.index"
+                                            @input="data.parent.selectItem(data.item)"
+                                            text-color="white"
+                                            color="info"
+                                    >{{ data.item.name }}</v-chip>
+                                </template>
+                            </v-select>
                         </v-flex>
                         <v-flex xs12 sm4>
                             <v-menu
@@ -35,7 +50,10 @@
                                             label="Data"
                                             prepend-icon="event"
                                             readonly
-                                            outline
+                                            outlined
+                                            rounded
+                                            filled
+                                            chips
                                             clearable
                                             hint="Selecione uma data para pesquisar"
                                             persistent-hint
