@@ -2,7 +2,7 @@
     <v-container fluid class=" fill-height">
         <v-layout row wrap class="justify-center">
             <v-flex sm3 v-if="patient" class="hidden-print-only">
-                <intakes-history :user="patient"></intakes-history>
+                <intakes-history></intakes-history>
             </v-flex>
             <v-flex class="hidden-print-only">
                 <procedures-search></procedures-search>

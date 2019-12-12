@@ -242,24 +242,18 @@ const actions = {
         return budgets
     },
     async getIntakeDetails(context, intake) {
-        let id= intake.id.toString();
-        let examsSnap = await firebase.firestore().collection('intakes').doc(id).collection('exams').get()
-        let consultationsSnap = await firebase.firestore().collection('intakes').doc(id).collection('specialties').get()
+        let examsSnap = await firebase.firestore().collection('intakes').doc(intake.id).collection('exams').get()
+        let consultationsSnap = await firebase.firestore().collection('intakes').doc(intake.id).collection('consultations').get()
         let exams = []
         let consultations = []
         examsSnap.forEach((e) => {
-            console.log('exams');
             exams.push(e.data())
         })
         consultationsSnap.forEach((c) => {
-            console.log('consultas');
             consultations.push(c.data())
         })
         intake.exams = exams
         intake.consultations = consultations
-        console.log('intake:', intake);
-        console.log('exams', intake.exams);
-        console.log('consultas', intake.consultations);
         return intake
     },
     //    async addSale({commit},payload){
