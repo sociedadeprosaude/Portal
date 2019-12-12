@@ -363,7 +363,6 @@
                         }
                     }
 
-                    console.log('product: ', products);
                     let p = products.filter(item => {
                         const text = item.name.toLowerCase();
                         return text.indexOf(search) >-1;

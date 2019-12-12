@@ -44,9 +44,9 @@ const actions = {
                 });
             }
 
-            console.log('#exams', exams);
+            //console.log('#exams', exams);
             commit('setClinics', clinics);
-            console.log(clinics);
+            //console.log(clinics);
             return clinics
         } catch (e) {
             throw e
@@ -187,7 +187,6 @@ const actions = {
                     });
                 });
 
-                console.log("carregando");
                 console.log(clinics);
                 commit('setClinics', clinics);
 

@@ -29,12 +29,12 @@ const options = {
     'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',
     'https://unpkg.com/kidlat-css/css/kidlat.css'
   ]
-}
+};
 
 Vue.use(VueHtmlToPaper, options);
 
-Vue.use(Vuetify)
-Vue.use(constants)
+Vue.use(Vuetify);
+Vue.use(constants);
 
 Vue.use(VCurrencyField, {
   locale: 'pt-BR',
@@ -43,11 +43,11 @@ Vue.use(VCurrencyField, {
   min: null,
   max: null,
   defaultValue: 0
-})
+});
 
 // Moment.js
-window.moment = require('moment')
-window.moment.locale('pt-br')
+window.moment = require('moment');
+window.moment.locale('pt-br');
 
 // if (window.location.href.includes('localhost')) {
 //   process.env.NODE_ENV = 'development'
@@ -58,15 +58,15 @@ window.moment.locale('pt-br')
 // } else {
 // }
 
-const token = localStorage.getItem('token')
+const token = localStorage.getItem('token');
 if (token) {
   axios.defaults.headers.common['token'] = token
 }
 
-Vue.filter('dateFilter', DateFilter)
-Vue.filter('moneyFilter', MoneyFilter)
+Vue.filter('dateFilter', DateFilter);
+Vue.filter('moneyFilter', MoneyFilter);
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 const vuetifyOptions = {
   iconfont: 'md',
@@ -86,7 +86,7 @@ const vuetifyOptions = {
       },
     },
   },
-}
+};
 
 new Vue({
   router,
@@ -94,7 +94,7 @@ new Vue({
   vuetify: new Vuetify(vuetifyOptions),
   render: h => h(App),
   created() {
-    firebase.initializeApp(constants.FIREBASE_CONFIG)
+    firebase.initializeApp(constants.FIREBASE_CONFIG);
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         this.$router.push('/')
@@ -103,4 +103,4 @@ new Vue({
       }
     })
   },
-}).$mount('#app')
+}).$mount('#app');
