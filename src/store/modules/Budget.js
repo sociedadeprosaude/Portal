@@ -218,16 +218,16 @@ const actions = {
         let intakes = []
         for (let snap in intakesSnap) {
             let doc = intakesSnap[snap]
-            let exams = []
-            let examSnap = await doc.ref.collection('exams').get()
-            examSnap.forEach((e) => {
-                exams.push(e.data())
-            })
-            let consultationsSnap = await doc.ref.collection('consultations').get()
-            let consultations = []
-            consultationsSnap.forEach((e) => {
-                consultations.push(e.data())
-            })
+            // let exams = []
+            // let examSnap = await doc.ref.collection('exams').get()
+            // examSnap.forEach((e) => {
+            //     exams.push(e.data())
+            // })
+            // let consultationsSnap = await doc.ref.collection('consultations').get()
+            // let consultations = []
+            // consultationsSnap.forEach((e) => {
+            //     consultations.push(e.data())
+            // })
             intakes.push(doc.data())
         }
         return intakes
@@ -240,6 +240,21 @@ const actions = {
             budgets.push(doc.data())
         })
         return budgets
+    },
+    async getIntakeDetails(context, intake) {
+        let examsSnap = await firebase.firestore().collection('intakes').doc(intake.id).collection('exams').get()
+        let consultationsSnap = await firebase.firestore().collection('intakes').doc(intake.id).collection('consultations').get()
+        let exams = []
+        let consultations = []
+        examsSnap.forEach((e) => {
+            exams.push(e.data())
+        })
+        consultationsSnap.forEach((c) => {
+            consultations.push(c.data())
+        })
+        intake.exams = exams
+        intake.consultations = consultations
+        return intake
     },
     //    async addSale({commit},payload){
     //
