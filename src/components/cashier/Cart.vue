@@ -461,7 +461,7 @@
                 if (!this.selectedBudget) {
                     this.saveBudget(this.generateBudget())
                 }
-                await this.$store.dispatch('addIntake', this.selectedBudget,)
+                await this.$store.dispatch('addIntake', this.selectedBudget)
                 this.updateBudgetsIntakes()
                 this.paymentLoading = false
                 this.paymentSuccess = true

@@ -25,7 +25,8 @@
                 </v-flex>
                 <div v-if="option === 'intakes'">
                     <v-flex xs12 v-for="intake in intakes" :key="intake.id">
-                        <v-card :class="['my-2 pa-2', diffByNow(intake) < 30000 ? 'green' : '']" @click="receipt(intake)">
+                        <v-card :class="['my-2 pa-2', diffByNow(intake) < 30000 ? 'green' : '']"
+                                @click="receipt(intake)">
                             <v-layout row wrap>
                                 <v-flex xs12 class="text-left">
                             <span class="my-sub-headline">
@@ -61,7 +62,8 @@
                             </span>
                                 </v-flex>
                                 <v-flex xs2>
-                                    <v-progress-circular indeterminate v-if="loading" class="primary--text"></v-progress-circular>
+                                    <v-progress-circular indeterminate v-if="loading"
+                                                         class="primary--text"></v-progress-circular>
                                 </v-flex>
                                 <v-flex xs12 class="text-left">
                             <span class="my-sub-headline">
@@ -84,15 +86,16 @@
                 </div>
             </v-layout>
         </v-card>
-        <v-flex v-if="selectedIntake" class="hidden-screen-only">
-            <receipt id="receipt-to-print" :budgets=selectedIntake></receipt>
-        </v-flex>
+        <v-dialog v-model="receiptDialog" v-if="selectedIntake">
+            <receipt :budget=selectedIntake></receipt>
+        </v-dialog>
     </v-container>
 </template>
 
 <script>
 
     import Receipt from "./Receipt";
+
     export default {
         name: "IntakesHistory",
         components: {Receipt},
@@ -100,9 +103,12 @@
             return {
                 option: 'budgets',
                 loading: false,
-                recep:false,
-                selectedIntake: undefined
+                selectedIntake: undefined,
+                receiptDialog: false
             }
+        },
+        mounted() {
+            console.log('selected', this.selectedIntake)
         },
         methods: {
             async selectBudget(budget) {
@@ -118,7 +124,6 @@
                     this.$store.commit('addShoppingCartItem', budget.specialties[spec])
                 }
                 this.loading = false
-                console.log('budgets:', budget)
                 // this.$store.commit('setSelectedPatient', budget.user)
             },
             diffByNow(product) {
@@ -126,10 +131,9 @@
                 let date = moment(product.date, 'YYYY-MM-DD HH:mm:ss')
                 return now.valueOf() - date.valueOf()
             },
-            async receipt(intake){
-                let intakeWithDetails = await this.$store.dispatch('getIntakeDetails', intake)
-                console.log('intake: ',intakeWithDetails);
-                window.print();
+            async receipt(intake) {
+                this.selectedIntake = await this.$store.dispatch('getIntakeDetails', intake)
+                this.receiptDialog = true
             }
         },
         computed: {

@@ -372,7 +372,6 @@
                 this.loading = false
             },
             handleEnter(e) {
-                console.log('aaa')
                 if (e.key === 'Enter') {
                     this.searchPatient()
                 }

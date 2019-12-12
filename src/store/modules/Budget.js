@@ -104,7 +104,6 @@ const actions = {
     },
     async addIntake(context, payload) {
         let originalPayload = Object.assign({}, payload);
-        console.log('payload total', payload);
         functions.removeUndefineds(payload);
         // console.log(payload)
         // return
@@ -145,7 +144,6 @@ const actions = {
             }
         }
         if (payload.user) {
-            console.log('adicionar no usuario')
             // await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('user').doc(user.cpf).set(user)
             context.dispatch('addIntakeToUser', originalPayload)
         }
@@ -242,18 +240,20 @@ const actions = {
         return budgets
     },
     async getIntakeDetails(context, intake) {
-        let examsSnap = await firebase.firestore().collection('intakes').doc(intake.id).collection('exams').get()
-        let consultationsSnap = await firebase.firestore().collection('intakes').doc(intake.id).collection('consultations').get()
+        intake = await firebase.firestore().collection('intakes').doc(intake.id.toString()).get()
+        intake = intake.data()
+        let examsSnap = await firebase.firestore().collection('intakes').doc(intake.id.toString()).collection('exams').get()
+        let specialtiesSnap = await firebase.firestore().collection('intakes').doc(intake.id.toString()).collection('specialties').get()
         let exams = []
-        let consultations = []
+        let specialties = []
         examsSnap.forEach((e) => {
             exams.push(e.data())
         })
-        consultationsSnap.forEach((c) => {
-            consultations.push(c.data())
+        specialtiesSnap.forEach((c) => {
+            specialties.push(c.data())
         })
         intake.exams = exams
-        intake.consultations = consultations
+        intake.specialties = specialties
         return intake
     },
     //    async addSale({commit},payload){
