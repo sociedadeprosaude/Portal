@@ -84,13 +84,11 @@ const actions = {
     },
 
     async removeExamFromClinic({commit}, payload){//apagar exames da clinica e clinica do exames
-        /*
         try {
-            firebase.firestore().collection('clinics').doc(payload.idConsultation).delete()
+            firebase.firestore().collection('clinics/' + payload.clinic.name + '/exams').doc(payload.product).delete();
         } catch (e) {
             throw e
         }
-         */
     },
 
     addAppointment ({commit}, payload) {

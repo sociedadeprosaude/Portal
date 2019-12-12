@@ -17,6 +17,7 @@
                                 hide-details
                         ></v-text-field>
                     </v-flex>
+
                     <v-flex xs12>
                         <v-select
                                 prepend-icon="edit"
@@ -31,203 +32,62 @@
                     </v-flex>
 
                     <v-layout v-if="option === 'Consultas' " align-center justify-center wrap>
-                        <strong>Colocar Form de Consultas AQUI</strong>
-                        <!--
-                        <v-card-text>
-                            <v-container grid-list-md>
-                                <v-layout align-center justify-center wrap>
-                                    <v-flex xs12>
-                                        <v-select
-                                                prepend-icon="assignment"
-                                                :items="consultationsOptions"
-                                                label="Consultas"
-                                                outlined
-                                                v-model="consultations"
-                                                clearable
-                                                chips
-                                                hide-details
-                                        ></v-select>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                        <v-select
-                                                multiple
-                                                prepend-icon="assignment_ind"
-                                                :items="doctorsOptions"
-                                                label="Médicos"
-                                                outlined
-                                                v-model="doctors"
-                                                clearable
-                                                chips
-                                                hide-details
-                                        ></v-select>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                        <v-select
-                                                prepend-icon="payment"
-                                                :items="paymentOptions"
-                                                label="Forma de Pagamento"
-                                                outlined
-                                                v-model="payment"
-                                                clearable
-                                                chips
-                                                hide-details
-                                        ></v-select>
-                                    </v-flex>
-                                    <v-flex xs6>
-                                        <v-text-field
-                                                prepend-icon="attach_money"
-                                                outlined
-                                                clearable
-                                                label="Preço de Custo"
-                                                placeholder="ex.: 50.00"
-                                                v-mask="['###.##' , '##.##', '####.##']"
-                                                v-model="cost"
-                                                prefix="R$"
-                                                hide-details
-                                        ></v-text-field>
-                                    </v-flex>
-                                    <v-flex xs6>
-                                        <v-text-field
-                                                prepend-icon="monetization_on"
-                                                outlined
-                                                clearable
-                                                label="Preço de Venda"
-                                                placeholder="ex.: 80.00"
-                                                v-mask="['###.##' , '##.##', '####.##']"
-                                                v-model="sale"
-                                                prefix="R$"
-                                                hide-details
-                                        ></v-text-field>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                        <v-textarea
-                                                outlined
-                                                v-model="obs"
-                                                label="Observação:"
-                                                counter
-                                                clearable
-                                                maxlength="280"
-                                                full-width
-                                                single-line
-                                                hide-details
-                                        ></v-textarea>
-                                    </v-flex>
-                                </v-layout>
-                            </v-container>
-                        </v-card-text>
-                        <v-divider></v-divider>
-                        <v-card-actions>
-                            <v-layout align-center justify-center>
-                                <v-btn
-                                        color="error"
-                                        @click="clearConsultation()"
+                        <strong>Consultas Cadastradas da Clinica para EDIÇÂO</strong>
+                            <v-flex>
+                                <v-select
+                                        :items="allSpecialties"
+                                        item-text="name"
+                                        item-value="name"
+                                        return-object
+                                        v-model="consultation"
+                                        chips
+                                        outlined
                                 >
-                                    <v-icon>
-                                        delete
-                                    </v-icon>
-                                    APAGAR
-                                </v-btn>
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                        @click="editConsultation()"
-                                        color="warning"
-                                >
-                                    <v-icon>
-                                        edit
-                                    </v-icon>
-                                    EDITAR
-                                </v-btn>
-                            </v-layout>
-                        </v-card-actions>
-                        -->
+                                    <template v-slot:selection="data">
+                                        <v-chip
+                                                :key="JSON.stringify(data.item)"
+                                                :selected="data.selected"
+                                                :disabled="data.disabled"
+                                                class="v-chip--select-multi"
+                                                @click.stop="data.parent.selectedIndex = data.index"
+                                                @input="data.parent.selectItem(data.item)"
+                                                text-color="white"
+                                                color="info"
+                                        >{{ data.item }}</v-chip>
+                                    </template>
+                                </v-select>
+                            </v-flex>
+                        {{consultation.doctors}}
                     </v-layout>
 
                     <v-layout v-else-if="option === 'Exames' " align-center justify-center wrap>
-                        <strong>Colocar Form de Exames AQUI</strong>
-                        <!--
-                        <v-card-text>
-                            <v-container grid-list-md>
-                                <v-layout align-center justify-center wrap>
-                                    <v-flex>
-                                        <v-combobox
-                                                multiple
-                                                prepend-icon="poll"
-                                                :items="listExam"
-                                                item-text="nome"
-                                                label="Exames"
-                                                outlined
-                                                v-model="exams"
-                                                clearable
-                                                chips
-                                                hide-details
-                                        ></v-combobox>
-                                    </v-flex>
-                                    <v-flex xs6>
-                                        <v-text-field
-                                                prepend-icon="attach_money"
-                                                outlined
-                                                clearable
-                                                label="Preço de Custo"
-                                                placeholder="ex.: 50.00"
-                                                v-mask="['###.##' , '##.##', '####.##']"
-                                                v-model="cost"
-                                                prefix="R$"
-                                                hide-details
-                                        ></v-text-field>
-                                    </v-flex>
-                                    <v-flex xs6>
-                                        <v-text-field
-                                                prepend-icon="monetization_on"
-                                                outlined
-                                                clearable
-                                                label="Preço de Venda"
-                                                placeholder="ex.: 80.00"
-                                                v-mask="['###.##' , '##.##', '####.##']"
-                                                v-model="sale"
-                                                prefix="R$"
-                                                hide-details
-                                        ></v-text-field>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                        <v-textarea
-                                                outlined
-                                                v-model="obs"
-                                                label="Observação:"
-                                                counter
-                                                clearable
-                                                maxlength="280"
-                                                full-width
-                                                single-line
-                                                hide-details
-                                        ></v-textarea>
-                                    </v-flex>
-                                </v-layout>
-                            </v-container>
-                        </v-card-text>
-                        <v-divider></v-divider>
-                        <v-card-actions>
-                            <v-layout align-center justify-center>
-                                <v-btn
-                                        color="error"
-                                        @click="clearExam()"
-                                >
-                                    <v-icon>
-                                        delete
-                                    </v-icon>
-                                    APAGAR
-                                </v-btn>
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                        @click="editExam()"
-                                        color="warning"
-                                >
-                                    <v-icon>
-                                        edit
-                                    </v-icon>
-                                    EDITAR
-                                </v-btn>
-                            </v-layout>
-                        </v-card-actions>
+                        <strong>Exames Cadastrados da Clinica para EDIÇÂO</strong>
+                        <v-flex>
+                            <v-select
+                                    :items="allExams"
+                                    item-text="name"
+                                    item-value="name"
+                                    return-object
+                                    v-model="exam"
+                                    chips
+                                    outlined
+                            >
+                                <template v-slot:selection="data">
+                                    <v-chip
+                                            :key="JSON.stringify(data.item)"
+                                            :selected="data.selected"
+                                            :disabled="data.disabled"
+                                            class="v-chip--select-multi"
+                                            @click.stop="data.parent.selectedIndex = data.index"
+                                            @input="data.parent.selectItem(data.item)"
+                                            text-color="white"
+                                            color="info"
+                                    >{{ data.item.name }} | R$  {{ data.item.cost }} | R$ {{ data.item.price }}</v-chip>
+                                </template>
+                            </v-select>
+                        </v-flex>
+                        {{exam}}
+                        <v-btn @click="pegar">pegar</v-btn>
                     </v-layout>
 
                     <v-layout v-else align-center justify-center wrap>
@@ -235,18 +95,15 @@
                             <v-container grid-list-md>
                                 <v-layout align-center justify-center wrap>
                                     <v-flex>
-                                        <v-alert type="warning">
+                                        <v-alert type="warning" outlined text>
                                             Selecione uma das Opções acima para
                                             <strong>EDITAR</strong>
-                                            ou
-                                            <strong>DELATAR</strong>
                                             Consultas ou Exames.
                                         </v-alert>
                                     </v-flex>
                                 </v-layout>
                             </v-container>
                         </v-card-text>
-                        -->
                     </v-layout>
 
                 </v-layout>
@@ -260,7 +117,9 @@
     export default {
         directives: {mask},
         data: () => ({
-            option:'',
+            exam: undefined,
+            consultation: undefined,
+            option: undefined,
             options: [
                 'Consultas',
                 'Exames'
@@ -270,10 +129,46 @@
             selectedClinic() {
                 return this.$store.getters.selectedClinic;
             },
+
+            listando () {
+                let val = this.$store.getters.clinics.filter((a) => {
+                    return a.name === this.selectedClinic.name;
+                });
+                return val
+                //return this.$store.getters.clinics
+            },
+
+            allExams () {
+
+                let clinic = this.listando[0];
+                let exams = [];
+
+                for (let i in clinic.exams){
+                    exams.push({
+                        ...clinic.exams[i],
+                    });
+                }
+                console.log('EXAMES::',exams)
+                return exams;
+            },
+
+            allSpecialties () {
+
+                let clinic = this.listando[0];
+                let specialties = [];
+
+                for (let i in clinic.specialties){
+                    specialties.push({
+                        ...clinic.specialties[i],
+                    });
+                }
+                console.log('DOCTORS:',specialties)
+                return specialties
+            },
         },
 
-        mounted() {
-            //
+        mounted () {
+            this.$store.dispatch('loadClinics');
         },
 
         watch: {
@@ -281,7 +176,13 @@
         },
 
         methods:{
-            //
+            pegar(){
+                let val = this.exam;
+                console.log(val)
+                console.log(val.name)
+                console.log(val.cost)
+                console.log(val.price)
+            }
         }
     }
 </script>
