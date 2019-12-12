@@ -17,42 +17,12 @@
                         ></v-text-field>
                     </v-flex>
 
-                    <v-layout row wrap class="align-center justify-center">
-                        <strong>Prototype Edit</strong>
-                        <v-flex>
-                            <v-select
-                                    :items="allExams"
-                                    item-text="name"
-                                    item-value="name"
-                                    return-object
-                                    v-model="options"
-                                    chips
-                                    outlined
-                            >
-                                <template v-slot:selection="data">
-                                    <v-chip
-                                            :key="JSON.stringify(data.item)"
-                                            :selected="data.selected"
-                                            :disabled="data.disabled"
-                                            class="v-chip--select-multi"
-                                            @click.stop="data.parent.selectedIndex = data.index"
-                                            @input="data.parent.selectItem(data.item)"
-                                            text-color="white"
-                                            color="info"
-                                    >{{ data.item }}</v-chip>
-                                </template>
-                            </v-select>
-                        </v-flex>
-                    </v-layout>
-                    <!--
-                    {{options}}
-                    {{options.doctors}}
-                    -->
-                    <v-card-text>
+                    <v-card-text v-if=" allExams.length !== 0">
+                        <strong>EXAMES</strong>
                         <v-list-item v-for="(item,index) in allExams" :key="index">
                             <v-chip color="red" text-color="white">
                                 <v-icon>poll</v-icon>:<strong>{{item.name}} | {{item.cost}} | R$ {{item.price}}</strong>
-                                <v-btn class="ml-1" small icon @click="preprocess(index)">
+                                <v-btn class="ml-1" small icon @click="preprocessExam(index)">
                                     <v-icon>cancel</v-icon>
                                 </v-btn>
                             </v-chip>
@@ -61,10 +31,16 @@
 
                     <v-dialog v-model="dialog" max-width="355">
                         <v-card>
-                            <v-card-title class="headline">Deletar o Item Selecionado ?</v-card-title>
+                            <v-card-title class="headline grey lighten-2" primary-title>
+                                <span class="headline">Deletar o Item Selecionado ?</span>
+                            </v-card-title>
                             <v-divider></v-divider>
                             <v-card-text>
-                                <strong>{{product}}</strong>
+                                <strong>
+                                    Exame: {{product}}<br>
+                                    Preço-Custo: R$ {{cost}}<br>
+                                    Preço-Venda: R$ {{price}}
+                                </strong>
                             </v-card-text>
                             <v-divider></v-divider>
                             <v-card-actions>
@@ -72,43 +48,53 @@
                                     NÃO
                                 </v-btn>
                                 <v-spacer></v-spacer>
-                                <v-btn color="success" rounded @click="removeProduct">
+                                <v-btn color="success" rounded @click="removeFromE">
                                     SIM
                                 </v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
-                    <!--
-                    <v-list v-if=" allExams.length !== 0">
-                        <v-subheader><strong>EXAMES</strong></v-subheader>
-                        <v-list-item-group v-model="item" color="primary">
-                            <v-list-item v-for="(item, i) in allExams" :key="i">
-                                <v-list-item-content>
-                                    <v-list-item-title>
-                                        <v-chip color="info" text-color="white">
-                                            <v-icon>poll</v-icon>:<strong>{{item.name}} | R$ {{item.cost}} | R$ {{item.price}}</strong>
-                                        </v-chip>
-                                    </v-list-item-title>
-                                </v-list-item-content>
-                            </v-list-item>
-                        </v-list-item-group>
-                    </v-list>
 
-                    <v-list v-if=" allSpecialties.length !== 0">
-                        <v-subheader><strong>CONSULTAS</strong></v-subheader>
-                        <v-list-item-group v-model="item" color="primary">
-                            <v-list-item v-for="(item, i) in allSpecialties" :key="i">
-                                <v-list-item-content>
-                                    <v-list-item-title>
-                                        <v-chip color="info" text-color="white">
-                                            <v-icon>assignment</v-icon>:<strong>{{item.name}} | {{item.doctors.name}}nome do medico | R$ {{item.doctors.cost}} | R$ {{item.doctors.price}}</strong>
-                                        </v-chip>
-                                    </v-list-item-title>
-                                </v-list-item-content>
-                            </v-list-item>
-                        </v-list-item-group>
-                    </v-list>
-                    -->
+
+                    <v-card-text v-if=" allSpecialties.length !== 0">
+                        <strong>CONSULTAS</strong>
+                        <v-list-item v-for="(item,index) in allSpecialties" :key="index">
+                            <v-chip color="red" text-color="white">
+                                <v-icon>assignment</v-icon>:<strong>{{item.name}} |{{item.specialtie}} | R${{item.cost}} | R$ {{item.price}}</strong>
+                                <v-btn class="ml-1" small icon @click="preprocessSpec(index)">
+                                    <v-icon>cancel</v-icon>
+                                </v-btn>
+                            </v-chip>
+                        </v-list-item>
+                    </v-card-text>
+
+                    <v-dialog v-model="dialog2" max-width="355">
+                        <v-card>
+                            <v-card-title class="headline grey lighten-2" primary-title>
+                                <span class="headline">Deletar o Item Selecionado ?</span>
+                            </v-card-title>
+                            <v-divider></v-divider>
+                            <v-card-text>
+                                <!--
+                                <strong>
+                                    Exame: {{product}}<br>
+                                    Preço-Custo: R$ {{cost}}<br>
+                                    Preço-Venda: R$ {{price}}
+                                </strong>
+                                -->
+                            </v-card-text>
+                            <v-divider></v-divider>
+                            <v-card-actions>
+                                <v-btn color="error" rounded @click="dialog2 = false">
+                                    NÃO
+                                </v-btn>
+                                <v-spacer></v-spacer>
+                                <v-btn color="success" rounded @click="removeFromS">
+                                    SIM
+                                </v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
 
                 </v-layout>
             </v-container>
@@ -120,8 +106,11 @@
     export default {
         data: () => ({
             dialog: false,
-            item: undefined,
+            dialog2: false,
             product: undefined,
+            doctor: undefined,
+            cost: undefined,
+            price: undefined,
             options: undefined,
         }),
 
@@ -172,11 +161,31 @@
         },
 
         methods:{
-            preprocess(index){
+            preprocessExam(index){
                 this.product = this.allExams[index].name;
+                this.cost = this.allExams[index].cost;
+                this.price = this.allExams[index].price;
                 this.dialog = true
             },
-            removeProduct(){
+            removeFromE(){
+                let info = {
+                    product: this.product,
+                    clinic: this.selectedClinic
+                }
+                console.log(info)
+                this.$store.dispatch('removeExamFromClinic', info)
+                this.$store.dispatch('removeClinicFromExam', info)
+                this.dialog = false
+                this.$store.dispatch('loadClinics');
+            },
+            preprocessSpec(index){
+                this.specialtie = this.allSpecialties[index].specialtie;
+                this.doctor = this.allSpecialties[index].name,
+                this.cost = this.allSpecialties[index].cost;
+                this.price = this.allSpecialties[index].price;
+                this.dialog2 = true
+            },
+            removeFromS(){
                 let info = {
                     product: this.product,
                     clinic: this.selectedClinic
@@ -184,7 +193,9 @@
                 console.log(info)
                 //this.$store.dispatch('removeExamFromClinic', info)
                 //this.$store.dispatch('removeClinicFromExam', info)
+                this.dialog2 = false
             },
+
         },
     }
 </script>
