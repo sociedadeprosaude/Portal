@@ -301,7 +301,7 @@
             },
             cost() {
                 let itens = this.$store.getters.getShoppingCartItems;
-                let total = 0
+                let total = 0;
                 for (let item in itens) {
                     total += parseFloat(itens[item].cost)
                 }

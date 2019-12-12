@@ -21,7 +21,7 @@
                                 </template>
                             </v-combobox>
                             <v-btn small fab color="primary" dark class="mb-2 mr-2"
-                                   @click="(registerPackage =! registerPackage, searchPackage =! searchPackage), clearSearch()">
+                                   @click="(registerPackage =! registerPackage, searchPackage =! searchPackage)">
                                 <v-icon>add</v-icon>
                             </v-btn>
                             <v-btn small fab color="primary" dark class="mb-2 mr-2"
@@ -385,7 +385,9 @@
             },
 
             total() {
-                return parseFloat(this.price) - parseFloat(this.moneyDiscount);
+                let subTotal = 0;
+                subTotal = subTotal + this.moneyDiscount;
+                return parseFloat(this.price) - parseFloat(subTotal);
             }
 
         },
@@ -403,7 +405,6 @@
 
             percentageDiscount: function () {
                 this.moneyDiscount = ((this.percentageDiscount * this.price) / 100);
-
             },
 
             searchData () {
@@ -449,7 +450,7 @@
             validateRegister () {
 
                 for (let exam in this.editedPackage.exams) {
-                    this.editedPackage.exams[exam].price = this.editedPackage.exams[exam].price - this.moneyDiscount
+                    this.editedPackage.exams[exam].priceDiscount = this.editedPackage.exams[exam].price - this.moneyDiscount
                 }
 
                 const packageData = {
@@ -620,7 +621,6 @@
             },
 
         },
-
 
     }
 </script>

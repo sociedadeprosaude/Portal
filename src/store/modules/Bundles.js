@@ -50,6 +50,7 @@ const actions = {
                     clinic: bundle.exams[i].clinic,
                     price: bundle.exams[i].price,
                     cost: bundle.exams[i].cost,
+                    priceDiscount: bundle.exams[i].priceDiscount,
                 };
                 firebase.firestore().collection('packages/' + bundle.name + '/exams').doc(bundle.exams[i].name)
                     .set(examData);
@@ -102,6 +103,7 @@ const actions = {
                                     clinic: doc.data().clinic,
                                     price: doc.data().price,
                                     cost: doc.data().cost,
+                                    priceDiscount: doc.data().priceDiscount,
                                 })
                             })
                         });
