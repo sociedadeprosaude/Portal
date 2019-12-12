@@ -97,9 +97,6 @@ const store = new Vuex.Store({
     addExpensive(state, payload) {
       state.expenses.push(payload)
     },
-    addIntake(state, payload) {
-      state.intakes.push(payload)
-    },
     deleteExpense(state, payload) {
       for (let expense in state.expenses) {
         if (state.expenses[expense].id === payload) {

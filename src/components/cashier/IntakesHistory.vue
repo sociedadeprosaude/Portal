@@ -85,7 +85,7 @@
             </v-layout>
         </v-card>
         <v-flex v-if="recep" class="hidden-screen-only">
-            <receipt :budgets="this.item"></receipt>
+            <receipt :budgets="this.items"></receipt>
         </v-flex>
     </v-container>
 </template>
@@ -95,13 +95,15 @@
     import Receipt from "./Receipt";
     export default {
         name: "IntakesHistory",
+        props: ['user'],
         components: {Receipt},
         data() {
             return {
                 option: 'budgets',
                 loading: false,
                 recep:false,
-                item:[],
+                usuario:[],
+                item:'',
             }
         },
         methods: {
@@ -127,14 +129,17 @@
                 return now.valueOf() - date.valueOf()
             },
             receipt(intake){
+                this.item = intake;
+                this.usuario= this.user;
                 this.recep=true;
-                this.item=intake;
-                console.log('intake: ',intake);
-                console.log('item: ',this.item);
-                window.print();
+                console.log('items',this.items);
             }
         },
         computed: {
+            items(item){
+                console.log('rodando');
+                return this.$store.dispatch('getIntakeDetails',item);
+            },
             patient() {
                 return this.$store.getters.selectedPatient
             },

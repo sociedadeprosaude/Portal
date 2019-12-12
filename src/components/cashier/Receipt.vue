@@ -11,7 +11,7 @@
                             <span>Código: this.codigo</span>
                         </v-flex>
                         <v-flex>
-                            <p>Recebemos de 'Nome do paciente' a quantia de R$!!this.total!! correspondente ao pagamento de this.budgets.exams.length>0?'exames, ':''}}
+                            <p>Recebemos de 'Nome do paciente' a quantia de R$this.items correspondente ao pagamento de this.budgets.exams.length>0?'exames, ':''}}
                                 this.budgets.specialties.length >0?'consultas, ':''}} e para a clareza firmamos o presente.
                             </p>
                         </v-flex>
@@ -40,9 +40,11 @@ export default{
         recibo:'',
     }),
     methods: {
-        mostrar(){
-            console.log(this.budgets)
-        }
+
+    },
+    computed: {
+    },
+    mounted() {
 
     }
 }
