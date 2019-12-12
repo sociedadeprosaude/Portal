@@ -248,53 +248,55 @@
 
                     <template v-slot:item.action="{ item }">
 
-                        <v-btn @click="editItem(item)" small dark fab color="warning" class="mr-2">
-                            <v-icon>
-                                edit
-                            </v-icon>
-                        </v-btn>
-                        <v-btn @click="deleteItem(item)" small dark fab color="error" class="mr-2">
-                            <v-icon>
-                                delete
-                            </v-icon>
-                        </v-btn>
+                        <v-btn @click="editItem(item)" small dark fab color="warning" class="mr-2"><v-icon>edit</v-icon></v-btn>
+                        <v-btn @click="deleteItem(item)" small dark fab color="error" class="mr-2"><v-icon>delete</v-icon></v-btn>
 
-                        <v-dialog v-model="Consultation" width="500px" text hide-overlay>
-                            <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" small dark fab color="primary" class="mr-2" @click="selectClinic(item)">
-                                    <v-icon>assignment</v-icon>
-                                </v-btn>
-                            </template>
-                            <Consultations v-if="clinicSelected"></Consultations>
-                        </v-dialog>
+                        <v-btn small dark fab color="primary" class="mr-2" @click="selectClinic(item), Consultation = true"><v-icon>assignment</v-icon></v-btn>
+                        <v-btn small dark fab color="primary" class="mr-2" @click="selectClinic(item), Exam = true"><v-icon>poll</v-icon></v-btn>
+                        <v-btn small dark fab color="error" class="mr-2" @click="selectClinic(item), Product = true"><v-icon>assignment_late</v-icon></v-btn>
+                        <v-btn small dark fab color="warning" class="mr-2" @click="selectClinic(item), Configuration = true "><v-icon>assignment_turned_in</v-icon></v-btn>
 
-                        <v-dialog v-model="Exam" width="500px" text hide-overlay>
-                            <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" small dark fab color="primary" class="mr-2" @click="selectClinic(item)">
-                                    <v-icon>poll</v-icon>
-                                </v-btn>
-                            </template>
-                            <Exams v-if="clinicSelected"></Exams>
-                        </v-dialog>
+                        <v-dialog v-model="Product" width="500px" text hide-overlay><Products v-if="clinicSelected"></Products></v-dialog>
+                        <v-dialog v-model="Configuration" width="500px" text hide-overlay><Configurations v-if="clinicSelected"></Configurations></v-dialog>
+                        <v-dialog v-model="Consultation" width="500px" text hide-overlay><Consultations v-if="clinicSelected"></Consultations></v-dialog>
+                        <v-dialog v-model="Exam" width="500px" text hide-overlay><Exams v-if="clinicSelected"></Exams></v-dialog>
+                        <!--
+                                                <v-dialog v-model="Consultation" width="500px" text hide-overlay>
+                                                    <template v-slot:activator="{ on }">
+                                                        <v-btn v-on="on" small dark fab color="primary" class="mr-2" @click="selectClinic(item)">
+                                                            <v-icon>assignment</v-icon>
+                                                        </v-btn>
+                                                    </template>
+                                                    <Consultations v-if="clinicSelected"></Consultations>
+                                                </v-dialog>
 
-                        <v-dialog v-model="Product" width="500px" text hide-overlay>
-                            <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" small dark fab color="error" class="mr-2" @click="selectClinic(item)">
-                                    <v-icon>assignment_late</v-icon>
-                                </v-btn>
-                            </template>
-                            <Products v-if="clinicSelected"></Products>
-                        </v-dialog>
+                                                <v-dialog v-model="Exam" width="500px" text hide-overlay>
+                                                    <template v-slot:activator="{ on }">
+                                                        <v-btn v-on="on" small dark fab color="primary" class="mr-2" @click="selectClinic(item)">
+                                                            <v-icon>poll</v-icon>
+                                                        </v-btn>
+                                                    </template>
+                                                    <Exams v-if="clinicSelected"></Exams>
+                                                </v-dialog>
 
-                        <v-dialog v-model="Configuration" width="500px" text hide-overlay>
-                            <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" small dark fab color="warning" class="mr-2" @click="selectClinic(item)">
-                                    <v-icon>assignment_turned_in</v-icon>
-                                </v-btn>
-                            </template>
-                            <Configurations v-if="clinicSelected"></Configurations>
-                        </v-dialog>
+                                                <v-dialog v-model="Product" width="500px" text hide-overlay>
+                                                    <template v-slot:activator="{ on }">
+                                                        <v-btn v-on="on" small dark fab color="error" class="mr-2" @click="selectClinic(item)">
+                                                            <v-icon>assignment_late</v-icon>
+                                                        </v-btn>
+                                                    </template>
+                                                    <Products v-if="clinicSelected"></Products>
+                                                </v-dialog>
 
+                                                <v-dialog v-model="Configuration" width="500px" text hide-overlay>
+                                                    <template v-slot:activator="{ on }">
+                                                        <v-btn v-on="on" small dark fab color="warning" class="mr-2" @click="selectClinic(item)">
+                                                            <v-icon>assignment_turned_in</v-icon>
+                                                        </v-btn>
+                                                    </template>
+                                                    <Configurations v-if="clinicSelected"></Configurations>
+                                                </v-dialog>
+                        -->
                     </template>
 
                     <template v-slot:no-results>
@@ -500,6 +502,8 @@
                 this.editedItem = Object.assign({}, item);
                 this.$store.dispatch('selectClinic', item);
             },
+
+
 
             editItem(item) {
                 this.editedIndex = this.clinics.indexOf(item);

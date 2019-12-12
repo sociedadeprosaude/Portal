@@ -42,6 +42,7 @@
                                         v-model="consultation"
                                         chips
                                         outlined
+                                        clearable
                                 >
                                     <template v-slot:selection="data">
                                         <v-chip
@@ -70,6 +71,7 @@
                                     return-object
                                     v-model="exam"
                                     chips
+                                    clearable
                                     outlined
                             >
                                 <template v-slot:selection="data">
@@ -87,7 +89,7 @@
                             </v-select>
                         </v-flex>
                         {{exam}}
-                        <v-btn @click="pegar">pegar</v-btn>
+                        <v-btn @click="formExam = true">Carregar para Edição</v-btn>
                     </v-layout>
 
                     <v-layout v-else align-center justify-center wrap>
@@ -106,6 +108,66 @@
                         </v-card-text>
                     </v-layout>
 
+                    <v-layout v-if="formExam === true" align-center justify-center row wrap>
+                        <v-flex xs12>
+                            <v-text-field prepend-icon="poll" outlined v-model="exam.name" readonly></v-text-field>
+                        </v-flex>
+
+                        <v-flex xs6>
+                            <v-text-field
+                                    prepend-icon="attach_money"
+                                    outlined
+                                    clearable
+                                    label="Preço de Custo"
+                                    placeholder="ex.: 50.00"
+                                    v-mask="['###.##' , '##.##', '####.##']"
+                                    v-model="exam.cost"
+                                    prefix="R$"
+                                    hide-details
+                            ></v-text-field>
+                        </v-flex>
+                        <v-flex xs6>
+                            <v-text-field
+                                    prepend-icon="monetization_on"
+                                    outlined
+                                    clearable
+                                    label="Preço de Venda"
+                                    placeholder="ex.: 80.00"
+                                    v-mask="['###.##' , '##.##', '####.##']"
+                                    v-model="exam.price"
+                                    prefix="R$"
+                                    hide-details
+                            ></v-text-field>
+                        </v-flex>
+                        <v-flex xs12>
+                            <v-textarea
+                                    outlined
+                                    v-model="exam.obs"
+                                    label="Observação:"
+                                    counter
+                                    clearable
+                                    maxlength="280"
+                                    full-width
+                                    single-line
+                                    hide-details
+                            ></v-textarea>
+                        </v-flex>
+                        <v-divider></v-divider>
+                        <v-card-actions>
+                            <v-layout align-center justify-center>
+                                <v-btn color="error" @click="clear()">CANCELAR</v-btn>
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                        :disabled="!formIsValid"
+                                        @click="save()"
+                                        color="success"
+                                >
+                                    SALVAR
+                                </v-btn>
+                            </v-layout>
+                        </v-card-actions>
+                    </v-layout>
+
                 </v-layout>
             </v-container>
         </v-card-text>
@@ -117,6 +179,7 @@
     export default {
         directives: {mask},
         data: () => ({
+            formExam: undefined,
             exam: undefined,
             consultation: undefined,
             option: undefined,
@@ -126,6 +189,10 @@
             ],
         }),
         computed: {
+            formIsValid() {
+                return this.exam.name && this.exam.cost && this.exam.price
+                //return this.price && this.cost && this.exams.length > 0
+            },
             selectedClinic() {
                 return this.$store.getters.selectedClinic;
             },
@@ -148,7 +215,6 @@
                         ...clinic.exams[i],
                     });
                 }
-                console.log('EXAMES::',exams)
                 return exams;
             },
 
@@ -162,7 +228,6 @@
                         ...clinic.specialties[i],
                     });
                 }
-                console.log('DOCTORS:',specialties)
                 return specialties
             },
         },
@@ -176,13 +241,22 @@
         },
 
         methods:{
-            pegar(){
-                let val = this.exam;
-                console.log(val)
-                console.log(val.name)
-                console.log(val.cost)
-                console.log(val.price)
-            }
+            save(){
+                let examData = {
+                    clinic: this.selectedClinic,
+                    exam: this.exam.name,
+                    cost:this.exam.cost,
+                    sale:this.exam.price,
+                    obs:this.exam.obs,
+                };
+                console.log("esta merda?:",examData);
+                this.$store.dispatch('addExamToClinic', examData);
+                this.clear()
+            },
+
+            clear () {
+                this.$store.dispatch('selectClinic', null);
+            },
         }
     }
 </script>
