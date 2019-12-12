@@ -638,6 +638,7 @@
                     idPatient: this.index_Selecionado.cpf
                 })
                 this.clear()
+                this.dialog = false
 
             },
            apagar() {
@@ -648,7 +649,8 @@
                     regress:this.index_Selecionado.consultation.regress,
                     previousConsultation:this.index_Selecionado.consultation.previousConsultation
                 })
-                this.clear()
+               this.clear()
+               this.dialog = false
 
             },
         },

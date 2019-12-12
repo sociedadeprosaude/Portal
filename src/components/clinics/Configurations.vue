@@ -31,6 +31,8 @@
                     </v-flex>
 
                     <v-layout v-if="option === 'Consultas' " align-center justify-center wrap>
+                        <strong>Colocar Form de Consultas AQUI</strong>
+                        <!--
                         <v-card-text>
                             <v-container grid-list-md>
                                 <v-layout align-center justify-center wrap>
@@ -137,9 +139,12 @@
                                 </v-btn>
                             </v-layout>
                         </v-card-actions>
+                        -->
                     </v-layout>
 
                     <v-layout v-else-if="option === 'Exames' " align-center justify-center wrap>
+                        <strong>Colocar Form de Exames AQUI</strong>
+                        <!--
                         <v-card-text>
                             <v-container grid-list-md>
                                 <v-layout align-center justify-center wrap>
@@ -241,6 +246,7 @@
                                 </v-layout>
                             </v-container>
                         </v-card-text>
+                        -->
                     </v-layout>
 
                 </v-layout>
@@ -259,99 +265,23 @@
                 'Consultas',
                 'Exames'
             ],
-            cost: null,
-            sale: null,
-            obs: null,
-            consultations: null,
-            doctors: [],
-            doctorsOptions: [],
-            payment:'Consultas',
-            paymentOptions: [
-                'Consultas',
-                'Dia'
-            ],
         }),
         computed: {
-            consultationsOptions(){
-                return this.$store.getters.especialidades
-            },
-            formIsValidConsultation() {
-                return this.sale && this.cost && this.consultations && this.doctors.length > 0
-            },
-            formIsValidExam() {
-                return this.sale && this.cost && this.exams.length > 0
-            },
             selectedClinic() {
                 return this.$store.getters.selectedClinic;
-            },
-            listExam () {
-                return this.$store.getters.allExam;
             },
         },
 
         mounted() {
-            this.$store.dispatch('loadEspecialidades');
-            this.$store.dispatch('loadMedicos');
-            this.$store.dispatch('loadExam');
+            //
         },
 
         watch: {
-            consultations: function (value) {
-                this.doctorsOptions = this.$store.getters.medicosPorEspecialidade(value)
-            }
+            //
         },
 
         methods:{
-
-            editConsultation(){
-                for (let i in this.doctors){
-                    let consultationData = {
-                        clinic: this.selectedClinic.nome,
-                        consultation: this.consultations.toUpperCase(),
-                        doctor:this.doctors[i],
-                        cost:this.cost,
-                        sale:this.sale,
-                        obs:this.obs,
-                        payment: this.payment,
-                    };
-                    this.$store.dispatch('addAppointment', consultationData);
-                    this.$store.dispatch('addClinicInAppointment', consultationData);
-                }
-                this.clearConsultation()
-            },
-
-            editExam(){
-                for (let i in this.exams){
-                    let examData = {
-                        clinic: this.selectedClinic.nome,
-                        exam: this.exams[i].nome,
-                        cost:this.cost,
-                        sale:this.sale,
-                        obs:this.obs,
-                    };
-                    this.$store.dispatch('addExam', examData);
-                    this.$store.dispatch('addClinicInExam', examData);
-                }
-                this.clearExam()
-            },
-
-            clearConsultation () {
-                this.cost = null;
-                this.sale =  null;
-                this.obs =  null;
-                this.consultations = null;
-                this.doctors = [];
-                this.payment = 'Consultas';
-                this.$store.dispatch('selectClinic', null);
-            },
-
-            clearExam () {
-                this.cost = null;
-                this.sale =  null;
-                this.obs =  null;
-                this.exams = [];
-                this.$store.dispatch('selectClinic', null);
-            },
+            //
         }
     }
 </script>

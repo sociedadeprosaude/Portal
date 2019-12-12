@@ -791,6 +791,7 @@
                 await this.$store.dispatch('addUserToConsultation', form)
                 this.loading = false
                 this.success = true
+                this.dialog = false
             }
         }
     };

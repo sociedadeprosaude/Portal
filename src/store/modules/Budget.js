@@ -173,17 +173,23 @@ const actions = {
             spec.forEach((s) => {
                 userRef.collection('intakes').doc(payload.id.toString()).collection('specialties').doc(s.id).delete()
             })
-            
+
             for (let spec in specialties) {
                 var used = false
-                let consultations = await userRef.collection('consultations').where('specialty.name','==',specialties[spec].name).where('status','==','Aguardando pagamento')
-                .get()
-                
-                consultations.forEach((c)=>{
+                let consultations = await userRef.collection('consultations').where('specialty.name', '==', specialties[spec].name).where('status', '==', 'Aguardando pagamento')
+                    .get()
+
+                consultations.forEach((c) => {
                     console.log('kj')
                     used = true
-                    userRef.collection('consultations').doc(c.id).update({status: 'Pago',payment_number:payload.id.toString()})
-                    firebase.firestore().collection('consultations').doc(c.id).update({status: 'Pago',payment_number:payload.id.toString()})
+                    userRef.collection('consultations').doc(c.id).update({
+                        status: 'Pago',
+                        payment_number: payload.id.toString()
+                    })
+                    firebase.firestore().collection('consultations').doc(c.id).update({
+                        status: 'Pago',
+                        payment_number: payload.id.toString()
+                    })
                 })
 
                 console.log('pagando')
@@ -208,11 +214,22 @@ const actions = {
     },
     async getUserIntakes(context, user) {
         let userRef = firebase.firestore().collection('users').doc(user.cpf)
-        let intakesSnap = await userRef.collection('intakes').get()
+        let intakesSnap = (await userRef.collection('intakes').get()).docs
         let intakes = []
-        intakesSnap.forEach((doc) => {
+        for (let snap in intakesSnap) {
+            let doc = intakesSnap[snap]
+            let exams = []
+            let examSnap = await doc.ref.collection('exams').get()
+            examSnap.forEach((e) => {
+                exams.push(e.data())
+            })
+            let consultationsSnap = await doc.ref.collection('consultations').get()
+            let consultations = []
+            consultationsSnap.forEach((e) => {
+                consultations.push(e.data())
+            })
             intakes.push(doc.data())
-        })
+        }
         return intakes
     },
     async getUserBudgets(context, user) {

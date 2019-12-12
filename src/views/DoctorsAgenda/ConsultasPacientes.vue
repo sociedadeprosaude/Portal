@@ -460,6 +460,7 @@
                     idPatient: this.index_Selecionado.cpf
                 })
                 this.clear()
+                this.dialog = false
 
             },
             apagar() {
@@ -471,6 +472,7 @@
                     previousConsultation:this.index_Selecionado.consultation.previousConsultation
                 })
                 this.clear()
+                this.dialog = false
 
             },
             modalidades(item) {

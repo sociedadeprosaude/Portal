@@ -209,7 +209,9 @@
                                             </v-btn>
                                         </v-flex>
                                         <v-flex xs6 class="text-center">
-                                            <submit-button text="Pagar" :loading="paymentLoading"
+                                            <submit-button
+                                                    :disabled="!patient"
+                                                    text="Pagar" :loading="paymentLoading"
                                                            :success="paymentSuccess" color="primary" @click="pay()">
                                                 Pagar
                                             </submit-button>
@@ -232,6 +234,9 @@
         <v-dialog fullscreen v-model="budgetToPrintDialog">
             <budget-to-print @close="budgetToPrintDialog = false" :budget="budgetToPrint"></budget-to-print>
         </v-dialog>
+        <v-flex class="hidden-screen-only">
+            <receipt :budgets="selectedBudget"></receipt>
+        </v-flex>
     </v-container>
 </template>
 
@@ -240,10 +245,12 @@
     import SelectPatientCard from "../SelectPatientCard";
     import SubmitButton from "../SubmitButton";
     import BudgetToPrint from "./BudgetToPrint";
+    import Receipt from "./Receipt";
 
     export default {
         name: "Cart",
         components: {
+            Receipt,
             SelectPatientCard,
             SubmitButton,
             BudgetToPrint
@@ -282,7 +289,6 @@
             },
             exames() {
                 // return this.$store.getters.selectedBudget.exams
-                console.log(this.$store.getters.getShoppingCartItemsByCategory.exams);
                 return this.$store.getters.getShoppingCartItemsByCategory.exams
             },
             consultas() {
@@ -432,15 +438,23 @@
                 }
                 return budget
             },
-            saveBudget(budget) {
-                this.$store.commit('setSelectedBudget',  Object.assign({}, budget))
-                //this.selectedBudget = Object.assign({}, budget)
-                this.$store.dispatch('addBudget', budget)
-
+            async updateBudgetsIntakes() {
+                let user = this.patient;
+                let intakes = await this.$store.dispatch('getUserIntakes', user)
+                let budgets = await this.$store.dispatch('getUserBudgets', user)
+                user.intakes = intakes
+                user.budgets = budgets
+                this.$store.commit('setSelectedPatient', user)
+            },
+            async saveBudget(budget) {
+                this.$store.commit('setSelectedBudget', budget)
+                // this.selectedBudget = Object.assign({}, budget)
+                await this.$store.dispatch('addBudget', budget)
+                this.updateBudgetsIntakes()
             },
             async pay() {
                 this.paymentLoading = true
-                let user = this.$store.getters.selectedPatient;
+                let user = this.patient;
                 if (!user) {
                     return
                 }
@@ -448,15 +462,11 @@
                     this.saveBudget(this.generateBudget())
                 }
                 await this.$store.dispatch('addIntake', this.selectedBudget,)
-                let intakes = await this.$store.dispatch('getUserIntakes', user)
-                let budgets = await this.$store.dispatch('getUserBudgets', user)
-                user.intakes = intakes
-                user.budgets = budgets
-                this.$store.commit('setSelectedPatient', user)
+                this.updateBudgetsIntakes()
                 this.paymentLoading = false
                 this.paymentSuccess = true
                 this.card = false
-                //}
+                window.print();
             },
             clearCart() {
                 this.$store.commit('clearShoppingCartItens')
