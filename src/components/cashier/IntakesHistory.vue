@@ -84,8 +84,8 @@
                 </div>
             </v-layout>
         </v-card>
-        <v-flex v-if="recep" class="hidden-screen-only">
-            <receipt :budgets="this.item"></receipt>
+        <v-flex v-if="selectedIntake" class="hidden-screen-only">
+            <receipt id="receipt-to-print" :budgets=selectedIntake></receipt>
         </v-flex>
     </v-container>
 </template>
@@ -101,7 +101,7 @@
                 option: 'budgets',
                 loading: false,
                 recep:false,
-                item:[],
+                selectedIntake: undefined
             }
         },
         methods: {
@@ -126,11 +126,9 @@
                 let date = moment(product.date, 'YYYY-MM-DD HH:mm:ss')
                 return now.valueOf() - date.valueOf()
             },
-            receipt(intake){
-                this.recep=true;
-                this.item=intake;
-                console.log('intake: ',intake);
-                console.log('item: ',this.item);
+            async receipt(intake){
+                let intakeWithDetails = await this.$store.dispatch('getIntakeDetails', intake)
+                console.log('intake: ',intakeWithDetails);
                 window.print();
             }
         },

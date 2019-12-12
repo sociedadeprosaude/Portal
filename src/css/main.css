@@ -22,3 +22,33 @@
     margin: 0;
     padding: 0;
 }
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #card-to-print, #card-to-print * {
+        visibility: visible;
+        -webkit-print-color-adjust: exact;
+    }
+
+    #card-to-print {
+        position: absolute;
+        left: 30px;
+        top: 30px;
+        width: calc(8.5cm * 2);
+        height: calc(8cm * 2);
+    }
+
+    #receipt-to-print, #receipt-to-print * {
+        visibility: visible;
+        -webkit-print-color-adjust: exact;
+    }
+
+    #receipt-to-print {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+    }
+}
