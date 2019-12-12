@@ -388,7 +388,14 @@
             total() {
                 let subTotal = 0;
                 subTotal = subTotal + this.moneyDiscount;
-                return parseFloat(this.price) - parseFloat(subTotal);
+                let total = parseFloat(this.price) - parseFloat(subTotal);
+
+                if (total < 0) {
+                    return 0;
+                } else {
+                    return total ;
+                }
+
             }
 
         },
