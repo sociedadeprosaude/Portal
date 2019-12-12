@@ -138,7 +138,7 @@ const actions = {
     },
     async addUserToConsultation({commit}, payload) {
         try {
-            console.log(payload.consultation.id)
+            console.log(payload)
             let obj = payload.consultation.type == "Retorno" ? {
                     user: payload.user,
                     type: payload.consultation.type,
@@ -157,6 +157,38 @@ const actions = {
             throw e
         }
     },
+
+    async addUserToConsultationReschedule({commit}, payload) {
+        try {
+            let obj = {user: payload.user, type: payload.consultation.type, status: payload.consultation.status,payment_number:payload.consultation.payment_number}
+            
+            if(payload.consultation.type == "Retorno")
+                obj.previousConsultation = payload.consultation.previousConsultation
+          
+            await firebase.firestore().collection('consultations').doc(payload.consultation.id).update(obj)
+            await firebase.firestore().collection('canceled').doc(payload.consultation.idConsultationCanceled).delete()
+            if (payload.consultation.type == "Retorno") {
+                await firebase.firestore().collection('consultations').doc(payload.consultation.previousConsultation).update({regress: payload.consultation.id})
+            }
+        } catch (e) {
+            throw e
+        }
+    },
+
+    async addConsultationAppointmentToUserReschedule({commit}, payload) {
+        try {
+            await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.id).set(payload.consultation)
+
+            if(payload.consultation.type == "Retorno") {
+                await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.previousConsultation).update({regress: payload.consultation.id})
+            }
+
+            
+        } catch (e) {
+            throw e
+        }
+    },
+
     async updateAppointment({commit}, payload) { //atualizarConsulta
         console.log(payload)
         try {
