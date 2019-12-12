@@ -272,7 +272,13 @@
                                             <!--                                                ></v-text-field>-->
                                             <!--                                            </v-flex>-->
                                             <v-flex xs12 sm8>
+                                                 <v-progress-circular
+                                                    v-if="loaderRecibo"
+                                                    indeterminate
+                                                    color="primary"
+                                                ></v-progress-circular>
                                                 <v-select
+                                                        v-else
                                                         prepend-icon="assignment_turned_in"
                                                         v-model="status"
                                                         :items="statusOptions"
@@ -421,6 +427,7 @@
             x: null,
             mode: "",
             alert: false,
+            loaderRecibo:false,
             menu: false,
             dialog: false,
             dialog2: false,
@@ -625,14 +632,17 @@
                 this.payment_numberFound = undefined
                 this.num_recibo = ''
                 this.status = 'Aguardando pagamento'
+                //this.loaderRecibo = true
                 this.$store.dispatch('thereIsIntakes',{
                     user:patient,
                     doctor:form.consultation.doctor,
                     specialty:form.consultation.specialty})
                 .then((obj)=>{
-                    this.payment_numberFound = obj
-                    this.num_recibo = obj.payment_number
-                    this.status = 'Pago'
+                        this.payment_numberFound = obj
+                        this.num_recibo = obj.payment_number
+                        this.status = 'Pago'
+                    
+                    //this.loaderRecibo = false
                 })
                 
                 this.createConsultationForm = form

@@ -459,14 +459,12 @@
                 // return this.formatDate(this.index_Selecionado.data);
             },
             consultas() {
-                console.log('Search Consultations')
+                console.log('Especialidade',this.especialidade)
                 let consultas = this.formatConsultationsArray(this.$store.getters.consultations).filter((a) => {
 
-                   
                     return this.especialidade && this.selectedDoctor ? this.especialidade.name === a.specialty.name &&
-                           this.selectedDoctor.cpf === a.doctor.cpf :  true
+                           this.selectedDoctor.cpf === a.doctor.cpf :  false
                 })
-                console.log(consultas)
                 return consultas;
             },
             doctors: {

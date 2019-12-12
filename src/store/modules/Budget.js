@@ -299,16 +299,14 @@ const actions = {
                             .where('used', '==', false)
                             .where('doctor.cpf', '==', payload.doctor.cpf).get().then((specialties) => {
                             if (!specialties.empty) {
-                                found = true
-                                console.log('Encontrou', found)
                                 specialties.forEach((doc) => {
+                                    console.log('encontrou aqui')
                                     resolve({uid: doc.id, ...doc.data(), payment_number: payment_number})
                                 })
 
                             }
                         })
                     })
-                    console.log(found)
                     /*  if(!found)
                          reject('Payment Number not found') */
 

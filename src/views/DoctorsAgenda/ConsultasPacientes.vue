@@ -98,7 +98,7 @@
                                                             data: item.date.split(' ')[0],
                                                             hora: item.date.split(' ')[1],
                                                             crm: item.doctor.crm,
-                                                            especialidade: item.specialty.name,
+                                                            especialidade: item.specialty,
                                                             status: item.status,
                                                             modalidade: item.type,
                                                             medico:item.doctor.name,
