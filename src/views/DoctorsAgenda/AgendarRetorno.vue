@@ -560,18 +560,12 @@
         },
         methods: {
             scheduleAppointment(consultation) {
-                if (!this.selectedPatient) {
-                    this.$refs.patientCard.$el.classList.add('shaking-ease-anim')
-                    setTimeout(() => {
-                        this.$refs.patientCard.$el.classList.remove('shaking-ease-anim')
-                    }, 1000)
-                    return
-                }
+                
                 this.fillConsultationForm(consultation)
                 this.dialog = true
             },
             fillConsultationForm(consultation) {
-                let patient = this.selectedPatient
+                let patient = this.query.pacienteObj
                 let form = {
                     user: patient,
                     consultation: consultation.consultations.find((a) => {
