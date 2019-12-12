@@ -279,8 +279,8 @@
 
                         <v-dialog v-model="Product" width="500px" text hide-overlay>
                             <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" small dark fab color="primary" class="mr-2" @click="selectClinic(item)">
-                                    <v-icon>playlist_add_check</v-icon>
+                                <v-btn v-on="on" small dark fab color="error" class="mr-2" @click="selectClinic(item)">
+                                    <v-icon>assignment_late</v-icon>
                                 </v-btn>
                             </template>
                             <Products v-if="clinicSelected"></Products>
@@ -288,8 +288,8 @@
 
                         <v-dialog v-model="Configuration" width="500px" text hide-overlay>
                             <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" small dark fab color="primary" class="mr-2" @click="selectClinic(item)">
-                                    <v-icon>build</v-icon>
+                                <v-btn v-on="on" small dark fab color="warning" class="mr-2" @click="selectClinic(item)">
+                                    <v-icon>assignment_turned_in</v-icon>
                                 </v-btn>
                             </template>
                             <Configurations v-if="clinicSelected"></Configurations>
