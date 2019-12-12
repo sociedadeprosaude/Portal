@@ -371,6 +371,13 @@
                 this.foundUsers = users
                 this.loading = false
             }
+        },
+        mounted() {
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    this.searchPatient()
+                }
+            })
         }
     }
 </script>
