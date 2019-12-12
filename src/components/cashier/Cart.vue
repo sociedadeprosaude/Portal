@@ -327,10 +327,10 @@
         },
         methods: {
             async searchBudget() {
-                this.searchBudgetLoading = true
-                let budget = await this.$store.dispatch('getBudget', this.searchBudgetNumber)
+                this.searchBudgetLoading = true;
+                let budget = await this.$store.dispatch('getBudget', this.searchBudgetNumber);
                 if (budget) {
-                    this.$store.commit('setSelectedBudget', budget)
+                    this.$store.commit('setSelectedBudget', budget);
                     // this.selectedBudget = budget
                     for (let exam in budget.exams) {
                         this.$store.commit('addShoppingCartItem', budget.exams[exam])
@@ -338,15 +338,15 @@
                     for (let spec in budget.specialties) {
                         this.$store.commit('addShoppingCartItem', budget.specialties[spec])
                     }
-                    let intakes = await this.$store.dispatch('getUserIntakes', budget.user)
+                    let intakes = await this.$store.dispatch('getUserIntakes', budget.user);
                     if (intakes) {
                         budget.user.intakes = intakes
                     }
-                    let budgets = await this.$store.dispatch('getUserBudgets', budget.user)
+                    let budgets = await this.$store.dispatch('getUserBudgets', budget.user);
                     if (budgets) {
                         budget.user.budgets = budgets
                     }
-                    this.$store.commit('setSelectedPatient', budget.user)
+                    this.$store.commit('setSelectedPatient', budget.user);
                     this.searchBudgetBtn = false
                 } else {
                     this.searchBudgetError = 'Orçamento não encontrado'

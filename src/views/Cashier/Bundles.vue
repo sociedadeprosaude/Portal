@@ -21,7 +21,7 @@
                                 </template>
                             </v-combobox>
                             <v-btn small fab color="primary" dark class="mb-2 mr-2"
-                                   @click="registerPackage =! registerPackage, searchPackage =! searchPackage, clearSearch()">
+                                   @click="(registerPackage =! registerPackage, searchPackage =! searchPackage), clearSearch()">
                                 <v-icon>add</v-icon>
                             </v-btn>
                             <v-btn small fab color="primary" dark class="mb-2 mr-2"
@@ -55,7 +55,7 @@
                                 </v-radio-group>
                                 <v-spacer></v-spacer>
                                 <v-btn color="primary" small fab
-                                       @click="registerPackage= !registerPackage, searchPackage= !searchPackage">
+                                       @click="registerPackage= !registerPackage, searchPackage= !searchPackage, clearSearch()">
                                     <v-icon >close</v-icon>
                                 </v-btn>
 
@@ -146,12 +146,11 @@
                     </v-card-text>
                 </v-card>
             </v-flex>
-
             <v-flex sm3>
                 <v-card class="ml-5 elevation-2">
                     <v-container>
                         <v-layout  row wrap class="mx-3 align-center">
-                            <v-flex xs12 class="v-card mt-3 mb-3"
+                            <v-flex xs12 class="v-card"
                                     style="overflow:auto; height:50vh; box-shadow: inset 0px 0px 5px grey;">
                                 <v-layout row wrap>
                                     <v-flex xs12 v-if="editedPackage.exams.length > 0">
@@ -202,7 +201,7 @@
                                         <v-flex xs5>
                                             <v-text-field
                                                     label="Desconto: %"
-                                                    v-model="discountPercentage"
+                                                    v-model="percentageDiscount"
                                                     clearable
                                             ></v-text-field>
                                         </v-flex>
@@ -211,7 +210,7 @@
                                             <v-text-field
                                                     disabled
                                                     label="Desconto: R$ "
-                                                    v-model="discountMoney"
+                                                    v-model="moneyDiscount"
                                             ></v-text-field>
                                         </v-flex>
                                     </v-layout>
@@ -237,6 +236,21 @@
                                         <v-flex xs12 class="text-center mt-4">
                                             <v-btn outlined color="primary" :disabled="!formRegister" @click="validateRegister()">
                                                 Salvar Pacote</v-btn>
+                                            <v-btn color="error" fab small class="ml-5" :disabled="!selectedPackage"
+                                                @click="deleteBundle = true">
+                                                <v-icon>delete</v-icon>
+                                            </v-btn>
+                                            <v-dialog v-model="deleteBundle" persistent max-width="350">
+                                                <v-card>
+                                                    <v-card-title><strong>Deseja excluir este pacote?</strong></v-card-title>
+                                                    <v-card-text>Este pacote será excluído permanentemente.</v-card-text>
+                                                    <v-card-actions>
+                                                        <v-spacer></v-spacer>
+                                                        <v-btn color="error" text @click="deleteBundle = false, deletePackage()">EXCLUIR</v-btn>
+                                                        <v-btn color="primary" text @click="deleteBundle = false">CANCELAR</v-btn>
+                                                    </v-card-actions>
+                                                </v-card>
+                                            </v-dialog>
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
@@ -261,9 +275,9 @@
             validRegister: true,
             categorySelect: null,
 
-            listProducts: [], items: [], action: false,
+            listProducts: [], items: [], action: false, deleteBundle: false,
 
-            cost: 0, price: 0, discountPercentage: 0, discountMoney: 0,
+            cost: 0, price: 0, percentageDiscount: 0, moneyDiscount: 0,
 
             editedPackage: {
                 id: '', name: '', exams: [], specialties: [],
@@ -292,8 +306,6 @@
             },
 
             selectedPackage () {
-                let pac =this.$store.getters.selectedBundle;
-                this.editedPackage = Object.assign({}, pac);
                 return this.$store.getters.selectedBundle;
             },
 
@@ -373,7 +385,7 @@
             },
 
             total() {
-                return parseFloat(this.price) - parseFloat(this.discountMoney);
+                return parseFloat(this.price) - parseFloat(this.moneyDiscount);
             }
 
         },
@@ -387,30 +399,66 @@
             this.$store.dispatch('loadClinics');
         },
 
+        watch: {
+
+            percentageDiscount: function () {
+                this.moneyDiscount = ((this.percentageDiscount * this.price) / 100);
+
+            },
+
+            searchData () {
+                if (this.searchData){
+                    this.isLoading = true;
+                    const data = this.searchData.name.toUpperCase();
+
+                    this.searchPackage = false;
+                    this.registerPackage= true;
+
+                    this.editedPackage = Object.assign({}, this.searchData);
+                    this.editedPackage.name = data;
+
+                    this.cost = parseFloat(this.editedPackage.cost);
+                    this.price = parseFloat(this.editedPackage.price);
+                    this.percentageDiscount = this.editedPackage.percentageDiscount;
+                    this.moneyDiscount = this.editedPackage.moneyDiscount;
+                    this.$store.dispatch('selectedBundle', this.editedPackage);
+
+                } else {
+                    this.$store.dispatch('selectedBundle', null);
+                }
+            },
+        },
+
         methods: {
 
             clearSearch () {
+
                 this.isLoading = false;
                 this.searchData = null;
+                this.registerPackage = false;
+                this.searchPackage = true;
                 this.editedPackage= Object.assign({}, this.defaultPackage);
                 this.$store.dispatch('selectedBundle', null);
                 this.editedPackage.exams = [];
                 this.cost = 0;
                 this.price = 0;
+                this.percentageDiscount = 0;
+                this.moneyDiscount = 0;
             },
 
             validateRegister () {
 
                 for (let exam in this.editedPackage.exams) {
-                    this.editedPackage.exams[exam].price = this.editedPackage.exams[exam].price - this.discountMoney
+                    this.editedPackage.exams[exam].price = this.editedPackage.exams[exam].price - this.moneyDiscount
                 }
 
                 const packageData = {
                       name: this.editedPackage.name.toUpperCase(),
                       cost: this.cost,
                       price: this.price,
-                      discountMoney: this.discountMoney,
-                      discountPercentage: this.discountPercentage,
+                      total: (this.price - this.moneyDiscount),
+                      moneyDiscount: this.moneyDiscount,
+                      percentageDiscount: this.percentageDiscount,
                       exams: this.editedPackage.exams,
                       //specialties: this.editedPackage.specialties,
                 };
@@ -422,7 +470,6 @@
                 });
 
             },
-
 
             selectExam () {
                 this.color.buttonExam = this.color.colorSelect;
@@ -557,9 +604,6 @@
                         this.editedPackage.exams.splice(i,1);
                     }
                 }
-
-
-                console.log(this.editedPackage.exams);
             },
 
             removeSpecialtie (index) {
@@ -567,41 +611,17 @@
                 this.cost -= this.editedPackage.specialties[index].cost;
 
                 this.editedPackage.specialties.splice(index,1);
-            }
+            },
+
+            deletePackage () {
+                this.$store.dispatch('deletePackage', this.editedPackage);
+                this.clearSearch();
+
+            },
 
         },
 
-        watch: {
 
-
-            discountPercentage: function () {
-                this.discountMoney = ((this.discountPercentage * this.price) / 100);
-                //this.total = (this.price - this.discountMoney)
-            },
-
-
-
-            searchData () { //pesquisa por filtro de status e por delimitação de nome
-                if (this.searchData){
-                    this.isLoading = true;
-                    const data = this.searchData.name.toUpperCase();
-
-                    this.searchPackage = false;
-                    this.registerPackage= true;
-
-
-                    //this.$store.dispatch('selectedBundle', this.searchData);
-                    this.editedPackage = Object.assign({}, this.searchData);
-                    this.editedPackage.name = data;
-
-                    console.log('================', this.editedPackage);
-
-
-                } else {
-                    this.$store.dispatch('selectedBundle', null);
-                }
-            },
-        },
     }
 </script>
 
@@ -609,5 +629,4 @@
     .round-card {
         border-radius: 20px;
     }
-
 </style>

@@ -24,8 +24,10 @@ const actions = {
             name : bundle.name,
             cost: bundle.cost,
             price: bundle.price,
-            discountMoney: bundle.discountMoney,
-            discountPercentage: bundle.discountPercentage,
+            total: bundle.total,
+            moneyDiscount: bundle.moneyDiscount,
+            percentageDiscount: bundle.percentageDiscount,
+
         };
 
         try {
@@ -44,12 +46,12 @@ const actions = {
             for (let i in bundle.exams){
 
                 let examData = {
-                    name: bundle.exams[i].product,
+                    name: bundle.exams[i].name,
                     clinic: bundle.exams[i].clinic,
                     price: bundle.exams[i].price,
                     cost: bundle.exams[i].cost,
                 };
-                firebase.firestore().collection('packages/' + bundle.name + '/exams').doc(bundle.exams[i].product)
+                firebase.firestore().collection('packages/' + bundle.name + '/exams').doc(bundle.exams[i].name)
                     .set(examData);
 
             }
@@ -109,8 +111,9 @@ const actions = {
                         id: bundle.id,
                         cost: bundle.cost,
                         price: bundle.price,
-                        moneyValue: bundle.discountMoney,
-                        percentageValue: bundle.discountPercentage,
+                        total: bundle.total,
+                        moneyDiscount: bundle.moneyDiscount,
+                        percentageDiscount: bundle.percentageDiscount,
                         exams: exams,
                         specialties: specialties,
                     });
@@ -126,6 +129,16 @@ const actions = {
 
             });
         });
+    },
+
+    async deletePackage({}, bundle) {
+
+        try {
+            await firebase.firestore().collection('packages').doc(bundle.name).delete();
+            return
+        } catch (e) {
+            throw e
+        }
     },
 
     selectedBundle ({commit}, bundle){

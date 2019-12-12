@@ -76,7 +76,7 @@ const actions = {
 
     async deleteClinic({}, clinic) {
         try {
-            await firebase.firestore().collection('clinics').doc(clinic.name).delete()
+            await firebase.firestore().collection('clinics').doc(clinic.name).delete();
             return
         } catch (e) {
             throw e
