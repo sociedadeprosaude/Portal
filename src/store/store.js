@@ -50,7 +50,7 @@ const store = new Vuex.Store({
     Saidas,
     Patient,
     Budget,
-    ShoppingCart
+    ShoppingCart,
   },
 
   state: {

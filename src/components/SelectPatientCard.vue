@@ -298,7 +298,7 @@
                 states: ['AC', 'AL', 'AM'],
                 cities: {'AC': [], 'AL': [], 'AM': ['Iranduba', 'Manaus', 'Parintins']},
                 foundUsers: [],
-                success: false
+                success: false,
             }
         },
         methods: {
@@ -370,14 +370,19 @@
                 })
                 this.foundUsers = users
                 this.loading = false
-            }
-        },
-        mounted() {
-            window.addEventListener('keydown', (e) => {
+            },
+            handleEnter(e) {
+                console.log('aaa')
                 if (e.key === 'Enter') {
                     this.searchPatient()
                 }
-            })
+            }
+        },
+        mounted() {
+           window.addEventListener('keydown', this.handleEnter)
+        },
+        beforeDestroy() {
+            window.removeEventListener('keydown', this.handleEnter)
         }
     }
 </script>
