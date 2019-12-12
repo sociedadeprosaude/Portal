@@ -16,6 +16,7 @@
                                 hide-details
                         ></v-text-field>
                     </v-flex>
+
                     {{listando}}
                     <!--
                     {{allExams}}
@@ -25,16 +26,16 @@
                         <v-subheader>Consultas</v-subheader>
                         <v-list-item-group v-model="item" color="primary">
                             <v-list-item
-                                    v-for="(item, i) in items"
+                                    v-for="(item, i) in exams"
                                     :key="i"
                             >
                                 <v-list-item-content>
                                     <v-list-item-title>
                                         <v-chip v-if="item.type ==='appointment' " color="success" text-color="white">
-                                            <v-icon>assignment</v-icon>:<strong>{{item.product}} | {{item.doctor}} | R$ {{item.cost}} | R$ {{item.sale}}</strong>
+                                            <v-icon>assignment</v-icon>:<strong>{{item.name}} | {{item.doctor}} | R$ {{item.cost}} | R$ {{item.sale}}</strong>
                                         </v-chip>
                                         <v-chip v-else color="info" text-color="white">
-                                            <v-icon>poll</v-icon>:<strong>{{item.product}} | R$ {{item.cost}} | R$ {{item.sale}}</strong>
+                                            <v-icon>poll</v-icon>:<strong>{{item.name}} | R$ {{item.cost}} | R$ {{item.price}}</strong>
                                         </v-chip>
                                     </v-list-item-title>
                                 </v-list-item-content>
@@ -52,6 +53,8 @@
     export default {
         data: () => ({
             item: undefined,
+
+
             items: [
                 {
                     type:'appointment',
@@ -80,13 +83,43 @@
             selectedClinic() {
                 return this.$store.getters.selectedClinic;
             },
+
             listando () {
                 let val = this.$store.getters.clinics.filter((a) => {
                     return a.name === this.selectedClinic.name;
-                })
+                });
                 return val
                 //return this.$store.getters.clinics
             },
+
+            exams () {
+
+                let clinic = this.listando[0];
+                let exams = [];
+
+                for (let i in clinic.exams){
+                    exams.push({
+                        ...clinic.exams[i],
+                    });
+                }
+
+                return exams;
+            },
+
+            specialties () {
+
+                let clinic = this.listando[0];
+                let specialties = [];
+
+                for (let i in clinic.specialties){
+                    specialties.push({
+                        ...clinic.specialties[i],
+                    });
+                }
+
+                return specialties;
+            },
+
             /*
             allExams () {
                 let val = this.$store.getters.clinics

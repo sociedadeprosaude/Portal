@@ -187,7 +187,6 @@ const actions = {
                     });
                 });
 
-                console.log("carregando");
                 console.log(clinics);
                 commit('setClinics', clinics);
 
