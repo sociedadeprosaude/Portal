@@ -194,6 +194,7 @@
                                             label="Venda R$"
                                             v-model="price"
                                             prefix="R$"
+                                            readonly
                                     ></v-text-field>
                                 </v-flex>
                                 <v-flex>
@@ -540,16 +541,15 @@
                             this.editedPackage.exams[key].clinic = this.item.clinic;
                             this.editedPackage.exams[key].price = this.item.price;
                             this.editedPackage.exams[key].cost = this.item.cost;
+                            this.action = true;
 
-
-                        } else {
-
-                                this.action = false;
                         }
                     }
                 }
 
-                if (this.action === false){ this.editedPackage.exams.push({...this.item}) }
+                if (this.action === false){
+                    this.editedPackage.exams.push({...this.item})
+                }
 
                 this.costAndPrice();
                 this.action = false;
@@ -591,9 +591,6 @@
             },
 
             removeExam (exam) {
-
-                console.log(exam);
-                console.log('price', this.price);
 
                 this.price -= exam.price;
                 this.cost -= exam.cost;
