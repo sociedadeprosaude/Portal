@@ -4,6 +4,11 @@ export default {
             if (!object[field]) {
                 delete object[field]
             }
+            // if (object[field].isArray) {
+            // }
+            if (typeof object[field] === 'object') {
+                this.removeUndefineds(object[field])
+            }
         }
     }
 }
