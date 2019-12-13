@@ -449,6 +449,7 @@
             async saveBudget(budget) {
                 this.$store.commit('setSelectedBudget', budget)
                 // this.selectedBudget = Object.assign({}, budget)
+                console.log('budgettttt', budget)
                 await this.$store.dispatch('addBudget', budget)
                 this.updateBudgetsIntakes()
             },
@@ -459,14 +460,18 @@
                     return
                 }
                 if (!this.selectedBudget) {
-                    this.saveBudget(this.generateBudget())
+                    await this.saveBudget(this.generateBudget())
+                } else {
+                    let newBudget = this.generateBudget()
+                    newBudget.id = this.selectedBudget.id
+                    this.$store.commit('setSelectedBudget', newBudget)
                 }
                 await this.$store.dispatch('addIntake', this.selectedBudget)
                 this.updateBudgetsIntakes()
                 this.paymentLoading = false
                 this.paymentSuccess = true
                 this.card = false
-                window.print();
+                // window.print();
             },
             clearCart() {
                 this.$store.commit('clearShoppingCartItens')

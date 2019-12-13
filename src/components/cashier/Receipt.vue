@@ -1,8 +1,8 @@
 <template>
-    <v-container v-if="budget" fluid class="fill-height ma-0 pa-0" id="receipt-to-print">
+    <v-container v-if="budget" fluid class="fill-height ma-0 pa-0">
         <v-layout row wrap>
             <v-flex>
-                <v-card class="pa-10">
+                <v-card flat class="pa-10" id="receipt-to-print">
                     <v-layout row wrap class="align-center pa-4" style="border: 2px solid #2196f3; border-radius: 16px">
                         <v-flex xs6 class="text-left">
                             <v-layout column wrap>
@@ -62,9 +62,17 @@
                                 </v-flex>
                             </v-layout>
                         </v-flex>
-                        <v-flex xs12 class="text-right mt-4 mr-4">
+                        <v-flex xs12 class="text-right mt-4 mr-4" v-if="budget.discount > 0">
+                            <span class="primary--text font-weight-bold pr-6" style="font-size: 1.2em">SubTotal </span>
+                            <span class="font-weight-bold">{{budget.subTotal.toLocaleString('en-us', {minimumFractionDigits: 2, maximumFractionDigits: 2})}}</span>
+                        </v-flex>
+                        <v-flex xs12 class="text-right mr-4" v-if="budget.discount > 0">
+                            <span class="primary--text font-weight-bold pr-6" style="font-size: 1.2em">Desconto </span>
+                            <span class="font-weight-bold">{{budget.discount.toLocaleString('en-us', {minimumFractionDigits: 2, maximumFractionDigits: 2})}}</span>
+                        </v-flex>
+                        <v-flex xs12 class="text-right mr-4 mt-2">
                             <span class="primary--text font-weight-bold pr-6" style="font-size: 1.2em">Total </span>
-                            <span class="font-weight-bold">{{total.toLocaleString('en-us', {minimumFractionDigits: 2, maximumFractionDigits: 2})}}</span>
+                            <span class="font-weight-bold">{{this.budget.total.toLocaleString('en-us', {minimumFractionDigits: 2, maximumFractionDigits: 2})}}</span>
                         </v-flex>
                         <v-flex xs6 class="text-left mt-12">
                             <v-layout column wrap class="primary--text">
@@ -91,13 +99,6 @@
             items() {
                 return this.budget.specialties.concat(this.budget.exams)
             },
-            total() {
-                let total = 0
-                for (let item in this.items) {
-                    total += parseFloat(this.items[item].price)
-                }
-                return total
-            }
         },
         data: () => ({}),
         mounted() {
