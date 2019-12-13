@@ -256,7 +256,7 @@
                         <v-btn small dark fab color="error" class="mr-2" @click="selectClinic(item), Product = true"><v-icon>assignment_late</v-icon></v-btn>
                         <v-btn small dark fab color="warning" class="mr-2" @click="selectClinic(item), Configuration = true "><v-icon>assignment_turned_in</v-icon></v-btn>
 
-                        <v-dialog v-model="Product" width="500px" text hide-overlay><Products v-if="clinicSelected"></Products></v-dialog>
+                        <v-dialog v-model="Product" width="850px" text hide-overlay><Products v-if="clinicSelected"></Products></v-dialog>
                         <v-dialog v-model="Configuration" width="500px" text hide-overlay><Configurations v-if="clinicSelected"></Configurations></v-dialog>
                         <v-dialog v-model="Consultation" width="500px" text hide-overlay><Consultations v-if="clinicSelected"></Consultations></v-dialog>
                         <v-dialog v-model="Exam" width="500px" text hide-overlay><Exams v-if="clinicSelected"></Exams></v-dialog>

@@ -131,10 +131,9 @@ const actions = {
 
     loadClinics ({commit}) {
         return new Promise((resolve, reject) => {
-
+            let clinics = [];
             firebase.firestore().collection('clinics').get().then((doc) => {
 
-                let clinics = [];
                 doc.forEach((doc) => {
 
                     let specialties = [];
