@@ -1,6 +1,16 @@
 <template>
     <v-container v-if="budget" fluid class="fill-height ma-0 pa-0">
         <v-layout row wrap>
+            <v-flex xs6 class="text-left white">
+                <v-btn class="transparent" text @click="$emit('close')">
+                    <v-icon>close</v-icon>
+                </v-btn>
+            </v-flex>
+            <v-flex xs6 class="text-right white">
+                <v-btn class="transparent" text @click="print()">
+                    <v-icon>print</v-icon>
+                </v-btn>
+            </v-flex>
             <v-flex>
                 <v-card flat class="pa-10" id="receipt-to-print">
                     <v-layout row wrap class="align-center pa-4" style="border: 2px solid #2196f3; border-radius: 16px">
@@ -19,7 +29,7 @@
                         <v-flex xs6 class="text-left">
                             <v-layout column wrap>
                                 <span class="primary--text font-weight-bold mt-2">{{this.budget.user.addresses[0].street}} {{this.budget.user.addresses[0].number}}</span>
-                                <span v-if="this.budget.user.addresses[0].complement.length > 0" class="primary--text font-weight-bold mt-2">{{this.budget.user.addresses[0].complement}}</span>
+                                <span v-if="this.budget.user.addresses[0].complement" class="primary--text font-weight-bold mt-2">{{this.budget.user.addresses[0].complement}}</span>
                                 <span class="primary--text font-weight-bold">{{this.budget.user.addresses[0].city}} - {{this.budget.user.addresses[0].uf}}</span>
                                 <span class="primary--text font-weight-bold">{{this.budget.user.addresses[0].cep}}</span>
                             </v-layout>
@@ -101,9 +111,10 @@
             },
         },
         data: () => ({}),
-        mounted() {
-            console.log('budget', this.budget)
-        },
-        methods: {}
+        methods: {
+            print() {
+                window.print()
+            }
+        }
     }
 </script>

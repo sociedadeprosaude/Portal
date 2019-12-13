@@ -28,10 +28,14 @@
                         <v-card :class="['my-2 pa-2', diffByNow(intake) < 30000 ? 'green' : '']"
                                 @click="receipt(intake)">
                             <v-layout row wrap>
-                                <v-flex xs12 class="text-left">
+                                <v-flex xs10 class="text-left">
                             <span class="my-sub-headline">
                                 {{intake.date | dateFilter}}
                             </span>
+                                </v-flex>
+                                <v-flex xs2>
+                                    <v-progress-circular indeterminate v-if="loading"
+                                                         class="primary--text"></v-progress-circular>
                                 </v-flex>
                                 <v-flex xs12 class="text-left">
                             <span class="my-sub-headline">
@@ -87,7 +91,7 @@
             </v-layout>
         </v-card>
         <v-dialog v-model="receiptDialog" v-if="selectedIntake">
-            <receipt :budget=selectedIntake></receipt>
+            <receipt @close="receiptDialog = false" :budget=selectedIntake></receipt>
         </v-dialog>
     </v-container>
 </template>
@@ -106,9 +110,6 @@
                 selectedIntake: undefined,
                 receiptDialog: false
             }
-        },
-        mounted() {
-            console.log('selected', this.selectedIntake)
         },
         methods: {
             async selectBudget(budget) {
@@ -132,8 +133,10 @@
                 return now.valueOf() - date.valueOf()
             },
             async receipt(intake) {
+                this.loading = true
                 this.selectedIntake = await this.$store.dispatch('getIntakeDetails', intake)
                 this.receiptDialog = true
+                this.loading = false
             }
         },
         computed: {

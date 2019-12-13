@@ -237,6 +237,9 @@
         <v-flex class="hidden-screen-only">
             <receipt :budgets="selectedBudget"></receipt>
         </v-flex>
+        <v-dialog v-model="receiptDialog" v-if="selectedIntake">
+            <receipt @close="receiptDialog = false" :budget=selectedIntake></receipt>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -274,7 +277,9 @@
                 FormasDePagamento: ["Dinheiro", "Crédito", "Débito"],
                 totalNovo: 0,
                 budgetToPrint: undefined,
-                budgetToPrintDialog: false
+                budgetToPrintDialog: false,
+                selectedIntake: undefined,
+                receiptDialog: false
 
                 // selectedBudget: undefined
             }
@@ -468,10 +473,16 @@
                 }
                 await this.$store.dispatch('addIntake', this.selectedBudget)
                 this.updateBudgetsIntakes()
+                this.receipt(this.selectedBudget)
                 this.paymentLoading = false
                 this.paymentSuccess = true
                 this.card = false
                 // window.print();
+            },
+            async receipt(intake) {
+                this.selectedIntake = await this.$store.dispatch('getIntakeDetails', intake)
+                // this.selectedIntake = intake
+                this.receiptDialog = true
             },
             clearCart() {
                 this.$store.commit('clearShoppingCartItens')
