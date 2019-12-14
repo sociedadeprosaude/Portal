@@ -409,7 +409,6 @@
                 // window.print();
                 this.saveBudget(this.generateBudget())
                 this.budgetToPrint = this.selectedBudget
-                console.log('sel', this.budgetToPrint)
                 this.budgetToPrintDialog = true
             },
             pesquisarUsuario() {
@@ -418,7 +417,6 @@
                     for (this.i = 0; this.i < this.pedid[0].consultas.length; this.i++) {
                         this.addProducts(this.pedid[0].consultas[this.i], this.pedid[0].consultas[this.i].preco, this.pedid[0].consultas[this.i].custo, this.pedid[0].consultas[this.i].clinica)
                     }
-                    console.log('mostrando', this.pedid[0].exames);
                     this.categorySelect = 'exams';
                     for (this.i = 0; this.i < this.pedid[0].exames.length; this.i++) {
                         this.addProducts(this.pedid[0].exames[this.i], this.pedid[0].exames[this.i].price, this.pedid[0].exames[this.i].cost, this.pedid[0].exames[this.i].clinic)
