@@ -113,6 +113,11 @@
                 loading: undefined
             }
         },
+        watch: {
+            categorySelect: function () {
+                this.search = ''
+            }
+        },
         computed: {
             specialties() {
                 let specialties = this.$store.getters.specialties;
