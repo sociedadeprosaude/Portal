@@ -205,7 +205,7 @@
                                 <v-flex xs12>
                                     <v-layout row wrap class="align-end fill-height">
                                         <v-flex xs6 class="text-center">
-                                            <v-btn outlined color="primary" @click="imprimir()">Imprimir
+                                            <v-btn :disabled="consultas.length === 0 && exames.length === 0" outlined color="primary" @click="imprimir()">Imprimir
                                             </v-btn>
                                         </v-flex>
                                         <v-flex xs6 class="text-center">
@@ -231,12 +231,12 @@
         >
             <select-patient-card max-width="100%"></select-patient-card>
         </v-dialog>
-        <v-dialog fullscreen v-model="budgetToPrintDialog">
+        <v-dialog v-model="budgetToPrintDialog" v-if="budgetToPrint">
             <budget-to-print @close="budgetToPrintDialog = false" :budget="budgetToPrint"></budget-to-print>
         </v-dialog>
-        <v-flex class="hidden-screen-only">
-            <receipt :budgets="selectedBudget"></receipt>
-        </v-flex>
+<!--        <v-flex class="hidden-screen-only">-->
+<!--            <receipt :budgets="selectedBudget"></receipt>-->
+<!--        </v-flex>-->
         <v-dialog v-model="receiptDialog" v-if="selectedIntake">
             <receipt @close="receiptDialog = false" :budget=selectedIntake></receipt>
         </v-dialog>
@@ -289,7 +289,6 @@
                 return this.$store.getters.selectedBudget
             },
             patient() {
-                console.log(this.$store.getters.selectedPatient)
                 return this.$store.getters.selectedPatient
             },
             exames() {
@@ -410,6 +409,7 @@
                 // window.print();
                 this.saveBudget(this.generateBudget())
                 this.budgetToPrint = this.selectedBudget
+                console.log('sel', this.budgetToPrint)
                 this.budgetToPrintDialog = true
             },
             pesquisarUsuario() {
@@ -454,7 +454,6 @@
             async saveBudget(budget) {
                 this.$store.commit('setSelectedBudget', budget)
                 // this.selectedBudget = Object.assign({}, budget)
-                console.log('budgettttt', budget)
                 await this.$store.dispatch('addBudget', budget)
                 this.updateBudgetsIntakes()
             },
