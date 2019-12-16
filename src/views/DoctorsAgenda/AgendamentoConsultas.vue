@@ -2,7 +2,7 @@
     <v-layout row wrap>
         <v-flex xs8>
             <v-layout align-center row wrap class="ml-6">
-                <v-flex xs4>
+                <v-flex xs12 md4>
                     <v-select
                             prepend-icon="school"
                             v-model="especialidade"
@@ -30,7 +30,7 @@
                         </template>
                     </v-select>
                 </v-flex>
-                <v-flex xs4>
+                <v-flex xs12 md4>
                     <v-select
                             prepend-icon="person"
                             v-model="selectedDoctor"
@@ -59,7 +59,7 @@
                     </v-select>
                 </v-flex>
 
-                <v-flex xs4>
+                <v-flex xs12 md4>
                     <v-select
                             prepend-icon="location_city"
                             v-model="clinic"
@@ -546,11 +546,6 @@
                         }
                     }
                     return response
-                    //
-                    // this.selectedDoctor ? (this.selectedDoctor.cpf === a.doctor.cpf) : true
-                    // && this.especialidade ? (this.especialidade.name ? this.especialidade.name === a.specialty.name : true) : true
-                    // && this.clinic ? this.clinic === a.clinic : true
-                    //
                 })
                 return consultas;
             },
