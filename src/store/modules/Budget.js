@@ -334,22 +334,29 @@ const actions = {
                         reject('Invoice not found!')
                     } */
                     var found = false
+                    var teste = undefined
                     intakes.forEach((intake) => {
+                        console.log('I')
                         let data = intake.data()
                         let payment_number = intake.id
                         firebase.firestore().collection('users').doc(payload.user.cpf).collection('intakes')
                             .doc(payment_number).collection('specialties').where('name', '==', payload.specialty.name)
                             .where('used', '==', false)
-                            .where('doctor.cpf', '==', payload.doctor.cpf).get().then((specialties) => {
+                            .where('doctor.cpf', '==', payload.doctor.cpf).get() .then((specialties) => {
+                                console.log('J')
                             if (!specialties.empty) {
                                 specialties.forEach((doc) => {
                                     console.log('encontrou aqui')
-                                    resolve({uid: doc.id, ...doc.data(), payment_number: payment_number})
+                                    teste = {uid: doc.id, ...doc.data(), payment_number: payment_number}
                                 })
 
                             }
                         })
                     })
+                    if(teste)
+                        resolve(teste)
+                    else
+                        console.log('não encontrou nada')
                     /*  if(!found)
                          reject('Payment Number not found') */
 
