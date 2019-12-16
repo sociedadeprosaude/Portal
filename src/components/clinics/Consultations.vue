@@ -112,7 +112,6 @@
                 >
                     SALVAR
                 </v-btn>
-                {{payment}}
             </v-layout>
         </v-card-actions>
     </v-card>
@@ -174,7 +173,7 @@
             save(){
                 for (let i in this.doctor){
                     let data = {
-                        clinic: this.selectedClinic.name,
+                        clinic: this.selectedClinic,
                         specialtie: this.consultations.name,
                         doctor:this.doctor[i].name,
                         crm: this.doctor[i].crm,
@@ -184,6 +183,7 @@
                         obs:this.obs,
                         payment: this.payment,
                     };
+                    console.log(data)
                     this.$store.dispatch('addAppointment', data);
                 }
                 this.clear()
