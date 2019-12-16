@@ -67,7 +67,7 @@
                             </v-flex>
                             <v-flex xs12 sm12>
                                 <v-select
-                                        prepend-icon="account_circle"
+                                        prepend-icon="location_city"
                                         v-model="clinic"
                                         :items="clinics"
                                         item-text="name"

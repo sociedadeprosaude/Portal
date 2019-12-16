@@ -96,7 +96,6 @@ const actions = {
         console.log('payload', payload);
 
         let data = {
-            clinic: payload.clinic,
             name: payload.doctor,
             specialtie: payload.specialtie,
             rules: payload.obs,
@@ -121,8 +120,14 @@ const actions = {
         firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie)
             .set(data);
 
+        firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).collection('clinics/').doc(payload.clinic.name)
+            .set(payload.clinic);
+
         firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf)
             .set(data);
+
+        firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf).collection('clinics/').doc(payload.clinic.name)
+            .set(payload.clinic);
     },
 
     selectClinic ({commit}, payload) {
