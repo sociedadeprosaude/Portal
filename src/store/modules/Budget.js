@@ -133,7 +133,7 @@ const actions = {
                 if (specialties[spec].doctor.rules === null) {
                     delete specialties[spec].doctor.rules
                 }
-                await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).collection('specialties').add(specialties[spec])
+                await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).collection('specialties').doc(specialties[spec].name).set(specialties[spec])
             }
         }
         if (exams) {
@@ -149,7 +149,7 @@ const actions = {
                 // if (exams[exam].rules === undefined) {
                 //     delete exams[exam].rules;
                 // }
-                await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).collection('exams').add(exams[exam])
+                await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).collection('exams').doc(exams[exam].name).set(exams[exam])
             }
         }
         if (copyPayload.user) {
@@ -343,7 +343,6 @@ const actions = {
                             .where('doctor.cpf', '==', payload.doctor.cpf).get().then((specialties) => {
                             if (!specialties.empty) {
                                 specialties.forEach((doc) => {
-                                    console.log('encontrou aqui')
                                     resolve({uid: doc.id, ...doc.data(), payment_number: payment_number})
                                 })
 
