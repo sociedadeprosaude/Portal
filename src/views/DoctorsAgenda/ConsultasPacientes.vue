@@ -1,6 +1,6 @@
 <template>
     <v-container class="pt-0">
-            
+
             <patient maxWidth="100%"></patient>
             <template>
                 <v-container class="my-0 py-0">
@@ -17,7 +17,7 @@
                                     <v-icon color="blue">restore</v-icon>:
                                     <v-chip small text-color="white" color="blue">Retorno</v-chip>
                                 </v-btn>
-                                <v-btn text>  
+                                <v-btn text>
                                     <v-icon color="warning">alarm_off</v-icon>:
                                     <v-chip small text-color="white" color="warning">Retorno Cancelado</v-chip>
                                 </v-btn>
@@ -106,7 +106,7 @@
                                                             num_recibo:item.payment_number,
                                                             pacienteObj:patient,
                                                             consultation:item
-                                                        }"    
+                                                        }"
                                                 >
                                                     <v-list-tile-content >
                                                         <v-list-tile-title>
@@ -151,7 +151,7 @@
                         </v-expansion-panels>
                     </v-layout>
                 </v-container>
-                    
+
             </template>
 
 
@@ -163,6 +163,10 @@
                                 <v-card>
                                     <v-card-title class="headline grey lighten-2" primary-title>
                                         Atualizar Informações
+                                        <v-spacer></v-spacer>
+                                        <v-btn @click="dialog = false" text class="transparent">
+                                            <v-icon>close</v-icon>
+                                        </v-btn>
                                     </v-card-title>
                                     <v-card-text>
                                         <v-container grid-list-md>
@@ -234,9 +238,9 @@
                                     </v-card-text>
                                     <v-divider></v-divider>
                                     <v-card-actions>
-                                        <v-btn color="warning" rounded @click="dialog = false">
-                                            Voltar
-                                            <v-icon>clear</v-icon>
+                                        <v-btn color="warning" rounded @click="documentDialog = !documentDialog">
+                                            Prontuario
+                                            <v-icon>insert_drive_file</v-icon>
                                         </v-btn>
                                         <v-spacer></v-spacer>
                                         <v-btn
@@ -315,16 +319,21 @@
                 <v-icon dark>done_outline</v-icon>
                 <!-- <v-icon dark>done</v-icon> -->
             </v-snackbar>
+        <v-dialog v-model="documentDialog">
+            <consultation-document @close="documentDialog = false" :consultation="index_Selecionado.consultation"></consultation-document>
+        </v-dialog>
     </v-container>
 </template>
 
 <script>
     import moment from 'moment/moment'
     import Patient from '../../components/SelectPatientCard'
+    import ConsultationDocument from "../../components/doctorsAgenda/ConsultationDocument";
     export default {
-        components: {Patient},
+        components: {Patient, ConsultationDocument},
         data: () => ({
             dialog: false,
+            documentDialog: false,
             y: 'top',
             x: null,
             mode: '',
@@ -351,7 +360,7 @@
         }),
         computed: {
             panel(){
-                
+
                 return [true]
             },
             computedDateFormatted() {
@@ -368,7 +377,7 @@
                         this.status_Selecionado = index.status
                         this.index_Selecionado = {...index}
                         this.dialog = true
-                        //this.$store.dispatch('agendarConsulta',{pacienteSelecionado: this.pacienteSelecionado, idConsulta: idConsulta, especialidade:this.especialidade})      
+                        //this.$store.dispatch('agendarConsulta',{pacienteSelecionado: this.pacienteSelecionado, idConsulta: idConsulta, especialidade:this.especialidade})
                 }
             },
 
@@ -392,29 +401,29 @@
                     if(val != null){
                         var consultas = []
                         this.qtdConsultas = 0
-                        this.qtdRetornos = 0    
+                        this.qtdRetornos = 0
                         console.log({...val})
                         for (const key in val.consultations) {
-                                
+
                                 if(val.consultations[key].type === 'Consulta' ){
                                 this.qtdConsultas += 1
                                 }else{
                                     this.qtdRetornos += 1
                                 }
                                 consultas.push(val.consultations[key])
-                            
+
                         }
                         val.consultations = consultas
                     }
-                    
+
                     return val
                 },/* ,
                 set(val){
                     var consultas = []
                     this.qtdConsultas = 0
-                    this.qtdRetornos = 0    
+                    this.qtdRetornos = 0
                     for (const key in val.consultas) {
-                        
+
                         if(val.consultas[key].status !== 'Cancelado'){
                             if(val.consultas[key].modalidade === 'Consulta' ){
                             this.qtdConsultas += 1
@@ -426,9 +435,9 @@
                     }
                     val.consultas = consultas
                     this.patientChoose = val
-                    
+
                 } */
-            
+
         },
         mounted() {
             this.date = moment().format('YYYY-MM-DD')
@@ -450,7 +459,7 @@
                 this.status = 'Aguardando pagamento'
             },
             atualizar() {
-    
+
                 this.index_Selecionado.pacienteObj.status = this.index_Selecionado.status
                 this.index_Selecionado.pacienteObj.payment_number = this.index_Selecionado.payment_number
                 this.$store.dispatch('updateAppointment', {
@@ -500,7 +509,7 @@
                     this.qtdRetornos = qtdRetornos
                 }
             },
-            
+
         }
     }
 </script>

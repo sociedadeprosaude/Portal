@@ -1,22 +1,159 @@
 <template>
-    <v-container fluid class=" fill-height">
+    <v-container class="ma-0 pa-0">
         <v-layout row wrap class="justify-center">
-            <v-flex>
-                <searchPackage></searchPackage>
-            </v-flex>
-            <v-flex sm3 v-if="selectedPackage">
-                <listPackage></listPackage>
+            <v-flex xs12>
+                <v-card class="round-card elevation-0">
+                    <v-flex xs12 class="text-right pa-2" v-if="searchPackage">
+                        <v-layout row wrap >
+                            <v-combobox v-model="searchData" :items="listPackage" item-text="name"
+                                        :clearable="true" :loading="isLoading" :search-input.sync="search"
+                                        filled  full-width
+                                        @click:clear = "clearSearch" outlined class="mr-2 ml-2"
+                                        :disabled="!searchPackage">
+                                <template v-slot:no-data>
+                                    <v-list-item>
+                                        <v-list-item-content>
+                                            <v-list-item-title>
+                                                Sem resultado para "<strong> {{ search }} </strong>"
+                                            </v-list-item-title>
+                                        </v-list-item-content>
+                                    </v-list-item>
+                                </template>
+                            </v-combobox>
+                            <v-btn small fab color="primary" dark class="mb-2 mr-2"
+                                   @click="(registerPackage =! registerPackage, searchPackage =! searchPackage),newPackage()">
+                                <v-icon>add</v-icon>
+                            </v-btn>
+                            <v-btn small fab color="primary" dark class="mb-2 mr-2"
+                                   @click="$router.back()">
+                                <v-icon>close</v-icon>
+                            </v-btn>
+                        </v-layout>
+                    </v-flex>
+                    <v-card-text v-if="registerPackage">
+                        <v-form v-model="validRegister" lazy-validation>
+                            <v-layout row wrap>
+                                <v-flex sm8 >
+                                    <v-text-field required label="nome" v-model="editedPackage.name"
+                                                  prepend-inner-icon="folder" :rules="rules.campoObrigatorio"
+                                                  primary solo :clearable="true">
+                                    </v-text-field>
+                                </v-flex>
+                                <v-spacer></v-spacer>
+                                <v-radio-group row class="ma-1">
+                                    <v-btn outlined text :color="color.buttonExam" class="button-select" rounded
+                                           @click="selectExam">Exames
+                                    </v-btn>
+                                    <!--
+                                    <v-btn outlined text :color="color.buttonAppointment" class="button-select mx-2" rounded
+                                           @click="selectAppointment">Consultas
+                                    </v-btn>
+                                    -->
+                                    <v-btn outlined text :color="color.buttonClinic" class="button-select mx-2" rounded
+                                           @click="selectClinic">Clinicas
+                                    </v-btn>
+                                </v-radio-group>
+                                <v-spacer></v-spacer>
+                                <v-btn color="primary" small fab
+                                       @click="registerPackage= !registerPackage, searchPackage= !searchPackage, clearSearch()">
+                                    <v-icon >close</v-icon>
+                                </v-btn>
+
+                                <v-text-field v-model="search" required solo primary :clearable="true"
+                                              placeholder="Escolha a categoria" item-value="nome"
+                                ></v-text-field>
+                            </v-layout>
+                            <v-card-text>
+                                <v-flex v-for="(item, index) in categories" :key="index" >
+                                    <v-card class="mt-1">
+                                        <v-card-title class="justify-center">
+                                            <h3 class="primary--text">{{item.name}}</h3>
+                                        </v-card-title>
+                                        <v-card-text>
+                                            <v-slide-group v-if="categorySelect === 'exam'"  show-arrows >
+                                                <v-slide-item
+                                                        v-for="(n,i) in item.clinics" :key="i" v-slot:default="{ active }" >
+                                                    <v-btn class="mx-2"
+                                                           :input-value="active"
+                                                           active-class="blue white--text"
+                                                           depressed
+                                                           rounded
+                                                           @click="addExam(n.clinic, item.name, categorySelect, n.price, n.cost)"
+                                                    >
+                                                        {{ n.clinic }} | {{ n.price }}
+                                                    </v-btn>
+                                                </v-slide-item>
+                                            </v-slide-group>
+                                            <!--
+                                            <v-slide-group v-if="categorySelect === 'appointment'" show-arrows multiple>
+                                                <v-slide-item
+                                                        v-for="(n,i) in item.doctors" v-slot:default="{ active, toggle }" :key="i">
+                                                    <v-btn class="mx-2"
+                                                           :input-value="active"
+                                                           active-class="blue white--text"
+                                                           depressed
+                                                           rounded
+                                                           @mousedown="toggle"
+                                                           @click="addSpecialties('PRO-SAUDE' , item , n, categorySelect, n.price, n.cost)"
+                                                    >
+                                                        {{n.name}} | {{n.price}}
+                                                    </v-btn>
+                                                </v-slide-item>
+                                            </v-slide-group>
+                                            -->
+                                        </v-card-text>
+                                        <v-card-text>
+                                            <v-slide-group v-if="categorySelect === 'clinic' && item.exams" show-arrows multiple>
+                                                <v-slide-item
+                                                        v-for="(n,index) in item.exams"  v-slot:default="{ active}" :key="index">
+                                                    <v-btn class="mx-2"
+                                                           :input-value="active"
+                                                           active-class="blue white--text"
+                                                           depressed
+                                                           rounded
+
+
+                                                           @click="addExam(n.clinic, item.name, categorySelect, n.price, n.cost)"
+                                                    >
+                                                        {{ n.name}} | {{n.price}}
+                                                    </v-btn>
+                                                </v-slide-item>
+                                            </v-slide-group>
+                                        </v-card-text>
+                                        <!--
+                                            <v-card-text>
+                                                <v-slide-group v-if="categorySelect === 'clinic' && item.specialties" show-arrows multiple>
+                                                    <v-slide-item
+                                                            v-for="(n,index) in doctors"  v-slot:default="{ active, toggle }" :key="index">
+                                                        <v-btn class="mx-2"
+                                                               :input-value="active"
+                                                               active-class="blue white--text"
+                                                               depressed
+                                                               rounded
+                                                               @mousedown="toggle"
+                                                               @click="addProducts(item.nome, n.nome, 'appointment', n.venda,n.custo)"
+                                                        >
+                                                            {{ n.produto}} | {{n.nome}} | {{n.venda}}
+                                                        </v-btn>
+                                                    </v-slide-item>
+                                                </v-slide-group>
+                                            </v-card-text>
+                                            -->
+                                    </v-card>
+                                </v-flex>
+                            </v-card-text>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
             </v-flex>
         </v-layout>
     </v-container>
 </template>
 
 <script>
-    import listPackage from "../../components/cashier/listPackage";
-    import searchPackage from "../../components/cashier/searchPackage";
-
-
     export default {
+
+        name: "searchPackage",
 
         data: () => ({
             searchPackage: true, registerPackage: false,
@@ -27,7 +164,7 @@
             validRegister: true,
             categorySelect: null,
 
-            listProducts: [], items: [], action: false, deleteBundle: false,
+            items: [], action: false,
 
             cost: 0, price: 0, percentageDiscount: 0, moneyDiscount: 0,
 
@@ -51,11 +188,6 @@
             }
 
         }),
-
-        components: {
-            listPackage,
-            searchPackage,
-        },
 
         computed: {
             listPackage (){
@@ -182,16 +314,26 @@
                     this.editedPackage = Object.assign({}, this.searchData);
                     this.editedPackage.name = data;
 
-                    this.cost = parseFloat(this.editedPackage.cost);
-                    this.price = parseFloat(this.editedPackage.price);
-                    this.percentageDiscount = this.editedPackage.percentageDiscount;
-                    this.moneyDiscount = this.editedPackage.moneyDiscount;
                     this.$store.dispatch('selectedBundle', this.editedPackage);
 
                 } else {
-                    this.$store.dispatch('selectedBundle', null);
+                    this.$store.commit('selectedBundle', null);
                 }
             },
+
+            selectedBundle () {
+                if (!this.selectedPackage){
+                    this.isLoading = false;
+                    this.searchData = null;
+                    this.registerPackage = false;
+                    this.editedPackage= Object.assign({}, this.defaultPackage);
+                    this.editedPackage.exams = [];
+                    this.cost = 0;
+                    this.price = 0;
+                    this.percentageDiscount = 0;
+                    this.moneyDiscount = 0;
+                }
+            }
         },
 
         methods: {
@@ -209,31 +351,6 @@
                 this.price = 0;
                 this.percentageDiscount = 0;
                 this.moneyDiscount = 0;
-            },
-
-            validateRegister () {
-
-                for (let exam in this.editedPackage.exams) {
-                    this.editedPackage.exams[exam].priceDiscount = this.editedPackage.exams[exam].price - this.moneyDiscount
-                }
-
-                const packageData = {
-                      name: this.editedPackage.name.toUpperCase(),
-                      cost: this.cost,
-                      price: this.price,
-                      total: (this.price - this.moneyDiscount),
-                      moneyDiscount: this.moneyDiscount,
-                      percentageDiscount: this.percentageDiscount,
-                      exams: this.editedPackage.exams,
-                      //specialties: this.editedPackage.specialties,
-                };
-
-                this.$store.dispatch('addBundle', packageData).then(() => {
-                    this.clearSearch();
-                    this.registerPackage = false;
-                    this.searchPackage = true;
-                });
-
             },
 
             selectExam () {
@@ -275,6 +392,8 @@
                     this.price += this.editedPackage.specialties[key].price;
                     this.cost += this.editedPackage.specialties[key].cost;
                 }
+
+
             },
 
             addExam (clinic, product, type, price, cost) {
@@ -286,6 +405,8 @@
                     cost:parseFloat(cost)
                 };
 
+
+                console.log('edited-exams', this.editedPackage.exams);
                 if (this.editedPackage.exams){
                     for (let key in this.editedPackage.exams) {
 
@@ -336,12 +457,12 @@
                             && this.item.cost === this.editedPackage.specialties[key].cost
                             && this.item.doctor === this.editedPackage.specialties[key].doctor){
 
-                                this.action = true;
-                                this.editedPackage.exams.splice(key, 1);
+                            this.action = true;
+                            this.editedPackage.exams.splice(key, 1);
 
                         } else {
 
-                                this.action = false;
+                            this.action = false;
                         }
                     }
                 }
@@ -374,10 +495,8 @@
                 this.editedPackage.specialties.splice(index,1);
             },
 
-            deletePackage () {
-                this.$store.dispatch('deletePackage', this.editedPackage);
-                this.clearSearch();
-
+            newPackage() {
+                this.$store.dispatch('selectedBundle', this.defaultPackage);
             },
 
         },

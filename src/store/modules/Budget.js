@@ -133,7 +133,7 @@ const actions = {
                 if (specialties[spec].doctor.rules === null) {
                     delete specialties[spec].doctor.rules
                 }
-                await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).collection('specialties').add(specialties[spec])
+                await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).collection('specialties').doc(specialties[spec].name).set(specialties[spec])
             }
         }
         if (exams) {
@@ -149,7 +149,7 @@ const actions = {
                 // if (exams[exam].rules === undefined) {
                 //     delete exams[exam].rules;
                 // }
-                await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).collection('exams').add(exams[exam])
+                await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).collection('exams').doc(exams[exam].name).set(exams[exam])
             }
         }
         if (copyPayload.user) {
@@ -339,19 +339,29 @@ const actions = {
                         console.log('I')
                         let data = intake.data()
                         let payment_number = intake.id
-                        firebase.firestore().collection('users').doc(payload.user.cpf).collection('intakes')
+                        specialties = await firebase.firestore().collection('users').doc(payload.user.cpf).collection('intakes')
                             .doc(payment_number).collection('specialties').where('name', '==', payload.specialty.name)
                             .where('used', '==', false)
-                            .where('doctor.cpf', '==', payload.doctor.cpf).get() .then((specialties) => {
+                            .where('doctor.cpf', '==', payload.doctor.cpf).get() 
+                            
+                        specialties.forEach((doc)=>{
+                            console.log('Encontrou Aqui')
+                            teste = {uid: doc.id, ...doc.data(), payment_number: payment_number}
+                        })   
+                            
+                            
+                            /* .then((specialties) => {
                                 console.log('J')
                             if (!specialties.empty) {
                                 specialties.forEach((doc) => {
+
                                     console.log('encontrou aqui')
                                     teste = {uid: doc.id, ...doc.data(), payment_number: payment_number}
+                                    //resolve({uid: doc.id, ...doc.data(), payment_number: payment_number})
                                 })
 
                             }
-                        })
+                        }) */
                     })
                     if(teste)
                         resolve(teste)

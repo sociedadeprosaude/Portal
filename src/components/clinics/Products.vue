@@ -288,8 +288,7 @@ export default {
         clinic: this.selectedClinic
       };
       console.log(info);
-      //this.$store.dispatch('removeExamFromClinic', info)
-      //this.$store.dispatch('removeClinicFromExam', info)
+      //this.$store.dispatch('deleteAppointment', info)
       this.dialog2 = false;
     }
   }

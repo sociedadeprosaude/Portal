@@ -205,7 +205,7 @@
                                 <v-flex xs12>
                                     <v-layout row wrap class="align-end fill-height">
                                         <v-flex xs6 class="text-center">
-                                            <v-btn outlined color="primary" @click="imprimir()">Imprimir
+                                            <v-btn :disabled="consultas.length === 0 && exames.length === 0" outlined color="primary" @click="imprimir()">Imprimir
                                             </v-btn>
                                         </v-flex>
                                         <v-flex xs6 class="text-center">
@@ -231,12 +231,12 @@
         >
             <select-patient-card max-width="100%"></select-patient-card>
         </v-dialog>
-        <v-dialog fullscreen v-model="budgetToPrintDialog">
+        <v-dialog v-model="budgetToPrintDialog" v-if="budgetToPrint">
             <budget-to-print @close="budgetToPrintDialog = false" :budget="budgetToPrint"></budget-to-print>
         </v-dialog>
-        <v-flex class="hidden-screen-only">
-            <receipt :budgets="selectedBudget"></receipt>
-        </v-flex>
+<!--        <v-flex class="hidden-screen-only">-->
+<!--            <receipt :budgets="selectedBudget"></receipt>-->
+<!--        </v-flex>-->
         <v-dialog v-model="receiptDialog" v-if="selectedIntake">
             <receipt @close="receiptDialog = false" :budget=selectedIntake></receipt>
         </v-dialog>
@@ -280,7 +280,6 @@
                 budgetToPrintDialog: false,
                 selectedIntake: undefined,
                 receiptDialog: false
-
                 // selectedBudget: undefined
             }
         },
@@ -289,7 +288,6 @@
                 return this.$store.getters.selectedBudget
             },
             patient() {
-                console.log(this.$store.getters.selectedPatient)
                 return this.$store.getters.selectedPatient
             },
             exames() {
@@ -418,7 +416,6 @@
                     for (this.i = 0; this.i < this.pedid[0].consultas.length; this.i++) {
                         this.addProducts(this.pedid[0].consultas[this.i], this.pedid[0].consultas[this.i].preco, this.pedid[0].consultas[this.i].custo, this.pedid[0].consultas[this.i].clinica)
                     }
-                    console.log('mostrando', this.pedid[0].exames);
                     this.categorySelect = 'exams';
                     for (this.i = 0; this.i < this.pedid[0].exames.length; this.i++) {
                         this.addProducts(this.pedid[0].exames[this.i], this.pedid[0].exames[this.i].price, this.pedid[0].exames[this.i].cost, this.pedid[0].exames[this.i].clinic)
@@ -454,7 +451,6 @@
             async saveBudget(budget) {
                 this.$store.commit('setSelectedBudget', budget)
                 // this.selectedBudget = Object.assign({}, budget)
-                console.log('budgettttt', budget)
                 await this.$store.dispatch('addBudget', budget)
                 this.updateBudgetsIntakes()
             },

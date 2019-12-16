@@ -96,7 +96,6 @@ const actions = {
         console.log('payload', payload);
 
         let data = {
-            clinic: payload.clinic,
             name: payload.doctor,
             specialtie: payload.specialtie,
             rules: payload.obs,
@@ -112,17 +111,62 @@ const actions = {
             name: payload.specialtie,
         };
 
-        firebase.firestore().collection('clinics/' + payload.clinic + '/specialties/' + payload.specialtie
+        firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie
             + '/doctors').doc(payload.cpf).set(data);
 
-        firebase.firestore().collection('clinics/' + payload.clinic + '/specialties').doc(payload.specialtie)
+        firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties').doc(payload.specialtie)
             .set(info);
 
         firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie)
             .set(data);
 
+        firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).collection('clinics/').doc(payload.clinic.name)
+            .set(payload.clinic);
+
         firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf)
             .set(data);
+
+        firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf).collection('clinics/').doc(payload.clinic.name)
+            .set(payload.clinic);
+    },
+
+    deleteAppointment ({commit}, payload) {
+
+        console.log('payload', payload);
+
+        let data = {
+            name: payload.doctor,
+            specialtie: payload.specialtie,
+            rules: payload.obs,
+            cost: payload.cost,
+            price: payload.price,
+            payment_method: payload.payment,
+            crm: payload.crm,
+            cpf: payload.cpf
+
+        };
+
+        let info = {
+            name: payload.specialtie,
+        };
+
+        firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie
+            + '/doctors').doc(payload.cpf).set(data);
+
+        firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties').doc(payload.specialtie)
+            .set(info);
+
+        firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie)
+            .set(data);
+
+        firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).collection('clinics/').doc(payload.clinic.name)
+            .set(payload.clinic);
+
+        firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf)
+            .set(data);
+
+        firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf).collection('clinics/').doc(payload.clinic.name)
+            .set(payload.clinic);
     },
 
     selectClinic ({commit}, payload) {
