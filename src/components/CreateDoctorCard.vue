@@ -78,6 +78,37 @@
                             </template>
                         </v-select>
                     </v-flex>
+
+                    <v-flex>
+                        <v-select
+                                prepend-icon="location_city"
+                                v-model="clinic"
+                                :items="clinics"
+                                item-text="name"
+                                label="Clínica"
+                                outlined
+                                rounded
+                                filled
+                                chips
+                                multiple
+                                color="purple"
+                                clearable
+                        >
+                            <template v-slot:selection="data">
+                                <v-chip
+                                        :key="JSON.stringify(data.item)"
+                                        :selected="data.selected"
+                                        :disabled="data.disabled"
+                                        class="v-chip--select-multi"
+                                        @click.stop="data.parent.selectedIndex = data.index"
+                                        @input="data.parent.selectItem(data.item)"
+                                        text-color="white"
+                                        color="info"
+                                >{{ data.item.name }}</v-chip>
+                            </template>
+                        </v-select>
+                    </v-flex>
+
                     <v-flex xs12 v-for="spec in specialties" :key="spec.name">
                         <v-layout row wrap class="align-center">
                             <v-flex xs6 class="text-left">
@@ -160,6 +191,7 @@
     export default {
         name: "CreateDoctorCard",
         props: ['doctor'],
+        clinic: undefined,
         directives: {
             mask,
         },
@@ -193,6 +225,9 @@
             }
         },
         computed: {
+            clinics() {
+                return this.$store.getters.clinics
+            },
             specialtyOptions() {
                 return this.$store.getters.specialties
             },
