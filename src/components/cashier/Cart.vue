@@ -280,7 +280,6 @@
                 budgetToPrintDialog: false,
                 selectedIntake: undefined,
                 receiptDialog: false
-
                 // selectedBudget: undefined
             }
         },
