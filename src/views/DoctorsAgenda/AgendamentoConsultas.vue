@@ -301,7 +301,7 @@
                                             <!--                                            </v-flex>-->
                                             <v-flex xs12 sm8>
                                                  <v-progress-circular
-                                                    v-if="loaderRecibo"
+                                                    v-if="loaderPaymentNumber"
                                                     indeterminate
                                                     color="primary"
                                                 ></v-progress-circular>
@@ -364,7 +364,7 @@
                                         <v-icon right>clear</v-icon>
                                     </v-btn>
                                     <v-spacer></v-spacer>
-                                    <v-btn
+                                    <!-- <v-btn
                                             color="success"
                                             :disabled="loader"
                                             :loading="loader"
@@ -377,16 +377,18 @@
                                         <template v-slot:loader>
                                             <span>Aguarde...</span>
                                         </template>
-                                    </v-btn>
+                                        v-if="status === 'Aguardando pagamento' && num_recibo === ''"
+                                    </v-btn> -->
                                     <submit-button
                                             color="success"
                                             rounded
-                                            @reset="success = false"
+                                            :disabled="loaderPaymentNumber"
+                                            @reset="resetSchedule"
                                             :success="success"
-                                            :loading="loading"
+                                            :loading="scheduleLoading"
                                             @click="save"
                                             text="Confirmar"
-                                            v-if="status === 'Aguardando pagamento' && num_recibo === ''"
+                                            
                                     >
                                     </submit-button>
                                 </v-card-actions>
@@ -455,7 +457,7 @@
             x: null,
             mode: "",
             alert: false,
-            loaderRecibo:false,
+            loaderPaymentNumber:false,
             menu: false,
             clinic: undefined,
             dialog: false,
@@ -498,6 +500,7 @@
             changeDoctorsOptions: true,
             success : false,
             loading: false,
+            scheduleLoading:false,
 
             //-------------------------------------------Scroll------------------------------------------------
             type: "number",
@@ -681,7 +684,7 @@
                 this.payment_numberFound = undefined
                 this.num_recibo = ''
                 this.status = 'Aguardando pagamento'
-                this.loaderRecibo = true
+                this.loaderPaymentNumber = true
                 this.$store.dispatch('thereIsIntakes',{
                     user:patient,
                     doctor:form.consultation.doctor,
@@ -690,9 +693,10 @@
                         this.payment_numberFound = obj
                         this.num_recibo = obj.payment_number
                         this.status = 'Pago'
-                        this.loaderRecibo = false
+                        this.loaderPaymentNumber = false
+
                 }).catch(()=>{
-                    this.loaderRecibo = false
+                    this.loaderPaymentNumber = false
                 })
                 
                 this.createConsultationForm = form
@@ -819,7 +823,13 @@
                 this.num_recibo = "";
                 this.status = "Aguardando pagamento";
             },
+            resetSchedule(){
+                this.dialog = false
+                this.success = false
+            },
             async save() {
+                this.scheduleLoading = true
+
                 let form = this.createConsultationForm
                 form.user = {
                     ...form.user,
@@ -840,9 +850,8 @@
                 await this.$store.dispatch('addConsultationAppointmentToUser', form)
                 //Realizar essa funcao pelo cloud functions
                 await this.$store.dispatch('addUserToConsultation', form)
-                this.loading = false
+                this.scheduleLoading = false
                 this.success = true
-                this.dialog = false
             }
         }
     };
