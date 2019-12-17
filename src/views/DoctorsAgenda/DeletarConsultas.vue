@@ -201,7 +201,7 @@
 
                                             <v-expansion-panel-content>
                                                 <v-divider></v-divider>
-                                                <v-card class="elevation-3">
+                                                <v-card class="elevation-0">
                                                     <v-list three-line subheader>
                                                         <v-layout wrap>
                                                             <v-flex sm3

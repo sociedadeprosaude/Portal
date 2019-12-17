@@ -16,10 +16,19 @@
                     <v-layout row wrap class="align-center pa-4" style="border: 2px solid #2196f3; border-radius: 16px">
                         <v-flex xs6 class="text-left">
                             <v-layout column wrap>
+                                <strong>Hoje: {{ hoje }} - {{dia}}</strong>
                                 <span class="my-sub-headline primary--text" style="font-size: 1.4em">Dr. {{consultation.doctor.name}}</span>
                                 <v-flex>
                                     <span class="primary--text font-weight-bold">CRM: </span>
                                     <span class="font-weight-bold">{{consultation.doctor.crm}}</span>
+                                </v-flex>
+                                <v-flex>
+                                    <span class="primary--text font-weight-bold">Especialidade: </span>
+                                    <span class="font-weight-bold">{{this.consultation.specialty.name}}</span>
+                                </v-flex>
+                                <v-flex>
+                                <span class="primary--text font-weight-bold">Procedimento: </span>
+                                <span class="font-weight-bold">{{this.consultation.type}}</span>
                                 </v-flex>
                             </v-layout>
                         </v-flex>
@@ -44,6 +53,14 @@
                                 <v-flex>
                                     <span class="primary--text font-weight-bold">CPF: </span>
                                     <span class="font-weight-bold">{{user.cpf}}</span>
+                                </v-flex>
+                                <v-flex>
+                                    <span class="primary--text font-weight-bold">Data de Nascimento: </span>
+                                    <span class="font-weight-bold">{{user.birth_date}}</span><br>
+                                </v-flex>
+                                <v-flex>
+                                    <span class="primary--text font-weight-bold">Idade: </span>
+                                    <span class="font-weight-bold">{{idade}}</span><br>
                                 </v-flex>
                             </v-layout>
                         </v-flex>
@@ -98,16 +115,22 @@
 </template>
 
 <script>
-
+    var moment = require("moment");
     export default {
         name: "Receipt",
         props: ['consultation'],
         computed: {
+            idade () {
+              return moment().diff(moment(this.user.birth_date, 'DD/MM/YYYY'), 'years')
+            },
             user() {
                 return this.$store.getters.selectedPatient
             }
         },
-        data: () => ({}),
+        data: () => ({
+            hoje: moment().locale('pt-BR').format('DD/MM/YYYY HH:mm:ss'),
+            dia: moment().format('dddd'),
+        }),
         methods: {
             print() {
                 window.print()

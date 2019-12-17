@@ -81,7 +81,7 @@
 
                             <v-expansion-panel-content>
                                 <v-divider></v-divider>
-                                <v-card class="elevation-3">
+                                <v-card class="elevation-0">
                                     <v-list three-line subheader>
                                         <v-layout row wrap>
                                             <v-flex sm3
@@ -98,7 +98,7 @@
                                                             data: item.date.split(' ')[0],
                                                             hora: item.date.split(' ')[1],
                                                             crm: item.doctor.crm,
-                                                            especialidade: item.specialty,
+                                                            especialidade: item.specialty.name,
                                                             status: item.status,
                                                             modalidade: item.type,
                                                             medico:item.doctor.name,
@@ -159,7 +159,7 @@
                 <v-container>
                     <v-layout>
                         <div class="text-xs-center">
-                            <v-dialog v-model="dialog" width="500">
+                            <v-dialog v-model="dialog" width="520">
                                 <v-card>
                                     <v-card-title class="headline grey lighten-2" primary-title>
                                         Atualizar Informações
@@ -171,11 +171,11 @@
                                     <v-card-text>
                                         <v-container grid-list-md>
                                             <v-layout wrap>
-                                                <v-flex xs12 sm6>
+                                                <v-flex xs12>
                                                     <v-text-field readonly hide-details outlined prepend-icon="person" label="Nome do Paciente" v-model="index_Selecionado.paciente">
                                                     </v-text-field>
                                                 </v-flex>
-                                                <v-flex xs12 sm6>
+                                                <v-flex xs12>
                                                     <v-text-field readonly hide-details outlined prepend-icon="credit_card" label="CPF" v-model="index_Selecionado.cpf">
                                                     </v-text-field>
                                                 </v-flex>
@@ -233,12 +233,30 @@
                                                             outlined
                                                     ></v-text-field>
                                                 </v-flex>
+                                                <v-flex xs12 sm12 md12 lg12><v-divider ></v-divider></v-flex>
+                                                <v-flex xs12>
+                                                    <v-select
+                                                            prepend-icon="device_unknown"
+                                                            v-model="attendance"
+                                                            :items="attendanceOptions"
+                                                            label="Atendimento"
+                                                            chips
+                                                            outlined
+                                                            hide-details
+                                                            :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress ? false : true"
+                                                    ></v-select>
+                                                </v-flex>
                                             </v-layout>
                                         </v-container>
                                     </v-card-text>
                                     <v-divider></v-divider>
                                     <v-card-actions>
-                                        <v-btn color="warning" rounded @click="documentDialog = !documentDialog">
+                                        <v-btn
+                                                color="warning"
+                                                rounded
+                                                @click="documentDialog = !documentDialog"
+                                                :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress ? false : true"
+                                        >
                                             Prontuario
                                             <v-icon>insert_drive_file</v-icon>
                                         </v-btn>
@@ -338,6 +356,12 @@
             x: null,
             mode: '',
             /* panel:[true], */
+            attendance:'Aguardando Atendimento',
+            attendanceOptions:
+                [
+                    {text: 'Aguardando Atendimento'},
+                    {text: 'Atendimento Realizado'},
+                ],
             statusOptions:
                 [
                     {text: 'Aguardando pagamento'},

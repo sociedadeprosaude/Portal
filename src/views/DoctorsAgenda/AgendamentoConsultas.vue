@@ -193,10 +193,8 @@
                     <div class="text-xs-center">
                         <v-dialog v-model="dialog" v-if="createConsultationForm" width="500">
                             <v-card>
-                                <v-card-title
-                                        class="headline grey lighten-2"
-                                        primary-title
-                                >Confirmar Agendamento da Consulta
+                                <v-card-title class="headline grey lighten-2" primary-title>
+                                    Confirmar Agendamento da Consulta
                                 </v-card-title>
                                 <v-card-text>
                                     <v-container grid-list-md>
@@ -217,7 +215,7 @@
                                                         label="CPF"
                                                 ></v-text-field>
                                             </v-flex>
-                                            <v-flex xs12>
+                                            <v-flex xs12 sm6>
                                                 <v-text-field
                                                         v-if="createConsultationForm.user.association_number"
                                                         readonly

@@ -153,7 +153,7 @@
 
                                 <v-expansion-panel-content>
                                     <v-divider></v-divider>
-                                    <v-card class="elevation-3">
+                                    <v-card class="elevation-0">
                                     <v-list three-line subheader>
                                         <v-layout wrap>
                                             <v-flex sm3
@@ -226,19 +226,23 @@
                 <v-container>
                     <v-layout>
                         <div class="text-xs-center">
-                            <v-dialog v-model="dialog" width="500">
+                            <v-dialog v-model="dialog" width="520">
                                 <v-card>
                                     <v-card-title class="headline grey lighten-2" primary-title>
                                         Atualizar Informações
+                                        <v-spacer></v-spacer>
+                                        <v-btn @click="dialog = false" text class="transparent">
+                                            <v-icon>close</v-icon>
+                                        </v-btn>
                                     </v-card-title>
                                     <v-card-text>
                                         <v-container grid-list-md>
                                             <v-layout wrap>
-                                                <v-flex xs12 sm6>
+                                                <v-flex xs12>
                                                     <v-text-field readonly hide-details outlined prepend-icon="person" label="Nome do Paciente" v-model="index_Selecionado.paciente">
                                                     </v-text-field>
                                                 </v-flex>
-                                                <v-flex xs12 sm6>
+                                                <v-flex xs12>
                                                     <v-text-field readonly hide-details outlined prepend-icon="credit_card" label="CPF" v-model="index_Selecionado.cpf">
                                                     </v-text-field>
                                                 </v-flex>
@@ -306,7 +310,7 @@
                                                             chips
                                                             outlined
                                                             hide-details
-                                                            :disabled="status_Selecionado.status === 'Pago' && index_Selecionado.num_recibo !== ''"
+                                                            :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress ? false : true"
                                                     ></v-select>
                                                 </v-flex>
                                             </v-layout>
@@ -314,9 +318,14 @@
                                     </v-card-text>
                                     <v-divider></v-divider>
                                     <v-card-actions>
-                                        <v-btn color="warning" rounded @click="dialog = false">
-                                            Voltar
-                                            <v-icon>clear</v-icon>
+                                        <v-btn
+                                                color="warning"
+                                                rounded
+                                                @click="documentDialog = !documentDialog"
+                                                :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress ? false : true"
+                                        >
+                                            Prontuario
+                                            <v-icon>insert_drive_file</v-icon>
                                         </v-btn>
                                         <v-spacer></v-spacer>
                                         <v-btn
@@ -398,12 +407,17 @@
             </v-card>
             </v-flex>
         </v-layout>
+        <v-dialog v-model="documentDialog">
+            <!--<consultation-document @close="documentDialog = false" :consultation="index_Selecionado"></consultation-document>-->
+        </v-dialog>
     </v-container>
 </template>
 
 <script>
+    import ConsultationDocument from "../../components/doctorsAgenda/ConsultationDocument";
     import moment from 'moment/moment'
     export default {
+        components: {ConsultationDocument},
         data: () => ({
             y: 'top',
             x: null,
@@ -412,11 +426,17 @@
             date_choose: '',
             dateFormatted: '',
             menu: false,
+            documentDialog: false,
             dialog: false,
             alert: false,
             index_Selecionado: {},
             status_Selecionado:'',
             attendance:'Aguardando Atendimento',
+            attendanceOptions:
+                [
+                    {text: 'Aguardando Atendimento'},
+                    {text: 'Atendimento Realizado'},
+                ],
             semanaOptions: [
                 "Domingo",
                 "Segunda-feira",
@@ -426,11 +446,6 @@
                 "Sexta-feira",
                 "Sábado"
             ],
-            attendanceOptions:
-                [
-                    {text: 'Aguardando Atendimento'},
-                    {text: 'Atendimento Realizado'},
-                ],
             statusOptions:
                 [
                     {text: 'Aguardando pagamento'},
