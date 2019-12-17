@@ -79,7 +79,7 @@
                                                                     data: item.date.split(' ')[0],
                                                                     hora: item.date.split(' ')[1],
                                                                     crm: item.doctor.crm,
-                                                                    especialidade: item.specialty,
+                                                                    especialidade: item.specialty.name,
                                                                     status: item.status,
                                                                     modalidade: item.type,
                                                                     medico:item.doctor.name,
@@ -182,7 +182,19 @@
                                                         <v-text-field prepend-icon="receipt" label="Nº do Recibo" v-model="index_Selecionado.num_recibo" outlined hide-details readonly
                                                         ></v-text-field>
                                                     </v-flex>
-                                                    <!--<v-flex xs12 sm12 md12 lg12><v-divider ></v-divider></v-flex>-->
+                                                    <v-flex xs12 sm12 md12 lg12><v-divider ></v-divider></v-flex>
+                                                    <v-flex xs12>
+                                                        <v-select
+                                                                prepend-icon="device_unknown"
+                                                                v-model="attendance"
+                                                                :items="attendanceOptions"
+                                                                label="Atendimento"
+                                                                chips
+                                                                outlined
+                                                                hide-details
+                                                                readonly
+                                                        ></v-select>
+                                                    </v-flex>
                                                 </v-layout>
                                             </v-container>
                                         </v-card-text>
@@ -211,6 +223,12 @@
     export default {
         data: () => ({
             menu: false,
+            attendance:'Aguardando Atendimento',
+            attendanceOptions:
+                [
+                    {text: 'Aguardando Atendimento'},
+                    {text: 'Atendimento Realizado'},
+                ],
             dateFormatted: '',
             date: null,
             dialog: false,

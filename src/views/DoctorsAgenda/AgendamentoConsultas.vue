@@ -148,14 +148,13 @@
                                                             text-color="white"
                                                     >Vagas : {{consulta.vagas}}
                                                     </v-chip>
+                                                    <v-chip
+                                                            color="primary_dark"
+                                                            text-color="white"
+                                                    >Clinica : {{consulta.clinic}}
+                                                    </v-chip>
                                                 </v-layout>
                                             </v-flex>
-                                            <!-- <v-flex x3 sm3 dm3 lg3 class="ml-4">
-                                              <v-chip
-                                                :color="consultaGroup.color"
-                                                text-color="white"
-                                              >Vagas : {{consulta.vaga}}</v-chip>
-                                            </v-flex>-->
                                             <v-flex xs12 class="text-right">
                                                 <v-btn
                                                         rounded
@@ -191,7 +190,7 @@
             <v-container>
                 <v-layout>
                     <div class="text-xs-center">
-                        <v-dialog v-model="dialog" v-if="createConsultationForm" width="500">
+                        <v-dialog v-model="dialog" v-if="createConsultationForm" width="520">
                             <v-card>
                                 <v-card-title class="headline grey lighten-2" primary-title>
                                     Confirmar Agendamento da Consulta
@@ -199,9 +198,9 @@
                                 <v-card-text>
                                     <v-container grid-list-md>
                                         <v-layout wrap row class="align-center">
-                                            <v-flex xs12 sm6>
+                                            <v-flex xs12>
                                                 <v-text-field
-                                                        readonly
+                                                        readonly hide-details outlined
                                                         prepend-icon="person"
                                                         v-model="createConsultationForm.user.name"
                                                         label="Nome do Paciente"
@@ -209,7 +208,7 @@
                                             </v-flex>
                                             <v-flex xs12 sm6>
                                                 <v-text-field
-                                                        readonly
+                                                        readonly hide-details outlined
                                                         prepend-icon="credit_card"
                                                         v-model="createConsultationForm.user.cpf"
                                                         label="CPF"
@@ -218,7 +217,7 @@
                                             <v-flex xs12 sm6>
                                                 <v-text-field
                                                         v-if="createConsultationForm.user.association_number"
-                                                        readonly
+                                                        readonly hide-details outlined
                                                         prepend-icon="credit_card"
                                                         v-model="createConsultationForm.user.association_number"
                                                         label="Nº do associado"
@@ -229,7 +228,7 @@
                                             </v-flex>
                                             <v-flex xs12 sm6>
                                                 <v-text-field
-                                                        readonly
+                                                        readonly hide-details outlined
                                                         prepend-icon="person"
                                                         v-model="createConsultationForm.consultation.doctor.name"
                                                         label="Nome do Médico"
@@ -237,7 +236,7 @@
                                             </v-flex>
                                             <v-flex xs12 sm6>
                                                 <v-text-field
-                                                        readonly
+                                                        readonly hide-details outlined
                                                         prepend-icon="credit_card"
                                                         v-model="createConsultationForm.consultation.doctor.crm"
                                                         label="CRM"
@@ -245,60 +244,30 @@
                                             </v-flex>
                                             <v-flex xs12 sm6>
                                                 <v-text-field
-                                                        readonly
+                                                        readonly hide-details outlined
                                                         prepend-icon="school"
                                                         v-model="createConsultationForm.consultation.specialty.name"
                                                         label="Especialidade"
                                                 ></v-text-field>
                                             </v-flex>
-                                            <v-flex xs12 sm6 class="text-left" style="position: relative; top: -12px">
-                                                <v-layout row wrap class="align-end ma-0">
-                                                    <v-flex xs2>
-                                                    <v-icon style="position: relative; bottom: -4px">event</v-icon>
-                                                    </v-flex>
-                                                    <v-layout column wrap>
-                                                        <span style="font-size: 0.9em">Dia</span>
-                                                        <span style="font-size: 1.2em" class="black--text">
-                                                    {{createConsultationForm.consultation.date.split(' ')[0] | dateFilter}}
-                                                </span>
-                                                        <v-divider class="mt-1 grey"></v-divider>
-                                                    </v-layout>
-                                                </v-layout>
+
+                                            <v-flex xs12 sm6>
+                                                <v-text-field
+                                                        prepend-icon="event"
+                                                        label="Dia da Consulta"
+                                                        v-model="computedDateFormatted"
+                                                        readonly hide-details outlined
+                                                ></v-text-field>
                                             </v-flex>
 
-                                            <v-flex xs12 sm4 class="text-left" style="position: relative; top: -12px">
-                                                <v-layout row wrap class="align-end ma-0">
-                                                    <v-flex xs4>
-                                                        <v-icon style="position: relative; bottom: -4px">access_alarm</v-icon>
-                                                    </v-flex>
-                                                    <v-flex xs8>
-                                                    <v-layout column wrap>
-                                                        <span style="font-size: 0.9em">Hora</span>
-                                                        <span style="font-size: 1.2em" class="black--text">
-                                                    {{createConsultationForm.consultation.date.split(' ')[1]}}
-                                                </span>
-                                                        <v-divider class="mt-1 grey"></v-divider>
-                                                    </v-layout>
-                                                    </v-flex>
-                                                </v-layout>
+                                            <v-flex xs12 sm4 >
+                                                <v-text-field
+                                                        v-model="createConsultationForm.consultation.date.split(' ')[1]"
+                                                        prepend-icon="access_alarm"
+                                                        label="Hora da Consulta"
+                                                        readonly hide-details outlined
+                                                ></v-text-field>
                                             </v-flex>
-
-                                            <!--                                            <v-flex xs12 sm6>-->
-                                            <!--                                                <v-text-field-->
-                                            <!--                                                        readonly-->
-                                            <!--                                                        prepend-icon="event"-->
-                                            <!--                                                        v-model="getConsultationDate(createConsultationForm.consultation.date)"-->
-                                            <!--                                                        label="Dia da Consulta"-->
-                                            <!--                                                ></v-text-field>-->
-                                            <!--                                            </v-flex>-->
-                                            <!--                                            <v-flex xs12 sm6>-->
-                                            <!--                                                <v-text-field-->
-                                            <!--                                                        readonly-->
-                                            <!--                                                        prepend-icon="access_alarm"-->
-                                            <!--                                                        v-model="createConsultationForm.hora"-->
-                                            <!--                                                        label="Hora da Consulta"-->
-                                            <!--                                                ></v-text-field>-->
-                                            <!--                                            </v-flex>-->
                                             <v-flex xs12 sm8>
                                                  <v-progress-circular
                                                     v-if="loaderPaymentNumber"
@@ -312,13 +281,15 @@
                                                         :items="statusOptions"
                                                         label="Status"
                                                         chips
+                                                        hide-details
+                                                        outlined
                                                 ></v-select>
                                             </v-flex>
                                             <v-flex xs12 sm6>
                                                 <v-text-field
                                                         prepend-icon="assignment"
                                                         v-model="modalidade"
-                                                        readonly
+                                                        readonly hide-details outlined
                                                         label="Modalidade"
                                                         chips
                                                 ></v-text-field>
@@ -330,6 +301,7 @@
                                                         v-model="num_recibo"
                                                         type="number"
                                                         :disabled="status === 'Pago' ? false : true"
+                                                        hide-details outlined
                                                 ></v-text-field>
                                             </v-flex>
                                             <v-flex xs12 sm12 md12 lg12>
@@ -342,7 +314,9 @@
                                                         :items="attendanceOptions"
                                                         label="Atendimento"
                                                         chips
-                                                        disabled
+                                                        readonly
+                                                        hide-details
+                                                        outlined
                                                 ></v-select>
                                             </v-flex>
                                         </v-layout>
@@ -492,6 +466,7 @@
             medicosOptions: ["Todos"],
             pacientes: "",
             timeout: 4000,
+            dateFormatted: '',
             especialidadeOption: "",
             especialidade: undefined,
             showAlert: false,
@@ -524,7 +499,7 @@
                 return this.$store.getters.specialties;
             },
             computedDateFormatted() {
-                // return this.formatDate(this.index_Selecionado.data);
+                return this.formatDate(this.createConsultationForm.consultation.date.split(' ')[0]);
             },
             consultas() {
                 let consultas = this.formatConsultationsArray(this.$store.getters.consultations).filter((a) => {
@@ -662,6 +637,11 @@
             window.addEventListener("scroll", this.handleScroll);
         },
         methods: {
+            formatDate (date) {
+                if (!date) return null
+                const [year, month, day] = date.split('-')
+                return `${day}/${month}/${year}`
+            },
             scheduleAppointment(consultation){
                 if (!this.selectedPatient) {
                     this.$refs.patientCard.$el.classList.add('shaking-ease-anim')
