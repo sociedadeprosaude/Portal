@@ -49,7 +49,7 @@ const actions = {
         }
         // copyPayload = Object.assign({}, payload)
     },
-    async getBudget({}, budgetId) {
+    async getBudget({ }, budgetId) {
         let budget = (await firebase.firestore().collection('budgets').doc(budgetId).get()).data()
         let specialtiesCol = await firebase.firestore().collection('budgets').doc(budgetId).collection('specialties').get()
         let examsCol = await firebase.firestore().collection('budgets').doc(budgetId).collection('exams').get()
@@ -67,7 +67,7 @@ const actions = {
         return budget
     },
 
-    async addBudgetToUser({}, payload) {
+    async addBudgetToUser({ }, payload) {
         let copyPayload = Object.assign({}, payload);
         functions.removeUndefineds(copyPayload)
         // console.log(copyPayload)
@@ -159,7 +159,7 @@ const actions = {
         // payload = Object.assign({}, payload)
 
     },
-    async addIntakeToUser({}, payload) {
+    async addIntakeToUser({ }, payload) {
         let copyPayload = Object.assign({}, payload);
         functions.removeUndefineds(copyPayload)
         // console.log(copyPayload)
@@ -318,61 +318,34 @@ const actions = {
     // */
     //    },
 
-    thereIsIntakes({commit}, payload) {
-        console.log(payload.specialty.name)
-        return new Promise((resolve, reject) => {
-            firebase.firestore().collection('users').doc(payload.user.cpf).collection('intakes')/* .
+    async thereIsIntakes({ commit }, payload) {
+        var found = false
+        let intakes
+        return new Promise(async (resolve, reject) => {
+            intakes = await firebase.firestore().collection('users').doc(payload.user.cpf).collection('intakes')/* .
             where('type', '==','specialty').where('used','==',false).where('name','==',payload.specialty.name)
             .where('doctor.cpf','==',payload.doctor.cpf) */
                 .get()
-                .then((intakes) => {
-                    /* if(!snap.empty){
-                        snap.forEach((doc)=>{
-                            resolve({id: doc.id,...doc.data()})
-                        })
-                    }else{
-                        reject('Invoice not found!')
-                    } */
-                    var found = false
-                    var teste = undefined
-                    intakes.forEach((intake) => {
-                        console.log('I')
-                        let data = intake.data()
-                        let payment_number = intake.id
-                        specialties = await firebase.firestore().collection('users').doc(payload.user.cpf).collection('intakes')
-                            .doc(payment_number).collection('specialties').where('name', '==', payload.specialty.name)
-                            .where('used', '==', false)
-                            .where('doctor.cpf', '==', payload.doctor.cpf).get() 
-                            
-                        specialties.forEach((doc)=>{
-                            console.log('Encontrou Aqui')
-                            teste = {uid: doc.id, ...doc.data(), payment_number: payment_number}
-                        })   
-                            
-                            
-                            /* .then((specialties) => {
-                                console.log('J')
-                            if (!specialties.empty) {
-                                specialties.forEach((doc) => {
+            for (const key in intakes.docs) {
 
-                                    console.log('encontrou aqui')
-                                    teste = {uid: doc.id, ...doc.data(), payment_number: payment_number}
-                                    //resolve({uid: doc.id, ...doc.data(), payment_number: payment_number})
-                                })
+                let payment_number = intakes.docs[key].id
+                let specialties
+                specialties = await firebase.firestore().collection('users').doc(payload.user.cpf).collection('intakes')
+                    .doc(payment_number).collection('specialties').where('name', '==', payload.specialty.name)
+                    .where('used', '==', false)
+                    .where('doctor.cpf', '==', payload.doctor.cpf).get()
+                specialties.forEach((doc) => {
+                    found = true
+                    resolve({ uid: doc.id, ...doc.data(), payment_number: payment_number })
+                })
+            }
 
-                            }
-                        }) */
-                    })
-                    if(teste)
-                        resolve(teste)
-                    else
-                        console.log('não encontrou nada')
-                    /*  if(!found)
-                         reject('Payment Number not found') */
+            if (!found) {
+                reject('Payment Number not found')
+            }
 
-                }).catch(() => {
-                reject('Error!')
-            })
+        }).catch(() => {
+            reject('Error!')
         })
 
     }

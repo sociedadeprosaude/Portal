@@ -683,7 +683,7 @@
                 this.payment_numberFound = undefined
                 this.num_recibo = ''
                 this.status = 'Aguardando pagamento'
-                //this.loaderRecibo = true
+                this.loaderRecibo = true
                 this.$store.dispatch('thereIsIntakes',{
                     user:patient,
                     doctor:form.consultation.doctor,
@@ -692,8 +692,9 @@
                         this.payment_numberFound = obj
                         this.num_recibo = obj.payment_number
                         this.status = 'Pago'
-                    
-                    //this.loaderRecibo = false
+                        this.loaderRecibo = false
+                }).catch(()=>{
+                    this.loaderRecibo = false
                 })
                 
                 this.createConsultationForm = form
