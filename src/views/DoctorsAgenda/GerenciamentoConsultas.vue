@@ -23,7 +23,7 @@
                                 <template v-slot:selection="data">
                                     <v-chip
                                             :key="JSON.stringify(data.item)"
-                                            :selected="data.selected"
+                                            :input-value="data.selected"
                                             :disabled="data.disabled"
                                             class="v-chip--select-multi"
                                             @click.stop="data.parent.selectedIndex = data.index"

@@ -24,7 +24,7 @@
                                     <template v-slot:selection="data">
                                         <v-chip
                                                 :key="JSON.stringify(data.item)"
-                                                :selected="data.selected"
+                                                :input-value="data.selected"
                                                 :disabled="data.disabled"
                                                 class="v-chip--select-multi"
                                                 @click.stop="data.parent.selectedIndex = data.index"
@@ -55,7 +55,7 @@
                                     <template v-slot:selection="data">
                                         <v-chip
                                                 :key="JSON.stringify(data.item)"
-                                                :selected="data.selected"
+                                                :input-value="data.selected"
                                                 :disabled="data.disabled"
                                                 class="v-chip--select-multi"
                                                 @click.stop="data.parent.selectedIndex = data.index"
@@ -440,8 +440,7 @@
                     doctor: this.doctor,
                     specialtie: this.especialidade
                 }
-
-                console.log(deletar)
+                //console.log(deletar)
                 this.$store.dispatch('removeAppointmentByDay', deletar)
                 this.clear()
 

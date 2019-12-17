@@ -9,7 +9,7 @@
                                     prepend-icon="spellcheck"
                                     v-model="cid"
                                     :items="cidOptions"
-                                    outline
+                                    outlined
                                     chips
                                     clearable
                                     placeholder="Digite o Codigo do CID para Pesquisar"
@@ -17,16 +17,14 @@
                                 <template v-slot:selection="data">
                                     <v-chip
                                             :key="JSON.stringify(data.item)"
-                                            :selected="data.selected"
+                                            :input-value="data.selected"
                                             :disabled="data.disabled"
                                             class="v-chip--select-multi"
                                             @click.stop="data.parent.selectedIndex = data.index"
                                             @input="data.parent.selectItem(data.item)"
+                                            color="primary"
                                     >
-                                        <v-avatar class="white--text" color="primary">
-                                            {{ data.item.slice(0, 3).toUpperCase() }}
-                                        </v-avatar>
-                                        <strong style="font-size: 15px">{{ data.item }}</strong>
+                                        <strong class="white--text" style="font-size: 15px">{{ data.item }}</strong>
                                     </v-chip>
                                 </template>
                             </v-combobox>
@@ -37,10 +35,8 @@
                                     v-model="menu"
                                     :close-on-content-click="false"
                                     :nudge-right="40"
-                                    lazy
                                     transition="scale-transition"
                                     offset-y
-                                    full-width
                                     min-width="290px"
                             >
                                 <template v-slot:activator="{ on }">
@@ -48,7 +44,7 @@
                                             v-model="computedDateFormatted"
                                             label="Data"
                                             prepend-icon="event"
-                                            outline
+                                            outlined
                                             disabled
                                             v-on="on"
                                     ></v-text-field>
@@ -68,7 +64,7 @@
                             <v-text-field
                                     v-model="start"
                                     label="Hora Inicio"
-                                    outline
+                                    outlined
                                     mask="time"
                                     prepend-icon="access_alarm"
                                     clearable
@@ -79,7 +75,7 @@
                             <v-text-field
                                     v-model="end"
                                     label="Hora Fim"
-                                    outline
+                                    outlined
                                     mask="time"
                                     prepend-icon="access_alarm"
                                     clearable

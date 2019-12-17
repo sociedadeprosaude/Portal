@@ -73,8 +73,7 @@
                                         @input="data.parent.selectItem(data.item)"
                                         text-color="white"
                                         color="info"
-                                >{{ data.item.name }}
-                                </v-chip>
+                                >{{ data.item.name }}</v-chip>
                             </template>
                         </v-select>
                     </v-flex>
@@ -97,7 +96,7 @@
                             <template v-slot:selection="data">
                                 <v-chip
                                         :key="JSON.stringify(data.item)"
-                                        :selected="data.selected"
+                                        :input-value="data.selected"
                                         :disabled="data.disabled"
                                         class="v-chip--select-multi"
                                         @click.stop="data.parent.selectedIndex = data.index"
@@ -191,7 +190,6 @@
     export default {
         name: "CreateDoctorCard",
         props: ['doctor'],
-        clinic: undefined,
         directives: {
             mask,
         },
@@ -202,6 +200,7 @@
             this.doctor = undefined
         },
         mounted() {
+            this.$store.dispatch('getClinics')
             this.$store.dispatch('getSpecialties')
             if (this.doctor) {
                 this.name = this.doctor.name
@@ -212,6 +211,7 @@
         },
         data() {
             return {
+                clinic: undefined,
                 maskCRM: '######',
                 maskCPF: '###.###.###-##',
                 paymentMethod: 'unit',

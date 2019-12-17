@@ -23,7 +23,7 @@
                                     <template v-slot:selection="data">
                                         <v-chip
                                                 :key="JSON.stringify(data.item)"
-                                                :selected="data.selected"
+                                                :input-value="data.selected"
                                                 :disabled="data.disabled"
                                                 class="v-chip--select-multi"
                                                 @click.stop="data.parent.selectedIndex = data.index"
@@ -54,7 +54,7 @@
                                     <template v-slot:selection="data">
                                         <v-chip
                                                 :key="JSON.stringify(data.item)"
-                                                :selected="data.selected"
+                                                :input-value="data.selected"
                                                 :disabled="data.disabled"
                                                 class="v-chip--select-multi"
                                                 @click.stop="data.parent.selectedIndex = data.index"
@@ -83,7 +83,7 @@
                                     <template v-slot:selection="data">
                                         <v-chip
                                                 :key="JSON.stringify(data.item)"
-                                                :selected="data.selected"
+                                                :input-value="data.selected"
                                                 :disabled="data.disabled"
                                                 class="v-chip--select-multi"
                                                 @click.stop="data.parent.selectedIndex = data.index"
@@ -108,10 +108,8 @@
                                         v-model="menu1"
                                         :close-on-content-click="false"
                                         :nudge-right="40"
-                                        lazy
                                         transition="scale-transition"
                                         offset-y
-                                        full-width
                                         min-width="290px"
                                 >
                                     <template v-slot:activator="{ on }">
@@ -143,10 +141,8 @@
                                         v-model="menu2"
                                         :close-on-content-click="false"
                                         :nudge-right="40"
-                                        lazy
                                         transition="scale-transition"
                                         offset-y
-                                        full-width
                                         min-width="290px"
                                 >
                                     <template v-slot:activator="{ on }">
@@ -191,7 +187,7 @@
                                     <template v-slot:selection="data">
                                         <v-chip
                                                 :key="JSON.stringify(data.item)"
-                                                :selected="data.selected"
+                                                :input-value="data.selected"
                                                 :disabled="data.disabled"
                                                 class="v-chip--select-multi"
                                                 @click.stop="data.parent.selectedIndex = data.index"
@@ -228,7 +224,7 @@
                                     <template v-slot:selection="data">
                                         <v-chip
                                                 :key="JSON.stringify(data.item)"
-                                                :selected="data.selected"
+                                                :input-value="data.selected"
                                                 :disabled="data.disabled"
                                                 class="v-chip--select-multi"
                                                 @click.stop="data.parent.selectedIndex = data.index"
