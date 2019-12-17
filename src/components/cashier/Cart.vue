@@ -436,7 +436,8 @@
                     payment_method: this.formaPagamento,
                     date: moment().format('YYYY-MM-DD HH:mm:ss'),
                     cost: this.cost,
-                    user: this.$store.getters.selectedPatient
+                    user: this.$store.getters.selectedPatient,
+                    colaborator: this.$store.getters.user
                 }
                 return budget
             },
