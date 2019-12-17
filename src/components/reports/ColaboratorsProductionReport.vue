@@ -1,20 +1,20 @@
 <template>
     <v-container>
-        <v-layout row wrap>
-            <v-flex xs12>
-                <v-select
-                        v-if="colaborators"
-                        v-model="selectedColaborator"
-                        :items="colaborators"
-                        item-text="name"
-                        return-object
-                >
-                </v-select>
-            </v-flex>
-            <v-flex v-if="selectedColaborator" xs12 class="my-sub-headline">
-                <span>{{selectedColaborator.name}}</span>
-            </v-flex>
-            <v-flex xs12 class="text-center">
+        <v-layout row wrap class="justify-center">
+            <!--            <v-flex xs12>-->
+            <!--                <v-select-->
+            <!--                        v-if="colaborators"-->
+            <!--                        v-model="selectedColaborator"-->
+            <!--                        :items="colaborators"-->
+            <!--                        item-text="name"-->
+            <!--                        return-object-->
+            <!--                >-->
+            <!--                </v-select>-->
+            <!--            </v-flex>-->
+            <!--            <v-flex v-if="selectedColaborator" xs12 class="my-sub-headline">-->
+            <!--                <span>{{selectedColaborator.name}}</span>-->
+            <!--            </v-flex>-->
+            <v-flex xs12 class="text-center" v-if="!loading">
                 <v-layout column wrap>
                     <v-card class="pa-3" width="300px" v-for="(object, name) in intakesResume" :key="name">
                         <v-layout row wrap>
@@ -23,12 +23,15 @@
                                     {{name}}
                                 </span>
                             </v-flex>
-                            <v-flex xs12 v-for="(value, field) in object">
+                            <v-flex xs12 v-for="(value, field) in object" :key="field">
                                 <span>{{field}}: {{value}}</span>
                             </v-flex>
                         </v-layout>
                     </v-card>
                 </v-layout>
+            </v-flex>
+            <v-flex xs12 class="text-center" v-else>
+                <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
             </v-flex>
         </v-layout>
     </v-container>
@@ -39,10 +42,9 @@
 
     export default {
         name: "ColabboratorsProductionReport",
-        props: ['intakes'],
+        props: ['intakes', 'loading'],
         data() {
             return {
-                loading: false,
                 colaborators: undefined,
                 selectedColaborator: undefined,
             }

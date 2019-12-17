@@ -153,6 +153,7 @@ const actions = {
     });
     console.log('relatorio: ', relatorio);
     context.commit('setRelatorio',relatorio)
+    return relatorio
   }
 
 

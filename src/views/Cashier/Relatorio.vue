@@ -6,67 +6,70 @@
             </v-flex>
             <v-flex xs12>
                 <v-chip-group
-                    row
-                    mandatory
-                    v-model="selectedReport"
-                    active-class="primary--text"
-                    >
+                        row
+                        mandatory
+                        v-model="selectedReport"
+                        active-class="primary--text"
+                >
                     <v-chip v-for="report in reportOptions" :key="report">
                         {{ report }}
                     </v-chip>
                 </v-chip-group>
             </v-flex>
+            <v-flex xs6>
+                <v-menu
+                        ref="menu1"
+                        v-model="menu1"
+                        :close-on-content-click="false"
+                        transition="scale-transition"
+                        offset-y
+                        full-width
+                        max-width="290px"
+                        min-width="290px"
+                >
+                    <template v-slot:activator="{ on }">
+                        <v-text-field
+                                v-model="dateFormatted"
+                                label="Data Inicial"
+                                prepend-icon="event"
+                                @blur="date = parseDate(dateFormatted)"
+                                v-on="on"
+                        ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
+                </v-menu>
+            </v-flex>
+
+            <v-flex xs6>
+                <v-menu
+                        v-model="menu2"
+                        :close-on-content-click="false"
+                        transition="scale-transition"
+                        offset-y
+                        full-width
+                        max-width="290px"
+                        min-width="290px"
+                >
+                    <template v-slot:activator="{ on }">
+                        <v-text-field
+                                v-model="dateFormatted2"
+                                label="Data Final"
+                                prepend-icon="event"
+                                readonly
+                                v-on="on"
+                        ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="date2" no-title @input="menu2 = false"></v-date-picker>
+                </v-menu>
+            </v-flex>
+            <v-flex xs12 v-if="selectedReport === 0">
+                <general-report :report="formattedReport" :loading="loading" :intakes="intakes"></general-report>
+            </v-flex>
             <v-flex xs12 v-if="selectedReport === 1">
-                <colaborators-production-report :intakes="intakes"></colaborators-production-report>
+                <colaborators-production-report :loading="loading" :intakes="intakes"></colaborators-production-report>
             </v-flex>
             <v-flex xs12 v-else>
                 <v-layout row wrap class="align-center">
-                    <v-flex>
-                        <v-menu
-                                ref="menu1"
-                                v-model="menu1"
-                                :close-on-content-click="false"
-                                transition="scale-transition"
-                                offset-y
-                                full-width
-                                max-width="290px"
-                                min-width="290px"
-                        >
-                            <template v-slot:activator="{ on }">
-                                <v-text-field
-                                        v-model="dateFormatted"
-                                        label="Data Inicial"
-                                        prepend-icon="event"
-                                        @blur="date = parseDate(dateFormatted)"
-                                        v-on="on"
-                                ></v-text-field>
-                            </template>
-                            <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
-                        </v-menu>
-                    </v-flex>
-
-                    <v-flex>
-                        <v-menu
-                                v-model="menu2"
-                                :close-on-content-click="false"
-                                transition="scale-transition"
-                                offset-y
-                                full-width
-                                max-width="290px"
-                                min-width="290px"
-                        >
-                            <template v-slot:activator="{ on }">
-                                <v-text-field
-                                        v-model="dateFormatted2"
-                                        label="Data Final"
-                                        prepend-icon="event"
-                                        readonly
-                                        v-on="on"
-                                ></v-text-field>
-                            </template>
-                            <v-date-picker v-model="date2" no-title @input="menu2 = false"></v-date-picker>
-                        </v-menu>
-                    </v-flex>
                     <v-flex>
                         <v-btn @click="Pesquisar()" color="blue">
                             Pesquisar
@@ -312,10 +315,13 @@
 
 <script>
     import ColaboratorsProductionReport from "../../components/reports/ColaboratorsProductionReport";
+    import GeneralReport from "../../components/reports/GeneralReport";
+
     var moment = require('moment');
     export default {
         components: {
-          ColaboratorsProductionReport
+            ColaboratorsProductionReport,
+            GeneralReport
         },
         data: vm => ({
             reportOptions: ['Relatório Financeiro Geral', 'Produção do Associado'],
@@ -327,18 +333,21 @@
             menu1: false,
             menu2: false,
             verificador: true,
-            intakes: undefined
+            intakes: undefined,
+            formattedReport: undefined,
+            loading: false
         }),
         methods: {
             async getIntakes() {
-              this.intakes = await this.$store.dispatch('getIntakes', {
-                  initialDate: this.date,
-                  finalDate: this.date2
-              })
+                this.loading = true
+                this.intakes = await this.$store.dispatch('getIntakes', {
+                    initialDate: this.date,
+                    finalDate: this.date2
+                })
+                this.loading = false
             },
-            Pesquisar() {
-                console.log('data1: ', this.date, ', data2: ', this.date2);
-                this.$store.dispatch('searchReports', {dataInicio: this.date, dataFinal: this.date2})
+            async Pesquisar() {
+                this.formattedReport = await this.$store.dispatch('searchReports', {dataInicio: this.date, dataFinal: this.date2})
             },
             formatDate(date) {
                 if (!date) return null;
