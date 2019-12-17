@@ -65,29 +65,6 @@
                   </template>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                    <!-- <v-data-table
-                        :headers="headers"
-                        :items="item.doctors"
-                        sort-by="calories"
-                        class="elevation-1"
-                        hide-default-footer
-                    >
-                        <template v-slot:item.action="{ item }">
-                            <v-icon
-                                small
-                                class="mr-2"
-                                @click="editItem(item)"
-                            >
-                                edit
-                            </v-icon>
-                            <v-icon
-                                small
-                                @click="deleteItem(item)"
-                            >
-                                delete
-                            </v-icon>
-                        </template>
-                    </v-data-table> -->
                   <v-simple-table>
                     <template v-slot:default>
                       <thead>
@@ -103,7 +80,6 @@
                                 <v-flex xs1>
                                     <th></th>
                                 </v-flex>
-                               
                             </v-layout>
                         </tr>
                       </thead>
@@ -119,7 +95,7 @@
                                 </v-flex>
                                 <v-flex xs1>
                                     <td class="text-left">
-                                        <v-btn  small icon @click="preprocessSpec(index2)">
+                                        <v-btn  small icon @click="preprocessSpec(index,index2)">
                                             <v-icon>cancel</v-icon>
                                         </v-btn>
                                     </td>
@@ -133,21 +109,6 @@
                 
               </v-expansion-panel>
             </v-expansion-panels>
-            <!-- <v-list-item v-for="(item,index) in allSpecialties" :key="index">
-              <v-chip
-                color="red"
-                text-color="white"
-                v-for="(doctor,index2) in item.doctors"
-                :key="index2"
-              >
-                <v-icon>assignment</v-icon>:
-                <strong>{{item.name}} |{{doctor.name}} | R${{doctor.cost}} | R$ {{doctor.price}}</strong>
-                <v-btn class="ml-1" small icon @click="preprocessSpec(index)">
-                  <v-icon>cancel</v-icon>
-                </v-btn>
-              </v-chip>
-              <br />
-            </v-list-item> -->
           </v-card-text>
 
           <v-dialog v-model="dialog2" max-width="355">
@@ -157,13 +118,12 @@
               </v-card-title>
               <v-divider></v-divider>
               <v-card-text>
-                <!--
-                                <strong>
-                                    Exame: {{product}}<br>
-                                    Preço-Custo: R$ {{cost}}<br>
-                                    Preço-Venda: R$ {{price}}
-                                </strong>
-                -->
+                  <strong>
+                      Medico: {{doctor}}<br>
+                      Especialidade: {{specialtie}}<br>
+                      Preço-Custo: R$ {{cost}}<br>
+                      Preço-Venda: R$ {{price}}
+                  </strong>
               </v-card-text>
               <v-divider></v-divider>
               <v-card-actions>
@@ -185,6 +145,7 @@ export default {
       dialog: false,
       dialog2: false,
       product: undefined,
+      doctor: undefined,
       specialtie: undefined,
       cpf: undefined,
       cost: undefined,
@@ -276,22 +237,25 @@ export default {
       this.dialog = false;
       this.$store.dispatch("loadClinics");
     },
-    preprocessSpec(index) {
-        this.specialtie = this.allSpecialties[index].specialtie;
-        this.doctor = this.allSpecialties[index].name;
-        this.crm = this.allSpecialties[index].crm;
-        this.cost = this.allSpecialties[index].cost;
-        this.price = this.allSpecialties[index].price;
+    preprocessSpec(index, index2) {
+        //console.log("shavdhsavd:",this.allSpecialties[index].doctors[index2])
+        this.specialtie = this.allSpecialties[index].doctors[index2].specialtie;
+        this.cpf = this.allSpecialties[index].doctors[index2].cpf;
+        this.doctor = this.allSpecialties[index].doctors[index2].name;
+        this.cost = this.allSpecialties[index].doctors[index2].cost;
+        this.price = this.allSpecialties[index].doctors[index2].price;
         this.dialog2 = true;
     },
     removeFromS() {
       let info = {
-        product: this.product,
-        clinic: this.selectedClinic
+          cpf: this.cpf,
+          clinic: this.selectedClinic,
+          specialtie: this.specialtie,
       };
-      console.log(info);
+      //console.log('disgraça:',info);
       this.$store.dispatch('deleteAppointment', info)
       this.dialog2 = false;
+      this.$store.dispatch("loadClinics");
     }
   }
 };
