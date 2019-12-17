@@ -118,24 +118,54 @@
     var moment = require("moment");
     export default {
         name: "Receipt",
-        props: ['consultation'],
+        props: ['consultation','openDocument'],
         computed: {
             idade () {
                 return moment().diff(moment(this.user.birth_date, 'DD/MM/YYYY'), 'years')
             },
             user() {
                 return this.$store.getters.selectedPatient
-            }
+            },
         },
         data: () => ({
             consultationHour: moment().locale('pt-BR').format('YYYY-MM-DD HH:mm:ss'),
             hoje: moment().locale('pt-BR').format('DD/MM/YYYY HH:mm:ss'),
             dia: moment().format('dddd'),
         }),
+        mounted(){
+            this.saveConsultationHour()
+        },
         methods: {
             print() {
                 window.print()
+            },
+            inititize(){
+                this.consultationHour = moment().locale('pt-BR').format('YYYY-MM-DD HH:mm:ss')
+                this.hoje = moment().locale('pt-BR').format('DD/MM/YYYY HH:mm:ss')
+                this.dia = moment().format('dddd')
+            },
+            saveConsultationHour(){
+                this.inititize()
+                if(this.openDocument){
+                    this.$store.dispatch('setConsultationHour',{consultation:this.consultation.id,patient:this.user.cpf,consultationHour:this.consultationHour,day:this.dia})
+                    .then((result)=>{
+                        console.log('Tem Mesmo',result)
+                        if(result){
+                            this.consultationHour = result.consultationHour
+                            this.hoje = moment(result.consultationHour).locale('pt-BR').format('DD/MM/YYYY HH:mm:ss')
+                            this.dia = result.day
+                        }
+                    })
+                }
+                    
             }
+        },
+        watch:{
+            openDocument(value){
+                this.saveConsultationHour()
+                return value
+            }
+            
         }
     }
 </script>

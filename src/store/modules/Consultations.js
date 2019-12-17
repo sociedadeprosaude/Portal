@@ -288,6 +288,23 @@ const actions = {
             throw e
         }
     },
+    setConsultationHour({commit},payload){
+       return new Promise((resolve,reject)=>{
+        firebase.firestore().collection('consultations').doc(payload.consultation).get()
+        .then((doc)=>{
+            if(!doc.data().consultationHour){
+                firebase.firestore().collection('consultations').doc(payload.consultation).update({consultationHour:payload})
+                firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({consultationHour:payload})
+                reject('Não tem!')
+                console.log('Não tem!')
+            }else{
+                console.log('Tem sim!',doc.data())
+                resolve(doc.data().consultationHour)
+            }
+        })
+       }) 
+        
+    }
 };
 
 const getters = {

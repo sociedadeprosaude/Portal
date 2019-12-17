@@ -338,7 +338,7 @@
                 <!-- <v-icon dark>done</v-icon> -->
             </v-snackbar>
         <v-dialog v-model="documentDialog">
-            <consultation-document @close="documentDialog = false" :consultation="index_Selecionado.consultation"></consultation-document>
+            <consultation-document @close="documentDialog = false" :openDocument="documentDialog" :consultation="index_Selecionado.consultation"></consultation-document>
         </v-dialog>
     </v-container>
 </template>
