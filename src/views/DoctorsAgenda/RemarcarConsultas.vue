@@ -2,7 +2,7 @@
     <v-layout row wrap>
         <v-flex xs8>
             <v-layout align-center row wrap class="ml-6">
-                <v-flex xs3>
+                <v-flex xs12 md6>
                     <v-select
                             prepend-icon="school"
                             v-model="especialidade"
@@ -10,13 +10,27 @@
                             item-text="name"
                             return-object
                             label="Especialidade"
-                            outline
+                            outlined
+                            rounded
                             chips
                             color="blue"
                             readonly
-                    ></v-select>
+                    >
+                        <template v-slot:selection="data">
+                            <v-chip
+                                    :key="JSON.stringify(data.item)"
+                                    :input-value="data.selected"
+                                    :disabled="data.disabled"
+                                    class="v-chip--select-multi"
+                                    @click.stop="data.parent.selectedIndex = data.index"
+                                    @input="data.parent.selectItem(data.item)"
+                                    text-color="white"
+                                    color="info"
+                            >{{ data.item.name }}</v-chip>
+                        </template>
+                    </v-select>
                 </v-flex>
-                <v-flex xs4 class="ml-3">
+                <v-flex xs12 md6>
                     <v-select
                             prepend-icon="person"
                             v-model="selectedDoctor"
@@ -24,11 +38,25 @@
                             return-object
                             item-text="name"
                             label="Médicos"
-                            outline
+                            outlined
+                            rounded
                             chips
                             color="blue"
                             
-                    ></v-select>
+                    >
+                        <template v-slot:selection="data">
+                            <v-chip
+                                    :key="JSON.stringify(data.item)"
+                                    :input-value="data.selected"
+                                    :disabled="data.disabled"
+                                    class="v-chip--select-multi"
+                                    @click.stop="data.parent.selectedIndex = data.index"
+                                    @input="data.parent.selectItem(data.item)"
+                                    text-color="white"
+                                    color="info"
+                            >{{ data.item.name }}</v-chip>
+                        </template>
+                    </v-select>
                 </v-flex>
             </v-layout>
             <v-container
