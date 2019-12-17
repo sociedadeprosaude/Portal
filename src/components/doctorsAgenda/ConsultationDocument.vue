@@ -121,13 +121,14 @@
         props: ['consultation'],
         computed: {
             idade () {
-              return moment().diff(moment(this.user.birth_date, 'DD/MM/YYYY'), 'years')
+                return moment().diff(moment(this.user.birth_date, 'DD/MM/YYYY'), 'years')
             },
             user() {
                 return this.$store.getters.selectedPatient
             }
         },
         data: () => ({
+            consultationHour: moment().locale('pt-BR').format('YYYY-MM-DD HH:mm:ss'),
             hoje: moment().locale('pt-BR').format('DD/MM/YYYY HH:mm:ss'),
             dia: moment().format('dddd'),
         }),

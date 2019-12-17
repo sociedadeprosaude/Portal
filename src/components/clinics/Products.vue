@@ -182,15 +182,16 @@
 <script>
 export default {
   data: () => ({
-    dialog: false,
-    dialog2: false,
-    product: undefined,
-    doctor: undefined,
-    cost: undefined,
-    price: undefined,
-    options: undefined,
-    panel: [0],
-    headers: [
+      dialog: false,
+      dialog2: false,
+      product: undefined,
+      specialtie: undefined,
+      cpf: undefined,
+      cost: undefined,
+      price: undefined,
+      options: undefined,
+      panel: [0],
+      headers: [
         {
           text: 'Nome do médico',
           align: 'left',
@@ -276,11 +277,12 @@ export default {
       this.$store.dispatch("loadClinics");
     },
     preprocessSpec(index) {
-      this.specialtie = this.allSpecialties[index].specialtie;
-      (this.doctor = this.allSpecialties[index].name),
-        (this.cost = this.allSpecialties[index].cost);
-      this.price = this.allSpecialties[index].price;
-      this.dialog2 = true;
+        this.specialtie = this.allSpecialties[index].specialtie;
+        this.doctor = this.allSpecialties[index].name;
+        this.crm = this.allSpecialties[index].crm;
+        this.cost = this.allSpecialties[index].cost;
+        this.price = this.allSpecialties[index].price;
+        this.dialog2 = true;
     },
     removeFromS() {
       let info = {
@@ -288,7 +290,7 @@ export default {
         clinic: this.selectedClinic
       };
       console.log(info);
-      //this.$store.dispatch('deleteAppointment', info)
+      this.$store.dispatch('deleteAppointment', info)
       this.dialog2 = false;
     }
   }

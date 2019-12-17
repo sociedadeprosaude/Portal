@@ -131,9 +131,9 @@ const actions = {
     },
 
     deleteAppointment ({commit}, payload) {
-
         console.log('payload', payload);
 
+        /*
         let data = {
             name: payload.doctor,
             specialtie: payload.specialtie,
@@ -150,23 +150,24 @@ const actions = {
             name: payload.specialtie,
         };
 
-        firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie
-            + '/doctors').doc(payload.cpf).set(data);
+        firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie + '/doctors').doc(payload.cpf)
+            .delete();
 
         firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties').doc(payload.specialtie)
-            .set(info);
+            .delete();
 
         firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie)
-            .set(data);
+            .delete();
 
         firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).collection('clinics/').doc(payload.clinic.name)
-            .set(payload.clinic);
+            .delete();
 
         firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf)
-            .set(data);
+            .delete();
 
         firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf).collection('clinics/').doc(payload.clinic.name)
-            .set(payload.clinic);
+            .delete();
+         */
     },
 
     selectClinic ({commit}, payload) {
