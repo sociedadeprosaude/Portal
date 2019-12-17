@@ -92,6 +92,7 @@
             verificador:false,
             categoriaNova:'',
             aviso:false,
+            now: moment().valueOf(),
             loading: false,
             success: false,
             data: moment().format("YYYY-MM-DD HH:mm:ss"),
@@ -105,7 +106,7 @@
         methods: {
             enviar(){
                 this.loading = true;
-                this.$store.dispatch('AddSaida',{descricao:this.descricao, categoria:this.categoria, valor: this.valor, codigo:this.data})
+                this.$store.dispatch('AddSaida',{descricao:this.descricao, categoria:this.categoria, valor: parseInt(this.valor), id:moment().valueOf(), date:this.data})
                 this.success = true;
                 this.loading = false;
                 this.descricao='';
