@@ -48,6 +48,20 @@ const actions = {
           console.log(error)
         })
   },
+  async getIntakes(context, payload) {
+    let intakesSnap = await firebase.firestore().collection('intakes').where('date', '>=', payload.initialDate)
+        .where('date', '<=', payload.finalDate)
+        // .where('colaborator', '>', '')
+        .orderBy('date').get()
+    let promises = []
+    for (let doc in intakesSnap.docs) {
+      if (intakesSnap.docs[doc].data().colaborator) {
+        promises.push(context.dispatch('getIntakeDetails', intakesSnap.docs[doc].data()))
+      }
+    }
+    let intakes = await Promise.all(promises)
+    return intakes
+  },
   async searchReports(context, payload){
     payload.dataFinal = payload.dataFinal + ' 24:00:00';
     payload.dataInicio= payload.dataInicio + ' 00:00:00';

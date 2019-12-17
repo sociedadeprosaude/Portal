@@ -193,20 +193,20 @@ const store = new Vuex.Store({
             })
       })
     },
-    getIntakes({commit, getters}, date) {
-      return new Promise((resolve, reject) => {
-        // axios.get('api/entradas/hoje')
-        axios.get('api/entradas/data', {params: {date: (date).substring(0, 10)}})
-            .then(response => {
-              commit('setIntakes', response.data.intakes)
-              resolve(response.data.intakes)
-            })
-            .catch(error => {
-              console.log(error);
-              reject(error)
-            })
-      })
-    },
+    // getIntakes({commit, getters}, date) {
+    //   return new Promise((resolve, reject) => {
+    //     // axios.get('api/entradas/hoje')
+    //     axios.get('api/entradas/data', {params: {date: (date).substring(0, 10)}})
+    //         .then(response => {
+    //           commit('setIntakes', response.data.intakes)
+    //           resolve(response.data.intakes)
+    //         })
+    //         .catch(error => {
+    //           console.log(error);
+    //           reject(error)
+    //         })
+    //   })
+    // },
     addExpense({commit, getters}, payload) {
       axios.post('api/despesa/adicionar', payload)
           .then(response => {

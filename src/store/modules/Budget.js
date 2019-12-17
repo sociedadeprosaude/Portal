@@ -221,6 +221,30 @@ const actions = {
             }
         }
     },
+    // async getColaboratorIntakes(context, colaborator) {
+    //     let intakesSnap = (await firebase.firestore().collection('intakes').where('colaborator.name', '==', colaborator.name).get())
+    //     let intakes = []
+    //     let promises = []
+    //     for (let snap in intakesSnap) {
+    //         let doc = intakesSnap[snap]
+    //         // let exams = []
+    //         // let examSnap = await doc.ref.collection('exams').get()
+    //         // examSnap.forEach((e) => {
+    //         //     exams.push(e.data())
+    //         // })
+    //         // let consultationsSnap = await doc.ref.collection('consultations').get()
+    //         // let consultations = []
+    //         // consultationsSnap.forEach((e) => {
+    //         //     consultations.push(e.data())
+    //         // })
+    //         intakes.push(doc.data())
+    //     }
+    //     for (let intake in intakes) {
+    //         promises.push(context.dispatch('getIntakeDetails', intakes[intake]))
+    //     }
+    //     await Promise.all(promises)
+    //     return intakes
+    // },
     async getUserIntakes(context, user) {
         let userRef = firebase.firestore().collection('users').doc(user.cpf)
         let intakesSnap = (await userRef.collection('intakes').get()).docs
