@@ -338,10 +338,7 @@
             },
             Pesquisar() {
                 console.log('data1: ', this.date, ', data2: ', this.date2);
-                this.$store.dispatch('searchReports', {dataInicio: this.date, dataFinal: this.date2}).then(() => {
-                    this.verificador = false;
-                    console.log('rodei')
-                });
+                this.$store.dispatch('searchReports', {dataInicio: this.date, dataFinal: this.date2})
             },
             formatDate(date) {
                 if (!date) return null;
@@ -362,6 +359,7 @@
         },
         computed: {
             Relatorio() {
+                console.log('relatorio')
                 return this.$store.getters.relatorio
             }
         },

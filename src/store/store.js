@@ -5,11 +5,11 @@ import router from '../router'
 import constants from '@/utils/constants'
 
 import Users from '@/store/modules/Users'
-import Reports from '@/store/modules/Reports'
 import Exams from '@/store/modules/Exams'
 import Auth from '@/store/modules/Auth'
 import Labor from '@/store/modules/Labor'
 import Patient from './modules/Patient'
+import Reports from './modules/Reports'
 
 import Localization from "./modules/Localization"
 import Bundles from "./modules/Bundles";

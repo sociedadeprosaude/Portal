@@ -15,15 +15,12 @@ const state = {
 
 const mutations = {
   setRelatorio(state,payload){
+    console.log('aqyu')
     state.relatorio= payload;
   }
 }
 
 const actions = {
-  resetInfo({commit}) {
-    commit('resetInfo')
-    return
-  },
   async getInfos({commit}, payload) {
       instance.get('/api/profits', {
         params: {
@@ -155,7 +152,7 @@ const actions = {
       totalSaidas: totalSaidas,
     });
     console.log('relatorio: ', relatorio);
-    return relatorio
+    context.commit('setRelatorio',relatorio)
   }
 
 
@@ -165,6 +162,7 @@ const actions = {
 
 const getters = {
   relatorio(state){
+    console.log('veio')
     return state.relatorio;
   }
 }
