@@ -422,7 +422,7 @@
             </v-flex>
         </v-layout>
         <v-dialog v-model="documentDialog">
-            <!--<consultation-document @close="documentDialog = false" :consultation="index_Selecionado"></consultation-document>-->
+            <consultation-document @close="documentDialog = false" :openDocument="documentDialog" :consultation="index_Selecionado.consultation"></consultation-document>
         </v-dialog>
     </v-container>
 </template>

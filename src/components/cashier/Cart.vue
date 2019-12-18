@@ -456,6 +456,7 @@
                 this.updateBudgetsIntakes()
             },
             async pay() {
+                console.log('Veio aqui')
                 this.paymentLoading = true
                 let user = this.patient;
                 if (!user) {

@@ -10,7 +10,7 @@ const actions = {
     async addBudget(context, payload) {
         let copyPayload = Object.assign({}, payload)
         functions.removeUndefineds(copyPayload)
-        // console.log(payload)
+        console.log('Aqui no Budget',copyPayload)
         // return
         let specialties = copyPayload.specialties ? Object.assign({}, copyPayload.specialties) : undefined
         let exams = copyPayload.exams ? Object.assign({}, copyPayload.exams) : undefined
@@ -21,7 +21,6 @@ const actions = {
 
         functions.removeUndefineds(specialties)
         functions.removeUndefineds(exams)
-
 
         await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).set(copyPayload)
         if (specialties) {
@@ -81,6 +80,8 @@ const actions = {
 
         functions.removeUndefineds(specialties)
         functions.removeUndefineds(exams)
+
+        
 
         let userRef = firebase.firestore().collection('users').doc(user.cpf)
         await userRef.collection('budgets').doc(copyPayload.id.toString()).set(copyPayload)

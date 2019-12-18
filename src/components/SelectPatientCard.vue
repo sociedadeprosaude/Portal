@@ -249,7 +249,7 @@
     import {mask} from 'vue-the-mask'
     import SubmitButton from "./SubmitButton";
     import PatientCard from "./PatientCard";
-
+    var moment = require("moment")
     export default {
         directives: {
             mask,
@@ -337,7 +337,7 @@
                     cpf: this.cpf.replace(/\./g, '').replace('-', ''),
                     email: this.email,
                     association_number: this.numAss,
-                    birth_date: this.birthDate,
+                    birth_date: moment(this.birthDate,"DD/MM/YYYY").format("YYYY-MM-DD"),
                     sex: this.sex,
                     telephones: this.telephones,
                     addresses: this.addresses,

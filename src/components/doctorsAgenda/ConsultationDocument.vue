@@ -121,7 +121,7 @@
         props: ['consultation','openDocument'],
         computed: {
             idade () {
-                return moment().diff(moment(this.user.birth_date, 'DD/MM/YYYY'), 'years')
+                return moment().diff(moment(this.user.birth_date, 'YYYY-MM-DD'), 'years')
             },
             user() {
                 return this.$store.getters.selectedPatient
@@ -147,7 +147,7 @@
             saveConsultationHour(){
                 this.inititize()
                 if(this.openDocument){
-                    this.$store.dispatch('setConsultationHour',{consultation:this.consultation.id,patient:this.user.cpf,consultationHour:this.consultationHour,day:this.dia})
+                    this.$store.dispatch('setConsultationHour',{consultation:this.consultation.id,patient:this.consultation.user.cpf ,consultationHour:this.consultationHour,day:this.dia})
                     .then((result)=>{
                         console.log('Tem Mesmo',result)
                         if(result){
