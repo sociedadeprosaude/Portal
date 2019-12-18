@@ -83,6 +83,7 @@
                                 prepend-icon="location_city"
                                 v-model="clinic"
                                 :items="clinics"
+                                return-object
                                 item-text="name"
                                 label="Clínica"
                                 outlined
@@ -270,13 +271,15 @@
                 }
                 await this.$store.dispatch('addDoctor', doctor)
                 await this.$store.dispatch('getDoctors')
+                //==========================começo da nova função
+                /*
                 for (let i in this.clinic){
                     let data = {
                         clinic: this.clinic[i],
                         specialtie: this.specialties[i].name,
                         doctor: this.name,
                         crm: this.crm,
-                        cpf: this.cpf,
+                        cpf: this.cpf.replace(/\./g, '').replace('-', ''),
                         cost: this.specialties[i].cost,
                         price: this.specialties[i].price,
                         payment: this.specialties[i].payment_method,
@@ -284,6 +287,8 @@
                     console.log(data)
                     //await this.$store.dispatch('addAppointment', data);
                 }
+                 */
+                //=============fim da nova função
                 this.success = true
                 this.loading = false
                 setTimeout(() => {
