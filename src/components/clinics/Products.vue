@@ -1,7 +1,7 @@
 <template>
   <v-card width="850">
     <v-card-title class="headline grey lighten-2" primary-title>
-      <span class="headline">Produtos Cadastrados</span>
+      <span class="headline">Exclusão de Produtos Cadastrados</span>
     </v-card-title>
     <v-card-text>
       <v-container grid-list-md>

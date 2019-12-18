@@ -175,12 +175,12 @@
                     let data = {
                         clinic: this.selectedClinic,
                         specialtie: this.consultations.name,
-                        doctor:this.doctor[i].name,
+                        doctor: this.doctor[i].name,
                         crm: this.doctor[i].crm,
                         cpf: this.doctor[i].cpf,
-                        cost:this.cost,
-                        price:this.sale,
-                        obs:this.obs,
+                        cost: this.cost,
+                        price: this.sale,
+                        obs: this.obs,
                         payment: this.payment,
                     };
                     console.log(data)
