@@ -83,6 +83,7 @@
                                 prepend-icon="location_city"
                                 v-model="clinic"
                                 :items="clinics"
+                                return-object
                                 item-text="name"
                                 label="Clínica"
                                 outlined
@@ -232,7 +233,10 @@
                 return this.$store.getters.specialties
             },
             formIsValid() {
-                return this.name && this.crm && this.specialties && this.cpf
+                return this.name
+                    && this.crm
+                    && this.specialties
+                    && this.cpf
                     && this.name.length > 0 && this.crm.length > 0 && this.specialties.length > 0 && this.cpf.length > 0
             },
         },
@@ -267,6 +271,24 @@
                 }
                 await this.$store.dispatch('addDoctor', doctor)
                 await this.$store.dispatch('getDoctors')
+                //==========================começo da nova função
+                for (let i in this.clinic){
+                    for (let j in this.specialties){
+                        let data = {
+                            clinic: this.clinic[i],
+                            specialtie: this.specialties[j].name,
+                            doctor: this.name,
+                            crm: this.crm,
+                            cpf: this.cpf.replace(/\./g, '').replace('-', ''),
+                            cost: this.specialties[i].cost,
+                            price: this.specialties[i].price,
+                            paymentMethod: this.specialties[i].payment_method,
+                        };
+                        console.log("imprimir:",data)
+                        //await this.$store.dispatch('addAppointment', data);
+                    }
+                }
+                //=============fim da nova função
                 this.success = true
                 this.loading = false
                 setTimeout(() => {
