@@ -21,8 +21,7 @@
             <strong>EXAMES</strong>
             <v-list-item v-for="(item,index) in allExams" :key="index">
               <v-chip color="red" text-color="white">
-                <v-icon>poll</v-icon>:
-                <strong>{{item.name}} | {{item.cost}} | R$ {{item.price}}</strong>
+                <strong>{{item.name}} | Custo R$ {{item.cost}} | Venda R$ {{item.price}}</strong>
                 <v-btn class="ml-1" small icon @click="preprocessExam(index)">
                   <v-icon>cancel</v-icon>
                 </v-btn>
