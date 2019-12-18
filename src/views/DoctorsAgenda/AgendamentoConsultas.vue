@@ -284,7 +284,21 @@
                                                         chips
                                                         hide-details
                                                         outlined
-                                                ></v-select>
+                                                        readonly
+                                                >
+                                                    <template v-slot:selection="data">
+                                                            <v-chip
+                                                                    :key="JSON.stringify(data.item)"
+                                                                    :input-value="data.selected"
+                                                                    :disabled="data.disabled"
+                                                                    class="v-chip--select-multi"
+                                                                    @click.stop="data.parent.selectedIndex = data.index"
+                                                                    @input="data.parent.selectItem(data.item)"
+                                                                    text-color="white"
+                                                                    :color="data.item.text === 'Pago' ? 'success' : data.item.text === 'Cancelado' ? 'error': 'warning'"
+                                                            >{{ data.item.text }}</v-chip>
+                                                    </template>
+                                                </v-select>
                                             </v-flex>
                                             <v-flex xs12 sm6>
                                                 <v-text-field
@@ -297,6 +311,7 @@
                                             </v-flex>
                                             <v-flex xs12 sm6>
                                                 <v-text-field
+                                                        readonly
                                                         prepend-icon="receipt"
                                                         label="Nº do Recibo"
                                                         v-model="num_recibo"
@@ -497,7 +512,28 @@
                 return this.$store.getters.clinics
             },
             specialties() {
-                return this.$store.getters.specialties;
+                //return this.$store.getters.specialties;
+
+                let espArray = Object.values(this.$store.getters.specialties)
+                    espArray = espArray.filter((specialty) => {
+                        console.log('Teeeee',specialty)
+                        if(!this.selectedDoctor) {
+                            return true
+                        }
+                        var find = false
+                        specialty.doctors.forEach((doctor)=>{
+                           
+                            if(doctor.cpf === this.selectedDoctor.cpf){
+                                find = true
+                                return true
+                            }
+                                
+                        })
+                        
+                        return find
+                    })
+                    //docArray.unshift({name:'Todos'})
+                    return espArray
             },
             computedDateFormatted() {
                 return this.formatDate(this.createConsultationForm.consultation.date.split(' ')[0]);
