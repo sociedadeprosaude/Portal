@@ -263,11 +263,11 @@
                                                     <v-text-field readonly hide-details outlined prepend-icon="event" label="Dia da Consulta" v-model="computedDateFormattedSelecionado">
                                                     </v-text-field>
                                                 </v-flex>
-                                                <v-flex xs12 sm6>
+                                                <v-flex xs12 sm4>
                                                     <v-text-field readonly hide-details outlined prepend-icon="access_alarm" label="Hora da Consulta" v-model="index_Selecionado.hora">
                                                     </v-text-field>
                                                 </v-flex>
-                                                <v-flex xs12 sm6>
+                                                <v-flex xs12 sm8>
                                                     <v-select
                                                             prepend-icon="assignment_turned_in"
                                                             v-model="index_Selecionado.status"
@@ -276,7 +276,21 @@
                                                             chips
                                                             outlined
                                                             hide-details
-                                                    ></v-select>
+                                                            
+                                                    >
+                                                        <template v-slot:selection="data">
+                                                            <v-chip
+                                                                    :key="JSON.stringify(data.item)"
+                                                                    :input-value="data.selected"
+                                                                    :disabled="data.disabled"
+                                                                    class="v-chip--select-multi"
+                                                                    @click.stop="data.parent.selectedIndex = data.index"
+                                                                    @input="data.parent.selectItem(data.item)"
+                                                                    text-color="white"
+                                                                    :color="data.item.text === 'Pago' ? 'success' : data.item.text === 'Cancelado' ? 'error': 'warning'"
+                                                            >{{ data.item.text }}</v-chip>
+                                                        </template>
+                                                    </v-select>
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
                                                     <v-text-field
@@ -350,7 +364,7 @@
                                             <v-icon>refresh</v-icon>
                                         </v-btn>
                                         <v-spacer></v-spacer>
-                                        <v-btn
+                                        <!-- <v-btn
                                                 color="success"
                                                 rounded
                                                 :disabled="loader"
@@ -359,7 +373,7 @@
                                                 v-if="index_Selecionado.status === 'Pago' && index_Selecionado.num_recibo !== ''"
                                         >Atualizar
                                             <v-icon>done</v-icon>
-                                        </v-btn>
+                                        </v-btn> -->
                                         <v-spacer></v-spacer>
                                         <v-dialog
                                                 v-model="loader"
@@ -447,10 +461,9 @@
                 "Sábado"
             ],
             statusOptions:
-                [
-                    {text: 'Aguardando pagamento'},
-                    {text: 'Pago'},
+                [   
                     {text: 'Cancelado'},
+                    {text: 'Aguardando pagamento'},
                 ],
             messages: [],
             timeout:4000,
@@ -515,7 +528,8 @@
                     if(this.especialidade != ''){
                         this.status_Selecionado = index.status
                         this.index_Selecionado = {...index}
-                        console.log(this.index_Selecionado)
+                        this.statusOptions.splice(1,1)
+                        this.statusOptions.push( {text: index.status})
                         this.dialog = true
                     }
                     else{

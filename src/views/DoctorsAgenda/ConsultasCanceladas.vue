@@ -79,7 +79,8 @@
                                                                     data: item.date.split(' ')[0],
                                                                     hora: item.date.split(' ')[1],
                                                                     crm: item.doctor.crm,
-                                                                    especialidade: item.specialty.name,
+                                                                    especialidade: item.specialty,
+                                                                    esp:item.specialty.name,
                                                                     status: item.status,
                                                                     modalidade: item.type,
                                                                     medico:item.doctor.name,
@@ -159,7 +160,7 @@
                                                         </v-text-field>
                                                     </v-flex>
                                                     <v-flex xs12 sm6>
-                                                        <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="index_Selecionado.especialidade">
+                                                        <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="index_Selecionado.esp">
                                                         </v-text-field>
                                                     </v-flex>
                                                     <v-flex xs12 sm6>

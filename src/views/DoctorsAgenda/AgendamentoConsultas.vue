@@ -149,6 +149,7 @@
                                                     >Vagas : {{consulta.vagas}}
                                                     </v-chip>
                                                     <v-chip
+                                                            class="mt-1"
                                                             color="primary_dark"
                                                             text-color="white"
                                                     >Clinica : {{consulta.clinic}}
