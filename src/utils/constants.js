@@ -4,17 +4,22 @@ export default {
     debit: {
       name: 'Débito',
       INITIAL_TAX:0.0299,
-      PARCEL_TAX: 0,
+      PARCEL_TAX: [],
     },
     credit: {
       name: 'Crédito',
-      INITIAL_TAX:0.0314,
-      PARCEL_TAX: 0.006,
+      INITIAL_TAX:0.026,
+      PARCEL_TAX: [
+          0.0191,
+          0.0254,
+          0.0317,
+          0.0378
+      ],
     },
     money: {
       name: 'Dinheiro',
       INITIAL_TAX:0,
-      PARCEL_TAX: 0,
+      PARCEL_TAX: [],
     }
   },
 

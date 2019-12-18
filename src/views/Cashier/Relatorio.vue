@@ -368,7 +368,6 @@
         },
         computed: {
             Relatorio() {
-                console.log('relatorio')
                 return this.$store.getters.relatorio
             }
         },

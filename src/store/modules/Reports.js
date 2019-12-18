@@ -83,7 +83,7 @@ const actions = {
     let totalCredito = 0;
     let totalSaidas = 0;
     let saidas = {};
-    let relatorio = [];
+    let relatorio = {};
     console.log(intakes)
 
     for (let intake in intakes) {
@@ -140,7 +140,7 @@ const actions = {
     console.log(totalBruto)
 
 
-    relatorio.push({
+    relatorio = {
       saidas: saidas,
       specialties: specialties,
       exams: exams,
@@ -150,7 +150,7 @@ const actions = {
       totalBruto: totalBruto,
       totalCusto: totalCusto,
       totalSaidas: totalSaidas,
-    });
+    };
     console.log('relatorio: ', relatorio);
     context.commit('setRelatorio',relatorio)
     return relatorio
