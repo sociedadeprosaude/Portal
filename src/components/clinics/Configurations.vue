@@ -2,6 +2,8 @@
     <v-card width="850">
         <v-card-title class="headline grey lighten-2" primary-title>
             <span class="headline">Edição de Produtos Cadastrados</span>
+            <v-spacer></v-spacer>
+            <v-btn small color="error" @click="clear()"><v-icon>close</v-icon></v-btn>
         </v-card-title>
         <v-card-text>
             <v-container grid-list-md>
@@ -414,7 +416,7 @@
                 this.doctor = this.allSpecialties[index].doctors[index2].name;
                 this.cost = this.allSpecialties[index].doctors[index2].cost;
                 this.price = this.allSpecialties[index].doctors[index2].price;
-                this.obs = this.allSpecialties[index].doctors[index2].obs;
+                this.obs = this.allSpecialties[index].doctors[index2].rules;
                 this.payment = this.allSpecialties[index].doctors[index2].payment_method;
                 this.formConsultation = true;
             },

@@ -135,18 +135,12 @@ const actions = {
         firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie + '/doctors').doc(payload.cpf)
             .delete();
 
-        //firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties').doc(payload.specialtie).delete();
-
-        //firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).delete();
+        firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf).collection('clinics/').doc(payload.clinic.name)
+            .delete();
 
         firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).collection('clinics/').doc(payload.clinic.name)
             .delete();
-
-        firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf)
-            .delete();
-
-        firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf).collection('clinics/').doc(payload.clinic.name)
-            .delete();
+        //firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).delete();
     },
 
     selectClinic ({commit}, payload) {

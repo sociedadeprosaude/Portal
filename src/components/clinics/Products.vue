@@ -132,6 +132,14 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+
+            <v-divider></v-divider>
+            <v-card-actions>
+                <v-layout align-center justify-center>
+                    <v-btn color="error" @click="clear()"><v-icon>close</v-icon>Fechar</v-btn>
+                </v-layout>
+            </v-card-actions>
+
         </v-layout>
       </v-container>
     </v-card-text>
@@ -219,6 +227,9 @@ export default {
   },
 
   methods: {
+      clear () {
+          this.$store.dispatch('selectClinic', null);
+      },
     preprocessExam(index) {
       this.product = this.allExams[index].name;
       this.cost = this.allExams[index].cost;
@@ -255,7 +266,7 @@ export default {
       this.$store.dispatch('deleteAppointment', info)
       this.dialog2 = false;
       this.$store.dispatch("loadClinics");
-    }
+    },
   }
 };
 </script>
