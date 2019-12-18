@@ -31,37 +31,11 @@
                         ></v-select>
                     </v-flex>
 
-                    <v-layout v-if="option === 'Consultas' " align-center justify-center wrap>
+                    <v-layout v-if="option === 'Consultas' && allSpecialties.length !== 0" align-center justify-center wrap>
                         <strong>Consultas Cadastradas da Clinica para EDIÇÂO</strong>
-                            <v-flex>
-                                <v-select
-                                        :items="allSpecialties"
-                                        item-text="name"
-                                        item-value="name"
-                                        return-object
-                                        v-model="consultation"
-                                        chips
-                                        outlined
-                                        clearable
-                                >
-                                    <template v-slot:selection="data">
-                                        <v-chip
-                                                :key="JSON.stringify(data.item)"
-                                                :selected="data.selected"
-                                                :disabled="data.disabled"
-                                                class="v-chip--select-multi"
-                                                @click.stop="data.parent.selectedIndex = data.index"
-                                                @input="data.parent.selectItem(data.item)"
-                                                text-color="white"
-                                                color="info"
-                                        >{{ data.item }}</v-chip>
-                                    </template>
-                                </v-select>
-                            </v-flex>
-                        {{consultation.doctors}}
                     </v-layout>
 
-                    <v-layout v-else-if="option === 'Exames' " align-center justify-center wrap>
+                    <v-layout v-else-if="option === 'Exames' && allExams.length !== 0" align-center justify-center wrap>
                         <strong>Exames Cadastrados da Clinica para EDIÇÂO</strong>
                         <v-flex>
                             <v-select
@@ -88,8 +62,35 @@
                                 </template>
                             </v-select>
                         </v-flex>
-                        {{exam}}
                         <v-btn @click="formExam = true">Carregar para Edição</v-btn>
+                    </v-layout>
+
+                    <v-layout v-else-if="option === 'Exames' && allExams.length === 0" align-center justify-center wrap>
+                        <v-card-text>
+                            <v-container grid-list-md>
+                                <v-layout align-center justify-center wrap>
+                                    <v-flex>
+                                        <v-alert type="error" outlined text>
+                                            Não há <strong>Exames</strong> Cadastradas para esta Clinica.
+                                        </v-alert>
+                                    </v-flex>
+                                </v-layout>
+                            </v-container>
+                        </v-card-text>
+                    </v-layout>
+
+                    <v-layout v-else-if="option === 'Consultas' && allSpecialties.length === 0" align-center justify-center wrap>
+                        <v-card-text>
+                            <v-container grid-list-md>
+                                <v-layout align-center justify-center wrap>
+                                    <v-flex>
+                                        <v-alert type="error" outlined text>
+                                            Não há <strong>Consultas</strong> Cadastradas para esta Clinica.
+                                        </v-alert>
+                                    </v-flex>
+                                </v-layout>
+                            </v-container>
+                        </v-card-text>
                     </v-layout>
 
                     <v-layout v-else align-center justify-center wrap>
@@ -159,7 +160,7 @@
                                 <v-spacer></v-spacer>
                                 <v-btn
                                         :disabled="!formIsValid"
-                                        @click="save()"
+                                        @click="editExam"
                                         color="success"
                                 >
                                     SALVAR
@@ -180,6 +181,7 @@
         directives: {mask},
         data: () => ({
             formExam: undefined,
+            formConsultation: undefined,
             exam: undefined,
             consultation: undefined,
             option: undefined,
@@ -191,7 +193,6 @@
         computed: {
             formIsValid() {
                 return this.exam.name && this.exam.cost && this.exam.price
-                //return this.price && this.cost && this.exams.length > 0
             },
             selectedClinic() {
                 return this.$store.getters.selectedClinic;
@@ -241,7 +242,7 @@
         },
 
         methods:{
-            save(){
+            editExam(){
                 let examData = {
                     clinic: this.selectedClinic,
                     exam: this.exam.name,
