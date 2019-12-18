@@ -93,7 +93,7 @@
                     <v-layout v-else-if="option === 'Exames' && allExams.length !== 0" align-center justify-center wrap>
                         <strong>Exames Cadastrados da Clinica para EDIÇÂO</strong>
                         <v-flex>
-                            <v-select
+                            <v-combobox
                                     :items="allExams"
                                     item-text="name"
                                     item-value="name"
@@ -102,7 +102,6 @@
                                     chips
                                     clearable
                                     outlined
-                                    label="Exame Selecionado"
                             >
                                 <template v-slot:selection="data">
                                     <v-chip
@@ -116,7 +115,7 @@
                                             color="info"
                                     >{{ data.item.name }} | R$  {{ data.item.cost }} | R$ {{ data.item.price }}</v-chip>
                                 </template>
-                            </v-select>
+                            </v-combobox>
                         </v-flex>
                         <v-btn v-if="exam" color="warning" @click="formExam = true">
                             <v-icon>edit</v-icon>
