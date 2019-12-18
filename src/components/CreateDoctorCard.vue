@@ -232,7 +232,10 @@
                 return this.$store.getters.specialties
             },
             formIsValid() {
-                return this.name && this.crm && this.specialties && this.cpf
+                return this.name
+                    && this.crm
+                    && this.specialties
+                    && this.cpf
                     && this.name.length > 0 && this.crm.length > 0 && this.specialties.length > 0 && this.cpf.length > 0
             },
         },
@@ -267,6 +270,20 @@
                 }
                 await this.$store.dispatch('addDoctor', doctor)
                 await this.$store.dispatch('getDoctors')
+                for (let i in this.clinic){
+                    let data = {
+                        clinic: this.clinic[i],
+                        specialtie: this.specialties[i].name,
+                        doctor: this.name,
+                        crm: this.crm,
+                        cpf: this.cpf,
+                        cost: this.specialties[i].cost,
+                        price: this.specialties[i].price,
+                        payment: this.specialties[i].payment_method,
+                    };
+                    console.log(data)
+                    //await this.$store.dispatch('addAppointment', data);
+                }
                 this.success = true
                 this.loading = false
                 setTimeout(() => {
