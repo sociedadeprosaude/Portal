@@ -272,22 +272,22 @@
                 await this.$store.dispatch('addDoctor', doctor)
                 await this.$store.dispatch('getDoctors')
                 //==========================começo da nova função
-                /*
                 for (let i in this.clinic){
-                    let data = {
-                        clinic: this.clinic[i],
-                        specialtie: this.specialties[i].name,
-                        doctor: this.name,
-                        crm: this.crm,
-                        cpf: this.cpf.replace(/\./g, '').replace('-', ''),
-                        cost: this.specialties[i].cost,
-                        price: this.specialties[i].price,
-                        payment: this.specialties[i].payment_method,
-                    };
-                    console.log(data)
-                    //await this.$store.dispatch('addAppointment', data);
+                    for (let j in this.specialties){
+                        let data = {
+                            clinic: this.clinic[i],
+                            specialtie: this.specialties[j].name,
+                            doctor: this.name,
+                            crm: this.crm,
+                            cpf: this.cpf.replace(/\./g, '').replace('-', ''),
+                            cost: this.specialties[i].cost,
+                            price: this.specialties[i].price,
+                            paymentMethod: this.specialties[i].payment_method,
+                        };
+                        console.log("imprimir:",data)
+                        //await this.$store.dispatch('addAppointment', data);
+                    }
                 }
-                 */
                 //=============fim da nova função
                 this.success = true
                 this.loading = false
