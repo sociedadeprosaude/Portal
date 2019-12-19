@@ -248,8 +248,6 @@
                     && this.crm
                     && this.specialties
                     && this.cpf
-                    && this.paymentMethod
-                    && this.clinic
                     && this.name.length > 0 && this.crm.length > 0 && this.specialties.length > 0 && this.cpf.length > 0
             },
         },
@@ -291,13 +289,13 @@
                         let data = {
                             clinic: this.clinic[i],
                             specialtie: this.specialties[j].name,
-                            doctor: this.name,
+                            doctor: this.name.toUpperCase(),
                             crm: this.crm,
                             cpf: this.cpf.replace(/\./g, '').replace('-', ''),
                             obs: this.obs,
-                            cost: this.specialties[i].cost,
-                            price: this.specialties[i].price,
-                            paymentMethod: this.specialties[i].payment_method,
+                            cost: this.specialties[j].cost,
+                            price: this.specialties[j].price,
+                            paymentMethod: this.specialties[j].payment_method,
                         };
                         console.log("imprimir:",data)
                         await this.$store.dispatch('addAppointmentFromDoctors', data);

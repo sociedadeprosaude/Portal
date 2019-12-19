@@ -132,7 +132,7 @@ const actions = {
 
     addAppointmentFromDoctors ({commit}, payload) {
 
-        console.log('payload', payload);
+        //console.log('antes:', payload);
 
         let data = {
             name: payload.doctor,
@@ -144,6 +144,8 @@ const actions = {
             crm: payload.crm,
             cpf: payload.cpf
         };
+
+        //console.log("me mostra formatado:", data)
 
         let info = {
             name: payload.specialtie,
