@@ -414,7 +414,7 @@
                     date: moment().format('YYYY-MM-DD HH:mm:ss'),
                     cost: this.cost,
                     user: this.$store.getters.selectedPatient,
-                    colaborator: this.$store.getters.user
+                    colaborator: this.$store.getters.user,
                     parcelar: this.parcelar
                 }
                 return budget
