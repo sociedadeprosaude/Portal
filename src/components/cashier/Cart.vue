@@ -450,14 +450,12 @@
                 this.$store.commit('setSelectedPatient', user)
             },
             async saveBudget(budget) {
-                console.log('SaveBudget')
                 this.$store.commit('setSelectedBudget', budget)
                 // this.selectedBudget = Object.assign({}, budget)
                 await this.$store.dispatch('addBudget', budget)
                 this.updateBudgetsIntakes()
             },
             async pay() {
-                console.log('Veio aqui')
                 this.paymentLoading = true
                 let user = this.patient;
                 if (!user) {

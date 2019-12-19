@@ -22,9 +22,7 @@ const actions = {
 
         functions.removeUndefineds(specialties)
         functions.removeUndefineds(exams)
-        console.log('Aqui no Add Budget',copyPayload)
         await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).set({...copyPayload})
-        console.log('Foi algo')
         if (specialties) {
             let spec = await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).collection('specialties').get()
             spec.forEach((s) => {
