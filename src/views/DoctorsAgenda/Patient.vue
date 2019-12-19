@@ -462,7 +462,7 @@
                 val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'));
             },
             cep(val){
-                console.log(val)
+                //console.log(val)
                 if(val.length == 8){
                     axios
                     .get('https://viacep.com.br/ws/'+ val + '/json/')

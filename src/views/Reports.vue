@@ -90,7 +90,7 @@
                     return b.quantity - a.quantity
                 })
                 biggerColab = biggerColab[0]
-                console.log(biggerColab)
+                //console.log(biggerColab)
                 return Math.floor(200 * colab.quantity / biggerColab.quantity)
             }
         },

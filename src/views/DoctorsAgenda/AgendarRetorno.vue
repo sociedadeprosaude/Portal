@@ -539,7 +539,7 @@
                 // return this.formatDate(this.index_Selecionado.data);
             },
             consultas() {
-                console.log('Especialidade',this.especialidade)
+                //console.log('Especialidade',this.especialidade)
                 let consultas = this.formatConsultationsArray(this.$store.getters.consultations).filter((a) => {
 
                     /* return this.especialidade && this.selectedDoctor ? this.especialidade.name === a.specialty.name &&
@@ -581,7 +581,7 @@
                         }
                         var find = false
                         doctor.specialties.forEach((specialty)=>{
-                            console.log(doctor.name,specialty.name)
+                            //console.log(doctor.name,specialty.name)
                             if(specialty.name === this.especialidade.name){
                                 find = true
                                 return true

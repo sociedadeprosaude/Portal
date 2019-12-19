@@ -516,7 +516,7 @@
 
                 let espArray = Object.values(this.$store.getters.specialties)
                     espArray = espArray.filter((specialty) => {
-                        console.log('Teeeee',specialty)
+                        //console.log('Teeeee',specialty)
                         if(!this.selectedDoctor) {
                             return true
                         }
@@ -579,7 +579,7 @@
                         }
                         var find = false
                         doctor.specialties.forEach((specialty)=>{
-                            console.log(doctor.name,specialty.name)
+                            //console.log(doctor.name,specialty.name)
                             if(specialty.name === this.especialidade.name){
                                 find = true
                                 return true

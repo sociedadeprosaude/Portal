@@ -34,7 +34,7 @@ const actions = {
                 let Categorias = [];
                 data.forEach((doc) => {
                     Categorias.push(doc.id);
-                    console.log('doc',doc.id)
+                    //console.log('doc',doc.id)
                 });
                 commit('setCategorias', Categorias)
             })

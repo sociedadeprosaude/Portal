@@ -53,8 +53,14 @@
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
-                                <v-flex xs4>
+                                <v-flex xs2>
                                     {{label}}
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs1>
+                                    {{spec.quantidade}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -170,20 +176,55 @@
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
-                                <v-flex xs2>
+                                <v-flex xs1>
                                     {{outtake.quantidade}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs2>
-                                    {{outtake.cost | moneyFilter}}
+                                    {{outtake.value | moneyFilter}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs2>
-                                    {{outtake.price | moneyFilter}}
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <v-divider></v-divider>
+                                </v-flex>
+                            </v-layout>
+                        </v-flex>
+                        <v-flex xs12>
+                            <v-layout row wrap class="mt-2">
+                                <v-flex xs12>
+                                    <v-divider></v-divider>
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs2>
+                                    Total Saidas
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs1>
+                                    {{report.quantidadeSaidas}}
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs2>
+                                    {{report.totalSaidas | moneyFilter}}
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs2>
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -295,5 +336,6 @@
 </script>
 
 <style scoped>
+
 
 </style>

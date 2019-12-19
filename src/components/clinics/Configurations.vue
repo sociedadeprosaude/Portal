@@ -1,5 +1,5 @@
 <template>
-    <v-card width="850">
+    <v-card width="800">
         <v-card-title class="headline grey lighten-2" primary-title>
             <span class="headline">Edição de Produtos Cadastrados</span>
             <v-spacer></v-spacer>
@@ -35,8 +35,8 @@
 
                     <v-layout v-if="option === 'Consultas' && allSpecialties.length !== 0" align-center justify-center wrap>
                         <strong>Consultas Cadastradas da Clinica para EDIÇÂO</strong>
-                        <v-expansion-panels  v-model="panel" accordion>
-                            <v-expansion-panel v-for="(item,index) in allSpecialties" :key="index">
+                        <v-expansion-panels  v-model="panel" accordion >
+                            <v-expansion-panel v-for="(item,index) in allSpecialties" :key="index" >
                                 <v-expansion-panel-header class="primary white--text">
                                     {{item.name}}
                                     <template v-slot:actions>
@@ -49,7 +49,7 @@
                                             <thead>
                                             <tr>
                                                 <v-layout row wrap>
-                                                    <v-flex xs11>
+                                                    <v-flex xs10>
                                                         <v-layout row wrap>
                                                             <v-flex xs6><th class="text-left">Name</th></v-flex>
                                                             <v-flex xs3><th class="text-left">Custo R$</th></v-flex>
@@ -65,7 +65,7 @@
                                             <tbody>
                                             <tr v-for="(doctor,index2) in item.doctors" :key="index2">
                                                 <v-layout row wrap>
-                                                    <v-flex xs11>
+                                                    <v-flex xs10>
                                                         <v-layout row wrap>
                                                             <v-flex xs6><td class="text-left">{{ doctor.name }}</td></v-flex>
                                                             <v-flex xs3><td class="text-left">R$ {{ doctor.cost }}</td></v-flex>

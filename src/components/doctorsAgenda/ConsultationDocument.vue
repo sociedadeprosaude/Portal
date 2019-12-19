@@ -149,7 +149,7 @@
                 if(this.openDocument){
                     this.$store.dispatch('setConsultationHour',{consultation:this.consultation.id,patient:this.consultation.user.cpf ,consultationHour:this.consultationHour,day:this.dia})
                     .then((result)=>{
-                        console.log('Tem Mesmo',result)
+                        //console.log('Tem Mesmo',result)
                         if(result){
                             this.consultationHour = result.consultationHour
                             this.hoje = moment(result.consultationHour).locale('pt-BR').format('DD/MM/YYYY HH:mm:ss')

@@ -522,7 +522,7 @@
                 // return this.formatDate(this.index_Selecionado.data);
             },
             consultas() {
-                console.log('Especialidade',this.especialidade)
+                //console.log('Especialidade',this.especialidade)
                 let consultas = this.formatConsultationsArray(this.$store.getters.consultations).filter((a) => {
 
                     /* return this.especialidade && this.selectedDoctor ? this.especialidade.name === a.specialty.name &&
@@ -565,7 +565,7 @@
                         }
                         var find = false
                         doctor.specialties.forEach((specialty)=>{
-                            console.log(doctor.name,specialty.name)
+                            //console.log(doctor.name,specialty.name)
                             if(specialty.name === this.especialidade.name){
                                 find = true
                                 return true
@@ -642,7 +642,7 @@
                     })
                 }
                 this.createConsultationForm = form
-                console.log(form)
+                //console.log(form)
             },
             formatConsultationsArray(consultations) {
                 let newArray = []
@@ -692,7 +692,7 @@
                 await this.$store.dispatch("getSpecialties")
 
                 this.query = this.$route.params.q
-                console.log( {...this.query})
+                //console.log( {...this.query})
                 if(!this.query){
                 //this.$router.push('agenda/GerenciamentoConsultas')
                 }
@@ -774,7 +774,7 @@
                     form.consultation = {...form.consultation,previousConsultation: this.query.consultation.previousConsultation}
                 // return
                 this.loading = true
-                console.log('Confirmar',form)
+                //console.log('Confirmar',form)
                 await this.$store.dispatch('addConsultationAppointmentToUserReschedule', form)
                 //Realizar essa funcao pelo cloud functions
                 await this.$store.dispatch('addUserToConsultationReschedule', form)
