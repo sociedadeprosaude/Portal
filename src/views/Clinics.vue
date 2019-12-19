@@ -437,7 +437,7 @@
             },
 
             clinicSelected () {
-                console.log(this.$store.getters.selectedClinic);
+                //console.log(this.$store.getters.selectedClinic);
                 return this.$store.getters.selectedClinic;
             },
 

@@ -250,7 +250,7 @@
                 set: function (index) {
                     this.status_Selecionado = index.status
                     this.index_Selecionado = {...index}
-                    console.log(this.index_Selecionado)
+                    //console.log(this.index_Selecionado)
                     this.dialog = true
                 }
             },

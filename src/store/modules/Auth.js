@@ -22,7 +22,7 @@ const actions = {
         }
         try {
         let resp = await firebase.database().ref('colaboradores/').child(user.uid).set(user)
-            console.log(resp)
+            //console.log(resp)
         } catch (e) {
             console.log(e)
         }

@@ -428,7 +428,7 @@
             snackbar() {
 
                 var snack = this.$store.getters.onSnackbarGCP
-                console.log(snack)
+                //console.log(snack)
                 if (snack) {
                     this.dialog = false
                 }
@@ -443,7 +443,7 @@
                         var consultas = []
                         this.qtdConsultas = 0
                         this.qtdRetornos = 0
-                        console.log({...val})
+                        //console.log({...val})
                         for (const key in val.consultations) {
 
                                 if(val.consultations[key].type === 'Consulta' ){
@@ -529,7 +529,7 @@
 
                 if (this.search === null || this.search === '' || this.search === undefined) {
 
-                    console.log('campo de pesquisa vazio')
+                    //console.log('campo de pesquisa vazio')
 
                 } else {
 

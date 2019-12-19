@@ -189,7 +189,7 @@ const actions = {
                     .get()
 
                 consultations.forEach((c) => {
-                    console.log('kj')
+                    //console.log('kj')
                     used = true
                     userRef.collection('consultations').doc(c.id).update({
                         status: 'Pago',
@@ -201,7 +201,7 @@ const actions = {
                     })
                 })
 
-                console.log('pagando')
+                //console.log('pagando')
                 await userRef.collection('intakes').doc(copyPayload.id.toString()).collection('specialties').add({
                     ...specialties[spec],
                     used: used

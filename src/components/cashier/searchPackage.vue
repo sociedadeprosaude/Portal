@@ -209,7 +209,7 @@
                 let search = this.search.toLowerCase();
                 let products = [];
 
-                console.log(this.items);
+                //console.log(this.items);
 
                 if (this.items) {
                     if (this.categorySelect === 'clinic') {
@@ -226,7 +226,7 @@
                             products[i] = (obj);
                         }
                     } else if (this.categorySelect === 'exam') { //exams
-                        console.log(this.items);
+                        //console.log(this.items);
                         for (let i in this.items) {
                             let obj = {
                                 name: this.items[i].name,
@@ -406,7 +406,7 @@
                 };
 
 
-                console.log('edited-exams', this.editedPackage.exams);
+                //console.log('edited-exams', this.editedPackage.exams);
                 if (this.editedPackage.exams){
                     for (let key in this.editedPackage.exams) {
 

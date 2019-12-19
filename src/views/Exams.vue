@@ -268,7 +268,7 @@
                                     this.$store.dispatch('selectExam', {... this.$store.getters.exam[key]});
                                     this.editedExam.name = data;
                                     this.editedExam = Object.assign({}, this.selectedExam);
-                                    console.log(this.editedExam);
+                                    //console.log(this.editedExam);
 
                                 }
                             }

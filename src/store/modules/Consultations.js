@@ -128,7 +128,7 @@ const actions = {
             }
 
             if(payload.payment_numberFound){
-                console.log('Tem que altera intake')
+                //console.log('Tem que altera intake')
                 firebase.firestore().collection('users').doc(payload.user.cpf).collection('intakes').doc(payload.payment_numberFound.payment_number)
                 .collection('specialties').doc(payload.payment_numberFound.uid).update({used:true})
             }
@@ -138,7 +138,7 @@ const actions = {
     },
     async addUserToConsultation({commit}, payload) {
         try {
-            console.log(payload)
+            //console.log(payload)
             let obj = payload.consultation.type == "Retorno" ? {
                     user: payload.user,
                     type: payload.consultation.type,
@@ -190,7 +190,7 @@ const actions = {
     },
 
     async updateAppointment({commit}, payload) { //atualizarConsulta
-        console.log(payload)
+        //console.log(payload)
         try {
             let obj = {
                 payment_number: payload.payment_number,
@@ -222,7 +222,7 @@ const actions = {
 
             //Para consultas que são do tipo Retorno
             if (payload.type === 'Retorno') {
-                console.log('É um retorno')
+                //console.log('É um retorno')
                 await firebase.firestore().collection('consultations').doc(payload.previousConsultation).update({
                     regress: FieldValue.delete()
                 })
@@ -234,7 +234,7 @@ const actions = {
             //Para consultas do tipo Consulta e possuem um retorno associado. É necessário remover o agendamento do retorno associado
             if (payload.regress != undefined) {
 
-                console.log('É uma consulta e possui um retorno')
+                //console.log('É uma consulta e possui um retorno')
 
                 await firebase.firestore().collection('consultations').doc(payload.regress).update({
                     user: FieldValue.delete(),
@@ -296,9 +296,9 @@ const actions = {
                 firebase.firestore().collection('consultations').doc(payload.consultation).update({consultationHour:payload})
                 firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({consultationHour:payload})
                 reject('Não tem!')
-                console.log('Não tem!')
+                //console.log('Não tem!')
             }else{
-                console.log('Tem sim!',doc.data())
+                //console.log('Tem sim!',doc.data())
                 resolve(doc.data().consultationHour)
             }
         })

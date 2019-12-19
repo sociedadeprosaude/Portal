@@ -297,7 +297,7 @@
                             price: this.specialties[j].price,
                             paymentMethod: this.specialties[j].payment_method,
                         };
-                        console.log("imprimir:",data)
+                        //console.log("imprimir:",data)
                         await this.$store.dispatch('addAppointmentFromDoctors', data);
                     }
                 }
