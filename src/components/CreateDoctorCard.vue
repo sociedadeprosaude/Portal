@@ -211,13 +211,14 @@
             this.doctor = undefined
         },
         mounted() {
+
             this.$store.dispatch('getClinics')
             this.$store.dispatch('getSpecialties')
             if (this.doctor) {
                 this.name = this.doctor.name
                 this.cpf = this.doctor.cpf
                 this.crm = this.doctor.crm
-                this.specialties = this.doctor.specialites
+                this.specialties = this.doctor.specialties
             }
         },
         data() {
@@ -275,6 +276,7 @@
                     email: this.email,
                     crm: this.crm,
                     specialties: this.specialties,
+                    clinics: this.clinic,
                     // birth_date: this.birthDate,
                     // sex: this.sex,
                     // telephones: this.telephones,

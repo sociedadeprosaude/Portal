@@ -124,9 +124,16 @@
                                             </v-card-title>
                                             <v-card-text class="pt-1 pb-0">
                                                 {{item.doctor.name}}
+                                                <v-divider></v-divider>
+                                                <v-layout row wrap class="mt-2">
+                                                    <span>
+                                                        {{item.doctor.clinic.name}}
+                                                    </span>
+                                                    <v-spacer></v-spacer>
                                                 <p class="text-right">
                                                     R$ {{item.doctor.price}}
                                                 </p>
+                                                </v-layout>
                                             </v-card-text>
 
                                         </v-card>

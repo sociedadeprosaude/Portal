@@ -46,7 +46,6 @@
                                                            active-class="blue white--text"
                                                            depressed
                                                            rounded
-
                                                            @click="addProduct(item, n, 'exam')"
                                                     >
                                                         R${{n.price}} | {{n.clinic}}
@@ -59,17 +58,20 @@
                                                 <v-slide-item v-for="n in item.doctors"
                                                               :key="n.crm"
                                                               v-slot:default="{ active, toggle }">
-                                                    <v-btn class="mx-2"
-                                                           :input-value="active"
-                                                           active-class="blue white--text"
-                                                           depressed
-                                                           rounded
+                                                    <div>
+                                                        <v-btn class="mx-2"
+                                                               :input-value="active"
+                                                               active-class="blue white--text"
+                                                               depressed
+                                                               rounded
+                                                               v-for="clinic in n.clinics"
+                                                               :key="clinic.name"
+                                                               @click="addProduct(item, n, 'appointment', clinic)"
 
-                                                           @click="addProduct(item, n, 'appointment')"
-
-                                                    >
-                                                        {{n.name}} | {{n.price}}
-                                                    </v-btn>
+                                                        >
+                                                            {{n.name}} | {{clinic.name}} | {{n.price}}
+                                                        </v-btn>
+                                                    </div>
                                                 </v-slide-item>
                                             </v-slide-group>
                                         </v-card-text>
@@ -79,16 +81,16 @@
                                                         v-slot:default="{ active, toggle }"
                                                 >
 
-                                                <v-btn class="mx-2"
-                                                       :input-value="active"
-                                                       active-class="blue white--text"
-                                                       depressed
-                                                       rounded
+                                                    <v-btn class="mx-2"
+                                                           :input-value="active"
+                                                           active-class="blue white--text"
+                                                           depressed
+                                                           rounded
 
-                                                       @click="selectBudget(item)"
-                                                >
-                                                    Selecionar
-                                                </v-btn>
+                                                           @click="selectBudget(item)"
+                                                    >
+                                                        Selecionar
+                                                    </v-btn>
                                                 </v-slide-item>
                                             </v-slide-group>
                                         </v-card-text>
@@ -134,8 +136,8 @@
             exams() {
                 return this.$store.getters.examsSelected;
             },
-            package(){
-              return this.$store.getters.bundles;
+            package() {
+                return this.$store.getters.bundles;
             },
             items() {
                 switch (this.categorySelect) {
@@ -144,7 +146,7 @@
                     case 'appointment':
                         return this.specialties;
                     case 'package':
-                        return  this.package;
+                        return this.package;
                     default:
                         return []
                 }
@@ -166,12 +168,13 @@
                 }
                 this.loading = false
             },
-            addProduct(product, selection, type) {
+            addProduct(product, selection, type, clinic) {
                 let holder = Object.assign({}, product);
                 switch (type) {
                     case 'appointment':
                         delete holder.doctors;
                         holder.doctor = selection;
+                        holder.doctor.clinic = clinic
                         holder.cost = selection.cost;
                         holder.price = selection.price;
                         break;
