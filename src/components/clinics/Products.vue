@@ -22,8 +22,8 @@
             <v-list-item v-for="(item,index) in allExams" :key="index">
               <v-chip color="red" text-color="white">
                 <strong>{{item.name}} | Custo R$ {{item.cost}} | Venda R$ {{item.price}}</strong>
-                <v-btn class="ml-1" small icon @click="preprocessExam(index)">
-                  <v-icon>cancel</v-icon>
+                <v-btn class="ml-1" small fab color="error" @click="preprocessExam(index)">
+                  <v-icon>delete</v-icon>
                 </v-btn>
               </v-chip>
             </v-list-item>
@@ -55,7 +55,7 @@
 
           <v-card-text v-if=" allSpecialties.length !== 0">
             <strong>CONSULTAS</strong>
-            <v-expansion-panels  v-model="panel" accordion>
+            <v-expansion-panels v-model="panel" accordion>
               <v-expansion-panel v-for="(item,index) in allSpecialties" :key="index">
                 <v-expansion-panel-header class="primary white--text">
                   {{item.name}}
@@ -63,49 +63,65 @@
                     <v-icon color="white">$expand</v-icon>
                   </template>
                 </v-expansion-panel-header>
-                <v-expansion-panel-content>
-                  <v-simple-table>
-                    <template v-slot:default>
+                <v-expansion-panel-content >
+                  <v-simple-table >
+                    <template v-slot:default >
                       <thead>
                         <tr>
-                            <v-layout row wrap>
-                                <v-flex xs11>
-                                    <v-layout row wrap>
-                                        <v-flex xs6><th class="text-left">Name</th></v-flex>
-                                        <v-flex xs3><th class="text-left">Custo R$</th></v-flex>
-                                        <v-flex xs3><th class="text-left">Venda R$</th></v-flex>
-                                    </v-layout>
+                          <v-layout row wrap>
+                            <v-flex xs10>
+                              <v-layout row wrap>
+                                <v-flex xs6>
+                                  <th class="text-left">Name</th>
                                 </v-flex>
-                                <v-flex xs1>
-                                    <th></th>
+                                <v-flex xs3>
+                                  <th class="text-left">Custo R$</th>
                                 </v-flex>
-                            </v-layout>
+                                <v-flex xs3>
+                                  <th class="text-left">Venda R$</th>
+                                </v-flex>
+                              </v-layout>
+                            </v-flex>
+                            <v-flex xs1>
+                              <th></th>
+                            </v-flex>
+                          </v-layout>
                         </tr>
                       </thead>
                       <tbody>
                         <tr v-for="(doctor,index2) in item.doctors" :key="index2">
-                            <v-layout row wrap>
-                                <v-flex xs11>
-                                    <v-layout row wrap>
-                                        <v-flex xs6><td class="text-left">{{ doctor.name }}</td></v-flex>
-                                        <v-flex xs3><td class="text-left">R$ {{ doctor.cost }}</td></v-flex>
-                                        <v-flex xs3><td class="text-left">R$ {{ doctor.price }}</td></v-flex>
-                                    </v-layout>
+                          <v-layout row wrap>
+                            <v-flex xs10  >
+                              <v-layout row wrap>
+                                <v-flex xs6>
+                                  <td class="text-left">{{ doctor.name }}</td>
                                 </v-flex>
-                                <v-flex xs1>
-                                    <td class="text-left">
-                                        <v-btn  small icon @click="preprocessSpec(index,index2)">
-                                            <v-icon>cancel</v-icon>
-                                        </v-btn>
-                                    </td>
+                                <v-flex xs3>
+                                  <td class="text-left">R$ {{ doctor.cost }}</td>
                                 </v-flex>
-                            </v-layout>
+                                <v-flex xs3>
+                                  <td class="text-left">R$ {{ doctor.price }}</td>
+                                </v-flex>
+                              </v-layout>
+                            </v-flex>
+                            <v-flex xs1>
+                              <td class="text-left">
+                                <v-btn
+                                  fab
+                                  color="error"
+                                  small
+                                  @click="preprocessSpec(index,index2)"
+                                >
+                                  <v-icon>delete</v-icon>
+                                </v-btn>
+                              </td>
+                            </v-flex>
+                          </v-layout>
                         </tr>
                       </tbody>
                     </template>
                   </v-simple-table>
                 </v-expansion-panel-content>
-                
               </v-expansion-panel>
             </v-expansion-panels>
           </v-card-text>
@@ -117,12 +133,15 @@
               </v-card-title>
               <v-divider></v-divider>
               <v-card-text>
-                  <strong>
-                      Medico: {{doctor}}<br>
-                      Especialidade: {{specialtie}}<br>
-                      Preço-Custo: R$ {{cost}}<br>
-                      Preço-Venda: R$ {{price}}
-                  </strong>
+                <strong>
+                  Medico: {{doctor}}
+                  <br />
+                  Especialidade: {{specialtie}}
+                  <br />
+                  Preço-Custo: R$ {{cost}}
+                  <br />
+                  Preço-Venda: R$ {{price}}
+                </strong>
               </v-card-text>
               <v-divider></v-divider>
               <v-card-actions>
@@ -133,13 +152,14 @@
             </v-card>
           </v-dialog>
 
-            <v-divider></v-divider>
-            <v-card-actions>
-                <v-layout align-center justify-center>
-                    <v-btn color="error" @click="clear()"><v-icon>close</v-icon>Fechar</v-btn>
-                </v-layout>
-            </v-card-actions>
-
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-layout align-center justify-center>
+              <v-btn color="error" @click="clear()">
+                <v-icon>close</v-icon>Fechar
+              </v-btn>
+            </v-layout>
+          </v-card-actions>
         </v-layout>
       </v-container>
     </v-card-text>
@@ -149,37 +169,37 @@
 <script>
 export default {
   data: () => ({
-      dialog: false,
-      dialog2: false,
-      product: undefined,
-      doctor: undefined,
-      specialtie: undefined,
-      cpf: undefined,
-      cost: undefined,
-      price: undefined,
-      options: undefined,
-      panel: [0],
-      headers: [
-        {
-          text: 'Nome do médico',
-          align: 'left',
-          sortable: false,
-          value: 'name',
-        },
-        {
-          text: 'Custo R$',
-          align: 'left',
-          sortable: false,
-          value: 'cost',
-        },
-        {
-          text: 'Venda R$',
-          align: 'left',
-          sortable: false,
-          value: 'sale',
-        },
-        { text: '', value: 'action', sortable: false },
-      ],
+    dialog: false,
+    dialog2: false,
+    product: undefined,
+    doctor: undefined,
+    specialtie: undefined,
+    cpf: undefined,
+    cost: undefined,
+    price: undefined,
+    options: undefined,
+    panel: [0],
+    headers: [
+      {
+        text: "Nome do médico",
+        align: "left",
+        sortable: false,
+        value: "name"
+      },
+      {
+        text: "Custo R$",
+        align: "left",
+        sortable: false,
+        value: "cost"
+      },
+      {
+        text: "Venda R$",
+        align: "left",
+        sortable: false,
+        value: "sale"
+      },
+      { text: "", value: "action", sortable: false }
+    ]
   }),
 
   computed: {
@@ -227,9 +247,9 @@ export default {
   },
 
   methods: {
-      clear () {
-          this.$store.dispatch('selectClinic', null);
-      },
+    clear() {
+      this.$store.dispatch("selectClinic", null);
+    },
     preprocessExam(index) {
       this.product = this.allExams[index].name;
       this.cost = this.allExams[index].cost;
@@ -248,25 +268,25 @@ export default {
       this.$store.dispatch("loadClinics");
     },
     preprocessSpec(index, index2) {
-        //console.log("shavdhsavd:",this.allSpecialties[index].doctors[index2])
-        this.specialtie = this.allSpecialties[index].doctors[index2].specialtie;
-        this.cpf = this.allSpecialties[index].doctors[index2].cpf;
-        this.doctor = this.allSpecialties[index].doctors[index2].name;
-        this.cost = this.allSpecialties[index].doctors[index2].cost;
-        this.price = this.allSpecialties[index].doctors[index2].price;
-        this.dialog2 = true;
+      //console.log("shavdhsavd:",this.allSpecialties[index].doctors[index2])
+      this.specialtie = this.allSpecialties[index].doctors[index2].specialtie;
+      this.cpf = this.allSpecialties[index].doctors[index2].cpf;
+      this.doctor = this.allSpecialties[index].doctors[index2].name;
+      this.cost = this.allSpecialties[index].doctors[index2].cost;
+      this.price = this.allSpecialties[index].doctors[index2].price;
+      this.dialog2 = true;
     },
     removeFromS() {
       let info = {
-          cpf: this.cpf,
-          clinic: this.selectedClinic,
-          specialtie: this.specialtie,
+        cpf: this.cpf,
+        clinic: this.selectedClinic,
+        specialtie: this.specialtie
       };
       //console.log('disgraça:',info);
-      this.$store.dispatch('deleteAppointment', info)
+      this.$store.dispatch("deleteAppointment", info);
       this.dialog2 = false;
       this.$store.dispatch("loadClinics");
-    },
+    }
   }
 };
 </script>
