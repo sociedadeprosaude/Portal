@@ -220,6 +220,7 @@
                 crm: undefined,
                 cpf: undefined,
                 specialties: undefined,
+                obs: null,
                 formTitle: 'Cadastro de Médicos',
                 loading: false,
                 success: false,
@@ -280,12 +281,13 @@
                             doctor: this.name,
                             crm: this.crm,
                             cpf: this.cpf.replace(/\./g, '').replace('-', ''),
+                            obs: this.obs,
                             cost: this.specialties[i].cost,
                             price: this.specialties[i].price,
                             paymentMethod: this.specialties[i].payment_method,
                         };
                         console.log("imprimir:",data)
-                        //await this.$store.dispatch('addAppointment', data);
+                        //await this.$store.dispatch('addAppointmentFromDoctors', data);
                     }
                 }
                 //=============fim da nova função
