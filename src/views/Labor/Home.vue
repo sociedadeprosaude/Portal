@@ -64,8 +64,8 @@
                             <span>
                             {{user.cpf}}
                         </span>
-                            <span>
-                            {{user.telephone}}
+                            <span v-if="user.telephones">
+                            {{user.telephones[0]}}
                         </span>
                             <span>
                             {{user.email}}

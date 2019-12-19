@@ -35,9 +35,9 @@ const actions = {
     let querySnapshot = await usersRef.get()
     let users = [];
     querySnapshot.forEach(function(doc) {
-      if (doc.data().association_number) {
+      // if (doc.data().association_number) {
         users.push(doc.data())
-      }
+      // }
     });
     return users
   },

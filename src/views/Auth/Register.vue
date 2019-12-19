@@ -136,8 +136,8 @@
                         name: this.name,
                         uid: resp.user.uid,
                         cpf: this.cpf.replace(/\./g, '').replace('-', ''),
-                        telephone: [this.telephone],
-                        type: 'colaborator',
+                        telephones: [this.telephone],
+                        type: 'COLABORATOR',
                         group: 'admin'
                     })
                     this.registered = true
