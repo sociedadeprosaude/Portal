@@ -287,7 +287,7 @@
                             paymentMethod: this.specialties[i].payment_method,
                         };
                         console.log("imprimir:",data)
-                        //await this.$store.dispatch('addAppointmentFromDoctors', data);
+                        await this.$store.dispatch('addAppointmentFromDoctors', data);
                     }
                 }
                 //=============fim da nova função

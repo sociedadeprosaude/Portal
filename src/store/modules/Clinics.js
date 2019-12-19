@@ -143,13 +143,12 @@ const actions = {
             payment_method: payload.paymentMethod,
             crm: payload.crm,
             cpf: payload.cpf
-
         };
 
         let info = {
             name: payload.specialtie,
         };
-
+/*
         firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties').doc(payload.specialtie)
             .set(info);
 
@@ -162,11 +161,11 @@ const actions = {
         firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).collection('clinics/')
             .doc(payload.clinic.name).set(payload.clinic);
 
-        firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf)
-            .set(data);
+        //firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf).set(data);
 
         firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf).collection('clinics/')
             .doc(payload.clinic.name).set(payload.clinic);
+ */
     },
 
     deleteAppointment ({commit}, payload) {
