@@ -95,9 +95,17 @@ const actions = {
             let specialtySnapt = await firebase.firestore().collection('specialties').get()
             let specialties = []
             specialtySnapt.forEach(function (document) {
+                let doctors = []
+                firebase.firestore().collection('specialties').doc(document.data().name).collection('doctors').get()
+                .then((snapshot)=>{
+                    snapshot.forEach((doctor)=>{
+                        doctors.push({...doctor.data()})
+                    })
+                })
                 specialties.push({
                   id: document.id,
-                  ...document.data()
+                  ...document.data(),
+                  doctors:doctors
                 })
             })
             commit('setSpecialties', specialties)

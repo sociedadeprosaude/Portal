@@ -15,7 +15,7 @@ const state = {
 
 const mutations = {
   setRelatorio(state,payload){
-    console.log('aqyu')
+    //console.log('aqyu')
     state.relatorio= payload;
   }
 }
@@ -51,7 +51,7 @@ const actions = {
         // .where('colaborator', '>', '')
         .orderBy('date').get()
     let promises = []
-    console.log('cheguei aqui')
+    //console.log('cheguei aqui')
     for (let doc in intakesSnap.docs) {
       if (intakesSnap.docs[doc].data().colaborator) {
         promises.push(context.dispatch('getIntakeDetails', intakesSnap.docs[doc].data()))
@@ -64,8 +64,8 @@ const actions = {
   async searchReports(context, payload) {
     payload.dataFinal = payload.dataFinal + ' 24:00:00';
     payload.dataInicio = payload.dataInicio + ' 00:00:00';
-    console.log('data inicial: ', payload.dataInicio);
-    console.log('data final: ', payload.dataFinal);
+    //console.log('data inicial: ', payload.dataInicio);
+    //console.log('data final: ', payload.dataFinal);
 
     let intakesSnap = await firebase.firestore().collection('intakes').where('date', '>=', payload.dataInicio)
         .where('date', '<=', payload.dataFinal).orderBy('date').get()
@@ -83,8 +83,9 @@ const actions = {
     let totalCredito = 0;
     let totalSaidas = 0;
     let saidas = {};
+    let quantidadeSaidas= 0;
     let relatorio = {};
-    console.log(intakes)
+    //console.log(intakes)
 
     for (let intake in intakes) {
 
@@ -115,8 +116,26 @@ const actions = {
         specialties[intakes[intake].specialties[specialtie].name].cost += parseFloat(intakes[intake].specialties[specialtie].cost),
             specialties[intakes[intake].specialties[specialtie].name].price += parseFloat(intakes[intake].specialties[specialtie].price)
       }
+      if(!intakes[intake].valor){
+        totalCusto += parseFloat(intakes[intake].cost);
+      }
+      else { //SAIDAS
+        if(!saidas[intakes[intake].categoria]){
+          saidas[intakes[intake].categoria] = {
+            quantidade: 0,
+            name: intakes[intake].categoria,
+            value: 0,
+          }
+        }
+        saidas[intakes[intake].categoria].quantidade ++;
+        saidas[intakes[intake].categoria].value += parseFloat(intakes[intake].valor)
+        totalSaidas += parseFloat(intakes[intake].valor)
+        quantidadeSaidas ++;
+        //console.log('valor', saidas[intakes[intake].categoria].value)
 
-      totalCusto += intakes[intake].cost;
+      }
+
+      //console.log('custo: ',totalCusto)
       if (intakes[intake].payment_method === 'Dinheiro') {
         totalCaixa += intakes[intake].total
         totalBruto += intakes[intake].total
@@ -129,15 +148,17 @@ const actions = {
         totalCredito += intakes[intake].total
         totalBruto += intakes[intake].total
       }
+
+
     }
-    console.log(exams);
-    console.log(specialties);
-    console.log(totalSaidas)
-    console.log(totalCusto)
-    console.log(totalCredito)
-    console.log(totalDebido)
-    console.log(totalCaixa)
-    console.log(totalBruto)
+    //console.log(exams);
+    //console.log(specialties);
+    //console.log(totalSaidas)
+    //console.log('total custo',totalCusto)
+    //console.log(totalCredito)
+    //console.log(totalDebido)
+    //console.log(totalCaixa)
+    //console.log(totalBruto)
 
 
     relatorio = {
@@ -148,10 +169,11 @@ const actions = {
       debito: totalDebido,
       dinheiro: totalCaixa,
       totalBruto: totalBruto,
+      quantidadeSaidas: quantidadeSaidas,
       totalCusto: totalCusto,
       totalSaidas: totalSaidas,
     };
-    console.log('relatorio: ', relatorio);
+    //console.log('relatorio: ', relatorio);
     context.commit('setRelatorio',relatorio)
     return relatorio
   }
@@ -163,7 +185,7 @@ const actions = {
 
 const getters = {
   relatorio(state){
-    console.log('veio')
+    //console.log('veio')
     return state.relatorio;
   }
 }

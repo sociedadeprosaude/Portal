@@ -23,7 +23,6 @@ const actions = {
 
                     let specialty = specDoc.data();
                     let doctors = [];
-
                     firebase.firestore().collection('specialties/' + specialty.name + '/doctors').get()
                         .then((data) => {
                             data.forEach((doc) => {

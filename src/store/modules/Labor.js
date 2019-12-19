@@ -12,14 +12,14 @@ const mutations = {
 
 const actions = {
     async getColaboratorsPermissions({commit}, user) {
-        console.log(user)
+        //console.log(user)
         user = {
             ...user,
             status: 'pending'
         }
         try {
         let resp = await firebase.database().ref('colaboradores/').child(user.uid).set(user)
-            console.log(resp)
+            //console.log(resp)
         } catch (e) {
             console.log(e)
         }

@@ -1,7 +1,9 @@
 <template>
-    <v-card width="850">
+    <v-card width="800">
         <v-card-title class="headline grey lighten-2" primary-title>
             <span class="headline">Edição de Produtos Cadastrados</span>
+            <v-spacer></v-spacer>
+            <v-btn small color="error" @click="clear()"><v-icon>close</v-icon></v-btn>
         </v-card-title>
         <v-card-text>
             <v-container grid-list-md>
@@ -33,8 +35,8 @@
 
                     <v-layout v-if="option === 'Consultas' && allSpecialties.length !== 0" align-center justify-center wrap>
                         <strong>Consultas Cadastradas da Clinica para EDIÇÂO</strong>
-                        <v-expansion-panels  v-model="panel" accordion>
-                            <v-expansion-panel v-for="(item,index) in allSpecialties" :key="index">
+                        <v-expansion-panels  v-model="panel" accordion >
+                            <v-expansion-panel v-for="(item,index) in allSpecialties" :key="index" >
                                 <v-expansion-panel-header class="primary white--text">
                                     {{item.name}}
                                     <template v-slot:actions>
@@ -47,7 +49,7 @@
                                             <thead>
                                             <tr>
                                                 <v-layout row wrap>
-                                                    <v-flex xs11>
+                                                    <v-flex xs10>
                                                         <v-layout row wrap>
                                                             <v-flex xs6><th class="text-left">Name</th></v-flex>
                                                             <v-flex xs3><th class="text-left">Custo R$</th></v-flex>
@@ -63,7 +65,7 @@
                                             <tbody>
                                             <tr v-for="(doctor,index2) in item.doctors" :key="index2">
                                                 <v-layout row wrap>
-                                                    <v-flex xs11>
+                                                    <v-flex xs10>
                                                         <v-layout row wrap>
                                                             <v-flex xs6><td class="text-left">{{ doctor.name }}</td></v-flex>
                                                             <v-flex xs3><td class="text-left">R$ {{ doctor.cost }}</td></v-flex>
@@ -91,7 +93,7 @@
                     <v-layout v-else-if="option === 'Exames' && allExams.length !== 0" align-center justify-center wrap>
                         <strong>Exames Cadastrados da Clinica para EDIÇÂO</strong>
                         <v-flex>
-                            <v-select
+                            <v-combobox
                                     :items="allExams"
                                     item-text="name"
                                     item-value="name"
@@ -100,7 +102,6 @@
                                     chips
                                     clearable
                                     outlined
-                                    label="Exame Selecionado"
                             >
                                 <template v-slot:selection="data">
                                     <v-chip
@@ -114,7 +115,7 @@
                                             color="info"
                                     >{{ data.item.name }} | R$  {{ data.item.cost }} | R$ {{ data.item.price }}</v-chip>
                                 </template>
-                            </v-select>
+                            </v-combobox>
                         </v-flex>
                         <v-btn v-if="exam" color="warning" @click="formExam = true">
                             <v-icon>edit</v-icon>
@@ -201,30 +202,26 @@
                             ></v-select>
                         </v-flex>
                         <v-flex xs6>
-                            <v-text-field
+                            <v-currency-field
                                     prepend-icon="attach_money"
                                     outlined
                                     clearable
                                     label="Preço de Custo"
-                                    placeholder="ex.: 50.00"
-                                    v-mask="['###.##' , '##.##', '####.##']"
-                                    v-model="cost"
                                     prefix="R$"
+                                    v-model="cost"
                                     hide-details
-                            ></v-text-field>
+                            ></v-currency-field>
                         </v-flex>
                         <v-flex xs6>
-                            <v-text-field
+                            <v-currency-field
                                     prepend-icon="monetization_on"
                                     outlined
                                     clearable
                                     label="Preço de Venda"
-                                    placeholder="ex.: 80.00"
-                                    v-mask="['###.##' , '##.##', '####.##']"
-                                    v-model="price"
                                     prefix="R$"
+                                    v-model="price"
                                     hide-details
-                            ></v-text-field>
+                            ></v-currency-field>
                         </v-flex>
                         <v-flex xs12>
                             <v-textarea
@@ -262,31 +259,28 @@
                             <v-text-field prepend-icon="poll" outlined v-model="exam.name" readonly></v-text-field>
                         </v-flex>
 
+
                         <v-flex xs6>
-                            <v-text-field
+                            <v-currency-field
                                     prepend-icon="attach_money"
                                     outlined
                                     clearable
                                     label="Preço de Custo"
-                                    placeholder="ex.: 50.00"
-                                    v-mask="['###.##' , '##.##', '####.##']"
-                                    v-model="exam.cost"
                                     prefix="R$"
+                                    v-model="exam.cost"
                                     hide-details
-                            ></v-text-field>
+                            ></v-currency-field>
                         </v-flex>
                         <v-flex xs6>
-                            <v-text-field
+                            <v-currency-field
                                     prepend-icon="monetization_on"
                                     outlined
                                     clearable
                                     label="Preço de Venda"
-                                    placeholder="ex.: 80.00"
-                                    v-mask="['###.##' , '##.##', '####.##']"
-                                    v-model="exam.price"
                                     prefix="R$"
+                                    v-model="exam.price"
                                     hide-details
-                            ></v-text-field>
+                            ></v-currency-field>
                         </v-flex>
                         <v-flex xs12>
                             <v-textarea
@@ -324,9 +318,7 @@
 </template>
 
 <script>
-    import {mask} from 'vue-the-mask';
     export default {
-        directives: {mask},
         data: () => ({
             panel: [0],
             formExam: undefined,
@@ -414,7 +406,7 @@
                 this.doctor = this.allSpecialties[index].doctors[index2].name;
                 this.cost = this.allSpecialties[index].doctors[index2].cost;
                 this.price = this.allSpecialties[index].doctors[index2].price;
-                this.obs = this.allSpecialties[index].doctors[index2].obs;
+                this.obs = this.allSpecialties[index].doctors[index2].rules;
                 this.payment = this.allSpecialties[index].doctors[index2].payment_method;
                 this.formConsultation = true;
             },

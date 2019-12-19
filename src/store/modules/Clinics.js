@@ -130,23 +130,56 @@ const actions = {
             .set(payload.clinic);
     },
 
+    addAppointmentFromDoctors ({commit}, payload) {
+
+        //console.log('antes:', payload);
+
+        let data = {
+            name: payload.doctor,
+            specialtie: payload.specialtie,
+            rules: payload.obs,
+            cost: payload.cost,
+            price: payload.price,
+            payment_method: payload.paymentMethod,
+            crm: payload.crm,
+            cpf: payload.cpf
+        };
+
+        //console.log("me mostra formatado:", data)
+
+        let info = {
+            name: payload.specialtie,
+        };
+
+        firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties').doc(payload.specialtie)
+            .set(info);
+
+        firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie + '/doctors')
+            .doc(payload.cpf).set(data);
+
+        firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie)
+            .set(data);
+
+        firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).collection('clinics/')
+            .doc(payload.clinic.name).set(payload.clinic);
+
+        //firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf).set(data);
+
+        firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf).collection('clinics/')
+            .doc(payload.clinic.name).set(payload.clinic);
+    },
+
     deleteAppointment ({commit}, payload) {
         //console.log('payload', payload);
         firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie + '/doctors').doc(payload.cpf)
             .delete();
 
-        //firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties').doc(payload.specialtie).delete();
-
-        //firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).delete();
+        firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf).collection('clinics/').doc(payload.clinic.name)
+            .delete();
 
         firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).collection('clinics/').doc(payload.clinic.name)
             .delete();
-
-        firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf)
-            .delete();
-
-        firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf).collection('clinics/').doc(payload.clinic.name)
-            .delete();
+        //firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).delete();
     },
 
     selectClinic ({commit}, payload) {

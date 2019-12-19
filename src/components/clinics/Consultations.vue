@@ -59,30 +59,26 @@
                         ></v-select>
                     </v-flex>
                     <v-flex xs6>
-                        <v-text-field
+                        <v-currency-field
                                 prepend-icon="attach_money"
                                 outlined
                                 clearable
                                 label="Preço de Custo"
-                                placeholder="ex.: 50.00"
-                                v-mask="['###.##' , '##.##', '####.##']"
-                                v-model="cost"
                                 prefix="R$"
+                                v-model="cost"
                                 hide-details
-                        ></v-text-field>
+                        ></v-currency-field>
                     </v-flex>
                     <v-flex xs6>
-                        <v-text-field
+                        <v-currency-field
                                 prepend-icon="monetization_on"
                                 outlined
                                 clearable
                                 label="Preço de Venda"
-                                placeholder="ex.: 80.00"
-                                v-mask="['###.##' , '##.##', '####.##']"
-                                v-model="sale"
                                 prefix="R$"
+                                v-model="sale"
                                 hide-details
-                        ></v-text-field>
+                        ></v-currency-field>
                     </v-flex>
                     <v-flex xs12>
                         <v-textarea
@@ -118,9 +114,7 @@
 </template>
 
 <script>
-    import {mask} from 'vue-the-mask';
     export default {
-        directives: {mask},
         data: () => ({
             cost: null,
             sale: null,

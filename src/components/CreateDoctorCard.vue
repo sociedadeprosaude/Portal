@@ -83,6 +83,7 @@
                                 prepend-icon="location_city"
                                 v-model="clinic"
                                 :items="clinics"
+                                return-object
                                 item-text="name"
                                 label="Clínica"
                                 outlined
@@ -134,16 +135,26 @@
                                     </v-layout>
                                 </v-radio-group>
                             </v-flex>
-                            <v-flex xs4>
+                            <v-flex xs6>
                                 <v-currency-field
+                                        prepend-icon="attach_money"
+                                        outlined
+                                        rounded
+                                        filled
+                                        clearable
                                         label="Custo"
                                         prefix="R$"
                                         v-model="spec.cost"
                                 ></v-currency-field>
                             </v-flex>
                             <v-spacer></v-spacer>
-                            <v-flex xs4>
+                            <v-flex xs6>
                                 <v-currency-field
+                                        prepend-icon="monetization_on"
+                                        outlined
+                                        rounded
+                                        filled
+                                        clearable
                                         prefix="R$"
                                         v-model="spec.price"
                                         label="Venda"
@@ -219,6 +230,7 @@
                 crm: undefined,
                 cpf: undefined,
                 specialties: undefined,
+                obs: null,
                 formTitle: 'Cadastro de Médicos',
                 loading: false,
                 success: false,
@@ -232,7 +244,10 @@
                 return this.$store.getters.specialties
             },
             formIsValid() {
-                return this.name && this.crm && this.specialties && this.cpf
+                return this.name
+                    && this.crm
+                    && this.specialties
+                    && this.cpf
                     && this.name.length > 0 && this.crm.length > 0 && this.specialties.length > 0 && this.cpf.length > 0
             },
         },
@@ -246,6 +261,7 @@
                 this.crm = undefined
                 this.cpf = undefined
                 this.specialties = undefined
+                this.clinic = undefined
             },
             erase() {
             },
@@ -267,6 +283,25 @@
                 }
                 await this.$store.dispatch('addDoctor', doctor)
                 await this.$store.dispatch('getDoctors')
+                //==========================começo da nova função
+                for (let i in this.clinic){
+                    for (let j in this.specialties){
+                        let data = {
+                            clinic: this.clinic[i],
+                            specialtie: this.specialties[j].name,
+                            doctor: this.name.toUpperCase(),
+                            crm: this.crm,
+                            cpf: this.cpf.replace(/\./g, '').replace('-', ''),
+                            obs: this.obs,
+                            cost: this.specialties[j].cost,
+                            price: this.specialties[j].price,
+                            paymentMethod: this.specialties[j].payment_method,
+                        };
+                        //console.log("imprimir:",data)
+                        await this.$store.dispatch('addAppointmentFromDoctors', data);
+                    }
+                }
+                //=============fim da nova função
                 this.success = true
                 this.loading = false
                 setTimeout(() => {

@@ -266,6 +266,7 @@
                 parcel: 1,
                 parcels: [1, 2, 3, 4, 5],
                 paymentLoading: false,
+                quantParcelas: ["1", "2", "3", "4", "5"],
                 paymentSuccess: false,
                 searchBudgetError: undefined,
                 searchBudgetNumber: undefined,
@@ -276,6 +277,7 @@
                 moneyDiscout: 0,
                 now: moment().valueOf(),
                 data: moment().format("YYYY-MM-DD HH:mm:ss"),
+                parcelas: '',
                 totalCusto: 0,
                 percentageDiscount: 0,
                 moneyDiscount: 0,
@@ -386,32 +388,7 @@
                 text += "\nTotal: R$" + this.totalNovo.toLocaleString('en-us', {minimumFractionDigits: 2});
                 return text
             },
-            removeExame(index) {
-                this.total = this.total - parseFloat(this.exames[index].preco);
-                this.exames.splice(index, 1)
-            },
-            removeConsults(index) {
-                this.total -= parseFloat(this.consultas[index].preco);
-                this.consultas.splice(index, 1);
-                this.medicoDia.splice(index, 1);
-            },
-            removePackages(index) {
-                this.total -= parseFloat(this.pacotes[index].preco);
-                this.pacotes.splice(index, 1)
-            },
             imprimir() {
-                // if (this.codigo === '') {
-                //     this.codigo = this.now.toString();
-                // }
-                // this.$store.dispatch('CadastrarVenda', {
-                //     consultas: this.consultas,
-                //     exames: this.exames,
-                //     pacotes: this.pacotes,
-                //     codigo: this.codigo,
-                //     preco: this.total,
-                //     custo: this.totalCusto
-                // });
-                // window.print();
                 this.saveBudget(this.generateBudget())
                 this.budgetToPrint = this.selectedBudget
                 this.budgetToPrintDialog = true
@@ -444,7 +421,8 @@
                     date: moment().format('YYYY-MM-DD HH:mm:ss'),
                     cost: this.cost,
                     user: this.$store.getters.selectedPatient,
-                    colaborator: this.$store.getters.user
+                    colaborator: this.$store.getters.user,
+                    parcelar: this.parcelar
                 }
                 return budget
             },
@@ -491,8 +469,10 @@
             clearCart() {
                 this.$store.commit('clearShoppingCartItens')
                 this.$store.commit('setSelectedBudget', undefined)
+                let user= undefined
+                this.$store.commit('setSelectedPatient', user)
                 // this.selectedBudget = undefined
-            },
+            }
         }
     }
 </script>

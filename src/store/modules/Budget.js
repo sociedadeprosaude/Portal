@@ -10,20 +10,19 @@ const actions = {
     async addBudget(context, payload) {
         let copyPayload = Object.assign({}, payload)
         functions.removeUndefineds(copyPayload)
-        // console.log(payload)
+        
         // return
         let specialties = copyPayload.specialties ? Object.assign({}, copyPayload.specialties) : undefined
         let exams = copyPayload.exams ? Object.assign({}, copyPayload.exams) : undefined
         // let user = copyPayload.user ? Object.assign({}, copyPayload.user) : undefined
         delete copyPayload.specialties
         delete copyPayload.exams
-        // delete payload.user
+        //let user = copyPayload.user
+        delete copyPayload.user.telephones
 
         functions.removeUndefineds(specialties)
         functions.removeUndefineds(exams)
-
-
-        await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).set(copyPayload)
+        await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).set({...copyPayload})
         if (specialties) {
             let spec = await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).collection('specialties').get()
             spec.forEach((s) => {
@@ -81,6 +80,8 @@ const actions = {
 
         functions.removeUndefineds(specialties)
         functions.removeUndefineds(exams)
+
+        
 
         let userRef = firebase.firestore().collection('users').doc(user.cpf)
         await userRef.collection('budgets').doc(copyPayload.id.toString()).set(copyPayload)
@@ -188,7 +189,7 @@ const actions = {
                     .get()
 
                 consultations.forEach((c) => {
-                    console.log('kj')
+                    //console.log('kj')
                     used = true
                     userRef.collection('consultations').doc(c.id).update({
                         status: 'Pago',
@@ -200,7 +201,7 @@ const actions = {
                     })
                 })
 
-                console.log('pagando')
+                //console.log('pagando')
                 await userRef.collection('intakes').doc(copyPayload.id.toString()).collection('specialties').add({
                     ...specialties[spec],
                     used: used

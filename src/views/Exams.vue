@@ -58,6 +58,35 @@
                                 <v-card-title>
                                     <h4 class="font-italic font-weight-bold primary--text">{{editedExam.name}}</h4>
                                 </v-card-title>
+                                <v-flex xs12 sm6>
+                                    <v-select
+                                            label="Especialidade"
+                                            prepend-icon="school"
+                                            v-model="editedExam.type"
+                                            :items="specialties"
+                                            item-text="name"
+                                            return-object
+                                            outlined
+                                            rounded
+                                            filled
+                                            chips
+                                            color="pink"
+                                            clearable
+                                    >
+                                        <template v-slot:selection="data">
+                                            <v-chip
+                                                    :key="JSON.stringify(data.item)"
+                                                    :input-value="data.selected"
+                                                    :disabled="data.disabled"
+                                                    class="v-chip--select-multi"
+                                                    @click.stop="data.parent.selectedIndex = data.index"
+                                                    @input="data.parent.selectItem(data.item)"
+                                                    text-color="white"
+                                                    color="info"
+                                            >{{ data.item.name }}</v-chip>
+                                        </template>
+                                    </v-select>
+                                </v-flex>
                                 <v-card-text>
                                     <v-layout wrap>
                                         <v-flex xs12 sm12>
@@ -79,12 +108,40 @@
                                     <v-card-text>
                                         <v-layout wrap >
                                             <v-flex xs12 sm12>
-                                                <v-text-field required label="Nome" v-model="editedExam.name" prepend-icon="description"
+                                                <v-text-field outlined required label="Nome" v-model="editedExam.name" prepend-icon="description"
                                                               :rules="rules.campoObrigatorio" class="ml-3 mr-3">
                                                 </v-text-field>
                                             </v-flex>
                                             <v-flex xs12 sm12>
-                                                <v-textarea label="Regras" v-model="editedExam.rules" class="ml-3 mr-3"
+                                                <v-select
+                                                        class="ml-3 mr-3"
+                                                        label="Tipo"
+                                                        prepend-icon="school"
+                                                        v-model="editedExam.type"
+                                                        :items="specialties"
+                                                        item-text="name"
+                                                        return-object
+                                                        outlined
+                                                        chips
+                                                        color="pink"
+                                                        clearable
+                                                >
+                                                    <template v-slot:selection="data">
+                                                        <v-chip
+                                                                :key="JSON.stringify(data.item)"
+                                                                :input-value="data.selected"
+                                                                :disabled="data.disabled"
+                                                                class="v-chip--select-multi"
+                                                                @click.stop="data.parent.selectedIndex = data.index"
+                                                                @input="data.parent.selectItem(data.item)"
+                                                                text-color="white"
+                                                                color="info"
+                                                        >{{ data.item.name }}</v-chip>
+                                                    </template>
+                                                </v-select>
+                                            </v-flex>
+                                            <v-flex xs12 sm12>
+                                                <v-textarea outlined label="Regras" v-model="editedExam.rules" class="ml-3 mr-3"
                                                             prepend-icon="report_problem">
                                                 </v-textarea>
                                             </v-flex>
@@ -138,11 +195,11 @@
             validRegister: true, editData: false, parameter: 'name', success:false,
 
             editedExam: {
-                id:'', name: '', rules: '',
+                id:'', name: '', rules: '', type: '',
             },
 
             defaultExam: {
-                id:'', name: '', rules: '',
+                id:'', name: '', rules: '', type: '',
             },
 
             rules: {
@@ -153,7 +210,9 @@
         }),
 
         computed: {
-
+            specialties(){
+                return this.$store.getters.specialties
+            },
             listExam () {
                 this.isLoading = false;
                 return this.$store.getters.exam;
@@ -187,6 +246,10 @@
 
         },
 
+        mounted() {
+            this.$store.dispatch('getSpecialties')
+        },
+
         watch: {
             searchData(){
 
@@ -205,7 +268,7 @@
                                     this.$store.dispatch('selectExam', {... this.$store.getters.exam[key]});
                                     this.editedExam.name = data;
                                     this.editedExam = Object.assign({}, this.selectedExam);
-                                    console.log(this.editedExam);
+                                    //console.log(this.editedExam);
 
                                 }
                             }
@@ -251,6 +314,7 @@
                     id: '',
                     name: this.capitalize(this.editedExam.name),
                     rules: this.editedExam.rules,
+                    type: this.editedExam.type,
                 };
                 await this.$store.dispatch('addExam', examData);
                 this.success = true
@@ -286,6 +350,7 @@
                     id: '',
                     name: this.capitalize(this.editedExam.name),
                     rules: this.editedExam.rules,
+                    type: this.editedExam.type,
                 };
                 this.$store.dispatch('loadExam').then(() => {
                     this.$store.dispatch('updateDataExam', examData);

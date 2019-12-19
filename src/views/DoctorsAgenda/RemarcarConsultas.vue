@@ -2,7 +2,7 @@
     <v-layout row wrap>
         <v-flex xs8>
             <v-layout align-center row wrap class="ml-6">
-                <v-flex xs12 md6>
+                <v-flex xs12 md4>
                     <v-select
                             prepend-icon="school"
                             v-model="especialidade"
@@ -30,7 +30,7 @@
                         </template>
                     </v-select>
                 </v-flex>
-                <v-flex xs12 md6>
+                <v-flex xs12 md4>
                     <v-select
                             prepend-icon="person"
                             v-model="selectedDoctor"
@@ -43,6 +43,34 @@
                             chips
                             color="blue"
                             
+                    >
+                        <template v-slot:selection="data">
+                            <v-chip
+                                    :key="JSON.stringify(data.item)"
+                                    :input-value="data.selected"
+                                    :disabled="data.disabled"
+                                    class="v-chip--select-multi"
+                                    @click.stop="data.parent.selectedIndex = data.index"
+                                    @input="data.parent.selectItem(data.item)"
+                                    text-color="white"
+                                    color="info"
+                            >{{ data.item.name }}</v-chip>
+                        </template>
+                    </v-select>
+                </v-flex>
+                <v-flex xs12 md4>
+                    <v-select
+                            prepend-icon="location_city"
+                            v-model="clinic"
+                            :items="clinics"
+                            item-text="name"
+                            label="Clínica"
+                            outlined
+                            rounded
+                            filled
+                            chips
+                            color="purple"
+                            clearable
                     >
                         <template v-slot:selection="data">
                             <v-chip
@@ -117,6 +145,12 @@
                                                             color="primary_dark"
                                                             text-color="white"
                                                     >Vagas : {{consulta.vagas}}
+                                                    </v-chip>
+                                                    <v-chip
+                                                            class="mt-1"
+                                                            color="primary_dark"
+                                                            text-color="white"
+                                                    >Clinica : {{consulta.clinic}}
                                                     </v-chip>
                                                 </v-layout>
                                             </v-flex>
@@ -279,7 +313,20 @@
                                                         :items="statusOptions"
                                                         label="Status"
                                                         chips
-                                                ></v-select>
+                                                >
+                                                    <template v-slot:selection="data">
+                                                            <v-chip
+                                                                    :key="JSON.stringify(data.item)"
+                                                                    :input-value="data.selected"
+                                                                    :disabled="data.disabled"
+                                                                    class="v-chip--select-multi"
+                                                                    @click.stop="data.parent.selectedIndex = data.index"
+                                                                    @input="data.parent.selectItem(data.item)"
+                                                                    text-color="white"
+                                                                    :color="data.item.text === 'Pago' ? 'success' : data.item.text === 'Cancelado' ? 'error': 'warning'"
+                                                            >{{ data.item.text }}</v-chip>
+                                                    </template>
+                                                </v-select>
                                             </v-flex>
                                             <v-flex xs12 sm6>
                                                 <v-text-field
@@ -439,6 +486,7 @@
             medicosOptions: ["Todos"],
             pacientes: "",
             timeout: 4000,
+            clinic:undefined,
             especialidadeOption: "",
             especialidade: undefined,
             showAlert: false,
@@ -464,6 +512,9 @@
         }),
 
         computed: {
+            clinics() {
+                return this.$store.getters.clinics
+            },
             specialties() {
                 return this.$store.getters.specialties;
             },
@@ -471,23 +522,61 @@
                 // return this.formatDate(this.index_Selecionado.data);
             },
             consultas() {
-                console.log('Especialidade',this.especialidade)
+                //console.log('Especialidade',this.especialidade)
                 let consultas = this.formatConsultationsArray(this.$store.getters.consultations).filter((a) => {
 
-                    return this.especialidade && this.selectedDoctor ? this.especialidade.name === a.specialty.name &&
-                           this.selectedDoctor.cpf === a.doctor.cpf :  false
+                    /* return this.especialidade && this.selectedDoctor ? this.especialidade.name === a.specialty.name &&
+                           this.selectedDoctor.cpf === a.doctor.cpf :  false */
+
+                        let response = true
+                        if(this.selectedDoctor){
+                            if(this.selectedDoctor.cpf !== a.doctor.cpf){
+                                response = false
+                            }
+                        }
+                        if(this.especialidade){
+                            if(this.especialidade.name !== a.specialty.name ){
+                                response = false
+                            }
+                        }
+                        if(this.clinic){
+                            if(this.clinic !== a.clinic){
+                                response = false
+                            }
+                        }
+                        return response
                 })
                 return consultas;
             },
             doctors: {
                 get: function () {
-                    let docs = {
+                    /* let docs = {
                         0: {
                             name: 'Todos'
                         },
                         ...this.$store.getters.doctors
                     }
-                    return Object.values(docs)
+                    return Object.values(docs) */
+
+                    let docArray = Object.values(this.$store.getters.doctors)
+                    docArray = docArray.filter((doctor) => {
+                        if(!this.especialidade) {
+                            return true
+                        }
+                        var find = false
+                        doctor.specialties.forEach((specialty)=>{
+                            //console.log(doctor.name,specialty.name)
+                            if(specialty.name === this.especialidade.name){
+                                find = true
+                                return true
+                            }
+                                
+                        })
+                        
+                        return find
+                    })
+                    //docArray.unshift({name:'Todos'})
+                    return docArray
                 }
             },
             selectedPatient() {
@@ -553,7 +642,7 @@
                     })
                 }
                 this.createConsultationForm = form
-                console.log(form)
+                //console.log(form)
             },
             formatConsultationsArray(consultations) {
                 let newArray = []
@@ -603,7 +692,7 @@
                 await this.$store.dispatch("getSpecialties")
 
                 this.query = this.$route.params.q
-                console.log( {...this.query})
+                //console.log( {...this.query})
                 if(!this.query){
                 //this.$router.push('agenda/GerenciamentoConsultas')
                 }
@@ -685,7 +774,7 @@
                     form.consultation = {...form.consultation,previousConsultation: this.query.consultation.previousConsultation}
                 // return
                 this.loading = true
-                console.log('Confirmar',form)
+                //console.log('Confirmar',form)
                 await this.$store.dispatch('addConsultationAppointmentToUserReschedule', form)
                 //Realizar essa funcao pelo cloud functions
                 await this.$store.dispatch('addUserToConsultationReschedule', form)

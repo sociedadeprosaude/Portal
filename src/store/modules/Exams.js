@@ -42,7 +42,7 @@ const actions = {
                 });
 
             });
-            console.log(exams);
+            //console.log(exams);
             commit('setExams', exams);
             return exams
         } catch (e) {

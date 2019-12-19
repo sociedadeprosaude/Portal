@@ -98,7 +98,8 @@
                                                             data: item.date.split(' ')[0],
                                                             hora: item.date.split(' ')[1],
                                                             crm: item.doctor.crm,
-                                                            especialidade: item.specialty.name,
+                                                            especialidade: item.specialty,
+                                                            esp:item.specialty.name,
                                                             status: item.status,
                                                             modalidade: item.type,
                                                             medico:item.doctor.name,
@@ -189,18 +190,19 @@
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
-                                                    <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="index_Selecionado.especialidade">
+                                                    <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="index_Selecionado.esp">
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
                                                     <v-text-field readonly hide-details outlined prepend-icon="event" label="Dia da Consulta" v-model="computedDateFormattedSelecionado">
                                                     </v-text-field>
                                                 </v-flex>
-                                                <v-flex xs12 sm6>
+                                                <v-flex xs12 sm4>
                                                     <v-text-field readonly hide-details outlined prepend-icon="access_alarm" label="Hora da Consulta" v-model="index_Selecionado.hora">
                                                     </v-text-field>
                                                 </v-flex>
-                                                <v-flex xs12 sm6>
+                                                <v-flex xs12 sm8>
+                                                    
                                                     <v-select
                                                             prepend-icon="assignment_turned_in"
                                                             v-model="index_Selecionado.status"
@@ -209,7 +211,20 @@
                                                             chips
                                                             hide-details
                                                             outlined
-                                                    ></v-select>
+                                                    >
+                                                          <template v-slot:selection="data">
+                                                            <v-chip
+                                                                    :key="JSON.stringify(data.item)"
+                                                                    :input-value="data.selected"
+                                                                    :disabled="data.disabled"
+                                                                    class="v-chip--select-multi"
+                                                                    @click.stop="data.parent.selectedIndex = data.index"
+                                                                    @input="data.parent.selectItem(data.item)"
+                                                                    text-color="white"
+                                                                    :color="data.item.text === 'Pago' ? 'success' : data.item.text === 'Cancelado' ? 'error': 'warning'"
+                                                            >{{ data.item.text }}</v-chip>
+                                                        </template>
+                                                    </v-select>
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
                                                     <v-text-field
@@ -231,6 +246,7 @@
                                                             :disabled="index_Selecionado.status === 'Pago' ? false : true"
                                                             hide-details
                                                             outlined
+                                                            readonly
                                                     ></v-text-field>
                                                 </v-flex>
                                                 <v-flex xs12 sm12 md12 lg12><v-divider ></v-divider></v-flex>
@@ -255,7 +271,7 @@
                                                 color="warning"
                                                 rounded
                                                 @click="documentDialog = !documentDialog"
-                                                :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress ? false : true"
+                                                :disabled="status_Selecionado === 'Pago' && index_Selecionado.consultation.payment_number ? false : true"
                                         >
                                             Prontuario
                                             <v-icon>insert_drive_file</v-icon>
@@ -283,7 +299,7 @@
                                             <v-icon>refresh</v-icon>
                                         </v-btn>
                                         <v-spacer></v-spacer>
-                                        <v-btn
+                                        <!-- <v-btn
                                                 color="success"
                                                 rounded
                                                 :disabled="loader"
@@ -292,7 +308,7 @@
                                                 v-if="index_Selecionado.status === 'Pago' && index_Selecionado.num_recibo !== ''"
                                         >Atualizar
                                             <v-icon>done</v-icon>
-                                        </v-btn>
+                                        </v-btn> -->
                                         <v-spacer></v-spacer>
                                         <v-dialog
                                                 v-model="loader"
@@ -364,9 +380,8 @@
                 ],
             statusOptions:
                 [
-                    {text: 'Aguardando pagamento'},
-                    {text: 'Pago'},
                     {text: 'Cancelado'},
+                    {text: 'Aguardando pagamento'},
                 ],
             search: '',
             qtdConsultas: '', qtdRetornos: '',
@@ -400,6 +415,8 @@
                 set: function (index) {
                         this.status_Selecionado = index.status
                         this.index_Selecionado = {...index}
+                        this.statusOptions.splice(1,1)
+                        this.statusOptions.push( {text: index.status})
                         this.dialog = true
                         //this.$store.dispatch('agendarConsulta',{pacienteSelecionado: this.pacienteSelecionado, idConsulta: idConsulta, especialidade:this.especialidade})
                 }
@@ -411,7 +428,7 @@
             snackbar() {
 
                 var snack = this.$store.getters.onSnackbarGCP
-                console.log(snack)
+                //console.log(snack)
                 if (snack) {
                     this.dialog = false
                 }
@@ -426,7 +443,7 @@
                         var consultas = []
                         this.qtdConsultas = 0
                         this.qtdRetornos = 0
-                        console.log({...val})
+                        //console.log({...val})
                         for (const key in val.consultations) {
 
                                 if(val.consultations[key].type === 'Consulta' ){
@@ -512,7 +529,7 @@
 
                 if (this.search === null || this.search === '' || this.search === undefined) {
 
-                    console.log('campo de pesquisa vazio')
+                    //console.log('campo de pesquisa vazio')
 
                 } else {
 

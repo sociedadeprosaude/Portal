@@ -60,7 +60,7 @@
                                 </v-btn>
 
                                 <v-text-field v-model="search" required solo primary :clearable="true"
-                                              placeholder="Escolha a categoria" item-value="nome"
+                                              placeholder="Exames / Clinicas" item-value="nome"
                                 ></v-text-field>
                             </v-layout>
                             <v-card-text>
@@ -173,7 +173,7 @@
             },
 
             defaultPackage: {
-                id: '', name: '', exams: [], specialties: [],
+                id: '', name: '', exams: [], specialties: [], percentageDiscount: 0,
             },
 
             rules: {
@@ -209,7 +209,7 @@
                 let search = this.search.toLowerCase();
                 let products = [];
 
-                console.log(this.items);
+                //console.log(this.items);
 
                 if (this.items) {
                     if (this.categorySelect === 'clinic') {
@@ -226,7 +226,7 @@
                             products[i] = (obj);
                         }
                     } else if (this.categorySelect === 'exam') { //exams
-                        console.log(this.items);
+                        //console.log(this.items);
                         for (let i in this.items) {
                             let obj = {
                                 name: this.items[i].name,
@@ -293,7 +293,7 @@
             this.$store.dispatch('loadExam').then(() => {
                 this.selectExam();
             });
-            this.$store.dispatch('loadSpecialties');
+            //this.$store.dispatch('loadSpecialties');
             this.$store.dispatch('loadClinics');
         },
 
@@ -317,21 +317,7 @@
                     this.$store.dispatch('selectedBundle', this.editedPackage);
 
                 } else {
-                    this.$store.commit('selectedBundle', null);
-                }
-            },
-
-            selectedBundle () {
-                if (!this.selectedPackage){
-                    this.isLoading = false;
-                    this.searchData = null;
-                    this.registerPackage = false;
-                    this.editedPackage= Object.assign({}, this.defaultPackage);
-                    this.editedPackage.exams = [];
-                    this.cost = 0;
-                    this.price = 0;
-                    this.percentageDiscount = 0;
-                    this.moneyDiscount = 0;
+                    this.$store.commit('selectedBundle', this.defaultPackage);
                 }
             }
         },
@@ -345,7 +331,7 @@
                 this.registerPackage = false;
                 this.searchPackage = true;
                 this.editedPackage= Object.assign({}, this.defaultPackage);
-                this.$store.dispatch('selectedBundle', null);
+                this.$store.dispatch('selectedBundle', this.defaultPackage);
                 this.editedPackage.exams = [];
                 this.cost = 0;
                 this.price = 0;
@@ -405,8 +391,6 @@
                     cost:parseFloat(cost)
                 };
 
-
-                console.log('edited-exams', this.editedPackage.exams);
                 if (this.editedPackage.exams){
                     for (let key in this.editedPackage.exams) {
 
@@ -439,41 +423,6 @@
                 this.action = false;
             },
 
-            addSpecialties (clinic, product, doctor, type, price, cost) {
-                this.item = {
-                    product: product.name,
-                    doctor: doctor.doctor,
-                    clinic: clinic,
-                    type: type,
-                    price:  parseFloat(price),
-                    cost:parseFloat(cost)
-                };
-
-                if (this.editedPackage.specialties){
-                    for (let key in this.editedPackage.specialties) {
-                        if (this.item.product === this.editedPackage.specialties[key].product
-                            && this.item.clinic === this.editedPackage.specialties[key].clinic
-                            && this.item.price === this.editedPackage.specialties[key].price
-                            && this.item.cost === this.editedPackage.specialties[key].cost
-                            && this.item.doctor === this.editedPackage.specialties[key].doctor){
-
-                            this.action = true;
-                            this.editedPackage.exams.splice(key, 1);
-
-                        } else {
-
-                            this.action = false;
-                        }
-                    }
-                }
-
-                if (this.action === false){ this.editedPackage.specialties.push({...this.item}) }
-
-                this.costAndPrice();
-                this.action = false;
-
-            },
-
             removeExam (exam) {
 
                 this.price -= exam.price;
@@ -486,13 +435,6 @@
                         this.editedPackage.exams.splice(i,1);
                     }
                 }
-            },
-
-            removeSpecialtie (index) {
-                this.sale -= this.editedPackage.specialties[index].price;
-                this.cost -= this.editedPackage.specialties[index].cost;
-
-                this.editedPackage.specialties.splice(index,1);
             },
 
             newPackage() {
