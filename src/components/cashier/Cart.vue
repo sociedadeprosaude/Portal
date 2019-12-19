@@ -450,6 +450,7 @@
                 this.$store.commit('setSelectedPatient', user)
             },
             async saveBudget(budget) {
+                console.log('SaveBudget')
                 this.$store.commit('setSelectedBudget', budget)
                 // this.selectedBudget = Object.assign({}, budget)
                 await this.$store.dispatch('addBudget', budget)
