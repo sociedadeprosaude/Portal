@@ -7,30 +7,29 @@
                         <v-layout  row wrap class="mx-3 align-center">
                             <v-flex xs12 class="v-card"
                                     style="overflow:auto; height:50vh; box-shadow: inset 0px 0px 5px grey;">
-                                <v-layout row wrap>
-                                                        <v-flex xs12 v-if="editedPackage.exams.length > 0">
-                                                            <p class="my-headline">Exames</p>
-                                                            <v-card v-for="(item) in editedPackage.exams" class="ma-2" :key="item.name">
-                                                                <v-card-title class="py-2">
-                                                                    <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
-                                                                    <v-spacer></v-spacer>
-                                                                    <span class="subtitle-1 font-weight-light">
-                                                <v-btn small icon @click="removeExam(item)">
-                                                    <v-icon>cancel</v-icon>
-                                                </v-btn>
-                                            </span>
-                                                                </v-card-title>
-                                                                <v-card-text class="pt-1 pb-0">
-                                                                    {{item.clinic}}
-                                                                    <p class="text-right">
-                                                                        R$ {{item.price}}
-                                                                    </p>
-                                                                </v-card-text>
-                                                            </v-card>
-                                                        </v-flex>
-                                                    </v-layout>
+                                <v-layout row wrap v-if="editedPackage">
+                                    <v-flex xs12 v-if="editedPackage.exams">
+                                        <p class="my-headline">Exames</p>
+                                        <v-card v-for="(item) in editedPackage.exams" class="ma-2" :key="item.name">
+                                            <v-card-title class="py-2">
+                                                <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
+                                                <v-spacer></v-spacer>
+                                                <span class="subtitle-1 font-weight-light">
+                                                    <v-btn small icon @click="removeExam(item)">
+                                                        <v-icon>cancel</v-icon>
+                                                    </v-btn>
+                                                </span>
+                                            </v-card-title>
+                                            <v-card-text class="pt-1 pb-0">
+                                                {{item.clinic}}
+                                                <p class="text-right">
+                                                    R$ {{item.price}}
+                                                </p>
+                                            </v-card-text>
+                                        </v-card>
+                                    </v-flex>
+                                </v-layout>
                             </v-flex>
-
                             <v-spacer></v-spacer>
                             <v-layout row wrap class="mt-2">
                                 <v-flex xs5>
@@ -136,7 +135,7 @@
             },
 
             defaultPackage: {
-                id: '', name: '', exams: [], specialties: [],
+                id: '', name: '', exams: [], specialties: [], percentageDiscount: 0,
             },
 
         }),
@@ -144,6 +143,12 @@
         computed: {
 
             selectedPackage () {
+                console.log('lista para carregar', this.$store.getters.selectedBundle);
+                this.editedPackage = this.$store.getters.selectedBundle;
+
+                if (this.editedPackage.percentageDiscount) {
+                    this.percentageDiscount = this.editedPackage.percentageDiscount;
+                }
                 return this.$store.getters.selectedBundle;
             },
 
@@ -157,7 +162,12 @@
                 for (let item in itens) {
                     total += parseFloat(itens[item].cost)
                 }
-                return total
+                if (total) {
+                    return total
+                } else {
+                    return 0;
+                }
+
             },
 
             price() {
@@ -167,7 +177,13 @@
                 for (let item in itens) {
                     total += parseFloat(itens[item].price)
                 }
-                return total
+
+                if (total) {
+                    return total;
+                } else {
+                    return 0;
+                }
+
 
             },
 
@@ -175,7 +191,7 @@
                 let subTotal = 0;
                 subTotal = subTotal + this.moneyDiscount;
                 let total = parseFloat(this.price) - parseFloat(subTotal);
-                if (total < 0) {
+                if (!total || total < 0) {
                     return 0;
                 } else {
                     return total ;
@@ -186,26 +202,29 @@
         },
 
 
-        mounted () {
-
-            this.editedPackage = Object.assign({}, this.selectedPackage);
-            this.cost = parseFloat(this.editedPackage.cost);
-            this.price = parseFloat(this.editedPackage.price);
-            this.percentageDiscount = this.editedPackage.percentageDiscount;
-            this.moneyDiscount = this.editedPackage.moneyDiscount;
-
-        },
-
-
         watch: {
 
             percentageDiscount: function () {
                 this.moneyDiscount = ((this.percentageDiscount * this.price) / 100);
             },
 
+            load : function () {
+                if (this.selectedPackage) {
+                    this.load();
+                }
+            },
+
         },
 
         methods: {
+
+            load () {
+                this.editedPackage = Object.assign({}, this.selectedPackage);
+                this.cost = parseFloat(this.editedPackage.cost);
+                this.price = parseFloat(this.editedPackage.price);
+                this.percentageDiscount = this.editedPackage.percentageDiscount;
+                this.moneyDiscount = this.editedPackage.moneyDiscount;
+            },
 
             clearSearch () {
 
