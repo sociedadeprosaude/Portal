@@ -358,6 +358,11 @@
                         user.budgets = budgets
                     }
                 }
+                else {
+                    this.cpf= undefined
+                    this.name= undefined
+                    this.numAss= undefined
+                }
                 this.$store.commit('setSelectedPatient', user)
                 this.foundUsers = []
             },
