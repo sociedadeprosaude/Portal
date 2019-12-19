@@ -1,4 +1,4 @@
-import firebase from "firebase";
+import firebase, {firestore} from "firebase";
 
 const state = {
     colabortors: []
@@ -26,19 +26,30 @@ const actions = {
         commit('setUser', user)
         return
     },
-    async getColaborators({commit}) {
+    async getColaborators(context) {
         try {
-            firebase.database().ref('colaboradores/').on('value', (colab) => {
-                let colabList = []
-                colab = colab.val()
-                for (let key in colab) {
-                    colabList.push(colab[key])
-                }
-                commit('setColaborators', colabList.sort((a, b) => {
-                    if (a.name > b.name) return 1
-                    return -1
-                }))
+            let colabList = await context.dispatch('searchUser', {
+                type: 'COLABORATOR'
             })
+            context.commit('setColaborators', colabList.sort((a, b) => {
+                if (a.name > b.name) return 1
+                return -1
+            }))
+            return
+        } catch (e) {
+            console.log(e)
+            return e
+        }
+    },
+    async setColaboratorGroup(context) {
+        try {
+            let colabList = await context.dispatch('searchUser', {
+                type: 'colaborator'
+            })
+            context.commit('setColaborators', colabList.sort((a, b) => {
+                if (a.name > b.name) return 1
+                return -1
+            }))
             return
         } catch (e) {
             console.log(e)

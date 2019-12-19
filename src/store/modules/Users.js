@@ -57,6 +57,15 @@ const actions = {
       throw e
     }
   },
+  async updateUserField(context, payload) {
+    let upd = {}
+    if(payload.value === 'delete') {
+      upd[payload.field] = firebase.firestore.FieldValue.delete()
+    } else {
+      upd[payload.field] = payload.value
+    }
+    return await firebase.firestore().collection('users').doc(payload.user.cpf).update(upd)
+  },
   async deleteUser ({}, user) {
     try {
       await firebase.firestore().collection('users').doc(user.cpf).delete()

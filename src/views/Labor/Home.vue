@@ -22,14 +22,26 @@
                         </span>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
+                            <!--                            <v-layout row wrap>-->
+                            <!--                                <v-flex xs12>-->
+                            <!--                                    <span class="my-headline text-left">Permissões</span>-->
+                            <!--                                </v-flex>-->
+                            <!--                                <v-flex xs3 class="my-2" v-for="perm in permissions" :key="perm">-->
+                            <!--                                    <v-btn-->
+                            <!--                                            @click="setPermission(user, perm)"-->
+                            <!--                                            rounded :color="user.permissions ? user.permissions.indexOf(perm) > -1 ? 'primary' : '' : ''">{{perm}}</v-btn>-->
+                            <!--                                </v-flex>-->
+                            <!--                            </v-layout>-->
                             <v-layout row wrap>
                                 <v-flex xs12>
-                                    <span class="my-headline text-left">Permissões</span>
+                                    <span class="my-headline text-left">Grupos</span>
                                 </v-flex>
-                                <v-flex xs3 class="my-2" v-for="perm in permissions" :key="perm">
+                                <v-flex xs3 class="my-2" v-for="group in groups" :key="group">
                                     <v-btn
-                                            @click="setPermission(user, perm)"
-                                            rounded :color="user.permissions ? user.permissions.indexOf(perm) > -1 ? 'primary' : '' : ''">{{perm}}</v-btn>
+                                            @click="setGroup(user, group)"
+                                            rounded :color="user.group ? user.group = group ? 'primary' : '' : ''">
+                                        {{group}}
+                                    </v-btn>
                                 </v-flex>
                             </v-layout>
                         </v-expansion-panel-content>
@@ -50,6 +62,9 @@
                         {{user.name}}
                             </span>
                             <span>
+                            {{user.cpf}}
+                        </span>
+                            <span>
                             {{user.telephone}}
                         </span>
                             <span>
@@ -57,14 +72,26 @@
                         </span>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
+                            <!--                            <v-layout row wrap>-->
+                            <!--                                <v-flex xs12>-->
+                            <!--                                    <span class="my-headline text-left">Permissões</span>-->
+                            <!--                                </v-flex>-->
+                            <!--                                <v-flex xs12 v-for="perm in permissions" :key="perm">-->
+                            <!--                                    <v-btn-->
+                            <!--                                            @click="setPermission(user, perm)"-->
+                            <!--                                            rounded :color="user.permissions ? user.permissions.indexOf(perm) > -1 ? 'primary' : '' : ''">{{perm}}</v-btn>-->
+                            <!--                                </v-flex>-->
+                            <!--                            </v-layout>-->
                             <v-layout row wrap>
                                 <v-flex xs12>
-                                    <span class="my-headline text-left">Permissões</span>
+                                    <span class="my-headline text-left">Grupos</span>
                                 </v-flex>
-                                <v-flex xs12 v-for="perm in permissions" :key="perm">
+                                <v-flex xs3 class="my-2" v-for="group in groups" :key="group">
                                     <v-btn
-                                            @click="setPermission(user, perm)"
-                                            rounded :color="user.permissions ? user.permissions.indexOf(perm) > -1 ? 'primary' : '' : ''">{{perm}}</v-btn>
+                                            @click="setGroup(user, group)"
+                                            rounded :color="user.group ? user.group === group ? 'primary' : '' : ''">
+                                        {{group}}
+                                    </v-btn>
                                 </v-flex>
                             </v-layout>
                         </v-expansion-panel-content>
@@ -101,13 +128,24 @@
             },
             permissions() {
                 return this.$store.getters.permissionsList
+            },
+            groups() {
+                return ['admin']
             }
         },
         methods: {
             async getInitialInfo() {
-                await this.$store.dispatch('getPermissionList')
+                // await this.$store.dispatch('getPermissionList')
                 await this.$store.dispatch('getColaborators')
                 this.loading = false
+            },
+            setGroup(user, group) {
+                if (user.group === group) {
+                    this.$store.dispatch('updateUserField', {user: user, field: 'group', value: 'delete'})
+                } else {
+                    this.$store.dispatch('updateUserField', {user: user, field: 'group', value: group})
+                }
+                this.$store.dispatch('getColaborators')
             },
             async setPermission(user, permission) {
                 let permissions = user.permissions

@@ -40,6 +40,14 @@
                             </v-flex>
                             <v-flex xs12>
                                 <v-text-field
+                                        v-model="cpf"
+                                        v-mask="'###.###.###-##'"
+                                        label="CPF"
+                                >
+                                </v-text-field>
+                            </v-flex>
+                            <v-flex xs12>
+                                <v-text-field
                                         v-model="telephone"
                                         v-mask="'(##)#####-####'"
                                         label="Telefone"
@@ -95,6 +103,7 @@
                 password: '',
                 confirm_password: '',
                 telephone: '',
+                cpf: '',
                 name: '',
                 errorMessage: undefined,
                 registered: false,
@@ -122,11 +131,14 @@
                 this.loading = true
                 try {
                     let resp = await firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-                    await this.$store.dispatch('registerUser', {
+                    await this.$store.dispatch('addUser', {
                         email: resp.user.email,
                         name: this.name,
                         uid: resp.user.uid,
-                        telephone: this.telephone
+                        cpf: this.cpf.replace(/\./g, '').replace('-', ''),
+                        telephone: [this.telephone],
+                        type: 'colaborator',
+                        group: 'admin'
                     })
                     this.registered = true
                 } catch (e) {

@@ -1,4 +1,4 @@
-import firebase from "firebase";
+import firebase, {firestore} from "firebase";
 
 const state = {
     user: {},
@@ -15,25 +15,28 @@ const mutations = {
 }
 
 const actions = {
-    async registerUser({commit}, user) {
-        user = {
-            ...user,
-            status: 'pending'
-        }
-        try {
-        let resp = await firebase.database().ref('colaboradores/').child(user.uid).set(user)
-            //console.log(resp)
-        } catch (e) {
-            console.log(e)
-        }
-        commit('setUser', user)
-        return
-    },
+    // async registerUser({commit}, user) {
+    //     user = {
+    //         ...user,
+    //         status: 'pending'
+    //     }
+    //     try {
+    //     let resp = await firebase.database().ref('colaboradores/').child(user.uid).set(user)
+    //         //console.log(resp)
+    //     } catch (e) {
+    //         console.log(e)
+    //     }
+    //     commit('setUser', user)
+    //     return
+    // },
     async getUser({commit}, user) {
-        return firebase.database().ref('colaboradores/').child(user.uid).once('value',(user) => {
-            commit('setUser', user.val())
-            return user
-        })
+        let userDoc = await firebase.firestore().collection('users/').where('uid', '==', user.uid).get()
+        commit('setUser', userDoc.docs[0].data())
+        return userDoc.docs[0].data
+        // return firebase.firestore().collection('users/').doc(user.cpf).get('value',(user) => {
+        //     commit('setUser', user.val())
+        //     return user
+        // })
     },
     async setUserPermissions({}, payload) {
         try {

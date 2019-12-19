@@ -149,9 +149,13 @@
         },
         computed: {
             filteredPages() {
-                if (!this.user.permissions) return []
+                // if (!this.user.permissions) return []
+                console.log(this.user)
                 return this.pages.filter(a => {
-                    return this.user.permissions.indexOf(a.permission) > -1
+                    if (this.user.group === 'admin') {
+                        return true
+                    }
+                    return false
                 })
             },
             user() {
