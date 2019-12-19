@@ -135,16 +135,26 @@
                                     </v-layout>
                                 </v-radio-group>
                             </v-flex>
-                            <v-flex xs4>
+                            <v-flex xs6>
                                 <v-currency-field
+                                        prepend-icon="attach_money"
+                                        outlined
+                                        rounded
+                                        filled
+                                        clearable
                                         label="Custo"
                                         prefix="R$"
                                         v-model="spec.cost"
                                 ></v-currency-field>
                             </v-flex>
                             <v-spacer></v-spacer>
-                            <v-flex xs4>
+                            <v-flex xs6>
                                 <v-currency-field
+                                        prepend-icon="monetization_on"
+                                        outlined
+                                        rounded
+                                        filled
+                                        clearable
                                         prefix="R$"
                                         v-model="spec.price"
                                         label="Venda"
@@ -238,6 +248,8 @@
                     && this.crm
                     && this.specialties
                     && this.cpf
+                    && this.paymentMethod
+                    && this.clinic
                     && this.name.length > 0 && this.crm.length > 0 && this.specialties.length > 0 && this.cpf.length > 0
             },
         },
@@ -251,6 +263,7 @@
                 this.crm = undefined
                 this.cpf = undefined
                 this.specialties = undefined
+                this.clinic = undefined
             },
             erase() {
             },

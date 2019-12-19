@@ -148,7 +148,7 @@ const actions = {
         let info = {
             name: payload.specialtie,
         };
-/*
+
         firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties').doc(payload.specialtie)
             .set(info);
 
@@ -165,7 +165,6 @@ const actions = {
 
         firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf).collection('clinics/')
             .doc(payload.clinic.name).set(payload.clinic);
- */
     },
 
     deleteAppointment ({commit}, payload) {
