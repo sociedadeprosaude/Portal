@@ -165,8 +165,8 @@
                                 </v-flex>
                                 <v-flex>
                                     <v-flex xs6 v-if="formaPagamento === 'Crédito'">
-                                        <v-select :items="quantParcelas" v-model="parcelas"
-                                                  label="quantidade de parcelas"></v-select>
+                                        <v-select :items="parcels" v-model="parcel"
+                                                  label="Parcelas"></v-select>
                                     </v-flex>
                                     <v-layout wrap>
                                         <v-flex xs5>
@@ -183,6 +183,9 @@
                                 </v-flex>
                                 <v-flex xs12 class="my-4">
                                     <v-layout row wrap>
+                                        <v-flex xs12 v-if="formaPagamento === 'Crédito'">
+                                            <span>{{parcel}}x de R$ {{(total / parcel).toFixed(2)}}</span>
+                                        </v-flex>
                                         <v-flex xs6>
                                             <span>Subtotal: R$ {{this.subTotal.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
                                         </v-flex>
@@ -260,6 +263,8 @@
         },
         data() {
             return {
+                parcel: 1,
+                parcels: [1, 2, 3, 4, 5],
                 paymentLoading: false,
                 paymentSuccess: false,
                 searchBudgetError: undefined,
@@ -296,6 +301,7 @@
             },
             consultas() {
                 // return this.$store.getters.selectedBudget.consultations
+                console.log(this.$store.getters.getShoppingCartItemsByCategory.consultations)
                 return this.$store.getters.getShoppingCartItemsByCategory.consultations
             },
             pacotes() {
@@ -434,6 +440,7 @@
                     discount: this.moneyDiscount,
                     total: this.total,
                     payment_method: this.formaPagamento,
+                    parcel: this.formaPagamento === 'Crédito' ? this.parcel : undefined,
                     date: moment().format('YYYY-MM-DD HH:mm:ss'),
                     cost: this.cost,
                     user: this.$store.getters.selectedPatient,
