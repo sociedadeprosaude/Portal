@@ -1,12 +1,12 @@
 <template>
-    <v-container >
+    <v-container>
         <v-layout row wrap>
             <v-flex xs12 class="my-4">
                 <v-expand-transition mode="out-in">
                     <v-card class="primary_dark pa-2" :max-width="maxWidth" v-if="!addPatient">
                         <v-layout row wrap>
-                            <v-flex xs6 class="text-left">
-                                <span class="my-headline white--text">Buscar Paciente</span>
+                            <v-flex xs6 class="text-left mb-4">
+                                <span class="my-headline white--text">Buscar Associado</span>
                             </v-flex>
                             <v-flex xs2 class="text-right">
                                 <v-btn
@@ -89,8 +89,8 @@
                     </v-card>
                     <v-card class="primary_dark pa-2" v-else>
                         <v-layout row wrap>
-                            <v-flex xs8 class="text-left" v-if="!formError">
-                                <span class="my-headline white--text">Adicionar Paciente</span>
+                            <v-flex xs8 class="text-left mb-4" v-if="!formError">
+                                <span class="my-headline white--text">Adicionar Associado</span>
                             </v-flex>
                             <v-flex xs8 class="text-left" v-else>
                                 <span class="my-headline red--text">{{formError}}</span>
@@ -256,7 +256,7 @@
         },
         props: {
             maxWidth: {
-                default: '400px'
+                default: '100%'
             }
         },
         components: {

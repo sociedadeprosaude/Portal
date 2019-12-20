@@ -10,27 +10,42 @@
                 </v-card>
             </v-flex>
             <v-flex class="ma-1"
-                    :key="page.title"
-                    v-for="page in filteredPages">
-                <v-card class="card" min-width="200" :to="page.external_url ? '' : page.to"
-                        @click="page.external_url ? goToExternalUrl(page.external_url) : ''">
-                    <v-layout column row>
-                        <v-icon size="72">{{page.icon}}</v-icon>
-                        <span class="text-center my-headline">
+                    :key="section.title"
+                    v-for="section in filteredPages">
+                <v-layout row wrap class="align-center justify-center">
+                    <v-flex xs12>
+                        <span class="my-headline">{{section.title}}</span>
+                    </v-flex>
+                    <v-flex v-for="page in section.pages"
+                            :key="page.title"
+                            class="mx-4">
+                        <v-card
+                                class="card" min-width="200" :to="page.external_url ? '' : page.to"
+                                @click="page.external_url ? goToExternalUrl(page.external_url) : ''">
+                            <v-layout column row>
+                                <v-icon size="72">{{page.icon}}</v-icon>
+                                <span class="text-center my-headline">
                         {{page.title}}
                     </span>
-                    </v-layout>
-                </v-card>
+                            </v-layout>
+                        </v-card>
+                    </v-flex>
+                    <v-flex xs12 class="my-4">
+                        <v-divider></v-divider>
+                    </v-flex>
+                </v-layout>
             </v-flex>
-            <v-flex xs2 class="ma-1">
-                <v-card class="card" to="/login">
-                    <v-layout column row>
-                        <v-icon size="72">exit_to_app</v-icon>
-                        <span class="text-center my-headline">
+            <v-flex xs12 class="ma-1">
+                <v-layout row wrap class="align-end justify-end">
+                    <v-card class="card" width="200px" to="/login">
+                        <v-layout column row>
+                            <v-icon size="72">exit_to_app</v-icon>
+                            <span class="text-center my-headline">
                         Sair
                     </span>
-                    </v-layout>
-                </v-card>
+                        </v-layout>
+                    </v-card>
+                </v-layout>
             </v-flex>
         </v-layout>
         <v-layout row wrap v-else class="align-center">
@@ -66,71 +81,81 @@
             //       'Colaboradores'
             //   ]
             // firebase.database().ref('permissions/') .set(perm)
-                let user = firebase.auth().currentUser
-                if (!user) {
-                    this.$router.push('login')
-                    return
-                }
-                this.getUser(user)
+            let user = firebase.auth().currentUser
+            if (!user) {
+                this.$router.push('login')
+                return
+            }
+            this.getUser(user)
         },
         data() {
             return {
                 loading: true,
                 pages: [
                     {
-                        title: 'Médicos',
-                        icon: 'group',
-                        permission: 'Caixa',
-                        to: '/doctors'
+                        title: 'Operacional',
+                        pages: [
+                            {
+                                title: 'Agenda Médica',
+                                permission: 'Agenda Médica',
+                                to: '/agenda/agendamento',
+                                // external_url: 'https://agenda-medica.firebaseapp.com',
+                                icon: 'calendar_today'
+                            },
+                            {
+                                title: 'Caixa',
+                                icon: 'monetization_on',
+                                permission: 'Caixa',
+                                to: '/caixa'
+                            },
+                            {
+                                title: 'Senhas',
+                                permission: 'Senhas',
+                                external_url: 'https://prosaudesenhas.firebaseapp.com',
+                                icon: 'filter_4'
+                            },
+                        ]
                     },
                     {
-                        title: 'Clinicas',
-                        icon: 'location_city',
-                        permission: 'Caixa',
-                        to: '/clinics'
-                    },
-                    {
-                        title: 'Exames',
-                        icon: 'poll',
-                        permission: 'Caixa',
-                        to: '/exams'
-                    },
-                    {
-                        title: 'Caixa',
-                        icon: 'monetization_on',
-                        permission: 'Caixa',
-                        to: '/caixa'
-                    },
-                    {
-                        title: 'Relatórios',
-                        to: '/relatorio',
-                        permission: 'Relatórios',
-                        icon: 'report'
-                    },
-                    // {
-                    //     title: 'Exames',
-                    //     to: '/exames',
-                    //     permission: 'Exames',
-                    //     icon: 'insert_drive_file'
-                    // },
-                    {
-                        title: 'Agenda Médica',
-                        permission: 'Agenda Médica',
-                        to: '/agenda/agendamento',
-                        // external_url: 'https://agenda-medica.firebaseapp.com',
-                        icon: 'calendar_today'
-                    },
-                    {
-                        title: 'Senhas',
-                        permission: 'Senhas',
-                        external_url: 'https://prosaudesenhas.firebaseapp.com',
-                        icon: 'filter_4'
-                    },
-                    {
-                        title: 'Colaboradores',
-                        permission: 'Colaboradores',
-                        to: '/labor',
-                        icon: 'supervisor_account'
+                        title: 'Cadastro e Registros',
+                        pages: [
+                            {
+                                title: 'Médicos',
+                                icon: 'group',
+                                permission: 'Caixa',
+                                to: '/doctors'
+                            },
+                            {
+                                title: 'Clinicas',
+                                icon: 'location_city',
+                                permission: 'Caixa',
+                                to: '/clinics'
+                            },
+                            {
+                                title: 'Exames',
+                                icon: 'poll',
+                                permission: 'Caixa',
+                                to: '/exams'
+                            },
+                            {
+                                title: 'Relatórios',
+                                to: '/relatorio',
+                                permission: 'Relatórios',
+                                icon: 'report'
+                            },
+                            // {
+                            //     title: 'Exames',
+                            //     to: '/exames',
+                            //     permission: 'Exames',
+                            //     icon: 'insert_drive_file'
+                            // },
+                            {
+                                title: 'Colaboradores',
+                                permission: 'Colaboradores',
+                                to: '/labor',
+                                icon: 'supervisor_account'
+                            }
+                        ]
                     }
                 ]
             }
