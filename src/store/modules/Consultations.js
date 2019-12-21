@@ -212,7 +212,7 @@ const actions = {
     },
 
     async eraseAppointment({commit}, payload) { // apagarConsulta
-        //console.log(payload)
+        console.log(payload)
         try {
             let FieldValue = firebase.firestore.FieldValue
             await firebase.firestore().collection('consultations').doc(payload.idConsultation).update({
@@ -228,6 +228,16 @@ const actions = {
                 })
                 await firebase.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.previousConsultation).update({
                     regress: FieldValue.delete()
+                })
+            }else if(payload.type === "Consulta" && payload.payment_number !== ""){
+                firebase.firestore().collection('users').doc(payload.idPatient).collection('intakes').doc(payload.payment_number).collection('specialties')
+                .where('name','==',payload.specialty).get()
+                .then((intake)=>{
+                    intake.forEach((element)=>{
+                        firebase.firestore().collection('users').doc(payload.idPatient).collection('intakes').doc(payload.payment_number)
+                        .collection('specialties').doc(element.id).update({used:false})
+                        return
+                    })
                 })
             }
 
