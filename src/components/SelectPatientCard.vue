@@ -3,7 +3,7 @@
         <v-layout row wrap>
             <v-flex xs12 class="my-4">
                 <v-expand-transition mode="out-in">
-                    <v-card class="primary_dark pa-2" :max-width="maxWidth" v-if="!addPatient">
+                    <v-card class="primary_light white--text pa-2" :max-width="maxWidth" v-if="!addPatient">
                         <v-layout row wrap>
                             <v-flex xs6 class="text-left mb-4">
                                 <span class="my-headline white--text">Buscar Associado</span>

@@ -11,7 +11,7 @@
 }
 
 .v-card {
-    border-radius: 8px;
+    border-radius: 16px !important;
 }
 
 .v-data-table {

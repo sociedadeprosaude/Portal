@@ -73,16 +73,16 @@ const vuetifyOptions = {
   theme: {
     themes: {
       light: {
-        primary: '#2196f3',
-        secondary: '#03a9f4',
-        accent: '#00bcd4',
+        primary: '#003B8F',
+        secondary: '#1564BF',
+        accent: '#00796B',
         error: '#f44336',
         warning: '#ffc107',
         info: '#e91e63',
         success: '#4caf50',
-        primary_light: '#b6ffff',
-        primary_dark: '#4ba3c7',
-        background: '#DFDFDF'
+        primary_light: '#63a4ff',
+        primary_dark: '#003B8F',
+        background: '#EFEFEF'
       },
     },
   },
