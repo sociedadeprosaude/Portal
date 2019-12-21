@@ -19,7 +19,8 @@
                                 </v-btn>
                                 <v-spacer></v-spacer>
                                 <v-btn rounded color="primary" dark class="mb-2 mx-2" @click="addSpecialtyDialog()">
-                                    <v-icon>add</v-icon><v-icon>school</v-icon>
+                                    <v-icon>add</v-icon>
+                                    <v-icon>school</v-icon>
                                 </v-btn>
                                 <v-btn rounded color="primary" dark class="mb-2" @click="addDoctor()">
                                     ADICIONAR MEDICO
@@ -27,7 +28,8 @@
                                 </v-btn>
                             </v-layout>
                         </v-flex>
-                        <v-text-field append-icon="search" v-model="search" label="Pesquisa" class="mx-4"></v-text-field>
+                        <v-text-field append-icon="search" v-model="search" label="Pesquisa"
+                                      class="mx-4"></v-text-field>
                     </template>
 
                     <template v-slot:item.action="{ item }">
@@ -93,36 +95,20 @@
                 <v-card-text>
                     <v-layout row wrap class="align-center justify-center">
                         <strong>CADASTRADAS:</strong>
-                        <v-flex>
-                            <v-select
-                                    :items="options"
-                                    item-text="name"
-                                    item-value="name"
-                                    return-object
-                                    multiple
-                                    v-model="options"
-                                    chips
-                                    outlined
-                                    rounded
-                                    readonly
-                            >
-                                <template v-slot:selection="data">
-                                    <v-chip
-                                            :key="JSON.stringify(data.item)"
-                                            :input-value="data.selected"
-                                            :disabled="data.disabled"
-                                            class="v-chip--select-multi"
-                                            @click.stop="data.parent.selectedIndex = data.index"
-                                            @input="data.parent.selectItem(data.item)"
-                                            text-color="white"
-                                            color="info"
-                                    >{{ data.item.name }}</v-chip>
-                                </template>
-                            </v-select>
+                        <v-flex xs12 class="my-4 mx-2">
+                            <v-chip
+                                    v-for="specialty in specialties"
+                                    :key="specialty.name"
+                                    class="v-chip--select-multi"
+                                    text-color="white"
+                                    color="info"
+                            >{{ specialty.name }}
+                            </v-chip>
                         </v-flex>
                         <v-divider></v-divider>
                         <v-flex xs12>
-                            <v-text-field repend-icon="school" v-model="specialty" label="Especialidade" outlined rounded filled></v-text-field>
+                            <v-text-field repend-icon="school" v-model="specialty" label="Especialidade" outlined
+                                          rounded filled></v-text-field>
                         </v-flex>
                     </v-layout>
                 </v-card-text>
@@ -141,6 +127,7 @@
 <script>
     import CreateDoctorCard from "../components/CreateDoctorCard";
     import SubmitButton from "../components/SubmitButton";
+
     export default {
         components: {
             SubmitButton,
@@ -171,9 +158,8 @@
         }),
 
         computed: {
-            options() {
-                let specialties = this.$store.getters.specialties
-                return specialties
+            specialties() {
+                return this.$store.getters.specialties
             },
             doctors() {
                 return this.$store.getters.doctors
@@ -192,15 +178,11 @@
             },
         },
 
-        watch: {
-            dialog(val) {
-                val || this.close()
-            }
-        },
-
-        created() {
-            this.initialize()
-        },
+        // watch: {
+        //     dialog(val) {
+        //         val || this.close()
+        //     }
+        // },
 
         mounted() {
             this.$store.dispatch('getClinics');
@@ -214,14 +196,15 @@
             },
             async addSpecialty() {
                 this.loading = true;
-                this.$store.dispatch('addSpecialty', {
+                await this.$store.dispatch('addSpecialty', {
                     name: this.specialty.toUpperCase()
                 });
+                await this.$store.dispatch('getSpecialties');
                 this.success = true;
                 this.loading = false;
                 setTimeout(() => {
                     this.specialty = undefined;
-                    this.createSpecialtyDialog = false
+                    // this.createSpecialtyDialog = false
                 }, 1000)
             },
             addDoctor() {
@@ -237,9 +220,6 @@
                 //Remo os ultimos dois caracteres do objeto, no caso um espaço e vírgula.
                 especialidades = especialidades.slice(0, especialidades.length - 2);
                 return especialidades
-            },
-            initialize() {
-                this.desserts = []
             },
 
             editItem(item) {
@@ -268,22 +248,13 @@
 
             },
 
-            close() {
-                this.dialog = false;
-                setTimeout(() => {
-                    this.editedItem = Object.assign({}, this.defaultItem);
-                    this.editedIndex = -1
-                }, 300)
-            },
-
-            save() {
-                if (this.editedIndex > -1) {
-                    Object.assign(this.desserts[this.editedIndex], this.editedItem)
-                } else {
-                    this.desserts.push(this.editedItem)
-                }
-                this.close()
-            }
+            // close() {
+            //     this.dialog = false;
+            //     setTimeout(() => {
+            //         this.editedItem = Object.assign({}, this.defaultItem);
+            //         this.editedIndex = -1
+            //     }, 300)
+            // },
         }
     }
 </script>
