@@ -36,9 +36,9 @@ const actions = {
                 }
             }
             doctor.type = "doctor"
-            await firebase.firestore().collection('users').doc(doctor.cpf).set(doctor)
             let docCopy = Object.assign({}, doctor)
             delete docCopy.specialties;
+            await firebase.firestore().collection('users').doc(doctor.cpf).set(docCopy)
             for (let spec in doctor.specialties) {
                 let holder = {
                     ...docCopy,

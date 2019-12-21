@@ -371,7 +371,8 @@
                 let users = await this.$store.dispatch('searchUser', {
                     name: this.name,
                     cpf: this.cpf,
-                    associate_number: this.numAss,
+                    association_number: this.numAss,
+                    type: 'patient'
                 })
                 this.foundUsers = users
                 this.loading = false
