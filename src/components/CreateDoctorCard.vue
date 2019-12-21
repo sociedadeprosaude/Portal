@@ -219,6 +219,7 @@
                 this.cpf = this.doctor.cpf
                 this.crm = this.doctor.crm
                 this.specialties = this.doctor.specialties
+                this.clinic = this.doctor.clinics
             }
         },
         data() {
@@ -227,14 +228,15 @@
                 maskCRM: '######',
                 maskCPF: '###.###.###-##',
                 paymentMethod: 'unit',
-                name: undefined,
-                crm: undefined,
-                cpf: undefined,
+                name: '',
+                crm: '',
+                cpf: '',
                 specialties: undefined,
                 obs: null,
                 formTitle: 'Cadastro de Médicos',
                 loading: false,
                 success: false,
+                error: undefined
             }
         },
         computed: {
@@ -245,11 +247,30 @@
                 return this.$store.getters.specialties
             },
             formIsValid() {
-                return this.name
-                    && this.crm
-                    && this.specialties
-                    && this.cpf
-                    && this.name.length > 0 && this.crm.length > 0 && this.specialties.length > 0 && this.cpf.length > 0
+                if (!this.name || this.name.length <= 0) {
+                    // this.error = 'Coloque o nome completo do médico'
+                    return false
+                }
+                if (!this.cpf || this.cpf.length <= 0) {
+                    // this.error = 'Coloque o cpf completo do médico'
+                    return false
+                }
+                if (!this.crm || this.crm.length <= 0) {
+                    // this.error = 'Coloque o crm completo do médico'
+                    return false
+                }
+                if (!this.specialties || this.specialties.length <= 0) {
+                    // this.error = 'Coloque as especialidades do médico'
+                    return false
+                } else {
+                    for (let spec in this.specialties) {
+                        if (!this.specialties[spec].cost || !this.specialties[spec].price || !this.specialties[spec].payment_method) {
+                            // this.error = 'Adicione os valores de custo'
+                            return false
+                        }
+                    }
+                }
+                return true
             },
         },
         methods: {
@@ -263,10 +284,6 @@
                 this.cpf = undefined
                 this.specialties = undefined
                 this.clinic = undefined
-            },
-            erase() {
-            },
-            edit() {
             },
             async save() {
                 this.loading = true

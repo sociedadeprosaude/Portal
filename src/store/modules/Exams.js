@@ -49,6 +49,14 @@ const actions = {
             throw e
         }
     },
+    async searchExam(context, search) {
+      let examsSnap = await firebase.firestore().collection('exams').where('name', '>=', search).get()
+      let exams  = []
+      examsSnap.forEach((doc) => {
+          exams.push(doc.data())
+      })
+        return exams
+    },
     async addExam({commit}, exam) {
         try {
             for (let data in exam) {

@@ -1,22 +1,22 @@
 <template>
-    <v-content>
-        <v-container>
+    <v-container>
 
-            <v-layout align-left justify-left>
+        <v-layout row wrap>
+            <v-flex xs12 class="text-left">
                 <v-btn
                         @click="back"
                         color="primary"
                         rounded
                         class="mb-2 elevation-6"
-                ><v-icon>close</v-icon>
+                >
+                    <v-icon>close</v-icon>
                 </v-btn>
-            </v-layout>
-
-            <v-container fluid class="center-card">
-                <v-card xs12 sm12 class="round-card">
-                    <v-card-title class="ml-2 mr-3" >
+            </v-flex>
+            <v-flex xs12>
+                <v-card class="round-card">
+                    <v-card-title class="ml-2 mr-3">
                         <p v-if="searchExam" class="titleExam font-italic font-weight-bold">EXAMES</p>
-                        <p  v-if="registerExam" class="titleExam font-italic font-weight-bold">CADASTRAR NOVO EXAME</p>
+                        <p v-if="registerExam" class="titleExam font-italic font-weight-bold">CADASTRAR NOVO EXAME</p>
                         <v-spacer></v-spacer>
                         <v-btn v-if="registerExam" color="primary" small dark fab
                                @click="registerExam= !registerExam, searchExam = !searchExam">
@@ -25,26 +25,31 @@
                     </v-card-title>
                     <v-card-text>
                         <v-flex xs12 v-if="searchExam">
-                            <v-layout >
+                            <v-layout>
                                 <v-flex xs11>
-                                    <v-combobox v-model="searchData" :items="listExam" :disabled="selectedExam !== null"
-                                                hide-selected hide-no-data :clearable="true" style="justify-content: center" :loading="isLoading"
-                                                :search-input.sync="searchData" filled single-line full-width return-object
-                                                @click:clear="clearSearch" shaped outlined item-text="name"
-                                    >
-                                        <template v-slot:no-data>
-                                            <v-list-item>
-                                                <v-list-item-content>
-                                                    <v-list-item-title>
-                                                        Sem resultado para "<strong>{{ searchData }}</strong>"
-                                                    </v-list-item-title>
-                                                </v-list-item-content>
-                                            </v-list-item>
-                                        </template>
-                                    </v-combobox>
+                                    <v-text-field
+                                            v-model="searchText"
+                                            label="Exame"
+                                    ></v-text-field>
+                                    <!--                                    <v-combobox v-model="searchData" :items="listExam"-->
+                                    <!--                                                hide-selected hide-no-data :clearable="true" style="justify-content: center" :loading="isLoading"-->
+                                    <!--                                                :search-input.sync="searchData" filled single-line full-width return-object-->
+                                    <!--                                                @click:clear="clearSearch" shaped outlined item-text="name"-->
+                                    <!--                                    >-->
+                                    <!--                                        <template v-slot:no-data>-->
+                                    <!--                                            <v-list-item>-->
+                                    <!--                                                <v-list-item-content>-->
+                                    <!--                                                    <v-list-item-title>-->
+                                    <!--                                                        Sem resultado para "<strong>{{ searchData }}</strong>"-->
+                                    <!--                                                    </v-list-item-title>-->
+                                    <!--                                                </v-list-item-content>-->
+                                    <!--                                            </v-list-item>-->
+                                    <!--                                        </template>-->
+                                    <!--                                    </v-combobox>-->
                                 </v-flex>
                                 <v-flex xs1 class="text-center">
-                                    <v-btn v-if="selectedExam" style="justify-content: center" text icon color="blue lighten-2"
+                                    <v-btn v-if="selectedExam" style="justify-content: center" text icon
+                                           color="blue lighten-2"
                                            @click="clearSearch">
                                         <v-icon>close</v-icon>
                                     </v-btn>
@@ -83,7 +88,8 @@
                                                     @input="data.parent.selectItem(data.item)"
                                                     text-color="white"
                                                     color="info"
-                                            >{{ data.item.name }}</v-chip>
+                                            >{{ data.item.name }}
+                                            </v-chip>
                                         </template>
                                     </v-select>
                                 </v-flex>
@@ -96,19 +102,16 @@
                                         </v-flex>
                                     </v-layout>
                                 </v-card-text>
-                                <v-card-actions>
-                                    <v-spacer></v-spacer>
-                                    <v-btn color="blue darken-1" text @click="save">Salvar<v-icon right>done_all</v-icon></v-btn>
-                                </v-card-actions>
                             </v-card>
                         </v-flex>
                         <v-flex xs12 v-if="registerExam">
                             <v-card grid-list-x1 fluid class="mt-4">
                                 <v-form v-model="validRegister" lazy-validation>
                                     <v-card-text>
-                                        <v-layout wrap >
+                                        <v-layout wrap>
                                             <v-flex xs12 sm12>
-                                                <v-text-field outlined required label="Nome" v-model="editedExam.name" prepend-icon="description"
+                                                <v-text-field outlined required label="Nome" v-model="editedExam.name"
+                                                              prepend-icon="description"
                                                               :rules="rules.campoObrigatorio" class="ml-3 mr-3">
                                                 </v-text-field>
                                             </v-flex>
@@ -136,33 +139,39 @@
                                                                 @input="data.parent.selectItem(data.item)"
                                                                 text-color="white"
                                                                 color="info"
-                                                        >{{ data.item.name }}</v-chip>
+                                                        >{{ data.item.name }}
+                                                        </v-chip>
                                                     </template>
                                                 </v-select>
                                             </v-flex>
                                             <v-flex xs12 sm12>
-                                                <v-textarea outlined label="Regras" v-model="editedExam.rules" class="ml-3 mr-3"
+                                                <v-textarea outlined label="Regras" v-model="editedExam.rules"
+                                                            class="ml-3 mr-3"
                                                             prepend-icon="report_problem">
                                                 </v-textarea>
                                             </v-flex>
                                         </v-layout>
                                     </v-card-text>
                                     <v-card-actions>
-                                        <v-dialog  v-model="loader" hide-overlay persistent width="300">
+                                        <v-dialog v-model="loader" hide-overlay persistent width="300">
                                             <v-card color="primary" dark>
-                                            <v-card-text class="py-5">
-                                                Salvando...
-                                                <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
-                                            </v-card-text>
+                                                <v-card-text class="py-5">
+                                                    Salvando...
+                                                    <v-progress-linear indeterminate color="white"
+                                                                       class="mb-0"></v-progress-linear>
+                                                </v-card-text>
                                             </v-card>
                                         </v-dialog>
                                         <v-spacer></v-spacer>
-                                        <submit-button :loading="loading" :success="success" text="Cadastrar Exame" :disabled="!formRegister" @click="validateRegister()"
-                                               class="ma-3"></submit-button>
+                                        <submit-button :loading="loading" :success="success" text="Cadastrar Exame"
+                                                       :disabled="!formRegister" @click="validateRegister()"
+                                                       class="ma-3"></submit-button>
                                         <v-dialog v-model="successRegister" hide-overlay max-width="500px">
                                             <v-card color="white">
                                                 <v-card-title class="text-xs-center ma-1">
-                                                    <h4>Exame cadastrado com sucesso!<v-icon right>how_to_reg</v-icon></h4>
+                                                    <h4>Exame cadastrado com sucesso!
+                                                        <v-icon right>how_to_reg</v-icon>
+                                                    </h4>
                                                 </v-card-title>
                                                 <v-card-actions>
                                                     <v-spacer></v-spacer>
@@ -176,30 +185,44 @@
                         </v-flex>
                     </v-card-text>
                 </v-card>
-            </v-container>
+            </v-flex>
+            <v-flex xs2 v-for="exam in exams" :key="exam.name" class="mt-4">
+                <v-card>
+                    <v-layout row wrap>
+                        <v-flex xs12>
+                            <span class="my-sub-headline">
+                                {{exam.name}}
+                            </span>
+                        </v-flex>
+                    </v-layout>
+                </v-card>
+            </v-flex>
+        </v-layout>
 
-        </v-container>
-    </v-content>
+    </v-container>
 </template>
 
 <script>
     import SubmitButton from "../components/SubmitButton";
+
     export default {
         components: {
             SubmitButton
         },
         data: () => ({
+            exams: [],
             loading: false,
             success: false,
-            searchExam: true, registerExam: false, searchData: null, isLoading:false,
-            validRegister: true, editData: false, parameter: 'name', success:false,
+            searchText: undefined,
+            searchExam: true, registerExam: false, searchData: null,
+            validRegister: true, editData: false, parameter: 'name', success: false,
 
             editedExam: {
-                id:'', name: '', rules: '', type: '',
+                id: '', name: '', rules: '', type: '',
             },
 
             defaultExam: {
-                id:'', name: '', rules: '', type: '',
+                id: '', name: '', rules: '', type: '',
             },
 
             rules: {
@@ -210,35 +233,31 @@
         }),
 
         computed: {
-            specialties(){
-                return this.$store.getters.specialties
-            },
-            listExam () {
-                this.isLoading = false;
-                return this.$store.getters.exam;
-            },
-
-            allExam () {
-                return this.$store.getters.exams;
+            specialties() {
+                let specialties = this.$store.getters.specialties.slice()
+                for (let spec in specialties) {
+                    delete specialties[spec].doctors
+                }
+                return specialties
             },
 
-            formRegister () {
+            formRegister() {
                 return this.editedExam.name;
 
             },
 
-            selectedExam () {
+            selectedExam() {
                 return this.$store.getters.selectedExam;
             },
-            loader(){
+            loader() {
                 return this.$store.getters.statusLoaderEX
             },
-            successRegister:{
-                get(){
+            successRegister: {
+                get() {
                     this.success = this.$store.getters.onSuccessRegisterEX
                     return this.success
                 },
-                set(val){
+                set(val) {
                     this.success = val
                 }
 
@@ -248,52 +267,38 @@
 
         mounted() {
             this.$store.dispatch('getSpecialties')
+            window.addEventListener('keydown', this.handleEnter)
+        },
+        beforeDestroy() {
+            window.removeEventListener('keydown', this.handleEnter)
         },
 
-        watch: {
-            searchData(){
-
-                if (this.searchData){
-
-                    this.isLoading = true;
-                    const data = this.capitalize (this.searchData);
-                    this.$store.dispatch('searchExam', data).then(() => {
-
-                        if (this.listExam.length > 0) {
-
-                            for (let key in this.listExam) {
-                                if (this.searchData === this.listExam[key].name || this.searchData.name === this.listExam[key].name) {
-                                    this.searchExam = true;
-                                    this.registerExam = false;
-                                    this.$store.dispatch('selectExam', {... this.$store.getters.exam[key]});
-                                    this.editedExam.name = data;
-                                    this.editedExam = Object.assign({}, this.selectedExam);
-                                    //console.log(this.editedExam);
-
-                                }
-                            }
-                        } else {
-
-                          // setTimeout(this.alert, 500);
-                        }
-                    })
-                } else {
-                    this.$store.dispatch('selectExam', null);
-                }
-            },
-        },
 
         methods: {
+            handleEnter(e) {
+                if (e.key === 'Enter') {
+                    this.searchExams()
+                }
+            },
+            async searchExams() {
+                if (this.searchText && this.searchText.length > 0) {
+                    this.loading = true;
+                    const data = this.capitalize(this.searchText);
+                    this.exams = await this.$store.dispatch('searchExam', data)
+                    this.loading = false
+                    return
+                }
+            },
 
             alert() {
-                if (this.selectedExam === null){
+                if (this.selectedExam === null) {
                     alert("Exame não cadastrado");
                     this.editedExam = Object.assign({}, this.defaultExam);
                     this.editedExam.name = this.searchData;
                 }
             },
 
-            clearSearch () {
+            clearSearch() {
                 this.isLoading = false;
                 this.searchData = null;
                 this.editedExam = Object.assign({}, this.defaultExam);
@@ -301,31 +306,31 @@
 
             },
 
-            validateRegister () {
+            validateRegister() {
                 this.loading = true
-                setTimeout(() => this.registerProduct(), 1000);
+                this.registerProduct()
                 /* this.registerProduct();
                 this.loader = true
                 this.sucessRegister = true; */
             },
 
-            async registerProduct () {
+            async registerProduct() {
                 const examData = {
                     id: '',
                     name: this.capitalize(this.editedExam.name),
                     rules: this.editedExam.rules,
-                    type: this.editedExam.type,
+                    type: this.editedExam.type.name,
                 };
                 await this.$store.dispatch('addExam', examData);
                 this.success = true
                 this.loading = false
             },
 
-            endRegister () {
+            endRegister() {
 
                 this.editedExam = Object.assign({}, this.defaultExam);
 
-                if (this.registerExam === true){
+                if (this.registerExam === true) {
 
                     this.$store.dispatch('selectExam', null);
                     this.registerExam = false;
@@ -337,33 +342,12 @@
                 }
             },
 
-
-            save(){
-                Object.assign({}, this.editedExam);
-                this.saveEditions();
-
-            },
-
-            saveEditions(){
-
-                const examData = {
-                    id: '',
-                    name: this.capitalize(this.editedExam.name),
-                    rules: this.editedExam.rules,
-                    type: this.editedExam.type,
-                };
-                this.$store.dispatch('loadExam').then(() => {
-                    this.$store.dispatch('updateDataExam', examData);
-                });
-
-            },
-
-            capitalize(value){
+            capitalize(value) {
                 value = value.toString();
                 return value.toUpperCase();
             },
 
-            back(){
+            back() {
                 this.$router.back()
             },
 
