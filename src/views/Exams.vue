@@ -186,6 +186,9 @@
                     </v-card-text>
                 </v-card>
             </v-flex>
+            <v-flex xs12 v-if="loading" class="my-4">
+                <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
+            </v-flex>
             <v-flex xs2 v-for="exam in exams" :key="exam.name" class="mt-4">
                 <v-card>
                     <v-layout row wrap>
@@ -281,6 +284,7 @@
                 }
             },
             async searchExams() {
+                this.loading = true
                 if (this.searchText && this.searchText.length > 0) {
                     this.loading = true;
                     const data = this.capitalize(this.searchText);
@@ -288,6 +292,7 @@
                     this.loading = false
                     return
                 }
+                this.loading = false
             },
 
             alert() {
