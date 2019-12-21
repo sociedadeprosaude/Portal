@@ -87,17 +87,17 @@ const actions = {
             cost: payload.cost,
             price: payload.sale,
             obs: payload.obs,
-            clinic: payload.clinic.name,
-            telephone: payload.clinic.telephone,
-            address: payload.clinic.address,
-            cnpj: payload.clinic.cnpj,
+            // clinic: payload.clinic.name,
+            // telephone: payload.clinic.telephone,
+            // address: payload.clinic.address,
+            // cnpj: payload.clinic.cnpj,
             //email: payload.clinic.email,
-            agenda: payload.clinic.agenda,
+            // agenda: payload.clinic.agenda,
 
         };
         firebase.firestore().collection('clinics/' + payload.clinic.name + '/exams').doc(payload.exam).set(examData);
 
-        firebase.firestore().collection('exams/' + payload.exam + '/clinics').doc(examData.clinic).set(examData);
+        firebase.firestore().collection('exams/').doc(payload.exam).collection('clinics').doc(payload.clinic.name).set(payload.clinic);
     },
 
     async loadSelectedExams({commit},payload){
