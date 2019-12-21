@@ -51,6 +51,7 @@ const actions = {
                         delete doctor.specialties[spec][data]
                     }
                 }
+                delete holder.clinics
                 await firebase.firestore().collection('specialties').doc(doctor.specialties[spec].name).collection('doctors').doc(doctor.cpf).set(holder)
             }
             return
