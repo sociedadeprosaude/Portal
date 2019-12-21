@@ -518,6 +518,9 @@
                     idConsultation:this.index_Selecionado.idConsultation,
                     idPatient:this.index_Selecionado.cpf,
                     type:this.index_Selecionado.modalidade,
+                    status:this.index_Selecionado.status,
+                    payment_number:this.index_Selecionado.num_recibo,
+                    specialty:this.index_Selecionado.especialidade.name,
                     regress:this.index_Selecionado.consultation.regress,
                     previousConsultation:this.index_Selecionado.consultation.previousConsultation
                 })
