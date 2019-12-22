@@ -175,7 +175,6 @@
         computed: {
             filteredPages() {
                 // if (!this.user.permissions) return []
-                console.log(this.user)
                 return this.pages.filter(a => {
                     if (this.user.group === 'admin') {
                         return true

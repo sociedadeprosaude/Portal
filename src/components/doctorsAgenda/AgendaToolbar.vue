@@ -1,6 +1,6 @@
 <template>
     <v-container class="ma-0 pa-0">
-        <v-navigation-drawer class="hidden-print-only" temporary v-model="drawer" fixed app>
+        <v-navigation-drawer v-if="doctorsAgendaToobar" class="hidden-print-only" temporary v-model="drawer" fixed app>
             <v-list>
                 <v-list-item
                         v-for="item in menuItems"
@@ -14,7 +14,7 @@
             </v-list>
         </v-navigation-drawer>
         <v-app-bar color="primary_dark" dark fixed class="hidden-print-only">
-            <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+            <v-app-bar-nav-icon v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
             <v-toolbar-title>
                 <router-link class="hidden-xs-only" to="/" tag="span" style="cursor: pointer">
                     <v-img :src="require('@/assets/logo-pro-saude.png')"
@@ -92,6 +92,9 @@
         computed: {
             selectedPatient() {
                 return this.$store.getters.selectedPatient
+            },
+            doctorsAgendaToobar() {
+                return this.$store.getters.showDoctorsAgendaToolbar
             }
         }
     }

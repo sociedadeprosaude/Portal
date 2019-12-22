@@ -1,9 +1,9 @@
 <template>
     <v-app id="app">
         <v-slide-y-transition>
-            <agenda-toolbar v-if="doctorsAgendaToobar"></agenda-toolbar>
+            <agenda-toolbar></agenda-toolbar>
         </v-slide-y-transition>
-        <v-content :class="['background', doctorsAgendaToobar ? 'mt-12 pt-6' : '']">
+        <v-content :class="['background','mt-12 pt-6']">
             <router-view/>
         </v-content>
     </v-app>
@@ -15,11 +15,6 @@
         components: {
             AgendaToolbar
         },
-        computed: {
-            doctorsAgendaToobar() {
-                return this.$store.getters.showDoctorsAgendaToolbar
-            }
-        }
     }
 </script>
 <style>
