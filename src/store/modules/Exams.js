@@ -51,10 +51,10 @@ const actions = {
     },
     async searchExam(context, search) {
       let examsSnap = await firebase.firestore().collection('exams').where('name', '>=', search).get()
-      let exams  = []
+      let exams  = [];
       examsSnap.forEach((doc) => {
           exams.push(doc.data())
-      })
+      });
         return exams
     },
     async addExam({commit}, exam) {

@@ -41,16 +41,18 @@
                                 </v-flex>
                                 <v-spacer></v-spacer>
                                 <v-radio-group row class="ma-1">
-                                    <v-btn outlined text :color="color.buttonExam" class="button-select" rounded
-                                           @click="selectExam">Exames
+                                    <v-btn outlined text rounded
+                                           :color="categorySelect === 'exam' ? 'accent' : 'primary_light'"
+                                           @click="selectCategory('exam')">Exames
                                     </v-btn>
                                     <!--
                                     <v-btn outlined text :color="color.buttonAppointment" class="button-select mx-2" rounded
                                            @click="selectAppointment">Consultas
                                     </v-btn>
                                     -->
-                                    <v-btn outlined text :color="color.buttonClinic" class="button-select mx-2" rounded
-                                           @click="selectClinic">Clinicas
+                                    <v-btn outlined text rounded class="mx-2"
+                                           :color="categorySelect === 'clinic' ? 'accent' : 'primary_light'"
+                                           @click="selectCategory('clinic')">Clinicas
                                     </v-btn>
                                 </v-radio-group>
                                 <v-spacer></v-spacer>
@@ -64,7 +66,7 @@
                                 ></v-text-field>
                             </v-layout>
                             <v-card-text>
-                                <v-flex v-for="(item, index) in categories" :key="index" >
+                                <v-flex v-for="(item, index) in items" :key="index" >
                                     <v-card class="mt-1">
                                         <v-card-title class="justify-center">
                                             <h3 class="primary--text">{{item.name}}</h3>
@@ -155,39 +157,37 @@
 
         name: "searchPackage",
 
-        data: () => ({
-            searchPackage: true, registerPackage: false,
-            searchData: null,
-            isLoading: false,
+        data () {
+            return {
 
-            search: null,
-            validRegister: true,
-            categorySelect: null,
+                searchPackage: true, registerPackage: false,
+                searchData: null,
+                isLoading: false,
 
-            items: [], action: false,
+                search: null,
+                validRegister: true,
+                categorySelect: 'exam',
 
-            cost: 0, price: 0, percentageDiscount: 0, moneyDiscount: 0,
+                action: false,
 
-            editedPackage: {
-                id: '', name: '', exams: [], specialties: [],
-            },
+                cost: 0, price: 0, percentageDiscount: 0, moneyDiscount: 0,
 
-            defaultPackage: {
-                id: '', name: '', exams: [], specialties: [], percentageDiscount: 0,
-            },
+                editedPackage: {
+                    id: '', name: '', exams: [], specialties: [],
+                },
 
-            rules: {
-                campoObrigatorio: [
-                    v => !!v || 'O CAMPO É OBRIGATÓRIO!'
-                ],
-            },
+                defaultPackage: {
+                    id: '', name: '', exams: [], specialties: [], percentageDiscount: 0,
+                },
 
-            color: {
-                buttonAppointment:'#9EA9D5', buttonExam:'#009688', buttonClinic: '#9EA9D5',
-                colorSelect:'#009688', noSelect: '#9EA9D5',
-            }
+                rules: {
+                    campoObrigatorio: [
+                        v => !!v || 'O CAMPO É OBRIGATÓRIO!'
+                    ],
+                },
 
-        }),
+            };
+        },
 
         computed: {
             listPackage (){
@@ -202,76 +202,25 @@
                 return this.editedPackage.name && this.price && this.cost;
             },
 
-            categories: function () {
+            exams () {
+                return this.$store.getters.examsSelected;
+            },
 
-                if (!this.search) { return [] }
+            clinic () {
+                return this.$store.getters.clinics;
+            },
 
-                let search = this.search.toLowerCase();
-                let products = [];
-
-                //console.log(this.items);
-
-                if (this.items) {
-                    if (this.categorySelect === 'clinic') {
-                        for (let i in this.items) {
-                            let obj = {
-                                name: this.items[i].name
-                            };
-                            if (this.items[i].specialties.length > 0){
-                                obj = {...obj, specialties: this.items[i].specialties};
-                            }
-                            if (this.items[i].exams.length > 0){
-                                obj = {...obj, exams: this.items[i].exams}
-                            }
-                            products[i] = (obj);
-                        }
-                    } else if (this.categorySelect === 'exam') { //exams
-                        //console.log(this.items);
-                        for (let i in this.items) {
-                            let obj = {
-                                name: this.items[i].name,
-                                rules: this.items[i].rules,
-                            };
-                            let clinics = [];
-                            for (let clinic in this.items[i].clinics) {
-                                clinics [clinic] = ({
-                                    cost: this.items[i].clinics[clinic].cost,
-                                    price: this.items[i].clinics[clinic].price,
-                                    clinic: this.items[i].clinics[clinic].clinic,
-                                });
-                            }
-
-                            obj = {...obj, clinics : clinics};
-                            products[i] = (obj);
-                        }
-                    } else { //specialities
-                        for (let i in this.items){
-                            let obj = {
-                                name: this.items[i].name,
-                            };
-                            let doctors = [];
-                            for (let doctor in this.items[i].doctors){
-                                doctors [doctor] = ({
-                                    payment_method: this.items[i].doctors[doctor].payment_method,
-                                    name: this.items[i].doctors[doctor].name,
-                                    cost: this.items[i].doctors[doctor].cost,
-                                    price: this.items[i].doctors[doctor].price,
-                                });
-                            }
-
-                            obj = {...obj, doctors: doctors};
-                            products [i] = (obj);
-                        }
-                    }
-
-                    let p = products.filter(item => {
-                        const text = item.name.toLowerCase();
-                        return text.indexOf(search) >-1;
-                    });
-
-                    return p;
+            items () {
+                switch (this.categorySelect) {
+                    case 'exam':
+                        return this.exams;
+                    case 'clinic':
+                        return this.clinics;
+                    default:
+                        return []
                 }
             },
+
 
             total() {
                 let subTotal = 0;
@@ -290,9 +239,7 @@
 
         mounted () {
             this.$store.dispatch('loadBundle');
-            this.$store.dispatch('loadExam').then(() => {
-                this.selectExam();
-            });
+            //this.$store.dispatch('loadExam').then(() => {});
             //this.$store.dispatch('loadSpecialties');
             this.$store.dispatch('loadClinics');
         },
@@ -319,10 +266,18 @@
                 } else {
                     this.$store.commit('selectedBundle', this.defaultPackage);
                 }
+            },
+
+            categorySelect: function () {
+                this.search = ''
             }
         },
 
         methods: {
+
+            selectCategory(category) {
+                this.categorySelect = category
+            },
 
             clearSearch () {
 
@@ -337,34 +292,6 @@
                 this.price = 0;
                 this.percentageDiscount = 0;
                 this.moneyDiscount = 0;
-            },
-
-            selectExam () {
-                this.color.buttonExam = this.color.colorSelect;
-                //this.color.buttonAppointment = this.color.noSelect;
-                this.color.buttonClinic = this.color.noSelect;
-                this.categorySelect = 'exam';
-                this.items= this.$store.getters.exams;
-
-            },
-
-            selectAppointment () {
-
-                this.color.buttonAppointment = this.color.colorSelect;
-                this.color.buttonExam = this.color.noSelect;
-                this.color.buttonClinic = this.color.noSelect;
-                this.categorySelect = 'appointment';
-                this.items= this.$store.getters.specialties;
-
-            },
-
-            selectClinic () {
-                this.color.buttonClinic = this.color.colorSelect;
-                this.color.buttonExam = this.color.noSelect;
-                //this.color.buttonAppointment = this.color.noSelect;
-                this.categorySelect = 'clinic';
-                this.items = this.$store.getters.clinics;
-
             },
 
             costAndPrice () {
