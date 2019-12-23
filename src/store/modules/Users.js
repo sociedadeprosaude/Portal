@@ -28,13 +28,11 @@ const mutations = {
 const actions = {
   async searchUser ({commit, getters}, searchFields) {
     let usersRef = firestore().collection('users')
-    console.log(searchFields)
     for (let field in searchFields) {
       if (!searchFields[field] || searchFields[field].length === 0) continue;
       usersRef = usersRef.where(field, field === 'name' ? '>=' : '==', searchFields[field].toUpperCase())
     }
-    console.log('query', usersRef)
-    let querySnapshot = await usersRef.get()
+    let querySnapshot = await usersRef.limit(20).get()
     let users = [];
     querySnapshot.forEach(function(doc) {
       // if (doc.data().association_number) {
