@@ -74,8 +74,8 @@ const vuetifyOptions = {
     themes: {
       light: {
         primary: '#003B8F',
-        secondary: '#1564BF',
-        accent: '#00796B',
+        secondary: '#00796B',
+        accent: '#e91e63',
         error: '#f44336',
         warning: '#ffc107',
         info: '#e91e63',

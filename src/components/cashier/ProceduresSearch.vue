@@ -16,16 +16,16 @@
                                         prepend-icon="search"
                                 ></v-text-field>
                             </v-flex>
-                            <v-btn outlined class="botao"
-                                   :color="categorySelect === 'exam' ? 'primary' : 'primary_light'" rounded
+                            <v-btn outlined class="mx-2"
+                                   :color="categorySelect === 'exam' ? 'accent' : 'primary_light'" rounded
                                    @click="selectCategory('exam')">Exames
                             </v-btn>
-                            <v-btn outlined class="botao"
-                                   :color="categorySelect === 'appointment' ? 'primary' : 'primary_light'" rounded
+                            <v-btn outlined class="mx-2"
+                                   :color="categorySelect === 'appointment' ? 'accent' : 'primary_light'" rounded
                                    @click="selectCategory('appointment')">Consultas
                             </v-btn>
-                            <v-btn outlined class="botao"
-                                   :color="categorySelect === 'package' ? 'primary' : 'primary_light'" rounded
+                            <v-btn outlined class="mx-2"
+                                   :color="categorySelect === 'package' ? 'accent' : 'primary_light'" rounded
                                    @click="selectCategory('package')">Pacotes
                             </v-btn>
                         </v-card-title>
@@ -110,7 +110,7 @@
         name: "ProceduresSearch",
         data() {
             return {
-                categorySelect: undefined,
+                categorySelect: 'appointment',
                 search: '',
                 loading: undefined
             }
@@ -191,7 +191,11 @@
         },
         mounted() {
             let self = this;
-            self.$store.dispatch("loadSpecialties");
+            this.loading = true
+            self.$store.dispatch("loadSpecialties")
+            .then(() => {
+                this.loading = false
+            })
             window.addEventListener('keyup', function (e) {
                 if (e.target.id === 'search') {
                     clearTimeout(self.typingTimer);
