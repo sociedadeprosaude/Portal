@@ -139,7 +139,6 @@
             async receipt(intake) {
                 this.loading = true
                 this.selectedIntake = await this.$store.dispatch('getIntakeDetails', intake)
-                console.log('sel', this.selectedIntake)
                 let examsPerClinic = {}
                 for (let exam in this.selectedIntake.exams) {
                     if (!examsPerClinic[this.selectedIntake.exams[exam].clinic.name]) {
