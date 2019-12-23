@@ -92,7 +92,8 @@
         </v-card>
         <v-dialog v-model="receiptDialog" v-if="selectedIntake">
             <receipt @close="receiptDialog = false" :budget=selectedIntake></receipt>
-            <attendance-guide></attendance-guide>
+            <!--componente de documento da clinica com os exames das mesmas-->
+            <attendance-guide v-if="selectedIntake"></attendance-guide>
         </v-dialog>
     </v-container>
 </template>
@@ -110,6 +111,7 @@
                 option: 'budgets',
                 loading: false,
                 selectedIntake: undefined,
+                //ExamsPerClincs: undefined,
                 receiptDialog: false
             }
         },
@@ -145,6 +147,7 @@
                     }
                     examsPerClinic[this.selectedIntake.exams[exam].clinic.name].push(this.selectedIntake.exams[exam])
                 }
+                //pegar e fazer um for (cada documento vai ter 1 clinica com as respectivos exames de cada clinica)
                 console.log('exam per clin', examsPerClinic)
                 this.receiptDialog = true
                 this.loading = false
