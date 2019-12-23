@@ -180,7 +180,7 @@
                         break;
                     case 'exam':
                         delete holder.clinics;
-                        holder.clinic = selection.clinic;
+                        holder.clinic = selection
                         holder.cost = selection.cost;
                         holder.price = selection.price;
                         break;

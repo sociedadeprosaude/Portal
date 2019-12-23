@@ -102,7 +102,7 @@
                                             </span>
                                             </v-card-title>
                                             <v-card-text class="pt-1 pb-0">
-                                                {{item.clinic}}
+                                                {{item.clinic.name}}
                                                 <p class="text-right">
                                                     R$ {{item.price}}
                                                 </p>
@@ -310,7 +310,6 @@
             },
             consultas() {
                 // return this.$store.getters.selectedBudget.consultations
-                console.log(this.$store.getters.getShoppingCartItemsByCategory.consultations)
                 return this.$store.getters.getShoppingCartItemsByCategory.consultations
             },
             pacotes() {

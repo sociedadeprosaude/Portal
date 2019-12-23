@@ -92,6 +92,7 @@
         </v-card>
         <v-dialog v-model="receiptDialog" v-if="selectedIntake">
             <receipt @close="receiptDialog = false" :budget=selectedIntake></receipt>
+            <attendance-guide></attendance-guide>
         </v-dialog>
     </v-container>
 </template>
@@ -99,10 +100,11 @@
 <script>
 
     import Receipt from "./Receipt";
+    import AttendanceGuide from "./attendanceGuide";
 
     export default {
         name: "IntakesHistory",
-        components: {Receipt},
+        components: {AttendanceGuide, Receipt},
         data() {
             return {
                 option: 'budgets',
@@ -135,6 +137,15 @@
             async receipt(intake) {
                 this.loading = true
                 this.selectedIntake = await this.$store.dispatch('getIntakeDetails', intake)
+                console.log('sel', this.selectedIntake)
+                let examsPerClinic = {}
+                for (let exam in this.selectedIntake.exams) {
+                    if (!examsPerClinic[this.selectedIntake.exams[exam].clinic.name]) {
+                        examsPerClinic[this.selectedIntake.exams[exam].clinic.name] = []
+                    }
+                    examsPerClinic[this.selectedIntake.exams[exam].clinic.name].push(this.selectedIntake.exams[exam])
+                }
+                console.log('exam per clin', examsPerClinic)
                 this.receiptDialog = true
                 this.loading = false
             }

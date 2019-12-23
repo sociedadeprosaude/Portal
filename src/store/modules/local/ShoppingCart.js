@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 const state = {
     items: [],
     budget: undefined
@@ -12,6 +14,13 @@ const mutations = {
         state.items = payload
     },
     addShoppingCartItem(state, payload) {
+        for (let item in state.items) {
+            if (state.items[item].name === payload.name) {
+                state.items[item] = payload
+                Vue.set(state.items, item, payload)
+                return
+            }
+        }
         state.items.push(payload)
     },
     removeShoppingCartItem(state, payload) {
