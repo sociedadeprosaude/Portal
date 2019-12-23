@@ -87,7 +87,7 @@
                             </v-flex>
                         </v-layout>
                     </v-card>
-                    <v-card class="primary_dark pa-2" v-else>
+                    <v-card class="primary_light white--text pa-2" v-else>
                         <v-layout row wrap>
                             <v-flex xs8 class="text-left mb-4" v-if="!formError">
                                 <span class="my-headline white--text">Adicionar Associado</span>
@@ -330,7 +330,11 @@
                 address.loading = false
             },
             registerPatient() {
-                if (!this.validateFiedls()) return
+                if (!this.validateFiedls()) {
+                    console.log('aa', this.validateFiedls())
+                    return
+                }
+                console.log('bbb')
                 this.loading = true
                 let patient = {
                     name: this.name.toUpperCase(),
@@ -343,6 +347,7 @@
                     addresses: this.addresses,
                     type: 'PATIENT'
                 }
+                console.log('c')
                 this.$store.dispatch('addUser', patient)
                 this.success = true
                 this.loading = false
