@@ -12,8 +12,8 @@ const mutations = {
     setExams(state, payload) {
         state.exams = payload
     },
-    setExamsSelected(state, payload){
-        state.examesSelected= payload
+    setExamsSelected(state, payload) {
+        state.examesSelected = payload
     }
 };
 
@@ -27,11 +27,11 @@ const actions = {
                 let clinics = [];
                 firebase.firestore().collection('exams/' + document.data().name + '/clinics').get().then((data) => {
                     data.forEach((doc) => {
-                       clinics.push({
-                           clinic : doc.data().clinic,
-                           cost: doc.data().cost,
-                           price: doc.data().price,
-                       });
+                        clinics.push({
+                            clinic: doc.data().clinic,
+                            cost: doc.data().cost,
+                            price: doc.data().price,
+                        });
                     });
                 });
 
@@ -50,11 +50,11 @@ const actions = {
         }
     },
     async searchExam(context, search) {
-      let examsSnap = await firebase.firestore().collection('exams').where('name', '>=', search).get()
-      let exams  = []
-      examsSnap.forEach((doc) => {
-          exams.push(doc.data())
-      })
+        let examsSnap = await firebase.firestore().collection('exams').where('name', '>=', search).get()
+        let exams = []
+        examsSnap.forEach((doc) => {
+            exams.push(doc.data())
+        })
         return exams
     },
     async addExam({commit}, exam) {
@@ -73,7 +73,7 @@ const actions = {
         }
     },
 
-    async removeClinicFromExam({commit}, payload){//apagar exames da clinica e clinica do exames
+    async removeClinicFromExam({commit}, payload) {//apagar exames da clinica e clinica do exames
         try {
             firebase.firestore().collection('exams/' + payload.product + '/clinics').doc(payload.clinic.name).delete();
         } catch (e) {
@@ -95,43 +95,37 @@ const actions = {
             // agenda: payload.clinic.agenda,
 
         };
+        delete payload.clinic.id
         firebase.firestore().collection('clinics/' + payload.clinic.name + '/exams').doc(payload.exam).set(examData);
 
-        firebase.firestore().collection('exams/').doc(payload.exam).collection('clinics').doc(payload.clinic.name).set(payload.clinic);
+        firebase.firestore().collection('exams/').doc(payload.exam).collection('clinics').doc(payload.clinic.name).set({
+            ...payload.clinic,
+            cost: payload.cost,
+            price: payload.sale,
+            obs: payload.obs,
+        });
     },
 
-    async loadSelectedExams({commit},payload){
-        return new Promise( async (resolve,reject) => {
-            payload= payload.toUpperCase();
-            try {
-                let examsSnap = await firebase.firestore().collection('exams').where('name', '>=', payload).get();
-                let exams = [];
-                examsSnap.forEach(function (document) {
-
-                    let clinics = [];
-                    firebase.firestore().collection('exams/' + document.data().name + '/clinics').get().then((data) => {
-                        data.forEach((doc) => {
-                            clinics.push({
-                                clinic : doc.data().clinic,
-                                cost: doc.data().cost,
-                                price: doc.data().price,
-                            });
-                        });
-                    });
-
-                    exams.push({
-                        name: document.data().name,
-                        rules: document.data().rules,
-                        clinics: clinics,
-                    });
-
+    async loadSelectedExams({commit}, payload) {
+        payload = payload.toUpperCase();
+        try {
+            let examsSnap = await firebase.firestore().collection('exams').where('name', '>=', payload).limit(20).get();
+            let exams = [];
+            for (let doc in examsSnap.docs) {
+                let clinics = [];
+                let clinSnap = await firebase.firestore().collection('exams/' + examsSnap.docs[doc].data().name + '/clinics').get()
+                clinSnap.forEach((document) => {
+                    clinics.push(document.data())
+                })
+                exams.push({
+                    ...examsSnap.docs[doc].data(),
+                    clinics: clinics,
                 });
-                commit('setExamsSelected', exams);
-                resolve()
-            } catch (e) {
-                throw e
             }
-        })
+            commit('setExamsSelected', exams);
+        } catch (e) {
+            throw e
+        }
     }
 };
 
@@ -139,7 +133,7 @@ const getters = {
     exams(state) {
         return state.exams
     },
-    examsSelected(state){
+    examsSelected(state) {
         return state.examesSelected
     }
 };

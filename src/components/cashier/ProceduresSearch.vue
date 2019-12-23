@@ -48,7 +48,7 @@
                                                            rounded
                                                            @click="addProduct(item, n, 'exam')"
                                                     >
-                                                        R${{n.price}} | {{n.clinic}}
+                                                        {{n.name}} | {{n.price}}
                                                     </v-btn>
                                                 </v-slide-item>
                                             </v-slide-group>

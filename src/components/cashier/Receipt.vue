@@ -27,7 +27,7 @@
                             <img src="@/assets/logo-pro-saude.png" height="84px">
                         </v-flex>
                         <v-flex xs6 class="text-left">
-                            <v-layout column wrap>
+                            <v-layout column wrap v-if="budget.user.addresses[0]">
                                 <span class="primary--text font-weight-bold mt-2">{{this.budget.user.addresses[0].street}} {{this.budget.user.addresses[0].number}}</span>
                                 <span v-if="this.budget.user.addresses[0].complement" class="primary--text font-weight-bold mt-2">{{this.budget.user.addresses[0].complement}}</span>
                                 <span class="primary--text font-weight-bold">{{this.budget.user.addresses[0].city}} - {{this.budget.user.addresses[0].uf}}</span>

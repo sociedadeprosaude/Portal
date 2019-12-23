@@ -170,7 +170,6 @@
             },
 
             save(){
-                console.log(this.exams);
                 for (let i in this.exams){
                     let examData = {
                         clinic: this.selectedClinic,
@@ -179,7 +178,6 @@
                         sale:this.sale,
                         obs:this.obs,
                     };
-                    console.log(examData);
                     this.$store.dispatch('addExamToClinic', examData);
                 }
 
