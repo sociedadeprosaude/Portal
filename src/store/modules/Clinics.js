@@ -157,9 +157,6 @@ const actions = {
         firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie + '/doctors')
             .doc(payload.cpf).set(data);
 
-        firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie)
-            .set(data);
-
         firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).collection('clinics/')
             .doc(payload.clinic.name).set(payload.clinic);
 

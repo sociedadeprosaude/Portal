@@ -40,12 +40,21 @@ const actions = {
             delete docCopy.specialties;
             await firebase.firestore().collection('users').doc(doctor.cpf).set(docCopy)
             for (let spec in doctor.specialties) {
-                let holder = {
-                    ...docCopy,
+                let details = {
                     cost: doctor.specialties[spec].cost,
                     price: doctor.specialties[spec].price,
                     payment_method: doctor.specialties[spec].payment_method
                 }
+                let holder = {
+                    ...docCopy,
+                    ...details
+                }
+                delete doctor.specialties[spec].doctors
+                firebase.firestore().collection('users/' + doctor.cpf + '/specialties').doc(doctor.specialties[spec].name)
+                    .set({
+                        ...details,
+                        ...doctor.specialties[spec]
+                    });
                 for (let data in doctor.specialties[spec]) {
                     if (!doctor.specialties[spec][data]) {
                         delete doctor.specialties[spec][data]
@@ -74,9 +83,14 @@ const actions = {
         try {
             let doctorsSnap = await firebase.firestore().collection('users').where('type', '==', 'doctor').get();
             let doctors = {};
-            doctorsSnap.forEach(function (document) {
-                doctors[document.id] = document.data()
-            });
+            for (let document in  doctorsSnap.docs) {
+                doctors[doctorsSnap.docs[document].id] = doctorsSnap.docs[document].data()
+                doctors[doctorsSnap.docs[document].id].specialties = []
+                let specSnap = await doctorsSnap.docs[document].ref.collection('specialties').get()
+                specSnap.forEach((specDoc) => {
+                    doctors[doctorsSnap.docs[document].id].specialties.push(specDoc.data())
+                })
+            }
             commit('setDoctors', doctors);
             return doctors
         } catch (e) {
