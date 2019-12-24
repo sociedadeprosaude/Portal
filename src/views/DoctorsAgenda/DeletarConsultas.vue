@@ -217,13 +217,13 @@
                                                                          </span>
                                                                 </v-list-item-title>
                                                                 <br>
-                                                                <v-list-item-sub-title class="text-left">
+                                                                <v-list-item-subtitle class="text-left">
                                                                     CPF: {{item.user.cpf}}
-                                                                </v-list-item-sub-title>
+                                                                </v-list-item-subtitle>
                                                                 <br>
-                                                                <v-list-item-sub-title>
+                                                                <v-list-item-subtitle>
                                                                     Telefone: {{item.user.telephones[0]}}
-                                                                </v-list-item-sub-title>
+                                                                </v-list-item-subtitle>
                                                                 <br>
                                                                 <v-list-item-action-text>
                                                                     {{item.date.split(' ')[0] | dateFilter}} -
@@ -360,7 +360,7 @@
             },
         },
         async mounted() {
-            await this.$store.dispatch('getConsultations', {
+            this.getConsultations({
                 start_date: moment().format('YYYY-MM-DD 00:00:00'),
                 final_date: moment().format('YYYY-MM-DD 23:59:59')
             })
@@ -373,10 +373,22 @@
         watch: {
             menu(val) {
                 val && setTimeout(() => (this.$refs.picker.activePicker = 'MONTH'))
+            },
+            date(val) {
+                this.getConsultations({
+                    start_date: val + ' 00:00:00',
+                    final_date: val + ' 23:59:59'
+                })
             }
         },
 
         methods: {
+
+            async getConsultations(dates) {
+                this.loading = true
+                await this.$store.dispatch('getConsultations', dates)
+                this.loading = false
+            },
 
             formatConsultationsArray(consultations) {
                 let newArray = []
