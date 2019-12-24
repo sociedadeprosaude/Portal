@@ -24,10 +24,9 @@ const actions = {
     async getConsultations({commit},payload) {
         try {
             let consultations = []
-            let consultationsByDate = {}
-            let consultationsSnap = await firebase.firestore().collection('consultations')
-                .where('date', '>=', payload)
-                .where('date', '<=', moment().add(10, 'days').format('YYYY-MM-DD 23:59:59'))
+            await firebase.firestore().collection('consultations')
+                .where('date', '>=', payload.start_date)
+                .where('date', '<=', payload.final_date)
                 .onSnapshot((querySnapshot)=>{
                     consultations = []
                     querySnapshot.forEach((document)=>{
@@ -38,27 +37,6 @@ const actions = {
                     })
                     commit('setConsultations', consultations)
                 })
-
-                //.get()
-           /*  consultationsSnap.forEach(function (document) {
-                consultations.push({
-                    ...document.data(),
-                    id: document.id
-                })
-                // consultations[document.id] = document.data()
-                // let date = document.data().date.split(' ')[0]
-                // if (!consultationsByDate[date])
-                //     consultationsByDate[date] = {}
-                // if (!consultationsByDate[date][document.data().doctor.cpf])
-                //     consultationsByDate[date][document.data().doctor.cpf] = []
-                // consultationsByDate[date][document.data().doctor.cpf].push({
-                //     ...document.data(),
-                //     id: document.id
-                // })
-            }) */
-            // commit('setConsultationsByDate', consultationsByDate)
-            //console.log('GetConsultations')
-            //commit('setConsultations', consultations)
             return consultations
         } catch (e) {
             throw e
@@ -161,10 +139,10 @@ const actions = {
     async addUserToConsultationReschedule({commit}, payload) {
         try {
             let obj = {user: payload.user, type: payload.consultation.type, status: payload.consultation.status,payment_number:payload.consultation.payment_number}
-            
+
             if(payload.consultation.type == "Retorno")
                 obj.previousConsultation = payload.consultation.previousConsultation
-          
+
             await firebase.firestore().collection('consultations').doc(payload.consultation.id).update(obj)
             await firebase.firestore().collection('canceled').doc(payload.consultation.idConsultationCanceled).delete()
             if (payload.consultation.type == "Retorno") {
@@ -183,7 +161,7 @@ const actions = {
                 await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.previousConsultation).update({regress: payload.consultation.id})
             }
 
-            
+
         } catch (e) {
             throw e
         }
@@ -312,8 +290,8 @@ const actions = {
                 resolve(doc.data().consultationHour)
             }
         })
-       }) 
-        
+       })
+
     }
 };
 

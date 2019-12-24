@@ -42,7 +42,7 @@
                             rounded
                             chips
                             color="blue"
-                            
+
                     >
                         <template v-slot:selection="data">
                             <v-chip
@@ -586,9 +586,9 @@
                                 find = true
                                 return true
                             }
-                                
+
                         })
-                        
+
                         return find
                     })
                     //docArray.unshift({name:'Todos'})
@@ -677,7 +677,7 @@
         },
         methods: {
             scheduleAppointment(consultation) {
-                
+
                 this.fillConsultationForm(consultation)
                 this.dialog = true
             },
@@ -735,7 +735,10 @@
             async initialConfig() {
                 this.loading = true
                 await this.$store.dispatch('getDoctors')
-                await this.$store.dispatch('getConsultations',moment().format('YYYY-MM-DD HH:mm:ss'))
+                await this.$store.dispatch('getConsultations',{
+                    start_date: moment().format('YYYY-MM-DD 00:00:00'),
+                    final_date: moment().format('YYYY-MM-DD 23:59:59')
+                })
                 await this.$store.dispatch("getSpecialties")
 
                 this.query = this.$route.params.q
@@ -747,7 +750,7 @@
                 this.pacienteSelecionado = this.query.pacienteObj
                 this.selectedDoctor = this.query.doctor
                 this.status = this.query.status
-                this.num_recibo = this.query.num_recibo 
+                this.num_recibo = this.query.num_recibo
                 this.loading = false
             },
             backTop() {
@@ -827,7 +830,7 @@
                     status: this.status,
                     type: this.modalidade,
                     payment_number: this.num_recibo,
-                    
+
                 }
                 form.consultation = {
                     ...form.consultation,

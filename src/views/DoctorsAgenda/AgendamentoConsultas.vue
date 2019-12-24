@@ -378,7 +378,7 @@
                                             :loading="scheduleLoading"
                                             @click="save"
                                             text="Confirmar"
-                                            
+
                                     >
                                     </submit-button>
                                 </v-card-actions>
@@ -522,14 +522,14 @@
                         }
                         var find = false
                         specialty.doctors.forEach((doctor)=>{
-                           
+
                             if(doctor.cpf === this.selectedDoctor.cpf){
                                 find = true
                                 return true
                             }
-                                
+
                         })
-                        
+
                         return find
                     })
                     //docArray.unshift({name:'Todos'})
@@ -584,9 +584,9 @@
                                 find = true
                                 return true
                             }
-                                
+
                         })
-                        
+
                         return find
                     })
                     //docArray.unshift({name:'Todos'})
@@ -715,7 +715,7 @@
                 }).catch(()=>{
                     this.loaderPaymentNumber = false
                 })
-                
+
                 this.createConsultationForm = form
             },
             formatConsultationsArray(consultations) {
@@ -763,7 +763,10 @@
                 this.loading = true
                 this.$store.dispatch('getClinics')
                 await this.$store.dispatch('getDoctors')
-                await this.$store.dispatch('getConsultations',moment().format('YYYY-MM-DD HH:mm:ss'))
+                await this.$store.dispatch('getConsultations',{
+                    start_date: moment().format('YYYY-MM-DD HH:mm:ss'),
+                    final_date: moment().add(10, 'days').format('YYYY-MM-DD 23:59:59')
+                })
                 await this.$store.dispatch("getSpecialties")
                 // this.$store.dispatch("stopSnack", false);
                 //this.$store.dispatch('setLoader',{loader:false,view:"AgendamentoConsulta"})

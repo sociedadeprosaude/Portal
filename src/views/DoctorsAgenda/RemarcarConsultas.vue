@@ -42,7 +42,7 @@
                             rounded
                             chips
                             color="blue"
-                            
+
                     >
                         <template v-slot:selection="data">
                             <v-chip
@@ -570,9 +570,9 @@
                                 find = true
                                 return true
                             }
-                                
+
                         })
-                        
+
                         return find
                     })
                     //docArray.unshift({name:'Todos'})
@@ -688,7 +688,10 @@
             async initialConfig() {
                 this.loading = true
                 await this.$store.dispatch('getDoctors')
-                await this.$store.dispatch('getConsultations',moment().format('YYYY-MM-DD HH:mm:ss'))
+                await this.$store.dispatch('getConsultations',{
+                    start_date: moment().format('YYYY-MM-DD 00:00:00'),
+                    final_date: moment().format('YYYY-MM-DD 23:59:59')
+                })
                 await this.$store.dispatch("getSpecialties")
 
                 this.query = this.$route.params.q
@@ -761,7 +764,7 @@
                     status: this.status,
                     type: this.modalidade,
                     payment_number: this.num_recibo,
-                    
+
                 }
                 form.consultation = {
                     ...form.consultation,
@@ -782,7 +785,7 @@
                 this.success = true
                 this.dialog = false
                 this.$router.back()
-            } 
+            }
         }
     };
 </script>
