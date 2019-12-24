@@ -83,6 +83,9 @@ const actions = {
             let day = moment(consultation.start_date, 'YYYY-MM-DD').add(i, 'days')
             if (consultation.weekDays.indexOf(day.weekday()) > -1) {
                 for (let j = 0; j < consultation.vacancy; j++) {
+                    delete consultation.doctor.clinics
+                    delete consultation.doctor.specialties
+                    delete consultation.specialty.doctors
                     let consultObject = {
                         specialty: consultation.specialty,
                         date: day.format('YYYY-MM-DD') + ' ' + consultation.hour,

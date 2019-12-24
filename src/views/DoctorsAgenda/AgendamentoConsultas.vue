@@ -152,7 +152,7 @@
                                                             class="mt-1"
                                                             color="primary_dark"
                                                             text-color="white"
-                                                    >Clinica : {{consulta.clinic}}
+                                                    >Clinica : {{consulta.clinic.name}}
                                                     </v-chip>
                                                 </v-layout>
                                             </v-flex>

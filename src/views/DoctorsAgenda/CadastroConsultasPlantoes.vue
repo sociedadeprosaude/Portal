@@ -71,6 +71,7 @@
                                         v-model="clinic"
                                         :items="clinics"
                                         item-text="name"
+                                        return-object
                                         label="Clínica"
                                         no-data-text="Nenhum médico para esta especialidade"
                                         outlined
@@ -428,7 +429,7 @@
             },
             menu2 (val) {
                 val && setTimeout(() => (this.$refs.picker.activePicker = 'MONTH'))
-            }
+            },
         },
         methods: {
             save1 (dataStart) {
