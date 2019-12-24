@@ -314,6 +314,14 @@
                     this.formError = 'CPF não pode ser vazio'
                     return false
                 }
+                if (!this.birthDate) {
+                    this.formError = 'Preencha a data de nascimento'
+                    return false
+                }
+                if (this.telephones[0].length === 0) {
+                    this.formError = 'Preencha um telefone'
+                    return false
+                }
                 return true
             },
             async getAddressByCep(address) {
@@ -331,10 +339,8 @@
             },
             registerPatient() {
                 if (!this.validateFiedls()) {
-                    console.log('aa', this.validateFiedls())
                     return
                 }
-                console.log('bbb')
                 this.loading = true
                 let patient = {
                     name: this.name.toUpperCase(),
@@ -347,7 +353,6 @@
                     addresses: this.addresses,
                     type: 'PATIENT'
                 }
-                console.log('c')
                 this.$store.dispatch('addUser', patient)
                 this.success = true
                 this.loading = false
