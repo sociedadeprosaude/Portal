@@ -3,7 +3,7 @@
         <v-card-title class="headline grey lighten-2" primary-title>
             <span>{{ formTitle }}</span>
             <v-spacer></v-spacer>
-            <v-btn text rounded @click="close">
+            <v-btn text rounded @click="close()">
                 <v-icon>clear</v-icon>
             </v-btn>
         </v-card-title>
@@ -73,7 +73,8 @@
                                         @input="data.parent.selectItem(data.item)"
                                         text-color="white"
                                         color="info"
-                                >{{ data.item.name }}</v-chip>
+                                >{{ data.item.name }}
+                                </v-chip>
                             </template>
                         </v-select>
                     </v-flex>
@@ -104,7 +105,8 @@
                                         @input="data.parent.selectItem(data.item)"
                                         text-color="white"
                                         color="info"
-                                >{{ data.item.name }}</v-chip>
+                                >{{ data.item.name }}
+                                </v-chip>
                             </template>
                         </v-select>
                     </v-flex>
@@ -210,8 +212,18 @@
         beforeDestroy() {
             this.doctor = undefined
         },
+        watch: {
+            doctor() {
+                if (this.doctor) {
+                    this.name = this.doctor.name
+                    this.cpf = this.doctor.cpf
+                    this.crm = this.doctor.crm
+                    this.specialties = this.doctor.specialties
+                    this.clinic = this.doctor.clinics
+                }
+            }
+        },
         mounted() {
-
             this.$store.dispatch('getClinics')
             this.$store.dispatch('getSpecialties')
             if (this.doctor) {
@@ -275,10 +287,10 @@
         },
         methods: {
             close() {
-                this.clear()
+                // this.clear()
                 this.$emit('close')
             },
-            clear () {
+            clear() {
                 this.name = undefined
                 this.crm = undefined
                 this.cpf = undefined
@@ -303,8 +315,8 @@
                 await this.$store.dispatch('addDoctor', doctor)
                 await this.$store.dispatch('getDoctors')
                 //==========================começo da nova função
-                for (let i in this.clinic){
-                    for (let j in this.specialties){
+                for (let i in this.clinic) {
+                    for (let j in this.specialties) {
                         let data = {
                             clinic: this.clinic[i],
                             specialtie: this.specialties[j].name,
