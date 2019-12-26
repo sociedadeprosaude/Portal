@@ -50,7 +50,7 @@ const actions = {
                 }
             }
             if (patient.type) {
-                patient.type = patient.type.toLowerCase()
+                patient.type = patient.type.toUpperCase()
             }
             let user = await firebase.firestore().collection('users').doc(patient.cpf).set(patient)
             return user
