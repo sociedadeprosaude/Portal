@@ -295,6 +295,11 @@
                 await this.$store.dispatch('addExam', examData);
                 this.success = true
                 this.loading = false
+                setTimeout(() => {
+                    this.editedExam = {
+                        id: '', name: '', rules: '', type: '',
+                    }
+                }, 1000)
             },
 
             endRegister() {
