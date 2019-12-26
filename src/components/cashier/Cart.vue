@@ -22,6 +22,27 @@
                                     <v-icon>search</v-icon>
                                 </v-btn>
                             </v-flex>
+                            <v-flex xs12 class="my-2" v-if="!loadingDoctors">
+                            <v-combobox
+                                    v-model="selectedDoctor"
+                                    auto-select-first
+                                    chips
+                                    dense
+                                    flat
+                                    clearable
+                                    label="Médico"
+                                    hint="Médico"
+                                    item-text="name"
+                                    return-object
+                                    :items="doctors"
+                            ></v-combobox>
+                            </v-flex>
+                            <v-flex xs12 v-else class="my-2">
+                                <v-layout column wrap class="align-center">
+                                    <span>Carregando Médicos...</span>
+                                    <v-progress-circular class="primary--text" indeterminate></v-progress-circular>
+                                </v-layout>
+                            </v-flex>
                             <v-flex xs12 v-if="searchBudgetBtn">
                                 <v-layout row wrap class="align-center">
                                     <v-flex xs10>
@@ -130,9 +151,9 @@
                                                         {{item.doctor.clinic.name}}
                                                     </span>
                                                     <v-spacer></v-spacer>
-                                                <p class="text-right">
-                                                    R$ {{item.doctor.price}}
-                                                </p>
+                                                    <p class="text-right">
+                                                        R$ {{item.doctor.price}}
+                                                    </p>
                                                 </v-layout>
                                             </v-card-text>
 
@@ -215,14 +236,15 @@
                                 <v-flex xs12>
                                     <v-layout row wrap class="align-end fill-height">
                                         <v-flex xs6 class="text-center">
-                                            <v-btn :disabled="consultas.length === 0 && exames.length === 0" outlined color="primary" @click="imprimir()">Imprimir
+                                            <v-btn :disabled="consultas.length === 0 && exames.length === 0" outlined
+                                                   color="primary" @click="imprimir()">Imprimir
                                             </v-btn>
                                         </v-flex>
                                         <v-flex xs6 class="text-center">
                                             <submit-button
                                                     :disabled="!patient"
                                                     text="Pagar" :loading="paymentLoading"
-                                                           :success="paymentSuccess" color="primary" @click="pay()">
+                                                    :success="paymentSuccess" color="primary" @click="pay()">
                                                 Pagar
                                             </submit-button>
                                         </v-flex>
@@ -244,9 +266,9 @@
         <v-dialog v-model="budgetToPrintDialog" v-if="budgetToPrint">
             <budget-to-print @close="budgetToPrintDialog = false" :budget="budgetToPrint"></budget-to-print>
         </v-dialog>
-<!--        <v-flex class="hidden-screen-only">-->
-<!--            <receipt :budgets="selectedBudget"></receipt>-->
-<!--        </v-flex>-->
+        <!--        <v-flex class="hidden-screen-only">-->
+        <!--            <receipt :budgets="selectedBudget"></receipt>-->
+        <!--        </v-flex>-->
         <v-dialog v-model="receiptDialog" v-if="selectedIntake">
             <receipt @close="receiptDialog = false" :budget=selectedIntake></receipt>
         </v-dialog>
@@ -293,11 +315,19 @@
                 budgetToPrint: undefined,
                 budgetToPrintDialog: false,
                 selectedIntake: undefined,
-                receiptDialog: false
+                selectedDoctor: undefined,
+                receiptDialog: false,
+                loadingDoctors: false
                 // selectedBudget: undefined
             }
         },
+        mounted() {
+            this.loadDoctors()
+        },
         computed: {
+            doctors() {
+                return Object.values(this.$store.getters.doctors)
+            },
             selectedBudget() {
                 return this.$store.getters.selectedBudget
             },
@@ -343,6 +373,11 @@
             },
         },
         methods: {
+            async loadDoctors() {
+                this.loadingDoctors = true
+                await this.$store.dispatch('getDoctors')
+                this.loadingDoctors = false
+            },
             async searchBudget() {
                 this.searchBudgetLoading = true;
                 let budget = await this.$store.dispatch('getBudget', this.searchBudgetNumber);
@@ -428,8 +463,10 @@
                     cost: this.cost,
                     user: this.$store.getters.selectedPatient,
                     colaborator: this.$store.getters.user,
-                    parcelar: this.parcelar
+                    parcelar: this.parcelar,
+                    doctor: this.selectedDoctor
                 }
+                console.log('hey', budget)
                 return budget
             },
             async updateBudgetsIntakes() {
@@ -475,7 +512,7 @@
             clearCart() {
                 this.$store.commit('clearShoppingCartItens')
                 this.$store.commit('setSelectedBudget', undefined)
-                let user= undefined
+                let user = undefined
                 this.$store.commit('setSelectedPatient', user)
                 // this.selectedBudget = undefined
             }
