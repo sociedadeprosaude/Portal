@@ -16,7 +16,7 @@
                                 hide-details
                         ></v-text-field>
                     </v-flex>
-                    <v-flex xs12>
+                    <v-flex xs12 v-if="!loadingExams">
                         <v-combobox
                                 prepend-inner-icon="search"
                                 prepend-icon="poll"
@@ -31,28 +31,33 @@
                                 hide-details
                         ></v-combobox>
                     </v-flex>
+                    <v-flex xs12 v-else>
+                        <v-layout column wrap class="align-center">
+                            <span>Carregando exames...</span>
+                            <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
+                        </v-layout>
+                    </v-flex>
                     <v-flex>
                         <v-flex xs12>
-                        <v-btn v-on:click="addToList" :disabled="!addIsValid" color="success">
-                            <v-icon>add</v-icon>
-                            adicionar na lista de exames
-                        </v-btn>
+                            <v-btn v-on:click="addToList" :disabled="!addIsValid" color="success">
+                                <v-icon>add</v-icon>
+                                adicionar na lista de exames
+                            </v-btn>
                         </v-flex>
                         <v-flex>
-                        <v-btn v-on:click="deleteFromList" :disabled="!deleteIsValid" color="error">
-                            <v-icon>delete_forever</v-icon>
-                            Limpar lista de exames
-                        </v-btn>
+                            <v-btn v-on:click="deleteFromList" :disabled="!deleteIsValid" color="error">
+                                <v-icon>delete_forever</v-icon>
+                                Limpar lista de exames
+                            </v-btn>
                         </v-flex>
                     </v-flex>
                     <v-flex xs12>
-                    <strong>EXAMES SELECIONADOS:</strong>
+                        <strong>EXAMES SELECIONADOS:</strong>
                     </v-flex>
                     <v-flex>
                         <v-select
                                 :items="exams"
                                 item-text="name"
-                                item-value="name"
                                 return-object
                                 multiple
                                 v-model="exams"
@@ -62,14 +67,15 @@
                             <template v-slot:selection="data">
                                 <v-chip
                                         :key="JSON.stringify(data.item)"
-                                        :selected="data.selected"
+                                        :input-value="data.selected"
                                         :disabled="data.disabled"
                                         class="v-chip--select-multi"
                                         @click.stop="data.parent.selectedIndex = data.index"
                                         @input="data.parent.selectItem(data.item)"
                                         text-color="white"
                                         color="info"
-                                >{{ data.item.name }}</v-chip>
+                                >{{ data.item.name }}
+                                </v-chip>
                             </template>
                         </v-select>
                     </v-flex>
@@ -137,6 +143,7 @@
             obs: null,
             exams: [],
             newExam: null,
+            loadingExams: false
         }),
         computed: {
             formIsValid() {
@@ -145,38 +152,55 @@
             addIsValid() {
                 return this.newExam
             },
-            deleteIsValid(){
+            deleteIsValid() {
                 return this.exams.length > 0
             },
             selectedClinic() {
                 return this.$store.getters.selectedClinic;
             },
-            listExam () {
+            listExam() {
                 return this.$store.getters.exams;
             },
         },
 
         mounted() {
-            this.$store.dispatch('loadExam');
+            this.loadExams()
+            window.addEventListener('keydown', this.handleEnter)
+        },
+        beforeDestroy() {
+            window.removeEventListener('keydown', this.handleEnter)
         },
 
-        methods:{
-            addToList () {
+        methods: {
+            async loadExams() {
+                this.loadingExams = true
+                await this.$store.dispatch('loadExam');
+                this.loadingExams = false
+            },
+            handleEnter(e) {
+                if (e.key === 'Enter') {
+                    this.addToList()
+                }
+            },
+            addToList() {
+                if (this.exams.indexOf(this.newExam) > -1) {
+                    return
+                }
                 this.exams.push(this.newExam);
                 this.newExam = null;
             },
-            deleteFromList () {
-                this.exams= [];
+            deleteFromList() {
+                this.exams = [];
             },
 
-            save(){
-                for (let i in this.exams){
+            save() {
+                for (let i in this.exams) {
                     let examData = {
                         clinic: this.selectedClinic,
                         exam: this.exams[i].name,
-                        cost:this.cost,
-                        sale:this.sale,
-                        obs:this.obs,
+                        cost: this.cost,
+                        sale: this.sale,
+                        obs: this.obs,
                     };
                     this.$store.dispatch('addExamToClinic', examData);
                 }
@@ -184,10 +208,10 @@
                 this.clear()
             },
 
-            clear () {
+            clear() {
                 this.cost = null;
-                this.sale =  null;
-                this.obs =  null;
+                this.sale = null;
+                this.obs = null;
                 this.exams = [];
                 this.$store.dispatch('selectClinic', null);
             },

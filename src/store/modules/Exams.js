@@ -20,31 +20,32 @@ const mutations = {
 const actions = {
     async loadExam({commit}) {
         try {
-            let examsSnap = await firebase.firestore().collection('exams').get();
-            let exams = [];
-            examsSnap.forEach(function (document) {
+            await firebase.firestore().collection('exams').onSnapshot((examsSnap) => {
+                let exams = [];
+                examsSnap.forEach(function (document) {
 
-                let clinics = [];
-                firebase.firestore().collection('exams/' + document.data().name + '/clinics').get().then((data) => {
-                    data.forEach((doc) => {
-                        clinics.push({
-                            clinic: doc.data().clinic,
-                            cost: doc.data().cost,
-                            price: doc.data().price,
+                    let clinics = [];
+                    firebase.firestore().collection('exams/' + document.data().name + '/clinics').get().then((data) => {
+                        data.forEach((doc) => {
+                            clinics.push({
+                                clinic: doc.data().clinic,
+                                cost: doc.data().cost,
+                                price: doc.data().price,
+                            });
                         });
                     });
-                });
 
-                exams.push({
-                    name: document.data().name,
-                    rules: document.data().rules,
-                    clinics: clinics,
-                });
+                    exams.push({
+                        name: document.data().name,
+                        rules: document.data().rules,
+                        clinics: clinics,
+                    });
 
-            });
-            //console.log(exams);
-            commit('setExams', exams);
-            return exams
+                });
+                //console.log(exams);
+                commit('setExams', exams);
+                return exams
+            })
         } catch (e) {
             throw e
         }
