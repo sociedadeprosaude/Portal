@@ -169,8 +169,11 @@
                                                 <v-card-text>Este exame será excluído permanentemente.</v-card-text>
                                                 <v-card-actions>
                                                     <v-spacer></v-spacer>
-                                                    <v-btn color="error" text @click="alertDelete = false, deleteExam()">EXCLUIR</v-btn>
-                                                    <v-btn color="primary" text @click="alertDelete = false">CANCELAR</v-btn>
+                                                    <v-btn color="error" text
+                                                           @click="alertDelete = false, deleteExam()">EXCLUIR
+                                                    </v-btn>
+                                                    <v-btn color="primary" text @click="alertDelete = false">CANCELAR
+                                                    </v-btn>
                                                 </v-card-actions>
                                             </v-card>
                                         </v-dialog>
@@ -186,12 +189,10 @@
                 <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
             </v-flex>
             <v-flex xs2 v-for="exam in exams" :key="exam.name" class="mt-4">
-                <v-card class="ma-3 white" >
-                    <v-layout row wrap >
+                <v-card class="ma-3 pa-3 white" @click="editExam(exam)" ripple>
+                    <v-layout row wrap>
                         <v-flex xs12>
-                            <v-btn class="my-sub-headline" text rounded @click="editExam(exam)">
-                                {{exam.name}}
-                            </v-btn>
+                            <span class="font-weight-bold">{{exam.name}}</span>
                         </v-flex>
                     </v-layout>
                 </v-card>
@@ -350,14 +351,14 @@
                 this.$router.back()
             },
 
-            editExam (exam) {
+            editExam(exam) {
                 this.editedExam = Object.assign({}, exam);
                 this.registerExam = true;
                 this.searchExam = false;
                 this.registed = true;
             },
 
-            async deleteExam () {
+            async deleteExam() {
                 this.loading = true
                 await this.$store.dispatch('deleteExam', this.editedExam.name)
                 this.loading = false
