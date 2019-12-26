@@ -153,32 +153,10 @@
                                         </v-layout>
                                     </v-card-text>
                                     <v-card-actions>
-                                        <v-dialog v-model="loader" hide-overlay persistent width="300">
-                                            <v-card color="primary" dark>
-                                                <v-card-text class="py-5">
-                                                    Salvando...
-                                                    <v-progress-linear indeterminate color="white"
-                                                                       class="mb-0"></v-progress-linear>
-                                                </v-card-text>
-                                            </v-card>
-                                        </v-dialog>
                                         <v-spacer></v-spacer>
                                         <submit-button :loading="loading" :success="success" text="Cadastrar Exame"
                                                        :disabled="!formRegister" @click="validateRegister()"
                                                        class="ma-3"></submit-button>
-                                        <v-dialog v-model="successRegister" hide-overlay max-width="500px">
-                                            <v-card color="white">
-                                                <v-card-title class="text-xs-center ma-1">
-                                                    <h4>Exame cadastrado com sucesso!
-                                                        <v-icon right>how_to_reg</v-icon>
-                                                    </h4>
-                                                </v-card-title>
-                                                <v-card-actions>
-                                                    <v-spacer></v-spacer>
-                                                    <v-btn color="primary" text @click="endRegister()">Finalizar</v-btn>
-                                                </v-card-actions>
-                                            </v-card>
-                                        </v-dialog>
                                     </v-card-actions>
                                 </v-form>
                             </v-card>
@@ -218,7 +196,7 @@
             success: false,
             searchText: undefined,
             searchExam: true, registerExam: false, searchData: null,
-            validRegister: true, editData: false, parameter: 'name', success: false,
+            validRegister: true, editData: false, parameter: 'name',
 
             editedExam: {
                 id: '', name: '', rules: '', type: '',
@@ -252,19 +230,6 @@
             selectedExam() {
                 return this.$store.getters.selectedExam;
             },
-            loader() {
-                return this.$store.getters.statusLoaderEX
-            },
-            successRegister: {
-                get() {
-                    this.success = this.$store.getters.onSuccessRegisterEX
-                    return this.success
-                },
-                set(val) {
-                    this.success = val
-                }
-
-            }
 
         },
 
@@ -281,7 +246,11 @@
         methods: {
             handleEnter(e) {
                 if (e.key === 'Enter') {
-                    this.searchExams(this.searchText)
+                    if (this.registerExam) {
+                        this.validateRegister()
+                    } else {
+                        this.searchExams(this.searchText)
+                    }
                 }
             },
             async searchExams(searchText) {
