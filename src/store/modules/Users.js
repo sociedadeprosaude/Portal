@@ -30,7 +30,7 @@ const actions = {
     let usersRef = firestore().collection('users')
     for (let field in searchFields) {
       if (!searchFields[field] || searchFields[field].length === 0) continue;
-      usersRef = usersRef.where(field, field === 'name' ? '>=' : '==', searchFields[field].toUpperCase())
+      usersRef = usersRef.where(field, field === 'name' ? '>=' : '==', searchFields[field].toLowerCase())
     }
     let querySnapshot = await usersRef.limit(20).get()
     let users = [];

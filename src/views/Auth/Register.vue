@@ -138,7 +138,7 @@
                         cpf: this.cpf.replace(/\./g, '').replace('-', ''),
                         telephones: [this.telephone],
                         type: 'COLABORATOR',
-                        group: 'admin'
+                        // group: 'colaborador'
                     })
                     this.registered = true
                 } catch (e) {
