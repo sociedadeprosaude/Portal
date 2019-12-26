@@ -185,10 +185,10 @@
                 <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
             </v-flex>
             <v-flex xs2 v-for="exam in exams" :key="exam.name" class="mt-4">
-                <v-card class="ma-3 transparent" >
+                <v-card class="ma-3 white" >
                     <v-layout row wrap >
                         <v-flex xs12>
-                            <v-btn class="my-sub-headline" rounded @click="editExam(exam)">
+                            <v-btn class="my-sub-headline" text rounded @click="editExam(exam)">
                                 {{exam.name}}
                             </v-btn>
                         </v-flex>
@@ -309,11 +309,12 @@
                     id: '',
                     name: this.capitalize(this.editedExam.name),
                     rules: this.editedExam.rules,
-                    type: this.editedExam.type.name,
+                    type: this.editedExam.type ? this.editedExam.type.name : undefined,
                 };
                 await this.$store.dispatch('addExam', examData);
                 this.success = true;
                 this.loading = false
+                this.searchExams()
                 setTimeout(() => {
                     this.editedExam = {
                         id: '', name: '', rules: '', type: '',
@@ -355,7 +356,6 @@
             },
 
             deleteExam () {
-
 
             },
 
