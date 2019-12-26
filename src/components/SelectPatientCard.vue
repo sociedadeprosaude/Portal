@@ -63,7 +63,7 @@
                                         label="Numero do Associado"></v-text-field>
                             </v-flex>
                             <v-flex xs12 class="text-right">
-                                <submit-button @reset="success = false" @click="searchPatient()" :loading="loading"
+                                <submit-button @click="searchPatient()" :loading="loading" :success="success"
                                                text="Buscar"></submit-button>
                             </v-flex>
                             <v-divider></v-divider>
@@ -231,7 +231,7 @@
                                 </v-layout>
                             </v-flex>
                             <v-flex xs12 class="text-right">
-                                <submit-button @reset="success = false" @click="registerPatient()" :loading="loading"
+                                <submit-button :success="success" @click="registerPatient()" :loading="loading"
                                                text="Salvar"></submit-button>
                             </v-flex>
                         </v-layout>
@@ -337,7 +337,7 @@
                 address.uf = resp.uf
                 address.loading = false
             },
-            registerPatient() {
+            async registerPatient() {
                 if (!this.validateFiedls()) {
                     return
                 }
@@ -353,7 +353,7 @@
                     addresses: this.addresses,
                     type: 'PATIENT'
                 }
-                this.$store.dispatch('addUser', patient)
+                await this.$store.dispatch('addUser', patient)
                 this.success = true
                 this.loading = false
             },
