@@ -63,6 +63,8 @@
                                         label="Numero do Associado"></v-text-field>
                             </v-flex>
                             <v-flex xs12 class="text-right">
+                                <submit-button class="mx-3" @click="searchPatientOldDatabase()" :loading="loading" :success="success"
+                                               text="Buscar antigo db"></submit-button>
                                 <submit-button @click="searchPatient()" :loading="loading" :success="success"
                                                text="Buscar"></submit-button>
                             </v-flex>
@@ -84,6 +86,9 @@
                                         </v-flex>
                                     </v-layout>
                                 </v-card>
+                            </v-flex>
+                            <v-flex xs12 v-if="foundUsers && foundUsers.length === 0">
+                                <span class="my-sub-headline">Nenhum associado encontrado</span>
                             </v-flex>
                         </v-layout>
                     </v-card>
@@ -296,8 +301,8 @@
                     cep: '##.###-###',
                 },
                 states: ['AC', 'AL', 'AM'],
-                cities: {'AC': [], 'AL': [], 'AM': ['Iranduba', 'Manaus', 'Parintins']},
-                foundUsers: [],
+                cities: {'AC': [], 'AL': [], 'AM': ['Iranduba', 'Manaus', 'Parintins', 'AUTAZES']},
+                foundUsers: undefined,
                 success: false,
             }
         },
@@ -385,6 +390,43 @@
                     type: 'patient'
                 })
                 this.foundUsers = users
+                this.loading = false
+            },
+            fillFormOldUser(oldUser) {
+                this.name = oldUser.nome
+                this.numAss = parseInt(oldUser.codigo)
+                this.birthDate = moment(oldUser.nasc).format('DD-MM-YYYY')
+                this.sex = oldUser.sexo === 'M' ? 'Masculino' : 'Feminino'
+                this.telephones = []
+                if (oldUser.telefone.length > 0) {
+                    this.telephones.push(oldUser.telefone)
+                }
+                if (oldUser['telefone02'].length > 0) {
+                    this.telephones.push(oldUser['telefone02'])
+                }
+                if (oldUser['telefone03'].length > 0) {
+                    this.telephones.push(oldUser['telefone03'])
+                }
+                if (oldUser['telefone04'].length > 0) {
+                    this.telephones.push(oldUser['telefone04'])
+                }
+                if (this.telephones.length === 0) {
+                    this.telephones = ['']
+                }
+                let address = {}
+                address.street = oldUser.rua
+                address.complement = oldUser.complemento
+                address.city = oldUser.cid
+                address.uf = oldUser.uf
+                address.cep = oldUser.cep
+                address.number = oldUser.endenume
+                this.addresses.push(address)
+            },
+            async searchPatientOldDatabase() {
+                this.loading = true
+                let oldUser = await this.$store.dispatch('searchUserFromOldDatabase', this.numAss)
+                this.addPatient = true
+                this.fillFormOldUser(oldUser)
                 this.loading = false
             },
             handleEnter(e) {
