@@ -190,7 +190,7 @@
                 <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
             </v-flex>
             <v-flex xs2 v-for="exam in exams" :key="exam.name" class="mt-4">
-                <v-card>
+                <v-card class="ma-3">
                     <v-layout row wrap>
                         <v-flex xs12>
                             <span class="my-sub-headline">
@@ -271,6 +271,7 @@
         mounted() {
             this.$store.dispatch('getSpecialties')
             window.addEventListener('keydown', this.handleEnter)
+            this.searchExams()
         },
         beforeDestroy() {
             window.removeEventListener('keydown', this.handleEnter)
@@ -280,18 +281,14 @@
         methods: {
             handleEnter(e) {
                 if (e.key === 'Enter') {
-                    this.searchExams()
+                    this.searchExams(this.searchText)
                 }
             },
-            async searchExams() {
+            async searchExams(searchText) {
                 this.loading = true
-                if (this.searchText && this.searchText.length > 0) {
-                    this.loading = true;
-                    const data = this.capitalize(this.searchText);
-                    this.exams = await this.$store.dispatch('searchExam', data)
-                    this.loading = false
-                    return
-                }
+                this.loading = true;
+                const data = searchText ? this.capitalize(searchText) : undefined
+                this.exams = await this.$store.dispatch('searchExam', data)
                 this.loading = false
             },
 

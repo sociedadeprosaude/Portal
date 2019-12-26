@@ -51,13 +51,17 @@ const actions = {
         }
     },
     async searchExam(context, search) {
-
-      let examsSnap = await firebase.firestore().collection('exams').where('name', '>=', search).get()
-      let exams  = [];
-      examsSnap.forEach((doc) => {
-          exams.push(doc.data())
-      });
-      return exams
+        let examsSnap
+        if (!search) {
+            examsSnap = await firebase.firestore().collection('exams').limit(30).get()
+        } else {
+            examsSnap = await firebase.firestore().collection('exams').where('name', '>=', search).limit(30).get()
+        }
+        let exams = [];
+        examsSnap.forEach((doc) => {
+            exams.push(doc.data())
+        });
+        return exams
     },
     async addExam({commit}, exam) {
         try {
