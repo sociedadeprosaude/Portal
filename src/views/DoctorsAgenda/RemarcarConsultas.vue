@@ -150,7 +150,7 @@
                                                             class="mt-1"
                                                             color="primary_dark"
                                                             text-color="white"
-                                                    >Clinica : {{consulta.clinic}}
+                                                    >Clinica : {{consulta.clinic.name}}
                                                     </v-chip>
                                                 </v-layout>
                                             </v-flex>
@@ -690,7 +690,7 @@
                 await this.$store.dispatch('getDoctors')
                 await this.$store.dispatch('getConsultations',{
                     start_date: moment().format('YYYY-MM-DD 00:00:00'),
-                    final_date: moment().format('YYYY-MM-DD 23:59:59')
+                    final_date: moment().add(10, 'days').format('YYYY-MM-DD 23:59:59')
                 })
                 await this.$store.dispatch("getSpecialties")
 
