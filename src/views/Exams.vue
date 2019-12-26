@@ -156,7 +156,24 @@
                                         <v-spacer></v-spacer>
                                         <submit-button :loading="loading" :success="success" text="Cadastrar Exame"
                                                        :disabled="!formRegister" @click="validateRegister()"
-                                                       class="ma-3"></submit-button>
+                                                       class="ma-3">
+                                        </submit-button>
+                                        <v-btn color="error" fab small v-if="registed"
+                                               @click="alertDelete = true">
+                                            <v-icon>delete</v-icon>
+                                        </v-btn>
+                                        <v-dialog v-model="alertDelete" persistent max-width="350">
+                                            <v-card>
+                                                <v-card-title><strong>Deseja excluir este exame?</strong></v-card-title>
+                                                <v-card-text>Este exame será excluído permanentemente.</v-card-text>
+                                                <v-card-actions>
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn color="error" text @click="alertDelete = false, deleteExam()">EXCLUIR</v-btn>
+                                                    <v-btn color="primary" text @click="alertDelete = false">CANCELAR</v-btn>
+                                                </v-card-actions>
+                                            </v-card>
+                                        </v-dialog>
+
                                     </v-card-actions>
                                 </v-form>
                             </v-card>
@@ -168,12 +185,12 @@
                 <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
             </v-flex>
             <v-flex xs2 v-for="exam in exams" :key="exam.name" class="mt-4">
-                <v-card class="ma-3">
-                    <v-layout row wrap>
+                <v-card class="ma-3 transparent" >
+                    <v-layout row wrap >
                         <v-flex xs12>
-                            <span class="my-sub-headline">
+                            <v-btn class="my-sub-headline" rounded @click="editExam(exam)">
                                 {{exam.name}}
-                            </span>
+                            </v-btn>
                         </v-flex>
                     </v-layout>
                 </v-card>
@@ -196,7 +213,9 @@
             success: false,
             searchText: undefined,
             searchExam: true, registerExam: false, searchData: null,
-            validRegister: true, editData: false, parameter: 'name',
+            validRegister: true, editData: false, parameter: 'name', registed: false,
+
+            alertDelete: false,
 
             editedExam: {
                 id: '', name: '', rules: '', type: '',
@@ -254,10 +273,10 @@
                 }
             },
             async searchExams(searchText) {
-                this.loading = true
                 this.loading = true;
-                const data = searchText ? this.capitalize(searchText) : undefined
-                this.exams = await this.$store.dispatch('searchExam', data)
+                this.loading = true;
+                const data = searchText ? this.capitalize(searchText) : undefined;
+                this.exams = await this.$store.dispatch('searchExam', data);
                 this.loading = false
             },
 
@@ -278,7 +297,7 @@
             },
 
             validateRegister() {
-                this.loading = true
+                this.loading = true;
                 this.registerProduct()
                 /* this.registerProduct();
                 this.loader = true
@@ -293,7 +312,7 @@
                     type: this.editedExam.type.name,
                 };
                 await this.$store.dispatch('addExam', examData);
-                this.success = true
+                this.success = true;
                 this.loading = false
             },
 
@@ -309,6 +328,7 @@
                     this.searchExam = true;
                     this.searchData = null;
                     this.editData = false;
+                    this.registed = false;
 
                 }
             },
@@ -320,6 +340,18 @@
 
             back() {
                 this.$router.back()
+            },
+
+            editExam (exam) {
+                this.editedExam = Object.assign({}, exam);
+                this.registerExam = true;
+                this.searchExam = false;
+                this.registed = true;
+            },
+
+            deleteExam () {
+
+
             },
 
         },

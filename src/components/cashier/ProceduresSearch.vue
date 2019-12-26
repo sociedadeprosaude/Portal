@@ -174,13 +174,13 @@
                     case 'appointment':
                         delete holder.doctors;
                         holder.doctor = selection;
-                        holder.doctor.clinic = clinic
+                        holder.doctor.clinic = clinic;
                         holder.cost = selection.cost;
                         holder.price = selection.price;
                         break;
                     case 'exam':
                         delete holder.clinics;
-                        holder.clinic = selection
+                        holder.clinic = selection;
                         holder.cost = selection.cost;
                         holder.price = selection.price;
                         break;

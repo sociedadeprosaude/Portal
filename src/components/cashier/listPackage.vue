@@ -13,7 +13,7 @@
                                         <v-card v-for="(item) in editedPackage.exams" class="ma-2" :key="item.name">
                                             <v-card-title class="py-2">
                                                 <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
-                                                <v-spacer></v-spacer>
+                                                <v-spacer> </v-spacer>
                                                 <span class="subtitle-1 font-weight-light">
                                                     <v-btn small icon @click="removeExam(item)">
                                                         <v-icon>cancel</v-icon>
@@ -30,7 +30,7 @@
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
-                            <v-spacer></v-spacer>
+                            <v-spacer> </v-spacer>
                             <v-layout row wrap class="mt-2">
                                 <v-flex xs5>
                                     <v-text-field
@@ -38,78 +38,77 @@
                                             label="Custo R$"
                                             v-model="cost"
                                             prefix="R$"
-                                            readonly
-                                    ></v-text-field>
+                                            readonly>
+                                    </v-text-field>
                                 </v-flex>
-                                <v-spacer></v-spacer>
+                                <v-spacer> </v-spacer>
                                 <v-flex xs5>
-                                                        <v-text-field
-                                                                outlined
-                                                                label="Venda R$"
-                                                                v-model="price"
-                                                                prefix="R$"
-                                                                readonly
-                                                        ></v-text-field>
-                                                    </v-flex>
-                                                    <v-flex>
-                                                        <v-layout wrap>
-                                                            <v-flex xs5>
-                                                                <v-text-field
-                                                                        label="Desconto: %"
-                                                                        v-model="percentageDiscount"
-                                                                        clearable
-                                                                ></v-text-field>
-                                                            </v-flex>
-                                                            <v-spacer></v-spacer>
-                                                            <v-flex xs5>
-                                                                <v-text-field
-                                                                        disabled
-                                                                        label="Desconto: R$ "
-                                                                        v-model="moneyDiscount"
-                                                                ></v-text-field>
-                                                            </v-flex>
-                                                        </v-layout>
-                                                    </v-flex>
-                                                    <v-flex xs12 class="my-4">
-                                                        <v-layout row wrap>
-                                                            <v-flex xs12>
-                                                                <v-divider></v-divider>
-                                                            </v-flex>
-                                                            <v-flex xs12>
-                                                                <h6 class="title font-weight-bold"> Total:
-                                                                    {{this.total | moneyFilter}}</h6>
-                                                            </v-flex>
-                                                            <v-flex xs12>
-                                                                <v-divider></v-divider>
-                                                            </v-flex>
-                                                        </v-layout>
-                                                    </v-flex>
-                                                    <v-spacer></v-spacer>
-
-                                                    <v-flex xs12>
-                                                        <v-layout row wrap class="align-end fill-height">
-                                                            <v-flex xs12 class="text-center mt-4">
-                                                                <v-btn outlined color="primary" :disabled="!formRegister" @click="validateRegister()">
-                                                                    Salvar Pacote</v-btn>
-                                                                <v-btn color="error" fab small class="ml-5" :disabled="!selectedPackage"
-                                                                       @click="deleteBundle = true">
-                                                                    <v-icon>delete</v-icon>
-                                                                </v-btn>
-                                                                <v-dialog v-model="deleteBundle" persistent max-width="350">
-                                                                    <v-card>
-                                                                        <v-card-title><strong>Deseja excluir este pacote?</strong></v-card-title>
-                                                                        <v-card-text>Este pacote será excluído permanentemente.</v-card-text>
-                                                                        <v-card-actions>
-                                                                            <v-spacer></v-spacer>
-                                                                            <v-btn color="error" text @click="deleteBundle = false, deletePackage()">EXCLUIR</v-btn>
-                                                                            <v-btn color="primary" text @click="deleteBundle = false">CANCELAR</v-btn>
-                                                                        </v-card-actions>
-                                                                    </v-card>
-                                                                </v-dialog>
-                                                            </v-flex>
-                                                        </v-layout>
-                                                    </v-flex>
-                                                </v-layout>
+                                    <v-text-field
+                                            outlined
+                                            label="Venda R$"
+                                            v-model="price"
+                                            prefix="R$"
+                                            readonly>
+                                    </v-text-field>
+                                </v-flex>
+                                <v-flex>
+                                    <v-layout wrap>
+                                        <v-flex xs5>
+                                            <v-text-field
+                                                    label="Desconto: %"
+                                                    v-model="percentageDiscount"
+                                                    clearable>
+                                            </v-text-field>
+                                        </v-flex>
+                                        <v-spacer> </v-spacer>
+                                        <v-flex xs5>
+                                            <v-text-field
+                                                    disabled
+                                                    label="Desconto: R$ "
+                                                    v-model="moneyDiscount">
+                                            </v-text-field>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                                <v-flex xs12 class="my-4">
+                                    <v-layout row wrap>
+                                        <v-flex xs12>
+                                            <v-divider> </v-divider>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <h6 class="title font-weight-bold"> Total:
+                                                {{this.total | moneyFilter}}</h6>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <v-divider> </v-divider>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                                <v-spacer> </v-spacer>
+                                <v-flex xs12>
+                                    <v-layout row wrap class="align-end fill-height">
+                                        <v-flex xs12 class="text-center mt-4">
+                                            <v-btn outlined color="primary" :disabled="!formRegister" @click="validateRegister()">
+                                                Salvar Pacote</v-btn>
+                                            <v-btn color="error" fab small class="ml-5" :disabled="!selectedPackage"
+                                                   @click="deleteBundle = true">
+                                                <v-icon>delete</v-icon>
+                                            </v-btn>
+                                            <v-dialog v-model="deleteBundle" persistent max-width="350">
+                                                <v-card>
+                                                    <v-card-title><strong>Deseja excluir este pacote?</strong></v-card-title>
+                                                    <v-card-text>Este pacote será excluído permanentemente.</v-card-text>
+                                                    <v-card-actions>
+                                                        <v-spacer> </v-spacer>
+                                                        <v-btn color="error" text @click="deleteBundle = false, deletePackage()">EXCLUIR</v-btn>
+                                                        <v-btn color="primary" text @click="deleteBundle = false">CANCELAR</v-btn>
+                                                    </v-card-actions>
+                                                </v-card>
+                                            </v-dialog>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                            </v-layout>
                         </v-layout>
                     </v-container>
                 </v-card>
@@ -143,11 +142,17 @@
         computed: {
 
             selectedPackage () {
-                console.log('lista para carregar', this.$store.getters.selectedBundle);
+                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                 this.editedPackage = this.$store.getters.selectedBundle;
 
-                if (this.editedPackage.percentageDiscount) {
+                if (!this.editedPackage.percentageDiscount) {
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                    this.percentageDiscount = 0;
+
+                } else {
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.percentageDiscount = this.editedPackage.percentageDiscount;
+
                 }
                 return this.$store.getters.selectedBundle;
             },
@@ -205,7 +210,10 @@
         watch: {
 
             percentageDiscount: function () {
-                this.moneyDiscount = ((this.percentageDiscount * this.price) / 100);
+                if (this.percentageDiscount)  {
+                    this.moneyDiscount = ((this.percentageDiscount * this.price) / 100);
+                }
+
             },
 
             load : function () {
