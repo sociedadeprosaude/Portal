@@ -18,6 +18,7 @@ const mutations = {
 };
 
 const actions = {
+
     async loadExam({commit}) {
         try {
             await firebase.firestore().collection('exams').onSnapshot((examsSnap) => {
@@ -122,12 +123,13 @@ const actions = {
                 let clinSnap = await firebase.firestore().collection('exams/' + examsSnap.docs[doc].data().name + '/clinics').get()
                 clinSnap.forEach((document) => {
                     clinics.push(document.data())
-                })
+                });
                 exams.push({
                     ...examsSnap.docs[doc].data(),
                     clinics: clinics,
                 });
             }
+            console.log(exams);
             commit('setExamsSelected', exams);
         } catch (e) {
             throw e

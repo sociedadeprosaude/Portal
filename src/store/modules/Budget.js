@@ -10,7 +10,7 @@ const actions = {
     async addBudget(context, payload) {
         let copyPayload = Object.assign({}, payload)
         functions.removeUndefineds(copyPayload)
-        
+
         // return
         let specialties = copyPayload.specialties ? Object.assign({}, copyPayload.specialties) : undefined
         let exams = copyPayload.exams ? Object.assign({}, copyPayload.exams) : undefined
@@ -22,7 +22,7 @@ const actions = {
 
         functions.removeUndefineds(specialties)
         functions.removeUndefineds(exams)
-        await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).set({...copyPayload})
+        await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).set({ ...copyPayload })
         if (specialties) {
             let spec = await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).collection('specialties').get()
             spec.forEach((s) => {
@@ -81,7 +81,7 @@ const actions = {
         functions.removeUndefineds(specialties)
         functions.removeUndefineds(exams)
 
-        
+
 
         let userRef = firebase.firestore().collection('users').doc(user.cpf)
         await userRef.collection('budgets').doc(copyPayload.id.toString()).set(copyPayload)
@@ -135,6 +135,8 @@ const actions = {
                     delete specialties[spec].doctor.rules
                 }
                 await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).collection('specialties').doc(specialties[spec].name).set(specialties[spec])
+
+
             }
         }
         if (exams) {
@@ -185,12 +187,13 @@ const actions = {
 
             for (let spec in specialties) {
                 var used = false
+                var consultationFound = undefined //variável usada para a tabela de procedimentos
                 let consultations = await userRef.collection('consultations').where('specialty.name', '==', specialties[spec].name).where('status', '==', 'Aguardando pagamento')
                     .get()
 
                 consultations.forEach((c) => {
-                    //console.log('kj')
                     used = true
+                    consultationFound = c
                     userRef.collection('consultations').doc(c.id).update({
                         status: 'Pago',
                         payment_number: copyPayload.id.toString()
@@ -201,11 +204,39 @@ const actions = {
                     })
                 })
 
-                //console.log('pagando')
                 await userRef.collection('intakes').doc(copyPayload.id.toString()).collection('specialties').add({
                     ...specialties[spec],
                     used: used
                 })
+
+                if (used) {
+                    let procedures = await firebase.firestore().collection('procedures').where('consultation', '==', consultationFound.id)
+                        .get()
+
+                    if (!procedures.empty) {
+                        console.log("Atualizando procedure")
+                        procedures.forEach((snap) => {
+                            let data = snap.data()
+                            firebase.firestore().collection('procedures').doc(snap.id).update(
+                                { 
+                                    status: data.status.push('Pago'),
+                                    payment_number: copyPayload.id.toString() 
+                                }
+                            )
+                        })
+                    }
+                }else{
+                    console.log("Criando procedure")
+                    firebase.firestore().collection('procedures').add(
+                        {
+                            status:['Pago'],
+                            payment_number:copyPayload.id.toString(),
+                            startAt: moment().format('YYYY-MM-DD hh:ss'),
+                            type:'Consultation',
+                            user:user.cpf
+                        }
+                    )
+                }
             }
         }
         if (exams) {

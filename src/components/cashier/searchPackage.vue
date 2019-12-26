@@ -6,7 +6,7 @@
                     <v-flex xs12 class="text-right pa-2" v-if="searchPackage">
                         <v-layout row wrap >
                             <v-combobox v-model="searchData" :items="listPackage" item-text="name"
-                                        :clearable="true" :loading="isLoading" :search-input.sync="search"
+                                        :clearable="true" :loading="isLoading" :search-input.sync="searchBundle"
                                         filled  full-width
                                         @click:clear = "clearSearch" outlined class="mr-2 ml-2"
                                         :disabled="!searchPackage">
@@ -14,7 +14,7 @@
                                     <v-list-item>
                                         <v-list-item-content>
                                             <v-list-item-title>
-                                                Sem resultado para "<strong> {{ search }} </strong>"
+                                                Sem resultado para "<strong> {{ searchBundle }} </strong>"
                                             </v-list-item-title>
                                         </v-list-item-content>
                                     </v-list-item>
@@ -39,7 +39,7 @@
                                                   primary solo :clearable="true">
                                     </v-text-field>
                                 </v-flex>
-                                <v-spacer></v-spacer>
+                                <v-spacer> </v-spacer>
                                 <v-radio-group row class="ma-1">
                                     <v-btn outlined text rounded
                                            :color="categorySelect === 'exam' ? 'accent' : 'primary_light'"
@@ -55,18 +55,19 @@
                                            @click="selectCategory('clinic')">Clinicas
                                     </v-btn>
                                 </v-radio-group>
-                                <v-spacer></v-spacer>
+                                <v-spacer> </v-spacer>
                                 <v-btn color="primary" small fab
                                        @click="registerPackage= !registerPackage, searchPackage= !searchPackage, clearSearch()">
                                     <v-icon >close</v-icon>
                                 </v-btn>
 
-                                <v-text-field v-model="search" required solo primary :clearable="true"
-                                              placeholder="Exames / Clinicas" item-value="nome"
-                                ></v-text-field>
+                                <v-text-field v-model="search" required solo primary clearable
+                                              id="search"
+                                              placeholder="Exames / Clinicas"
+                                > </v-text-field>
                             </v-layout>
                             <v-card-text>
-                                <v-flex v-for="(item, index) in items" :key="index" >
+                                <v-flex v-for="item in items" :key="item.id" >
                                     <v-card class="mt-1">
                                         <v-card-title class="justify-center">
                                             <h3 class="primary--text">{{item.name}}</h3>
@@ -80,9 +81,9 @@
                                                            active-class="blue white--text"
                                                            depressed
                                                            rounded
-                                                           @click="addExam(n.clinic, item.name, categorySelect, n.price, n.cost)"
+                                                           @click="addExam(n.name, item.name, categorySelect, n.price, n.cost)"
                                                     >
-                                                        {{ n.clinic }} | {{ n.price }}
+                                                        {{ n.name }} | {{ n.price }}
                                                     </v-btn>
                                                 </v-slide-item>
                                             </v-slide-group>
@@ -113,9 +114,7 @@
                                                            active-class="blue white--text"
                                                            depressed
                                                            rounded
-
-
-                                                           @click="addExam(n.clinic, item.name, categorySelect, n.price, n.cost)"
+                                                           @click="addExam(n.name, item.name, categorySelect, n.price, n.cost)"
                                                     >
                                                         {{ n.name}} | {{n.price}}
                                                     </v-btn>
@@ -164,7 +163,8 @@
                 searchData: null,
                 isLoading: false,
 
-                search: null,
+                searchBundle: null,
+                search: '',
                 validRegister: true,
                 categorySelect: 'exam',
 
@@ -206,7 +206,7 @@
                 return this.$store.getters.examsSelected;
             },
 
-            clinic () {
+            clinics () {
                 return this.$store.getters.clinics;
             },
 
@@ -239,9 +239,26 @@
 
         mounted () {
             this.$store.dispatch('loadBundle');
-            //this.$store.dispatch('loadExam').then(() => {});
-            //this.$store.dispatch('loadSpecialties');
-            this.$store.dispatch('loadClinics');
+            let self = this;
+            window.addEventListener('keyup', function (e) {
+                if (e.target.id === 'search') {
+                    clearTimeout(self.typingTimer);
+                    self.typingTimer = setTimeout(() => {
+                        if (self.categorySelect === 'exam') {
+                            self.$store.dispatch("loadSelectedExams", self.search).then(() => {
+                            });
+                        }
+                        if (self.categorySelect === 'clinic') {
+                            self.$store.dispatch("loadClinics");
+                        }
+                    }, 1000);
+                }
+            });
+            window.addEventListener('keydown', function (e) {
+                if (e.target.id === 'search') {
+                    clearTimeout(self.typingTimer)
+                }
+            })
         },
 
         watch: {
@@ -270,6 +287,29 @@
 
             categorySelect: function () {
                 this.search = ''
+            },
+
+            search () {
+                let self = this;
+                window.addEventListener('keyup', function (e) {
+                    if (e.target.id === 'search') {
+                        clearTimeout(self.typingTimer);
+                        self.typingTimer = setTimeout(() => {
+                            if (self.categorySelect === 'exam') {
+                                self.$store.dispatch("loadSelectedExams", self.search).then(() => {
+                                });
+                            }
+                            if (self.categorySelect === 'clinic') {
+                                self.$store.dispatch("loadClinics");
+                            }
+                        }, 1000);
+                    }
+                });
+                window.addEventListener('keydown', function (e) {
+                    if (e.target.id === 'search') {
+                        clearTimeout(self.typingTimer)
+                    }
+                })
             }
         },
 
@@ -277,6 +317,8 @@
 
             selectCategory(category) {
                 this.categorySelect = category
+                console.log(this.categorySelect);
+                console.log('items', this.items);
             },
 
             clearSearch () {
@@ -345,6 +387,8 @@
                 if (this.action === false){
                     this.editedPackage.exams.push({...this.item})
                 }
+
+                console.log(this.editedPackage.exams);
 
                 this.costAndPrice();
                 this.action = false;

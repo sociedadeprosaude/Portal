@@ -16,8 +16,8 @@ const mutations = {
     addShoppingCartItem(state, payload) {
         for (let item in state.items) {
             if (state.items[item].name === payload.name) {
-                state.items[item] = payload
-                Vue.set(state.items, item, payload)
+                state.items[item] = payload;
+                Vue.set(state.items, item, payload);
                 return
             }
         }
