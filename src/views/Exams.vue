@@ -54,7 +54,7 @@
                                         <v-icon>close</v-icon>
                                     </v-btn>
                                     <v-btn v-else style="justify-content: center" text icon color="blue lighten-2"
-                                           @click="registerExam = !registerExam, searchExam = !searchExam">
+                                           @click="registerExam = !registerExam, searchExam = !searchExam, registed = false">
                                         <v-icon v-if="searchExam">add</v-icon>
                                     </v-btn>
                                 </v-flex>
@@ -159,6 +159,7 @@
                                                        class="ma-3">
                                         </submit-button>
                                         <v-btn color="error" fab small v-if="registed"
+                                               :disabled="loading"
                                                @click="alertDelete = true">
                                             <v-icon>delete</v-icon>
                                         </v-btn>
@@ -312,13 +313,14 @@
                     type: this.editedExam.type ? this.editedExam.type.name : undefined,
                 };
                 await this.$store.dispatch('addExam', examData);
-                this.success = true;
+                this.success = true
                 this.loading = false
                 this.searchExams()
                 setTimeout(() => {
                     this.editedExam = {
                         id: '', name: '', rules: '', type: '',
                     }
+                    this.success = false
                 }, 1000)
             },
 
@@ -355,8 +357,15 @@
                 this.registed = true;
             },
 
-            deleteExam () {
-
+            async deleteExam () {
+                this.loading = true
+                await this.$store.dispatch('deleteExam', this.editedExam.name)
+                this.loading = false
+                this.editedExam = {
+                    id: '', name: '', rules: '', type: '',
+                }
+                this.registed = false
+                this.searchExams()
             },
 
         },

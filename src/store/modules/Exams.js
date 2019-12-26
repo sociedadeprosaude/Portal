@@ -134,6 +134,14 @@ const actions = {
         } catch (e) {
             throw e
         }
+    },
+    async deleteExam(context, examKey) {
+        let examClinicsCol = await firebase.firestore().collection('exams').doc(examKey).collection('clinics').get()
+        for(let doc in examClinicsCol.docs) {
+            firebase.firestore().collection('clinics').doc(examClinicsCol.docs[doc].name).collection('exams').doc(examKey).delete()
+        }
+        firebase.firestore().collection('exams').doc(examKey).delete()
+        return
     }
 };
 
