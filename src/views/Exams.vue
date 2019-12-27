@@ -309,7 +309,7 @@
             async registerProduct() {
                 const examData = {
                     id: '',
-                    name: this.capitalize(this.editedExam.name),
+                    name: this.capitalize(this.editedExam.name).replace(/\//g, "-"),
                     rules: this.editedExam.rules,
                     type: this.editedExam.type ? this.editedExam.type.name : undefined,
                 };

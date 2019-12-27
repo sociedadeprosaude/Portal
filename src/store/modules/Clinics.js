@@ -111,6 +111,14 @@ const actions = {
             name: payload.specialtie,
         };
 
+        let details = {
+            id: payload.specialtie,
+            name: payload.specialtie,
+            cost: payload.cost,
+            price: payload.price,
+            payment_method: payload.payment,
+        };
+
         firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie
             + '/doctors').doc(payload.cpf).set(data);
 
@@ -118,7 +126,7 @@ const actions = {
             .set(info);
 
         firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie)
-            .set(data);
+            .set(details);
 
         firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).collection('clinics/').doc(payload.clinic.name)
             .set(payload.clinic);
