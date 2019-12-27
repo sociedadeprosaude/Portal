@@ -1,5 +1,6 @@
 import axios from 'axios'
 import firebase, {firestore} from "firebase";
+import moment from 'moment'
 
 const state = {
     selectedPatient: undefined
@@ -42,7 +43,7 @@ const actions = {
         console.log('user', users)
         return users
     },
-    async addUser({commit}, patient) {
+    async addUser({getters}, patient) {
         try {
             for (let data in patient) {
                 if (!patient[data]) {
@@ -52,6 +53,8 @@ const actions = {
             if (patient.type) {
                 patient.type = patient.type.toUpperCase()
             }
+            patient.created_at = moment().format('YYYY-MM-DD HH:mm:ss')
+            patient.association_number = getters.associated.quantity
             let user = await firebase.firestore().collection('users').doc(patient.cpf).set(patient)
             return user
         } catch (e) {

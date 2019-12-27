@@ -63,8 +63,11 @@
                                         label="Numero do Associado"></v-text-field>
                             </v-flex>
                             <v-flex xs12 class="text-right">
+                                <span v-if="searchError">
+                                    {{searchError}}
+                                </span>
                                 <submit-button class="mx-3" @click="searchPatientOldDatabase()" :loading="loading" :success="success"
-                                               text="Buscar antigo db"></submit-button>
+                                               text="Buscar antigo sistema"></submit-button>
                                 <submit-button @click="searchPatient()" :loading="loading" :success="success"
                                                text="Buscar"></submit-button>
                             </v-flex>
@@ -293,6 +296,7 @@
                 addresses: [],
                 loading: false,
                 formError: undefined,
+                searchError: undefined,
                 mask: {
                     maskRG: '#######-#',
                     cpf: '###.###.###-##',
@@ -379,7 +383,7 @@
                     this.numAss= undefined
                 }
                 this.$store.commit('setSelectedPatient', user)
-                this.foundUsers = []
+                this.foundUsers = undefined
             },
             async searchPatient() {
                 this.loading = true
@@ -425,8 +429,11 @@
             async searchPatientOldDatabase() {
                 this.loading = true
                 let oldUser = await this.$store.dispatch('searchUserFromOldDatabase', this.numAss)
-                this.addPatient = true
-                this.fillFormOldUser(oldUser)
+                if(oldUser) {
+                    this.addPatient = true
+                    this.fillFormOldUser(oldUser)
+                }
+                this.searchError = 'Nenhum associado encontrado'
                 this.loading = false
             },
             handleEnter(e) {

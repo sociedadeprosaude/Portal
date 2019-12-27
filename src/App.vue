@@ -15,6 +15,9 @@
         components: {
             AgendaToolbar
         },
+        mounted() {
+            this.$store.dispatch('listenToOperationalValues')
+        }
     }
 </script>
 <style>
