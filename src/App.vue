@@ -16,7 +16,7 @@
             AgendaToolbar
         },
         mounted() {
-            this.$store.dispatch('listenToOperationalValues')
+            // this.$store.dispatch('listenToOperationalValues')
         }
     }
 </script>
