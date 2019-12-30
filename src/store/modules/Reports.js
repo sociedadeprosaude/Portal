@@ -82,6 +82,8 @@ const actions = {
     let totalCusto = 0;
     let totalCredito = 0;
     let totalSaidas = 0;
+    let totalTaxaDebito= 0;
+    let totalTaxaCredito= 0;
     let saidas = {};
     let quantidadeSaidas= 0;
     let relatorio = {};
@@ -120,6 +122,7 @@ const actions = {
         totalCusto += parseFloat(intakes[intake].cost);
       }
       else { //SAIDAS
+        console.log('saida')
         if(!saidas[intakes[intake].categoria]){
           saidas[intakes[intake].categoria] = {
             quantidade: 0,
@@ -136,15 +139,35 @@ const actions = {
       }
 
       //console.log('custo: ',totalCusto)
+      console.log('metodo de pagamento: ',intakes[intake].payment_method)
       if (intakes[intake].payment_method === 'Dinheiro') {
+        console.log('pago em dinheiro')
         totalCaixa += intakes[intake].total
         totalBruto += intakes[intake].total
       }
-      if (intakes[intake].payment_method === 'Debito') {
+      if (intakes[intake].payment_method === 'Débito') {
+        console.log('pago em debito', intakes[intake])
+        totalTaxaDebito += ((intakes[intake].total * 0.0299)/100)
         totalDebido += intakes[intake].total
         totalBruto += intakes[intake].total
       }
-      if (intakes[intake].payment_method === 'Credito') {
+      if (intakes[intake].payment_method === 'Crédito') {
+        console.log('pago em credito', intakes[intake])
+        if(intakes[intake].parcel === 1){
+          totalTaxaCredito += ((intakes[intake].total * 0.026)/100)
+        }
+      else if(intakes[intake].parcel === 2){
+          totalTaxaCredito += (((intakes[intake].total * 0.026)/100) + ((intakes[intake].total * 0.0191)/100))
+        }
+      else if(intakes[intake].parcel === 3){
+          totalTaxaCredito += (((intakes[intake].total * 0.026)/100) + ((intakes[intake].total * 0.0254)/100))
+        }
+      else if(intakes[intake].parcel === 4){
+          totalTaxaCredito += (((intakes[intake].total * 0.026)/100) + ((intakes[intake].total * 0.0317)/100))
+        }
+      else if(intakes[intake].parcel === 5){
+          totalTaxaCredito += (((intakes[intake].total * 0.026)/100) + ((intakes[intake].total * 0.0378)/100))
+        }
         totalCredito += intakes[intake].total
         totalBruto += intakes[intake].total
       }
@@ -155,10 +178,10 @@ const actions = {
     //console.log(specialties);
     //console.log(totalSaidas)
     //console.log('total custo',totalCusto)
-    //console.log(totalCredito)
-    //console.log(totalDebido)
-    //console.log(totalCaixa)
-    //console.log(totalBruto)
+    console.log('total credito: ',totalCredito)
+    console.log('total debito: ',totalDebido)
+    console.log('total caixa:',totalCaixa)
+    console.log(totalBruto)
 
 
     relatorio = {
@@ -172,8 +195,10 @@ const actions = {
       quantidadeSaidas: quantidadeSaidas,
       totalCusto: totalCusto,
       totalSaidas: totalSaidas,
+      totalTaxaCredito: totalTaxaCredito.toFixed(5),
+      totalTaxaDebito: totalTaxaDebito.toFixed(5)
     };
-    //console.log('relatorio: ', relatorio);
+    console.log('relatorio: ', relatorio);
     context.commit('setRelatorio',relatorio)
     return relatorio
   }
