@@ -81,6 +81,7 @@ const actions = {
     },
 
     async removeClinicFromExam({commit}, payload) {//apagar exames da clinica e clinica do exames
+        delete payload.clinic.id
         try {
             firebase.firestore().collection('exams/' + payload.product + '/clinics').doc(payload.clinic.name).delete();
         } catch (e) {
@@ -93,6 +94,7 @@ const actions = {
             name: payload.exam,
             cost: payload.cost,
             price: payload.sale,
+            rules: payload.rules,
             obs: payload.obs,
             // clinic: payload.clinic.name,
             // telephone: payload.clinic.telephone,
@@ -109,6 +111,7 @@ const actions = {
             ...payload.clinic,
             cost: payload.cost,
             price: payload.sale,
+            rules: payload.rules,
             obs: payload.obs,
         });
     },

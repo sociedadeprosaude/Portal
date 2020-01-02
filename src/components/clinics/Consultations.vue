@@ -177,7 +177,7 @@
                         obs: this.obs,
                         payment: this.payment,
                     };
-                    console.log(data)
+                    //console.log(data)
                     this.$store.dispatch('addAppointment', data);
                 }
                 this.clear()

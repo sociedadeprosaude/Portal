@@ -102,7 +102,7 @@
                                 hide-details
                         ></v-currency-field>
                     </v-flex>
-<!--                    <v-flex xs12>
+                    <v-flex xs12>
                         <v-textarea
                                 outlined
                                 v-model="obs"
@@ -114,7 +114,7 @@
                                 single-line
                                 hide-details
                         ></v-textarea>
-                    </v-flex>-->
+                    </v-flex>
                 </v-layout>
             </v-container>
         </v-card-text>
@@ -140,6 +140,7 @@
         data: () => ({
             cost: null,
             sale: null,
+            rules: null,
             obs: null,
             exams: [],
             newExam: null,
@@ -198,7 +199,8 @@
                     let examData = {
                         clinic: this.selectedClinic,
                         exam: this.exams[i].name,
-                        obs: this.exams[i].rules,
+                        rules: this.exams[i].rules,
+                        obs: this.obs,
                         cost: this.cost,
                         sale: this.sale,
                     };
