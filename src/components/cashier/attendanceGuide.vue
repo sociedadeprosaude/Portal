@@ -28,7 +28,7 @@
                                         <span v-if="item.clinic.address.complement">Complemento: {{item.clinic.address.complement}}</span>
                                         <span>{{item.clinic.address.city}} - {{item.clinic.address.state}}</span>
                                         <br/>
-                                        <span class="font-weight-bold">Contato.: {{item.clinic.telephone[0]}}</span>
+                                        <span class="font-weight-bold">Contato.: <v-icon>call</v-icon> {{item.clinic.telephone[0]}}</span>
                                         <br/>
                                         <span class="font-weight-bold">Dias e Horarios de Funcionamento:</span>
                                         <span><v-icon>event</v-icon> Segunda-Feira: {{item.clinic.agenda[0]}} <v-icon>alarm</v-icon></span>
