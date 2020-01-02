@@ -299,6 +299,68 @@
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
+                                <v-flex xs12>
+                                    <v-layout row wrap>
+                                        <v-flex xs12>
+                                            <v-divider></v-divider>
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs3>
+                                            Taxa Crédito
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs3>
+                                            Taxa Débito
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs2>
+                                            Dinheiro - Taxas
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <v-divider></v-divider>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <v-layout row wrap>
+                                        <v-flex xs12>
+                                            <v-divider></v-divider>
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs3>
+                                            {{parseFloat(report.totalTaxaCredito) | moneyFilter}}
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs3>
+                                            {{parseFloat(report.totalTaxaDebito) | moneyFilter}}
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs2>
+                                            {{(((report.dinheiro)- parseFloat(report.totalTaxaDebito)) - parseFloat(report.totalTaxaCredito) )| moneyFilter}}
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <v-divider></v-divider>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
                             </v-layout>
                         </v-flex>
                     </v-layout>
@@ -317,7 +379,8 @@
         },
         data() {
             return {
-                now: moment().format('YYYY-MM-DD HH:mm:ss')
+                now: moment().format('YYYY-MM-DD HH:mm:ss'),
+                total: 0,
             }
         },
         computed: {
