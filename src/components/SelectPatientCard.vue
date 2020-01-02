@@ -155,6 +155,7 @@
                                         outlined
                                         rounded
                                         filled
+                                        disabled
                                         v-model="numAss"
                                         label="Nun. Associado"></v-text-field>
                             </v-flex>

@@ -28,14 +28,14 @@
                                 <v-layout column wrap>
                                     <span class="font-weight-bold white--text"
                                           style="font-size: 0.6em">Associado desde</span>
-                                    <span class="font-weight-bold white--text" style="font-size: 1.2em">05/19</span>
+                                    <span class="font-weight-bold white--text" style="font-size: 1.2em">{{actualDate}}</span>
                                 </v-layout>
                             </v-flex>
                             <v-flex xs4 class="text-left">
                                 <v-layout column wrap>
                                     <span class="font-weight-bold white--text"
                                           style="font-size: 0.6em">Válido até</span>
-                                    <span class="font-weight-bold white--text" style="font-size: 1.2em">05/21</span>
+                                    <span class="font-weight-bold white--text" style="font-size: 1.2em">{{validDate}}</span>
                                 </v-layout>
                             </v-flex>
                             <v-flex xs4 class="text-left">
@@ -127,6 +127,12 @@
     export default {
         name: "PatientCard",
         props: ['user'],
+        data() {
+            return {
+                actualDate: moment().format('MM/YY'),
+                validDate: moment().add(1, 'year').format('MM/YY')
+            }
+        },
         methods: {
             print() {
                 window.print()
