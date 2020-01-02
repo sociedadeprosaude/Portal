@@ -4,7 +4,8 @@
             <v-flex class="white elevation-6" v-for="(item, i) in this.guide" :key="i">
                 {{item.clinic.name}}
                 <p>{{item.name}}</p>
-                <strong>obs:{{item.rules}}</strong>
+                <strong>regras: {{item.rules}}</strong><br/>
+                <strong>observações: {{item.clinic.obs}}</strong>
 '            </v-flex>
             <v-flex class="red">
                 {{this.guide}}
