@@ -157,6 +157,12 @@
                                 permission: 'Colaboradores',
                                 to: '/labor',
                                 icon: 'supervisor_account'
+                            },
+                            {
+                                title: 'Unidades',
+                                permission: 'Colaboradores',
+                                to: '/units',
+                                icon: 'storefront'
                             }
                         ]
                     }

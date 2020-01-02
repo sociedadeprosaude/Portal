@@ -4,6 +4,7 @@ const state = {
     clinics: [],
     allClinics: [],
     selectedClinic: null,
+    units: []
 };
 
 const mutations = {
@@ -15,6 +16,9 @@ const mutations = {
     },
     setSelectedClinic (state, payload){
         state.selectedClinic = payload;
+    },
+    setUnits (state, payload) {
+        state.units = payload
     }
 };
 
@@ -22,32 +26,33 @@ const actions = {
 
     async getClinics({commit}) {
         try {
-            let clinicsSnap = await firebase.firestore().collection('clinics').get();
-            let clinics = [];
-            clinicsSnap.forEach(function (document) {
-                clinics.push({
-                    id: document.id,
-                    ...document.data()
-                });
-            });
-
-            let exams = [];
-            for (let clinic in clinics){
-                let examsSnap = await firebase.firestore().collection('clinics').doc(clinics[clinic].name)
-                    .collection('exams').get();
-
-                examsSnap.forEach(function (doc) {
-                    exams.push({
-                        id: doc.id,
-                        ...doc.data(),
+            firebase.firestore().collection('clinics').onSnapshot(async function (clinicsSnap) {
+                let clinics = [];
+                clinicsSnap.forEach(function (document) {
+                    clinics.push({
+                        id: document.id,
+                        ...document.data()
                     });
                 });
-            }
 
-            //console.log('#exams', exams);
-            commit('setClinics', clinics);
-            //console.log(clinics);
-            return clinics
+                let exams = [];
+                for (let clinic in clinics){
+                    let examsSnap = await firebase.firestore().collection('clinics').doc(clinics[clinic].name)
+                        .collection('exams').get();
+
+                    examsSnap.forEach(function (doc) {
+                        exams.push({
+                            id: doc.id,
+                            ...doc.data(),
+                        });
+                    });
+                }
+
+                //console.log('#exams', exams);
+                commit('setClinics', clinics);
+                //console.log(clinics);
+            })
+
         } catch (e) {
             throw e
         }
@@ -196,7 +201,7 @@ const actions = {
     loadClinics ({commit}) {
         return new Promise((resolve, reject) => {
             let clinics = [];
-            firebase.firestore().collection('clinics').get().then((doc) => {
+            firebase.firestore().collection('clinics').onSnapshot((doc) => {
 
                 doc.forEach((doc) => {
 
@@ -258,7 +263,6 @@ const actions = {
                     });
                 });
 
-                console.log(clinics);
                 commit('setClinics', clinics);
 
                 if (doc) {
@@ -269,6 +273,22 @@ const actions = {
             })
         })
     },
+    async getProSaudeUnits(context) {
+        firebase.firestore().collection('clinics').where('property', '==', 'true').onSnapshot(clinCollection => {
+            let pros = []
+            clinCollection.forEach(doc => {
+                pros.push(doc.data())
+            })
+            context.commit('setUnits', pros)
+        })
+    },
+    async setClinProperty(context, clin) {
+        if (clin.property) {
+            firebase.firestore().collection('clinics').doc(clin.name).update({property: firebase.firestore.FieldValue.delete()})
+            return
+        }
+        firebase.firestore().collection('clinics').doc(clin.name).update({property: true})
+    }
 };
 
 const getters = {
@@ -282,6 +302,9 @@ const getters = {
 
     selectedClinic (state){
         return state.selectedClinic;
+    },
+    units(state) {
+        return state.units
     }
 };
 
