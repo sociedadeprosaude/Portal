@@ -102,7 +102,7 @@
                                 hide-details
                         ></v-currency-field>
                     </v-flex>
-                    <v-flex xs12>
+<!--                    <v-flex xs12>
                         <v-textarea
                                 outlined
                                 v-model="obs"
@@ -114,7 +114,7 @@
                                 single-line
                                 hide-details
                         ></v-textarea>
-                    </v-flex>
+                    </v-flex>-->
                 </v-layout>
             </v-container>
         </v-card-text>
@@ -198,13 +198,12 @@
                     let examData = {
                         clinic: this.selectedClinic,
                         exam: this.exams[i].name,
+                        obs: this.exams[i].rules,
                         cost: this.cost,
                         sale: this.sale,
-                        obs: this.obs,
                     };
                     this.$store.dispatch('addExamToClinic', examData);
                 }
-
                 this.clear()
             },
 
