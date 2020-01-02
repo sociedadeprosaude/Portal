@@ -201,7 +201,7 @@
                     clearTimeout(self.typingTimer);
                     self.typingTimer = setTimeout(() => {
                         if (self.categorySelect === 'exam') {
-                            self.$store.dispatch("loadSelectedExams", self.search).then(() => {
+                            self.$store.dispatch("loadSelectedExams", self.search.toUpperCase()).then(() => {
                             });
                         }
                         if (self.categorySelect === 'package') {
