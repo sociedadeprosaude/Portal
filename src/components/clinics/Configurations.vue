@@ -113,7 +113,7 @@
                                             @input="data.parent.selectItem(data.item)"
                                             text-color="white"
                                             color="info"
-                                    >{{ data.item}}</v-chip>
+                                    >{{ data.item.name }} | R$  {{ data.item.cost }} | R$ {{ data.item.price }}</v-chip>
                                 </template>
                             </v-combobox>
                         </v-flex>
