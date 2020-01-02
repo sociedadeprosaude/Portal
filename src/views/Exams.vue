@@ -319,7 +319,7 @@
                 this.searchExams()
                 setTimeout(() => {
                     this.editedExam = {
-                        id: '', name: '', rules: '', type: this.editedExam.type ? this.editedExam.type.name : undefined,
+                        id: '', name: '', rules: '', type: this.editedExam.type ? this.editedExam.type : '',
                     }
                     this.success = false
                 }, 1000)
