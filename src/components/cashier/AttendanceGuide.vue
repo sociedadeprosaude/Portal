@@ -2,18 +2,18 @@
     <v-container v-if="guide" fluid class="fill-height ma-0 pa-0">
         <v-layout row wrap>
 
-            <v-flex xs12 class="text-right white">
-                <v-btn class="transparent" text @click="print()">
-                    <v-icon>print</v-icon>
-                </v-btn>
-            </v-flex>
+<!--            <v-flex xs12 class="text-right white">-->
+<!--                <v-btn class="transparent" text @click="print()">-->
+<!--                    <v-icon>print</v-icon>-->
+<!--                </v-btn>-->
+<!--            </v-flex>-->
 <!--            <v-flex xs6 class="text-left white">
                 <v-btn class="transparent" text @click="$emit('close')">
                     <v-icon>close</v-icon>
                 </v-btn>
             </v-flex>-->
             <v-flex>
-                <v-card flat class="pa-10" id="attendanceGuide-to-print">
+                <v-card flat class="pa-10">
                     <v-layout row wrap class="align-center pa-4" style="border: 2px solid #2196f3; border-radius: 16px">
                         <v-flex xs6 class="text-left">
                             <v-layout column wrap v-for="(item, index) in [items[0]]" :key="index">
@@ -31,12 +31,12 @@
                                         <span class="font-weight-bold">Contato.: <v-icon>call</v-icon> {{item.clinic.telephone[0]}}</span>
                                         <br/>
                                         <span class="font-weight-bold">Dias e Horarios de Funcionamento:</span>
-                                        <span><v-icon>event</v-icon> Segunda-Feira: {{item.clinic.agenda[0]}} <v-icon>alarm</v-icon></span>
-                                        <span><v-icon>event</v-icon> Terça-Feira: {{item.clinic.agenda[1]}} <v-icon>alarm</v-icon></span>
-                                        <span><v-icon>event</v-icon> Quarta-Feira: {{item.clinic.agenda[2]}} <v-icon>alarm</v-icon></span>
-                                        <span><v-icon>event</v-icon> Quinta-Feira: {{item.clinic.agenda[3]}} <v-icon>alarm</v-icon></span>
-                                        <span><v-icon>event</v-icon> Sexta-Feira: {{item.clinic.agenda[4]}} <v-icon>alarm</v-icon></span>
-                                        <span><v-icon>event</v-icon> Sábado: {{item.clinic.agenda[5]}} <v-icon>alarm</v-icon></span>
+                                        <span><v-icon>event</v-icon> Segunda-Feira: {{item.clinic.agenda[0]}}</span>
+                                        <span><v-icon>event</v-icon> Terça-Feira: {{item.clinic.agenda[1]}}</span>
+                                        <span><v-icon>event</v-icon> Quarta-Feira: {{item.clinic.agenda[2]}} </span>
+                                        <span><v-icon>event</v-icon> Quinta-Feira: {{item.clinic.agenda[3]}} </span>
+                                        <span><v-icon>event</v-icon> Sexta-Feira: {{item.clinic.agenda[4]}} </span>
+                                        <span><v-icon>event</v-icon> Sábado: {{item.clinic.agenda[5]}} </span>
                                     </v-layout>
                                 </v-flex>
                             </v-layout>
@@ -64,10 +64,10 @@
                         </v-flex>-->
                         <v-flex xs12 class="mt-12 primary py-1 px-4" style="height: 32px">
                             <v-layout row wrap class="align-center">
-                                <v-flex xs2 class="text-left">
+                                <v-flex xs4 class="text-left">
                                     <span class="white--text font-weight-bold">Descrição</span>
                                 </v-flex>
-                                <v-flex xs6 class="text-left">
+                                <v-flex xs4 class="text-left">
                                     <span class="white--text font-weight-bold">Regras</span>
                                 </v-flex>
                                 <v-flex xs4 class="text-right">
@@ -77,10 +77,10 @@
                         </v-flex>
                         <v-flex xs12 class="mt-2 py-1 px-4">
                             <v-layout row wrap class="align-center" v-for="(item, index) in items" :key="index">
-                                <v-flex xs2 class="text-left">
+                                <v-flex xs4 class="text-left">
                                     <span class="font-weight-bold">{{item.name}}</span>
                                 </v-flex>
-                                <v-flex xs6 class="text-left">
+                                <v-flex xs4 class="text-left">
                                     <span class="font-weight-bold">{{item.rules}}</span>
                                 </v-flex>
                                 <v-flex xs4 class="text-right">

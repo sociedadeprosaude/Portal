@@ -12,7 +12,7 @@
                 </v-btn>
             </v-flex>
             <v-flex>
-                <v-card flat class="pa-10" id="receipt-to-print">
+                <v-card flat class="pa-10 receipt-to-print">
                     <v-layout row wrap class="align-center pa-4" style="border: 2px solid #2196f3; border-radius: 16px">
                         <v-flex xs6 class="text-left">
                             <img src="@/assets/logo-pro-saude.png" height="84px">
@@ -102,7 +102,6 @@
 </template>
 
 <script>
-
     export default {
         name: "BudgetToPrint",
         props: ['budget'],
@@ -116,7 +115,6 @@
                 return this.budget.specialties.concat(this.budget.exams)
             },
         },
-        data: () => ({}),
         methods: {
             print() {
                 window.print()
