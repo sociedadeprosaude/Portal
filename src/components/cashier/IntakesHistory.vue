@@ -93,7 +93,9 @@
         <v-dialog v-model="receiptDialog" v-if="selectedIntake">
             <receipt @close="receiptDialog = false" :budget=selectedIntake></receipt>
             <!--componente de documento da clinica com os exames das mesmas-->
-            <!--<attendance-guide :guide=examsPerClinc></attendance-guide>-->
+            <div v-for="(item,i) in examsPerClinc" :key="i">
+                <attendance-guide :guide=item></attendance-guide>
+            </div>
         </v-dialog>
     </v-container>
 </template>
