@@ -336,7 +336,8 @@
             doctor: undefined,
             cost: undefined,
             price: undefined,
-            obs: undefined,
+            rules: null,
+            obs: null,
             payment: undefined,
             paymentOptions: [
                 { text: 'Consultas', value: 'unit'},
@@ -422,7 +423,7 @@
                     obs: this.obs,
                     payment: this.payment,
                 };
-                console.log("Q?:",data)
+                //console.log("Q?:",data)
                 this.$store.dispatch('addAppointment', data);
                 this.clear()
             },
@@ -432,9 +433,12 @@
                     exam: this.exam.name,
                     cost:this.exam.cost,
                     sale:this.exam.price,
+                    //rules: this.rules,
+                    rules: this.exam.rules,
                     obs:this.exam.obs,
                 };
-                this.$store.dispatch('addExamToClinic', examData);
+                console.log("payload:",examData)
+                //this.$store.dispatch('addExamToClinic', examData);
                 this.clear()
             },
 

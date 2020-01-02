@@ -84,6 +84,7 @@ const actions = {
     },
 
     async removeExamFromClinic({commit}, payload){//apagar exames da clinica e clinica do exames
+        delete payload.clinic.id
         try {
             firebase.firestore().collection('clinics/' + payload.clinic.name + '/exams').doc(payload.product).delete();
         } catch (e) {
@@ -118,7 +119,7 @@ const actions = {
             price: payload.price,
             payment_method: payload.payment,
         };
-
+        delete payload.clinic.id
         firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie
             + '/doctors').doc(payload.cpf).set(data);
 
@@ -176,6 +177,7 @@ const actions = {
 
     deleteAppointment ({commit}, payload) {
         //console.log('payload', payload);
+        delete payload.clinic.id
         firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie + '/doctors').doc(payload.cpf)
             .delete();
 
