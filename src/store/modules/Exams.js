@@ -1,6 +1,4 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import moment from 'moment'
+import functions from "../../utils/functions";
 import firebase from "firebase";
 
 const state = {
@@ -104,6 +102,7 @@ const actions = {
             // agenda: payload.clinic.agenda,
 
         };
+        examData = functions.removeUndefineds(examData)
         delete payload.clinic.id
         firebase.firestore().collection('clinics/' + payload.clinic.name + '/exams').doc(payload.exam).set(examData);
 

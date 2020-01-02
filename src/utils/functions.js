@@ -10,5 +10,6 @@ export default {
                 this.removeUndefineds(object[field])
             }
         }
+        return object
     }
 }
