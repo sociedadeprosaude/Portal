@@ -54,7 +54,9 @@ const actions = {
                 patient.type = patient.type.toUpperCase()
             }
             patient.created_at = moment().format('YYYY-MM-DD HH:mm:ss')
-            patient.association_number = getters.associated.quantity
+            if (patient.type === 'PATIENT') {
+                patient.association_number = getters.associated.quantity
+            }
             let user = await firebase.firestore().collection('users').doc(patient.cpf).set(patient)
             return user
         } catch (e) {
