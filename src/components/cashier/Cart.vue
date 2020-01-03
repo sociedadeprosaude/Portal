@@ -34,8 +34,8 @@
                                     hint="Médico"
                                     item-text="name"
                                     return-object
-                                    :items="doctors"
-                            ></v-combobox>
+                                    :items="doctors">
+                            </v-combobox>
                             </v-flex>
                             <v-flex xs12 v-else class="my-2">
                                 <v-layout column wrap class="align-center">
@@ -62,8 +62,8 @@
                                         >
                                             <v-icon>search</v-icon>
                                         </v-btn>
-                                        <v-progress-circular class="primary--text" indeterminate
-                                                             v-else></v-progress-circular>
+                                        <v-progress-circular class="primary--text" indeterminate v-else>
+                                        </v-progress-circular>
                                     </v-flex>
                                     <v-flex xs12 v-if="searchBudgetError">
                                         <span class="error--text">{{searchBudgetError}}</span>
@@ -205,7 +205,8 @@
                                         <v-flex xs5>
                                             <v-text-field
                                                     disabled
-                                                    label="Desconto: R$ " v-model="moneyDiscount"></v-text-field>
+                                                    label="Desconto: R$ " v-model="moneyDiscount">
+                                            </v-text-field>
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
@@ -308,7 +309,7 @@
                 data: moment().format("YYYY-MM-DD HH:mm:ss"),
                 parcelas: '',
                 totalCusto: 0,
-                percentageDiscount: 0,
+                  percentageDiscount: 0,
                 moneyDiscount: 0,
                 FormasDePagamento: ["Dinheiro", "Crédito", "Débito"],
                 totalNovo: 0,
@@ -374,8 +375,8 @@
         },
         methods: {
             async loadDoctors() {
-                this.loadingDoctors = true
-                await this.$store.dispatch('getDoctors')
+                this.loadingDoctors = true;
+                await this.$store.dispatch('getDoctors');
                 this.loadingDoctors = false
             },
             async searchBudget() {
@@ -449,7 +450,7 @@
                 })
             },
             generateBudget() {
-                let id = this.now
+                let id = this.now;
                 let budget = {
                     id: id,
                     specialties: this.consultas.length > 0 ? this.consultas : undefined,
@@ -465,22 +466,22 @@
                     colaborator: this.$store.getters.user,
                     parcelar: this.parcelar,
                     doctor: this.selectedDoctor
-                }
-                console.log('hey', budget)
+                };
+                console.log('hey', budget);
                 return budget
             },
             async updateBudgetsIntakes() {
                 let user = this.patient;
-                let intakes = await this.$store.dispatch('getUserIntakes', user)
-                let budgets = await this.$store.dispatch('getUserBudgets', user)
-                user.intakes = intakes
-                user.budgets = budgets
+                let intakes = await this.$store.dispatch('getUserIntakes', user);
+                let budgets = await this.$store.dispatch('getUserBudgets', user);
+                user.intakes = intakes;
+                user.budgets = budgets;
                 this.$store.commit('setSelectedPatient', user)
             },
             async saveBudget(budget) {
-                this.$store.commit('setSelectedBudget', budget)
+                this.$store.commit('setSelectedBudget', budget);
                 // this.selectedBudget = Object.assign({}, budget)
-                await this.$store.dispatch('addBudget', budget)
+                await this.$store.dispatch('addBudget', budget);
                 this.updateBudgetsIntakes()
             },
             async pay() {
@@ -510,9 +511,9 @@
                 this.receiptDialog = true
             },
             clearCart() {
-                this.$store.commit('clearShoppingCartItens')
-                this.$store.commit('setSelectedBudget', undefined)
-                let user = undefined
+                this.$store.commit('clearShoppingCartItens');
+                this.$store.commit('setSelectedBudget', undefined);
+                let user = undefined;
                 this.$store.commit('setSelectedPatient', user)
                 // this.selectedBudget = undefined
             }

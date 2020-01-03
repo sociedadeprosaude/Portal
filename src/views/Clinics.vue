@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <v-layout row wrap>
-            <v-flex>
+            <v-flex v-if="!loading">
                 <v-data-table
                         :headers="headers"
                         :search="search"
@@ -302,6 +302,9 @@
                     </template>
                 </v-data-table>
             </v-flex>
+            <v-flex xs12 class="text-center" v-else>
+                <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
+            </v-flex>
         </v-layout>
         <v-overlay :value="loading">
             <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
@@ -446,7 +449,7 @@
         },
 
         mounted() {
-            this.$store.dispatch('getClinics')
+            this.loadClinics()
         },
 
         watch: {
@@ -497,6 +500,12 @@
         },
 
         methods: {
+
+            async loadClinics() {
+              this.loading = true
+              await this.$store.dispatch('getClinics')
+              this.loading = false
+            },
 
             selectClinic(item) {
                 this.editedIndex = this.clinics.indexOf(item);

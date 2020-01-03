@@ -8,20 +8,20 @@
                             <v-flex xs12 class="v-card"
                                     style="overflow:auto; height:50vh; box-shadow: inset 0px 0px 5px grey;">
                                 <v-layout row wrap v-if="editedPackage">
-                                    <v-flex xs12 v-if="editedPackage.exams">
+                                    <v-flex xs12 v-if="exams.length > 0">
                                         <p class="my-headline">Exames</p>
-                                        <v-card v-for="(item) in editedPackage.exams" class="ma-2" :key="item.name">
+                                        <v-card v-for="(item) in exams" class="ma-2" :key="item.name">
                                             <v-card-title class="py-2">
                                                 <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
                                                 <v-spacer> </v-spacer>
                                                 <span class="subtitle-1 font-weight-light">
-                                                    <v-btn small icon @click="removeExam(item)">
+                                                    <v-btn small icon @click="removeItem(item)">
                                                         <v-icon>cancel</v-icon>
                                                     </v-btn>
                                                 </span>
                                             </v-card-title>
                                             <v-card-text class="pt-1 pb-0">
-                                                {{item.clinic}}
+                                                {{item.clinic.name}}
                                                 <p class="text-right">
                                                     R$ {{item.price}}
                                                 </p>
@@ -88,7 +88,7 @@
                                 <v-flex xs12>
                                     <v-layout row wrap class="align-end fill-height">
                                         <v-flex xs12 class="text-center mt-4">
-                                            <v-btn outlined color="primary" :disabled="!formRegister" @click="validateRegister()">
+                                            <v-btn outlined color="primary"  @click="validateRegister()">
                                                 Salvar Pacote</v-btn>
                                             <v-btn color="error" fab small class="ml-5" :disabled="!selectedPackage"
                                                    @click="deleteBundle = true">
@@ -143,26 +143,15 @@
 
             selectedPackage () {
                 // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-                this.editedPackage = this.$store.getters.selectedBundle;
-
-                if (!this.editedPackage.percentageDiscount) {
-                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-                    this.percentageDiscount = 0;
-
-                } else {
-                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-                    this.percentageDiscount = this.editedPackage.percentageDiscount;
-
-                }
                 return this.$store.getters.selectedBundle;
             },
 
-            formRegister () {
-                return this.editedPackage.name && this.price && this.cost;
+            exams () {
+                return this.$store.getters.getItemsPackageByCategory.exams
             },
 
             cost () {
-                let itens = this.selectedPackage.exams;
+                let itens = this.$store.getters.getItemsPackage;
                 let total = 0;
                 for (let item in itens) {
                     total += parseFloat(itens[item].cost)
@@ -177,7 +166,7 @@
 
             price() {
 
-                let itens = this.selectedPackage.exams;
+                let itens = this.$store.getters.getItemsPackage;
                 let total = 0;
                 for (let item in itens) {
                     total += parseFloat(itens[item].price)
@@ -216,58 +205,45 @@
 
             },
 
-            load : function () {
-                if (this.selectedPackage) {
-                    this.load();
-                }
-            },
+
 
         },
 
         methods: {
 
-            load () {
-                this.editedPackage = Object.assign({}, this.selectedPackage);
-                this.cost = parseFloat(this.editedPackage.cost);
-                this.price = parseFloat(this.editedPackage.price);
-                this.percentageDiscount = this.editedPackage.percentageDiscount;
-                this.moneyDiscount = this.editedPackage.moneyDiscount;
-            },
-
             clearSearch () {
 
                 this.$store.dispatch('selectedBundle', null);
-                this.editedPackage= Object.assign({}, this.defaultPackage);
-                this.editedPackage.exams = [];
-                this.cost = 0;
-                this.price = 0;
                 this.percentageDiscount = 0;
                 this.moneyDiscount = 0;
             },
 
             validateRegister () {
 
-                for (let exam in this.editedPackage.exams) {
-                    this.editedPackage.exams[exam].priceDiscount = this.editedPackage.exams[exam].price - this.moneyDiscount
-                }
-
                 const packageData = {
-                    name: this.editedPackage.name.toUpperCase(),
+
+                    exams: this.exams.length > 0 ? this.exams : undefined,
+                    moneyDiscount: this.moneyDiscount,
+                    percentageDiscount: this.percentageDiscount,
                     cost: this.cost,
                     price: this.price,
                     total: (this.price - this.moneyDiscount),
-                    moneyDiscount: this.moneyDiscount,
-                    percentageDiscount: this.percentageDiscount,
-                    exams: this.editedPackage.exams,
+                    name: this.$store.getters.getNameBundle.toUpperCase(),
                     //specialties: this.editedPackage.specialties,
                 };
 
+                for (let exam in this.exams) {
+                    this.exams[exam].priceDiscount = this.exams[exam].price - this.moneyDiscount
+                }
                 this.$store.dispatch('addBundle', packageData).then(() => {
                     this.clearSearch();
                 });
 
             },
 
+            removeItem(item) {
+                this.$store.commit('removeItemsPackage', item)
+            },
             deletePackage () {
                 this.$store.dispatch('deletePackage', this.editedPackage);
                 this.clearSearch();

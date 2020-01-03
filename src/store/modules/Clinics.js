@@ -26,7 +26,7 @@ const actions = {
 
     async getClinics({commit}) {
         try {
-            firebase.firestore().collection('clinics').onSnapshot(async function (clinicsSnap) {
+            await firebase.firestore().collection('clinics').onSnapshot(async function (clinicsSnap) {
                 let clinics = [];
                 clinicsSnap.forEach(function (document) {
                     clinics.push({
@@ -249,6 +249,7 @@ const actions = {
                                 name: doc.data().name,
                                 cost: doc.data().cost,
                                 price: doc.data().price,
+                                rules: doc.data().rules,
                                 obs: doc.data().obs,
                             });
                         });

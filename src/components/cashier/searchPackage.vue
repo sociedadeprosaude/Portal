@@ -34,7 +34,7 @@
                         <v-form v-model="validRegister" lazy-validation>
                             <v-layout row wrap>
                                 <v-flex sm8 >
-                                    <v-text-field required label="nome" v-model="editedPackage.name"
+                                    <v-text-field required label="nome" v-model="nameBundle" @keyup="nameForPackage()"
                                                   prepend-inner-icon="folder" :rules="rules.campoObrigatorio"
                                                   primary solo :clearable="true">
                                     </v-text-field>
@@ -62,7 +62,7 @@
                                 </v-btn>
 
                                 <v-text-field v-model="search" required solo primary clearable
-                                              id="search"
+                                              id="search" :loading="loading"
                                               placeholder="Exames / Clinicas"
                                 > </v-text-field>
                             </v-layout>
@@ -75,13 +75,13 @@
                                         <v-card-text>
                                             <v-slide-group v-if="categorySelect === 'exam'"  show-arrows >
                                                 <v-slide-item
-                                                        v-for="(n,i) in item.clinics" :key="i" v-slot:default="{ active }" >
+                                                        v-for="n in item.clinics" :key="n.name" v-slot:default="{ active }" >
                                                     <v-btn class="mx-2"
                                                            :input-value="active"
                                                            active-class="blue white--text"
                                                            depressed
                                                            rounded
-                                                           @click="addExam(n.name, item.name, categorySelect, n.price, n.cost)"
+                                                           @click="addProduct(item, n, categorySelect)"
                                                     >
                                                         {{ n.name }} | {{ n.price }}
                                                     </v-btn>
@@ -114,7 +114,7 @@
                                                            active-class="blue white--text"
                                                            depressed
                                                            rounded
-                                                           @click="addExam(n.name, item.name, categorySelect, n.price, n.cost)"
+                                                           @click="addProduct(item, n, categorySelect)"
                                                     >
                                                         {{ n.name}} | {{n.price}}
                                                     </v-btn>
@@ -160,24 +160,19 @@
             return {
 
                 searchPackage: true, registerPackage: false,
-                searchData: null,
-                isLoading: false,
+                searchData: null, searchBundle: null,
+                isLoading: undefined, loading: undefined, nameBundle: null,
 
-                searchBundle: null,
                 search: '',
                 validRegister: true,
                 categorySelect: 'exam',
-
-                action: false,
-
-                cost: 0, price: 0, percentageDiscount: 0, moneyDiscount: 0,
 
                 editedPackage: {
                     id: '', name: '', exams: [], specialties: [],
                 },
 
                 defaultPackage: {
-                    id: '', name: '', exams: [], specialties: [], percentageDiscount: 0,
+                    id: '', name: '', exams: [], specialties: [],
                 },
 
                 rules: {
@@ -190,12 +185,9 @@
         },
 
         computed: {
+
             listPackage (){
                 return this.$store.getters.bundles;
-            },
-
-            selectedPackage () {
-                return this.$store.getters.selectedBundle;
             },
 
             formRegister () {
@@ -220,20 +212,6 @@
                         return []
                 }
             },
-
-
-            total() {
-                let subTotal = 0;
-                subTotal = subTotal + this.moneyDiscount;
-                let total = parseFloat(this.price) - parseFloat(subTotal);
-
-                if (total < 0) {
-                    return 0;
-                } else {
-                    return total ;
-                }
-
-            }
 
         },
 
@@ -263,25 +241,28 @@
 
         watch: {
 
-            percentageDiscount: function () {
-                this.moneyDiscount = ((this.percentageDiscount * this.price) / 100);
-            },
-
-            searchData () {
+            async searchData () {
                 if (this.searchData){
                     this.isLoading = true;
                     const data = this.searchData.name.toUpperCase();
 
-                    this.searchPackage = false;
-                    this.registerPackage= true;
+                    let bundle = await this.$store.dispatch('getBundle', data);
 
-                    this.editedPackage = Object.assign({}, this.searchData);
-                    this.editedPackage.name = data;
+                    if (bundle.length === 1) {
+                        this.searchPackage = false;
+                        this.registerPackage= true;
 
-                    this.$store.dispatch('selectedBundle', this.editedPackage);
+                        this.$store.commit('setSelectedBundle', bundle[0]);
+
+
+                        console.log("#bundle, exams", bundle[0].exams);
+                        for (let exam in bundle[0].exams) {
+                            this.$store.commit('addItemsPackage', bundle[0].exams[exam])
+                        }
+                    }
 
                 } else {
-                    this.$store.commit('selectedBundle', this.defaultPackage);
+                    this.$store.commit('setSelectedBundle', this.defaultPackage);
                 }
             },
 
@@ -289,36 +270,16 @@
                 this.search = ''
             },
 
-            search () {
-                let self = this;
-                window.addEventListener('keyup', function (e) {
-                    if (e.target.id === 'search') {
-                        clearTimeout(self.typingTimer);
-                        self.typingTimer = setTimeout(() => {
-                            if (self.categorySelect === 'exam') {
-                                self.$store.dispatch("loadSelectedExams", self.search).then(() => {
-                                });
-                            }
-                            if (self.categorySelect === 'clinic') {
-                                self.$store.dispatch("loadClinics");
-                            }
-                        }, 1000);
-                    }
-                });
-                window.addEventListener('keydown', function (e) {
-                    if (e.target.id === 'search') {
-                        clearTimeout(self.typingTimer)
-                    }
-                })
-            }
         },
 
         methods: {
 
+            nameForPackage () {
+                this.$store.commit('setNameBundle', this.nameBundle)
+            },
+
             selectCategory(category) {
-                this.categorySelect = category
-                console.log(this.categorySelect);
-                console.log('items', this.items);
+                this.categorySelect = category;
             },
 
             clearSearch () {
@@ -330,82 +291,29 @@
                 this.editedPackage= Object.assign({}, this.defaultPackage);
                 this.$store.dispatch('selectedBundle', this.defaultPackage);
                 this.editedPackage.exams = [];
-                this.cost = 0;
-                this.price = 0;
-                this.percentageDiscount = 0;
-                this.moneyDiscount = 0;
-            },
-
-            costAndPrice () {
-                this.price = 0;
-                this.cost = 0;
-                for (let key in this.editedPackage.exams) {
-                    this.price += this.editedPackage.exams[key].price;
-                    this.cost += this.editedPackage.exams[key].cost;
-                }
-                for (let key in this.editedPackage.specialties) {
-                    this.price += this.editedPackage.specialties[key].price;
-                    this.cost += this.editedPackage.specialties[key].cost;
-                }
-
 
             },
 
-            addExam (clinic, product, type, price, cost) {
-                this.item = {
-                    name: product,
-                    clinic: clinic,
-                    type: type,
-                    price:  parseFloat(price),
-                    cost:parseFloat(cost)
-                };
-
-                if (this.editedPackage.exams){
-                    for (let key in this.editedPackage.exams) {
-
-                        if (this.item.name === this.editedPackage.exams[key].name &&
-                            this.item.clinic === this.editedPackage.exams[key].clinic){
-
-                            this.action = true;
-                            this.editedPackage.exams.splice(key, 1);
-                        }
-
-                        if (this.item.name === this.editedPackage.exams[key].name &&
-                            this.item.clinic !== this.editedPackage.exams[key].clinic ){
-
-                            this.action = true;
-                            this.editedPackage.exams[key].name= this.item.name;
-                            this.editedPackage.exams[key].clinic = this.item.clinic;
-                            this.editedPackage.exams[key].price = this.item.price;
-                            this.editedPackage.exams[key].cost = this.item.cost;
-                            this.action = true;
-
-                        }
-                    }
+            async selectBundle (bundle) {
+                this.loading = true;
+                this.$store.commit('setSelectedBundle', bundle);
+                for (let exam in bundle.exams) {
+                    //console.log('exams', budget.exams[exam])
+                    this.$store.commit('addItemsPackage', bundle.exams[exam])
                 }
-
-                if (this.action === false){
-                    this.editedPackage.exams.push({...this.item})
-                }
-
-                console.log(this.editedPackage.exams);
-
-                this.costAndPrice();
-                this.action = false;
+                this.loading = false
             },
 
-            removeExam (exam) {
+            addProduct(product, selection, type) {
 
-                this.price -= exam.price;
-                this.cost -= exam.cost;
+                let holder = Object.assign({}, product);
 
-                for (let i in this.editedPackage.exams) {
-                    if (this.editedPackage.exams[i].name === exam.name
-                        && this.editedPackage.exams[i].clinic === exam.clinic){
+                delete holder.clinics;
+                holder.clinic = selection;
+                holder.cost = selection.cost;
+                holder.price = selection.price;
 
-                        this.editedPackage.exams.splice(i,1);
-                    }
-                }
+                this.$store.commit('addItemsPackage', holder);
             },
 
             newPackage() {

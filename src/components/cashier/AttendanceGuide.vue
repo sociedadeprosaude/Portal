@@ -1,22 +1,11 @@
 <template>
     <v-container v-if="guide" fluid class="fill-height ma-0 pa-0">
         <v-layout row wrap>
-
-            <!--            <v-flex xs12 class="text-right white">-->
-            <!--                <v-btn class="transparent" text @click="print()">-->
-            <!--                    <v-icon>print</v-icon>-->
-            <!--                </v-btn>-->
-            <!--            </v-flex>-->
-            <!--            <v-flex xs6 class="text-left white">
-                            <v-btn class="transparent" text @click="$emit('close')">
-                                <v-icon>close</v-icon>
-                            </v-btn>
-                        </v-flex>-->
             <v-flex>
                 <v-card flat class="pa-10">
                     <v-layout row wrap class="align-center pa-4" style="border: 2px solid #2196f3; border-radius: 16px">
                         <v-flex xs12 class="text-center">
-                            <img src="@/assets/logo-pro-saude.png" height="84px" class="ml-0 px-0 mr-0 pa-0">
+                            <img src="@/assets/logo-pro-saude.png" height="50px" class="ml-0 px-0 mr-0 pa-0">
                         </v-flex>
                         <v-flex xs6 class="text-left">
                         <v-layout column wrap v-for="(item, index) in [items[0]]" :key="index">
@@ -62,44 +51,32 @@
                                 <span class="font-weight-bold">{{patient.birth_date | dateFilter}}</span>
                             </v-layout>
                         </v-flex>
-                        <v-flex xs12 class="mt-12 primary py-1 px-4" style="height: 32px">
-                            <v-layout row wrap class="align-center">
-                                <v-flex xs4 class="text-left">
-                                    <span class="white--text font-weight-bold">Descrição</span>
-                                </v-flex>
-                                <v-flex xs4 class="text-left">
-                                    <span class="white--text font-weight-bold">Regras</span>
-                                </v-flex>
-                                <v-flex xs4 class="text-right">
-                                    <span class="white--text font-weight-bold">Observações</span>
-                                </v-flex>
-                            </v-layout>
+
+                        <v-flex class="white" style="color: white">.</v-flex>
+
+                        <v-flex xs12 class="mx-0 my-0">
+                            <template>
+                                <v-simple-table dense class="elevation-3 mx-0 my-0">
+                                    <template v-slot:default>
+                                        <thead>
+                                        <tr>
+                                            <th class="primary text-left white--text">EXAME</th>
+                                            <th class="primary text-left white--text">REGRAS</th>
+                                            <th class="primary text-left white--text">OBSERVAÇÃO</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="(item, index) in items" :key="index">
+                                            <td class="primary--text" style="text-align: justify">{{ item.name }}</td>
+                                            <td class="primary--text" style="text-align: justify">{{ item.rules }}</td>
+                                            <td class="primary--text" style="text-align: justify">{{ item.clinic.obs }}</td>
+                                        </tr>
+                                        </tbody>
+                                    </template>
+                                </v-simple-table>
+                            </template>
                         </v-flex>
-                        <v-flex xs12 class="mt-2 py-1 px-4">
-                            <v-layout row wrap class="align-center" v-for="(item, index) in items" :key="index">
-                                <v-flex xs4 class="text-left">
-                                    <span class="font-weight-bold">{{item.name}}</span>
-                                </v-flex>
-                                <v-flex xs4 class="text-left">
-                                    <span class="font-weight-bold">{{item.rules}}</span>
-                                </v-flex>
-                                <v-flex xs4 class="text-right">
-                                    <span class="font-weight-bold">{{item.clinic.obs}}</span>
-                                </v-flex>
-                            </v-layout>
-                        </v-flex>
-                        <!--                        <v-flex xs12 class="text-right mt-4 mr-4" v-if="budget.discount > 0">
-                                                    <span class="primary&#45;&#45;text font-weight-bold pr-6" style="font-size: 1.2em">SubTotal </span>
-                                                    <span class="font-weight-bold">{{budget.subTotal.toLocaleString('en-us', {minimumFractionDigits: 2, maximumFractionDigits: 2})}}</span>
-                                                </v-flex>
-                                                <v-flex xs12 class="text-right mr-4" v-if="budget.discount > 0">
-                                                    <span class="primary&#45;&#45;text font-weight-bold pr-6" style="font-size: 1.2em">Desconto </span>
-                                                    <span class="font-weight-bold">{{budget.discount.toLocaleString('en-us', {minimumFractionDigits: 2, maximumFractionDigits: 2})}}</span>
-                                                </v-flex>
-                                                <v-flex xs12 class="text-right mr-4 mt-2">
-                                                    <span class="primary&#45;&#45;text font-weight-bold pr-6" style="font-size: 1.2em">Total </span>
-                                                    <span class="font-weight-bold">{{this.budget.total.toLocaleString('en-us', {minimumFractionDigits: 2, maximumFractionDigits: 2})}}</span>
-                                                </v-flex>-->
+
                         <v-flex xs6 class="text-left mt-12">
                             <v-layout column wrap class="primary--text">
                                 <span class="font-weight-bold">Instituto Pró Saúde do Amazonas</span>
@@ -108,6 +85,9 @@
                                 <span>CNPJ: 09.066.632/0001-22</span>
                             </v-layout>
                         </v-flex>
+<!--                        <v-flex xs1 class="text-center mt-12">
+                            <img src="@/assets/logo-pro-saude.png" height="50px">
+                        </v-flex>-->
                         <v-flex xs6 class="primary" style="height: 2px; margin-top: 124px;"></v-flex>
                     </v-layout>
                 </v-card>

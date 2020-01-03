@@ -83,9 +83,46 @@
                             </v-layout>
                         </v-flex>
                         <v-flex xs12>
-                            <span class="my-headline">Exames</span>
+                            <v-layout row wrap class="mt-2">
+                                <v-flex xs12>
+                                    <v-divider></v-divider>
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs2>
+                                    Total
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs1>
+                                    {{proceduresQuantity}}
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs2>
+                                    {{report.totalCustoEspecialts | moneyFilter}}
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs2>
+                                    {{report.totalGanhoEspecialts | moneyFilter}}
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <v-divider></v-divider>
+                                </v-flex>
+                            </v-layout>
                         </v-flex>
-                        <v-flex xs12 v-for="(exam, label) in report.exams" :key="label" class="my-1">
+                        <v-flex xs12>
+                            <span class="my-headline">Clínicas</span>
+                        </v-flex>
+                        <v-flex xs12 v-for="(clinics, label) in report.clinics" :key="label" class="my-1">
                             <v-layout row wrap>
                                 <v-flex xs12>
                                     <v-divider></v-divider>
@@ -100,19 +137,19 @@
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs1>
-                                    {{exam.quantidade}}
+                                    {{clinics.quantidade}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs2>
-                                    {{exam.cost | moneyFilter}}
+                                    {{clinics.cost | moneyFilter}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs2>
-                                    {{exam.price | moneyFilter}}
+                                    {{clinics.price | moneyFilter}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -137,19 +174,19 @@
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs1>
-                                    {{proceduresQuantity}}
+                                    {{examsQuantity}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs2>
-                                    {{report.totalCusto | moneyFilter}}
+                                    {{report.totalCustoExams | moneyFilter}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs2>
-                                    {{report.totalBruto | moneyFilter}}
+                                    {{report.totalGanhoExams | moneyFilter}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -207,7 +244,7 @@
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs2>
-                                    Total Saidas
+                                    Total
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -236,9 +273,13 @@
                         </v-flex>
 
                         <v-flex xs12>
-                            <v-layout row wrap>
-                                <v-flex xs12>
-                                    <v-layout row wrap>
+                            <span class="my-headline">Relatório</span>
+                        </v-flex>
+
+                        <v-flex xs12>
+                            <v-layout row wrap >
+                                <v-flex xs12 class="my-1">
+                                    <v-layout row wrap class="mt-2">
                                         <v-flex xs12>
                                             <v-divider></v-divider>
                                         </v-flex>
@@ -246,19 +287,19 @@
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs3>
-                                            Crédito
+                                            Total Crédito
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs3>
-                                            Débito
+                                            Total Débito
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs2>
-                                            Dinheiro
+                                            Total Caixa
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
@@ -268,7 +309,7 @@
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
-                                <v-flex xs12>
+                                <v-flex xs12 class="my-1">
                                     <v-layout row wrap>
                                         <v-flex xs12>
                                             <v-divider></v-divider>
@@ -299,7 +340,7 @@
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
-                                <v-flex xs12>
+                                <v-flex xs12 class="my-1">
                                     <v-layout row wrap>
                                         <v-flex xs12>
                                             <v-divider></v-divider>
@@ -320,7 +361,7 @@
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs2>
-                                            Dinheiro - Taxas
+                                            Total Bruto - Taxas
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
@@ -330,7 +371,7 @@
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
-                                <v-flex xs12>
+                                <v-flex xs12 class="my-1">
                                     <v-layout row wrap>
                                         <v-flex xs12>
                                             <v-divider></v-divider>
@@ -351,7 +392,71 @@
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs2>
-                                            {{(((report.dinheiro)- parseFloat(report.totalTaxaDebito)) - parseFloat(report.totalTaxaCredito) )| moneyFilter}}
+                                            {{(((report.totalBruto)- parseFloat(report.totalTaxaDebito)) - parseFloat(report.totalTaxaCredito) )| moneyFilter}}
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <v-divider></v-divider>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+
+                                <v-flex xs12 class="my-1">
+                                <v-layout row wrap>
+                                    <v-flex xs12>
+                                        <v-divider></v-divider>
+                                    </v-flex>
+                                    <v-flex xs1>
+                                        <v-divider vertical></v-divider>
+                                    </v-flex>
+                                    <v-flex xs3>
+                                        Total Bruto
+                                    </v-flex>
+                                    <v-flex xs1>
+                                        <v-divider vertical></v-divider>
+                                    </v-flex>
+                                    <v-flex xs3>
+                                        Total Liquido
+                                    </v-flex>
+                                    <v-flex xs1>
+                                        <v-divider vertical></v-divider>
+                                    </v-flex>
+                                    <v-flex xs2>
+                                        Saldo Final
+                                    </v-flex>
+                                    <v-flex xs1>
+                                        <v-divider vertical></v-divider>
+                                    </v-flex>
+                                    <v-flex xs12>
+                                        <v-divider></v-divider>
+                                    </v-flex>
+                                </v-layout>
+                            </v-flex>
+
+                                <v-flex xs12 class="my-1">
+                                    <v-layout row wrap>
+                                        <v-flex xs12>
+                                            <v-divider></v-divider>
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs3>
+                                            {{ this.report.totalBruto.toFixed(2)}}
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs3>
+                                            {{(this.report.totalBruto - this.report.totalCusto -  parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito)).toFixed(2)}}
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs2>
+                                            {{(this.report.totalBruto - this.report.totalCusto - parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito) - this.report.totalSaidas).toFixed(2)}}
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
@@ -386,13 +491,17 @@
         computed: {
             proceduresQuantity() {
                 let procQt = 0
-                for(let exam in this.report.exams) {
-                    procQt += this.report.exams[exam].quantidade
-                }
                 for(let specialty in this.report.specialties) {
                     procQt += this.report.specialties[specialty].quantidade
                 }
                 return procQt
+            },
+            examsQuantity(){
+                let quantidade=0
+              for(let exam in this.report.exams){
+                  quantidade +=this.report.exams[exam].quantidade
+              }
+              return quantidade
             }
         }
     }

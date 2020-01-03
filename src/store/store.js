@@ -21,6 +21,7 @@ import Saidas from "./modules/Saidas"
 import Budget from "./modules/Budget"
 import ShoppingCart from "./modules/local/ShoppingCart";
 import Operational from "./modules/Operational";
+import ItemsPackage from "./modules/local/ItemsPackage";
 
 
 Vue.use(Vuex);
@@ -50,6 +51,7 @@ const store = new Vuex.Store({
     Saidas,
     Budget,
     ShoppingCart,
+    ItemsPackage,
     Operational
   },
 

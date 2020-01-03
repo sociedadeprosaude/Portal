@@ -74,12 +74,17 @@ const actions = {
       promises.push(context.dispatch('getIntakeDetails', intakesSnap.docs[doc]))
     }
     let intakes = await Promise.all(promises)
-    let exams = {}
-    let specialties = {}
+    let exams = {};
+    let clinics = {};
+    let specialties = {};
     let totalCaixa = 0;
     let totalDebido = 0;
     let totalBruto = 0;
     let totalCusto = 0;
+    let totalCustoExams= 0;
+    let totalCustoEspecialts= 0;
+    let totalGanhoExams= 0;
+    let totalGanhoEspecialts= 0;
     let totalCredito = 0;
     let totalSaidas = 0;
     let totalTaxaDebito= 0;
@@ -87,23 +92,46 @@ const actions = {
     let saidas = {};
     let quantidadeSaidas= 0;
     let relatorio = {};
-    //console.log(intakes)
+    console.log(intakes);
 
     for (let intake in intakes) {
 
+      //for (let exam in intakes[intake].exams) {
+      //  if (!exams[intakes[intake].exams[exam].name]) {
+        //     exams[intakes[intake].exams[exam].name] = {
+        //    quantidade: 0,
+        //    name: intakes[intake].exams[exam].name,
+        //    cost: 0,
+        //    price: 0
+        //  }
+        // }
+        //console.log('clinica',intakes[intake].exams[exam].clinic.name)
+        //exams[intakes[intake].exams[exam].name].quantidade++,
+        //    exams[intakes[intake].exams[exam].name].cost += parseFloat(intakes[intake].exams[exam].cost),
+        //    exams[intakes[intake].exams[exam].name].price += parseFloat(intakes[intake].exams[exam].price)
+        //  totalCustoExams += parseFloat(intakes[intake].exams[exam].cost)
+        //  totalGanhoExams += parseFloat(intakes[intake].exams[exam].price)
+        // }
+
       for (let exam in intakes[intake].exams) {
-        if (!exams[intakes[intake].exams[exam].name]) {
-          exams[intakes[intake].exams[exam].name] = {
-            quantidade: 0,
-            name: intakes[intake].exams[exam].name,
-            cost: 0,
-            price: 0
-          }
-        }
-        exams[intakes[intake].exams[exam].name].quantidade++,
-            exams[intakes[intake].exams[exam].name].cost += parseFloat(intakes[intake].exams[exam].cost),
-            exams[intakes[intake].exams[exam].name].price += parseFloat(intakes[intake].exams[exam].price)
+            if (!clinics[intakes[intake].exams[exam].clinic.name]) {
+                clinics[intakes[intake].exams[exam].clinic.name] = {
+                    quantidade: 0,
+                    name: intakes[intake].exams[exam].clinic.name,
+                    cost: 0,
+                    price: 0
+                }
+            }
+            clinics[intakes[intake].exams[exam].clinic.name].quantidade++,
+                clinics[intakes[intake].exams[exam].clinic.name].cost += parseFloat(intakes[intake].exams[exam].cost),
+                clinics[intakes[intake].exams[exam].clinic.name].price += parseFloat(intakes[intake].exams[exam].price)
+            totalCustoExams += parseFloat(intakes[intake].exams[exam].cost)
+            totalGanhoExams += parseFloat(intakes[intake].exams[exam].price)
       }
+
+
+
+
 
       //ESPECIALIDADES
       for (let specialtie in intakes[intake].specialties) {
@@ -117,12 +145,13 @@ const actions = {
         specialties[intakes[intake].specialties[specialtie].name].quantidade++
         specialties[intakes[intake].specialties[specialtie].name].cost += parseFloat(intakes[intake].specialties[specialtie].cost),
             specialties[intakes[intake].specialties[specialtie].name].price += parseFloat(intakes[intake].specialties[specialtie].price)
+          totalCustoEspecialts += parseFloat(intakes[intake].specialties[specialtie].cost),
+              totalGanhoEspecialts += parseFloat(intakes[intake].specialties[specialtie].price)
       }
       if(!intakes[intake].valor){
         totalCusto += parseFloat(intakes[intake].cost);
       }
       else { //SAIDAS
-        console.log('saida')
         if(!saidas[intakes[intake].categoria]){
           saidas[intakes[intake].categoria] = {
             quantidade: 0,
@@ -141,18 +170,15 @@ const actions = {
       //console.log('custo: ',totalCusto)
       console.log('metodo de pagamento: ',intakes[intake].payment_method)
       if (intakes[intake].payment_method === 'Dinheiro') {
-        console.log('pago em dinheiro')
         totalCaixa += intakes[intake].total
         totalBruto += intakes[intake].total
       }
       if (intakes[intake].payment_method === 'Débito') {
-        console.log('pago em debito', intakes[intake])
         totalTaxaDebito += ((intakes[intake].total * 0.0299)/100)
         totalDebido += intakes[intake].total
         totalBruto += intakes[intake].total
       }
       if (intakes[intake].payment_method === 'Crédito') {
-        console.log('pago em credito', intakes[intake])
         if(intakes[intake].parcel === 1){
           totalTaxaCredito += ((intakes[intake].total * 0.026)/100)
         }
@@ -188,6 +214,7 @@ const actions = {
       saidas: saidas,
       specialties: specialties,
       exams: exams,
+        clinics:clinics,
       credito: totalCredito,
       debito: totalDebido,
       dinheiro: totalCaixa,
@@ -196,7 +223,11 @@ const actions = {
       totalCusto: totalCusto,
       totalSaidas: totalSaidas,
       totalTaxaCredito: totalTaxaCredito.toFixed(5),
-      totalTaxaDebito: totalTaxaDebito.toFixed(5)
+      totalTaxaDebito: totalTaxaDebito.toFixed(5),
+        totalCustoExams: totalCustoExams,
+        totalGanhoExams: totalGanhoExams,
+        totalCustoEspecialts: totalCustoEspecialts,
+        totalGanhoEspecialts: totalGanhoEspecialts
     };
     console.log('relatorio: ', relatorio);
     context.commit('setRelatorio',relatorio)

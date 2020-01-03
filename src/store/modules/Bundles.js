@@ -11,9 +11,10 @@ const mutations = {
         state.bundles = payload;
     },
 
-    setSelectedBundle (state, payload){
-        state.selectedBundle = payload;
+    setSelectedBundle (state, payload) {
+        state.selectedBundle = payload
     }
+
 };
 
 const actions = {
@@ -43,6 +44,7 @@ const actions = {
                 bundleRef = await firebase.firestore().collection('packages').add(bundle);
             }
 
+
             for (let i in bundle.exams){
 
                 let examData = {
@@ -57,18 +59,44 @@ const actions = {
 
             }
 
-            for (let i in bundle.specialties) {
-                let specialtieData = {
-                    name: bundle
-                };
-            }
-
             return bundleRef;
 
         } catch (e) {
             throw e;
         }
 
+    },
+
+    async getBundle ({ }, search) {
+
+        let bundleSnap;
+
+        if (!search) {
+            bundleSnap = await firebase.firestore().collection('packages').limit(30).get()
+        } else {
+            bundleSnap = await firebase.firestore().collection('packages').where('name', '>=', search).limit(30).get()
+        }
+
+        let bundle = [];
+        bundleSnap.forEach((doc) => {
+            bundle.push(doc.data());
+        });
+
+        for (let item in bundle) {
+            let name = bundle[item].name;
+            let exams = [];
+            let examSnap = await firebase.firestore().collection('packages/' + name + '/exams').get();
+
+            examSnap.forEach((e) => {
+                exams.push(e.data());
+            });
+
+            bundle[item].exams = exams;
+        }
+
+        console.log(bundle);
+        
+        return bundle;
     },
 
     async loadBundle ({commit}) {
@@ -122,8 +150,6 @@ const actions = {
 
                 });
 
-
-                console.log(allPackages);
                 commit('setBundles', allPackages);
 
                 if (data) resolve (data);
@@ -155,9 +181,6 @@ const getters = {
         return state.bundles;
     },
 
-    selectedBundle (state) {
-        return state.selectedBundle;
-    },
 };
 
 export default {

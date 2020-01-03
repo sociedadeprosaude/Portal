@@ -49,19 +49,19 @@ const actions = {
         // copyPayload = Object.assign({}, payload)
     },
     async getBudget({ }, budgetId) {
-        let budget = (await firebase.firestore().collection('budgets').doc(budgetId).get()).data()
+        let budget = (await firebase.firestore().collection('budgets').doc(budgetId).get()).data();
         let specialtiesCol = await firebase.firestore().collection('budgets').doc(budgetId).collection('specialties').get()
         let examsCol = await firebase.firestore().collection('budgets').doc(budgetId).collection('exams').get()
-        let specialties = []
-        let exams = []
+        let specialties = [];
+        let exams = [];
         specialtiesCol.forEach((s) => {
             specialties.push(s.data())
-        })
+        });
         examsCol.forEach((e) => {
             exams.push(e.data())
-        })
-        budget['specialties'] = specialties
-        budget['exams'] = exams
+        });
+        budget['specialties'] = specialties;
+        budget['exams'] = exams;
 
         return budget
     },

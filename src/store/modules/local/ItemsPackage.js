@@ -2,18 +2,28 @@ import Vue from 'vue'
 
 const state = {
     items: [],
-    budget: undefined
+    bundle: undefined,
+    nameBundle : undefined,
+
 };
 
 const mutations = {
-    setSelectedBudget(state, payload) {
+    setSelectedBundle(state, payload) {
         //console.log('SetSelectedBudget',payload)
-        state.budget = payload
+        state.bundle = payload
     },
-    setShoppingCartItems(state, payload) {
+
+    setNameBundle (state, payload){
+        state.nameBundle = payload
+    },
+
+    setItemsPackage (state, payload) {
         state.items = payload
     },
-    addShoppingCartItem(state, payload) {
+
+    addItemsPackage (state, payload) {
+
+        console.log('payload', payload);
 
         for (let item in state.items) {
             if (state.items[item].name === payload.name) {
@@ -22,12 +32,15 @@ const mutations = {
                 return
             }
         }
+
         state.items.push(payload)
     },
-    removeShoppingCartItem(state, payload) {
+
+    removeItemsPackage (state, payload) {
         state.items.splice(state.items.indexOf(payload), 1)
     },
-    clearShoppingCartItens(state) {
+
+    clearItemsPackage (state) {
         state.items = []
     }
 };
@@ -36,29 +49,43 @@ const actions = {
 
 };
 
+
 const getters = {
-    selectedBudget(state) {
-        return state.budget
+
+    selectedBundle (state) {
+        return state.bundle
     },
-    getShoppingCartItems(state) {
+
+    getItemsPackage (state) {
         return state.items
     },
-    getShoppingCartItemsByCategory(state) {
-        let consultations = state.items.filter((a) => {
-            return a.doctor
-        });
+
+    getNameBundle (state) {
+        return state.nameBundle;
+    },
+
+    getItemsPackageByCategory(state) {
+
         let exams = state.items.filter((a) => {
             return a.clinic
+        });
+
+        /*
+        let consultations = state.items.filter((a) => {
+            return a.doctor
         });
         let packages = state.items.filter((a) => {
             return !a.doctor && !a.clinic
         });
+        */
+
         return {
-            consultations: consultations,
             exams: exams,
-            packages: packages
+            //consultations: consultations,
+            //packages: packages
         }
     }
+
 };
 
 export default {
