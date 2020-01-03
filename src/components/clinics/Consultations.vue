@@ -132,7 +132,8 @@
                 return this.$store.getters.specialties;
             },
             formIsValid() {
-                return this.sale && this.cost && this.consultations && this.doctors.length > 0 && this.payment
+                /*return this.sale && this.cost && this.consultations && this.doctors.length > 0 && this.payment*/
+                return this.cost && this.consultations && this.doctors.length > 0 && this.payment
             },
             selectedClinic() {
                 return this.$store.getters.selectedClinic;
