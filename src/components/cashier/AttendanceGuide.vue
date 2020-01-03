@@ -51,16 +51,14 @@
                         <v-flex xs6 class="align-start pt-6">
                             <v-layout column wrap class="justify-start align-start">
                                 <span class="primary--text font-weight-bold">Paciente:</span>
-<!--                                <span class="primary&#45;&#45;text font-weight-bold">CPF:</span>
-                                <span class="primary&#45;&#45;text font-weight-bold">Contato.:</span>-->
+                                <span class="primary--text font-weight-bold">Número do Associado:</span>
                                 <span class="primary--text font-weight-bold">Data de Nascimento:</span>
                             </v-layout>
                         </v-flex>
                         <v-flex xs6 class="align-start pt-6">
                             <v-layout column wrap class="justify-start align-start">
                                 <span class="font-weight-bold">{{patient.name}}</span>
-<!--                                <span class="font-weight-bold">{{patient.cpf}}</span>
-                                <span class="font-weight-bold">{{patient.telephones[0]}}</span>-->
+                                <span class="font-weight-bold">{{patient.association_number}}</span>
                                 <span class="font-weight-bold">{{patient.birth_date | dateFilter}}</span>
                             </v-layout>
                         </v-flex>
