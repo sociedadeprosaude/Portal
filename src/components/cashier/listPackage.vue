@@ -88,7 +88,7 @@
                                 <v-flex xs12>
                                     <v-layout row wrap class="align-end fill-height">
                                         <v-flex xs12 class="text-center mt-4">
-                                            <v-btn outlined color="primary" :disabled="!formRegister" @click="validateRegister()">
+                                            <v-btn outlined color="primary"  @click="validateRegister()">
                                                 Salvar Pacote</v-btn>
                                             <v-btn color="error" fab small class="ml-5" :disabled="!selectedPackage"
                                                    @click="deleteBundle = true">
@@ -150,9 +150,6 @@
                 return this.$store.getters.getItemsPackageByCategory.exams
             },
 
-            formRegister () {
-                return this.editedPackage.name && this.price && this.cost;
-            },
 
             cost () {
                 let itens = this.$store.getters.getItemsPackage;
