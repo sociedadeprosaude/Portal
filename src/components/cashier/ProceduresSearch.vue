@@ -13,8 +13,8 @@
                                         id="search"
                                         single-line
                                         :disabled="!categorySelect"
-                                        prepend-icon="search"
-                                ></v-text-field>
+                                        prepend-icon="search">
+                                </v-text-field>
                             </v-flex>
                             <v-btn outlined class="mx-2"
                                    :color="categorySelect === 'exam' ? 'accent' : 'primary_light'" rounded
@@ -152,6 +152,7 @@
                 }
             }
         },
+
         methods: {
             selectCategory(category) {
                 this.categorySelect = category
@@ -168,6 +169,7 @@
                 }
                 this.loading = false
             },
+
             addProduct(product, selection, type, clinic) {
                 let holder = Object.assign({}, product);
                 switch (type) {

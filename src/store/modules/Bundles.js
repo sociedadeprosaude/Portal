@@ -11,9 +11,6 @@ const mutations = {
         state.bundles = payload;
     },
 
-    setSelectedBundle (state, payload){
-        state.selectedBundle = payload;
-    }
 };
 
 const actions = {
@@ -122,8 +119,6 @@ const actions = {
 
                 });
 
-
-                console.log(allPackages);
                 commit('setBundles', allPackages);
 
                 if (data) resolve (data);
@@ -154,10 +149,7 @@ const getters = {
     bundles (state) {
         return state.bundles;
     },
-
-    selectedBundle (state) {
-        return state.selectedBundle;
-    },
+    
 };
 
 export default {

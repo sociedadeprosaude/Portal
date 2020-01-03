@@ -8,20 +8,20 @@
                             <v-flex xs12 class="v-card"
                                     style="overflow:auto; height:50vh; box-shadow: inset 0px 0px 5px grey;">
                                 <v-layout row wrap v-if="editedPackage">
-                                    <v-flex xs12 v-if="editedPackage.exams">
+                                    <v-flex xs12 v-if="exams.length > 0">
                                         <p class="my-headline">Exames</p>
-                                        <v-card v-for="(item) in editedPackage.exams" class="ma-2" :key="item.name">
+                                        <v-card v-for="(item) in exams" class="ma-2" :key="item.name">
                                             <v-card-title class="py-2">
                                                 <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
                                                 <v-spacer> </v-spacer>
                                                 <span class="subtitle-1 font-weight-light">
-                                                    <v-btn small icon @click="removeExam(item)">
+                                                    <v-btn small icon @click="removeItem(item)">
                                                         <v-icon>cancel</v-icon>
                                                     </v-btn>
                                                 </span>
                                             </v-card-title>
                                             <v-card-text class="pt-1 pb-0">
-                                                {{item.clinic}}
+                                                {{item.clinic.name}}
                                                 <p class="text-right">
                                                     R$ {{item.price}}
                                                 </p>
@@ -143,18 +143,11 @@
 
             selectedPackage () {
                 // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-                this.editedPackage = this.$store.getters.selectedBundle;
-
-                if (!this.editedPackage.percentageDiscount) {
-                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-                    this.percentageDiscount = 0;
-
-                } else {
-                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-                    this.percentageDiscount = this.editedPackage.percentageDiscount;
-
-                }
                 return this.$store.getters.selectedBundle;
+            },
+
+            exams () {
+                return this.$store.getters.getItemsPackageByCategory.exams
             },
 
             formRegister () {
@@ -162,7 +155,7 @@
             },
 
             cost () {
-                let itens = this.selectedPackage.exams;
+                let itens = this.$store.getters.getItemsPackage;
                 let total = 0;
                 for (let item in itens) {
                     total += parseFloat(itens[item].cost)
@@ -177,7 +170,7 @@
 
             price() {
 
-                let itens = this.selectedPackage.exams;
+                let itens = this.$store.getters.getItemsPackage;
                 let total = 0;
                 for (let item in itens) {
                     total += parseFloat(itens[item].price)
@@ -216,23 +209,11 @@
 
             },
 
-            load : function () {
-                if (this.selectedPackage) {
-                    this.load();
-                }
-            },
+
 
         },
 
         methods: {
-
-            load () {
-                this.editedPackage = Object.assign({}, this.selectedPackage);
-                this.cost = parseFloat(this.editedPackage.cost);
-                this.price = parseFloat(this.editedPackage.price);
-                this.percentageDiscount = this.editedPackage.percentageDiscount;
-                this.moneyDiscount = this.editedPackage.moneyDiscount;
-            },
 
             clearSearch () {
 
@@ -268,6 +249,9 @@
 
             },
 
+            removeItem(item) {
+                this.$store.commit('removeItemsPackage', item)
+            },
             deletePackage () {
                 this.$store.dispatch('deletePackage', this.editedPackage);
                 this.clearSearch();
