@@ -54,12 +54,6 @@ const actions = {
 
             }
 
-            for (let i in bundle.specialties) {
-                let specialtieData = {
-                    name: bundle
-                };
-            }
-
             return bundleRef;
 
         } catch (e) {
@@ -81,16 +75,10 @@ const actions = {
         let bundle = [];
         bundleSnap.forEach((doc) => {
             bundle.push(doc.data());
-
-            let examsCol = firebase.firestore().collection('packages').doc(doc.data().name).collection('exams').get();
-            let exams = [];
-            examsCol.forEach((e) => {
-                exams.push(e.data())
-            });
-
-            bundle['exams'] = exams;
         });
 
+        console.log(bundle);
+        
         return bundle;
     },
 

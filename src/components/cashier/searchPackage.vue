@@ -34,7 +34,7 @@
                         <v-form v-model="validRegister" lazy-validation>
                             <v-layout row wrap>
                                 <v-flex sm8 >
-                                    <v-text-field required label="nome" v-model="editedPackage.name"
+                                    <v-text-field required label="nome" v-model="nameBundle" @keyup="nameForPackage()"
                                                   prepend-inner-icon="folder" :rules="rules.campoObrigatorio"
                                                   primary solo :clearable="true">
                                     </v-text-field>
@@ -161,7 +161,7 @@
 
                 searchPackage: true, registerPackage: false,
                 searchData: null, searchBundle: null,
-                isLoading: undefined, loading: undefined,
+                isLoading: undefined, loading: undefined, nameBundle: null,
 
                 search: '',
                 validRegister: true,
@@ -252,10 +252,7 @@
                         this.searchPackage = false;
                         this.registerPackage= true;
 
-                        this.editedPackage = Object.assign({}, this.searchData);
-                        this.editedPackage.name = data;
-
-                        this.$store.commit('selectedBundle', this.editedPackage);
+                        this.$store.commit('selectedBundle', bundle);
                         for (let exam in bundle.exams) {
                             this.$store.commit('addItemsPackage', bundle.exams[exam])
                         }
@@ -273,6 +270,10 @@
         },
 
         methods: {
+
+            nameForPackage () {
+                this.$store.commit('setNameBundle', this.nameBundle)
+            },
 
             selectCategory(category) {
                 this.categorySelect = category;

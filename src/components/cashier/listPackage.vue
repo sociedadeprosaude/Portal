@@ -150,7 +150,6 @@
                 return this.$store.getters.getItemsPackageByCategory.exams
             },
 
-
             cost () {
                 let itens = this.$store.getters.getItemsPackage;
                 let total = 0;
@@ -215,31 +214,27 @@
             clearSearch () {
 
                 this.$store.dispatch('selectedBundle', null);
-                this.editedPackage= Object.assign({}, this.defaultPackage);
-                this.editedPackage.exams = [];
-                this.cost = 0;
-                this.price = 0;
                 this.percentageDiscount = 0;
                 this.moneyDiscount = 0;
             },
 
             validateRegister () {
 
-                for (let exam in this.editedPackage.exams) {
-                    this.editedPackage.exams[exam].priceDiscount = this.editedPackage.exams[exam].price - this.moneyDiscount
-                }
-
                 const packageData = {
-                    name: this.editedPackage.name.toUpperCase(),
+
+                    exams: this.exams.length > 0 ? this.exams : undefined,
+                    moneyDiscount: this.moneyDiscount,
+                    percentageDiscount: this.percentageDiscount,
                     cost: this.cost,
                     price: this.price,
                     total: (this.price - this.moneyDiscount),
-                    moneyDiscount: this.moneyDiscount,
-                    percentageDiscount: this.percentageDiscount,
-                    exams: this.editedPackage.exams,
+                    name: this.$store.getters.getNameBundle.toUpperCase(),
                     //specialties: this.editedPackage.specialties,
                 };
 
+                for (let exam in this.exams) {
+                    this.exams[exam].priceDiscount = this.exams[exam].price - this.moneyDiscount
+                }
                 this.$store.dispatch('addBundle', packageData).then(() => {
                     this.clearSearch();
                 });

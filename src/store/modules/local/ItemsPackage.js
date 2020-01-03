@@ -3,12 +3,18 @@ import Vue from 'vue'
 const state = {
     items: [],
     bundle: undefined,
+    nameBundle : undefined,
+
 };
 
 const mutations = {
     setSelectedBundle(state, payload) {
         //console.log('SetSelectedBudget',payload)
         state.bundle = payload
+    },
+
+    setNameBundle (state, payload){
+        state.nameBundle = payload
     },
 
     setItemsPackage (state, payload) {
@@ -52,6 +58,10 @@ const getters = {
 
     getItemsPackage (state) {
         return state.items
+    },
+
+    getNameBundle (state) {
+        return state.nameBundle;
     },
 
     getItemsPackageByCategory(state) {
