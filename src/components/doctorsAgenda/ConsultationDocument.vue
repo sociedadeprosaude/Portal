@@ -56,7 +56,7 @@
                                 </v-flex>
                                 <v-flex>
                                     <span class="primary--text font-weight-bold">Data de Nascimento: </span>
-                                    <span class="font-weight-bold">{{user.birth_date}}</span><br>
+                                    <span class="font-weight-bold">{{user.birth_date | dateFilter}}</span><br>
                                 </v-flex>
                                 <v-flex>
                                     <span class="primary--text font-weight-bold">Idade: </span>
