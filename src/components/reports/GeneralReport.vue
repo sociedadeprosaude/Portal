@@ -287,19 +287,19 @@
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs3>
-                                            Crédito
+                                            Total Crédito
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs3>
-                                            Débito
+                                            Total Débito
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs2>
-                                            Dinheiro
+                                            Total Caixa
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
@@ -361,7 +361,7 @@
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs2>
-                                            Dinheiro - Taxas
+                                            Total Bruto - Taxas
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
@@ -392,7 +392,7 @@
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs2>
-                                            {{(((report.dinheiro)- parseFloat(report.totalTaxaDebito)) - parseFloat(report.totalTaxaCredito) )| moneyFilter}}
+                                            {{(((report.totalBruto)- parseFloat(report.totalTaxaDebito)) - parseFloat(report.totalTaxaCredito) )| moneyFilter}}
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
@@ -424,7 +424,7 @@
                                         <v-divider vertical></v-divider>
                                     </v-flex>
                                     <v-flex xs2>
-
+                                        Saldo Final
                                     </v-flex>
                                     <v-flex xs1>
                                         <v-divider vertical></v-divider>
@@ -444,19 +444,19 @@
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs3>
-                                            {{ this.report.totalBruto}}
+                                            {{ this.report.totalBruto.toFixed(2)}}
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs3>
-                                            {{this.report.totalBruto - this.report.totalCusto}}
+                                            {{(this.report.totalBruto - this.report.totalCusto -  parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito)).toFixed(2)}}
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs2>
-
+                                            {{(this.report.totalBruto - this.report.totalCusto - parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito) - this.report.totalSaidas).toFixed(2)}}
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
