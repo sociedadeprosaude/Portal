@@ -80,6 +80,10 @@ const actions = {
     let totalDebido = 0;
     let totalBruto = 0;
     let totalCusto = 0;
+    let totalCustoExams= 0;
+    let totalCustoEspecialts= 0;
+    let totalGanhoExams= 0;
+    let totalGanhoEspecialts= 0;
     let totalCredito = 0;
     let totalSaidas = 0;
     let totalTaxaDebito= 0;
@@ -103,6 +107,8 @@ const actions = {
         exams[intakes[intake].exams[exam].name].quantidade++,
             exams[intakes[intake].exams[exam].name].cost += parseFloat(intakes[intake].exams[exam].cost),
             exams[intakes[intake].exams[exam].name].price += parseFloat(intakes[intake].exams[exam].price)
+          totalCustoExams += parseFloat(intakes[intake].exams[exam].cost)
+          totalGanhoExams += parseFloat(intakes[intake].exams[exam].price)
       }
 
       //ESPECIALIDADES
@@ -117,6 +123,8 @@ const actions = {
         specialties[intakes[intake].specialties[specialtie].name].quantidade++
         specialties[intakes[intake].specialties[specialtie].name].cost += parseFloat(intakes[intake].specialties[specialtie].cost),
             specialties[intakes[intake].specialties[specialtie].name].price += parseFloat(intakes[intake].specialties[specialtie].price)
+          totalCustoEspecialts += parseFloat(intakes[intake].specialties[specialtie].cost),
+              totalGanhoEspecialts += parseFloat(intakes[intake].specialties[specialtie].price)
       }
       if(!intakes[intake].valor){
         totalCusto += parseFloat(intakes[intake].cost);
@@ -196,7 +204,11 @@ const actions = {
       totalCusto: totalCusto,
       totalSaidas: totalSaidas,
       totalTaxaCredito: totalTaxaCredito.toFixed(5),
-      totalTaxaDebito: totalTaxaDebito.toFixed(5)
+      totalTaxaDebito: totalTaxaDebito.toFixed(5),
+        totalCustoExams: totalCustoExams,
+        totalGanhoExams: totalGanhoExams,
+        totalCustoEspecialts: totalCustoEspecialts,
+        totalGanhoEspecialts: totalGanhoEspecialts
     };
     console.log('relatorio: ', relatorio);
     context.commit('setRelatorio',relatorio)
