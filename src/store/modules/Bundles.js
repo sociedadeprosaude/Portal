@@ -11,6 +11,10 @@ const mutations = {
         state.bundles = payload;
     },
 
+    setSelectedBundle (state, payload) {
+        state.selectedBundle = payload
+    }
+
 };
 
 const actions = {
@@ -39,6 +43,7 @@ const actions = {
             } else {
                 bundleRef = await firebase.firestore().collection('packages').add(bundle);
             }
+
 
             for (let i in bundle.exams){
 
@@ -76,6 +81,18 @@ const actions = {
         bundleSnap.forEach((doc) => {
             bundle.push(doc.data());
         });
+
+        for (let item in bundle) {
+            let name = bundle[item].name;
+            let exams = [];
+            let examSnap = await firebase.firestore().collection('packages/' + name + '/exams').get();
+
+            examSnap.forEach((e) => {
+                exams.push(e.data());
+            });
+
+            bundle[item].exams = exams;
+        }
 
         console.log(bundle);
         

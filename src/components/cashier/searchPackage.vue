@@ -248,18 +248,21 @@
 
                     let bundle = await this.$store.dispatch('getBundle', data);
 
-                    if (bundle) {
+                    if (bundle.length === 1) {
                         this.searchPackage = false;
                         this.registerPackage= true;
 
-                        this.$store.commit('selectedBundle', bundle);
-                        for (let exam in bundle.exams) {
-                            this.$store.commit('addItemsPackage', bundle.exams[exam])
+                        this.$store.commit('setSelectedBundle', bundle[0]);
+
+
+                        console.log("#bundle, exams", bundle[0].exams);
+                        for (let exam in bundle[0].exams) {
+                            this.$store.commit('addItemsPackage', bundle[0].exams[exam])
                         }
                     }
 
                 } else {
-                    this.$store.commit('selectedBundle', this.defaultPackage);
+                    this.$store.commit('setSelectedBundle', this.defaultPackage);
                 }
             },
 

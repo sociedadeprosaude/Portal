@@ -15,7 +15,6 @@ const mutations = {
     },
     addShoppingCartItem(state, payload) {
 
-        console.log('##hiohi');
         for (let item in state.items) {
             if (state.items[item].name === payload.name) {
                 state.items[item] = payload;
