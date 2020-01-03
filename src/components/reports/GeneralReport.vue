@@ -120,9 +120,9 @@
                             </v-layout>
                         </v-flex>
                         <v-flex xs12>
-                            <span class="my-headline">Exames</span>
+                            <span class="my-headline">Clínicas</span>
                         </v-flex>
-                        <v-flex xs12 v-for="(exam, label) in report.exams" :key="label" class="my-1">
+                        <v-flex xs12 v-for="(clinics, label) in report.clinics" :key="label" class="my-1">
                             <v-layout row wrap>
                                 <v-flex xs12>
                                     <v-divider></v-divider>
@@ -137,19 +137,19 @@
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs1>
-                                    {{exam.quantidade}}
+                                    {{clinics.quantidade}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs2>
-                                    {{exam.cost | moneyFilter}}
+                                    {{clinics.cost | moneyFilter}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs2>
-                                    {{exam.price | moneyFilter}}
+                                    {{clinics.price | moneyFilter}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -273,7 +273,7 @@
                         </v-flex>
 
                         <v-flex xs12>
-                            <span class="my-headline">Relatorio</span>
+                            <span class="my-headline">Relatório</span>
                         </v-flex>
 
                         <v-flex xs12>
