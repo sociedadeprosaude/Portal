@@ -106,13 +106,15 @@ const actions = {
         delete payload.clinic.id
         firebase.firestore().collection('clinics/' + payload.clinic.name + '/exams').doc(payload.exam).set(examData);
 
-        firebase.firestore().collection('exams/').doc(payload.exam).collection('clinics').doc(payload.clinic.name).set({
-            ...payload.clinic,
-            cost: payload.cost,
-            price: payload.sale,
-            rules: payload.rules,
-            obs: payload.obs,
-        });
+        firebase.firestore().collection('exams/').doc(payload.exam).collection('clinics').doc(payload.clinic.name).set(
+            functions.removeUndefineds({
+                ...payload.clinic,
+                cost: payload.cost,
+                price: payload.sale,
+                rules: payload.rules,
+                obs: payload.obs,
+            })
+        );
     },
 
     async loadSelectedExams({commit}, payload) {

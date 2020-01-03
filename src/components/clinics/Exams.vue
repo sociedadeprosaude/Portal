@@ -123,19 +123,21 @@
             <v-layout align-center justify-center>
                 <v-btn color="error" @click="clear()">CANCELAR</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn
-                        :disabled="!formIsValid"
-                        @click="save()"
-                        color="success"
-                >
-                    SALVAR
-                </v-btn>
+                <submit-button :loading="loading" :success="succes" text="SALVAR" :disabled="!formIsValid" @click="save()"></submit-button>
+<!--                <v-btn-->
+<!--                        :disabled="!formIsValid"-->
+<!--                        @click="save()"-->
+<!--                        color="success"-->
+<!--                >-->
+<!--                    SALVAR-->
+<!--                </v-btn>-->
             </v-layout>
         </v-card-actions>
     </v-card>
 </template>
 
 <script>
+    import SubmitButton from "../SubmitButton";
     export default {
         data: () => ({
             cost: null,
@@ -144,8 +146,13 @@
             obs: null,
             exams: [],
             newExam: null,
-            loadingExams: false
+            loadingExams: false,
+            loading: false,
+            succes: false
         }),
+        components: {
+            SubmitButton
+        },
         computed: {
             formIsValid() {
                 return this.sale && this.cost && this.exams.length > 0
@@ -194,7 +201,8 @@
                 this.exams = [];
             },
 
-            save() {
+            async save() {
+                this.loading = true
                 for (let i in this.exams) {
                     let examData = {
                         clinic: this.selectedClinic,
@@ -204,9 +212,14 @@
                         cost: this.cost,
                         sale: this.sale,
                     };
-                    this.$store.dispatch('addExamToClinic', examData);
+                    await this.$store.dispatch('addExamToClinic', examData);
                 }
-                this.clear()
+                this.loading = false
+                this.succes = true
+                setTimeout(() => {
+                    this.clear()
+                    this.succes = false
+                }, 1000)
             },
 
             clear() {
@@ -214,7 +227,7 @@
                 this.sale = null;
                 this.obs = null;
                 this.exams = [];
-                this.$store.dispatch('selectClinic', null);
+                // this.$store.dispatch('selectClinic', null);
             },
         }
     }
