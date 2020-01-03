@@ -15,21 +15,30 @@
             <v-flex>
                 <v-card flat class="pa-10">
                     <v-layout row wrap class="align-center pa-4" style="border: 2px solid #2196f3; border-radius: 16px">
+                        <v-flex xs12 class="text-center">
+                            <img src="@/assets/logo-pro-saude.png" height="84px" class="ml-0 px-0 mr-0 pa-0">
+                        </v-flex>
                         <v-flex xs6 class="text-left">
-                            <v-layout column wrap v-for="(item, index) in [items[0]]" :key="index">
-                                <span class="my-sub-headline primary--text" style="font-size: 1.4em">{{item.clinic.name}}</span>
-                                <v-flex>
-                                    <span class="primary--text font-weight-bold">CNPJ: </span>
-                                    <span class="font-weight-bold">{{item.clinic.cnpj}}</span>
-                                </v-flex>
-                                <v-flex>
-                                    <v-layout column wrap class="primary--text">
-                                        <span class="font-weight-bold"> {{item.clinic.address.street}}, {{item.clinic.address.number}}, {{item.clinic.address.neighboor}}, {{item.clinic.address.cep}}</span>
-                                        <span v-if="item.clinic.address.complement">Complemento: {{item.clinic.address.complement}}</span>
-                                        <span>{{item.clinic.address.city}} - {{item.clinic.address.state}}</span>
-                                        <br/>
-                                        <span class="font-weight-bold">Contato.: <v-icon>call</v-icon> {{item.clinic.telephone[0]}}</span>
-                                        <br/>
+                        <v-layout column wrap v-for="(item, index) in [items[0]]" :key="index">
+                            <span class="my-sub-headline primary--text" style="font-size: 1.4em">{{item.clinic.name}}</span>
+                            <v-flex>
+                                <span class="primary--text font-weight-bold">CNPJ: </span>
+                                <span class="font-weight-bold">{{item.clinic.cnpj}}</span>
+                            </v-flex>
+                            <v-flex>
+                                <v-layout column wrap class="primary--text">
+                                    <span class="font-weight-bold"> {{item.clinic.address.street}}, {{item.clinic.address.number}}, {{item.clinic.address.neighboor}}, {{item.clinic.address.cep}}</span>
+                                    <span v-if="item.clinic.address.complement">Complemento: {{item.clinic.address.complement}}</span>
+                                    <span>{{item.clinic.address.city}} - {{item.clinic.address.state}}</span>
+                                    <br/>
+                                    <span class="font-weight-bold">Contato.: <v-icon>call</v-icon> {{item.clinic.telephone[0]}}</span>
+                                    <br/>
+                                </v-layout>
+                            </v-flex>
+                        </v-layout>
+                        </v-flex>
+                        <v-flex xs6 class="text-right">
+                                    <v-layout column wrap class="primary--text justify-start align-start" v-for="(item, index) in [items[0]]" :key="index">
                                         <span class="font-weight-bold">Dias e Horarios de Funcionamento:</span>
                                         <span><v-icon>event</v-icon> Segunda-Feira: {{item.clinic.agenda[0]}}</span>
                                         <span><v-icon>event</v-icon> Terça-Feira: {{item.clinic.agenda[1]}}</span>
@@ -38,33 +47,20 @@
                                         <span><v-icon>event</v-icon> Sexta-Feira: {{item.clinic.agenda[4]}} </span>
                                         <span><v-icon>event</v-icon> Sábado: {{item.clinic.agenda[5]}} </span>
                                     </v-layout>
-                                </v-flex>
-                            </v-layout>
                         </v-flex>
-                        <v-flex xs6 class="text-right">
-                            <img src="@/assets/logo-pro-saude.png" height="84px" class="ml-0 px-0 mr-0 pa-0">
-                        </v-flex>
-<!--                        <v-flex xs6 class="text-right">
-                            <v-layout column wrap>
-                                <span class="primary&#45;&#45;text font-weight-bold mt-2">Paciente: {{patient.name}}</span>
-                                <span class="primary&#45;&#45;text font-weight-bold mt-2">Aniversário: {{patient.birth_date | dateFilter}}</span>
-                                <span class="primary&#45;&#45;text font-weight-bold">CPF: {{patient.cpf}}</span>
-                                <span class="primary&#45;&#45;text font-weight-bold">Contato.: {{patient.telephones[0]}}</span>
-                            </v-layout>
-                        </v-flex>-->
-                        <v-flex xs3 class="align-start pt-6">
+                        <v-flex xs6 class="align-start pt-6">
                             <v-layout column wrap class="justify-start align-start">
                                 <span class="primary--text font-weight-bold">Paciente:</span>
-                                <span class="primary--text font-weight-bold">CPF:</span>
-                                <span class="primary--text font-weight-bold">Contato.:</span>
-                                <span class="primary--text font-weight-bold">Aniversário:</span>
+<!--                                <span class="primary&#45;&#45;text font-weight-bold">CPF:</span>
+                                <span class="primary&#45;&#45;text font-weight-bold">Contato.:</span>-->
+                                <span class="primary--text font-weight-bold">Data de Nascimento:</span>
                             </v-layout>
                         </v-flex>
-                        <v-flex xs3 class="align-start pt-6">
+                        <v-flex xs6 class="align-start pt-6">
                             <v-layout column wrap class="justify-start align-start">
                                 <span class="font-weight-bold">{{patient.name}}</span>
-                                <span class="font-weight-bold">{{patient.cpf}}</span>
-                                <span class="font-weight-bold">{{patient.telephones[0]}}</span>
+<!--                                <span class="font-weight-bold">{{patient.cpf}}</span>
+                                <span class="font-weight-bold">{{patient.telephones[0]}}</span>-->
                                 <span class="font-weight-bold">{{patient.birth_date | dateFilter}}</span>
                             </v-layout>
                         </v-flex>
