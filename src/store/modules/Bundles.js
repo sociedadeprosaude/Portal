@@ -68,6 +68,32 @@ const actions = {
 
     },
 
+    async getBundle ({ }, search) {
+
+        let bundleSnap;
+
+        if (!search) {
+            bundleSnap = await firebase.firestore().collection('packages').limit(30).get()
+        } else {
+            bundleSnap = await firebase.firestore().collection('packages').where('name', '>=', search).limit(30).get()
+        }
+
+        let bundle = [];
+        bundleSnap.forEach((doc) => {
+            bundle.push(doc.data());
+
+            let examsCol = firebase.firestore().collection('packages').doc(doc.data().name).collection('exams').get();
+            let exams = [];
+            examsCol.forEach((e) => {
+                exams.push(e.data())
+            });
+
+            bundle['exams'] = exams;
+        });
+
+        return bundle;
+    },
+
     async loadBundle ({commit}) {
         return new Promise((resolve, reject) => {
             firebase.firestore().collection('packages').get().then((data) => {
@@ -149,7 +175,7 @@ const getters = {
     bundles (state) {
         return state.bundles;
     },
-    
+
 };
 
 export default {

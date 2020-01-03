@@ -241,18 +241,25 @@
 
         watch: {
 
-            searchData () {
+            async searchData () {
                 if (this.searchData){
                     this.isLoading = true;
                     const data = this.searchData.name.toUpperCase();
 
-                    this.searchPackage = false;
-                    this.registerPackage= true;
+                    let bundle = await this.$store.dispatch('getBundle', data);
 
-                    this.editedPackage = Object.assign({}, this.searchData);
-                    this.editedPackage.name = data;
+                    if (bundle) {
+                        this.searchPackage = false;
+                        this.registerPackage= true;
 
-                    this.$store.dispatch('selectedBundle', this.editedPackage);
+                        this.editedPackage = Object.assign({}, this.searchData);
+                        this.editedPackage.name = data;
+
+                        this.$store.commit('selectedBundle', this.editedPackage);
+                        for (let exam in bundle.exams) {
+                            this.$store.commit('addItemsPackage', bundle.exams[exam])
+                        }
+                    }
 
                 } else {
                     this.$store.commit('selectedBundle', this.defaultPackage);
