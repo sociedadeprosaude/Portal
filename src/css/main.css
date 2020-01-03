@@ -41,17 +41,17 @@
         height: calc(8cm * 2);
     }
 
-    #receipt-to-print, #receipt-to-print * {
+    .receipt-to-print, .receipt-to-print * {
         visibility: visible;
         -webkit-print-color-adjust: exact;
     }
 
-    #receipt-to-print {
+    .receipt-to-print {
         position: absolute;
         left: 0px;
         top: 0px;
     }
-/*
+
     #attendanceGuide-to-print, #attendanceGuide-to-print * {
         visibility: visible;
         -webkit-print-color-adjust: exact;
@@ -62,5 +62,4 @@
         left: 0px;
         top: 0px;
     }
- */
 }

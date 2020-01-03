@@ -48,7 +48,7 @@
                 </v-layout>
             </v-flex>
             <v-flex xs12 class="text-right">
-                <span>1.1.1</span>
+                <span>1.1.3</span>
             </v-flex>
         </v-layout>
         <v-layout row wrap v-else class="align-center">
@@ -157,6 +157,12 @@
                                 permission: 'Colaboradores',
                                 to: '/labor',
                                 icon: 'supervisor_account'
+                            },
+                            {
+                                title: 'Unidades',
+                                permission: 'Colaboradores',
+                                to: '/units',
+                                icon: 'storefront'
                             }
                         ]
                     }

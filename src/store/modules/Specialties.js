@@ -15,38 +15,39 @@ const mutations = {
 const actions = {
 
     async loadSpecialties({commit}) {
-        let data = await firebase.firestore().collection('specialties').get()
+        firebase.firestore().collection('specialties').onSnapshot(async function(data) {
+            let allSpecialties = [];
+            for (let specDoc in data.docs) {
+                let specialty = data.docs[specDoc].data();
+                let doctors = [];
+                let docsCollection = await firebase.firestore().collection('specialties/' + specialty.name + '/doctors').get()
+                for (let doctorDoc in docsCollection.docs) {
+                    let doctor = docsCollection.docs[doctorDoc].data()
+                    doctor.clinics = []
+                    let clinCollection = await firebase.firestore().collection('specialties/' + specialty.name + '/doctors').doc(doctor.cpf).collection('clinics').get()
+                    clinCollection.forEach((clinDoc) => {
+                        doctor.clinics.push(clinDoc.data())
+                    })
+                    doctors.push({
+                        ...doctor,
+                        price: doctor.price,
+                        cost: doctor.cost,
+                        payment_method: doctor.payment_method,
+                    });
+                }
 
-        let allSpecialties = [];
-        for (let specDoc in data.docs) {
-            let specialty = data.docs[specDoc].data();
-            let doctors = [];
-            let docsCollection = await firebase.firestore().collection('specialties/' + specialty.name + '/doctors').get()
-            for (let doctorDoc in docsCollection.docs) {
-                let doctor = docsCollection.docs[doctorDoc].data()
-                doctor.clinics = []
-                let clinCollection = await firebase.firestore().collection('specialties/' + specialty.name + '/doctors').doc(doctor.cpf).collection('clinics').get()
-                clinCollection.forEach((clinDoc) => {
-                    doctor.clinics.push(clinDoc.data())
+
+                allSpecialties.push({
+                    name: specialty.name,
+                    id: specDoc.id,
+                    doctors: doctors,
                 })
-                doctors.push({
-                    ...doctor,
-                    price: doctor.price,
-                    cost: doctor.cost,
-                    payment_method: doctor.payment_method,
-                });
+
+
+                commit('setSpecialties', allSpecialties);
             }
-
-
-            allSpecialties.push({
-                name: specialty.name,
-                id: specDoc.id,
-                doctors: doctors,
-            })
-
-
-            commit('setSpecialties', allSpecialties);
-        }
+        })
+        // let data = await firebase.firestore().collection('specialties').get()
 
 
         // if (data) return data

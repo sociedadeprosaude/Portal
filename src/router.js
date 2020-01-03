@@ -12,6 +12,7 @@ import Bundles from '@/views/Cashier/Bundles'
 
 import Doctors from '@/views/Doctors'
 import Clinics from "@/views/Clinics"
+import Units from "./views/Units";
 
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
 import CashierRoutes from "./routes/CashierRoutes";
@@ -93,7 +94,14 @@ let mainRoutes = [
     meta: {
       requiresAuth: false,
     }
-
+  },
+  {
+    path: '/units',
+    name: 'units',
+    component : Units,
+    meta: {
+      requiresAuth: false,
+    }
   },
 ]
 

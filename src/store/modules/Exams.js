@@ -94,25 +94,24 @@ const actions = {
             price: payload.sale,
             rules: payload.rules,
             obs: payload.obs,
-            // clinic: payload.clinic.name,
-            // telephone: payload.clinic.telephone,
-            // address: payload.clinic.address,
-            // cnpj: payload.clinic.cnpj,
-            //email: payload.clinic.email,
-            // agenda: payload.clinic.agenda,
-
         };
-        examData = functions.removeUndefineds(examData)
-        delete payload.clinic.id
-        firebase.firestore().collection('clinics/' + payload.clinic.name + '/exams').doc(payload.exam).set(examData);
 
-        firebase.firestore().collection('exams/').doc(payload.exam).collection('clinics').doc(payload.clinic.name).set({
+        let examAndClinic = {
             ...payload.clinic,
             cost: payload.cost,
             price: payload.sale,
             rules: payload.rules,
             obs: payload.obs,
-        });
+        };
+
+        examData = functions.removeUndefineds(examData)
+        delete payload.clinic.id
+        examAndClinic = functions.removeUndefineds(examAndClinic)
+
+        firebase.firestore().collection('clinics/' + payload.clinic.name + '/exams').doc(payload.exam).set(examData);
+
+        firebase.firestore().collection('exams/').doc(payload.exam).collection('clinics').doc(payload.clinic.name)
+            .set(examAndClinic);
     },
 
     async loadSelectedExams({commit}, payload) {

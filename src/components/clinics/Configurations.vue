@@ -433,12 +433,11 @@
                     exam: this.exam.name,
                     cost:this.exam.cost,
                     sale:this.exam.price,
-                    //rules: this.rules,
                     rules: this.exam.rules,
-                    obs:this.exam.obs,
+                    obs: this.exam.obs,
                 };
-                console.log("payload:",examData)
-                //this.$store.dispatch('addExamToClinic', examData);
+                //console.log("payload:",examData)
+                this.$store.dispatch('addExamToClinic', examData);
                 this.clear()
             },
 

@@ -12,7 +12,7 @@
                 </v-btn>
             </v-flex>
             <v-flex>
-                <v-card flat class="pa-10" id="receipt-to-print">
+                <v-card flat class="pa-10 receipt-to-print">
                     <v-layout row wrap class="align-center pa-4" style="border: 2px solid #2196f3; border-radius: 16px">
                         <v-flex xs6 class="text-left">
                             <v-layout column wrap>
@@ -56,7 +56,7 @@
                                 </v-flex>
                                 <v-flex>
                                     <span class="primary--text font-weight-bold">Data de Nascimento: </span>
-                                    <span class="font-weight-bold">{{user.birth_date}}</span><br>
+                                    <span class="font-weight-bold">{{user.birth_date | dateFilter}}</span><br>
                                 </v-flex>
                                 <v-flex>
                                     <span class="primary--text font-weight-bold">Idade: </span>
@@ -157,7 +157,7 @@
                         }
                     })
                 }
-                    
+
             }
         },
         watch:{
@@ -165,7 +165,7 @@
                 this.saveConsultationHour()
                 return value
             }
-            
+
         }
     }
 </script>
