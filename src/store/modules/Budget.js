@@ -209,7 +209,7 @@ const actions = {
                     used: used
                 })
 
-                if (used) {
+                if (used && consultationFound) {
                     let procedures = await firebase.firestore().collection('procedures').where('consultation', '==', consultationFound.id)
                         .get()
 
@@ -229,10 +229,11 @@ const actions = {
                     console.log("Criando procedure")
                     firebase.firestore().collection('procedures').add(
                         {
-                            status:['Pago'],
+                            status:['Comprado'],
                             payment_number:copyPayload.id.toString(),
                             startAt: moment().format('YYYY-MM-DD hh:ss'),
                             type:'Consultation',
+                            specialty:specialties[spec].name,
                             user:user.cpf
                         }
                     )
@@ -378,9 +379,22 @@ const actions = {
         var found = false
         let intakes
         return new Promise(async (resolve, reject) => {
-            intakes = await firebase.firestore().collection('users').doc(payload.user.cpf).collection('intakes')/* .
+            let procedures
+            procedures = await firebase.firestore().collection('procedures').where('type','==','Consultation')
+            .where('specialty','==',payload.specialty.name).where('user','==',payload.user.cpf).where('status','==',['Comprado']).get()
+            if(!procedures.empty){
+                procedures.forEach((procedure)=>{
+                    console.log('Encontrou!')
+                    resolve({ uid: procedure.id, ...procedure.data() })
+                })
+            }else{
+                reject('Payment Number not found')
+            }
+           
+
+            /* intakes = await firebase.firestore().collection('users').doc(payload.user.cpf).collection('intakes')/* .
             where('type', '==','specialty').where('used','==',false).where('name','==',payload.specialty.name)
-            .where('doctor.cpf','==',payload.doctor.cpf) */
+            .where('doctor.cpf','==',payload.doctor.cpf) //
                 .get()
             for (const key in intakes.docs) {
 
@@ -398,7 +412,7 @@ const actions = {
 
             if (!found) {
                 reject('Payment Number not found')
-            }
+            } */
 
         }).catch(() => {
             reject('Error!')
