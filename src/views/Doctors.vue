@@ -35,9 +35,9 @@
                     </template>
 
                     <template v-slot:item.action="{ item }">
-                        <v-btn fab text class="warning mr-2" small>
-                            <v-icon color="white" @click="editItem(item)">edit</v-icon>
-                        </v-btn>
+<!--                        <v-btn fab text class="warning mr-2" small>-->
+<!--                            <v-icon color="white" @click="editItem(item)">edit</v-icon>-->
+<!--                        </v-btn>-->
 
                         <v-btn fab text class="error mx-0" small>
                             <v-icon color="white" @click="confirmDeletion(item)">delete</v-icon>
@@ -156,6 +156,7 @@
                     value: 'name',
                     filterable: true
                 },
+                {text: 'CPF', value: 'cpf', sortable: false, align: 'right'},
                 {text: 'CRM', value: 'crm', sortable: false, align: 'right'},
                 {text: 'Especialidades', value: 'specialties', sortable: false, align: 'center'},
                 {text: 'Ações', value: 'action', sortable: false, align: 'center'}
