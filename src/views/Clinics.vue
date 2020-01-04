@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <v-layout row wrap>
-            <v-flex v-if="!loading">
+            <v-flex v-if="!loadingClinics">
                 <v-data-table
                         :headers="headers"
                         :search="search"
@@ -427,6 +427,9 @@
         }),
 
         computed: {
+            loadingClinics() {
+              return !this.$store.getters.clinicsLoaded
+            },
 
             formIsValid() {
                 return this.editedItem.name && this.editedItem.telephone[0]
@@ -534,7 +537,7 @@
                 confirm('Are you sure you want to delete this item?')
                 this.loading = true
                 await this.$store.dispatch('deleteClinic', item)
-                await this.$store.dispatch('getClinics')
+                // await this.$store.dispatch('getClinics')
                 this.loading = false
             },
 

@@ -2,7 +2,9 @@
     <v-container>
         <v-layout row wrap>
 
-            <v-flex xs12 class="my-4">
+            <v-flex xs12 class="my-4"
+                    v-if="!loadingDoctors"
+            >
 
                 <v-data-table
                         :headers="headers"
@@ -49,6 +51,9 @@
                     </template>
 
                 </v-data-table>
+            </v-flex>
+            <v-flex xs12 class="text-center" v-else>
+                <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
             </v-flex>
         </v-layout>
 
@@ -158,6 +163,9 @@
         }),
 
         computed: {
+            loadingDoctors() {
+                return !this.$store.getters.doctorsLoaded
+            },
             specialties() {
                 return this.$store.getters.specialties
             },

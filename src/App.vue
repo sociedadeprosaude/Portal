@@ -19,6 +19,7 @@
             // this.$store.dispatch('listenToOperationalValues')
             this.$store.dispatch("loadSpecialties")
             this.$store.dispatch("getDoctors")
+            this.$store.dispatch("getClinics")
         }
     }
 </script>
