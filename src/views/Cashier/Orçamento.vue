@@ -4,7 +4,7 @@
             <v-flex sm3 v-if="patient" class="hidden-print-only">
                 <intakes-history></intakes-history>
             </v-flex>
-            <v-flex class="hidden-print-only">
+            <v-flex sm6 class="hidden-print-only">
                 <procedures-search></procedures-search>
             </v-flex>
             <v-flex sm3 class="hidden-print-only">
