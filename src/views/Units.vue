@@ -24,6 +24,7 @@
         methods: {
             async loadInitialInfo() {
                 this.$store.dispatch('getProSaudeUnits')
+                await this.$store.dispatch('getClinics')
             },
             setProperty(clin) {
                 this.$store.dispatch('setClinProperty', clin)

@@ -2,14 +2,12 @@ import firebase from "firebase";
 
 const state = {
     specialties: [],
-    loaded: false
 };
 
 const mutations = {
 
     setSpecialties(state, payload) {
         state.specialties = payload;
-        state.loaded = true
     },
 
 };
@@ -66,9 +64,6 @@ const getters = {
     specialties(state) {
         return state.specialties;
     },
-    specialtiesLoaded (state) {
-        return state.loaded
-    }
 
 };
 

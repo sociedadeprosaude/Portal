@@ -322,6 +322,9 @@
                 // selectedBudget: undefined
             }
         },
+        mounted() {
+            this.loadDoctors()
+        },
         computed: {
             doctors() {
                 return Object.values(this.$store.getters.doctors)
@@ -371,6 +374,11 @@
             },
         },
         methods: {
+            async loadDoctors() {
+                this.loadingDoctors = true;
+                await this.$store.dispatch('getDoctors');
+                this.loadingDoctors = false
+            },
             async searchBudget() {
                 this.searchBudgetLoading = true;
                 let budget = await this.$store.dispatch('getBudget', this.searchBudgetNumber);

@@ -4,22 +4,20 @@ const state = {
     clinics: [],
     allClinics: [],
     selectedClinic: null,
-    units: [],
-    loaded: false
+    units: []
 };
 
 const mutations = {
     setClinics(state, payload) {
         state.clinics = payload
-        state.loaded = true
     },
-    setAllClinics(state, payload) {
+    setAllClinics (state, payload){
         state.allClinics = payload;
     },
-    setSelectedClinic(state, payload) {
+    setSelectedClinic (state, payload){
         state.selectedClinic = payload;
     },
-    setUnits(state, payload) {
+    setUnits (state, payload) {
         state.units = payload
     }
 };
@@ -27,30 +25,37 @@ const mutations = {
 const actions = {
 
     async getClinics({commit}) {
-        firebase.firestore().collection('clinics').onSnapshot(async function (clinicsSnap) {
-            let clinics = [];
-            clinicsSnap.forEach(function (document) {
-                clinics.push({
-                    id: document.id,
-                    ...document.data()
-                });
-            });
-
-            let exams = [];
-            for (let clinic in clinics) {
-                let examsSnap = await firebase.firestore().collection('clinics').doc(clinics[clinic].name)
-                    .collection('exams').get();
-
-                examsSnap.forEach(function (doc) {
-                    exams.push({
-                        id: doc.id,
-                        ...doc.data(),
+        try {
+            await firebase.firestore().collection('clinics').onSnapshot(async function (clinicsSnap) {
+                let clinics = [];
+                clinicsSnap.forEach(function (document) {
+                    clinics.push({
+                        id: document.id,
+                        ...document.data()
                     });
                 });
-            }
 
-            commit('setClinics', clinics);
-        })
+                let exams = [];
+                for (let clinic in clinics){
+                    let examsSnap = await firebase.firestore().collection('clinics').doc(clinics[clinic].name)
+                        .collection('exams').get();
+
+                    examsSnap.forEach(function (doc) {
+                        exams.push({
+                            id: doc.id,
+                            ...doc.data(),
+                        });
+                    });
+                }
+
+                //console.log('#exams', exams);
+                commit('setClinics', clinics);
+                //console.log(clinics);
+            })
+
+        } catch (e) {
+            throw e
+        }
     },
 
     async addClinic({commit}, clinic) {
@@ -83,7 +88,7 @@ const actions = {
         }
     },
 
-    async removeExamFromClinic({commit}, payload) {//apagar exames da clinica e clinica do exames
+    async removeExamFromClinic({commit}, payload){//apagar exames da clinica e clinica do exames
         delete payload.clinic.id
         try {
             firebase.firestore().collection('clinics/' + payload.clinic.name + '/exams').doc(payload.product).delete();
@@ -92,7 +97,7 @@ const actions = {
         }
     },
 
-    addAppointment({commit}, payload) {
+    addAppointment ({commit}, payload) {
 
         console.log('payload', payload);
 
@@ -139,7 +144,7 @@ const actions = {
             .set(payload.clinic);
     },
 
-    addAppointmentFromDoctors({commit}, payload) {
+    addAppointmentFromDoctors ({commit}, payload) {
 
         //console.log('antes:', payload);
 
@@ -175,7 +180,7 @@ const actions = {
             .doc(payload.clinic.name).set(payload.clinic);
     },
 
-    deleteAppointment({commit}, payload) {
+    deleteAppointment ({commit}, payload) {
         //console.log('payload', payload);
         delete payload.clinic.id
         firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie + '/doctors').doc(payload.cpf)
@@ -189,11 +194,11 @@ const actions = {
         //firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).delete();
     },
 
-    selectClinic({commit}, payload) {
-        commit('setSelectedClinic', payload);
+    selectClinic ({commit}, payload) {
+        commit('setSelectedClinic' , payload);
     },
 
-    loadClinics({commit}) {
+    loadClinics ({commit}) {
         return new Promise((resolve, reject) => {
             let clinics = [];
             firebase.firestore().collection('clinics').onSnapshot((doc) => {
@@ -292,18 +297,15 @@ const getters = {
         return state.clinics
     },
 
-    allClinics(state) {
+    allClinics (state) {
         return state.allClinics;
     },
 
-    selectedClinic(state) {
+    selectedClinic (state){
         return state.selectedClinic;
     },
     units(state) {
         return state.units
-    },
-    clinicsLoaded(state) {
-        return state.loaded
     }
 };
 

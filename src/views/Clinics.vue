@@ -448,6 +448,9 @@
 
         },
 
+        mounted() {
+            this.loadClinics()
+        },
 
         watch: {
 
@@ -498,6 +501,12 @@
 
         methods: {
 
+            async loadClinics() {
+              this.loading = true
+              await this.$store.dispatch('getClinics')
+              this.loading = false
+            },
+
             selectClinic(item) {
                 this.editedIndex = this.clinics.indexOf(item);
                 this.editedItem = Object.assign({}, item);
@@ -525,6 +534,7 @@
                 confirm('Are you sure you want to delete this item?')
                 this.loading = true
                 await this.$store.dispatch('deleteClinic', item)
+                await this.$store.dispatch('getClinics')
                 this.loading = false
             },
 
@@ -577,6 +587,7 @@
                 // this.loading = false
                 // return
                 await this.$store.dispatch('addClinic', clinicData)
+                await this.$store.dispatch('getClinics')
                 this.success = true
                 this.loading = false
                 setTimeout(() => {

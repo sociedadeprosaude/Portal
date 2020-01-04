@@ -194,6 +194,10 @@
         mounted() {
             let self = this;
             this.loading = true;
+            self.$store.dispatch("loadSpecialties")
+            .then(() => {
+                this.loading = false
+            });
             window.addEventListener('keyup', function (e) {
                 if (e.target.id === 'search') {
                     clearTimeout(self.typingTimer);

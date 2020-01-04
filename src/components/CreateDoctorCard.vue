@@ -224,6 +224,8 @@
             }
         },
         mounted() {
+            this.$store.dispatch('getClinics')
+            this.$store.dispatch('getSpecialties')
             if (this.doctor) {
                 this.name = this.doctor.name
                 this.cpf = this.doctor.cpf
@@ -311,7 +313,7 @@
                     type: 'doctor'
                 }
                 await this.$store.dispatch('addDoctor', doctor)
-                // await this.$store.dispatch('getDoctors')
+                await this.$store.dispatch('getDoctors')
                 //==========================começo da nova função
                 for (let i in this.clinic) {
                     for (let j in this.specialties) {

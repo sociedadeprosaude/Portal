@@ -3,14 +3,8 @@
         <v-slide-y-transition>
             <agenda-toolbar></agenda-toolbar>
         </v-slide-y-transition>
-        <v-content :class="['background','mt-12 pt-6']" v-if="infosLoaded">
+        <v-content :class="['background','mt-12 pt-6']">
             <router-view/>
-        </v-content>
-        <v-content v-else :class="['background','mt-12 pt-6']">
-            <v-layout column wrap class="align-center">
-                <span>Carregando informações iniciais</span>
-                <v-progress-circular indeterminate class="primary_light--color"></v-progress-circular>
-            </v-layout>
         </v-content>
     </v-app>
 </template>
@@ -21,20 +15,8 @@
         components: {
             AgendaToolbar
         },
-        computed: {
-            infosLoaded() {
-                return this.$store.getters.examsLoaded
-                    && this.$store.getters.doctorsLoaded
-                    && this.$store.getters.specialtiesLoaded
-                    && this.$store.getters.clinicsLoaded
-            }
-        },
         mounted() {
             // this.$store.dispatch('listenToOperationalValues')
-            this.$store.dispatch('loadExams')
-            this.$store.dispatch('getDoctors')
-            this.$store.dispatch('loadSpecialties')
-            this.$store.dispatch('getClinics')
         }
     }
 </script>
