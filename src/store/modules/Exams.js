@@ -117,7 +117,7 @@ const actions = {
     async loadSelectedExams({commit}, payload) {
         payload = payload.toUpperCase();
         try {
-            let examsSnap = await firebase.firestore().collection('exams').where('name', '>=', payload).limit(20).get();
+            let examsSnap = await firebase.firestore().collection('exams').where('name', '>=', payload).limit(5).get();
             let exams = [];
             for (let doc in examsSnap.docs) {
                 let clinics = [];
@@ -130,7 +130,6 @@ const actions = {
                     clinics: clinics,
                 });
             }
-            console.log(exams);
             commit('setExamsSelected', exams);
         } catch (e) {
             throw e

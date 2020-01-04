@@ -17,6 +17,7 @@
         },
         mounted() {
             // this.$store.dispatch('listenToOperationalValues')
+            this.$store.dispatch("loadSpecialties")
         }
     }
 </script>

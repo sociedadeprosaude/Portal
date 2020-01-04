@@ -2,6 +2,7 @@ import firebase from "firebase";
 
 const state = {
     specialties: [],
+    loaded: false
 };
 
 const mutations = {
@@ -9,6 +10,9 @@ const mutations = {
     setSpecialties(state, payload) {
         state.specialties = payload;
     },
+    setSpecialtiesLoaded(state, payload) {
+        state.loaded = payload
+    }
 
 };
 
@@ -46,6 +50,8 @@ const actions = {
 
                 commit('setSpecialties', allSpecialties);
             }
+            commit('setSpecialtiesLoaded', true);
+
         })
         // let data = await firebase.firestore().collection('specialties').get()
 
@@ -64,6 +70,9 @@ const getters = {
     specialties(state) {
         return state.specialties;
     },
+    specialtiesLoaded(state) {
+        return state.loaded
+    }
 
 };
 

@@ -22,7 +22,7 @@
                             </v-btn>
                             <v-btn outlined class="mx-2"
                                    :color="categorySelect === 'appointment' ? 'accent' : 'primary_light'" rounded
-                                   @click="selectCategory('appointment')">Consultas
+                                   @click="selectCategory('appointment')">{{specialtiesLoaded ? 'Consultas' : 'Carregando consultas...'}}
                             </v-btn>
                             <v-btn outlined class="mx-2"
                                    :color="categorySelect === 'package' ? 'accent' : 'primary_light'" rounded
@@ -133,6 +133,9 @@
                 });
                 return specialties
             },
+            specialtiesLoaded() {
+                return this.$store.getters.specialtiesLoaded
+            },
             exams() {
                 return this.$store.getters.examsSelected;
             },
@@ -193,23 +196,20 @@
         },
         mounted() {
             let self = this;
-            this.loading = true;
-            self.$store.dispatch("loadSpecialties")
-            .then(() => {
-                this.loading = false
-            });
             window.addEventListener('keyup', function (e) {
                 if (e.target.id === 'search') {
                     clearTimeout(self.typingTimer);
                     self.typingTimer = setTimeout(() => {
                         if (self.categorySelect === 'exam') {
+                            self.loading = true
                             self.$store.dispatch("loadSelectedExams", self.search.toUpperCase()).then(() => {
+                                self.loading = false
                             });
                         }
                         if (self.categorySelect === 'package') {
                             self.$store.dispatch("loadBundle");
                         }
-                    }, 1000);
+                    }, 300);
                 }
             });
             window.addEventListener('keydown', function (e) {
