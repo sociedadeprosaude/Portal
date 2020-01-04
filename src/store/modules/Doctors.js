@@ -2,12 +2,14 @@ import firebase, {firestore} from "firebase";
 
 const state = {
     doctors: {},
-    specialties: []
+    specialties: [],
+    loaded: false
 };
 
 const mutations = {
     setDoctors(state, payload) {
         state.doctors = payload
+        state.loaded = true
     },
     setSpecialties(state, payload) {
         state.specialties = payload
@@ -80,22 +82,18 @@ const actions = {
         }
     },
     async getDoctors({commit}) {
-        try {
-            let doctorsSnap = await firebase.firestore().collection('users').where('type', '==', 'doctor').get();
-            let doctors = {};
-            for (let document in  doctorsSnap.docs) {
-                doctors[doctorsSnap.docs[document].id] = doctorsSnap.docs[document].data()
-                doctors[doctorsSnap.docs[document].id].specialties = []
-                let specSnap = await doctorsSnap.docs[document].ref.collection('specialties').get()
-                specSnap.forEach((specDoc) => {
-                    doctors[doctorsSnap.docs[document].id].specialties.push(specDoc.data())
-                })
-            }
-            commit('setDoctors', doctors);
-            return doctors
-        } catch (e) {
-            throw e
-        }
+        firebase.firestore().collection('users').where('type', '==', 'doctor').onSnapshot(async (doctorsSnap) => {
+                let doctors = {};
+                for (let document in  doctorsSnap.docs) {
+                    doctors[doctorsSnap.docs[document].id] = doctorsSnap.docs[document].data()
+                    doctors[doctorsSnap.docs[document].id].specialties = []
+                    let specSnap = await doctorsSnap.docs[document].ref.collection('specialties').get()
+                    specSnap.forEach((specDoc) => {
+                        doctors[doctorsSnap.docs[document].id].specialties.push(specDoc.data())
+                    })
+                }
+                commit('setDoctors', doctors);
+            })
     },
     async addSpecialty({}, specialty) {
         try {
@@ -135,6 +133,9 @@ const getters = {
     doctors(state) {
         return state.doctors
     },
+    doctorsLoaded(state) {
+        return state.loaded
+    }
 };
 
 export default {

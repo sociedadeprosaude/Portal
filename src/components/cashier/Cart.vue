@@ -318,14 +318,13 @@
                 selectedIntake: undefined,
                 selectedDoctor: undefined,
                 receiptDialog: false,
-                loadingDoctors: false
                 // selectedBudget: undefined
             }
         },
-        mounted() {
-            this.loadDoctors()
-        },
         computed: {
+            loadingDoctors() {
+              return !this.$store.getters.doctorsLoaded
+            },
             doctors() {
                 return Object.values(this.$store.getters.doctors)
             },
@@ -374,11 +373,6 @@
             },
         },
         methods: {
-            async loadDoctors() {
-                this.loadingDoctors = true;
-                await this.$store.dispatch('getDoctors');
-                this.loadingDoctors = false
-            },
             async searchBudget() {
                 this.searchBudgetLoading = true;
                 let budget = await this.$store.dispatch('getBudget', this.searchBudgetNumber);

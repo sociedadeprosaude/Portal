@@ -18,6 +18,7 @@
         mounted() {
             // this.$store.dispatch('listenToOperationalValues')
             this.$store.dispatch("loadSpecialties")
+            this.$store.dispatch("getDoctors")
         }
     }
 </script>
