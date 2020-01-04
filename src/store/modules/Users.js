@@ -27,6 +27,13 @@ const mutations = {
 };
 
 const actions = {
+    // async updateUsers() {
+    //     let usersSnap = await firestore().collection('users').get()
+    //     usersSnap.forEach((doc) => {
+    //         let user = doc.data()
+    //         firestore().collection('users').doc(user.cpf).update({type: user.type.toUpperCase()})
+    //     })
+    // },
     async searchUser({commit, getters}, searchFields) {
         let usersRef = firestore().collection('users')
         for (let field in searchFields) {

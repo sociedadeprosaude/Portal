@@ -20,6 +20,8 @@
             this.$store.dispatch("loadSpecialties")
             this.$store.dispatch("getDoctors")
             this.$store.dispatch("getClinics")
+            // this.$store.dispatch("updateUsers")
+
         }
     }
 </script>

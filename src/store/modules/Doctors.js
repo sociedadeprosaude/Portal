@@ -82,7 +82,7 @@ const actions = {
         }
     },
     async getDoctors({commit}) {
-        firebase.firestore().collection('users').where('type', '==', 'doctor').onSnapshot(async (doctorsSnap) => {
+        firebase.firestore().collection('users').where('type', '==', 'DOCTOR').onSnapshot(async (doctorsSnap) => {
                 let doctors = {};
                 for (let document in  doctorsSnap.docs) {
                     doctors[doctorsSnap.docs[document].id] = doctorsSnap.docs[document].data()
