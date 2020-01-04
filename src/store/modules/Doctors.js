@@ -72,6 +72,14 @@ const actions = {
     },
     async deleteDoctor ({}, doctor) {
         try {
+            (await firebase.firestore().collection('users').doc(doctor.cpf).collection('specialties').get()).forEach((doc) => {
+                firebase.firestore().collection('users').doc(doctor.cpf).collection('specialties').doc(doc.id).delete()
+            });
+
+            (await firebase.firestore().collection('users').doc(doctor.cpf).collection('clinics').get()).forEach((doc) => {
+                firebase.firestore().collection('users').doc(doctor.cpf).collection('clinics').doc(doc.id).delete()
+            });
+
             await firebase.firestore().collection('users').doc(doctor.cpf).delete()
             for (let spec in doctor.specialties) {
                 await firebase.firestore().collection('specialties').doc(doctor.specialties[spec].name).collection('doctors').doc(doctor.cpf).delete()

@@ -212,10 +212,7 @@
         // beforeDestroy() {
         //     this.doctor = undefined
         // },
-        watch: {
-            specialties(val) {
-                console.log(val)
-            }
+        // watch: {
         //     doctor() {
         //         if (this.doctor) {
         //             this.name = this.doctor.name
@@ -225,17 +222,17 @@
         //             this.clinic = this.doctor.clinics
         //         }
         //     }
-        },
+        // },
         mounted() {
             this.$store.dispatch('getClinics')
             this.$store.dispatch('getSpecialties')
-        //     if (this.doctor) {
-        //         this.name = this.doctor.name
-        //         this.cpf = this.doctor.cpf
-        //         this.crm = this.doctor.crm
-        //         this.specialties = this.doctor.specialties
-        //         this.clinic = this.doctor.clinics
-        //     }
+            if (this.doctor) {
+                this.name = this.doctor.name
+                this.cpf = this.doctor.cpf
+                this.crm = this.doctor.crm
+                this.specialties = this.doctor.specialties
+                this.clinic = this.doctor.clinics
+            }
         },
         data() {
             return {
@@ -317,6 +314,7 @@
                     // addresses: this.addresses,
                     type: 'doctor'
                 }
+                await this.$store.dispatch('deleteDoctor', doctor)
                 await this.$store.dispatch('addDoctor', doctor)
                 await this.$store.dispatch('getDoctors')
                 //==========================começo da nova função
