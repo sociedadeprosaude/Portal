@@ -178,18 +178,6 @@
             },
         },
 
-        // watch: {
-        //     dialog(val) {
-        //         val || this.close()
-        //     }
-        // },
-
-        mounted() {
-            this.$store.dispatch('getClinics');
-            this.$store.dispatch('getDoctors');
-            this.$store.dispatch('getSpecialties');
-        },
-
         methods: {
             addSpecialtyDialog() {
                 this.createSpecialtyDialog = true

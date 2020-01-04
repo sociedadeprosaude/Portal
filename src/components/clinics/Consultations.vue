@@ -157,7 +157,6 @@
 
         mounted() {
             this.$store.dispatch('getSpecialties');
-            this.$store.dispatch('getDoctors');
         },
 
         watch: {

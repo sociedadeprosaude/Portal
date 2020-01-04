@@ -172,7 +172,7 @@
         },
 
         mounted() {
-            this.loadExams()
+            // this.loadExams()
             window.addEventListener('keydown', this.handleEnter)
         },
         beforeDestroy() {
@@ -180,11 +180,11 @@
         },
 
         methods: {
-            async loadExams() {
-                this.loadingExams = true
-                await this.$store.dispatch('loadExam');
-                this.loadingExams = false
-            },
+            // async loadExams() {
+            //     this.loadingExams = true
+            //     await this.$store.dispatch('loadExam');
+            //     this.loadingExams = false
+            // },
             handleEnter(e) {
                 if (e.key === 'Enter') {
                     this.addToList()

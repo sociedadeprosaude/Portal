@@ -365,7 +365,6 @@
                 final_date: moment().format('YYYY-MM-DD 23:59:59')
             })
             await this.$store.dispatch('getSpecialties')
-            await this.$store.dispatch('getDoctors')
             this.date = moment().format('YYYY-MM-DD')
             this.dateFormatted = moment().format('YYYY-MM-DD')
         },

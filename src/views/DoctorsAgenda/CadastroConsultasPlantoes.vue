@@ -417,8 +417,6 @@
         },
         mounted() {
             this.$store.dispatch('getSpecialties')
-            this.$store.dispatch('getDoctors')
-            this.$store.dispatch('getClinics')
             this.dataStart = moment().format('YYYY-MM-DD')
             this.dataTheEnd = moment().format('YYYY-MM-DD')
             this.dateFormatted = moment().format('YYYY-MM-DD')

@@ -2,12 +2,14 @@ import firebase, {firestore} from "firebase";
 
 const state = {
     doctors: {},
-    specialties: []
+    specialties: [],
+    loaded: false
 };
 
 const mutations = {
     setDoctors(state, payload) {
         state.doctors = payload
+        state.loaded = true
     },
     setSpecialties(state, payload) {
         state.specialties = payload
@@ -28,7 +30,7 @@ const actions = {
     //     })
     //     return users
     // },
-    async addDoctor ({commit}, doctor) {
+    async addDoctor({commit}, doctor) {
         try {
             for (let data in doctor) {
                 if (!doctor[data]) {
@@ -68,7 +70,7 @@ const actions = {
             throw e
         }
     },
-    async deleteDoctor ({}, doctor) {
+    async deleteDoctor({}, doctor) {
         try {
             await firebase.firestore().collection('users').doc(doctor.cpf).delete()
             for (let spec in doctor.specialties) {
@@ -80,10 +82,9 @@ const actions = {
         }
     },
     async getDoctors({commit}) {
-        try {
-            let doctorsSnap = await firebase.firestore().collection('users').where('type', '==', 'doctor').get();
+        firebase.firestore().collection('users').where('type', '==', 'doctor').onSnapshot(async function(doctorsSnap) {
             let doctors = {};
-            for (let document in  doctorsSnap.docs) {
+            for (let document in doctorsSnap.docs) {
                 doctors[doctorsSnap.docs[document].id] = doctorsSnap.docs[document].data()
                 doctors[doctorsSnap.docs[document].id].specialties = []
                 let specSnap = await doctorsSnap.docs[document].ref.collection('specialties').get()
@@ -92,10 +93,7 @@ const actions = {
                 })
             }
             commit('setDoctors', doctors);
-            return doctors
-        } catch (e) {
-            throw e
-        }
+        })
     },
     async addSpecialty({}, specialty) {
         try {
@@ -112,15 +110,15 @@ const actions = {
             specialtySnapt.forEach(function (document) {
                 let doctors = []
                 firebase.firestore().collection('specialties').doc(document.data().name).collection('doctors').get()
-                .then((snapshot)=>{
-                    snapshot.forEach((doctor)=>{
-                        doctors.push({...doctor.data()})
+                    .then((snapshot) => {
+                        snapshot.forEach((doctor) => {
+                            doctors.push({...doctor.data()})
+                        })
                     })
-                })
                 specialties.push({
-                  id: document.id,
-                  ...document.data(),
-                  doctors:doctors
+                    id: document.id,
+                    ...document.data(),
+                    doctors: doctors
                 })
             })
             commit('setSpecialties', specialties)
@@ -135,6 +133,9 @@ const getters = {
     doctors(state) {
         return state.doctors
     },
+    doctorsLoaded(state) {
+        return state.loaded
+    }
 };
 
 export default {
