@@ -186,13 +186,13 @@ const actions = {
             })
 
             for (let spec in specialties) {
-                var used = false
+                //var used = false
                 var consultationFound = undefined //variável usada para a tabela de procedimentos
                 let consultations = await userRef.collection('consultations').where('specialty.name', '==', specialties[spec].name).where('status', '==', 'Aguardando pagamento')
                     .get()
 
                 consultations.forEach((c) => {
-                    used = true
+                    //used = true
                     consultationFound = c
                     userRef.collection('consultations').doc(c.id).update({
                         status: 'Pago',
@@ -206,20 +206,20 @@ const actions = {
 
                 await userRef.collection('intakes').doc(copyPayload.id.toString()).collection('specialties').add({
                     ...specialties[spec],
-                    used: used
+                    //used: used
                 })
 
-                if (used && consultationFound) {
-                    let procedures = await firebase.firestore().collection('procedures').where('consultation', '==', consultationFound.id)
+                if (consultationFound) {
+                    let procedures = await firebase.firestore().collection('users').doc(user.cpf).collection('procedures').where('consultation', '==', consultationFound.id)
                         .get()
 
                     if (!procedures.empty) {
                         console.log("Atualizando procedure")
                         procedures.forEach((snap) => {
                             let data = snap.data()
-                            firebase.firestore().collection('procedures').doc(snap.id).update(
+                            firebase.firestore().collection('users').doc(user.cpf).collection('procedures').doc(snap.id).update(
                                 { 
-                                    status: data.status.push('Pago'),
+                                    status: firebase.firestore.FieldValue.arrayUnion('Consulta Paga'),
                                     payment_number: copyPayload.id.toString() 
                                 }
                             )
@@ -227,14 +227,13 @@ const actions = {
                     }
                 }else{
                     console.log("Criando procedure")
-                    firebase.firestore().collection('procedures').add(
+                    firebase.firestore().collection('users').doc(user.cpf).collection('procedures').add(
                         {
-                            status:['Comprado'],
+                            status:['Consulta Paga'],
                             payment_number:copyPayload.id.toString(),
                             startAt: moment().format('YYYY-MM-DD hh:ss'),
                             type:'Consultation',
-                            specialty:specialties[spec].name,
-                            user:user.cpf
+                            specialty:specialties[spec].name
                         }
                     )
                 }
@@ -380,12 +379,12 @@ const actions = {
         let intakes
         return new Promise(async (resolve, reject) => {
             let procedures
-            procedures = await firebase.firestore().collection('procedures').where('type','==','Consultation')
-            .where('specialty','==',payload.specialty.name).where('user','==',payload.user.cpf).where('status','==',['Comprado']).get()
+            procedures = await firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type','==','Consultation')
+            .where('specialty','==',payload.specialty.name).where('status','==',['Consulta Paga']).get()
             if(!procedures.empty){
                 procedures.forEach((procedure)=>{
                     console.log('Encontrou!')
-                    resolve({ uid: procedure.id, ...procedure.data() })
+                    resolve({ procedureId: procedure.id, ...procedure.data() })
                 })
             }else{
                 reject('Payment Number not found')
