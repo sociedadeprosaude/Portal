@@ -143,7 +143,15 @@
 
             selectedPackage () {
                 // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                let item= this.$store.getters.selectedBundle;
+                if(item){
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties,vue/no-side-effects-in-computed-properties
+                    this.percentageDiscount= parseFloat(item.percentageDiscount);
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                    this.moneyDiscount = parseFloat(item.moneyDiscount)
+                }
                 return this.$store.getters.selectedBundle;
+
             },
 
             exams () {
