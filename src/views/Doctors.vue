@@ -58,10 +58,10 @@
         </v-layout>
 
         <v-dialog v-model="createDoctorDialog" max-width="500px">
-            <create-doctor-card @close="createDoctorDialog = false"></create-doctor-card>
+            <create-doctor-card @clean="selectedDoctor = undefined" @close="createDoctorDialog = false"></create-doctor-card>
         </v-dialog>
         <v-dialog v-model="editDoctorDialog" max-width="500px">
-            <create-doctor-card :doctor="selectedDoctor" @close="editDoctorDialog = false"></create-doctor-card>
+            <create-doctor-card @clean="selectedDoctor = undefined" :doctor="selectedDoctor" @close="editDoctorDialog = false"></create-doctor-card>
         </v-dialog>
         <v-dialog v-if="selectedDoctor" v-model="confirmDeletionDialog" max-width="500px">
             <v-card>
@@ -248,7 +248,7 @@
                 let doctor = this.doctors[item.cpf]
                 this.loading = true
                 await this.$store.dispatch('deleteDoctor', doctor)
-                await this.$store.dispatch('getDoctors')
+                // await this.$store.dispatch('getDoctors')
                 this.success = true
                 this.loading = false
                 setTimeout(() => {

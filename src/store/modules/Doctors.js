@@ -37,7 +37,7 @@ const actions = {
                     delete doctor[data]
                 }
             }
-            doctor.type = "doctor"
+            doctor.type = "DOCTOR"
             let docCopy = Object.assign({}, doctor)
             delete docCopy.specialties;
             await firebase.firestore().collection('users').doc(doctor.cpf).set(docCopy)
@@ -75,6 +75,9 @@ const actions = {
             await firebase.firestore().collection('users').doc(doctor.cpf).delete()
             for (let spec in doctor.specialties) {
                 await firebase.firestore().collection('specialties').doc(doctor.specialties[spec].name).collection('doctors').doc(doctor.cpf).delete()
+            }
+            for (let clinic in doctor.clinics) {
+                await firebase.firestore().collection('clinics').doc(doctor.clinics[clinic].name).collection('doctors').doc(doctor.cpf).delete()
             }
             return
         } catch (e) {
