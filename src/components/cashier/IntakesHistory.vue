@@ -64,7 +64,7 @@
                                         <v-icon class="secondary--text">delete</v-icon>
                                     </v-btn>
                                 </v-flex>
-                                <v-flex xs2 v-else-if="!loading">
+                                <v-flex xs2 v-else>
                                     <v-btn disabled text style="min-width: 0; width: 32px; height: 100%">
                                         <v-icon class="secondary--text">cancel</v-icon>
                                     </v-btn>
@@ -107,7 +107,7 @@
                 </div>
             </v-layout>
         </v-card>
-        <v-dialog fullscreen v-model="receiptDialog" v-if="selectedIntake" class="white">
+        <v-dialog v-model="receiptDialog" v-if="selectedIntake">
             <receipt @close="receiptDialog = false" :budget=selectedIntake></receipt>
             <!--            <attendance-guide v-for="(item,i) in examsPerClinc" :key="i" :guide=item></attendance-guide>-->
         </v-dialog>

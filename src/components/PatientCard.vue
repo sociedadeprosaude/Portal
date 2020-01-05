@@ -2,7 +2,7 @@
     <v-container class="ma-0 pa-0">
         <v-layout row wrap class="ma-0 pa-0" id="card-to-print">
             <v-flex xs6>
-                <v-card flat>
+                <v-card>
                     <v-img :src="require('../assets/card_background.jpg')" class="px-4 py-2">
                         <v-layout row wrap>
                             <v-flex xs6 class="text-left">

@@ -1,18 +1,18 @@
 <template>
-    <v-container v-if="budget" fluid class="fill-height ma-0 pa-0 white">
+    <v-container v-if="budget" fluid class="fill-height ma-0 pa-0">
         <v-layout row wrap>
-            <v-flex xs6 class="text-left white hidden-print-only">
+            <v-flex xs6 class="text-left white">
                 <v-btn class="transparent" text @click="$emit('close')">
                     <v-icon>close</v-icon>
                 </v-btn>
             </v-flex>
-            <v-flex xs6 class="text-right white hidden-print-only">
+            <v-flex xs6 class="text-right white">
                 <v-btn class="transparent" text @click="print('receipt')">
                     <v-icon>print</v-icon>
                 </v-btn>
             </v-flex>
             <v-flex>
-                <v-card flat class="pa-10 page-break" ref="receipt">
+                <v-card flat class="pa-10 receipt-to-print" ref="receipt">
                     <v-layout row wrap class="align-center pa-4" style="border: 2px solid #2196f3; border-radius: 16px">
                         <v-flex xs6 class="text-left">
                             <v-layout column wrap>
@@ -98,12 +98,12 @@
                 </v-card>
                 <v-card flat class="my-2">
                     <v-layout row wrap xs12 v-for="(item,i) in examsPerClinic" :key="i" class="my-2">
-                        <v-flex xs12 class="text-right white hidden-print-only">
+                        <v-flex xs12 class="text-right white">
                             <v-btn class="transparent" text @click="print('guide-' + i)">
                                 <v-icon>print</v-icon>
                             </v-btn>
                         </v-flex>
-                        <attendance-guide class="page-break" :ref="'guide-' + i" :guide=item></attendance-guide>
+                        <attendance-guide :ref="'guide-' + i" :guide=item></attendance-guide>
                     </v-layout>
                 </v-card>
             </v-flex>
@@ -137,21 +137,21 @@
         methods: {
             print(ref) {
                 // console.log(this.$refs)
-                // for (let holder in this.$refs) {
-                //     if (this.$refs[holder].$el) {
-                //         if (holder === ref) {
-                //             this.$refs[holder].$el.classList.add('receipt-to-print')
-                //         } else {
-                //             this.$refs[holder].$el.classList.remove('receipt-to-print')
-                //         }
-                //     } else {
-                //         if (holder === ref) {
-                //             this.$refs[holder][0].$el.classList.add('receipt-to-print')
-                //         } else {
-                //             this.$refs[holder][0].$el.classList.remove('receipt-to-print')
-                //         }
-                //     }
-                // }
+                for (let holder in this.$refs) {
+                    if (this.$refs[holder].$el) {
+                        if (holder === ref) {
+                            this.$refs[holder].$el.classList.add('receipt-to-print')
+                        } else {
+                            this.$refs[holder].$el.classList.remove('receipt-to-print')
+                        }
+                    } else {
+                        if (holder === ref) {
+                            this.$refs[holder][0].$el.classList.add('receipt-to-print')
+                        } else {
+                            this.$refs[holder][0].$el.classList.remove('receipt-to-print')
+                        }
+                    }
+                }
 
                 window.print()
             }

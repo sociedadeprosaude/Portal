@@ -23,18 +23,9 @@
     padding: 0;
 }
 
-#html {
-    -webkit-print-color-adjust: exact;
-}
-
 @media print {
     body * {
-        /*visibility: hidden;*/
-    }
-
-    .page-break {
-        display: block;
-        page-break-before: always;
+        visibility: hidden;
     }
 
     #card-to-print, #card-to-print * {
@@ -51,7 +42,7 @@
     }
 
     .receipt-to-print, .receipt-to-print * {
-        /*visibility: visible;*/
+        visibility: visible;
         -webkit-print-color-adjust: exact;
     }
 
