@@ -13,6 +13,7 @@ import Bundles from '@/views/Cashier/Bundles'
 import Doctors from '@/views/Doctors'
 import Clinics from "@/views/Clinics"
 import Units from "./views/Units";
+import firebase from 'firebase'
 
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
 import CashierRoutes from "./routes/CashierRoutes";
@@ -107,10 +108,11 @@ let mainRoutes = [
 
 let routes = mainRoutes.concat(DoctorsAgendaRoutes, CashierRoutes)
 let router =  new Router({
+  mode: 'history',
   routes: routes
 })
 
-router.afterEach((to, from) => {
+router.afterEach((to, from, next) => {
   if (to.path.includes('agenda')) {
     store.commit('setDoctorsAgendaToolbar', true)
   } else {
