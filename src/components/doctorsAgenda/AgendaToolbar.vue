@@ -17,13 +17,21 @@
             <v-app-bar-nav-icon v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
             <v-toolbar-title>
                 <router-link class="hidden-xs-only" to="/" tag="span" style="cursor: pointer">
-                    <v-img :src="require('@/assets/logo-pro-saude.png')"
+                    <v-img v-if="selectedUnit"
+                            :src="selectedUnit.logo"
                            aspect-radio="1"
-                           width="180"
+                           width="260"
                            class="hidden-xl-only"
                     ></v-img>
                 </router-link>
             </v-toolbar-title>
+            <v-toolbar-items>
+                <v-layout row wrap class="justify-center align-center">
+                    <v-btn rounded text @click="selectUnit()">
+                        <v-icon>cached</v-icon>
+                    </v-btn>
+                </v-layout>
+            </v-toolbar-items>
             <v-spacer></v-spacer>
             <v-toolbar-items>
                 <v-flex class="mt-2">
@@ -34,26 +42,38 @@
                                 <v-list-item-title>Nome: {{selectedPatient.name}}</v-list-item-title>
                                 <v-list-item-subtitle v-if="selectedPatient.cpf !== ''">CPF: {{selectedPatient.cpf}}
                                 </v-list-item-subtitle>
-                                <v-list-tile-subtitle v-else>Número: {{selectedPatient.association_number}}</v-list-tile-subtitle>
+                                <v-list-tile-subtitle v-else>Número: {{selectedPatient.association_number}}
+                                </v-list-tile-subtitle>
                                 <v-spacer></v-spacer>
                             </v-list-item-content>
                         </v-list-item>
                     </v-card>
                 </v-flex>
-<!--
-                <v-dialog v-model="dialog" width="1000">
-                    <template v-slot:activator="{ on }">
-                        <v-btn color="transparent" v-on="on" class="elevation-0">
-                            <v-icon left>search</v-icon>
-                            associados
-                            <v-icon right>person_add</v-icon>
-                        </v-btn>
-                    </template>
-                    <pacientes></pacientes>
-                </v-dialog>
-                -->
+                <!--
+                                <v-dialog v-model="dialog" width="1000">
+                                    <template v-slot:activator="{ on }">
+                                        <v-btn color="transparent" v-on="on" class="elevation-0">
+                                            <v-icon left>search</v-icon>
+                                            associados
+                                            <v-icon right>person_add</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <pacientes></pacientes>
+                                </v-dialog>
+                                -->
             </v-toolbar-items>
         </v-app-bar>
+        <v-dialog v-model="selectUnitDialog">
+            <v-card>
+                <v-layout row wrap>
+                    <v-flex v-for="unit in units" :key="unit.id">
+                        <v-btn @click="selectUnit(unit)" height="124px">
+                            <img :src="unit.logo" width="256px">
+                        </v-btn>
+                    </v-flex>
+                </v-layout>
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -64,6 +84,7 @@
             return {
                 drawer: false,
                 dialog: false,
+                selectUnitDialog: false,
                 menuItems: [
                     {
                         icon: 'calendar_today',
@@ -77,7 +98,11 @@
                         title: 'Gerenciamento de Consultas do Médico',
                         link: '/agenda/GerenciamentoConsultas'
                     },
-                    {icon: 'event', title: 'Gerenciamento de Consultas do Paciente', link: '/agenda/ConsultasPacientes'},
+                    {
+                        icon: 'event',
+                        title: 'Gerenciamento de Consultas do Paciente',
+                        link: '/agenda/ConsultasPacientes'
+                    },
                     {
                         icon: 'event_busy',
                         title: 'Gerenc. de Consultas Canceladas de Todas as Especilidades',
@@ -90,11 +115,29 @@
             }
         },
         computed: {
+            units() {
+                return this.$store.getters.units
+            },
+            selectedUnit() {
+              return this.$store.getters.selectedUnit
+            },
             selectedPatient() {
                 return this.$store.getters.selectedPatient
             },
             doctorsAgendaToobar() {
                 return this.$store.getters.showDoctorsAgendaToolbar
+            }
+        },
+        mounted() {
+            this.$store.dispatch('getProSaudeUnits')
+        },
+        methods: {
+            selectUnit(unit) {
+                if (!this.selectUnitDialog) {
+                    this.selectUnitDialog = true
+                    return
+                }
+                this.$store.commit('setSelectedUnit', unit)
             }
         }
     }

@@ -85,10 +85,10 @@
             //   ]
             // firebase.database().ref('permissions/') .set(perm)
             let user = firebase.auth().currentUser
-            if (!user) {
-                this.$router.push('login')
-                return
-            }
+            // if (!user) {
+            //     this.$router.push('/login')
+            //     return
+            // }
             this.getUser(user)
         },
         data() {
@@ -158,12 +158,12 @@
                                 to: '/labor',
                                 icon: 'supervisor_account'
                             },
-                            {
-                                title: 'Unidades',
-                                permission: 'Colaboradores',
-                                to: '/units',
-                                icon: 'storefront'
-                            }
+                            // {
+                            //     title: 'Unidades',
+                            //     permission: 'Colaboradores',
+                            //     to: '/units',
+                            //     icon: 'storefront'
+                            // }
                         ]
                     }
                 ]
