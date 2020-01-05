@@ -152,7 +152,7 @@
                                     </v-layout>
                                 </v-expansion-panel-header>
 
-                                <v-expansion-panel-content>
+                                <!-- <v-expansion-panel-content>
                                     <v-divider></v-divider>
                                     <v-card class="elevation-0">
                                         <v-list three-line subheader>
@@ -189,13 +189,13 @@
                                                             </span>
                                                             </v-list-item-title>
                                                             <br>
-                                                            <v-list-item-subtitle class="text-center">
+                                                            <v-list-item-subtitle class="text-left">
                                                                 CPF: {{item.user.cpf}}
                                                             </v-list-item-subtitle>
                                                             <br>
-                                                            <!-- <v-list-item-subtitle>
+                                                            <v-list-item-subtitle>
                                                                 Telefone: {{item.user.telephones[0]}}
-                                                            </v-list-item-subtitle> -->
+                                                            </v-list-item-subtitle>
                                                             <br>
                                                             <v-list-item-action-text>
                                                                 {{item.date.split(' ')[0] | dateFilter}} -
@@ -224,7 +224,7 @@
                                             </v-layout>
                                         </v-list>
                                     </v-card>
-                                </v-expansion-panel-content>
+                                </v-expansion-panel-content> -->
                             </v-expansion-panel>
                         </v-expansion-panels>
                     </v-layout>
