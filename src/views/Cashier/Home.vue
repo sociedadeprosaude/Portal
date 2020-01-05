@@ -11,19 +11,19 @@
     </v-layout>
     <v-layout row wrap>
       <v-flex xs4 class= "text-center" >
-        <v-btn fab large dark class="botao" color="#2962FF" @click="pacotes">
+        <v-btn fab large dark class="botao" color="primary" @click="pacotes">
           <v-icon size="80" >create_new_folder</v-icon>
         </v-btn>
         <p class="word">Pacotes</p>
       </v-flex>
       <v-flex xs4 class="text-center">
-        <v-btn fab dark class="botao" color="#2962FF" @click="orcamento">
+        <v-btn fab dark class="botao" color="primary" @click="orcamento">
           <v-icon size="80" >shopping_cart</v-icon>
         </v-btn>
         <p class="word">Orçamento</p>
       </v-flex>
       <v-flex xs4 class="text-center">
-        <v-btn fab dark class="botao" color="#2962FF" @click="saidas">
+        <v-btn fab dark class="botao" color="primary" @click="saidas">
           <v-icon size="80" >attach_money</v-icon>
         </v-btn>
         <p class="word">Saidas</p>

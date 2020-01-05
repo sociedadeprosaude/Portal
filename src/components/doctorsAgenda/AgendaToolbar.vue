@@ -13,7 +13,7 @@
                 </v-list-item>
             </v-list>
         </v-navigation-drawer>
-        <v-app-bar color="primary_dark" dark fixed class="hidden-print-only">
+        <v-app-bar color="primary_dark" dark fixed class="hidden-print-only" v-if="selectedUnit">
             <v-app-bar-nav-icon v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
             <v-toolbar-title>
                 <router-link to="/" tag="span" style="cursor: pointer">
@@ -64,8 +64,8 @@
         </v-app-bar>
         <v-dialog v-model="selectUnitDialog">
             <v-card>
-                <v-layout row wrap>
-                    <v-flex v-for="unit in units" :key="unit.id">
+                <v-layout row wrap class="align-center justify-center">
+                    <v-flex v-for="unit in units" :key="unit.id" class="text-center">
                         <v-btn @click="selectUnit(unit)" height="124px">
                             <img :src="unit.logo" width="256px">
                         </v-btn>

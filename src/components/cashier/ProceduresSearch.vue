@@ -55,8 +55,8 @@
                                         </v-card-text>
                                         <v-card-text v-if="categorySelect === 'appointment'">
                                             <v-slide-group show-arrows>
-                                                <v-slide-item v-for="n in item.doctors"
-                                                              :key="n.crm"
+                                                <v-slide-item v-for="(n, index) in item.doctors"
+                                                              :key="n.crm + index"
                                                               v-slot:default="{ active, toggle }">
                                                     <div>
                                                         <v-btn class="mx-2"

@@ -276,7 +276,7 @@ const actions = {
                 pros.push(doc.data())
             })
             context.commit('setUnits', pros)
-            if (!context.getters.selectedUnit) {
+            if (!this.getters.selectedUnit) {
                 context.commit('setSelectedUnit', pros[0])
             }
         })

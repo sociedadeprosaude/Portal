@@ -181,7 +181,7 @@
                 this.loading = false
             },
             logout() {
-                firebase.auth().signOut()
+                this.$store.dispatch('logOut')
             }
         },
         computed: {

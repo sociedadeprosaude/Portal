@@ -1,7 +1,8 @@
 import firebase, {firestore} from "firebase";
+import router from "../../router";
 
 const state = {
-    user: {},
+    user: undefined,
     permissions: []
 }
 
@@ -29,6 +30,13 @@ const actions = {
     //     commit('setUser', user)
     //     return
     // },
+    async logOut(context) {
+        firebase.auth().signOut()
+        setTimeout(() => {
+            context.commit('setUser', undefined)
+        }, 500)
+        return
+    },
     async getUser({commit}, user) {
         let userDoc = await firebase.firestore().collection('users/').where('uid', '==', user.uid).get()
         commit('setUser', userDoc.docs[0].data())

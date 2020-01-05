@@ -1,7 +1,7 @@
 <template>
     <v-app id="app">
         <v-slide-y-transition>
-            <agenda-toolbar></agenda-toolbar>
+            <agenda-toolbar v-if="user"></agenda-toolbar>
         </v-slide-y-transition>
         <v-content v-if="loaded" :class="['background','mt-12 pt-6']">
             <router-view/>
@@ -21,6 +21,11 @@
                 loaded: false
             }
         },
+        computed: {
+          user() {
+              return this.$store.getters.user
+            }
+        },
         mounted() {
             // this.$store.dispatch('listenToOperationalValues')
             this.$store.dispatch("loadSpecialties")
@@ -31,6 +36,8 @@
                 this.loaded = true
                 if (!user) {
                     this.$router.push('/login')
+                } else if (this.$router.currentRoute.path.includes('login')) {
+                    this.$router.push('/')
                 }
             })
 
