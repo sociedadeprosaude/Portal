@@ -823,12 +823,7 @@
                 this.num_recibo = "";
                 this.status = "Aguardando pagamento";
             },
-            resetSchedule(){
-                this.dialog = false
-                this.success = false
-            },
             async save() {
-                this.loading = true
                 let form = this.createConsultationForm
                 form.user = {
                     ...form.user,
@@ -853,8 +848,6 @@
                 this.success = true
                 this.dialog = false
                 this.$router.back()
-
-                
             }
         }
     };

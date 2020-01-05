@@ -380,7 +380,7 @@
                                         <v-icon right>clear</v-icon>
                                     </v-btn>
                                     <v-spacer></v-spacer>
-                                    <!-- <v-btn
+                                    <v-btn
                                             color="success"
                                             :disabled="loader"
                                             :loading="loader"
@@ -393,7 +393,7 @@
                                         <template v-slot:loader>
                                             <span>Aguarde...</span>
                                         </template>
-                                    </v-btn> -->
+                                    </v-btn>
                                     <submit-button
                                             color="success"
                                             rounded
@@ -402,7 +402,7 @@
                                             :loading="loading"
                                             @click="save"
                                             text="Confirmar"
-                                            v-if="status === 'Pago' && num_recibo !== ''"
+                                            v-if="status === 'Aguardando pagamento' && num_recibo === ''"
                                     >
                                     </submit-button>
                                 </v-card-actions>
@@ -823,12 +823,7 @@
                 this.num_recibo = "";
                 this.status = "Aguardando pagamento";
             },
-            resetSchedule(){
-                this.dialog = false
-                this.success = false
-            },
             async save() {
-                this.loading = true
                 let form = this.createConsultationForm
                 form.user = {
                     ...form.user,
@@ -853,8 +848,6 @@
                 this.success = true
                 this.dialog = false
                 this.$router.back()
-
-                
             }
         }
     };
