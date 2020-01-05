@@ -189,13 +189,13 @@
                                                             </span>
                                                             </v-list-item-title>
                                                             <br>
-                                                            <v-list-item-subtitle class="text-center">
+                                                            <v-list-item-subtitle class="text-left">
                                                                 CPF: {{item.user.cpf}}
                                                             </v-list-item-subtitle>
                                                             <br>
-                                                            <!-- <v-list-item-subtitle>
+                                                            <v-list-item-subtitle>
                                                                 Telefone: {{item.user.telephones[0]}}
-                                                            </v-list-item-subtitle> -->
+                                                            </v-list-item-subtitle>
                                                             <br>
                                                             <v-list-item-action-text>
                                                                 {{item.date.split(' ')[0] | dateFilter}} -
@@ -513,10 +513,9 @@
             consultas() {
                  console.log('/entrou aqui',this.especialidade)
                 let consultas = this.$store.getters.consultations.filter((a) => {
-                    console.log('/entrou aqui',a.date.split(' ')[0])
+                    console.log('/entrou aqui')
                     return this.especialidade && this.date ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && a.user : false
                 })
-                console.log('Saiu aqui',consultas)
                 return consultas;
             },
             /* menssagens:{
@@ -597,7 +596,6 @@
             async initialConfig() {
                 this.loading = true
                 await this.$store.dispatch("getSpecialties")
-                console.log(this.specialties[0])
                 this.especialidade = this.specialties[0]
                 await this.$store.dispatch('getDoctors')
                 await this.$store.dispatch('getConsultations',
@@ -656,7 +654,6 @@
                     else res[targetDate].numRegress += 1
                     res[targetDate].consultations.push(consultations[cons])
                 }
-                console.log('foi aqui também',res)
                 return res
             },
 

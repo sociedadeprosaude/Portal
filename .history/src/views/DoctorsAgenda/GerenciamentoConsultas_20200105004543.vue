@@ -189,7 +189,7 @@
                                                             </span>
                                                             </v-list-item-title>
                                                             <br>
-                                                            <v-list-item-subtitle class="text-center">
+                                                            <v-list-item-subtitle class="text-left">
                                                                 CPF: {{item.user.cpf}}
                                                             </v-list-item-subtitle>
                                                             <br>
