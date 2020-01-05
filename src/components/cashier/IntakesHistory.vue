@@ -107,7 +107,7 @@
                 </div>
             </v-layout>
         </v-card>
-        <v-dialog fullscreen v-model="receiptDialog" v-if="selectedIntake">
+        <v-dialog transition="dialog-bottom-transition" fullscreen v-model="receiptDialog" v-if="selectedIntake">
             <receipt @close="receiptDialog = false" :budget=selectedIntake></receipt>
             <!--            <attendance-guide v-for="(item,i) in examsPerClinc" :key="i" :guide=item></attendance-guide>-->
         </v-dialog>
