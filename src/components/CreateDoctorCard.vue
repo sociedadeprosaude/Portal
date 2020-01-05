@@ -70,7 +70,7 @@
                                         :disabled="data.disabled"
                                         class="v-chip--select-multi"
                                         @click.stop="data.parent.selectedIndex = data.index"
-                                        @input="data.parent.selectItem(data.item)"
+                                        @input="data.parent.selectItem({},data.item)"
                                         text-color="white"
                                         color="info"
                                 >{{ data.item.name }}
@@ -209,20 +209,20 @@
         components: {
             SubmitButton
         },
-        beforeDestroy() {
-            this.doctor = undefined
-        },
-        watch: {
-            doctor() {
-                if (this.doctor) {
-                    this.name = this.doctor.name
-                    this.cpf = this.doctor.cpf
-                    this.crm = this.doctor.crm
-                    this.specialties = this.doctor.specialties
-                    this.clinic = this.doctor.clinics
-                }
-            }
-        },
+        // beforeDestroy() {
+        //     this.doctor = undefined
+        // },
+        // watch: {
+        //     doctor() {
+        //         if (this.doctor) {
+        //             this.name = this.doctor.name
+        //             this.cpf = this.doctor.cpf
+        //             this.crm = this.doctor.crm
+        //             this.specialties = this.doctor.specialties
+        //             this.clinic = this.doctor.clinics
+        //         }
+        //     }
+        // },
         mounted() {
             this.$store.dispatch('getClinics')
             this.$store.dispatch('getSpecialties')
@@ -256,7 +256,8 @@
                 return this.$store.getters.clinics
             },
             specialtyOptions() {
-                return this.$store.getters.specialties
+                console.log('tt', this.$store.getters.specialties)
+                return JSON.parse(JSON.stringify(this.$store.getters.specialties))
             },
             formIsValid() {
                 if (!this.name || this.name.length <= 0) {
@@ -296,6 +297,7 @@
                 this.cpf = undefined
                 this.specialties = undefined
                 this.clinic = undefined
+                this.$emit('clean')
             },
             async save() {
                 this.loading = true
@@ -312,6 +314,7 @@
                     // addresses: this.addresses,
                     type: 'doctor'
                 }
+                await this.$store.dispatch('deleteDoctor', doctor)
                 await this.$store.dispatch('addDoctor', doctor)
                 await this.$store.dispatch('getDoctors')
                 //==========================começo da nova função
@@ -335,7 +338,9 @@
                 //=============fim da nova função
                 this.success = true
                 this.loading = false
+                this.clear()
                 setTimeout(() => {
+                    this.success = false
                     this.close()
                 }, 800)
             }

@@ -237,13 +237,13 @@
                                 <v-flex xs12>
                                     <v-layout row wrap class="align-end fill-height">
                                         <v-flex xs6 class="text-center">
-                                            <v-btn :disabled="consultas.length === 0 && exames.length === 0" outlined
+                                            <v-btn :disabled="cartItems.length === 0" outlined
                                                    color="primary" @click="imprimir()">Imprimir
                                             </v-btn>
                                         </v-flex>
                                         <v-flex xs6 class="text-center">
                                             <submit-button
-                                                    :disabled="!patient"
+                                                    :disabled="!patient || cartItems.length === 0"
                                                     text="Pagar" :loading="paymentLoading"
                                                     :success="paymentSuccess" color="primary" @click="pay()">
                                                 Pagar
@@ -333,6 +333,9 @@
             },
             patient() {
                 return this.$store.getters.selectedPatient
+            },
+            cartItems() {
+              return this.$store.getters.getShoppingCartItems
             },
             exames() {
                 // return this.$store.getters.selectedBudget.exams
@@ -461,7 +464,6 @@
                     parcelar: this.parcelar,
                     doctor: this.selectedDoctor
                 };
-                console.log('hey', budget);
                 return budget
             },
             async updateBudgetsIntakes() {

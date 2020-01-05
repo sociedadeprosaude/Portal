@@ -4,7 +4,7 @@
             <v-flex sm3 v-if="patient" class="hidden-print-only">
                 <intakes-history></intakes-history>
             </v-flex>
-            <v-flex class="hidden-print-only">
+            <v-flex sm6 class="hidden-print-only">
                 <procedures-search></procedures-search>
             </v-flex>
             <v-flex sm3 class="hidden-print-only">
@@ -66,127 +66,6 @@
             IntakesHistory
         },
         methods: {
-            // addProducts(item, preco, custo, clinica, total) {
-            //
-            //     if (this.categorySelect === 'exam') {
-            //         let product = {
-            //             name: item.name,
-            //             price: preco,
-            //             cost: custo,
-            //             clinic: clinica
-            //         };
-            //         if (this.exames) {
-            //             let tamanho = this.exames.length;
-            //             Vue.set(this.exames, tamanho, product);
-            //             let tamanho2 = this.pedido.length;
-            //             Vue.set(this.pedido, tamanho2, product);
-            //             this.total = parseInt(this.total) + parseInt(product.price);
-            //             this.totalNovo = this.total - this.desconto2;
-            //             this.totalCusto = parseInt(this.totalCusto) + parseInt(product.cost);
-            //         } else {
-            //             this.exames[0] = product;
-            //         }
-            //     }
-            //     if (this.categorySelect === 'appointment') {
-            //         console.log('item: ', item);
-            //         console.log('total: ', total);
-            //         if (total.recebeu === undefined) {
-            //             let product = {
-            //                 nome: item.nome,
-            //                 price: preco,
-            //                 cost: custo,
-            //                 clinic: clinica,
-            //                 medico: total.nome,
-            //                 recebimento: total.pagamento,
-            //                 recebeu: ''
-            //             };
-            //             if (this.consultas) {
-            //                 let tamanho = this.consultas.length;
-            //                 Vue.set(this.consultas, tamanho, product);
-            //                 let tamanho2 = this.pedido.length;
-            //                 Vue.set(this.pedido, tamanho2, product);
-            //                 this.total = parseInt(this.total) + parseInt(product.proce);
-            //                 this.totalNovo = this.total - this.desconto2;
-            //                 if (product.recebimento === 'Consultas') {
-            //                     this.totalCusto = parseInt(this.totalCusto) + parseInt(product.cost);
-            //                 } else {
-            //                     let medico = {
-            //                         name: total.nome,
-            //                         consulta: item.nome,
-            //                         data: this.data2,
-            //                         cost: custo,
-            //                         clinic: clinica
-            //                     };
-            //                     if (this.medicoDia) {
-            //                         let tamanho = this.medicoDia.length;
-            //                         Vue.set(this.medicoDia, tamanho, medico)
-            //                     } else {
-            //                         this.medicoDia[0] = medico;
-            //                     }
-            //                 }
-            //             } else {
-            //                 this.consultas[0] = product;
-            //             }
-            //         } else {
-            //             let product = {
-            //                 name: item.nome,
-            //                 price: preco,
-            //                 cost: custo,
-            //                 clinic: clinica,
-            //                 medico: total.nome,
-            //                 recebimento: total.pagamento,
-            //                 recebeu: total.recebeu
-            //             };
-            //             console.log('consulta: ', product);
-            //             if (this.consultas) {
-            //                 let tamanho = this.consultas.length;
-            //                 Vue.set(this.consultas, tamanho, product);
-            //                 let tamanho2 = this.pedido.length;
-            //                 Vue.set(this.pedido, tamanho2, product);
-            //                 this.total = parseInt(this.total) + parseInt(product.price);
-            //                 this.totalNovo = this.total - this.desconto2;
-            //                 if (product.recebimento === 'Consultas') {
-            //                     this.totalCusto = parseInt(this.totalCusto) + parseInt(product.cost);
-            //                 } else {
-            //                     let medico = {
-            //                         name: total.nome,
-            //                         consulta: item.nome,
-            //                         data: this.data2,
-            //                         cost: custo,
-            //                         clinic: clinica
-            //                     };
-            //                     console.log("medico: ", medico);
-            //                     if (this.medicoDia) {
-            //                         let tamanho = this.medicoDia.length;
-            //                         Vue.set(this.medicoDia, tamanho, medico)
-            //                     } else {
-            //                         this.medicoDia[0] = medico;
-            //                     }
-            //                 }
-            //             } else {
-            //                 this.consultas[0] = product;
-            //             }
-            //         }
-            //         if (this.categorySelect === 'package') {
-            //             let product = {
-            //                 name: item.nome,
-            //                 price: preco,
-            //                 cost: custo
-            //             };
-            //             if (this.pacotes) {
-            //                 let tamanho = this.pacotes.length;
-            //                 Vue.set(this.pacotes, tamanho, product);
-            //                 let tamanho2 = this.pedido.length;
-            //                 Vue.set(this.pedido, tamanho2, product);
-            //                 this.total = parseInt(this.total) + parseInt(product.price);
-            //                 this.totalNovo = this.total - this.desconto2
-            //                 this.totalCusto = parseInt(this.totalCusto) + parseInt(product.cost);
-            //             } else {
-            //                 this.pacotes[0] = product;
-            //             }
-            //         }
-            //     }
-            // }
         },
         computed: {
             pedid() {

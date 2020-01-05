@@ -10,6 +10,7 @@
 </template>
 <script>
     import AgendaToolbar from "./components/doctorsAgenda/AgendaToolbar";
+    import firebase from 'firebase'
 
     export default {
         components: {
@@ -20,6 +21,13 @@
             this.$store.dispatch("loadSpecialties")
             this.$store.dispatch("getDoctors")
             this.$store.dispatch("getClinics")
+            // this.$store.dispatch("updateUsers")
+            firebase.auth().onAuthStateChanged((user) => {
+                if (!user) {
+                    this.$router.push('/login')
+                }
+            })
+
         }
     }
 </script>

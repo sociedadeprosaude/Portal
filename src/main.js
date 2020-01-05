@@ -95,12 +95,12 @@ new Vue({
   render: h => h(App),
   created() {
     firebase.initializeApp(constants.FIREBASE_CONFIG);
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.$router.push('/')
-      } else {
-        this.$router.push('/login')
-      }
-    })
+    // firebase.auth().onAuthStateChanged((user) => {
+    //   if (user) {
+    //     this.$router.push('/')
+    //   } else {
+    //     this.$router.push('/login')
+    //   }
+    // })
   },
 }).$mount('#app');

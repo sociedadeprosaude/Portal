@@ -37,7 +37,7 @@ const actions = {
                     delete doctor[data]
                 }
             }
-            doctor.type = "doctor"
+            doctor.type = "DOCTOR"
             let docCopy = Object.assign({}, doctor)
             delete docCopy.specialties;
             await firebase.firestore().collection('users').doc(doctor.cpf).set(docCopy)
@@ -72,9 +72,20 @@ const actions = {
     },
     async deleteDoctor ({}, doctor) {
         try {
+            (await firebase.firestore().collection('users').doc(doctor.cpf).collection('specialties').get()).forEach((doc) => {
+                firebase.firestore().collection('users').doc(doctor.cpf).collection('specialties').doc(doc.id).delete()
+            });
+
+            (await firebase.firestore().collection('users').doc(doctor.cpf).collection('clinics').get()).forEach((doc) => {
+                firebase.firestore().collection('users').doc(doctor.cpf).collection('clinics').doc(doc.id).delete()
+            });
+
             await firebase.firestore().collection('users').doc(doctor.cpf).delete()
             for (let spec in doctor.specialties) {
                 await firebase.firestore().collection('specialties').doc(doctor.specialties[spec].name).collection('doctors').doc(doctor.cpf).delete()
+            }
+            for (let clinic in doctor.clinics) {
+                await firebase.firestore().collection('clinics').doc(doctor.clinics[clinic].name).collection('doctors').doc(doctor.cpf).delete()
             }
             return
         } catch (e) {
@@ -82,7 +93,7 @@ const actions = {
         }
     },
     async getDoctors({commit}) {
-        firebase.firestore().collection('users').where('type', '==', 'doctor').onSnapshot(async (doctorsSnap) => {
+        firebase.firestore().collection('users').where('type', '==', 'DOCTOR').onSnapshot(async (doctorsSnap) => {
                 let doctors = {};
                 for (let document in  doctorsSnap.docs) {
                     doctors[doctorsSnap.docs[document].id] = doctorsSnap.docs[document].data()

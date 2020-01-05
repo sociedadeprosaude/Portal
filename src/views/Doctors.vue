@@ -35,9 +35,9 @@
                     </template>
 
                     <template v-slot:item.action="{ item }">
-<!--                        <v-btn fab text class="warning mr-2" small>-->
-<!--                            <v-icon color="white" @click="editItem(item)">edit</v-icon>-->
-<!--                        </v-btn>-->
+                        <v-btn fab text class="warning mr-2" small>
+                            <v-icon color="white" @click="editItem(item)">edit</v-icon>
+                        </v-btn>
 
                         <v-btn fab text class="error mx-0" small>
                             <v-icon color="white" @click="confirmDeletion(item)">delete</v-icon>
@@ -57,11 +57,11 @@
             </v-flex>
         </v-layout>
 
-        <v-dialog v-model="createDoctorDialog" max-width="500px">
-            <create-doctor-card @close="createDoctorDialog = false"></create-doctor-card>
+        <v-dialog v-model="createDoctorDialog" v-if="createDoctorDialog" max-width="500px">
+            <create-doctor-card @clean="selectedDoctor = undefined" @close="createDoctorDialog = false"></create-doctor-card>
         </v-dialog>
-        <v-dialog v-model="editDoctorDialog" max-width="500px">
-            <create-doctor-card :doctor="selectedDoctor" @close="editDoctorDialog = false"></create-doctor-card>
+        <v-dialog v-model="editDoctorDialog" v-if="editDoctorDialog" max-width="500px">
+            <create-doctor-card @clean="selectedDoctor = undefined" :doctor="selectedDoctor" @close="editDoctorDialog = false"></create-doctor-card>
         </v-dialog>
         <v-dialog v-if="selectedDoctor" v-model="confirmDeletionDialog" max-width="500px">
             <v-card>
@@ -248,7 +248,7 @@
                 let doctor = this.doctors[item.cpf]
                 this.loading = true
                 await this.$store.dispatch('deleteDoctor', doctor)
-                await this.$store.dispatch('getDoctors')
+                // await this.$store.dispatch('getDoctors')
                 this.success = true
                 this.loading = false
                 setTimeout(() => {

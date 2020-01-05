@@ -18,7 +18,7 @@
                     </v-flex>
                     <v-flex v-for="page in section.pages"
                             :key="page.title"
-                            class="mx-4">
+                            class="mx-4 my-2">
                         <v-card
                                 class="card" min-width="200" :to="page.external_url ? '' : page.to"
                                 @click="page.external_url ? goToExternalUrl(page.external_url) : ''">
@@ -48,7 +48,7 @@
                 </v-layout>
             </v-flex>
             <v-flex xs12 class="text-right">
-                <span>1.1.4</span>
+                <span>1.1.5</span>
             </v-flex>
         </v-layout>
         <v-layout row wrap v-else class="align-center">
