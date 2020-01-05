@@ -1,6 +1,7 @@
 import firebase from "firebase";
 import functions from "../../utils/functions";
 import moment from "moment";
+import constants from "../../utils/constants";
 
 const state = {};
 
@@ -218,9 +219,9 @@ const actions = {
                         procedures.forEach((snap) => {
                             let data = snap.data()
                             firebase.firestore().collection('procedures').doc(snap.id).update(
-                                { 
+                                {
                                     status: data.status.push('Pago'),
-                                    payment_number: copyPayload.id.toString() 
+                                    payment_number: copyPayload.id.toString()
                                 }
                             )
                         })
@@ -281,6 +282,7 @@ const actions = {
     async getUserIntakes(context, user) {
         let userRef = firebase.firestore().collection('users').doc(user.cpf)
         let intakesSnap = (await userRef.collection('intakes').get()).docs
+        // let intakesSnap = (await firebase.firestore().collection('intakes').where('user.cpf', '==', user.cpf).get()).docs
         let intakes = []
         for (let snap in intakesSnap) {
             let doc = intakesSnap[snap]
@@ -324,56 +326,20 @@ const actions = {
         intake.specialties = specialties
         return intake
     },
-    //    async addSale({commit},payload){
-    //
-    //        firebase.firestore().collection('intakes').doc(payload.invoice).set({
-    //            package_id: payload.package_id,
-    //            invoice: payload.invoice,
-    //            price: payload.price,
-    //            form_payment: payload.form_payment,
-    //            percentageDiscount: payload.percentageDiscount,
-    //            moneyDiscount: payload.moneyDiscount,
-    //            date: payload.date,
-    //            cost: payload.cost,
-    //            /* medicoDia: this.medicoDia */
-    //            user:payload.user
-    //        }).then(()=>{
-    //            payload.consultations.forEach((obj)=>{
-    //                firebase.firestore().collection('intakes').doc(payload.invoice).collection('specialties')
-    //                .doc(obj.name).set(obj)
-    //            })
-    //        })
-    //
-    //        payload.consultations.forEach((obj)=>{
-    //            firebase.firestore().collection('users').doc(payload.user.cpf).collection('intakes').add({
-    //                type:"specialty",
-    //                price:obj.price,
-    //                doctor:obj.doctor,
-    //                invoice:payload.invoice,
-    //                used:false,
-    //                name:obj.name,
-    //                cost:obj.cost
-    //            })
-    //        })
-    //
-    //
-    //        /* firebase.firestore().collection('users').doc(payload.user.cpf).collection('intakes').add({
-    //            package_id: payload.package_id,
-    //            invoice: payload.invoice,
-    //            price: payload.price,
-    //            form_payment: payload.form_payment,
-    //            percentageDiscount: payload.percentageDiscount,
-    //            moneyDiscount: payload.moneyDiscount,
-    //            date: payload.date,
-    //            cost: payload.cost,
-    //            /* medicoDia: this.medicoDia
-    //        }).then(()=>{
-    //
-    //        }) */
-    //        /* firebase.firestore().collection('users/' + payload.cpf + '/consultations').set(payload.consultations);
-    //        firebase.firestore().collection('users/' + payload.cpf + '/exams').set(payload.exams);
-    // */
-    //    },
+
+    async cancelIntake(context, intake) {
+        await firebase.firestore().collection('intakes').doc(intake.id.toString()).update(
+            {
+                status: constants.INTAKE_STATUS.CANCELLED,
+                cancelled_by: context.getters.user
+            })
+        await firebase.firestore().collection('users').doc(intake.user.cpf).collection('intakes').doc(intake.id.toString()).update(
+            {
+                status: constants.INTAKE_STATUS.CANCELLED,
+                cancelled_by: context.getters.user
+            })
+        return
+    },
 
     async thereIsIntakes({ commit }, payload) {
         var found = false
@@ -390,7 +356,7 @@ const actions = {
             }else{
                 reject('Payment Number not found')
             }
-           
+
 
             /* intakes = await firebase.firestore().collection('users').doc(payload.user.cpf).collection('intakes')/* .
             where('type', '==','specialty').where('used','==',false).where('name','==',payload.specialty.name)

@@ -464,7 +464,6 @@
                     parcelar: this.parcelar,
                     doctor: this.selectedDoctor
                 };
-                console.log('hey', budget);
                 return budget
             },
             async updateBudgetsIntakes() {

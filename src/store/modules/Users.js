@@ -47,7 +47,6 @@ const actions = {
             users.push(doc.data())
             // }
         });
-        console.log('user', users)
         return users
     },
     async addUser({getters}, patient) {

@@ -23,6 +23,11 @@ export default {
         }
     },
 
+    MANAGER_PASSWORD: 'gerenciaprosaude',
+    INTAKE_STATUS: {
+      CANCELLED: 'cancelled'
+    },
+
 
     FIREBASE_CONFIG: process.env.NODE_ENV === 'production' ?
         {
