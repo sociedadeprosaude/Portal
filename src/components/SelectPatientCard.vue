@@ -366,6 +366,9 @@
                 await this.$store.dispatch('addUser', patient)
                 this.success = true
                 this.loading = false
+                setTimeout(() => {
+                    this.success = false
+                }, 1000)
             },
             async selectUser(user) {
                 if (user) {
