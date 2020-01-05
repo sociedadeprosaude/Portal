@@ -328,6 +328,9 @@
             doctors() {
                 return Object.values(this.$store.getters.doctors)
             },
+            selectedUnit() {
+                return this.$store.getters.selectedUnit
+            },
             selectedBudget() {
                 return this.$store.getters.selectedBudget
             },
@@ -462,7 +465,8 @@
                     user: this.$store.getters.selectedPatient,
                     colaborator: this.$store.getters.user,
                     parcelar: this.parcelar,
-                    doctor: this.selectedDoctor
+                    doctor: this.selectedDoctor,
+                    unit: this.selectedUnit
                 };
                 return budget
             },

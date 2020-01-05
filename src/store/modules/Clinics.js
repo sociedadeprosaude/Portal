@@ -21,7 +21,7 @@ const mutations = {
     },
     setUnits(state, payload) {
         state.units = payload
-    }
+    },
 };
 
 const actions = {
@@ -270,12 +270,15 @@ const actions = {
         })
     },
     async getProSaudeUnits(context) {
-        firebase.firestore().collection('clinics').where('property', '==', 'true').onSnapshot(clinCollection => {
+        firebase.firestore().collection('clinics').where('property', '==', true).onSnapshot(clinCollection => {
             let pros = []
             clinCollection.forEach(doc => {
                 pros.push(doc.data())
             })
             context.commit('setUnits', pros)
+            if (!context.getters.selectedUnit) {
+                context.commit('setSelectedUnit', pros[0])
+            }
         })
     },
     async setClinProperty(context, clin) {
@@ -302,6 +305,7 @@ const getters = {
     units(state) {
         return state.units
     },
+
     clinicsLoaded(state) {
         return state.loaded
     }
