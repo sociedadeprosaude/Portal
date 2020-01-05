@@ -37,7 +37,7 @@
             </v-flex>
             <v-flex xs12 class="ma-1">
                 <v-layout row wrap class="align-end justify-end">
-                    <v-card class="card" width="200px" to="/login">
+                    <v-card class="card" width="200px" @click="logout()">
                         <v-layout column row>
                             <v-icon size="72">exit_to_app</v-icon>
                             <span class="text-center my-headline">
@@ -179,6 +179,9 @@
             async getUser(user) {
                 await this.$store.dispatch('getUser', user)
                 this.loading = false
+            },
+            logout() {
+                firebase.auth().signOut()
             }
         },
         computed: {
