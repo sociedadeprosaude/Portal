@@ -48,8 +48,9 @@
 
     .receipt-to-print {
         position: absolute;
-        left: 0px;
-        top: 0px;
+        left: 0;
+        top: -50px;
+        /*height: 100%;*/
     }
 
     #attendanceGuide-to-print, #attendanceGuide-to-print * {

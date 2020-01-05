@@ -2,7 +2,7 @@
     <v-container v-if="guide" fluid class="fill-height ma-0 pa-0">
         <v-layout row wrap>
             <v-flex>
-                <v-card flat class="pa-10">
+                <v-card flat class="pa-10" style="page-break-before: always !important; display: block">
                     <v-layout row wrap class="align-center pa-4" style="border: 2px solid #2196f3; border-radius: 16px">
                         <v-flex xs12 class="text-center">
                             <img src="@/assets/logo-pro-saude.png" height="50px" class="ml-0 px-0 mr-0 pa-0">
