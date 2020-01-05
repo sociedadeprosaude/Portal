@@ -16,12 +16,11 @@
         <v-app-bar color="primary_dark" dark fixed class="hidden-print-only">
             <v-app-bar-nav-icon v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
             <v-toolbar-title>
-                <router-link class="hidden-xs-only" to="/" tag="span" style="cursor: pointer">
+                <router-link to="/" tag="span" style="cursor: pointer">
                     <v-img v-if="selectedUnit"
                             :src="selectedUnit.logo"
                            aspect-radio="1"
                            width="260"
-                           class="hidden-xl-only"
                     ></v-img>
                 </router-link>
             </v-toolbar-title>
