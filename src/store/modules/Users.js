@@ -63,7 +63,16 @@ const actions = {
             // if (patient.type === 'PATIENT') {
             //     patient.association_number = getters.associated.quantity
             // }
-            let user = await firebase.firestore().collection('users').doc(patient.cpf).set(patient)
+            let user
+            let foundUser = await firebase.firestore().collection('users').doc(patient.cpf).get()
+            console.log(foundUser)
+            if (foundUser.exists) {
+                delete patient.type
+                user = await firebase.firestore().collection('users').doc(patient.cpf).update(patient)
+            } else {
+                user = await firebase.firestore().collection('users').doc(patient.cpf).set(patient)
+            }
+
             return user
         } catch (e) {
             throw e
@@ -97,7 +106,6 @@ const actions = {
         while (numAss.length < 8) {
             numAss = '0' + numAss
         }
-        console.log('numAss', numAss)
         let url = 'http://caixa.sociedadeprosaude.com:84/api/buscar/paciente?field=codigo&query=' + numAss /*00060009*/
         let res = await axios.get(url)
         console.log('aa', res.data)
