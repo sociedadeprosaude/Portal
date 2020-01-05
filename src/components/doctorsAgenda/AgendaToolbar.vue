@@ -20,7 +20,7 @@
                     <v-img v-if="selectedUnit"
                             :src="selectedUnit.logo"
                            aspect-radio="1"
-                           width="260"
+                           width="240"
                     ></v-img>
                 </router-link>
             </v-toolbar-title>

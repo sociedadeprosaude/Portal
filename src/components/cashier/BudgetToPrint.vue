@@ -15,7 +15,7 @@
                 <v-card flat class="pa-10 receipt-to-print">
                     <v-layout row wrap class="align-center pa-4" style="border: 2px solid #2196f3; border-radius: 16px">
                         <v-flex xs6 class="text-left">
-                            <img src="@/assets/logo-pro-saude.png" height="84px">
+                            <img :src="selectedUnit.logo" height="84px">
                         </v-flex>
                         <v-flex xs6 class="text-right pr-4" v-if="this.budget.user">
                             <v-layout column wrap>
@@ -106,6 +106,9 @@
         name: "BudgetToPrint",
         props: ['budget'],
         computed: {
+            selectedUnit() {
+                return this.$store.getters.selectedUnit
+            },
             items() {
                 if (!this.budget.exams) {
                     return this.budget.specialties

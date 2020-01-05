@@ -31,7 +31,7 @@
                                         </v-layout>
                                     </v-flex>
                                     <v-flex xs6 class="text-right">
-                                        <img src="@/assets/logo-pro-saude.png" height="84px">
+                                        <img :src="selectedUnit.logo" height="84px">
                                     </v-flex>
                                     <v-flex xs6 class="text-left">
                                         <v-layout column wrap v-if="budget.user.addresses[0]">
@@ -143,6 +143,9 @@
             AttendanceGuide
         },
         computed: {
+            selectedUnit() {
+                return this.$store.getters.selectedUnit
+            },
             items() {
                 return this.budget.specialties.concat(this.budget.exams)
             },

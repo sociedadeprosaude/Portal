@@ -5,7 +5,7 @@
                 <v-card flat class="pa-10" style="page-break-before: always !important; display: block">
                     <v-layout row wrap class="align-center pa-4" style="border: 2px solid #2196f3; border-radius: 16px">
                         <v-flex xs12 class="text-center">
-                            <img src="@/assets/logo-pro-saude.png" height="50px" class="ml-0 px-0 mr-0 pa-0">
+                            <img :src="selectedUnit.logo" height="50px" class="ml-0 px-0 mr-0 pa-0">
                         </v-flex>
                         <v-flex xs6 class="text-left">
                         <v-layout column wrap v-for="(item, index) in [items[0]]" :key="index">
@@ -103,6 +103,9 @@
         computed: {
             items() {
                 return this.guide
+            },
+            selectedUnit() {
+                return this.$store.getters.selectedUnit
             },
             patient() {
                 return this.$store.getters.selectedPatient
