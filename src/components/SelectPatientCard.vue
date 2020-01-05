@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <v-layout row wrap>
+        <v-layout row wrap class="hidden-print-only">
             <v-flex xs12 class="my-4">
                 <v-expand-transition mode="out-in">
                     <v-card class="primary_light white--text pa-2" :max-width="maxWidth" v-if="!addPatient">

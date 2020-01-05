@@ -48,7 +48,7 @@
                 </v-layout>
             </v-flex>
             <v-flex xs12 class="text-right">
-                <span>1.1.6</span>
+                <span>1.1.7</span>
             </v-flex>
         </v-layout>
         <v-layout row wrap v-else class="align-center">
