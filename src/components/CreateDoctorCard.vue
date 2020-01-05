@@ -256,7 +256,6 @@
                 return this.$store.getters.clinics
             },
             specialtyOptions() {
-                console.log('tt', this.$store.getters.specialties)
                 return JSON.parse(JSON.stringify(this.$store.getters.specialties))
             },
             formIsValid() {
@@ -277,7 +276,7 @@
                     return false
                 } else {
                     for (let spec in this.specialties) {
-                        if (!this.specialties[spec].cost || !this.specialties[spec].price || !this.specialties[spec].payment_method) {
+                        if (!this.specialties[spec].payment_method) {
                             // this.error = 'Adicione os valores de custo'
                             return false
                         }
@@ -301,6 +300,14 @@
             },
             async save() {
                 this.loading = true
+                for (let spec in this.specialties) {
+                    if (!this.specialties[spec].cost) {
+                        this.specialties[spec].cost = 0.00
+                    }
+                    if (!this.specialties[spec].price) {
+                        this.specialties[spec].price = 0.00
+                    }
+                }
                 let doctor = {
                     name: this.name.toUpperCase(),
                     cpf: this.cpf.replace(/\./g, '').replace('-', ''),
@@ -314,9 +321,10 @@
                     // addresses: this.addresses,
                     type: 'doctor'
                 }
+
                 await this.$store.dispatch('deleteDoctor', doctor)
                 await this.$store.dispatch('addDoctor', doctor)
-                await this.$store.dispatch('getDoctors')
+                // await this.$store.dispatch('getDoctors')
                 //==========================começo da nova função
                 for (let i in this.clinic) {
                     for (let j in this.specialties) {

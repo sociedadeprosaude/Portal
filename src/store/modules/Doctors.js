@@ -1,4 +1,5 @@
 import firebase, {firestore} from "firebase";
+import functions from '../../utils/functions'
 
 const state = {
     doctors: {},
@@ -32,13 +33,14 @@ const actions = {
     // },
     async addDoctor ({commit}, doctor) {
         try {
-            for (let data in doctor) {
-                if (!doctor[data]) {
-                    delete doctor[data]
-                }
-            }
+            doctor = functions.removeUndefineds(doctor)
+            // for (let data in doctor) {
+            //     if (!doctor[data]) {
+            //         delete doctor[data]
+            //     }
+            // }
             doctor.type = "DOCTOR"
-            let docCopy = Object.assign({}, doctor)
+            let docCopy = JSON.parse(JSON.stringify(doctor))
             delete docCopy.specialties;
             await firebase.firestore().collection('users').doc(doctor.cpf).set(docCopy)
             for (let spec in doctor.specialties) {
@@ -57,11 +59,12 @@ const actions = {
                         ...details,
                         ...doctor.specialties[spec]
                     });
-                for (let data in doctor.specialties[spec]) {
-                    if (!doctor.specialties[spec][data]) {
-                        delete doctor.specialties[spec][data]
-                    }
-                }
+                doctor.specialties[spec] = functions.removeUndefineds(doctor.specialties[spec])
+                // for (let data in doctor.specialties[spec]) {
+                //     if (!doctor.specialties[spec][data] === undefined) {
+                //         delete doctor.specialties[spec][data]
+                //     }
+                // }
                 delete holder.clinics
                 await firebase.firestore().collection('specialties').doc(doctor.specialties[spec].name).collection('doctors').doc(doctor.cpf).set(holder)
             }
