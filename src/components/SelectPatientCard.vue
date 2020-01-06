@@ -186,6 +186,39 @@
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
+
+                            <v-flex xs12 class="px-3 text-left">
+                                <span class="my-sub-headline">Dependentes</span>
+                                <v-btn
+                                        @click="dependents.push({
+                                            name: '',
+                                            birthDate: ''
+                                        })"
+                                        text class="transparent">
+                                    <v-icon>add_circle</v-icon>
+
+                                </v-btn>
+                                <v-layout wrap justify v-for="(dependent, index) in dependents" :key="index">
+                                    <v-flex xs12 class="text-right">
+                                        <v-btn class="transparent" text @click="dependents.splice(index, 1)">
+                                            <v-icon>remove_circle</v-icon>
+                                        </v-btn>
+                                    </v-flex>
+                                    <v-text-field label="Nome" class="ml-2"
+                                                      v-model="dependent.name"></v-text-field>
+                                    <v-spacer></v-spacer>
+                                    <v-flex xs12 sm3>
+                                        <v-text-field label="Data de Nascimento" class="ml-2"
+                                                      v-model="dependent.birthDate"></v-text-field>
+                                    </v-flex>
+
+                                    <v-flex xs12 sm10 class="px-3">
+                                        <v-select label="Grau" hide-details single-line v-model="dependent.grau"
+                                                  :items="degress" menu-props="auto"></v-select>
+                                    </v-flex>
+                                   
+                                </v-layout>
+                            </v-flex>
                             <v-flex xs12 class="px-3 text-left">
                                 <span class="my-sub-headline">Endereços</span>
                                 <v-btn
@@ -299,6 +332,8 @@
                 sex: undefined,
                 telephones: [''],
                 addresses: [],
+                dependents:[],
+                degress: ['filho(a)', 'neto(a)', ],
                 loading: false,
                 formError: undefined,
                 searchError: undefined,
