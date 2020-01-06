@@ -148,12 +148,7 @@
                                                             text-color="white"
                                                     >Vagas : {{consulta.vagas}}
                                                     </v-chip>
-                                                    <v-chip
-                                                            class="mt-1"
-                                                            color="primary_dark"
-                                                            text-color="white"
-                                                    >Clinica : {{consulta.clinic.name}}
-                                                    </v-chip>
+                                                    <v-chip class="mt-1" color="primary_dark" text-color="white">{{consulta.clinic.name}}</v-chip>
                                                 </v-layout>
                                             </v-flex>
                                             <v-flex xs12 class="text-right">
