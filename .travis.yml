@@ -8,4 +8,5 @@ install:
 after_success:
   - npm install
   - npm run build
+  - ls -la
   - firebase deploy --token $FIREBASE_TOKEN
