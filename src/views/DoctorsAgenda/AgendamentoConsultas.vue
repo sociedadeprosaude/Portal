@@ -2,7 +2,7 @@
     <v-layout row wrap>
         <v-flex xs8>
             <v-layout align-center row wrap class="ml-6">
-                <v-flex xs12 md4>
+                <v-flex xs12 md5>
                     <v-select
                             prepend-icon="school"
                             v-model="especialidade"
@@ -30,7 +30,8 @@
                         </template>
                     </v-select>
                 </v-flex>
-                <v-flex xs12 md4>
+                <v-spacer></v-spacer>
+                <v-flex xs12 md5>
                     <v-select
                             prepend-icon="person"
                             v-model="selectedDoctor"
@@ -59,7 +60,7 @@
                     </v-select>
                 </v-flex>
 
-                <v-flex xs12 md4>
+                <v-flex xs12 md12>
                     <v-select
                             prepend-icon="location_city"
                             v-model="clinic"
