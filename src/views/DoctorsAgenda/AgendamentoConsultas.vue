@@ -536,7 +536,7 @@
             consultas() {
                 let consultas = this.formatConsultationsArray(this.$store.getters.consultations).filter((a) => {
                     //console.log("selecionado:", this.clinic)
-                    //console.log("do banco:", a.clinic)
+                    //console.log("do banco:", a.clinic.name)
                     let response = true
                     if(this.selectedDoctor){
                         if(this.selectedDoctor.cpf !== a.doctor.cpf){
@@ -549,10 +549,11 @@
                         }
                     }
                     if(this.clinic){
-                        if(this.clinic !== a.clinic){
+                        if(this.clinic !== a.clinic.name){
                             response = false
                         }
                     }
+                    //console.log("resposta:", response)
                     return response
                 })
                 return consultas;
