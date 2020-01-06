@@ -191,7 +191,7 @@
                     if (this.user.group === 'admin') {
                         return true
                     } else if (this.user.group === 'colaborador') {
-                        return a === this.pages[1]
+                        return a === this.pages[0]
                     }
                     return false
                 })

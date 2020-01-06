@@ -40,7 +40,7 @@ const actions = {
             if (!searchFields[field] || searchFields[field].length === 0) continue;
             usersRef = usersRef.where(field, field === 'name' ? '>=' : '==', searchFields[field].toUpperCase())
         }
-        let querySnapshot = await usersRef.limit(20).get()
+        let querySnapshot = await usersRef.get()
         let users = [];
         querySnapshot.forEach(function (doc) {
             // if (doc.data().association_number) {
