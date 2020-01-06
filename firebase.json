@@ -15,7 +15,7 @@
   "hosting": [
     {
       "target": "portal",
-      "public": "Portal/dist",
+      "public": "dist",
       "headers": [
       {
         "source": "/**",
