@@ -2,6 +2,8 @@
   <v-card width="850">
     <v-card-title class="headline grey lighten-2" primary-title>
       <span class="headline">Exclusão de Produtos Cadastrados</span>
+      <v-spacer></v-spacer>
+      <v-btn small color="error" @click="clear()"><v-icon>close</v-icon></v-btn>
     </v-card-title>
     <v-card-text>
       <v-container grid-list-md>
@@ -20,7 +22,7 @@
           <v-card-text v-if=" allExams.length !== 0">
             <strong>EXAMES</strong>
             <v-list-item v-for="(item,index) in allExams" :key="index">
-              <v-chip color="red" text-color="white">
+              <v-chip color="primary" text-color="white">
                 <strong>{{item.name}} | Custo R$ {{item.cost}} | Venda R$ {{item.price}}</strong>
                 <v-btn class="ml-1" small fab color="error" @click="preprocessExam(index)">
                   <v-icon>delete</v-icon>
@@ -248,8 +250,14 @@ export default {
 
   methods: {
     clear() {
-      this.$store.dispatch("selectClinic", null);
+      this.closeDialog()
+      //this.$store.dispatch("selectClinic", null);
     },
+
+    closeDialog: function() {
+      this.$emit('close-dialog')
+    },
+
     preprocessExam(index) {
       this.product = this.allExams[index].name;
       this.cost = this.allExams[index].cost;

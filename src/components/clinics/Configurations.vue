@@ -442,7 +442,12 @@
             },
 
             clear () {
-                this.$store.dispatch('selectClinic', null);
+                this.closeDialog()
+                //this.$store.dispatch('selectClinic', null);
+            },
+
+            closeDialog: function() {
+                this.$emit('close-dialog')
             },
         }
     }
