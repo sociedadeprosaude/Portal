@@ -2,7 +2,7 @@
     <v-layout row wrap>
         <v-flex xs8>
             <v-layout align-center row wrap class="ml-6">
-                <v-flex xs12 md5>
+                <v-flex xs12 md4>
                     <v-select
                             prepend-icon="school"
                             v-model="especialidade"
@@ -14,7 +14,7 @@
                             rounded
                             chips
                             color="blue"
-                            clearable
+                            readonly
                     >
                         <template v-slot:selection="data">
                             <v-chip
@@ -30,8 +30,7 @@
                         </template>
                     </v-select>
                 </v-flex>
-                <v-spacer></v-spacer>
-                <v-flex xs12 md5>
+                <v-flex xs12 md4>
                     <v-select
                             prepend-icon="person"
                             v-model="selectedDoctor"
@@ -43,7 +42,7 @@
                             rounded
                             chips
                             color="blue"
-                            clearable
+
                     >
                         <template v-slot:selection="data">
                             <v-chip
@@ -60,7 +59,7 @@
                     </v-select>
                 </v-flex>
 
-                <v-flex xs12 md12>
+                <v-flex xs12 md4>
                     <v-select
                             prepend-icon="location_city"
                             v-model="clinic"
@@ -558,7 +557,7 @@
                         }
                     }
                     if(this.clinic){
-                        if(this.clinic !== a.clinic.name){
+                        if(this.clinic.name !== a.clinic.name){
                             response = false
                         }
                     }
@@ -738,7 +737,7 @@
                 await this.$store.dispatch('getDoctors')
                 await this.$store.dispatch('getConsultations',{
                     start_date: moment().format('YYYY-MM-DD 00:00:00'),
-                    final_date: moment().add(30, 'days').format('YYYY-MM-DD 23:59:59')
+                    final_date: moment().add(10, 'days').format('YYYY-MM-DD 23:59:59')
                 })
                 await this.$store.dispatch("getSpecialties")
 

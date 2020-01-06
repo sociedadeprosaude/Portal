@@ -2,7 +2,7 @@
     <v-layout row wrap>
         <v-flex xs8>
             <v-layout align-center row wrap class="ml-6">
-                <v-flex xs12 md5>
+                <v-flex xs12 md4>
                     <v-select
                             prepend-icon="school"
                             v-model="especialidade"
@@ -14,7 +14,7 @@
                             rounded
                             chips
                             color="blue"
-                            clearable
+                            readonly
                     >
                         <template v-slot:selection="data">
                             <v-chip
@@ -30,8 +30,7 @@
                         </template>
                     </v-select>
                 </v-flex>
-                <v-spacer></v-spacer>
-                <v-flex xs12 md5>
+                <v-flex xs12 md4>
                     <v-select
                             prepend-icon="person"
                             v-model="selectedDoctor"
@@ -43,7 +42,7 @@
                             rounded
                             chips
                             color="blue"
-                            clearable
+
                     >
                         <template v-slot:selection="data">
                             <v-chip
@@ -59,8 +58,7 @@
                         </template>
                     </v-select>
                 </v-flex>
-
-                <v-flex xs12 md12>
+                <v-flex xs12 md4>
                     <v-select
                             prepend-icon="location_city"
                             v-model="clinic"
@@ -367,7 +365,7 @@
                                 </v-card-text>
                                 <v-divider></v-divider>
                                 <v-card-actions>
-                                    <v-dialog v-model="loader" hide-overlay persistent width="300">
+                                    <!-- <v-dialog v-model="loader" hide-overlay persistent width="300">
                                         <v-card color="primary" dark>
                                             <v-card-text>
                                                 Salvando...
@@ -375,26 +373,24 @@
                                                                    class="mb-0"></v-progress-linear>
                                             </v-card-text>
                                         </v-card>
-                                    </v-dialog>
+                                    </v-dialog> -->
                                     <v-btn rounded class="error" @click="dialog = false">
                                         Cancelar
                                         <v-icon right>clear</v-icon>
                                     </v-btn>
                                     <v-spacer></v-spacer>
-                                    <!-- <v-btn
+                                    <v-btn
                                             color="success"
-                                            :disabled="loader"
-                                            :loading="loader"
                                             rounded
                                             @click="save"
                                             v-if="status === 'Pago' && num_recibo !== ''"
                                     >
                                         Confirmar
                                         <v-icon right>done</v-icon>
-                                        <template v-slot:loader>
+                                       <!--  <template v-slot:loader>
                                             <span>Aguarde...</span>
-                                        </template>
-                                    </v-btn> -->
+                                        </template> -->
+                                    </v-btn>
                                     <submit-button
                                             color="success"
                                             rounded
@@ -403,7 +399,7 @@
                                             :loading="loading"
                                             @click="save"
                                             text="Confirmar"
-                                            v-if="status === 'Pago' && num_recibo !== ''"
+                                            v-if="status === 'Aguardando pagamento' && num_recibo === ''"
                                     >
                                     </submit-button>
                                 </v-card-actions>
@@ -417,21 +413,7 @@
             </v-container>
         </template>
 
-        <!-- <v-snackbar
-            v-model="snackbar"
-            :bottom="y === 'bottom'"
-            :left="x === 'left'"
-            color="success"
-            :multi-line="mode === 'multi-line'"
-            :right="x === 'right'"
-            :top="y === 'top'"
-            :timeout="timeout"
-            :vertical="mode === 'vertical'"
-          >
-            {{this.mensagem}}
-            <v-icon dark>done_outline</v-icon>
-        </v-snackbar>-->
-        <v-dialog v-model="snackbar" hide-overlay max-width="500px">
+        <!-- <v-dialog v-model="snackbar" hide-overlay max-width="500px">
             <v-card color="white">
                 <v-card-title class="text-xs-center ma-1">
                     <h3>
@@ -450,7 +432,7 @@
                     <v-btn color="primary" flat @click="clearPatient">Não</v-btn>
                 </v-card-actions>
             </v-card>
-        </v-dialog>
+        </v-dialog> -->
         <v-btn v-if="offsetTop > 2" class="mr-2" fixed dark fab bottom right color="primary" @click="backTop">
             <v-icon>keyboard_arrow_up</v-icon>
         </v-btn>
@@ -477,7 +459,6 @@
             dialog2: false,
             dialogPaciente: false,
             selectedDoctor: undefined,
-            clinic:undefined,
             num_recibo: "",
             type: "",
             createConsultationForm: undefined,
@@ -497,7 +478,7 @@
             ],
             status: "Aguardando pagamento",
             statusOptions: [{text: "Aguardando pagamento"}, {text: "Pago"}],
-            modalidade: "Retorno",
+            modalidade: "",
             date: moment().format("YYYY-MM-DD"),
             dates: [],
             times: "",
@@ -505,6 +486,7 @@
             medicosOptions: ["Todos"],
             pacientes: "",
             timeout: 4000,
+            clinic:undefined,
             especialidadeOption: "",
             especialidade: undefined,
             showAlert: false,
@@ -546,23 +528,24 @@
                     /* return this.especialidade && this.selectedDoctor ? this.especialidade.name === a.specialty.name &&
                            this.selectedDoctor.cpf === a.doctor.cpf :  false */
 
-                    let response = true
-                    if(this.selectedDoctor){
-                        if(this.selectedDoctor.cpf !== a.doctor.cpf){
-                            response = false
+                        let response = true
+                        if(this.selectedDoctor){
+                            if(this.selectedDoctor.cpf !== a.doctor.cpf){
+                                response = false
+                            }
                         }
-                    }
-                    if(this.especialidade){
-                        if(this.especialidade.name !== a.specialty.name ){
-                            response = false
+                        if(this.especialidade){
+                            if(this.especialidade.name !== a.specialty.name ){
+                                response = false
+                            }
                         }
-                    }
-                    if(this.clinic){
-                        if(this.clinic !== a.clinic.name){
-                            response = false
+                        console.log('clinica',a.clinic)
+                        if(this.clinic){
+                            if(this.clinic !== a.clinic.name){
+                                response = false
+                            }
                         }
-                    }
-                    return response
+                        return response
                 })
                 return consultas;
             },
@@ -575,6 +558,7 @@
                         ...this.$store.getters.doctors
                     }
                     return Object.values(docs) */
+
                     let docArray = Object.values(this.$store.getters.doctors)
                     docArray = docArray.filter((doctor) => {
                         if(!this.especialidade) {
@@ -600,37 +584,6 @@
                 let paciente = this.$store.getters.selectedPatient;
                 return paciente;
             },
-            loader() {
-                return this.$store.getters.statusLoaderAC;
-            },
-            snackbar: {
-                get: function () {
-                    var snack = this.$store.getters.onSnackbarAC;
-                    if (!this.snack && this.snackDialogDone) {
-                        this.snackDialogDone = false;
-                    } else if (snack) {
-                        this.dialog = false;
-                        this.snack = snack;
-                    }
-                    return this.snack;
-                },
-                set: function (val) {
-                    this.snack = val;
-                }
-            },
-            mensagem() {
-                return this.$store.getters.onMensagem;
-            },
-            // especialidade: {
-            //     set: function (value) {
-            //         this.especialidadeOption = value;
-            //         this.dates = [];
-            //     },
-            //     get: function () {
-            //         return this.especialidadeOption;
-            //     }
-            // },
-            //------------------------------------------Scroll-------------------------------------------------
             target() {
                 const value = this[this.type];
                 if (!isNaN(value)) return Number(value);
@@ -678,7 +631,6 @@
         },
         methods: {
             scheduleAppointment(consultation) {
-
                 this.fillConsultationForm(consultation)
                 this.dialog = true
             },
@@ -691,6 +643,7 @@
                     })
                 }
                 this.createConsultationForm = form
+                //console.log(form)
             },
             formatConsultationsArray(consultations) {
                 let newArray = []
@@ -738,12 +691,12 @@
                 await this.$store.dispatch('getDoctors')
                 await this.$store.dispatch('getConsultations',{
                     start_date: moment().format('YYYY-MM-DD 00:00:00'),
-                    final_date: moment().add(30, 'days').format('YYYY-MM-DD 23:59:59')
+                    final_date: moment().add(10, 'days').format('YYYY-MM-DD 23:59:59')
                 })
                 await this.$store.dispatch("getSpecialties")
 
                 this.query = this.$route.params.q
-                console.log( {...this.query})
+                //console.log( {...this.query})
                 if(!this.query){
                 //this.$router.push('agenda/GerenciamentoConsultas')
                 }
@@ -752,6 +705,7 @@
                 this.selectedDoctor = this.query.doctor
                 this.status = this.query.status
                 this.num_recibo = this.query.num_recibo
+                this.modalidade = this.query.modalidade
                 this.loading = false
             },
             backTop() {
@@ -785,11 +739,11 @@
             },
             keepPatient() {
                 this.snackDialogDone = true;
-                this.snackbar = false;
+                //this.snackbar = false;
             },
             clearPatient() {
                 this.snackDialogDone = true;
-                this.snackbar = false;
+                //this.snackbar = false;
                 this.$store.dispatch("selecionarPaciente", null);
             },
             clearRecibo() {
@@ -800,36 +754,11 @@
             //     const [year, month, day] = date.split("-");
             //     return `${day}/${month}/${year}`;
             // },
-            call() {
-                var consulta = this.$store.getters.idConsultation({
-                    data: this.index_Selecionado.data,
-                    hora: this.index_Selecionado.hora,
-                    crm: this.index_Selecionado.crm,
-                    status: this.status,
-                    modalidade: this.modalidade,
-                    num_recibo: this.num_recibo
-                });
-
-                this.$store.dispatch("scheduleAppointment", {
-                    pacienteSelecionado: this.pacienteSelecionado,
-                    status: this.status,
-                    modalidade: this.modalidade,
-                    consulta: consulta,
-                    especialidade: this.especialidade,
-                    num_recibo: this.num_recibo
-                });
-                this.clear();
-            },
             clear() {
                 this.num_recibo = "";
                 this.status = "Aguardando pagamento";
             },
-            resetSchedule(){
-                this.dialog = false
-                this.success = false
-            },
             async save() {
-                this.loading = true
                 let form = this.createConsultationForm
                 form.user = {
                     ...form.user,
@@ -843,19 +772,20 @@
                     status: this.status,
                     type: this.modalidade,
                     payment_number: this.num_recibo,
-                    previousConsultation:this.query.idConsultation
+                    idConsultationCanceled:this.query.idConsultation
                 }
+                if(this.modalidade == 'Retorno')
+                    form.consultation = {...form.consultation,previousConsultation: this.query.consultation.previousConsultation}
                 // return
                 this.loading = true
-                await this.$store.dispatch('addConsultationAppointmentToUser', form)
+                //console.log('Confirmar',form)
+                await this.$store.dispatch('addConsultationAppointmentToUserReschedule', form)
                 //Realizar essa funcao pelo cloud functions
-                await this.$store.dispatch('addUserToConsultation', form)
+                await this.$store.dispatch('addUserToConsultationReschedule', form)
                 this.loading = false
                 this.success = true
                 this.dialog = false
                 this.$router.back()
-
-                
             }
         }
     };

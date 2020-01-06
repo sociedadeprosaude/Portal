@@ -389,7 +389,6 @@
                 }
                 this.$store.commit('setSelectedPatient', user)
                 this.foundUsers = undefined
-                this.addPatient = false
             },
             async searchPatient() {
                 this.loading = true
