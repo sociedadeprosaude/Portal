@@ -145,6 +145,17 @@
                                 to: '/relatorio',
                                 permission: 'Relatórios',
                                 icon: 'report'
+                            },{
+                                title: 'Consultas',
+                                to:'/agenda/CadastroConsultasPlantoes',
+                                permission: 'Agenda',
+                                icon:'event',
+                            },
+                            {
+                                title: 'Pacotes',
+                                to: '/bundles',
+                                permission:'Caixa',
+                                icon: 'queue',
                             },
                             // {
                             //     title: 'Exames',
