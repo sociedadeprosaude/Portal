@@ -272,12 +272,10 @@
                                                 rounded
                                                 @click="documentDialog = !documentDialog"
                                                 v-if="(index_Selecionado.data)"
-                                                :disabled="status_Selecionado === 'Pago' && index_Selecionado.consultation.payment_number ? false : true"
+                                                :disabled="status_Selecionado === 'Pago' && index_Selecionado.consultation.payment_number && index_Selecionado.data >= hoje ? false : true"
                                         >
                                             Prontuario
-                                            {{hoje}}
                                             <v-icon>insert_drive_file</v-icon>
-                                            {{index_Selecionado.data}}
                                         </v-btn>
                                         <v-spacer></v-spacer>
                                         <v-btn
