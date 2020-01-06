@@ -9,7 +9,7 @@ script:
   - npm run build
   - ls -la
   - firebase use prosaude-36f66 --token $FIREBASE_TOKEN
-  - firebase deploy --token $FIREBASE_TOKEN
+  - firebase deploy --token $FIREBASE_TOKEN --only hosting
 #after_script:
 #  - ls -la
 #  - firebase deploy --token $FIREBASE_TOKEN
