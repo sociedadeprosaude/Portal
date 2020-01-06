@@ -110,7 +110,7 @@
                                     <v-icon>remove</v-icon>
                                 </v-btn>
                             </v-flex>
-                            <v-flex sm6 xs12 class="px-3">
+                            <v-flex sm12 xs12 class="px-3">
                                 <v-text-field
                                         outlined
                                         rounded
@@ -119,7 +119,7 @@
                                         v-model="name"
                                         label="Nome"></v-text-field>
                             </v-flex>
-                            <v-flex sm3 xs12 class="px-3">
+                            <v-flex sm6 xs12 class="px-3">
                                 <v-text-field
                                         outlined
                                         rounded
@@ -129,7 +129,7 @@
                                         prepend-icon="date_range"
                                         label="Data de Nascimento"></v-text-field>
                             </v-flex>
-                            <v-flex sm3 xs12 class="px-3">
+                            <v-flex sm6 xs12 class="px-3">
                                 <v-text-field
                                         outlined
                                         rounded
@@ -138,7 +138,7 @@
                                         v-model="cpf"
                                         label="CPF"></v-text-field>
                             </v-flex>
-                            <v-flex sm4 xs12 class="px-3">
+                            <v-flex sm12 xs12 class="px-3">
                                 <v-text-field
                                         outlined
                                         rounded
@@ -147,10 +147,10 @@
                                         prepend-icon="email"
                                         label="Email"></v-text-field>
                             </v-flex>
-                            <v-flex sm3 xs12 class="px-3">
+                            <v-flex sm6 xs12 class="px-3">
                                 <v-select outlined rounded filled label="Sexo" :items="['Feminino' , 'Masculino']" v-model="sex"></v-select>
                             </v-flex>
-                            <v-flex sm4 xs12>
+                            <v-flex sm6 xs12>
                                 <v-text-field
                                         outlined
                                         rounded
@@ -159,7 +159,7 @@
                                         v-model="numAss"
                                         label="Nun. Associado"></v-text-field>
                             </v-flex>
-                            <v-flex sm4 xs12 class="px-3">
+                            <v-flex sm12 xs12 class="px-3">
                                 <v-layout row wrap class="align-center" v-for="(tel, index) in telephones" :key="index">
                                     <v-flex xs10>
                                         <v-text-field
