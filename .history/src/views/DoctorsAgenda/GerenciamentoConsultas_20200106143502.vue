@@ -193,7 +193,7 @@
                                                                 CPF: {{item.user.cpf}}
                                                             </v-list-item-subtitle>
                                                             <br>
-                                                            <v-list-item-subtitle v-if="item.user.telephones[0]">
+                                                            <v-list-item-subtitle>
                                                                Telefone: {{item.user.telephones[0]}}
                                                             </v-list-item-subtitle>
                                                             <br>

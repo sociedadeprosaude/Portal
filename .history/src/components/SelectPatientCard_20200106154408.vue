@@ -244,7 +244,7 @@
                                 </v-layout>
                             </v-flex>
                             <v-flex xs12 class="text-right">
-                                <submit-button :disabled="!(this.name != '' && this.cpf != '' && this.birthDate != '' && this.telephones != '')" :success="success" @click="registerPatient()" :loading="loading"
+                                <submit-button :success="success" @click="registerPatient()" :loading="loading"
                                                text="Salvar"></submit-button>
                             </v-flex>
                         </v-layout>
@@ -260,6 +260,7 @@
 
 <script>
     import {mask} from 'vue-the-mask'
+    import axios from 'axios';
     import SubmitButton from "./SubmitButton";
     import PatientCard from "./PatientCard";
     var moment = require("moment")
@@ -299,6 +300,8 @@
                 sex: undefined,
                 telephones: [''],
                 addresses: [],
+                cep:'',
+                alertCEP:false,
                 loading: false,
                 formError: undefined,
                 searchError: undefined,
@@ -314,6 +317,46 @@
                 foundUsers: undefined,
                 success: false,
             }
+        },
+        watch:{
+            cep(val) {
+                if (val.length === 8) {
+                    axios
+                        .get('https://viacep.com.br/ws/' + val + '/json/')
+                        .then((response) => {
+                            if (response.data.erro) {
+                                this.alertCEP = true
+                            } else {
+                                this.alertCEP = false
+                                this.editedItem.address.street = response.data.logradouro;
+                                this.editedItem.address.neighborhood = response.data.bairro;
+                                this.editedItem.address.city = response.data.localidade;
+                                /* var array = this.stateOptions;
+                                /* console.log(
+                                    array.find(function(element) {
+                                        if(element.includes('AM')){
+                                            return element;
+                                        }
+
+                                        return '';
+                                    })
+                                ); 
+                                this.editedItem.state = array.find(function (element) {
+                                    if (element.includes(response.data.uf)) {
+                                        return element;
+                                    }
+                                    return '';
+                                }); */
+                            }
+
+                        })
+                } else {
+                    this.editedItem.address.street = '';
+                    this.editedItem.address.neighborhood = '';
+                    this.editedItem.address.state = '';
+                    this.editedItem.address.city = '';
+                }
+            },
         },
         methods: {
             showUserCard(user) {
@@ -340,11 +383,13 @@
             },
             async getAddressByCep(address) {
                 address.loading = true
+
                 let resp = await this.$store.dispatch('getAddressByCep', address.cep.replace('.', '').replace('-', ''))
                 if (resp.erro) {
                     address.cepError = true
                     return
                 }
+                console.log('Response',resp)
                 address.street = resp.logradouro
                 address.complement = resp.complemento
                 address.city = resp.localidade
