@@ -148,12 +148,7 @@
                                                             text-color="white"
                                                     >Vagas : {{consulta.vagas}}
                                                     </v-chip>
-                                                    <v-chip
-                                                            class="mt-1"
-                                                            color="primary_dark"
-                                                            text-color="white"
-                                                    >Clinica : {{consulta.clinic.name}}
-                                                    </v-chip>
+                                                    <v-chip class="mt-1" color="primary_dark" text-color="white">{{consulta.clinic.name}}</v-chip>
                                                 </v-layout>
                                             </v-flex>
                                             <v-flex xs12 class="text-right">
@@ -541,7 +536,7 @@
             consultas() {
                 let consultas = this.formatConsultationsArray(this.$store.getters.consultations).filter((a) => {
                     //console.log("selecionado:", this.clinic)
-                    //console.log("do banco:", a.clinic)
+                    //console.log("do banco:", a.clinic.name)
                     let response = true
                     if(this.selectedDoctor){
                         if(this.selectedDoctor.cpf !== a.doctor.cpf){
@@ -554,10 +549,11 @@
                         }
                     }
                     if(this.clinic){
-                        if(this.clinic !== a.clinic){
+                        if(this.clinic !== a.clinic.name){
                             response = false
                         }
                     }
+                    //console.log("resposta:", response)
                     return response
                 })
                 return consultas;
