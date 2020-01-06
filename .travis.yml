@@ -8,7 +8,7 @@ before_script:
 script:
   - npm run build
   - ls -la
-  - firebase use prosaude-36f66 --token $FIREBASE_DEPLOY_KEY1
+  - firebase use prosaude-36f66 --token $FIREBASE_TOKEN
   - firebase deploy --token $FIREBASE_TOKEN
 #after_script:
 #  - ls -la
