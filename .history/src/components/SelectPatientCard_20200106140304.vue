@@ -366,7 +366,6 @@
                 await this.$store.dispatch('addUser', patient)
                 this.success = true
                 this.loading = false
-                this.selectUser(patient)
                 setTimeout(() => {
                     this.success = false
                 }, 1000)
@@ -389,7 +388,6 @@
                 }
                 this.$store.commit('setSelectedPatient', user)
                 this.foundUsers = undefined
-                this.addPatient = false
             },
             async searchPatient() {
                 this.loading = true
