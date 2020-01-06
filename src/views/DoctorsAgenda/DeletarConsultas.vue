@@ -533,16 +533,22 @@
                 return `${day}/${month}/${year}`
             },
 
-            deleteConsultasDia() {
+            async deleteConsultasDia() {
 
+                this.loading = true
+                // setTimeout(() => {
+                //     this.loading = false
+                // }, 2000)
+                // return
                 var deletar = {
                     start_date: this.start_date,
                     final_date: this.final_date,
                     doctor: this.doctor,
                     specialtie: this.especialidade
                 }
-                this.$store.dispatch('removeAppointmentByDay', deletar)
+                await this.$store.dispatch('removeAppointmentByDay', deletar)
                 // this.clear()
+                this.loading = false
 
             },
 

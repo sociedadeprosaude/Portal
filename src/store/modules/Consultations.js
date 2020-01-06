@@ -296,6 +296,7 @@ const actions = {
         } catch (e) {
             throw e
         }
+        return
     },
     setConsultationHour({ commit }, payload) {
         return new Promise((resolve, reject) => {
