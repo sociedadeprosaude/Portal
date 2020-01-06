@@ -84,7 +84,7 @@
             //       'Colaboradores'
             //   ]
             // firebase.database().ref('permissions/') .set(perm)
-            let user = firebase.auth().currentUser
+            let user = firebase.auth().currentUser;
             // if (!user) {
             //     this.$router.push('/login')
             //     return
@@ -145,6 +145,17 @@
                                 to: '/relatorio',
                                 permission: 'Relatórios',
                                 icon: 'report'
+                            },{
+                                title: 'Consultas',
+                                to:'/agenda/CadastroConsultasPlantoes',
+                                permission: 'Agenda Médica',
+                                icon:'event',
+                            },
+                            {
+                                title: 'Pacotes',
+                                to: '/bundles',
+                                permission:'Caixa',
+                                icon: 'queue',
                             },
                             // {
                             //     title: 'Exames',

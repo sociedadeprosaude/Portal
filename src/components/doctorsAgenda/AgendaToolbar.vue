@@ -85,11 +85,7 @@
                 dialog: false,
                 selectUnitDialog: false,
                 menuItems: [
-                    {
-                        icon: 'calendar_today',
-                        title: 'Cadastro de Plantões & Consultas',
-                        link: '/agenda/CadastroConsultasPlantoes'
-                    },
+          
                     {icon: 'delete_forever', title: 'Apagar Consultas do dia', link: '/agenda/DeletarConsultas'},
                     {icon: 'event_note', title: 'Agendamento de Consultas', link: '/agenda/agendamento'},
                     {
