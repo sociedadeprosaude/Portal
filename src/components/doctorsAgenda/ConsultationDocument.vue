@@ -13,6 +13,7 @@
             </v-flex>
             <v-flex>
                 <v-card flat class="pa-10 receipt-to-print">
+                    <v-flex xs12 class="white" style="color: white">.</v-flex>
                     <v-layout row wrap class="align-center pa-4" style="border: 2px solid #2196f3; border-radius: 16px">
                         <v-flex xs6 class="text-left">
                             <v-layout column wrap>
@@ -106,7 +107,7 @@
                         <!--                        <v-flex xs6 class="primary" style="height: 2px; margin-top: 124px;"></v-flex>-->
                     </v-layout>
                     <v-layout row wrap class="align-center pa-4 mt-4" style="border: 2px solid #2196f3; border-radius: 16px">
-                        <v-flex xs12 style="height: 750px"></v-flex>
+                        <v-flex xs12 style="height: 740px"></v-flex>
                     </v-layout>
                 </v-card>
             </v-flex>
