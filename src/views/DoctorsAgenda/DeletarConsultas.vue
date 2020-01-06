@@ -3,7 +3,7 @@
         <v-layout row wrap>
             <v-card class="pa-4">
                 <v-layout align-center wrap>
-                    <v-flex xs12 sm4>
+                    <v-flex xs12 sm5>
                         <v-select
                                 label="Especialidade"
                                 prepend-icon="school"
@@ -34,7 +34,7 @@
                         </v-select>
                     </v-flex>
                     <v-spacer></v-spacer>
-                    <v-flex xs12 sm4>
+                    <v-flex xs12 sm5>
                         <v-select
                                 prepend-icon="account_circle"
                                 v-model="doctor"
@@ -65,10 +65,10 @@
                             </template>
                         </v-select>
                     </v-flex>
-                    <v-flex xs12 sm4>
+                    <v-flex xs12 sm5>
                         <v-menu
                                 ref="menu"
-                                v-model="menu"
+                                v-model="startMenu"
                                 :close-on-content-click="false"
                                 :nudge-right="40"
                                 transition="scale-transition"
@@ -77,11 +77,11 @@
                         >
                             <template v-slot:activator="{ on }">
                                 <v-text-field
-                                        v-model="computedDateFormatted"
-                                        label="Dia para Deletar"
+                                        v-model="startDateFormatted"
+                                        label="De"
                                         prepend-icon="event_busy"
                                         outline
-                                        hint="Selecione o diak para deletar as consultas do mesmo."
+                                        hint="Do dia."
                                         persistent-hint
                                         color="error"
                                         clearable
@@ -94,7 +94,45 @@
                             </template>
                             <v-date-picker
                                     ref="picker"
-                                    v-model="date"
+                                    v-model="start_date"
+                                    :min="new Date().toISOString().substr(0, 10)"
+                                    locale="pt-br"
+                                    color="red"
+                                    @change="save"
+                            ></v-date-picker>
+                        </v-menu>
+                    </v-flex>
+                    <v-spacer></v-spacer>
+                    <v-flex xs12 sm5>
+                        <v-menu
+                                ref="menu"
+                                v-model="finishMenu"
+                                :close-on-content-click="false"
+                                :nudge-right="40"
+                                transition="scale-transition"
+                                offset-y
+                                min-width="290px"
+                        >
+                            <template v-slot:activator="{ on }">
+                                <v-text-field
+                                        v-model="finishDateFormatted"
+                                        label="Até"
+                                        prepend-icon="event_busy"
+                                        outline
+                                        hint="Até o dia."
+                                        persistent-hint
+                                        color="error"
+                                        clearable
+                                        rounded
+                                        outlined
+                                        filled
+                                        readonly
+                                        v-on="on"
+                                ></v-text-field>
+                            </template>
+                            <v-date-picker
+                                    ref="picker"
+                                    v-model="final_date"
                                     :min="new Date().toISOString().substr(0, 10)"
                                     locale="pt-br"
                                     color="red"
@@ -105,6 +143,16 @@
                 </v-layout>
 
                 <v-layout align-center justify-center>
+                    <v-btn
+                            @click="getConsultations()"
+                            color="error"
+                            class="mx-3"
+                            rounded
+                            :disabled="!formIsValid"
+                    >
+                        Ver consultas
+                        <!--                        <v-icon right>calendar</v-icon>-->
+                    </v-btn>
                     <v-btn
                             @click="deleteConsultasDia"
                             color="error"
@@ -144,8 +192,11 @@
                             <v-flex xs12 sm12 md12 lg12></v-flex>
                             <v-flex xs12 sm12 md12 lg12></v-flex>
                             <v-spacer></v-spacer>
-                            <v-subheader v-if="consultasByDoctors(consultas).length != 0"><b>Data: {{date | dateFilter}}
-                                - {{daydate(date)}}</b></v-subheader>
+                            <v-subheader v-if="consultasByDoctors(consultas).length != 0"><b>{{start_date |
+                                dateFilter}}
+                                - {{daydate(start_date)}} até {{final_date |
+                                dateFilter}}
+                                - {{daydate(final_date)}}</b></v-subheader>
 
                             <v-expansion-panels>
                                 <v-expansion-panel
@@ -157,7 +208,7 @@
                                     <v-expansion-panel-header>
                                         <v-layout align-center row spacer>
 
-                                            <v-flex xs6 hidden-xs-only>
+                                            <v-flex xs4 hidden-xs-only>
                                                 <strong>Médico:</strong>
                                                 <v-chip small color="blue" text-color="white">
                                                     <v-avatar>
@@ -178,23 +229,39 @@
                                             </v-flex>
 
                                             <v-flex row wrap xs2 class="text-xs-right blue--text">
-                                                <strong>Consultas: </strong>
-                                                <v-chip small color="blue" text-color="white">
-                                                    <v-avatar>
-                                                        <v-icon>event</v-icon>
-                                                    </v-avatar>
-                                                    {{consultation.numConsultations}}
-                                                </v-chip>
+                                                <v-layout column wrap>
+                                                    <strong>Vagas: </strong>
+                                                    <v-chip small color="blue" text-color="white">
+                                                        <v-avatar>
+                                                            <v-icon>event</v-icon>
+                                                        </v-avatar>
+                                                        {{consultation.vacancy}}
+                                                    </v-chip>
+                                                </v-layout>
                                             </v-flex>
 
                                             <v-flex row wrap xs2 class="text-xs-right blue--text">
-                                                <strong>Retornos: </strong>
-                                                <v-chip small color="blue" text-color="white">
-                                                    <v-avatar>
-                                                        <v-icon>restore</v-icon>
-                                                    </v-avatar>
-                                                    {{consultation.numRegress}}
-                                                </v-chip>
+                                                <v-layout column wrap>
+                                                    <strong>Consultas: </strong>
+                                                    <v-chip small color="blue" text-color="white">
+                                                        <v-avatar>
+                                                            <v-icon>event</v-icon>
+                                                        </v-avatar>
+                                                        {{consultation.numConsultations}}
+                                                    </v-chip>
+                                                </v-layout>
+                                            </v-flex>
+
+                                            <v-flex row wrap xs2 class="text-xs-right blue--text">
+                                                <v-layout column wrap>
+                                                    <strong>Retornos: </strong>
+                                                    <v-chip small color="blue" text-color="white">
+                                                        <v-avatar>
+                                                            <v-icon>restore</v-icon>
+                                                        </v-avatar>
+                                                        {{consultation.numRegress}}
+                                                    </v-chip>
+                                                </v-layout>
                                             </v-flex>
                                         </v-layout>
                                     </v-expansion-panel-header>
@@ -209,7 +276,7 @@
                                                             v-for="item in consultation.consultations"
                                                             :key="item.id"
                                                     >
-                                                        <v-list-item>
+                                                        <v-list-item v-if="item.user">
                                                             <v-list-item-content>
                                                                 <v-list-item-title class="primary--text">
                                                                          <span style="font-weight: bolder">
@@ -262,6 +329,7 @@
                 </v-layout>
 
             </v-card>
+            <v-progress-circular v-if="loading" indeterminate class="primary--text"></v-progress-circular>
         </v-layout>
     </v-container>
 </template>
@@ -270,9 +338,12 @@
     var moment = require('moment');
     export default {
         data: () => ({
+            start_date: undefined,
+            final_date: undefined,
             teste: 0,
             moment: moment,
-            menu: false,
+            startMenu: false,
+            finishMenu: false,
             panel: [true],
             date_choose: '',
             especialidade: '',
@@ -312,7 +383,7 @@
         computed: {
 
             formIsValid() {
-                return this.date && this.doctor && this.especialidade
+                return this.start_date && this.final_date && this.doctor && this.especialidade
             },
 
             specialties() {
@@ -334,19 +405,23 @@
                 return doctors
             },
 
-            computedDateFormatted() {
-                return this.formatDate(this.date)
+            startDateFormatted() {
+                return this.formatDate(this.start_date)
+            },
+            finishDateFormatted() {
+                return this.formatDate(this.final_date)
             },
 
             computedDateFormattedSelecionado() {
-                return this.formatDate(this.index_Selecionado.data)
+                return this.formatDate(this.index_Selecionado.start_date)
             },
 
             consultas() {
-                let consultas = this.$store.getters.consultations.filter((a) => {
-
-                    return this.especialidade && this.date && this.doctor ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && this.doctor.cpf == a.doctor.cpf && a.user : false
-                })
+                let consultas = this.$store.getters.consultations
+                // .filter((a) => {
+                //
+                //     return this.especialidade && this.start_date && this.doctor ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && this.doctor.cpf == a.doctor.cpf && a.user : false
+                // })
                 return consultas;
             },
 
@@ -366,7 +441,7 @@
             })
             await this.$store.dispatch('getSpecialties')
             await this.$store.dispatch('getDoctors')
-            this.date = moment().format('YYYY-MM-DD')
+            this.start_date = moment().format('YYYY-MM-DD')
             this.dateFormatted = moment().format('YYYY-MM-DD')
         },
 
@@ -374,19 +449,18 @@
             menu(val) {
                 val && setTimeout(() => (this.$refs.picker.activePicker = 'MONTH'))
             },
-            date(val) {
-                this.getConsultations({
-                    start_date: val + ' 00:00:00',
-                    final_date: val + ' 23:59:59'
-                })
-            }
         },
 
         methods: {
 
-            async getConsultations(dates) {
+            async getConsultations() {
+                let payload = {
+                    start_date: this.start_date + ' 00:00',
+                    final_date: this.final_date + ' 23:59',
+                    doctor: this.doctor
+                }
                 this.loading = true
-                await this.$store.dispatch('getConsultations', dates)
+                await this.$store.dispatch('getConsultations', payload)
                 this.loading = false
             },
 
@@ -414,7 +488,7 @@
             },
             checkConsultationIsInArray(array, consultation) {
                 for (let i in array) {
-                    if (array[i].date === consultation.date && array[i].doctor.name === consultation.doctor.name) {
+                    if (array[i].start_date === consultation.start_date && array[i].doctor.name === consultation.doctor.name) {
                         return i
                     }
                 }
@@ -426,18 +500,18 @@
                 let res = {}
                 for (let cons in consultations) {
                     let targetDate = consultations[cons].doctor.cpf
-                    var numConsultations = 0
-                    var numRegress = 0
                     if (!res[targetDate]) {
                         res[targetDate] = {
                             doctor: consultations[cons].doctor,
                             numConsultations: 0,
                             numRegress: 0,
+                            vacancy: 0,
                             consultations: []
                         }
                     }
                     if (consultations[cons].type == 'Consulta') res[targetDate].numConsultations += 1
-                    else res[targetDate].numRegress += 1
+                    else if (consultations[cons].type == 'Retorno') res[targetDate].numRegress += 1
+                    else res[targetDate].vacancy += 1
                     res[targetDate].consultations.push(consultations[cons])
 
 
@@ -462,18 +536,18 @@
             deleteConsultasDia() {
 
                 var deletar = {
-                    date: this.date,
+                    start_date: this.start_date,
+                    final_date: this.final_date,
                     doctor: this.doctor,
                     specialtie: this.especialidade
                 }
-                //console.log(deletar)
                 this.$store.dispatch('removeAppointmentByDay', deletar)
-                this.clear()
+                // this.clear()
 
             },
 
             clear() {
-                this.date = moment().format('YYYY-MM-DD');
+                this.start_date = moment().format('YYYY-MM-DD');
                 this.doctor = null;
                 this.especialidade = '';
             },

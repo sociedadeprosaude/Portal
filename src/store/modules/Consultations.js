@@ -24,10 +24,13 @@ const actions = {
     async getConsultations({ commit }, payload) {
         try {
             let consultations = []
-            await firebase.firestore().collection('consultations')
+            let query = firebase.firestore().collection('consultations')
                 .where('date', '>=', payload.start_date)
                 .where('date', '<=', payload.final_date)
-                .onSnapshot((querySnapshot) => {
+            if(payload.doctor) {
+                query.where('doctor.cpf', '==', payload.doctor.cpf)
+            }
+            await query.onSnapshot((querySnapshot) => {
                     consultations = []
                     querySnapshot.forEach((document) => {
                         consultations.push({
@@ -266,8 +269,8 @@ const actions = {
 
     async removeAppointmentByDay({ commit }, payload) { // ApagarTodasAsConsultasDoDiaDoMedico
 
-        let start = moment(payload.date, 'YYYY-MM-DD').format('YYYY-MM-DD 00:00:00');
-        let end = moment(payload.date, 'YYYY-MM-DD').format('YYYY-MM-DD 23:59:59');
+        let start = moment(payload.start_date, 'YYYY-MM-DD').format('YYYY-MM-DD 00:00');
+        let end = moment(payload.final_date, 'YYYY-MM-DD').format('YYYY-MM-DD 23:59');
         //console.log(payload.date)
         try {
             let snapshot = await firebase.firestore().collection('consultations')
