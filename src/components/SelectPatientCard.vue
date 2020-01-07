@@ -198,22 +198,39 @@
                                     <v-icon>add_circle</v-icon>
 
                                 </v-btn>
-                                <v-layout wrap justify v-for="(dependent, index) in dependents" :key="index">
-                                    <v-flex xs12 class="text-right">
+                                <v-layout row wrap justify v-for="(dependent, index) in dependents" :key="index">
+                                    <v-flex xs12  class="text-right">
                                         <v-btn class="transparent" text @click="dependents.splice(index, 1)">
                                             <v-icon>remove_circle</v-icon>
                                         </v-btn>
                                     </v-flex>
-                                    <v-text-field label="Nome" class="ml-2"
-                                                      v-model="dependent.name"></v-text-field>
-                                    <v-spacer></v-spacer>
-                                    <v-flex xs12 sm3>
-                                        <v-text-field label="Data de Nascimento" class="ml-2"
-                                                      v-model="dependent.birthDate"></v-text-field>
+                                    <v-flex xs12>
+                                        <v-text-field
+                                                outlined
+                                                rounded
+                                                filled
+                                                prepend-icon="account_circle"
+                                                v-model="dependent.name"
+                                                label="Nome"></v-text-field>
                                     </v-flex>
 
-                                    <v-flex xs12 sm10 class="px-3">
-                                        <v-select label="Grau" hide-details single-line v-model="dependent.grau"
+                                    <v-spacer></v-spacer>
+                                     <v-flex sm4 xs12 class="px-3">
+                                        <v-text-field
+                                                outlined
+                                                rounded
+                                                filled
+                                                placeholder="Campo obrigatório *"
+                                                v-model="dependent.birthDate"
+                                                v-mask="mask.date"
+                                                prepend-icon="date_range"
+                                                label="Data de Nascimento"></v-text-field>
+                                    </v-flex>
+                                     <v-flex sm4 xs12 class="px-3">
+                                        <v-select outlined rounded filled label="Sexo" :items="['Feminino' , 'Masculino']" v-model="dependent.sex"></v-select>
+                                    </v-flex>
+                                    <v-flex xs6 sm4 class="px-3">
+                                        <v-select label="Grau de Dependência" outlined rounded filled v-model="dependent.dependentDegree"
                                                   :items="degress" menu-props="auto"></v-select>
                                     </v-flex>
                                    
@@ -400,6 +417,7 @@
                     sex: this.sex,
                     telephones: this.telephones,
                     addresses: this.addresses,
+                    dependents:this.dependents,
                     type: 'PATIENT'
                 }
                 await this.$store.dispatch('addUser', patient)
