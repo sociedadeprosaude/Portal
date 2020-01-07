@@ -1,5 +1,6 @@
 import firebase, {firestore} from "firebase";
 import functions from '../../utils/functions'
+import moment from "moment";
 
 const state = {
     doctors: {},
@@ -73,6 +74,27 @@ const actions = {
             throw e
         }
     },
+
+    async deleteConsultations ({}, doctor) {
+        let hoje = moment().locale('pt-BR').format('YYYY-MM-DD HH:mm')
+        try {
+            let snapshot = await firebase.firestore().collection('consultations')
+                .where('doctor.cpf', "==", doctor.cpf)
+                .where('date', ">=", hoje)
+                .get()
+            snapshot.forEach(doc => {
+                firebase.firestore().collection('consultations').doc(doc.id).delete()
+                if (doc.data().user) {
+                    firebase.firestore().collection('users').doc(doc.data().user.cpf).collection('consultations').doc(doc.id).delete()
+                    firebase.firestore().collection('canceled').doc(doc.id).set(doc.data())
+                }
+            })
+        } catch (e) {
+            throw e
+        }
+        return
+    },
+
     async deleteDoctor ({}, doctor) {
         try {
             (await firebase.firestore().collection('users').doc(doctor.cpf).collection('specialties').get()).forEach((doc) => {

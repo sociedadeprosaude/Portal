@@ -247,6 +247,7 @@
             async deleteItem(item) {
                 let doctor = this.doctors[item.cpf]
                 this.loading = true
+                await this.$store.dispatch('deleteConsultations', doctor)
                 await this.$store.dispatch('deleteDoctor', doctor)
                 // await this.$store.dispatch('getDoctors')
                 this.success = true
@@ -254,7 +255,6 @@
                 setTimeout(() => {
                     this.confirmDeletionDialog = false
                 }, 800)
-
             },
 
             // close() {
