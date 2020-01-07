@@ -191,6 +191,7 @@ const actions = {
 
     selectClinic({commit}, payload) {
         commit('setSelectedClinic', payload);
+
     },
 
     loadClinics({commit}) {
@@ -274,8 +275,8 @@ const actions = {
             let pros = []
             clinCollection.forEach(doc => {
                 pros.push(doc.data())
-            })
-            context.commit('setUnits', pros)
+            });
+            context.commit('setUnits', pros);
             if (!this.getters.selectedUnit) {
                 context.commit('setSelectedUnit', pros[0])
             }

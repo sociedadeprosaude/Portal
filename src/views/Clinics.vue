@@ -25,7 +25,7 @@
 
                                 <v-dialog v-model="dialog" persistent width="500px">
                                     <template v-slot:activator="{ on }">
-                                        <v-btn rounded color="primary" dark class="mb-2 elevation-6" v-on="on">
+                                        <v-btn rounded color="primary" dark class="mb-2 elevation-6" v-on="on" @click="newClinic()">
                                             <v-icon left>add</v-icon>
                                             Nova Clinica
                                         </v-btn>
@@ -466,8 +466,8 @@
         methods: {
 
             async loadClinics() {
-              this.loading = true
-              await this.$store.dispatch('getClinics')
+              this.loading = true;
+              await this.$store.dispatch('getClinics');
               this.loading = false
             },
 
@@ -514,8 +514,14 @@
                 this.$router.back()
             },
 
+
+            newClinic () {
+                this.$store.dispatch('selectClinic', this.defaultItem);
+                this.editedItem = Object.assign({}, this.defaultItem);
+            },
+
             async save() {
-                this.loading = true
+                this.loading = true;
                 if (this.editedIndex > -1) {
                     Object.assign(this.clinics[this.editedIndex], this.editedItem);
                 } else {

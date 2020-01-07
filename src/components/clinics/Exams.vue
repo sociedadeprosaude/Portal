@@ -216,10 +216,10 @@
                     };
                     await this.$store.dispatch('addExamToClinic', examData);
                 }
-                this.loading = false
-                this.succes = true
+                this.loading = false;
+                this.succes = true;
                 setTimeout(() => {
-                    this.clear()
+                    this.clear();
                     this.succes = false
                 }, 1000)
             },
@@ -229,8 +229,8 @@
                 this.sale = null;
                 this.obs = null;
                 this.exams = [];
-                this.closeDialog()
-                // this.$store.dispatch('selectClinic', null);
+                this.closeDialog();
+                //this.$store.dispatch('selectClinic', null);
             },
 
             closeDialog: function() {
