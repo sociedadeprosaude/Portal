@@ -481,6 +481,7 @@
             async saveBudget(budget) {
                 this.$store.commit('setSelectedBudget', budget);
                 // this.selectedBudget = Object.assign({}, budget)
+                console.log('2', this.budget)
                 await this.$store.dispatch('addBudget', budget);
                 this.updateBudgetsIntakes()
             },
@@ -494,6 +495,9 @@
                     await this.saveBudget(this.generateBudget())
                 } else {
                     let newBudget = this.generateBudget()
+                    if(!this.selectedBudget.id) {
+                        this.selectedBudget.id = this.now
+                    }
                     newBudget.id = this.selectedBudget.id
                     this.$store.commit('setSelectedBudget', newBudget)
                 }
