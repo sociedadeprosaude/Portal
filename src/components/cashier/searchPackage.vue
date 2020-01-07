@@ -5,10 +5,18 @@
                 <v-card class="round-card elevation-0">
                     <v-flex xs12 class="text-right pa-2" v-if="searchPackage">
                         <v-layout row wrap >
-                            <v-combobox v-model="searchData" :items="listPackage" item-text="name"
-                                        :clearable="true" :loading="isLoading" :search-input.sync="searchBundle"
-                                        filled  full-width
-                                        @click:clear = "clearSearch" outlined class="mr-2 ml-2"
+                            <v-combobox v-model="searchData"
+                                        :items="listPackage"
+                                        item-text="name"
+                                        auto-select-first
+                                        :clearable="true"
+                                        :loading="isLoading"
+                                        :search-input.sync="searchBundle"
+                                        filled
+                                        full-width
+                                        return-object
+                                        @click:clear = "clearSearch"
+                                        outlined class="mr-2 ml-2"
                                         :disabled="!searchPackage">
                                 <template v-slot:no-data>
                                     <v-list-item>
@@ -187,7 +195,8 @@
         computed: {
 
             listPackage (){
-                return this.$store.getters.bundles;
+                return Object.values(this.$store.getters.bundles);
+                //return this.$store.getters.bundles;
             },
 
             formRegister () {
@@ -244,24 +253,20 @@
             async searchData () {
                 if (this.searchData){
                     this.isLoading = true;
-                    const data = this.searchData.name.toUpperCase();
 
-                    let bundle = await this.$store.dispatch('getBundle', data);
+                    this.searchPackage = false;
+                    this.registerPackage= true;
+                    this.$store.commit('setSelectedBundle', this.searchData);
+                    this.nameBundle = this.searchData.name.toUpperCase();
 
-                    if (bundle.length === 1) {
-                        this.searchPackage = false;
-                        this.registerPackage= true;
-
-                        this.$store.commit('setSelectedBundle', bundle[0]);
-
-
-                        console.log("#bundle, exams", bundle[0].exams);
-                        for (let exam in bundle[0].exams) {
-                            this.$store.commit('addItemsPackage', bundle[0].exams[exam])
-                        }
+                    console.log("#bundle, exams", this.searchData);
+                    for (let exam in this.searchData.exams) {
+                        this.$store.commit('addItemsPackage', this.searchData.exams[exam])
                     }
+                }
 
-                } else {
+
+                else {
                     this.$store.commit('setSelectedBundle', this.defaultPackage);
                 }
             },

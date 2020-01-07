@@ -29,7 +29,7 @@ const mutations = {
     },
     clearShoppingCartItens(state) {
         state.items = []
-    }
+}
 };
 
 const actions = {

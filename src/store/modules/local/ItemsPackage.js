@@ -23,8 +23,6 @@ const mutations = {
 
     addItemsPackage (state, payload) {
 
-        console.log('payload', payload);
-
         for (let item in state.items) {
             if (state.items[item].name === payload.name) {
                 state.items[item] = payload;
@@ -41,7 +39,8 @@ const mutations = {
     },
 
     clearItemsPackage (state) {
-        state.items = []
+        state.items = [];
+        console.log(state.items);
     }
 };
 

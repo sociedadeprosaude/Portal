@@ -56,7 +56,8 @@
                                         <v-flex xs5>
                                             <v-text-field
                                                     label="Desconto: %"
-                                                    v-model="percentageDiscount"
+                                                    v-model="percentageDiscount.number"
+                                                    placeholder="0"
                                                     clearable>
                                             </v-text-field>
                                         </v-flex>
@@ -65,7 +66,8 @@
                                             <v-text-field
                                                     disabled
                                                     label="Desconto: R$ "
-                                                    v-model="moneyDiscount">
+                                                    placeholder="0"
+                                                    v-model="moneyDiscount.number">
                                             </v-text-field>
                                         </v-flex>
                                     </v-layout>
@@ -119,25 +121,26 @@
 <script>
     export default {
         name: "listPackage",
-        data: () => ({
-            searchData: null,
+        data () {
+            return {
+                searchData: null,
 
-            search: null,
-            validRegister: true,
+                search: null,
+                validRegister: true,
 
-            items: [], action: false, deleteBundle: false,
+                items: [], action: false, deleteBundle: false,
 
-            percentageDiscount: 0, moneyDiscount: 0,
+                percentageDiscount: 0, moneyDiscount: 0,
 
-            editedPackage: {
-                id: '', name: '', exams: [], specialties: [],
-            },
+                editedPackage: {
+                    id: '', name: '', exams: [], specialties: [],
+                },
 
-            defaultPackage: {
-                id: '', name: '', exams: [], specialties: [], percentageDiscount: 0,
-            },
-
-        }),
+                defaultPackage: {
+                    id: '', name: '', exams: [], specialties: [], percentageDiscount: 0,
+                },
+            }
+        },
 
         computed: {
 
@@ -180,13 +183,7 @@
                     total += parseFloat(itens[item].price)
                 }
 
-                if (total) {
-                    return total;
-                } else {
-                    return 0;
-                }
-
-
+                return total;
             },
 
             total() {
@@ -207,13 +204,10 @@
         watch: {
 
             percentageDiscount: function () {
-                if (this.percentageDiscount)  {
-                    this.moneyDiscount = ((this.percentageDiscount * this.price) / 100);
-                }
+
+                this.moneyDiscount = ((this.percentageDiscount * this.price) / 100);
 
             },
-
-
 
         },
 
@@ -222,6 +216,7 @@
             clearSearch () {
 
                 this.$store.dispatch('selectedBundle', null);
+                this.$store.dispatch('clearItemsPackage');
                 this.percentageDiscount = 0;
                 this.moneyDiscount = 0;
             },
