@@ -194,28 +194,26 @@ const actions = {
 
     },
 
-    loadClinics({commit}) {
+    async loadClinics({commit}) {
         return new Promise((resolve, reject) => {
             let clinics = [];
-            firebase.firestore().collection('clinics').onSnapshot((doc) => {
-
+            firebase.firestore().collection('clinics')
+                .onSnapshot((doc) => {
                 doc.forEach((doc) => {
 
                     let specialties = [];
                     let nameClinic = doc.data().name;
 
                     firebase.firestore().collection('clinics').doc(nameClinic).collection('specialties')
-                        .get().then((data) => {
-
-                        data.forEach((doc) => {
+                        .onSnapshot((querySnapshot) => {
+                            querySnapshot.forEach((doc) => {
 
                             let doctors = [];
                             let nameSpecialtie = doc.data().name;
 
                             firebase.firestore().collection('clinics').doc(nameClinic).collection('specialties').doc(nameSpecialtie).collection('doctors')
-                                .get().then((info) => {
-
-                                info.forEach((doc) => {
+                                .onSnapshot((doc) => {
+                                    doc.forEach((doc) => {
                                     doctors.push({
                                         cost: doc.data().cost,
                                         cpf: doc.data().cpf,
@@ -239,8 +237,8 @@ const actions = {
 
                     let exams = [];
                     firebase.firestore().collection('clinics').doc(nameClinic).collection('exams')
-                        .get().then((data) => {
-                        data.forEach((doc) => {
+                        .onSnapshot((doc) => {
+                            doc.forEach((doc) => {
                             exams.push({
                                 name: doc.data().name,
                                 cost: doc.data().cost,
