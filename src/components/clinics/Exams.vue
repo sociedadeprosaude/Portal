@@ -3,7 +3,7 @@
         <v-card-title class="headline grey lighten-2" primary-title>
             <span class="headline">Cadastro de Exames</span>
             <v-spacer></v-spacer>
-            <v-btn small color="error" @click="clear()"><v-icon>close</v-icon></v-btn>
+            <v-btn small color="error" @click="clear(), closeDialog()"><v-icon>close</v-icon></v-btn>
         </v-card-title>
         <v-card-text>
             <v-container grid-list-md>
@@ -229,8 +229,8 @@
                 this.sale = null;
                 this.obs = null;
                 this.exams = [];
-                this.closeDialog();
-                //this.$store.dispatch('selectClinic', null);
+                // this.closeDialog()
+                // this.$store.dispatch('selectClinic', null);
             },
 
             closeDialog: function() {
