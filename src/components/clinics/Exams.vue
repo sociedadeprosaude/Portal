@@ -229,7 +229,7 @@
                 this.sale = null;
                 this.obs = null;
                 this.exams = [];
-                this.closeDialog()
+                // this.closeDialog()
                 // this.$store.dispatch('selectClinic', null);
             },
 

@@ -269,6 +269,14 @@ const actions = {
             })
         })
     },
+    async getClinicExams(context, clinic) {
+        let examSnap = await firebase.firestore().collection('clinics').doc(clinic.id).collection('exams').get()
+        let exams = []
+        examSnap.forEach((doc) => {
+            exams.push(doc.data())
+        })
+        return exams
+    },
     async getProSaudeUnits(context) {
         firebase.firestore().collection('clinics').where('property', '==', true).onSnapshot(clinCollection => {
             let pros = []

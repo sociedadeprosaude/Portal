@@ -142,7 +142,19 @@ const actions = {
         }
         firebase.firestore().collection('exams').doc(examKey).delete()
         return
-    }
+    },
+     async setClinicOnExams(context, payload) {
+        for (let exam in payload.exams) {
+            let holder = {
+                ...payload.clinic,
+                price: payload.exams[exam].price,
+                cost: payload.exams[exam].cost,
+                rules: payload.exams[exam].rules
+            }
+            holder = functions.removeUndefineds(holder)
+            firebase.firestore().collection('exams').doc(payload.exams[exam].name).collection('clinics').doc(payload.clinic.id).set(holder)
+        }
+     }
 };
 
 const getters = {
