@@ -123,9 +123,9 @@
         <v-divider></v-divider>
         <v-card-actions>
             <v-layout align-center justify-center>
-                <v-btn color="error" @click="clear()">CANCELAR</v-btn>
+                <v-btn color="error" @click="clear(), closeDialog()">CANCELAR</v-btn>
                 <v-spacer></v-spacer>
-                <submit-button :loading="loading" :success="succes" text="SALVAR" :disabled="!formIsValid" @click="save()"></submit-button>
+                <submit-button :loading="loading" :success="succes" text="SALVAR" :disabled="!formIsValid" @click="save(), closeDialog()"></submit-button>
 <!--                <v-btn-->
 <!--                        :disabled="!formIsValid"-->
 <!--                        @click="save()"-->
