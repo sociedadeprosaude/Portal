@@ -193,9 +193,10 @@
                                         filled
                                         placeholder="Campo obrigatório *"
                                         v-model="birthDate"
+                                        :rules="rules"
                                         v-mask="mask.date"
                                         prepend-icon="date_range"
-                                        label="Data de Nascimento"></v-text-field>
+                                        label="Data de Nascimento"></v-text-field>                         
                             </v-flex>
                             <v-flex sm6 xs12 class="px-3">
                                 <v-text-field
@@ -286,9 +287,9 @@
                                                 outlined
                                                 rounded
                                                 filled
-                                                placeholder="Campo obrigatório *"
                                                 v-model="dependent.birthDate"
                                                 v-mask="mask.date"
+                                                :rules="rules"
                                                 prepend-icon="date_range"
                                                 label="Data de Nascimento"></v-text-field>
                                     </v-flex>
@@ -360,7 +361,7 @@
                                 </v-layout>
                             </v-flex>
                             <v-flex xs12 class="text-right">
-                                <submit-button :disabled="!(this.name != '' && this.cpf != '' && this.birthDate != '' && this.telephones != '')" :success="success" @click="registerPatient()" :loading="loading"
+                                <submit-button :disabled="!(this.name != '' && this.cpf != '' && this.birthDate != '' && this.dateValid(this.birthDate) && this.telephones != '')" :success="success" @click="registerPatient()" :loading="loading"
                                                text="Salvar"></submit-button>
                             </v-flex>
                         </v-layout>
@@ -427,6 +428,12 @@
                     telephone: '(##) #####-####',
                     cep: '##.###-###',
                 },
+                rules: [
+                    value => {
+                        const rule = this.dateValid(value)
+                        return rule || 'Data inválida'
+                    }
+                ],
                 states: ['AC', 'AL', 'AM'],
                 cities: {'AC': [], 'AL': [], 'AM': ['Iranduba', 'Manaus', 'Parintins', 'AUTAZES']},
                 foundUsers: undefined,
@@ -434,6 +441,11 @@
             }
         },
         methods: {
+            dateValid(value){
+                if(value)
+                    return value.length < 10 || moment(value,'DD/MM/YYYY').isValid()
+                return true
+            },
             showUserCard(user) {
                 this.patientCard = !this.patientCard
             },

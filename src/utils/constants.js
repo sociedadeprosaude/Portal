@@ -51,7 +51,7 @@ export default {
     //     }
     FIREBASE_CONFIG:
               {
-            apiKey: "AIzaSyBgrfEkJonYXxE4d3UD2NWMLDCWeWZEND4",
+           apiKey: "AIzaSyBgrfEkJonYXxE4d3UD2NWMLDCWeWZEND4",
            authDomain: "prosaudedev.firebaseapp.com",
              databaseURL: "https://prosaudedev.firebaseio.com",
              projectId: "prosaudedev",
