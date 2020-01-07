@@ -18,10 +18,9 @@
                     </v-flex>
                     <v-flex v-for="page in section.pages"
                             :key="page.title"
-                            xs4
-                            sm3
                             class="mx-2 my-2">
                         <v-card
+                                min-width="200"
                                 class="card hidden-xs-only" :to="page.external_url ? '' : page.to"
                                 @click="page.external_url ? goToExternalUrl(page.external_url) : ''">
                             <v-layout column row>
@@ -32,6 +31,7 @@
                             </v-layout>
                         </v-card>
                         <v-card
+                                width="124"
                                 class="card hidden-sm-and-up" :to="page.external_url ? '' : page.to"
                                 @click="page.external_url ? goToExternalUrl(page.external_url) : ''">
                             <v-layout column row>
