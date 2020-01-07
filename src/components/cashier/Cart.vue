@@ -177,7 +177,6 @@
                                                     R$ {{item.price}}
                                                 </p>
                                             </v-card-text>
-
                                         </v-card>
                                     </v-flex>
 

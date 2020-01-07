@@ -3,18 +3,19 @@ import Vue from 'vue'
 const state = {
     items: [],
     bundle: undefined,
-    nameBundle : undefined,
+    nameBundle : '',
 
 };
 
 const mutations = {
-    setSelectedBundle(state, payload) {
-        //console.log('SetSelectedBudget',payload)
-        state.bundle = payload
-    },
+
 
     setNameBundle (state, payload){
         state.nameBundle = payload
+    },
+
+    clearNameBundle (state) {
+        state.nameBundle = "";
     },
 
     setItemsPackage (state, payload) {
@@ -38,6 +39,7 @@ const mutations = {
         state.items.splice(state.items.indexOf(payload), 1)
     },
 
+
     clearItemsPackage (state) {
         state.items = [];
         console.log(state.items);
@@ -51,9 +53,6 @@ const actions = {
 
 const getters = {
 
-    selectedBundle (state) {
-        return state.bundle
-    },
 
     getItemsPackage (state) {
         return state.items

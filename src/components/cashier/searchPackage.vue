@@ -33,7 +33,7 @@
                                 <v-icon>add</v-icon>
                             </v-btn>
                             <v-btn small fab color="primary" dark class="mb-2 mr-2"
-                                   @click="$router.back()">
+                                   @click="close()">
                                 <v-icon>close</v-icon>
                             </v-btn>
                         </v-layout>
@@ -169,7 +169,7 @@
 
                 searchPackage: true, registerPackage: false,
                 searchData: null, searchBundle: null,
-                isLoading: undefined, loading: undefined, nameBundle: null,
+                isLoading: undefined, loading: undefined,
 
                 search: '',
                 validRegister: true,
@@ -194,6 +194,9 @@
 
         computed: {
 
+            nameBundle () {
+                 return this.$store.getters.getNameBundle;
+            },
             listPackage (){
                 return Object.values(this.$store.getters.bundles);
                 //return this.$store.getters.bundles;
@@ -257,9 +260,8 @@
                     this.searchPackage = false;
                     this.registerPackage= true;
                     this.$store.commit('setSelectedBundle', this.searchData);
-                    this.nameBundle = this.searchData.name.toUpperCase();
-
-                    console.log("#bundle, exams", this.searchData);
+                    let name = this.searchData.name.toUpperCase();
+                    this.$store.commit('setNameBundle', name);
                     for (let exam in this.searchData.exams) {
                         this.$store.commit('addItemsPackage', this.searchData.exams[exam])
                     }
@@ -293,9 +295,11 @@
                 this.searchData = null;
                 this.registerPackage = false;
                 this.searchPackage = true;
+                this.$store.commit('clearNameBundle');
                 this.editedPackage= Object.assign({}, this.defaultPackage);
-                this.$store.dispatch('selectedBundle', this.defaultPackage);
+                this.$store.commit('setSelectedBundle', this.defaultPackage);
                 this.editedPackage.exams = [];
+                this.$store.commit('clearItemsPackage');
 
             },
 
@@ -322,8 +326,15 @@
             },
 
             newPackage() {
-                this.$store.dispatch('selectedBundle', this.defaultPackage);
+                this.$store.commit('clearNameBundle');
+                this.$store.commit('setSelectedBundle', this.defaultPackage);
             },
+
+
+            close () {
+                this.clearSearch();
+                this.$router.back();
+            }
 
         },
 

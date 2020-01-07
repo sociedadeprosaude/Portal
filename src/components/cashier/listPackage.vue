@@ -56,7 +56,7 @@
                                         <v-flex xs5>
                                             <v-text-field
                                                     label="Desconto: %"
-                                                    v-model="percentageDiscount.number"
+                                                    v-model="percentageDiscount"
                                                     placeholder="0"
                                                     clearable>
                                             </v-text-field>
@@ -67,7 +67,7 @@
                                                     disabled
                                                     label="Desconto: R$ "
                                                     placeholder="0"
-                                                    v-model="moneyDiscount.number">
+                                                    v-model="moneyDiscount">
                                             </v-text-field>
                                         </v-flex>
                                     </v-layout>
@@ -130,7 +130,7 @@
 
                 items: [], action: false, deleteBundle: false,
 
-                percentageDiscount: 0, moneyDiscount: 0,
+                percentageDiscount: '0', moneyDiscount: '0',
 
                 editedPackage: {
                     id: '', name: '', exams: [], specialties: [],
@@ -148,10 +148,11 @@
                 // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                 let item= this.$store.getters.selectedBundle;
                 if(item){
+
                     // eslint-disable-next-line vue/no-side-effects-in-computed-properties,vue/no-side-effects-in-computed-properties
-                    this.percentageDiscount= parseFloat(item.percentageDiscount);
+                    this.percentageDiscount= item.percentageDiscount ? parseFloat(item.percentageDiscount) : 0;
                     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-                    this.moneyDiscount = parseFloat(item.moneyDiscount)
+                    this.moneyDiscount = item.percentageDiscount ? parseFloat(item.moneyDiscount) : 0;
                 }
                 return this.$store.getters.selectedBundle;
 
@@ -203,6 +204,8 @@
 
         watch: {
 
+
+
             percentageDiscount: function () {
 
                 this.moneyDiscount = ((this.percentageDiscount * this.price) / 100);
@@ -215,8 +218,9 @@
 
             clearSearch () {
 
-                this.$store.dispatch('selectedBundle', null);
-                this.$store.dispatch('clearItemsPackage');
+                this.$store.commit('setSelectedBundle', this.defaultPackage);
+                this.$store.commit('clearItemsPackage');
+                this.$store.commit('clearNameBundle');
                 this.percentageDiscount = 0;
                 this.moneyDiscount = 0;
             },
