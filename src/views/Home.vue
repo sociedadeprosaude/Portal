@@ -18,13 +18,25 @@
                     </v-flex>
                     <v-flex v-for="page in section.pages"
                             :key="page.title"
-                            class="mx-4 my-2">
+                            xs4
+                            sm3
+                            class="mx-2 my-2">
                         <v-card
-                                class="card" min-width="200" :to="page.external_url ? '' : page.to"
+                                class="card hidden-xs-only" :to="page.external_url ? '' : page.to"
                                 @click="page.external_url ? goToExternalUrl(page.external_url) : ''">
                             <v-layout column row>
                                 <v-icon size="72">{{page.icon}}</v-icon>
                                 <span class="text-center my-headline">
+                        {{page.title}}
+                    </span>
+                            </v-layout>
+                        </v-card>
+                        <v-card
+                                class="card hidden-sm-and-up" :to="page.external_url ? '' : page.to"
+                                @click="page.external_url ? goToExternalUrl(page.external_url) : ''">
+                            <v-layout column row>
+                                <v-icon size="24">{{page.icon}}</v-icon>
+                                <span class="text-center font-weight-bold">
                         {{page.title}}
                     </span>
                             </v-layout>
@@ -35,7 +47,7 @@
                     </v-flex>
                 </v-layout>
             </v-flex>
-            <v-flex xs12 class="ma-1">
+            <v-flex xs12 class="ma-1 hidden-xs-only">
                 <v-layout row wrap class="align-end justify-end">
                     <v-card class="card" width="200px" @click="logout()">
                         <v-layout column row>
@@ -43,6 +55,19 @@
                             <span class="text-center my-headline">
                         Sair
                     </span>
+                        </v-layout>
+                    </v-card>
+                </v-layout>
+            </v-flex>
+            <v-flex xs12 class="ma-1 hidden-sm-and-up">
+                <v-layout row wrap class="align-center justify-start">
+                    <v-card class="card py-1 px-2" @click="logout()">
+                        <v-layout row wrap class="align-center">
+                            <span class="text-center font-weight-bold">
+                        Sair
+                    </span>
+                            <v-icon size="24">exit_to_app</v-icon>
+
                         </v-layout>
                     </v-card>
                 </v-layout>
@@ -145,16 +170,16 @@
                                 to: '/relatorio',
                                 permission: 'Relatórios',
                                 icon: 'report'
-                            },{
+                            }, {
                                 title: 'Consultas',
-                                to:'/agenda/CadastroConsultasPlantoes',
+                                to: '/agenda/CadastroConsultasPlantoes',
                                 permission: 'Agenda Médica',
-                                icon:'event',
+                                icon: 'event',
                             },
                             {
                                 title: 'Pacotes',
                                 to: '/bundles',
-                                permission:'Caixa',
+                                permission: 'Caixa',
                                 icon: 'queue',
                             },
                             // {
