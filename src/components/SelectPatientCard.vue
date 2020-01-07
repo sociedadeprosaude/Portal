@@ -5,33 +5,99 @@
                 <v-expand-transition mode="out-in">
                     <v-card class="primary_light white--text pa-2" :max-width="maxWidth" v-if="!addPatient">
                         <v-layout row wrap>
-                            <v-flex xs6 class="text-left mb-4">
+                            <v-flex xs12 class="text-left mb-4">
                                 <span class="my-headline white--text">Buscar Associado</span>
                             </v-flex>
-                            <v-flex xs2 class="text-right">
-                                <v-btn
-                                        v-if="selectedPatient"
-                                        @click="showUserCard(selectedPatient)"
-                                        rounded text class="white--text transparent">
-                                    <v-icon>credit_card</v-icon>
-                                </v-btn>
-                            </v-flex>
-                            <v-flex xs2 class="text-right">
-                                <v-btn
-                                        v-if="selectedPatient"
-                                        @click="selectUser(undefined)"
-                                        rounded text class="white--text transparent">
-                                    <v-icon>delete</v-icon>
-                                </v-btn>
-                            </v-flex>
-                            <v-flex xs2 class="text-right">
-                                <v-btn
-                                        @click="addPatient = !addPatient"
-                                        rounded text class="white--text transparent">
-                                    <v-icon>group_add</v-icon>
-                                </v-btn>
-                            </v-flex>
                             <v-flex xs12>
+                                <v-layout row wrap>
+                                    <v-spacer></v-spacer>
+                                    
+                                    <v-flex xs2 class="text-right">
+                                        <v-tooltip v-if="selectedPatient" top>
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn
+                                                    v-on="on"
+                                                    to="/agenda/Declaration"
+                                                    rounded text class="white--text transparent">
+                                                <v-icon>print</v-icon>
+                                            </v-btn>
+                                            </template>
+                                            <span>Declaração de Comparecimento</span>
+                                        </v-tooltip>
+                                    </v-flex>
+                                    <v-flex xs2 class="text-right ">
+                                        <v-tooltip v-if="selectedPatient" top>
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn
+                                                    v-on="on"
+                                                    to="/agenda/ConsultasPacientes"
+                                                    rounded text class="white--text transparent">
+                                                <v-icon>date_range</v-icon>
+                                            </v-btn>
+                                            </template>
+                                            <span>Gerenciamento de Consultas do Paciente</span>
+                                        </v-tooltip>
+                                        
+                                    </v-flex>
+                                    <v-flex xs2 class="text-right ">
+                                        <v-tooltip v-if="selectedPatient" top>
+                                            <template  v-slot:activator="{ on }">
+                                                <v-btn
+                                                    v-on="on"
+                                                    to="/agenda/agendamento"
+                                                    rounded text class="white--text transparent">
+                                                <v-icon>calendar_today</v-icon>
+                                            </v-btn>
+                                            </template>
+                                            <span>Agendamento de Consultas</span>
+                                        </v-tooltip>
+                                    </v-flex>
+                                    <v-flex xs2 class="text-right ">
+                                        <v-tooltip v-if="selectedPatient" top>
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn
+                                                        v-on="on"
+                                                        @click="showUserCard(selectedPatient)"
+                                                        rounded text class="white--text transparent">
+                                                    <v-icon>credit_card</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <span>Cartão de Associado</span>
+                                        </v-tooltip>
+                                        
+                                    </v-flex>
+                                    <v-flex xs2 class="text-right ">
+                                        <v-tooltip v-if="selectedPatient" top>
+                                            <template v-slot:activator="{ on }">
+                                               <v-btn
+                                                    v-on="on"
+                                                    @click="selectUser(undefined)"
+                                                    rounded text class="white--text transparent">
+                                                <v-icon>delete</v-icon>
+                                            </v-btn>
+                                            </template>
+                                            <span>Deselecionar Dados do Paciente</span>
+                                        </v-tooltip>
+                                        
+                                    </v-flex>
+                                    <v-flex xs2 class="text-right ">
+                                        <v-tooltip top>
+                                            <template v-slot:activator="{ on }">
+                                               <v-btn
+                                                    v-on="on"
+                                                    @click="addPatient = !addPatient"
+                                                    rounded text class="white--text transparent">
+                                                <v-icon>group_add</v-icon>
+                                            </v-btn>
+                                            </template>
+                                            <span>Cadastrar Novo Paciente</span>
+                                        </v-tooltip>
+                                        
+                                    </v-flex>
+                                </v-layout>
+                            </v-flex>
+                            
+                            <v-flex class="mt-5" xs12>
                                 <v-text-field
                                         outlined
                                         rounded
@@ -186,6 +252,56 @@
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
+
+                            <v-flex xs12 class="px-3 text-left">
+                                <span class="my-sub-headline">Dependentes</span>
+                                <v-btn
+                                        @click="dependents.push({
+                                            name: '',
+                                            birthDate: ''
+                                        })"
+                                        text class="transparent">
+                                    <v-icon>add_circle</v-icon>
+
+                                </v-btn>
+                                <v-layout row wrap justify v-for="(dependent, index) in dependents" :key="index">
+                                    <v-flex xs12  class="text-right">
+                                        <v-btn class="transparent" text @click="dependents.splice(index, 1)">
+                                            <v-icon>remove_circle</v-icon>
+                                        </v-btn>
+                                    </v-flex>
+                                    <v-flex xs12>
+                                        <v-text-field
+                                                outlined
+                                                rounded
+                                                filled
+                                                prepend-icon="account_circle"
+                                                v-model="dependent.name"
+                                                label="Nome"></v-text-field>
+                                    </v-flex>
+
+                                    <v-spacer></v-spacer>
+                                     <v-flex sm4 xs12 class="px-3">
+                                        <v-text-field
+                                                outlined
+                                                rounded
+                                                filled
+                                                placeholder="Campo obrigatório *"
+                                                v-model="dependent.birthDate"
+                                                v-mask="mask.date"
+                                                prepend-icon="date_range"
+                                                label="Data de Nascimento"></v-text-field>
+                                    </v-flex>
+                                     <v-flex sm4 xs12 class="px-3">
+                                        <v-select outlined rounded filled label="Sexo" :items="['Feminino' , 'Masculino']" v-model="dependent.sex"></v-select>
+                                    </v-flex>
+                                    <v-flex xs6 sm4 class="px-3">
+                                        <v-select label="Grau de Dependência" outlined rounded filled v-model="dependent.dependentDegree"
+                                                  :items="degress" menu-props="auto"></v-select>
+                                    </v-flex>
+                                   
+                                </v-layout>
+                            </v-flex>
                             <v-flex xs12 class="px-3 text-left">
                                 <span class="my-sub-headline">Endereços</span>
                                 <v-btn
@@ -299,6 +415,8 @@
                 sex: undefined,
                 telephones: [''],
                 addresses: [],
+                dependents:[],
+                degress: ['filho(a)', 'neto(a)', ],
                 loading: false,
                 formError: undefined,
                 searchError: undefined,
@@ -365,6 +483,7 @@
                     sex: this.sex,
                     telephones: this.telephones,
                     addresses: this.addresses,
+                    dependents:this.dependents,
                     type: 'PATIENT'
                 }
                 await this.$store.dispatch('addUser', patient)
