@@ -1,14 +1,15 @@
 <template>
-    <v-container>
+    <v-container class="ma-0 pa-0">
         <v-layout row wrap>
-            <v-flex xs12 class="my-4">
+            <v-flex xs12>
                 <v-expand-transition mode="out-in">
                     <v-card class="primary_light white--text pa-2" :max-width="maxWidth" v-if="!addPatient">
-                        <v-layout row wrap>
-                            <v-flex xs6 class="text-left mb-4">
-                                <span class="my-headline white--text">Buscar Associado</span>
+                        <v-layout row wrap class="align-center">
+                            <v-flex v-if="!selectedPatient" sm6 xs8 class="text-left mb-3">
+                                <span class="my-headline white--text hidden-xs-only">Buscar Associado</span>
+                                <span class="white--text font-weight-bold hidden-sm-and-up">Buscar Associado</span>
                             </v-flex>
-                            <v-flex xs2 class="text-right">
+                            <v-flex sm2 class="text-right mb-3">
                                 <v-btn
                                         v-if="selectedPatient"
                                         @click="showUserCard(selectedPatient)"
@@ -16,7 +17,7 @@
                                     <v-icon>credit_card</v-icon>
                                 </v-btn>
                             </v-flex>
-                            <v-flex xs2 class="text-right">
+                            <v-flex sm2 class="text-right mb-3">
                                 <v-btn
                                         v-if="selectedPatient"
                                         @click="selectUser(undefined)"
@@ -24,7 +25,7 @@
                                     <v-icon>delete</v-icon>
                                 </v-btn>
                             </v-flex>
-                            <v-flex xs2 class="text-right">
+                            <v-flex sm2 class="text-right mb-3">
                                 <v-btn
                                         @click="addPatient = !addPatient"
                                         rounded text class="white--text transparent">
@@ -66,7 +67,7 @@
                                 <span v-if="searchError">
                                     {{searchError}}
                                 </span>
-                                <submit-button class="mx-3" @click="searchPatientOldDatabase()" :loading="loading" :success="success"
+                                <submit-button class="mx-3 mb-3" @click="searchPatientOldDatabase()" :loading="loading" :success="success"
                                                text="Buscar antigo sistema"></submit-button>
                                 <submit-button @click="searchPatient()" :loading="loading" :success="success"
                                                text="Buscar"></submit-button>
@@ -98,7 +99,8 @@
                     <v-card class="primary_light white--text pa-2" v-else>
                         <v-layout row wrap>
                             <v-flex xs8 class="text-left mb-4" v-if="!formError">
-                                <span class="my-headline white--text">Adicionar Associado</span>
+                                <span class="my-headline white--text hidden-xs-only">Adicionar Associado</span>
+                                <span class="white--text font-weight-bold hidden-sm-and-up">Adicionar Associado</span>
                             </v-flex>
                             <v-flex xs8 class="text-left" v-else>
                                 <span class="my-headline red--text">{{formError}}</span>

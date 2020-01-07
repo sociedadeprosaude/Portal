@@ -1,24 +1,39 @@
 <template>
     <v-app id="app">
         <v-slide-y-transition>
-            <agenda-toolbar v-if="user"></agenda-toolbar>
+            <agenda-toolbar class="hidden-xs-only mb-12 pb-6" v-if="user"></agenda-toolbar>
         </v-slide-y-transition>
-        <v-content v-if="loaded" :class="['background','mt-12 pt-6']">
+        <v-content v-if="loaded" :class="['background']">
             <router-view/>
         </v-content>
+        <v-btn
+        fab
+        class="primary_light hidden-sm-and-up"
+        fixed
+        bottom
+        @click="patientDialog = !patientDialog"
+        right>
+            <v-icon class="white--text">people</v-icon>
+        </v-btn>
+        <v-dialog v-model="patientDialog">
+            <select-patient-card></select-patient-card>
+        </v-dialog>
     </v-app>
 </template>
 <script>
     import AgendaToolbar from "./components/doctorsAgenda/AgendaToolbar";
     import firebase from 'firebase'
+    import SelectPatientCard from "./components/SelectPatientCard";
 
     export default {
         components: {
+            SelectPatientCard,
             AgendaToolbar
         },
         data() {
             return {
-                loaded: false
+                loaded: false,
+                patientDialog: false
             }
         },
         computed: {
