@@ -9,7 +9,6 @@ const mutations = {}
 
 const actions = {
     async getAddressByCep({}, cep) {
-        console.log('chegou aqui')
         try {
             let resp = await axios.get('https://viacep.com.br/ws/' + cep + '/json/')
             return resp.data

@@ -207,7 +207,7 @@
                                         <v-layout row wrap class="align-center">
                                             <v-text-field
                                                     :error="address.cepError"
-                                                    label="CEP" class="ml-3" v-model="address.cep"
+                                                    label="CEP" class="ml-3" v-model="cep"
                                                     v-mask="mask.cep"></v-text-field>
                                             <v-btn v-if="!address.loading" @click="getAddressByCep(address)"
                                                    class="transparent" text>
@@ -244,7 +244,7 @@
                                 </v-layout>
                             </v-flex>
                             <v-flex xs12 class="text-right">
-                                <submit-button :disabled="!(this.name != '' && this.cpf != '' && this.birthDate != '' && this.telephones != '')" :success="success" @click="registerPatient()" :loading="loading"
+                                <submit-button :success="success" @click="registerPatient()" :loading="loading"
                                                text="Salvar"></submit-button>
                             </v-flex>
                         </v-layout>
@@ -299,6 +299,7 @@
                 sex: undefined,
                 telephones: [''],
                 addresses: [],
+                cep,
                 loading: false,
                 formError: undefined,
                 searchError: undefined,

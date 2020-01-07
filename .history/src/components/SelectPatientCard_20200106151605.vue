@@ -115,17 +115,16 @@
                                         outlined
                                         rounded
                                         filled
-                                        placeholder="Campo obrigatório *"
+                                        placeholder="Campo"
                                         prepend-icon="account_circle"
                                         v-model="name"
-                                        label="Nome"></v-text-field>
+                                        label="Nomeuu"></v-text-field>
                             </v-flex>
                             <v-flex sm6 xs12 class="px-3">
                                 <v-text-field
                                         outlined
                                         rounded
                                         filled
-                                        placeholder="Campo obrigatório *"
                                         v-model="birthDate"
                                         v-mask="mask.date"
                                         prepend-icon="date_range"
@@ -136,7 +135,6 @@
                                         outlined
                                         rounded
                                         filled
-                                        placeholder="Campo obrigatório *"
                                         v-mask="mask.cpf"
                                         v-model="cpf"
                                         label="CPF"></v-text-field>
@@ -170,7 +168,6 @@
                                                 rounded
                                                 filled
                                                 v-model="telephones[index]"
-                                                placeholder="Campo obrigatório *"
                                                 v-mask="mask.telephone"
                                                 prepend-icon="phone"
                                                 label="Telefones"></v-text-field>
@@ -244,7 +241,7 @@
                                 </v-layout>
                             </v-flex>
                             <v-flex xs12 class="text-right">
-                                <submit-button :disabled="!(this.name != '' && this.cpf != '' && this.birthDate != '' && this.telephones != '')" :success="success" @click="registerPatient()" :loading="loading"
+                                <submit-button :success="success" @click="registerPatient()" :loading="loading"
                                                text="Salvar"></submit-button>
                             </v-flex>
                         </v-layout>

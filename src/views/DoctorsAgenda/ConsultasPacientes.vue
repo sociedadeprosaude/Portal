@@ -271,7 +271,8 @@
                                                 color="warning"
                                                 rounded
                                                 @click="documentDialog = !documentDialog"
-                                                :disabled="status_Selecionado === 'Pago' && index_Selecionado.consultation.payment_number ? false : true"
+                                                v-if="(index_Selecionado.data)"
+                                                :disabled="status_Selecionado === 'Pago' && index_Selecionado.consultation.payment_number && index_Selecionado.data >= hoje ? false : true"
                                         >
                                             Prontuario
                                             <v-icon>insert_drive_file</v-icon>
@@ -366,6 +367,7 @@
     export default {
         components: {Patient, ConsultationDocument},
         data: () => ({
+            hoje: moment().locale('pt-BR').format('YYYY-MM-DD'),
             dialog: false,
             documentDialog: false,
             y: 'top',

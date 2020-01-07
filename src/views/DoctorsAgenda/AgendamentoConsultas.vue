@@ -118,7 +118,7 @@
                                             <v-flex x2 sm2 dm2 lg2>
                                                 <v-avatar>
                                                     <v-btn icon large color="primary_dark">
-                                                        <v-icon medium color="white">person</v-icon>
+                                                        <v-icon medium color="grey">person</v-icon>
                                                     </v-btn>
                                                 </v-avatar>
                                             </v-flex>

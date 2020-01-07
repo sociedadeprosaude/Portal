@@ -207,7 +207,7 @@
                                         <v-layout row wrap class="align-center">
                                             <v-text-field
                                                     :error="address.cepError"
-                                                    label="CEP" class="ml-3" v-model="address.cep"
+                                                    label="CEP" class="ml-3" v-model="cep"
                                                     v-mask="mask.cep"></v-text-field>
                                             <v-btn v-if="!address.loading" @click="getAddressByCep(address)"
                                                    class="transparent" text>
@@ -244,7 +244,7 @@
                                 </v-layout>
                             </v-flex>
                             <v-flex xs12 class="text-right">
-                                <submit-button :disabled="!(this.name != '' && this.cpf != '' && this.birthDate != '' && this.telephones != '')" :success="success" @click="registerPatient()" :loading="loading"
+                                <submit-button :success="success" @click="registerPatient()" :loading="loading"
                                                text="Salvar"></submit-button>
                             </v-flex>
                         </v-layout>
@@ -260,6 +260,7 @@
 
 <script>
     import {mask} from 'vue-the-mask'
+     import axios from 'axios';
     import SubmitButton from "./SubmitButton";
     import PatientCard from "./PatientCard";
     var moment = require("moment")
@@ -299,6 +300,7 @@
                 sex: undefined,
                 telephones: [''],
                 addresses: [],
+                cep:'',
                 loading: false,
                 formError: undefined,
                 searchError: undefined,
@@ -314,6 +316,46 @@
                 foundUsers: undefined,
                 success: false,
             }
+        },
+        watch:{
+            cep(val) {
+                if (val.length === 8) {
+                    axios
+                        .get('https://viacep.com.br/ws/' + val + '/json/')
+                        .then((response) => {
+                            if (response.data.erro) {
+                                this.alertCEP = true
+                            } else {
+                                this.alertCEP = false
+                                this.editedItem.address.street = response.data.logradouro;
+                                this.editedItem.address.neighborhood = response.data.bairro;
+                                this.editedItem.address.city = response.data.localidade;
+                                var array = this.stateOptions;
+                                /* console.log(
+                                    array.find(function(element) {
+                                        if(element.includes('AM')){
+                                            return element;
+                                        }
+
+                                        return '';
+                                    })
+                                ); */
+                                this.editedItem.state = array.find(function (element) {
+                                    if (element.includes(response.data.uf)) {
+                                        return element;
+                                    }
+                                    return '';
+                                });
+                            }
+
+                        })
+                } else {
+                    this.editedItem.address.street = '';
+                    this.editedItem.address.neighborhood = '';
+                    this.editedItem.address.state = '';
+                    this.editedItem.address.city = '';
+                }
+            },
         },
         methods: {
             showUserCard(user) {
