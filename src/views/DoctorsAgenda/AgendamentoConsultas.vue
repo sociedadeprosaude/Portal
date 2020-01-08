@@ -1,6 +1,6 @@
 <template>
     <v-layout row wrap>
-        <v-flex sm8 xs11>
+        <v-flex sm8 xs12 class="pr-2">
             <v-layout align-center row wrap class="ml-6">
                 <v-flex xs12 md5>
                     <v-select
@@ -177,7 +177,7 @@
                 <v-flex xs12 class="text-center">
                     <select-patient-card ref="patientCard" max-width="1000px"></select-patient-card>
                 </v-flex>
-                <v-flex xs12 class="text-center">
+                <v-flex xs12 class="text-center mt-4">
                     <v-date-picker landscape full-width class="mx-4" v-model="date" :allowed-dates="allowedDates"
                                    locale="pt-br"></v-date-picker>
                 </v-flex>

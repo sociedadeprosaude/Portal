@@ -157,9 +157,6 @@
                 return this.$store.getters.showDoctorsAgendaToolbar
             }
         },
-        mounted() {
-            this.$store.dispatch('getProSaudeUnits')
-        },
         methods: {
             selectUnit(unit) {
                 if (!this.selectUnitDialog) {

@@ -30,6 +30,7 @@
         methods: {
             async getUser(user) {
                 await this.$store.dispatch('getUser', user)
+                await this.$store.dispatch('getProSaudeUnits')
                 this.loaded = true
             },
         },
