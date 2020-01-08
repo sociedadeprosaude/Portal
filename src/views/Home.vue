@@ -10,6 +10,7 @@
                 </v-card>
             </v-flex>
             <v-flex class="ma-1"
+                    xs12
                     :key="section.title"
                     v-for="section in filteredPages">
                 <v-layout row wrap class="align-center justify-center">

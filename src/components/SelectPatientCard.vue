@@ -5,33 +5,6 @@
                 <v-expand-transition mode="out-in">
                     <v-card class="primary_light white--text pa-2" :max-width="maxWidth" v-if="!addPatient">
                         <v-layout row wrap class="align-center">
-                            <v-flex v-if="!selectedPatient" sm6 xs8 class="text-left mb-3">
-                                <span class="my-headline white--text hidden-xs-only">Buscar Associado</span>
-                                <span class="white--text font-weight-bold hidden-sm-and-up">Buscar Associado</span>
-                            </v-flex>
-                            <v-flex sm2 class="text-right mb-3">
-                                <v-btn
-                                        v-if="selectedPatient"
-                                        @click="showUserCard(selectedPatient)"
-                                        rounded text class="white--text transparent">
-                                    <v-icon>credit_card</v-icon>
-                                </v-btn>
-                            </v-flex>
-                            <v-flex sm2 class="text-right mb-3">
-                                <v-btn
-                                        v-if="selectedPatient"
-                                        @click="selectUser(undefined)"
-                                        rounded text class="white--text transparent">
-                                    <v-icon>delete</v-icon>
-                                </v-btn>
-                            </v-flex>
-                            <v-flex sm2 class="text-right mb-3">
-                                <v-btn
-                                        @click="addPatient = !addPatient"
-                                        rounded text class="white--text transparent">
-                                    <v-icon>group_add</v-icon>
-                                </v-btn>
-                            </v-flex>
                             <v-flex xs12>
                                 <v-layout row wrap>
                                     <v-spacer></v-spacer>
@@ -104,6 +77,11 @@
                                         </v-tooltip>
 
                                     </v-flex>
+                                    <v-flex v-if="!selectedPatient" sm6 xs8 class="text-left mb-3">
+                                        <span class="my-headline white--text hidden-xs-only">Buscar Associado</span>
+                                        <span class="white--text font-weight-bold hidden-sm-and-up">Buscar Associado</span>
+                                    </v-flex>
+                                    <v-spacer></v-spacer>
                                     <v-flex xs2 class="text-right ">
                                         <v-tooltip top>
                                             <template v-slot:activator="{ on }">
@@ -158,7 +136,7 @@
                                 </span>
                                 <submit-button class="mx-3 mb-3" @click="searchPatientOldDatabase()" :loading="loading" :success="success"
                                                text="Buscar antigo sistema"></submit-button>
-                                <submit-button @click="searchPatient()" :loading="loading" :success="success"
+                                <submit-button class="mb-3" @click="searchPatient()" :loading="loading" :success="success"
                                                text="Buscar"></submit-button>
                             </v-flex>
                             <v-divider></v-divider>
