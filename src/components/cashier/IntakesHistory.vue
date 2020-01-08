@@ -150,6 +150,8 @@
         },
         data() {
             return {
+                xDown: undefined,
+                yDown: undefined,
                 option: 'budgets',
                 loading: false,
                 selectedIntake: undefined,
@@ -206,9 +208,12 @@
                 this.patient.intakes = await this.$store.dispatch('getUserIntakes', this.patient)
                 this.$store.commit('setSelectedPatient', this.patient)
                 this.loading = false
-            }
+            },
         },
         computed: {
+            isMobile() {
+                return this.$store.getters.isMobile
+            },
             patient() {
                 return this.$store.getters.selectedPatient
             },

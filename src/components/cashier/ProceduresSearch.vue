@@ -2,7 +2,7 @@
     <v-container class="ma-0 pa-0">
         <v-layout row wrap>
             <v-flex class="hidden-print-only" xs12>
-                <v-card class="elevation-0 px-2">
+                <v-card class="elevation-0 pl-2 pr-4">
                     <v-flex xs12>
                         <v-card-title class="pa-0">
                             <v-flex xs12>
