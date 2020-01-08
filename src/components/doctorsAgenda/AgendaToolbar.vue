@@ -63,17 +63,18 @@
                                 -->
             </v-toolbar-items>
         </v-app-bar>
-        <v-app-bar color="white hidden-sm-and-up" light fixed class="hidden-print-only" v-if="selectedUnit">
-            <v-app-bar-nav-icon v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+        <v-app-bar dense hide-on-scroll flat color="white hidden-sm-and-up" light fixed class="hidden-print-only" v-if="selectedUnit">
+            <v-app-bar-nav-icon hidden v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
             <v-toolbar-title class="ma-0 pa-0">
                 <router-link to="/" tag="span" style="cursor: pointer">
                     <v-img v-if="selectedUnit"
                            :src="selectedUnit.logo"
                            aspect-radio="1"
-                           width="160"
+                           width="100"
                     ></v-img>
                 </router-link>
             </v-toolbar-title>
+            <v-spacer></v-spacer>
             <v-toolbar-items>
                 <v-layout row wrap class="justify-center align-center">
                     <v-btn rounded text @click="selectUnit()">
@@ -95,7 +96,7 @@
         <v-dialog v-model="selectUnitDialog">
             <v-card>
                 <v-layout row wrap class="align-center justify-center">
-                    <v-flex v-for="unit in units" :key="unit.id" class="text-center">
+                    <v-flex xs12 sm4 v-for="unit in units" :key="unit.id" class="text-center">
                         <v-btn @click="selectUnit(unit)" height="124px">
                             <img :src="unit.logo" width="256px">
                         </v-btn>

@@ -11,11 +11,9 @@
 <script>
     import AgendaToolbar from "./components/doctorsAgenda/AgendaToolbar";
     import firebase from 'firebase'
-    import SelectPatientCard from "./components/SelectPatientCard";
 
     export default {
         components: {
-            SelectPatientCard,
             AgendaToolbar
         },
         data() {
@@ -29,6 +27,12 @@
                 return this.$store.getters.user
             }
         },
+        methods: {
+            async getUser(user) {
+                await this.$store.dispatch('getUser', user)
+                this.loaded = true
+            },
+        },
         mounted() {
             // this.$store.dispatch('listenToOperationalValues')
             this.$store.dispatch("loadSpecialties")
@@ -36,11 +40,15 @@
             this.$store.dispatch("getClinics")
             // this.$store.dispatch("updateUsers")
             firebase.auth().onAuthStateChanged((user) => {
-                this.loaded = true
                 if (!user) {
                     this.$router.push('/login')
+                    this.loaded = true
+                    return
                 } else if (this.$router.currentRoute.path.includes('login')) {
                     this.$router.push('/')
+                }
+                if (user) {
+                    this.getUser(user)
                 }
             })
 

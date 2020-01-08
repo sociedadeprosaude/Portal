@@ -40,7 +40,7 @@ const actions = {
     async getUser({commit}, user) {
         let userDoc = await firebase.firestore().collection('users/').where('uid', '==', user.uid).get()
         commit('setUser', userDoc.docs[0].data())
-        return userDoc.docs[0].data
+        return userDoc.docs[0].data()
         // return firebase.firestore().collection('users/').doc(user.cpf).get('value',(user) => {
         //     commit('setUser', user.val())
         //     return user

@@ -111,16 +111,16 @@
             //       'Colaboradores'
             //   ]
             // firebase.database().ref('permissions/') .set(perm)
-            let user = firebase.auth().currentUser;
+            // let user = firebase.auth().currentUser;
             // if (!user) {
             //     this.$router.push('/login')
             //     return
             // }
-            this.getUser(user)
+            // this.getUser(user)
         },
         data() {
             return {
-                loading: true,
+                loading: false,
                 pages: [
                     {
                         title: 'Operacional',
@@ -213,10 +213,6 @@
             },
             onSalesSelected() {
                 this.$router.push('/caixa')
-            },
-            async getUser(user) {
-                await this.$store.dispatch('getUser', user)
-                this.loading = false
             },
             logout() {
                 this.$store.dispatch('logOut')
