@@ -1,7 +1,7 @@
 <template>
     <v-app id="app">
         <v-slide-y-transition>
-            <agenda-toolbar class="hidden-xs-only mb-12 pb-6" v-if="user"></agenda-toolbar>
+            <agenda-toolbar class="mb-12 pb-6" v-if="user"></agenda-toolbar>
         </v-slide-y-transition>
         <v-content v-if="loaded" :class="['background']">
             <router-view/>

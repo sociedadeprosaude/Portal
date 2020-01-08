@@ -9,6 +9,7 @@
                     <v-card-title>Você ainda não tem permissões</v-card-title>
                 </v-card>
             </v-flex>
+
             <v-flex class="ma-1"
                     xs12
                     :key="section.title"

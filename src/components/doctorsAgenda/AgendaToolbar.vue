@@ -1,6 +1,6 @@
 <template>
     <v-container class="ma-0 pa-0">
-        <v-navigation-drawer v-if="doctorsAgendaToobar" class="hidden-print-only" temporary v-model="drawer" fixed app>
+        <v-navigation-drawer v-if="doctorsAgendaToobar" class="hidden-print-only" dark temporary v-model="drawer" fixed app>
             <v-list>
                 <v-list-item
                         v-for="item in menuItems"
@@ -13,8 +13,9 @@
                 </v-list-item>
             </v-list>
         </v-navigation-drawer>
-        <v-app-bar color="primary_dark" dark fixed class="hidden-print-only" v-if="selectedUnit">
+        <v-app-bar color="primary_dark hidden-xs-only" fixed dark class="hidden-print-only" v-if="selectedUnit">
             <v-app-bar-nav-icon v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+
             <v-toolbar-title>
                 <router-link to="/" tag="span" style="cursor: pointer">
                     <v-img v-if="selectedUnit"
@@ -27,7 +28,7 @@
             <v-toolbar-items>
                 <v-layout row wrap class="justify-center align-center">
                     <v-btn rounded text @click="selectUnit()">
-                        <v-icon>cached</v-icon>
+                        <v-icon >cached</v-icon>
                     </v-btn>
                 </v-layout>
             </v-toolbar-items>
@@ -62,6 +63,26 @@
                                 -->
             </v-toolbar-items>
         </v-app-bar>
+        <v-app-bar color="white hidden-sm-and-up" light fixed class="hidden-print-only" v-if="selectedUnit">
+            <v-app-bar-nav-icon v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+            <v-toolbar-title class="ma-0 pa-0">
+                <router-link to="/" tag="span" style="cursor: pointer">
+                    <v-img v-if="selectedUnit"
+                           :src="selectedUnit.logo"
+                           aspect-radio="1"
+                           width="160"
+                    ></v-img>
+                </router-link>
+            </v-toolbar-title>
+            <v-toolbar-items>
+                <v-layout row wrap class="justify-center align-center">
+                    <v-btn rounded text @click="selectUnit()">
+                        <v-icon class="black--text">cached</v-icon>
+                    </v-btn>
+                </v-layout>
+            </v-toolbar-items>
+            <v-spacer></v-spacer>
+        </v-app-bar>
         <v-dialog v-model="selectUnitDialog">
             <v-card>
                 <v-layout row wrap class="align-center justify-center">
@@ -85,7 +106,7 @@
                 dialog: false,
                 selectUnitDialog: false,
                 menuItems: [
-          
+
                     {icon: 'delete_forever', title: 'Apagar Consultas do dia', link: '/agenda/DeletarConsultas'},
                     {icon: 'event_note', title: 'Agendamento de Consultas', link: '/agenda/agendamento'},
                     {
