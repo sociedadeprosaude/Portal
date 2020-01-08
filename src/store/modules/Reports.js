@@ -92,7 +92,6 @@ const actions = {
     let saidas = {};
     let quantidadeSaidas= 0;
     let relatorio = {};
-    console.log(intakes);
 
     for (let intake in intakes) {
 
@@ -204,10 +203,10 @@ const actions = {
     //console.log(specialties);
     //console.log(totalSaidas)
     //console.log('total custo',totalCusto)
-    console.log('total credito: ',totalCredito)
-    console.log('total debito: ',totalDebido)
-    console.log('total caixa:',totalCaixa)
-    console.log(totalBruto)
+    // console.log('total credito: ',totalCredito)
+    // console.log('total debito: ',totalDebido)
+    // console.log('total caixa:',totalCaixa)
+    // console.log(totalBruto)
 
 
     relatorio = {
@@ -229,7 +228,7 @@ const actions = {
         totalCustoEspecialts: totalCustoEspecialts,
         totalGanhoEspecialts: totalGanhoEspecialts
     };
-    console.log('relatorio: ', relatorio);
+    // console.log('relatorio: ', relatorio);
     context.commit('setRelatorio',relatorio)
     return relatorio
   }

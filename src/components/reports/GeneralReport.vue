@@ -479,9 +479,6 @@
     export default {
         name: "GeneralReport",
         props: ['report', 'loading'],
-        mounted() {
-            console.log('rep', this.report)
-        },
         data() {
             return {
                 now: moment().format('YYYY-MM-DD HH:mm:ss'),
