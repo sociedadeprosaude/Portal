@@ -1,17 +1,14 @@
 <template>
-    <v-container>
+    <v-container class="ma-0 pa-0">
         <v-layout row wrap>
-            <v-flex xs12 class="my-4">
+            <v-flex xs12>
                 <v-expand-transition mode="out-in">
                     <v-card class="primary_light white--text pa-2" :max-width="maxWidth" v-if="!addPatient">
-                        <v-layout row wrap>
-                            <v-flex xs12 class="text-left mb-4">
-                                <span class="my-headline white--text">Buscar Associado</span>
-                            </v-flex>
+                        <v-layout row wrap class="align-center">
                             <v-flex xs12>
                                 <v-layout row wrap>
                                     <v-spacer></v-spacer>
-                                    
+
                                     <v-flex xs2 class="text-right">
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
@@ -37,7 +34,7 @@
                                             </template>
                                             <span>Gerenciamento de Consultas do Paciente</span>
                                         </v-tooltip>
-                                        
+
                                     </v-flex>
                                     <v-flex xs2 class="text-right ">
                                         <v-tooltip v-if="selectedPatient" top>
@@ -64,7 +61,7 @@
                                             </template>
                                             <span>Cartão de Associado</span>
                                         </v-tooltip>
-                                        
+
                                     </v-flex>
                                     <v-flex xs2 class="text-right ">
                                         <v-tooltip v-if="selectedPatient" top>
@@ -78,8 +75,13 @@
                                             </template>
                                             <span>Deselecionar Dados do Paciente</span>
                                         </v-tooltip>
-                                        
+
                                     </v-flex>
+                                    <v-flex v-if="!selectedPatient" sm6 xs8 class="text-left mb-3">
+                                        <span class="my-headline white--text hidden-xs-only">Buscar Associado</span>
+                                        <span class="white--text font-weight-bold hidden-sm-and-up">Buscar Associado</span>
+                                    </v-flex>
+                                    <v-spacer></v-spacer>
                                     <v-flex xs2 class="text-right ">
                                         <v-tooltip top>
                                             <template v-slot:activator="{ on }">
@@ -92,11 +94,11 @@
                                             </template>
                                             <span>Cadastrar Novo Paciente</span>
                                         </v-tooltip>
-                                        
+
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
-                            
+
                             <v-flex class="mt-5" xs12>
                                 <v-text-field
                                         outlined
@@ -132,9 +134,9 @@
                                 <span v-if="searchError">
                                     {{searchError}}
                                 </span>
-                                <submit-button class="mx-3" @click="searchPatientOldDatabase()" :loading="loading" :success="success"
+                                <submit-button class="mx-3 mb-3" @click="searchPatientOldDatabase()" :loading="loading" :success="success"
                                                text="Buscar antigo sistema"></submit-button>
-                                <submit-button @click="searchPatient()" :loading="loading" :success="success"
+                                <submit-button class="mb-3" @click="searchPatient()" :loading="loading" :success="success"
                                                text="Buscar"></submit-button>
                             </v-flex>
                             <v-divider></v-divider>
@@ -164,7 +166,8 @@
                     <v-card class="primary_light white--text pa-2" v-else>
                         <v-layout row wrap>
                             <v-flex xs8 class="text-left mb-4" v-if="!formError">
-                                <span class="my-headline white--text">Adicionar Associado</span>
+                                <span class="my-headline white--text hidden-xs-only">Adicionar Associado</span>
+                                <span class="white--text font-weight-bold hidden-sm-and-up">Adicionar Associado</span>
                             </v-flex>
                             <v-flex xs8 class="text-left" v-else>
                                 <span class="my-headline red--text">{{formError}}</span>
@@ -196,7 +199,7 @@
                                         :rules="rules"
                                         v-mask="mask.date"
                                         prepend-icon="date_range"
-                                        label="Data de Nascimento"></v-text-field>                         
+                                        label="Data de Nascimento"></v-text-field>
                             </v-flex>
                             <v-flex sm6 xs12 class="px-3">
                                 <v-text-field
@@ -300,7 +303,7 @@
                                         <v-select label="Grau de Dependência" outlined rounded filled v-model="dependent.dependentDegree"
                                                   :items="degress" menu-props="auto"></v-select>
                                     </v-flex>
-                                   
+
                                 </v-layout>
                             </v-flex>
                             <v-flex xs12 class="px-3 text-left">

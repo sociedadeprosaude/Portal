@@ -1,9 +1,9 @@
 <template>
     <v-app id="app">
         <v-slide-y-transition>
-            <agenda-toolbar v-if="user"></agenda-toolbar>
+            <agenda-toolbar class="mb-12 pb-6" v-if="user"></agenda-toolbar>
         </v-slide-y-transition>
-        <v-content v-if="loaded" :class="['background','mt-12 pt-6']">
+        <v-content v-if="loaded" :class="['background']">
             <router-view/>
         </v-content>
     </v-app>
@@ -18,13 +18,21 @@
         },
         data() {
             return {
-                loaded: false
+                loaded: false,
+                patientDialog: false
             }
         },
         computed: {
-          user() {
-              return this.$store.getters.user
+            user() {
+                return this.$store.getters.user
             }
+        },
+        methods: {
+            async getUser(user) {
+                await this.$store.dispatch('getUser', user)
+                await this.$store.dispatch('getProSaudeUnits')
+                this.loaded = true
+            },
         },
         mounted() {
             // this.$store.dispatch('listenToOperationalValues')
@@ -33,11 +41,15 @@
             this.$store.dispatch("getClinics")
             // this.$store.dispatch("updateUsers")
             firebase.auth().onAuthStateChanged((user) => {
-                this.loaded = true
                 if (!user) {
                     this.$router.push('/login')
+                    this.loaded = true
+                    return
                 } else if (this.$router.currentRoute.path.includes('login')) {
                     this.$router.push('/')
+                }
+                if (user) {
+                    this.getUser(user)
                 }
             })
 

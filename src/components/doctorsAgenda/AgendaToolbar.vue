@@ -1,6 +1,6 @@
 <template>
     <v-container class="ma-0 pa-0">
-        <v-navigation-drawer v-if="doctorsAgendaToobar" class="hidden-print-only" temporary v-model="drawer" fixed app>
+        <v-navigation-drawer v-if="doctorsAgendaToobar" class="hidden-print-only" dark temporary v-model="drawer" fixed app>
             <v-list>
                 <v-list-item
                         v-for="item in menuItems"
@@ -13,8 +13,9 @@
                 </v-list-item>
             </v-list>
         </v-navigation-drawer>
-        <v-app-bar color="primary_dark" dark fixed class="hidden-print-only" v-if="selectedUnit">
+        <v-app-bar color="primary_dark hidden-xs-only" fixed dark class="hidden-print-only" v-if="selectedUnit">
             <v-app-bar-nav-icon v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+
             <v-toolbar-title>
                 <router-link to="/" tag="span" style="cursor: pointer">
                     <v-img v-if="selectedUnit"
@@ -27,7 +28,7 @@
             <v-toolbar-items>
                 <v-layout row wrap class="justify-center align-center">
                     <v-btn rounded text @click="selectUnit()">
-                        <v-icon>cached</v-icon>
+                        <v-icon >cached</v-icon>
                     </v-btn>
                 </v-layout>
             </v-toolbar-items>
@@ -62,10 +63,40 @@
                                 -->
             </v-toolbar-items>
         </v-app-bar>
+        <v-app-bar dense hide-on-scroll flat color="white hidden-sm-and-up" light fixed class="hidden-print-only" v-if="selectedUnit">
+            <v-app-bar-nav-icon hidden v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+            <v-toolbar-title class="ma-0 pa-0">
+                <router-link to="/" tag="span" style="cursor: pointer">
+                    <v-img v-if="selectedUnit"
+                           :src="selectedUnit.logo"
+                           aspect-radio="1"
+                           width="100"
+                    ></v-img>
+                </router-link>
+            </v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-toolbar-items>
+                <v-layout row wrap class="justify-center align-center">
+                    <v-btn rounded text @click="selectUnit()">
+                        <v-icon class="black--text">cached</v-icon>
+                    </v-btn>
+                    <v-btn
+                            class="hidden-sm-and-up"
+                            text
+                            @click="patientDialog = !patientDialog">
+                        <v-icon class="primary_light--text">people</v-icon>
+                    </v-btn>
+                </v-layout>
+            </v-toolbar-items>
+            <v-spacer></v-spacer>
+        </v-app-bar>
+        <v-dialog v-model="patientDialog" transition="dialog-bottom-transition">
+            <select-patient-card></select-patient-card>
+        </v-dialog>
         <v-dialog v-model="selectUnitDialog">
             <v-card>
                 <v-layout row wrap class="align-center justify-center">
-                    <v-flex v-for="unit in units" :key="unit.id" class="text-center">
+                    <v-flex xs12 sm4 v-for="unit in units" :key="unit.id" class="text-center">
                         <v-btn @click="selectUnit(unit)" height="124px">
                             <img :src="unit.logo" width="256px">
                         </v-btn>
@@ -77,15 +108,20 @@
 </template>
 
 <script>
+    import SelectPatientCard from "../SelectPatientCard";
     export default {
         name: "AgendaToolbar",
+        components: {
+            SelectPatientCard
+        },
         data() {
             return {
                 drawer: false,
                 dialog: false,
                 selectUnitDialog: false,
+                patientDialog: false,
                 menuItems: [
-          
+
                     {icon: 'delete_forever', title: 'Apagar Consultas do dia', link: '/agenda/DeletarConsultas'},
                     {icon: 'event_note', title: 'Agendamento de Consultas', link: '/agenda/agendamento'},
                     {
@@ -120,9 +156,6 @@
             doctorsAgendaToobar() {
                 return this.$store.getters.showDoctorsAgendaToolbar
             }
-        },
-        mounted() {
-            this.$store.dispatch('getProSaudeUnits')
         },
         methods: {
             selectUnit(unit) {

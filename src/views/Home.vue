@@ -2,14 +2,16 @@
     <v-container fluid>
         <v-layout wrap row class="justify-center" v-if="!loading">
             <v-flex xs12>
-                <select-patient-card></select-patient-card>
+                <select-patient-card class="hidden-xs-only"></select-patient-card>
             </v-flex>
             <v-flex xs12 v-if="filteredPages.length === 0">
                 <v-card>
                     <v-card-title>Você ainda não tem permissões</v-card-title>
                 </v-card>
             </v-flex>
+
             <v-flex class="ma-1"
+                    xs12
                     :key="section.title"
                     v-for="section in filteredPages">
                 <v-layout row wrap class="align-center justify-center">
@@ -18,13 +20,25 @@
                     </v-flex>
                     <v-flex v-for="page in section.pages"
                             :key="page.title"
-                            class="mx-4 my-2">
+                            class="mx-2 my-2">
                         <v-card
-                                class="card" min-width="200" :to="page.external_url ? '' : page.to"
+                                min-width="200"
+                                class="card hidden-xs-only" :to="page.external_url ? '' : page.to"
                                 @click="page.external_url ? goToExternalUrl(page.external_url) : ''">
                             <v-layout column row>
                                 <v-icon size="72">{{page.icon}}</v-icon>
                                 <span class="text-center my-headline">
+                        {{page.title}}
+                    </span>
+                            </v-layout>
+                        </v-card>
+                        <v-card
+                                width="124"
+                                class="card hidden-sm-and-up" :to="page.external_url ? '' : page.to"
+                                @click="page.external_url ? goToExternalUrl(page.external_url) : ''">
+                            <v-layout column row>
+                                <v-icon size="24">{{page.icon}}</v-icon>
+                                <span class="text-center font-weight-bold">
                         {{page.title}}
                     </span>
                             </v-layout>
@@ -35,7 +49,7 @@
                     </v-flex>
                 </v-layout>
             </v-flex>
-            <v-flex xs12 class="ma-1">
+            <v-flex xs12 class="ma-1 hidden-xs-only">
                 <v-layout row wrap class="align-end justify-end">
                     <v-card class="card" width="200px" @click="logout()">
                         <v-layout column row>
@@ -43,6 +57,19 @@
                             <span class="text-center my-headline">
                         Sair
                     </span>
+                        </v-layout>
+                    </v-card>
+                </v-layout>
+            </v-flex>
+            <v-flex xs12 class="ma-1 hidden-sm-and-up">
+                <v-layout row wrap class="align-center justify-start">
+                    <v-card class="card py-1 px-2" @click="logout()">
+                        <v-layout row wrap class="align-center">
+                            <span class="text-center font-weight-bold">
+                        Sair
+                    </span>
+                            <v-icon size="24">exit_to_app</v-icon>
+
                         </v-layout>
                     </v-card>
                 </v-layout>
@@ -84,16 +111,16 @@
             //       'Colaboradores'
             //   ]
             // firebase.database().ref('permissions/') .set(perm)
-            let user = firebase.auth().currentUser;
+            // let user = firebase.auth().currentUser;
             // if (!user) {
             //     this.$router.push('/login')
             //     return
             // }
-            this.getUser(user)
+            // this.getUser(user)
         },
         data() {
             return {
-                loading: true,
+                loading: false,
                 pages: [
                     {
                         title: 'Operacional',
@@ -145,16 +172,16 @@
                                 to: '/relatorio',
                                 permission: 'Relatórios',
                                 icon: 'report'
-                            },{
+                            }, {
                                 title: 'Consultas',
-                                to:'/agenda/CadastroConsultasPlantoes',
+                                to: '/agenda/CadastroConsultasPlantoes',
                                 permission: 'Agenda Médica',
-                                icon:'event',
+                                icon: 'event',
                             },
                             {
                                 title: 'Pacotes',
                                 to: '/bundles',
-                                permission:'Caixa',
+                                permission: 'Caixa',
                                 icon: 'queue',
                             },
                             // {
@@ -186,10 +213,6 @@
             },
             onSalesSelected() {
                 this.$router.push('/caixa')
-            },
-            async getUser(user) {
-                await this.$store.dispatch('getUser', user)
-                this.loading = false
             },
             logout() {
                 this.$store.dispatch('logOut')

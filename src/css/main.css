@@ -10,8 +10,10 @@
     color: #505050;
 }
 
-.v-card {
-    border-radius: 16px !important;
+.v-card:not(.v-card--flat) {
+    border-radius: .5em !important;
+    box-shadow: -3px -3px 2px 0 rgba(255, 255, 255, .8),
+    6px 6px 6px 0 rgba(0, 0, 0, .3);
 }
 
 .v-data-table {
@@ -21,6 +23,27 @@
 .layout {
     margin: 0;
     padding: 0;
+}
+
+/*.bottom-sheet-dialog {*/
+
+/*    max-width: 720px;*/
+/*}*/
+
+.v-dialog {
+    border-radius: 16px;
+    position: absolute;
+    bottom: 0px;
+    margin: auto;
+    /*flex-basis: 80%;*/
+    /*transition-timing-function: ease-in-out;*/
+    /*transition: flex-basis 0.3s;*/
+}
+
+.v-btn {
+    min-width: 0px;
+    padding: 0;
+    margin: 0;
 }
 
 @media print {

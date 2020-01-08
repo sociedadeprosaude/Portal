@@ -270,6 +270,13 @@ const store = new Vuex.Store({
         }
     },
     getters: {
+        isMobile() {
+            if(window.innerWidth <= 800 && window.innerHeight <= 600) {
+                return true;
+            } else {
+                return false;
+            }
+        },
         categories(state) {
             return state.categories
         },

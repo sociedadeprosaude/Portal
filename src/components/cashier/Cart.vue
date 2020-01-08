@@ -1,7 +1,7 @@
 <template>
     <v-container class="ma-0 pa-0">
         <v-layout row wrap>
-            <v-flex class="hidden-print-only d-none d-md-block" xs12>
+            <v-flex class="hidden-print-only" xs12>
                 <v-card id="carrinho" class="ml-5 elevation-2 ">
                     <v-container>
                         <v-layout row wrap class="mx-3 align-center">
@@ -259,7 +259,7 @@
                 </v-card>
             </v-flex>
         </v-layout>
-        <v-dialog v-model="searchPatient"
+        <v-dialog v-model="searchPatient" transition="dialog-bottom-transition"
         >
             <select-patient-card max-width="100%"></select-patient-card>
         </v-dialog>
@@ -292,6 +292,8 @@
         },
         data() {
             return {
+                xDown: undefined,
+                yDown: undefined,
                 parcel: 1,
                 parcels: [1, 2, 3, 4, 5],
                 paymentLoading: false,
@@ -519,7 +521,9 @@
                 let user = undefined;
                 this.$store.commit('setSelectedPatient', user)
                 // this.selectedBudget = undefined
-            }
+            },
+
+
         }
     }
 </script>
