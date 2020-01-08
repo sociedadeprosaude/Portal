@@ -79,7 +79,7 @@ const actions = {
     },
 
     async removeClinicFromExam({commit}, payload) {//apagar exames da clinica e clinica do exames
-        delete payload.clinic.id
+        delete payload.clinic.id;
         try {
             firebase.firestore().collection('exams/' + payload.product + '/clinics').doc(payload.clinic.name).delete();
         } catch (e) {
@@ -104,9 +104,9 @@ const actions = {
             obs: payload.obs,
         };
 
-        examData = functions.removeUndefineds(examData)
-        delete payload.clinic.id
-        examAndClinic = functions.removeUndefineds(examAndClinic)
+        examData = functions.removeUndefineds(examData);
+        delete payload.clinic.id;
+        examAndClinic = functions.removeUndefineds(examAndClinic);
 
         firebase.firestore().collection('clinics/' + payload.clinic.name + '/exams').doc(payload.exam).set(examData);
 
@@ -142,7 +142,19 @@ const actions = {
         }
         firebase.firestore().collection('exams').doc(examKey).delete()
         return
-    }
+    },
+     async setClinicOnExams(context, payload) {
+        for (let exam in payload.exams) {
+            let holder = {
+                ...payload.clinic,
+                price: payload.exams[exam].price,
+                cost: payload.exams[exam].cost,
+                rules: payload.exams[exam].rules
+            }
+            holder = functions.removeUndefineds(holder)
+            firebase.firestore().collection('exams').doc(payload.exams[exam].name).collection('clinics').doc(payload.clinic.id).set(holder)
+        }
+     }
 };
 
 const getters = {

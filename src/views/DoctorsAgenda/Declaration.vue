@@ -2,8 +2,11 @@
     <v-container>
         <v-layout row wrap>
 
-                <v-container class="py-0 my-0 hidden-print-only">
-                    <v-layout align-center row wrap>
+                <v-container class="py-0 my-0 hidden-print-only white">
+                    <v-layout align-center justify-center row wrap>
+                        <v-flex xs12 class="justify-end align-end">
+                            <select-patient-card ref="patientCard" width="1000px"></select-patient-card>
+                        </v-flex>
                         <v-flex xs12>
                             <v-combobox
                                     prepend-icon="spellcheck"
@@ -63,49 +66,43 @@
                         <v-flex xs2>
                             <v-text-field
                                     v-model="start"
-                                    label="Hora Inicio"
+                                    label="Hora da Chegada"
                                     outlined
-                                    mask="time"
+                                    type="time"
                                     prepend-icon="access_alarm"
-                                    clearable
                             ></v-text-field>
                         </v-flex>
                         <v-spacer></v-spacer>
                         <v-flex xs2>
                             <v-text-field
                                     v-model="end"
-                                    label="Hora Fim"
+                                    label="Hora da saida"
                                     outlined
-                                    mask="time"
+                                    type="time"
                                     prepend-icon="access_alarm"
-                                    clearable
                             ></v-text-field>
                         </v-flex>
                     </v-layout>
                 </v-container>
 
-            <v-container v-if="formIsValid" id="declaration" class="py-0 my-0 hidden-print-only">
-                <v-layout  align-center justify-center>
-                <v-card  width="400" class="elevation-6 " style="-webkit-print-color-adjust:exact">
+            <v-flex xs12 class="transparent"><p></p></v-flex>
+
+            <v-container id="declaration" class="py-0 my-0 hidden-print-only">
+                <v-layout align-center justify-center>
+                <v-card width="400" class="elevation-6 " style="-webkit-print-color-adjust:exact">
                     <img style="position:absolute;z-index:0;width:200px; heigth:200px; bottom:0" :src="require('@/assets/pro_saude_logo_transparente.png')">
                     <!-- <v-img :src="require('../assets/pro_saude_logo_transparente.png')"> -->
                 <v-layout style="z-index:1;position:relative;" align-center row wrap>
                     <v-flex xs12>
-                        <v-img
-                                :src="require('@/assets/logo-pro-saude.png')"
-                                class="my-3"
-                                contain
-                                height="50"
-                        ></v-img>
+                        <img :src="selectedUnit.logo" height="50px" contain class="my-3">
                     </v-flex>
                     <v-flex xs12>
                         <h3 style="text-align: center">DECLARAÇÃO DE COMPARECIMENTO</h3>
                         <br/><br/><br/>
                         <p style="text-align: center; text-justify: auto">
-                                <strong>NOME: {{ selectedPatient.nome }}<br/>
+                                PACIENTE: <strong>{{paciente.name}}</strong><br/>
                                 CODIGO: {{  this.cid ? cid.slice(0, 3).toUpperCase() : ''}}<br/>
-                                COMPARECEU DAS {{ start.slice(0, 2) }}:{{ start.slice(2, 4) }}h
-                                ÀS {{ end.slice(0, 2) }}:{{ end.slice(2, 4) }}h<br/>
+                                COMPARECEU DAS {{start}}h ÀS {{end}}h<br/>
                                 DEVENDO RETORNAR AO TRABALHO.
                                 <br/><br/><br/><br/>
                                 MANAUS, {{ date | dateFilter }}
@@ -116,55 +113,44 @@
                                             ASSINATURA
                                     </v-flex>
                                 </v-layout>
-                                </strong>
                         </p>
                     </v-flex>
                 </v-layout>
-                   <!--  </v-img> -->
                 </v-card>
                 </v-layout>
             </v-container>
 
-            <!-- <v-container id="declaration" class="py-0 my-0 hidden-screen-only">
-                <v-layout  align-center justify-center> -->
-                <v-card  class="elevation-0 hidden-screen-only" style="-webkit-print-color-adjust:exact;width:100%">
-                   <!--  <img style="position:absolute;z-index:0;width:200px; heigth:200px; bottom:0" :src="require('../assets/pro_saude_logo_transparente.png')"> -->
-                    <!-- <v-img :src="require('../assets/pro_saude_logo_transparente.png')"> -->
-                <v-layout style="z-index:1;position:relative;" align-center row wrap>
+            <v-container fluid class="fill-height hidden-screen-only receipt-to-print">
+            <v-card  class="elevation-0" style="-webkit-print-color-adjust:exact;width:100%;">
+                <img style="position:absolute;z-index:0;width:200px; heigth:200px; bottom:0" :src="require('@/assets/pro_saude_logo_transparente.png')">
+                <v-layout style="z-index:1;position:relative;border: 2px solid #2196f3; border-radius: 16px" row wrap class="align-center mx-5">
                     <v-flex xs12>
-                        <!-- <v-img
-                                :src="require('../assets/logo-pro-saude.png')"
-                                class="my-3"
-                                contain
-                                height="50"
-                        ></v-img> -->
+                        <v-flex xs12>
+                            <img :src="selectedUnit.logo" height="50px" contain class="my-3">
+                        </v-flex>
                     </v-flex>
                     <v-flex xs12>
                         <h3 style="text-align: center">DECLARAÇÃO DE COMPARECIMENTO</h3>
                         <br/><br/><br/>
                         <p style="text-align: center; text-justify: auto">
-                                <strong>NOME: {{ selectedPatient.nome }}<br/>
-                                CODIGO: {{this.cid ? cid.slice(0, 3).toUpperCase() : ''}}<br/>
-                                COMPARECEU DAS {{ start.slice(0, 2) }}:{{ start.slice(2, 4) }}h
-                                ÀS {{ end.slice(0, 2) }}:{{ end.slice(2, 4) }}h<br/>
-                                DEVENDO RETORNAR AO TRABALHO.
-                                <br/><br/><br/><br/>
-                                MANAUS, {{ date | dateFilter }}
-                                <br/><br/><br/><br/><br/><br/><br/>
-                                <v-layout align-center justify-center>
-                                    <v-flex xs4 lalign-center justify-center>
-                                        <v-divider color="black"></v-divider>
-                                            ASSINATURA
-                                    </v-flex>
-                                </v-layout>
-                                </strong>
+                            PACIENTE: <strong>{{paciente.name}}</strong><br/>
+                            CODIGO: {{  this.cid ? cid.slice(0, 3).toUpperCase() : ''}}<br/>
+                            COMPARECEU DAS {{start}}h ÀS {{end}}h<br/>
+                            DEVENDO RETORNAR AO TRABALHO.
+                            <br/><br/><br/><br/>
+                            MANAUS, {{ date | dateFilter }}
+                            <br/><br/><br/><br/><br/><br/><br/>
+                            <v-layout align-center justify-center>
+                                <v-flex xs4 lalign-center justify-center>
+                                    <v-divider color="black"></v-divider>
+                                    ASSINATURA
+                                </v-flex>
+                            </v-layout>
                         </p>
                     </v-flex>
                 </v-layout>
-                   <!--  </v-img> -->
-                </v-card><!--
-                </v-layout>
-            </v-container> -->
+            </v-card>
+            </v-container>
 
             <v-layout align-center justify-center class="hidden-print-only mt-2">
                 <v-btn
@@ -185,13 +171,10 @@
 </template>
 
 <script>
+    import SelectPatientCard from "../../components/SelectPatientCard";
     var moment = require('moment');
-
-    import Pacientes from './Patient'
-
-
     export default {
-        components: {Pacientes},
+        components: {SelectPatientCard},
         data: () => ({
             start: '',
             end: '',
@@ -207,19 +190,13 @@
                 return this.formatDate(this.date)
             },
             formIsValid() {
-                console.log()
-                return this.date && this.start && this.end &&  this.cid && this.selectedPatient.nome
+                return this.date && this.start && this.end && this.cid && this.paciente.name
             },
-            selectedPatient() {
-
-                let patient = this.$store.getters.selectedPatient;
-
-                if(patient === null){
-                    return {nome:'',id:'', cpf:''}
-                }else{
-                    this.dialog = false
-                    return patient;
-                }
+            selectedUnit() {
+                return this.$store.getters.selectedUnit
+            },
+            paciente() {
+                return this.$store.getters.selectedPatient
             },
         },
         async mounted() {
@@ -241,13 +218,12 @@
                 return `${day}/${month}/${year}`
             },
              printOut() {
-                // Pass the element id here
-                //this.$htmlToPaper('declaration');
                 window.print();
             }
         }
     }
 </script>
+
 <style scoped>
 @page{size:auto; margin:0mm;}
 </style>

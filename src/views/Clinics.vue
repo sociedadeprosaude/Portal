@@ -25,7 +25,7 @@
 
                                 <v-dialog v-model="dialog" persistent width="500px">
                                     <template v-slot:activator="{ on }">
-                                        <v-btn rounded color="primary" dark class="mb-2 elevation-6" v-on="on">
+                                        <v-btn rounded color="primary" dark class="mb-2 elevation-6" v-on="on" @click="newClinic()">
                                             <v-icon left>add</v-icon>
                                             Nova Clinica
                                         </v-btn>
@@ -250,6 +250,8 @@
                         <v-btn @click="editItem(item)" small dark fab color="warning" class="mr-2"><v-icon>edit</v-icon></v-btn>
                         <v-btn @click="deleteItem(item)" small dark fab color="error" class="mr-2"><v-icon>delete</v-icon></v-btn>
 
+<!--                        <v-btn small dark fab color="primary_light" class="mr-2" @click="fixExamsWithouClinics(item)"><v-icon>assignment</v-icon></v-btn>-->
+
                         <v-btn small dark fab color="primary" class="mr-2" @click="selectClinic(item), Consultation = true"><v-icon>assignment</v-icon></v-btn>
                         <v-btn small dark fab color="primary" class="mr-2" @click="selectClinic(item), Exam = true"><v-icon>poll</v-icon></v-btn>
                         <v-btn small dark fab color="error" class="mr-2" @click="selectClinic(item), Product = true"><v-icon>assignment_late</v-icon></v-btn>
@@ -464,10 +466,16 @@
         },
 
         methods: {
+            async fixExamsWithouClinics(clinic) {
+                this.loading = true
+                let clinicExams = await this.$store.dispatch('getClinicExams', clinic)
+                await this.$store.dispatch('setClinicOnExams', {clinic: clinic, exams: clinicExams})
+                this.loading = false
+            },
 
             async loadClinics() {
-              this.loading = true
-              await this.$store.dispatch('getClinics')
+              this.loading = true;
+              await this.$store.dispatch('getClinics');
               this.loading = false
             },
 
@@ -514,8 +522,14 @@
                 this.$router.back()
             },
 
+
+            newClinic () {
+                this.$store.dispatch('selectClinic', this.defaultItem);
+                this.editedItem = Object.assign({}, this.defaultItem);
+            },
+
             async save() {
-                this.loading = true
+                this.loading = true;
                 if (this.editedIndex > -1) {
                     Object.assign(this.clinics[this.editedIndex], this.editedItem);
                 } else {

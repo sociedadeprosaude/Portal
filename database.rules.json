@@ -1,0 +1,82 @@
+{
+  "rules": {
+    ".write": true,
+    ".read": true,
+    "consultas": {
+      ".indexOn": "data_inicial",
+      "Clinico Geral":{
+        ".indexOn": "data_inicial"
+      },
+      "Cirurgião Geral":{
+        ".indexOn": "data_inicial"
+      },
+      "Cardiologia":{
+        ".indexOn": "data_inicial"
+      },
+      "Dermatologia":{
+        ".indexOn": "data_inicial"
+      },
+      "Urologia":{
+        ".indexOn": "data_inicial"
+      },
+      "Endocrinologia":{
+        ".indexOn": "data_inicial"
+      },
+      "Fonoaudiologia":{
+        ".indexOn": "data_inicial"
+      },
+      "Gastrenterologia":{
+        ".indexOn": "data_inicial"
+      },
+      "Ginecologia":{
+        ".indexOn": "data_inicial"
+      },
+      "Infectologia":{
+        ".indexOn": "data_inicial"
+      },
+      "Mastologia":{
+        ".indexOn": "data_inicial"
+      },
+      "Neurologia":{
+        ".indexOn": "data_inicial"
+      },
+      "Neuropediatria":{
+        ".indexOn": "data_inicial"
+      },
+      "Nutricionista":{
+        ".indexOn": "data_inicial"
+      },
+      "Oncologia":{
+        ".indexOn": "data_inicial"
+      },
+      "Obstetrícia":{
+        ".indexOn": "data_inicial"
+      },
+      "Ortopedia":{
+        ".indexOn": "data_inicial"
+      },
+      "Otorrinolaringologia":{
+        ".indexOn": "data_inicial"
+      },
+      "Peneumologia":{
+        ".indexOn": "data_inicial"
+      },
+      "Psiquiatria":{
+        ".indexOn": "data_inicial"
+      },
+      "Psicologia":{
+        ".indexOn": "data_inicial"
+      },
+      "Proctologia":{
+        ".indexOn": "data_inicial"
+      },
+      "Pediatria":{
+        ".indexOn": "data_inicial"
+      },
+      "Reumatologia":{
+        ".indexOn": "data_inicial"
+      }
+      
+    },
+  }
+}

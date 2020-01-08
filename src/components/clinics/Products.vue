@@ -269,7 +269,6 @@ export default {
         product: this.product,
         clinic: this.selectedClinic
       };
-      console.log(info);
       this.$store.dispatch("removeExamFromClinic", info);
       this.$store.dispatch("removeClinicFromExam", info);
       this.dialog = false;
