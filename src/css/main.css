@@ -11,7 +11,9 @@
 }
 
 .v-card {
-    border-radius: 16px !important;
+    border-radius: .5em !important;
+    box-shadow: -3px -3px 2px 0 rgba(255, 255, 255, .8),
+    6px 6px 6px 0 rgba(0, 0, 0, .3);
 }
 
 .v-data-table {
