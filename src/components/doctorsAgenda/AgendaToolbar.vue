@@ -104,8 +104,6 @@
                         link: '/agenda/ConsultasCanceladas'
                     },
                     {icon: 'translate', title: 'Pesquisa de CIDs', link: '/agenda/Cids'},
-                    {icon: 'print', title: 'Declaração de Comparecimento', link: '/agenda/Declaration'},
-
                 ]
             }
         },

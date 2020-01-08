@@ -130,7 +130,7 @@
         },
         
         mounted () {
-            this.$store.dispatch('selectedBundle', this.defaultPackage);
+            this.$store.commit('setSelectedBundle', this.defaultPackage);
         },
 
     }

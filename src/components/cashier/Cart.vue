@@ -177,7 +177,6 @@
                                                     R$ {{item.price}}
                                                 </p>
                                             </v-card-text>
-
                                         </v-card>
                                     </v-flex>
 
@@ -309,7 +308,7 @@
                 data: moment().format("YYYY-MM-DD HH:mm:ss"),
                 parcelas: '',
                 totalCusto: 0,
-                  percentageDiscount: 0,
+                percentageDiscount: 0,
                 moneyDiscount: 0,
                 FormasDePagamento: ["Dinheiro", "Crédito", "Débito"],
                 totalNovo: 0,
