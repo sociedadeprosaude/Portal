@@ -6,19 +6,6 @@
         <v-content v-if="loaded" :class="['background']">
             <router-view/>
         </v-content>
-        <v-btn
-                v-if="user"
-                fab
-                class="primary_light hidden-sm-and-up"
-                fixed
-                bottom
-                @click="patientDialog = !patientDialog"
-                right>
-            <v-icon class="white--text">people</v-icon>
-        </v-btn>
-        <v-dialog v-model="patientDialog">
-            <select-patient-card></select-patient-card>
-        </v-dialog>
     </v-app>
 </template>
 <script>

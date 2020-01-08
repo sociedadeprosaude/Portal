@@ -79,10 +79,19 @@
                     <v-btn rounded text @click="selectUnit()">
                         <v-icon class="black--text">cached</v-icon>
                     </v-btn>
+                    <v-btn
+                            class="hidden-sm-and-up"
+                            text
+                            @click="patientDialog = !patientDialog">
+                        <v-icon class="primary_light--text">people</v-icon>
+                    </v-btn>
                 </v-layout>
             </v-toolbar-items>
             <v-spacer></v-spacer>
         </v-app-bar>
+        <v-dialog v-model="patientDialog" transition="dialog-bottom-transition">
+            <select-patient-card></select-patient-card>
+        </v-dialog>
         <v-dialog v-model="selectUnitDialog">
             <v-card>
                 <v-layout row wrap class="align-center justify-center">
@@ -98,13 +107,18 @@
 </template>
 
 <script>
+    import SelectPatientCard from "../SelectPatientCard";
     export default {
         name: "AgendaToolbar",
+        components: {
+            SelectPatientCard
+        },
         data() {
             return {
                 drawer: false,
                 dialog: false,
                 selectUnitDialog: false,
+                patientDialog: false,
                 menuItems: [
 
                     {icon: 'delete_forever', title: 'Apagar Consultas do dia', link: '/agenda/DeletarConsultas'},

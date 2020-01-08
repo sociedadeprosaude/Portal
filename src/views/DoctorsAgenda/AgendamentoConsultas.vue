@@ -1,6 +1,6 @@
 <template>
     <v-layout row wrap>
-        <v-flex xs8>
+        <v-flex sm8 xs11>
             <v-layout align-center row wrap class="ml-6">
                 <v-flex xs12 md5>
                     <v-select
@@ -172,7 +172,7 @@
             </v-container>
         </v-flex>
         <!--      <v-divider vertical></v-divider>-->
-        <v-flex v-if="!showAlert" xs4 class="text-center">
+        <v-flex v-if="!showAlert" xs4 class="text-center hidden-xs-only">
             <v-layout row wrap class="align-center justify-center">
                 <v-flex xs12 class="text-center">
                     <select-patient-card ref="patientCard" max-width="1000px"></select-patient-card>
