@@ -92,7 +92,7 @@
             </v-layout>
             <v-container
                     style="width:100%"
-                    class="align-center justify-center hidden-xs-only py-0"
+                    class="align-center justify-center py-0"
                     v-for="(consultaGroup, i) in consultasByDate(consultas)"
                     :key="i"
 
@@ -110,12 +110,12 @@
                 </v-flex>
                 <v-container fluid grid-list-sm class="py-0 my-3">
                     <v-layout row wrap>
-                        <v-flex v-for="(consulta, j) in consultaGroup" :key="j" xs4>
+                        <v-flex v-for="(consulta, j) in consultaGroup" :key="j" sm4 xs12>
                             <v-card class="elevation-12" dark style="border-radius:20px">
                                 <v-card-text class="white text--primary">
                                     <v-container class="py-0 px-0">
                                         <v-layout row wrap>
-                                            <v-flex x2 sm2 dm2 lg2>
+                                            <v-flex xs2 sm2 dm2 lg2>
                                                 <v-avatar>
                                                     <v-btn icon large color="primary_dark">
                                                         <v-icon medium color="grey">person</v-icon>
@@ -123,7 +123,7 @@
                                                 </v-avatar>
                                             </v-flex>
 
-                                            <v-flex id="teste" xs10 sm10 md10 lg10 hidden-xs-only class="pl-3 py-2">
+                                            <v-flex id="teste" xs10 sm10 md10 lg10 class="pl-3 py-2 text-left mb-1">
                                                 <div style="height:60px">
                                                     <h4>
                                                         <span class="subheading font-weight-bold">{{consulta.doctor.name}}</span>
@@ -187,10 +187,14 @@
             <v-container>
                 <v-layout>
                     <div class="text-xs-center">
-                        <v-dialog v-model="dialog" v-if="createConsultationForm" width="520">
+                        <v-dialog v-model="dialog" v-if="createConsultationForm" max-width="520">
                             <v-card>
                                 <v-card-title class="headline grey lighten-2" primary-title>
-                                    Confirmar Agendamento da Consulta
+                                    <v-btn @click="dialog = false" text class="transparent" style="width: 32px; min-width: 0px">
+                                        <v-icon>close</v-icon>
+                                    </v-btn>
+                                    <span class="hidden-xs-only">Confirmar Agendamento da Consulta</span>
+                                    <span class="hidden-sm-and-up" style="font-size: 0.8em">Agendamento da Consulta</span>
                                 </v-card-title>
                                 <v-card-text>
                                     <v-container grid-list-md>
