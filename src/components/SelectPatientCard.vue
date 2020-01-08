@@ -206,6 +206,7 @@
                                         outlined
                                         rounded
                                         filled
+                                        :disabled="selectedPatient !== undefined"
                                         placeholder="Campo obrigatório *"
                                         v-mask="mask.cpf"
                                         v-model="cpf"
@@ -443,6 +444,18 @@
                 success: false,
             }
         },
+        watch: {
+            cpf(val) {
+                console.log('watch', val)
+            },
+            addPatient(val) {
+                if (val) {
+                    if (this.selectedPatient) {
+                        this.fillFormUser(this.selectedPatient)
+                    }
+                }
+            }
+        },
         methods: {
             dateValid(value){
                 if(value)
@@ -473,11 +486,18 @@
             },
             async getAddressByCep(address) {
                 address.loading = true
-                let resp = await this.$store.dispatch('getAddressByCep', address.cep.replace('.', '').replace('-', ''))
-                if (resp.erro) {
-                    address.cepError = true
+                let resp
+                try {
+                    resp = await this.$store.dispatch('getAddressByCep', address.cep.replace('.', '').replace('-', ''))
+                    if (resp.erro) {
+                        address.cepError = true
+                        return
+                    }
+                } catch (e) {
+                    address.loading = false
                     return
                 }
+
                 address.street = resp.logradouro
                 address.complement = resp.complemento
                 address.city = resp.localidade
@@ -489,6 +509,9 @@
                     return
                 }
                 this.loading = true
+                for (let add in this.addresses) {
+                    delete this.addresses[add].loading
+                }
                 let patient = {
                     name: this.name.toUpperCase(),
                     cpf: this.cpf.replace(/\./g, '').replace('-', ''),
@@ -505,6 +528,7 @@
                 this.success = true
                 this.loading = false
                 this.selectUser(patient)
+                this.fillFormUser(patient)
                 setTimeout(() => {
                     this.success = false
                 }, 1000)
@@ -526,6 +550,7 @@
                     this.numAss= undefined
                 }
                 this.$store.commit('setSelectedPatient', user)
+                this.fillFormUser(user)
                 this.foundUsers = undefined
                 this.addPatient = false
             },
@@ -539,6 +564,21 @@
                 })
                 this.foundUsers = users
                 this.loading = false
+            },
+            fillFormUser(user) {
+                console.log(user)
+                this.name = user.name
+                this.cpf = user.cpf
+                this.email = user.email
+                this.numAss = user.association_number
+                this.birthDate = moment(user.birth_date).format('DD-MM-YYYY')
+                this.sex = user.sex
+                this.dependents = user.dependents
+                this.telephones = user.telephones
+                for (let add in user.addresses) {
+                    delete user.addresses[add].loading
+                }
+                this.addresses = user.addresses
             },
             fillFormOldUser(oldUser) {
                 this.name = oldUser.nome
