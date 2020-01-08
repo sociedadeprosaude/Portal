@@ -259,7 +259,7 @@
                 </v-card>
             </v-flex>
         </v-layout>
-        <v-dialog v-model="searchPatient"
+        <v-dialog v-model="searchPatient" transition="dialog-bottom-transition"
         >
             <select-patient-card max-width="100%"></select-patient-card>
         </v-dialog>
