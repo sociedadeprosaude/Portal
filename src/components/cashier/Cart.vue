@@ -323,9 +323,6 @@
             }
         },
         computed: {
-            isMobile() {
-              return this.$store.getters.isMobile
-            },
             loadingDoctors() {
               return !this.$store.getters.doctorsLoaded
             },

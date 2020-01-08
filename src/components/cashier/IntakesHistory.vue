@@ -23,7 +23,7 @@
                         </v-btn>
                     </v-btn-toggle>
                 </v-flex>
-                <div v-if="option === 'intakes'">
+                <div v-show="option === 'intakes'">
                     <v-flex xs12 v-for="intake in intakes" :key="intake.id">
                         <v-card :class="['my-2 pl-2 py-2', diffByNow(intake) < 30000 ? 'green' : '']"
                         >
@@ -73,7 +73,7 @@
                         </v-card>
                     </v-flex>
                 </div>
-                <div v-if="option === 'budgets'">
+                <div v-show="option === 'budgets'">
                     <v-flex xs12 v-for="budget in budgets" :key="budget.id">
                         <v-card ripple class=" my-2 pa-2" @click="selectBudget(budget)">
                             <v-layout row wrap>
@@ -211,9 +211,6 @@
             },
         },
         computed: {
-            isMobile() {
-                return this.$store.getters.isMobile
-            },
             patient() {
                 return this.$store.getters.selectedPatient
             },

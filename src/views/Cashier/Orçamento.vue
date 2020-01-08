@@ -15,10 +15,10 @@
             </v-flex>
 
             <v-dialog transition="slide-x-reverse-transition" class="hidden-sm-and-up" v-model="cart">
-                <cart @close="cart = false"></cart>
+                <cart></cart>
             </v-dialog>
             <v-dialog transition="slide-x-transition" class="hidden-sm-and-up" v-model="intakes">
-                <intakes-history @close="intakes = false"></intakes-history>
+                <intakes-history></intakes-history>
             </v-dialog>
 
             <v-btn
