@@ -7,12 +7,13 @@
             <router-view/>
         </v-content>
         <v-btn
-        fab
-        class="primary_light hidden-sm-and-up"
-        fixed
-        bottom
-        @click="patientDialog = !patientDialog"
-        right>
+                v-if="user"
+                fab
+                class="primary_light hidden-sm-and-up"
+                fixed
+                bottom
+                @click="patientDialog = !patientDialog"
+                right>
             <v-icon class="white--text">people</v-icon>
         </v-btn>
         <v-dialog v-model="patientDialog">
@@ -37,8 +38,8 @@
             }
         },
         computed: {
-          user() {
-              return this.$store.getters.user
+            user() {
+                return this.$store.getters.user
             }
         },
         mounted() {
