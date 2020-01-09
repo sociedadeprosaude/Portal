@@ -56,13 +56,13 @@
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs1>
-                                    {{intake.cost}}
+                                    {{intake.cost | moneyFilter}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs2>
-                                    {{intake.price}}
+                                    {{intake.price | moneyFilter}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -130,13 +130,13 @@
                                 <v-divider vertical></v-divider>
                             </v-flex>
                             <v-flex xs1>
-                                {{examees.cost}}
+                                {{examees.cost | moneyFilter}}
                             </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs2>
-                                    {{examees.price}}
+                                    {{examees.price | moneyFilter}}
                                 </v-flex>
                             <v-flex xs1>
                                 <v-divider vertical></v-divider>
@@ -193,13 +193,13 @@
                                         <v-divider vertical></v-divider>
                                     </v-flex>
                                     <v-flex xs1>
-                                        {{specialtie.cost}}
+                                        {{specialtie.cost | moneyFilter}}
                                     </v-flex>
                                     <v-flex xs1>
                                         <v-divider vertical></v-divider>
                                     </v-flex>
                                     <v-flex xs2>
-                                        {{specialtie.price}}
+                                        {{specialtie.price | moneyFilter}}
                                     </v-flex>
                                     <v-flex xs1>
                                         <v-divider vertical></v-divider>
