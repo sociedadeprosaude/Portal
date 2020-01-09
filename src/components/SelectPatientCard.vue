@@ -403,7 +403,7 @@
               if (user) {
                   this.name = user.name
                   this.cpf = user.cpf
-                  this.numAss = user.association_number
+                  //this.numAss = user.association_number
               }
               return this.$store.getters.selectedPatient
           }
@@ -446,7 +446,10 @@
         },
         watch: {
             cpf(val) {
-                console.log('watch', val)
+                //Gambiarra pra resolver a inicialização do cpf pelo numAss misteriosamente
+                if(val !== this.selectedPatient.cpf)
+                    this.cpf = this.selectedPatient.cpf
+                console.log('Watch',this.cpf)
             },
             addPatient(val) {
                 if (val) {
@@ -548,6 +551,11 @@
                     this.cpf= undefined
                     this.name= undefined
                     this.numAss= undefined
+                    this.birth_date = undefined
+                    this.email = undefined
+                    this.telephones = []
+                    this.addresses = []
+                    this.dependents = []
                 }
                 this.$store.commit('setSelectedPatient', user)
                 this.fillFormUser(user)
@@ -573,7 +581,7 @@
                 this.numAss = user.association_number
                 this.birthDate = moment(user.birth_date).format('DD-MM-YYYY')
                 this.sex = user.sex
-                this.dependents = user.dependents
+                this.dependents = user.dependents ? user.dependents : []
                 this.telephones = user.telephones
                 for (let add in user.addresses) {
                     delete user.addresses[add].loading
