@@ -189,12 +189,12 @@
                                                             </span>
                                                             </v-list-item-title>
                                                             <br>
-                                                            <v-list-item-subtitle class="text-left">
+                                                            <v-list-item-subtitle class="text-center">
                                                                 CPF: {{item.user.cpf}}
                                                             </v-list-item-subtitle>
                                                             <br>
-                                                            <v-list-item-subtitle>
-                                                                Telefone: {{item.user.telephones[0]}}
+                                                            <v-list-item-subtitle v-if="item.user.telephones[0]">
+                                                               Telefone: {{item.user.telephones[0]}}
                                                             </v-list-item-subtitle>
                                                             <br>
                                                             <v-list-item-action-text>
@@ -656,6 +656,7 @@
                     else res[targetDate].numRegress += 1
                     res[targetDate].consultations.push(consultations[cons])
                 }
+                console.log('foi aqui também',res)
                 return res
             },
 

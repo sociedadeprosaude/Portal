@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <v-layout wrap row class="justify-center" v-if="!loading">
-            <v-flex xs12>
+            <v-flex xs12 class="text-center">
                 <select-patient-card class="hidden-xs-only"></select-patient-card>
             </v-flex>
             <v-flex xs12 v-if="filteredPages.length === 0">
@@ -75,7 +75,7 @@
                 </v-layout>
             </v-flex>
             <v-flex xs12 class="text-right">
-                <span>1.3.0</span>
+                <span>1.3.1</span>
             </v-flex>
         </v-layout>
         <v-layout row wrap v-else class="align-center">
