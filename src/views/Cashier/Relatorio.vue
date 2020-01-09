@@ -68,6 +68,9 @@
             <v-flex xs12 v-if="selectedReport === 1">
                 <colaborators-production-report :loading="loading" :intakes="intakes"></colaborators-production-report>
             </v-flex>
+            <v-flex xs12 v-if="selectedReport === 2">
+                <intakes-report :loading="loading" :intakes="intakes"></intakes-report>
+            </v-flex>
             <v-flex xs12 v-else>
                 <v-layout row wrap class="align-center">
                     <v-flex>
@@ -316,15 +319,17 @@
 <script>
     import ColaboratorsProductionReport from "../../components/reports/ColaboratorsProductionReport";
     import GeneralReport from "../../components/reports/GeneralReport";
+    import IntakesReport from "../../components/reports/IntakesReport"
 
     var moment = require('moment');
     export default {
         components: {
             ColaboratorsProductionReport,
-            GeneralReport
+            GeneralReport,
+            IntakesReport,
         },
         data: vm => ({
-            reportOptions: ['Relatório Financeiro Geral', 'Produção do Associado'],
+            reportOptions: ['Relatório Financeiro Geral', 'Produção do Associado', 'Relatório das Vendas'],
             selectedReport: 'Relatório Financeiro Geral',
             date: moment().format('YYYY-MM-DD 00:00:00'),
             date2: moment().format('YYYY-MM-DD 23:59:59'),
