@@ -447,7 +447,7 @@
         watch: {
             cpf(val) {
                 //Gambiarra pra resolver a inicialização do cpf pelo numAss misteriosamente
-                if(val !== this.selectedPatient.cpf)
+                if(this.selectedPatient && val !== this.selectedPatient.cpf)
                     this.cpf = this.selectedPatient.cpf
                 console.log('Watch',this.cpf)
             },
