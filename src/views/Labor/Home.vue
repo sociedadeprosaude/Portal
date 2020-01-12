@@ -103,6 +103,9 @@
                     </v-expansion-panel>
                 </v-expansion-panels>
             </v-flex>
+            <v-flex xs12>
+                <paymeny-report :colaborators="colab"></paymeny-report>
+            </v-flex>
         </v-layout>
         <v-layout row wrap v-else>
             <v-flex xs12 class="text-center">
@@ -151,8 +154,12 @@
 </template>
 
 <script>
+    import PaymenyReport from "../../components/labor/PaymenyReport";
     export default {
         name: "Home",
+        components: {
+          PaymenyReport
+        },
         data() {
             return {
                 loading: true,
