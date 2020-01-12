@@ -11,17 +11,28 @@
                             :key="i"
                     >
                         <v-expansion-panel-header>
+                            <v-flex xs4>
                         <span>
                         {{user.name}}
                             </span>
+                            </v-flex>
+                            <v-flex xs4>
+
                             <span>
                             {{user.email}}
                         </span>
+                            </v-flex>
+                            <v-flex xs2>
+
                             <span>
                             R$ {{user.salary}}
                         </span>
+                            </v-flex>
+                            <v-flex xs2>
+
                             <span>{{user.advances ? user.advances.length : 0}}
                         </span>
+                            </v-flex>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                             <!--                            <v-layout row wrap>-->
@@ -59,7 +70,8 @@
                                 <v-flex xs3 class="my-2" v-for="unit in units" :key="unit.name">
                                     <v-btn
                                             @click="setUserUnit(unit, user)"
-                                            rounded :class="[user.clinic ? user.clinic.name === unit.name ? 'primary' : '' : '']">
+                                            rounded
+                                            :class="[user.clinic ? user.clinic.name === unit.name ? 'primary' : '' : '']">
                                         <img width="124px" :src="unit.logo">
                                     </v-btn>
                                 </v-flex>
@@ -103,13 +115,18 @@
                     </v-expansion-panel>
                 </v-expansion-panels>
             </v-flex>
-            <v-flex xs12>
+            <v-flex xs12 class="text-center">
                 <paymeny-report :colaborators="colab"></paymeny-report>
+            </v-flex>
+            <v-flex xs12 class="text-center">
+                <v-btn @click="makePayments" rounded class="primary">
+                    Pagar
+                </v-btn>
             </v-flex>
         </v-layout>
         <v-layout row wrap v-else>
             <v-flex xs12 class="text-center">
-                <v-progress-circular size="64" indeterminate color="white"></v-progress-circular>
+                <v-progress-circular size="64" indeterminate color="primary"></v-progress-circular>
             </v-flex>
         </v-layout>
         <v-dialog v-model="salaryDialog" max-width="300px">
@@ -155,10 +172,11 @@
 
 <script>
     import PaymenyReport from "../../components/labor/PaymenyReport";
+
     export default {
         name: "Home",
         components: {
-          PaymenyReport
+            PaymenyReport
         },
         data() {
             return {
@@ -277,6 +295,18 @@
                     value: unit
                 })
                 await this.getInitialInfo()
+            },
+            async makePayments() {
+                this.loading = true
+                for (let user in this.colab) {
+                    await this.$store.dispatch('updateUserField', {
+                        user: this.colab[user],
+                        field: 'advances',
+                        value: 'delete'
+                    })
+                }
+                await this.getInitialInfo()
+                this.loading = false
             }
         },
         mounted() {
