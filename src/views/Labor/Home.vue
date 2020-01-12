@@ -11,17 +11,28 @@
                             :key="i"
                     >
                         <v-expansion-panel-header>
+                            <v-flex xs4>
                         <span>
                         {{user.name}}
                             </span>
+                            </v-flex>
+                            <v-flex xs4>
+
                             <span>
                             {{user.email}}
                         </span>
+                            </v-flex>
+                            <v-flex xs2>
+
                             <span>
                             R$ {{user.salary}}
                         </span>
+                            </v-flex>
+                            <v-flex xs2>
+
                             <span>{{user.advances ? user.advances.length : 0}}
                         </span>
+                            </v-flex>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                             <!--                            <v-layout row wrap>-->
@@ -59,7 +70,8 @@
                                 <v-flex xs3 class="my-2" v-for="unit in units" :key="unit.name">
                                     <v-btn
                                             @click="setUserUnit(unit, user)"
-                                            rounded :class="[user.clinic ? user.clinic.name === unit.name ? 'primary' : '' : '']">
+                                            rounded
+                                            :class="[user.clinic ? user.clinic.name === unit.name ? 'primary' : '' : '']">
                                         <img width="124px" :src="unit.logo">
                                     </v-btn>
                                 </v-flex>
@@ -155,10 +167,11 @@
 
 <script>
     import PaymenyReport from "../../components/labor/PaymenyReport";
+
     export default {
         name: "Home",
         components: {
-          PaymenyReport
+            PaymenyReport
         },
         data() {
             return {
