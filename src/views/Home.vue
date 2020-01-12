@@ -190,18 +190,23 @@
                             //     permission: 'Exames',
                             //     icon: 'insert_drive_file'
                             // },
-                            {
-                                title: 'Colaboradores',
-                                permission: 'Colaboradores',
-                                to: '/labor',
-                                icon: 'supervisor_account'
-                            },
                             // {
                             //     title: 'Unidades',
                             //     permission: 'Colaboradores',
                             //     to: '/units',
                             //     icon: 'storefront'
                             // }
+                        ]
+                    },
+                    {
+                        title: 'Pessoal',
+                        pages: [
+                            {
+                                title: 'Colaboradores',
+                                permission: 'Colaboradores',
+                                to: '/labor',
+                                icon: 'supervisor_account'
+                            },
                         ]
                     }
                 ]
@@ -226,6 +231,8 @@
                         return true
                     } else if (this.user.group === 'colaborador') {
                         return a === this.pages[0]
+                    } else if (this.user.group === 'gerente') {
+                        return a === this.pages[0] || a === this.pages[1]
                     }
                     return false
                 })
