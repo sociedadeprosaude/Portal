@@ -5,7 +5,7 @@
                 <v-layout row wrap>
                     <v-flex xs12>
                         <v-layout row wrap>
-                            <v-flex xs3>
+                            <v-flex xs4>
                                 <span>Nome</span>
                             </v-flex>
                             <v-spacer></v-spacer>
@@ -23,7 +23,7 @@
                     </v-flex>
                     <v-flex xs12 v-for="colab in colaborators" :key="colab.name">
                         <v-layout row wrap>
-                            <v-flex xs3>
+                            <v-flex xs4>
                                 <span>{{colab.name}}</span>
                             </v-flex>
                             <v-spacer></v-spacer>
@@ -41,7 +41,7 @@
                     </v-flex>
                     <v-flex xs12>
                         <v-layout row wrap>
-                            <v-flex xs3>
+                            <v-flex xs4>
                                 <span>Total</span>
                             </v-flex>
                             <v-spacer></v-spacer>
