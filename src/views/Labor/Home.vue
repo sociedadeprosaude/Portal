@@ -115,13 +115,18 @@
                     </v-expansion-panel>
                 </v-expansion-panels>
             </v-flex>
-            <v-flex xs12>
+            <v-flex xs12 class="text-center">
                 <paymeny-report :colaborators="colab"></paymeny-report>
+            </v-flex>
+            <v-flex xs12 class="text-center">
+                <v-btn @click="makePayments" rounded class="primary">
+                    Pagar
+                </v-btn>
             </v-flex>
         </v-layout>
         <v-layout row wrap v-else>
             <v-flex xs12 class="text-center">
-                <v-progress-circular size="64" indeterminate color="white"></v-progress-circular>
+                <v-progress-circular size="64" indeterminate color="primary"></v-progress-circular>
             </v-flex>
         </v-layout>
         <v-dialog v-model="salaryDialog" max-width="300px">
@@ -290,6 +295,18 @@
                     value: unit
                 })
                 await this.getInitialInfo()
+            },
+            async makePayments() {
+                this.loading = true
+                for (let user in this.colab) {
+                    await this.$store.dispatch('updateUserField', {
+                        user: this.colab[user],
+                        field: 'advances',
+                        value: 'delete'
+                    })
+                }
+                await this.getInitialInfo()
+                this.loading = false
             }
         },
         mounted() {

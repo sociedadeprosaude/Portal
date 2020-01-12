@@ -3,7 +3,7 @@
         <v-layout row wrap>
             <v-card>
                 <v-layout row wrap>
-                    <v-flex xs12>
+                    <v-flex xs12 class="mb-3">
                         <v-layout row wrap>
                             <v-flex xs4>
                                 <span>Nome</span>
