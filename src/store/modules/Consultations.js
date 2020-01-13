@@ -48,7 +48,7 @@ const actions = {
 
     async getConsultationsCanceled({ commit }) {//pegar todas as consultas deletadas pela clinica
         try {
-            let canceledSnap = await firebase.firestore().collection('canceled')
+            let canceledSnap = await firebase.firestore().collection('canceled').orderBy('date','asc')
                 .onSnapshot((querySnapshot) => {
                     let consultationsCanceled = []
                     querySnapshot.forEach((document) => {

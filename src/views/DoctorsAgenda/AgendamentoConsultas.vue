@@ -765,14 +765,15 @@
                 this.$store.dispatch('getClinics')
                 await this.$store.dispatch('getDoctors')
                 await this.$store.dispatch('getConsultations',{
-                    start_date: moment().add(2, 'hours').format('YYYY-MM-DD HH:mm:ss'),
-                    final_date: moment().add(10, 'days').format('YYYY-MM-DD 23:59:59')
+                    start_date: moment().subtract(2,'hours').format('YYYY-MM-DD HH:mm:ss'),
+                    final_date: moment().add(30, 'days').format('YYYY-MM-DD 23:59:59')
                 })
                 await this.$store.dispatch("getSpecialties")
                 // this.$store.dispatch("stopSnack", false);
                 //this.$store.dispatch('setLoader',{loader:false,view:"AgendamentoConsulta"})
                 // this.especialidade = "Clinico Geral"
                 this.loading = false
+                console.log(moment().subtract(2,'hours').format('YYYY-MM-DD HH:mm:ss'))
             },
             backTop() {
                 this.$vuetify.goTo(0, this.options)

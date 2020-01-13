@@ -4,12 +4,19 @@
             <v-flex xs12>
                 <v-expand-transition mode="out-in">
                     <v-card class="primary_light white--text pa-2" :max-width="maxWidth" v-if="!addPatient">
-                        <v-layout row wrap class="align-center">
-                            <v-flex xs12>
-                                <v-layout row wrap>
+                        <v-layout row wrap>
+                            <v-flex v-if="!selectedPatient" xs8>
+                                 <v-flex sm6 xs8 class="text-left mb-3">
+                                        <span class="my-headline white--text hidden-xs-only">Buscar Associado</span>
+                                        <span class="white--text font-weight-bold hidden-sm-and-up">Buscar Associado</span>
+                                    </v-flex>
+                                    <v-spacer></v-spacer>
+                            </v-flex>
+                            <v-flex :class="!selectedPatient ? 'xs4' : 'xs12'">
+                                <v-layout row wrap class="text-right">
                                     <v-spacer></v-spacer>
 
-                                    <v-flex xs2 class="text-right">
+                                    <v-flex xs1 class="text-right mx-3">
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn
@@ -22,7 +29,7 @@
                                             <span>Declaração de Comparecimento</span>
                                         </v-tooltip>
                                     </v-flex>
-                                    <v-flex xs2 class="text-right ">
+                                    <v-flex xs1 class="text-right mx-3">
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn
@@ -36,7 +43,7 @@
                                         </v-tooltip>
 
                                     </v-flex>
-                                    <v-flex xs2 class="text-right ">
+                                    <v-flex xs1 class="text-right mx-3">
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template  v-slot:activator="{ on }">
                                                 <v-btn
@@ -49,7 +56,21 @@
                                             <span>Agendamento de Consultas</span>
                                         </v-tooltip>
                                     </v-flex>
-                                    <v-flex xs2 class="text-right ">
+                                    <v-flex v-if="selectedPatient && selectedPatient.dependents" xs1 class="text-right mx-3">
+                                        <v-tooltip  top>
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn
+                                                        v-on="on"
+                                                        @click="listDependents()"
+                                                        rounded text class="white--text transparent">
+                                                    <v-icon>child_friendly</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <span>Selecionar dependentes</span>
+                                        </v-tooltip>
+
+                                    </v-flex>
+                                    <v-flex xs1 class="text-right mx-3">
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn
@@ -63,7 +84,7 @@
                                         </v-tooltip>
 
                                     </v-flex>
-                                    <v-flex xs2 class="text-right ">
+                                    <v-flex xs1 class="text-right mx-3">
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
                                                <v-btn
@@ -77,12 +98,8 @@
                                         </v-tooltip>
 
                                     </v-flex>
-                                    <v-flex v-if="!selectedPatient" sm6 xs8 class="text-left mb-3">
-                                        <span class="my-headline white--text hidden-xs-only">Buscar Associado</span>
-                                        <span class="white--text font-weight-bold hidden-sm-and-up">Buscar Associado</span>
-                                    </v-flex>
-                                    <v-spacer></v-spacer>
-                                    <v-flex xs2 class="text-right ">
+                                   
+                                    <v-flex xs1 class="text-right mx-3">
                                         <v-tooltip top>
                                             <template v-slot:activator="{ on }">
                                                <v-btn
@@ -130,6 +147,16 @@
                                         :disabled="selectedPatient !== undefined"
                                         label="Numero do Associado"></v-text-field>
                             </v-flex>
+                            <v-flex class="mt-5" xs12 v-if="selectedDependent">
+                                <v-text-field
+                                        outlined
+                                        rounded
+                                        filled
+                                        prepend-icon="account_circle"
+                                        v-model="dependentName"
+                                        disabled
+                                        label="Nome do dependente"></v-text-field>
+                            </v-flex>
                             <v-flex xs12 class="text-right">
                                 <span v-if="searchError">
                                     {{searchError}}
@@ -161,6 +188,22 @@
                             <v-flex xs12 v-if="foundUsers && foundUsers.length === 0">
                                 <span class="my-sub-headline">Nenhum associado encontrado</span>
                             </v-flex>
+                            <v-flex xs12>
+                                <v-card v-for="(dependent,index) in foundDependents" :key="index" class="my-2" @click="selectDependent(dependent)">
+                                    <v-layout row wrap class="align-center">
+                                        <v-flex xs4>
+                                            <span>{{dependent.name}}</span>
+                                        </v-flex>
+                                        <v-flex xs4>
+                                            <span>Grau: {{dependent.dependentDegree}}</span>
+                                        </v-flex>
+                                        <v-flex xs4>
+                                            <span>Data de Nascimento: {{dependent.birthDate}}</span>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-card>
+                            </v-flex>
+
                         </v-layout>
                     </v-card>
                     <v-card class="primary_light white--text pa-2" v-else>
@@ -406,6 +449,13 @@
                   //this.numAss = user.association_number
               }
               return this.$store.getters.selectedPatient
+          },
+          selectedDependent(){
+            let dependent = this.$store.getters.selectedDependent
+            if(dependent){
+                this.dependentName = dependent.name
+            }
+            return dependent
           }
         },
         data() {
@@ -413,6 +463,7 @@
                 patientCard: false,
                 addPatient: false,
                 name: undefined,
+                dependentName:undefined,
                 cpf: undefined,
                 numAss: undefined,
                 birthDate: undefined,
@@ -441,6 +492,7 @@
                 states: ['AC', 'AL', 'AM'],
                 cities: {'AC': [], 'AL': [], 'AM': ['Iranduba', 'Manaus', 'Parintins', 'AUTAZES']},
                 foundUsers: undefined,
+                foundDependents:undefined,
                 success: false,
             }
         },
@@ -536,7 +588,13 @@
                     this.success = false
                 }, 1000)
             },
+            selectDependent(dependent){
+                this.$store.dispatch('setSelectedDependent',dependent)
+                this.dependentName = dependent.name
+                this.foundDependents = undefined
+            },
             async selectUser(user) {
+                console.log('select user')
                 if (user) {
                     let intakes = await this.$store.dispatch('getUserIntakes', user)
                     if (intakes) {
@@ -548,6 +606,7 @@
                     }
                 }
                 else {
+                    console.log('eiii')
                     this.cpf= undefined
                     this.name= undefined
                     this.numAss= undefined
@@ -556,11 +615,22 @@
                     this.telephones = []
                     this.addresses = []
                     this.dependents = []
+                    this.dependentName = undefined
+                    
                 }
+                console.log('eiiijjjjjjj')
                 this.$store.commit('setSelectedPatient', user)
+                this.$store.commit('clearSelectedDependent')
                 this.fillFormUser(user)
                 this.foundUsers = undefined
                 this.addPatient = false
+            },
+            
+            async listDependents() {
+                this.loading = true
+                
+                this.foundDependents = this.selectedPatient.dependents
+                this.loading = false
             },
             async searchPatient() {
                 this.loading = true
