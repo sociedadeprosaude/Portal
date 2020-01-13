@@ -13,6 +13,7 @@ import Bundles from '@/views/Cashier/Bundles'
 import Doctors from '@/views/Doctors'
 import Clinics from "@/views/Clinics"
 import Units from "./views/Units";
+import Bills from "./views/Bills";
 import firebase from 'firebase'
 
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
@@ -100,6 +101,14 @@ let mainRoutes = [
     path: '/units',
     name: 'units',
     component : Units,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/bills',
+    name: 'bills',
+    component : Bills,
     meta: {
       requiresAuth: false,
     }

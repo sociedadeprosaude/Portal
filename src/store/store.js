@@ -24,6 +24,7 @@ import ShoppingCart from "./modules/local/ShoppingCart";
 import Operational from "./modules/Operational";
 import ItemsPackage from "./modules/local/ItemsPackage";
 import LocalUnit from "./modules/local/Unit";
+import Outtakes from "./modules/Outtakes";
 
 
 Vue.use(Vuex);
@@ -60,7 +61,8 @@ const store = new Vuex.Store({
         ShoppingCart,
         ItemsPackage,
         Operational,
-        LocalUnit
+        LocalUnit,
+        Outtakes
     },
 
     state: {
