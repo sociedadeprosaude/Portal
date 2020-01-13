@@ -184,6 +184,12 @@
                                 permission: 'Caixa',
                                 icon: 'queue',
                             },
+                            {
+                                title: 'Contas à pagar',
+                                to: '/bills',
+                                permission: 'Caixa',
+                                icon: 'receipt',
+                            },
                             // {
                             //     title: 'Exames',
                             //     to: '/exames',
