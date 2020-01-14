@@ -42,6 +42,36 @@
                                     locale="pt-br"
                                     v-model="dateToPay"></v-date-picker>
                         </v-flex>
+                        <v-flex xs12 sm8>
+                            <v-layout column wrap>
+                                <v-flex xs12>
+                                    <span class="my-sub-headline">Anexos</span>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <v-layout row wrap>
+                                        <v-card class="pa-2 ma-2" v-for="(preview, i) in filesPreviews" :key="i">
+                                            <v-btn @click="removeFile(i)" class="grey" small fab text
+                                                   style="position: absolute; right: 0;">
+                                                <v-icon>close</v-icon>
+                                            </v-btn>
+                                            <v-layout column wrap>
+                                                <img style="max-height: 124px; max-width: 124px" :src="preview">
+                                                <span>{{files[i].name}}</span>
+                                            </v-layout>
+                                        </v-card>
+                                    </v-layout>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <v-btn class="primary" rounded @click="$refs.files.click()">Adicionar Anexo</v-btn>
+                                </v-flex>
+                                <label>
+                                    <input v-show="false" type="file" id="files" ref="files" multiple
+                                           v-on:change="handleFileUpload()"/>
+                                </label>
+                            </v-layout>
+
+                            <!--                            <button v-on:click="submitFile()">Submit</button>-->
+                        </v-flex>
                         <v-spacer></v-spacer>
                         <!--                        <v-flex xs12 sm7 class="mt-6">-->
                         <!--                            <v-layout row wrap v-if="paymentMethod === paymentMethods[0]">-->
@@ -150,6 +180,7 @@
 </template>
 
 <script>
+
     export default {
         name: "Bills",
         data() {
@@ -161,6 +192,8 @@
                 dateToPay: moment().format('YYYY-MM-DD'),
                 paymentMethods: ['Boleto', 'Transferência', 'Dinheiro'],
                 loading: false,
+                files: [],
+                filesPreviews: []
             }
         },
         mounted() {
@@ -211,6 +244,10 @@
                 if (this.categories.indexOf(this.category) < 0) {
                     await this.$store.dispatch('addOuttakesCategory', this.category)
                 }
+                if (this.files.length > 0) {
+                    let urls = await this.submitFiles(this.files)
+                    bill.appends = urls
+                }
                 await this.$store.dispatch('addOuttakes', bill)
                 await this.$store.dispatch('getOuttakes')
             },
@@ -228,7 +265,7 @@
                 this.loading = true
                 await this.$store.dispatch('updateOuttake', {
                     outtake: outtake,
-                    field: 'status',
+                    field: 'paid',
                     value: 'delete'
                 })
                 await this.$store.dispatch('getOuttakes')
@@ -243,11 +280,43 @@
             distanceToToday(date) {
                 let now = moment()
                 return moment(date, 'YYYY-MM-DD').diff(now, 'days')
+            },
+            handleFileUpload() {
+                let uploadedFiles = this.$refs.files.files;
+
+                for (var i = 0; i < uploadedFiles.length; i++) {
+                    if (this.files.indexOf(uploadedFiles[i]) < 0) {
+                        let index = this.files.push(uploadedFiles[i])
+                        this.readFileUrl(uploadedFiles[i], index - 1)
+                    }
+                }
+            },
+            readFileUrl(file, index) {
+                let self = this
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    self.filesPreviews[index] = e.target.result
+                    self.$forceUpdate()
+                }
+                reader.readAsDataURL(file);
+            },
+            removeFile(index) {
+                this.files.splice(index, 1)
+                this.filesPreviews.splice(index, 1)
+            },
+            async submitFiles(files) {
+                return await this.$store.dispatch('uploadFileToStorage', {
+                    files: files,
+                    path: '/outtakes/orders',
+                })
             }
         },
     }
 </script>
 
-<style scoped>
-
-</style>
+<!--<style scoped>-->
+<!--    input[type="file"]{-->
+<!--        position: absolute;-->
+<!--        top: -500px;-->
+<!--    }-->
+<!--</style>-->
