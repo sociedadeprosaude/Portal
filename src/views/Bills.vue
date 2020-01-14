@@ -111,9 +111,9 @@
                 <span class="my-headline">Contas pagas</span>
             </v-flex>
             <v-flex xs12 class="mt-4">
-                <v-card class="pa-4">
+                <v-card class="pa-4 my-4" v-for="bill in paidOuttakes" :key="bill.id">
                     <v-layout row wrap>
-                        <v-flex xs12 v-for="bill in paidOuttakes" :key="bill.id">
+                        <v-flex xs12>
                             <v-layout row wrap>
                                 <span>{{bill.category}}</span>
                                 <v-divider vertical class="mx-4"></v-divider>

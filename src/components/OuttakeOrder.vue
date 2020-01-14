@@ -1,8 +1,8 @@
 <template>
     <v-container class="ma-0 pa-0">
-        <v-card class="pa-4">
+        <v-card class="pa-4 my-4" v-for="bill in outtakes" :key="bill.id">
             <v-layout row wrap>
-                <v-flex xs12 class="my-2" v-for="bill in outtakes" :key="bill.id">
+                <v-flex xs12 class="my-2">
                     <v-layout row wrap>
                         <span>{{bill.category}}</span>
                         <v-divider vertical class="mx-4"></v-divider>
