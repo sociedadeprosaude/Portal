@@ -142,8 +142,8 @@
     import SubmitButton from "../SubmitButton";
     export default {
         data: () => ({
-            cost: null,
-            sale: null,
+            cost: 0,
+            sale: 0,
             rules: null,
             obs: null,
             exams: [],
@@ -157,7 +157,8 @@
         },
         computed: {
             formIsValid() {
-                return this.sale && this.cost && this.exams.length > 0
+                /*return this.sale && this.cost && this.exams.length > 0*/
+                return this.exams.length > 0
             },
             addIsValid() {
                 return this.newExam
@@ -214,6 +215,7 @@
                         cost: this.cost,
                         sale: this.sale,
                     };
+                    //console.log(examData)
                     await this.$store.dispatch('addExamToClinic', examData);
                 }
                 this.loading = false;
@@ -225,8 +227,8 @@
             },
 
             clear() {
-                this.cost = null;
-                this.sale = null;
+                this.cost = 0;
+                this.sale = 0;
                 this.obs = null;
                 this.exams = [];
                 // this.closeDialog()
