@@ -42,6 +42,36 @@
                                     locale="pt-br"
                                     v-model="dateToPay"></v-date-picker>
                         </v-flex>
+                        <v-flex xs12 sm8>
+                            <v-layout column wrap>
+                                <v-flex xs12>
+                                    <span class="my-sub-headline">Anexos</span>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <v-layout row wrap>
+                                        <v-card class="pa-2 ma-2" v-for="(preview, i) in filesPreviews" :key="i">
+                                            <v-btn @click="removeFile(i)" class="grey" small fab text
+                                                   style="position: absolute; right: 0;">
+                                                <v-icon>close</v-icon>
+                                            </v-btn>
+                                            <v-layout column wrap>
+                                                <img style="max-height: 124px; max-width: 124px" :src="preview">
+                                                <span>{{files[i].name}}</span>
+                                            </v-layout>
+                                        </v-card>
+                                    </v-layout>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <v-btn class="primary" rounded @click="$refs.files.click()">Adicionar Anexo</v-btn>
+                                </v-flex>
+                                <label>
+                                    <input v-show="false" type="file" id="files" ref="files" multiple
+                                           v-on:change="handleFileUpload()"/>
+                                </label>
+                            </v-layout>
+
+                            <!--                            <button v-on:click="submitFile()">Submit</button>-->
+                        </v-flex>
                         <v-spacer></v-spacer>
                         <!--                        <v-flex xs12 sm7 class="mt-6">-->
                         <!--                            <v-layout row wrap v-if="paymentMethod === paymentMethods[0]">-->
@@ -75,38 +105,7 @@
                 <span class="my-headline">Contas à pagar</span>
             </v-flex>
             <v-flex xs12>
-                <v-card class="pa-4">
-                    <v-layout row wrap>
-                        <v-flex xs12 class="my-2" v-for="bill in pendingOuttakes" :key="bill.id">
-                            <v-layout row wrap>
-                                <span>{{bill.category}}</span>
-                                <v-divider vertical class="mx-4"></v-divider>
-                                <span>{{bill.payment_method}}</span>
-                                <v-divider vertical class="mx-4"></v-divider>
-                                <span class="font-weight-bold">{{bill.date_to_pay | dateFilter}}</span>
-                                <v-divider vertical class="mx-4"></v-divider>
-                                <v-icon class="warning--text" v-if="distanceToToday(bill.date_to_pay) < 3">warning
-                                </v-icon>
-                                <v-spacer></v-spacer>
-                                <span class="font-weight-bold">R$ {{bill.value}}</span>
-                                <v-flex xs12>
-                                    <span>{{bill.description}}</span>
-                                </v-flex>
-                                <v-flex xs12 class="text-right" v-if="!loading">
-                                    <v-btn @click="deleteOuttake(bill)" class="error mx-2" fab small>
-                                        <v-icon>delete</v-icon>
-                                    </v-btn>
-                                    <v-btn @click="payOuttake(bill)" class="success mx-2" fab small>
-                                        <v-icon>attach_money</v-icon>
-                                    </v-btn>
-                                </v-flex>
-                                <v-flex xs12 class="text-right" v-else>
-                                    <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
-                                </v-flex>
-                            </v-layout>
-                        </v-flex>
-                    </v-layout>
-                </v-card>
+                <outtake-order :outtakes="pendingOuttakes"></outtake-order>
             </v-flex>
             <v-flex xs12 class="text-left mt-6">
                 <span class="my-headline">Contas pagas</span>
@@ -129,6 +128,35 @@
                                 <v-flex xs12>
                                     <span>{{bill.description}}</span>
                                 </v-flex>
+                                <v-flex xs12 sm10 class="mt-4">
+                                    <v-layout row wrap>
+                                        <v-layout column wrap>
+                                            <span class="my-sub-headline mb-4">Anexos</span>
+                                            <v-layout row wrap>
+                                                <v-flex v-for="(append, i) in bill.appends" :key="i">
+                                                    <v-card @click="openAppend(append)" flat>
+                                                        <img :src="append" style="max-width: 124px; max-width: 124px">
+                                                    </v-card>
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-layout>
+                                        <v-divider vertical></v-divider>
+                                        <v-layout column wrap>
+                                            <span class="my-sub-headline mb-4">Comprovante</span>
+                                            <v-layout row wrap v-if="!loading">
+                                                <v-flex v-for="(append, i) in bill.receipts" :key="i">
+                                                    <v-card @click="openAppend(append)" flat>
+                                                        <img :src="append" style="max-width: 124px; max-width: 124px">
+                                                    </v-card>
+                                                </v-flex>
+                                            </v-layout>
+                                            <v-flex xs12 sm2 class="text-right" v-else>
+                                                <v-progress-circular indeterminate
+                                                                     class="primary--text"></v-progress-circular>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-layout>
+                                </v-flex>
                                 <v-flex xs12 class="text-right" v-if="!loading">
                                     <!--                                    <v-btn @click="deleteOuttake(bill)" class="error mx-2" fab small>-->
                                     <!--                                        <v-icon>delete</v-icon>-->
@@ -150,8 +178,14 @@
 </template>
 
 <script>
+
+    import OuttakeOrder from "../components/OuttakeOrder";
+
     export default {
         name: "Bills",
+        components: {
+            OuttakeOrder
+        },
         data() {
             return {
                 category: undefined,
@@ -161,6 +195,8 @@
                 dateToPay: moment().format('YYYY-MM-DD'),
                 paymentMethods: ['Boleto', 'Transferência', 'Dinheiro'],
                 loading: false,
+                files: [],
+                filesPreviews: []
             }
         },
         mounted() {
@@ -199,6 +235,7 @@
                 this.loading = false
             },
             async addBill() {
+                this.loading = true
                 let bill = {
                     category: this.category,
                     payment_method: this.paymentMethod,
@@ -211,16 +248,11 @@
                 if (this.categories.indexOf(this.category) < 0) {
                     await this.$store.dispatch('addOuttakesCategory', this.category)
                 }
+                if (this.files.length > 0) {
+                    let urls = await this.submitFiles(this.files)
+                    bill.appends = urls
+                }
                 await this.$store.dispatch('addOuttakes', bill)
-                await this.$store.dispatch('getOuttakes')
-            },
-            async payOuttake(outtake) {
-                this.loading = true
-                await this.$store.dispatch('updateOuttake', {
-                    outtake: outtake,
-                    field: 'paid',
-                    value: moment().format('YYYY-MM-DD HH:mm:ss')
-                })
                 await this.$store.dispatch('getOuttakes')
                 this.loading = false
             },
@@ -228,26 +260,52 @@
                 this.loading = true
                 await this.$store.dispatch('updateOuttake', {
                     outtake: outtake,
-                    field: 'status',
+                    field: 'paid',
                     value: 'delete'
                 })
                 await this.$store.dispatch('getOuttakes')
                 this.loading = false
             },
-            async deleteOuttake(outtake) {
-                this.loading = true
-                await this.$store.dispatch('deleteOuttake', outtake)
-                await this.$store.dispatch('getOuttakes')
-                this.loading = false
+
+            handleFileUpload() {
+                let uploadedFiles = this.$refs.files.files;
+
+                for (var i = 0; i < uploadedFiles.length; i++) {
+                    if (this.files.indexOf(uploadedFiles[i]) < 0) {
+                        let index = this.files.push(uploadedFiles[i])
+                        this.readFileUrl(uploadedFiles[i], index - 1)
+                    }
+                }
             },
-            distanceToToday(date) {
-                let now = moment()
-                return moment(date, 'YYYY-MM-DD').diff(now, 'days')
+            readFileUrl(file, index) {
+                let self = this
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    self.filesPreviews[index] = e.target.result
+                    self.$forceUpdate()
+                }
+                reader.readAsDataURL(file);
+            },
+            removeFile(index) {
+                this.files.splice(index, 1)
+                this.filesPreviews.splice(index, 1)
+            },
+            async submitFiles(files) {
+                return await this.$store.dispatch('uploadFileToStorage', {
+                    files: files,
+                    path: '/outtakes/orders',
+                })
+            },
+            openAppend(append) {
+                window.open(append)
             }
         },
     }
 </script>
 
-<style scoped>
-
-</style>
+<!--<style scoped>-->
+<!--    input[type="file"]{-->
+<!--        position: absolute;-->
+<!--        top: -500px;-->
+<!--    }-->
+<!--</style>-->
