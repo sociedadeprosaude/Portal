@@ -24,6 +24,23 @@ const actions = {
         }
         return filesUrl
     },
+    async deleteFile({}, payload) {
+        try {
+            for (let path in payload.imagePaths) {
+                let imagePath = payload.imagePaths[path]
+                let name = imagePath.substr(imagePath.indexOf('%2F') + 3, (imagePath.indexOf('?')) - (imagePath.indexOf('%2F') + 3)).replace('%2B', '+')
+                console.log(name)
+                name = name.substr(name.indexOf('%2F') + 3, name.length)
+                console.log(name)
+                // name = name.replace('%20', ' ');
+                let storagePath = firebase.storage().ref();
+                await storagePath.child(`${payload.path}/${name}`).delete();
+            }
+        } catch (e) {
+            console.log(e)
+        }
+        return
+    }
 }
 
 const getters = {

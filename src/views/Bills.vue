@@ -105,38 +105,7 @@
                 <span class="my-headline">Contas à pagar</span>
             </v-flex>
             <v-flex xs12>
-                <v-card class="pa-4">
-                    <v-layout row wrap>
-                        <v-flex xs12 class="my-2" v-for="bill in pendingOuttakes" :key="bill.id">
-                            <v-layout row wrap>
-                                <span>{{bill.category}}</span>
-                                <v-divider vertical class="mx-4"></v-divider>
-                                <span>{{bill.payment_method}}</span>
-                                <v-divider vertical class="mx-4"></v-divider>
-                                <span class="font-weight-bold">{{bill.date_to_pay | dateFilter}}</span>
-                                <v-divider vertical class="mx-4"></v-divider>
-                                <v-icon class="warning--text" v-if="distanceToToday(bill.date_to_pay) < 3">warning
-                                </v-icon>
-                                <v-spacer></v-spacer>
-                                <span class="font-weight-bold">R$ {{bill.value}}</span>
-                                <v-flex xs12>
-                                    <span>{{bill.description}}</span>
-                                </v-flex>
-                                <v-flex xs12 class="text-right" v-if="!loading">
-                                    <v-btn @click="deleteOuttake(bill)" class="error mx-2" fab small>
-                                        <v-icon>delete</v-icon>
-                                    </v-btn>
-                                    <v-btn @click="payOuttake(bill)" class="success mx-2" fab small>
-                                        <v-icon>attach_money</v-icon>
-                                    </v-btn>
-                                </v-flex>
-                                <v-flex xs12 class="text-right" v-else>
-                                    <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
-                                </v-flex>
-                            </v-layout>
-                        </v-flex>
-                    </v-layout>
-                </v-card>
+                <outtake-order :outtakes="pendingOuttakes"></outtake-order>
             </v-flex>
             <v-flex xs12 class="text-left mt-6">
                 <span class="my-headline">Contas pagas</span>
@@ -158,6 +127,35 @@
                                 <span class="font-weight-bold">R$ {{bill.value}}</span>
                                 <v-flex xs12>
                                     <span>{{bill.description}}</span>
+                                </v-flex>
+                                <v-flex xs12 sm10 class="mt-4">
+                                    <v-layout row wrap>
+                                        <v-layout column wrap>
+                                            <span class="my-sub-headline mb-4">Anexos</span>
+                                            <v-layout row wrap>
+                                                <v-flex v-for="(append, i) in bill.appends" :key="i">
+                                                    <v-card @click="openAppend(append)" flat>
+                                                        <img :src="append" style="max-width: 124px; max-width: 124px">
+                                                    </v-card>
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-layout>
+                                        <v-divider vertical></v-divider>
+                                        <v-layout column wrap>
+                                            <span class="my-sub-headline mb-4">Comprovante</span>
+                                            <v-layout row wrap v-if="!loading">
+                                                <v-flex v-for="(append, i) in bill.receipts" :key="i">
+                                                    <v-card @click="openAppend(append)" flat>
+                                                        <img :src="append" style="max-width: 124px; max-width: 124px">
+                                                    </v-card>
+                                                </v-flex>
+                                            </v-layout>
+                                            <v-flex xs12 sm2 class="text-right" v-else>
+                                                <v-progress-circular indeterminate
+                                                                     class="primary--text"></v-progress-circular>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-layout>
                                 </v-flex>
                                 <v-flex xs12 class="text-right" v-if="!loading">
                                     <!--                                    <v-btn @click="deleteOuttake(bill)" class="error mx-2" fab small>-->
@@ -181,8 +179,13 @@
 
 <script>
 
+    import OuttakeOrder from "../components/OuttakeOrder";
+
     export default {
         name: "Bills",
+        components: {
+            OuttakeOrder
+        },
         data() {
             return {
                 category: undefined,
@@ -232,6 +235,7 @@
                 this.loading = false
             },
             async addBill() {
+                this.loading = true
                 let bill = {
                     category: this.category,
                     payment_method: this.paymentMethod,
@@ -250,15 +254,6 @@
                 }
                 await this.$store.dispatch('addOuttakes', bill)
                 await this.$store.dispatch('getOuttakes')
-            },
-            async payOuttake(outtake) {
-                this.loading = true
-                await this.$store.dispatch('updateOuttake', {
-                    outtake: outtake,
-                    field: 'paid',
-                    value: moment().format('YYYY-MM-DD HH:mm:ss')
-                })
-                await this.$store.dispatch('getOuttakes')
                 this.loading = false
             },
             async unpayOuttake(outtake) {
@@ -271,16 +266,7 @@
                 await this.$store.dispatch('getOuttakes')
                 this.loading = false
             },
-            async deleteOuttake(outtake) {
-                this.loading = true
-                await this.$store.dispatch('deleteOuttake', outtake)
-                await this.$store.dispatch('getOuttakes')
-                this.loading = false
-            },
-            distanceToToday(date) {
-                let now = moment()
-                return moment(date, 'YYYY-MM-DD').diff(now, 'days')
-            },
+
             handleFileUpload() {
                 let uploadedFiles = this.$refs.files.files;
 
@@ -309,6 +295,9 @@
                     files: files,
                     path: '/outtakes/orders',
                 })
+            },
+            openAppend(append) {
+                window.open(append)
             }
         },
     }
