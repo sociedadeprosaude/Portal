@@ -12,7 +12,7 @@
                 </v-btn>
             </v-flex>
             <v-flex>
-                <v-card flat class="pa-10 receipt-to-print">
+                <v-card flat class="pa-10 item-to-print">
                     <v-flex xs12 class="white" style="color: white">.</v-flex>
                     <v-layout row wrap class="align-center pa-4" style="border: 2px solid #2196f3; border-radius: 16px">
                         <v-flex xs6 class="text-left">
@@ -28,8 +28,12 @@
                                     <span class="font-weight-bold">{{this.consultation.specialty.name}}</span>
                                 </v-flex>
                                 <v-flex>
-                                <span class="primary--text font-weight-bold">Procedimento: </span>
-                                <span class="font-weight-bold">{{this.consultation.type}}</span>
+                                    <span class="primary--text font-weight-bold">Procedimento: </span>
+                                    <span class="font-weight-bold">{{this.consultation.type}}</span>
+                                </v-flex>
+                                <v-flex>
+                                    <span class="primary--text font-weight-bold">Data: </span>
+                                    <span class="font-weight-bold">{{this.consultation.date | dateFilter}}</span>
                                 </v-flex>
                             </v-layout>
                         </v-flex>
@@ -39,18 +43,9 @@
                         <v-flex xs12>
                             <v-divider class="primary my-2"></v-divider>
                         </v-flex>
-                        <!--                        <v-flex xs6 class="text-left">-->
-                        <!--                            <v-layout column wrap>-->
-                        <!--                                <span class="primary&#45;&#45;text font-weight-bold mt-2">{{this.budget.user.addresses[0].street}} {{this.budget.user.addresses[0].number}}</span>-->
-                        <!--                                <span v-if="this.budget.user.addresses[0].complement" class="primary&#45;&#45;text font-weight-bold mt-2">{{this.budget.user.addresses[0].complement}}</span>-->
-                        <!--                                <span class="primary&#45;&#45;text font-weight-bold">{{this.budget.user.addresses[0].city}} - {{this.budget.user.addresses[0].uf}}</span>-->
-                        <!--                                <span class="primary&#45;&#45;text font-weight-bold">{{this.budget.user.addresses[0].cep}}</span>-->
-                        <!--                            </v-layout>-->
-                        <!--                        </v-flex>-->
                         <v-flex xs6 class="text-left">
-                            <v-layout column wrap>
-                                <span class="my-sub-headline primary--text"
-                                      style="font-size: 1.4em">{{user.name}}</span>
+                            <v-layout column wrap align-start justify-start>
+                                <span class="my-sub-headline primary--text" style="font-size: 1.4em">{{user.name}}</span>
                                 <v-flex>
                                     <span class="primary--text font-weight-bold">CPF: </span>
                                     <span class="font-weight-bold">{{user.cpf}}</span>
@@ -65,49 +60,25 @@
                                 </v-flex>
                             </v-layout>
                         </v-flex>
-                        <v-flex xs6 class="pt-6">
-                            <v-layout row wrap class="justify-end align-end">
-                                <span class="primary--text font-weight-bold mx-2">Data: </span>
-                                <span class="font-weight-bold">{{this.consultation.date | dateFilter}}</span>
+                        <v-flex xs6 class="text-center">
+                            <v-layout row wrap justify-end align-end>
+                                <!--<v-layout column wrap>-->
+                                    <v-flex xs5>
+                                        <span class="my-sub-headline primary--text" style="font-size: 1.4em">Triagem</span>
+                                        <v-text-field prefix="Peso:" type="number" suffix="KG" hide-details v-model="p"></v-text-field>
+                                        <v-text-field prefix="Altura:" type="number" suffix="cm" hide-details v-model="alt"></v-text-field>
+                                        <v-text-field prefix="P.A:" suffix="PA" v-mask="'##x##'" v-model="pa" hide-details></v-text-field>
+                                    </v-flex>
+                                <!--</v-layout>-->
                             </v-layout>
                         </v-flex>
                         <v-flex xs12 class="mt-2 py-1 px-4">
                             <v-layout row wrap class="align-center">
-                                <!--                                <v-flex xs2 class="text-center">-->
-                                <!--                                    <span class="font-weight-bold">1</span>-->
-                                <!--                                </v-flex>-->
-                                <!--                                <v-flex xs6 class="text-left">-->
-                                <!--                                    <span class="font-weight-bold">{{item.name}}</span>-->
-                                <!--                                </v-flex>-->
-                                <!--                                <v-flex xs4 class="text-right">-->
-                                <!--                                    <span class="font-weight-bold">{{item.price}}</span>-->
-                                <!--                                </v-flex>-->
                             </v-layout>
                         </v-flex>
-                        <!--                        <v-flex xs12 class="text-right mt-4 mr-4" v-if="budget.discount > 0">-->
-                        <!--                            <span class="primary&#45;&#45;text font-weight-bold pr-6" style="font-size: 1.2em">SubTotal </span>-->
-                        <!--                            <span class="font-weight-bold">{{budget.subTotal.toLocaleString('en-us', {minimumFractionDigits: 2, maximumFractionDigits: 2})}}</span>-->
-                        <!--                        </v-flex>-->
-                        <!--                        <v-flex xs12 class="text-right mr-4" v-if="budget.discount > 0">-->
-                        <!--                            <span class="primary&#45;&#45;text font-weight-bold pr-6" style="font-size: 1.2em">Desconto </span>-->
-                        <!--                            <span class="font-weight-bold">{{budget.discount.toLocaleString('en-us', {minimumFractionDigits: 2, maximumFractionDigits: 2})}}</span>-->
-                        <!--                        </v-flex>-->
-                        <!--                        <v-flex xs12 class="text-right mr-4 mt-2">-->
-                        <!--                            <span class="primary&#45;&#45;text font-weight-bold pr-6" style="font-size: 1.2em">Total </span>-->
-                        <!--                            <span class="font-weight-bold">{{this.budget.total.toLocaleString('en-us', {minimumFractionDigits: 2, maximumFractionDigits: 2})}}</span>-->
-                        <!--                        </v-flex>-->
-                        <!--                        <v-flex xs6 class="text-left mt-12">-->
-                        <!--                            <v-layout column wrap class="primary&#45;&#45;text">-->
-                        <!--                                <span class="font-weight-bold">Instituto Pró Saúde do Amazonas</span>-->
-                        <!--                                <span>Rua Major Gabriel 915, Centro</span>-->
-                        <!--                                <span>Manaus - AM</span>-->
-                        <!--                                <span>CNPJ: 09.066.632/0001-22</span>-->
-                        <!--                            </v-layout>-->
-                        <!--                        </v-flex>-->
-                        <!--                        <v-flex xs6 class="primary" style="height: 2px; margin-top: 124px;"></v-flex>-->
                     </v-layout>
                     <v-layout row wrap class="align-center pa-4 mt-4" style="border: 2px solid #2196f3; border-radius: 16px">
-                        <v-flex xs12 style="height: 740px"></v-flex>
+                        <v-flex xs12 style="height: 550px"></v-flex>
                     </v-layout>
                 </v-card>
             </v-flex>
@@ -117,6 +88,7 @@
 
 <script>
     var moment = require("moment");
+    import {mask} from 'vue-the-mask';
     export default {
         name: "Receipt",
         props: ['consultation','openDocument'],
@@ -128,7 +100,11 @@
                 return this.$store.getters.selectedPatient
             },
         },
+        directives: {mask},
         data: () => ({
+            alt: '',
+            p: '',
+            pa: '',
             consultationHour: moment().locale('pt-BR').format('YYYY-MM-DD HH:mm:ss'),
             hoje: moment().locale('pt-BR').format('DD/MM/YYYY HH:mm:ss'),
             dia: moment().format('dddd'),
@@ -148,15 +124,15 @@
             saveConsultationHour(){
                 this.inititize()
                 if(this.openDocument){
-                    this.$store.dispatch('setConsultationHour',{consultation:this.consultation.id,patient:this.consultation.user.cpf ,consultationHour:this.consultationHour,day:this.dia})
-                    .then((result)=>{
-                        //console.log('Tem Mesmo',result)
-                        if(result){
-                            this.consultationHour = result.consultationHour
-                            this.hoje = moment(result.consultationHour).locale('pt-BR').format('DD/MM/YYYY HH:mm:ss')
-                            this.dia = result.day
-                        }
-                    })
+                    this.$store.dispatch('setConsultationHour',{consultation:this.consultation.id,patient:this.user.cpf ,consultationHour:this.consultationHour,day:this.dia})
+                        .then((result)=>{
+                            //console.log('Tem Mesmo',result)
+                            if(result){
+                                this.consultationHour = result.consultationHour
+                                this.hoje = moment(result.consultationHour).locale('pt-BR').format('DD/MM/YYYY HH:mm:ss')
+                                this.dia = result.day
+                            }
+                        })
                 }
 
             }
