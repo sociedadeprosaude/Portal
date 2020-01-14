@@ -12,6 +12,7 @@
                         :search="search"
                         item-key="name"
                         class="elevation-1"
+                        :items-per-page="-1"
                 >
                     <template v-slot:top>
                         <v-flex xs12 class="text-right pa-2">
