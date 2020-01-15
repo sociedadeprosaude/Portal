@@ -56,7 +56,7 @@
                                             <span>Agendamento de Consultas</span>
                                         </v-tooltip>
                                     </v-flex>
-                                    <v-flex v-if="selectedPatient && selectedPatient.dependents" xs1 class="text-right mx-3">
+                                    <!-- <v-flex v-if="selectedPatient && selectedPatient.dependents" xs1 class="text-right mx-3">
                                         <v-tooltip  top>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn
@@ -69,7 +69,7 @@
                                             <span>Selecionar dependentes</span>
                                         </v-tooltip>
 
-                                    </v-flex>
+                                    </v-flex> -->
                                     <v-flex xs1 class="text-right mx-3">
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
@@ -472,7 +472,7 @@
                 telephones: [''],
                 addresses: [],
                 dependents:[],
-                degress: ['filho(a)', 'neto(a)', ],
+                degress: ['Filho(a)', 'Neto(a)', ],
                 loading: false,
                 formError: undefined,
                 searchError: undefined,

@@ -180,6 +180,24 @@
                                                     <v-text-field readonly hide-details outlined prepend-icon="credit_card" label="CPF" v-model="index_Selecionado.cpf">
                                                     </v-text-field>
                                                 </v-flex>
+                                                 <v-flex xs12 v-if="index_Selecionado.consultation && index_Selecionado.consultation.dependent">
+                                                            <v-text-field readonly hide-details outlined
+                                                                          prepend-icon="person" label="Nome do Dependente"
+                                                                          v-model="index_Selecionado.consultation.dependent.name">
+                                                            </v-text-field>
+                                                        </v-flex>
+                                                         <v-flex xs12 sm6 v-if="index_Selecionado.consultation && index_Selecionado.consultation.dependent">
+                                                            <v-text-field readonly hide-details outlined
+                                                                          prepend-icon="person" label="Nascimento do Dependente"
+                                                                          v-model="index_Selecionado.consultation.dependent.birthDate">
+                                                            </v-text-field>
+                                                        </v-flex>
+                                                        <v-flex xs12 sm6 v-if="index_Selecionado.consultation && index_Selecionado.consultation.dependent">
+                                                            <v-text-field readonly hide-details outlined
+                                                                          prepend-icon="credit_card"
+                                                                          v-model="index_Selecionado.consultation.dependent.dependentDegree" label=" Grau do Dependente">
+                                                            </v-text-field>
+                                                        </v-flex>
                                                 <v-flex xs12 sm12 md12 lg12><v-divider ></v-divider></v-flex>
                                                 <v-flex xs12 sm6>
                                                     <v-text-field readonly hide-details outlined prepend-icon="person" label="Nome do Médico" v-model="index_Selecionado.medico">
