@@ -3,7 +3,7 @@
         <v-card-title class="headline grey lighten-2" primary-title>
             <span class="headline">Edição de Produtos Cadastrados</span>
             <v-spacer></v-spacer>
-            <v-btn small color="error" @click="clear()"><v-icon>close</v-icon></v-btn>
+            <v-btn small color="error" @click="clear(), closeDialog()"><v-icon>close</v-icon></v-btn>
         </v-card-title>
         <v-card-text>
             <v-container grid-list-md>
@@ -239,11 +239,11 @@
                         <v-divider></v-divider>
                         <v-card-actions>
                             <v-layout align-center justify-center>
-                                <v-btn color="error" @click="clear()">CANCELAR</v-btn>
+                                <v-btn color="error" @click="clear(), closeDialog()">CANCELAR</v-btn>
                                 <v-spacer></v-spacer>
                                 <v-btn
                                         :disabled="!formIsValidS"
-                                        @click="editConsultation"
+                                        @click="editConsultation(), closeDialog()"
                                         color="success"
                                 >
                                     SALVAR
@@ -298,11 +298,11 @@
                         <v-divider></v-divider>
                         <v-card-actions>
                             <v-layout align-center justify-center>
-                                <v-btn color="error" @click="clear()">CANCELAR</v-btn>
+                                <v-btn color="error" @click="clear(), closeDialog()">CANCELAR</v-btn>
                                 <v-spacer></v-spacer>
                                 <v-btn
                                         :disabled="!formIsValidE"
-                                        @click="editExam"
+                                        @click="editExam(), closeDialog()"
                                         color="success"
                                 >
                                     SALVAR
@@ -334,8 +334,8 @@
             cpf: undefined,
             crm: undefined,
             doctor: undefined,
-            cost: undefined,
-            price: undefined,
+            cost: 0,
+            price: 0,
             rules: null,
             obs: null,
             payment: undefined,
@@ -346,10 +346,10 @@
         }),
         computed: {
             formIsValidE() {
-                return this.exam.name && this.exam.cost && this.exam.price
+                return this.exam.name
             },
             formIsValidS() {
-                return this.cost && this.price && this.doctor && this.specialtie && this.payment
+                return this.doctor && this.specialtie && this.payment
             },
             selectedClinic() {
                 return this.$store.getters.selectedClinic;
@@ -442,7 +442,9 @@
             },
 
             clear () {
-                this.closeDialog()
+                /*
+                 */
+                //this.closeDialog()
                 //this.$store.dispatch('selectClinic', null);
             },
 
