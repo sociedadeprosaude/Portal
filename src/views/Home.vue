@@ -190,6 +190,12 @@
                                 permission: 'Caixa',
                                 icon: 'receipt',
                             },
+                            {
+                                title: 'Atendimentos de Consultas e Retornos',
+                                to: '/MedicalCare',
+                                permission: 'Caixa',
+                                icon: 'assignment_ind',
+                            },
                             // {
                             //     title: 'Exames',
                             //     to: '/exames',
