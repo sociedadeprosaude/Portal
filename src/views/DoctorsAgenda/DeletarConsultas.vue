@@ -275,8 +275,9 @@
                                                             xs12
                                                             v-for="item in consultation.consultations"
                                                             :key="item.id"
+                                                            v-if="item.user"
                                                     >
-                                                        <v-list-item v-if="item.user">
+                                                        <v-list-item >
                                                             <v-list-item-content>
                                                                 <v-list-item-title class="primary--text">
                                                                          <span style="font-weight: bolder">
@@ -284,7 +285,7 @@
                                                                          </span>
                                                                 </v-list-item-title>
                                                                 <br>
-                                                                <v-list-item-subtitle class="text-left">
+                                                                <v-list-item-subtitle class="text-center">
                                                                     CPF: {{item.user.cpf}}
                                                                 </v-list-item-subtitle>
                                                                 <br>
