@@ -1,30 +1,25 @@
 <template>
     <v-container>
         <v-layout row wrap class="justify-center">
-            <!--            <v-flex xs12>-->
-            <!--                <v-select-->
-            <!--                        v-if="colaborators"-->
-            <!--                        v-model="selectedColaborator"-->
-            <!--                        :items="colaborators"-->
-            <!--                        item-text="name"-->
-            <!--                        return-object-->
-            <!--                >-->
-            <!--                </v-select>-->
-            <!--            </v-flex>-->
-            <!--            <v-flex v-if="selectedColaborator" xs12 class="my-sub-headline">-->
-            <!--                <span>{{selectedColaborator.name}}</span>-->
-            <!--            </v-flex>-->
             <v-flex xs12 class="text-center" v-if="!loading">
-                <v-layout column wrap>
-                    <v-card class="pa-3" width="300px" v-for="(object, name) in intakesResume" :key="name">
+                <v-layout row wrap>
+                    <v-card class="pa-3 ma-3" width="300px" v-for="(resume, name) in intakesResume" :key="name">
                         <v-layout row wrap>
-                            <v-flex xs12>
+                            <v-flex xs12 class="mb-4">
                                 <span class="my-sub-headline">
                                     {{name}}
                                 </span>
                             </v-flex>
-                            <v-flex xs12 v-for="(value, field) in object" :key="field">
-                                <span>{{field}}: {{value}}</span>
+                            <v-flex xs6>
+                                <v-layout column wrap>
+                                    <span v-for="i in 3" :key="i">{{Object.keys(resume)[i]}}: {{resume[Object.keys(resume)[i]]}}</span>
+                                </v-layout>
+                            </v-flex>
+                            <v-divider vertical></v-divider>
+                            <v-flex xs5>
+                                <v-layout column wrap>
+                                    <span v-for="i in 2" :key="i">{{Object.keys(resume)[i + 2]}}: {{resume[Object.keys(resume)[i + 2]]}}</span>
+                                </v-layout>
                             </v-flex>
                         </v-layout>
                     </v-card>
@@ -47,6 +42,7 @@
             return {
                 colaborators: undefined,
                 selectedColaborator: undefined,
+                paymentMethods: ['Dinheiro', 'Crédito', 'Débito']
             }
         },
         computed: {
@@ -63,10 +59,12 @@
                     if (!resumes[this.intakes[intake].colaborator.name]) {
                         resumes[this.intakes[intake].colaborator.name] = {}
                     }
-                    if (!resumes[this.intakes[intake].colaborator.name][this.intakes[intake].payment_method]) {
-                        resumes[this.intakes[intake].colaborator.name][this.intakes[intake].payment_method] = 0.0
+                    for (let payMethod in this.paymentMethods) {
+                        if (!resumes[this.intakes[intake].colaborator.name][this.paymentMethods[payMethod]]) {
+                            resumes[this.intakes[intake].colaborator.name][this.paymentMethods[payMethod]] = 0.0
+                        }
                     }
-                    resumes[this.intakes[intake].colaborator.name][this.intakes[intake].payment_method] = this.intakes[intake].total
+                    resumes[this.intakes[intake].colaborator.name][this.intakes[intake].payment_method] += this.intakes[intake].total
                     resumes[this.intakes[intake].colaborator.name].Exames = resumes[this.intakes[intake].colaborator.name].Exames ? this.intakes[intake].exams.length + resumes[this.intakes[intake].colaborator.name].Exames : this.intakes[intake].exams.length
                     resumes[this.intakes[intake].colaborator.name].Consultas = resumes[this.intakes[intake].colaborator.name].Consultas ? this.intakes[intake].specialties.length + resumes[this.intakes[intake].colaborator.name].Consultas : this.intakes[intake].specialties.length
                 }

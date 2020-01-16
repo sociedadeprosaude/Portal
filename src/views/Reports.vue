@@ -329,7 +329,7 @@
             IntakesReport
         },
         data: vm => ({
-            reportOptions: ['Relatório Financeiro Geral', 'Produção do Associado','Relatorio de Vendas'],
+            reportOptions: ['Relatório Financeiro Geral', 'Produção do Colaborador','Relatorio de Vendas'],
             selectedReport: 'Relatório Financeiro Geral',
             date: moment().format('YYYY-MM-DD 00:00:00'),
             date2: moment().format('YYYY-MM-DD 23:59:59'),
