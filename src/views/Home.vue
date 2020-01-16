@@ -75,7 +75,7 @@
                 </v-layout>
             </v-flex>
             <v-flex xs12 class="text-right">
-                <span>1.3.2</span>
+                <span>1.3.3</span>
             </v-flex>
         </v-layout>
         <v-layout row wrap v-else class="align-center">
@@ -91,7 +91,6 @@
 </template>
 
 <script>
-    import firebase from 'firebase'
     import SelectPatientCard from "../components/SelectPatientCard";
 
     export default {
@@ -189,6 +188,12 @@
                                 to: '/bills',
                                 permission: 'Caixa',
                                 icon: 'receipt',
+                            },
+                            {
+                                title: 'Atendimentos de Consultas e Retornos',
+                                to: '/MedicalCare',
+                                permission: 'Caixa',
+                                icon: 'assignment_ind',
                             },
                             // {
                             //     title: 'Exames',

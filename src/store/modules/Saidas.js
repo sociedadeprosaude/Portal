@@ -15,14 +15,14 @@ const mutations = {
 const actions = {
     async AddSaida({commit},payload) {
             try {
-           let res =  await firebase.firestore().collection('intakes/').doc(payload.id.toString()).set({...payload});
+           let res =  await firebase.firestore().collection('outtakes/').doc(payload.id.toString()).set({...payload});
             } catch (e) {
                 throw e
             }
     },
     async AddCategorie({commit},payload){
         try {
-            let res = await firebase.firestore().collection('intakes/intakes/categories').doc(payload.categoria).set({categoria:payload.categoria});
+            let res = await firebase.firestore().collection('outtakes/outtakes/categories').doc(payload.categoria).set({categoria:payload.categoria});
         }
         catch (e) {
             throw e
@@ -30,7 +30,7 @@ const actions = {
     },
     async LoadCategories({commit}){
         try{
-            var categorias= firebase.firestore().collection('intakes/intakes/categories').get().then((data) => {
+            var categorias= firebase.firestore().collection('outtakes/outtakes/categories').get().then((data) => {
                 let Categorias = [];
                 data.forEach((doc) => {
                     Categorias.push(doc.id);
