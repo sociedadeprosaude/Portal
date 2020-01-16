@@ -205,7 +205,7 @@
                 return this.$store.getters.permissionsList
             },
             groups() {
-                return ['admin', 'colaborador', 'gerente']
+                return ['admin', 'colaborador', 'gerente', 'doctors']
             }
         },
         methods: {

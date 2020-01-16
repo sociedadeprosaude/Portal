@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import store from "./store/store"
+import firebase from 'firebase'
 import Home from '@/views/Home'
 import Account from '@/views/Auth/Account'
 import Login from '@/views/Auth/Login'
@@ -14,9 +15,9 @@ import Doctors from '@/views/Doctors'
 import Clinics from "@/views/Clinics"
 import Units from "./views/Units";
 import Bills from "./views/Bills";
+
 import MedicalCare from "./views/MedicalCare";
 import Attendance from "./views/Attendance";
-import firebase from 'firebase'
 
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
 import CashierRoutes from "./routes/CashierRoutes";
