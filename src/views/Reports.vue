@@ -62,6 +62,17 @@
                     <v-date-picker v-model="date2" no-title @input="menu2 = false"></v-date-picker>
                 </v-menu>
             </v-flex>
+            <v-flex xs12 class="mb-3">
+                <v-layout row wrap class="align-center">
+                    <v-flex>
+                        <v-btn @click="pesquisar()" color="blue" v-if="!loading">
+                            Pesquisar
+                        </v-btn>
+                        <v-progress-circular indeterminate class="primary--text" v-else>
+                        </v-progress-circular>
+                    </v-flex>
+                </v-layout>
+            </v-flex>
             <v-flex xs12 v-if="selectedReport === 0">
                 <general-report :report="formattedReport" :loading="loading" :intakes="intakes"></general-report>
             </v-flex>
@@ -70,15 +81,6 @@
             </v-flex>
             <v-flex xs12 v-if="selectedReport === 2">
                 <intakes-report :report="formattedReport" :loading="loading" :intakes="intakes"></intakes-report>
-            </v-flex>
-            <v-flex xs12 v-else>
-                <v-layout row wrap class="align-center">
-                    <v-flex>
-                        <v-btn @click="Pesquisar()" color="blue">
-                            Pesquisar
-                        </v-btn>
-                    </v-flex>
-                </v-layout>
             </v-flex>
             <v-flex class="hidden-screen-only">
                 <p>DE {{dateFormatted}} ATÉ {{dateFormatted2}}</p>
@@ -330,7 +332,7 @@
         },
         data: vm => ({
             reportOptions: ['Relatório Financeiro Geral', 'Produção do Colaborador','Relatorio de Vendas'],
-            selectedReport: 'Relatório Financeiro Geral',
+            selectedReport: 0,
             date: moment().format('YYYY-MM-DD 00:00:00'),
             date2: moment().format('YYYY-MM-DD 23:59:59'),
             dateFormatted: moment().format('DD/MM/YYYY'),
@@ -349,10 +351,13 @@
                     initialDate: this.date,
                     finalDate: this.date2
                 })
+                await this.pesquisar()
                 this.loading = false
             },
-            async Pesquisar() {
+            async pesquisar() {
+                this.loading = true
                 this.formattedReport = await this.$store.dispatch('searchReports', {dataInicio: this.date, dataFinal: this.date2})
+                this.loading = false
             },
             formatDate(date) {
                 if (!date) return null;
@@ -379,11 +384,11 @@
         watch: {
             date(val) {
                 this.dateFormatted = this.formatDate(this.date)
-                this.getIntakes()
+                // this.getIntakes()
             },
             date2(val) {
                 this.dateFormatted2 = this.formatDate(this.date2)
-                this.getIntakes()
+                // this.getIntakes()
             }
         }
     }

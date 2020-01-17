@@ -12,7 +12,7 @@
                             </v-flex>
                             <v-flex xs6>
                                 <v-layout column wrap>
-                                    <span v-for="i in 3" :key="i">{{Object.keys(resume)[i]}}: {{resume[Object.keys(resume)[i]]}}</span>
+                                    <span v-for="i in 3" :key="i">{{Object.keys(resume)[i - 1]}}: {{resume[Object.keys(resume)[i - 1]]}}</span>
                                 </v-layout>
                             </v-flex>
                             <v-divider vertical></v-divider>
