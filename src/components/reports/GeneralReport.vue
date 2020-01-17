@@ -2,6 +2,18 @@
     <v-container>
         <v-layout row wrap v-if="report">
             <v-flex xs12>
+                <v-chip-group
+                        row
+                        mandatory
+                        v-model="reportSelected"
+                        active-class="primary--text"
+                >
+                    <v-chip v-for="report in reportOptions" :key="report">
+                        {{ report }}
+                    </v-chip>
+                </v-chip-group>
+            </v-flex>
+            <v-flex xs12>
                 <v-card class="pa-4 receipt-to-print">
                     <v-layout row wrap>
                         <v-flex xs6 class="text-left">
@@ -131,7 +143,7 @@
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs2>
-                                    {{label}}
+                                    <span class="font-weight-bold">{{label}}</span>
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -153,6 +165,40 @@
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs12 class="mt-4" v-if="reportSelected === 1">
+                                    <v-layout row wrap v-for="(exam, name) in clinics.exams" :key="name">
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs2>
+                                            - {{name}}
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            {{exam.quantity}}
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs2>
+                                            {{exam.cost | moneyFilter}}
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs2>
+                                            {{exam.price | moneyFilter}}
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <v-divider></v-divider>
+                                        </v-flex>
+                                    </v-layout>
                                 </v-flex>
                                 <v-flex xs12>
                                     <v-divider></v-divider>
@@ -484,6 +530,8 @@
             return {
                 now: moment().format('YYYY-MM-DD HH:mm:ss'),
                 total: 0,
+                reportOptions: ['Relatorio Geral', 'Relatorio Geral Detalhado'],
+                reportSelected: 0
             }
         },
         computed: {
