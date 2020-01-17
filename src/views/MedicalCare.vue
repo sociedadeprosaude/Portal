@@ -285,7 +285,7 @@
                                             <v-spacer></v-spacer>
                                             <v-btn
                                                     color="success"
-                                                    :to="{ name: 'Attendance'}"
+                                                    :to="{ name: 'Attendance', params: { q: {...this.index_Selecionado}}}"
                                             >
                                                 SIM
                                             </v-btn>
@@ -303,6 +303,7 @@
 </template>
 
 <script>
+    var moment = require('moment');
     export default {
         data: () => ({
             panel: [true],
@@ -511,56 +512,6 @@
                 if (!date) return null
                 const [year, month, day] = date.split('-')
                 return `${day}/${month}/${year}`
-            },
-            clearRecibo() {
-                this.index_Selecionado.num_recibo = ''
-            },
-            call() {
-
-                this.$store.dispatch('eraseAppointment', {...this.index_Selecionado, especialidade: this.especialidade})
-                this.clear()
-            },
-            call_atualizar() {
-                this.index_Selecionado.pacienteObj.status = this.index_Selecionado.status
-                this.index_Selecionado.pacienteObj.num_recibo = this.index_Selecionado.num_recibo
-                this.$store.dispatch('updateAppointment', {
-                    ...this.index_Selecionado,
-                    especialidade: this.especialidade
-                })
-                this.clear()
-            },
-            clear() {
-                this.num_recibo = ''
-                this.status = 'Aguardando pagamento'
-            },
-            atualizar() {
-
-                this.index_Selecionado.pacienteObj.status = this.index_Selecionado.status
-                this.index_Selecionado.pacienteObj.payment_number = this.index_Selecionado.payment_number
-                this.$store.dispatch('updateAppointment', {
-                    status: this.index_Selecionado.status,
-                    payment_number: this.index_Selecionado.num_recibo,
-                    idConsultation: this.index_Selecionado.idConsultation,
-                    idPatient: this.index_Selecionado.cpf
-                })
-                this.clear()
-                this.dialog = false
-
-            },
-            apagar() {
-                this.$store.dispatch('eraseAppointment', {
-                    idConsultation: this.index_Selecionado.idConsultation,
-                    idPatient: this.index_Selecionado.cpf,
-                    type: this.index_Selecionado.modalidade,
-                    status: this.index_Selecionado.status,
-                    payment_number: this.index_Selecionado.num_recibo,
-                    specialty: this.especialidade.name,
-                    regress: this.index_Selecionado.consultation.regress,
-                    previousConsultation: this.index_Selecionado.consultation.previousConsultation
-                })
-                this.clear()
-                this.dialog = false
-
             },
         },
     }

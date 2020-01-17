@@ -134,6 +134,7 @@
         data: () => ({
             dialog: false,
             //o de cima é de finalizar
+            query: undefined,
             //os de baixo são componentes de docs
             Attestations: false,
             Orientations: false,
@@ -144,6 +145,13 @@
         }),
         computed:{
             //
+        },
+        mounted() {
+            this.query = this.$route.params.q
+            console.log("parametro passado pela rota:",{...this.query})
+            if(!this.query){
+                this.$router.push('MedicalCare')
+            }
         },
         watch:{
             //
