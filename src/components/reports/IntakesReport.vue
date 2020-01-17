@@ -71,7 +71,7 @@
                                     <v-divider></v-divider>
                                 </v-flex>
                             </v-layout>
-                            <v-flex xs12>
+                            <v-flex xs12 v-if="intake.exams.length > 0">
                                 <v-layout row wrap class="mt-2">
                                     <v-flex xs12>
                                         <v-divider></v-divider>
@@ -79,25 +79,25 @@
                                     <v-flex xs1>
                                         <v-divider vertical></v-divider>
                                     </v-flex>
-                                    <v-flex xs2>
+                                    <v-flex xs2 class="font-weight-bold">
                                         Exames
                                     </v-flex>
                                     <v-flex xs1>
                                         <v-divider vertical></v-divider>
                                     </v-flex>
-                                    <v-flex xs2>
+                                    <v-flex xs2 class="font-weight-bold">
                                         Clinica
                                     </v-flex>
                                     <v-flex xs1>
                                         <v-divider vertical></v-divider>
                                     </v-flex>
-                                    <v-flex xs1>
+                                    <v-flex xs1 class="font-weight-bold">
                                         Custo
                                     </v-flex>
                                     <v-flex xs1>
                                         <v-divider vertical></v-divider>
                                     </v-flex>
-                                    <v-flex xs2>
+                                    <v-flex xs2 class="font-weight-bold">
                                         Venda
                                     </v-flex>
                                     <v-flex xs1>
@@ -110,43 +110,43 @@
                             </v-flex>
                             <v-flex xs12 v-for="(examees, labels) in intake.exams" :key="labels" class="my-1">
 
-                            <v-layout row wrap>
-                            <v-flex xs12>
-                                <v-divider></v-divider>
+                                <v-layout row wrap>
+                                    <v-flex xs12>
+                                        <v-divider></v-divider>
+                                    </v-flex>
+                                    <v-flex xs1>
+                                        <v-divider vertical></v-divider>
+                                    </v-flex>
+                                    <v-flex xs2>
+                                        {{examees.name}}
+                                    </v-flex>
+                                    <v-flex xs1>
+                                        <v-divider vertical></v-divider>
+                                    </v-flex>
+                                    <v-flex xs2 >
+                                        {{examees.clinic.name}}
+                                    </v-flex>
+                                    <v-flex xs1>
+                                        <v-divider vertical></v-divider>
+                                    </v-flex>
+                                    <v-flex xs1>
+                                        {{examees.cost | moneyFilter}}
+                                    </v-flex>
+                                    <v-flex xs1>
+                                        <v-divider vertical></v-divider>
+                                    </v-flex>
+                                    <v-flex xs2>
+                                        {{examees.price | moneyFilter}}
+                                    </v-flex>
+                                    <v-flex xs1>
+                                        <v-divider vertical></v-divider>
+                                    </v-flex>
+                                    <v-flex xs12>
+                                        <v-divider></v-divider>
+                                    </v-flex>
+                                </v-layout>
                             </v-flex>
-                            <v-flex xs1>
-                                <v-divider vertical></v-divider>
-                            </v-flex>
-                            <v-flex xs2>
-                                {{examees.name}}
-                            </v-flex>
-                            <v-flex xs1>
-                                <v-divider vertical></v-divider>
-                            </v-flex>
-                            <v-flex xs2 >
-                                {{examees.clinic.name}}
-                            </v-flex>
-                            <v-flex xs1>
-                                <v-divider vertical></v-divider>
-                            </v-flex>
-                            <v-flex xs1>
-                                {{examees.cost | moneyFilter}}
-                            </v-flex>
-                                <v-flex xs1>
-                                    <v-divider vertical></v-divider>
-                                </v-flex>
-                                <v-flex xs2>
-                                    {{examees.price | moneyFilter}}
-                                </v-flex>
-                            <v-flex xs1>
-                                <v-divider vertical></v-divider>
-                            </v-flex>
-                            <v-flex xs12>
-                                <v-divider></v-divider>
-                            </v-flex>
-                        </v-layout>
-                            </v-flex>
-                            <v-flex xs12>
+                            <v-flex xs12 v-if="intake.specialties.length > 0">
                                 <v-layout row wrap class="mt-2">
                                     <v-flex xs12>
                                         <v-divider></v-divider>
@@ -154,19 +154,19 @@
                                     <v-flex xs1>
                                         <v-divider vertical></v-divider>
                                     </v-flex>
-                                    <v-flex xs5>
+                                    <v-flex xs5 class="font-weight-bold">
                                         Especialidade
                                     </v-flex>
                                     <v-flex xs1>
                                         <v-divider vertical></v-divider>
                                     </v-flex>
-                                    <v-flex xs1>
+                                    <v-flex xs1 class="font-weight-bold">
                                         Custo
                                     </v-flex>
                                     <v-flex xs1>
                                         <v-divider vertical></v-divider>
                                     </v-flex>
-                                    <v-flex xs2>
+                                    <v-flex xs2 class="font-weight-bold">
                                         Venda
                                     </v-flex>
                                     <v-flex xs1>
@@ -178,7 +178,6 @@
                                 </v-layout>
                             </v-flex>
                             <v-flex xs12 v-for="(specialtie, labels) in intake.specialties" :key="labels" class="my-1">
-
                                 <v-layout row wrap>
                                     <v-flex xs12>
                                         <v-divider></v-divider>
@@ -209,82 +208,11 @@
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
+                            <v-flex xs12 v-for="i in 3">
+                                <v-divider color="black"></v-divider>
+                            </v-flex>
 
                         </v-flex>
-                        <v-flex xs12>
-                            <v-layout row wrap class="mt-2">
-                                <v-flex xs12>
-                                    <v-divider></v-divider>
-                                </v-flex>
-                                <v-flex xs1>
-                                    <v-divider vertical></v-divider>
-                                </v-flex>
-                                <v-flex xs2>
-                                    Total
-                                </v-flex>
-                                <v-flex xs1>
-                                    <v-divider vertical></v-divider>
-                                </v-flex>
-                                <v-flex xs1>
-                                    {{proceduresQuantity}}
-                                </v-flex>
-                                <v-flex xs1>
-                                    <v-divider vertical></v-divider>
-                                </v-flex>
-                                <v-flex xs2>
-                                    {{report.totalCustoEspecialts | moneyFilter}}
-                                </v-flex>
-                                <v-flex xs1>
-                                    <v-divider vertical></v-divider>
-                                </v-flex>
-                                <v-flex xs2>
-                                    {{report.totalGanhoEspecialts | moneyFilter}}
-                                </v-flex>
-                                <v-flex xs1>
-                                    <v-divider vertical></v-divider>
-                                </v-flex>
-                                <v-flex xs12>
-                                    <v-divider></v-divider>
-                                </v-flex>
-                            </v-layout>
-                        </v-flex>
-                        <v-flex xs12>
-                            <v-layout row wrap class="mt-2">
-                                <v-flex xs12>
-                                    <v-divider></v-divider>
-                                </v-flex>
-                                <v-flex xs1>
-                                    <v-divider vertical></v-divider>
-                                </v-flex>
-                                <v-flex xs2>
-                                    Total
-                                </v-flex>
-                                <v-flex xs1>
-                                    <v-divider vertical></v-divider>
-                                </v-flex>
-                                <v-flex xs1>
-                                    {{report.quantidadeSaidas}}
-                                </v-flex>
-                                <v-flex xs1>
-                                    <v-divider vertical></v-divider>
-                                </v-flex>
-                                <v-flex xs2>
-                                    {{report.totalSaidas | moneyFilter}}
-                                </v-flex>
-                                <v-flex xs1>
-                                    <v-divider vertical></v-divider>
-                                </v-flex>
-                                <v-flex xs2>
-                                </v-flex>
-                                <v-flex xs1>
-                                    <v-divider vertical></v-divider>
-                                </v-flex>
-                                <v-flex xs12>
-                                    <v-divider></v-divider>
-                                </v-flex>
-                            </v-layout>
-                        </v-flex>
-
                         <v-flex xs12>
                             <span class="my-headline">Relatório</span>
                         </v-flex>
@@ -469,7 +397,7 @@
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs2>
-                                            {{(this.report.totalBruto - this.report.totalCusto - parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito) - this.report.totalSaidas).toFixed(2)}}
+                                            {{(this.report.totalBruto - this.report.totalCusto - parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito)).toFixed(2)}}
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
@@ -489,8 +417,9 @@
 </template>
 
 <script>
+    import moment from "moment"
     export default {
-        name: "GeneralReport",
+        name: "IntakesReport",
         props: ['report', 'loading'],
         mounted() {
             console.log('rep', this.report)
@@ -511,16 +440,14 @@
             },
             examsQuantity(){
                 let quantidade=0
-              for(let exam in this.report.exams){
-                  quantidade +=this.report.exams[exam].quantidade
-              }
-              return quantidade
+                for(let exam in this.report.exams){
+                    quantidade +=this.report.exams[exam].quantidade
+                }
+                return quantidade
             }
         }
     }
 </script>
 
 <style scoped>
-
-
 </style>

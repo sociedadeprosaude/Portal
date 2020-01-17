@@ -35,12 +35,12 @@
                         </v-flex>
                         <v-spacer></v-spacer>
                         <v-flex xs4>
-                            <v-text-field
+                            <v-currency-field
                                     label="valor"
                                     v-model="valor"
                                     :rules="[rules.required||rules.valor]"
                                     required
-                            ></v-text-field>
+                            ></v-currency-field>
                         </v-flex>
                         <v-flex xs12>
                             <v-text-field
@@ -98,7 +98,7 @@
             data: moment().format("YYYY-MM-DD HH:mm:ss"),
             rules: {
                 valor: value =>{
-                    const pattern = /(^(\d)+(\.(\d)+)*$|^$)/
+                    const pattern = /(^(\d)+(,(\d)+)*$|^$)/
                     return pattern.test(value) || 'Digite apenas números exemplo:" 2.5 "'
                 }
             }
@@ -106,7 +106,7 @@
         methods: {
             enviar(){
                 this.loading = true;
-                this.$store.dispatch('AddSaida',{descricao:this.descricao, categoria:this.categoria, valor: parseInt(this.valor), id:moment().valueOf(), date:this.data})
+                this.$store.dispatch('AddSaida',{descricao:this.descricao, category:this.categoria, value: parseFloat(this.valor), id:moment().valueOf(), date:this.data, paid:this.data, payment_method:'Dinheiro'})
                 this.success = true;
                 this.loading = false;
                 this.descricao='';

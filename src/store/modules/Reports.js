@@ -73,15 +73,18 @@ const actions = {
     for (let doc in intakesSnap.docs) {
       promises.push(context.dispatch('getIntakeDetails', intakesSnap.docs[doc]))
     }
+
     let intakes = await Promise.all(promises)
     let exams = {};
     let clinics = {};
     let specialties = {};
     let intaker = {};
+    let outtakes = {};
     let totalCaixa = 0;
     let totalDebido = 0;
     let totalBruto = 0;
     let totalCusto = 0;
+    let totalCustoOuttakes=0;
     let totalCustoExams = 0;
     let totalCustoEspecialts = 0;
     let totalGanhoExams = 0;
@@ -90,8 +93,7 @@ const actions = {
     let totalSaidas = 0;
     let totalTaxaDebito = 0;
     let totalTaxaCredito = 0;
-    let saidas = {};
-    let quantidadeSaidas = 0;
+    let quantidadeOuttakes = 0;
     let relatorio = {};
 
     for (let intake in intakes) {
@@ -157,22 +159,7 @@ const actions = {
       }
       if (!intakes[intake].valor) {
         totalCusto += parseFloat(intakes[intake].cost);
-      } else { //SAIDAS
-        if (!saidas[intakes[intake].categoria]) {
-          saidas[intakes[intake].categoria] = {
-            quantidade: 0,
-            name: intakes[intake].categoria,
-            value: 0,
-          }
-        }
-        saidas[intakes[intake].categoria].quantidade++;
-        saidas[intakes[intake].categoria].value += parseFloat(intakes[intake].valor)
-        totalSaidas += parseFloat(intakes[intake].valor)
-        quantidadeSaidas++;
-        //console.log('valor', saidas[intakes[intake].categoria].value)
-
       }
-
       //console.log('custo: ',totalCusto)
       console.log('metodo de pagamento: ', intakes[intake].payment_method)
       if (intakes[intake].payment_method === 'Dinheiro') {
@@ -202,6 +189,24 @@ const actions = {
 
 
     }
+    let outtakesSnap = await firebase.firestore().collection('outtakes').where('paid', '>=', payload.dataInicio)
+        .where('paid', '<=', payload.dataFinal).orderBy('paid').get();
+    outtakesSnap.forEach((e) => {
+        if(e.data().payment_method === 'Dinheiro'){
+            if (!outtakes[e.data().category]) {
+              outtakes[e.data().category] = {
+                quantidade:0,
+                cost: 0,
+              }
+            }
+            outtakes[e.data().category].quantidade++;
+            quantidadeOuttakes++;
+            outtakes[e.data().category].cost += parseFloat(e.data().value);
+          totalCustoOuttakes += parseFloat(e.data().value)
+        }
+      console.log(e.data())
+    })
+
     //console.log(exams);
     //console.log(specialties);
     //console.log(totalSaidas)
@@ -213,7 +218,6 @@ const actions = {
 
 
     relatorio = {
-      saidas: saidas,
       specialties: specialties,
       exams: exams,
       clinics: clinics,
@@ -221,7 +225,7 @@ const actions = {
       debito: totalDebido,
       dinheiro: totalCaixa,
       totalBruto: totalBruto,
-      quantidadeSaidas: quantidadeSaidas,
+      quantidadeOuttakes: quantidadeOuttakes,
       totalCusto: totalCusto,
       totalSaidas: totalSaidas,
       totalTaxaCredito: totalTaxaCredito.toFixed(5),
@@ -229,10 +233,12 @@ const actions = {
       totalCustoExams: totalCustoExams,
       totalGanhoExams: totalGanhoExams,
       totalCustoEspecialts: totalCustoEspecialts,
+      totalCustoOuttakes: totalCustoOuttakes,
+      outtakes: outtakes,
       totalGanhoEspecialts: totalGanhoEspecialts,
       intakes: intaker
     };
-    // console.log('relatorio: ', relatorio);
+    console.log('relatorio: ', relatorio);
     context.commit('setRelatorio',relatorio)
     return relatorio
   }

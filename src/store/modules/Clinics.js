@@ -36,8 +36,10 @@ const actions = {
                 });
             });
 
-            let exams = [];
+
             for (let clinic in clinics) {
+                let exams = []
+                let specialties = []
                 let examsSnap = await firebase.firestore().collection('clinics').doc(clinics[clinic].name)
                     .collection('exams').get();
 
@@ -47,6 +49,19 @@ const actions = {
                         ...doc.data(),
                     });
                 });
+
+                let specialtySnap = await firebase.firestore().collection('clinics').doc(clinics[clinic].name)
+                    .collection('specialties').get();
+
+                specialtySnap.forEach(function (doc) {
+                    specialties.push({
+                        id: doc.id,
+                        ...doc.data(),
+                    });
+                });
+
+                clinics[clinic].exams = exams
+                clinics[clinic].specialties = specialties
             }
 
             commit('setClinics', clinics);
@@ -275,6 +290,14 @@ const actions = {
             exams.push(doc.data())
         })
         return exams
+    },
+    async getClinicSpecialties(context, clinic) {
+        let specSnap = await firebase.firestore().collection('clinics').doc(clinic.id).collection('specialties').get()
+        let spec = []
+        specSnap.forEach((doc) => {
+            spec.push(doc.data())
+        })
+        return spec
     },
     async getProSaudeUnits(context) {
         firebase.firestore().collection('clinics').where('property', '==', true).onSnapshot(clinCollection => {

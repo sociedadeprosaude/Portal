@@ -197,9 +197,9 @@
                             </v-layout>
                         </v-flex>
                         <v-flex xs12>
-                            <span class="my-headline">Saídas</span>
+                            <span class="my-headline">Outtakes</span>
                         </v-flex>
-                        <v-flex xs12 v-for="(outtake, label) in report.saidas" :key="label" class="my-1">
+                        <v-flex xs12 v-for="(outtake, label) in report.outtakes" :key="label" class="my-1">
                             <v-layout row wrap>
                                 <v-flex xs12>
                                     <v-divider></v-divider>
@@ -220,7 +220,7 @@
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs2>
-                                    {{outtake.value | moneyFilter}}
+                                    {{outtake.cost | moneyFilter}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -250,13 +250,13 @@
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs1>
-                                    {{report.quantidadeSaidas}}
+                                    {{report.quantidade}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs2>
-                                    {{report.totalSaidas | moneyFilter}}
+                                    {{report.totalCustoOuttakes | moneyFilter}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -456,7 +456,7 @@
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs2>
-                                            {{(this.report.totalBruto - this.report.totalCusto - parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito) - this.report.totalSaidas).toFixed(2)}}
+                                            {{(this.report.totalBruto - this.report.totalCusto - parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito) - parseFloat(report.totalCustoOuttakes)).toFixed(2)}}
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
@@ -476,6 +476,7 @@
 </template>
 
 <script>
+    import moment from "moment"
     export default {
         name: "GeneralReport",
         props: ['report', 'loading'],
