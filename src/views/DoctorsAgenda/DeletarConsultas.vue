@@ -184,7 +184,7 @@
                         wrap
                         justify-center
                         align-center
-                        v-if="consultation.doctor.name === doctor.name"
+                        
                 >
                     <v-container class="align-center justify-center py-0">
                         <v-layout row align-center justify-center wrap>
@@ -440,10 +440,27 @@
 
             consultas() {
                 let consultas = this.$store.getters.consultations
-                // .filter((a) => {
-                //
-                //     return this.especialidade && this.start_date && this.doctor ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && this.doctor.cpf == a.doctor.cpf && a.user : false
-                // })
+                 .filter((a) => {
+
+                     let response = true
+                    if(this.doctor){
+                        if(this.doctor.cpf !== a.doctor.cpf){
+                            response = false
+                        }
+                    }
+                    if(this.especialidade){
+                        if(this.especialidade.name !== a.specialty.name ){
+                            response = false
+                        }
+                    }
+                    if(!a.user){
+                        response = false
+                    }
+                    //console.log("resposta:", response)
+                    return response
+                
+                     //return this.especialidade && this.start_date && this.doctor ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && this.doctor.cpf == a.doctor.cpf && a.user : false
+                 })
                 return consultas;
             },
 
