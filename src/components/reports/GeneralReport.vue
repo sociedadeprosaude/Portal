@@ -8,7 +8,7 @@
                             <span class="my-sub-headline">Relatório Geral</span>
                         </v-flex>
                         <v-flex xs6 class="text-right">
-                            <span>{{now | dateFilter}}</span>
+                            <span>{{report.dataInicio | dateFilter}} até {{report.dataFinal | dateFilter}}</span>
                         </v-flex>
                         <v-flex xs12>
                             <v-layout row wrap class="mt-2">

@@ -161,7 +161,6 @@ const actions = {
         totalCusto += parseFloat(intakes[intake].cost);
       }
       //console.log('custo: ',totalCusto)
-      console.log('metodo de pagamento: ', intakes[intake].payment_method)
       if (intakes[intake].payment_method === 'Dinheiro') {
         totalCaixa += intakes[intake].total
         totalBruto += intakes[intake].total
@@ -204,7 +203,6 @@ const actions = {
             outtakes[e.data().category].cost += parseFloat(e.data().value);
           totalCustoOuttakes += parseFloat(e.data().value)
         }
-      console.log(e.data())
     })
 
     //console.log(exams);
@@ -236,9 +234,10 @@ const actions = {
       totalCustoOuttakes: totalCustoOuttakes,
       outtakes: outtakes,
       totalGanhoEspecialts: totalGanhoEspecialts,
-      intakes: intaker
+      intakes: intaker,
+      dataInicio: payload.dataInicio,
+      dataFinal: payload.dataFinal
     };
-    console.log('relatorio: ', relatorio);
     context.commit('setRelatorio',relatorio)
     return relatorio
   }
