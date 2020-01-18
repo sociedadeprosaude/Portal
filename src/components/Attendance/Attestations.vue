@@ -170,6 +170,7 @@
 <script>
     var moment = require('moment');
     export default {
+        props:['consultation'],
         data: () => ({
             medico: 'JACKSON KELVIN DE SOUZA',
             crm:'55874',
@@ -198,6 +199,7 @@
             this.dataStart = moment().format('YYYY-MM-DD')
             this.dataTheEnd = moment().format('YYYY-MM-DD')
             this.dateFormatted = moment().format('YYYY-MM-DD')
+            this.paciente = this.consultation.user.dependent ? this.consultation.user.dependent.name :              this.consultation.user.name 
         },
         watch: {
             menu1 (val) {

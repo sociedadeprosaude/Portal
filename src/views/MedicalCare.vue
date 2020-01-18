@@ -217,25 +217,27 @@
                                                         }"
                                                         >
                                                             <v-list-item-content>
-                                                                <v-list-item-title class="primary--text">
+                                                            <v-list-item-title class="primary--text">
                                                             <span style="font-weight: bolder">
-                                                                {{item.user.name}}
+                                                                {{item.user.dependent ? item.user.dependent.name:
+                                                                    item.user.name}}
                                                             </span>
-                                                                </v-list-item-title>
-                                                                <br>
-                                                                <v-list-item-subtitle class="text-center">
-                                                                    CPF: {{item.user.cpf}}
-                                                                </v-list-item-subtitle>
-                                                                <br>
-                                                                <v-list-item-subtitle v-if="item.user.telephones[0]">
-                                                                    Telefone: {{item.user.telephones[0]}}
-                                                                </v-list-item-subtitle>
-                                                                <br>
-                                                                <v-list-item-action-text>
-                                                                    {{item.date.split(' ')[0] | dateFilter}} -
-                                                                    {{item.date.split(' ')[1]}}
-                                                                </v-list-item-action-text>
-                                                            </v-list-item-content>
+                                                            </v-list-item-title>
+                                                            <br>
+                                                            <v-list-item-subtitle class="text-center">
+                                                                {{item.user.dependent ? 'Data de Nascimento:' + item.user.dependent.birthDate
+                                                                    : 'CPF:' + item.user.cpf}}
+                                                            </v-list-item-subtitle>
+                                                            <br>
+                                                            <!-- <v-list-item-subtitle v-if="item.user.telephones[0]">
+                                                               Telefone: {{item.user.telephones[0]}}
+                                                            </v-list-item-subtitle> -->
+                                                            <br>
+                                                            <v-list-item-action-text>
+                                                                {{item.date.split(' ')[0] | dateFilter}} -
+                                                                {{item.date.split(' ')[1]}}
+                                                            </v-list-item-action-text>
+                                                        </v-list-item-content>
                                                             <br>
                                                             <v-list-item-action class="ml-2">
                                                                 <v-btn icon ripple text>
@@ -373,12 +375,12 @@
                 return this.formatDate(this.index_Selecionado.data)
             },
             consultas() {
-                console.log('/entrou aqui',this.especialidade)
+                //console.log('/entrou aqui',this.especialidade)
                 let consultas = this.$store.getters.consultations.filter((a) => {
-                    console.log('/entrou aqui',a.date.split(' ')[0])
+                    //console.log('/entrou aqui',a.date.split(' ')[0])
                     return this.especialidade && this.date ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && a.user : false
                 })
-                console.log('Saiu aqui',consultas)
+                //console.log('Saiu aqui',consultas)
                 return consultas;
             },
             doctors () {
@@ -497,7 +499,7 @@
                     else res[targetDate].numRegress += 1
                     res[targetDate].consultations.push(consultations[cons])
                 }
-                console.log('foi aqui também',res)
+                //console.log('foi aqui também',res)
                 return res
             },
 

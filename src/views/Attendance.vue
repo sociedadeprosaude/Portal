@@ -69,7 +69,7 @@
                             <v-icon x-large color="primary">assignment</v-icon>
                         </v-btn>
                     </template>
-                    <solicitations></solicitations>
+                    <solicitations :consultation="consultation"></solicitations>
                 </v-dialog>
 
                 <v-dialog v-model="Prescriptions" width="1000">
@@ -109,7 +109,7 @@
                             <v-icon x-large color="primary">assignment_late</v-icon>
                         </v-btn>
                     </template>
-                    <attestations></attestations>
+                    <attestations :consultation="consultation"></attestations>
                 </v-dialog>
 
             </v-row>
@@ -144,7 +144,9 @@
             MedicalRecords: false,
         }),
         computed:{
-            //
+            consultation(){
+                return this.query ? this.query.consultation : undefined
+            }
         },
         mounted() {
             this.query = this.$route.params.q
