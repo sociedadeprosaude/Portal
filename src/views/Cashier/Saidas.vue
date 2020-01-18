@@ -14,7 +14,7 @@
         <v-layout row wrap>
             <v-content>
                 <v-flex xs12>
-                    <v-card>
+                    <v-card class="pa-4">
                         <v-layout wrap>
                             <v-flex xs5>
                                 <v-select

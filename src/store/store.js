@@ -25,6 +25,7 @@ import Operational from "./modules/Operational";
 import ItemsPackage from "./modules/local/ItemsPackage";
 import LocalUnit from "./modules/local/Unit";
 import Outtakes from "./modules/Outtakes";
+import Intakes from "./modules/Intakes";
 import Storage from "./modules/Storage";
 
 
@@ -64,6 +65,7 @@ const store = new Vuex.Store({
         Operational,
         LocalUnit,
         Outtakes,
+        Intakes,
         Storage
     },
 
