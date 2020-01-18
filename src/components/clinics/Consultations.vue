@@ -118,8 +118,8 @@
 <script>
     export default {
         data: () => ({
-            cost: null,
-            sale: null,
+            cost: 0,
+            sale: 0,
             obs: null,
             consultations:'',
             doctor: [],
@@ -135,7 +135,7 @@
             },
             formIsValid() {
                 /*return this.sale && this.cost && this.consultations && this.doctors.length > 0 && this.payment*/
-                return this.cost && this.consultations && this.doctors.length > 0 && this.payment
+                return this.consultations && this.doctors.length > 0 && this.payment
             },
             selectedClinic() {
                 return this.$store.getters.selectedClinic;
@@ -187,8 +187,8 @@
             },
 
             clear () {
-                this.cost = null;
-                this.sale =  null;
+                this.cost = 0;
+                this.sale = 0;
                 this.obs =  null;
                 this.consultations = null;
                 this.doctor = [];

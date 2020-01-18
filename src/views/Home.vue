@@ -75,7 +75,7 @@
                 </v-layout>
             </v-flex>
             <v-flex xs12 class="text-right">
-                <span>1.3.1</span>
+                <span>1.3.2</span>
             </v-flex>
         </v-layout>
         <v-layout row wrap v-else class="align-center">
@@ -205,6 +205,17 @@
                         ]
                     },
                     {
+                        title: 'Atendimento Médico',
+                        pages: [
+                            {
+                                title: 'Atendimentos de Consultas e Retornos',
+                                to: '/MedicalCare',
+                                /*permission: 'doctors',*/
+                                icon: 'assignment_ind',
+                            },
+                        ]
+                    },
+                    {
                         title: 'Pessoal',
                         pages: [
                             {
@@ -239,6 +250,8 @@
                         return a === this.pages[0]
                     } else if (this.user.group === 'gerente') {
                         return a === this.pages[0] || a === this.pages[1]
+                    } else if (this.user.group === 'doctors') {
+                        return a === this.pages[3]
                     }
                     return false
                 })

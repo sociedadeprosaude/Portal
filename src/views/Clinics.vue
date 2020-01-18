@@ -8,6 +8,7 @@
                         :items="clinics"
                         sort-by="cnpj"
                         class="elevation-6"
+                        :items-per-page="-1"
                 >
                     <template v-slot:top>
                         <v-flex xs12 class="text-right pa-2">

@@ -184,6 +184,7 @@
                         wrap
                         justify-center
                         align-center
+                        v-if="consultation.doctor.name === doctor.name"
                 >
                     <v-container class="align-center justify-center py-0">
                         <v-layout row align-center justify-center wrap>
@@ -285,7 +286,7 @@
                                                                          </span>
                                                                 </v-list-item-title>
                                                                 <br>
-                                                                <v-list-item-subtitle class="text-left">
+                                                                <v-list-item-subtitle class="text-center">
                                                                     CPF: {{item.user.cpf}}
                                                                 </v-list-item-subtitle>
                                                                 <br>
@@ -388,7 +389,27 @@
             },
 
             specialties() {
-                return this.$store.getters.specialties
+                //return this.$store.getters.specialties;
+                let espArray = Object.values(this.$store.getters.specialties)
+                espArray = espArray.filter((specialty) => {
+                    //console.log('Teeeee',specialty)
+                    if(!this.selectedDoctor) {
+                        return true
+                    }
+                    var find = false
+                    specialty.doctors.forEach((doctor)=>{
+
+                        if(doctor.cpf === this.selectedDoctor.cpf){
+                            find = true
+                            return true
+                        }
+
+                    })
+
+                    return find
+                })
+                //docArray.unshift({name:'Todos'})
+                return espArray
             },
 
             doctors() {
