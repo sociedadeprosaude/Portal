@@ -267,7 +267,6 @@ const actions = {
             dataFinal: payload.dataFinal,
             financialSupportIntakes: financialSupport
         };
-        console.log('ff', financialSupport)
         context.commit('setRelatorio', relatorio)
         return relatorio
     }
