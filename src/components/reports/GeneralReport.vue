@@ -325,6 +325,57 @@
                             </v-layout>
                         </v-flex>
 
+                        <v-flex xs12 class="mt-2">
+                            <v-layout row wrap v-if="report.financialSupportIntakes.length > 0">
+                                <v-flex xs12>
+                                    <span class="my-headline">Aportes Financeiros</span>
+                                </v-flex>
+                                <v-flex xs12 v-for="intake in report.financialSupportIntakes" :key="intake.date" class="my-1">
+                                    <v-layout row wrap>
+                                        <v-flex xs12>
+                                            <v-divider></v-divider>
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs2 class="font-weight-bold">
+                                            {{intake.category}}
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs1>
+<!--                                            {{outtake.quantidade}}-->
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs2>
+                                            {{intake.value | moneyFilter}}
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs2>
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs12 class="mt-4" v-if="reportSelected === 1">
+                                            <v-layout row wrap>
+                                                <v-flex xs12>
+                                                    <span>{{intake.description}}</span>
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <v-divider></v-divider>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                            </v-layout>
+                        </v-flex>
+
                         <v-flex xs12>
                             <span class="my-headline">Relatório</span>
                         </v-flex>
@@ -383,7 +434,7 @@
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs2>
-                                            {{report.dinheiro | moneyFilter}}
+                                            {{report.dinheiro + totalFinancialSupport | moneyFilter}}
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
@@ -497,19 +548,19 @@
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs3>
-                                            {{ this.report.totalBruto.toFixed(2)}}
+                                            {{ this.report.totalBruto.toFixed(2) | moneyFilter}}
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs3>
-                                            {{(this.report.totalBruto - this.report.totalCusto -  parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito)).toFixed(2)}}
+                                            {{(this.report.totalBruto - this.report.totalCusto -  parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito)).toFixed(2) | moneyFilter}}
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs2>
-                                            {{(report.totalBruto - report.totalCusto - parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito) - parseFloat(report.totalCustoOuttakes)).toFixed(2)}}
+                                            {{((report.totalBruto + totalFinancialSupport - report.totalCusto - parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito) - parseFloat(report.totalCustoOuttakes)).toFixed(2))| moneyFilter}}
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
@@ -542,6 +593,13 @@
             }
         },
         computed: {
+            totalFinancialSupport() {
+              let total = 0
+              for (let support in this.report.financialSupportIntakes) {
+                  total += this.report.financialSupportIntakes[support].value
+              }
+              return total
+            },
             proceduresQuantity() {
                 let procQt = 0
                 for(let specialty in this.report.specialties) {

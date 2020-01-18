@@ -54,7 +54,10 @@ const actions = {
         //console.log('cheguei aqui')
         for (let doc in intakesSnap.docs) {
             if (intakesSnap.docs[doc].data().colaborator) {
-                promises.push(context.dispatch('getIntakeDetails', intakesSnap.docs[doc].data()))
+                promises.push(context.dispatch('getIntakeDetails', {
+                    ...intakesSnap.docs[doc].data(),
+                    id: intakesSnap.docs[doc].id
+                }))
             }
         }
         let intakes = await Promise.all(promises)
@@ -80,6 +83,7 @@ const actions = {
         let specialties = {};
         let intaker = {};
         let outtakes = [];
+        let financialSupport = [];
         let totalCaixa = 0;
         let totalDebido = 0;
         let totalBruto = 0;
@@ -97,6 +101,10 @@ const actions = {
         let relatorio = {};
 
         for (let intake in intakes) {
+            if (intakes[intake].type === 'financial_support') {
+                financialSupport.push(intakes[intake])
+                continue
+            }
 
             //for (let exam in intakes[intake].exams) {
             //  if (!exams[intakes[intake].exams[exam].name]) {
@@ -256,8 +264,10 @@ const actions = {
             totalGanhoEspecialts: totalGanhoEspecialts,
             intakes: intaker,
             dataInicio: payload.dataInicio,
-            dataFinal: payload.dataFinal
+            dataFinal: payload.dataFinal,
+            financialSupportIntakes: financialSupport
         };
+        console.log('ff', financialSupport)
         context.commit('setRelatorio', relatorio)
         return relatorio
     }

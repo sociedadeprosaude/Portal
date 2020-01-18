@@ -219,9 +219,9 @@ const actions = {
                         procedures.forEach((snap) => {
                             let data = snap.data()
                             firebase.firestore().collection('users').doc(user.cpf).collection('procedures').doc(snap.id).update(
-                                { 
+                                {
                                     status: firebase.firestore.FieldValue.arrayUnion('Consulta Paga'),
-                                    payment_number: copyPayload.id.toString() 
+                                    payment_number: copyPayload.id.toString()
                                 }
                             )
                         })
@@ -310,7 +310,10 @@ const actions = {
     },
     async getIntakeDetails(context, intake) {
         intake = await firebase.firestore().collection('intakes').doc(intake.id.toString()).get()
-        intake = intake.data()
+        intake = {
+            ...intake.data(),
+            id: intake.id
+        }
         let examsSnap = await firebase.firestore().collection('intakes').doc(intake.id.toString()).collection('exams').get()
         let specialtiesSnap = await firebase.firestore().collection('intakes').doc(intake.id.toString()).collection('specialties').get()
         let exams = []
