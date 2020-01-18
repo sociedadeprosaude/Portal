@@ -79,7 +79,7 @@ const actions = {
         let clinics = {};
         let specialties = {};
         let intaker = {};
-        let outtakes = {};
+        let outtakes = [];
         let totalCaixa = 0;
         let totalDebido = 0;
         let totalBruto = 0;
@@ -159,10 +159,21 @@ const actions = {
                     specialties[intakes[intake].specialties[specialtie].name] = {
                         quantidade: 0,
                         cost: 0,
-                        price: 0
+                        price: 0,
+                        // doctors: {}
                     }
                 }
+                // if (!specialties[intakes[intake].specialties[specialtie].name].doctors[intakes[intake].specialties[specialtie].doctor.name]) {
+                //     specialties[intakes[intake].specialties[specialtie].name].doctors[intakes[intake].specialties[specialtie].doctor.name] = {
+                //         quantity: 0,
+                //         cost: 0,
+                //         price: 0,
+                //     }
+                // }
                 specialties[intakes[intake].specialties[specialtie].name].quantidade++
+                // specialties[intakes[intake].specialties[specialtie].name].doctors[intakes[intake].specialties[specialtie].doctor.name].quantity++
+                // specialties[intakes[intake].specialties[specialtie].name].doctors[intakes[intake].specialties[specialtie].doctor.name].cost += intakes[intake].specialties[specialtie].cost
+                // specialties[intakes[intake].specialties[specialtie].name].doctors[intakes[intake].specialties[specialtie].doctor.name] += intakes[intake].specialties[specialtie].price
                 specialties[intakes[intake].specialties[specialtie].name].cost += parseFloat(intakes[intake].specialties[specialtie].cost),
                     specialties[intakes[intake].specialties[specialtie].name].price += parseFloat(intakes[intake].specialties[specialtie].price)
                 totalCustoEspecialts += parseFloat(intakes[intake].specialties[specialtie].cost),
@@ -203,16 +214,17 @@ const actions = {
             .where('paid', '<=', payload.dataFinal).orderBy('paid').get();
         outtakesSnap.forEach((e) => {
             if (e.data().payment_method === 'Dinheiro') {
-                if (!outtakes[e.data().category]) {
-                    outtakes[e.data().category] = {
-                        quantidade: 0,
-                        cost: 0,
-                    }
-                }
-                outtakes[e.data().category].quantidade++;
-                quantidadeOuttakes++;
-                outtakes[e.data().category].cost += parseFloat(e.data().value);
-                totalCustoOuttakes += parseFloat(e.data().value)
+                // if (!outtakes[e.data().category]) {
+                //     outtakes[e.data().category] = {
+                //         quantidade: 0,
+                //         cost: 0,
+                //     }
+                // }
+                // outtakes[e.data().category].quantidade++;
+                // quantidadeOuttakes++;
+                // outtakes[e.data().category].cost += parseFloat(e.data().value);
+                // totalCustoOuttakes += parseFloat(e.data().value)
+                outtakes.push(e.data())
             }
         })
 

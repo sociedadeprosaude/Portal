@@ -243,9 +243,9 @@
                             </v-layout>
                         </v-flex>
                         <v-flex xs12>
-                            <span class="my-headline">Outtakes</span>
+                            <span class="my-headline">Gastos</span>
                         </v-flex>
-                        <v-flex xs12 v-for="(outtake, label) in report.outtakes" :key="label" class="my-1">
+                        <v-flex xs12 v-for="outtake in report.outtakes" :key="outtake.paid" class="my-1">
                             <v-layout row wrap>
                                 <v-flex xs12>
                                     <v-divider></v-divider>
@@ -253,8 +253,8 @@
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
-                                <v-flex xs2>
-                                    {{label}}
+                                <v-flex xs2 class="font-weight-bold">
+                                    {{outtake.category}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -266,7 +266,7 @@
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs2>
-                                    {{outtake.cost | moneyFilter}}
+                                    {{outtake.value | moneyFilter}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -275,6 +275,13 @@
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs12 class="mt-4" v-if="reportSelected === 1">
+                                    <v-layout row wrap>
+                                        <v-flex xs12>
+                                            <span>{{outtake.description}}</span>
+                                        </v-flex>
+                                    </v-layout>
                                 </v-flex>
                                 <v-flex xs12>
                                     <v-divider></v-divider>
