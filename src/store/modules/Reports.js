@@ -182,15 +182,13 @@ const actions = {
             if (!intakes[intake].valor) {
                 totalCusto += parseFloat(intakes[intake].cost);
             }
-            //console.log('custo: ',totalCusto)
+            totalBruto += intakes[intake].total
             if (intakes[intake].payment_method === 'Dinheiro') {
                 totalCaixa += intakes[intake].total
-                totalBruto += intakes[intake].total
             }
             if (intakes[intake].payment_method === 'Débito') {
                 totalTaxaDebito += ((intakes[intake].total * 0.0299) / 100)
                 totalDebido += intakes[intake].total
-                totalBruto += intakes[intake].total
             }
             if (intakes[intake].payment_method === 'Crédito') {
                 if (intakes[intake].parcel === 1) {
@@ -205,7 +203,6 @@ const actions = {
                     totalTaxaCredito += (((intakes[intake].total * 0.026) / 100) + ((intakes[intake].total * 0.0378) / 100))
                 }
                 totalCredito += intakes[intake].total
-                totalBruto += intakes[intake].total
             }
 
 
@@ -221,9 +218,9 @@ const actions = {
                 //     }
                 // }
                 // outtakes[e.data().category].quantidade++;
-                // quantidadeOuttakes++;
+                quantidadeOuttakes++;
                 // outtakes[e.data().category].cost += parseFloat(e.data().value);
-                // totalCustoOuttakes += parseFloat(e.data().value)
+                totalCustoOuttakes += parseFloat(e.data().value)
                 outtakes.push(e.data())
             }
         })

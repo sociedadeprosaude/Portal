@@ -303,7 +303,7 @@
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs1>
-                                    {{report.quantidade}}
+                                    {{report.quantidadeOuttakes}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -340,19 +340,19 @@
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs3>
-                                            Total Crédito
+                                            Crédito
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs3>
-                                            Total Débito
+                                            Débito
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs2>
-                                            Total Caixa
+                                            Dinheiro
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
@@ -414,7 +414,7 @@
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs2>
-                                            Total Bruto - Taxas
+                                            Total de taxas
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
@@ -445,7 +445,7 @@
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs2>
-                                            {{(((report.totalBruto)- parseFloat(report.totalTaxaDebito)) - parseFloat(report.totalTaxaCredito) )| moneyFilter}}
+                                            {{((parseFloat(report.totalTaxaDebito)) + parseFloat(report.totalTaxaCredito) )| moneyFilter}}
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
@@ -477,7 +477,7 @@
                                         <v-divider vertical></v-divider>
                                     </v-flex>
                                     <v-flex xs2>
-                                        Saldo Final
+                                        Saldo Final com gastos
                                     </v-flex>
                                     <v-flex xs1>
                                         <v-divider vertical></v-divider>
@@ -509,7 +509,7 @@
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs2>
-                                            {{(this.report.totalBruto - this.report.totalCusto - parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito) - parseFloat(report.totalCustoOuttakes)).toFixed(2)}}
+                                            {{(report.totalBruto - report.totalCusto - parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito) - parseFloat(report.totalCustoOuttakes)).toFixed(2)}}
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
