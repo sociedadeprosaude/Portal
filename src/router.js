@@ -16,6 +16,7 @@ import Units from "./views/Units";
 import Bills from "./views/Bills";
 import MedicalCare from "./views/MedicalCare";
 import Attendance from "./views/Attendance";
+import Tickets from "./views/Tickets";
 import firebase from 'firebase'
 
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
@@ -127,6 +128,14 @@ let mainRoutes = [
     path: '/Attendance',
     name: 'Attendance',
     component : Attendance,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/senhas',
+    name: 'Tickets',
+    component : Tickets,
     meta: {
       requiresAuth: false,
     }

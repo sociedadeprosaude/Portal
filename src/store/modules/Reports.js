@@ -276,7 +276,6 @@ const actions = {
 
 const getters = {
     relatorio(state) {
-        //console.log('veio')
         return state.relatorio;
     }
 }

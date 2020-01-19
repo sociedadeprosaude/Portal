@@ -137,12 +137,12 @@
                                 permission: 'Caixa',
                                 to: '/caixa'
                             },
-                            // {
-                            //     title: 'Senhas',
-                            //     permission: 'Senhas',
-                            //     external_url: 'https://prosaudesenhas.firebaseapp.com',
-                            //     icon: 'filter_4'
-                            // },
+                            {
+                                title: 'Senhas',
+                                permission: 'Senhas',
+                                to: '/senhas',
+                                icon: 'filter_4'
+                            },
                         ]
                     },
                     {
