@@ -1,16 +1,18 @@
 <template>
     <v-container>
         <v-layout row wrap>
-            <v-flex xs4>
-                <v-card class="primary white--text">
-                    <v-layout row wrap>
-                        <v-flex xs12>
-                            <span class="font-weight-bold">Proxima senha: {{ticketInfo.ticket_number}}</span>
-                        </v-flex>
-                    </v-layout>
-                </v-card>
+            <v-flex sm4 xs6>
+
+                <v-tooltip top v-if="doctorsLoaded">
+                    <template v-slot:activator="{ on }">
+                        <v-btn v-on="on" class="primary" rounded @click="skipNextTicket">Proxima senha:
+                            {{ticketInfo.ticket_number}}
+                        </v-btn>
+                    </template>
+                    <span>Pular próxima senha</span>
+                </v-tooltip>
             </v-flex>
-            <v-flex xs4 class="text-right">
+            <v-flex sm4 xs6 class="text-right">
                 <v-fade-transition mode="out-in">
                     <v-card class="pa-4" v-if="createRoomController">
                         <v-layout row wrap>
@@ -46,7 +48,7 @@
                         <v-card class="pa-4">
                             <v-layout row wrap class="justify-center">
                                 <v-flex xs10 class="text-left">
-                                    <span class="my-headline">{{room.name}}</span>
+                                    <span class="my-sub-headline">{{room.name}}</span>
                                 </v-flex>
                                 <v-flex xs12 class="my-2">
                                     <v-layout row wrap>
@@ -56,7 +58,7 @@
                                                         v-on="on"
                                                         @click="selectedRoom = room, doctorsListDialog.active = true"
                                                         text fab
-                                                        x-small class="primary">
+                                                        x-small class="primary my-2">
                                                     <v-icon>person</v-icon>
                                                 </v-btn>
                                             </template>
@@ -67,20 +69,29 @@
                                         <v-tooltip top v-if="doctorsLoaded">
                                             <template v-slot:activator="{ on }">
                                                 <v-btn v-on="on" @click="generateNextTicket(room)" text fab
-                                                       x-small class="primary ml-2">
+                                                       x-small class="primary ml-2 my-2">
                                                     <v-icon>post_add</v-icon>
                                                 </v-btn>
-                                                <span>Gerar senha</span>
                                             </template>
+                                            <span>Gerar senha</span>
                                         </v-tooltip>
                                         <v-tooltip top v-if="doctorsLoaded">
                                             <template v-slot:activator="{ on }">
                                                 <v-btn v-on="on" @click="callNextTicket(room)" text fab
-                                                       x-small class="primary ml-2">
+                                                       x-small class="primary ml-2 my-2">
                                                     <v-icon>add_alert</v-icon>
                                                 </v-btn>
-                                                <span>Chamar próxima senha</span>
                                             </template>
+                                            <span>Chamar próxima senha</span>
+                                        </v-tooltip>
+                                        <v-tooltip top v-if="doctorsLoaded">
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn v-on="on" @click="callNextTicket(room)" text fab
+                                                       x-small class="primary ml-2 my-2">
+                                                    <v-icon>notification_important</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <span>Alertar senha atual</span>
                                         </v-tooltip>
                                     </v-layout>
                                 </v-flex>
@@ -238,6 +249,11 @@
                 let ticketInfo = this.ticketInfo
                 ticketInfo.ticket_number = 1
                 ticketInfo.last_updated = moment().format('YYYY-MM-DD HH:mm:ss')
+                this.$store.dispatch('updateGeneralInfo', ticketInfo)
+            },
+            skipNextTicket() {
+                let ticketInfo = this.ticketInfo
+                ticketInfo.ticket_number++
                 this.$store.dispatch('updateGeneralInfo', ticketInfo)
             }
         }

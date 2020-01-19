@@ -63,7 +63,7 @@
                                 -->
             </v-toolbar-items>
         </v-app-bar>
-        <v-app-bar dense hide-on-scroll flat color="white hidden-sm-and-up" light fixed class="hidden-print-only" v-if="selectedUnit">
+        <v-app-bar dense flat color="white hidden-sm-and-up" light fixed class="hidden-print-only" v-if="selectedUnit">
             <v-app-bar-nav-icon hidden v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
             <v-toolbar-title class="ma-0 pa-0">
                 <router-link to="/" tag="span" style="cursor: pointer">
