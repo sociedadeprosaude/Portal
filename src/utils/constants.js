@@ -27,6 +27,9 @@ export default {
     INTAKE_STATUS: {
       CANCELLED: 'cancelled'
     },
+    ASSETS: {
+      logo: 'https://firebasestorage.googleapis.com/v0/b/prosaude-36f66.appspot.com/o/assets%2Flogo.svg?alt=media&token=21faf2be-78a2-471d-b045-2c17e26434b4'
+    },
 
 
     FIREBASE_CONFIG: process.env.NODE_ENV === 'production' ?

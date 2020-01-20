@@ -93,6 +93,15 @@
                                             </template>
                                             <span>Alertar senha atual</span>
                                         </v-tooltip>
+                                        <v-tooltip top v-if="doctorsLoaded">
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn v-on="on" @click="openSingleView(room)" text fab
+                                                       x-small class="primary ml-2 my-2">
+                                                    <v-icon>personal_video</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <span>Visualizador único</span>
+                                        </v-tooltip>
                                     </v-layout>
                                 </v-flex>
                                 <v-flex xs12 v-if="room.doctor">
@@ -146,16 +155,21 @@
                 </v-layout>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="singleViewDialog.active" fullscreen transition="dialog-bottom-transition">
+            <single-visualizer @close="singleViewDialog.active = false" :selectedRoom="singleViewDialog.room"></single-visualizer>
+        </v-dialog>
     </v-container>
 </template>
 
 <script>
     import SubmitButton from "../components/SubmitButton";
+    import SingleVisualizer from "../components/tickets/SingleVisualizer";
 
     export default {
         name: "Tickets",
         components: {
-            SubmitButton
+            SubmitButton,
+            SingleVisualizer
         },
         mounted() {
             this.$store.dispatch('getTicketsGeneralInfo')
@@ -171,7 +185,11 @@
                 room: {},
                 createRoomController: false,
                 loading: false,
-                success: false
+                success: false,
+                singleViewDialog: {
+                    active: false,
+                    room: {}
+                }
             }
         },
         computed: {
@@ -255,6 +273,10 @@
                 let ticketInfo = this.ticketInfo
                 ticketInfo.ticket_number++
                 this.$store.dispatch('updateGeneralInfo', ticketInfo)
+            },
+            openSingleView(room) {
+                this.singleViewDialog.room = room
+                this.singleViewDialog.active = true
             }
         }
     }
