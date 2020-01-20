@@ -12,6 +12,11 @@
                     <span>Pular próxima senha</span>
                 </v-tooltip>
             </v-flex>
+            <v-flex sm4>
+                <v-btn class="primary" rounded @click="multipleViewDialog = true">
+                    <span>Visualizador geral</span>
+                </v-btn>
+            </v-flex>
             <v-flex sm4 xs6 class="text-right">
                 <v-fade-transition mode="out-in">
                     <v-card class="pa-4" v-if="createRoomController">
@@ -158,18 +163,23 @@
         <v-dialog v-model="singleViewDialog.active" fullscreen transition="dialog-bottom-transition">
             <single-visualizer @close="singleViewDialog.active = false" :selectedRoom="singleViewDialog.room"></single-visualizer>
         </v-dialog>
+        <v-dialog v-model="multipleViewDialog" fullscreen transition="dialog-bottom-transition">
+            <multiple-visualizer @close="multipleViewDialog = false"></multiple-visualizer>
+        </v-dialog>
     </v-container>
 </template>
 
 <script>
     import SubmitButton from "../components/SubmitButton";
     import SingleVisualizer from "../components/tickets/SingleVisualizer";
+    import MultipleVisualizer from "../components/tickets/MultipleVisualizer";
 
     export default {
         name: "Tickets",
         components: {
             SubmitButton,
-            SingleVisualizer
+            SingleVisualizer,
+            MultipleVisualizer
         },
         mounted() {
             this.$store.dispatch('getTicketsGeneralInfo')
@@ -189,7 +199,8 @@
                 singleViewDialog: {
                     active: false,
                     room: {}
-                }
+                },
+                multipleViewDialog: false
             }
         },
         computed: {

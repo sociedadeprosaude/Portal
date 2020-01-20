@@ -7,9 +7,6 @@
                         <v-flex xs12>
                             <img :src="constants.ASSETS.logo" height="124px">
                         </v-flex>
-                        <v-flex xs12 class="font-weight-bold" style="font-size: 4em;">
-                            Dr. {{doctorName}}
-                        </v-flex>
                         <v-flex xs12 class="font-weight-bold" style="font-size: 2em;">
                             {{hour}}
                         </v-flex>
@@ -21,7 +18,7 @@
                         :key="ticket.number">
                     <v-layout row wrap class="align-center justify-center fill-height" :style="cardStyleByIndex(index)">
                         <v-flex xs5 class="font-weight-bold" style="font-size: 4em">
-                            <span>{{room.name}}</span>
+                            <span>{{ticket.roomName}}</span>
                         </v-flex>
                         <v-flex xs1 class="text-center">
                             <v-divider vertical></v-divider>
@@ -39,7 +36,6 @@
 
     export default {
         name: "SingleVisualizer",
-        props: ['selectedRoom'],
         mounted() {
             this.clockInterval = setInterval(() => {
                 this.$nextTick(() => {
@@ -58,10 +54,8 @@
             }
         },
         computed: {
-            room() {
-                return this.$store.getters.rooms.find(room => {
-                    return room.name === this.selectedRoom.name
-                })
+            rooms() {
+                return this.$store.getters.rooms
             },
             doctorName() {
                 let names = this.room.doctor.name.split(' ')
@@ -72,9 +66,20 @@
                 return finalName
             },
             calledTicketsInOrder() {
-                return this.room.tickets.filter(ticket => {
-                    return ticket.called_at
-                }).sort((ticketA, ticketB) => {
+                let tickets = []
+                for(let room in this.rooms) {
+                    let filteredTickets = this.rooms[room].tickets.filter((ticket) => {
+                        return ticket.called_at
+                    })
+                    for (let ticket in filteredTickets) {
+                        let formattedTicket = {
+                            ...filteredTickets[ticket],
+                            roomName: this.rooms[room].name
+                        }
+                        tickets.push(formattedTicket)
+                    }
+                }
+                return tickets.sort((ticketA, ticketB) => {
                     return moment(ticketB.called_at).diff(moment(ticketA.called_at), 'seconds')
                 })
             }
