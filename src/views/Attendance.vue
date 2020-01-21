@@ -148,14 +148,15 @@
             save(){
                 this.endConsultation = moment().format('HH:mm:ss')
                 this.timeConsultation = moment(this.endConsultation, 'HH:mm:ss').diff(moment(this.startConsultation, 'HH:mm:ss'), 'minutes')
-                console.log("começou:",this.startConsultation)
-                console.log("terminou:",this.endConsultation)
-                console.log("tempo total em minutos:",this.timeConsultation)
-
+                //console.log("começou:",this.startConsultation)
+                //console.log("terminou:",this.endConsultation)
+                //console.log("tempo total em minutos:",this.timeConsultation)
                 this.$store.dispatch('addTimesToConsultation', {
-                    startConsultation: this.startConsultation,
-                    endConsultation: this.endConsultation,
-                    timeConsultation: this.timeConsultation,
+                    start: this.startConsultation,
+                    end: this.endConsultation,
+                    durantion: this.timeConsultation,
+                    consultation: this.consultation.id,
+                    patient: this.consultation.user.cpf
 
                 })
 

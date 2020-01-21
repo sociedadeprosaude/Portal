@@ -344,12 +344,16 @@ const actions = {
     },
 
    async addProntuarioToConsultation ({ commit }, payload) {
-        console.log(payload)
        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ prontuario: payload.prontuario })
    },
 
     async addTimesToConsultation ({ commit }, payload) {
-        console.log(payload)
+        firebase.firestore().collection('consultations').doc(payload.consultation).update( { start_at: payload.start })
+        firebase.firestore().collection('consultations').doc(payload.consultation).update( { end_at: payload.end })
+        firebase.firestore().collection('consultations').doc(payload.consultation).update( { duration: payload.durantion})
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ start_at: payload.start })
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ end_at: payload.end })
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ duration: payload.durantion} )
     }
 };
 
