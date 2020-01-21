@@ -4,6 +4,7 @@
             <v-card-title class="headline grey lighten-2 justify-center align-center" primary-title>PRONTUÁRIO</v-card-title>
             <v-card-text>
                 <vue-editor v-model="prontuario"/>
+                <!--<strong>{{consultation}}</strong>-->
             </v-card-text>
             <v-divider></v-divider>
             <v-card-actions>
@@ -35,10 +36,15 @@
                 this.$emit('close-dialog')
             },
             save(){
+                //console.log(this.consultation)
                 if(this.prontuario){
-                    this.$store.dispatch('addProntuarioToConsultation',{prontuario:this.prontuario,})
+                    this.$store.dispatch('addProntuarioToConsultation',{
+                        prontuario:this.prontuario,
+                        consultation: this.consultation.id,
+                        patient: this.consultation.user.cpf
+                    })
                 }
-                //this.clear()
+                this.clear()
             }
         },
     };
