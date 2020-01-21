@@ -341,6 +341,14 @@ const actions = {
                 })
         })
 
+    },
+
+   async addProntuarioToConsultation ({ commit }, payload) {
+        //
+   },
+
+    async addTimesToConsultation ({ commit }, payload) {
+        //
     }
 };
 

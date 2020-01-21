@@ -270,12 +270,12 @@
                                 <v-dialog v-model="dialog" persistent max-width="350">
                                     <v-card>
                                         <v-card-title>Deseja Iniciar o Atendimento do Paciente Selecionado ?</v-card-title>
-                                        <v-divider></v-divider>
+<!--                                        <v-divider></v-divider>
                                         <v-card-text>
                                             <strong>
                                                 nome do paciente aqui
                                             </strong>
-                                        </v-card-text>
+                                        </v-card-text>-->
                                         <v-divider></v-divider>
                                         <v-card-actions>
                                             <v-btn

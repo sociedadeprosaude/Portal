@@ -16,12 +16,12 @@
                     </template>
                     <v-card>
                         <v-card-title>Deseja Finalizar o Atendimento ?</v-card-title>
-                        <v-divider></v-divider>
+<!--                        <v-divider></v-divider>
                         <v-card-text>
                             <strong>
                                     nome do paciente aqui
                             </strong>
-                        </v-card-text>
+                        </v-card-text>-->
                         <v-divider></v-divider>
                         <v-card-actions>
                             <v-btn
@@ -33,7 +33,7 @@
                             <v-spacer></v-spacer>
                             <v-btn
                                     color="success"
-                                    :to="{ name: 'MedicalCare'}"
+                                    @click="save()"
                             >
                                 SIM
                             </v-btn>
@@ -47,75 +47,55 @@
 
             <v-row justify="space-around">
 
-<!--                <v-dialog v-model="MedicalRecords" width="1000">
-                    <template v-slot:activator="{ on }">
-                        <v-btn v-on="on" x-large outlined color="primary" class="elevation-3">
-                            PRONTUARIOS
-                            <v-icon x-large color="primary">assignment_ind</v-icon>
-                        </v-btn>
-                    </template>
-                    <medical-records @close-dialog="MedicalRecords = false"></medical-records>
-                </v-dialog>-->
-
                 <v-btn x-large outlined color="primary" class="elevation-3" @click="MedicalRecords = true">
                     PRONTUARIOS
                     <v-icon x-large color="primary">assignment_ind</v-icon>
                 </v-btn>
-
-                <v-dialog v-model="Solicitations" width="1000">
-                    <template v-slot:activator="{ on }">
-                        <v-btn v-on="on" x-large outlined color="primary" class="elevation-3">
-                            Solicitação de EXAMES
-                            <v-icon x-large color="primary">assignment</v-icon>
-                        </v-btn>
-                    </template>
-                    <solicitations :consultation="consultation"></solicitations>
-                </v-dialog>
-
-                <v-dialog v-model="Prescriptions" width="1000">
-                    <template v-slot:activator="{ on }">
-                        <v-btn v-on="on" x-large outlined color="primary" class="elevation-3">
-                            PRESCRIÇÕES
-                            <v-icon x-large color="primary">note_add</v-icon>
-                        </v-btn>
-                    </template>
-                    <prescription></prescription>
-                </v-dialog>
-
-                <v-dialog v-model="Report" width="1000">
-                    <template v-slot:activator="{ on }">
-                        <v-btn v-on="on" x-large outlined color="primary" class="elevation-3">
-                            LAUDOS
-                            <v-icon x-large color="primary">description</v-icon>
-                        </v-btn>
-                    </template>
-                    <report></report>
-                </v-dialog>
-
-                <v-dialog v-model="Orientations" width="1000">
-                    <template v-slot:activator="{ on }">
-                        <v-btn v-on="on" x-large outlined color="primary" class="elevation-3">
-                            ORIENTAÇÕES
-                            <v-icon x-large color="primary">receipt</v-icon>
-                        </v-btn>
-                    </template>
-                    <orientations></orientations>
-                </v-dialog>
-
-                <v-dialog v-model="Attestations" width="1000">
-                    <template v-slot:activator="{ on }">
-                        <v-btn v-on="on" x-large outlined color="primary" class="elevation-3">
-                            ATESTADOS
-                            <v-icon x-large color="primary">assignment_late</v-icon>
-                        </v-btn>
-                    </template>
-                    <attestations :consultation="consultation"></attestations>
-                </v-dialog>
+                <v-btn x-large outlined color="primary" class="elevation-3" @click="Solicitations = true">
+                    Solicitação de EXAMES
+                    <v-icon x-large color="primary">assignment</v-icon>
+                </v-btn>
+                <v-btn x-large outlined color="primary" class="elevation-3" @click="Prescriptions = true">
+                    PRESCRIÇÕES
+                    <v-icon x-large color="primary">note_add</v-icon>
+                </v-btn>
+                <v-btn x-large outlined color="primary" class="elevation-3" @click="Report = true">
+                    LAUDOS
+                    <v-icon x-large color="primary">description</v-icon>
+                </v-btn>
+                <v-btn x-large outlined color="primary" class="elevation-3" @click="Orientations = true">
+                    ORIENTAÇÕES
+                    <v-icon x-large color="primary">receipt</v-icon>
+                </v-btn>
+                <v-btn x-large outlined color="primary" class="elevation-3" @click="Attestations = true">
+                    ATESTADOS
+                    <v-icon x-large color="primary">assignment_late</v-icon>
+                </v-btn>
 
             </v-row>
 
             <v-container fluid v-show="MedicalRecords">
-                <medical-records @close-dialog="MedicalRecords = false"></medical-records>
+                <medical-records @close-dialog="MedicalRecords = false" :consultation="consultation"></medical-records>
+            </v-container>
+
+            <v-container fluid v-show="Solicitations">
+                <solicitations @close-dialog="Solicitations = false" :consultation="consultation"></solicitations>
+            </v-container>
+
+            <v-container fluid v-show="Prescriptions">
+                <prescription @close-dialog="Prescriptions = false" :consultation="consultation"></prescription>
+            </v-container>
+
+            <v-container fluid v-show="Report">
+                <report @close-dialog="Report = false" :consultation="consultation"></report>
+            </v-container>
+
+            <v-container fluid v-show="Orientations">
+                <orientations @close-dialog="Orientations = false" :consultation="consultation"></orientations>
+            </v-container>
+
+            <v-container fluid v-show="Attestations">
+                <attestations @close-dialog="Attestations = false" :consultation="consultation"></attestations>
             </v-container>
 
         </v-container>
@@ -123,6 +103,7 @@
 </template>
 
 <script>
+    var moment = require('moment');
     import MedicalRecords from "../components/Attendance/MedicalRecords";
     import Prescription from "../components/Attendance/Prescription";
     import Orientations from "../components/Attendance/Orientations";
@@ -134,7 +115,11 @@
         data: () => ({
             dialog: false,
             //o de cima é de finalizar
-            query: undefined,
+            query: undefined,//val que recebe parametro da view anterior
+            //tempo de abertura, fechamento e diferença(total time consultation)
+            startConsultation: undefined,
+            endConsultation: undefined,
+            timeConsultation: undefined,
             //os de baixo são componentes de docs
             Attestations: false,
             Orientations: false,
@@ -149,6 +134,7 @@
             }
         },
         mounted() {
+            this.startConsultation = moment().format('HH:mm:ss')
             this.query = this.$route.params.q
             console.log("parametro passado pela rota:",{...this.query})
             if(!this.query){
@@ -159,7 +145,22 @@
             //
         },
         methods: {
-            //
+            save(){
+                this.endConsultation = moment().format('HH:mm:ss')
+                this.timeConsultation = moment(this.endConsultation, 'HH:mm:ss').diff(moment(this.startConsultation, 'HH:mm:ss'), 'minutes')
+                console.log("começou:",this.startConsultation)
+                console.log("terminou:",this.endConsultation)
+                console.log("tempo total em minutos:",this.timeConsultation)
+
+                this.$store.dispatch('addTimesToConsultation', {
+                    startConsultation: this.startConsultation,
+                    endConsultation: this.endConsultation,
+                    timeConsultation: this.timeConsultation,
+
+                })
+
+                this.$router.push("MedicalCare")
+            }
         }
     }
 </script>

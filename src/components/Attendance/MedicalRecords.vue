@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <v-card class="elevation-3">
-            <v-card-title class="headline grey lighten-2 justify-center align-center" primary-title>Prontuário</v-card-title>
+            <v-card-title class="headline grey lighten-2 justify-center align-center" primary-title>PRONTUÁRIO</v-card-title>
             <v-card-text>
                 <vue-editor v-model="prontuario"/>
             </v-card-text>
@@ -9,7 +9,7 @@
             <v-card-actions>
                 <v-btn color="error" @click="clear()">Fechar</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn color="success" @click="null">Salvar</v-btn>
+                <v-btn color="success" @click="save()" :disabled="!prontuario">Salvar</v-btn>
             </v-card-actions>
         </v-card>
     </v-container>
@@ -18,11 +18,14 @@
 <script>
     import { VueEditor } from "vue2-editor";
     export default {
-        props: ['Consultation'],
+        props: ['consultation'],
         components: { VueEditor },
         data: () => ({
             prontuario: undefined,
         }),
+        mounted(){
+            //
+        },
         methods: {
             clear() {
                 this.prontuario = undefined,
@@ -31,6 +34,12 @@
             closeDialog: function () {
                 this.$emit('close-dialog')
             },
+            save(){
+                if(this.prontuario){
+                    this.$store.dispatch('addProntuarioToConsultation',{prontuario:this.prontuario,})
+                }
+                //this.clear()
+            }
         },
     };
 </script>

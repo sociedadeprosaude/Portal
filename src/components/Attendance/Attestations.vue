@@ -1,169 +1,167 @@
 <template>
-    <v-container>
-        <v-layout row wrap>
-
-            <v-container fluid grid-list-xl>
-                <v-card
-                        outlined
-                        class="elevation-6"
-                >
-                    <v-layout align-center wrap>
-
-                        <v-flex xs11>
-                            <v-combobox
-                                    prepend-icon="spellcheck"
-                                    v-model="cid"
-                                    :items="cidOptions"
-                                    outlined
-                                    hide-details
-                                    chips
-                                    clearable
-                                    placeholder="Digite o Codigo do CID para Pesquisar"
-                            >
-                                <template v-slot:selection="data">
-                                    <v-chip
-                                            color="primary"
-                                            :key="JSON.stringify(data.item)"
-                                            :selected="data.selected"
-                                            :disabled="data.disabled"
-                                            class="v-chip--select-multi"
-                                            @click.stop="data.parent.selectedIndex = data.index"
-                                            @input="data.parent.selectItem(data.item)"
-                                    >
-                                        <strong style="font-size: 15px">{{ data.item }}</strong>
-                                    </v-chip>
-                                </template>
-                            </v-combobox>
-                        </v-flex>
-                        <v-flex xs5>
-                            <v-menu
-                                    ref="menu1"
-                                    v-model="menu1"
-                                    :close-on-content-click="false"
-                                    :nudge-right="40"
-                                    lazy
-                                    transition="scale-transition"
-                                    offset-y
-                                    full-width
-                                    min-width="290px"
-                            >
-                                <template v-slot:activator="{ on }">
-                                    <v-text-field
-                                            v-model="computedDateFormattedStart"
-                                            label="Data Inicial"
-                                            prepend-icon="event"
-                                            readonly
-                                            hide-details
-                                            outlined
-                                            disabled
-                                            clearable
-                                            v-on="on"
-                                    ></v-text-field>
-                                </template>
-                                <v-date-picker
-                                        ref="picker"
-                                        v-model="dataStart"
-                                        locale="pt-br"
-                                        :min="new Date().toISOString().substr(0, 10)"
-                                        @change="save1"
-                                ></v-date-picker>
-                            </v-menu>
-                        </v-flex>
-                        <v-flex xs5>
-                            <v-menu
-                                    ref="menu2"
-                                    v-model="menu2"
-                                    :close-on-content-click="false"
-                                    :nudge-right="40"
-                                    lazy
-                                    transition="scale-transition"
-                                    offset-y
-                                    full-width
-                                    min-width="290px"
-                            >
-                                <template v-slot:activator="{ on }">
-                                    <v-text-field
-                                            v-model="computedDateFormattedTheEnd"
-                                            label="Data Final"
-                                            prepend-icon="event"
-                                            readonly
-                                            hide-details
-                                            outlined
-                                            clearable
-                                            v-on="on"
-                                    ></v-text-field>
-                                </template>
-                                <v-date-picker
-                                        ref="picker"
-                                        v-model="dataTheEnd"
-                                        locale="pt-br"
-                                        :min="new Date().toISOString().substr(0, 10)"
-                                        @change="save2"
-                                ></v-date-picker>
-                            </v-menu>
-                        </v-flex>
-
+    <v-container fluid>
+            <v-card class="elevation-3">
+                <v-card-title class="headline grey lighten-2 justify-center align-center" primary-title>ATESTADO</v-card-title>
+                <v-card-text>
+                    <v-layout row wrap>
+                    <v-flex xs12>
+                        <v-combobox
+                                prepend-icon="spellcheck"
+                                v-model="cid"
+                                :items="cidOptions"
+                                outlined
+                                chips
+                                clearable
+                                placeholder="Digite o Codigo do CID para Pesquisar"
+                        >
+                            <template v-slot:selection="data">
+                                <v-chip
+                                        color="primary"
+                                        :key="JSON.stringify(data.item)"
+                                        :selected="data.selected"
+                                        :disabled="data.disabled"
+                                        class="v-chip--select-multi"
+                                        @click.stop="data.parent.selectedIndex = data.index"
+                                        @input="data.parent.selectItem(data.item)"
+                                >
+                                    <strong style="font-size: 15px">{{ data.item }}</strong>
+                                </v-chip>
+                            </template>
+                        </v-combobox>
+                    </v-flex>
+                    <v-flex xs5>
+                        <v-menu
+                                ref="menu1"
+                                v-model="menu1"
+                                :close-on-content-click="false"
+                                :nudge-right="40"
+                                lazy
+                                transition="scale-transition"
+                                offset-y
+                                full-width
+                                min-width="290px"
+                        >
+                            <template v-slot:activator="{ on }">
+                                <v-text-field
+                                        v-model="computedDateFormattedStart"
+                                        label="Data Inicial"
+                                        prepend-icon="event"
+                                        readonly
+                                        outlined
+                                        disabled
+                                        clearable
+                                        v-on="on"
+                                ></v-text-field>
+                            </template>
+                            <v-date-picker
+                                    ref="picker"
+                                    v-model="dataStart"
+                                    locale="pt-br"
+                                    :min="new Date().toISOString().substr(0, 10)"
+                                    @change="save1"
+                            ></v-date-picker>
+                        </v-menu>
+                    </v-flex>
+                    <v-spacer></v-spacer>
+                    <v-flex xs5>
+                        <v-menu
+                                ref="menu2"
+                                v-model="menu2"
+                                :close-on-content-click="false"
+                                :nudge-right="40"
+                                lazy
+                                transition="scale-transition"
+                                offset-y
+                                full-width
+                                min-width="290px"
+                        >
+                            <template v-slot:activator="{ on }">
+                                <v-text-field
+                                        v-model="computedDateFormattedTheEnd"
+                                        label="Data Final"
+                                        prepend-icon="event"
+                                        readonly
+                                        outlined
+                                        clearable
+                                        v-on="on"
+                                ></v-text-field>
+                            </template>
+                            <v-date-picker
+                                    ref="picker"
+                                    v-model="dataTheEnd"
+                                    locale="pt-br"
+                                    :min="new Date().toISOString().substr(0, 10)"
+                                    @change="save2"
+                            ></v-date-picker>
+                        </v-menu>
+                    </v-flex>
                     </v-layout>
-                </v-card>
-            </v-container>
 
-            <v-container class="py-0 my-0 ml-0">
-                <v-layout align-center justify-center>
-                    <v-card width="700" class="elevation-6">
-<!--                        <v-img :src="require('../assets/pro_saude_logo_transparente.png')">-->
-                            <v-layout align-center row wrap>
-                                <v-flex xs12>
-<!--                                    <v-img
-                                            :src="require('../assets/logo-pro-saude.png')"
-                                            class="my-3"
-                                            contain
-                                            height="50"
-                                    ></v-img>-->
-                                </v-flex>
-                                <v-flex xs12>
-                                    <h2 style="text-align: center">LICENÇA MÉDICA</h2>
-                                    <br/><br/><br/>
-                                    <p style="text-align: center; text-justify: auto">
-                                        <strong>
-                                            NOME: {{paciente}}<br/>
-                                            CODIGO: {{ cid.slice(0, 3).toUpperCase() }}<br/>
-                                            ESTA IMPOSSIBILITADO(A) A COMPARECER A SEU TRABALHO DE:<br/>
-                                            {{ dataStart | dateFilter }} à {{ dataTheEnd | dateFilter }}
-                                            <br/>
-                                            Este atestado é valido para finalidade previstas np Art. 86 do RGPS, aprovado pelo decreto nº 14.03.67 e será expedido para justificativa de 1 a 15 dias de afastamento do trabalho.<br/>
-                                            <br/><br/><br/><br/>
-                                            MANAUS, {{ dataStart | dateFilter }}.
-                                            <br/><br/><br/><br/><br/><br/><br/>
-                                            <v-layout align-center justify-center>
-                                                <v-flex xs4 lalign-center justify-center>
-                                                    <v-divider color="black"></v-divider>
-                                                    {{medico}}
-                                                    {{crm}}
-                                                </v-flex>
-                                            </v-layout>
-                                        </strong>
-                                    </p>
-                                </v-flex>
-                            </v-layout>
-                        </v-img>
-                    </v-card>
-                </v-layout>
-            </v-container>
+                    <v-container class="py-0 my-0 ml-0">
+                        <v-layout align-center justify-center>
+                            <v-card width="700" class="elevation-6">
+                                <!--                        <v-img :src="require('../assets/pro_saude_logo_transparente.png')">-->
+                                <v-layout align-center row wrap>
+                                    <v-flex xs12>
+                                        <!--                                    <v-img
+                                                                                    :src="require('../assets/logo-pro-saude.png')"
+                                                                                    class="my-3"
+                                                                                    contain
+                                                                                    height="50"
+                                                                            ></v-img>-->
+                                    </v-flex>
+                                    <v-flex xs12>
+                                        <h2 style="text-align: center">LICENÇA MÉDICA</h2>
+                                        <br/><br/><br/>
+                                        <p style="text-align: center; text-justify: auto">
+                                            <strong>
+                                                NOME: {{paciente}}<br/>
+                                                CODIGO: {{ cid.slice(0, 3).toUpperCase() }}<br/>
+                                                ESTA IMPOSSIBILITADO(A) A COMPARECER A SEU TRABALHO DE:<br/>
+                                                {{ dataStart | dateFilter }} à {{ dataTheEnd | dateFilter }}
+                                                <br/>
+                                                Este atestado é valido para finalidade previstas np Art. 86 do RGPS, aprovado pelo decreto nº 14.03.67 e será expedido para justificativa de 1 a 15 dias de afastamento do trabalho.<br/>
+                                                <br/><br/><br/><br/>
+                                                MANAUS, {{ dataStart | dateFilter }}.
+                                                <br/><br/><br/><br/><br/><br/><br/>
+                                                <v-layout align-center justify-center>
+                                                    <v-flex xs4 lalign-center justify-center>
+                                                        <v-divider color="black"></v-divider>
+                                                        {{medico}}
+                                                        {{crm}}
+                                                    </v-flex>
+                                                </v-layout>
+                                            </strong>
+                                        </p>
+                                    </v-flex>
+                                </v-layout>
+                                <!--</v-img>-->
+                            </v-card>
+                        </v-layout>
+                    </v-container>
 
-            <v-layout align-center justify-center>
-                <v-btn
-                        align-center
-                        justify-center
-                        round
-                        color="primary"
-                        :disabled="!formIsValid"
-                >
-                    IMPRIMIR
-                    <v-icon right color="white">print</v-icon>
-                </v-btn>
-            </v-layout>
+                    <v-layout align-center justify-center>
+                        <v-btn
+                                align-center
+                                justify-center
+                                round
+                                color="primary"
+                                :disabled="!formIsValid"
+                        >
+                            IMPRIMIR
+                            <v-icon right color="white">print</v-icon>
+                        </v-btn>
+                    </v-layout>
 
-        </v-layout>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-btn color="error" @click="clear()">Fechar</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn color="success" @click="null">Salvar</v-btn>
+                </v-card-actions>
+            </v-card>
+
     </v-container>
 </template>
 
@@ -220,6 +218,12 @@
                 if (!date) return null
                 const [year, month, day] = date.split('-')
                 return `${day}/${month}/${year}`
+            },
+            clear() {
+                this.closeDialog()
+            },
+            closeDialog: function () {
+                this.$emit('close-dialog')
             },
         }
     }
