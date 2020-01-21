@@ -91,13 +91,15 @@
                                                         }">
                                                             <v-list-tile-content>
                                                                 <v-list-tile-title class="primary--text">
-                                                            <span  style="font-weight: bolder">
-                                                                {{item.user.name}}
-                                                            </span>
+                                                                    <span  style="font-weight: bolder">
+                                                                        {{item.user.dependent ? item.user.dependent.name:
+                                                                    item.user.name}}
+                                                                    </span>
                                                                 </v-list-tile-title>
                                                                 <br>
                                                                 <v-list-tile-sub-title class="text-left">
-                                                                    CPF: {{item.user.cpf}}
+                                                                   {{item.user.dependent ? 'Nascimento:' + item.user.dependent.birthDate
+                                                                    : 'CPF:' + item.user.cpf}}
                                                                 </v-list-tile-sub-title>
                                                                 <br>
                                                                 <v-list-tile-sub-title>
