@@ -645,12 +645,13 @@
                     this.cpf= undefined;
                     this.name= undefined;
                     this.numAss= undefined;
-                    this.birth_date = undefined;
+                    this.birthDate = undefined;
                     this.email = undefined;
                     this.telephones = [''];
                     this.addresses = [];
                     this.dependents = [];
-                    this.dependentName = undefined
+                    this.dependentName = undefined;
+                    this.sex = undefined;
                 }
 
                 this.$store.commit('setSelectedPatient', user);
