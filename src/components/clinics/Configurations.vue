@@ -462,8 +462,7 @@
                     this.exam = undefined;
                 }
                 this.option = undefined;
-                this.$store.dispatch('selectClinic', null);
-
+                //this.$store.dispatch('selectClinic', null);
             },
 
             closeDialog: function() {
