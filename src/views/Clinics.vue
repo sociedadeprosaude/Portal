@@ -258,11 +258,11 @@
 
                         <v-tooltip top color="error">
                             <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" @click="deleteItem(item)" small dark fab color="error" class="mr-2"><v-icon>delete</v-icon></v-btn>
+                                <!--<v-btn v-on="on" @click="deleteItem(item)" small dark fab color="error" class="mr-2"><v-icon>delete</v-icon></v-btn>-->
+                                <v-btn v-on="on" @click="confirmDeletion(item)" small dark fab color="error" class="mr-2"><v-icon>delete</v-icon></v-btn>
                             </template>
                             <span>Apagar Clinica</span>
                         </v-tooltip>
-
 <!--                        <v-btn small dark fab color="primary_light" class="mr-2" @click="fixExamsWithouClinics(item)"><v-icon>assignment</v-icon></v-btn>-->
                         <v-tooltip top color="primary">
                             <template v-slot:activator="{ on }">
@@ -313,6 +313,23 @@
         <v-dialog v-model="Configuration" width="800px" text hide-overlay><Configurations @close-dialog="Configuration = false"></Configurations></v-dialog>
         <v-dialog v-model="Consultation" width="500px" text hide-overlay><Consultations @close-dialog="Consultation = false"></Consultations></v-dialog>
         <v-dialog v-model="Exam" width="500px" text hide-overlay><Exams @close-dialog="Exam = false"></Exams></v-dialog>
+
+        <v-dialog v-if="selectedClin" v-model="areyoushure" max-width="350px">
+            <v-card>
+                <v-card-title class="headline">Apagar Clínica ?</v-card-title>
+                <v-divider></v-divider>
+                <v-card-text class="headline">
+                    {{ selectedClin.name }}
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-btn rounded color="error" @click="areyoushure = false">Cancelar</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn rounded color="success" @click="deleteItem(selectedClin)">Confirmar</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
     </v-container>
 </template>
 
@@ -330,6 +347,8 @@
         data: () => ({
             Exam: false,
             Consultation: false,
+            areyoushure: false,
+            selectedClin: undefined,
             dialog: false,
             Product: false,
             Configuration: false,
@@ -521,8 +540,6 @@
                 this.$store.dispatch('selectClinic', item);
             },
 
-
-
             editItem(item) {
                 this.editedIndex = this.clinics.indexOf(item);
                 this.editedItem = Object.assign({}, item);
@@ -537,13 +554,20 @@
                 this.dialog = true;
             },
 
+            confirmDeletion (item) {
+                this.selectedClin = item
+                this.areyoushure =  true
+            },
+
             async deleteItem(item) {
                 const index = this.clinics.indexOf(item);
-                confirm('Are you sure you want to delete this item?')
-                this.loading = true
+                /*confirm('Are you sure you want to delete this item?')*/
+/*                this.loading = true*/
                 await this.$store.dispatch('deleteClinic', item)
                 // await this.$store.dispatch('getClinics')
-                this.loading = false
+/*                this.success = true
+                this.loading = false*/
+                setTimeout(() => { this.areyoushure = false }, 1000)
             },
 
             close() {
