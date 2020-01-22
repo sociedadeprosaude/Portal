@@ -840,7 +840,7 @@ export default {
       await this.$store.dispatch("getDoctors");
       await this.$store.dispatch("getConsultations", {
         start_date: moment()
-          .subtract(2, "hours")
+          .subtract(4, "hours")
           .format("YYYY-MM-DD HH:mm:ss"),
         final_date: moment()
           .add(30, "days")
@@ -853,7 +853,7 @@ export default {
       this.loading = false;
       console.log(
         moment()
-          .subtract(2, "hours")
+          .subtract(4, "hours")
           .format("YYYY-MM-DD HH:mm:ss")
       );
     },
