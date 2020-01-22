@@ -530,6 +530,9 @@
             computedDateFormattedSelecionado() {
                 return this.formatDate(this.index_Selecionado.data)
             },
+            computedDateFormattedDependent(val){
+                return this.formatDate(val ? val: this. index_Selecionado.pacienteObj.dependent.birthDate)
+            },
             consultas() {
                  console.log('/entrou aqui',this.especialidade)
                 let consultas = this.$store.getters.consultations.filter((a) => {
@@ -628,6 +631,7 @@
                     })
                 this.loading = false
             },
+            
 
             formatConsultationsArray(consultations) {
                 let newArray = []
@@ -689,9 +693,14 @@
                 this.$refs.menu.save(date)
             },
             formatDate(date) {
-                if (!date) return null
-                const [year, month, day] = date.split('-')
-                return `${day}/${month}/${year}`
+               if (!date) return null
+                var patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
+              
+                if(!patt.test(date)){
+                    const [year, month, day] = date.split('-')
+                    return `${day}/${month}/${year}`
+                }
+                return date
             },
             clearRecibo() {
                 this.index_Selecionado.num_recibo = ''

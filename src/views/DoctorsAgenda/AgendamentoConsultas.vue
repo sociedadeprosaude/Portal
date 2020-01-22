@@ -774,13 +774,15 @@ export default {
           specialty: form.consultation.specialty
         })
         .then(obj => {
+          console.log('Achou')
           this.payment_numberFound = obj;
           this.num_recibo = obj.payment_number;
           this.status = "Pago";
           this.loaderPaymentNumber = false;
         })
-        .catch(() => {
+        .catch((response) => {
           this.loaderPaymentNumber = false;
+           console.log(response)
         });
 
       this.createConsultationForm = form;

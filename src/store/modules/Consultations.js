@@ -105,6 +105,7 @@ const actions = {
 
 
     async addConsultationAppointmentToUser({ commit }, payload) {
+        console.log('agendamento',payload)
         try {
             await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.id).set(payload.consultation)
             if (payload.consultation.type == "Retorno") {
@@ -128,6 +129,7 @@ const actions = {
                         startAt: moment().format('YYYY-MM-DD hh:ss'),
                         type: 'Consultation',
                         consultation: payload.consultation.id,
+                        specialty:payload.consultation.specialty.name
                     }
                 )
             }
@@ -239,12 +241,21 @@ const actions = {
                         })
                     }) */
 
+
+
                 firebase.firestore().collection('users').doc(payload.idPatient).collection('procedures')
                 .where('consultation','==',payload.idConsultation).get()
                 .then((procedure)=>{
                     procedure.forEach((doc)=>{
                         let data = doc.data()
-                        console.log('Criando outra procedure')
+                        console.log(data)
+                        console.log('Criando outra procedure', {
+                            status:['Consulta Paga'],
+                            payment_number:data.payment_number,
+                            startAt: data.startAt,
+                            type:'Consultation',
+                            specialty:data.specialty
+                        })
                         //Criando outra procedure
                         firebase.firestore().collection('users').doc(payload.idPatient).collection('procedures').add(
                             {

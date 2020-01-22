@@ -335,7 +335,7 @@
                                                 rounded
                                                 filled
                                                 v-model="dependent.birthDate"
-                                                v-mask="mask.date"
+                                                v-mask="mask.date "
                                                 :rules="rules"
                                                 prepend-icon="date_range"
                                                 label="Data de Nascimento"></v-text-field>
@@ -479,7 +479,7 @@
                 mask: {
                     maskRG: '#######-#',
                     cpf: '###.###.###-##',
-                    date: '##/##/####',
+                    date:  '##/##/####',
                     telephone: '(##) #####-####',
                     cep: '##.###-###',
                 },
@@ -515,6 +515,8 @@
             dateValid(value){
                 if(value)
                     return value.length < 10 || moment(value,'DD/MM/YYYY').isValid()
+
+                
                 return true
             },
             showUserCard(user) {
@@ -564,9 +566,21 @@
                     return
                 }
                 this.loading = true
+                var teste = []
                 for (let add in this.addresses) {
                     delete this.addresses[add].loading
                 }
+
+                for(let dependent in this.dependents){
+                    var birthDate = moment( this.dependents[dependent].birthDate,"DD/MM/YYYY").format("YYYY-MM-DD")
+                    console.log('formatando',birthDate)
+                    //delete this.dependents[dependent].birthDate
+                   // this.dependents[dependent].birthDate = birthDate
+                   
+                   teste.push(Object.assign({birthDate:birthDate}, {name:this.dependents[dependent].name,sex:this.dependents[dependent].sex,dependentDegree:this.dependents[dependent].dependentDegree}))
+                   
+                }
+                console.log('objeto', teste[0].birthDate)
                 let patient = {
                     name: this.name.toUpperCase(),
                     cpf: this.cpf.replace(/\./g, '').replace('-', ''),
@@ -576,9 +590,11 @@
                     sex: this.sex,
                     telephones: this.telephones,
                     addresses: this.addresses,
-                    dependents:this.dependents,
+                    dependents:teste,
                     type: 'PATIENT'
                 }
+                console.log('objeto', teste)
+                console.log('paciente',patient)
                 await this.$store.dispatch('addUser', patient)
                 this.success = true
                 this.loading = false
@@ -594,8 +610,8 @@
                 this.foundDependents = undefined
             },
             async selectUser(user) {
-                console.log('select user')
                 if (user) {
+                    console.log('<<<---',user.dependents)
                     let intakes = await this.$store.dispatch('getUserIntakes', user)
                     if (intakes) {
                         user.intakes = intakes
@@ -606,7 +622,6 @@
                     }
                 }
                 else {
-                    console.log('eiii')
                     this.cpf= undefined
                     this.name= undefined
                     this.numAss= undefined
@@ -618,7 +633,6 @@
                     this.dependentName = undefined
                     
                 }
-                console.log('eiiijjjjjjj')
                 this.$store.commit('setSelectedPatient', user)
                 this.$store.commit('clearSelectedDependent')
                 this.fillFormUser(user)
@@ -644,7 +658,7 @@
                 this.loading = false
             },
             fillFormUser(user) {
-                console.log(user)
+                console.log('->>>>',user.dependents)
                 this.name = user.name
                 this.cpf = user.cpf
                 this.email = user.email
@@ -652,11 +666,24 @@
                 this.birthDate = moment(user.birth_date).format('DD-MM-YYYY')
                 this.sex = user.sex
                 this.dependents = user.dependents ? user.dependents : []
-                this.telephones = user.telephones
+                this.telephones = user.telephones ? user.telephones : ['']
                 for (let add in user.addresses) {
                     delete user.addresses[add].loading
                 }
-                this.addresses = user.addresses
+                this.addresses = user.addresses 
+                if(user.dependents){
+                    for(let index in user.dependents){
+                        var patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
+                        var date  = user.dependents[index].birthDate
+                        if(!patt.test(date))
+                            date = moment(date,"YYYY-MM-DD").format("DD/MM/YYYY")
+                        user.dependents[index].birthDate = date
+                    }
+                     this.dependents = user.dependents
+                }else{
+                     this.dependents = []
+                }
+
             },
             fillFormOldUser(oldUser) {
                 this.name = oldUser.nome

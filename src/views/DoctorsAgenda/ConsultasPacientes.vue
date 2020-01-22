@@ -189,7 +189,7 @@
                                                          <v-flex xs12 sm6 v-if="index_Selecionado.consultation && index_Selecionado.consultation.dependent">
                                                             <v-text-field readonly hide-details outlined
                                                                           prepend-icon="person" label="Nascimento do Dependente"
-                                                                          v-model="index_Selecionado.consultation.dependent.birthDate">
+                                                                          v-model="computedDateFormattedDependent">
                                                             </v-text-field>
                                                         </v-flex>
                                                         <v-flex xs12 sm6 v-if="index_Selecionado.consultation && index_Selecionado.consultation.dependent">
@@ -373,7 +373,7 @@
                 <!-- <v-icon dark>done</v-icon> -->
             </v-snackbar>
         <v-dialog v-model="documentDialog">
-            <consultation-document @close="documentDialog = false" :openDocument="documentDialog" :consultation="index_Selecionado.consultation"></consultation-document>
+            <consultation-document @close="documentDialog = false" :openDocument="documentDialog" :consultation="index_Selecionado .consultation"></consultation-document>
         </v-dialog>
     </v-container>
 </template>
@@ -428,6 +428,9 @@
             computedDateFormattedSelecionado() {
                 return this.formatDate(this.index_Selecionado.data)
             },
+            computedDateFormattedDependent(){
+                return this.formatDate(this.index_Selecionado.consultation.dependent.birthDate)
+            },
             visualizarConsulta: {
                 get: function () {
                     return this.index_Selecionado;
@@ -435,6 +438,7 @@
                 set: function (index) {
                         this.status_Selecionado = index.status
                         this.index_Selecionado = {...index}
+                        console.log('Consulllll->>',this.index_Selecionado.consultation)
                         this.statusOptions.splice(1,1)
                         this.statusOptions.push( {text: index.status})
                         this.dialog = true
@@ -509,9 +513,18 @@
         methods: {
             formatDate(date) {
                 if (!date) return null
-                const [year, month, day] = date.split('-')
-                return `${day}/${month}/${year}`
+                var patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
+              
+                if(!patt.test(date)){
+                    const [year, month, day] = date.split('-')
+                    return `${day}/${month}/${year}`
+                }
+                return date
+                
             },
+
+            
+
             clearRecibo() {
                 this.index_Selecionado.num_recibo = ''
             },

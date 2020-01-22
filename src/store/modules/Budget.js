@@ -382,8 +382,6 @@ const actions = {
                 reject('Payment Number not found')
             } */
 
-        }).catch(() => {
-            reject('Error!')
         })
 
     }

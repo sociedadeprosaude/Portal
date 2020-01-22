@@ -45,14 +45,14 @@
                         </v-flex>
                         <v-flex xs6 class="text-left">
                             <v-layout column wrap align-start justify-start>
-                                <span class="my-sub-headline primary--text" style="font-size: 1.4em">{{user.name}}</span>
-                                <v-flex>
+                                <span class="my-sub-headline primary--text" style="font-size: 1.4em">{{dependent ? dependent.name : user.name}}</span>
+                                <v-flex v-if="!dependent">
                                     <span class="primary--text font-weight-bold">CPF: </span>
                                     <span class="font-weight-bold">{{user.cpf}}</span>
                                 </v-flex>
                                 <v-flex>
                                     <span class="primary--text font-weight-bold">Data de Nascimento: </span>
-                                    <span class="font-weight-bold">{{user.birth_date | dateFilter}}</span><br>
+                                    <span class="font-weight-bold">{{this.birthDate}}</span><br>
                                 </v-flex>
                                 <v-flex>
                                     <span class="primary--text font-weight-bold">Idade: </span>
@@ -93,9 +93,15 @@
         name: "Receipt",
         props: ['consultation','openDocument'],
         computed: {
-            idade () {
-                return moment().diff(moment(this.user.birth_date, 'YYYY-MM-DD'), 'years')
-            },
+            /* idade () {
+                var date = this.dependent ? this.dependent.birthDate : this.user.birth_date
+                 var patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
+              
+                if(patt.test(date))
+                    date = moment(date,"DD/MM/YYYY").format("YYYY-MM-DD")
+                
+                return moment().diff(moment(date, 'YYYY-MM-DD'), 'years')
+            }, */
             user() {
                 return this.$store.getters.selectedPatient
             },
@@ -108,11 +114,31 @@
             consultationHour: moment().locale('pt-BR').format('YYYY-MM-DD HH:mm:ss'),
             hoje: moment().locale('pt-BR').format('DD/MM/YYYY HH:mm:ss'),
             dia: moment().format('dddd'),
+            dependent:undefined,
+            idade:'',
+            birthDate:''
         }),
+        watch:{
+           
+        },
         mounted(){
             this.saveConsultationHour()
+            this.dependent =  this.consultation.dependent
+            this.formatDates()
         },
         methods: {
+             formatDates(){
+                
+                var date = this.dependent ? this.dependent.birthDate : this.user.birth_date
+                 var patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
+                console.log('date',date)
+                if(patt.test(date))
+                    date = moment(date,"DD/MM/YYYY").format("YYYY-MM-DD")
+                
+                this.idade = moment().diff(moment(date, 'YYYY-MM-DD'), 'years')
+                this.birthDate = moment(date).format('DD/MM/YYYY')
+                //return moment().diff(moment(date, 'YYYY-MM-DD'), 'years')
+            },
             print() {
                 window.print()
             },
