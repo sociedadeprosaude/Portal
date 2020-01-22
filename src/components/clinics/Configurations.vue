@@ -16,8 +16,8 @@
                                 outlined
                                 readonly
                                 v-model="selectedClinic.name"
-                                hide-details
-                        ></v-text-field>
+                                hide-details>
+                        </v-text-field>
                     </v-flex>
 
                     <v-flex xs12>
@@ -29,11 +29,11 @@
                                 v-model="option"
                                 clearable
                                 chips
-                                hide-details
-                        ></v-select>
+                                hide-details>
+                        </v-select>
                     </v-flex>
 
-                    <v-layout v-if="option === 'Consultas' && allSpecialties.length !== 0" align-center justify-center wrap>
+                    <v-layout v-if="option === 'Consultas' && allSpecialties.length !== 0" class="align-center justify-center" wrap>
                         <strong>Consultas Cadastradas da Clinica para EDIÇÂO</strong>
                         <v-expansion-panels  v-model="panel" accordion >
                             <v-expansion-panel v-for="(item,index) in allSpecialties" :key="index" >
@@ -90,7 +90,7 @@
                         </v-expansion-panels>
                     </v-layout>
 
-                    <v-layout v-else-if="option === 'Exames' && allExams.length !== 0" align-center justify-center wrap>
+                    <v-layout v-else-if="option === 'Exames' && allExams.length !== 0" class="align-center justify-center"  wrap>
                         <strong>Exames Cadastrados da Clinica para EDIÇÂO</strong>
                         <v-flex>
                             <v-combobox
@@ -123,7 +123,7 @@
                         </v-btn>
                     </v-layout>
 
-                    <v-layout v-else-if="option === 'Exames' && allExams.length === 0" align-center justify-center wrap>
+                    <v-layout v-else-if="option === 'Exames' && allExams.length === 0" class="align-center justify-center" wrap>
                         <v-card-text>
                             <v-container grid-list-md>
                                 <v-layout align-center justify-center wrap>
@@ -137,10 +137,10 @@
                         </v-card-text>
                     </v-layout>
 
-                    <v-layout v-else-if="option === 'Consultas' && allSpecialties.length === 0" align-center justify-center wrap>
+                    <v-layout v-else-if="option === 'Consultas' && allSpecialties.length === 0" class="align-center justify-center" wrap>
                         <v-card-text>
                             <v-container grid-list-md>
-                                <v-layout align-center justify-center wrap>
+                                <v-layout class="align-center justify-center" wrap>
                                     <v-flex>
                                         <v-alert type="error" outlined text>
                                             Não há <strong>Consultas</strong> Cadastradas para esta Clinica.
@@ -151,10 +151,10 @@
                         </v-card-text>
                     </v-layout>
 
-                    <v-layout v-else align-center justify-center wrap>
+                    <v-layout v-else class="align-center justify-center" wrap>
                         <v-card-text>
                             <v-container grid-list-md>
-                                <v-layout align-center justify-center wrap>
+                                <v-layout class="align-center justify-center" wrap>
                                     <v-flex>
                                         <v-alert type="warning" outlined text>
                                             Selecione uma das Opções acima para
@@ -167,7 +167,7 @@
                         </v-card-text>
                     </v-layout>
 
-                    <v-layout v-if="formConsultation === true" align-center justify-center row wrap>
+                    <v-layout v-if="formConsultation === true" class="align-center justify-center" row wrap>
                         <v-flex xs12></v-flex><v-flex xs12></v-flex><v-flex xs12></v-flex>
                         <v-flex xs12>
                             <v-text-field
@@ -176,8 +176,8 @@
                                     outlined
                                     v-model="specialtie"
                                     readonly
-                                    hide-details
-                            ></v-text-field>
+                                    hide-details>
+                            </v-text-field>
                         </v-flex>
                         <v-flex xs12>
                             <v-text-field
@@ -186,8 +186,8 @@
                                     outlined
                                     v-model="doctor"
                                     readonly
-                                    hide-details
-                            ></v-text-field>
+                                    hide-details>
+                            </v-text-field>
                         </v-flex>
                         <v-flex xs12>
                             <v-select
@@ -198,8 +198,8 @@
                                     v-model="payment"
                                     clearable
                                     chips
-                                    hide-details
-                            ></v-select>
+                                    hide-details>
+                            </v-select>
                         </v-flex>
                         <v-flex xs6>
                             <v-currency-field
@@ -209,8 +209,8 @@
                                     label="Preço de Custo"
                                     prefix="R$"
                                     v-model="cost"
-                                    hide-details
-                            ></v-currency-field>
+                                    hide-details>
+                            </v-currency-field>
                         </v-flex>
                         <v-flex xs6>
                             <v-currency-field
@@ -220,8 +220,8 @@
                                     label="Preço de Venda"
                                     prefix="R$"
                                     v-model="price"
-                                    hide-details
-                            ></v-currency-field>
+                                    hide-details>
+                            </v-currency-field>
                         </v-flex>
                         <v-flex xs12>
                             <v-textarea
@@ -233,12 +233,12 @@
                                     maxlength="280"
                                     full-width
                                     single-line
-                                    hide-details
-                            ></v-textarea>
+                                    hide-details>
+                            </v-textarea>
                         </v-flex>
                         <v-divider></v-divider>
                         <v-card-actions>
-                            <v-layout align-center justify-center>
+                            <v-layout class="align-center justify-center" >
                                 <v-btn color="error" @click="clear(), closeDialog()">CANCELAR</v-btn>
                                 <v-spacer></v-spacer>
                                 <v-btn
@@ -252,7 +252,7 @@
                         </v-card-actions>
                     </v-layout>
 
-                    <v-layout v-if="formExam === true" align-center justify-center row wrap>
+                    <v-layout v-if="formExam === true" class="align-center justify-center " row wrap>
                         <v-flex xs12></v-flex><v-flex xs12></v-flex><v-flex xs12></v-flex>
 
                         <v-flex xs12>
@@ -268,8 +268,8 @@
                                     label="Preço de Custo"
                                     prefix="R$"
                                     v-model="exam.cost"
-                                    hide-details
-                            ></v-currency-field>
+                                    hide-details>
+                            </v-currency-field>
                         </v-flex>
                         <v-flex xs6>
                             <v-currency-field
@@ -279,8 +279,8 @@
                                     label="Preço de Venda"
                                     prefix="R$"
                                     v-model="exam.price"
-                                    hide-details
-                            ></v-currency-field>
+                                    hide-details>
+                            </v-currency-field>
                         </v-flex>
                         <v-flex xs12>
                             <v-textarea
@@ -292,8 +292,8 @@
                                     maxlength="280"
                                     full-width
                                     single-line
-                                    hide-details
-                            ></v-textarea>
+                                    hide-details>
+                            </v-textarea>
                         </v-flex>
                         <v-divider></v-divider>
                         <v-card-actions>
@@ -442,10 +442,28 @@
             },
 
             clear () {
-                /*
-                 */
-                //this.closeDialog()
-                //this.$store.dispatch('selectClinic', null);
+                this.closeDialog();
+                if (this.option === 'Consultas') {
+                    this.formConsultation = undefined;
+                    this.consultation = undefined;
+                    this.specialtie = undefined;
+                    this.cpf = undefined;
+                    this.crm = undefined;
+                    this.doctor = undefined;
+                    this.cost = 0;
+                    this.price = 0;
+                    this.rules = null;
+                    this.obs = null;
+                    this.payment = undefined;
+                    this.panel =  [0];
+                }
+                if (this.option === 'Exames'){
+                    this.formExam = undefined;
+                    this.exam = undefined;
+                }
+                this.option = undefined;
+                this.$store.dispatch('selectClinic', null);
+
             },
 
             closeDialog: function() {
