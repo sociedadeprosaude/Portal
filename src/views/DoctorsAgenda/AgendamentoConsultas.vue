@@ -571,7 +571,11 @@ export default {
 
   computed: {
     clinics() {
-      return this.$store.getters.clinics;
+      let val = this.$store.getters.clinics.filter(a => {
+        return a.property;
+      });
+      return val;
+      //return this.$store.getters.clinics;
     },
     specialties() {
       //return this.$store.getters.specialties;
