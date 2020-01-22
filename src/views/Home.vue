@@ -189,12 +189,6 @@
                                 permission: 'Caixa',
                                 icon: 'receipt',
                             },
-                            {
-                                title: 'Atendimentos de Consultas e Retornos',
-                                to: '/MedicalCare',
-                                permission: 'Caixa',
-                                icon: 'assignment_ind',
-                            },
                             // {
                             //     title: 'Exames',
                             //     to: '/exames',
@@ -207,6 +201,17 @@
                             //     to: '/units',
                             //     icon: 'storefront'
                             // }
+                        ]
+                    },
+                    {
+                        title: 'Atendimento Médico',
+                        pages: [
+                            {
+                                title: 'Atendimentos de Consultas e Retornos',
+                                to: '/MedicalCare',
+                                /*permission: 'doctors',*/
+                                icon: 'assignment_ind',
+                            },
                         ]
                     },
                     {
@@ -244,6 +249,8 @@
                         return a === this.pages[0]
                     } else if (this.user.group === 'gerente') {
                         return a === this.pages[0] || a === this.pages[1]
+                    } else if (this.user.group === 'doctors') {
+                        return a === this.pages[3]
                     }
                     return false
                 })

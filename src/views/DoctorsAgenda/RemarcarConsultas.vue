@@ -207,7 +207,7 @@
                                 <v-card-text>
                                     <v-container grid-list-md>
                                         <v-layout wrap row class="align-center">
-                                            <v-flex xs12 sm6>
+                                            <v-flex xs12 sm12>
                                                 <v-text-field
                                                         readonly
                                                         prepend-icon="person"
@@ -223,13 +223,40 @@
                                                         label="CPF"
                                                 ></v-text-field>
                                             </v-flex>
-                                            <v-flex xs12>
+                                            <v-flex xs12 sm6>
                                                 <v-text-field
                                                         v-if="createConsultationForm.user.association_number"
                                                         readonly
                                                         prepend-icon="credit_card"
                                                         v-model="createConsultationForm.user.association_number"
                                                         label="Nº do associado"
+                                                ></v-text-field>
+                                            </v-flex>
+                                            <v-flex xs12 v-if="createConsultationForm.user.dependent">
+                                                <v-text-field
+                                                readonly
+                                                hide-details
+                                                prepend-icon="person"
+                                                label="Nome do Dependente"
+                                                v-model="createConsultationForm.user.dependent.name"
+                                                ></v-text-field>
+                                            </v-flex>
+                                            <v-flex xs12 sm6 v-if="createConsultationForm.user.dependent">
+                                                <v-text-field
+                                                readonly
+                                                hide-details
+                                                prepend-icon="person"
+                                                label="Nascimento do Dependente"
+                                                v-model="createConsultationForm.user.dependent.birthDate"
+                                                ></v-text-field>
+                                            </v-flex>
+                                            <v-flex xs12 sm6 v-if="createConsultationForm.user.dependent">
+                                                <v-text-field
+                                                readonly
+                                                hide-details
+                                                prepend-icon="credit_card"
+                                                v-model="createConsultationForm.user.dependent.dependentDegree"
+                                                label=" Grau do Dependente"
                                                 ></v-text-field>
                                             </v-flex>
                                             <v-flex xs12 sm12 md12 lg12>

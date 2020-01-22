@@ -14,6 +14,7 @@ import Doctors from '@/views/Doctors'
 import Clinics from "@/views/Clinics"
 import Units from "./views/Units";
 import Bills from "./views/Bills";
+
 import MedicalCare from "./views/MedicalCare";
 import Attendance from "./views/Attendance";
 import Tickets from "./views/Tickets";
