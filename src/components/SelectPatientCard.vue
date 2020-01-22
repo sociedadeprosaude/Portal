@@ -39,7 +39,8 @@
                                         prepend-icon="account_circle"
                                         v-model="name"
                                         :disabled="selectedPatient !== undefined"
-                                        label="Nome"></v-text-field>
+                                        label="Nome">
+                                </v-text-field>
                             </v-flex>
                             <v-flex xs12>
                                 <v-text-field
@@ -48,8 +49,10 @@
                                         rounded
                                         filled
                                         v-model="cpf"
+                                        v-mask="mask.cpf"
                                         :disabled="selectedPatient !== undefined"
-                                        label="CPF"></v-text-field>
+                                        label="CPF">
+                                </v-text-field>
                             </v-flex>
                             <v-spacer></v-spacer>
                             <v-flex xs12>
@@ -60,14 +63,16 @@
                                         filled
                                         v-model="numAss"
                                         :disabled="selectedPatient !== undefined"
-                                        label="Numero do Associado"></v-text-field>
+                                        label="Numero do Associado">
+                                </v-text-field>
                             </v-flex>
                             <v-flex xs12 class="text-right">
                                 <span v-if="searchError">
                                     {{searchError}}
                                 </span>
                                 <submit-button class="mx-3" @click="searchPatientOldDatabase()" :loading="loading" :success="success"
-                                               text="Buscar antigo sistema"></submit-button>
+                                               text="Buscar antigo sistema">
+                                </submit-button>
                                 <submit-button @click="searchPatient()" :loading="loading" :success="success"
                                                text="Buscar"></submit-button>
                             </v-flex>
@@ -129,7 +134,8 @@
                                         v-model="birthDate"
                                         v-mask="mask.date"
                                         prepend-icon="date_range"
-                                        label="Data de Nascimento"></v-text-field>
+                                        label="Data de Nascimento">
+                                </v-text-field>
                             </v-flex>
                             <v-flex sm6 xs12 class="px-3">
                                 <v-text-field
@@ -139,7 +145,8 @@
                                         placeholder="Campo obrigatório *"
                                         v-mask="mask.cpf"
                                         v-model="cpf"
-                                        label="CPF"></v-text-field>
+                                        label="CPF">
+                                </v-text-field>
                             </v-flex>
                             <v-flex sm12 xs12 class="px-3">
                                 <v-text-field
@@ -148,10 +155,13 @@
                                         filled
                                         v-model="email"
                                         prepend-icon="email"
-                                        label="Email"></v-text-field>
+                                        label="Email">
+                                </v-text-field>
                             </v-flex>
                             <v-flex sm6 xs12 class="px-3">
-                                <v-select outlined rounded filled label="Sexo" :items="['Feminino' , 'Masculino']" v-model="sex"></v-select>
+                                <v-select outlined rounded filled label="Sexo" :items="['Feminino' , 'Masculino']"
+                                          v-model="sex">
+                                </v-select>
                             </v-flex>
                             <v-flex sm6 xs12>
                                 <v-text-field
@@ -160,7 +170,8 @@
                                         filled
                                         disabled
                                         v-model="numAss"
-                                        label="Nun. Associado"></v-text-field>
+                                        label="Nun. Associado">
+                                </v-text-field>
                             </v-flex>
                             <v-flex sm12 xs12 class="px-3">
                                 <v-layout row wrap class="align-center" v-for="(tel, index) in telephones" :key="index">
@@ -173,7 +184,8 @@
                                                 placeholder="Campo obrigatório *"
                                                 v-mask="mask.telephone"
                                                 prepend-icon="phone"
-                                                label="Telefones"></v-text-field>
+                                                label="Telefones">
+                                        </v-text-field>
                                     </v-flex>
                                     <v-flex xs2>
                                         <v-btn
@@ -208,44 +220,53 @@
                                             <v-text-field
                                                     :error="address.cepError"
                                                     label="CEP" class="ml-3" v-model="address.cep"
-                                                    v-mask="mask.cep"></v-text-field>
+                                                    v-mask="mask.cep">
+                                            </v-text-field>
                                             <v-btn v-if="!address.loading" @click="getAddressByCep(address)"
                                                    class="transparent" text>
                                                 <v-icon>search</v-icon>
                                             </v-btn>
                                             <v-progress-circular indeterminate color="white"
-                                                                 v-else></v-progress-circular>
+                                                                 v-else>
+                                            </v-progress-circular>
                                         </v-layout>
                                     </v-flex>
                                     <v-spacer></v-spacer>
                                     <v-flex xs12 sm3>
                                         <v-select label="UF" hide-details single-line v-model="address.uf"
-                                                  :items="states" menu-props="auto"></v-select>
+                                                  :items="states" menu-props="auto">
+                                        </v-select>
                                     </v-flex>
                                     <v-spacer></v-spacer>
                                     <v-flex xs12 sm3>
                                         <v-select v-if="address.uf" label="Cidade" class="mr-2" single-line
                                                   v-model="address.city" :items="cities[address.uf]" menu-props="auto"
-                                                  hide-details></v-select>
+                                                  hide-details>
+                                        </v-select>
                                     </v-flex>
 
                                     <v-flex xs12 sm10 class="px-3">
                                         <v-text-field label="Logradouro" class="ml-2"
-                                                      v-model="address.street"></v-text-field>
+                                                      v-model="address.street">
+                                        </v-text-field>
                                     </v-flex>
                                     <v-flex xs12 sm2>
                                         <v-text-field label="Numero" class="mr-2"
-                                                      v-model="address.number"></v-text-field>
+                                                      v-model="address.number">
+                                        </v-text-field>
                                     </v-flex>
                                     <v-flex xs12 sm10 class="px-3">
                                         <v-text-field label="Complemento" class="ml-2"
-                                                      v-model="address.complement"></v-text-field>
+                                                      v-model="address.complement">
+                                        </v-text-field>
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
                             <v-flex xs12 class="text-right">
-                                <submit-button :disabled="!(this.name != '' && this.cpf != '' && this.birthDate != '' && this.telephones != '')" :success="success" @click="registerPatient()" :loading="loading"
-                                               text="Salvar"></submit-button>
+                                <submit-button :disabled="!(this.name !== '' && this.cpf !== '' && this.birthDate !== ''
+                                 && this.telephones !== '')" :success="success" @click="registerPatient()" :loading="loading"
+                                               text="Salvar">
+                                </submit-button>
                             </v-flex>
                         </v-layout>
                     </v-card>
@@ -262,7 +283,7 @@
     import {mask} from 'vue-the-mask'
     import SubmitButton from "./SubmitButton";
     import PatientCard from "./PatientCard";
-    var moment = require("moment")
+    var moment = require("moment");
     export default {
         directives: {
             mask,
@@ -278,10 +299,10 @@
         },
         computed: {
           selectedPatient() {
-              let user = this.$store.getters.selectedPatient
+              let user = this.$store.getters.selectedPatient;
               if (user) {
-                  this.name = user.name
-                  this.cpf = user.cpf
+                  this.name = user.name;
+                  this.cpf = user.cpf;
                   this.numAss = user.association_number
               }
               return this.$store.getters.selectedPatient
@@ -321,41 +342,41 @@
             },
             validateFiedls() {
                 if (!this.name || this.name.length === 0) {
-                    this.formError = 'Nome não pode ser vazio'
+                    this.formError = 'Nome não pode ser vazio';
                     return false
                 }
                 if (!this.cpf || this.cpf.length === 0) {
-                    this.formError = 'CPF não pode ser vazio'
+                    this.formError = 'CPF não pode ser vazio';
                     return false
                 }
                 if (!this.birthDate) {
-                    this.formError = 'Preencha a data de nascimento'
+                    this.formError = 'Preencha a data de nascimento';
                     return false
                 }
                 if (this.telephones[0].length === 0) {
-                    this.formError = 'Preencha um telefone'
+                    this.formError = 'Preencha um telefone';
                     return false
                 }
                 return true
             },
             async getAddressByCep(address) {
-                address.loading = true
+                address.loading = true;
                 let resp = await this.$store.dispatch('getAddressByCep', address.cep.replace('.', '').replace('-', ''))
                 if (resp.erro) {
-                    address.cepError = true
+                    address.cepError = true;
                     return
                 }
                 address.street = resp.logradouro
                 address.complement = resp.complemento
                 address.city = resp.localidade
-                address.uf = resp.uf
+                address.uf = resp.uf;
                 address.loading = false
             },
             async registerPatient() {
                 if (!this.validateFiedls()) {
                     return
                 }
-                this.loading = true
+                this.loading = true;
                 let patient = {
                     name: this.name.toUpperCase(),
                     cpf: this.cpf.replace(/\./g, '').replace('-', ''),
@@ -366,52 +387,52 @@
                     telephones: this.telephones,
                     addresses: this.addresses,
                     type: 'PATIENT'
-                }
-                await this.$store.dispatch('addUser', patient)
-                this.success = true
-                this.loading = false
-                this.selectUser(patient)
+                };
+                await this.$store.dispatch('addUser', patient);
+                this.success = true;
+                this.loading = false;
+                this.selectUser(patient);
                 setTimeout(() => {
                     this.success = false
                 }, 1000)
             },
             async selectUser(user) {
                 if (user) {
-                    let intakes = await this.$store.dispatch('getUserIntakes', user)
+                    let intakes = await this.$store.dispatch('getUserIntakes', user);
                     if (intakes) {
                         user.intakes = intakes
                     }
-                    let budgets = await this.$store.dispatch('getUserBudgets', user)
+                    let budgets = await this.$store.dispatch('getUserBudgets', user);
                     if (budgets) {
                         user.budgets = budgets
                     }
                 }
                 else {
-                    this.cpf= undefined
-                    this.name= undefined
+                    this.cpf= undefined;
+                    this.name= undefined;
                     this.numAss= undefined
                 }
-                this.$store.commit('setSelectedPatient', user)
-                this.foundUsers = undefined
+                this.$store.commit('setSelectedPatient', user);
+                this.foundUsers = undefined;
                 this.addPatient = false
             },
             async searchPatient() {
-                this.loading = true
+                this.loading = true;
                 let users = await this.$store.dispatch('searchUser', {
                     name: this.name,
                     cpf: this.cpf,
                     association_number: this.numAss,
                     type: 'patient'
-                })
-                this.foundUsers = users
+                });
+                this.foundUsers = users;
                 this.loading = false
             },
             fillFormOldUser(oldUser) {
-                this.name = oldUser.nome
-                this.numAss = parseInt(oldUser.codigo)
-                this.birthDate = moment(oldUser.nasc).format('DD-MM-YYYY')
-                this.sex = oldUser.sexo === 'M' ? 'Masculino' : 'Feminino'
-                this.telephones = []
+                this.name = oldUser.nome;
+                this.numAss = parseInt(oldUser.codigo);
+                this.birthDate = moment(oldUser.nasc).format('DD-MM-YYYY');
+                this.sex = oldUser.sexo === 'M' ? 'Masculino' : 'Feminino';
+                this.telephones = [''];
                 if (oldUser.telefone.length > 0) {
                     this.telephones.push(oldUser.telefone)
                 }
@@ -427,23 +448,23 @@
                 if (this.telephones.length === 0) {
                     this.telephones = ['']
                 }
-                let address = {}
+                let address = {};
                 address.street = oldUser.rua
-                address.complement = oldUser.complemento
-                address.city = oldUser.cid
-                address.uf = oldUser.uf
-                address.cep = oldUser.cep
-                address.number = oldUser.endenume
+                address.complement = oldUser.complemento;
+                address.city = oldUser.cid;
+                address.uf = oldUser.uf;
+                address.cep = oldUser.cep;
+                address.number = oldUser.number;
                 this.addresses.push(address)
             },
             async searchPatientOldDatabase() {
-                this.loading = true
-                let oldUser = await this.$store.dispatch('searchUserFromOldDatabase', this.numAss)
+                this.loading = true;
+                let oldUser = await this.$store.dispatch('searchUserFromOldDatabase', this.numAss);
                 if(oldUser) {
-                    this.addPatient = true
+                    this.addPatient = true;
                     this.fillFormOldUser(oldUser)
                 }
-                this.searchError = 'Nenhum associado encontrado'
+                this.searchError = 'Nenhum associado encontrado';
                 this.loading = false
             },
             handleEnter(e) {
