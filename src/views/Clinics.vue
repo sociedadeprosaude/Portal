@@ -8,6 +8,7 @@
                         :items="clinics"
                         sort-by="cnpj"
                         class="elevation-6"
+                        :items-per-page="-1"
                 >
                     <template v-slot:top>
                         <v-flex xs12 class="text-right pa-2">
@@ -247,15 +248,50 @@
                     </template>
 
                     <template v-slot:item.action="{ item }">
-                        <v-btn @click="editItem(item)" small dark fab color="warning" class="mr-2"><v-icon>edit</v-icon></v-btn>
-                        <v-btn @click="deleteItem(item)" small dark fab color="error" class="mr-2"><v-icon>delete</v-icon></v-btn>
+
+                        <v-tooltip left color="warning">
+                            <template v-slot:activator="{ on }">
+                                <v-btn v-on="on" @click="editItem(item)" small dark fab color="warning" class="mr-2"><v-icon>edit</v-icon></v-btn>
+                            </template>
+                            <span>Editar Clinica</span>
+                        </v-tooltip>
+
+                        <v-tooltip top color="error">
+                            <template v-slot:activator="{ on }">
+                                <v-btn v-on="on" @click="deleteItem(item)" small dark fab color="error" class="mr-2"><v-icon>delete</v-icon></v-btn>
+                            </template>
+                            <span>Apagar Clinica</span>
+                        </v-tooltip>
 
 <!--                        <v-btn small dark fab color="primary_light" class="mr-2" @click="fixExamsWithouClinics(item)"><v-icon>assignment</v-icon></v-btn>-->
+                        <v-tooltip top color="primary">
+                            <template v-slot:activator="{ on }">
+                                <v-btn v-on="on" small dark fab color="primary" class="mr-2" @click="selectClinic(item), Consultation = true"><v-icon>assignment</v-icon></v-btn>
+                            </template>
+                            <span>Adicionar Consultas</span>
+                        </v-tooltip>
 
-                        <v-btn small dark fab color="primary" class="mr-2" @click="selectClinic(item), Consultation = true"><v-icon>assignment</v-icon></v-btn>
-                        <v-btn small dark fab color="primary" class="mr-2" @click="selectClinic(item), Exam = true"><v-icon>poll</v-icon></v-btn>
-                        <v-btn small dark fab color="error" class="mr-2" @click="selectClinic(item), Product = true"><v-icon>assignment_late</v-icon></v-btn>
-                        <v-btn small dark fab color="warning" class="mr-2" @click="selectClinic(item), Configuration = true "><v-icon>assignment_turned_in</v-icon></v-btn>
+                        <v-tooltip top color="primary">
+                            <template v-slot:activator="{ on }">
+                                <v-btn v-on="on" small dark fab color="primary" class="mr-2" @click="selectClinic(item), Exam = true"><v-icon>poll</v-icon></v-btn>
+                            </template>
+                            <span>Adicionar Exames</span>
+                        </v-tooltip>
+
+                        <v-tooltip top color="error">
+                            <template v-slot:activator="{ on }">
+                                <v-btn v-on="on" small dark fab color="error" class="mr-2" @click="selectClinic(item), Product = true"><v-icon>assignment_late</v-icon></v-btn>
+                            </template>
+                            <span>Apagar Exames e Consultas</span>
+                        </v-tooltip>
+
+                        <v-tooltip right color="warning">
+                            <template v-slot:activator="{ on }">
+                                <v-btn v-on="on" small dark fab color="warning" class="mr-2" @click="selectClinic(item), Configuration = true "><v-icon>assignment_turned_in</v-icon></v-btn>
+                            </template>
+                            <span>Editar Exames e Consultas</span>
+                        </v-tooltip>
+
                     </template>
 
                     <template v-slot:no-results>

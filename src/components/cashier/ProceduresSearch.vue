@@ -2,10 +2,10 @@
     <v-container class="ma-0 pa-0">
         <v-layout row wrap>
             <v-flex class="hidden-print-only" xs12>
-                <v-card class="elevation-0">
+                <v-card class="elevation-0 pl-2 pr-4">
                     <v-flex xs12>
-                        <v-card-title>
-                            <v-flex xs6>
+                        <v-card-title class="pa-0">
+                            <v-flex xs12>
                                 <v-text-field
                                         label="Pesquisa"
                                         v-model="search"
@@ -16,18 +16,26 @@
                                         prepend-icon="search">
                                 </v-text-field>
                             </v-flex>
-                            <v-btn outlined class="mx-2"
-                                   :color="categorySelect === 'exam' ? 'accent' : 'primary_light'" rounded
-                                   @click="selectCategory('exam')">Exames
-                            </v-btn>
-                            <v-btn outlined class="mx-2"
-                                   :color="categorySelect === 'appointment' ? 'accent' : 'primary_light'" rounded
-                                   @click="selectCategory('appointment')">{{specialtiesLoaded ? 'Consultas' : 'Carregando consultas...'}}
-                            </v-btn>
-                            <v-btn outlined class="mx-2"
-                                   :color="categorySelect === 'package' ? 'accent' : 'primary_light'" rounded
-                                   @click="selectCategory('package')">Pacotes
-                            </v-btn>
+                            <v-flex xs12 class="text-center">
+                                <v-btn outlined class="mx-2"
+                                       :color="categorySelect === 'exam' ? 'accent' : 'primary_light'" rounded
+                                       @click="selectCategory('exam')">
+                                    <span class="hidden-xs-only">Exames</span>
+                                    <img src="@/assets/icons/lab.svg" height="24px" class="hidden-sm-and-up">
+                                </v-btn>
+                                <v-btn outlined class="mx-2"
+                                       :color="categorySelect === 'appointment' ? 'accent' : 'primary_light'" rounded
+                                       @click="selectCategory('appointment')">
+                                    <span class="hidden-xs-only">{{specialtiesLoaded ? 'Consultas' : 'Carregando consultas...'}}</span>
+                                    <img src="@/assets/icons/doctor.svg" height="24px" class="hidden-sm-and-up">
+                                </v-btn>
+                                <v-btn outlined class="mx-2"
+                                       :color="categorySelect === 'package' ? 'accent' : 'primary_light'" rounded
+                                       @click="selectCategory('package')">
+                                    <span class="hidden-xs-only">Pacotes</span>
+                                    <img src="@/assets/icons/box.svg" height="24px" class="hidden-sm-and-up">
+                                </v-btn>
+                            </v-flex>
                         </v-card-title>
                     </v-flex>
                     <v-fade-transition>
@@ -37,7 +45,7 @@
                                     <v-card v-for="item in items" class="my-3" :key="item.id">
                                         <v-card-title class="pt-2 " v-text="item.name"></v-card-title>
                                         <v-card-text v-if="categorySelect === 'exam'">
-                                            <v-slide-group show-arrows>
+                                            <v-slide-group >
                                                 <v-slide-item v-for="n in item.clinics"
                                                               :key="n.name"
                                                               v-slot:default="{ active, toggle }">

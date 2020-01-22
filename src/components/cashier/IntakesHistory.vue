@@ -23,7 +23,7 @@
                         </v-btn>
                     </v-btn-toggle>
                 </v-flex>
-                <div v-if="option === 'intakes'">
+                <div v-show="option === 'intakes'">
                     <v-flex xs12 v-for="intake in intakes" :key="intake.id">
                         <v-card :class="['my-2 pl-2 py-2', diffByNow(intake) < 30000 ? 'green' : '']"
                         >
@@ -73,7 +73,7 @@
                         </v-card>
                     </v-flex>
                 </div>
-                <div v-if="option === 'budgets'">
+                <div v-show="option === 'budgets'">
                     <v-flex xs12 v-for="budget in budgets" :key="budget.id">
                         <v-card ripple class=" my-2 pa-2" @click="selectBudget(budget)">
                             <v-layout row wrap>
@@ -150,6 +150,8 @@
         },
         data() {
             return {
+                xDown: undefined,
+                yDown: undefined,
                 option: 'budgets',
                 loading: false,
                 selectedIntake: undefined,
@@ -206,7 +208,7 @@
                 this.patient.intakes = await this.$store.dispatch('getUserIntakes', this.patient)
                 this.$store.commit('setSelectedPatient', this.patient)
                 this.loading = false
-            }
+            },
         },
         computed: {
             patient() {

@@ -1,15 +1,17 @@
 <template>
     <v-container fluid>
         <v-layout wrap row class="justify-center" v-if="!loading">
-            <v-flex xs12>
-                <select-patient-card></select-patient-card>
+            <v-flex xs12 class="text-center">
+                <select-patient-card class="hidden-xs-only"></select-patient-card>
             </v-flex>
             <v-flex xs12 v-if="filteredPages.length === 0">
                 <v-card>
                     <v-card-title>Você ainda não tem permissões</v-card-title>
                 </v-card>
             </v-flex>
+
             <v-flex class="ma-1"
+                    xs12
                     :key="section.title"
                     v-for="section in filteredPages">
                 <v-layout row wrap class="align-center justify-center">
@@ -18,13 +20,25 @@
                     </v-flex>
                     <v-flex v-for="page in section.pages"
                             :key="page.title"
-                            class="mx-4 my-2">
+                            class="mx-2 my-2">
                         <v-card
-                                class="card" min-width="200" :to="page.external_url ? '' : page.to"
+                                min-width="200"
+                                class="card hidden-xs-only" :to="page.external_url ? '' : page.to"
                                 @click="page.external_url ? goToExternalUrl(page.external_url) : ''">
                             <v-layout column row>
                                 <v-icon size="72">{{page.icon}}</v-icon>
                                 <span class="text-center my-headline">
+                        {{page.title}}
+                    </span>
+                            </v-layout>
+                        </v-card>
+                        <v-card
+                                width="124"
+                                class="card hidden-sm-and-up" :to="page.external_url ? '' : page.to"
+                                @click="page.external_url ? goToExternalUrl(page.external_url) : ''">
+                            <v-layout column row>
+                                <v-icon size="24">{{page.icon}}</v-icon>
+                                <span class="text-center font-weight-bold">
                         {{page.title}}
                     </span>
                             </v-layout>
@@ -35,7 +49,7 @@
                     </v-flex>
                 </v-layout>
             </v-flex>
-            <v-flex xs12 class="ma-1">
+            <v-flex xs12 class="ma-1 hidden-xs-only">
                 <v-layout row wrap class="align-end justify-end">
                     <v-card class="card" width="200px" @click="logout()">
                         <v-layout column row>
@@ -47,8 +61,21 @@
                     </v-card>
                 </v-layout>
             </v-flex>
+            <v-flex xs12 class="ma-1 hidden-sm-and-up">
+                <v-layout row wrap class="align-center justify-start">
+                    <v-card class="card py-1 px-2" @click="logout()">
+                        <v-layout row wrap class="align-center">
+                            <span class="text-center font-weight-bold">
+                        Sair
+                    </span>
+                            <v-icon size="24">exit_to_app</v-icon>
+
+                        </v-layout>
+                    </v-card>
+                </v-layout>
+            </v-flex>
             <v-flex xs12 class="text-right">
-                <span>1.2.6</span>
+                <span>1.3.3</span>
             </v-flex>
         </v-layout>
         <v-layout row wrap v-else class="align-center">
@@ -64,7 +91,6 @@
 </template>
 
 <script>
-    import firebase from 'firebase'
     import SelectPatientCard from "../components/SelectPatientCard";
 
     export default {
@@ -84,16 +110,16 @@
             //       'Colaboradores'
             //   ]
             // firebase.database().ref('permissions/') .set(perm)
-            let user = firebase.auth().currentUser;
+            // let user = firebase.auth().currentUser;
             // if (!user) {
             //     this.$router.push('/login')
             //     return
             // }
-            this.getUser(user)
+            // this.getUser(user)
         },
         data() {
             return {
-                loading: true,
+                loading: false,
                 pages: [
                     {
                         title: 'Operacional',
@@ -111,12 +137,12 @@
                                 permission: 'Caixa',
                                 to: '/caixa'
                             },
-                            // {
-                            //     title: 'Senhas',
-                            //     permission: 'Senhas',
-                            //     external_url: 'https://prosaudesenhas.firebaseapp.com',
-                            //     icon: 'filter_4'
-                            // },
+                            {
+                                title: 'Senhas',
+                                permission: 'Senhas',
+                                to: '/senhas',
+                                icon: 'filter_4'
+                            },
                         ]
                     },
                     {
@@ -145,17 +171,23 @@
                                 to: '/relatorio',
                                 permission: 'Relatórios',
                                 icon: 'report'
-                            },{
+                            }, {
                                 title: 'Consultas',
-                                to:'/agenda/CadastroConsultasPlantoes',
+                                to: '/agenda/CadastroConsultasPlantoes',
                                 permission: 'Agenda Médica',
-                                icon:'event',
+                                icon: 'event',
                             },
                             {
                                 title: 'Pacotes',
                                 to: '/bundles',
-                                permission:'Caixa',
+                                permission: 'Caixa',
                                 icon: 'queue',
+                            },
+                            {
+                                title: 'Contas à pagar',
+                                to: '/bills',
+                                permission: 'Caixa',
+                                icon: 'receipt',
                             },
                             // {
                             //     title: 'Exames',
@@ -163,18 +195,34 @@
                             //     permission: 'Exames',
                             //     icon: 'insert_drive_file'
                             // },
-                            {
-                                title: 'Colaboradores',
-                                permission: 'Colaboradores',
-                                to: '/labor',
-                                icon: 'supervisor_account'
-                            },
                             // {
                             //     title: 'Unidades',
                             //     permission: 'Colaboradores',
                             //     to: '/units',
                             //     icon: 'storefront'
                             // }
+                        ]
+                    },
+                    {
+                        title: 'Atendimento Médico',
+                        pages: [
+                            {
+                                title: 'Atendimentos de Consultas e Retornos',
+                                to: '/MedicalCare',
+                                /*permission: 'doctors',*/
+                                icon: 'assignment_ind',
+                            },
+                        ]
+                    },
+                    {
+                        title: 'Pessoal',
+                        pages: [
+                            {
+                                title: 'Colaboradores',
+                                permission: 'Colaboradores',
+                                to: '/labor',
+                                icon: 'supervisor_account'
+                            },
                         ]
                     }
                 ]
@@ -186,10 +234,6 @@
             },
             onSalesSelected() {
                 this.$router.push('/caixa')
-            },
-            async getUser(user) {
-                await this.$store.dispatch('getUser', user)
-                this.loading = false
             },
             logout() {
                 this.$store.dispatch('logOut')
@@ -203,6 +247,10 @@
                         return true
                     } else if (this.user.group === 'colaborador') {
                         return a === this.pages[0]
+                    } else if (this.user.group === 'gerente') {
+                        return a === this.pages[0] || a === this.pages[1]
+                    } else if (this.user.group === 'doctors') {
+                        return a === this.pages[3]
                     }
                     return false
                 })

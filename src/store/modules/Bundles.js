@@ -13,7 +13,7 @@ const mutations = {
 
     setSelectedBundle (state, payload) {
         state.selectedBundle = payload
-    }
+    },
 
 };
 
@@ -169,7 +169,7 @@ const actions = {
         }
     },
 
-    selectedBundle ({commit}, bundle){
+    selectBundle ({commit}, bundle){
         commit('setSelectedBundle', bundle);
     }
 
@@ -180,6 +180,10 @@ const getters = {
     bundles (state) {
         return state.bundles;
     },
+
+    selectedBundle (state) {
+        return state.selectedBundle;
+    }
 
 };
 

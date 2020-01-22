@@ -3,12 +3,14 @@ import firebase, {firestore} from "firebase";
 import moment from 'moment'
 
 const state = {
-    selectedPatient: undefined
+    selectedPatient: undefined,
+    selectedDependent : undefined,
 };
 
 const mutations = {
     async setSelectedPatient(state, payload) {
         var consultations
+        console.log('Clear USER')
         if (payload) {
             await firebase.firestore().collection('users').doc(payload.cpf).collection('consultations')
                 .onSnapshot((querySnapshot) => {
@@ -24,6 +26,13 @@ const mutations = {
             state.selectedPatient = payload
         }
     },
+    setSelectedDependent(state, payload){
+        state.selectedDependent = payload
+    },
+    clearSelectedDependent(state){
+        console.log('Cleanup')
+        state.selectedDependent = undefined
+    }
 };
 
 const actions = {
@@ -109,12 +118,20 @@ const actions = {
         let res = await axios.get(url)
         console.log('aa', res.data)
         return res.data[0]
+    },
+
+    setSelectedDependent({commit},payload){
+        commit('setSelectedDependent',payload)
     }
 };
 
 const getters = {
     selectedPatient(state) {
         return state.selectedPatient
+    },
+    selectedDependent(state) {
+        console.log('limpando')
+        return state.selectedDependent
     },
 };
 

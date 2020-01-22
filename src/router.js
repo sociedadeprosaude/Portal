@@ -13,6 +13,11 @@ import Bundles from '@/views/Cashier/Bundles'
 import Doctors from '@/views/Doctors'
 import Clinics from "@/views/Clinics"
 import Units from "./views/Units";
+import Bills from "./views/Bills";
+
+import MedicalCare from "./views/MedicalCare";
+import Attendance from "./views/Attendance";
+import Tickets from "./views/Tickets";
 import firebase from 'firebase'
 
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
@@ -100,6 +105,38 @@ let mainRoutes = [
     path: '/units',
     name: 'units',
     component : Units,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/bills',
+    name: 'bills',
+    component : Bills,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/MedicalCare',
+    name: 'MedicalCare',
+    component : MedicalCare,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/Attendance',
+    name: 'Attendance',
+    component : Attendance,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/senhas',
+    name: 'Tickets',
+    component : Tickets,
     meta: {
       requiresAuth: false,
     }

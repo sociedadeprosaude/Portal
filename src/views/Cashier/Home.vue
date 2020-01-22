@@ -1,66 +1,135 @@
 <template>
-  <v-container fluid>
-    <v-layout align-left justify-left>
-      <v-btn
-              @click="back"
-              color="primary"
-              rounded
-              class="mb-2 elevation-6"
-      ><v-icon>close</v-icon>
-      </v-btn>
-    </v-layout>
-    <v-layout row wrap>
-      <v-flex xs4 class= "text-center" >
-        <v-btn fab large dark class="botao" color="primary" @click="pacotes">
-          <v-icon size="80" >create_new_folder</v-icon>
-        </v-btn>
-        <p class="word">Pacotes</p>
-      </v-flex>
-      <v-flex xs4 class="text-center">
-        <v-btn fab dark class="botao" color="primary" @click="orcamento">
-          <v-icon size="80" >shopping_cart</v-icon>
-        </v-btn>
-        <p class="word">Orçamento</p>
-      </v-flex>
-      <v-flex xs4 class="text-center">
-        <v-btn fab dark class="botao" color="primary" @click="saidas">
-          <v-icon size="80" >attach_money</v-icon>
-        </v-btn>
-        <p class="word">Saidas</p>
-      </v-flex>
-    </v-layout>
-  </v-container>
+    <v-container fluid>
+        <!--    <v-layout align-left justify-left>-->
+        <!--      <v-btn-->
+        <!--              @click="back"-->
+        <!--              color="primary"-->
+        <!--              rounded-->
+        <!--              class="mb-2 elevation-6"-->
+        <!--      ><v-icon>close</v-icon>-->
+        <!--      </v-btn>-->
+        <!--    </v-layout>-->
+        <v-layout row wrap>
+            <!--      <v-flex xs4 class= "text-center" >-->
+            <!--        <v-btn fab large dark class="botao" color="primary" @click="pacotes">-->
+            <!--          <v-icon size="80" >create_new_folder</v-icon>-->
+            <!--        </v-btn>-->
+            <!--        <p class="word">Pacotes</p>-->
+            <!--      </v-flex>-->
+            <v-flex xs12 class="text-center">
+                <v-btn fab dark class="botao" color="primary" @click="orcamento">
+                    <v-icon size="80">shopping_cart</v-icon>
+                </v-btn>
+                <p class="word">Orçamento</p>
+            </v-flex>
+            <v-flex xs6 class="text-center">
+                <v-btn fab dark class="botao" color="primary" @click="intakeDialog = !intakeDialog">
+                    <v-icon size="80">attach_money</v-icon>
+                </v-btn>
+                <p class="word">Entrada</p>
+            </v-flex>
+            <v-flex xs6 class="text-center">
+                <v-btn fab dark class="botao" color="primary" @click="saidas">
+                    <v-icon size="80">money_off</v-icon>
+                </v-btn>
+                <p class="word">Saida</p>
+            </v-flex>
+        </v-layout>
+        <v-dialog content-class="bottom-dialog" v-model="intakeDialog" transition="dialog-bottom-transition" max-width="720px">
+            <v-card class="pa-3">
+                <v-layout row wrap>
+                    <v-flex xs12>
+                        <span class="my-headline">Entrada</span>
+                    </v-flex>
+                    <v-flex sm5 xs12>
+                        <v-combobox
+                                :items="intakeCategories"
+                                v-model="intake.category" label="categoria"></v-combobox>
+                    </v-flex>
+                    <v-spacer></v-spacer>
+                    <v-flex sm5 xs12>
+                        <v-currency-field v-model="intake.value" label="valor"></v-currency-field>
+                    </v-flex>
+                    <v-flex xs12>
+                        <v-text-field v-model="intake.description" label="Descricao"></v-text-field>
+                    </v-flex>
+                    <v-flex xs12 class="text-center">
+                        <submit-button text="Adicionar" :loading="loading" :success="success" @click="addIntake(intake)">
+                        </submit-button>
+                    </v-flex>
+                </v-layout>
+            </v-card>
+        </v-dialog>
+    </v-container>
 </template>
 
 <script>
-export default {
-    data: () => ({
-    }),
-  methods:{
-      pacotes(){
-        this.$router.push('/caixa/Bundles')
-      },
-      orcamento(){
-        this.$router.push('/caixa/Orçamento')
-      },
-      saidas(){
-        this.$router.push('/caixa/Saidas')
-      },
-      back(){
-      this.$router.push('/')
-      },
-  }
-};
+    import SubmitButton from "../../components/SubmitButton";
+    export default {
+        data() {
+            return {
+                intakeDialog: false,
+                intake: {},
+                loading: false,
+                success: false
+            }
+        },
+        components: {
+            SubmitButton
+        },
+        computed: {
+            intakeCategories() {
+                return this.$store.getters.intakesCategories
+            },
+            user () {
+                return this.$store.getters.user
+            },
+            unit() {
+                return this.$store.getters.selectedUnit
+            }
+        },
+        mounted() {
+            this.$store.dispatch('getIntakesCategories')
+        },
+        methods: {
+            pacotes() {
+                this.$router.push('/caixa/Bundles')
+            },
+            orcamento() {
+                this.$router.push('/caixa/Orçamento')
+            },
+            saidas() {
+                this.$router.push('/caixa/Saidas')
+            },
+            back() {
+                this.$router.push('/')
+            },
+            async addIntake(intake) {
+                this.loading = true
+                intake.colaborator = this.user
+                intake.unit = this.unit
+                intake.date = moment().format('YYYY-MM-DD HH:mm:ss')
+                intake.type = 'financial_support'
+                await this.$store.dispatch('addFinancialSupportIntake', intake)
+                this.success = true
+                this.loading = false
+                setTimeout(() => {
+                    this.success = false
+                }, 1000)
+            }
+        }
+    };
 </script>
 
 <style scoped>
-  .botao{
-    margin-top: 15%;
-    width: 120px;
-    height: 120px;
-  }
-  .word{
-    font-size: 32px;
-    margin-top: 5%;
-  }
+    .botao {
+        margin-top: 15%;
+        width: 120px;
+        height: 120px;
+    }
+
+    .word {
+        font-size: 32px;
+        margin-top: 5%;
+    }
 </style>

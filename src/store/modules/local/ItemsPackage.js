@@ -3,18 +3,19 @@ import Vue from 'vue'
 const state = {
     items: [],
     bundle: undefined,
-    nameBundle : undefined,
+    nameBundle : '',
 
 };
 
 const mutations = {
-    setSelectedBundle(state, payload) {
-        //console.log('SetSelectedBudget',payload)
-        state.bundle = payload
-    },
+
 
     setNameBundle (state, payload){
         state.nameBundle = payload
+    },
+
+    clearNameBundle (state) {
+        state.nameBundle = "";
     },
 
     setItemsPackage (state, payload) {
@@ -22,8 +23,6 @@ const mutations = {
     },
 
     addItemsPackage (state, payload) {
-
-        console.log('payload', payload);
 
         for (let item in state.items) {
             if (state.items[item].name === payload.name) {
@@ -40,8 +39,10 @@ const mutations = {
         state.items.splice(state.items.indexOf(payload), 1)
     },
 
+
     clearItemsPackage (state) {
-        state.items = []
+        state.items = [];
+        console.log(state.items);
     }
 };
 
@@ -52,9 +53,6 @@ const actions = {
 
 const getters = {
 
-    selectedBundle (state) {
-        return state.bundle
-    },
 
     getItemsPackage (state) {
         return state.items

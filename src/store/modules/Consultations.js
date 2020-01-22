@@ -48,7 +48,7 @@ const actions = {
 
     async getConsultationsCanceled({ commit }) {//pegar todas as consultas deletadas pela clinica
         try {
-            let canceledSnap = await firebase.firestore().collection('canceled')
+            let canceledSnap = await firebase.firestore().collection('canceled').orderBy('date','asc')
                 .onSnapshot((querySnapshot) => {
                     let consultationsCanceled = []
                     querySnapshot.forEach((document) => {
@@ -229,7 +229,7 @@ const actions = {
                     regress: FieldValue.delete()
                 })
             } else if (payload.type === "Consulta" && payload.payment_number !== "") {
-                firebase.firestore().collection('users').doc(payload.idPatient).collection('intakes').doc(payload.payment_number).collection('specialties')
+                /* firebase.firestore().collection('users').doc(payload.idPatient).collection('intakes').doc(payload.payment_number).collection('specialties')
                     .where('name', '==', payload.specialty).get()
                     .then((intake) => {
                         intake.forEach((element) => {
@@ -237,7 +237,34 @@ const actions = {
                                 .collection('specialties').doc(element.id).update({ used: false })
                             return
                         })
+                    }) */
+
+                firebase.firestore().collection('users').doc(payload.idPatient).collection('procedures')
+                .where('consultation','==',payload.idConsultation).get()
+                .then((procedure)=>{
+                    procedure.forEach((doc)=>{
+                        let data = doc.data()
+                        console.log('Criando outra procedure')
+                        //Criando outra procedure
+                        firebase.firestore().collection('users').doc(payload.idPatient).collection('procedures').add(
+                            {
+                                status:['Consulta Paga'],
+                                payment_number:data.payment_number,
+                                startAt: data.startAt,
+                                type:'Consultation',
+                                specialty:data.specialty
+                            }
+                        )
+
+                        firebase.firestore().collection('users').doc(payload.idPatient).collection('procedures').doc(doc.id)
+                        .update({ status: firebase.firestore.FieldValue.arrayUnion('Consulta Cancelada')})
+
+                        return
                     })
+                })
+
+
+
             }
 
             //Para consultas do tipo Consulta e possuem um retorno associado. É necessário remover o agendamento do retorno associado
@@ -314,6 +341,19 @@ const actions = {
                 })
         })
 
+    },
+
+   async addProntuarioToConsultation ({ commit }, payload) {
+       firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ prontuario: payload.prontuario })
+   },
+
+    async addTimesToConsultation ({ commit }, payload) {
+        firebase.firestore().collection('consultations').doc(payload.consultation).update( { start_at: payload.start })
+        firebase.firestore().collection('consultations').doc(payload.consultation).update( { end_at: payload.end })
+        firebase.firestore().collection('consultations').doc(payload.consultation).update( { duration: payload.durantion})
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ start_at: payload.start })
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ end_at: payload.end })
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ duration: payload.durantion} )
     }
 };
 

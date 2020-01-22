@@ -68,7 +68,7 @@
                                         <tbody>
                                         <tr v-for="(item, index) in items" :key="index">
                                             <td class="primary--text" style="text-align: justify">{{ item.name }}</td>
-                                            <td class="primary--text" style="text-align: justify">{{ item.rules }}</td>
+                                            <td class="primary--text" style="text-align: justify; font-size: 0.6em">{{ item.rules }}</td>
                                             <td class="primary--text" style="text-align: justify">{{ item.clinic.obs }}</td>
                                         </tr>
                                         </tbody>

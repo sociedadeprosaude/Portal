@@ -19,6 +19,10 @@
             ></v-text-field>
           </v-flex>
 
+          <v-flex xs12>
+            <v-progress-circular indeterminate class="primary--text" v-if="loading"></v-progress-circular>
+          </v-flex>
+
           <v-card-text v-if=" allExams.length !== 0">
             <strong>EXAMES</strong>
             <v-list-item v-for="(item,index) in allExams" :key="index">
@@ -171,6 +175,7 @@
 <script>
 export default {
   data: () => ({
+    loading: false,
     dialog: false,
     dialog2: false,
     product: undefined,
@@ -226,7 +231,6 @@ export default {
           ...clinic.exams[i]
         });
       }
-      console.log("EXAMES::", exams);
       return exams;
     },
 
@@ -239,13 +243,8 @@ export default {
           ...clinic.specialties[i]
         });
       }
-      console.log("DOCTORS:", specialties);
       return specialties;
     }
-  },
-
-  mounted() {
-    this.$store.dispatch("loadClinics");
   },
 
   methods: {

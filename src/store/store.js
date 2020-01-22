@@ -24,6 +24,10 @@ import ShoppingCart from "./modules/local/ShoppingCart";
 import Operational from "./modules/Operational";
 import ItemsPackage from "./modules/local/ItemsPackage";
 import LocalUnit from "./modules/local/Unit";
+import Outtakes from "./modules/Outtakes";
+import Intakes from "./modules/Intakes";
+import Storage from "./modules/Storage";
+import Tickets from "./modules/Tickets";
 
 
 Vue.use(Vuex);
@@ -60,7 +64,11 @@ const store = new Vuex.Store({
         ShoppingCart,
         ItemsPackage,
         Operational,
-        LocalUnit
+        LocalUnit,
+        Outtakes,
+        Intakes,
+        Storage,
+        Tickets
     },
 
     state: {
@@ -270,6 +278,13 @@ const store = new Vuex.Store({
         }
     },
     getters: {
+        isMobile() {
+            if(window.innerWidth <= 800 && window.innerHeight <= 600) {
+                return true;
+            } else {
+                return false;
+            }
+        },
         categories(state) {
             return state.categories
         },

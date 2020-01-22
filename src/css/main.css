@@ -1,3 +1,7 @@
+.html {
+    font-family: 'Montserrat', sans-serif;
+}
+
 .my-headline {
     font-weight: 900;
     font-size: 24px;
@@ -10,8 +14,10 @@
     color: #505050;
 }
 
-.v-card {
-    border-radius: 16px !important;
+.v-card:not(.v-card--flat) {
+    border-radius: .5em !important;
+    box-shadow: -3px -3px 2px 0 rgba(255, 255, 255, .8),
+    6px 6px 6px 0 rgba(0, 0, 0, .3);
 }
 
 .v-data-table {
@@ -21,6 +27,27 @@
 .layout {
     margin: 0;
     padding: 0;
+}
+
+/*.bottom-sheet-dialog {*/
+
+/*    max-width: 720px;*/
+/*}*/
+
+.bottom-dialog {
+    border-radius: 16px;
+    position: absolute !important;
+    bottom: 0px !important;
+    margin: auto !important;
+    /*flex-basis: 80%;*/
+    /*transition-timing-function: ease-in-out;*/
+    /*transition: flex-basis 0.3s;*/
+}
+
+.v-btn {
+    min-width: 0px;
+    padding: 0;
+    margin: 0;
 }
 
 @media print {
@@ -53,12 +80,12 @@
         /*height: 100%;*/
     }
 
-    #attendanceGuide-to-print, #attendanceGuide-to-print * {
+    .item-to-print, .item-to-print * {
         visibility: visible;
         -webkit-print-color-adjust: exact;
     }
 
-    #attendanceGuide-to-print {
+    .item-to-print {
         position: absolute;
         left: 0px;
         top: 0px;

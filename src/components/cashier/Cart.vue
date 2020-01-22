@@ -1,7 +1,7 @@
 <template>
     <v-container class="ma-0 pa-0">
         <v-layout row wrap>
-            <v-flex class="hidden-print-only d-none d-md-block" xs12>
+            <v-flex class="hidden-print-only" xs12>
                 <v-card id="carrinho" class="ml-5 elevation-2 ">
                     <v-container>
                         <v-layout row wrap class="mx-3 align-center">
@@ -177,7 +177,6 @@
                                                     R$ {{item.price}}
                                                 </p>
                                             </v-card-text>
-
                                         </v-card>
                                     </v-flex>
 
@@ -260,7 +259,7 @@
                 </v-card>
             </v-flex>
         </v-layout>
-        <v-dialog v-model="searchPatient"
+        <v-dialog v-model="searchPatient" transition="dialog-bottom-transition"
         >
             <select-patient-card max-width="100%"></select-patient-card>
         </v-dialog>
@@ -293,6 +292,8 @@
         },
         data() {
             return {
+                xDown: undefined,
+                yDown: undefined,
                 parcel: 1,
                 parcels: [1, 2, 3, 4, 5],
                 paymentLoading: false,
@@ -309,7 +310,7 @@
                 data: moment().format("YYYY-MM-DD HH:mm:ss"),
                 parcelas: '',
                 totalCusto: 0,
-                  percentageDiscount: 0,
+                percentageDiscount: 0,
                 moneyDiscount: 0,
                 FormasDePagamento: ["Dinheiro", "Crédito", "Débito"],
                 totalNovo: 0,
@@ -481,6 +482,7 @@
             async saveBudget(budget) {
                 this.$store.commit('setSelectedBudget', budget);
                 // this.selectedBudget = Object.assign({}, budget)
+                console.log('2', this.budget)
                 await this.$store.dispatch('addBudget', budget);
                 this.updateBudgetsIntakes()
             },
@@ -494,6 +496,9 @@
                     await this.saveBudget(this.generateBudget())
                 } else {
                     let newBudget = this.generateBudget()
+                    if(!this.selectedBudget.id) {
+                        this.selectedBudget.id = this.now
+                    }
                     newBudget.id = this.selectedBudget.id
                     this.$store.commit('setSelectedBudget', newBudget)
                 }
@@ -516,7 +521,9 @@
                 let user = undefined;
                 this.$store.commit('setSelectedPatient', user)
                 // this.selectedBudget = undefined
-            }
+            },
+
+
         }
     }
 </script>

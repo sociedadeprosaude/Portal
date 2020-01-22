@@ -184,6 +184,7 @@
                         wrap
                         justify-center
                         align-center
+                        
                 >
                     <v-container class="align-center justify-center py-0">
                         <v-layout row align-center justify-center wrap>
@@ -275,8 +276,9 @@
                                                             xs12
                                                             v-for="item in consultation.consultations"
                                                             :key="item.id"
+                                                            v-if="item.user"
                                                     >
-                                                        <v-list-item v-if="item.user">
+                                                        <v-list-item >
                                                             <v-list-item-content>
                                                                 <v-list-item-title class="primary--text">
                                                                          <span style="font-weight: bolder">
@@ -284,7 +286,7 @@
                                                                          </span>
                                                                 </v-list-item-title>
                                                                 <br>
-                                                                <v-list-item-subtitle class="text-left">
+                                                                <v-list-item-subtitle class="text-center">
                                                                     CPF: {{item.user.cpf}}
                                                                 </v-list-item-subtitle>
                                                                 <br>
@@ -387,7 +389,27 @@
             },
 
             specialties() {
-                return this.$store.getters.specialties
+                //return this.$store.getters.specialties;
+                let espArray = Object.values(this.$store.getters.specialties)
+                espArray = espArray.filter((specialty) => {
+                    //console.log('Teeeee',specialty)
+                    if(!this.selectedDoctor) {
+                        return true
+                    }
+                    var find = false
+                    specialty.doctors.forEach((doctor)=>{
+
+                        if(doctor.cpf === this.selectedDoctor.cpf){
+                            find = true
+                            return true
+                        }
+
+                    })
+
+                    return find
+                })
+                //docArray.unshift({name:'Todos'})
+                return espArray
             },
 
             doctors() {
@@ -418,10 +440,27 @@
 
             consultas() {
                 let consultas = this.$store.getters.consultations
-                // .filter((a) => {
-                //
-                //     return this.especialidade && this.start_date && this.doctor ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && this.doctor.cpf == a.doctor.cpf && a.user : false
-                // })
+                 .filter((a) => {
+
+                     let response = true
+                    if(this.doctor){
+                        if(this.doctor.cpf !== a.doctor.cpf){
+                            response = false
+                        }
+                    }
+                    if(this.especialidade){
+                        if(this.especialidade.name !== a.specialty.name ){
+                            response = false
+                        }
+                    }
+                    if(!a.user){
+                        response = false
+                    }
+                    //console.log("resposta:", response)
+                    return response
+                
+                     //return this.especialidade && this.start_date && this.doctor ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && this.doctor.cpf == a.doctor.cpf && a.user : false
+                 })
                 return consultas;
             },
 

@@ -36,8 +36,10 @@ const actions = {
                 });
             });
 
-            let exams = [];
+
             for (let clinic in clinics) {
+                let exams = []
+                let specialties = []
                 let examsSnap = await firebase.firestore().collection('clinics').doc(clinics[clinic].name)
                     .collection('exams').get();
 
@@ -47,6 +49,19 @@ const actions = {
                         ...doc.data(),
                     });
                 });
+
+                let specialtySnap = await firebase.firestore().collection('clinics').doc(clinics[clinic].name)
+                    .collection('specialties').get();
+
+                specialtySnap.forEach(function (doc) {
+                    specialties.push({
+                        id: doc.id,
+                        ...doc.data(),
+                    });
+                });
+
+                clinics[clinic].exams = exams
+                clinics[clinic].specialties = specialties
             }
 
             commit('setClinics', clinics);
@@ -194,28 +209,26 @@ const actions = {
 
     },
 
-    loadClinics({commit}) {
+    async loadClinics({commit}) {
         return new Promise((resolve, reject) => {
             let clinics = [];
-            firebase.firestore().collection('clinics').onSnapshot((doc) => {
-
+            firebase.firestore().collection('clinics')
+                .onSnapshot((doc) => {
                 doc.forEach((doc) => {
 
                     let specialties = [];
                     let nameClinic = doc.data().name;
 
                     firebase.firestore().collection('clinics').doc(nameClinic).collection('specialties')
-                        .get().then((data) => {
-
-                        data.forEach((doc) => {
+                        .onSnapshot((querySnapshot) => {
+                            querySnapshot.forEach((doc) => {
 
                             let doctors = [];
                             let nameSpecialtie = doc.data().name;
 
                             firebase.firestore().collection('clinics').doc(nameClinic).collection('specialties').doc(nameSpecialtie).collection('doctors')
-                                .get().then((info) => {
-
-                                info.forEach((doc) => {
+                                .onSnapshot((doc) => {
+                                    doc.forEach((doc) => {
                                     doctors.push({
                                         cost: doc.data().cost,
                                         cpf: doc.data().cpf,
@@ -239,8 +252,8 @@ const actions = {
 
                     let exams = [];
                     firebase.firestore().collection('clinics').doc(nameClinic).collection('exams')
-                        .get().then((data) => {
-                        data.forEach((doc) => {
+                        .onSnapshot((doc) => {
+                            doc.forEach((doc) => {
                             exams.push({
                                 name: doc.data().name,
                                 cost: doc.data().cost,
@@ -277,6 +290,14 @@ const actions = {
             exams.push(doc.data())
         })
         return exams
+    },
+    async getClinicSpecialties(context, clinic) {
+        let specSnap = await firebase.firestore().collection('clinics').doc(clinic.id).collection('specialties').get()
+        let spec = []
+        specSnap.forEach((doc) => {
+            spec.push(doc.data())
+        })
+        return spec
     },
     async getProSaudeUnits(context) {
         firebase.firestore().collection('clinics').where('property', '==', true).onSnapshot(clinCollection => {

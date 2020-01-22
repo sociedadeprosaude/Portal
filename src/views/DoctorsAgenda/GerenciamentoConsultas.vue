@@ -185,17 +185,19 @@
                                                         <v-list-item-content>
                                                             <v-list-item-title class="primary--text">
                                                             <span style="font-weight: bolder">
-                                                                {{item.user.name}}
+                                                                {{item.user.dependent ? item.user.dependent.name:
+                                                                    item.user.name}}
                                                             </span>
                                                             </v-list-item-title>
                                                             <br>
                                                             <v-list-item-subtitle class="text-center">
-                                                                CPF: {{item.user.cpf}}
+                                                                {{item.user.dependent ? 'Data de Nascimento:' + item.user.dependent.birthDate
+                                                                    : 'CPF:' + item.user.cpf}}
                                                             </v-list-item-subtitle>
                                                             <br>
-                                                            <v-list-item-subtitle v-if="item.user.telephones[0]">
+                                                            <!-- <v-list-item-subtitle v-if="item.user.telephones[0]">
                                                                Telefone: {{item.user.telephones[0]}}
-                                                            </v-list-item-subtitle>
+                                                            </v-list-item-subtitle> -->
                                                             <br>
                                                             <v-list-item-action-text>
                                                                 {{item.date.split(' ')[0] | dateFilter}} -
@@ -253,8 +255,26 @@
                                                         </v-flex>
                                                         <v-flex xs12>
                                                             <v-text-field readonly hide-details outlined
-                                                                          prepend-icon="credit_card" label="CPF"
+                                                                          prepend-icon="credit_card" label=" CPF"
                                                                           v-model="index_Selecionado.cpf">
+                                                            </v-text-field>
+                                                        </v-flex>
+                                                        <v-flex xs12 v-if="index_Selecionado.pacienteObj && index_Selecionado.pacienteObj.dependent">
+                                                            <v-text-field readonly hide-details outlined
+                                                                          prepend-icon="person" label="Nome do Dependente"
+                                                                          v-model="index_Selecionado.pacienteObj.dependent.name">
+                                                            </v-text-field>
+                                                        </v-flex>
+                                                         <v-flex xs12 sm6 v-if="index_Selecionado.pacienteObj && index_Selecionado.pacienteObj.dependent">
+                                                            <v-text-field readonly hide-details outlined
+                                                                          prepend-icon="person" label="Nascimento do Dependente"
+                                                                          v-model="index_Selecionado.pacienteObj.dependent.birthDate">
+                                                            </v-text-field>
+                                                        </v-flex>
+                                                        <v-flex xs12 sm6 v-if="index_Selecionado.pacienteObj && index_Selecionado.pacienteObj.dependent">
+                                                            <v-text-field readonly hide-details outlined
+                                                                          prepend-icon="credit_card"
+                                                                          v-model="index_Selecionado.pacienteObj.dependent.dependentDegree" label=" Grau do Dependente">
                                                             </v-text-field>
                                                         </v-flex>
                                                         <v-flex xs12 sm12 md12 lg12>
@@ -556,6 +576,7 @@
                 set: function (index) {
 
                     if (this.especialidade != '') {
+                        console.log(index)
                         this.status_Selecionado = index.status
                         this.index_Selecionado = {...index}
                         this.statusOptions.splice(1, 1)
