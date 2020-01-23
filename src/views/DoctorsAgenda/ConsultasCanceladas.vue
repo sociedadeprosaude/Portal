@@ -70,6 +70,7 @@
                                                             v-for="item in consultas"
                                                     >
                                                         <v-list-item
+                                                                class="py-3"
                                                                 @click="visualizarConsulta = {
                                                                     idConsultation:item.id,
                                                                     idPaciente: item.user.cpf,
@@ -102,9 +103,9 @@
                                                                     : 'CPF:' + item.user.cpf}}
                                                                 </v-list-tile-sub-title>
                                                                 <br>
-                                                                <v-list-tile-sub-title>
-                                                                    Telefone: {{item.user.telephones[0]}}
-                                                                </v-list-tile-sub-title>
+                                                               <v-list-item-subtitle>
+                                                                    Telefone: {{item.user.telephones  ? item.user.telephones[0] : 'Número não informado'}}
+                                                                </v-list-item-subtitle>
                                                                 <br>
                                                                 <v-list-tile-action-text>
                                                                     {{item.date.split(' ')[0] | dateFilter}} -
