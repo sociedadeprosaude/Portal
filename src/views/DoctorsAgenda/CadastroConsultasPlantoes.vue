@@ -371,8 +371,27 @@
             ],
         }),
         computed:{
-            specialties(){
-                return this.$store.getters.specialties
+            specialties() {
+                //return this.$store.getters.specialties;
+
+                let espArray = Object.values(this.$store.getters.specialties);
+                espArray = espArray.filter(specialty => {
+                    //console.log('Teeeee',specialty)
+                    if (!this.medicos) {
+                        return true;
+                    }
+                    var find = false;
+                    specialty.doctors.forEach(doctor => {
+                        if (doctor.cpf === this.medicos.cpf) {
+                            find = true;
+                            return true;
+                        }
+                    });
+
+                    return find;
+                });
+                //docArray.unshift({name:'Todos'})
+                return espArray;
             },
             formIsValid () {
                 return this.medicos && this.dataStart && this.semana.length > 0 && this.vagas && this.especialidade && this.times && this.dataTheEnd && this.clinic
