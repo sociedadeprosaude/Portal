@@ -439,8 +439,8 @@
                             </v-flex>
                             <v-flex xs12 class="text-right">
 
-                                <submit-button :disabled="!(this.name !== '' && this.cpf !== '' && this.birthDate !== ''
-                                && this.dateValid(this.birthDate) && this.telephones !== '')" :success="success"
+                                <submit-button :disabled="!(this.name !== '' && this.name && this.cpf !== '' && this.cpf && this.birthDate !== '' && this.birthDate
+                                && this.dateValid(this.birthDate) && this.telephones !== [''])" :success="success"
                                                @click="registerPatient()" :loading="loading"
                                                text="Salvar">
                                 </submit-button>
