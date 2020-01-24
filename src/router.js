@@ -18,7 +18,7 @@ import Bills from "./views/Bills";
 import MedicalCare from "./views/MedicalCare";
 import Attendance from "./views/Attendance";
 import Tickets from "./views/Tickets";
-import firebase from 'firebase'
+import CardEditor from "./views/CardEditor";
 
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
 import CashierRoutes from "./routes/CashierRoutes";
@@ -137,6 +137,14 @@ let mainRoutes = [
     path: '/senhas',
     name: 'Tickets',
     component : Tickets,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/editor',
+    name: 'Editor',
+    component : CardEditor,
     meta: {
       requiresAuth: false,
     }

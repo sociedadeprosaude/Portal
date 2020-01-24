@@ -189,6 +189,12 @@
                                 permission: 'Caixa',
                                 icon: 'receipt',
                             },
+                            {
+                                title: 'Editor de cartao',
+                                to: '/editor',
+                                permission: 'Caixa',
+                                icon: 'credit_card',
+                            },
                             // {
                             //     title: 'Exames',
                             //     to: '/exames',
