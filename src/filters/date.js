@@ -1,6 +1,9 @@
 export default (value) => {
   if (value !== null && value !== undefined) {
     let stringArray = ''
+    var patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
+    if(patt.test(value))
+      return value
     if (value.indexOf('T') > -1) {
       stringArray = value.split('-')
       let year = stringArray[0]
@@ -25,6 +28,7 @@ export default (value) => {
       }
       return returnString
     }
+
     stringArray = value.split(' ')
     let year = stringArray[0]
     let day = year.substr(year.length - 2, 2)
