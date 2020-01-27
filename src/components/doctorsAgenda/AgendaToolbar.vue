@@ -34,17 +34,19 @@
             </v-toolbar-items>
             <v-spacer></v-spacer>
             <v-toolbar-items>
-                <v-flex class="mt-2">
+                <v-flex class="mt-n2">
                     <v-card class="transparent" flat v-if="selectedPatient">
                         <v-list-item>
                             <v-icon left>person</v-icon>
                             <v-list-item-content>
                                 <v-list-item-title>Nome: {{selectedPatient.name}}</v-list-item-title>
-                                <v-list-item-subtitle v-if="selectedPatient.cpf !== ''">CPF: {{selectedPatient.cpf}}
+                                <v-list-item-subtitle v-if="selectedPatient.cpf !== ''">
+                                    CPF: {{selectedPatient.cpf}}
+                                    <br>
+                                    TELEFONE: {{selectedPatient.telephones  ? selectedPatient.telephones[0] : 'Número não informado'}}
                                 </v-list-item-subtitle>
-                                <v-list-tile-subtitle v-else>Número: {{selectedPatient.association_number}}
-                                </v-list-tile-subtitle>
-                                <v-spacer></v-spacer>
+<!--                                <v-list-tile-subtitle v-else>Número: {{selectedPatient.association_number}}
+                                </v-list-tile-subtitle>-->
                             </v-list-item-content>
                         </v-list-item>
                     </v-card>
