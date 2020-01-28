@@ -217,7 +217,7 @@
                           label="Nome do Paciente"
                         ></v-text-field>
                       </v-flex>
-                      <v-flex xs12 v-if="foundDependents">
+                      <v-flex xs12 v-if="foundDependents && foundDependents.lenght > 0">
                         <v-select
                           prepend-icon="person"
                           v-model="createConsultationForm.user.dependent"
