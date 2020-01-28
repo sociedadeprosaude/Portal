@@ -312,7 +312,7 @@
                                                 rounded
                                                 dark
                                                 :to="{ name: 'AgendarRetorno', params: { q: {...this.index_Selecionado,consultaPaciente:true}}}"
-                                                :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress ? false : true"
+                                                :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress && index_Selecionado.especialidade.name != 'ULTRASSONOGRAFIA' ? false : true"
                                                 v-if="index_Selecionado.modalidade !== 'Retorno'"
                                         >Retorno
                                             <v-icon>refresh</v-icon>
