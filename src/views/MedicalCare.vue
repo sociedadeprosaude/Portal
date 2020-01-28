@@ -47,6 +47,7 @@
                                         outlined
                                         rounded
                                         chips
+                                        filled
                                         color="blue"
                                         clearable
                                 >
@@ -111,7 +112,7 @@
                                     :
                                     <v-chip small text-color="white" color="blue">Retorno</v-chip>
                                 </v-btn>
-                                <v-btn text>
+<!--                                <v-btn text>
                                     <v-icon color="success">attach_money</v-icon>
                                     :
                                     <v-chip small text-color="white" color="success">Pago</v-chip>
@@ -120,7 +121,7 @@
                                     <v-icon color="error">money_off</v-icon>
                                     :
                                     <v-chip small text-color="white" color="error">Aguardando Pagamento</v-chip>
-                                </v-btn>
+                                </v-btn>-->
                             </v-flex>
                         </v-layout>
 
@@ -195,8 +196,11 @@
                                                             xs12
                                                             v-for="item in consultation.consultations"
                                                             :key="item.id"
+                                                            v-if="item.status === 'Pago'"
+                                                            :class="item.end_at ? 'success' : 'transparent'"
                                                     >
                                                         <v-list-item
+                                                                :disabled="item.end_at ? true : false"
                                                                 @click="visualizarConsulta = {
                                                             idConsultation:item.id,
                                                             idPaciente: item.user.cpf,
@@ -247,12 +251,12 @@
                                                                     <v-icon v-if="item.type === 'Consulta'"
                                                                             color="primary">event
                                                                     </v-icon>
-                                                                    <v-icon v-if="item.status === 'Pago'"
+<!--                                                                    <v-icon v-if="item.status === 'Pago'"
                                                                             color="success">attach_money
                                                                     </v-icon>
                                                                     <v-icon v-if="item.status === 'Aguardando pagamento'"
                                                                             color="error">money_off
-                                                                    </v-icon>
+                                                                    </v-icon>-->
                                                                 </v-btn>
                                                             </v-list-item-action>
                                                         </v-list-item>
@@ -349,13 +353,13 @@
                 let espArray = Object.values(this.$store.getters.specialties)
                 espArray = espArray.filter((specialty) => {
                     //console.log('Teeeee',specialty)
-                    if(!this.selectedDoctor) {
+                    if(!this.doctor) {
                         return true
                     }
                     var find = false
                     specialty.doctors.forEach((doctor)=>{
 
-                        if(doctor.cpf === this.selectedDoctor.cpf){
+                        if(doctor.cpf === this.doctor.cpf){
                             find = true
                             return true
                         }
@@ -398,6 +402,27 @@
                 }
                 return doctors
             },
+/*            doctors: {
+                get: function() {
+                    let docArray = Object.values(this.$store.getters.doctors);
+                    docArray = docArray.filter(doctor => {
+                        if (!this.especialidade) {
+                            return true;
+                        }
+                        var find = false;
+                        doctor.specialties.forEach(specialty => {
+                            //console.log(doctor.name,specialty.name)
+                            if (specialty.name === this.especialidade.name) {
+                                find = true;
+                                return true;
+                            }
+                        });
+
+                        return find;
+                    });
+                    return docArray;
+                }
+            },*/
             date: {
                 get() {
                     return this.date_choose;

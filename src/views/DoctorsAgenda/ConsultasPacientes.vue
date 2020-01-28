@@ -57,7 +57,17 @@
                                             </v-chip>
                                         </v-flex>
 
-                                        <v-flex row wrap xs5 sm3 :class="`${color}--text`">
+                                    <v-flex sm6 md2 sm2 hidden-xs-only :class="`${color}--text`">
+                                        <strong>Contato:</strong>
+                                        <v-chip small :color="color" text-color="white">
+                                            <v-avatar>
+                                                <v-icon>call</v-icon>
+                                            </v-avatar>
+                                            {{patient.telephones  ? patient.telephones[0] : 'Número não informado'}}
+                                        </v-chip>
+                                    </v-flex>
+
+                                        <v-flex row wrap xs5 sm2 :class="`${color}--text`">
                                             <strong>Consultas: </strong>
                                             <v-chip small :color="color" text-color="white">
                                                 <v-avatar>
@@ -67,7 +77,7 @@
                                             </v-chip>
                                         </v-flex>
 
-                                        <v-flex row wrap xs5 sm3 :class="`${color}--text`">
+                                        <v-flex row wrap xs5 sm2 :class="`${color}--text`">
                                             <strong>Retornos: </strong>
                                             <v-chip small :color="color" text-color="white">
                                                 <v-avatar>
