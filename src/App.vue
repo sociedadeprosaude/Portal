@@ -1,7 +1,7 @@
 <template>
     <v-app id="app">
         <v-slide-y-transition>
-            <agenda-toolbar class="mb-12 pb-6" v-if="user"></agenda-toolbar>
+            <toolbar class="mb-12 pb-6" v-if="user"></toolbar>
         </v-slide-y-transition>
         <v-content v-if="loaded" :class="['background']">
             <router-view/>
@@ -9,12 +9,12 @@
     </v-app>
 </template>
 <script>
-    import AgendaToolbar from "./components/doctorsAgenda/AgendaToolbar";
+    import Toolbar from "./components/Toolbar";
     import firebase from 'firebase'
 
     export default {
         components: {
-            AgendaToolbar
+            Toolbar
         },
         data() {
             return {
@@ -39,6 +39,7 @@
             this.$store.dispatch("loadSpecialties")
             this.$store.dispatch("getDoctors")
             this.$store.dispatch("getClinics")
+            this.$store.dispatch("loadExam")
             // this.$store.dispatch("updateUsers")
             firebase.auth().onAuthStateChanged((user) => {
                 if (!user) {

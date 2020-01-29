@@ -30,6 +30,8 @@
                     <v-btn rounded text @click="selectUnit()">
                         <v-icon >cached</v-icon>
                     </v-btn>
+                    <span class="white--text">Exames carregados: {{examsLoaded}}</span>
+
                 </v-layout>
             </v-toolbar-items>
             <v-spacer></v-spacer>
@@ -108,7 +110,7 @@
 </template>
 
 <script>
-    import SelectPatientCard from "../SelectPatientCard";
+    import SelectPatientCard from "./SelectPatientCard";
     export default {
         name: "AgendaToolbar",
         components: {
@@ -144,6 +146,9 @@
             }
         },
         computed: {
+            examsLoaded() {
+              return this.$store.getters.examsLoaded
+            },
             units() {
                 return this.$store.getters.units
             },

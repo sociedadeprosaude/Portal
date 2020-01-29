@@ -3,51 +3,53 @@ import firebase from "firebase";
 
 const state = {
     exams: [],
+    loaded: false,
     examesSelected: []
 };
 
 const mutations = {
     setExams(state, payload) {
         state.exams = payload
+        state.loaded = true
+        console.log('exams', payload)
     },
     setExamsSelected(state, payload) {
         state.examesSelected = payload
+    },
+    setExamesLoaded(state, payload) {
+        state.loaded = payload
     }
 };
 
 const actions = {
 
     async loadExam({commit}) {
-        try {
-            await firebase.firestore().collection('exams').onSnapshot((examsSnap) => {
-                let exams = [];
-                examsSnap.forEach(function (document) {
+        await firebase.firestore().collection('exams').onSnapshot(async (examsSnap) => {
+            let exams = [];
+            for (let exam in examsSnap.docs) {
+                let document = examsSnap.docs[exam]
 
-                    let clinics = [];
-                    firebase.firestore().collection('exams/' + document.data().name + '/clinics').get().then((data) => {
-                        data.forEach((doc) => {
-                            clinics.push({
-                                clinic: doc.data().clinic,
-                                cost: doc.data().cost,
-                                price: doc.data().price,
-                            });
-                        });
+                let clinics = [];
+                let data = await firebase.firestore().collection('exams/' + document.data().name + '/clinics').get()
+                data.forEach((doc) => {
+                    clinics.push({
+                        clinic: doc.data().clinic,
+                        cost: doc.data().cost,
+                        price: doc.data().price,
                     });
-
-                    exams.push({
-                        name: document.data().name,
-                        rules: document.data().rules,
-                        clinics: clinics,
-                    });
-
                 });
-                //console.log(exams);
-                commit('setExams', exams);
-                return exams
-            })
-        } catch (e) {
-            throw e
-        }
+
+                exams.push({
+                    name: document.data().name,
+                    rules: document.data().rules,
+                    clinics: clinics,
+                });
+            }
+
+            //console.log(exams);
+            commit('setExams', exams);
+            return exams
+        })
     },
     async searchExam(context, search) {
         let examsSnap
@@ -137,13 +139,13 @@ const actions = {
     },
     async deleteExam(context, examKey) {
         let examClinicsCol = await firebase.firestore().collection('exams').doc(examKey).collection('clinics').get()
-        for(let doc in examClinicsCol.docs) {
+        for (let doc in examClinicsCol.docs) {
             firebase.firestore().collection('clinics').doc(examClinicsCol.docs[doc].name).collection('exams').doc(examKey).delete()
         }
         firebase.firestore().collection('exams').doc(examKey).delete()
         return
     },
-     async setClinicOnExams(context, payload) {
+    async setClinicOnExams(context, payload) {
         for (let exam in payload.exams) {
             let holder = {
                 ...payload.clinic,
@@ -154,7 +156,7 @@ const actions = {
             holder = functions.removeUndefineds(holder)
             firebase.firestore().collection('exams').doc(payload.exams[exam].name).collection('clinics').doc(payload.clinic.id).set(holder)
         }
-     }
+    }
 };
 
 const getters = {
@@ -163,6 +165,9 @@ const getters = {
     },
     examsSelected(state) {
         return state.examesSelected
+    },
+    examsLoaded(state) {
+        return state.loaded
     }
 };
 
