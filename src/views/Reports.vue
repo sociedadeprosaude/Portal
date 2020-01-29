@@ -65,7 +65,7 @@
             <v-flex xs12 class="mb-3">
                 <v-layout row wrap class="align-center">
                     <v-flex>
-                        <v-btn @click="pesquisar()" color="blue" v-if="!loading">
+                        <v-btn @click="getIntakes()" color="blue" v-if="!loading">
                             Pesquisar
                         </v-btn>
                         <v-progress-circular indeterminate class="primary--text" v-else>
@@ -119,8 +119,8 @@
             async getIntakes() {
                 this.loading = true
                 this.intakes = await this.$store.dispatch('getIntakes', {
-                    initialDate: this.date,
-                    finalDate: this.date2
+                    initialDate: moment(this.date).format('YYYY-MM-DD 00:00:00'),
+                    finalDate: moment(this.date2).format('YYYY-MM-DD 23:59:59')
                 })
                 await this.pesquisar()
                 this.loading = false

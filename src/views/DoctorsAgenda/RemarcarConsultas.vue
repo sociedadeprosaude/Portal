@@ -408,7 +408,7 @@
                                         <v-icon right>clear</v-icon>
                                     </v-btn>
                                     <v-spacer></v-spacer>
-                                    <v-btn
+                                  <!--   <v-btn
                                             color="success"
                                             rounded
                                             @click="save"
@@ -416,10 +416,10 @@
                                     >
                                         Confirmar
                                         <v-icon right>done</v-icon>
-                                       <!--  <template v-slot:loader>
+                                        <template v-slot:loader>
                                             <span>Aguarde...</span>
-                                        </template> -->
-                                    </v-btn>
+                                        </template>
+                                    </v-btn> -->
                                     <submit-button
                                             color="success"
                                             rounded
@@ -428,7 +428,7 @@
                                             :loading="loading"
                                             @click="save"
                                             text="Confirmar"
-                                            v-if="status === 'Aguardando pagamento' && num_recibo === ''"
+                                          
                                     >
                                     </submit-button>
                                 </v-card-actions>

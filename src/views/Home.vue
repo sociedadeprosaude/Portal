@@ -75,7 +75,7 @@
                 </v-layout>
             </v-flex>
             <v-flex xs12 class="text-right">
-                <span>1.3.3</span>
+                <span>1.3.4</span>
             </v-flex>
         </v-layout>
         <v-layout row wrap v-else class="align-center">
@@ -188,6 +188,12 @@
                                 to: '/bills',
                                 permission: 'Caixa',
                                 icon: 'receipt',
+                            },
+                            {
+                                title: 'Editor de cartao',
+                                to: '/editor',
+                                permission: 'Caixa',
+                                icon: 'credit_card',
                             },
                             // {
                             //     title: 'Exames',

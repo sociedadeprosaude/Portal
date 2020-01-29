@@ -291,7 +291,7 @@
                                                                 </v-list-item-subtitle>
                                                                 <br>
                                                                 <v-list-item-subtitle>
-                                                                    Telefone: {{item.user.telephones[0]}}
+                                                                    Telefone: {{item.user.telephones  ? item.user.telephones[0] : 'Número não informado'}}
                                                                 </v-list-item-subtitle>
                                                                 <br>
                                                                 <v-list-item-action-text>
@@ -441,7 +441,7 @@
             consultas() {
                 let consultas = this.$store.getters.consultations
                  .filter((a) => {
-
+                    
                      let response = true
                     if(this.doctor){
                         if(this.doctor.cpf !== a.doctor.cpf){
@@ -455,6 +455,9 @@
                     }
                     if(!a.user){
                         response = false
+                    }
+                    else{
+                        console.log(a.user)
                     }
                     //console.log("resposta:", response)
                     return response

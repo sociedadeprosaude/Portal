@@ -217,7 +217,7 @@
                           label="Nome do Paciente"
                         ></v-text-field>
                       </v-flex>
-                      <v-flex xs12>
+                      <v-flex xs12 v-if="foundDependents && foundDependents.lenght > 0">
                         <v-select
                           prepend-icon="person"
                           v-model="createConsultationForm.user.dependent"
@@ -770,8 +770,10 @@ export default {
       this.payment_numberFound = undefined;
       this.num_recibo = "";
       this.status = "Aguardando pagamento";
-      this.loaderPaymentNumber = true;
-      this.$store
+      
+      if(form.consultation.specialty.name != 'ULTRASSONOGRAFIA'){
+        this.loaderPaymentNumber = true;
+         this.$store
         .dispatch("thereIsIntakes", {
           user: patient,
           doctor: form.consultation.doctor,
@@ -788,6 +790,12 @@ export default {
           this.loaderPaymentNumber = false;
            console.log(response)
         });
+      }else{
+         this.status = "Pago";
+      }
+
+
+     
 
       this.createConsultationForm = form;
     },
