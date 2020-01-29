@@ -191,26 +191,53 @@ const actions = {
                 totalCusto += parseFloat(intakes[intake].cost);
             }
             totalBruto += intakes[intake].total
-            if (intakes[intake].payment_method === 'Dinheiro') {
-                totalCaixa += intakes[intake].total
-            }
-            if (intakes[intake].payment_method === 'Débito') {
-                totalTaxaDebito += ((intakes[intake].total * 0.0299) / 100)
-                totalDebido += intakes[intake].total
-            }
-            if (intakes[intake].payment_method === 'Crédito') {
-                if (intakes[intake].parcel === 1) {
-                    totalTaxaCredito += ((intakes[intake].total * 0.026) / 100)
-                } else if (intakes[intake].parcel === 2) {
-                    totalTaxaCredito += (((intakes[intake].total * 0.026) / 100) + ((intakes[intake].total * 0.0191) / 100))
-                } else if (intakes[intake].parcel === 3) {
-                    totalTaxaCredito += (((intakes[intake].total * 0.026) / 100) + ((intakes[intake].total * 0.0254) / 100))
-                } else if (intakes[intake].parcel === 4) {
-                    totalTaxaCredito += (((intakes[intake].total * 0.026) / 100) + ((intakes[intake].total * 0.0317) / 100))
-                } else if (intakes[intake].parcel === 5) {
-                    totalTaxaCredito += (((intakes[intake].total * 0.026) / 100) + ((intakes[intake].total * 0.0378) / 100))
+            if(intakes[intake].payments){
+                for(let i=0; i< intakes[intake].payments.length; i++){
+                    if (intakes[intake].payments[i] === 'Dinheiro') {
+                        totalCaixa += parseFloat(intakes[intake].valuesPayments[i])
+                    }
+                    if (intakes[intake].payments[i] === 'Débito') {
+                        totalTaxaDebito += ((intakes[intake].total * 0.0299) / 100)
+                        totalDebido += parseFloat(intakes[intake].valuesPayments[i])
+                    }
+                    if (intakes[intake].payments[i] === 'Crédito') {
+                        if (intakes[intake].parcel === 1) {
+                            totalTaxaCredito += ((intakes[intake].valuesPayments[i] * 0.026) / 100)
+                        } else if (intakes[intake].parcel === 2) {
+                            totalTaxaCredito += (((intakes[intake].valuesPayments[i] * 0.026) / 100) + ((intakes[intake].valuesPayments[i] * 0.0191) / 100))
+                        } else if (intakes[intake].parcel === 3) {
+                            totalTaxaCredito += (((intakes[intake].valuesPayments[i] * 0.026) / 100) + ((intakes[intake].valuesPayments[i] * 0.0254) / 100))
+                        } else if (intakes[intake].parcel === 4) {
+                            totalTaxaCredito += (((intakes[intake].valuesPayments[i] * 0.026) / 100) + ((intakes[intake].valuesPayments[i] * 0.0317) / 100))
+                        } else if (intakes[intake].parcel === 5) {
+                            totalTaxaCredito += (((intakes[intake].valuesPayments[i] * 0.026) / 100) + ((intakes[intake].valuesPayments[i] * 0.0378) / 100))
+                        }
+                        totalCredito += parseFloat(intakes[intake].valuesPayments[i])
+                    }
                 }
-                totalCredito += intakes[intake].total
+            }
+            else{
+                if (intakes[intake].payment_method === 'Dinheiro') {
+                    totalCaixa += intakes[intake].total
+                }
+                if (intakes[intake].payment_method === 'Débito') {
+                    totalTaxaDebito += ((intakes[intake].total * 0.0299) / 100)
+                    totalDebido += intakes[intake].total
+                }
+                if (intakes[intake].payment_method === 'Crédito') {
+                    if (intakes[intake].parcel === 1) {
+                        totalTaxaCredito += ((intakes[intake].total * 0.026) / 100)
+                    } else if (intakes[intake].parcel === 2) {
+                        totalTaxaCredito += (((intakes[intake].total * 0.026) / 100) + ((intakes[intake].total * 0.0191) / 100))
+                    } else if (intakes[intake].parcel === 3) {
+                        totalTaxaCredito += (((intakes[intake].total * 0.026) / 100) + ((intakes[intake].total * 0.0254) / 100))
+                    } else if (intakes[intake].parcel === 4) {
+                        totalTaxaCredito += (((intakes[intake].total * 0.026) / 100) + ((intakes[intake].total * 0.0317) / 100))
+                    } else if (intakes[intake].parcel === 5) {
+                        totalTaxaCredito += (((intakes[intake].total * 0.026) / 100) + ((intakes[intake].total * 0.0378) / 100))
+                    }
+                    totalCredito += intakes[intake].total
+                }
             }
 
 
@@ -218,18 +245,20 @@ const actions = {
         let outtakesSnap = await firebase.firestore().collection('outtakes').where('paid', '>=', payload.dataInicio)
             .where('paid', '<=', payload.dataFinal).orderBy('paid').get();
         outtakesSnap.forEach((e) => {
-            if (e.data().payment_method === 'Dinheiro') {
-                // if (!outtakes[e.data().category]) {
-                //     outtakes[e.data().category] = {
-                //         quantidade: 0,
-                //         cost: 0,
-                //     }
-                // }
-                // outtakes[e.data().category].quantidade++;
-                quantidadeOuttakes++;
-                // outtakes[e.data().category].cost += parseFloat(e.data().value);
-                totalCustoOuttakes += parseFloat(e.data().value)
-                outtakes.push(e.data())
+            for(let i=0; i< e.data().payments.length; i++){
+                if (e.data(). e.data().payments[i] === 'Dinheiro') {
+                    // if (!outtakes[e.data().category]) {
+                    //     outtakes[e.data().category] = {
+                    //         quantidade: 0,
+                    //         cost: 0,
+                    //     }
+                    // }
+                    // outtakes[e.data().category].quantidade++;
+                    quantidadeOuttakes++;
+                    // outtakes[e.data().category].cost += parseFloat(e.data().value);
+                    totalCustoOuttakes += parseFloat(e.data().valuesPayments[i])
+                    outtakes.push(e.data())
+                }
             }
         })
 
