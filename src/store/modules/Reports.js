@@ -190,7 +190,7 @@ const actions = {
             if (!intakes[intake].valor) {
                 totalCusto += parseFloat(intakes[intake].cost);
             }
-            totalBruto += intakes[intake].total
+            totalBruto += intakes[intake].total;
             if(intakes[intake].payments){
                 for(let i=0; i< intakes[intake].payments.length; i++){
                     if (intakes[intake].payments[i] === 'Dinheiro') {
@@ -245,14 +245,25 @@ const actions = {
         let outtakesSnap = await firebase.firestore().collection('outtakes').where('paid', '>=', payload.dataInicio)
             .where('paid', '<=', payload.dataFinal).orderBy('paid').get();
         outtakesSnap.forEach((e) => {
-            for(let i=0; i< e.data().payments.length; i++){
-                if (e.data(). e.data().payments[i] === 'Dinheiro') {
-                    // if (!outtakes[e.data().category]) {
-                    //     outtakes[e.data().category] = {
-                    //         quantidade: 0,
-                    //         cost: 0,
-                    //     }
-                    // }
+            if(e.data().payments){
+                for(let i=0; i< e.data().payments.length; i++){
+                    if (e.data(). e.data().payments[i] === 'Dinheiro') {
+                        // if (!outtakes[e.data().category]) {
+                        //     outtakes[e.data().category] = {
+                        //         quantidade: 0,
+                        //         cost: 0,
+                        //     }
+                        // }
+                        // outtakes[e.data().category].quantidade++;
+                        quantidadeOuttakes++;
+                        // outtakes[e.data().category].cost += parseFloat(e.data().value);
+                        totalCustoOuttakes += parseFloat(e.data().valuesPayments[i])
+                        outtakes.push(e.data())
+                    }
+                }
+            }
+            else{
+                if(e.data().payment_method === 'Dinheiro'){
                     // outtakes[e.data().category].quantidade++;
                     quantidadeOuttakes++;
                     // outtakes[e.data().category].cost += parseFloat(e.data().value);
