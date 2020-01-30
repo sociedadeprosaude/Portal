@@ -90,8 +90,8 @@
 </template>
 
 <script>
-    import ColaboratorsProductionReport from "@/components/reports/ColaboratorsProductionReport";
-    import GeneralReport from "@/components/reports/GeneralReport";
+    import ColaboratorsProductionReport from "../components/reports/ColaboratorsProductionReport";
+    import GeneralReport from "../components/reports/GeneralReport";
     import IntakesReport from '../components/reports/IntakesReport';
 
     var moment = require('moment');
