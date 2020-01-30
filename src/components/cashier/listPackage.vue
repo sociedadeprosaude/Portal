@@ -203,9 +203,6 @@
 
 
         watch: {
-
-
-
             percentageDiscount: function () {
 
                 this.moneyDiscount = ((this.percentageDiscount * this.price) / 100);
@@ -244,6 +241,7 @@
                 }
                 this.$store.dispatch('addBundle', packageData).then(() => {
                     this.clearSearch();
+                    this.$store.dispatch('loadBundle');
                 });
 
             },
@@ -252,7 +250,10 @@
                 this.$store.commit('removeItemsPackage', item)
             },
             deletePackage () {
-                this.$store.dispatch('deletePackage', this.editedPackage);
+
+                this.$store.dispatch('deletePackage', this.$store.getters.selectedBundle).then(() => {
+                    this.$store.dispatch('loadBundle');
+                });
                 this.clearSearch();
 
             },

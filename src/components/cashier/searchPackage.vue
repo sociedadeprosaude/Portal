@@ -171,6 +171,8 @@
                 searchData: null, searchBundle: null,
                 isLoading: undefined, loading: undefined,
 
+                nameBundle : null,
+
                 search: '',
                 validRegister: true,
                 categorySelect: 'exam',
