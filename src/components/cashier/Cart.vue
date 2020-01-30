@@ -159,27 +159,6 @@
 
                                         </v-card>
                                     </v-flex>
-                                    <v-divider></v-divider>
-                                    <v-flex xs12 v-if="pacotes.length > 0">
-                                        <p class="my-headline">Pacotes</p>
-                                        <v-card v-for="(item) in pacotes" class="mt-2" :key="item.nome">
-                                            <v-card-title class="py-2">
-                                                <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
-                                                <v-spacer></v-spacer>
-                                                <span class="subtitle-1 font-weight-light">
-                                                <v-btn small icon @click="removeItem(item)">
-                                                    <v-icon>cancel</v-icon>
-                                                </v-btn>
-                                            </span>
-                                            </v-card-title>
-                                            <v-card-text class="pt-1 pb-0">
-                                                <p class="text-right">
-                                                    R$ {{item.price}}
-                                                </p>
-                                            </v-card-text>
-                                        </v-card>
-                                    </v-flex>
-
                                 </v-layout>
                             </v-flex>
 
@@ -409,8 +388,10 @@
                 let itens = this.$store.getters.getShoppingCartItems;
                 let total = 0;
                 for (let item in itens) {
+                    console.log('preco:', itens[item].price)
                     total += parseFloat(itens[item].price);
                 }
+                console.log('total=', total)
                 return total
             },
             total() {
