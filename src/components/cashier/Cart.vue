@@ -159,41 +159,60 @@
 
                                         </v-card>
                                     </v-flex>
-                                    <v-divider></v-divider>
-                                    <v-flex xs12 v-if="pacotes.length > 0">
-                                        <p class="my-headline">Pacotes</p>
-                                        <v-card v-for="(item) in pacotes" class="mt-2" :key="item.nome">
-                                            <v-card-title class="py-2">
-                                                <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
-                                                <v-spacer></v-spacer>
-                                                <span class="subtitle-1 font-weight-light">
-                                                <v-btn small icon @click="removeItem(item)">
-                                                    <v-icon>cancel</v-icon>
-                                                </v-btn>
-                                            </span>
-                                            </v-card-title>
-                                            <v-card-text class="pt-1 pb-0">
-                                                <p class="text-right">
-                                                    R$ {{item.price}}
-                                                </p>
-                                            </v-card-text>
-                                        </v-card>
-                                    </v-flex>
-
                                 </v-layout>
                             </v-flex>
 
 
                             <v-spacer></v-spacer>
                             <v-layout row wrap>
-                                <v-flex xs12>
+                               <!-- <v-flex xs12>
                                     <v-select class="mt-5" label="Forma de pagamento" :items="FormasDePagamento"
                                               v-model="formaPagamento"></v-select>
-                                </v-flex>
+                                </v-flex> -->
                                 <v-flex>
-                                    <v-flex xs6 v-if="formaPagamento === 'Crédito'">
+                                  <!--  <v-flex xs6 v-if="formaPagamento === 'Crédito'">
                                         <v-select :items="parcels" v-model="parcel"
                                                   label="Parcelas"></v-select>
+                                    </v-flex> -->
+                                    <v-flex sm12 xs12 class="px-3">
+                                        <v-layout row wrap class="align-center" v-for="(payment, index) in payments" :key="index">
+                                            <v-flex xs10>
+                                                <v-select
+                                                            outlined
+                                                            rounded
+                                                            :items="FormasDePagamento"
+                                                            v-model="payments[index]"
+                                                            label="Forma de Pagamento">
+                                                </v-select>
+                                                </v-flex>
+                                                <v-flex xs5 v-if="payments[index] === 'Crédito'">
+                                                    <v-text-field
+                                                            filled
+                                                            v-model="valuesPayments[index]"
+                                                            label="Valor">
+                                                    </v-text-field>
+                                                </v-flex>
+                                            <v-flex xs10 v-if="payments[index] !== 'Crédito'">
+                                                <v-text-field
+                                                        filled
+                                                        v-model="valuesPayments[index]"
+                                                        label="Valor">
+                                                </v-text-field>
+                                            </v-flex>
+                                            <v-flex xs5 v-if="payments[index] === 'Crédito'">
+                                                <v-select :items="parcels" v-model="parcel"
+                                                          label="Parcelas"
+                                                          filled></v-select>
+                                            </v-flex>
+                                                <v-flex xs2>
+                                                    <v-btn
+                                                        @click="index === 0 ? adicionarFormaDePagamento() : apagarFormaDePagamento(index)"
+                                                        text class="transparent">
+                                                        <v-icon v-if="index === 0">add_circle</v-icon>
+                                                        <v-icon v-else>remove_circle</v-icon>
+                                                    </v-btn>
+                                                </v-flex>
+                                        </v-layout>
                                     </v-flex>
                                     <v-layout wrap>
                                         <v-flex xs5>
@@ -211,8 +230,10 @@
                                 </v-flex>
                                 <v-flex xs12 class="my-4">
                                     <v-layout row wrap>
-                                        <v-flex xs12 v-if="formaPagamento === 'Crédito'">
-                                            <span>{{parcel}}x de R$ {{(total / parcel).toFixed(2)}}</span>
+                                        <v-flex v-for="(payment, index) in payments" :key="index">
+                                            <v-flex xs12 v-if="payments[index] === 'Crédito'">
+                                                <span>{{parcel}}x de R$ {{( valuesPayments[index] / parcel).toFixed(2)}}</span>
+                                            </v-flex>
                                         </v-flex>
                                         <v-flex xs6>
                                             <span>Subtotal: R$ {{this.subTotal.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
@@ -304,7 +325,8 @@
                 searchBudgetLoading: false,
                 searchBudgetBtn: false,
                 searchPatient: false,
-                formaPagamento: 'Dinheiro',
+                payments: [''],
+                valuesPayments:[''],
                 moneyDiscout: 0,
                 now: moment().valueOf(),
                 data: moment().format("YYYY-MM-DD HH:mm:ss"),
@@ -313,6 +335,7 @@
                 percentageDiscount: 0,
                 moneyDiscount: 0,
                 FormasDePagamento: ["Dinheiro", "Crédito", "Débito"],
+                Pago:0,
                 totalNovo: 0,
                 budgetToPrint: undefined,
                 budgetToPrintDialog: false,
@@ -365,8 +388,10 @@
                 let itens = this.$store.getters.getShoppingCartItems;
                 let total = 0;
                 for (let item in itens) {
+                    console.log('preco:', itens[item].price)
                     total += parseFloat(itens[item].price);
                 }
+                console.log('total=', total)
                 return total
             },
             total() {
@@ -377,6 +402,13 @@
             percentageDiscount: function () {
                 this.moneyDiscount = ((this.percentageDiscount * this.subTotal) / 100);
                 // this.totalNovo = this.total - this.moneyDiscount
+            },
+            Pagamento: function (){
+                let tamanho= this.payments.length
+                for(let i=0; i < tamanho; i++){
+                    this.Pago += this.payments[i].value
+                }
+                console.log(this.Pago)
             },
         },
         methods: {
@@ -406,6 +438,14 @@
                     this.searchBudgetError = 'Orçamento não encontrado'
                 }
                 this.searchBudgetLoading = false
+            },
+            adicionarFormaDePagamento(){
+                this.valuesPayments.push('')
+                this.payments.push('')
+            },
+            apagarFormaDePagamento(index){
+                this.payments.splice(index, 1)
+                this.valuesPayments.splice(index,1)
             },
             removeItem(item) {
                 this.$store.commit('removeShoppingCartItem', item)
@@ -459,14 +499,15 @@
                     subTotal: this.subTotal,
                     discount: this.moneyDiscount,
                     total: this.total,
-                    payment_method: this.formaPagamento,
-                    parcel: this.formaPagamento === 'Crédito' ? this.parcel : undefined,
+                    parcel: this.parcel ,
                     date: moment().format('YYYY-MM-DD HH:mm:ss'),
                     cost: this.cost,
                     user: this.$store.getters.selectedPatient,
                     colaborator: this.$store.getters.user,
                     parcelar: this.parcelar,
                     doctor: this.selectedDoctor,
+                    payments: this.payments,
+                    valuesPayments: this.valuesPayments,
                     unit: this.selectedUnit
                 };
                 return budget
