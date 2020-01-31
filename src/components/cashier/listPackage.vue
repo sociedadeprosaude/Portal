@@ -237,7 +237,7 @@
                 };
 
                 for (let exam in this.exams) {
-                    this.exams[exam].priceDiscount = this.exams[exam].price - this.moneyDiscount
+                    this.exams[exam].priceDiscount = this.exams[exam].price - (this.percentageDiscount * this.exam[exam].price)
                 }
                 this.$store.dispatch('addBundle', packageData).then(() => {
                     this.clearSearch();
