@@ -51,6 +51,10 @@ const getters = {
             return a.clinic
         });
         let packages = state.items.filter((a) => {
+         
+            let trocarNumero= a.price;
+            a.price= a.priceDiscount;
+            a.priceAntigo = trocarNumero;
             return !a.doctor && !a.clinic
         });
         return {
