@@ -51,7 +51,7 @@ const getters = {
             return a.clinic
         });
         let packages = state.items.filter((a) => {
-            console.log('payload', a);
+         
             let trocarNumero= a.price;
             a.price= a.priceDiscount;
             a.priceAntigo = trocarNumero;
