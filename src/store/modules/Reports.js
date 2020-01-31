@@ -267,7 +267,7 @@ const actions = {
                     // outtakes[e.data().category].quantidade++;
                     quantidadeOuttakes++;
                     // outtakes[e.data().category].cost += parseFloat(e.data().value);
-                    totalCustoOuttakes += parseFloat(e.data().valuesPayments[i])
+                    totalCustoOuttakes += parseFloat(e.data().value)
                     outtakes.push(e.data())
                 }
             }
