@@ -236,9 +236,12 @@
                     //specialties: this.editedPackage.specialties,
                 };
 
+           
                 for (let exam in this.exams) {
-                    this.exams[exam].priceDiscount = this.exams[exam].price - (this.percentageDiscount * this.exam[exam].price)
+
+                    this.exams[exam].priceDiscount = this.exams[exam].price - ((this.percentageDiscount / 100) * this.exams[exam].price)
                 }
+
                 this.$store.dispatch('addBundle', packageData).then(() => {
                     this.clearSearch();
                     this.$store.dispatch('loadBundle');
