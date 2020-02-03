@@ -164,6 +164,9 @@
 
 
                             <v-spacer></v-spacer>
+                            <v-flex xs12>
+                                <v-spacer></v-spacer>
+                            </v-flex>
                             <v-layout row wrap>
                                <!-- <v-flex xs12>
                                     <v-select class="mt-5" label="Forma de pagamento" :items="FormasDePagamento"
@@ -186,22 +189,22 @@
                                                 </v-select>
                                                 </v-flex>
                                                 <v-flex xs5 v-if="payments[index] === 'Crédito'">
-                                                    <v-text-field
+                                                    <v-currency-field
                                                             filled
                                                             v-model="valuesPayments[index]"
                                                             label="Valor"
                                                             v-on="Pagamento"
                                                     >
-                                                    </v-text-field>
+                                                    </v-currency-field>
                                                 </v-flex>
                                             <v-flex xs10 v-if="payments[index] !== 'Crédito'">
-                                                <v-text-field
+                                                <v-currency-field
                                                         filled
                                                         v-model="valuesPayments[index]"
                                                         label="Valor"
                                                         v-on="Pagamento"
                                                 >
-                                                </v-text-field>
+                                                </v-currency-field>
                                             </v-flex>
                                             <v-flex xs5 v-if="payments[index] === 'Crédito'">
                                                 <v-select :items="parcels" v-model="parcel"
@@ -234,6 +237,9 @@
                                 </v-flex>
                                 <v-flex xs12 class="my-4">
                                     <v-layout row wrap>
+                                        <v-flex xs12>
+                                            <v-divider color="black"></v-divider>
+                                        </v-flex>
                                         <v-flex v-for="(payment, index) in payments" :key="index">
                                             <v-flex xs12 v-if="payments[index] === 'Crédito'">
                                                 <span>Crédito: {{parcel}}x de R$ {{( valuesPayments[index] / parcel).toFixed(2)}}</span>
@@ -246,7 +252,7 @@
                                             </v-flex>
                                         </v-flex>
                                         <v-flex xs12>
-                                            <v-divider></v-divider>
+                                            <v-divider color="black"></v-divider>
                                         </v-flex>
                                         <v-flex>
                                             <span>Total Até então: {{this.Pago}}</span>
@@ -258,14 +264,14 @@
                                             <span>Desconto: R$ {{this.moneyDiscount.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
                                         </v-flex>
                                         <v-flex xs12>
-                                            <v-divider></v-divider>
+                                            <v-divider color="black"></v-divider>
                                         </v-flex>
                                         <v-flex xs12>
                                             <h6 class="title font-weight-bold"> Total: R$
                                                 {{this.total.toLocaleString('en-us', {minimumFractionDigits: 2})}}</h6>
                                         </v-flex>
                                         <v-flex xs12>
-                                            <v-divider></v-divider>
+                                            <v-divider color="black"></v-divider>
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
