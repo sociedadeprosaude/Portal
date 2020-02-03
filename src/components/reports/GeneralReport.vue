@@ -548,7 +548,7 @@
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs3>
-                                            {{ this.report.totalBruto.toFixed(2) | moneyFilter}}
+                                            {{ this.report.totalBruto | moneyFilter}}
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
