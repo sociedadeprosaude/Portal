@@ -125,7 +125,7 @@
                                             <v-card-text class="pt-1 pb-0">
                                                 {{item.clinic.name}}
                                                 <p class="text-right">
-                                                    R$ {{item.price}}
+                                                    R$ {{(item.price).toFixed(2)}}
                                                 </p>
                                             </v-card-text>
                                         </v-card>
@@ -152,7 +152,7 @@
                                                     </span>
                                                     <v-spacer></v-spacer>
                                                     <p class="text-right">
-                                                        R$ {{item.doctor.price}}
+                                                        R$ {{(item.doctor.price).toFixed(2)}}
                                                     </p>
                                                 </v-layout>
                                             </v-card-text>
@@ -189,14 +189,18 @@
                                                     <v-text-field
                                                             filled
                                                             v-model="valuesPayments[index]"
-                                                            label="Valor">
+                                                            label="Valor"
+                                                            v-on="Pagamento"
+                                                    >
                                                     </v-text-field>
                                                 </v-flex>
                                             <v-flex xs10 v-if="payments[index] !== 'Crédito'">
                                                 <v-text-field
                                                         filled
                                                         v-model="valuesPayments[index]"
-                                                        label="Valor">
+                                                        label="Valor"
+                                                        v-on="Pagamento"
+                                                >
                                                 </v-text-field>
                                             </v-flex>
                                             <v-flex xs5 v-if="payments[index] === 'Crédito'">
@@ -232,8 +236,20 @@
                                     <v-layout row wrap>
                                         <v-flex v-for="(payment, index) in payments" :key="index">
                                             <v-flex xs12 v-if="payments[index] === 'Crédito'">
-                                                <span>{{parcel}}x de R$ {{( valuesPayments[index] / parcel).toFixed(2)}}</span>
+                                                <span>Crédito: {{parcel}}x de R$ {{( valuesPayments[index] / parcel).toFixed(2)}}</span>
                                             </v-flex>
+                                            <v-flex xs12 v-if="payments[index] === 'Débito'">
+                                                <span>Débito: R$ {{( valuesPayments[index])}}</span>
+                                            </v-flex>
+                                            <v-flex xs12 v-if="payments[index] === 'Dinheiro'">
+                                                <span>Dinheiro: R$ {{( valuesPayments[index])}}</span>
+                                            </v-flex>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <v-divider></v-divider>
+                                        </v-flex>
+                                        <v-flex>
+                                            <span>Total Até então: {{this.Pago}}</span>
                                         </v-flex>
                                         <v-flex xs6>
                                             <span>Subtotal: R$ {{this.subTotal.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
@@ -263,7 +279,7 @@
                                         </v-flex>
                                         <v-flex xs6 class="text-center">
                                             <submit-button
-                                                    :disabled="!patient || cartItems.length === 0"
+                                                    :disabled="!patient || cartItems.length === 0 || this.Pago !== this.total"
                                                     text="Pagar" :loading="paymentLoading"
                                                     :success="paymentSuccess" color="primary" @click="pay()">
                                                 Pagar
@@ -372,10 +388,10 @@
                 // return this.$store.getters.selectedBudget.consultations
                 return this.$store.getters.getShoppingCartItemsByCategory.consultations
             },
-            pacotes() {
+            //pacotes() {
                 // return this.$store.getters.selectedBudget.packages
-                return this.$store.getters.getShoppingCartItemsByCategory.packages
-            },
+           //     return this.$store.getters.getShoppingCartItemsByCategory.packages
+           // },
             cost() {
                 let itens = this.$store.getters.getShoppingCartItems;
                 let total = 0;
@@ -395,20 +411,26 @@
                 return total
             },
             total() {
-                return parseFloat(this.subTotal) - parseFloat(this.moneyDiscount)
+                return (parseFloat(this.subTotal) - parseFloat(this.moneyDiscount)).toFixed(2)
+            },
+            Pagamento(){
+                let tamanho= this.payments.length;
+                console.log('payments:', this.payments)
+                let pagando=0
+                for(let i=0; i < tamanho; i++){
+                    if(this.valuesPayments[i] !== ''){
+                        pagando += parseFloat(this.valuesPayments[i])
+                    }
+                }
+                this.Pago= pagando.toFixed(2)
+                console.log('pago: ', this.Pago)
+                console.log('total: ', this.total)
             }
         },
         watch: {
             percentageDiscount: function () {
                 this.moneyDiscount = ((this.percentageDiscount * this.subTotal) / 100);
                 // this.totalNovo = this.total - this.moneyDiscount
-            },
-            Pagamento: function (){
-                let tamanho= this.payments.length
-                for(let i=0; i < tamanho; i++){
-                    this.Pago += this.payments[i].value
-                }
-                console.log(this.Pago)
             },
         },
         methods: {
