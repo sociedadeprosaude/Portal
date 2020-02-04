@@ -531,12 +531,16 @@
         },
         watch: {
             cpf(val) {
+
+                if (!this.selectedPatient && !this.addPatient) {
+                    this.cpf = undefined
+                    return
+                }
+
                 if(this.selectedPatient && val !== this.selectedPatient.cpf) {
                     this.cpf = this.selectedPatient.cpf;
                 }
-                if (!this.selectedPatient) {
-                    this.cpf = undefined;
-                }
+                
             },
             addPatient(val) {
                 if (val) {
