@@ -56,12 +56,25 @@
                 }
 
                 for (let intake in this.intakes) {
+                    console.log('intake', this.intakes[intake]);
                     if (!resumes[this.intakes[intake].colaborator.name]) {
-                        resumes[this.intakes[intake].colaborator.name] = {}
+                        resumes[this.intakes[intake].colaborator.name] = {
+                            Dinheiro: 0.0,
+                            Credito: 0.0,
+                            Debito: 0.0,
+                            Exames: 0,
+                            Consultas: 0
+                        }
                     }
-                    for (let payMethod in this.paymentMethods) {
-                        if (!resumes[this.intakes[intake].colaborator.name][this.paymentMethods[payMethod]]) {
-                            resumes[this.intakes[intake].colaborator.name][this.paymentMethods[payMethod]] = 0.0
+                    for(let i=0; i< this.intakes[intake].payments.length; i++){
+                        if(this.intakes[intake].payments[i] === 'Dinheiro'){
+                            resumes[this.intakes[intake].colaborator.name].Dinheiro += parseFloat(this.intakes[intake].valuesPayments[i])
+                        }
+                        if(this.intakes[intake].payments[i] === 'Crédito'){
+                            resumes[this.intakes[intake].colaborator.name].Credito += parseFloat(this.intakes[intake].valuesPayments[i])
+                        }
+                        if(this.intakes[intake].payments[i] === 'Débito'){
+                            resumes[this.intakes[intake].colaborator.name].Debito += parseFloat(this.intakes[intake].valuesPayments[i])
                         }
                     }
                     resumes[this.intakes[intake].colaborator.name][this.intakes[intake].payment_method] += this.intakes[intake].total
