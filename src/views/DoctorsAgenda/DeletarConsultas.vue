@@ -390,31 +390,30 @@
 
             specialties() {
                 //return this.$store.getters.specialties;
-                let espArray = Object.values(this.$store.getters.specialties)
-                espArray = espArray.filter((specialty) => {
+
+                let espArray = Object.values(this.$store.getters.specialties);
+                espArray = espArray.filter(specialty => {
                     //console.log('Teeeee',specialty)
-                    if(!this.selectedDoctor) {
-                        return true
+                    if (!this.doctor) {
+                        return true;
                     }
-                    var find = false
-                    specialty.doctors.forEach((doctor)=>{
-
-                        if(doctor.cpf === this.selectedDoctor.cpf){
-                            find = true
-                            return true
+                    var find = false;
+                    specialty.doctors.forEach(doctor => {
+                        if (doctor.cpf === this.doctor.cpf) {
+                            find = true;
+                            return true;
                         }
+                    });
 
-                    })
-
-                    return find
-                })
+                    return find;
+                });
                 //docArray.unshift({name:'Todos'})
-                return espArray
+                return espArray;
             },
 
-            doctors() {
+            doctors () {
                 let doctors = Object.values(this.$store.getters.doctors)
-                if (this.especialidade) {
+                if(this.especialidade) {
                     doctors = doctors.filter((a) => {
                         for (let spe in a.specialties) {
                             if (a.specialties[spe].name === this.especialidade.name) {
@@ -422,6 +421,7 @@
                             }
                         }
                         return false
+                        // return a.specialties.indexOf(this.especialidade.name) > -1
                     })
                 }
                 return doctors
