@@ -190,7 +190,7 @@ const actions = {
             if (!intakes[intake].valor) {
                 totalCusto += parseFloat(intakes[intake].cost);
             }
-            totalBruto += intakes[intake].total
+            totalBruto += parseFloat(intakes[intake].total);
             if(intakes[intake].payments){
                 for(let i=0; i< intakes[intake].payments.length; i++){
                     if (intakes[intake].payments[i] === 'Dinheiro') {
@@ -271,7 +271,8 @@ const actions = {
         // console.log('total caixa:',totalCaixa)
         // console.log(totalBruto)
 
-
+        console.log('total Custo', totalCusto)
+        console.log('total bruto', totalBruto)
         relatorio = {
             specialties: specialties,
             exams: exams,

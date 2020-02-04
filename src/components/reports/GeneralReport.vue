@@ -554,13 +554,13 @@
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs3>
-                                            {{(this.report.totalBruto - this.report.totalCusto -  parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito)).toFixed(2) | moneyFilter}}
+                                            {{(this.report.totalBruto - (parseFloat(this.report.totalCusto) +  parseFloat(report.totalTaxaDebito) + parseFloat(report.totalTaxaCredito)).toFixed(2)) | moneyFilter}}
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs2>
-                                            {{((report.totalBruto + totalFinancialSupport - report.totalCusto - parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito) - parseFloat(report.totalCustoOuttakes)).toFixed(2))| moneyFilter}}
+                                            {{((report.totalBruto + parseFloat(totalFinancialSupport) - (parseFloat(report.totalCusto) + parseFloat(report.totalTaxaDebito) + parseFloat(report.totalTaxaCredito) + parseFloat(report.totalCustoOuttakes)).toFixed(2)))| moneyFilter}}
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
