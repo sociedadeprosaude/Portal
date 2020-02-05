@@ -40,7 +40,7 @@
                             <v-flex xs12 v-else class="my-2">
                                 <v-layout column wrap class="align-center">
                                     <span>Carregando Médicos...</span>
-                                    <v-progress-circular class="primary--text" indeterminate></v-progress-circular>
+                                    <v-progress-circular class="primary--text" indeterminate/>
                                 </v-layout>
                             </v-flex>
                             <v-flex xs12 v-if="searchBudgetBtn">
@@ -49,8 +49,8 @@
                                         <v-text-field
                                                 label="Num. do Orçamento"
                                                 v-model="searchBudgetNumber"
-                                                type="number"
-                                        ></v-text-field>
+                                                type="number">
+                                        </v-text-field>
                                     </v-flex>
                                     <v-flex xs2 class="text-center">
                                         <v-btn
@@ -73,7 +73,7 @@
                             <v-flex xs12 v-if="patient" class="my-3 text-left" style="font-size: 0.8em">
                                 <v-layout row wrap>
                                     <v-flex xs12>
-                                        <v-divider></v-divider>
+                                        <v-divider/>
                                     </v-flex>
                                     <v-flex xs12>
                                         <span class="font-weight-bold">{{patient.name}}</span>
@@ -87,20 +87,20 @@
                                         <span class="font-weight-bold"> {{patient.association_number}}</span>
                                     </v-flex>
                                     <v-flex xs12>
-                                        <v-divider></v-divider>
+                                        <v-divider/>
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
                             <v-flex xs12 v-if="selectedBudget" class="mt-3 text-left" style="font-size: 0.8em">
                                 <v-layout row wrap>
                                     <v-flex xs12>
-                                        <v-divider></v-divider>
+                                        <v-divider/>
                                     </v-flex>
                                     <v-flex xs12>
                                         <span>Orçamento: {{selectedBudget.id}}</span>
                                     </v-flex>
                                     <v-flex xs12>
-                                        <v-divider></v-divider>
+                                        <v-divider/>
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
@@ -115,7 +115,7 @@
                                         <v-card v-for="(item) in exames" class="ma-2" :key="item.name">
                                             <v-card-title class="py-2">
                                                 <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
-                                                <v-spacer></v-spacer>
+                                                <v-spacer/>
                                                 <span class="subtitle-1 font-weight-light">
                                                 <v-btn small icon @click="removeItem(item)">
                                                     <v-icon>cancel</v-icon>
@@ -130,13 +130,13 @@
                                             </v-card-text>
                                         </v-card>
                                     </v-flex>
-                                    <v-divider></v-divider>
+                                    <v-divider/>
                                     <v-flex xs12 v-if="consultas.length > 0">
                                         <p class="my-headline">Consultas</p>
                                         <v-card v-for="(item) in consultas" class="ma-2" :key="item.doctor.name">
                                             <v-card-title class="py-2">
                                                 <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
-                                                <v-spacer></v-spacer>
+                                                <v-spacer/>
                                                 <span class="subtitle-1 font-weight-light">
                                                 <v-btn small icon @click="removeItem(item)">
                                                     <v-icon>cancel</v-icon>
@@ -145,12 +145,12 @@
                                             </v-card-title>
                                             <v-card-text class="pt-1 pb-0">
                                                 {{item.doctor.name}}
-                                                <v-divider></v-divider>
+                                                <v-divider/>
                                                 <v-layout row wrap class="mt-2">
                                                     <span>
                                                         {{item.doctor.clinic.name}}
                                                     </span>
-                                                    <v-spacer></v-spacer>
+                                                    <v-spacer/>
                                                     <p class="text-right">
                                                         R$ {{(item.doctor.price).toFixed(2)}}
                                                     </p>
@@ -163,9 +163,9 @@
                             </v-flex>
 
 
-                            <v-spacer></v-spacer>
+                            <v-spacer/>
                             <v-flex xs12>
-                                <v-spacer></v-spacer>
+                                <v-spacer/>
                             </v-flex>
                             <v-layout row wrap>
                                <!-- <v-flex xs12>
@@ -209,7 +209,8 @@
                                             <v-flex xs5 v-if="payments[index] === 'Crédito'">
                                                 <v-select :items="parcels" v-model="parcel"
                                                           label="Parcelas"
-                                                          filled></v-select>
+                                                          filled>
+                                                </v-select>
                                             </v-flex>
                                                 <v-flex xs2>
                                                     <v-btn
@@ -224,9 +225,10 @@
                                     <v-layout wrap>
                                         <v-flex xs5>
                                             <v-text-field label="Desconto: %"
-                                                          v-model="percentageDiscount"></v-text-field>
+                                                          v-model="percentageDiscount">
+                                            </v-text-field>
                                         </v-flex>
-                                        <v-spacer></v-spacer>
+                                        <v-spacer/>
                                         <v-flex xs5>
                                             <v-text-field
                                                     disabled
@@ -238,7 +240,7 @@
                                 <v-flex xs12 class="my-4">
                                     <v-layout row wrap>
                                         <v-flex xs12>
-                                            <v-divider color="black"></v-divider>
+                                            <v-divider color="black"/>
                                         </v-flex>
                                         <v-flex v-for="(payment, index) in payments" :key="index">
                                             <v-flex xs12 v-if="payments[index] === 'Crédito'">
@@ -252,7 +254,7 @@
                                             </v-flex>
                                         </v-flex>
                                         <v-flex xs12>
-                                            <v-divider color="black"></v-divider>
+                                            <v-divider color="black"/>
                                         </v-flex>
                                         <v-flex>
                                             <span>Total Até então: {{this.Pago}}</span>
@@ -264,18 +266,18 @@
                                             <span>Desconto: R$ {{this.moneyDiscount.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
                                         </v-flex>
                                         <v-flex xs12>
-                                            <v-divider color="black"></v-divider>
+                                            <v-divider color="black"/>
                                         </v-flex>
                                         <v-flex xs12>
                                             <h6 class="title font-weight-bold"> Total: R$
                                                 {{this.total.toLocaleString('en-us', {minimumFractionDigits: 2})}}</h6>
                                         </v-flex>
                                         <v-flex xs12>
-                                            <v-divider color="black"></v-divider>
+                                            <v-divider color="black"/>
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
-                                <v-spacer></v-spacer>
+                                <v-spacer/>
                                 <v-flex xs12>
                                     <v-layout row wrap class="align-end fill-height">
                                         <v-flex xs6 class="text-center">
@@ -304,16 +306,17 @@
         </v-layout>
         <v-dialog v-model="searchPatient" transition="dialog-bottom-transition"
         >
-            <select-patient-card max-width="100%"></select-patient-card>
+            <select-patient-card max-width="100%"/>
         </v-dialog>
         <v-dialog v-model="budgetToPrintDialog" v-if="budgetToPrint">
-            <budget-to-print @close="budgetToPrintDialog = false" :budget="budgetToPrint"></budget-to-print>
+            <budget-to-print @close="budgetToPrintDialog = false" :budget="budgetToPrint"/>
         </v-dialog>
         <!--        <v-flex class="hidden-screen-only">-->
         <!--            <receipt :budgets="selectedBudget"></receipt>-->
         <!--        </v-flex>-->
         <v-dialog v-model="receiptDialog" v-if="selectedIntake">
-            <receipt @close="receiptDialog = false" :budget=selectedIntake></receipt>
+            <receipt @close="receiptDialog = false" :budget=selectedIntake>
+            </receipt>
         </v-dialog>
     </v-container>
 </template>
@@ -410,10 +413,10 @@
                 let itens = this.$store.getters.getShoppingCartItems;
                 let total = 0;
                 for (let item in itens) {
-                    console.log('preco:', itens[item].price)
+                    console.log('preco:', itens[item].price);
                     total += parseFloat(itens[item].price);
                 }
-                console.log('total=', total)
+                console.log('total=', total);
                 return total
             },
             total() {
@@ -421,15 +424,15 @@
             },
             Pagamento(){
                 let tamanho= this.payments.length;
-                console.log('payments:', this.payments)
+                console.log('payments:', this.payments);
                 let pagando=0
                 for(let i=0; i < tamanho; i++){
                     if(this.valuesPayments[i] !== ''){
                         pagando += parseFloat(this.valuesPayments[i])
                     }
                 }
-                this.Pago= pagando.toFixed(2)
-                console.log('pago: ', this.Pago)
+                this.Pago= pagando.toFixed(2);
+                console.log('pago: ', this.Pago);
                 console.log('total: ', this.total)
             }
         },
@@ -468,11 +471,11 @@
                 this.searchBudgetLoading = false
             },
             adicionarFormaDePagamento(){
-                this.valuesPayments.push('')
+                this.valuesPayments.push('');
                 this.payments.push('')
             },
             apagarFormaDePagamento(index){
-                this.payments.splice(index, 1)
+                this.payments.splice(index, 1);
                 this.valuesPayments.splice(index,1)
             },
             removeItem(item) {
@@ -500,8 +503,8 @@
                 return text
             },
             imprimir() {
-                this.saveBudget(this.generateBudget())
-                this.budgetToPrint = this.selectedBudget
+                this.saveBudget(this.generateBudget());
+                this.budgetToPrint = this.selectedBudget;
                 this.budgetToPrintDialog = true
             },
             pesquisarUsuario() {
@@ -551,12 +554,12 @@
             async saveBudget(budget) {
                 this.$store.commit('setSelectedBudget', budget);
                 // this.selectedBudget = Object.assign({}, budget)
-                console.log('2', this.budget)
+                console.log('2', this.budget);
                 await this.$store.dispatch('addBudget', budget);
                 this.updateBudgetsIntakes()
             },
             async pay() {
-                this.paymentLoading = true
+                this.paymentLoading = true;
                 let user = this.patient;
                 if (!user) {
                     return
@@ -564,23 +567,23 @@
                 if (!this.selectedBudget) {
                     await this.saveBudget(this.generateBudget())
                 } else {
-                    let newBudget = this.generateBudget()
+                    let newBudget = this.generateBudget();
                     if(!this.selectedBudget.id) {
                         this.selectedBudget.id = this.now
                     }
-                    newBudget.id = this.selectedBudget.id
+                    newBudget.id = this.selectedBudget.id;
                     this.$store.commit('setSelectedBudget', newBudget)
                 }
-                await this.$store.dispatch('addIntake', this.selectedBudget)
-                this.updateBudgetsIntakes()
-                this.receipt(this.selectedBudget)
-                this.paymentLoading = false
-                this.paymentSuccess = true
+                await this.$store.dispatch('addIntake', this.selectedBudget);
+                this.updateBudgetsIntakes();
+                this.receipt(this.selectedBudget);
+                this.paymentLoading = false;
+                this.paymentSuccess = true;
                 this.card = false
                 // window.print();
             },
             async receipt(intake) {
-                this.selectedIntake = await this.$store.dispatch('getIntakeDetails', intake)
+                this.selectedIntake = await this.$store.dispatch('getIntakeDetails', intake);
                 // this.selectedIntake = intake
                 this.receiptDialog = true
             },
@@ -590,6 +593,7 @@
                 let user = undefined;
                 this.$store.commit('setSelectedPatient', user)
                 // this.selectedBudget = undefined
+
             },
 
 
