@@ -92,7 +92,7 @@
                                 <span>Manaus - AM</span>
                                 <span>CNPJ: 09.066.632/0001-22</span>
                                 <v-spacer/>
-                                <spam class="text-right font-italic black--text">Este orçamento tem validade por 15 dias.</spam>
+                                <span class="text-right font-italic black--text">Este orçamento tem validade por 15 dias.</span>
                             </v-layout>
                         </v-flex>
 <!--                        <v-flex xs6 class="primary" style="height: 2px; margin-top: 124px;"></v-flex>-->
