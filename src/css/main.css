@@ -83,10 +83,8 @@
 
     #card-to-print {
         position: absolute;
-        left: 30px;
-        top: 30px;
-        width: calc(8.5cm * 2);
-        height: calc(8cm * 2);
+        left: 0;
+        top: 0;
     }
 
     .receipt-to-print, .receipt-to-print * {
