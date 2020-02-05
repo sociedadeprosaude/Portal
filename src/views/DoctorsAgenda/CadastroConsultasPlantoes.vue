@@ -6,7 +6,7 @@
                     <v-container fluid grid-list-xl>
                         <v-layout align-center wrap>
                             <v-flex xs12 sm6>
-                                <v-select
+                                <v-combobox
                                         label="Especialidade"
                                         prepend-icon="school"
                                         v-model="especialidade"
@@ -32,11 +32,11 @@
                                                 color="info"
                                         >{{ data.item.name }}</v-chip>
                                     </template>
-                                </v-select>
+                                </v-combobox>
                             </v-flex>
                             <v-spacer></v-spacer>
                             <v-flex xs12 sm6>
-                                <v-select
+                                <v-combobox
                                         prepend-icon="account_circle"
                                         v-model="medicos"
                                         :items="doctors"
@@ -63,7 +63,7 @@
                                                 color="info"
                                         >{{ data.item.name }}</v-chip>
                                     </template>
-                                </v-select>
+                                </v-combobox>
                             </v-flex>
                             <v-flex xs12 sm12>
                                 <v-select
