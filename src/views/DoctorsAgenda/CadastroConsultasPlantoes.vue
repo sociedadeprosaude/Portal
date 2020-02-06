@@ -488,6 +488,7 @@
                     vacancy: this.vagas,
                     weekDays: this.semana
                 }
+
                 await this.$store.dispatch('createConsultation', consultation)
                 this.success = true
                 this.loading = false

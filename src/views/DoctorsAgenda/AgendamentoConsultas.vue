@@ -830,7 +830,8 @@ export default {
       for (let i in array) {
         if (
           array[i].date === consultation.date &&
-          array[i].doctor.name === consultation.doctor.name
+          array[i].doctor.cpf === consultation.doctor.cpf &&
+          array[i].specialty.name === consultation.specialty.name
         ) {
           return i;
         }
