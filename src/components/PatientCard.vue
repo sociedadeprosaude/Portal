@@ -1,8 +1,8 @@
 <template>
     <v-container class="ma-0 pa-0">
         <v-layout row wrap class="ma-0 pa-0" id="card-to-print">
-            <v-flex xs12>
-                <v-card width="100vw" height="110vh">
+            <v-flex xs12 class="mb-1">
+                <v-card width="100vw" height="100vh">
                     <v-img :src="require('../assets/card_background.jpg')" class="px-4 py-2">
                         <v-layout row wrap>
                             <v-flex xs6 class="text-left">
@@ -52,7 +52,7 @@
             </v-flex>
             <v-spacer></v-spacer>
             <v-flex xs12 class="text-right">
-                <v-card width="100vw" height="110vh">
+                <v-card width="100vw" height="100vh">
                     <v-img :src="require('../assets/card_background.jpg')" class="px-4 py-2">
                         <v-layout row wrap>
                             <v-flex xs8 class="text-left mt-2" style="font-size: 0.8em">
