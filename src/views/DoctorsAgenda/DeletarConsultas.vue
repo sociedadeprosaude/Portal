@@ -399,7 +399,7 @@
                     var find = false
                     specialty.doctors.forEach((doctor)=>{
 
-                        if(doctor.cpf === this.selectedDoctor.cpf){
+                        if(/* doctor.cpf === this.selectedDoctor.cpf ||  */doctor.crm === this.selectedDoctor.crm){
                             find = true
                             return true
                         }
@@ -444,7 +444,7 @@
                     
                      let response = true
                     if(this.doctor){
-                        if(this.doctor.cpf !== a.doctor.cpf){
+                        if(this.doctor.crm !== a.doctor.crm){
                             response = false
                         }
                     }

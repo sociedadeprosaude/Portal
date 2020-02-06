@@ -563,7 +563,7 @@
 
                         let response = true
                         if(this.selectedDoctor){
-                            if(this.selectedDoctor.cpf !== a.doctor.cpf){
+                            if(this.selectedDoctor.crm !== a.doctor.crm){
                                 response = false
                             }
                         }

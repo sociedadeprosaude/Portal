@@ -1,10 +1,10 @@
 import axios from 'axios'
-import firebase, {firestore} from "firebase";
+import firebase, { firestore } from "firebase";
 import moment from 'moment'
 
 const state = {
     selectedPatient: undefined,
-    selectedDependent : undefined,
+    selectedDependent: undefined,
 };
 
 const mutations = {
@@ -16,9 +16,9 @@ const mutations = {
                 .onSnapshot((querySnapshot) => {
                     consultations = []
                     querySnapshot.forEach((consultation) => {
-                        consultations.push({...consultation.data()})
+                        consultations.push({ ...consultation.data() })
                     })
-                    payload = {...payload, consultations: consultations}
+                    payload = { ...payload, consultations: consultations }
                     state.selectedPatient = payload
                 })
 
@@ -26,10 +26,10 @@ const mutations = {
             state.selectedPatient = payload
         }
     },
-    setSelectedDependent(state, payload){
+    setSelectedDependent(state, payload) {
         state.selectedDependent = payload
     },
-    clearSelectedDependent(state){
+    clearSelectedDependent(state) {
         console.log('Cleanup')
         state.selectedDependent = undefined
     }
@@ -43,7 +43,7 @@ const actions = {
     //         firestore().collection('users').doc(user.cpf).update({type: user.type.toUpperCase()})
     //     })
     // },
-    async searchUser({commit, getters}, searchFields) {
+    async searchUser({ commit, getters }, searchFields) {
         let usersRef = firestore().collection('users')
         for (let field in searchFields) {
             if (!searchFields[field] || searchFields[field].length === 0) continue;
@@ -58,7 +58,7 @@ const actions = {
         });
         return users
     },
-    async addUser({getters}, patient) {
+    async addUser({ getters }, patient) {
         try {
             for (let data in patient) {
                 if (!patient[data]) {
@@ -76,28 +76,27 @@ const actions = {
             let foundUser = await firebase.firestore().collection('users').doc(patient.cpf).get()
             if (foundUser.exists) {
                 // delete patient.type
-                user = await firebase.firestore().collection('users').doc(patient.cpf).update({...patient,group:'admin'})
-            } else {
-                if(patient.type==='DOCTOR'){
-                    let oldDoctor = await firebase.firestore().collection('users').doc(patient.crm).get()
-                    if(oldDoctor.exists){
-                        let specialties = await firebase.firestore().collection('users').doc(patient.crm).collection('specialties').get()
-                        user = await firebase.firestore().collection('users').doc(patient.cpf).set({...patient,group:'admin',clinics:oldDoctor.data().clinics})
+                user = await firebase.firestore().collection('users').doc(patient.cpf).update({ ...patient, group: 'admin' })
+            } else if (patient.type === 'DOCTOR') {
+                let oldDoctor = await firebase.firestore().collection('users').doc(patient.crm).get()
+                if (oldDoctor.exists) {
+                    let specialties = await firebase.firestore().collection('users').doc(patient.crm).collection('specialties').get()
+                    user = await firebase.firestore().collection('users').doc(patient.cpf).set({ ...patient, group: 'admin', clinics: oldDoctor.data().clinics })
 
-                        specialties.forEach( async (doc) =>{
-                            await firebase.firestore().collection('users').doc(patient.cpf).collection('specialties').doc(doc.data().name).set({...doc.data()})
-                            let clinics = await firebase.firestore().collection('users').doc(patient.crm).collection('specialties').doc(doc.data().name).collection('clinics').get()
-                            clinics.forEach((clinic)=>{
-                                firebase.firestore().collection('users').doc(patient.cpf).collection('specialties').doc(doc.data().name).collection('clinics').doc(clinic.data().name) .set({...clinic.data()})
-                            })
+                    specialties.forEach(async (doc) => {
+                        await firebase.firestore().collection('users').doc(patient.cpf).collection('specialties').doc(doc.data().name).set({ ...doc.data() })
+                        let clinics = await firebase.firestore().collection('users').doc(patient.crm).collection('specialties').doc(doc.data().name).collection('clinics').get()
+                        clinics.forEach((clinic) => {
+                            firebase.firestore().collection('users').doc(patient.cpf).collection('specialties').doc(doc.data().name).collection('clinics').doc(clinic.data().name).set({ ...clinic.data() })
                         })
-                    }else{
-                        user = await firebase.firestore().collection('users').doc(patient.cpf).set({...patient,group:'admin'})
-                    }
-                }else{
-                    user = await firebase.firestore().collection('users').doc(patient.cpf).set({...patient,group:'admin'})
+                    })
+
+                    firebase.firestore().collection('users').doc(oldDoctor.data().cpf).delete()
+                } else { //Estado crítico
+                    user = await firebase.firestore().collection('users').doc(patient.cpf).set({ ...patient, group: 'admin' })
                 }
-                
+            } else {
+                user = await firebase.firestore().collection('users').doc(patient.cpf).set({ ...patient, group: 'admin' })
             }
 
             return user
@@ -114,7 +113,7 @@ const actions = {
         }
         return await firebase.firestore().collection('users').doc(payload.user.cpf).update(upd)
     },
-    async deleteUser({}, user) {
+    async deleteUser({ }, user) {
         try {
             await firebase.firestore().collection('users').doc(user.cpf).delete()
             return
@@ -122,10 +121,10 @@ const actions = {
             throw e
         }
     },
-    editPatient({commit}, payload) {
+    editPatient({ commit }, payload) {
 
     },
-    async setSelectedPatient({commit}, payload) {
+    async setSelectedPatient({ commit }, payload) {
         commit('setSelectedPatient', payload)
         if (payload.name) this.dispatch('getPatientProntuario', payload)
     },
@@ -139,8 +138,8 @@ const actions = {
         return res.data[0]
     },
 
-    setSelectedDependent({commit},payload){
-        commit('setSelectedDependent',payload)
+    setSelectedDependent({ commit }, payload) {
+        commit('setSelectedDependent', payload)
     }
 };
 

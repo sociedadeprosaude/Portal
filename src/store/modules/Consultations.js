@@ -314,7 +314,7 @@ const actions = {
         //console.log(payload.date)
         try {
             let snapshot = await firebase.firestore().collection('consultations')
-                .where('doctor.cpf', "==", payload.doctor.cpf)
+                .where('doctor.crm', "==", payload.doctor.crm)
                 //.orderByChild('date')
                 //.startAt(start)
                 //.endAt(end)

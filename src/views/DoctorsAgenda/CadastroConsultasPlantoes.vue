@@ -382,7 +382,7 @@
                     }
                     var find = false;
                     specialty.doctors.forEach(doctor => {
-                        if (doctor.cpf === this.medicos.cpf) {
+                        if (/* doctor.cpf === this.medicos.cpf || */ doctor.crm === this.medicos.crm) {
                             find = true;
                             return true;
                         }
