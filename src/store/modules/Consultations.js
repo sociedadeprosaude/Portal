@@ -1,5 +1,6 @@
 import firebase, { firestore } from "firebase";
 import moment from 'moment'
+import functions from "../../utils/functions";
 
 const state = {
     consultations: [],
@@ -310,12 +311,12 @@ const actions = {
         let start = moment(payload.start_date, 'YYYY-MM-DD').format('YYYY-MM-DD 00:00');
         let end = moment(payload.final_date, 'YYYY-MM-DD').format('YYYY-MM-DD 23:59');
         //console.log(payload.date)
-        try {
+        console.log("ANTES:", payload)
+        payload = functions.removeUndefineds(payload);
+        console.log("DEPOIS:", payload)
+/*        try {
             let snapshot = await firebase.firestore().collection('consultations')
                 .where('doctor.cpf', "==", payload.doctor.cpf)
-                //.orderByChild('date')
-                //.startAt(start)
-                //.endAt(end)
                 .where('date', ">=", start)
                 .where('date', "<=", end)
                 .get()
@@ -334,7 +335,7 @@ const actions = {
         } catch (e) {
             throw e
         }
-        return
+        return*/
     },
     setConsultationHour({ commit }, payload) {
         return new Promise((resolve, reject) => {

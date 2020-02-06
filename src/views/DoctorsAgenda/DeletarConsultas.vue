@@ -436,8 +436,8 @@
             success: false,
             index_Selecionado: {},
             status_Selecionado: '',
-            times:'',
-            semana:[],
+            times: undefined,
+            semana: undefined,
             timesOptions: [
                 { text: '06:00'},
                 { text: '06:30'},
@@ -701,7 +701,9 @@
                     start_date: this.start_date,
                     final_date: this.final_date,
                     doctor: this.doctor,
-                    specialtie: this.especialidade
+                    specialtie: this.especialidade,
+                    hour: this.times,
+                    weekDays: this.semana
                 }
                 await this.$store.dispatch('removeAppointmentByDay', deletar)
                 // this.clear()
