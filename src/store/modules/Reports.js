@@ -197,7 +197,6 @@ const actions = {
                         if(intakes[intake].valuesPayments[i] !== '') {
 
                         if (intakes[intake].payments[i] === 'Dinheiro') {
-                            console.log('adicionando dinheiro: ', intakes[intake].valuesPayments[i])
                             totalCaixa += parseFloat(intakes[intake].valuesPayments[i])
                         }
                         if (intakes[intake].payments[i] === 'Débito') {
@@ -216,7 +215,6 @@ const actions = {
                             } else if (intakes[intake].parcel === 5) {
                                 totalTaxaCredito += (((intakes[intake].valuesPayments[i] * 0.026) / 100) + ((intakes[intake].valuesPayments[i] * 0.0378) / 100))
                             }
-                            console.log('somando credito:', intakes[intake].valuesPayments[i])
                             totalCredito += parseFloat(intakes[intake].valuesPayments[i])
                         }
                         }
@@ -276,8 +274,6 @@ const actions = {
         })
 
 
-        console.log('dinheiro:', totalCaixa)
-        console.log('credito', totalCredito)
         relatorio = {
             specialties: specialties,
             exams: exams,
