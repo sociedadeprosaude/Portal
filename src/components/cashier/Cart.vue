@@ -177,8 +177,8 @@
                                         <v-select :items="parcels" v-model="parcel"
                                                   label="Parcelas"></v-select>
                                     </v-flex> -->
-                                    <v-flex sm12 xs12 class="px-3">
-                                        <v-layout row wrap class="align-center" v-for="(payment, index) in payments" :key="index">
+                                    <v-flex sm12 xs12 class="px-3" v-if="payments.length > 1">
+                                        <v-layout row wrap class="align-center" v-for="(payment, index) in payments"  :key="index">
                                             <v-flex xs10>
                                                 <v-select
                                                             outlined
@@ -222,6 +222,35 @@
                                                 </v-flex>
                                         </v-layout>
                                     </v-flex>
+                                    <v-flex sm12 xs12 class="px-3" v-if="payments.length === 1">
+                                        <v-layout row wrap class="align-center" v-for="(payment, index) in payments"  :key="index">
+                                            <v-flex xs10>
+                                                <v-select
+                                                        outlined
+                                                        rounded
+                                                        :items="FormasDePagamento"
+                                                        v-model="payments[index]"
+                                                        label="Forma de Pagamento"
+                                                        v-on="Pagamento">
+                                                </v-select>
+                                            </v-flex>
+                                            <v-flex xs10 v-if="payments[index] === 'Crédito'">
+                                                <v-select :items="parcels" v-model="parcel"
+                                                          label="Parcelas"
+                                                          filled>
+                                                </v-select>
+                                            </v-flex>
+                                            <v-flex xs2>
+                                                <v-btn
+                                                        @click="index === 0 ? adicionarFormaDePagamento() : apagarFormaDePagamento(index)"
+                                                        text class="transparent">
+                                                    <v-icon v-if="index === 0">add_circle</v-icon>
+                                                    <v-icon v-else>remove_circle</v-icon>
+                                                </v-btn>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-flex>
+
                                     <v-layout wrap>
                                         <v-flex xs5>
                                             <v-text-field label="Desconto: %"
@@ -355,7 +384,7 @@
                 moneyDiscout: 0,
                 now: moment().valueOf(),
                 data: moment().format("YYYY-MM-DD HH:mm:ss"),
-                parcelas: '',
+                parcelas: '1',
                 totalCusto: 0,
                 percentageDiscount: 0,
                 moneyDiscount: 0,
@@ -426,9 +455,16 @@
                 let tamanho= this.payments.length;
                 console.log('payments:', this.payments);
                 let pagando=0
-                for(let i=0; i < tamanho; i++){
-                    if(this.valuesPayments[i] !== ''){
-                        pagando += parseFloat(this.valuesPayments[i])
+                if(tamanho === 1 && this.payments[0] !== ''){
+                    this.valuesPayments[0]= parseFloat(this.total)
+                    pagando = parseFloat(this.valuesPayments[0])
+                    console.log('pagando=', pagando )
+                }
+                else{
+                    for(let i=0; i < tamanho; i++){
+                        if(this.valuesPayments[i] !== ''){
+                            pagando += parseFloat(this.valuesPayments[i])
+                        }
                     }
                 }
                 this.Pago= pagando.toFixed(2);
