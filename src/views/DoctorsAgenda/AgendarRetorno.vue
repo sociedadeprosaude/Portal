@@ -589,7 +589,7 @@ export default {
 
         let response = true;
         if (this.selectedDoctor) {
-          if (this.selectedDoctor.crm !== a.doctor.crm) {
+          if (this.selectedDoctor.cpf !== a.doctor.cpf) {
             response = false;
           }
         }

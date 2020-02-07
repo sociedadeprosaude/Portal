@@ -563,7 +563,7 @@
 
                         let response = true
                         if(this.selectedDoctor){
-                            if(this.selectedDoctor.crm !== a.doctor.crm){
+                            if(this.selectedDoctor.cpf !== a.doctor.cpf){
                                 response = false
                             }
                         }
@@ -734,7 +734,7 @@
                 }
                 this.especialidade = this.query.especialidade
                 this.pacienteSelecionado = this.query.pacienteObj
-                this.selectedDoctor = this.query.doctor
+                //this.selectedDoctor = this.query.doctor
                 this.status = this.query.status
                 this.num_recibo = this.query.num_recibo
                 this.modalidade = this.query.modalidade

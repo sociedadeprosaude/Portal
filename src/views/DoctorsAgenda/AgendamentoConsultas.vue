@@ -588,7 +588,7 @@ export default {
         }
         var find = false;
         specialty.doctors.forEach(doctor => {
-          if (/* doctor.cpf === this.selectedDoctor.cpf */ doctor.crm === this.selectedDoctor.crm) {
+          if (doctor.cpf === this.selectedDoctor.cpf) {
             find = true;
             return true;
           }
@@ -612,7 +612,7 @@ export default {
         //console.log("do banco:", a.clinic.name)
         let response = true;
         if (this.selectedDoctor) {
-          if (this.selectedDoctor.crm !== a.doctor.crm) {
+          if (this.selectedDoctor.cpf !== a.doctor.cpf) {
             response = false;
           }
         }
@@ -829,8 +829,8 @@ export default {
     checkConsultationIsInArray(array, consultation) {
       for (let i in array) {
         if (
-          array[i].date === consultation.date &&
-          /* array[i].doctor.cpf === consultation.doctor.cpf  || */  array[i].doctor.crm === consultation.doctor.crm&&
+         array[i].date === consultation.date &&
+          array[i].doctor.cpf === consultation.doctor.cpf &&
           array[i].specialty.name === consultation.specialty.name
         ) {
           return i;
