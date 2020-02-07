@@ -101,7 +101,6 @@ const actions = {
         let relatorio = {};
 
         for (let intake in intakes) {
-            console.log('intake', intakes[intake])
             if(!intakes[intake].cancelled_by){
                 if (intakes[intake].type === 'financial_support') {
                     financialSupport.push(intakes[intake])
@@ -195,11 +194,14 @@ const actions = {
                 totalBruto += parseFloat(intakes[intake].total);
                 if(intakes[intake].payments){
                     for(let i=0; i< intakes[intake].payments.length; i++){
+                        if(intakes[intake].valuesPayments[i] !== '') {
+
                         if (intakes[intake].payments[i] === 'Dinheiro') {
+                            console.log('adicionando dinheiro: ', intakes[intake].valuesPayments[i])
                             totalCaixa += parseFloat(intakes[intake].valuesPayments[i])
                         }
                         if (intakes[intake].payments[i] === 'Débito') {
-                            totalTaxaDebito += ((intakes[intake].total * 0.0299) / 100)
+                            totalTaxaDebito += ((parseFloat(intakes[intake].total) * 0.0299) / 100)
                             totalDebido += parseFloat(intakes[intake].valuesPayments[i])
                         }
                         if (intakes[intake].payments[i] === 'Crédito') {
@@ -214,17 +216,19 @@ const actions = {
                             } else if (intakes[intake].parcel === 5) {
                                 totalTaxaCredito += (((intakes[intake].valuesPayments[i] * 0.026) / 100) + ((intakes[intake].valuesPayments[i] * 0.0378) / 100))
                             }
+                            console.log('somando credito:', intakes[intake].valuesPayments[i])
                             totalCredito += parseFloat(intakes[intake].valuesPayments[i])
+                        }
                         }
                     }
                 }
                 else{
                     if (intakes[intake].payment_method === 'Dinheiro') {
-                        totalCaixa += intakes[intake].total
+                        totalCaixa += parseFloat(intakes[intake].total)
                     }
                     if (intakes[intake].payment_method === 'Débito') {
                         totalTaxaDebito += ((intakes[intake].total * 0.0299) / 100)
-                        totalDebido += intakes[intake].total
+                        totalDebido += parseFloat(intakes[intake].total)
                     }
                     if (intakes[intake].payment_method === 'Crédito') {
                         if (intakes[intake].parcel === 1) {
@@ -238,7 +242,7 @@ const actions = {
                         } else if (intakes[intake].parcel === 5) {
                             totalTaxaCredito += (((intakes[intake].total * 0.026) / 100) + ((intakes[intake].total * 0.0378) / 100))
                         }
-                        totalCredito += intakes[intake].total
+                        totalCredito += parseFloat(intakes[intake].total)
                     }
                 }
             }
@@ -272,8 +276,8 @@ const actions = {
         })
 
 
-        console.log('Outtakes', outtakes)
-        console.log('total bruto', totalBruto)
+        console.log('dinheiro:', totalCaixa)
+        console.log('credito', totalCredito)
         relatorio = {
             specialties: specialties,
             exams: exams,
