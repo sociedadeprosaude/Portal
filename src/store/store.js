@@ -158,36 +158,6 @@ const store = new Vuex.Store({
                 router.go()
             })
         },
-        // getUser({commit}) {
-        //   return new Promise((resolve, reject) => {
-        //     commit('setLoading', true)
-        //     axios.get(AUTH_URL + "auth/user", {
-        //       params: {
-        //         credential: localStorage.getItem('credential')
-        //       }
-        //     })
-        //         .then(response => {
-        //           commit('setUser', response.data)
-        //           commit('setLoading', false)
-        //           resolve(response.data)
-        //         })
-        //         .catch(error => {
-        //           if (error.response.status === 401) {
-        //             router.push('/login')
-        //           }
-        //           console.log(error.response.status)
-        //         })
-        //   })
-        // },
-        // addUser({commit}, payload) {
-        //   return new Promise((resolve, reject) => {
-        //     axios.post(AUTH_URL + "auth/user/adicionar", payload)
-        //         .then(response => {
-        //           resolve(response.data)
-        //         })
-        //   })
-        // }
-        // ,
         getCategories({commit, getters}) {
             axios.get('api/despesas/categorias')
                 .then(response => {
@@ -211,20 +181,6 @@ const store = new Vuex.Store({
                     })
             })
         },
-        // getIntakes({commit, getters}, date) {
-        //   return new Promise((resolve, reject) => {
-        //     // axios.get('api/entradas/hoje')
-        //     axios.get('api/entradas/data', {params: {date: (date).substring(0, 10)}})
-        //         .then(response => {
-        //           commit('setIntakes', response.data.intakes)
-        //           resolve(response.data.intakes)
-        //         })
-        //         .catch(error => {
-        //           console.log(error);
-        //           reject(error)
-        //         })
-        //   })
-        // },
         addExpense({commit, getters}, payload) {
             axios.post('api/despesa/adicionar', payload)
                 .then(response => {

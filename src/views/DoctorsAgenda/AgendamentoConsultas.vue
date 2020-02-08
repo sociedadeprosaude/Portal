@@ -770,32 +770,29 @@ export default {
       this.payment_numberFound = undefined;
       this.num_recibo = "";
       this.status = "Aguardando pagamento";
-      
-      if(form.consultation.specialty.name != 'ULTRASSONOGRAFIA'){
+
+      if (form.consultation.specialty.name != "ULTRASSONOGRAFIA") {
         this.loaderPaymentNumber = true;
-         this.$store
-        .dispatch("thereIsIntakes", {
-          user: patient,
-          doctor: form.consultation.doctor,
-          specialty: form.consultation.specialty
-        })
-        .then(obj => {
-          console.log('Achou')
-          this.payment_numberFound = obj;
-          this.num_recibo = obj.payment_number;
-          this.status = "Pago";
-          this.loaderPaymentNumber = false;
-        })
-        .catch((response) => {
-          this.loaderPaymentNumber = false;
-           console.log(response)
-        });
-      }else{
-         this.status = "Pago";
+        this.$store
+          .dispatch("thereIsIntakes", {
+            user: patient,
+            doctor: form.consultation.doctor,
+            specialty: form.consultation.specialty
+          })
+          .then(obj => {
+            console.log("Achou");
+            this.payment_numberFound = obj;
+            this.num_recibo = obj.payment_number;
+            this.status = "Pago";
+            this.loaderPaymentNumber = false;
+          })
+          .catch(response => {
+            this.loaderPaymentNumber = false;
+            console.log(response);
+          });
+      } else {
+        this.status = "Pago";
       }
-
-
-     
 
       this.createConsultationForm = form;
     },
@@ -830,7 +827,8 @@ export default {
       for (let i in array) {
         if (
           array[i].date === consultation.date &&
-          array[i].doctor.name === consultation.doctor.name
+          array[i].doctor.cpf === consultation.doctor.cpf &&
+          array[i].specialty.name === consultation.specialty.name
         ) {
           return i;
         }
@@ -965,8 +963,11 @@ export default {
 
       if (this.payment_numberFound)
         form = { ...form, payment_numberFound: this.payment_numberFound };
-      if(form.user.dependent)
-        form.consultation = {...form.consultation,dependent:form.user.dependent}
+      if (form.user.dependent)
+        form.consultation = {
+          ...form.consultation,
+          dependent: form.user.dependent
+        };
       // return
       this.loading = true;
       await this.$store.dispatch("addConsultationAppointmentToUser", form);
@@ -974,7 +975,7 @@ export default {
       await this.$store.dispatch("addUserToConsultation", form);
       this.scheduleLoading = false;
       this.success = true;
-      this.dependent = undefined
+      this.dependent = undefined;
     }
   }
 };
