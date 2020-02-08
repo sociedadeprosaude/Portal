@@ -310,6 +310,36 @@
                         ></v-text-field>
                       </v-flex>
 
+                      <v-flex xs12 v-show=" this.especialidade.name === 'ULTRASSONOGRAFIA'">
+                        <v-combobox
+                                prepend-inner-icon="search"
+                                prepend-icon="poll"
+                                :items="listExam"
+                                item-text="name"
+                                return-object
+                                label="Exames"
+                                outlined
+                                v-model="exam"
+                                clearable
+                                chips
+                                hide-details
+                        >
+                          <template v-slot:selection="data">
+                          <v-chip
+                                  :key="JSON.stringify(data.item)"
+                                  :input-value="data.selected"
+                                  :disabled="data.disabled"
+                                  class="v-chip--select-multi"
+                                  @click.stop="data.parent.selectedIndex = data.index"
+                                  @input="data.parent.selectItem(data.item)"
+                                  text-color="white"
+                                  color="info"
+                          >{{ data.item.name }}</v-chip>
+                        </template>
+
+                        </v-combobox>
+                      </v-flex>
+
                       <v-flex xs12 sm4>
                         <v-text-field
                           v-model="createConsultationForm.consultation.date.split(' ')[1]"
@@ -508,6 +538,7 @@ export default {
     x: null,
     mode: "",
     alert: false,
+    exam: null,
     loaderPaymentNumber: false,
     menu: false,
     clinic: undefined,
@@ -576,6 +607,14 @@ export default {
       });
       return val;
       //return this.$store.getters.clinics;
+    },
+    listExam() {
+      let val = this.$store.getters.exams.filter(a => {
+        return a.type === this.especialidade.name;
+        //return a.type === "ULTRASSONOGRAFIA";
+      });
+      return val;
+      //return this.$store.getters.exams;
     },
     specialties() {
       //return this.$store.getters.specialties;
@@ -861,6 +900,7 @@ export default {
           .format("YYYY-MM-DD 23:59:59")
       });
       await this.$store.dispatch("getSpecialties");
+      await this.$store.dispatch('loadExam');
       // this.$store.dispatch("stopSnack", false);
       //this.$store.dispatch('setLoader',{loader:false,view:"AgendamentoConsulta"})
       // this.especialidade = "Clinico Geral"
@@ -940,6 +980,7 @@ export default {
     },
     clear() {
       this.num_recibo = "";
+      this.exam = null,
       this.status = "Aguardando pagamento";
     },
     resetSchedule() {

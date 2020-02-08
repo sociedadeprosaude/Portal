@@ -36,6 +36,7 @@ const actions = {
 
                     exams.push({
                         name: document.data().name,
+                        type: document.data().type,
                         rules: document.data().rules,
                         clinics: clinics,
                     });
