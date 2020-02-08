@@ -45,9 +45,18 @@ Vue.use(VCurrencyField, {
   defaultValue: 0
 });
 
+// Moment.js
 window.moment = require('moment');
 window.moment.locale('pt-br');
 
+// if (window.location.href.includes('localhost')) {
+//   process.env.NODE_ENV = 'development'
+//   console.log(process.env.NODE_ENV)
+// }
+// if (process.env.NODE_ENV === 'development') {
+//
+// } else {
+// }
 
 const token = localStorage.getItem('token');
 if (token) {

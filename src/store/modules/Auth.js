@@ -16,6 +16,20 @@ const mutations = {
 }
 
 const actions = {
+    // async registerUser({commit}, user) {
+    //     user = {
+    //         ...user,
+    //         status: 'pending'
+    //     }
+    //     try {
+    //     let resp = await firebase.database().ref('colaboradores/').child(user.uid).set(user)
+    //         //console.log(resp)
+    //     } catch (e) {
+    //         console.log(e)
+    //     }
+    //     commit('setUser', user)
+    //     return
+    // },
     async logOut(context) {
         firebase.auth().signOut()
         setTimeout(() => {

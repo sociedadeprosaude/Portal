@@ -1,6 +1,5 @@
 import firebase, { firestore } from "firebase";
 import moment from 'moment'
-import functions from "../../utils/functions";
 
 const state = {
     consultations: [],
@@ -90,15 +89,14 @@ const actions = {
                     delete consultation.doctor.clinics
                     delete consultation.doctor.specialties
                     delete consultation.specialty.doctors
-                    functions.removeUndefineds(consultation)
                     let consultObject = {
                         specialty: consultation.specialty,
                         date: day.format('YYYY-MM-DD') + ' ' + consultation.hour,
                         routine_id: routineId,
                         clinic: consultation.clinic,
-                        doctor: consultation.doctor, 
+                        doctor: consultation.doctor,
                     }
-                   await firebase.firestore().collection('consultations').add(consultObject)
+                    await firebase.firestore().collection('consultations').add(consultObject)
                 }
             }
         }

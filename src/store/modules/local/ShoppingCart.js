@@ -45,28 +45,18 @@ const getters = {
     },
     getShoppingCartItemsByCategory(state) {
         let consultations = state.items.filter((a) => {
-            if(a.doctor){
-                return a.doctor
-            }
+            return a.doctor
         });
         let exams = state.items.filter((a) => {
-            if(a.clinic){
-                if(a.priceDiscount){
-                    console.log('dentro de um pacote')
-                    let trocarNumero= a.price;
-                    a.price= a.priceDiscount;
-                    a.priceAntigo = trocarNumero;
-                    return a.clinic
-                }
-                else{
-                    console.log('fora de um pacote')
-                    return a.clinic
-                }
-            }
+            return a.clinic
+        });
+        let packages = state.items.filter((a) => {
+            return !a.doctor && !a.clinic
         });
         return {
             consultations: consultations,
             exams: exams,
+            packages: packages
         }
     }
 };
