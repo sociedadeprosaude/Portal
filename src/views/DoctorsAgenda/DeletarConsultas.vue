@@ -184,7 +184,7 @@
                         wrap
                         justify-center
                         align-center
-                        
+
                 >
                     <v-container class="align-center justify-center py-0">
                         <v-layout row align-center justify-center wrap>
@@ -385,7 +385,7 @@
         computed: {
 
             formIsValid() {
-                return this.start_date && this.final_date && this.doctor && this.especialidade
+                return this.start_date && this.doctor && this.especialidade
             },
 
             specialties() {
@@ -440,30 +440,30 @@
 
             consultas() {
                 let consultas = this.$store.getters.consultations
-                 .filter((a) => {
-                    
-                     let response = true
-                    if(this.doctor){
-                        if(this.doctor.cpf !== a.doctor.cpf){
-                            response = false
-                        }
-                    }
-                    if(this.especialidade){
-                        if(this.especialidade.name !== a.specialty.name ){
-                            response = false
-                        }
-                    }
-                    if(!a.user){
-                        response = false
-                    }
-                    else{
-                        console.log(a.user)
-                    }
-                    //console.log("resposta:", response)
-                    return response
-                
-                     //return this.especialidade && this.start_date && this.doctor ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && this.doctor.cpf == a.doctor.cpf && a.user : false
-                 })
+                 // .filter((a) => {
+                 //
+                 //     let response = true
+                 //    if(this.doctor){
+                 //        if(this.doctor.cpf !== a.doctor.cpf){
+                 //            response = false
+                 //        }
+                 //    }
+                 //    if(this.especialidade){
+                 //        if(this.especialidade.name !== a.specialty.name ){
+                 //            response = false
+                 //        }
+                 //    }
+                 //    if(!a.user){
+                 //        response = false
+                 //    }
+                 //    else{
+                 //        console.log(a.user)
+                 //    }
+                 //    //console.log("resposta:", response)
+                 //    return response
+                 //
+                 //     //return this.especialidade && this.start_date && this.doctor ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && this.doctor.cpf == a.doctor.cpf && a.user : false
+                 // })
                 return consultas;
             },
 
@@ -498,7 +498,7 @@
             async getConsultations() {
                 let payload = {
                     start_date: this.start_date + ' 00:00',
-                    final_date: this.final_date + ' 23:59',
+                    final_date: this.final_date ? this.final_date  + ' 23:59' : undefined,
                     doctor: this.doctor
                 }
                 this.loading = true
