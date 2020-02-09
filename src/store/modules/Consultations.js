@@ -1,6 +1,7 @@
 import firebase, {firestore} from "firebase";
 import moment from 'moment'
 import axios from 'axios'
+import Vue from 'vue'
 
 let cloudFunctionInstance = axios.create({
     baseURL: process.env.NODE_ENV === 'production' ? 'https://us-central1-prosaude-36f66.cloudfunctions.net/'
@@ -16,6 +17,11 @@ const state = {
     consultations: [],
     consultationsCanceled: [],
     consultationsByDate: {},
+    consultationsCreationInfo: {
+        // total: 365,
+        // created: 5,
+        // day: '2020-02-24'
+    },
     loaded: false
 };
 
@@ -29,6 +35,17 @@ const mutations = {
     },
     setConsultationsLoaded(state, payload) {
         state.loaded = payload
+    },
+    setConsultationCreationTotalDays(state, payload) {
+        state.consultationsCreationInfo.total = payload
+    },
+    setConsultationCreationDaysCreated(state, payload) {
+        Vue.set(state.consultationsCreationInfo, 'created', payload)
+        // state.consultationsCreationInfo.created = payload
+    },
+    setConsultationCreationActualDay(state, payload) {
+        Vue.set(state.consultationsCreationInfo, 'day', payload)
+        // state.consultationsCreationInfo.day = payload
     }
     // setConsultationsByDate(state, payload) {
     //     state.consultationsByDate = payload
@@ -97,13 +114,68 @@ const actions = {
     },
 
     async createConsultation({commit}, consultation) {
-        try {
-            await cloudFunctionInstance.post('createConsultations', consultation)
-        } catch (e) {
-            console.log('error', e)
+        let startDate = moment(consultation.start_date, 'YYYY-MM-DD')
+        let finalDate = moment(consultation.final_date, 'YYYY-MM-DD')
+        let daysDiff = finalDate.diff(startDate, 'days')
+        let routineId = moment().valueOf()
+        commit('setConsultationCreationTotalDays', daysDiff)
+        for (let i = 0; i <= daysDiff; i++) {
+            let day = moment(consultation.start_date, 'YYYY-MM-DD').add(i, 'days')
+            commit('setConsultationCreationActualDay', day.format('YYYY-MM-DD'))
+            commit('setConsultationCreationDaysCreated', i)
+            if (consultation.weekDays.indexOf(day.weekday()) > -1) {
+                for (let j = 0; j < consultation.vacancy; j++) {
+                    delete consultation.doctor.clinics
+                    delete consultation.doctor.specialties
+                    delete consultation.specialty.doctors
+                    let consultObject = {
+                        specialty: consultation.specialty,
+                        date: day.format('YYYY-MM-DD') + ' ' + consultation.hour,
+                        routine_id: routineId,
+                        clinic: consultation.clinic,
+                        doctor: consultation.doctor,
+                    }
+                    await firebase.firestore().collection('consultations').add(consultObject)
+                }
+            }
         }
-        return
-    },
+
+
+        // try {
+        //     await cloudFunctionInstance.post('createConsultations', consultation)
+        // } catch (e) {
+        //     console.log('error', e)
+        // }
+        // return
+
+
+        // let startDate = moment(consultation.start_date, 'YYYY-MM-DD')
+        // let finalDate = moment(consultation.final_date, 'YYYY-MM-DD')
+        // let daysDiff = finalDate.diff(startDate, 'days')
+        // let routineId = moment().valueOf()
+        // commit('setConsultationCreationTotalDays', daysDiff)
+        // for (let i = 0; i <= daysDiff; i++) {
+        //     let day = moment(consultation.start_date, 'YYYY-MM-DD').add(i, 'days')
+        //     commit('setConsultationCreationActualDay', day.format('YYYY-MM-DD'))
+        //     commit('setConsultationCreationDaysCreated', i)
+        //     if (consultation.weekDays.indexOf(day.weekday()) > -1) {
+        //         for (let j = 0; j < consultation.vacancy; j++) {
+        //             delete consultation.doctor.clinics
+        //             delete consultation.doctor.specialties
+        //             delete consultation.specialty.doctors
+        //             let consultObject = {
+        //                 specialty: consultation.specialty,
+        //                 date: day.format('YYYY-MM-DD') + ' ' + consultation.hour,
+        //                 routine_id: routineId,
+        //                 clinic: consultation.clinic,
+        //                 doctor: consultation.doctor,
+        //             }
+        //             await firebase.firestore().collection('consultations').add(consultObject)
+        //         }
+        //     }
+        // }
+    }
+    ,
 
 
     async addConsultationAppointmentToUser({commit}, payload) {
@@ -141,7 +213,8 @@ const actions = {
         } catch (e) {
             throw e
         }
-    },
+    }
+    ,
     async addUserToConsultation({commit}, payload) {
         try {
             //console.log(payload)
@@ -167,7 +240,8 @@ const actions = {
         } catch (e) {
             throw e
         }
-    },
+    }
+    ,
 
     async addUserToConsultationReschedule({commit}, payload) {
         try {
@@ -189,7 +263,8 @@ const actions = {
         } catch (e) {
             throw e
         }
-    },
+    }
+    ,
 
     async addConsultationAppointmentToUserReschedule({commit}, payload) {
         try {
@@ -203,7 +278,8 @@ const actions = {
         } catch (e) {
             throw e
         }
-    },
+    }
+    ,
 
     async updateAppointment({commit}, payload) { //atualizarConsulta
         //console.log(payload)
@@ -218,14 +294,16 @@ const actions = {
         } catch (e) {
             throw e
         }
-    },
+    }
+    ,
     async SearchCosultation({commit}) {
         try {
             firebase.firestore().collection('consultations').doc()
         } catch (e) {
             throw e
         }
-    },
+    }
+    ,
 
     async eraseAppointment({commit}, payload) { // apagarConsulta
         console.log(payload)
@@ -307,7 +385,8 @@ const actions = {
         } catch (e) {
             throw e
         }
-    },
+    }
+    ,
 
     async removeAppointmentForever({commit}, payload) {//apagar consulta de cancelados para semopre.
         //console.log(payload.idConsultation)
@@ -316,7 +395,8 @@ const actions = {
         } catch (e) {
             throw e
         }
-    },
+    }
+    ,
 
     async removeAppointmentByDay({commit}, payload) { // ApagarTodasAsConsultasDoDiaDoMedico
 
@@ -348,7 +428,8 @@ const actions = {
             throw e
         }
         return
-    },
+    }
+    ,
     setConsultationHour({commit}, payload) {
         return new Promise((resolve, reject) => {
             firebase.firestore().collection('consultations').doc(payload.consultation).get()
@@ -365,11 +446,13 @@ const actions = {
                 })
         })
 
-    },
+    }
+    ,
 
     async addProntuarioToConsultation({commit}, payload) {
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({prontuario: payload.prontuario})
-    },
+    }
+    ,
 
     async addTimesToConsultation({commit}, payload) {
         firebase.firestore().collection('consultations').doc(payload.consultation).update({start_at: payload.start})
@@ -390,6 +473,9 @@ const getters = {
     },
     consultationsLoaded(state) {
         return state.loaded
+    },
+    consultationsCreationInfo(state) {
+        return state.consultationsCreationInfo
     }
     // consultationsByDate(state) {
     //     return state.consultationsByDate
