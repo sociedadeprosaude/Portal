@@ -491,7 +491,7 @@
                 await this.$store.dispatch('createConsultation', consultation)
                 this.success = true
                 this.loading = false
-                this.clear()
+                // this.clear()
             }
         }
     }

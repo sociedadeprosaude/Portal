@@ -1,5 +1,16 @@
 import firebase, { firestore } from "firebase";
 import moment from 'moment'
+import axios from 'axios'
+
+let cloudFunctionInstance = axios.create({
+    baseURL: process.env.NODE_ENV === 'production' ? 'https://us-central1-prosaude-36f66.cloudfunctions.net/'
+        : 'https://us-central1-prosaudedev.cloudfunctions.net/',
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+    }
+})
 
 const state = {
     consultations: [],
@@ -78,27 +89,10 @@ const actions = {
     },
 
     async createConsultation({ commit }, consultation) {
-        let startDate = moment(consultation.start_date, 'YYYY-MM-DD')
-        let finalDate = moment(consultation.final_date, 'YYYY-MM-DD')
-        let daysDiff = finalDate.diff(startDate, 'days')
-        let routineId = moment().valueOf()
-        for (let i = 0; i <= daysDiff; i++) {
-            let day = moment(consultation.start_date, 'YYYY-MM-DD').add(i, 'days')
-            if (consultation.weekDays.indexOf(day.weekday()) > -1) {
-                for (let j = 0; j < consultation.vacancy; j++) {
-                    delete consultation.doctor.clinics
-                    delete consultation.doctor.specialties
-                    delete consultation.specialty.doctors
-                    let consultObject = {
-                        specialty: consultation.specialty,
-                        date: day.format('YYYY-MM-DD') + ' ' + consultation.hour,
-                        routine_id: routineId,
-                        clinic: consultation.clinic,
-                        doctor: consultation.doctor,
-                    }
-                    await firebase.firestore().collection('consultations').add(consultObject)
-                }
-            }
+        try {
+            await cloudFunctionInstance.post('createConsultations', consultation)
+        } catch (e) {
+            console.log('error', e)
         }
         return
     },
