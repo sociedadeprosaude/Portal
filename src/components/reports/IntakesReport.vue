@@ -8,7 +8,7 @@
                             <span class="my-sub-headline">Relatório Vendas</span>
                         </v-flex>
                         <v-flex xs6 class="text-right">
-                            <span>{{now | dateFilter}}</span>
+                            <span>{{report.dataInicio | dateFilter}} até {{report.dataFinal | dateFilter}}</span>
                         </v-flex>
                         <v-flex xs12 v-for="(intake, label) in report.intakes" :key="label" class="my-1">
                             <v-flex xs12>
@@ -385,7 +385,7 @@
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs3>
-                                            {{ this.report.totalBruto.toFixed(2)}}
+                                            {{ this.report.totalBruto  | moneyFilter}}
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
