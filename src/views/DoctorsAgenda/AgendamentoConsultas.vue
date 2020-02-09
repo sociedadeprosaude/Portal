@@ -770,7 +770,7 @@ export default {
       this.payment_numberFound = undefined;
       this.num_recibo = "";
       this.status = "Aguardando pagamento";
-      
+
       if(form.consultation.specialty.name != 'ULTRASSONOGRAFIA'){
         this.loaderPaymentNumber = true;
          this.$store
@@ -795,7 +795,7 @@ export default {
       }
 
 
-     
+
 
       this.createConsultationForm = form;
     },
@@ -857,7 +857,7 @@ export default {
           .subtract(4, "hours")
           .format("YYYY-MM-DD HH:mm:ss"),
         final_date: moment()
-          .add(30, "days")
+          .add(10, "days")
           .format("YYYY-MM-DD 23:59:59")
       });
       await this.$store.dispatch("getSpecialties");

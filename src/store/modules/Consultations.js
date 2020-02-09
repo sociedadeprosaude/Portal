@@ -55,16 +55,18 @@ const mutations = {
 const actions = {
 
     async getConsultations({commit}, payload) {
+        console.log('getando')
         try {
+            console.log(payload)
             commit('setConsultationsLoaded', false)
             let consultations = []
             let query = firebase.firestore().collection('consultations')
                 .where('date', '>=', payload.start_date)
             if (payload.final_date) {
-                query.where('date', '<=', payload.final_date)
+                query = query.where('date', '<=', payload.final_date)
             }
             if (payload.doctor) {
-                query.where('doctor.cpf', '==', payload.doctor.cpf)
+                query = query.where('doctor.cpf', '==', payload.doctor.cpf)
             }
             await query.onSnapshot((querySnapshot) => {
                 consultations = []
@@ -74,6 +76,7 @@ const actions = {
                         id: document.id
                     })
                 })
+                console.log('set', consultations)
                 commit('setConsultations', consultations)
             })
             return consultations

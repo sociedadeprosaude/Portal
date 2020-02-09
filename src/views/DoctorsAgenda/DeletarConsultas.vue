@@ -144,7 +144,7 @@
 
                 <v-layout align-center justify-center>
                     <v-btn
-                            @click="getConsultations()"
+                            @click="getConsultations"
                             color="error"
                             class="mx-3"
                             rounded
@@ -387,7 +387,7 @@
             },
 
             formIsValid() {
-                return this.start_date && this.doctor && this.especialidade
+                return this.start_date && this.final_date && this.doctor && this.especialidade
             },
 
             specialties() {
@@ -479,10 +479,12 @@
             },
         },
         async mounted() {
-            this.getConsultations({
-                start_date: moment().format('YYYY-MM-DD 00:00:00'),
-                final_date: moment().format('YYYY-MM-DD 23:59:59')
-            })
+            // this.start_date = moment().format('YYYY-MM-DD')
+            // this.final_date = moment().format('YYYY-MM-DD')
+            // this.getConsultations({
+            //     start_date: moment().format('YYYY-MM-DD 00:00:00'),
+            //     final_date: moment().format('YYYY-MM-DD 23:59:59')
+            // })
             await this.$store.dispatch('getSpecialties')
             await this.$store.dispatch('getDoctors')
             this.start_date = moment().format('YYYY-MM-DD')
