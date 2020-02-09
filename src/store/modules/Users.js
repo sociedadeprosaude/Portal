@@ -76,27 +76,9 @@ const actions = {
             let foundUser = await firebase.firestore().collection('users').doc(patient.cpf).get()
             if (foundUser.exists) {
                 // delete patient.type
-                user = await firebase.firestore().collection('users').doc(patient.cpf).update({ ...patient, group: 'admin' })
-            } else if (patient.type === 'DOCTOR') {
-                let oldDoctor = await firebase.firestore().collection('users').doc(patient.crm).get()
-                if (oldDoctor.exists) {
-                    let specialties = await firebase.firestore().collection('users').doc(patient.crm).collection('specialties').get()
-                    user = await firebase.firestore().collection('users').doc(patient.cpf).set({ ...patient, group: 'admin', clinics: oldDoctor.data().clinics })
-
-                    specialties.forEach(async (doc) => {
-                        await firebase.firestore().collection('users').doc(patient.cpf).collection('specialties').doc(doc.data().name).set({ ...doc.data() })
-                        let clinics = await firebase.firestore().collection('users').doc(patient.crm).collection('specialties').doc(doc.data().name).collection('clinics').get()
-                        clinics.forEach((clinic) => {
-                            firebase.firestore().collection('users').doc(patient.cpf).collection('specialties').doc(doc.data().name).collection('clinics').doc(clinic.data().name).set({ ...clinic.data() })
-                        })
-                    })
-
-                    firebase.firestore().collection('users').doc(oldDoctor.data().cpf).delete()
-                } else { //Estado crítico
-                    user = await firebase.firestore().collection('users').doc(patient.cpf).set({ ...patient, group: 'admin' })
-                }
+                user = await firebase.firestore().collection('users').doc(patient.cpf).update(patient)
             } else {
-                user = await firebase.firestore().collection('users').doc(patient.cpf).set({ ...patient, group: 'admin' })
+                user = await firebase.firestore().collection('users').doc(patient.cpf).set(patient)
             }
 
             return user
