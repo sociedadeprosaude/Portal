@@ -353,7 +353,6 @@
             alert: false,
             doctor: null,
             dateFormatted: '',
-            loading: false,
             success: false,
             index_Selecionado: {},
             status_Selecionado: '',
@@ -383,6 +382,9 @@
         }),
 
         computed: {
+            loading() {
+              return !this.$store.getters.consultationsLoaded
+            },
 
             formIsValid() {
                 return this.start_date && this.doctor && this.especialidade
@@ -501,9 +503,9 @@
                     final_date: this.final_date ? this.final_date  + ' 23:59' : undefined,
                     doctor: this.doctor
                 }
-                this.loading = true
+                // this.loading = true
                 await this.$store.dispatch('getConsultations', payload)
-                this.loading = false
+                // this.loading = false
             },
 
             formatConsultationsArray(consultations) {

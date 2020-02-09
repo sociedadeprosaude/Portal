@@ -16,15 +16,20 @@ const state = {
     consultations: [],
     consultationsCanceled: [],
     consultationsByDate: {},
+    loaded: false
 };
 
 const mutations = {
     setConsultations(state, payload) {
         state.consultations = payload
+        state.loaded = true
     },
     setConsultationsCanceled(state, payload) {
         state.consultationsCanceled = payload
     },
+    setConsultationsLoaded(state, payload) {
+        state.loaded = payload
+    }
     // setConsultationsByDate(state, payload) {
     //     state.consultationsByDate = payload
     // },
@@ -34,7 +39,7 @@ const actions = {
 
     async getConsultations({commit}, payload) {
         try {
-            console.log('veio', payload)
+            commit('setConsultationsLoaded', false)
             let consultations = []
             let query = firebase.firestore().collection('consultations')
                 .where('date', '>=', payload.start_date)
@@ -383,6 +388,9 @@ const getters = {
     consultationsCanceled(state) {
         return state.consultationsCanceled
     },
+    consultationsLoaded(state) {
+        return state.loaded
+    }
     // consultationsByDate(state) {
     //     return state.consultationsByDate
     // },
