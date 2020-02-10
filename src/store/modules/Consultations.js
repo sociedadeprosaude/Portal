@@ -71,7 +71,8 @@ const actions = {
             if (payload.doctor) {
                 query = query.where('doctor.cpf', '==', payload.doctor.cpf)
             }
-            await query.onSnapshot((querySnapshot) => {
+            return query.onSnapshot((querySnapshot) => {
+                console.log('listor')
                 consultations = []
                 querySnapshot.forEach((document) => {
                     consultations.push({
@@ -81,7 +82,6 @@ const actions = {
                 })
                 commit('setConsultations', consultations)
             })
-            return consultations
         } catch (e) {
             throw e
         }
@@ -428,7 +428,6 @@ const actions = {
     ,
 
     async removeAppointments({commit}, consultations) {
-        console.log('ola', consultations)
         for (let consultation in consultations) {
             commit('setConsultationDeletionInfo', {
                 total: consultations.length,
