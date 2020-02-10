@@ -1,6 +1,7 @@
 import firebase, { firestore } from "firebase";
 import moment from 'moment'
 import axios from 'axios'
+import functions from "../../utils/functions";
 
 let cloudFunctionInstance = axios.create({
     baseURL: process.env.NODE_ENV === 'production' ? 'https://us-central1-prosaude-36f66.cloudfunctions.net/'
@@ -11,6 +12,7 @@ let cloudFunctionInstance = axios.create({
         'Access-Control-Allow-Origin': '*'
     }
 })
+
 
 const state = {
     consultations: [],
