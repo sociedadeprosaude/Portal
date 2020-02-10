@@ -13,6 +13,7 @@ let cloudFunctionInstance = axios.create({
     }
 })
 
+import functions from "../../utils/functions";
 
 const state = {
     consultations: [],
@@ -449,20 +450,27 @@ const actions = {
         let start = moment(payload.start_date, 'YYYY-MM-DD').format('YYYY-MM-DD 00:00');
         let end = moment(payload.final_date, 'YYYY-MM-DD').format('YYYY-MM-DD 23:59');
         //console.log(payload.date)
-        try {
+        console.log("ANTES:", payload)
+        payload = functions.removeUndefineds(payload);
+        console.log("DEPOIS:", payload)
+       try {
             let snapshot = await firebase.firestore().collection('consultations')
                 .where('doctor.cpf', "==", payload.doctor.cpf)
                 .where('date', ">=", start)
                 .where('date', "<=", end)
                 .get()
-            //console.log(snapshot.size)
+
 
             snapshot.forEach(doc => {
-                //console.log(doc.data())
-                //console.log(doc.id)
+                
+                let dateConsultation = moment(doc.data().date)
+                let filterHour = payload.hour ? dateConsultation.format('hh:ss') === payload.hour ? true : false : true
+                let filterDayWeek = payload.weekDays ? payload.weekDays.indexOf(dateConsultation.weekday()) > -1 ? true : false : true
 
-                firebase.firestore().collection('consultations').doc(doc.id).delete()
-                if (doc.data().user) {
+                if(filterHour && filterDayWeek)
+                    firebase.firestore().collection('consultations').doc(doc.id).delete()
+                
+                if (filterHour && filterDayWeek && doc.data().user) {
                     firebase.firestore().collection('users').doc(doc.data().user.cpf).collection('consultations').doc(doc.id).delete()
                     firebase.firestore().collection('canceled').doc(doc.id).set(doc.data())
                 }
