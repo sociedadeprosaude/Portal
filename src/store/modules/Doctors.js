@@ -1,5 +1,6 @@
 import firebase, {firestore} from "firebase";
 import functions from '../../utils/functions'
+import Vue from 'vue'
 import moment from "moment";
 
 const state = {
@@ -15,6 +16,9 @@ const mutations = {
     },
     setSpecialties(state, payload) {
         state.specialties = payload
+    },
+    deleteDoctor(state, payload) {
+        Vue.delete(state.doctors, payload.cpf)
     }
 };
 
@@ -100,7 +104,7 @@ const actions = {
         return
     },
 
-    async deleteDoctor ({}, doctor) {
+    async deleteDoctor ({commit}, doctor) {
         try {
             (await firebase.firestore().collection('users').doc(doctor.cpf).collection('specialties').get()).forEach((doc) => {
                 firebase.firestore().collection('users').doc(doctor.cpf).collection('specialties').doc(doc.id).delete()
@@ -117,6 +121,7 @@ const actions = {
             for (let clinic in doctor.clinics) {
                 await firebase.firestore().collection('clinics').doc(doctor.clinics[clinic].name).collection('doctors').doc(doctor.cpf).delete()
             }
+            commit('deleteDoctor', doctor)
             return
         } catch (e) {
             throw e

@@ -1,5 +1,6 @@
 const functions = require('firebase-functions');
 var admin = require('firebase-admin');
+const cors = require('cors')({origin: true});
 
 var papa = require('papaparse');
 var moment = require('moment');
@@ -9,11 +10,11 @@ const defaultRoute = '/analise-exames'
 
 exports.createConsultations = functions.https.onRequest((request, response) => {
     let consultation = request.body
-    // response.send('resss ' + consultation.start_date)
-    // return
+    console.log('cons', consultation.start_date, consultation)
     let startDate = moment(consultation.start_date, 'YYYY-MM-DD')
     let finalDate = moment(consultation.final_date, 'YYYY-MM-DD')
     let daysDiff = finalDate.diff(startDate, 'days')
+    console.log('daysdiff', daysDiff)
     let routineId = moment().valueOf()
     for (let i = 0; i <= daysDiff; i++) {
         let day = moment(consultation.start_date, 'YYYY-MM-DD').add(i, 'days')
@@ -33,7 +34,9 @@ exports.createConsultations = functions.https.onRequest((request, response) => {
             }
         }
     }
-    response.send('success')
+    cors(request, response, () => {
+        response.status(200).send('success')
+    });
     return
 })
 

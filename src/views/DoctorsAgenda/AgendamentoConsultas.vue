@@ -167,8 +167,10 @@
           </v-layout>
         </v-container>
       </v-container>
+      <v-flex xs12>
+        <v-btn class="primary" rounded @click="listenMoreConsultations">Carregar mais</v-btn>
+      </v-flex>
     </v-flex>
-    <!--      <v-divider vertical></v-divider>-->
     <v-flex v-if="!showAlert" xs4 class="text-center hidden-xs-only">
       <v-layout row wrap class="align-center justify-center">
         <v-flex xs12 class="text-center">
@@ -407,21 +409,6 @@
                     <v-icon right>clear</v-icon>
                   </v-btn>
                   <v-spacer></v-spacer>
-                  <!-- <v-btn
-                                            color="success"
-                                            :disabled="loader"
-                                            :loading="loader"
-                                            rounded
-                                            @click="save"
-                                            v-if="status === 'Pago' && num_recibo !== ''"
-                                    >
-                                        Confirmar
-                                        <v-icon right>done</v-icon>
-                                        <template v-slot:loader>
-                                            <span>Aguarde...</span>
-                                        </template>
-                                        v-if="status === 'Aguardando pagamento' && num_recibo === ''"
-                  </v-btn>-->
                   <submit-button
                     color="success"
                     rounded
@@ -443,20 +430,6 @@
       </v-container>
     </template>
 
-    <!-- <v-snackbar
-            v-model="snackbar"
-            :bottom="y === 'bottom'"
-            :left="x === 'left'"
-            color="success"
-            :multi-line="mode === 'multi-line'"
-            :right="x === 'right'"
-            :top="y === 'top'"
-            :timeout="timeout"
-            :vertical="mode === 'vertical'"
-          >
-            {{this.mensagem}}
-            <v-icon dark>done_outline</v-icon>
-    </v-snackbar>-->
     <v-dialog v-model="snackbar" hide-overlay max-width="500px">
       <v-card color="white">
         <v-card-title class="text-xs-center ma-1">
@@ -554,6 +527,8 @@ export default {
     loading: false,
     scheduleLoading: false,
     dependent: undefined,
+    consultationsListenerUnsubscriber: undefined,
+    daysToListen: 10,
 
     //-------------------------------------------Scroll------------------------------------------------
     type: "number",
@@ -742,6 +717,9 @@ export default {
   created() {
     window.addEventListener("scroll", this.handleScroll);
   },
+  beforeDestroy() {
+    this.consultationsListenerUnsubscriber()
+  },
   methods: {
     formatDate(date) {
       if (!date) return null;
@@ -770,7 +748,7 @@ export default {
       this.payment_numberFound = undefined;
       this.num_recibo = "";
       this.status = "Aguardando pagamento";
-      
+
       if(form.consultation.specialty.name != 'ULTRASSONOGRAFIA'){
         this.loaderPaymentNumber = true;
          this.$store
@@ -795,7 +773,7 @@ export default {
       }
 
 
-     
+
 
       this.createConsultationForm = form;
     },
@@ -853,14 +831,7 @@ export default {
       this.loading = true;
       this.$store.dispatch("getClinics");
       await this.$store.dispatch("getDoctors");
-      await this.$store.dispatch("getConsultations", {
-        start_date: moment()
-          .subtract(4, "hours")
-          .format("YYYY-MM-DD HH:mm:ss"),
-        final_date: moment()
-          .add(30, "days")
-          .format("YYYY-MM-DD 23:59:59")
-      });
+      await this.listenConsultations()
       await this.$store.dispatch("getSpecialties");
       // this.$store.dispatch("stopSnack", false);
       //this.$store.dispatch('setLoader',{loader:false,view:"AgendamentoConsulta"})
@@ -871,6 +842,23 @@ export default {
           .subtract(4, "hours")
           .format("YYYY-MM-DD HH:mm:ss")
       );
+    },
+    async listenConsultations() {
+      this.consultationsListenerUnsubscriber = await this.$store.dispatch("listenConsultations", {
+        start_date: moment()
+                .subtract(4, "hours")
+                .format("YYYY-MM-DD HH:mm:ss"),
+        final_date: moment()
+                .add(this.daysToListen, "days")
+                .format("YYYY-MM-DD 23:59:59")
+      });
+    },
+    async listenMoreConsultations() {
+      if (this.consultationsListenerUnsubscriber) {
+        this.consultationsListenerUnsubscriber()
+      }
+      this.daysToListen += 10
+      this.listenConsultations()
     },
     backTop() {
       this.$vuetify.goTo(0, this.options);
