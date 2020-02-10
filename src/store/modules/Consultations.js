@@ -314,20 +314,24 @@ const actions = {
         console.log("ANTES:", payload)
         payload = functions.removeUndefineds(payload);
         console.log("DEPOIS:", payload)
-/*        try {
+       try {
             let snapshot = await firebase.firestore().collection('consultations')
                 .where('doctor.cpf', "==", payload.doctor.cpf)
                 .where('date', ">=", start)
                 .where('date', "<=", end)
                 .get()
-            //console.log(snapshot.size)
+
 
             snapshot.forEach(doc => {
-                //console.log(doc.data())
-                //console.log(doc.id)
+                
+                let dateConsultation = moment(doc.data().date)
+                let filterHour = payload.hour ? dateConsultation.format('hh:ss') === payload.hour ? true : false : true
+                let filterDayWeek = payload.weekDays ? payload.weekDays.indexOf(dateConsultation.weekday()) > -1 ? true : false : true
 
-                firebase.firestore().collection('consultations').doc(doc.id).delete()
-                if (doc.data().user) {
+                if(filterHour && filterDayWeek)
+                    firebase.firestore().collection('consultations').doc(doc.id).delete()
+                
+                if (filterHour && filterDayWeek && doc.data().user) {
                     firebase.firestore().collection('users').doc(doc.data().user.cpf).collection('consultations').doc(doc.id).delete()
                     firebase.firestore().collection('canceled').doc(doc.id).set(doc.data())
                 }
@@ -335,7 +339,7 @@ const actions = {
         } catch (e) {
             throw e
         }
-        return*/
+        return
     },
     setConsultationHour({ commit }, payload) {
         return new Promise((resolve, reject) => {
