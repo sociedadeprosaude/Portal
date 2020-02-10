@@ -18,9 +18,11 @@ const state = {
     consultationsCanceled: [],
     consultationsByDate: {},
     consultationsCreationInfo: {
-        // total: 365,
-        // created: 5,
-        // day: '2020-02-24'
+    },
+    consultationsDeletionInfo: {
+        // removed: 2,
+        // total: 300,
+        // day: '2020-03-23'
     },
     loaded: false
 };
@@ -46,7 +48,10 @@ const mutations = {
     setConsultationCreationActualDay(state, payload) {
         Vue.set(state.consultationsCreationInfo, 'day', payload)
         // state.consultationsCreationInfo.day = payload
-    }
+    },
+    setConsultationDeletionInfo(state, payload) {
+        state.consultationsDeletionInfo = payload
+    },
     // setConsultationsByDate(state, payload) {
     //     state.consultationsByDate = payload
     // },
@@ -54,10 +59,8 @@ const mutations = {
 
 const actions = {
 
-    async getConsultations({commit}, payload) {
-        console.log('getando')
+    async listenConsultations({commit}, payload) {
         try {
-            console.log(payload)
             commit('setConsultationsLoaded', false)
             let consultations = []
             let query = firebase.firestore().collection('consultations')
@@ -76,8 +79,32 @@ const actions = {
                         id: document.id
                     })
                 })
-                console.log('set', consultations)
                 commit('setConsultations', consultations)
+            })
+            return consultations
+        } catch (e) {
+            throw e
+        }
+    },
+
+    async getConsultations({commit}, payload) {
+        try {
+            let consultations = []
+            let query = firebase.firestore().collection('consultations')
+                .where('date', '>=', payload.start_date)
+            if (payload.final_date) {
+                query = query.where('date', '<=', payload.final_date)
+            }
+            if (payload.doctor) {
+                query = query.where('doctor.cpf', '==', payload.doctor.cpf)
+            }
+            let querySnapshot = await query.get()
+            consultations = []
+            querySnapshot.forEach((document) => {
+                consultations.push({
+                    ...document.data(),
+                    id: document.id
+                })
             })
             return consultations
         } catch (e) {
@@ -182,7 +209,6 @@ const actions = {
 
 
     async addConsultationAppointmentToUser({commit}, payload) {
-        console.log('agendamento', payload)
         try {
             await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.id).set(payload.consultation)
             if (payload.consultation.type == "Retorno") {
@@ -401,6 +427,23 @@ const actions = {
     }
     ,
 
+    async removeAppointments({commit}, consultations) {
+        console.log('ola', consultations)
+        for (let consultation in consultations) {
+            commit('setConsultationDeletionInfo', {
+                total: consultations.length,
+                day: consultations[consultation].date,
+                removed: consultation
+            })
+            await firebase.firestore().collection('consultations').doc(consultations[consultation].id).delete()
+            if (consultations[consultation].user) {
+                await firebase.firestore().collection('users').doc(consultations[consultation].user.cpf).collection('consultations').doc(consultations[consultation].id).delete()
+                await firebase.firestore().collection('canceled').doc(consultations[consultation].id).set(consultations[consultation])
+            }
+        }
+        commit('setConsultationDeletionInfo', {})
+    },
+
     async removeAppointmentByDay({commit}, payload) { // ApagarTodasAsConsultasDoDiaDoMedico
 
         let start = moment(payload.start_date, 'YYYY-MM-DD').format('YYYY-MM-DD 00:00');
@@ -409,9 +452,6 @@ const actions = {
         try {
             let snapshot = await firebase.firestore().collection('consultations')
                 .where('doctor.cpf', "==", payload.doctor.cpf)
-                //.orderByChild('date')
-                //.startAt(start)
-                //.endAt(end)
                 .where('date', ">=", start)
                 .where('date', "<=", end)
                 .get()
@@ -479,6 +519,9 @@ const getters = {
     },
     consultationsCreationInfo(state) {
         return state.consultationsCreationInfo
+    },
+    consultationsDeletionInfo(state) {
+        return state.consultationsDeletionInfo
     }
     // consultationsByDate(state) {
     //     return state.consultationsByDate

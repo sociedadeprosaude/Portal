@@ -154,6 +154,7 @@
                         <!--                        <v-icon right>calendar</v-icon>-->
                     </v-btn>
                     <v-btn
+                            v-if="Object.keys(consultationsDeletionInfo).length === 0"
                             @click="deleteConsultasDia"
                             color="error"
                             rounded
@@ -162,6 +163,9 @@
                         DELETAR
                         <v-icon right>delete_forever</v-icon>
                     </v-btn>
+                    <span v-else class="ml-4">
+                        Deletando {{consultationsDeletionInfo.removed}}/{{consultationsDeletionInfo.total}}, dia {{consultationsDeletionInfo.day | dateFilter}}
+                    </span>
                 </v-layout>
 
                 <v-container v-if="consultas && consultas.lenght == 0">
@@ -379,11 +383,17 @@
             messages: [],
             timeout: 4000,
             mensage_progress: '',
+            consultas: [],
+            loading: false
         }),
 
         computed: {
-            loading() {
-              return !this.$store.getters.consultationsLoaded
+            // loading() {
+            //   return !this.$store.getters.consultationsLoaded
+            // },
+
+            consultationsDeletionInfo() {
+              return this.$store.getters.consultationsDeletionInfo
             },
 
             formIsValid() {
@@ -440,34 +450,34 @@
                 return this.formatDate(this.index_Selecionado.start_date)
             },
 
-            consultas() {
-                let consultas = this.$store.getters.consultations
-                 // .filter((a) => {
-                 //
-                 //     let response = true
-                 //    if(this.doctor){
-                 //        if(this.doctor.cpf !== a.doctor.cpf){
-                 //            response = false
-                 //        }
-                 //    }
-                 //    if(this.especialidade){
-                 //        if(this.especialidade.name !== a.specialty.name ){
-                 //            response = false
-                 //        }
-                 //    }
-                 //    if(!a.user){
-                 //        response = false
-                 //    }
-                 //    else{
-                 //        console.log(a.user)
-                 //    }
-                 //    //console.log("resposta:", response)
-                 //    return response
-                 //
-                 //     //return this.especialidade && this.start_date && this.doctor ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && this.doctor.cpf == a.doctor.cpf && a.user : false
-                 // })
-                return consultas;
-            },
+            // consultas() {
+            //     let consultas = this.$store.getters.consultations
+            //      // .filter((a) => {
+            //      //
+            //      //     let response = true
+            //      //    if(this.doctor){
+            //      //        if(this.doctor.cpf !== a.doctor.cpf){
+            //      //            response = false
+            //      //        }
+            //      //    }
+            //      //    if(this.especialidade){
+            //      //        if(this.especialidade.name !== a.specialty.name ){
+            //      //            response = false
+            //      //        }
+            //      //    }
+            //      //    if(!a.user){
+            //      //        response = false
+            //      //    }
+            //      //    else{
+            //      //        console.log(a.user)
+            //      //    }
+            //      //    //console.log("resposta:", response)
+            //      //    return response
+            //      //
+            //      //     //return this.especialidade && this.start_date && this.doctor ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && this.doctor.cpf == a.doctor.cpf && a.user : false
+            //      // })
+            //     return consultas;
+            // },
 
             date: {
                 get() {
@@ -505,9 +515,9 @@
                     final_date: this.final_date ? this.final_date  + ' 23:59' : undefined,
                     doctor: this.doctor
                 }
-                // this.loading = true
-                await this.$store.dispatch('getConsultations', payload)
-                // this.loading = false
+                this.loading = true
+                this.consultas = await this.$store.dispatch('getConsultations', payload)
+                this.loading = false
             },
 
             formatConsultationsArray(consultations) {
@@ -582,17 +592,14 @@
             async deleteConsultasDia() {
 
                 this.loading = true
-                // setTimeout(() => {
-                //     this.loading = false
-                // }, 2000)
-                // return
-                var deletar = {
-                    start_date: this.start_date,
-                    final_date: this.final_date,
-                    doctor: this.doctor,
-                    specialtie: this.especialidade
-                }
-                await this.$store.dispatch('removeAppointmentByDay', deletar)
+                // var deletar = {
+                //     start_date: this.start_date,
+                //     final_date: this.final_date,
+                //     doctor: this.doctor,
+                //     specialtie: this.especialidade
+                // }
+                // await this.$store.dispatch('removeAppointmentByDay', deletar)
+                await this.$store.dispatch('removeAppointments', this.consultas)
                 // this.clear()
                 this.loading = false
 

@@ -852,7 +852,7 @@ export default {
       this.loading = true;
       this.$store.dispatch("getClinics");
       await this.$store.dispatch("getDoctors");
-      await this.$store.dispatch("getConsultations", {
+      await this.$store.dispatch("listenConsultations", {
         start_date: moment()
           .subtract(4, "hours")
           .format("YYYY-MM-DD HH:mm:ss"),
