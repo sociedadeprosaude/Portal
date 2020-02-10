@@ -491,6 +491,7 @@
             success : false,
             loading: false,
             pacienteSelecionado:undefined,
+            consultationsListenerUnsubscriber: undefined,
             daysToListen: 30,
 
             //-------------------------------------------Scroll------------------------------------------------
@@ -627,6 +628,9 @@
         },
         created() {
             window.addEventListener("scroll", this.handleScroll);
+        },
+        beforeDestroy() {
+            this.consultationsListenerUnsubscriber()
         },
         methods: {
             scheduleAppointment(consultation) {
