@@ -6,6 +6,14 @@
         <v-content v-if="loaded" :class="['background']">
             <router-view/>
         </v-content>
+        <v-content v-else>
+            <v-img
+                    class="align-center"
+                    :src="require('./assets/pro_saude_logo.png')"
+                   aspect-radio="1"
+                   width="150"
+            ></v-img>
+        </v-content>
     </v-app>
 </template>
 <script>
@@ -34,12 +42,14 @@
                 this.loaded = true
             },
         },
-        mounted() {
+        created() {
             // this.$store.dispatch('listenToOperationalValues')
             this.$store.dispatch("loadSpecialties")
             this.$store.dispatch("getDoctors")
             this.$store.dispatch("getClinics")
             // this.$store.dispatch("updateUsers")
+        },
+        mounted() {
             firebase.auth().onAuthStateChanged((user) => {
                 if (!user) {
                     this.$router.push('/login')
@@ -52,7 +62,6 @@
                     this.getUser(user)
                 }
             })
-
         }
     }
 </script>

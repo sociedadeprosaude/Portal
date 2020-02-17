@@ -2,8 +2,8 @@
     <v-container fluid fill-height>
         <v-layout row wrap align-center justify-center style="margin-bottom: 30vh">
             <v-flex xs8 sm4 class="text-xs-center">
-                <img src="https://firebasestorage.googleapis.com/v0/b/prosaude-36f66.appspot.com/o/assets%2Flogo.svg?alt=media&token=280c2f44-d4e0-4213-b480-30a995c5a254"
-                     width="300px" class="mb-5 mt-5">
+                <img :src="require('../../assets/pro_saude_logo.png')"
+                     width="100px" class="mb-5 mt-5">
                 <v-card style="min-width: 300px" class="mb-5">
                     <v-card-text>
                         <v-text-field
