@@ -98,7 +98,7 @@
                                         </v-tooltip>
 
                                     </v-flex>
-                                   
+
                                     <v-flex xs1 class="text-right mx-3">
                                         <v-tooltip top>
                                             <template v-slot:activator="{ on }">
@@ -461,7 +461,7 @@
     import {mask} from 'vue-the-mask'
     import SubmitButton from "./SubmitButton";
     import PatientCard from "./PatientCard";
-    var moment = require("moment");
+    let moment = require("moment");
     export default {
         directives: {
             mask,
@@ -550,7 +550,7 @@
                 if(value)
                     return value.length < 10 || moment(value,'DD/MM/YYYY').isValid()
 
-                
+
                 return true
             },
             showUserCard(user) {
@@ -607,12 +607,12 @@
 
                 for(let dependent in this.dependents){
                     var birthDate = moment( this.dependents[dependent].birthDate,"DD/MM/YYYY").format("YYYY-MM-DD")
-                  
+
                     //delete this.dependents[dependent].birthDate
                    // this.dependents[dependent].birthDate = birthDate
-                   
+
                    copyDependents.push(Object.assign({birthDate:birthDate}, {name:this.dependents[dependent].name,sex:this.dependents[dependent].sex,dependentDegree:this.dependents[dependent].dependentDegree}))
-                   
+
                 }
                 let patient = {
                     name: this.name.toUpperCase(),
@@ -662,14 +662,15 @@
                     this.addresses = []
                     this.dependents = []
                     this.dependentName = undefined
-                    
+
                 }
                 this.$store.commit('setSelectedPatient', user)
                 this.$store.commit('clearSelectedDependent')
                 this.foundUsers = undefined
                 this.addPatient = false
+                this.$emit('selected')
             },
-            
+
             async listDependents() {
                 this.loading = true;
                 this.foundDependents = this.selectedPatient.dependents;
@@ -700,7 +701,7 @@
                 for (let add in user.addresses) {
                     delete user.addresses[add].loading
                 }
-                this.addresses = user.addresses 
+                this.addresses = user.addresses
                 if(user.dependents){
                     for(let index in user.dependents){
                         var patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
