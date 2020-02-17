@@ -538,7 +538,7 @@ export default {
     x: null,
     mode: "",
     alert: false,
-    exam: null,
+    exam: undefined,
     loaderPaymentNumber: false,
     menu: false,
     clinic: undefined,
@@ -585,6 +585,7 @@ export default {
     loading: false,
     scheduleLoading: false,
     dependent: undefined,
+    selectedForm:undefined,
 
     //-------------------------------------------Scroll------------------------------------------------
     type: "number",
@@ -771,6 +772,16 @@ export default {
                 ); */
       if (val == this.consultas[0].date) this.$vuetify.goTo(0, this.options);
       else this.$vuetify.goTo("#group-" + val, this.options);
+    },
+    exam(value){
+      if(value){
+        console.log('Agendando Exame')
+        this.thereIsPaymentNumber()
+      }else{
+        this.payment_numberFound = undefined;
+        this.num_recibo = "";
+        this.status = "Aguardando pagamento";
+      }
     }
   },
 
@@ -799,24 +810,28 @@ export default {
       this.dialog = true;
     },
     async fillConsultationForm(consultation) {
-      let patient = this.selectedPatient;
-      let form = {
-        user: patient,
+      this.selectedForm = {
+        user: this.selectedPatient,
         consultation: consultation.consultations.find(a => {
           return !a.user;
         })
-      };
+      }      
+      this.thereIsPaymentNumber()
+
+      this.createConsultationForm = this.selectedForm;
+    },
+    async thereIsPaymentNumber(){
       this.payment_numberFound = undefined;
       this.num_recibo = "";
       this.status = "Aguardando pagamento";
       
-      if(form.consultation.specialty.name != 'ULTRASSONOGRAFIA'){
         this.loaderPaymentNumber = true;
          this.$store
         .dispatch("thereIsIntakes", {
-          user: patient,
-          doctor: form.consultation.doctor,
-          specialty: form.consultation.specialty
+          user: this.selectedForm.user,
+          doctor: this.selectedForm.consultation.doctor,
+          specialty: this.selectedForm.consultation.specialty,
+          exam:this.exam
         })
         .then(obj => {
           console.log('Achou')
@@ -829,14 +844,7 @@ export default {
           this.loaderPaymentNumber = false;
            console.log(response)
         });
-      }else{
-         this.status = "Pago";
-      }
 
-
-     
-
-      this.createConsultationForm = form;
     },
     formatConsultationsArray(consultations) {
       let newArray = [];
@@ -1016,6 +1024,7 @@ export default {
       this.scheduleLoading = false;
       this.success = true;
       this.dependent = undefined
+      this.exam = undefined
     }
   }
 };

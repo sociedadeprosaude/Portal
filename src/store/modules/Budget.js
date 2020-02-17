@@ -163,7 +163,68 @@ const actions = {
         // payload = Object.assign({}, payload)
 
     },
-    async addIntakeToUser({ }, payload) {
+    async verifyUnpaidConsultation(context,payload){
+        var consultationFound = undefined //variável usada para a tabela de procedimentos
+        let consultations = await payload.userRef.collection('consultations').where('specialty.name', '==', payload.specialty).where('status', '==', 'Aguardando pagamento')
+            .get()
+
+        consultations.forEach((c) => {
+            consultationFound = c
+            payload.userRef.collection('consultations').doc(c.id).update({
+                status: 'Pago',
+                payment_number: payload.payment_number
+            })
+            firebase.firestore().collection('consultations').doc(c.id).update({
+                status: 'Pago',
+                payment_number: payload.payment_number
+            })
+        })
+
+        context.dispatch('createOrUpdateProcedure',{consultationFound:consultationFound,userRef:payload.userRef,user:payload.user,isConsultation:payload.isConsultation, payment_number:payload.payment_number,specialty:payload.specialty,examName:payload.examName})
+    },
+    async createOrUpdateProcedure({},payload){
+        let consultationFound = payload.consultationFound
+        let user = payload.user
+        let statusName = payload.isConsultation ? 'Consulta Paga' : 'Exame Pago'
+        let type = payload.isConsultation ? 'Consultation' : 'Exam'
+        if (consultationFound) {
+            let procedures = await firebase.firestore().collection('users').doc(user.cpf).collection('procedures').where('consultation', '==', consultationFound.id)
+                .get()
+
+            if (!procedures.empty) {
+                console.log("Atualizando procedure")
+                procedures.forEach((snap) => {
+                    let data = snap.data()
+                    let obj =  {
+                        status: firebase.firestore.FieldValue.arrayUnion(statusName),
+                        payment_number: payload.payment_number
+                    }
+                    if(!payload.isConsultation)
+                        Object.assign(obj, {exam_name: payload.examName});
+                    firebase.firestore().collection('users').doc(user.cpf).collection('procedures').doc(snap.id).update(
+                       {...obj}
+                    )
+                })
+            }
+        }else{
+            console.log("Criando procedure")
+            let obj = {
+                status:[statusName],
+                payment_number:payload.payment_number,
+                startAt: moment().format('YYYY-MM-DD hh:ss'),
+                type:type,
+                specialty:payload.specialty
+            }
+
+            if(!payload.isConsultation)
+                Object.assign(obj, {exam_name: payload.examName});
+            firebase.firestore().collection('users').doc(user.cpf).collection('procedures').add(
+                {...obj}
+            )
+        }
+
+    },
+    async addIntakeToUser(context, payload) {
         let copyPayload = Object.assign({}, payload);
         functions.removeUndefineds(copyPayload)
         // console.log(copyPayload)
@@ -187,57 +248,11 @@ const actions = {
             })
 
             for (let spec in specialties) {
-                //var used = false
-                var consultationFound = undefined //variável usada para a tabela de procedimentos
-                let consultations = await userRef.collection('consultations').where('specialty.name', '==', specialties[spec].name).where('status', '==', 'Aguardando pagamento')
-                    .get()
-
-                consultations.forEach((c) => {
-                    //used = true
-                    consultationFound = c
-                    userRef.collection('consultations').doc(c.id).update({
-                        status: 'Pago',
-                        payment_number: copyPayload.id.toString()
-                    })
-                    firebase.firestore().collection('consultations').doc(c.id).update({
-                        status: 'Pago',
-                        payment_number: copyPayload.id.toString()
-                    })
-                })
-
                 await userRef.collection('intakes').doc(copyPayload.id.toString()).collection('specialties').add({
-                    ...specialties[spec],
-                    //used: used
+                    ...specialties[spec]
                 })
 
-                if (consultationFound) {
-                    let procedures = await firebase.firestore().collection('users').doc(user.cpf).collection('procedures').where('consultation', '==', consultationFound.id)
-                        .get()
-
-                    if (!procedures.empty) {
-                        console.log("Atualizando procedure")
-                        procedures.forEach((snap) => {
-                            let data = snap.data()
-                            firebase.firestore().collection('users').doc(user.cpf).collection('procedures').doc(snap.id).update(
-                                {
-                                    status: firebase.firestore.FieldValue.arrayUnion('Consulta Paga'),
-                                    payment_number: copyPayload.id.toString()
-                                }
-                            )
-                        })
-                    }
-                }else{
-                    console.log("Criando procedure")
-                    firebase.firestore().collection('users').doc(user.cpf).collection('procedures').add(
-                        {
-                            status:['Consulta Paga'],
-                            payment_number:copyPayload.id.toString(),
-                            startAt: moment().format('YYYY-MM-DD hh:ss'),
-                            type:'Consultation',
-                            specialty:specialties[spec].name
-                        }
-                    )
-                }
+                context.dispatch.verifyUnpaidConsultation({userRef:userRef ,user:user,isConsultation:true, payment_number:copyPayload.id.toString(),specialty:specialties[spec].name})
             }
         }
         if (exams) {
@@ -248,9 +263,10 @@ const actions = {
             for (let exam in exams) {
                 functions.removeUndefineds(exams[exam])
                 await userRef.collection('intakes').doc(copyPayload.id.toString()).collection('exams').add({
-                    ...exams[exam],
-                    used: false
+                    ...exams[exam]
                 })
+
+                context.dispatch('verifyUnpaidConsultation',{userRef:userRef,user:user,isConsultation:false, payment_number:copyPayload.id.toString(),specialty:exams[exam].type,examName:exams[exam].name})
             }
         }
     },
@@ -348,8 +364,14 @@ const actions = {
         let intakes
         return new Promise(async (resolve, reject) => {
             let procedures
-            procedures = await firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type','==','Consultation')
-            .where('specialty','==',payload.specialty.name).where('status','==',['Consulta Paga']).get()
+            let type = payload.exam ? 'Exam' : 'Consultation'
+            let status = payload.exam ? 'Exame Pago' : 'Consulta Paga'
+            let procedureRef = payload.exam ? procedureRef = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type','==',type)
+                    .where('specialty','==',payload.specialty.name).where('status','==',[status]).where('exam_name','==',payload.exam.name) 
+                : procedureRef = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type','==',type)
+                    .where('specialty','==',payload.specialty.name).where('status','==',[status])
+            
+            procedures = await procedureRef.get()
             if(!procedures.empty){
                 procedures.forEach((procedure)=>{
                     console.log('Encontrou!')
