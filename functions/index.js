@@ -1,18 +1,44 @@
 const functions = require('firebase-functions');
 var admin = require('firebase-admin');
-// admin.initializeApp(functions.config().firebase);
+const cors = require('cors')({origin: true});
 
 var papa = require('papaparse');
 var moment = require('moment');
 const { parse } = require('json2csv');
 admin.initializeApp();
 const defaultRoute = '/analise-exames'
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
+
+exports.createConsultations = functions.https.onRequest((request, response) => {
+    let consultation = request.body
+    console.log('cons', consultation.start_date, consultation)
+    let startDate = moment(consultation.start_date, 'YYYY-MM-DD')
+    let finalDate = moment(consultation.final_date, 'YYYY-MM-DD')
+    let daysDiff = finalDate.diff(startDate, 'days')
+    console.log('daysdiff', daysDiff)
+    let routineId = moment().valueOf()
+    for (let i = 0; i <= daysDiff; i++) {
+        let day = moment(consultation.start_date, 'YYYY-MM-DD').add(i, 'days')
+        if (consultation.weekDays.indexOf(day.weekday()) > -1) {
+            for (let j = 0; j < consultation.vacancy; j++) {
+                delete consultation.doctor.clinics
+                delete consultation.doctor.specialties
+                delete consultation.specialty.doctors
+                let consultObject = {
+                    specialty: consultation.specialty,
+                    date: day.format('YYYY-MM-DD') + ' ' + consultation.hour,
+                    routine_id: routineId,
+                    clinic: consultation.clinic,
+                    doctor: consultation.doctor,
+                }
+                admin.firestore().collection('consultations').add(consultObject)
+            }
+        }
+    }
+    cors(request, response, () => {
+        response.status(200).send('success')
+    });
+    return
+})
 
 exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate(async (change, context) => {
     let db = admin.firestore()

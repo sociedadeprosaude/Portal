@@ -1,9 +1,9 @@
 <template>
     <v-container class="ma-0 pa-0">
         <v-layout row wrap class="ma-0 pa-0" id="card-to-print">
-            <v-flex xs6>
-                <v-card>
-                    <v-img :src="require('../assets/card_background.jpg')" class="px-4 py-2">
+            <v-flex xs12 class="mb-1">
+                <v-card width="100vw" height="100vh">
+                    <v-img :src="require('../assets/card_background.jpg')" height="100%" width="100%" class="px-4 py-2 ma-0">
                         <v-layout row wrap>
                             <v-flex xs6 class="text-left">
                                 <v-layout column wrap>
@@ -51,9 +51,9 @@
                 </v-card>
             </v-flex>
             <v-spacer></v-spacer>
-            <v-flex xs6 class="text-right">
-                <v-card>
-                    <v-img :src="require('../assets/card_background.jpg')" class="px-4 py-2">
+            <v-flex xs12 class="text-right">
+                <v-card width="100vw" height="100vh">
+                    <v-img :src="require('../assets/card_background.jpg')" height="100%" width="100%" class="px-8 py-2">
                         <v-layout row wrap>
                             <v-flex xs8 class="text-left mt-2" style="font-size: 0.8em">
                                 <v-layout column wrap>
@@ -83,7 +83,7 @@
                                     <span class="font-weight-bold white--text">
                                                                                 <v-icon class="white--text pb-1"
                                                                                         style="font-size: 1.2em">alarm</v-icon>
-                                        7:00 - 17:00</span>
+                                        7:30 - 17:00</span>
                                 </v-layout>
                             </v-flex>
                             <v-flex xs12 class="text-left" style="height: 50px">

@@ -57,7 +57,17 @@
                                             </v-chip>
                                         </v-flex>
 
-                                        <v-flex row wrap xs5 sm3 :class="`${color}--text`">
+                                    <v-flex sm6 md2 sm2 hidden-xs-only :class="`${color}--text`">
+                                        <strong>Contato:</strong>
+                                        <v-chip small :color="color" text-color="white">
+                                            <v-avatar>
+                                                <v-icon>call</v-icon>
+                                            </v-avatar>
+                                            {{patient.telephones  ? patient.telephones[0] : 'Número não informado'}}
+                                        </v-chip>
+                                    </v-flex>
+
+                                        <v-flex row wrap xs5 sm2 :class="`${color}--text`">
                                             <strong>Consultas: </strong>
                                             <v-chip small :color="color" text-color="white">
                                                 <v-avatar>
@@ -67,7 +77,7 @@
                                             </v-chip>
                                         </v-flex>
 
-                                        <v-flex row wrap xs5 sm3 :class="`${color}--text`">
+                                        <v-flex row wrap xs5 sm2 :class="`${color}--text`">
                                             <strong>Retornos: </strong>
                                             <v-chip small :color="color" text-color="white">
                                                 <v-avatar>
@@ -290,7 +300,7 @@
                                                 rounded
                                                 @click="documentDialog = !documentDialog"
                                                 v-if="(index_Selecionado.data)"
-                                                :disabled="status_Selecionado === 'Pago' && index_Selecionado.consultation.payment_number && index_Selecionado.data >= hoje ? false : true"
+                                                :disabled="status_Selecionado === 'Pago' && (index_Selecionado.consultation.payment_number || index_Selecionado.especialidade.name === 'ULTRASSONOGRAFIA' )&& index_Selecionado.data >= hoje ? false : true"
                                         >
                                             Prontuario
                                             <v-icon>insert_drive_file</v-icon>
@@ -312,7 +322,7 @@
                                                 rounded
                                                 dark
                                                 :to="{ name: 'AgendarRetorno', params: { q: {...this.index_Selecionado,consultaPaciente:true}}}"
-                                                :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress ? false : true"
+                                                :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress && index_Selecionado.especialidade.name != 'ULTRASSONOGRAFIA' ? false : true"
                                                 v-if="index_Selecionado.modalidade !== 'Retorno'"
                                         >Retorno
                                             <v-icon>refresh</v-icon>

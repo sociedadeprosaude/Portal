@@ -23,7 +23,6 @@
                         :close-on-content-click="false"
                         transition="scale-transition"
                         offset-y
-                        full-width
                         max-width="290px"
                         min-width="290px"
                 >
@@ -33,8 +32,8 @@
                                 label="Data Inicial"
                                 prepend-icon="event"
                                 @blur="date = parseDate(dateFormatted)"
-                                v-on="on"
-                        ></v-text-field>
+                                v-on="on">
+                        </v-text-field>
                     </template>
                     <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
                 </v-menu>
@@ -46,7 +45,6 @@
                         :close-on-content-click="false"
                         transition="scale-transition"
                         offset-y
-                        full-width
                         max-width="290px"
                         min-width="290px"
                 >
@@ -56,8 +54,8 @@
                                 label="Data Final"
                                 prepend-icon="event"
                                 readonly
-                                v-on="on"
-                        ></v-text-field>
+                                v-on="on">
+                        </v-text-field>
                     </template>
                     <v-date-picker v-model="date2" no-title @input="menu2 = false"></v-date-picker>
                 </v-menu>
@@ -90,8 +88,8 @@
 </template>
 
 <script>
-    import ColaboratorsProductionReport from "@/components/reports/ColaboratorsProductionReport";
-    import GeneralReport from "@/components/reports/GeneralReport";
+    import ColaboratorsProductionReport from "../components/reports/ColaboratorsProductionReport";
+    import GeneralReport from "../components/reports/GeneralReport";
     import IntakesReport from '../components/reports/IntakesReport';
 
     var moment = require('moment');
@@ -117,16 +115,16 @@
         }),
         methods: {
             async getIntakes() {
-                this.loading = true
+                this.loading = true;
                 this.intakes = await this.$store.dispatch('getIntakes', {
                     initialDate: moment(this.date).format('YYYY-MM-DD 00:00:00'),
                     finalDate: moment(this.date2).format('YYYY-MM-DD 23:59:59')
-                })
-                await this.pesquisar()
+                });
+                await this.pesquisar();
                 this.loading = false
             },
             async pesquisar() {
-                this.loading = true
+                this.loading = true;
                 this.formattedReport = await this.$store.dispatch('searchReports', {dataInicio: this.date, dataFinal: this.date2})
                 this.loading = false
             },

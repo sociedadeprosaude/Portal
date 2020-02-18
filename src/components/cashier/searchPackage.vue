@@ -259,8 +259,10 @@
 
                     this.searchPackage = false;
                     this.registerPackage= true;
+                    console.log(this.searchData);
                     this.$store.commit('setSelectedBundle', this.searchData);
                     let name = this.searchData.name.toUpperCase();
+                    console.log('name', name);
                     this.$store.commit('setNameBundle', name);
                     for (let exam in this.searchData.exams) {
                         this.$store.commit('addItemsPackage', this.searchData.exams[exam])

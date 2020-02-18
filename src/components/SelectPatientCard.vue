@@ -642,7 +642,6 @@
             },
             async selectUser(user) {
                 if (user) {
-                    console.log('<<<---',user.dependents)
                     let intakes = await this.$store.dispatch('getUserIntakes', user)
                     if (intakes) {
                         user.intakes = intakes
@@ -651,6 +650,7 @@
                     if (budgets) {
                         user.budgets = budgets
                     }
+                    this.fillFormUser(user)
                 }
                 else {
                     this.cpf= undefined
@@ -666,7 +666,6 @@
                 }
                 this.$store.commit('setSelectedPatient', user)
                 this.$store.commit('clearSelectedDependent')
-                this.fillFormUser(user)
                 this.foundUsers = undefined
                 this.addPatient = false
             },
@@ -690,7 +689,6 @@
             },
 
             fillFormUser(user) {
-                console.log('->>>>',user.dependents)
                 this.name = user.name
                 this.cpf = user.cpf
                 this.email = user.email

@@ -256,7 +256,8 @@
                     </v-container>
                 </template>
 
-                <v-layout align-end justify-end>
+                <v-layout row wrap align-end justify-end>
+                    <span class="mr-4" v-if="Object.keys(consultationsCreationInfo).length > 0"> Criando {{consultationsCreationInfo.created}}/{{consultationsCreationInfo.total}}, dia {{consultationsCreationInfo.day | dateFilter}}</span>
                     <submit-button
                             @click="save"
                             :disabled="!formIsValid"
@@ -371,6 +372,9 @@
             ],
         }),
         computed:{
+            consultationsCreationInfo() {
+              return this.$store.getters.consultationsCreationInfo
+            },
             specialties() {
                 //return this.$store.getters.specialties;
 
@@ -466,6 +470,11 @@
                 const [year, month, day] = date.split('-')
                 return `${day}/${month}/${year}`
             },
+            cleanExamsAndSpecialtiesFromClinic(clinic) {
+                delete clinic.exams
+                delete clinic.specialties
+                return clinic
+            },
             clear () {
                 this.dataStart = moment().format('YYYY-MM-DD')
                 this.dataTheEnd = moment().format('YYYY-MM-DD')
@@ -483,7 +492,7 @@
                     final_date: this.dataTheEnd,
                     specialty: this.especialidade,
                     hour: this.times,
-                    clinic: this.clinic,
+                    clinic: this.cleanExamsAndSpecialtiesFromClinic(this.clinic),
                     doctor: this.medicos,
                     vacancy: this.vagas,
                     weekDays: this.semana
@@ -491,7 +500,7 @@
                 await this.$store.dispatch('createConsultation', consultation)
                 this.success = true
                 this.loading = false
-                this.clear()
+                // this.clear()
             }
         }
     }

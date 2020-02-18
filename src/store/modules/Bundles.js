@@ -31,6 +31,8 @@ const actions = {
 
         };
 
+        console.log('dataBundle', dataBundle);
+
         try {
             for (let data in bundle){
                 if (!bundle[data]) {
@@ -38,11 +40,8 @@ const actions = {
                 }
             }
             let bundleRef;
-            if (bundle.name){
-                bundleRef = await firebase.firestore().collection('packages').doc(bundle.name).set(dataBundle);
-            } else {
-                bundleRef = await firebase.firestore().collection('packages').add(bundle);
-            }
+
+            bundleRef = await firebase.firestore().collection('packages').doc(bundle.name).set(bundle);
 
 
             for (let i in bundle.exams){

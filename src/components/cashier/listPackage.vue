@@ -203,9 +203,6 @@
 
 
         watch: {
-
-
-
             percentageDiscount: function () {
 
                 this.moneyDiscount = ((this.percentageDiscount * this.price) / 100);
@@ -239,11 +236,15 @@
                     //specialties: this.editedPackage.specialties,
                 };
 
+           
                 for (let exam in this.exams) {
-                    this.exams[exam].priceDiscount = this.exams[exam].price - this.moneyDiscount
+
+                    this.exams[exam].priceDiscount = this.exams[exam].price - ((this.percentageDiscount / 100) * this.exams[exam].price)
                 }
+
                 this.$store.dispatch('addBundle', packageData).then(() => {
                     this.clearSearch();
+                    this.$store.dispatch('loadBundle');
                 });
 
             },
@@ -252,7 +253,10 @@
                 this.$store.commit('removeItemsPackage', item)
             },
             deletePackage () {
-                this.$store.dispatch('deletePackage', this.editedPackage);
+
+                this.$store.dispatch('deletePackage', this.$store.getters.selectedBundle).then(() => {
+                    this.$store.dispatch('loadBundle');
+                });
                 this.clearSearch();
 
             },
