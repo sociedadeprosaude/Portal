@@ -310,7 +310,7 @@
                         ></v-text-field>
                       </v-flex>
 
-                      <v-flex xs12 v-show=" this.especialidade.name === 'ULTRASSONOGRAFIA'">
+                      <v-flex xs12 v-show="createConsultationForm.consultation.specialty.name === 'ULTRASSONOGRAFIA'">
                         <v-combobox
                                 prepend-inner-icon="search"
                                 prepend-icon="poll"
@@ -611,8 +611,8 @@ export default {
     },
     listExam() {
       let val = this.$store.getters.exams.filter(a => {
-        return a.type === this.especialidade.name;
-        //return a.type === "ULTRASSONOGRAFIA";
+        //return a.type === this.especialidade.name;
+        return a.type === "ULTRASSONOGRAFIA";
       });
       return val;
       //return this.$store.getters.exams;
