@@ -95,6 +95,7 @@ new Vue({
   render: h => h(App),
   created() {
     firebase.initializeApp(constants.FIREBASE_CONFIG);
+    firebase.firestore().enablePersistence()
     // firebase.auth().onAuthStateChanged((user) => {
     //   if (user) {
     //     this.$router.push('/')

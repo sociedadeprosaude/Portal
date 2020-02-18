@@ -120,3 +120,9 @@ exports.exams_report = functions.https.onRequest((req, res) => {
             return res.status(400).send(error.toString());
         });
 });
+
+// exports.searchExam = functions.https.onRequest((req, res) => {
+//     let searchText = req.query.search
+//     let db = admin.firestore().collection('exams').
+//
+// })
