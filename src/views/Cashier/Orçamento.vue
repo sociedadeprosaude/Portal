@@ -1,8 +1,8 @@
 <template>
     <v-container fluid class="ma-0 pa-0">
         <v-layout row wrap class="justify-center">
-            <v-flex sm3 v-if="patient" class="hidden-print-only hidden-xs-only">
-                <intakes-history></intakes-history>
+            <v-flex sm3 class="hidden-print-only hidden-xs-only">
+                <intakes-history v-if="patient"></intakes-history>
             </v-flex>
             <v-flex xs12 sm6 class="hidden-print-only">
                 <procedures-search></procedures-search>

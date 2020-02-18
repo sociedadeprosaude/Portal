@@ -3,7 +3,7 @@
         <v-flex xs8>
             <v-layout align-center row wrap class="ml-6">
                 <v-flex xs12 md5>
-                    <v-select
+                    <v-combobox
                             prepend-icon="school"
                             v-model="especialidade"
                             :items="specialties"
@@ -28,11 +28,11 @@
                                     color="info"
                             >{{ data.item.name }}</v-chip>
                         </template>
-                    </v-select>
+                    </v-combobox>
                 </v-flex>
                 <v-spacer></v-spacer>
                 <v-flex xs12 md5>
-                    <v-select
+                    <v-combobox
                             prepend-icon="person"
                             v-model="selectedDoctor"
                             :items="doctors"
@@ -57,7 +57,7 @@
                                     color="info"
                             >{{ data.item.name }}</v-chip>
                         </template>
-                    </v-select>
+                    </v-combobox>
                 </v-flex>
 
                 <v-flex xs12 md12>
@@ -702,7 +702,7 @@
                 }
                 this.especialidade = this.query.especialidade
                 this.pacienteSelecionado = this.query.pacienteObj
-                this.selectedDoctor = this.query.doctor
+                //this.selectedDoctor = this.query.doctor
                 this.status = this.query.status
                 this.num_recibo = this.query.num_recibo
                 this.modalidade = this.query.modalidade

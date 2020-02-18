@@ -4,7 +4,7 @@
             <v-card class="pa-4">
                 <v-layout align-center wrap>
                     <v-flex xs12 sm5>
-                        <v-select
+                        <v-combobox
                                 label="Especialidade"
                                 prepend-icon="school"
                                 v-model="especialidade"
@@ -31,11 +31,11 @@
                                 >{{ data.item.name }}
                                 </v-chip>
                             </template>
-                        </v-select>
+                        </v-combobox>
                     </v-flex>
                     <v-spacer></v-spacer>
                     <v-flex xs12 sm5>
-                        <v-select
+                        <v-combobox
                                 prepend-icon="account_circle"
                                 v-model="doctor"
                                 :items="doctors"
@@ -63,7 +63,7 @@
                                 >{{ data.item.name }}
                                 </v-chip>
                             </template>
-                        </v-select>
+                        </v-combobox>
                     </v-flex>
                     <v-flex xs12 sm5>
                         <v-menu
@@ -140,6 +140,83 @@
                             ></v-date-picker>
                         </v-menu>
                     </v-flex>
+
+                    <v-flex xs12>
+                    <v-layout class="align-end justify-end">
+                        <v-btn color="black" dark @click="filterHour ? filterHour = false: filterHour = true">
+                            Filtro de <v-icon right>alarm</v-icon>
+                        </v-btn>
+                        <v-spacer></v-spacer>
+                        <v-btn color="black" dark @click="filterDayWeek ? filterDayWeek = false: filterDayWeek = true">
+                            Filtro de <v-icon right>today</v-icon>
+                        </v-btn>
+                    </v-layout>
+                    </v-flex>
+
+                    <v-flex xs12><p></p></v-flex>
+
+                    <v-flex xs12 sm5 v-show="filterHour">
+                        <v-select
+                                v-model="times"
+                                prepend-icon="alarm_add"
+                                :items="timesOptions"
+                                label="Horários"
+                                attach
+                                outlined
+                                rounded
+                                filled
+                                hint="Selecione o horario que deseja Apagar"
+                                persistent-hint
+                                chips
+                                color="green"
+                                clearable
+                        >
+                            <template v-slot:selection="data">
+                                <v-chip
+                                        :key="JSON.stringify(data.item)"
+                                        :input-value="data.selected"
+                                        :disabled="data.disabled"
+                                        class="v-chip--select-multi"
+                                        @click.stop="data.parent.selectedIndex = data.index"
+                                        @input="data.parent.selectItem(data.item)"
+                                        text-color="white"
+                                        color="info"
+                                >{{ data.item.text }}</v-chip>
+                            </template>
+                        </v-select>
+                    </v-flex>
+                    <v-spacer></v-spacer>
+                    <v-flex xs12 sm5 v-show="filterDayWeek">
+                        <v-select
+                                v-model="semana"
+                                prepend-icon="event"
+                                :items="semanaOptions"
+                                label="Dias da Semana"
+                                hint="Selecione o(s) dia(s) da semana que deseja apagar"
+                                persistent-hint
+                                outlined
+                                rounded
+                                filled
+                                multiple
+                                chips
+                                color="blue"
+                                clearable
+                        >
+                            <template v-slot:selection="data">
+                                <v-chip
+                                        :key="JSON.stringify(data.item)"
+                                        :input-value="data.selected"
+                                        :disabled="data.disabled"
+                                        class="v-chip--select-multi"
+                                        @click.stop="data.parent.selectedIndex = data.index"
+                                        @input="data.parent.selectItem(data.item)"
+                                        text-color="white"
+                                        color="info"
+                                >{{ data.item.text }}</v-chip>
+                            </template>
+                        </v-select>
+                    </v-flex>
+
                 </v-layout>
 
                 <v-layout align-center justify-center>
@@ -197,11 +274,11 @@
                             <v-flex xs12 sm12 md12 lg12></v-flex>
                             <v-flex xs12 sm12 md12 lg12></v-flex>
                             <v-spacer></v-spacer>
-                            <v-subheader v-if="consultasByDoctors(consultas).length != 0"><b>{{start_date |
-                                dateFilter}}
-                                - {{daydate(start_date)}} até {{final_date |
-                                dateFilter}}
-                                - {{daydate(final_date)}}</b></v-subheader>
+                            <v-subheader v-if="consultasByDoctors(consultas).length != 0">
+                                <b>
+                                    {{start_date | dateFilter}} - {{daydate(start_date)}} até {{final_date | dateFilter}} - {{daydate(final_date)}}
+                                </b>
+                            </v-subheader>
 
                             <v-expansion-panels>
                                 <v-expansion-panel
@@ -347,6 +424,8 @@
             start_date: undefined,
             final_date: undefined,
             teste: 0,
+            filterHour: false,
+            filterDayWeek: false,
             moment: moment,
             startMenu: false,
             finishMenu: false,
@@ -360,7 +439,34 @@
             success: false,
             index_Selecionado: {},
             status_Selecionado: '',
-            semanaOptions: [
+            times: undefined,
+            semana: undefined,
+            timesOptions: [
+                { text: '06:00'},
+                { text: '06:30'},
+                { text: '07:00'},
+                { text: '07:30'},
+                { text: '08:00'},
+                { text: '08:30'},
+                { text: '09:00'},
+                { text: '09:30'},
+                { text: '10:00'},
+                { text: '10:30'},
+                { text: '11:00'},
+                { text: '11:30'},
+                { text: '12:00'},
+                { text: '12:30'},
+                { text: '13:00'},
+                { text: '13:30'},
+                { text: '14:00'},
+                { text: '14:30'},
+                { text: '15:00'},
+                { text: '15:30'},
+                { text: '16:00'},
+                { text: '16:30'},
+                { text: '17:00'}
+            ],
+            semanas: [
                 "Domingo",
                 "Segunda-feira",
                 "Terça-feira",
@@ -368,6 +474,15 @@
                 "Quinta-feira",
                 "Sexta-feira",
                 "Sábado"
+            ],
+            semanaOptions: [
+                { text: 'segunda-feira', value: 1},
+                { text: 'terça-feira', value: 2},
+                { text: 'quarta-feira', value: 3},
+                { text: 'quinta-feira', value: 4},
+                { text: 'sexta-feira', value: 5},
+                { text: 'sábado', value: 6},
+                { text: 'domingo', value: 0}
             ],
             attendanceOptions:
                 [
@@ -402,31 +517,30 @@
 
             specialties() {
                 //return this.$store.getters.specialties;
-                let espArray = Object.values(this.$store.getters.specialties)
-                espArray = espArray.filter((specialty) => {
+
+                let espArray = Object.values(this.$store.getters.specialties);
+                espArray = espArray.filter(specialty => {
                     //console.log('Teeeee',specialty)
-                    if(!this.selectedDoctor) {
-                        return true
+                    if (!this.doctor) {
+                        return true;
                     }
-                    var find = false
-                    specialty.doctors.forEach((doctor)=>{
-
-                        if(doctor.cpf === this.selectedDoctor.cpf){
-                            find = true
-                            return true
+                    var find = false;
+                    specialty.doctors.forEach(doctor => {
+                        if (doctor.cpf === this.doctor.cpf) {
+                            find = true;
+                            return true;
                         }
+                    });
 
-                    })
-
-                    return find
-                })
+                    return find;
+                });
                 //docArray.unshift({name:'Todos'})
-                return espArray
+                return espArray;
             },
 
-            doctors() {
+            doctors () {
                 let doctors = Object.values(this.$store.getters.doctors)
-                if (this.especialidade) {
+                if(this.especialidade) {
                     doctors = doctors.filter((a) => {
                         for (let spe in a.specialties) {
                             if (a.specialties[spe].name === this.especialidade.name) {
@@ -434,6 +548,7 @@
                             }
                         }
                         return false
+                        // return a.specialties.indexOf(this.especialidade.name) > -1
                     })
                 }
                 return doctors
@@ -577,7 +692,7 @@
 
             daydate(date) {
                 var dateMoment = moment(date);
-                return this.semanaOptions[dateMoment.day()];
+                return this.semanas[dateMoment.day()];
             },
 
             save(date) {
@@ -592,14 +707,19 @@
             async deleteConsultasDia() {
 
                 this.loading = true
-                // var deletar = {
-                //     start_date: this.start_date,
-                //     final_date: this.final_date,
-                //     doctor: this.doctor,
-                //     specialtie: this.especialidade
-                // }
-                // await this.$store.dispatch('removeAppointmentByDay', deletar)
-                await this.$store.dispatch('removeAppointments', this.consultas)
+                // setTimeout(() => {
+                //     this.loading = false
+                // }, 2000)
+                // return
+                var deletar = {
+                    start_date: this.start_date,
+                    final_date: this.final_date,
+                    doctor: this.doctor,
+                    specialtie: this.especialidade,
+                    hour: this.times,
+                    weekDays: this.semana
+                }
+                await this.$store.dispatch('removeAppointmentByDay', deletar)
                 // this.clear()
                 this.loading = false
 

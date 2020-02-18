@@ -3,7 +3,7 @@
     <v-flex sm8 xs12 class="pr-2">
       <v-layout align-center row wrap class="ml-6">
         <v-flex xs12 md5>
-          <v-select
+          <v-combobox
             prepend-icon="school"
             v-model="especialidade"
             :items="specialties"
@@ -28,11 +28,11 @@
                 color="info"
               >{{ data.item.name }}</v-chip>
             </template>
-          </v-select>
+          </v-combobox>
         </v-flex>
         <v-spacer></v-spacer>
         <v-flex xs12 md5>
-          <v-select
+          <v-combobox
             prepend-icon="person"
             v-model="selectedDoctor"
             :items="doctors"
@@ -57,7 +57,7 @@
                 color="info"
               >{{ data.item.name }}</v-chip>
             </template>
-          </v-select>
+          </v-combobox>
         </v-flex>
 
         <v-flex xs12 md12>
@@ -807,8 +807,9 @@ export default {
     checkConsultationIsInArray(array, consultation) {
       for (let i in array) {
         if (
-          array[i].date === consultation.date &&
-          array[i].doctor.name === consultation.doctor.name
+         array[i].date === consultation.date &&
+          array[i].doctor.cpf === consultation.doctor.cpf &&
+          array[i].specialty.name === consultation.specialty.name
         ) {
           return i;
         }

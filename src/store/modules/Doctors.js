@@ -47,7 +47,12 @@ const actions = {
             doctor.type = "DOCTOR"
             let docCopy = JSON.parse(JSON.stringify(doctor))
             delete docCopy.specialties;
-            await firebase.firestore().collection('users').doc(doctor.cpf).set(docCopy)
+            let foundUser = await firebase.firestore().collection('users').doc(doctor.cpf).get()
+            if (foundUser.exists) {
+                firebase.firestore().collection('users').doc(doctor.cpf).update(docCopy)
+            } else {
+                await firebase.firestore().collection('users').doc(doctor.cpf).set(docCopy)
+            }
             for (let spec in doctor.specialties) {
                 let details = {
                     cost: doctor.specialties[spec].cost,
