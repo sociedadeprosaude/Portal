@@ -109,7 +109,7 @@ const actions = {
         if (payload.name) this.dispatch('getPatientProntuario', payload)
     },
     async searchUserFromOldDatabase(context, numAss) {
-        let url = 'http://caixa.sociedadeprosaude.com:84/api/buscar/paciente?field=sequencia&query=' + numAss /*00060009*/
+        let url = 'https://caixa.sociedadeprosaude.com/api/api/buscar/paciente?field=sequencia&query=' + numAss /*00060009*/
         let res = await axios.get(url)
         return res.data[0]
     },
