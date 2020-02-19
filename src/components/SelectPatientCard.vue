@@ -742,7 +742,7 @@
             },
             fillFormOldUser(oldUser) {
                 this.name = oldUser.nome;
-                this.numAss = parseInt(oldUser.codigo);
+                this.numAss = parseInt(oldUser.sequencia);
                 this.birthDate = moment(oldUser.nasc).format('DD-MM-YYYY');
                 this.sex = oldUser.sexo === 'M' ? 'Masculino' : 'Feminino';
                 this.telephones = [''];
