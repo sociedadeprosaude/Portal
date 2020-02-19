@@ -1,18 +1,19 @@
 <template>
     <v-app id="app">
-        <v-slide-y-transition>
+        <v-content v-if="ready" :class="['background', 'fade-in-anim']">
             <toolbar class="mb-12 pb-6" v-if="user"></toolbar>
-        </v-slide-y-transition>
-        <v-content v-if="loaded" :class="['background']">
             <router-view/>
         </v-content>
         <v-content v-else>
-            <v-img
-                    class="align-center"
-                    :src="require('./assets/pro_saude_logo.png')"
-                    aspect-radio="1"
-                    width="150"
-            ></v-img>
+            <v-layout ref="loader" class="primary fill-height align-center justify-center">
+                <img
+                        ref="logo"
+                        class="pulse-anim"
+                        :src="require('./assets/pro_saude_logo.png')"
+                        width="150px"
+                        height="150px"
+                >
+            </v-layout>
         </v-content>
     </v-app>
 </template>
@@ -26,7 +27,8 @@
         },
         data() {
             return {
-                patientDialog: false
+                patientDialog: false,
+                ready: false
             }
         },
         computed: {
@@ -45,6 +47,17 @@
                 }
                 return false
             }
+        },
+        watch: {
+          loaded(val) {
+              if (val) {
+                  this.$refs['logo'].classList.add('fade-out-anim')
+                  this.$refs['loader'].classList.add('fe-contract')
+                  setTimeout(() => {
+                      this.ready = true
+                  }, 1500)
+              }
+          }
         },
         methods: {
             async getUser(user) {

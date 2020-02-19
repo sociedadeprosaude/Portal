@@ -29,6 +29,17 @@
     padding: 0;
 }
 
+.centralize-X {
+    margin: auto;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.centralize-Y {
+    margin: auto;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
 /*.bottom-sheet-dialog {*/
 
 /*    max-width: 720px;*/
