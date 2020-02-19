@@ -16,7 +16,7 @@
                     </v-chip>
                 </v-chip-group>
             </v-flex>
-            <v-flex xs6>
+            <v-flex xs6 v-if="selectedReport !== 3">
                 <v-menu
                         ref="menu1"
                         v-model="menu1"
@@ -39,7 +39,7 @@
                 </v-menu>
             </v-flex>
 
-            <v-flex xs6>
+            <v-flex xs6 v-if="selectedReport !== 3">
                 <v-menu
                         v-model="menu2"
                         :close-on-content-click="false"
@@ -60,7 +60,7 @@
                     <v-date-picker v-model="date2" no-title @input="menu2 = false"></v-date-picker>
                 </v-menu>
             </v-flex>
-            <v-flex xs12 class="mb-3">
+            <v-flex xs12 class="mb-3" v-if="selectedReport !== 3">
                 <v-layout row wrap class="align-center">
                     <v-flex>
                         <v-btn @click="getIntakes()" color="blue" v-if="!loading">
@@ -80,6 +80,9 @@
             <v-flex xs12 v-if="selectedReport === 2">
                 <intakes-report :report="formattedReport" :loading="loading" :intakes="intakes"></intakes-report>
             </v-flex>
+            <v-flex xs12 v-if="selectedReport === 3">
+                <procedures-prices-analises></procedures-prices-analises>
+            </v-flex>
             <v-flex class="hidden-screen-only">
                 <p>DE {{dateFormatted}} ATÉ {{dateFormatted2}}</p>
             </v-flex>
@@ -91,16 +94,17 @@
     import ColaboratorsProductionReport from "../components/reports/ColaboratorsProductionReport";
     import GeneralReport from "../components/reports/GeneralReport";
     import IntakesReport from '../components/reports/IntakesReport';
-
+    import ProceduresPricesAnalises from "../components/reports/ProceduresPricesAnalises";
     var moment = require('moment');
     export default {
         components: {
             ColaboratorsProductionReport,
             GeneralReport,
-            IntakesReport
+            IntakesReport,
+            ProceduresPricesAnalises
         },
         data: vm => ({
-            reportOptions: ['Relatório Financeiro Geral', 'Produção do Colaborador','Relatorio de Vendas'],
+            reportOptions: ['Relatório Financeiro Geral', 'Produção do Colaborador','Relatorio de Vendas', 'Analise de preço de exames'],
             selectedReport: 0,
             date: moment().format('YYYY-MM-DD 00:00:00'),
             date2: moment().format('YYYY-MM-DD 23:59:59'),
