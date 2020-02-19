@@ -10,8 +10,8 @@
             <v-img
                     class="align-center"
                     :src="require('./assets/pro_saude_logo.png')"
-                   aspect-radio="1"
-                   width="150"
+                    aspect-radio="1"
+                    width="150"
             ></v-img>
         </v-content>
     </v-app>
@@ -26,20 +26,30 @@
         },
         data() {
             return {
-                loaded: false,
                 patientDialog: false
             }
         },
         computed: {
             user() {
                 return this.$store.getters.user
+            },
+            loaded() {
+                if (this.$route.path === '/login') {
+                    return true
+                }
+                if (this.$store.getters.user) {
+                    if (this.$store.getters.examsLoaded
+                        && this.$store.getters.unitsLoaded) {
+                        return true
+                    }
+                }
+                return false
             }
         },
         methods: {
             async getUser(user) {
                 await this.$store.dispatch('getUser', user)
                 await this.$store.dispatch('getProSaudeUnits')
-                this.loaded = true
             },
         },
         created() {
@@ -54,7 +64,6 @@
             firebase.auth().onAuthStateChanged((user) => {
                 if (!user) {
                     this.$router.push('/login')
-                    this.loaded = true
                     return
                 } else if (this.$router.currentRoute.path.includes('login')) {
                     this.$router.push('/')

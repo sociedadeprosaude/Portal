@@ -5,7 +5,8 @@ const state = {
     allClinics: [],
     selectedClinic: null,
     units: [],
-    loaded: false
+    loaded: false,
+    unitsLoaded: false
 };
 
 const mutations = {
@@ -21,6 +22,7 @@ const mutations = {
     },
     setUnits(state, payload) {
         state.units = payload
+        state.unitsLoaded = true
     },
 };
 
@@ -334,6 +336,10 @@ const getters = {
     },
     units(state) {
         return state.units
+    },
+
+    unitsLoaded(state) {
+        return state.unitsLoaded
     },
 
     clinicsLoaded(state) {

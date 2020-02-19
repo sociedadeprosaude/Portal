@@ -30,7 +30,7 @@
                     <v-btn rounded text @click="selectUnit()">
                         <v-icon >cached</v-icon>
                     </v-btn>
-                    <span class="white--text">Exames carregados: {{examsLoaded}}</span>
+<!--                    <span class="white&#45;&#45;text">Exames carregados: {{examsLoaded}}</span>-->
 
                 </v-layout>
             </v-toolbar-items>

@@ -78,7 +78,7 @@
                     this.loading = true
                     let user = await firebase.auth().signInWithEmailAndPassword(this.email, this.password)
                     await this.$store.dispatch('getUser', user)
-                    await this.$router.push('/')
+                    await this.$router.go()
                 } catch (e) {
                     switch (e.code) {
                         case 'auth/user-not-found':
