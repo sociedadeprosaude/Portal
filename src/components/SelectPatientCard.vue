@@ -87,6 +87,21 @@
                                     <v-flex xs1 class="text-right mx-3">
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
+                                                <v-btn
+                                                        v-on="on"
+                                                        @click="patientTag = !patientTag"
+                                                        rounded text class="white--text transparent">
+                                                    <v-icon>credit_card</v-icon>
+                                                    2
+                                                </v-btn>
+                                            </template>
+                                            <span>Cartão de Associado</span>
+                                        </v-tooltip>
+
+                                    </v-flex>
+                                    <v-flex xs1 class="text-right mx-3">
+                                        <v-tooltip v-if="selectedPatient" top>
+                                            <template v-slot:activator="{ on }">
                                                <v-btn
                                                     v-on="on"
                                                     @click="selectUser(undefined)"
@@ -454,6 +469,9 @@
         <v-dialog v-model="patientCard">
             <patient-card :user="selectedPatient"></patient-card>
         </v-dialog>
+        <v-dialog v-model="patientTag">
+            <patient-tag :user="selectedPatient"></patient-tag>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -461,6 +479,8 @@
     import {mask} from 'vue-the-mask'
     import SubmitButton from "./SubmitButton";
     import PatientCard from "./PatientCard";
+    import PatientTag from "./PatientTag";
+
     let moment = require("moment");
     export default {
         directives: {
@@ -473,7 +493,8 @@
         },
         components: {
             SubmitButton,
-            PatientCard
+            PatientCard,
+            PatientTag
         },
         computed: {
           selectedPatient() {
@@ -496,6 +517,7 @@
         data() {
             return {
                 patientCard: false,
+                patientTag: false,
                 addPatient: false,
                 name: undefined,
                 dependentName:undefined,
@@ -549,9 +571,11 @@
             dateValid(value){
                 if(value)
                     return value.length < 10 || moment(value,'DD/MM/YYYY').isValid()
-
-
                 return true
+            },
+            showSecondUserCard(user) {
+                console.log('veio aqui')
+                this.patientTag = !this.patientTag
             },
             showUserCard(user) {
                 this.patientCard = !this.patientCard

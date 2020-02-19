@@ -170,6 +170,7 @@
                     this.selectUnitDialog = true
                     return
                 }
+                console.log('select unit', unit.name)
                 this.$store.commit('setSelectedUnit', unit)
             }
         }

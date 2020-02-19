@@ -10,7 +10,6 @@ const state = {
 const mutations = {
     async setSelectedPatient(state, payload) {
         var consultations
-        console.log('Clear USER')
         if (payload) {
             await firebase.firestore().collection('users').doc(payload.cpf).collection('consultations')
                 .onSnapshot((querySnapshot) => {
@@ -30,7 +29,6 @@ const mutations = {
         state.selectedDependent = payload
     },
     clearSelectedDependent(state) {
-        console.log('Cleanup')
         state.selectedDependent = undefined
     }
 };
@@ -116,7 +114,6 @@ const actions = {
         }
         let url = 'http://caixa.sociedadeprosaude.com:84/api/buscar/paciente?field=codigo&query=' + numAss /*00060009*/
         let res = await axios.get(url)
-        console.log('aa', res.data)
         return res.data[0]
     },
 
@@ -130,7 +127,6 @@ const getters = {
         return state.selectedPatient
     },
     selectedDependent(state) {
-        console.log('limpando')
         return state.selectedDependent
     },
 };

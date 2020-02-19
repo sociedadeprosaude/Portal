@@ -41,6 +41,9 @@ const actions = {
         try {
             let userDoc = await firebase.firestore().collection('users/').where('uid', '==', user.uid).get()
             commit('setUser', userDoc.docs[0].data())
+            if (userDoc.docs[0].data().clinic) {
+                this.commit('setSelectedUnit', userDoc.docs[0].data().clinic)
+            }
             return userDoc.docs[0].data()
         }
         catch (e) {
