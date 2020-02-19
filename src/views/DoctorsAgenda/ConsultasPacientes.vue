@@ -565,7 +565,8 @@
                     payment_number:this.index_Selecionado.num_recibo,
                     specialty:this.index_Selecionado.especialidade.name,
                     regress:this.index_Selecionado.consultation.regress,
-                    previousConsultation:this.index_Selecionado.consultation.previousConsultation
+                    previousConsultation:this.index_Selecionado.consultation.previousConsultation,
+                    consultation:this.index_Selecionado.consultation
                 })
                 this.clear()
                 this.dialog = false

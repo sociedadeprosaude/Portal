@@ -774,10 +774,9 @@ export default {
       else this.$vuetify.goTo("#group-" + val, this.options);
     },
     exam(value){
-      if(value){
-        console.log('Agendando Exame')
+      if(!value.notFindPayment){
         this.thereIsPaymentNumber()
-      }else{
+      }else if(!value){
         this.payment_numberFound = undefined;
         this.num_recibo = "";
         this.status = "Aguardando pagamento";
@@ -806,6 +805,7 @@ export default {
         }, 1000);
         return;
       }
+      this.exam = undefined
       this.fillConsultationForm(consultation);
       this.dialog = true;
     },
@@ -836,13 +836,15 @@ export default {
         .then(obj => {
           console.log('Achou')
           this.payment_numberFound = obj;
+          console.log(obj)
           this.num_recibo = obj.payment_number;
           this.status = "Pago";
+          this.exam = obj.exam ?{ ... obj.exam,notFindPayment:true}:undefined
           this.loaderPaymentNumber = false;
         })
         .catch((response) => {
           this.loaderPaymentNumber = false;
-           console.log(response)
+
         });
 
     },
@@ -988,7 +990,7 @@ export default {
     },
     clear() {
       this.num_recibo = "";
-      this.exam = null,
+      this.exam = undefined,
       this.status = "Aguardando pagamento";
     },
     resetSchedule() {
@@ -997,25 +999,30 @@ export default {
     },
     async save() {
       this.scheduleLoading = true;
-
+   /*    if(this.exam.notFindPayment)
+        delete this.exam.notFindPayment */
       let form = this.createConsultationForm;
       form.user = {
         ...form.user,
         status: this.status,
         type: this.modalidade,
-        payment_number: this.num_recibo
+        payment_number: this.num_recibo,
+        exam:this.exam
       };
       form.consultation = {
         ...form.consultation,
         status: this.status,
         type: this.modalidade,
-        payment_number: this.num_recibo
+        payment_number: this.num_recibo,
+        exam:this.exam
       };
 
       if (this.payment_numberFound)
         form = { ...form, payment_numberFound: this.payment_numberFound };
       if(form.user.dependent)
         form.consultation = {...form.consultation,dependent:form.user.dependent}
+
+      
       // return
       this.loading = true;
       await this.$store.dispatch("addConsultationAppointmentToUser", form);

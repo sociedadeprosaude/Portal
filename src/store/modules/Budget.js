@@ -180,7 +180,7 @@ const actions = {
             })
         })
 
-        context.dispatch('createOrUpdateProcedure',{consultationFound:consultationFound,userRef:payload.userRef,user:payload.user,isConsultation:payload.isConsultation, payment_number:payload.payment_number,specialty:payload.specialty,examName:payload.examName})
+        context.dispatch('createOrUpdateProcedure',{consultationFound:consultationFound,userRef:payload.userRef,user:payload.user,isConsultation:payload.isConsultation, payment_number:payload.payment_number,specialty:payload.specialty,examObj:payload.examObj})
     },
     async createOrUpdateProcedure({},payload){
         let consultationFound = payload.consultationFound
@@ -200,7 +200,7 @@ const actions = {
                         payment_number: payload.payment_number
                     }
                     if(!payload.isConsultation)
-                        Object.assign(obj, {exam_name: payload.examName});
+                        Object.assign(obj, {exam: payload.examObj});
                     firebase.firestore().collection('users').doc(user.cpf).collection('procedures').doc(snap.id).update(
                        {...obj}
                     )
@@ -217,7 +217,7 @@ const actions = {
             }
 
             if(!payload.isConsultation)
-                Object.assign(obj, {exam_name: payload.examName});
+                Object.assign(obj, {exam: payload.examObj});
             firebase.firestore().collection('users').doc(user.cpf).collection('procedures').add(
                 {...obj}
             )
@@ -266,7 +266,7 @@ const actions = {
                     ...exams[exam]
                 })
 
-                context.dispatch('verifyUnpaidConsultation',{userRef:userRef,user:user,isConsultation:false, payment_number:copyPayload.id.toString(),specialty:exams[exam].type,examName:exams[exam].name})
+                context.dispatch('verifyUnpaidConsultation',{userRef:userRef,user:user,isConsultation:false, payment_number:copyPayload.id.toString(),specialty:exams[exam].type,examObj:exams[exam]})
             }
         }
     },
@@ -367,11 +367,17 @@ const actions = {
             let type = payload.exam ? 'Exam' : 'Consultation'
             let status = payload.exam ? 'Exame Pago' : 'Consulta Paga'
             let procedureRef = payload.exam ? procedureRef = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type','==',type)
-                    .where('specialty','==',payload.specialty.name).where('status','==',[status]).where('exam_name','==',payload.exam.name) 
+                    .where('specialty','==',payload.specialty.name).where('status','==',[status]).where('exam.name','==',payload.exam.name) 
                 : procedureRef = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type','==',type)
                     .where('specialty','==',payload.specialty.name).where('status','==',[status])
             
+            let procedureRefOr = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type','==','Exam')
+            .where('specialty','==',payload.specialty.name).where('status','==',['Exame Pago'])
+            
             procedures = await procedureRef.get()
+            if( procedures.empty && type == 'Consultation' )
+                procedures = await procedureRefOr.get()
+
             if(!procedures.empty){
                 procedures.forEach((procedure)=>{
                     console.log('Encontrou!')
