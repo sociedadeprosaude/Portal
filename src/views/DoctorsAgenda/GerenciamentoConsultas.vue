@@ -195,10 +195,10 @@
                                                                     : 'CPF:' + item.user.cpf}}
                                                             </v-list-item-subtitle>
                                                             <br>
-                                                            <v-list-item-subtitle v-if="item.user.telephones[0]">
+<!--                                                            <v-list-item-subtitle v-if="item.user.telephones[0]">
                                                                Telefone: {{item.user.telephones[0]}}
                                                             </v-list-item-subtitle>
-                                                            <br>
+                                                            <br>-->
                                                             <v-list-item-action-text>
                                                                 {{item.date.split(' ')[0] | dateFilter}} -
                                                                 {{item.date.split(' ')[1]}}
