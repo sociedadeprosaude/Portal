@@ -684,13 +684,12 @@
                     this.addresses = []
                     this.dependents = []
                     this.dependentName = undefined
-
+                    this.$emit('removed')
                 }
                 this.$store.commit('setSelectedPatient', user)
                 this.$store.commit('clearSelectedDependent')
                 this.foundUsers = undefined
                 this.addPatient = false
-                this.$emit('selected')
             },
 
             async listDependents() {
