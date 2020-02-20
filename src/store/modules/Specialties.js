@@ -23,28 +23,27 @@ const actions = {
             let allSpecialties = [];
             for (let specDoc in data.docs) {
                 let specialty = data.docs[specDoc].data();
-                let doctors = [];
-                let docsCollection = await firebase.firestore().collection('specialties/' + specialty.name + '/doctors').get()
-                for (let doctorDoc in docsCollection.docs) {
-                    let doctor = docsCollection.docs[doctorDoc].data()
-                    doctor.clinics = []
-                    let clinCollection = await firebase.firestore().collection('specialties/' + specialty.name + '/doctors').doc(doctor.cpf).collection('clinics').get()
-                    clinCollection.forEach((clinDoc) => {
-                        doctor.clinics.push(clinDoc.data())
-                    })
-                    doctors.push({
-                        ...doctor,
-                        price: doctor.price,
-                        cost: doctor.cost,
-                        payment_method: doctor.payment_method,
-                    });
-                }
+                // let doctors = [];
+                // let docsCollection = await firebase.firestore().collection('specialties/' + specialty.name + '/doctors').get()
+                // for (let doctorDoc in docsCollection.docs) {
+                //     let doctor = docsCollection.docs[doctorDoc].data()
+                //     doctor.clinics = []
+                //     let clinCollection = await firebase.firestore().collection('specialties/' + specialty.name + '/doctors').doc(doctor.cpf).collection('clinics').get()
+                //     clinCollection.forEach((clinDoc) => {
+                //         doctor.clinics.push(clinDoc.data())
+                //     })
+                //     doctors.push({
+                //         ...doctor,
+                //         price: doctor.price,
+                //         cost: doctor.cost,
+                //         payment_method: doctor.payment_method,
+                //     });
+                // }
 
 
                 allSpecialties.push({
-                    name: specialty.name,
+                    ...specialty,
                     id: specDoc.id,
-                    doctors: doctors,
                 })
 
 

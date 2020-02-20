@@ -41,6 +41,8 @@
                 }
                 if (this.$store.getters.user) {
                     if (this.$store.getters.examsLoaded
+                        && this.$store.getters.doctorsLoaded
+                        && this.$store.getters.clinicsLoaded
                         && this.$store.getters.unitsLoaded) {
                         return true
                     }
@@ -49,15 +51,15 @@
             }
         },
         watch: {
-          loaded(val) {
-              if (val) {
-                  this.$refs['logo'].classList.add('fade-out-anim')
-                  this.$refs['loader'].classList.add('fe-contract')
-                  setTimeout(() => {
-                      this.ready = true
-                  }, 1500)
-              }
-          }
+            loaded(val) {
+                if (val) {
+                    this.$refs['logo'].classList.add('fade-out-anim')
+                    this.$refs['loader'].classList.add('fe-contract')
+                    setTimeout(() => {
+                        this.ready = true
+                    }, 1500)
+                }
+            }
         },
         methods: {
             async getUser(user) {
@@ -66,12 +68,10 @@
             },
         },
         created() {
-            // this.$store.dispatch('listenToOperationalValues')
             this.$store.dispatch("loadSpecialties")
             this.$store.dispatch("getDoctors")
             this.$store.dispatch("getClinics")
             this.$store.dispatch("loadExam")
-            // this.$store.dispatch("updateUsers")
         },
         mounted() {
             firebase.auth().onAuthStateChanged((user) => {

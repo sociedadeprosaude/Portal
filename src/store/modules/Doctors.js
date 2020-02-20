@@ -132,11 +132,11 @@ const actions = {
                 let doctors = {};
                 for (let document in  doctorsSnap.docs) {
                     doctors[doctorsSnap.docs[document].id] = doctorsSnap.docs[document].data()
-                    doctors[doctorsSnap.docs[document].id].specialties = []
-                    let specSnap = await doctorsSnap.docs[document].ref.collection('specialties').get()
-                    specSnap.forEach((specDoc) => {
-                        doctors[doctorsSnap.docs[document].id].specialties.push(specDoc.data())
-                    })
+                    // doctors[doctorsSnap.docs[document].id].specialties = []
+                    // let specSnap = await doctorsSnap.docs[document].ref.collection('specialties').get()
+                    // specSnap.forEach((specDoc) => {
+                    //     doctors[doctorsSnap.docs[document].id].specialties.push(specDoc.data())
+                    // })
                 }
                 commit('setDoctors', doctors);
             })
