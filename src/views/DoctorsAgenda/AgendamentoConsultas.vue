@@ -528,7 +528,7 @@ export default {
     scheduleLoading: false,
     dependent: undefined,
     consultationsListenerUnsubscriber: undefined,
-    daysToListen: 10,
+    daysToListen: 3,
 
     //-------------------------------------------Scroll------------------------------------------------
     type: "number",
@@ -829,19 +829,11 @@ export default {
     },
     async initialConfig() {
       this.loading = true;
-      this.$store.dispatch("getClinics");
-      await this.$store.dispatch("getDoctors");
+      // this.$store.dispatch("getClinics");
+      // await this.$store.dispatch("getDoctors");
       await this.listenConsultations()
-      await this.$store.dispatch("getSpecialties");
-      // this.$store.dispatch("stopSnack", false);
-      //this.$store.dispatch('setLoader',{loader:false,view:"AgendamentoConsulta"})
-      // this.especialidade = "Clinico Geral"
+      // await this.$store.dispatch("getSpecialties");
       this.loading = false;
-      console.log(
-        moment()
-          .subtract(4, "hours")
-          .format("YYYY-MM-DD HH:mm:ss")
-      );
     },
     async listenConsultations() {
       this.consultationsListenerUnsubscriber = await this.$store.dispatch("listenConsultations", {

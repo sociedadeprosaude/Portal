@@ -253,7 +253,6 @@
                 // if (!this.user.permissions) return []
                 if(this.user){
                     return this.pages.filter(a => {
-                        console.log('filtros');
                         if (this.user.group === 'admin') {
                             return true
                         } else if (this.user.group === 'colaborador') {
