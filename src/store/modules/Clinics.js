@@ -39,32 +39,32 @@ const actions = {
             });
 
 
-            for (let clinic in clinics) {
-                let exams = []
-                let specialties = []
-                let examsSnap = await firebase.firestore().collection('clinics').doc(clinics[clinic].name)
-                    .collection('exams').get();
-
-                examsSnap.forEach(function (doc) {
-                    exams.push({
-                        id: doc.id,
-                        ...doc.data(),
-                    });
-                });
-
-                let specialtySnap = await firebase.firestore().collection('clinics').doc(clinics[clinic].name)
-                    .collection('specialties').get();
-
-                specialtySnap.forEach(function (doc) {
-                    specialties.push({
-                        id: doc.id,
-                        ...doc.data(),
-                    });
-                });
-
-                clinics[clinic].exams = exams
-                clinics[clinic].specialties = specialties
-            }
+            // for (let clinic in clinics) {
+            //     let exams = []
+            //     let specialties = []
+            //     let examsSnap = await firebase.firestore().collection('clinics').doc(clinics[clinic].name)
+            //         .collection('exams').get();
+            //
+            //     examsSnap.forEach(function (doc) {
+            //         exams.push({
+            //             id: doc.id,
+            //             ...doc.data(),
+            //         });
+            //     });
+            //
+            //     let specialtySnap = await firebase.firestore().collection('clinics').doc(clinics[clinic].name)
+            //         .collection('specialties').get();
+            //
+            //     specialtySnap.forEach(function (doc) {
+            //         specialties.push({
+            //             id: doc.id,
+            //             ...doc.data(),
+            //         });
+            //     });
+            //
+            //     clinics[clinic].exams = exams
+            //     clinics[clinic].specialties = specialties
+            // }
 
             commit('setClinics', clinics);
         })

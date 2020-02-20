@@ -4,9 +4,14 @@ const cors = require('cors')({origin: true});
 
 var papa = require('papaparse');
 var moment = require('moment');
-const { parse } = require('json2csv');
+const {parse} = require('json2csv');
 admin.initializeApp();
 const defaultRoute = '/analise-exames'
+
+const heavyFunctionsRuntimeOpts = {
+    timeoutSeconds: 540,
+    memory: '2GB'
+}
 
 exports.createConsultations = functions.https.onRequest((request, response) => {
     let consultation = request.body
@@ -44,9 +49,9 @@ exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate
     let db = admin.firestore()
     let userRef = db.collection('users').doc(context.params.cpf)
     let user = (await userRef.get()).data()
-    if(!user.association_number) {
+    if (!user.association_number) {
         let associatedOpRef = db.collection('operational').doc('associated')
-        let numAss = (await  associatedOpRef.get()).data().quantity
+        let numAss = (await associatedOpRef.get()).data().quantity
         userRef.update({
             association_number: numAss
         })
@@ -56,73 +61,122 @@ exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate
     }
 })
 
-exports.exams_report = functions.https.onRequest((req, res) => {
-    var db = admin.database();
-    let startDate
-    let finalDate
-    if (req.query.start_date) {
-        startDate = moment(req.query.start_date).format('YYYY/MM/DD HH:mm:SS')
-    } else {
-        startDate = ''
-    }
-    if (req.query.final_date) {
-        finalDate = moment(req.query.final_date).format('YYYY/MM/DD HH:mm:SS')
-    } else {
-        finalDate = moment().format('YYYY/MM/DD HH:mm:SS')
-    }
-    db.ref(defaultRoute)
-        .child('/budgets')
-        .orderByChild('date')
-        .startAt(startDate)
-        .endAt(finalDate)
-        .once('value')
-        .then(budgetSnap => {
-            let budgets = budgetSnap.val()
-            // res.status(200).send(budgets);
-            // return budgets
-            let response = {}
-            for (let budget in budgets) {
-                if (!response[budgets[budget].doctor]) response[budgets[budget].doctor] = {}
-                if (!response[budgets[budget].doctor]['No de exames']) response[budgets[budget].doctor]['No de exames'] = 0
-                if (!response[budgets[budget].doctor]['No de pedidos']) response[budgets[budget].doctor]['No de pedidos'] = 0
+exports.listenChangeInSpecialtiesSubcollections = functions.firestore.document('specialties/{specialtyId}/{collectionId}/{docId}').onWrite(async (change, context) => {
+    convertSpecialtySubcollectionInObject((await admin.firestore().collection('specialties').doc(context.params.specialtyId).get()))
+})
 
-                response[budgets[budget].doctor]['Médico'] = budgets[budget].doctor
-                response[budgets[budget].doctor]['No de exames'] = response[budgets[budget].doctor]['No de exames'] + budgets[budget].exams.length
-                response[budgets[budget].doctor]['No de pedidos'] = response[budgets[budget].doctor]['No de pedidos'] + 1
-                // response[budgets[budget].doctor]['Medico'] = response[budgets[budget].doctor] + budgets[budget].exams.length
-            }
-            let arrayResp = []
-            for(let obj in response) {
-                arrayResp.push(response[obj])
-            }
-            const fields = ['Médico', 'No de pedidos', 'No de exames'];
-            const opts = { fields };
-            arrayResp.sort((a, b) => {
-                return a['No de exames'] <= b['No de exames'] ? 1 : -1
-            })
+exports.listenChangeInDoctorsSubcollections = functions.firestore.document('users/{userId}/{collectionId}/{docId}').onWrite(async (change, context) => {
+    convertDoctorSubcollectionInObject((await admin.firestore().collection('users').doc(context.params.userId).get()))
+})
 
-            // let csv = papa.unparse({
-            //     fields: fields,
-            //     data: arrayResp
-            // })
-            let csv = parse(arrayResp, opts);
-
-            res.setHeader(
-                "Content-disposition",
-                "attachment; filename=exames_total.csv"
-            );
-            res.set("Content-Type", "text/csv");
-            res.status(200).send(csv);
-            return response;
-        })
-        .catch(error => {
-            console.log(error);
-            return res.status(400).send(error.toString());
-        });
+exports.updateSpecialties = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (req, res) => {
+    res.send(await convertSpecialtiesSubcollectionsInObjects())
 });
 
-// exports.searchExam = functions.https.onRequest((req, res) => {
-//     let searchText = req.query.search
-//     let db = admin.firestore().collection('exams').
-//
-// })
+exports.updateDoctors = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (req, res) => {
+    res.send(await convertDoctorsSubcollectionsInObjects())
+});
+
+async function convertSpecialtiesSubcollectionsInObjects() {
+    let db = admin.firestore()
+    let specRef = db.collection('specialties')
+    let specSnap = await specRef.get()
+    let allSpecialties = [];
+    for (let docIndex in specSnap.docs) {
+        // eslint-disable-next-line no-await-in-loop
+        let converted = await convertSpecialtySubcollectionInObject(specSnap.docs[docIndex])
+        allSpecialties.push(converted)
+    }
+    return allSpecialties
+}
+
+async function convertSpecialtySubcollectionInObject(specialtyDoc) {
+    let specialty = specialtyDoc.data();
+    let doctors = [];
+    // eslint-disable-next-line no-await-in-loop
+    let docsCollection = await admin.firestore().collection('specialties/' + specialty.name + '/doctors').get()
+    for (let doctorDoc in docsCollection.docs) {
+        let doctor = docsCollection.docs[doctorDoc].data()
+        doctor.clinics = []
+        // eslint-disable-next-line no-await-in-loop
+        let clinCollection = await admin.firestore().collection('specialties/' + specialty.name + '/doctors').doc(doctor.cpf).collection('clinics').get()
+        clinCollection.forEach((clinDoc) => {
+            let clinic = clinDoc.data()
+            if (clinic.exams) {
+                delete clinic.exams
+            }
+            if (clinic.specialties) {
+                delete clinic.specialties
+            }
+            doctor.clinics.push(clinic)
+        })
+        doctors.push({
+            ...doctor,
+            price: doctor.price,
+            cost: doctor.cost,
+            payment_method: doctor.payment_method,
+        });
+    }
+    specialtyDoc.ref.set(
+        {
+            ...specialty,
+            doctors: doctors,
+        }
+    )
+    return {
+        ...specialty,
+        doctors: doctors,
+    }
+}
+
+async function convertDoctorsSubcollectionsInObjects() {
+    let db = admin.firestore()
+    let doctorRef = db.collection('users')
+    let doctorSnap = await doctorRef.where('type', '==', 'DOCTOR').get()
+    let allDoctors = [];
+    for (let docIndex in doctorSnap.docs) {
+        // eslint-disable-next-line no-await-in-loop
+        let doctor = await convertDoctorSubcollectionInObject(doctorSnap.docs[docIndex])
+        allDoctors.push(doctor)
+    }
+    return allDoctors
+}
+
+async function convertDoctorSubcollectionInObject(doctorDoc) {
+    let doctor = doctorDoc.data()
+    if (doctor.clinics) {
+        cleanExamsAndSpecialtiesFromClinics(doctor.clinics)
+    }
+    let specialties = [];
+    // eslint-disable-next-line no-await-in-loop
+    let specialtiesCollection = await admin.firestore().collection('users/' + doctor.cpf + '/specialties').get()
+    for (let specialtyDoc in specialtiesCollection.docs) {
+        let specialty = specialtiesCollection.docs[specialtyDoc].data()
+        specialties.push(specialty)
+    }
+    doctor.specialties = specialties
+
+    doctorDoc.ref.set(doctor)
+    return doctor
+}
+
+function cleanExamsAndSpecialtiesFromClinics(clinics) {
+    for (let clinic in clinics) {
+        if (clinics[clinic].exams) {
+            delete clinics[clinic].exams
+        }
+        if (clinics[clinic].specialties) {
+            delete clinics[clinic].specialties
+        }
+    }
+}
+
+async function getDocSubcollections(doc) {
+    // eslint-disable-next-line no-await-in-loop
+    let colections = await doc.ref.listCollections()
+    let subCollections = []
+    colections.forEach((col) => {
+        subCollections.push(col.id)
+    })
+    return subCollections
+}

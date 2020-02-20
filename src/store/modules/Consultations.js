@@ -26,7 +26,8 @@ const state = {
         // total: 300,
         // day: '2020-03-23'
     },
-    loaded: false
+    loaded: false,
+    loading: false
 };
 
 const mutations = {
@@ -54,6 +55,9 @@ const mutations = {
     setConsultationDeletionInfo(state, payload) {
         state.consultationsDeletionInfo = payload
     },
+    setConsultationLoading(state, payload) {
+        state.loading = payload
+    }
     // setConsultationsByDate(state, payload) {
     //     state.consultationsByDate = payload
     // },
@@ -73,8 +77,8 @@ const actions = {
             if (payload.doctor) {
                 query = query.where('doctor.cpf', '==', payload.doctor.cpf)
             }
+            commit('setConsultationLoading', true)
             return query.onSnapshot((querySnapshot) => {
-                console.log('listor')
                 consultations = []
                 querySnapshot.forEach((document) => {
                     consultations.push({
@@ -83,6 +87,7 @@ const actions = {
                     })
                 })
                 commit('setConsultations', consultations)
+                commit('setConsultationLoading', false)
             })
         } catch (e) {
             throw e
@@ -462,14 +467,14 @@ const actions = {
 
 
             snapshot.forEach(doc => {
-                
+
                 let dateConsultation = moment(doc.data().date)
                 let filterHour = payload.hour ? dateConsultation.format('hh:ss') === payload.hour ? true : false : true
                 let filterDayWeek = payload.weekDays ? payload.weekDays.indexOf(dateConsultation.weekday()) > -1 ? true : false : true
 
                 if(filterHour && filterDayWeek)
                     firebase.firestore().collection('consultations').doc(doc.id).delete()
-                
+
                 if (filterHour && filterDayWeek && doc.data().user) {
                     firebase.firestore().collection('users').doc(doc.data().user.cpf).collection('consultations').doc(doc.id).delete()
                     firebase.firestore().collection('canceled').doc(doc.id).set(doc.data())
@@ -530,6 +535,9 @@ const getters = {
     },
     consultationsDeletionInfo(state) {
         return state.consultationsDeletionInfo
+    },
+    consultationsLoading(state) {
+        return state.loading
     }
     // consultationsByDate(state) {
     //     return state.consultationsByDate
