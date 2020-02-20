@@ -241,8 +241,9 @@ const actions = {
                 .then((procedure)=>{
                     procedure.forEach((doc)=>{
                         let data = doc.data()
-                        let status = payload.consultation.exam ? 'Exame Pago' : 'Consulta Paga'
-                        let type = payload.consultation.exam ? 'Exam' : 'Consultation'
+                        let thereIsExam = payload.consultation.exam ? payload.consultation.exam : payload.consultation.user.exam ? payload.consultation.user.exam : undefined
+                        let status = thereIsExam? 'Exame Pago' : 'Consulta Paga'
+                        let type = thereIsExam ? 'Exam' : 'Consultation'
                         let obj =  {
                             status:[status],
                             payment_number:data.payment_number,
@@ -251,9 +252,9 @@ const actions = {
                             specialty:data.specialty
                         }
 
-                        if(payload.consultation.exam)
-                            obj = {...obj,exam:payload.consultation.exam}
-                        console.log(obj)
+                        if(thereIsExam)
+                            obj = {...obj,exam:thereIsExam}
+                        console.log('oi',obj)
                         firebase.firestore().collection('users').doc(payload.idPatient).collection('procedures').add(
                             {... obj}
                         )
@@ -261,7 +262,7 @@ const actions = {
                         firebase.firestore().collection('users').doc(payload.idPatient).collection('procedures').doc(doc.id)
                         .update({ status: firebase.firestore.FieldValue.arrayUnion('Cancelado')})
 
-                        return
+                        return;
                     })
                 })
 

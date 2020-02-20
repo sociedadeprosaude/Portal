@@ -774,12 +774,12 @@ export default {
       else this.$vuetify.goTo("#group-" + val, this.options);
     },
     exam(value){
-      if(!value.notFindPayment){
-        this.thereIsPaymentNumber()
-      }else if(!value){
+       if(!value){
         this.payment_numberFound = undefined;
         this.num_recibo = "";
         this.status = "Aguardando pagamento";
+      }else if( !value.notFindPayment){
+        this.thereIsPaymentNumber()
       }
     }
   },
@@ -834,12 +834,11 @@ export default {
           exam:this.exam
         })
         .then(obj => {
-          console.log('Achou')
           this.payment_numberFound = obj;
-          console.log(obj)
           this.num_recibo = obj.payment_number;
-          this.status = "Pago";
           this.exam = obj.exam ?{ ... obj.exam,notFindPayment:true}:undefined
+          this.status = "Pago"
+          console.log(obj)
           this.loaderPaymentNumber = false;
         })
         .catch((response) => {

@@ -195,9 +195,9 @@
                                                                     : 'CPF:' + item.user.cpf}}
                                                             </v-list-item-subtitle>
                                                             <br>
-                                                            <!-- <v-list-item-subtitle v-if="item.user.telephones[0]">
+                                                            <v-list-item-subtitle v-if="item.user.telephones[0]">
                                                                Telefone: {{item.user.telephones[0]}}
-                                                            </v-list-item-subtitle> -->
+                                                            </v-list-item-subtitle>
                                                             <br>
                                                             <v-list-item-action-text>
                                                                 {{item.date.split(' ')[0] | dateFilter}} -
@@ -746,7 +746,8 @@
                     payment_number: this.index_Selecionado.num_recibo,
                     specialty: this.especialidade.name,
                     regress: this.index_Selecionado.consultation.regress,
-                    previousConsultation: this.index_Selecionado.consultation.previousConsultation
+                    previousConsultation: this.index_Selecionado.consultation.previousConsultation,
+                    consultation:this.index_Selecionado.consultation
                 })
                 this.clear()
                 this.dialog = false

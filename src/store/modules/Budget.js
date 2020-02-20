@@ -375,12 +375,11 @@ const actions = {
             .where('specialty','==',payload.specialty.name).where('status','==',['Exame Pago'])
             
             procedures = await procedureRef.get()
-            if( procedures.empty && type == 'Consultation' )
+            if( procedures.empty && type == 'Consultation' && payload.specialty.name == 'ULTRASSONOGRAFIA')
                 procedures = await procedureRefOr.get()
 
             if(!procedures.empty){
                 procedures.forEach((procedure)=>{
-                    console.log('Encontrou!')
                     resolve({ procedureId: procedure.id, ...procedure.data() })
                 })
             }else{
