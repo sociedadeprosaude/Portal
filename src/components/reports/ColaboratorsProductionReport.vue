@@ -54,7 +54,6 @@
                     // Consultas: 0
                 }
                 for (let intake in this.intakes) {
-                    console.log('intake', this.intakes[intake]);
                     if (!resumes[this.intakes[intake].colaborator.name]) {
                         resumes[this.intakes[intake].colaborator.name] = {
                             Dinheiro: 0.0,

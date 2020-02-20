@@ -1,11 +1,11 @@
 <template>
     <v-container class="ma-0 pa-0">
-        <v-navigation-drawer v-if="doctorsAgendaToobar" class="hidden-print-only" dark temporary v-model="drawer" fixed app>
+        <v-navigation-drawer v-if="doctorsAgendaToobar" class="hidden-print-only" dark temporary v-model="drawer" absolute>
             <v-list>
                 <v-list-item
                         v-for="item in menuItems"
                         :key="item.title"
-                        :to="item.link">
+                        @click.native="goRoute(item.link)">
                     <v-list-item-action>
                         <v-icon>{{ item.icon }}</v-icon>
                     </v-list-item-action>
@@ -165,6 +165,10 @@
             }
         },
         methods: {
+            goRoute(route) {
+                console.log('route', route)
+              this.$router.push(route)
+            },
             selectUnit(unit) {
                 if (!this.selectUnitDialog) {
                     this.selectUnitDialog = true

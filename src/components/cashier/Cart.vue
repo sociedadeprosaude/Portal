@@ -335,7 +335,7 @@
         </v-layout>
         <v-dialog v-model="searchPatient" transition="dialog-bottom-transition"
         >
-            <select-patient-card @selected="clearCart" max-width="100%"/>
+            <select-patient-card @removed="clearCart" max-width="100%"/>
         </v-dialog>
         <v-dialog v-model="budgetToPrintDialog" v-if="budgetToPrint">
             <budget-to-print @close="budgetToPrintDialog = false" :budget="budgetToPrint"/>

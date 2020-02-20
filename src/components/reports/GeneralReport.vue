@@ -17,10 +17,13 @@
                 <v-card class="pa-4 receipt-to-print">
                     <v-layout row wrap>
                         <v-flex xs6 class="text-left">
-                            <span class="my-sub-headline">Relatório Geral</span>
+                            <img :src="report.unit.logo" height="64px">
                         </v-flex>
                         <v-flex xs6 class="text-right">
-                            <span>{{report.dataInicio | dateFilter}} até {{report.dataFinal | dateFilter}}</span>
+                            <v-layout column wrap>
+                                <span class="my-sub-headline mb-4">Relatório Geral</span>
+                                <span>{{report.dataInicio | dateFilter}} até {{report.dataFinal | dateFilter}}</span>
+                            </v-layout>
                         </v-flex>
                         <v-flex xs12>
                             <v-layout row wrap class="mt-2">

@@ -47,12 +47,13 @@ const actions = {
             })
     },
     async getIntakes(context, payload) {
+        let selectedUnit = context.getters.selectedUnit
         let intakesSnap = await firebase.firestore().collection('intakes').where('date', '>=', payload.initialDate)
             .where('date', '<=', payload.finalDate)
+            .where('unit.name', '==', selectedUnit.name)
             // .where('colaborator', '>', '')
             .orderBy('date').get()
         let promises = []
-        //console.log('cheguei aqui')
         for (let doc in intakesSnap.docs) {
             if (intakesSnap.docs[doc].data().colaborator) {
                 promises.push(context.dispatch('getIntakeDetails', {
@@ -68,10 +69,12 @@ const actions = {
     async searchReports(context, payload) {
         payload.dataFinal = payload.dataFinal + ' 24:00:00';
         payload.dataInicio = payload.dataInicio + ' 00:00:00';
+        let selectedUnit = context.getters.selectedUnit
         //console.log('data inicial: ', payload.dataInicio);
         //console.log('data final: ', payload.dataFinal);
 
         let intakesSnap = await firebase.firestore().collection('intakes').where('date', '>=', payload.dataInicio)
+            .where('unit.name', '==', selectedUnit.name)
             .where('date', '<=', payload.dataFinal).orderBy('date').get()
         let promises = []
         for (let doc in intakesSnap.docs) {
@@ -276,6 +279,7 @@ const actions = {
 
 
         relatorio = {
+            unit: selectedUnit,
             specialties: specialties,
             exams: exams,
             clinics: clinics,
