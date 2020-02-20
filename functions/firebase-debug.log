@@ -1,0 +1,407 @@
+[debug] [2020-02-20T17:26:41.782Z] ----------------------------------------------------------------------
+[debug] [2020-02-20T17:26:41.783Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy --only functions
+[debug] [2020-02-20T17:26:41.784Z] CLI Version:   7.11.0
+[debug] [2020-02-20T17:26:41.784Z] Platform:      darwin
+[debug] [2020-02-20T17:26:41.784Z] Node Version:  v10.16.0
+[debug] [2020-02-20T17:26:41.785Z] Time:          Thu Feb 20 2020 14:26:41 GMT-0300 (Brasilia Standard Time)
+[debug] [2020-02-20T17:26:41.785Z] ----------------------------------------------------------------------
+[debug] [2020-02-20T17:26:41.785Z] 
+[debug] [2020-02-20T17:26:41.792Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-02-20T17:26:41.792Z] > authorizing via signed-in user
+[debug] [2020-02-20T17:26:41.792Z] [iam] checking project prosaude-36f66 for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2020-02-20T17:26:41.793Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/prosaude-36f66:testIamPermissions  
+
+[debug] [2020-02-20T17:26:42.231Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'prosaude-36f66'...
+[info] 
+[info] i  deploying functions
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint
+[info] ✔  functions: Finished running predeploy script.
+[debug] [2020-02-20T17:26:45.659Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "lint": "eslint .",
+    "serve": "firebase serve --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "8"
+  },
+  "dependencies": {
+    "firebase-admin": "^8.0.0",
+    "firebase-functions": "^3.1.0",
+    "json2csv": "^4.5.2",
+    "moment": "^2.24.0",
+    "papaparse": "^5.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^5.12.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "firebase-functions-test": "^0.1.6"
+  },
+  "private": true
+}
+[info] i  functions: ensuring necessary APIs are enabled...
+[debug] [2020-02-20T17:26:45.660Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/prosaude-36f66/services/cloudfunctions.googleapis.com  
+ 
+[debug] [2020-02-20T17:26:45.661Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/prosaude-36f66/services/runtimeconfig.googleapis.com  
+ 
+[debug] [2020-02-20T17:26:46.895Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:26:46.932Z] <<< HTTP RESPONSE 200
+[info] ✔  functions: all necessary APIs are enabled
+[debug] [2020-02-20T17:26:46.933Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/prosaude-36f66/adminSdkConfig  
+ 
+[debug] [2020-02-20T17:26:47.329Z] <<< HTTP RESPONSE 200
+[info] i  functions: preparing functions directory for uploading...
+[debug] [2020-02-20T17:26:47.332Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/prosaude-36f66/configs  
+ 
+[debug] [2020-02-20T17:26:47.773Z] <<< HTTP RESPONSE 200
+[info] i  functions: packaged functions (40.4 KB) for uploading
+[debug] [2020-02-20T17:26:47.978Z] >>> HTTP REQUEST POST https://cloudfunctions.googleapis.com/v1/projects/prosaude-36f66/locations/us-central1/functions:generateUploadUrl  
+ 
+[debug] [2020-02-20T17:26:49.457Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:26:49.458Z] >>> HTTP REQUEST PUT https://storage.googleapis.com/gcf-upload-us-central1-1d9989ec-9e01-43c0-9711-826a930c86ed/5986df44-e5ca-4910-b344-b9882631a1c1.zip?GoogleAccessId=service-86942539576@gcf-admin-robot.iam.gserviceaccount.com&Expires=1582221409&Signature=pucBB6W6BGphnyZfAwL8yZuD84elCbHBO5ubwja8JCFEtm1co2ACYLX%2BOjhMjaVzLpgOwEZu4Ujvc2QxjYzQnCJSzVw5Wl%2BsXxvh0bVI6kaMOZDvLUaJs82wq%2FzAqrT5qq5beNQMkJ1zEsY3d90BqPC6NSXLljcNB%2BnmobP%2FgMHKeng9ImgX7ka4lbNDBUt%2FNMskcOm0sRtMF9QcPf4NNnXxRlESioNMBa9WU18KneBxCtPm%2FwuVgt0twex1IOTcjo9BYs%2Fq0z%2BzvaOlLegA%2B%2Bgas%2BYCGRHn68fx%2BDK1VTRRt0iqp3UCYRqkFnWpRbA45Z22aEL1%2BcVV5Lm2W%2FXMKQ%3D%3D  
+ <request body omitted>
+[debug] [2020-02-20T17:26:49.963Z] <<< HTTP RESPONSE 200
+[info] ✔  functions: functions folder uploaded successfully
+[debug] [2020-02-20T17:26:49.966Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/projects/prosaude-36f66/locations/-/functions  
+ 
+[debug] [2020-02-20T17:26:51.301Z] <<< HTTP RESPONSE 200
+[info] i  functions: creating Node.js 8 function listenChangeInSpecialtiesSubcollections(us-central1)...
+[debug] [2020-02-20T17:26:51.303Z] Trigger is:  {"eventTrigger":{"resource":"projects/prosaude-36f66/databases/(default)/documents/specialties/{specialtyId}/{collectionId}/{docId}","eventType":"providers/cloud.firestore/eventTypes/document.write","service":"firestore.googleapis.com"}}
+[info] i  functions: creating Node.js 8 function listenChangeInDoctorsSubcollections(us-central1)...
+[debug] [2020-02-20T17:26:51.303Z] Trigger is:  {"eventTrigger":{"resource":"projects/prosaude-36f66/databases/(default)/documents/users/{userId}/{collectionId}/{docId}","eventType":"providers/cloud.firestore/eventTypes/document.write","service":"firestore.googleapis.com"}}
+[info] i  functions: updating Node.js 8 function createConsultations(us-central1)...
+[debug] [2020-02-20T17:26:51.304Z] Trigger is:  {"httpsTrigger":{}}
+[info] i  functions: updating Node.js 8 function listenToUserAdded(us-central1)...
+[debug] [2020-02-20T17:26:51.305Z] Trigger is:  {"eventTrigger":{"resource":"projects/prosaude-36f66/databases/(default)/documents/users/{cpf}","eventType":"providers/cloud.firestore/eventTypes/document.create","service":"firestore.googleapis.com"}}
+[info] i  functions: updating Node.js 8 function updateSpecialties(us-central1)...
+[debug] [2020-02-20T17:26:51.305Z] Trigger is:  {"httpsTrigger":{}}
+[info] i  functions: updating Node.js 8 function updateDoctors(us-central1)...
+[debug] [2020-02-20T17:26:51.305Z] Trigger is:  {"httpsTrigger":{}}
+[info] 
+The following functions are found in your project but do not exist in your local source code:
+	exams_report(us-central1)
+
+If you are renaming a function or changing its region, it is recommended that you create the new function first before deleting the old one to prevent event loss. For more info, visit https://firebase.google.com/docs/functions/manage-functions#modify
+
+[info] i  functions: deleting function exams_report(us-central1)...
+[debug] [2020-02-20T17:26:54.055Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/prosaude-36f66/services/cloudscheduler.googleapis.com  
+ 
+[debug] [2020-02-20T17:26:55.087Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:26:55.090Z] >>> HTTP REQUEST POST https://cloudfunctions.googleapis.com/v1/projects/prosaude-36f66/locations/us-central1/functions  
+
+[debug] [2020-02-20T17:26:55.091Z] >>> HTTP REQUEST POST https://cloudfunctions.googleapis.com/v1/projects/prosaude-36f66/locations/us-central1/functions  
+
+[debug] [2020-02-20T17:26:55.092Z] >>> HTTP REQUEST PATCH https://cloudfunctions.googleapis.com/v1/projects/prosaude-36f66/locations/us-central1/functions/createConsultations {"updateMask":"sourceUploadUrl,name,labels,runtime,httpsTrigger"} 
+
+[debug] [2020-02-20T17:26:55.093Z] >>> HTTP REQUEST PATCH https://cloudfunctions.googleapis.com/v1/projects/prosaude-36f66/locations/us-central1/functions/listenToUserAdded {"updateMask":"sourceUploadUrl,name,labels,runtime,eventTrigger.resource,eventTrigger.eventType,eventTrigger.service"} 
+
+[debug] [2020-02-20T17:26:55.094Z] >>> HTTP REQUEST PATCH https://cloudfunctions.googleapis.com/v1/projects/prosaude-36f66/locations/us-central1/functions/updateSpecialties {"updateMask":"sourceUploadUrl,name,labels,runtime,availableMemoryMb,timeout,httpsTrigger"} 
+
+[debug] [2020-02-20T17:26:55.094Z] >>> HTTP REQUEST PATCH https://cloudfunctions.googleapis.com/v1/projects/prosaude-36f66/locations/us-central1/functions/updateDoctors {"updateMask":"sourceUploadUrl,name,labels,runtime,availableMemoryMb,timeout,httpsTrigger"} 
+
+[debug] [2020-02-20T17:26:55.094Z] >>> HTTP REQUEST DELETE https://cloudfunctions.googleapis.com/v1/projects/prosaude-36f66/locations/us-central1/functions/exams_report  
+ 
+[debug] [2020-02-20T17:26:55.490Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:26:55.708Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:26:56.358Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:26:56.361Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:26:56.371Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:26:56.410Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:26:56.422Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:26:56.424Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/projects/prosaude-36f66/locations/-/functions  
+ 
+[debug] [2020-02-20T17:26:57.806Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:26:57.808Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5TcGVjaWFsdGllc1N1YmNvbGxlY3Rpb25zL2JjOGJnWDBCanF3  
+ 
+[debug] [2020-02-20T17:26:57.808Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5Eb2N0b3JzU3ViY29sbGVjdGlvbnMvSFgydUJwbUctQW8  
+ 
+[debug] [2020-02-20T17:26:57.809Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvY3JlYXRlQ29uc3VsdGF0aW9ucy9DTHhRdVFZeGJHdw  
+ 
+[debug] [2020-02-20T17:26:57.809Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuVG9Vc2VyQWRkZWQvOWl3S3JYTUVsa2M  
+ 
+[debug] [2020-02-20T17:26:57.809Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlU3BlY2lhbHRpZXMvR29vSzlqaXpCeWM  
+ 
+[debug] [2020-02-20T17:26:57.810Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlRG9jdG9ycy91VjNjOWZBa25kWQ  
+ 
+[debug] [2020-02-20T17:26:57.810Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvZXhhbXNfcmVwb3J0L2ZocjhOb05yRDZR  
+ 
+[debug] [2020-02-20T17:26:58.118Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:26:58.126Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:26:58.157Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:26:58.969Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:26:58.989Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:26:58.990Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:26:59.009Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:00.120Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlRG9jdG9ycy91VjNjOWZBa25kWQ  
+ 
+[debug] [2020-02-20T17:27:00.127Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvY3JlYXRlQ29uc3VsdGF0aW9ucy9DTHhRdVFZeGJHdw  
+ 
+[debug] [2020-02-20T17:27:00.159Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5TcGVjaWFsdGllc1N1YmNvbGxlY3Rpb25zL2JjOGJnWDBCanF3  
+ 
+[debug] [2020-02-20T17:27:00.439Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:00.975Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlU3BlY2lhbHRpZXMvR29vSzlqaXpCeWM  
+ 
+[debug] [2020-02-20T17:27:00.992Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuVG9Vc2VyQWRkZWQvOWl3S3JYTUVsa2M  
+ 
+[debug] [2020-02-20T17:27:00.993Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvZXhhbXNfcmVwb3J0L2ZocjhOb05yRDZR  
+ 
+[debug] [2020-02-20T17:27:01.009Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5Eb2N0b3JzU3ViY29sbGVjdGlvbnMvSFgydUJwbUctQW8  
+ 
+[debug] [2020-02-20T17:27:01.285Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:01.296Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:01.352Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:02.172Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:02.179Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:02.182Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:02.443Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvY3JlYXRlQ29uc3VsdGF0aW9ucy9DTHhRdVFZeGJHdw  
+ 
+[debug] [2020-02-20T17:27:03.289Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlU3BlY2lhbHRpZXMvR29vSzlqaXpCeWM  
+ 
+[debug] [2020-02-20T17:27:03.297Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlRG9jdG9ycy91VjNjOWZBa25kWQ  
+ 
+[debug] [2020-02-20T17:27:03.356Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5TcGVjaWFsdGllc1N1YmNvbGxlY3Rpb25zL2JjOGJnWDBCanF3  
+ 
+[debug] [2020-02-20T17:27:03.627Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:04.177Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvZXhhbXNfcmVwb3J0L2ZocjhOb05yRDZR  
+ 
+[debug] [2020-02-20T17:27:04.180Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5Eb2N0b3JzU3ViY29sbGVjdGlvbnMvSFgydUJwbUctQW8  
+ 
+[debug] [2020-02-20T17:27:04.184Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuVG9Vc2VyQWRkZWQvOWl3S3JYTUVsa2M  
+ 
+[debug] [2020-02-20T17:27:04.545Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:04.547Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:04.548Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:04.555Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:04.558Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:05.434Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:05.628Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvY3JlYXRlQ29uc3VsdGF0aW9ucy9DTHhRdVFZeGJHdw  
+ 
+[debug] [2020-02-20T17:27:06.550Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlU3BlY2lhbHRpZXMvR29vSzlqaXpCeWM  
+ 
+[debug] [2020-02-20T17:27:06.551Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlRG9jdG9ycy91VjNjOWZBa25kWQ  
+ 
+[debug] [2020-02-20T17:27:06.551Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvZXhhbXNfcmVwb3J0L2ZocjhOb05yRDZR  
+ 
+[debug] [2020-02-20T17:27:06.554Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5Eb2N0b3JzU3ViY29sbGVjdGlvbnMvSFgydUJwbUctQW8  
+ 
+[debug] [2020-02-20T17:27:06.560Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5TcGVjaWFsdGllc1N1YmNvbGxlY3Rpb25zL2JjOGJnWDBCanF3  
+ 
+[debug] [2020-02-20T17:27:06.891Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:06.932Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:06.933Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:06.944Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:07.441Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuVG9Vc2VyQWRkZWQvOWl3S3JYTUVsa2M  
+ 
+[debug] [2020-02-20T17:27:07.831Z] <<< HTTP RESPONSE 200
+[info] ✔  functions[exams_report(us-central1)]: Successful delete operation. 
+[debug] [2020-02-20T17:27:07.863Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:08.750Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:08.892Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvY3JlYXRlQ29uc3VsdGF0aW9ucy9DTHhRdVFZeGJHdw  
+ 
+[debug] [2020-02-20T17:27:08.935Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlU3BlY2lhbHRpZXMvR29vSzlqaXpCeWM  
+ 
+[debug] [2020-02-20T17:27:08.935Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlRG9jdG9ycy91VjNjOWZBa25kWQ  
+ 
+[debug] [2020-02-20T17:27:08.945Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5TcGVjaWFsdGllc1N1YmNvbGxlY3Rpb25zL2JjOGJnWDBCanF3  
+ 
+[debug] [2020-02-20T17:27:09.331Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:09.867Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5Eb2N0b3JzU3ViY29sbGVjdGlvbnMvSFgydUJwbUctQW8  
+ 
+[debug] [2020-02-20T17:27:10.523Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:10.755Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuVG9Vc2VyQWRkZWQvOWl3S3JYTUVsa2M  
+ 
+[debug] [2020-02-20T17:27:10.760Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:10.767Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:11.334Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvY3JlYXRlQ29uc3VsdGF0aW9ucy9DTHhRdVFZeGJHdw  
+ 
+[debug] [2020-02-20T17:27:11.771Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:12.529Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlRG9jdG9ycy91VjNjOWZBa25kWQ  
+ 
+[debug] [2020-02-20T17:27:12.762Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5TcGVjaWFsdGllc1N1YmNvbGxlY3Rpb25zL2JjOGJnWDBCanF3  
+ 
+[debug] [2020-02-20T17:27:12.768Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlU3BlY2lhbHRpZXMvR29vSzlqaXpCeWM  
+ 
+[debug] [2020-02-20T17:27:12.816Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:13.341Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:13.775Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5Eb2N0b3JzU3ViY29sbGVjdGlvbnMvSFgydUJwbUctQW8  
+ 
+[debug] [2020-02-20T17:27:14.047Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:14.069Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:14.072Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:14.820Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuVG9Vc2VyQWRkZWQvOWl3S3JYTUVsa2M  
+ 
+[debug] [2020-02-20T17:27:14.937Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:15.343Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvY3JlYXRlQ29uc3VsdGF0aW9ucy9DTHhRdVFZeGJHdw  
+ 
+[debug] [2020-02-20T17:27:15.640Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:15.995Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:16.050Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlRG9jdG9ycy91VjNjOWZBa25kWQ  
+ 
+[debug] [2020-02-20T17:27:16.074Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5TcGVjaWFsdGllc1N1YmNvbGxlY3Rpb25zL2JjOGJnWDBCanF3  
+ 
+[debug] [2020-02-20T17:27:16.074Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlU3BlY2lhbHRpZXMvR29vSzlqaXpCeWM  
+ 
+[debug] [2020-02-20T17:27:16.941Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5Eb2N0b3JzU3ViY29sbGVjdGlvbnMvSFgydUJwbUctQW8  
+ 
+[debug] [2020-02-20T17:27:17.212Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:17.242Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:17.261Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:17.645Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvY3JlYXRlQ29uc3VsdGF0aW9ucy9DTHhRdVFZeGJHdw  
+ 
+[debug] [2020-02-20T17:27:17.996Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuVG9Vc2VyQWRkZWQvOWl3S3JYTUVsa2M  
+ 
+[debug] [2020-02-20T17:27:18.296Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:18.446Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:18.847Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:19.214Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlRG9jdG9ycy91VjNjOWZBa25kWQ  
+ 
+[debug] [2020-02-20T17:27:19.244Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlU3BlY2lhbHRpZXMvR29vSzlqaXpCeWM  
+ 
+[debug] [2020-02-20T17:27:19.262Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5TcGVjaWFsdGllc1N1YmNvbGxlY3Rpb25zL2JjOGJnWDBCanF3  
+ 
+[debug] [2020-02-20T17:27:19.546Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:20.298Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuVG9Vc2VyQWRkZWQvOWl3S3JYTUVsa2M  
+ 
+[debug] [2020-02-20T17:27:20.412Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:20.449Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5Eb2N0b3JzU3ViY29sbGVjdGlvbnMvSFgydUJwbUctQW8  
+ 
+[debug] [2020-02-20T17:27:20.552Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:20.853Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvY3JlYXRlQ29uc3VsdGF0aW9ucy9DTHhRdVFZeGJHdw  
+ 
+[debug] [2020-02-20T17:27:21.478Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:21.552Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlU3BlY2lhbHRpZXMvR29vSzlqaXpCeWM  
+ 
+[debug] [2020-02-20T17:27:21.634Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:22.042Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:22.415Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5TcGVjaWFsdGllc1N1YmNvbGxlY3Rpb25zL2JjOGJnWDBCanF3  
+ 
+[debug] [2020-02-20T17:27:22.556Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlRG9jdG9ycy91VjNjOWZBa25kWQ  
+ 
+[debug] [2020-02-20T17:27:22.716Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:22.750Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:23.478Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuVG9Vc2VyQWRkZWQvOWl3S3JYTUVsa2M  
+ 
+[debug] [2020-02-20T17:27:23.638Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5Eb2N0b3JzU3ViY29sbGVjdGlvbnMvSFgydUJwbUctQW8  
+ 
+[debug] [2020-02-20T17:27:23.775Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:23.919Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:24.046Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvY3JlYXRlQ29uc3VsdGF0aW9ucy9DTHhRdVFZeGJHdw  
+ 
+[debug] [2020-02-20T17:27:24.335Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:24.625Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:24.721Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5TcGVjaWFsdGllc1N1YmNvbGxlY3Rpb25zL2JjOGJnWDBCanF3  
+ 
+[debug] [2020-02-20T17:27:24.752Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlU3BlY2lhbHRpZXMvR29vSzlqaXpCeWM  
+ 
+[debug] [2020-02-20T17:27:25.779Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlRG9jdG9ycy91VjNjOWZBa25kWQ  
+ 
+[debug] [2020-02-20T17:27:25.876Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:25.920Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5Eb2N0b3JzU3ViY29sbGVjdGlvbnMvSFgydUJwbUctQW8  
+ 
+[debug] [2020-02-20T17:27:25.927Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:26.337Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvY3JlYXRlQ29uc3VsdGF0aW9ucy9DTHhRdVFZeGJHdw  
+ 
+[debug] [2020-02-20T17:27:26.629Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuVG9Vc2VyQWRkZWQvOWl3S3JYTUVsa2M  
+ 
+[debug] [2020-02-20T17:27:26.668Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:26.950Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:27.011Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:27.081Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:27.881Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5TcGVjaWFsdGllc1N1YmNvbGxlY3Rpb25zL2JjOGJnWDBCanF3  
+ 
+[debug] [2020-02-20T17:27:27.929Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlU3BlY2lhbHRpZXMvR29vSzlqaXpCeWM  
+ 
+[debug] [2020-02-20T17:27:28.673Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvY3JlYXRlQ29uc3VsdGF0aW9ucy9DTHhRdVFZeGJHdw  
+ 
+[debug] [2020-02-20T17:27:28.956Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuVG9Vc2VyQWRkZWQvOWl3S3JYTUVsa2M  
+ 
+[debug] [2020-02-20T17:27:28.972Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:29.013Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlRG9jdG9ycy91VjNjOWZBa25kWQ  
+ 
+[debug] [2020-02-20T17:27:29.065Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:29.084Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5Eb2N0b3JzU3ViY29sbGVjdGlvbnMvSFgydUJwbUctQW8  
+ 
+[debug] [2020-02-20T17:27:29.112Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:30.121Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:30.147Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:30.274Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:30.976Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvY3JlYXRlQ29uc3VsdGF0aW9ucy9DTHhRdVFZeGJHdw  
+ 
+[debug] [2020-02-20T17:27:31.070Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5TcGVjaWFsdGllc1N1YmNvbGxlY3Rpb25zL2JjOGJnWDBCanF3  
+ 
+[debug] [2020-02-20T17:27:31.115Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlU3BlY2lhbHRpZXMvR29vSzlqaXpCeWM  
+ 
+[debug] [2020-02-20T17:27:32.127Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuVG9Vc2VyQWRkZWQvOWl3S3JYTUVsa2M  
+ 
+[debug] [2020-02-20T17:27:32.135Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:32.149Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlRG9jdG9ycy91VjNjOWZBa25kWQ  
+ 
+[debug] [2020-02-20T17:27:32.280Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5Eb2N0b3JzU3ViY29sbGVjdGlvbnMvSFgydUJwbUctQW8  
+ 
+[debug] [2020-02-20T17:27:32.302Z] <<< HTTP RESPONSE 200
+[info] ✔  functions[updateSpecialties(us-central1)]: Successful update operation. 
+[debug] [2020-02-20T17:27:32.335Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:32.567Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:33.296Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:33.310Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:34.136Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvY3JlYXRlQ29uc3VsdGF0aW9ucy9DTHhRdVFZeGJHdw  
+ 
+[debug] [2020-02-20T17:27:34.341Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5TcGVjaWFsdGllc1N1YmNvbGxlY3Rpb25zL2JjOGJnWDBCanF3  
+ 
+[debug] [2020-02-20T17:27:34.570Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5Eb2N0b3JzU3ViY29sbGVjdGlvbnMvSFgydUJwbUctQW8  
+ 
+[debug] [2020-02-20T17:27:35.294Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:35.297Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuVG9Vc2VyQWRkZWQvOWl3S3JYTUVsa2M  
+ 
+[debug] [2020-02-20T17:27:35.311Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvdXBkYXRlRG9jdG9ycy91VjNjOWZBa25kWQ  
+ 
+[debug] [2020-02-20T17:27:35.519Z] <<< HTTP RESPONSE 200
+[info] ✔  functions[listenChangeInSpecialtiesSubcollections(us-central1)]: Successful create operation. 
+[debug] [2020-02-20T17:27:35.705Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:35.746Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:36.489Z] <<< HTTP RESPONSE 200
+[info] ✔  functions[updateDoctors(us-central1)]: Successful update operation. 
+[debug] [2020-02-20T17:27:37.295Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvY3JlYXRlQ29uc3VsdGF0aW9ucy9DTHhRdVFZeGJHdw  
+ 
+[debug] [2020-02-20T17:27:37.708Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuQ2hhbmdlSW5Eb2N0b3JzU3ViY29sbGVjdGlvbnMvSFgydUJwbUctQW8  
+ 
+[debug] [2020-02-20T17:27:37.748Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuVG9Vc2VyQWRkZWQvOWl3S3JYTUVsa2M  
+ 
+[debug] [2020-02-20T17:27:38.001Z] <<< HTTP RESPONSE 200
+[info] ✔  functions[listenChangeInDoctorsSubcollections(us-central1)]: Successful create operation. 
+[debug] [2020-02-20T17:27:38.498Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:39.088Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:40.501Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvY3JlYXRlQ29uc3VsdGF0aW9ucy9DTHhRdVFZeGJHdw  
+ 
+[debug] [2020-02-20T17:27:41.088Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuVG9Vc2VyQWRkZWQvOWl3S3JYTUVsa2M  
+ 
+[debug] [2020-02-20T17:27:41.663Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:42.252Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:43.668Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvY3JlYXRlQ29uc3VsdGF0aW9ucy9DTHhRdVFZeGJHdw  
+ 
+[debug] [2020-02-20T17:27:44.258Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuVG9Vc2VyQWRkZWQvOWl3S3JYTUVsa2M  
+ 
+[debug] [2020-02-20T17:27:44.918Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:45.419Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:46.924Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvY3JlYXRlQ29uc3VsdGF0aW9ucy9DTHhRdVFZeGJHdw  
+ 
+[debug] [2020-02-20T17:27:47.426Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuVG9Vc2VyQWRkZWQvOWl3S3JYTUVsa2M  
+ 
+[debug] [2020-02-20T17:27:48.109Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:48.572Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:50.113Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvY3JlYXRlQ29uc3VsdGF0aW9ucy9DTHhRdVFZeGJHdw  
+ 
+[debug] [2020-02-20T17:27:50.427Z] <<< HTTP RESPONSE 200
+[info] ✔  functions[createConsultations(us-central1)]: Successful update operation. 
+[debug] [2020-02-20T17:27:50.576Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuVG9Vc2VyQWRkZWQvOWl3S3JYTUVsa2M  
+ 
+[debug] [2020-02-20T17:27:50.865Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-20T17:27:52.866Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/cHJvc2F1ZGUtMzZmNjYvdXMtY2VudHJhbDEvbGlzdGVuVG9Vc2VyQWRkZWQvOWl3S3JYTUVsa2M  
+ 
