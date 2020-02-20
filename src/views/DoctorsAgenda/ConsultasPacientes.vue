@@ -109,6 +109,7 @@
                                                             hora: item.date.split(' ')[1],
                                                             crm: item.doctor.crm,
                                                             especialidade: item.specialty,
+                                                            exame: item.specialty.name === 'ULTRASSONOGRAFIA' ? item.exam.name : item.specialty.name,
                                                             esp:item.specialty.name,
                                                             status: item.status,
                                                             modalidade: item.type,
@@ -217,8 +218,12 @@
                                                     <v-text-field readonly hide-details outlined prepend-icon="credit_card" v-model="index_Selecionado.crm" label="CRM">
                                                     </v-text-field>
                                                 </v-flex>
-                                                <v-flex xs12 sm6>
+                                                <v-flex xs12 sm6 v-show="index_Selecionado.esp !== 'ULTRASSONOGRAFIA'">
                                                     <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="index_Selecionado.esp">
+                                                    </v-text-field>
+                                                </v-flex>
+                                                <v-flex xs12 sm6 v-show="index_Selecionado.esp === 'ULTRASSONOGRAFIA'">
+                                                    <v-text-field readonly hide-details outlined prepend-icon="poll" label="Exame" v-model="index_Selecionado.exame">
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
