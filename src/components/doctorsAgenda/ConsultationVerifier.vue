@@ -26,10 +26,10 @@
                             <v-layout row wrap>
                                 <v-flex class="text-left pr-4" v-if="consultation.user">
                                     <v-layout column wrap>
-                                        <span class="my-sub-headline primary--text" style="font-size: 1.4em">{{consultation.user.name}}</span>
+                                        <span class="my-sub-headline primary--text" style="font-size: 1.4em">{{consultation.user ? consultation.user.name : consultation.paciente}}</span>
                                         <v-flex>
                                             <span class="primary--text font-weight-bold">CPF: </span>
-                                            <span class="font-weight-bold">{{consultation.user.cpf}}</span>
+                                            <span class="font-weight-bold">{{consultation.user ? consultation.user.cpf : consultation.cpf}}</span>
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
