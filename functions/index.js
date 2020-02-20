@@ -83,7 +83,8 @@ async function convertSpecialtiesSubcollectionsInObjects() {
     let specSnap = await specRef.get()
     let allSpecialties = [];
     for (let docIndex in specSnap.docs) {
-        let converted = convertSpecialtySubcollectionInObject(specSnap.docs[docIndex])
+        // eslint-disable-next-line no-await-in-loop
+        let converted = await convertSpecialtySubcollectionInObject(specSnap.docs[docIndex])
         allSpecialties.push(converted)
     }
     return allSpecialties
