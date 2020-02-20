@@ -333,7 +333,8 @@
                                 <v-flex xs12>
                                     <span class="my-headline">Aportes Financeiros</span>
                                 </v-flex>
-                                <v-flex xs12 v-for="intake in report.financialSupportIntakes" :key="intake.date" class="my-1">
+                                <v-flex xs12 v-for="intake in report.financialSupportIntakes" :key="intake.date"
+                                        class="my-1">
                                     <v-layout row wrap>
                                         <v-flex xs12>
                                             <v-divider></v-divider>
@@ -384,197 +385,370 @@
                         </v-flex>
 
                         <v-flex xs12>
-                            <v-layout row wrap >
-                                <v-flex xs12 class="my-1">
-                                    <v-layout row wrap class="mt-2">
-                                        <v-flex xs12>
-                                            <v-divider></v-divider>
-                                        </v-flex>
+                            <v-layout row wrap>
+                                <v-flex xs12 class="my-2">
+                                    <v-layout row wrap>
                                         <v-flex xs1>
-                                            <v-divider vertical></v-divider>
+                                            <v-layout row wrap class="fill-height align-center justify-center">
+                                                <span></span>
+                                            </v-layout>
                                         </v-flex>
-                                        <v-flex xs3>
-                                            Crédito
-                                        </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
-                                        </v-flex>
-                                        <v-flex xs3>
-                                            Débito
-                                        </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
-                                        </v-flex>
-                                        <v-flex xs2>
-                                            Dinheiro
-                                        </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
-                                        </v-flex>
-                                        <v-flex xs12>
-                                            <v-divider></v-divider>
+                                        <v-flex xs11>
+                                            <v-layout row wrap>
+                                                <v-flex xs12>
+                                                    <v-layout row wrap>
+                                                        <v-flex xs2></v-flex>
+                                                        <v-flex xs3 class="border">Crédito
+                                                        </v-flex>
+                                                        <v-flex xs3 class="border">Débito
+                                                        </v-flex>
+                                                        <v-flex xs3 class="border">Dinheiro
+                                                        </v-flex>
+                                                        <v-flex xs1 class="border">
+                                                            <span>%</span>
+                                                        </v-flex>
+                                                    </v-layout>
+                                                </v-flex>
+                                            </v-layout>
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
-                                <v-flex xs12 class="my-1">
+                                <v-flex xs12 class="my-2">
                                     <v-layout row wrap>
-                                        <v-flex xs12>
-                                            <v-divider></v-divider>
+                                        <v-flex xs1 class="border">
+                                            <v-layout row wrap class="fill-height align-center justify-center">
+                                                <span>Entradas</span>
+                                            </v-layout>
                                         </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
-                                        </v-flex>
-                                        <v-flex xs3>
-                                            {{report.credito | moneyFilter}}
-                                        </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
-                                        </v-flex>
-                                        <v-flex xs3>
-                                            {{report.debito | moneyFilter}}
-                                        </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
-                                        </v-flex>
-                                        <v-flex xs2>
-                                            {{report.dinheiro + totalFinancialSupport | moneyFilter}}
-                                        </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
-                                        </v-flex>
-                                        <v-flex xs12>
-                                            <v-divider></v-divider>
+                                        <v-flex xs11>
+                                            <v-layout row wrap>
+                                                <v-flex xs12>
+                                                    <v-layout row wrap>
+                                                        <v-flex xs2 class="border">Saldo Bruto</v-flex>
+                                                        <v-flex xs3 class="border">{{report.credito | moneyFilter}}
+                                                        </v-flex>
+                                                        <v-flex xs3 class="border">{{report.debito | moneyFilter}}
+                                                        </v-flex>
+                                                        <v-flex xs3 class="border">{{report.dinheiro +
+                                                            totalFinancialSupport | moneyFilter}}
+                                                        </v-flex>
+                                                        <v-flex xs1>
+                                                        </v-flex>
+                                                    </v-layout>
+                                                </v-flex>
+                                                <v-flex xs12>
+                                                    <v-layout row wrap>
+                                                        <v-flex xs2 class="border">Total</v-flex>
+                                                        <v-flex xs3 class="border">{{report.credito | moneyFilter}} ({{(report.credito/this.report.totalBruto * 100).toFixed(2)}}%)
+                                                        </v-flex>
+                                                        <v-flex xs3 class="border">{{report.debito | moneyFilter}} ({{(report.debito/this.report.totalBruto * 100).toFixed(2)}}%)
+                                                        </v-flex>
+                                                        <v-flex xs3 class="border">{{report.dinheiro +
+                                                            totalFinancialSupport | moneyFilter}} ({{(report.dinheiro/this.report.totalBruto * 100).toFixed(2)}}%)
+                                                        </v-flex>
+                                                        <v-flex xs1>
+<!--                                                            {{((report.credito + report.debito + report.dinheiro +-->
+<!--                                                            totalFinancialSupport)/this.report.totalBruto * 100).toFixed(2)}}%-->
+                                                        </v-flex>
+                                                    </v-layout>
+                                                </v-flex>
+                                            </v-layout>
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
-                                <v-flex xs12 class="my-1">
+                                <v-flex xs12 class="my-2">
                                     <v-layout row wrap>
-                                        <v-flex xs12>
-                                            <v-divider></v-divider>
+                                        <v-flex xs1 class="border">
+                                            <v-layout class="align-center fill-height justify-center">
+                                                <span>Saídas</span>
+                                            </v-layout>
                                         </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
-                                        </v-flex>
-                                        <v-flex xs3>
-                                            Taxa Crédito
-                                        </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
-                                        </v-flex>
-                                        <v-flex xs3>
-                                            Taxa Débito
-                                        </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
-                                        </v-flex>
-                                        <v-flex xs2>
-                                            Total de taxas
-                                        </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
-                                        </v-flex>
-                                        <v-flex xs12>
-                                            <v-divider></v-divider>
+                                        <v-flex xs11>
+                                            <v-layout row wrap>
+                                                <v-flex xs12>
+                                                    <v-layout row wrap>
+                                                        <v-flex xs2 class="border">Custo Médicos</v-flex>
+                                                        <v-flex xs3 class="border">{{0 | moneyFilter}}
+                                                        </v-flex>
+                                                        <v-flex xs3 class="border">{{0 | moneyFilter}}
+                                                        </v-flex>
+                                                        <v-flex xs3 class="border">{{report.totalCustoEspecialts |
+                                                            moneyFilter}}
+                                                        </v-flex>
+                                                        <v-flex xs1 class="border">
+                                                            {{(report.totalCustoEspecialts/this.report.totalBruto * 100).toFixed(2)}}%
+                                                        </v-flex>
+                                                    </v-layout>
+                                                </v-flex>
+                                                <v-flex xs12>
+                                                    <v-layout row wrap>
+                                                        <v-flex xs2 class="border">Custo Clínicas</v-flex>
+                                                        <v-flex xs3 class="border">{{0 | moneyFilter}}
+                                                        </v-flex>
+                                                        <v-flex xs3 class="border">{{0 | moneyFilter}}
+                                                        </v-flex>
+                                                        <v-flex xs3 class="border">{{report.totalCustoExams |
+                                                            moneyFilter}}
+                                                        </v-flex>
+                                                        <v-flex xs1 class="border">
+                                                            {{(report.totalCustoExams/this.report.totalBruto * 100).toFixed(2)}}%
+                                                        </v-flex>
+                                                    </v-layout>
+                                                </v-flex>
+                                                <v-flex xs12>
+                                                    <v-layout row wrap>
+                                                        <v-flex xs2 class="border">Gasto Op. (dia-a-dia)</v-flex>
+                                                        <v-flex xs3 class="border">{{0 | moneyFilter}}
+                                                        </v-flex>
+                                                        <v-flex xs3 class="border">{{0| moneyFilter}}
+                                                        </v-flex>
+                                                        <v-flex xs3 class="border">{{report.totalCustoOuttakes |
+                                                            moneyFilter}}
+                                                        </v-flex>
+                                                        <v-flex xs1 class="border">
+                                                            {{(report.totalCustoOuttakes/this.report.totalBruto * 100).toFixed(2)}}%
+                                                        </v-flex>
+                                                    </v-layout>
+                                                </v-flex>
+                                                <v-flex xs12>
+                                                    <v-layout row wrap>
+                                                        <v-flex xs2 class="border">Taxas do cartão</v-flex>
+                                                        <v-flex xs3 class="border">{{parseFloat(report.totalTaxaCredito)
+                                                            | moneyFilter}}
+                                                        </v-flex>
+                                                        <v-flex xs3 class="border">{{parseFloat(report.totalTaxaDebito)
+                                                            | moneyFilter}}
+                                                        </v-flex>
+                                                        <v-flex xs3 class="border">{{0 | moneyFilter}}
+                                                        </v-flex>
+                                                        <v-flex xs1 class="border">
+                                                            {{((parseFloat(report.totalTaxaCredito) + parseFloat(report.totalTaxaDebito))/this.report.totalBruto * 100).toFixed(2)}}%
+                                                        </v-flex>
+                                                    </v-layout>
+                                                </v-flex>
+                                                <v-flex xs12>
+                                                    <v-layout row wrap>
+                                                        <v-flex xs2 class="border">Total</v-flex>
+                                                        <v-flex xs3 class="border">{{parseFloat(report.totalTaxaCredito)
+                                                            | moneyFilter}}
+                                                        </v-flex>
+                                                        <v-flex xs3 class="border">{{parseFloat(report.totalTaxaDebito)
+                                                            | moneyFilter}}
+                                                        </v-flex>
+                                                        <v-flex xs3 class="border">{{report.totalCustoEspecialts +
+                                                            report.totalCustoExams + report.totalCustoOuttakes |
+                                                            moneyFilter}}
+                                                        </v-flex>
+                                                        <v-flex xs1 class="border">
+                                                            {{((parseFloat(report.totalTaxaCredito) + parseFloat(report.totalTaxaDebito) + report.totalCustoEspecialts +
+                                                            report.totalCustoExams + report.totalCustoOuttakes)/this.report.totalBruto * 100).toFixed(2)}}%
+                                                        </v-flex>
+                                                    </v-layout>
+                                                </v-flex>
+                                            </v-layout>
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
-                                <v-flex xs12 class="my-1">
+                                <v-flex xs12 class="my-2">
                                     <v-layout row wrap>
-                                        <v-flex xs12>
-                                            <v-divider></v-divider>
+                                        <v-flex xs1 class="border">
+                                            <v-layout row wrap class="fill-height align-center justify-center">
+                                                <span>Total</span>
+                                            </v-layout>
                                         </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
-                                        </v-flex>
-                                        <v-flex xs3>
-                                            {{parseFloat(report.totalTaxaCredito) | moneyFilter}}
-                                        </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
-                                        </v-flex>
-                                        <v-flex xs3>
-                                            {{parseFloat(report.totalTaxaDebito) | moneyFilter}}
-                                        </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
-                                        </v-flex>
-                                        <v-flex xs2>
-                                            {{((parseFloat(report.totalTaxaDebito)) + parseFloat(report.totalTaxaCredito) )| moneyFilter}}
-                                        </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
-                                        </v-flex>
-                                        <v-flex xs12>
-                                            <v-divider></v-divider>
+                                        <v-flex xs11>
+                                            <v-layout row wrap>
+                                                <v-flex xs12>
+                                                    <v-layout row wrap>
+                                                        <v-flex xs2 class="border">
+                                                            <v-layout row wrap class="align-center justify-center fill-height">
+                                                                <v-divider class="black mx-4"></v-divider>
+                                                            </v-layout>
+                                                        </v-flex>
+                                                        <v-flex xs3 class="border">{{report.credito -
+                                                            parseFloat(report.totalTaxaCredito) | moneyFilter}}
+                                                        </v-flex>
+                                                        <v-flex xs3 class="border">{{report.debito -
+                                                            parseFloat(report.totalTaxaDebito) | moneyFilter}}
+                                                        </v-flex>
+                                                        <v-flex xs3 class="border">{{report.dinheiro +
+                                                            totalFinancialSupport - report.totalCustoEspecialts -
+                                                            report.totalCustoExams - report.totalCustoOuttakes |
+                                                            moneyFilter}}
+                                                        </v-flex>
+                                                        <v-flex xs1 class="border">
+                                                            {{((report.credito -
+                                                            parseFloat(report.totalTaxaCredito) + report.debito -
+                                                            parseFloat(report.totalTaxaDebito) + report.dinheiro +
+                                                            totalFinancialSupport - report.totalCustoEspecialts -
+                                                            report.totalCustoExams - report.totalCustoOuttakes)/this.report.totalBruto * 100).toFixed(2)}}%
+                                                        </v-flex>
+                                                    </v-layout>
+                                                </v-flex>
+                                            </v-layout>
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
 
                                 <v-flex xs12 class="my-1">
-                                    <v-layout row wrap>
-                                        <v-flex xs12>
-                                            <v-divider></v-divider>
-                                        </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
-                                        </v-flex>
-                                        <v-flex xs3>
+                                    <v-layout row wrap class="justify-center">
+                                        <v-flex xs3 class="border">
                                             Total Bruto
                                         </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
+                                        <v-flex xs3 class="border">
+                                            Custos
                                         </v-flex>
-                                        <v-flex xs3>
-                                            Total Liquido
-                                        </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
-                                        </v-flex>
-                                        <v-flex xs2>
-                                            Saldo Final com gastos
-                                        </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
-                                        </v-flex>
-                                        <v-flex xs12>
-                                            <v-divider></v-divider>
+                                        <v-flex xs2 class="border">
+                                            Saldo Final
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
 
                                 <v-flex xs12 class="my-1">
-                                    <v-layout row wrap>
-                                        <v-flex xs12>
-                                            <v-divider></v-divider>
-                                        </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
-                                        </v-flex>
-                                        <v-flex xs3>
+                                    <v-layout row wrap class="justify-center">
+                                        <v-flex xs3 class="border">
                                             {{ this.report.totalBruto | moneyFilter}}
                                         </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
+                                        <v-flex xs3 class="border">
+                                            {{totalCost | moneyFilter}} ({{(totalCost / this.report.totalBruto * 100).toFixed(2)}}%)
                                         </v-flex>
-                                        <v-flex xs3>
-                                            {{(this.report.totalBruto - (parseFloat(this.report.totalCusto) +  parseFloat(report.totalTaxaDebito) + parseFloat(report.totalTaxaCredito) + parseFloat(report.totalCustoOuttakes)).toFixed(2)) | moneyFilter}}
-                                        </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
-                                        </v-flex>
-                                        <v-flex xs2>
-                                            {{((report.totalBruto + parseFloat(totalFinancialSupport) - (parseFloat(report.totalCusto) + parseFloat(report.totalTaxaDebito) + parseFloat(report.totalTaxaCredito) + parseFloat(report.totalCustoOuttakes)).toFixed(2)))| moneyFilter}}
-                                        </v-flex>
-                                        <v-flex xs1>
-                                            <v-divider vertical></v-divider>
-                                        </v-flex>
-                                        <v-flex xs12>
-                                            <v-divider></v-divider>
+                                        <v-flex xs2 class="border">
+                                            {{finalProfit | moneyFilter}} ({{(finalProfit / this.report.totalBruto * 100).toFixed(2)}}%)
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
                             </v-layout>
                         </v-flex>
+
+<!--                        <v-flex xs12>-->
+<!--                            <v-layout row wrap>-->
+<!--                                <v-flex xs12 class="my-1">-->
+<!--                                    <v-layout row wrap class="mt-2">-->
+<!--                                        <v-flex xs12>-->
+<!--                                            <v-divider></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs1>-->
+<!--                                            <v-divider vertical></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs3>-->
+<!--                                            Crédito-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs1>-->
+<!--                                            <v-divider vertical></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs3>-->
+<!--                                            Débito-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs1>-->
+<!--                                            <v-divider vertical></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs2>-->
+<!--                                            Dinheiro-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs1>-->
+<!--                                            <v-divider vertical></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs12>-->
+<!--                                            <v-divider></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                    </v-layout>-->
+<!--                                </v-flex>-->
+<!--                                <v-flex xs12 class="my-1">-->
+<!--                                    <v-layout row wrap>-->
+<!--                                        <v-flex xs12>-->
+<!--                                            <v-divider></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs1>-->
+<!--                                            <v-divider vertical></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs3>-->
+<!--                                            {{report.credito | moneyFilter}}-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs1>-->
+<!--                                            <v-divider vertical></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs3>-->
+<!--                                            {{report.debito | moneyFilter}}-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs1>-->
+<!--                                            <v-divider vertical></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs2>-->
+<!--                                            {{report.dinheiro + totalFinancialSupport | moneyFilter}}-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs1>-->
+<!--                                            <v-divider vertical></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs12>-->
+<!--                                            <v-divider></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                    </v-layout>-->
+<!--                                </v-flex>-->
+<!--                                <v-flex xs12 class="my-1">-->
+<!--                                    <v-layout row wrap>-->
+<!--                                        <v-flex xs12>-->
+<!--                                            <v-divider></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs1>-->
+<!--                                            <v-divider vertical></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs3>-->
+<!--                                            Taxa Crédito-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs1>-->
+<!--                                            <v-divider vertical></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs3>-->
+<!--                                            Taxa Débito-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs1>-->
+<!--                                            <v-divider vertical></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs2>-->
+<!--                                            Total de taxas-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs1>-->
+<!--                                            <v-divider vertical></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs12>-->
+<!--                                            <v-divider></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                    </v-layout>-->
+<!--                                </v-flex>-->
+<!--                                <v-flex xs12 class="my-1">-->
+<!--                                    <v-layout row wrap>-->
+<!--                                        <v-flex xs12>-->
+<!--                                            <v-divider></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs1>-->
+<!--                                            <v-divider vertical></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs3>-->
+<!--                                            {{parseFloat(report.totalTaxaCredito) | moneyFilter}}-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs1>-->
+<!--                                            <v-divider vertical></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs3>-->
+<!--                                            {{parseFloat(report.totalTaxaDebito) | moneyFilter}}-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs1>-->
+<!--                                            <v-divider vertical></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs2>-->
+<!--                                            {{((parseFloat(report.totalTaxaDebito)) +-->
+<!--                                            parseFloat(report.totalTaxaCredito) )| moneyFilter}}-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs1>-->
+<!--                                            <v-divider vertical></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                        <v-flex xs12>-->
+<!--                                            <v-divider></v-divider>-->
+<!--                                        </v-flex>-->
+<!--                                    </v-layout>-->
+<!--                                </v-flex>-->
+<!--                            </v-layout>-->
+<!--                        </v-flex>-->
                     </v-layout>
                 </v-card>
             </v-flex>
@@ -584,6 +758,7 @@
 
 <script>
     import moment from "moment"
+
     export default {
         name: "GeneralReport",
         props: ['report', 'loading'],
@@ -596,6 +771,17 @@
             }
         },
         computed: {
+            finalProfit() {
+              return this.report.totalBruto + parseFloat(this.totalFinancialSupport) -
+                  (parseFloat(this.report.totalCusto) + parseFloat(this.report.totalTaxaDebito) +
+                      parseFloat(this.report.totalTaxaCredito) +
+                      parseFloat(this.report.totalCustoOuttakes)).toFixed(2)
+            },
+            totalCost() {
+              return (parseFloat(this.report.totalCusto) +
+                  parseFloat(this.report.totalTaxaDebito) + parseFloat(this.report.totalTaxaCredito) +
+                  parseFloat(this.report.totalCustoOuttakes))
+            },
             totalFinancialSupport() {
                 let total = 0
                 for (let support in this.report.financialSupportIntakes) {
@@ -605,15 +791,15 @@
             },
             proceduresQuantity() {
                 let procQt = 0
-                for(let specialty in this.report.specialties) {
+                for (let specialty in this.report.specialties) {
                     procQt += this.report.specialties[specialty].quantidade
                 }
                 return procQt
             },
-            examsQuantity(){
-                let quantidade=0
-                for(let exam in this.report.exams){
-                    quantidade +=this.report.exams[exam].quantidade
+            examsQuantity() {
+                let quantidade = 0
+                for (let exam in this.report.exams) {
+                    quantidade += this.report.exams[exam].quantidade
                 }
                 return quantidade
             }
@@ -622,4 +808,7 @@
 </script>
 
 <style scoped>
+    .border {
+        border: 1px solid grey;
+    }
 </style>
