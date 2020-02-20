@@ -467,6 +467,9 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="consultationCard" v-if="consultationConfirmation">
+            <consultation-verifier @close="consultationCard = false" :consultation="consultationConfirmation"></consultation-verifier>
+        </v-dialog>
         <v-btn
                 v-if="offsetTop > 2"
                 class="mr-2"
@@ -487,13 +490,16 @@
     import Pacientes from "./Patient";
     import SelectPatientCard from "../../components/SelectPatientCard";
     import SubmitButton from "../../components/SubmitButton";
+    import ConsultationVerifier from "../../components/doctorsAgenda/ConsultationVerifier";
 
     var moment = require("moment");
     // import * as easings from "vuetify/es5/util/easing-patterns";
     export default {
-        components: {Pacientes, SelectPatientCard, SubmitButton},
+        components: {Pacientes, SelectPatientCard, SubmitButton, ConsultationVerifier},
 
         data: () => ({
+            consultationCard: false,
+            consultationConfirmation: undefined,
             y: "top",
             x: null,
             mode: "",
@@ -970,10 +976,13 @@
                 this.loading = true;
                 await this.$store.dispatch("addConsultationAppointmentToUser", form);
                 //Realizar essa funcao pelo cloud functions
-                await this.$store.dispatch("addUserToConsultation", form);
+                this.consultationConfirmation = await this.$store.dispatch("addUserToConsultation", form);
                 this.scheduleLoading = false;
                 this.success = true;
                 this.dependent = undefined
+                setTimeout(() => {
+                    this.consultationCard = true
+                }, 1000)
             }
         }
     };

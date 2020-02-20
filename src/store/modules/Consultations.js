@@ -273,6 +273,7 @@ const actions = {
             if (payload.consultation.type == "Retorno") {
                 await firebase.firestore().collection('consultations').doc(payload.consultation.previousConsultation).update({regress: payload.consultation.id})
             }
+            return (await firebase.firestore().collection('consultations').doc(payload.consultation.id).get()).data()
         } catch (e) {
             throw e
         }
