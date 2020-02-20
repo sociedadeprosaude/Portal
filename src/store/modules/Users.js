@@ -1,6 +1,7 @@
 import axios from 'axios'
 import firebase, { firestore } from "firebase";
 import moment from 'moment'
+import functions from "../../utils/functions";
 
 const state = {
     selectedPatient: undefined,
@@ -58,11 +59,7 @@ const actions = {
     },
     async addUser({ getters }, patient) {
         try {
-            for (let data in patient) {
-                if (!patient[data]) {
-                    delete patient[data]
-                }
-            }
+            functions.removeUndefineds(patient)
             if (patient.type) {
                 patient.type = patient.type.toUpperCase()
             }

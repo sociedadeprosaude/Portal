@@ -557,7 +557,6 @@
             cpf(val) {
                 if(this.selectedPatient && val !== this.selectedPatient.cpf)
                     this.cpf = this.selectedPatient.cpf;
-                console.log('Watch',this.cpf)
             },
             addPatient(val) {
                 if (val) {
@@ -574,7 +573,6 @@
                 return true
             },
             showSecondUserCard(user) {
-                console.log('veio aqui')
                 this.patientTag = !this.patientTag
             },
             showUserCard(user) {
