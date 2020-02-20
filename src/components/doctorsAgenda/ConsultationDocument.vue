@@ -23,13 +23,21 @@
                                     <span class="primary--text font-weight-bold">CRM: </span>
                                     <span class="font-weight-bold">{{consultation.doctor.crm}}</span>
                                 </v-flex>
-                                <v-flex>
+                                <v-flex v-show="this.consultation.specialty.name !== 'ULTRASSONOGRAFIA'">
                                     <span class="primary--text font-weight-bold">Especialidade: </span>
                                     <span class="font-weight-bold">{{this.consultation.specialty.name}}</span>
                                 </v-flex>
-                                <v-flex>
+                                <v-flex v-show="this.consultation.specialty.name === 'ULTRASSONOGRAFIA'">
+                                    <span class="primary--text font-weight-bold">Procedimento: </span>
+                                    <span class="font-weight-bold">Exame</span>
+                                </v-flex>
+                                <v-flex v-show="this.consultation.specialty.name !== 'ULTRASSONOGRAFIA'">
                                     <span class="primary--text font-weight-bold">Procedimento: </span>
                                     <span class="font-weight-bold">{{this.consultation.type}}</span>
+                                </v-flex>
+                                <v-flex v-show="this.consultation.specialty.name === 'ULTRASSONOGRAFIA'">
+                                    <span class="primary--text font-weight-bold">Exame: </span>
+                                    <span class="font-weight-bold">{{this.consultation.specialty.name === 'ULTRASSONOGRAFIA' ? this.consultation.exam.name : this.consultation.specialty.name,}}</span>
                                 </v-flex>
                                 <v-flex>
                                     <span class="primary--text font-weight-bold">Data: </span>
