@@ -110,7 +110,7 @@ const actions = {
     async addIntake(context, payload) {
         let copyPayload = Object.assign({}, payload);
         functions.removeUndefineds(copyPayload);
-        // console.log(copyPayload)
+         console.log('intake',copyPayload)
         // return
         let specialties = copyPayload.specialties ? Object.assign({}, copyPayload.specialties) : undefined;
         let exams = copyPayload.exams ? Object.assign({}, copyPayload.exams) : undefined;
@@ -132,6 +132,7 @@ const actions = {
             // spec.forEach((s) => {
             // })
             for (let spec in specialties) {
+                console.log('Specialty',specialties[spec])
                 if (specialties[spec].doctor.rules === null) {
                     delete specialties[spec].doctor.rules
                 }
@@ -158,6 +159,7 @@ const actions = {
         }
         if (copyPayload.user) {
             // await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('user').doc(user.cpf).set(user)
+            console.log('Aicionando no user')
             context.dispatch('addIntakeToUser', payload)
         }
         // payload = Object.assign({}, payload)
@@ -216,9 +218,9 @@ const actions = {
 
                     if (!procedures.empty) {
                         console.log("Atualizando procedure")
-                        procedures.forEach((snap) => {
+                        procedures.forEach( async (snap) => {
                             let data = snap.data()
-                            firebase.firestore().collection('users').doc(user.cpf).collection('procedures').doc(snap.id).update(
+                            await firebase.firestore().collection('users').doc(user.cpf).collection('procedures').doc(snap.id).update(
                                 {
                                     status: firebase.firestore.FieldValue.arrayUnion('Consulta Paga'),
                                     payment_number: copyPayload.id.toString()
@@ -228,7 +230,7 @@ const actions = {
                     }
                 }else{
                     console.log("Criando procedure")
-                    firebase.firestore().collection('users').doc(user.cpf).collection('procedures').add(
+                    await firebase.firestore().collection('users').doc(user.cpf).collection('procedures').add(
                         {
                             status:['Consulta Paga'],
                             payment_number:copyPayload.id.toString(),
