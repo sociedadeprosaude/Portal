@@ -292,10 +292,12 @@
                                                                           v-model="index_Selecionado.crm" label="CRM">
                                                             </v-text-field>
                                                         </v-flex>
-                                                        <v-flex xs12 sm6>
-                                                            <v-text-field readonly hide-details outlined
-                                                                          prepend-icon="school" label="Especialidade"
-                                                                          v-model="especialidade.name">
+                                                        <v-flex xs12 sm6 v-show="especialidade.name !== 'ULTRASSONOGRAFIA'">
+                                                            <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="especialidade.name">
+                                                            </v-text-field>
+                                                        </v-flex>
+                                                        <v-flex xs12 sm6 v-show="especialidade.name === 'ULTRASSONOGRAFIA'">
+                                                            <v-text-field readonly hide-details outlined prepend-icon="poll" label="Exame" v-model="index_Selecionado.consultation.user.exam.name">
                                                             </v-text-field>
                                                         </v-flex>
                                                         <v-flex xs12 sm6>
@@ -379,7 +381,7 @@
                                             </v-card-text>
                                             <v-divider></v-divider>
                                             <v-card-actions>
-                                                <v-btn
+<!--                                                <v-btn
                                                         color="warning"
                                                         rounded
                                                         @click="documentDialog = !documentDialog"
@@ -388,7 +390,7 @@
                                                     Prontuario
                                                     <v-icon>insert_drive_file</v-icon>
                                                 </v-btn>
-                                                <v-spacer></v-spacer>
+                                                <v-spacer></v-spacer>-->
                                                 <v-btn
                                                         color="error"
                                                         rounded
@@ -468,19 +470,19 @@
                 </v-card>
             </v-flex>
         </v-layout>
-        <v-dialog v-model="documentDialog">
+<!--        <v-dialog v-model="documentDialog">
             <consultation-document @close="documentDialog = false" :openDocument="documentDialog"
                                    :consultation="index_Selecionado.consultation"></consultation-document>
-        </v-dialog>
+        </v-dialog>-->
     </v-container>
 </template>
 
 <script>
-    import ConsultationDocument from "../../components/doctorsAgenda/ConsultationDocument";
+/*    import ConsultationDocument from "../../components/doctorsAgenda/ConsultationDocument";*/
     import moment from 'moment/moment'
 
     export default {
-        components: {ConsultationDocument},
+/*        components: {ConsultationDocument},*/
         data: () => ({
             y: 'top',
             x: null,
@@ -489,7 +491,7 @@
             date_choose: '',
             dateFormatted: '',
             menu: false,
-            documentDialog: false,
+/*            documentDialog: false,*/
             dialog: false,
             alert: false,
             index_Selecionado: {},
@@ -574,6 +576,7 @@
             },
             visualizarConsulta: {
                 get: function () {
+                    console.log("payload:", this.index_Selecionado)
                     return this.index_Selecionado;
                 },
                 set: function (index) {
