@@ -144,11 +144,11 @@
                     <v-flex xs12>
                     <v-layout class="align-end justify-end">
                         <v-btn color="black" dark @click="filterHour ? filterHour = false: filterHour = true">
-                            Filtro de <v-icon right>alarm</v-icon>
+                            Filtro de Hora :<v-icon right>alarm</v-icon>
                         </v-btn>
                         <v-spacer></v-spacer>
                         <v-btn color="black" dark @click="filterDayWeek ? filterDayWeek = false: filterDayWeek = true">
-                            Filtro de <v-icon right>today</v-icon>
+                            Filtro de Dia da Semana :<v-icon right>today</v-icon>
                         </v-btn>
                     </v-layout>
                     </v-flex>
@@ -220,6 +220,7 @@
                 </v-layout>
 
                 <v-layout align-center justify-center>
+                    <v-spacer></v-spacer>
                     <v-btn
                             @click="getConsultations()"
                             color="error"
@@ -228,17 +229,20 @@
                             :disabled="!formIsValid"
                     >
                         Ver consultas
-                        <!--                        <v-icon right>calendar</v-icon>-->
+                        <v-icon right>remove_red_eye</v-icon>
                     </v-btn>
-                    <v-btn
+                    <v-spacer></v-spacer>
+                    <submit-button
                             @click="deleteConsultasDia"
+                            :disabled="!formIsValids"
+                            :loading="loading"
+                            :success="success"
                             color="error"
-                            rounded
-                            :disabled="!formIsValid"
-                    >
-                        DELETAR
-                        <v-icon right>delete_forever</v-icon>
-                    </v-btn>
+                            icon="delete_forever"
+                            text="DELETAR"
+                            class="white--text"
+                            ></submit-button>
+                    <v-spacer></v-spacer>
                 </v-layout>
 
                 <v-container v-if="consultas && consultas.lenght == 0">
@@ -408,14 +412,18 @@
                 </v-layout>
 
             </v-card>
-            <v-progress-circular v-if="loading" indeterminate class="primary--text"></v-progress-circular>
+            <!--<v-progress-circular v-if="loading" indeterminate class="primary&#45;&#45;text"></v-progress-circular>-->
         </v-layout>
     </v-container>
 </template>
 
 <script>
+    import SubmitButton from "../../components/SubmitButton";
     var moment = require('moment');
     export default {
+        components: {
+            SubmitButton
+        },
         data: () => ({
             start_date: undefined,
             final_date: undefined,
@@ -500,6 +508,10 @@
         computed: {
 
             formIsValid() {
+                return this.start_date && this.final_date && this.doctor && this.especialidade
+            },
+
+            formIsValids() {
                 return this.start_date && this.final_date && this.doctor && this.especialidade
             },
 
@@ -616,9 +628,9 @@
                     final_date: this.final_date + ' 23:59',
                     doctor: this.doctor
                 }
-                this.loading = true
+                /*this.loading = true*/
                 await this.$store.dispatch('getConsultations', payload)
-                this.loading = false
+                /*this.loading = false*/
             },
 
             formatConsultationsArray(consultations) {
@@ -691,12 +703,7 @@
             },
 
             async deleteConsultasDia() {
-
                 this.loading = true
-                // setTimeout(() => {
-                //     this.loading = false
-                // }, 2000)
-                // return
                 var deletar = {
                     start_date: this.start_date,
                     final_date: this.final_date,
@@ -707,7 +714,9 @@
                 }
                 await this.$store.dispatch('removeAppointmentByDay', deletar)
                 // this.clear()
+                this.success = true
                 this.loading = false
+/*                this.success = false*/
 
             },
 
