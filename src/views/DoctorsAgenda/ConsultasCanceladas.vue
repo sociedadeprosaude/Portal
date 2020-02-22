@@ -81,6 +81,7 @@
                                                                     hora: item.date.split(' ')[1],
                                                                     crm: item.doctor.crm,
                                                                     especialidade: item.specialty,
+                                                                    exame: item.specialty.name === 'ULTRASSONOGRAFIA' ? item.user.exam.name : item.specialty.name,
                                                                     esp:item.specialty.name,
                                                                     status: item.status,
                                                                     modalidade: item.type,
@@ -162,9 +163,11 @@
                                                         <v-text-field readonly hide-details outlined prepend-icon="credit_card" v-model="index_Selecionado.crm" label="CRM">
                                                         </v-text-field>
                                                     </v-flex>
-                                                    <v-flex xs12 sm6>
-                                                        <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="index_Selecionado.esp">
-                                                        </v-text-field>
+                                                    <v-flex xs12 sm6 v-if="index_Selecionado.esp !== 'ULTRASSONOGRAFIA'">
+                                                        <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="index_Selecionado.esp"></v-text-field>
+                                                    </v-flex>
+                                                    <v-flex xs12 sm6 v-if="index_Selecionado.esp === 'ULTRASSONOGRAFIA'">
+                                                        <v-text-field readonly hide-details outlined prepend-icon="poll" label="Exame" v-model="index_Selecionado.exame"></v-text-field>
                                                     </v-flex>
                                                     <v-flex xs12 sm6>
                                                         <v-text-field readonly hide-details outlined prepend-icon="event" label="Dia da Consulta" v-model="computedDateFormattedSelecionado">
@@ -206,6 +209,7 @@
                                         <v-card-actions>
                                             <v-btn color="warning" rounded @click="dialog = false">Voltar<v-icon right>clear</v-icon></v-btn>
                                             <v-spacer></v-spacer>
+                                            <!--:disabled="index_Selecionado.status === 'Pago'"-->
                                             <v-btn color="error" rounded @click="apagar">Apagar<v-icon right>delete</v-icon></v-btn>
                                             <v-spacer></v-spacer>
                                             <v-btn color="success" rounded dark :to="{ name: 'RemarcarConsultas', params: { q: {...index_Selecionado}}}">Remarcar<v-icon right>assignment_turned_in</v-icon></v-btn>
@@ -259,6 +263,7 @@
             },
             consultas () {
                 let consultas = this.$store.getters.consultationsCanceled
+                /*console.log('/entrou aqui', consultas)*/
                 return consultas;
             },
         },

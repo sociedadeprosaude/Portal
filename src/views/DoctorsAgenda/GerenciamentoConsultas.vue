@@ -173,6 +173,7 @@
                                                             hora: item.date.split(' ')[1],
                                                             crm: item.doctor.crm,
                                                             especialidade: item.specialty,
+                                                            exame: item.specialty.name === 'ULTRASSONOGRAFIA' ? item.user.exam.name : item.specialty.name,
                                                             status: item.status,
                                                             modalidade: item.type,
                                                             medico:item.doctor.name,
@@ -292,13 +293,11 @@
                                                                           v-model="index_Selecionado.crm" label="CRM">
                                                             </v-text-field>
                                                         </v-flex>
-                                                        <v-flex xs12 sm6 v-show="especialidade.name !== 'ULTRASSONOGRAFIA'">
-                                                            <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="especialidade.name">
-                                                            </v-text-field>
+                                                        <v-flex xs12 sm6 v-if="especialidade.name !== 'ULTRASSONOGRAFIA'">
+                                                            <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="especialidade.name"></v-text-field>
                                                         </v-flex>
-                                                        <v-flex xs12 sm6 v-show="especialidade.name === 'ULTRASSONOGRAFIA'">
-                                                            <v-text-field readonly hide-details outlined prepend-icon="poll" label="Exame" v-model="index_Selecionado.consultation.user.exam.name">
-                                                            </v-text-field>
+                                                        <v-flex xs12 sm6 v-if="especialidade.name === 'ULTRASSONOGRAFIA'">
+                                                            <v-text-field readonly hide-details outlined prepend-icon="poll" label="Exame" v-model="index_Selecionado.exame"></v-text-field>
                                                         </v-flex>
                                                         <v-flex xs12 sm6>
                                                             <v-text-field readonly hide-details outlined
@@ -576,7 +575,6 @@
             },
             visualizarConsulta: {
                 get: function () {
-                    console.log("payload:", this.index_Selecionado)
                     return this.index_Selecionado;
                 },
                 set: function (index) {
