@@ -197,7 +197,6 @@
                                 outlined
                                 rounded
                                 filled
-                                multiple
                                 chips
                                 color="blue"
                                 clearable
@@ -358,8 +357,9 @@
                                                             v-for="item in consultation.consultations"
                                                             :key="item.id"
                                                             v-if="item.user"
+                                                            v-show="filterHour === false && filterDayWeek === false"
                                                     >
-                                                        <v-list-item >
+                                                        <v-list-item>
                                                             <v-list-item-content>
                                                                 <v-list-item-title class="primary--text">
                                                                          <span style="font-weight: bolder">
@@ -377,7 +377,104 @@
                                                                 <br>
                                                                 <v-list-item-action-text>
                                                                     {{item.date.split(' ')[0] | dateFilter}} -
-                                                                    {{item.date.split(' ')[1]}}
+                                                                    {{item.date.split(' ')[1]}} -
+                                                                    {{moment(item.date.split(' ')[0],'YYYY-MM-DD').format('dddd')}}
+                                                                </v-list-item-action-text>
+                                                            </v-list-item-content>
+                                                            <br>
+                                                            <v-list-item-action class="ml-2">
+                                                                <v-btn icon ripple text>
+                                                                    <v-icon v-if="item.type === 'Retorno'"
+                                                                            color="primary">restore
+                                                                    </v-icon>
+                                                                    <v-icon v-if="item.type === 'Consulta'"
+                                                                            color="primary">event
+                                                                    </v-icon>
+                                                                    <v-icon v-if="item.status === 'Pago'"
+                                                                            color="success">attach_money
+                                                                    </v-icon>
+                                                                    <v-icon v-if="item.status === 'Aguardando pagamento'"
+                                                                            color="error">money_off
+                                                                    </v-icon>
+                                                                </v-btn>
+                                                            </v-list-item-action>
+                                                        </v-list-item>
+                                                    </v-flex>
+                                                    <v-flex sm3
+                                                            xs12
+                                                            v-for="item in consultation.consultations"
+                                                            :key="item.id"
+                                                            v-if="item.user"
+                                                            v-show="filterHour === true && times === item.date.split(' ')[1]"
+                                                    >
+                                                        <v-list-item>
+                                                            <v-list-item-content>
+                                                                <v-list-item-title class="primary--text">
+                                                                         <span style="font-weight: bolder">
+                                                                            {{item.user.name}}
+                                                                         </span>
+                                                                </v-list-item-title>
+                                                                <br>
+                                                                <v-list-item-subtitle class="text-center">
+                                                                    CPF: {{item.user.cpf}}
+                                                                </v-list-item-subtitle>
+                                                                <br>
+                                                                <v-list-item-subtitle>
+                                                                    Telefone: {{item.user.telephones  ? item.user.telephones[0] : 'Número não informado'}}
+                                                                </v-list-item-subtitle>
+                                                                <br>
+                                                                <v-list-item-action-text>
+                                                                    {{item.date.split(' ')[0] | dateFilter}} -
+                                                                    {{item.date.split(' ')[1]}} -
+                                                                    {{moment(item.date.split(' ')[0],'YYYY-MM-DD').format('dddd')}}
+                                                                </v-list-item-action-text>
+                                                            </v-list-item-content>
+                                                            <br>
+                                                            <v-list-item-action class="ml-2">
+                                                                <v-btn icon ripple text>
+                                                                    <v-icon v-if="item.type === 'Retorno'"
+                                                                            color="primary">restore
+                                                                    </v-icon>
+                                                                    <v-icon v-if="item.type === 'Consulta'"
+                                                                            color="primary">event
+                                                                    </v-icon>
+                                                                    <v-icon v-if="item.status === 'Pago'"
+                                                                            color="success">attach_money
+                                                                    </v-icon>
+                                                                    <v-icon v-if="item.status === 'Aguardando pagamento'"
+                                                                            color="error">money_off
+                                                                    </v-icon>
+                                                                </v-btn>
+                                                            </v-list-item-action>
+                                                        </v-list-item>
+                                                    </v-flex>
+                                                    <v-flex sm3
+                                                            xs12
+                                                            v-for="item in consultation.consultations"
+                                                            :key="item.id"
+                                                            v-if="item.user"
+                                                            v-show="filterDayWeek === true && moment(semana,'e').format('dddd') === moment(item.date.split(' ')[0],'YYYY-MM-DD').format('dddd')"
+                                                    >
+                                                        <v-list-item>
+                                                            <v-list-item-content>
+                                                                <v-list-item-title class="primary--text">
+                                                                         <span style="font-weight: bolder">
+                                                                             {{item.user.name}}
+                                                                         </span>
+                                                                </v-list-item-title>
+                                                                <br>
+                                                                <v-list-item-subtitle class="text-center">
+                                                                    CPF: {{item.user.cpf}}
+                                                                </v-list-item-subtitle>
+                                                                <br>
+                                                                <v-list-item-subtitle>
+                                                                    Telefone: {{item.user.telephones  ? item.user.telephones[0] : 'Número não informado'}}
+                                                                </v-list-item-subtitle>
+                                                                <br>
+                                                                <v-list-item-action-text>
+                                                                    {{item.date.split(' ')[0] | dateFilter}} -
+                                                                    {{item.date.split(' ')[1]}} -
+                                                                    {{moment(item.date.split(' ')[0],'YYYY-MM-DD').format('dddd')}}
                                                                 </v-list-item-action-text>
                                                             </v-list-item-content>
                                                             <br>
@@ -628,6 +725,31 @@
                     final_date: this.final_date + ' 23:59',
                     doctor: this.doctor
                 }
+/*                let payload
+                if(this.filterHour === false && this.times === undefined || this.filterDayWeek === false && this.semana === undefined){
+                    payload = {
+                        start_date: this.start_date + ' 00:00',
+                        final_date: this.final_date + ' 23:59',
+                        doctor: this.doctor
+                    }
+                }
+                else if(this.filterHour && this.times){
+                    payload = {
+                        start_date: this.start_date +' '+ this.times,
+                        final_date: this.final_date +' '+ this.times,
+                        doctor: this.doctor
+                    }
+                }*/
+/*                else if(this.filterDayWeek === true){
+                    if( this.semana !== undefined){
+                        payload = {
+                            start_date: this.start_date + ' 00:00',
+                            final_date: this.final_date + ' 23:59',
+                            doctor: this.doctor,
+                            weekDays: this.semana
+                        }
+                    }
+                }*/
                 /*this.loading = true*/
                 await this.$store.dispatch('getConsultations', payload)
                 /*this.loading = false*/

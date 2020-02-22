@@ -79,6 +79,7 @@ const actions = {
     },
 
     async createConsultation({ commit }, consultation) {
+        consultation = functions.removeUndefineds(consultation);
         let startDate = moment(consultation.start_date, 'YYYY-MM-DD')
         let finalDate = moment(consultation.final_date, 'YYYY-MM-DD')
         let daysDiff = finalDate.diff(startDate, 'days')
