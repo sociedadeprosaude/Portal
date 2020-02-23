@@ -537,6 +537,7 @@ export default {
     dependent: undefined,
     consultationsListenerUnsubscriber: undefined,
     daysToListen: 3,
+    selectedForm:undefined,
 
     //-------------------------------------------Scroll------------------------------------------------
     type: "number",
@@ -654,24 +655,6 @@ export default {
     foundDependents() {
       return this.selectedPatient.dependents;
     },
-    loader() {
-      return this.$store.getters.statusLoaderAC;
-    },
-    snackbar: {
-      get: function() {
-        var snack = this.$store.getters.onSnackbarAC;
-        if (!this.snack && this.snackDialogDone) {
-          this.snackDialogDone = false;
-        } else if (snack) {
-          this.dialog = false;
-          this.snack = snack;
-        }
-        return this.snack;
-      },
-      set: function(val) {
-        this.snack = val;
-      }
-    },
     mensagem() {
       return this.$store.getters.onMensagem;
     },
@@ -749,46 +732,76 @@ export default {
       this.dialog = true;
     },
     async fillConsultationForm(consultation) {
-      let patient = this.selectedPatient;
-      let form = {
-        user: patient,
+       this.selectedForm = {
+        user: this.selectedPatient,
         consultation: consultation.consultations.find(a => {
           return !a.user;
         })
-      };
+      }      
 
+      this.thereIsPaymentNumber()
+
+      this.createConsultationForm = this.selectedForm;
+    },
+
+     specialtyCost() {
+                let espArray = Object.values(this.$store.getters.specialties);
+                let cost = undefined
+                espArray.forEach(specialty => {
+                    if(specialty.name === this.selectedForm.consultation.specialty.name){
+                        
+                         specialty.doctors.forEach(doctor => {
+                            if (doctor.cpf === this.selectedForm.consultation.doctor.cpf) {
+                                cost = {
+                                    cost : doctor.cost,
+                                    price :doctor.price,
+                                    doctorConsultation :doctor
+                                }
+                                return cost
+                            }
+                        });
+                    }
+                });
+                return cost
+            },
+
+    async thereIsPaymentNumber(){
       this.payment_numberFound = undefined;
       this.num_recibo = "";
       this.status = "Aguardando pagamento";
 
       this.loaderPaymentNumber = true;
 
-      if (form.consultation.specialty.name != "ULTRASSONOGRAFIA") {
-        if ( form.consultation.specialty.name === "CLINICO GERAL" || form.consultation.specialty.name === "PEDIATRIA")
-                this.status = "Pago"
-        else{
+      if (this.selectedForm.consultation.specialty.name != "ULTRASSONOGRAFIA") {
+        
             this.$store
             .dispatch("thereIsIntakes", {
-                user: patient,
-                doctor: form.consultation.doctor,
-                specialty: form.consultation.specialty
+               user: this.selectedForm.user,
+                doctor: this.selectedForm.consultation.doctor,
+                specialty: this.selectedForm.consultation.specialty,
             })
             .then(obj => {
                 this.payment_numberFound = obj;
                 this.num_recibo = obj.payment_number;
-                this.status = "Pago";
+                this.status = "Pago"
                 this.loaderPaymentNumber = false;
             })
             .catch(response => {
+              let cost = this.specialtyCost()
+              console.log(cost);
+              if ( cost && cost.price == 0){
+                  this.status = "Pago"
+                  this.loaderPaymentNumber = false 
+              }
+              
                 this.loaderPaymentNumber = false;
-                console.log(response);
+                
             });
-        }
+        
       } else {
         this.status = "Pago";
       }
 
-      this.createConsultationForm = form;
     },
     formatConsultationsArray(consultations) {
       let newArray = [];
@@ -944,89 +957,40 @@ export default {
       this.success = false;
     },
 
-    async newIntake(){
-        if (
-        form.consultation.specialty.name === "CLINICO GERAL" ||
-        form.consultation.specialty.name === "PEDIATRIA"
-      ) {
-        let cost = 0;
-        let price = 0;
-        let doctorConsultation;
-        this.specialties.forEach(a => {
-          if (a.name === form.consultation.specialty.name) {
-            a.doctors.forEach(doctor => {
-              if (doctor.cpf === form.consultation.doctor.cpf) {
-                cost = doctor.cost;
-                price = doctor.price;
-                doctorConsultation = doctor;
-
-                console.log('Achou',doctor)
-              }
-            });
-          }
-        });
-
-        let id = moment().valueOf();
-        let budget = {
-          id: id,
-          specialties: [
-            {
-              doctor: doctorConsultation,
-              cost: cost,
-              price: price,
-              name:form.consultation.specialty.name
-            }
-          ],
-          exams:undefined,
-          subTotal: price,
-          discount: 0,
-          total: price,
-          date: moment().format("YYYY-MM-DD HH:mm:ss"),
-          cost: cost,
-          user: this.$store.getters.selectedPatient,
-          colaborator: this.$store.getters.user,
-          doctor: doctorConsultation
-          
+    async finalizeSaveConsultation(){
+        let form = this.createConsultationForm;
+        form.user = {
+            ...form.user,
+            status: this.status,
+            type: this.modalidade,
+            payment_number: this.num_recibo
         };
-        console.log(budget)
-        await this.$store.dispatch("addIntake", budget);
-        /* this.status = "Pago";
-        this.loaderPaymentNumber = false; */
-      }
-    },
+        form.consultation = {
+            ...form.consultation,
+            status: this.status,
+            type: this.modalidade,
+            payment_number: this.num_recibo
+        };
 
+        if (this.payment_numberFound)
+            form = { ...form, payment_numberFound: this.payment_numberFound };
+        if (form.user.dependent)
+            form.consultation = {
+            ...form.consultation,
+            dependent: form.user.dependent
+            };
+        // return
+        this.loading = true;
+        await this.$store.dispatch("addConsultationAppointmentToUser", form);
+        //Realizar essa funcao pelo cloud functions
+        await this.$store.dispatch("addUserToConsultation", form);
+        this.scheduleLoading = false;
+        this.success = true;
+        this.dependent = undefined;
+    },
     async save() {
       this.scheduleLoading = true;
-
-      let form = this.createConsultationForm;
-      form.user = {
-        ...form.user,
-        status: this.status,
-        type: this.modalidade,
-        payment_number: this.num_recibo
-      };
-      form.consultation = {
-        ...form.consultation,
-        status: this.status,
-        type: this.modalidade,
-        payment_number: this.num_recibo
-      };
-
-      if (this.payment_numberFound)
-        form = { ...form, payment_numberFound: this.payment_numberFound };
-      if (form.user.dependent)
-        form.consultation = {
-          ...form.consultation,
-          dependent: form.user.dependent
-        };
-      // return
-      this.loading = true;
-      await this.$store.dispatch("addConsultationAppointmentToUser", form);
-      //Realizar essa funcao pelo cloud functions
-      await this.$store.dispatch("addUserToConsultation", form);
-      this.scheduleLoading = false;
-      this.success = true;
-      this.dependent = undefined;
+      this.finalizeSaveConsultation()
     }
   }
 };

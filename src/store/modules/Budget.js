@@ -2,6 +2,7 @@ import firebase from "firebase";
 import functions from "../../utils/functions";
 import moment from "moment";
 import constants from "../../utils/constants";
+import { Promise } from "core-js";
 
 const state = {};
 
@@ -110,7 +111,7 @@ const actions = {
     async addIntake(context, payload) {
         let copyPayload = Object.assign({}, payload);
         functions.removeUndefineds(copyPayload);
-         console.log('intake',copyPayload)
+        console.log('intake', copyPayload)
         // return
         let specialties = copyPayload.specialties ? Object.assign({}, copyPayload.specialties) : undefined;
         let exams = copyPayload.exams ? Object.assign({}, copyPayload.exams) : undefined;
@@ -132,7 +133,7 @@ const actions = {
             // spec.forEach((s) => {
             // })
             for (let spec in specialties) {
-                console.log('Specialty',specialties[spec])
+                console.log('Specialty', specialties[spec])
                 if (specialties[spec].doctor.rules === null) {
                     delete specialties[spec].doctor.rules
                 }
@@ -160,15 +161,15 @@ const actions = {
         if (copyPayload.user) {
             // await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('user').doc(user.cpf).set(user)
             console.log('Aicionando no user')
-            context.dispatch('addIntakeToUser', payload)
+            await context.dispatch('addIntakeToUser', payload)
         }
         // payload = Object.assign({}, payload)
 
     },
-    async addIntakeToUser({ }, payload) {
+    async addIntakeToUser(context, payload) {
         let copyPayload = Object.assign({}, payload);
         functions.removeUndefineds(copyPayload)
-        // console.log(copyPayload)
+        console.log(copyPayload)
         // return
         let specialties = copyPayload.specialties ? Object.assign({}, copyPayload.specialties) : undefined
         let exams = copyPayload.exams ? Object.assign({}, copyPayload.exams) : undefined
@@ -190,35 +191,34 @@ const actions = {
 
             for (let spec in specialties) {
                 //var used = false
-                var consultationFound = undefined //variável usada para a tabela de procedimentos
-                let consultations = await userRef.collection('consultations').where('specialty.name', '==', specialties[spec].name).where('status', '==', 'Aguardando pagamento')
-                    .get()
+                var consultationFound = undefined 
+                var precoVendaZero = specialties[spec].price == 0
+                if(!precoVendaZero){
+                    let consultations = await userRef.collection('consultations').where('specialty.name', '==', specialties[spec].name).where('status', '==', 'Aguardando pagamento')
+                        .get()
 
-                consultations.forEach((c) => {
-                    //used = true
-                    consultationFound = c
-                    userRef.collection('consultations').doc(c.id).update({
-                        status: 'Pago',
-                        payment_number: copyPayload.id.toString()
+                    consultations.forEach(async (c) => {
+                        //used = true
+                        consultationFound = c
+                        context.dispatch('updatePaymentNumberConsultation',{user:user,consultation:c,payment_number:copyPayload.id})
                     })
-                    firebase.firestore().collection('consultations').doc(c.id).update({
-                        status: 'Pago',
-                        payment_number: copyPayload.id.toString()
-                    })
-                })
+                }
 
                 await userRef.collection('intakes').doc(copyPayload.id.toString()).collection('specialties').add({
                     ...specialties[spec],
                     //used: used
                 })
 
-                if (consultationFound) {
-                    let procedures = await firebase.firestore().collection('users').doc(user.cpf).collection('procedures').where('consultation', '==', consultationFound.id)
+                if (consultationFound || (precoVendaZero && payload.consultation)) {
+                    console.log('primeira',consultationFound)
+                    let consultation = precoVendaZero && payload.consultation?  payload.consultation : consultationFound 
+                    await context.dispatch('updateProcedure',{user:user,consultation:consultation,payment_number:copyPayload.id,status:"Consulta Paga"})
+                   /*  let procedures = await firebase.firestore().collection('users').doc(user.cpf).collection('procedures').where('consultation', '==', consultationFound.id)
                         .get()
 
                     if (!procedures.empty) {
                         console.log("Atualizando procedure")
-                        procedures.forEach( async (snap) => {
+                        procedures.forEach(async (snap) => {
                             let data = snap.data()
                             await firebase.firestore().collection('users').doc(user.cpf).collection('procedures').doc(snap.id).update(
                                 {
@@ -227,18 +227,19 @@ const actions = {
                                 }
                             )
                         })
-                    }
-                }else{
+                    } */
+                } else {
                     console.log("Criando procedure")
-                    await firebase.firestore().collection('users').doc(user.cpf).collection('procedures').add(
+                    context.dispatch('createProcedure',{user:user,status:"Consulta Paga",payment_number:copyPayload.id,specialty:specialties[spec]})
+                    /* await firebase.firestore().collection('users').doc(user.cpf).collection('procedures').add(
                         {
-                            status:['Consulta Paga'],
-                            payment_number:copyPayload.id.toString(),
+                            status: ['Consulta Paga'],
+                            payment_number: copyPayload.id.toString(),
                             startAt: moment().format('YYYY-MM-DD hh:ss'),
-                            type:'Consultation',
-                            specialty:specialties[spec].name
+                            type: 'Consultation',
+                            specialty: specialties[spec].name
                         }
-                    )
+                    ) */
                 }
             }
         }
@@ -256,6 +257,47 @@ const actions = {
             }
         }
     },
+
+    async updatePaymentNumberConsultation(context,payload){
+        await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.id).update({
+            status: 'Pago',
+            payment_number: payload.payment_number.toString()
+        })
+        await firebase.firestore().collection('consultations').doc(payload.consultation.id).update({
+            status: 'Pago',
+            payment_number: payload.payment_number.toString()
+        })
+    },
+
+    async createProcedure(context,payload){
+        await firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').add(
+            {
+                status: [payload.status],
+                payment_number: payload.payment_number.toString(),
+                startAt: moment().format('YYYY-MM-DD hh:ss'),
+                type: 'Consultation',
+                specialty: payload.specialty.name
+            }
+        )
+    },
+
+    async updateProcedure(context, payload) {
+        let procedures = await firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('consultation', '==', payload.consultation.id)
+            .get()
+
+        if (!procedures.empty) {
+            console.log("Atualizando procedure")
+            procedures.forEach(async (snap) => {
+                await firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').doc(snap.id).update(
+                    {
+                        status: firebase.firestore.FieldValue.arrayUnion(payload.status),
+                        payment_number: payload.payment_number.toString()
+                    }
+                )
+            })
+        }
+    },
+
     // async getColaboratorIntakes(context, colaborator) {
     //     let intakesSnap = (await firebase.firestore().collection('intakes').where('colaborator.name', '==', colaborator.name).get())
     //     let intakes = []
@@ -350,14 +392,16 @@ const actions = {
         let intakes
         return new Promise(async (resolve, reject) => {
             let procedures
-            procedures = await firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type','==','Consultation')
-            .where('specialty','==',payload.specialty.name).where('status','==',['Consulta Paga']).get()
-            if(!procedures.empty){
-                procedures.forEach((procedure)=>{
+            procedures = payload.status && payload.payment_number ? await firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', 'Consultation')
+                                        .where('specialty', '==', payload.specialty.name).where('status', 'array-contains-any', payload.status).where('payment_number','==',payload.payment_number.toString()).get()
+                                : await firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', 'Consultation')
+                                         .where('specialty', '==', payload.specialty.name).where('status', '==', ['Consulta Paga']).get()
+            if (!procedures.empty) {
+                procedures.forEach((procedure) => {
                     console.log('Encontrou!')
                     resolve({ procedureId: procedure.id, ...procedure.data() })
                 })
-            }else{
+            } else {
                 reject('Payment Number not found')
             }
 
@@ -385,9 +429,20 @@ const actions = {
             } */
 
         })
-
+    },
+    async findProcedureId({ commit }, payload) {
+        return new Promise(async (resolve, reject) => {
+            console.log('FindProcedureId', payload)
+            let procedure = await firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('payment_number', '==', payload.payment_number.toString()).get()
+            procedure.forEach((proc) => {
+                console.log('kjkjhk')
+                if (proc.exists)
+                    resolve(proc.id)
+                else
+                    reject()
+            })
+        });
     }
-
 };
 
 const getters = {};
