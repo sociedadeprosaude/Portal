@@ -196,6 +196,7 @@
                                 persistent-hint
                                 outlined
                                 rounded
+                                multiple
                                 filled
                                 chips
                                 color="blue"
@@ -725,31 +726,6 @@
                     final_date: this.final_date + ' 23:59',
                     doctor: this.doctor
                 }
-/*                let payload
-                if(this.filterHour === false && this.times === undefined || this.filterDayWeek === false && this.semana === undefined){
-                    payload = {
-                        start_date: this.start_date + ' 00:00',
-                        final_date: this.final_date + ' 23:59',
-                        doctor: this.doctor
-                    }
-                }
-                else if(this.filterHour && this.times){
-                    payload = {
-                        start_date: this.start_date +' '+ this.times,
-                        final_date: this.final_date +' '+ this.times,
-                        doctor: this.doctor
-                    }
-                }*/
-/*                else if(this.filterDayWeek === true){
-                    if( this.semana !== undefined){
-                        payload = {
-                            start_date: this.start_date + ' 00:00',
-                            final_date: this.final_date + ' 23:59',
-                            doctor: this.doctor,
-                            weekDays: this.semana
-                        }
-                    }
-                }*/
                 /*this.loading = true*/
                 await this.$store.dispatch('getConsultations', payload)
                 /*this.loading = false*/
@@ -838,8 +814,6 @@
                 // this.clear()
                 this.success = true
                 this.loading = false
-/*                this.success = false*/
-
             },
 
             clear() {
