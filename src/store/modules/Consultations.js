@@ -230,7 +230,7 @@ const actions = {
 
                 firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').doc(payload.payment_numberFound.procedureId)
                     .update({
-                        status: firebase.firestore.FieldValue.arrayUnion('Consulta Agendada'),
+                        status: firebase.firestore.FieldValue.arrayUnion('Agendado'),
                         consultation: payload.consultation.id,
                     })
             } else {
@@ -238,7 +238,7 @@ const actions = {
                 console.log("Criando procedure")
                 firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').add(
                     {
-                        status: ['Consulta Agendada'],
+                        status: ['Agendado'],
                         startAt: moment().format('YYYY-MM-DD hh:ss'),
                         type: 'Consultation',
                         consultation: payload.consultation.id,

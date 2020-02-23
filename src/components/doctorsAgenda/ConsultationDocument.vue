@@ -134,6 +134,9 @@
             user() {
                 return this.$store.getters.selectedPatient
             },
+            selectedUnit() {
+                return this.$store.getters.selectedUnit
+            },
         },
         directives: {mask},
         data: () => ({
@@ -199,7 +202,7 @@
                     .dispatch("thereIsIntakes", {
                         user: this.user,
                         specialty: this.consultation.specialty,
-                        status:['Consulta Agendada','Consulta Paga'],
+                        status:['Agendado','Consulta Paga'],
                         payment_number: this.consultation.payment_number
                     })
                     .then(async (obj) => {
@@ -262,6 +265,7 @@
                 user: this.$store.getters.selectedPatient,
                 colaborator: this.$store.getters.user,
                 doctor: costConsultation.doctorConsultation,
+                unit: this.selectedUnit,
                 consultation : this.consultation
                 };
                 await this.$store.dispatch("addIntake", budget);
