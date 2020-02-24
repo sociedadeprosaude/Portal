@@ -25,9 +25,13 @@ const actions = {
     async getConsultations({ commit }, payload) {
         try {
             let consultations = []
-            let query = firebase.firestore().collection('consultations')
-                .where('date', '>=', payload.start_date)
-                .where('date', '<=', payload.final_date)
+            let query = payload.finalDate ? firebase.firestore().collection('consultations')
+                                    .where('date', '>=', payload.start_date)
+                                    .where('date', '<=', payload.final_date)
+                            :  firebase.firestore().collection('consultations')
+                                 .where('date', '>=', payload.start_date)
+                                 
+
             if(payload.doctor) {
                 query.where('doctor.cpf', '==', payload.doctor.cpf)
             }

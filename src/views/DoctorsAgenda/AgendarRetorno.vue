@@ -797,9 +797,9 @@ export default {
       await this.$store.dispatch("getDoctors");
       await this.$store.dispatch("getConsultations", {
         start_date: moment().format("YYYY-MM-DD 00:00:00"),
-        final_date: moment()
+        /* final_date: moment()
           .add(30, "days")
-          .format("YYYY-MM-DD 23:59:59")
+          .format("YYYY-MM-DD 23:59:59") */
       });
       await this.$store.dispatch("getSpecialties");
 
