@@ -108,6 +108,7 @@ const actions = {
     async addConsultationAppointmentToUser({ commit }, payload) {
         try {
             functions.removeUndefineds(payload)
+            
             await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.id).set(payload.consultation)
             if (payload.consultation.type == "Retorno") {
                 await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.previousConsultation).update({ regress: payload.consultation.id })

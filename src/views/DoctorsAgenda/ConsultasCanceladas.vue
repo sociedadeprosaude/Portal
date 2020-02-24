@@ -81,7 +81,7 @@
                                                                     hora: item.date.split(' ')[1],
                                                                     crm: item.doctor.crm,
                                                                     especialidade: item.specialty,
-                                                                    exame: item.specialty.name === 'ULTRASSONOGRAFIA' ? item.user.exam.name : item.specialty.name,
+                                                                    //exame: item.specialty.name === 'ULTRASSONOGRAFIA' ? item.user.exam.name : item.specialty.name,
                                                                     esp:item.specialty.name,
                                                                     status: item.status,
                                                                     modalidade: item.type,
@@ -91,37 +91,37 @@
                                                                     pacienteObj:item.user,
                                                                     consultation:item
                                                         }">
-                                                            <v-list-tile-content>
-                                                                <v-list-tile-title class="primary--text">
+                                                            <v-list-item-content>
+                                                                <v-list-item-title class="primary--text">
                                                                     <span  style="font-weight: bolder">
                                                                         {{item.user.dependent ? item.user.dependent.name:
                                                                     item.user.name}}
                                                                     </span>
-                                                                </v-list-tile-title>
+                                                                </v-list-item-title>
                                                                 <br>
-                                                                <v-list-tile-sub-title class="text-left">
+                                                                <v-list-item-subtitle class="text-center font-weight-bold">
                                                                    {{item.user.dependent ? 'Nascimento:' + item.user.dependent.birthDate
                                                                     : 'CPF:' + item.user.cpf}}
-                                                                </v-list-tile-sub-title>
+                                                                </v-list-item-subtitle>
                                                                 <br>
-                                                               <v-list-item-subtitle>
+                                                               <v-list-item-subtitle class="text-center font-weight-bold">
                                                                     Telefone: {{item.user.telephones  ? item.user.telephones[0] : 'Número não informado'}}
                                                                 </v-list-item-subtitle>
                                                                 <br>
-                                                                <v-list-tile-action-text>
+                                                                <v-list-item-action-text>
                                                                     {{item.date.split(' ')[0] | dateFilter}} -
                                                                     {{item.date.split(' ')[1]}}
-                                                                </v-list-tile-action-text>
-                                                            </v-list-tile-content>
+                                                                </v-list-item-action-text>
+                                                            </v-list-item-content>
                                                             <br>
-                                                            <v-list-tile-action class="ml-2">
+                                                            <v-list-item-action class="ml-2">
                                                                 <v-btn icon ripple text>
                                                                     <v-icon v-if="item.type === 'Retorno'" color="primary">restore</v-icon>
                                                                     <v-icon v-if="item.type === 'Consulta'" color="primary">event</v-icon>
                                                                     <v-icon v-if="item.status === 'Pago'" color="success">attach_money</v-icon>
                                                                     <v-icon v-if="item.status === 'Aguardando pagamento'" color="error">money_off</v-icon>
                                                                 </v-btn>
-                                                            </v-list-tile-action>
+                                                            </v-list-item-action>
                                                         </v-list-item>
                                                     </v-flex>
                                                 </v-layout>
@@ -138,7 +138,7 @@
                     <v-container>
                         <v-layout>
                             <div class="text-xs-center">
-                                <v-dialog v-model="dialog" width="500">
+                                <v-dialog v-model="dialog" width="560">
                                     <v-card>
                                         <v-card-title class="headline grey lighten-2" primary-title>
                                             Informações
@@ -163,11 +163,11 @@
                                                         <v-text-field readonly hide-details outlined prepend-icon="credit_card" v-model="index_Selecionado.crm" label="CRM">
                                                         </v-text-field>
                                                     </v-flex>
-                                                    <v-flex xs12 sm6 v-if="index_Selecionado.esp !== 'ULTRASSONOGRAFIA'">
+                                                    <v-flex xs12 sm6 v-if="index_Selecionado.esp !== 'ULTRASSONOGRAFIA' || !index_Selecionado.pacienteObj.exam">
                                                         <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="index_Selecionado.esp"></v-text-field>
                                                     </v-flex>
-                                                    <v-flex xs12 sm6 v-if="index_Selecionado.esp === 'ULTRASSONOGRAFIA'">
-                                                        <v-text-field readonly hide-details outlined prepend-icon="poll" label="Exame" v-model="index_Selecionado.exame"></v-text-field>
+                                                    <v-flex xs12 sm6 v-if="index_Selecionado.esp === 'ULTRASSONOGRAFIA' &&index_Selecionado.pacienteObj.exam">
+                                                        <v-text-field readonly hide-details outlined prepend-icon="poll" label="Exame" v-model="index_Selecionado.pacienteObj.exam.name"></v-text-field>
                                                     </v-flex>
                                                     <v-flex xs12 sm6>
                                                         <v-text-field readonly hide-details outlined prepend-icon="event" label="Dia da Consulta" v-model="computedDateFormattedSelecionado">

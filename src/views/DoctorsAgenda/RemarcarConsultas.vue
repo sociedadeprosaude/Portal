@@ -726,10 +726,11 @@
                 await this.$store.dispatch("getSpecialties")
 
                 this.query = this.$route.params.q
-                //console.log( {...this.query})
+                console.log( {...this.query})
                 if(!this.query){
                 //this.$router.push('agenda/GerenciamentoConsultas')
                 }
+                
                 this.especialidade = this.query.especialidade
                 this.pacienteSelecionado = this.query.pacienteObj
                 this.selectedDoctor = this.query.doctor
@@ -802,13 +803,14 @@
                     status: this.status,
                     type: this.modalidade,
                     payment_number: this.num_recibo,
-                    idConsultationCanceled:this.query.idConsultation
+                    idConsultationCanceled:this.query.idConsultation,
+                    exam: this.query.pacienteObj.exam
                 }
+
                 if(this.modalidade == 'Retorno')
                     form.consultation = {...form.consultation,previousConsultation: this.query.consultation.previousConsultation}
                 // return
                 this.loading = true
-                //console.log('Confirmar',form)
                 await this.$store.dispatch('addConsultationAppointmentToUserReschedule', form)
                 //Realizar essa funcao pelo cloud functions
                 await this.$store.dispatch('addUserToConsultationReschedule', form)
