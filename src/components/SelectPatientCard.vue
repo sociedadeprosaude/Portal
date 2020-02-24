@@ -680,7 +680,7 @@
                     this.numAss= undefined
                     this.birth_date = undefined
                     this.email = undefined
-                    this.telephones = []
+                    this.telephones = ['']
                     this.addresses = []
                     this.dependents = []
                     this.dependentName = undefined

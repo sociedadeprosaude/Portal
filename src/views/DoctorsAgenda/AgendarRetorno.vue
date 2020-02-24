@@ -143,6 +143,14 @@
                             text-color="white"
                           >{{consulta.date.split(' ')[1]}}</v-chip>
                           <v-chip color="primary_dark" text-color="white">Vagas : {{consulta.vagas}}</v-chip>
+                          <v-chip class="mt-1 mr-1" color="primary_dark" text-color="white">
+                            Consultas :
+                            {{consulta.numConsultations}}
+                          </v-chip>
+                          <v-chip class="mt-1" color="primary_dark" text-color="white">
+                            Retornos :
+                            {{consulta.returns}}
+                          </v-chip>
                           <v-chip
                             class="mt-1"
                             color="primary_dark"
@@ -766,6 +774,14 @@ export default {
       for (let i in newArray) {
         newArray[i].vagas = newArray[i].consultations.filter(a => {
           return !a.user;
+        }).length;
+         newArray[i].numConsultations = newArray[i].consultations.filter(a => {
+
+          return a.user && a.type === "Consulta";
+        }).length;
+        newArray[i].returns = newArray[i].consultations.filter(a => {
+
+          return a.user && a.type === "Retorno";
         }).length;
       }
       return newArray;

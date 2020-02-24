@@ -336,7 +336,7 @@
                                             rounded
                                             @click="documentDialog = !documentDialog"
                                             v-if="(index_Selecionado.data)"
-                                            :disabled="status_Selecionado === 'Pago' && (index_Selecionado.consultation.payment_number || index_Selecionado.especialidade.name === 'ULTRASSONOGRAFIA' )&& index_Selecionado.data >= hoje ? false : true"
+                                           :disabled="status_Selecionado === 'Pago'&& index_Selecionado.data >= hoje ? false : true"
                                     >
                                         Prontuario
                                         <v-icon>insert_drive_file</v-icon>
@@ -541,6 +541,16 @@
 
                     }
                     val.consultations = consultas
+                     val.consultations.sort(function(a, b) {
+                           
+                            if (a.date < b.date) {
+                                return 1;
+                            }
+                            if (a.date > b.date) {
+                                return -1;
+                            }
+                            return 0;
+                        });
                 }
 
                 return val

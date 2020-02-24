@@ -183,6 +183,7 @@
 
             addProduct(product, selection, type, clinic) {
                 let holder = Object.assign({}, product);
+                
                 switch (type) {
                     case 'appointment':
                         delete holder.doctors;

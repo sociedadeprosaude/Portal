@@ -2,6 +2,7 @@ import firebase, {firestore} from "firebase";
 import moment from 'moment'
 import axios from 'axios'
 import Vue from 'vue'
+import functions from "../../utils/functions";
 
 let cloudFunctionInstance = axios.create({
     baseURL: process.env.NODE_ENV === 'production' ? 'https://us-central1-prosaude-36f66.cloudfunctions.net/'
@@ -12,8 +13,6 @@ let cloudFunctionInstance = axios.create({
         'Access-Control-Allow-Origin': '*'
     }
 })
-
-import functions from "../../utils/functions";
 
 const state = {
     consultations: [],
@@ -155,6 +154,7 @@ const actions = {
         let finalDate = moment(consultation.final_date, 'YYYY-MM-DD')
         let daysDiff = finalDate.diff(startDate, 'days')
         let routineId = moment().valueOf()
+        functions.removeUndefineds(consultation)
         commit('setConsultationCreationTotalDays', daysDiff)
         for (let i = 0; i <= daysDiff; i++) {
             let day = moment(consultation.start_date, 'YYYY-MM-DD').add(i, 'days')
@@ -230,7 +230,7 @@ const actions = {
 
                 firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').doc(payload.payment_numberFound.procedureId)
                     .update({
-                        status: firebase.firestore.FieldValue.arrayUnion('Consulta Agendada'),
+                        status: firebase.firestore.FieldValue.arrayUnion('Agendado'),
                         consultation: payload.consultation.id,
                     })
             } else {
@@ -238,7 +238,7 @@ const actions = {
                 console.log("Criando procedure")
                 firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').add(
                     {
-                        status: ['Consulta Agendada'],
+                        status: ['Agendado'],
                         startAt: moment().format('YYYY-MM-DD hh:ss'),
                         type: 'Consultation',
                         consultation: payload.consultation.id,
