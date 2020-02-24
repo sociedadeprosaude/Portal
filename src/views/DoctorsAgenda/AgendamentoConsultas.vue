@@ -190,7 +190,7 @@
       <v-container>
         <v-layout>
           <div class="text-xs-center">
-            <v-dialog v-model="dialog" v-if="createConsultationForm" max-width="520">
+            <v-dialog v-model="dialog" v-if="createConsultationForm" max-width="560">
               <v-card>
                 <v-card-title class="headline grey lighten-2" primary-title>
                   <v-btn
@@ -214,7 +214,7 @@
                           outlined
                           prepend-icon="person"
                           v-model="createConsultationForm.user.name"
-                          label="Nome do Paciente"
+                          label="Nome do Paciente "
                         ></v-text-field>
                       </v-flex>
                       <v-flex xs12 v-if="foundDependents && foundDependents.length > 0">
@@ -223,7 +223,7 @@
                           v-model="createConsultationForm.user.dependent"
                           :items="foundDependents"
                           return-object
-                          item-text="name"
+                          item-text="name "
                           label="Selecionar dependente"
                           outlined
                           chips
@@ -251,7 +251,7 @@
                           outlined
                           prepend-icon="credit_card"
                           v-model="createConsultationForm.user.cpf"
-                          label="CPF"
+                          label="CPF "
                         ></v-text-field>
                       </v-flex>
                       <v-flex xs12 sm6>
@@ -262,7 +262,7 @@
                           outlined
                           prepend-icon="credit_card"
                           v-model="createConsultationForm.user.association_number"
-                          label="Nº do associado"
+                          label="Nº do associado "
                         ></v-text-field>
                       </v-flex>
                       <v-flex xs12 sm12 md12 lg12>
@@ -275,7 +275,7 @@
                           outlined
                           prepend-icon="person"
                           v-model="createConsultationForm.consultation.doctor.name"
-                          label="Nome do Médico"
+                          label="Nome do Médico "
                         ></v-text-field>
                       </v-flex>
                       <v-flex xs12 sm6>
@@ -285,7 +285,7 @@
                           outlined
                           prepend-icon="credit_card"
                           v-model="createConsultationForm.consultation.doctor.crm"
-                          label="CRM"
+                          label="CRM "
                         ></v-text-field>
                       </v-flex>
                       <v-flex xs12 sm6>
@@ -295,14 +295,14 @@
                           outlined
                           prepend-icon="school"
                           v-model="createConsultationForm.consultation.specialty.name"
-                          label="Especialidade"
+                          label="Especialidade "
                         ></v-text-field>
                       </v-flex>
 
                       <v-flex xs12 sm6>
                         <v-text-field
                           prepend-icon="event"
-                          label="Dia da Consulta"
+                          label="Dia da Consulta "
                           v-model="computedDateFormatted"
                           readonly
                           hide-details
@@ -344,7 +344,7 @@
                         <v-text-field
                           v-model="createConsultationForm.consultation.date.split(' ')[1]"
                           prepend-icon="access_alarm"
-                          label="Hora da Consulta"
+                          label="Horário "
                           readonly
                           hide-details
                           outlined
@@ -361,7 +361,7 @@
                           prepend-icon="assignment_turned_in"
                           v-model="status"
                           :items="statusOptions"
-                          label="Status"
+                          label="Status "
                           chips
                           hide-details
                           outlined
@@ -388,7 +388,7 @@
                           readonly
                           hide-details
                           outlined
-                          label="Modalidade"
+                          label="Modalidade "
                           chips
                         ></v-text-field>
                       </v-flex>
@@ -455,7 +455,7 @@
                   <submit-button
                     color="success"
                     rounded
-                    :disabled="loaderPaymentNumber"
+                    :disabled="loaderPaymentNumber || (createConsultationForm.consultation.specialty.name === 'ULTRASSONOGRAFIA' &&!exam)"
                     @reset="resetSchedule"
                     :success="success"
                     :loading="scheduleLoading"
@@ -834,6 +834,7 @@ export default {
           exam:this.exam
         })
         .then(obj => {
+          console.log('khkjhkj')
           this.payment_numberFound = obj;
           this.num_recibo = obj.payment_number;
           this.exam = obj.exam ?{ ... obj.exam,notFindPayment:true}:undefined
