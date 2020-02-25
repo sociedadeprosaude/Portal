@@ -3,6 +3,17 @@
         <v-content v-if="ready" :class="['background', 'fade-in-anim']">
             <toolbar class="mb-12 pb-6" v-if="user"></toolbar>
             <router-view/>
+            <v-dialog v-model="systemDialog.show">
+                <v-card>
+                    <v-card-title>{{systemDialog.header}}</v-card-title>
+                    <v-card-text>{{systemDialog.body}}</v-card-text>
+                    <v-card-actions>
+                        <v-btn rounded text @click="systemDialog.show = false">Cancelar</v-btn>
+                        <v-spacer></v-spacer>
+                        <v-btn class="primary" text rounded @click="systemDialog.functionToRun(); systemDialog.show = false;">Ok</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
         </v-content>
         <v-content v-else>
             <v-layout ref="loader" class="primary fill-height align-center justify-center">
@@ -34,6 +45,9 @@
         computed: {
             user() {
                 return this.$store.getters.user
+            },
+            systemDialog() {
+              return this.$store.getters.systemDialog
             },
             loaded() {
                 if (this.$route.path === '/login') {

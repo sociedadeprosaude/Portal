@@ -256,7 +256,7 @@
                                         label="Nome">
                                 </v-text-field>
                             </v-flex>
-                            <v-flex sm6 xs12 class="px-3">
+                            <v-flex sm4 xs12 class="px-3">
                                 <v-text-field
                                         outlined
                                         rounded
@@ -269,7 +269,7 @@
                                         label="Data de Nascimento">
                                 </v-text-field>
                             </v-flex>
-                            <v-flex sm6 xs12 class="px-3">
+                            <v-flex sm4 xs12 class="px-3">
                                 <v-text-field
                                         outlined
                                         rounded
@@ -279,6 +279,18 @@
                                         v-mask="mask.cpf"
                                         v-model="cpf"
                                         label="CPF">
+                                </v-text-field>
+                            </v-flex>
+                            <v-flex sm4 xs12 class="px-3">
+                                <v-text-field
+                                        outlined
+                                        rounded
+                                        filled
+                                        :disabled="selectedPatient !== undefined"
+                                        placeholder="Campo obrigatório *"
+                                        type="number"
+                                        v-model="rg"
+                                        label="RG">
                                 </v-text-field>
                             </v-flex>
                             <v-flex sm12 xs12 class="px-3">
@@ -454,7 +466,7 @@
                             </v-flex>
                             <v-flex xs12 class="text-right">
 
-                                <submit-button :disabled="!(this.name !== '' && this.name && this.cpf !== '' && this.cpf && this.birthDate !== '' && this.birthDate
+                                <submit-button :disabled="!(this.name !== '' && this.name && ((this.cpf !== '' && this.cpf) || (this.rg !== '' && this.rg)) && this.birthDate !== '' && this.birthDate
                                 && this.dateValid(this.birthDate) && this.telephones !== [''])" :success="success"
                                                @click="registerPatient()" :loading="loading"
                                                text="Salvar">
@@ -522,6 +534,7 @@
                 name: undefined,
                 dependentName:undefined,
                 cpf: undefined,
+                rg: undefined,
                 numAss: undefined,
                 birthDate: undefined,
                 email: undefined,
@@ -583,8 +596,8 @@
                     this.formError = 'Nome não pode ser vazio';
                     return false
                 }
-                if (!this.cpf || this.cpf.length === 0) {
-                    this.formError = 'CPF não pode ser vazio';
+                if ((!this.cpf || this.cpf.length === 0) && (!this.rg || this.rg.length === 0)) {
+                    this.formError = 'É preciso preencher o CPF ou o RG';
                     return false
                 }
                 if (!this.birthDate) {
@@ -630,16 +643,14 @@
                 for(let dependent in this.dependents){
                     var birthDate = moment( this.dependents[dependent].birthDate,"DD/MM/YYYY").format("YYYY-MM-DD")
 
-                    //delete this.dependents[dependent].birthDate
-                   // this.dependents[dependent].birthDate = birthDate
-
                    copyDependents.push(Object.assign({birthDate:birthDate}, {name:this.dependents[dependent].name,sex:this.dependents[dependent].sex,dependentDegree:this.dependents[dependent].dependentDegree}))
 
                 }
                 let patient = {
                     name: this.name.toUpperCase(),
-                    cpf: this.cpf.replace(/\./g, '').replace('-', ''),
+                    cpf: this.cpf ? this.cpf.replace(/\./g, '').replace('-', '') : undefined,
                     email: this.email,
+                    rg: this.rg ? this.rg.replace(/\./g, '').replace('-', '').replace('.', '') : undefined,
                     association_number: this.numAss,
                     birth_date: moment(this.birthDate,"DD/MM/YYYY").format("YYYY-MM-DD"),
                     sex: this.sex,
@@ -648,11 +659,40 @@
                     dependents:copyDependents,
                     type: 'PATIENT'
                 }
+                let foundPatient
+                let identifier
+                if (patient.cpf) {
+                    foundPatient = await this.$store.dispatch('getPatient', patient.cpf)
+                    identifier = {
+                        name: 'cpf',
+                        value: patient.cpf
+                    }
+                } else {
+                    foundPatient = await this.$store.dispatch('getPatient', 'RG' + patient.rg)
+                    identifier = {
+                        name: 'rg',
+                        value: patient.rg
+                    }
+                }
+                if (foundPatient) {
+                    let dialog = {
+                        header: `Já existe um associado com o ${identifier.name} ${identifier.value}, substituir?`,
+                        body: `${foundPatient.name}, ${identifier.name}: ${identifier.value}, Num. Ass: ${foundPatient.association_number}`,
+                        show: true,
+                        functionToRun: () => this.addUserToFirestore(patient)
+                    }
+                    this.$store.commit('setSystemDialog', dialog)
+                    return
+                }
+
+                this.addUserToFirestore(patient)
+            },
+            async addUserToFirestore(patient) {
                 await this.$store.dispatch('addUser', patient)
                 this.success = true
                 this.loading = false
                 this.selectUser(patient)
-                this.fillFormUser(patient)
+                // this.fillFormUser(patient)
                 setTimeout(() => {
                     this.success = false
                 }, 1000)
@@ -678,6 +718,7 @@
                     this.cpf= undefined
                     this.name= undefined
                     this.numAss= undefined
+                    this.rg = undefined
                     this.birth_date = undefined
                     this.email = undefined
                     this.telephones = ['']
@@ -714,6 +755,7 @@
                 this.name = user.name
                 this.cpf = user.cpf
                 this.email = user.email
+                this.rg = user.rg
                 this.numAss = user.association_number
                 this.birthDate = moment(user.birth_date).format('DD-MM-YYYY')
                 this.sex = user.sex

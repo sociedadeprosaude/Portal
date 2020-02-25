@@ -42,6 +42,10 @@ const actions = {
     //         firestore().collection('users').doc(user.cpf).update({type: user.type.toUpperCase()})
     //     })
     // },
+    async getPatient({}, id) {
+        let userDoc = await firestore().collection('users').doc(id.toString()).get()
+        return userDoc.data()
+    },
     async searchUser({ commit, getters }, searchFields) {
         let usersRef = firestore().collection('users')
         for (let field in searchFields) {
@@ -52,7 +56,10 @@ const actions = {
         let users = [];
         querySnapshot.forEach(function (doc) {
             // if (doc.data().association_number) {
-            users.push(doc.data())
+            users.push({
+                ...doc.data(),
+                id: doc.id
+            })
             // }
         });
         return users
@@ -68,6 +75,10 @@ const actions = {
             //     patient.association_number = getters.associated.quantity
             // }
             let user
+            if (!patient.cpf) {
+                patient.cpf = 'RG' + patient.rg
+            }
+            // let identifier = patient.cpf ? patient.cpf : 'RG' + patient.rg
             let foundUser = await firebase.firestore().collection('users').doc(patient.cpf).get()
             if (foundUser.exists) {
                 // delete patient.type
@@ -103,7 +114,7 @@ const actions = {
     },
     async setSelectedPatient({ commit }, payload) {
         commit('setSelectedPatient', payload)
-        if (payload.name) this.dispatch('getPatientProntuario', payload)
+        // if (payload.name) this.dispatch('getPatientProntuario', payload)
     },
     async searchUserFromOldDatabase(context, numAss) {
         let url = 'https://caixa.sociedadeprosaude.com/api/api/buscar/paciente?field=sequencia&query=' + numAss /*00060009*/

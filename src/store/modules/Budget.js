@@ -191,7 +191,7 @@ const actions = {
 
             for (let spec in specialties) {
                 //var used = false
-                var consultationFound = undefined 
+                var consultationFound = undefined
                 var precoVendaZero = specialties[spec].price == 0
                 if(!precoVendaZero){
                     let consultations = await userRef.collection('consultations').where('specialty.name', '==', specialties[spec].name).where('status', '==', 'Aguardando pagamento')
@@ -211,7 +211,7 @@ const actions = {
 
                 if (consultationFound || (precoVendaZero && payload.consultation)) {
                     console.log('primeira',consultationFound)
-                    let consultation = precoVendaZero && payload.consultation?  payload.consultation : consultationFound 
+                    let consultation = precoVendaZero && payload.consultation?  payload.consultation : consultationFound
                     await context.dispatch('updateProcedure',{user:user,consultation:consultation,payment_number:copyPayload.id,status:"Consulta Paga"})
                    /*  let procedures = await firebase.firestore().collection('users').doc(user.cpf).collection('procedures').where('consultation', '==', consultationFound.id)
                         .get()
@@ -325,20 +325,9 @@ const actions = {
     async getUserIntakes(context, user) {
         let userRef = firebase.firestore().collection('users').doc(user.cpf)
         let intakesSnap = (await userRef.collection('intakes').get()).docs
-        // let intakesSnap = (await firebase.firestore().collection('intakes').where('user.cpf', '==', user.cpf).get()).docs
         let intakes = []
         for (let snap in intakesSnap) {
             let doc = intakesSnap[snap]
-            // let exams = []
-            // let examSnap = await doc.ref.collection('exams').get()
-            // examSnap.forEach((e) => {
-            //     exams.push(e.data())
-            // })
-            // let consultationsSnap = await doc.ref.collection('consultations').get()
-            // let consultations = []
-            // consultationsSnap.forEach((e) => {
-            //     consultations.push(e.data())
-            // })
             intakes.push(doc.data())
         }
         return intakes
