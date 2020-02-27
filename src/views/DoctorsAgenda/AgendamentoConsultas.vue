@@ -780,9 +780,11 @@ export default {
 
       this.loaderPaymentNumber = true;
 
-      if (this.selectedForm.consultation.specialty.name != "ULTRASSONOGRAFIA") {
-        
-            this.$store
+      if (this.selectedForm.consultation.specialty.name == "ULTRASSONOGRAFIA" || this.selectedForm.consultation.specialty.name == "ECOCARDIOGRAMA") {
+        this.status = "Pago";
+      } else {
+
+         this.$store
             .dispatch("thereIsIntakes", {
                user: this.selectedForm.user,
                 doctor: this.selectedForm.consultation.doctor,
@@ -792,23 +794,20 @@ export default {
                 this.payment_numberFound = obj;
                 this.num_recibo = obj.payment_number;
                 this.status = "Pago"
-                this.loaderPaymentNumber = false;
             })
             .catch(response => {
               let cost = this.specialtyCost()
               console.log(cost);
               if ( cost && cost.price == 0){
                   this.status = "Pago"
-                  this.loaderPaymentNumber = false 
               }
               
-                this.loaderPaymentNumber = false;
                 
             });
-        
-      } else {
-        this.status = "Pago";
       }
+
+      
+      this.loaderPaymentNumber = false 
 
     },
     formatConsultationsArray(consultations) {
