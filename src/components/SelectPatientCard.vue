@@ -245,8 +245,9 @@
                                     <v-icon>remove</v-icon>
                                 </v-btn>
                             </v-flex>
-                            <v-flex sm12 xs12 class="px-3">
-                                <v-text-field
+                            <v-row>
+                                <v-col cols="12">
+                                     <v-text-field
                                         outlined
                                         rounded
                                         filled
@@ -255,6 +256,11 @@
                                         v-model="name"
                                         label="Nome">
                                 </v-text-field>
+                                </v-col>
+                               
+                            </v-row>
+                            <v-flex sm12 xs12 class="px-3">
+                                
                             </v-flex>
                             <v-flex sm4 xs12 class="px-3">
                                 <v-text-field
