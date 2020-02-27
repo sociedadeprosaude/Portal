@@ -148,6 +148,7 @@
                             Vagas :
                             {{consulta.vagas}}
                           </v-chip>
+                          <br>
                           <v-chip class="mt-1 mr-1" color="primary_dark" text-color="white">
                             Consultas :
                             {{consulta.numConsultations}}

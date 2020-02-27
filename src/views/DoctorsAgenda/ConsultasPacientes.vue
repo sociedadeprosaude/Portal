@@ -133,7 +133,7 @@
                                                         </v-list-item-title>
 
                                                         <br>
-                                                        <v-list-item-subtitle class="text-left">
+                                                        <v-list-item-subtitle class="text-center">
                                                             {{item.specialty.name}}
                                                         </v-list-item-subtitle>
                                                         <br>

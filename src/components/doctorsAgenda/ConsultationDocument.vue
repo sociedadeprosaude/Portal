@@ -45,8 +45,13 @@
                 </v-flex>
               </v-layout>
             </v-flex>
-            <v-flex xs6 class="text-right">
-              <img src="@/assets/logo-pro-saude.png" height="84px" />
+            <v-spacer></v-spacer>
+              <v-flex xs4 >
+                <v-img v-if="selectedUnit"
+                           :src="selectedUnit.logo"
+                           width="400"
+                    ></v-img>
+              
             </v-flex>
             <v-flex xs12>
               <v-divider class="primary my-2"></v-divider>
