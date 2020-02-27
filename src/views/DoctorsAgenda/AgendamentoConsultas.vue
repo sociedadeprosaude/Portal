@@ -885,7 +885,7 @@ export default {
         "listenConsultations",
         {
           start_date: moment()
-            .subtract(4, "hours")
+            .subtract(5, "hours")
             .format("YYYY-MM-DD HH:mm:ss"),
           final_date: moment()
             .add(this.daysToListen, "days")
