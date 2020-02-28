@@ -116,19 +116,25 @@ const actions = {
 
         let specialties = copyPayload.specialties ? Object.assign(copyPayload.specialties) : undefined;
         let exams = copyPayload.exams ? Object.assign({}, copyPayload.exams) : undefined;
-        copyPayload.specialties = Object.values(copyPayload.specialties)
-        copyPayload.exams = Object.values(copyPayload.exams)
+        if (copyPayload.specialties) {
+            copyPayload.specialties = Object.values(copyPayload.specialties)
+        }
+        if (copyPayload.exams) {
+            copyPayload.exams = Object.values(copyPayload.exams)
+        }
         // delete copyPayload.specialties;
         // delete copyPayload.exams;
-        for (let specialty of copyPayload.specialties) {
-            if (specialty.doctor.clinics) {
-                delete specialty.doctor.clinics
-            }
-            if (specialty.doctor.clinic.exams) {
-                delete specialty.doctor.clinic.exams
-            }
-            if (specialty.doctor.clinic.specialties) {
-                delete specialty.doctor.clinic.specialties
+        if (copyPayload.specialties) {
+            for (let specialty of copyPayload.specialties) {
+                if (specialty.doctor.clinics) {
+                    delete specialty.doctor.clinics
+                }
+                if (specialty.doctor.clinic.exams) {
+                    delete specialty.doctor.clinic.exams
+                }
+                if (specialty.doctor.clinic.specialties) {
+                    delete specialty.doctor.clinic.specialties
+                }
             }
         }
 
