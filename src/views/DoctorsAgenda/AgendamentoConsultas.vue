@@ -578,17 +578,20 @@ export default {
 
       let espArray = Object.values(this.$store.getters.specialties);
       espArray = espArray.filter(specialty => {
-        //console.log('Teeeee',specialty)
+        if(!specialty.doctors)
+            console.log('Teeeee',specialty)
         if (!this.selectedDoctor) {
           return true;
         }
         var find = false;
-        specialty.doctors.forEach(doctor => {
-          if (doctor.cpf === this.selectedDoctor.cpf) {
-            find = true;
-            return true;
-          }
-        });
+        if(specialty.doctors){
+          specialty.doctors.forEach(doctor => {
+            if (doctor.cpf === this.selectedDoctor.cpf) {
+              find = true;
+              return true;
+            }
+          });
+        }
 
         return find;
       });
