@@ -126,13 +126,14 @@ const actions = {
         // delete copyPayload.exams;
         if (copyPayload.specialties) {
             for (let specialty of copyPayload.specialties) {
+                console.log(specialty)
                 if (specialty.doctor.clinics) {
                     delete specialty.doctor.clinics
                 }
-                if (specialty.doctor.clinic.exams) {
+                if (specialty.doctor.clinic && specialty.doctor.clinic.exams) {
                     delete specialty.doctor.clinic.exams
                 }
-                if (specialty.doctor.clinic.specialties) {
+                if (specialty.doctor.clinic && specialty.doctor.clinic.specialties) {
                     delete specialty.doctor.clinic.specialties
                 }
             }

@@ -447,7 +447,7 @@
       </v-container>
     </template>
 
-    <v-dialog v-model="snackbar" hide-overlay max-width="500px">
+   <!--  <v-dialog v-model="snackbar" hide-overlay max-width="500px">
       <v-card color="white">
         <v-card-title class="text-xs-center ma-1">
           <h3>
@@ -466,7 +466,7 @@
           <v-btn color="primary" flat @click="clearPatient">Não</v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
     <v-btn
       v-if="offsetTop > 2"
       class="mr-2"
