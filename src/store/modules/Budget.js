@@ -110,15 +110,15 @@ const actions = {
     },
     async addIntake(context, payload) {
         let copyPayload = Object.assign({}, payload);
+        delete copyPayload.user.budgets
+        delete copyPayload.user.consultations
+        delete copyPayload.user.intakes
+
         functions.removeUndefineds(copyPayload);
-        console.log('intake', copyPayload)
-        // return
         let specialties = copyPayload.specialties ? Object.assign({}, copyPayload.specialties) : undefined;
         let exams = copyPayload.exams ? Object.assign({}, copyPayload.exams) : undefined;
-        // let user = copyPayload.user ? Object.assign({}, copyPayload.user) : undefined
         delete copyPayload.specialties;
         delete copyPayload.exams;
-        // delete copyPayload.user
 
         functions.removeUndefineds(specialties);
         functions.removeUndefineds(exams);

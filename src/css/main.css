@@ -106,7 +106,7 @@
     .receipt-to-print {
         position: absolute;
         left: 0;
-        top: -50px;
+        top: 150px;
         /*height: 100%;*/
     }
 

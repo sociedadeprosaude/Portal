@@ -109,7 +109,6 @@
         </v-card>
         <v-dialog transition="dialog-bottom-transition" fullscreen v-model="receiptDialog" v-if="selectedIntake">
             <receipt @close="receiptDialog = false" :budget=selectedIntake></receipt>
-            <!--            <attendance-guide v-for="(item,i) in examsPerClinc" :key="i" :guide=item></attendance-guide>-->
         </v-dialog>
         <v-dialog v-model="cancelBuyDialog" v-if="selectedIntake" max-width="500px">
             <v-card class="pa-2">

@@ -343,7 +343,7 @@
         <!--        <v-flex class="hidden-screen-only">-->
         <!--            <receipt :budgets="selectedBudget"></receipt>-->
         <!--        </v-flex>-->
-        <v-dialog v-model="receiptDialog" v-if="selectedIntake">
+        <v-dialog v-model="receiptDialog" v-if="selectedIntake" fullscreen transition="dialog-bottom-transition">
             <receipt @close="receiptDialog = false" :budget=selectedIntake>
             </receipt>
         </v-dialog>
@@ -351,7 +351,6 @@
 </template>
 
 <script>
-    import constants from "../../utils/constants";
     import SelectPatientCard from "../SelectPatientCard";
     import SubmitButton from "../SubmitButton";
     import BudgetToPrint from "./BudgetToPrint";
@@ -468,8 +467,6 @@
                     }
                 }
                 this.Pago= pagando.toFixed(2);
-                console.log('pago: ', this.Pago);
-                console.log('total: ', this.total)
             }
         },
         watch: {
@@ -589,8 +586,6 @@
             },
             async saveBudget(budget) {
                 this.$store.commit('setSelectedBudget', budget);
-                // this.selectedBudget = Object.assign({}, budget)
-                console.log('2', this.budget);
                 await this.$store.dispatch('addBudget', budget);
                 this.updateBudgetsIntakes()
             },
