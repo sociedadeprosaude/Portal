@@ -77,6 +77,71 @@ exports.updateDoctors = functions.runWith(heavyFunctionsRuntimeOpts).https.onReq
     res.send(await convertDoctorsSubcollectionsInObjects())
 });
 
+exports.updateIntakes = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (req, res) => {
+    res.send(await convertIntakesSubcollectionsInObjects())
+});
+
+exports.fixIntakesBrokenSpecialties = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (req, res) => {
+    res.send(await fixIntakesBrokenSpecialties())
+});
+
+async function convertIntakesSubcollectionsInObjects() {
+    let db = admin.firestore()
+    let intakesRef = db.collection('intakes')
+    let intakesSnap = await intakesRef.get()
+    let allIntakes = [];
+    for (let doc of intakesSnap.docs) {
+        // eslint-disable-next-line no-await-in-loop
+        let exams = await doc.ref.collection('exams').get()
+        exams = convertCollectionIntoArray(exams)
+        // eslint-disable-next-line no-await-in-loop
+        let specialties = await doc.ref.collection('specialties').get()
+        specialties = convertCollectionIntoArray(specialties)
+        // eslint-disable-next-line no-await-in-loop
+        let converted = {
+            ...doc.data(),
+            exams: exams,
+            specialties: specialties
+        }
+        doc.ref.update(converted)
+        // allIntakes.push(converted)
+    }
+    return allIntakes
+}
+
+function convertCollectionIntoArray(collection) {
+    let collectionArray = []
+    for (let doc of collection.docs) {
+        collectionArray.push(
+            doc.data()
+        )
+    }
+    return collectionArray
+}
+
+async function fixIntakesBrokenSpecialties() {
+    let db = admin.firestore()
+    let intakesRef = await db.collection('intakes').get()
+    for (let doc of intakesRef.docs) {
+        // eslint-disable-next-line no-await-in-loop
+        let specialties = await doc.ref.collection('specialties').get()
+        for (let doc of specialties.docs) {
+            let update = doc.data()
+            if (update.doctor.clinics) {
+                delete update.doctor.clinics
+            }
+            if (update.doctor.clinic.exams) {
+                delete update.doctor.clinic.exams
+            }
+            if (update.doctor.clinic.specialties) {
+                delete update.doctor.clinic.specialties
+            }
+            doc.ref.update(update)
+        }
+    }
+    return 'Sucesso, consertado ' + intakesRef.docs.length + ' intakes'
+}
+
 async function convertSpecialtiesSubcollectionsInObjects() {
     let db = admin.firestore()
     let specRef = db.collection('specialties')
