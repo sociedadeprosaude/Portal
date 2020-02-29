@@ -53,16 +53,12 @@ const actions = {
             .where('unit.name', '==', selectedUnit.name)
             // .where('colaborator', '>', '')
             .orderBy('date').get()
-        let promises = []
-        for (let doc in intakesSnap.docs) {
-            if (intakesSnap.docs[doc].data().colaborator) {
-                promises.push(context.dispatch('getIntakeDetails', {
-                    ...intakesSnap.docs[doc].data(),
-                    id: intakesSnap.docs[doc].id
-                }))
+        let intakes = []
+        for (let doc of intakesSnap.docs) {
+            if (doc.data().colaborator) {
+                intakes.push(doc.data())
             }
         }
-        let intakes = await Promise.all(promises)
         return intakes
     },
 
@@ -76,12 +72,13 @@ const actions = {
         let intakesSnap = await firebase.firestore().collection('intakes').where('date', '>=', payload.dataInicio)
             .where('unit.name', '==', selectedUnit.name)
             .where('date', '<=', payload.dataFinal).orderBy('date').get()
-        let promises = []
-        for (let doc in intakesSnap.docs) {
-            promises.push(context.dispatch('getIntakeDetails', intakesSnap.docs[doc]))
+        let intakes = []
+        for (let doc of intakesSnap.docs) {
+            // promises.push(context.dispatch('getIntakeDetails', intakesSnap.docs[doc]))
+            intakes.push(doc.data())
         }
 
-        let intakes = await Promise.all(promises)
+        // let intakes = await Promise.all(promises)
         let exams = {};
         let clinics = {};
         let specialties = {};
@@ -265,15 +262,21 @@ const actions = {
                         quantidadeOuttakes++;
                         // outtakes[e.data().category].cost += parseFloat(e.data().value);
                         totalCustoOuttakes += parseFloat(e.data().valuesPayments[i])
-                        outtakes.push(e.data())
+                        outtakes.push({
+                            ...e.data(),
+                            id: e.id
+                        }
+                    )
                     }
                 }
             }
             else{
                 quantidadeOuttakes++;
-                totalCustoOuttakes += parseFloat(e.data().value)
-                console.log(e.data())
-                outtakes.push(e.data())
+                // totalCustoOuttakes += parseFloat(e.data().value)
+                outtakes.push({
+                    ...e.data(),
+                    id: e.id
+                })
             }
         })
 
@@ -295,7 +298,7 @@ const actions = {
             totalCustoExams: totalCustoExams,
             totalGanhoExams: totalGanhoExams,
             totalCustoEspecialts: totalCustoEspecialts,
-            totalCustoOuttakes: totalCustoOuttakes,
+            // totalCustoOuttakes: totalCustoOuttakes,
             outtakes: outtakes,
             totalGanhoEspecialts: totalGanhoEspecialts,
             intakes: intaker,
