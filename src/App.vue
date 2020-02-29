@@ -86,6 +86,7 @@
             this.$store.dispatch("getDoctors")
             this.$store.dispatch("getClinics")
             this.$store.dispatch("loadExam")
+            this.$store.dispatch("startConnectionListener")
         },
         mounted() {
             firebase.auth().onAuthStateChanged((user) => {
