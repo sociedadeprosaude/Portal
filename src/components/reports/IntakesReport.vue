@@ -20,7 +20,7 @@
                                         <v-divider vertical></v-divider>
                                     </v-flex>
                                     <v-flex xs5 class="font-weight-black">
-                                        Intake
+                                        Código
                                     </v-flex>
                                     <v-flex xs1>
                                         <v-divider vertical></v-divider>
