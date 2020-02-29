@@ -71,7 +71,7 @@
                                     <v-divider></v-divider>
                                 </v-flex>
                             </v-layout>
-                            <v-flex xs12 v-if="intake.exams.length > 0">
+                            <v-flex xs12 v-if="intake.exams && intake.exams.length > 0">
                                 <v-layout row wrap class="mt-2">
                                     <v-flex xs12>
                                         <v-divider></v-divider>
@@ -146,7 +146,7 @@
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
-                            <v-flex xs12 v-if="intake.specialties.length > 0">
+                            <v-flex xs12 v-if="intake.specialties && intake.specialties.length > 0">
                                 <v-layout row wrap class="mt-2">
                                     <v-flex xs12>
                                         <v-divider></v-divider>
