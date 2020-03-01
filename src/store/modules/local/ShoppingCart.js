@@ -29,7 +29,7 @@ const mutations = {
     },
     clearShoppingCartItens(state) {
         state.items = []
-}
+    }
 };
 
 const actions = {
@@ -64,15 +64,15 @@ const getters = {
                 }
             }
         });
-     //   let packages = state.items.filter((a) => {
-      //      console.log('é um pacote:',a.doctor && a.clinic)
-       //     if(!a.clinic && !a.doctor){
-         //       let trocarNumero= a.price;
-           //     a.price= a.priceDiscount;
-             //   a.priceAntigo = trocarNumero;
-               // return !a.clinic && !a.doctor
-     //       }
-   //     });
+        //   let packages = state.items.filter((a) => {
+        //      console.log('é um pacote:',a.doctor && a.clinic)
+        //     if(!a.clinic && !a.doctor){
+        //       let trocarNumero= a.price;
+        //     a.price= a.priceDiscount;
+        //   a.priceAntigo = trocarNumero;
+        // return !a.clinic && !a.doctor
+        //       }
+        //     });
         console.log('consultas:', consultations)
         console.log('exames:', exams)
         return {

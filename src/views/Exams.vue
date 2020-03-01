@@ -31,21 +31,6 @@
                                             v-model="searchText"
                                             label="Exame"
                                     ></v-text-field>
-                                    <!--                                    <v-combobox v-model="searchData" :items="listExam"-->
-                                    <!--                                                hide-selected hide-no-data :clearable="true" style="justify-content: center" :loading="isLoading"-->
-                                    <!--                                                :search-input.sync="searchData" filled single-line full-width return-object-->
-                                    <!--                                                @click:clear="clearSearch" shaped outlined item-text="name"-->
-                                    <!--                                    >-->
-                                    <!--                                        <template v-slot:no-data>-->
-                                    <!--                                            <v-list-item>-->
-                                    <!--                                                <v-list-item-content>-->
-                                    <!--                                                    <v-list-item-title>-->
-                                    <!--                                                        Sem resultado para "<strong>{{ searchData }}</strong>"-->
-                                    <!--                                                    </v-list-item-title>-->
-                                    <!--                                                </v-list-item-content>-->
-                                    <!--                                            </v-list-item>-->
-                                    <!--                                        </template>-->
-                                    <!--                                    </v-combobox>-->
                                 </v-flex>
                                 <v-flex xs1 class="text-center">
                                     <v-btn v-if="selectedExam" style="justify-content: center" text icon

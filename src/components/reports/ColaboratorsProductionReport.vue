@@ -34,7 +34,6 @@
 
 <script>
     import constants from "../../utils/constants";
-
     export default {
         name: "ColabboratorsProductionReport",
         props: ['intakes', 'loading'],
@@ -48,15 +47,9 @@
         computed: {
             intakesResume() {
                 let resumes = {
-                    // Dinheiro: 0.0,
-                    // Crédito: 0.0,
-                    // Débito: 0.0,
-                    // Exames: 0,
-                    // Consultas: 0
                 }
-
                 for (let intake in this.intakes) {
-                    console.log('intake', this.intakes[intake]);
+                    if (this.intakes[intake].status === 'cancelled') continue
                     if (!resumes[this.intakes[intake].colaborator.name]) {
                         resumes[this.intakes[intake].colaborator.name] = {
                             Dinheiro: 0.0,
@@ -66,20 +59,28 @@
                             Consultas: 0
                         }
                     }
-                    for(let i=0; i< this.intakes[intake].payments.length; i++){
-                        if(this.intakes[intake].payments[i] === 'Dinheiro'){
-                            resumes[this.intakes[intake].colaborator.name].Dinheiro += parseFloat(this.intakes[intake].valuesPayments[i])
+                    if (this.intakes[intake].payments) {
+                        for (let i = 0; i < this.intakes[intake].payments.length; i++) {
+                            if (this.intakes[intake].payments[i] === 'Dinheiro') {
+                                resumes[this.intakes[intake].colaborator.name].Dinheiro += parseFloat(this.intakes[intake].valuesPayments[i])
+                            }
+                            if (this.intakes[intake].payments[i] === 'Crédito') {
+                                resumes[this.intakes[intake].colaborator.name].Credito += parseFloat(this.intakes[intake].valuesPayments[i])
+                            }
+                            if (this.intakes[intake].payments[i] === 'Débito') {
+                                resumes[this.intakes[intake].colaborator.name].Debito += parseFloat(this.intakes[intake].valuesPayments[i])
+                            }
                         }
-                        if(this.intakes[intake].payments[i] === 'Crédito'){
-                            resumes[this.intakes[intake].colaborator.name].Credito += parseFloat(this.intakes[intake].valuesPayments[i])
-                        }
-                        if(this.intakes[intake].payments[i] === 'Débito'){
-                            resumes[this.intakes[intake].colaborator.name].Debito += parseFloat(this.intakes[intake].valuesPayments[i])
-                        }
+                    } else {
+                        resumes[this.intakes[intake].colaborator.name].Dinheiro += parseFloat(this.intakes[intake].total)
                     }
                     resumes[this.intakes[intake].colaborator.name][this.intakes[intake].payment_method] += this.intakes[intake].total
-                    resumes[this.intakes[intake].colaborator.name].Exames = resumes[this.intakes[intake].colaborator.name].Exames ? this.intakes[intake].exams.length + resumes[this.intakes[intake].colaborator.name].Exames : this.intakes[intake].exams.length
-                    resumes[this.intakes[intake].colaborator.name].Consultas = resumes[this.intakes[intake].colaborator.name].Consultas ? this.intakes[intake].specialties.length + resumes[this.intakes[intake].colaborator.name].Consultas : this.intakes[intake].specialties.length
+                    if (this.intakes[intake].exams) {
+                        resumes[this.intakes[intake].colaborator.name].Exames = resumes[this.intakes[intake].colaborator.name].Exames ? this.intakes[intake].exams.length + resumes[this.intakes[intake].colaborator.name].Exames : this.intakes[intake].exams.length
+                    }
+                    if (this.intakes[intake].specialties) {
+                        resumes[this.intakes[intake].colaborator.name].Consultas = resumes[this.intakes[intake].colaborator.name].Consultas ? this.intakes[intake].specialties.length + resumes[this.intakes[intake].colaborator.name].Consultas : this.intakes[intake].specialties.length
+                    }
                 }
                 return resumes
             }
@@ -109,5 +110,4 @@
 </script>
 
 <style scoped>
-
 </style>

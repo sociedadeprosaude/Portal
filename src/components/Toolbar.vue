@@ -1,11 +1,11 @@
 <template>
     <v-container class="ma-0 pa-0">
-        <v-navigation-drawer v-if="doctorsAgendaToobar" class="hidden-print-only" dark temporary v-model="drawer" fixed app>
+        <v-navigation-drawer v-if="doctorsAgendaToobar" class="hidden-print-only" dark temporary v-model="drawer" absolute>
             <v-list>
                 <v-list-item
                         v-for="item in menuItems"
                         :key="item.title"
-                        :to="item.link">
+                        @click.native="goRoute(item.link)">
                     <v-list-item-action>
                         <v-icon>{{ item.icon }}</v-icon>
                     </v-list-item-action>
@@ -30,6 +30,8 @@
                     <v-btn rounded text @click="selectUnit()">
                         <v-icon >cached</v-icon>
                     </v-btn>
+<!--                    <span class="white&#45;&#45;text">Exames carregados: {{examsLoaded}}</span>-->
+
                 </v-layout>
             </v-toolbar-items>
             <v-spacer></v-spacer>
@@ -110,7 +112,7 @@
 </template>
 
 <script>
-    import SelectPatientCard from "../SelectPatientCard";
+    import SelectPatientCard from "./SelectPatientCard";
     export default {
         name: "AgendaToolbar",
         components: {
@@ -146,6 +148,9 @@
             }
         },
         computed: {
+            examsLoaded() {
+              return this.$store.getters.examsLoaded
+            },
             units() {
                 return this.$store.getters.units
             },
@@ -160,11 +165,16 @@
             }
         },
         methods: {
+            goRoute(route) {
+                console.log('route', route)
+              this.$router.push(route)
+            },
             selectUnit(unit) {
                 if (!this.selectUnitDialog) {
                     this.selectUnitDialog = true
                     return
                 }
+                console.log('select unit', unit.name)
                 this.$store.commit('setSelectedUnit', unit)
             }
         }

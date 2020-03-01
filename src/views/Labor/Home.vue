@@ -115,6 +115,122 @@
                     </v-expansion-panel>
                 </v-expansion-panels>
             </v-flex>
+
+            <v-flex xs12>
+                <span class="my-headline">Médicos</span>
+            </v-flex>
+            <v-flex xs12 class="px-3 my-3">
+                <v-expansion-panels inset>
+                    <v-expansion-panel
+                            v-for="(doctor,i) in doctors"
+                            :key="i"
+                    >
+                        <v-expansion-panel-header>
+                            <v-flex xs4>
+                        <span>
+                        {{doctor.name}}
+                            </span>
+                            </v-flex>
+                            <v-flex xs4>
+
+                            <span>
+                            {{doctor.email}}
+                        </span>
+                            </v-flex>
+                            <!-- <v-flex xs2>
+
+                            <span>
+                            R$ {{user.salary}}
+                        </span>
+                            </v-flex>
+                            <v-flex xs2>
+
+                            <span>{{user.advances ? user.advances.length : 0}}
+                        </span>
+                            </v-flex> -->
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            <!--                            <v-layout row wrap>-->
+                            <!--                                <v-flex xs12>-->
+                            <!--                                    <span class="my-headline text-left">Permissões</span>-->
+                            <!--                                </v-flex>-->
+                            <!--                                <v-flex xs12 v-for="perm in permissions" :key="perm">-->
+                            <!--                                    <v-btn-->
+                            <!--                                            @click="setPermission(user, perm)"-->
+                            <!--                                            rounded :color="user.permissions ? user.permissions.indexOf(perm) > -1 ? 'primary' : '' : ''">{{perm}}</v-btn>-->
+                            <!--                                </v-flex>-->
+                            <!--                            </v-layout>-->
+                            <v-layout row wrap>
+                               <!--  <v-flex xs12 class="text-left mb-2">
+                                    <v-btn rounded class="primary mx-1" @click="setSalary(user)">Salario</v-btn>
+                                    <v-btn rounded class="primary mx-1" @click="setAdvance(user)">Adiantamento</v-btn>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <v-divider></v-divider>
+                                </v-flex> -->
+                                <v-flex xs12>
+                                 <span class="mr-3">
+                            CPF: {{doctor.cpf}}
+                        </span>
+                                    <span v-if="doctor.telephones">
+                            Telefone: {{doctor.telephones[0]}}
+                        </span>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <v-divider></v-divider>
+                                </v-flex>
+                                <!-- <v-flex xs12>
+                                    <span class="my-headline text-left">Unidade</span>
+                                </v-flex>
+                                <v-flex xs3 class="my-2" v-for="unit in units" :key="unit.name">
+                                    <v-btn
+                                            @click="setUserUnit(unit, user)"
+                                            rounded
+                                            :class="[user.clinic ? user.clinic.name === unit.name ? 'primary' : '' : '']">
+                                        <img width="124px" :src="unit.logo">
+                                    </v-btn>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <v-divider></v-divider>
+                                </v-flex> -->
+                                <!-- <v-flex xs12 v-if="user.advances">
+                                    <v-layout row wrap>
+                                        <v-flex xs12>
+                                            <span class="my-headline text-left">Adiantamentos</span>
+                                        </v-flex>
+                                        <v-flex xs3 class="my-2" v-for="advance in doctor.advances" :key="advance.date">
+                                            <v-card class="pa-3">
+                                                <v-layout row wrap>
+                                                    <v-flex xs12 class="mb-3">
+                                                        <span>{{advance.date | dateFilter}}</span>
+                                                    </v-flex>
+                                                    <v-flex xs12 class="text-right">
+                                                        <span class="font-weight-bold">R$ {{advance.value}}</span>
+                                                    </v-flex>
+                                                </v-layout>
+                                            </v-card>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex> -->
+                                <v-flex xs12>
+                                    <v-divider></v-divider>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <span class="my-headline text-left">Grupos</span>
+                                </v-flex>
+                                <v-flex xs3 class="my-2" v-for="group in groups" :key="group">
+                                    <v-btn
+                                            @click="setGroup(doctor, group)"
+                                            rounded :color="doctor.group ? doctor.group === group ? 'primary' : '' : ''">
+                                        {{group}}
+                                    </v-btn>
+                                </v-flex>
+                            </v-layout>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
+            </v-flex>
+
             <v-flex xs12 class="text-center">
                 <paymeny-report :colaborators="colab"></paymeny-report>
             </v-flex>
@@ -196,6 +312,11 @@
                     return a.status !== 'pending'
                 })
             },
+            doctors() {
+                return this.$store.getters.colaboratorsDoctors.filter(a => {
+                    return a.status !== 'pending' && a.uid
+                })
+            },
             pendingColab() {
                 return this.$store.getters.colaborators.filter(a => {
                     return a.status === 'pending'
@@ -212,15 +333,19 @@
             async getInitialInfo() {
                 // await this.$store.dispatch('getPermissionList')
                 await this.$store.dispatch('getColaborators')
+                await this.$store.dispatch('getColaboratorsDoctors')
                 this.loading = false
             },
             setGroup(user, group) {
+                console.log(group)
+                console.log(user)
                 if (user.group === group) {
                     this.$store.dispatch('updateUserField', {user: user, field: 'group', value: 'delete'})
                 } else {
                     this.$store.dispatch('updateUserField', {user: user, field: 'group', value: group})
                 }
                 this.$store.dispatch('getColaborators')
+                this.$store.dispatch('getColaboratorsDoctors')
             },
             async setPermission(user, permission) {
                 let permissions = user.permissions

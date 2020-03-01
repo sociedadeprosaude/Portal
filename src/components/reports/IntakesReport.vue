@@ -10,7 +10,7 @@
                         <v-flex xs6 class="text-right">
                             <span>{{report.dataInicio | dateFilter}} até {{report.dataFinal | dateFilter}}</span>
                         </v-flex>
-                        <v-flex xs12 v-for="(intake, label) in report.intakes" :key="label" class="my-1">
+                        <v-flex xs12 v-for="(intake, label) in report.intakes" :key="'intake' + label" class="my-1">
                             <v-flex xs12>
                                 <v-layout row wrap class="mt-2">
                                     <v-flex xs12>
@@ -20,7 +20,7 @@
                                         <v-divider vertical></v-divider>
                                     </v-flex>
                                     <v-flex xs5 class="font-weight-black">
-                                        Intake
+                                        Código
                                     </v-flex>
                                     <v-flex xs1>
                                         <v-divider vertical></v-divider>
@@ -71,7 +71,7 @@
                                     <v-divider></v-divider>
                                 </v-flex>
                             </v-layout>
-                            <v-flex xs12 v-if="intake.exams.length > 0">
+                            <v-flex xs12 v-if="intake.exams && intake.exams.length > 0">
                                 <v-layout row wrap class="mt-2">
                                     <v-flex xs12>
                                         <v-divider></v-divider>
@@ -108,7 +108,7 @@
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
-                            <v-flex xs12 v-for="(examees, labels) in intake.exams" :key="labels" class="my-1">
+                            <v-flex xs12 v-for="(examees, labels) in intake.exams" :key="'exams' + labels" class="my-1">
 
                                 <v-layout row wrap>
                                     <v-flex xs12>
@@ -146,7 +146,7 @@
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
-                            <v-flex xs12 v-if="intake.specialties.length > 0">
+                            <v-flex xs12 v-if="intake.specialties && intake.specialties.length > 0">
                                 <v-layout row wrap class="mt-2">
                                     <v-flex xs12>
                                         <v-divider></v-divider>
@@ -421,9 +421,6 @@
     export default {
         name: "IntakesReport",
         props: ['report', 'loading'],
-        mounted() {
-            console.log('rep', this.report)
-        },
         data() {
             return {
                 now: moment().format('YYYY-MM-DD HH:mm:ss'),

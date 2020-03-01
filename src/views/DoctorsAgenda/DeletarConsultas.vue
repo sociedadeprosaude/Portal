@@ -222,7 +222,7 @@
                 <v-layout align-center justify-center>
                     <v-spacer></v-spacer>
                     <v-btn
-                            @click="getConsultations()"
+                            @click="getConsultations"
                             color="error"
                             class="mx-3"
                             rounded
@@ -231,18 +231,21 @@
                         Ver consultas
                         <v-icon right>remove_red_eye</v-icon>
                     </v-btn>
-                    <v-spacer></v-spacer>
-                    <submit-button
+                    <v-btn
+                            v-if="Object.keys(consultationsDeletionInfo).length === 0"
                             @click="deleteConsultasDia"
-                            :disabled="!formIsValids"
                             :loading="loading"
                             :success="success"
                             color="error"
-                            icon="delete_forever"
-                            text="DELETAR"
-                            class="white--text"
-                            ></submit-button>
-                    <v-spacer></v-spacer>
+                            rounded
+                            :disabled="!formIsValid"
+                    >
+                        DELETAR
+                        <v-icon right>delete_forever</v-icon>
+                    </v-btn>
+                    <span v-else class="ml-4">
+                        Deletando {{consultationsDeletionInfo.removed}}/{{consultationsDeletionInfo.total}}, dia {{consultationsDeletionInfo.day | dateFilter}}
+                    </span>
                 </v-layout>
 
                 <v-container v-if="consultas && consultas.lenght == 0">
@@ -265,7 +268,7 @@
                         wrap
                         justify-center
                         align-center
-                        
+
                 >
                     <v-container class="align-center justify-center py-0">
                         <v-layout row align-center justify-center wrap>
@@ -538,7 +541,6 @@
             alert: false,
             doctor: null,
             dateFormatted: '',
-            loading: false,
             success: false,
             index_Selecionado: {},
             status_Selecionado: '',
@@ -601,9 +603,18 @@
             messages: [],
             timeout: 4000,
             mensage_progress: '',
+            consultas: [],
+            loading: false
         }),
 
         computed: {
+            // loading() {
+            //   return !this.$store.getters.consultationsLoaded
+            // },
+
+            consultationsDeletionInfo() {
+              return this.$store.getters.consultationsDeletionInfo
+            },
 
             formIsValid() {
                 return this.start_date && this.final_date && this.doctor && this.especialidade
@@ -663,34 +674,34 @@
                 return this.formatDate(this.index_Selecionado.start_date)
             },
 
-            consultas() {
-                let consultas = this.$store.getters.consultations
-                 .filter((a) => {
-                    
-                     let response = true
-                    if(this.doctor){
-                        if(this.doctor.cpf !== a.doctor.cpf){
-                            response = false
-                        }
-                    }
-                    if(this.especialidade){
-                        if(this.especialidade.name !== a.specialty.name ){
-                            response = false
-                        }
-                    }
-                    if(!a.user){
-                        response = false
-                    }
-                    else{
-                        console.log(a.user)
-                    }
-                    //console.log("resposta:", response)
-                    return response
-                
-                     //return this.especialidade && this.start_date && this.doctor ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && this.doctor.cpf == a.doctor.cpf && a.user : false
-                 })
-                return consultas;
-            },
+            // consultas() {
+            //     let consultas = this.$store.getters.consultations
+            //      // .filter((a) => {
+            //      //
+            //      //     let response = true
+            //      //    if(this.doctor){
+            //      //        if(this.doctor.cpf !== a.doctor.cpf){
+            //      //            response = false
+            //      //        }
+            //      //    }
+            //      //    if(this.especialidade){
+            //      //        if(this.especialidade.name !== a.specialty.name ){
+            //      //            response = false
+            //      //        }
+            //      //    }
+            //      //    if(!a.user){
+            //      //        response = false
+            //      //    }
+            //      //    else{
+            //      //        console.log(a.user)
+            //      //    }
+            //      //    //console.log("resposta:", response)
+            //      //    return response
+            //      //
+            //      //     //return this.especialidade && this.start_date && this.doctor ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && this.doctor.cpf == a.doctor.cpf && a.user : false
+            //      // })
+            //     return consultas;
+            // },
 
             date: {
                 get() {
@@ -702,10 +713,12 @@
             },
         },
         async mounted() {
-            this.getConsultations({
-                start_date: moment().format('YYYY-MM-DD 00:00:00'),
-                final_date: moment().format('YYYY-MM-DD 23:59:59')
-            })
+            // this.start_date = moment().format('YYYY-MM-DD')
+            // this.final_date = moment().format('YYYY-MM-DD')
+            // this.getConsultations({
+            //     start_date: moment().format('YYYY-MM-DD 00:00:00'),
+            //     final_date: moment().format('YYYY-MM-DD 23:59:59')
+            // })
             await this.$store.dispatch('getSpecialties')
             await this.$store.dispatch('getDoctors')
             this.start_date = moment().format('YYYY-MM-DD')
@@ -723,12 +736,12 @@
             async getConsultations() {
                 let payload = {
                     start_date: this.start_date + ' 00:00',
-                    final_date: this.final_date + ' 23:59',
+                    final_date: this.final_date ? this.final_date  + ' 23:59' : undefined,
                     doctor: this.doctor
                 }
-                /*this.loading = true*/
-                await this.$store.dispatch('getConsultations', payload)
-                /*this.loading = false*/
+                this.loading = true
+                this.consultas = await this.$store.dispatch('getConsultations', payload)
+                this.loading = false
             },
 
             formatConsultationsArray(consultations) {

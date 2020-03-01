@@ -132,12 +132,19 @@
             specialties() {
                 let specialties = this.$store.getters.specialties;
                 for (let spec in specialties) {
-                    specialties[spec].doctors = specialties[spec].doctors.filter((a) => {
-                        return a.cost
-                    })
+                    if ( specialties[spec].doctors) {
+
+                        specialties[spec].doctors = specialties[spec].doctors.filter((a) => {
+                            return a.cost
+                        })
+                    }
                 }
                 specialties = this.$store.getters.specialties.filter((a) => {
-                    return a.doctors.length > 0 && a.name.includes(this.search.toUpperCase())
+                    if (a.doctors) {
+                        return a.doctors.length > 0 && a.name.includes(this.search.toUpperCase())
+                    } else {
+                        return false
+                    }
                 });
                 return specialties
             },
@@ -183,6 +190,7 @@
 
             addProduct(product, selection, type, clinic) {
                 let holder = Object.assign({}, product);
+
                 switch (type) {
                     case 'appointment':
                         delete holder.doctors;

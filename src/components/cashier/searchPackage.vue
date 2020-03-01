@@ -8,7 +8,6 @@
                             <v-combobox v-model="searchData"
                                         :items="listPackage"
                                         item-text="name"
-                                        item-value="name"
                                         auto-select-first
                                         :clearable="true"
                                         :loading="isLoading"

@@ -5,7 +5,8 @@ const state = {
     allClinics: [],
     selectedClinic: null,
     units: [],
-    loaded: false
+    loaded: false,
+    unitsLoaded: false
 };
 
 const mutations = {
@@ -21,6 +22,7 @@ const mutations = {
     },
     setUnits(state, payload) {
         state.units = payload
+        state.unitsLoaded = true
     },
 };
 
@@ -37,32 +39,32 @@ const actions = {
             });
 
 
-            for (let clinic in clinics) {
-                let exams = []
-                let specialties = []
-                let examsSnap = await firebase.firestore().collection('clinics').doc(clinics[clinic].name)
-                    .collection('exams').get();
-
-                examsSnap.forEach(function (doc) {
-                    exams.push({
-                        id: doc.id,
-                        ...doc.data(),
-                    });
-                });
-
-                let specialtySnap = await firebase.firestore().collection('clinics').doc(clinics[clinic].name)
-                    .collection('specialties').get();
-
-                specialtySnap.forEach(function (doc) {
-                    specialties.push({
-                        id: doc.id,
-                        ...doc.data(),
-                    });
-                });
-
-                clinics[clinic].exams = exams
-                clinics[clinic].specialties = specialties
-            }
+            // for (let clinic in clinics) {
+            //     let exams = []
+            //     let specialties = []
+            //     let examsSnap = await firebase.firestore().collection('clinics').doc(clinics[clinic].name)
+            //         .collection('exams').get();
+            //
+            //     examsSnap.forEach(function (doc) {
+            //         exams.push({
+            //             id: doc.id,
+            //             ...doc.data(),
+            //         });
+            //     });
+            //
+            //     let specialtySnap = await firebase.firestore().collection('clinics').doc(clinics[clinic].name)
+            //         .collection('specialties').get();
+            //
+            //     specialtySnap.forEach(function (doc) {
+            //         specialties.push({
+            //             id: doc.id,
+            //             ...doc.data(),
+            //         });
+            //     });
+            //
+            //     clinics[clinic].exams = exams
+            //     clinics[clinic].specialties = specialties
+            // }
 
             commit('setClinics', clinics);
         })
@@ -334,6 +336,10 @@ const getters = {
     },
     units(state) {
         return state.units
+    },
+
+    unitsLoaded(state) {
+        return state.unitsLoaded
     },
 
     clinicsLoaded(state) {

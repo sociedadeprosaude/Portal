@@ -410,7 +410,7 @@
 @keyframes contract {
     from {
         transform: scaleX(1);
-        background-color: #259085;
+        background-color: #003B8F;
         /*transform: scaleX(1);*/
     }
     /*50% { transform: scaleX(0.5); }*/
