@@ -312,9 +312,7 @@ const actions = {
         let start = moment(payload.start_date, 'YYYY-MM-DD').format('YYYY-MM-DD 00:00');
         let end = moment(payload.final_date, 'YYYY-MM-DD').format('YYYY-MM-DD 23:59');
         //console.log(payload.date)
-        console.log("ANTES:", payload)
         payload = functions.removeUndefineds(payload);
-        console.log("DEPOIS:", payload)
        try {
             let snapshot = await firebase.firestore().collection('consultations')
                 .where('doctor.cpf', "==", payload.doctor.cpf)
@@ -326,8 +324,10 @@ const actions = {
             snapshot.forEach(doc => {
                 
                 let dateConsultation = moment(doc.data().date)
-                let filterHour = payload.hour ? dateConsultation.format('hh:ss') === payload.hour ? true : false : true
+                let filterHour = payload.hour ? doc.data().date.split(' ')[1] === payload.hour ? true : false : true
                 let filterDayWeek = payload.weekDays ? payload.weekDays.indexOf(dateConsultation.weekday()) > -1 ? true : false : true
+
+                console.log(doc.data().date.split(' ')[1] )
 
                 if(filterHour && filterDayWeek)
                     firebase.firestore().collection('consultations').doc(doc.id).delete()

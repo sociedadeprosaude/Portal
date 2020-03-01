@@ -810,6 +810,8 @@
                     hour: this.times,
                     weekDays: this.semana
                 }
+
+                console.log(deletar)
                 await this.$store.dispatch('removeAppointmentByDay', deletar)
                 // this.clear()
                 this.success = true
