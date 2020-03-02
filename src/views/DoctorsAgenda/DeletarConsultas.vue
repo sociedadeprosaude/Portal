@@ -4,7 +4,7 @@
             <v-card class="pa-4">
                 <v-layout align-center wrap>
                     <v-flex xs12 sm5>
-                        <v-select
+                        <v-combobox
                                 label="Especialidade"
                                 prepend-icon="school"
                                 v-model="especialidade"
@@ -31,11 +31,11 @@
                                 >{{ data.item.name }}
                                 </v-chip>
                             </template>
-                        </v-select>
+                        </v-combobox>
                     </v-flex>
                     <v-spacer></v-spacer>
                     <v-flex xs12 sm5>
-                        <v-select
+                        <v-combobox
                                 prepend-icon="account_circle"
                                 v-model="doctor"
                                 :items="doctors"
@@ -63,7 +63,7 @@
                                 >{{ data.item.name }}
                                 </v-chip>
                             </template>
-                        </v-select>
+                        </v-combobox>
                     </v-flex>
                     <v-flex xs12 sm5>
                         <v-menu
@@ -140,21 +140,102 @@
                             ></v-date-picker>
                         </v-menu>
                     </v-flex>
+
+                    <v-flex xs12>
+                    <v-layout class="align-end justify-end">
+                        <v-btn color="black" dark @click="filterHour ? filterHour = false: filterHour = true">
+                            Filtro de Hora :<v-icon right>alarm</v-icon>
+                        </v-btn>
+                        <v-spacer></v-spacer>
+                        <v-btn color="black" dark @click="filterDayWeek ? filterDayWeek = false: filterDayWeek = true">
+                            Filtro de Dia da Semana :<v-icon right>today</v-icon>
+                        </v-btn>
+                    </v-layout>
+                    </v-flex>
+
+                    <v-flex xs12><p></p></v-flex>
+
+                    <v-flex xs12 sm5 v-show="filterHour">
+                        <v-select
+                                v-model="times"
+                                prepend-icon="alarm_add"
+                                :items="timesOptions"
+                                label="Horários"
+                                attach
+                                outlined
+                                rounded
+                                filled
+                                hint="Selecione o horario que deseja Apagar"
+                                persistent-hint
+                                chips
+                                color="green"
+                                clearable
+                        >
+                            <template v-slot:selection="data">
+                                <v-chip
+                                        :key="JSON.stringify(data.item)"
+                                        :input-value="data.selected"
+                                        :disabled="data.disabled"
+                                        class="v-chip--select-multi"
+                                        @click.stop="data.parent.selectedIndex = data.index"
+                                        @input="data.parent.selectItem(data.item)"
+                                        text-color="white"
+                                        color="info"
+                                >{{ data.item.text }}</v-chip>
+                            </template>
+                        </v-select>
+                    </v-flex>
+                    <v-spacer></v-spacer>
+                    <v-flex xs12 sm5 v-show="filterDayWeek">
+                        <v-select
+                                v-model="semana"
+                                prepend-icon="event"
+                                :items="semanaOptions"
+                                label="Dias da Semana"
+                                hint="Selecione o(s) dia(s) da semana que deseja apagar"
+                                persistent-hint
+                                outlined
+                                rounded
+                                multiple
+                                filled
+                                chips
+                                color="blue"
+                                clearable
+                        >
+                            <template v-slot:selection="data">
+                                <v-chip
+                                        :key="JSON.stringify(data.item)"
+                                        :input-value="data.selected"
+                                        :disabled="data.disabled"
+                                        class="v-chip--select-multi"
+                                        @click.stop="data.parent.selectedIndex = data.index"
+                                        @input="data.parent.selectItem(data.item)"
+                                        text-color="white"
+                                        color="info"
+                                >{{ data.item.text }}</v-chip>
+                            </template>
+                        </v-select>
+                    </v-flex>
+
                 </v-layout>
 
                 <v-layout align-center justify-center>
+                    <v-spacer></v-spacer>
                     <v-btn
-                            @click="getConsultations()"
+                            @click="getConsultations"
                             color="error"
                             class="mx-3"
                             rounded
                             :disabled="!formIsValid"
                     >
                         Ver consultas
-                        <!--                        <v-icon right>calendar</v-icon>-->
+                        <v-icon right>remove_red_eye</v-icon>
                     </v-btn>
                     <v-btn
+                            v-if="Object.keys(consultationsDeletionInfo).length === 0"
                             @click="deleteConsultasDia"
+                            :loading="loading"
+                            :success="success"
                             color="error"
                             rounded
                             :disabled="!formIsValid"
@@ -162,6 +243,9 @@
                         DELETAR
                         <v-icon right>delete_forever</v-icon>
                     </v-btn>
+                    <span v-else class="ml-4">
+                        Deletando {{consultationsDeletionInfo.removed}}/{{consultationsDeletionInfo.total}}, dia {{consultationsDeletionInfo.day | dateFilter}}
+                    </span>
                 </v-layout>
 
                 <v-container v-if="consultas && consultas.lenght == 0">
@@ -184,7 +268,7 @@
                         wrap
                         justify-center
                         align-center
-                        
+
                 >
                     <v-container class="align-center justify-center py-0">
                         <v-layout row align-center justify-center wrap>
@@ -193,11 +277,11 @@
                             <v-flex xs12 sm12 md12 lg12></v-flex>
                             <v-flex xs12 sm12 md12 lg12></v-flex>
                             <v-spacer></v-spacer>
-                            <v-subheader v-if="consultasByDoctors(consultas).length != 0"><b>{{start_date |
-                                dateFilter}}
-                                - {{daydate(start_date)}} até {{final_date |
-                                dateFilter}}
-                                - {{daydate(final_date)}}</b></v-subheader>
+                            <v-subheader v-if="consultasByDoctors(consultas).length != 0">
+                                <b>
+                                    {{start_date | dateFilter}} - {{daydate(start_date)}} até {{final_date | dateFilter}} - {{daydate(final_date)}}
+                                </b>
+                            </v-subheader>
 
                             <v-expansion-panels>
                                 <v-expansion-panel
@@ -277,8 +361,9 @@
                                                             v-for="item in consultation.consultations"
                                                             :key="item.id"
                                                             v-if="item.user"
+                                                            v-show="filterHour === false && filterDayWeek === false"
                                                     >
-                                                        <v-list-item >
+                                                        <v-list-item>
                                                             <v-list-item-content>
                                                                 <v-list-item-title class="primary--text">
                                                                          <span style="font-weight: bolder">
@@ -296,7 +381,104 @@
                                                                 <br>
                                                                 <v-list-item-action-text>
                                                                     {{item.date.split(' ')[0] | dateFilter}} -
-                                                                    {{item.date.split(' ')[1]}}
+                                                                    {{item.date.split(' ')[1]}} -
+                                                                    {{moment(item.date.split(' ')[0],'YYYY-MM-DD').format('dddd')}}
+                                                                </v-list-item-action-text>
+                                                            </v-list-item-content>
+                                                            <br>
+                                                            <v-list-item-action class="ml-2">
+                                                                <v-btn icon ripple text>
+                                                                    <v-icon v-if="item.type === 'Retorno'"
+                                                                            color="primary">restore
+                                                                    </v-icon>
+                                                                    <v-icon v-if="item.type === 'Consulta'"
+                                                                            color="primary">event
+                                                                    </v-icon>
+                                                                    <v-icon v-if="item.status === 'Pago'"
+                                                                            color="success">attach_money
+                                                                    </v-icon>
+                                                                    <v-icon v-if="item.status === 'Aguardando pagamento'"
+                                                                            color="error">money_off
+                                                                    </v-icon>
+                                                                </v-btn>
+                                                            </v-list-item-action>
+                                                        </v-list-item>
+                                                    </v-flex>
+                                                    <v-flex sm3
+                                                            xs12
+                                                            v-for="item in consultation.consultations"
+                                                            :key="item.id"
+                                                            v-if="item.user"
+                                                            v-show="filterHour === true && times === item.date.split(' ')[1]"
+                                                    >
+                                                        <v-list-item>
+                                                            <v-list-item-content>
+                                                                <v-list-item-title class="primary--text">
+                                                                         <span style="font-weight: bolder">
+                                                                            {{item.user.name}}
+                                                                         </span>
+                                                                </v-list-item-title>
+                                                                <br>
+                                                                <v-list-item-subtitle class="text-center">
+                                                                    CPF: {{item.user.cpf}}
+                                                                </v-list-item-subtitle>
+                                                                <br>
+                                                                <v-list-item-subtitle>
+                                                                    Telefone: {{item.user.telephones  ? item.user.telephones[0] : 'Número não informado'}}
+                                                                </v-list-item-subtitle>
+                                                                <br>
+                                                                <v-list-item-action-text>
+                                                                    {{item.date.split(' ')[0] | dateFilter}} -
+                                                                    {{item.date.split(' ')[1]}} -
+                                                                    {{moment(item.date.split(' ')[0],'YYYY-MM-DD').format('dddd')}}
+                                                                </v-list-item-action-text>
+                                                            </v-list-item-content>
+                                                            <br>
+                                                            <v-list-item-action class="ml-2">
+                                                                <v-btn icon ripple text>
+                                                                    <v-icon v-if="item.type === 'Retorno'"
+                                                                            color="primary">restore
+                                                                    </v-icon>
+                                                                    <v-icon v-if="item.type === 'Consulta'"
+                                                                            color="primary">event
+                                                                    </v-icon>
+                                                                    <v-icon v-if="item.status === 'Pago'"
+                                                                            color="success">attach_money
+                                                                    </v-icon>
+                                                                    <v-icon v-if="item.status === 'Aguardando pagamento'"
+                                                                            color="error">money_off
+                                                                    </v-icon>
+                                                                </v-btn>
+                                                            </v-list-item-action>
+                                                        </v-list-item>
+                                                    </v-flex>
+                                                    <v-flex sm3
+                                                            xs12
+                                                            v-for="item in consultation.consultations"
+                                                            :key="item.id"
+                                                            v-if="item.user"
+                                                            v-show="filterDayWeek === true && moment(semana,'e').format('dddd') === moment(item.date.split(' ')[0],'YYYY-MM-DD').format('dddd')"
+                                                    >
+                                                        <v-list-item>
+                                                            <v-list-item-content>
+                                                                <v-list-item-title class="primary--text">
+                                                                         <span style="font-weight: bolder">
+                                                                             {{item.user.name}}
+                                                                         </span>
+                                                                </v-list-item-title>
+                                                                <br>
+                                                                <v-list-item-subtitle class="text-center">
+                                                                    CPF: {{item.user.cpf}}
+                                                                </v-list-item-subtitle>
+                                                                <br>
+                                                                <v-list-item-subtitle>
+                                                                    Telefone: {{item.user.telephones  ? item.user.telephones[0] : 'Número não informado'}}
+                                                                </v-list-item-subtitle>
+                                                                <br>
+                                                                <v-list-item-action-text>
+                                                                    {{item.date.split(' ')[0] | dateFilter}} -
+                                                                    {{item.date.split(' ')[1]}} -
+                                                                    {{moment(item.date.split(' ')[0],'YYYY-MM-DD').format('dddd')}}
                                                                 </v-list-item-action-text>
                                                             </v-list-item-content>
                                                             <br>
@@ -331,18 +513,24 @@
                 </v-layout>
 
             </v-card>
-            <v-progress-circular v-if="loading" indeterminate class="primary--text"></v-progress-circular>
+            <!--<v-progress-circular v-if="loading" indeterminate class="primary&#45;&#45;text"></v-progress-circular>-->
         </v-layout>
     </v-container>
 </template>
 
 <script>
+    import SubmitButton from "../../components/SubmitButton";
     var moment = require('moment');
     export default {
+        components: {
+            SubmitButton
+        },
         data: () => ({
             start_date: undefined,
             final_date: undefined,
             teste: 0,
+            filterHour: false,
+            filterDayWeek: false,
             moment: moment,
             startMenu: false,
             finishMenu: false,
@@ -353,11 +541,37 @@
             alert: false,
             doctor: null,
             dateFormatted: '',
-            loading: false,
             success: false,
             index_Selecionado: {},
             status_Selecionado: '',
-            semanaOptions: [
+            times: undefined,
+            semana: undefined,
+            timesOptions: [
+                { text: '06:00'},
+                { text: '06:30'},
+                { text: '07:00'},
+                { text: '07:30'},
+                { text: '08:00'},
+                { text: '08:30'},
+                { text: '09:00'},
+                { text: '09:30'},
+                { text: '10:00'},
+                { text: '10:30'},
+                { text: '11:00'},
+                { text: '11:30'},
+                { text: '12:00'},
+                { text: '12:30'},
+                { text: '13:00'},
+                { text: '13:30'},
+                { text: '14:00'},
+                { text: '14:30'},
+                { text: '15:00'},
+                { text: '15:30'},
+                { text: '16:00'},
+                { text: '16:30'},
+                { text: '17:00'}
+            ],
+            semanas: [
                 "Domingo",
                 "Segunda-feira",
                 "Terça-feira",
@@ -365,6 +579,15 @@
                 "Quinta-feira",
                 "Sexta-feira",
                 "Sábado"
+            ],
+            semanaOptions: [
+                { text: 'segunda-feira', value: 1},
+                { text: 'terça-feira', value: 2},
+                { text: 'quarta-feira', value: 3},
+                { text: 'quinta-feira', value: 4},
+                { text: 'sexta-feira', value: 5},
+                { text: 'sábado', value: 6},
+                { text: 'domingo', value: 0}
             ],
             attendanceOptions:
                 [
@@ -380,41 +603,53 @@
             messages: [],
             timeout: 4000,
             mensage_progress: '',
+            consultas: [],
+            loading: false
         }),
 
         computed: {
+            // loading() {
+            //   return !this.$store.getters.consultationsLoaded
+            // },
+
+            consultationsDeletionInfo() {
+              return this.$store.getters.consultationsDeletionInfo
+            },
 
             formIsValid() {
                 return this.start_date && this.final_date && this.doctor && this.especialidade
             },
 
-            specialties() {
-                //return this.$store.getters.specialties;
-                let espArray = Object.values(this.$store.getters.specialties)
-                espArray = espArray.filter((specialty) => {
-                    //console.log('Teeeee',specialty)
-                    if(!this.selectedDoctor) {
-                        return true
-                    }
-                    var find = false
-                    specialty.doctors.forEach((doctor)=>{
-
-                        if(doctor.cpf === this.selectedDoctor.cpf){
-                            find = true
-                            return true
-                        }
-
-                    })
-
-                    return find
-                })
-                //docArray.unshift({name:'Todos'})
-                return espArray
+            formIsValids() {
+                return this.start_date && this.final_date && this.doctor && this.especialidade
             },
 
-            doctors() {
+            specialties() {
+                //return this.$store.getters.specialties;
+
+                let espArray = Object.values(this.$store.getters.specialties);
+                espArray = espArray.filter(specialty => {
+                    //console.log('Teeeee',specialty)
+                    if (!this.doctor) {
+                        return true;
+                    }
+                    var find = false;
+                    specialty.doctors.forEach(doctor => {
+                        if (doctor.cpf === this.doctor.cpf) {
+                            find = true;
+                            return true;
+                        }
+                    });
+
+                    return find;
+                });
+                //docArray.unshift({name:'Todos'})
+                return espArray;
+            },
+
+            doctors () {
                 let doctors = Object.values(this.$store.getters.doctors)
-                if (this.especialidade) {
+                if(this.especialidade) {
                     doctors = doctors.filter((a) => {
                         for (let spe in a.specialties) {
                             if (a.specialties[spe].name === this.especialidade.name) {
@@ -422,6 +657,7 @@
                             }
                         }
                         return false
+                        // return a.specialties.indexOf(this.especialidade.name) > -1
                     })
                 }
                 return doctors
@@ -438,34 +674,34 @@
                 return this.formatDate(this.index_Selecionado.start_date)
             },
 
-            consultas() {
-                let consultas = this.$store.getters.consultations
-                 .filter((a) => {
-                    
-                     let response = true
-                    if(this.doctor){
-                        if(this.doctor.cpf !== a.doctor.cpf){
-                            response = false
-                        }
-                    }
-                    if(this.especialidade){
-                        if(this.especialidade.name !== a.specialty.name ){
-                            response = false
-                        }
-                    }
-                    if(!a.user){
-                        response = false
-                    }
-                    else{
-                        console.log(a.user)
-                    }
-                    //console.log("resposta:", response)
-                    return response
-                
-                     //return this.especialidade && this.start_date && this.doctor ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && this.doctor.cpf == a.doctor.cpf && a.user : false
-                 })
-                return consultas;
-            },
+            // consultas() {
+            //     let consultas = this.$store.getters.consultations
+            //      // .filter((a) => {
+            //      //
+            //      //     let response = true
+            //      //    if(this.doctor){
+            //      //        if(this.doctor.cpf !== a.doctor.cpf){
+            //      //            response = false
+            //      //        }
+            //      //    }
+            //      //    if(this.especialidade){
+            //      //        if(this.especialidade.name !== a.specialty.name ){
+            //      //            response = false
+            //      //        }
+            //      //    }
+            //      //    if(!a.user){
+            //      //        response = false
+            //      //    }
+            //      //    else{
+            //      //        console.log(a.user)
+            //      //    }
+            //      //    //console.log("resposta:", response)
+            //      //    return response
+            //      //
+            //      //     //return this.especialidade && this.start_date && this.doctor ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && this.doctor.cpf == a.doctor.cpf && a.user : false
+            //      // })
+            //     return consultas;
+            // },
 
             date: {
                 get() {
@@ -477,10 +713,12 @@
             },
         },
         async mounted() {
-            this.getConsultations({
-                start_date: moment().format('YYYY-MM-DD 00:00:00'),
-                final_date: moment().format('YYYY-MM-DD 23:59:59')
-            })
+            // this.start_date = moment().format('YYYY-MM-DD')
+            // this.final_date = moment().format('YYYY-MM-DD')
+            // this.getConsultations({
+            //     start_date: moment().format('YYYY-MM-DD 00:00:00'),
+            //     final_date: moment().format('YYYY-MM-DD 23:59:59')
+            // })
             await this.$store.dispatch('getSpecialties')
             await this.$store.dispatch('getDoctors')
             this.start_date = moment().format('YYYY-MM-DD')
@@ -498,11 +736,11 @@
             async getConsultations() {
                 let payload = {
                     start_date: this.start_date + ' 00:00',
-                    final_date: this.final_date + ' 23:59',
+                    final_date: this.final_date ? this.final_date  + ' 23:59' : undefined,
                     doctor: this.doctor
                 }
                 this.loading = true
-                await this.$store.dispatch('getConsultations', payload)
+                this.consultas = await this.$store.dispatch('getConsultations', payload)
                 this.loading = false
             },
 
@@ -563,7 +801,7 @@
 
             daydate(date) {
                 var dateMoment = moment(date);
-                return this.semanaOptions[dateMoment.day()];
+                return this.semanas[dateMoment.day()];
             },
 
             save(date) {
@@ -576,22 +814,22 @@
             },
 
             async deleteConsultasDia() {
-
                 this.loading = true
-                // setTimeout(() => {
-                //     this.loading = false
-                // }, 2000)
-                // return
                 var deletar = {
                     start_date: this.start_date,
                     final_date: this.final_date,
                     doctor: this.doctor,
-                    specialtie: this.especialidade
+                    specialtie: this.especialidade,
+                    hour: this.times,
+                    weekDays: this.semana
                 }
+
+                console.log(deletar)
                 await this.$store.dispatch('removeAppointmentByDay', deletar)
                 // this.clear()
+                this.success = true
                 this.loading = false
-
+                this.getConsultations()
             },
 
             clear() {

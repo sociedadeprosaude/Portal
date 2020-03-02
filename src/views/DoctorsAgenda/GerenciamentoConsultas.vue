@@ -5,7 +5,7 @@
                 <v-card class="pa-4">
                     <v-layout align-center row wrap>
                         <v-flex xs12 sm4>
-                            <v-select
+                            <v-combobox
                                     prepend-icon="school"
                                     v-model="especialidade"
                                     :items="specialties"
@@ -31,7 +31,7 @@
                                     >{{ data.item.name }}
                                     </v-chip>
                                 </template>
-                            </v-select>
+                            </v-combobox>
                         </v-flex>
                         <v-flex xs12 sm4>
                             <v-menu

@@ -1,24 +1,24 @@
 import axios from 'axios'
-import firebase, {firestore} from "firebase";
+import firebase, { firestore } from "firebase";
 import moment from 'moment'
+import functions from "../../utils/functions";
 
 const state = {
     selectedPatient: undefined,
-    selectedDependent : undefined,
+    selectedDependent: undefined,
 };
 
 const mutations = {
     async setSelectedPatient(state, payload) {
         var consultations
-        console.log('Clear USER')
         if (payload) {
             await firebase.firestore().collection('users').doc(payload.cpf).collection('consultations')
                 .onSnapshot((querySnapshot) => {
                     consultations = []
                     querySnapshot.forEach((consultation) => {
-                        consultations.push({...consultation.data()})
+                        consultations.push({ ...consultation.data() })
                     })
-                    payload = {...payload, consultations: consultations}
+                    payload = { ...payload, consultations: consultations }
                     state.selectedPatient = payload
                 })
 
@@ -26,11 +26,10 @@ const mutations = {
             state.selectedPatient = payload
         }
     },
-    setSelectedDependent(state, payload){
+    setSelectedDependent(state, payload) {
         state.selectedDependent = payload
     },
-    clearSelectedDependent(state){
-        console.log('Cleanup')
+    clearSelectedDependent(state) {
         state.selectedDependent = undefined
     }
 };
@@ -43,7 +42,11 @@ const actions = {
     //         firestore().collection('users').doc(user.cpf).update({type: user.type.toUpperCase()})
     //     })
     // },
-    async searchUser({commit, getters}, searchFields) {
+    async getPatient({}, id) {
+        let userDoc = await firestore().collection('users').doc(id.toString()).get()
+        return userDoc.data()
+    },
+    async searchUser({ commit, getters }, searchFields) {
         let usersRef = firestore().collection('users')
         for (let field in searchFields) {
             if (!searchFields[field] || searchFields[field].length === 0) continue;
@@ -53,18 +56,17 @@ const actions = {
         let users = [];
         querySnapshot.forEach(function (doc) {
             // if (doc.data().association_number) {
-            users.push(doc.data())
+            users.push({
+                ...doc.data(),
+                id: doc.id
+            })
             // }
         });
         return users
     },
-    async addUser({getters}, patient) {
+    async addUser({ getters }, patient) {
         try {
-            for (let data in patient) {
-                if (!patient[data]) {
-                    delete patient[data]
-                }
-            }
+            functions.removeUndefineds(patient)
             if (patient.type) {
                 patient.type = patient.type.toUpperCase()
             }
@@ -73,6 +75,10 @@ const actions = {
             //     patient.association_number = getters.associated.quantity
             // }
             let user
+            if (!patient.cpf) {
+                patient.cpf = 'RG' + patient.rg
+            }
+            // let identifier = patient.cpf ? patient.cpf : 'RG' + patient.rg
             let foundUser = await firebase.firestore().collection('users').doc(patient.cpf).get()
             if (foundUser.exists) {
                 // delete patient.type
@@ -95,7 +101,7 @@ const actions = {
         }
         return await firebase.firestore().collection('users').doc(payload.user.cpf).update(upd)
     },
-    async deleteUser({}, user) {
+    async deleteUser({ }, user) {
         try {
             await firebase.firestore().collection('users').doc(user.cpf).delete()
             return
@@ -103,25 +109,21 @@ const actions = {
             throw e
         }
     },
-    editPatient({commit}, payload) {
+    editPatient({ commit }, payload) {
 
     },
-    async setSelectedPatient({commit}, payload) {
+    async setSelectedPatient({ commit }, payload) {
         commit('setSelectedPatient', payload)
-        if (payload.name) this.dispatch('getPatientProntuario', payload)
+        // if (payload.name) this.dispatch('getPatientProntuario', payload)
     },
     async searchUserFromOldDatabase(context, numAss) {
-        while (numAss.length < 8) {
-            numAss = '0' + numAss
-        }
-        let url = 'http://caixa.sociedadeprosaude.com:84/api/buscar/paciente?field=codigo&query=' + numAss /*00060009*/
+        let url = 'https://caixa.sociedadeprosaude.com/api/api/buscar/paciente?field=sequencia&query=' + numAss /*00060009*/
         let res = await axios.get(url)
-        console.log('aa', res.data)
         return res.data[0]
     },
 
-    setSelectedDependent({commit},payload){
-        commit('setSelectedDependent',payload)
+    setSelectedDependent({ commit }, payload) {
+        commit('setSelectedDependent', payload)
     }
 };
 
@@ -130,7 +132,6 @@ const getters = {
         return state.selectedPatient
     },
     selectedDependent(state) {
-        console.log('limpando')
         return state.selectedDependent
     },
 };

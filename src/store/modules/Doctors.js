@@ -1,5 +1,6 @@
 import firebase, {firestore} from "firebase";
 import functions from '../../utils/functions'
+import Vue from 'vue'
 import moment from "moment";
 
 const state = {
@@ -15,6 +16,9 @@ const mutations = {
     },
     setSpecialties(state, payload) {
         state.specialties = payload
+    },
+    deleteDoctor(state, payload) {
+        Vue.delete(state.doctors, payload.cpf)
     }
 };
 
@@ -43,7 +47,12 @@ const actions = {
             doctor.type = "DOCTOR"
             let docCopy = JSON.parse(JSON.stringify(doctor))
             delete docCopy.specialties;
-            await firebase.firestore().collection('users').doc(doctor.cpf).set(docCopy)
+            let foundUser = await firebase.firestore().collection('users').doc(doctor.cpf).get()
+            if (foundUser.exists) {
+                firebase.firestore().collection('users').doc(doctor.cpf).update(docCopy)
+            } else {
+                await firebase.firestore().collection('users').doc(doctor.cpf).set(docCopy)
+            }
             for (let spec in doctor.specialties) {
                 let details = {
                     cost: doctor.specialties[spec].cost,
@@ -95,7 +104,7 @@ const actions = {
         return
     },
 
-    async deleteDoctor ({}, doctor) {
+    async deleteDoctor ({commit}, doctor) {
         try {
             (await firebase.firestore().collection('users').doc(doctor.cpf).collection('specialties').get()).forEach((doc) => {
                 firebase.firestore().collection('users').doc(doctor.cpf).collection('specialties').doc(doc.id).delete()
@@ -112,6 +121,7 @@ const actions = {
             for (let clinic in doctor.clinics) {
                 await firebase.firestore().collection('clinics').doc(doctor.clinics[clinic].name).collection('doctors').doc(doctor.cpf).delete()
             }
+            commit('deleteDoctor', doctor)
             return
         } catch (e) {
             throw e
@@ -122,11 +132,11 @@ const actions = {
                 let doctors = {};
                 for (let document in  doctorsSnap.docs) {
                     doctors[doctorsSnap.docs[document].id] = doctorsSnap.docs[document].data()
-                    doctors[doctorsSnap.docs[document].id].specialties = []
-                    let specSnap = await doctorsSnap.docs[document].ref.collection('specialties').get()
-                    specSnap.forEach((specDoc) => {
-                        doctors[doctorsSnap.docs[document].id].specialties.push(specDoc.data())
-                    })
+                    // doctors[doctorsSnap.docs[document].id].specialties = []
+                    // let specSnap = await doctorsSnap.docs[document].ref.collection('specialties').get()
+                    // specSnap.forEach((specDoc) => {
+                    //     doctors[doctorsSnap.docs[document].id].specialties.push(specDoc.data())
+                    // })
                 }
                 commit('setDoctors', doctors);
             })

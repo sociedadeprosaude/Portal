@@ -1,0 +1,43 @@
+[debug] [2020-02-28T10:36:57.591Z] ----------------------------------------------------------------------
+[debug] [2020-02-28T10:36:57.593Z] Command:       /usr/local/bin/node /usr/local/bin/firebase serve --only functions
+[debug] [2020-02-28T10:36:57.593Z] CLI Version:   7.11.0
+[debug] [2020-02-28T10:36:57.593Z] Platform:      darwin
+[debug] [2020-02-28T10:36:57.593Z] Node Version:  v10.16.0
+[debug] [2020-02-28T10:36:57.595Z] Time:          Fri Feb 28 2020 07:36:57 GMT-0300 (Brasilia Standard Time)
+[debug] [2020-02-28T10:36:57.595Z] ----------------------------------------------------------------------
+[debug] [2020-02-28T10:36:57.596Z] 
+[debug] [2020-02-28T10:36:57.606Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-02-28T10:36:57.607Z] > authorizing via signed-in user
+[debug] [2020-02-28T10:36:57.607Z] [iam] checking project prosaude-36f66 for permissions ["firebase.projects.get"]
+[debug] [2020-02-28T10:36:57.608Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2020-02-28T10:36:57.608Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2020-02-28T10:36:57.809Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-28T10:36:57.819Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/prosaude-36f66:testIamPermissions  
+
+[debug] [2020-02-28T10:36:59.145Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-28T10:36:59.146Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/prosaude-36f66  
+ 
+[debug] [2020-02-28T10:37:00.447Z] <<< HTTP RESPONSE 200
+[warn] ⚠  Your requested "node" version "8" doesn't match your global version "10"
+[info] ✔  functions: Emulator started at http://localhost:5000
+[info] i  functions: Watching "/Users/luisfnicolau/GitHub/ProSaude/Portal/functions" for Cloud Functions...
+[debug] [2020-02-28T10:37:00.734Z] [worker-pool] addWorker(~diagnostic~)
+[debug] [2020-02-28T10:37:00.734Z] [worker-pool] Adding worker with key ~diagnostic~, total=1
+[debug] [2020-02-28T10:37:00.734Z] [worker-pool] submitWork(triggerId=)
+[debug] [2020-02-28T10:37:00.735Z] [worker-~diagnostic~-221e16a8-e419-4750-af6c-bc5969b688cb]: Assigning socketPath: /var/folders/r2/tczh__ys0clckb_1dd7693qw0000gn/T/fire_emu_27420.sock
+[debug] [2020-02-28T10:37:00.735Z] [worker-~diagnostic~-221e16a8-e419-4750-af6c-bc5969b688cb]: BUSY
+[debug] [2020-02-28T10:37:01.006Z] [runtime-status] [27420] Functions runtime initialized. {"cwd":"/Users/luisfnicolau/GitHub/ProSaude/Portal/functions","node_version":"10.16.0"}
+[debug] [2020-02-28T10:37:01.007Z] [runtime-status] [27420] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true,"pubsub_emulator":true}
+[debug] [2020-02-28T10:37:01.013Z] [runtime-status] [27420] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.3.0","resolution":"/Users/luisfnicolau/GitHub/ProSaude/Portal/functions/node_modules/firebase-admin/lib/index.js"}
+[debug] [2020-02-28T10:37:01.016Z] [runtime-status] [27420] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.2.0","resolution":"/Users/luisfnicolau/GitHub/ProSaude/Portal/functions/node_modules/firebase-functions/lib/index.js"}
+[debug] [2020-02-28T10:37:01.017Z] [runtime-status] [27420] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.2.0","resolution":"/Users/luisfnicolau/GitHub/ProSaude/Portal/functions/node_modules/firebase-functions/lib/index.js"}
+[info] ✔  functions[createConsultations]: http function initialized (http://localhost:5000/prosaude-36f66/us-central1/createConsultations).
+[info] ✔  functions[updateSpecialties]: http function initialized (http://localhost:5000/prosaude-36f66/us-central1/updateSpecialties).
+[info] ✔  functions[updateDoctors]: http function initialized (http://localhost:5000/prosaude-36f66/us-central1/updateDoctors).
+[info] ✔  functions[updateIntakes]: http function initialized (http://localhost:5000/prosaude-36f66/us-central1/updateIntakes).
+[info] ✔  functions[fixIntakesBrokenSpecialties]: http function initialized (http://localhost:5000/prosaude-36f66/us-central1/fixIntakesBrokenSpecialties).
+[info] i  functions[listenToUserAdded]: function ignored because the firestore emulator does not exist or is not running.
+[info] i  functions[listenChangeInSpecialtiesSubcollections]: function ignored because the firestore emulator does not exist or is not running.
+[info] i  functions[listenChangeInDoctorsSubcollections]: function ignored because the firestore emulator does not exist or is not running.
+[debug] [2020-02-28T10:37:01.099Z] [worker-~diagnostic~-221e16a8-e419-4750-af6c-bc5969b688cb]: IDLE

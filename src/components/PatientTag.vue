@@ -3,46 +3,25 @@
         <v-layout row wrap class="ma-0 pa-0" id="card-to-print">
             <v-flex xs12 class="mb-1">
                 <v-card width="100vw" height="100vh">
-                    <v-img :src="require('../assets/card_background.jpg')" height="100%" width="100%" class="px-4 py-2 ma-0">
-                        <v-layout row wrap>
-                            <v-flex xs6 class="text-left">
+                    <v-img height="100%" width="100%" class="px-4 py-2 ma-0">
+                        <v-layout row wrap style="font-size: 0.8em">
+                            <v-flex xs3 class="text-left">
+                                <span class="font-weight-bold" style="font-size: 1.0em">{{user.name}}</span>
+                            </v-flex>
+                            <v-flex xs1 class="text-right">
                                 <v-layout column wrap>
-                                    <span class="font-weight-bold white--text" style="font-size: 1.2em">Sociedade</span>
-                                    <span class="font-weight-bold white--text" style="font-size: 1.6em">Pró Saúde</span>
+                                    <span class="font-weight-bold" style="font-size: 1.2em">{{user.association_number}}</span>
                                 </v-layout>
                             </v-flex>
-                            <v-flex xs6 class="text-right">
-                                <img height="64px" :src="require('@/assets/pro_saude_logo.png')">
-                            </v-flex>
-                            <v-flex xs12 class="text-left">
-                                <span class="font-weight-bold white--text" style="font-size: 1.0em">{{user.name}}</span>
-                            </v-flex>
-                            <v-flex xs12 class="text-left">
+                            <v-flex xs8></v-flex>
+                            <v-flex xs2 class="text-left mt-2">
                                 <v-layout column wrap>
-                                    <span class="font-weight-bold white--text"
-                                          style="font-size: 0.6em">No Associado</span>
-                                    <span class="font-weight-bold white--text" style="font-size: 1.2em">{{user.association_number}}</span>
+                                    <span class="font-weight-bold" style="font-size: 1.2em">{{actualDate}}</span>
                                 </v-layout>
                             </v-flex>
-                            <v-flex xs4 class="text-left">
+                            <v-flex xs2 class="text-right mt-2">
                                 <v-layout column wrap>
-                                    <span class="font-weight-bold white--text"
-                                          style="font-size: 0.6em">Associado desde</span>
-                                    <span class="font-weight-bold white--text" style="font-size: 1.2em">{{actualDate}}</span>
-                                </v-layout>
-                            </v-flex>
-                            <v-flex xs4 class="text-left">
-                                <v-layout column wrap>
-                                    <span class="font-weight-bold white--text"
-                                          style="font-size: 0.6em">Válido até</span>
-                                    <span class="font-weight-bold white--text" style="font-size: 1.2em">{{validDate}}</span>
-                                </v-layout>
-                            </v-flex>
-                            <v-flex xs4 class="text-left">
-                                <v-layout column wrap>
-                                    <span class="font-weight-bold white--text"
-                                          style="font-size: 0.6em">Nascimento</span>
-                                    <span class="font-weight-bold white--text"
+                                    <span class="font-weight-bold"
                                           style="font-size: 1.2em">{{user.birth_date | dateFilter}}</span>
                                 </v-layout>
                             </v-flex>
@@ -125,11 +104,14 @@
 
 <script>
     export default {
-        name: "PatientCard",
+        name: "PatientTag",
         props: ['user'],
+        mounted() {
+            console.log(this.user)
+        },
         data() {
             return {
-                actualDate: moment().format('MM/YY'),
+                // actualDate: moment(this.user.created_at).format('MM/YY'),
                 validDate: moment().add(1, 'year').format('MM/YY')
             }
         },
@@ -139,6 +121,9 @@
             }
         },
         computed: {
+            actualDate() {
+                return moment(this.user.created_at, 'YYYY-MM-DD HH:mm:ss').format('MM/YY')
+            },
             selectedUnit() {
                 return this.$store.getters.selectedUnit
             },

@@ -29,6 +29,17 @@
     padding: 0;
 }
 
+.centralize-X {
+    margin: auto;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.centralize-Y {
+    margin: auto;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
 /*.bottom-sheet-dialog {*/
 
 /*    max-width: 720px;*/
@@ -83,10 +94,8 @@
 
     #card-to-print {
         position: absolute;
-        left: 30px;
-        top: 30px;
-        width: calc(8.5cm * 2);
-        height: calc(8cm * 2);
+        left: 0;
+        top: 0;
     }
 
     .receipt-to-print, .receipt-to-print * {
@@ -97,7 +106,7 @@
     .receipt-to-print {
         position: absolute;
         left: 0;
-        top: -50px;
+        top: 150px;
         /*height: 100%;*/
     }
 
