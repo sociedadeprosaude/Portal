@@ -829,6 +829,7 @@
                 // this.clear()
                 this.success = true
                 this.loading = false
+                this.getConsultations()
             },
 
             clear() {
