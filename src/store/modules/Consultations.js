@@ -112,6 +112,7 @@ const actions = {
                     id: document.id
                 })
             })
+            commit('setConsultations', consultations)
             return consultations
         } catch (e) {
             throw e

@@ -764,8 +764,9 @@
                 let espArray = Object.values(this.$store.getters.specialties);
                 let cost = undefined
                 espArray.forEach(specialty => {
+                    console.log(specialty)
                     if (specialty.name === this.selectedForm.consultation.specialty.name) {
-
+                        console.log(specialty)
                         specialty.doctors.forEach(doctor => {
                             if (doctor.cpf === this.selectedForm.consultation.doctor.cpf) {
                                 cost = {
@@ -882,6 +883,7 @@
                 // this.$store.dispatch("getClinics");
                 // await this.$store.dispatch("getDoctors");
                 await this.listenConsultations();
+                this.$store.dispatch('getConsultations')
                 // await this.$store.dispatch("getSpecialties");
                 this.loading = false;
             },
