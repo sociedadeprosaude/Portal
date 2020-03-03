@@ -177,6 +177,14 @@ const actions = {
             holder = functions.removeUndefineds(holder)
             firebase.firestore().collection('exams').doc(payload.exams[exam].name).collection('clinics').doc(payload.clinic.id).set(holder)
         }
+    },
+    async getExamClinics(context, exam) {
+        let clinicSnap = await firebase.firestore().collection('exams').doc(exam.name).collection('clinics').get()
+        let clinics = []
+        clinicSnap.forEach((doc) => {
+            clinics.push(doc.data())
+        })
+        return clinics
     }
 };
 

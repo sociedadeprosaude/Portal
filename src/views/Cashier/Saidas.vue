@@ -39,7 +39,7 @@
                                 <v-currency-field
                                         label="valor"
                                         v-model="valor"
-                                        :rules="[rules.required||rules.valor]"
+                                        :rules="[rules.required]"
                                         required
                                 ></v-currency-field>
                             </v-flex>
