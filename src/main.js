@@ -83,7 +83,7 @@ const vuetifyOptions = {
         primary_light: '#63a4ff',
         primary_dark: '#003B8F',
         dark_grey: '#808080',
-        background: '#EFEFEF',
+        background: '#EFEFEF'
 
       },
     },
@@ -97,6 +97,7 @@ new Vue({
   render: h => h(App),
   created() {
     firebase.initializeApp(constants.FIREBASE_CONFIG);
+    firebase.firestore().enablePersistence()
     // firebase.auth().onAuthStateChanged((user) => {
     //   if (user) {
     //     this.$router.push('/')

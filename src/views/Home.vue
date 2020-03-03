@@ -78,7 +78,7 @@
                 </v-layout>
             </v-flex>
             <v-flex xs12 class="text-right">
-                <span>1.3.4</span>
+                <span>1.4</span>
             </v-flex>
         </v-layout>
         <v-layout row wrap v-else class="align-center">
@@ -251,24 +251,26 @@
             }
         },
         computed: {
-            filteredPages() {
-                // if (!this.user.permissions) return []
-                return this.pages.filter(a => {
-                    if (this.user.group === 'admin') {
-                        return true
-                    } else if (this.user.group === 'colaborador') {
-                        return a === this.pages[0]
-                    } else if (this.user.group === 'gerente') {
-                        return a === this.pages[0] || a === this.pages[1]
-                    } else if (this.user.group === 'doctors') {
-                        return a === this.pages[3]
-                    }
-                    return false
-                })
-            },
             user() {
                 return this.$store.getters.user
-            }
+            },
+            filteredPages() {
+                // if (!this.user.permissions) return []
+                if(this.user){
+                    return this.pages.filter(a => {
+                        if (this.user.group === 'admin') {
+                            return true
+                        } else if (this.user.group === 'colaborador') {
+                            return a === this.pages[0]
+                        } else if (this.user.group === 'gerente') {
+                            return a === this.pages[0] || a === this.pages[1]
+                        } else if (this.user.group === 'doctors') {
+                            return a === this.pages[2]
+                        }
+                        return false
+                    })
+                }
+                }
         },
     }
 </script>

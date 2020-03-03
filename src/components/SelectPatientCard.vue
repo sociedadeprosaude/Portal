@@ -10,11 +10,12 @@
                                         <span class="my-headline white--text hidden-xs-only">Buscar Associado</span>
                                         <span class="white--text font-weight-bold hidden-sm-and-up">Buscar Associado</span>
                                     </v-flex>
-                                    <v-spacer/>
+                                    <v-spacer></v-spacer>
                             </v-flex>
                             <v-flex :class="!selectedPatient ? 'xs4' : 'xs12'">
                                 <v-layout row wrap class="text-right">
-                                    <v-spacer/>
+                                    <v-spacer></v-spacer>
+
                                     <v-flex xs1 class="text-right mx-3">
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
@@ -40,6 +41,7 @@
                                             </template>
                                             <span>Gerenciamento de Consultas do Paciente</span>
                                         </v-tooltip>
+
                                     </v-flex>
                                     <v-flex xs1 class="text-right mx-3">
                                         <v-tooltip v-if="selectedPatient" top>
@@ -85,6 +87,21 @@
                                     <v-flex xs1 class="text-right mx-3">
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
+                                                <v-btn
+                                                        v-on="on"
+                                                        @click="patientTag = !patientTag"
+                                                        rounded text class="white--text transparent">
+                                                    <v-icon>credit_card</v-icon>
+                                                    2
+                                                </v-btn>
+                                            </template>
+                                            <span>Cartão de Associado</span>
+                                        </v-tooltip>
+
+                                    </v-flex>
+                                    <v-flex xs1 class="text-right mx-3">
+                                        <v-tooltip v-if="selectedPatient" top>
+                                            <template v-slot:activator="{ on }">
                                                <v-btn
                                                     v-on="on"
                                                     @click="selectUser(undefined)"
@@ -96,7 +113,7 @@
                                         </v-tooltip>
 
                                     </v-flex>
-                                   
+
                                     <v-flex xs1 class="text-right mx-3">
                                         <v-tooltip top>
                                             <template v-slot:activator="{ on }">
@@ -137,7 +154,7 @@
                                         label="CPF">
                                 </v-text-field>
                             </v-flex>
-                            <v-spacer/>
+                            <v-spacer></v-spacer>
                             <v-flex xs12>
                                 <v-text-field
                                         prepend-icon="credit_card"
@@ -172,7 +189,7 @@
                                                text="Buscar">
                                 </submit-button>
                             </v-flex>
-                            <v-divider/>
+                            <v-divider></v-divider>
                             <v-flex xs12>
                                 <v-card v-for="user in foundUsers" :key="user.cpf" class="my-2" @click="selectUser(user)">
                                     <v-layout row wrap class="align-center">
@@ -228,8 +245,9 @@
                                     <v-icon>remove</v-icon>
                                 </v-btn>
                             </v-flex>
-                            <v-flex sm12 xs12 class="px-3">
-                                <v-text-field
+                            <v-row>
+                                <v-col cols="12">
+                                     <v-text-field
                                         outlined
                                         rounded
                                         filled
@@ -238,8 +256,13 @@
                                         v-model="name"
                                         label="Nome">
                                 </v-text-field>
+                                </v-col>
+                               
+                            </v-row>
+                            <v-flex sm12 xs12 class="px-3">
+                                
                             </v-flex>
-                            <v-flex sm6 xs12 class="px-3">
+                            <v-flex sm4 xs12 class="px-3">
                                 <v-text-field
                                         outlined
                                         rounded
@@ -252,7 +275,7 @@
                                         label="Data de Nascimento">
                                 </v-text-field>
                             </v-flex>
-                            <v-flex sm6 xs12 class="px-3">
+                            <v-flex sm4 xs12 class="px-3">
                                 <v-text-field
                                         outlined
                                         rounded
@@ -262,6 +285,18 @@
                                         v-mask="mask.cpf"
                                         v-model="cpf"
                                         label="CPF">
+                                </v-text-field>
+                            </v-flex>
+                            <v-flex sm4 xs12 class="px-3">
+                                <v-text-field
+                                        outlined
+                                        rounded
+                                        filled
+                                        :disabled="selectedPatient !== undefined"
+                                        placeholder="Campo obrigatório *"
+                                        type="number"
+                                        v-model="rg"
+                                        label="RG">
                                 </v-text-field>
                             </v-flex>
                             <v-flex sm12 xs12 class="px-3">
@@ -343,7 +378,7 @@
                                         </v-text-field>
                                     </v-flex>
 
-                                    <v-spacer> </v-spacer>
+                                    <v-spacer></v-spacer>
                                      <v-flex sm4 xs12 class="px-3">
                                         <v-text-field
                                                 outlined
@@ -404,13 +439,13 @@
                                             </v-progress-circular>
                                         </v-layout>
                                     </v-flex>
-                                    <v-spacer/>
+                                    <v-spacer></v-spacer>
                                     <v-flex xs12 sm3>
                                         <v-select label="UF" hide-details single-line v-model="address.uf"
                                                   :items="states" menu-props="auto">
                                         </v-select>
                                     </v-flex>
-                                    <v-spacer/>
+                                    <v-spacer></v-spacer>
                                     <v-flex xs12 sm3>
                                         <v-select v-if="address.uf" label="Cidade" class="mr-2" single-line
                                                   v-model="address.city" :items="cities[address.uf]" menu-props="auto"
@@ -437,7 +472,7 @@
                             </v-flex>
                             <v-flex xs12 class="text-right">
 
-                                <submit-button :disabled="!(this.name !== '' && this.name && this.cpf !== '' && this.cpf && this.birthDate !== '' && this.birthDate
+                                <submit-button :disabled="!(this.name !== '' && this.name && ((this.cpf !== '' && this.cpf) || (this.rg !== '' && this.rg)) && this.birthDate !== '' && this.birthDate
                                 && this.dateValid(this.birthDate) && this.telephones !== [''])" :success="success"
                                                @click="registerPatient()" :loading="loading"
                                                text="Salvar">
@@ -450,7 +485,10 @@
             </v-flex>
         </v-layout>
         <v-dialog v-model="patientCard">
-            <patient-card :user="selectedPatient"/>
+            <patient-card :user="selectedPatient"></patient-card>
+        </v-dialog>
+        <v-dialog v-model="patientTag">
+            <patient-tag :user="selectedPatient"></patient-tag>
         </v-dialog>
     </v-container>
 </template>
@@ -459,7 +497,9 @@
     import {mask} from 'vue-the-mask'
     import SubmitButton from "./SubmitButton";
     import PatientCard from "./PatientCard";
-    var moment = require("moment");
+    import PatientTag from "./PatientTag";
+
+    let moment = require("moment");
     export default {
         directives: {
             mask,
@@ -471,7 +511,8 @@
         },
         components: {
             SubmitButton,
-            PatientCard
+            PatientCard,
+            PatientTag
         },
         computed: {
           selectedPatient() {
@@ -494,10 +535,12 @@
         data() {
             return {
                 patientCard: false,
+                patientTag: false,
                 addPatient: false,
                 name: undefined,
                 dependentName:undefined,
                 cpf: undefined,
+                rg: undefined,
                 numAss: undefined,
                 birthDate: undefined,
                 email: undefined,
@@ -531,16 +574,8 @@
         },
         watch: {
             cpf(val) {
-
-                if (!this.selectedPatient && !this.addPatient) {
-                    this.cpf = undefined
-                    return
-                }
-
-                if(this.selectedPatient && val !== this.selectedPatient.cpf) {
+                if(this.selectedPatient && val !== this.selectedPatient.cpf)
                     this.cpf = this.selectedPatient.cpf;
-                }
-                
             },
             addPatient(val) {
                 if (val) {
@@ -553,10 +588,11 @@
         methods: {
             dateValid(value){
                 if(value)
-
-                    return value.length < 10 || moment(value,'DD/MM/YYYY').isValid();
-
+                    return value.length < 10 || moment(value,'DD/MM/YYYY').isValid()
                 return true
+            },
+            showSecondUserCard(user) {
+                this.patientTag = !this.patientTag
             },
             showUserCard(user) {
                 this.patientCard = !this.patientCard
@@ -566,8 +602,8 @@
                     this.formError = 'Nome não pode ser vazio';
                     return false
                 }
-                if (!this.cpf || this.cpf.length === 0) {
-                    this.formError = 'CPF não pode ser vazio';
+                if ((!this.cpf || this.cpf.length === 0) && (!this.rg || this.rg.length === 0)) {
+                    this.formError = 'É preciso preencher o CPF ou o RG';
                     return false
                 }
                 if (!this.birthDate) {
@@ -584,7 +620,7 @@
                 address.loading = true;
                 let resp;
                 try {
-                    resp = await this.$store.dispatch('getAddressByCep', address.cep.replace('.', '').replace('-', ''));
+                    resp = await this.$store.dispatch('getAddressByCep', address.cep.replace('.', '').replace('-', ''))
                     if (resp.erro) {
                         address.cepError = true;
                         return
@@ -604,29 +640,23 @@
                 if (!this.validateFiedls()) {
                     return
                 }
-
-                this.loading = true;
-                var copyDependents = [];
-
+                this.loading = true
+                var copyDependents = []
                 for (let add in this.addresses) {
                     delete this.addresses[add].loading
                 }
 
                 for(let dependent in this.dependents){
+                    var birthDate = moment( this.dependents[dependent].birthDate,"DD/MM/YYYY").format("YYYY-MM-DD")
 
-                    var birthDate = moment( this.dependents[dependent].birthDate,"DD/MM/YYYY").format("YYYY-MM-DD");
-
-                  
-                    //delete this.dependents[dependent].birthDate
-                   // this.dependents[dependent].birthDate = birthDate
-                   
                    copyDependents.push(Object.assign({birthDate:birthDate}, {name:this.dependents[dependent].name,sex:this.dependents[dependent].sex,dependentDegree:this.dependents[dependent].dependentDegree}))
-                   
+
                 }
                 let patient = {
                     name: this.name.toUpperCase(),
-                    cpf: this.cpf.replace(/\./g, '').replace('-', ''),
+                    cpf: this.cpf ? this.cpf.replace(/\./g, '').replace('-', '') : undefined,
                     email: this.email,
+                    rg: this.rg ? this.rg.replace(/\./g, '').replace('-', '').replace('.', '') : undefined,
                     association_number: this.numAss,
                     birth_date: moment(this.birthDate,"DD/MM/YYYY").format("YYYY-MM-DD"),
                     sex: this.sex,
@@ -635,11 +665,40 @@
                     dependents:copyDependents,
                     type: 'PATIENT'
                 }
+                let foundPatient
+                let identifier
+                if (patient.cpf) {
+                    foundPatient = await this.$store.dispatch('getPatient', patient.cpf)
+                    identifier = {
+                        name: 'cpf',
+                        value: patient.cpf
+                    }
+                } else {
+                    foundPatient = await this.$store.dispatch('getPatient', 'RG' + patient.rg)
+                    identifier = {
+                        name: 'rg',
+                        value: patient.rg
+                    }
+                }
+                if (foundPatient) {
+                    let dialog = {
+                        header: `Já existe um associado com o ${identifier.name} ${identifier.value}, substituir?`,
+                        body: `${foundPatient.name}, ${identifier.name}: ${identifier.value}, Num. Ass: ${foundPatient.association_number}`,
+                        show: true,
+                        functionToRun: () => this.addUserToFirestore(patient)
+                    }
+                    this.$store.commit('setSystemDialog', dialog)
+                    return
+                }
+
+                this.addUserToFirestore(patient)
+            },
+            async addUserToFirestore(patient) {
                 await this.$store.dispatch('addUser', patient)
                 this.success = true
                 this.loading = false
                 this.selectUser(patient)
-                this.fillFormUser(patient)
+                // this.fillFormUser(patient)
                 setTimeout(() => {
                     this.success = false
                 }, 1000)
@@ -662,24 +721,24 @@
                     this.fillFormUser(user)
                 }
                 else {
-
-                    this.cpf= undefined;
-                    this.name= undefined;
-                    this.numAss= undefined;
-                    this.birthDate = undefined;
-                    this.email = undefined;
-                    this.telephones = [];
-                    this.addresses = [];
-                    this.dependents = [];
+                    this.cpf= undefined
+                    this.name= undefined
+                    this.numAss= undefined
+                    this.rg = undefined
+                    this.birth_date = undefined
+                    this.email = undefined
+                    this.telephones = ['']
+                    this.addresses = []
+                    this.dependents = []
                     this.dependentName = undefined
-                    
+                    this.$emit('removed')
                 }
-                this.$store.commit('setSelectedPatient', user);
-                this.$store.commit('clearSelectedDependent');
-                this.foundUsers = undefined;
+                this.$store.commit('setSelectedPatient', user)
+                this.$store.commit('clearSelectedDependent')
+                this.foundUsers = undefined
                 this.addPatient = false
             },
-            
+
             async listDependents() {
                 this.loading = true;
                 this.foundDependents = this.selectedPatient.dependents;
@@ -699,26 +758,25 @@
             },
 
             fillFormUser(user) {
-
-                this.name = user.name;
-                this.cpf = user.cpf;
-                this.email = user.email;
-                this.numAss = user.association_number;
-                this.birthDate = moment(user.birth_date).format('DD-MM-YYYY');
-                this.sex = user.sex;
-                this.dependents = user.dependents ? user.dependents : [];
-                this.telephones = user.telephones ? user.telephones : [''];
+                this.name = user.name
+                this.cpf = user.cpf
+                this.email = user.email
+                this.rg = user.rg
+                this.numAss = user.association_number
+                this.birthDate = moment(user.birth_date).format('DD-MM-YYYY')
+                this.sex = user.sex
+                this.dependents = user.dependents ? user.dependents : []
+                this.telephones = user.telephones ? user.telephones : ['']
                 for (let add in user.addresses) {
                     delete user.addresses[add].loading
                 }
-
-                this.addresses = user.addresses ;
+                this.addresses = user.addresses
                 if(user.dependents){
                     for(let index in user.dependents){
                         var patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
-                        var date  = user.dependents[index].birthDate;
+                        var date  = user.dependents[index].birthDate
                         if(!patt.test(date))
-                            date = moment(date,"YYYY-MM-DD").format("DD/MM/YYYY");
+                            date = moment(date,"YYYY-MM-DD").format("DD/MM/YYYY")
                         user.dependents[index].birthDate = date
                     }
                      this.dependents = user.dependents
@@ -729,7 +787,7 @@
             },
             fillFormOldUser(oldUser) {
                 this.name = oldUser.nome;
-                this.numAss = parseInt(oldUser.codigo);
+                this.numAss = parseInt(oldUser.sequencia);
                 this.birthDate = moment(oldUser.nasc).format('DD-MM-YYYY');
                 this.sex = oldUser.sexo === 'M' ? 'Masculino' : 'Feminino';
                 this.telephones = [''];
@@ -749,7 +807,7 @@
                     this.telephones = ['']
                 }
                 let address = {};
-                address.street = oldUser.rua;
+                address.street = oldUser.rua
                 address.complement = oldUser.complemento;
                 address.city = oldUser.cid;
                 address.uf = oldUser.uf;

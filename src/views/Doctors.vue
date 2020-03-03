@@ -10,7 +10,7 @@
                         :headers="headers"
                         :items="doctorsArray"
                         :search="search"
-                        item-key="name"
+                        item-key="cpf"
                         class="elevation-1"
                         :items-per-page="-1"
                 >

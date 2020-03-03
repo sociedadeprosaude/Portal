@@ -3,7 +3,7 @@
         <v-flex xs8>
             <v-layout align-center row wrap class="ml-6">
                 <v-flex xs12 md5>
-                    <v-select
+                    <v-combobox
                             prepend-icon="school"
                             v-model="especialidade"
                             :items="specialties"
@@ -28,11 +28,11 @@
                                     color="info"
                             >{{ data.item.name }}</v-chip>
                         </template>
-                    </v-select>
+                    </v-combobox>
                 </v-flex>
                 <v-spacer></v-spacer>
                 <v-flex xs12 md5>
-                    <v-select
+                    <v-combobox
                             prepend-icon="person"
                             v-model="selectedDoctor"
                             :items="doctors"
@@ -57,7 +57,7 @@
                                     color="info"
                             >{{ data.item.name }}</v-chip>
                         </template>
-                    </v-select>
+                    </v-combobox>
                 </v-flex>
 
                 <v-flex xs12 md12>
@@ -148,6 +148,14 @@
                                                             text-color="white"
                                                     >Vagas : {{consulta.vagas}}
                                                     </v-chip>
+                                                    <v-chip class="mt-1 mr-1" color="primary_dark" text-color="white">
+                                                        Consultas :
+                                                        {{consulta.numConsultations}}
+                                                    </v-chip>
+                                                    <v-chip class="mt-1" color="primary_dark" text-color="white">
+                                                        Retornos :
+                                                        {{consulta.returns}}
+                                                    </v-chip>
                                                     <v-chip
                                                             class="mt-1"
                                                             color="primary_dark"
@@ -180,6 +188,9 @@
                     </v-layout>
                 </v-container>
             </v-container>
+            <v-flex xs12>
+                <v-btn class="primary" rounded @click="listenMoreConsultations">Carregar mais</v-btn>
+            </v-flex>
         </v-flex>
         <!--      <v-divider vertical></v-divider>-->
         <v-flex id="lknlknlk" v-if="!showAlert" xs4 class="text-center">
@@ -318,22 +329,6 @@
                                                 </v-layout>
                                             </v-flex>
 
-                                            <!--                                            <v-flex xs12 sm6>-->
-                                            <!--                                                <v-text-field-->
-                                            <!--                                                        readonly-->
-                                            <!--                                                        prepend-icon="event"-->
-                                            <!--                                                        v-model="getConsultationDate(createConsultationForm.consultation.date)"-->
-                                            <!--                                                        label="Dia da Consulta"-->
-                                            <!--                                                ></v-text-field>-->
-                                            <!--                                            </v-flex>-->
-                                            <!--                                            <v-flex xs12 sm6>-->
-                                            <!--                                                <v-text-field-->
-                                            <!--                                                        readonly-->
-                                            <!--                                                        prepend-icon="access_alarm"-->
-                                            <!--                                                        v-model="createConsultationForm.hora"-->
-                                            <!--                                                        label="Hora da Consulta"-->
-                                            <!--                                                ></v-text-field>-->
-                                            <!--                                            </v-flex>-->
                                             <v-flex xs12 sm8>
                                                 <v-select
                                                         readonly
@@ -394,32 +389,11 @@
                                 </v-card-text>
                                 <v-divider></v-divider>
                                 <v-card-actions>
-                                    <!-- <v-dialog v-model="loader" hide-overlay persistent width="300">
-                                        <v-card color="primary" dark>
-                                            <v-card-text>
-                                                Salvando...
-                                                <v-progress-linear indeterminate color="white"
-                                                                   class="mb-0"></v-progress-linear>
-                                            </v-card-text>
-                                        </v-card>
-                                    </v-dialog> -->
                                     <v-btn rounded class="error" @click="dialog = false">
                                         Cancelar
                                         <v-icon right>clear</v-icon>
                                     </v-btn>
                                     <v-spacer></v-spacer>
-                                  <!--   <v-btn
-                                            color="success"
-                                            rounded
-                                            @click="save"
-                                            v-if="status === 'Pago' && num_recibo !== ''"
-                                    >
-                                        Confirmar
-                                        <v-icon right>done</v-icon>
-                                        <template v-slot:loader>
-                                            <span>Aguarde...</span>
-                                        </template>
-                                    </v-btn> -->
                                     <submit-button
                                             color="success"
                                             rounded
@@ -428,7 +402,7 @@
                                             :loading="loading"
                                             @click="save"
                                             text="Confirmar"
-                                          
+
                                     >
                                     </submit-button>
                                 </v-card-actions>
@@ -525,6 +499,8 @@
             success : false,
             loading: false,
             pacienteSelecionado:undefined,
+            consultationsListenerUnsubscriber: undefined,
+            daysToListen: 30,
 
             //-------------------------------------------Scroll------------------------------------------------
             type: "number",
@@ -661,6 +637,9 @@
         created() {
             window.addEventListener("scroll", this.handleScroll);
         },
+        beforeDestroy() {
+            this.consultationsListenerUnsubscriber()
+        },
         methods: {
             scheduleAppointment(consultation) {
                 this.fillConsultationForm(consultation)
@@ -696,6 +675,12 @@
                     newArray[i].vagas = newArray[i].consultations.filter((a) => {
                         return !a.user
                     }).length
+                    newArray[i].numConsultations = newArray[i].consultations.filter(a => {
+                        return a.user && a.type === "Consulta";
+                    }).length;
+                    newArray[i].returns = newArray[i].consultations.filter(a => {
+                        return a.user && a.type === "Retorno";
+                    }).length;
                 }
                 return newArray
             },
@@ -721,10 +706,7 @@
             async initialConfig() {
                 this.loading = true
                 await this.$store.dispatch('getDoctors')
-                await this.$store.dispatch('getConsultations',{
-                    start_date: moment().format('YYYY-MM-DD 00:00:00'),
-                    final_date: moment().add(30, 'days').format('YYYY-MM-DD 23:59:59')
-                })
+                await this.listenConsultations()
                 await this.$store.dispatch("getSpecialties")
 
                 this.query = this.$route.params.q
@@ -734,11 +716,28 @@
                 }
                 this.especialidade = this.query.especialidade
                 this.pacienteSelecionado = this.query.pacienteObj
-                this.selectedDoctor = this.query.doctor
+                //this.selectedDoctor = this.query.doctor
                 this.status = this.query.status
                 this.num_recibo = this.query.num_recibo
                 this.modalidade = this.query.modalidade
                 this.loading = false
+            },
+            async listenConsultations() {
+                this.consultationsListenerUnsubscriber = await this.$store.dispatch("listenConsultations", {
+                    start_date: moment()
+                        .subtract(4, "hours")
+                        .format("YYYY-MM-DD HH:mm:ss"),
+                    final_date: moment()
+                        .add(this.daysToListen, "days")
+                        .format("YYYY-MM-DD 23:59:59")
+                });
+            },
+            async listenMoreConsultations() {
+                if (this.consultationsListenerUnsubscriber) {
+                    this.consultationsListenerUnsubscriber()
+                }
+                this.daysToListen += 10
+                this.listenConsultations()
             },
             backTop() {
                 this.$vuetify.goTo(0, this.options)

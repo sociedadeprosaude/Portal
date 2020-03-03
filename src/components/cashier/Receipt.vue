@@ -115,19 +115,6 @@
                         </v-tab-item>
                     </v-tabs>
                 </v-flex>
-                <!--            <v-flex>-->
-
-                <!--                <v-card flat class="my-2">-->
-                <!--                    <v-layout row wrap xs12 v-for="(item,i) in examsPerClinic" :key="i" class="my-2">-->
-                <!--                        <v-flex xs12 class="text-right white">-->
-                <!--                            <v-btn class="transparent hidden-print-only" text @click="print('guide-' + i)">-->
-                <!--                                <v-icon>print</v-icon>-->
-                <!--                            </v-btn>-->
-                <!--                        </v-flex>-->
-                <!--                        <attendance-guide :guide=item :ref="'guide-' + i" :id="'guide-' + i"></attendance-guide>-->
-                <!--                    </v-layout>-->
-                <!--                </v-card>-->
-                <!--            </v-flex>-->
             </v-layout>
         </v-container>
     </v-container>

@@ -3,7 +3,7 @@
     <v-flex xs8>
       <v-layout align-center row wrap class="ml-6">
         <v-flex xs12 md5>
-          <v-select
+          <v-combobox
             prepend-icon="school"
             v-model="especialidade"
             :items="specialties"
@@ -28,11 +28,11 @@
                 color="info"
               >{{ data.item.name }}</v-chip>
             </template>
-          </v-select>
+          </v-combobox>
         </v-flex>
         <v-spacer></v-spacer>
         <v-flex xs12 md5>
-          <v-select
+          <v-combobox
             prepend-icon="person"
             v-model="selectedDoctor"
             :items="doctors"
@@ -57,7 +57,7 @@
                 color="info"
               >{{ data.item.name }}</v-chip>
             </template>
-          </v-select>
+          </v-combobox>
         </v-flex>
 
         <v-flex xs12 md12>
@@ -143,6 +143,14 @@
                             text-color="white"
                           >{{consulta.date.split(' ')[1]}}</v-chip>
                           <v-chip color="primary_dark" text-color="white">Vagas : {{consulta.vagas}}</v-chip>
+                          <v-chip class="mt-1 mr-1" color="primary_dark" text-color="white">
+                            Consultas :
+                            {{consulta.numConsultations}}
+                          </v-chip>
+                          <v-chip class="mt-1" color="primary_dark" text-color="white">
+                            Retornos :
+                            {{consulta.returns}}
+                          </v-chip>
                           <v-chip
                             class="mt-1"
                             color="primary_dark"
@@ -580,7 +588,6 @@ export default {
       // return this.formatDate(this.index_Selecionado.data);
     },
     consultas() {
-      //console.log('Especialidade',this.especialidade)
       let consultas = this.formatConsultationsArray(
         this.$store.getters.consultations
       ).filter(a => {
@@ -767,6 +774,14 @@ export default {
         newArray[i].vagas = newArray[i].consultations.filter(a => {
           return !a.user;
         }).length;
+         newArray[i].numConsultations = newArray[i].consultations.filter(a => {
+
+          return a.user && a.type === "Consulta";
+        }).length;
+        newArray[i].returns = newArray[i].consultations.filter(a => {
+
+          return a.user && a.type === "Retorno";
+        }).length;
       }
       return newArray;
     },
@@ -797,9 +812,9 @@ export default {
       await this.$store.dispatch("getDoctors");
       await this.$store.dispatch("getConsultations", {
         start_date: moment().format("YYYY-MM-DD 00:00:00"),
-        final_date: moment()
+       /*  final_date: moment()
           .add(30, "days")
-          .format("YYYY-MM-DD 23:59:59")
+          .format("YYYY-MM-DD 23:59:59") */
       });
       await this.$store.dispatch("getSpecialties");
 

@@ -23,24 +23,24 @@
                                 </v-btn>
                             </v-flex>
                             <v-flex xs12 class="my-2" v-if="!loadingDoctors">
-                            <v-combobox
-                                    v-model="selectedDoctor"
-                                    auto-select-first
-                                    chips
-                                    dense
-                                    flat
-                                    clearable
-                                    label="Médico"
-                                    hint="Médico"
-                                    item-text="name"
-                                    return-object
-                                    :items="doctors">
-                            </v-combobox>
+                                <v-combobox
+                                        v-model="selectedDoctor"
+                                        auto-select-first
+                                        chips
+                                        dense
+                                        flat
+                                        clearable
+                                        label="Médico"
+                                        hint="Médico"
+                                        item-text="name"
+                                        return-object
+                                        :items="doctors">
+                                </v-combobox>
                             </v-flex>
                             <v-flex xs12 v-else class="my-2">
                                 <v-layout column wrap class="align-center">
                                     <span>Carregando Médicos...</span>
-                                    <v-progress-circular class="primary--text" indeterminate/>
+                                    <v-progress-circular class="primary--text" indeterminate></v-progress-circular>
                                 </v-layout>
                             </v-flex>
                             <v-flex xs12 v-if="searchBudgetBtn">
@@ -168,35 +168,35 @@
                                 <v-spacer/>
                             </v-flex>
                             <v-layout row wrap>
-                               <!-- <v-flex xs12>
-                                    <v-select class="mt-5" label="Forma de pagamento" :items="FormasDePagamento"
-                                              v-model="formaPagamento"></v-select>
-                                </v-flex> -->
+                                <!-- <v-flex xs12>
+                                     <v-select class="mt-5" label="Forma de pagamento" :items="FormasDePagamento"
+                                               v-model="formaPagamento"></v-select>
+                                 </v-flex> -->
                                 <v-flex>
-                                  <!--  <v-flex xs6 v-if="formaPagamento === 'Crédito'">
-                                        <v-select :items="parcels" v-model="parcel"
-                                                  label="Parcelas"></v-select>
-                                    </v-flex> -->
-                                    <v-flex sm12 xs12 class="px-3">
-                                        <v-layout row wrap class="align-center" v-for="(payment, index) in payments" :key="index">
+                                    <!--  <v-flex xs6 v-if="formaPagamento === 'Crédito'">
+                                          <v-select :items="parcels" v-model="parcel"
+                                                    label="Parcelas"></v-select>
+                                      </v-flex> -->
+                                    <v-flex sm12 xs12 class="px-3" v-if="payments.length > 1">
+                                        <v-layout row wrap class="align-center" v-for="(payment, index) in payments"  :key="index">
                                             <v-flex xs10>
                                                 <v-select
-                                                            outlined
-                                                            rounded
-                                                            :items="FormasDePagamento"
-                                                            v-model="payments[index]"
-                                                            label="Forma de Pagamento">
+                                                        outlined
+                                                        rounded
+                                                        :items="FormasDePagamento"
+                                                        v-model="payments[index]"
+                                                        label="Forma de Pagamento">
                                                 </v-select>
-                                                </v-flex>
-                                                <v-flex xs5 v-if="payments[index] === 'Crédito'">
-                                                    <v-currency-field
-                                                            filled
-                                                            v-model="valuesPayments[index]"
-                                                            label="Valor"
-                                                            v-on="Pagamento"
-                                                    >
-                                                    </v-currency-field>
-                                                </v-flex>
+                                            </v-flex>
+                                            <v-flex xs5 v-if="payments[index] === 'Crédito'">
+                                                <v-currency-field
+                                                        filled
+                                                        v-model="valuesPayments[index]"
+                                                        label="Valor"
+                                                        v-on="Pagamento"
+                                                >
+                                                </v-currency-field>
+                                            </v-flex>
                                             <v-flex xs10 v-if="payments[index] !== 'Crédito'">
                                                 <v-currency-field
                                                         filled
@@ -212,16 +212,45 @@
                                                           filled>
                                                 </v-select>
                                             </v-flex>
-                                                <v-flex xs2>
-                                                    <v-btn
+                                            <v-flex xs2>
+                                                <v-btn
                                                         @click="index === 0 ? adicionarFormaDePagamento() : apagarFormaDePagamento(index)"
                                                         text class="transparent">
-                                                        <v-icon v-if="index === 0">add_circle</v-icon>
-                                                        <v-icon v-else>remove_circle</v-icon>
-                                                    </v-btn>
-                                                </v-flex>
+                                                    <v-icon v-if="index === 0">add_circle</v-icon>
+                                                    <v-icon v-else>remove_circle</v-icon>
+                                                </v-btn>
+                                            </v-flex>
                                         </v-layout>
                                     </v-flex>
+                                    <v-flex sm12 xs12 class="px-3" v-if="payments.length === 1">
+                                        <v-layout row wrap class="align-center" v-for="(payment, index) in payments"  :key="index">
+                                            <v-flex xs10>
+                                                <v-select
+                                                        outlined
+                                                        rounded
+                                                        :items="FormasDePagamento"
+                                                        v-model="payments[index]"
+                                                        label="Forma de Pagamento"
+                                                        v-on="Pagamento">
+                                                </v-select>
+                                            </v-flex>
+                                            <v-flex xs10 v-if="payments[index] === 'Crédito'">
+                                                <v-select :items="parcels" v-model="parcel"
+                                                          label="Parcelas"
+                                                          filled>
+                                                </v-select>
+                                            </v-flex>
+                                            <v-flex xs2>
+                                                <v-btn
+                                                        @click="index === 0 ? adicionarFormaDePagamento() : apagarFormaDePagamento(index)"
+                                                        text class="transparent">
+                                                    <v-icon v-if="index === 0">add_circle</v-icon>
+                                                    <v-icon v-else>remove_circle</v-icon>
+                                                </v-btn>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-flex>
+
                                     <v-layout wrap>
                                         <v-flex xs5>
                                             <v-text-field label="Desconto: %"
@@ -306,7 +335,7 @@
         </v-layout>
         <v-dialog v-model="searchPatient" transition="dialog-bottom-transition"
         >
-            <select-patient-card max-width="100%"/>
+            <select-patient-card @removed="clearCart" max-width="100%"/>
         </v-dialog>
         <v-dialog v-model="budgetToPrintDialog" v-if="budgetToPrint">
             <budget-to-print @close="budgetToPrintDialog = false" :budget="budgetToPrint"/>
@@ -314,7 +343,7 @@
         <!--        <v-flex class="hidden-screen-only">-->
         <!--            <receipt :budgets="selectedBudget"></receipt>-->
         <!--        </v-flex>-->
-        <v-dialog v-model="receiptDialog" v-if="selectedIntake">
+        <v-dialog v-model="receiptDialog" v-if="selectedIntake" fullscreen transition="dialog-bottom-transition">
             <receipt @close="receiptDialog = false" :budget=selectedIntake>
             </receipt>
         </v-dialog>
@@ -322,7 +351,6 @@
 </template>
 
 <script>
-    import constants from "../../utils/constants";
     import SelectPatientCard from "../SelectPatientCard";
     import SubmitButton from "../SubmitButton";
     import BudgetToPrint from "./BudgetToPrint";
@@ -355,7 +383,7 @@
                 moneyDiscout: 0,
                 now: moment().valueOf(),
                 data: moment().format("YYYY-MM-DD HH:mm:ss"),
-                parcelas: '',
+                parcelas: '1',
                 totalCusto: 0,
                 percentageDiscount: 0,
                 moneyDiscount: 0,
@@ -372,7 +400,7 @@
         },
         computed: {
             loadingDoctors() {
-              return !this.$store.getters.doctorsLoaded
+                return !this.$store.getters.doctorsLoaded
             },
             doctors() {
                 return Object.values(this.$store.getters.doctors)
@@ -387,7 +415,7 @@
                 return this.$store.getters.selectedPatient
             },
             cartItems() {
-              return this.$store.getters.getShoppingCartItems
+                return this.$store.getters.getShoppingCartItems
             },
             exames() {
                 // return this.$store.getters.selectedBudget.exams
@@ -398,9 +426,9 @@
                 return this.$store.getters.getShoppingCartItemsByCategory.consultations
             },
             //pacotes() {
-                // return this.$store.getters.selectedBudget.packages
-           //     return this.$store.getters.getShoppingCartItemsByCategory.packages
-           // },
+            // return this.$store.getters.selectedBudget.packages
+            //     return this.$store.getters.getShoppingCartItemsByCategory.packages
+            // },
             cost() {
                 let itens = this.$store.getters.getShoppingCartItems;
                 let total = 0;
@@ -426,14 +454,19 @@
                 let tamanho= this.payments.length;
                 console.log('payments:', this.payments);
                 let pagando=0
-                for(let i=0; i < tamanho; i++){
-                    if(this.valuesPayments[i] !== ''){
-                        pagando += parseFloat(this.valuesPayments[i])
+                if(tamanho === 1 && this.payments[0] !== ''){
+                    this.valuesPayments[0]= parseFloat(this.total)
+                    pagando = parseFloat(this.valuesPayments[0])
+                    console.log('pagando=', pagando )
+                }
+                else{
+                    for(let i=0; i < tamanho; i++){
+                        if(this.valuesPayments[i] !== ''){
+                            pagando += parseFloat(this.valuesPayments[i])
+                        }
                     }
                 }
                 this.Pago= pagando.toFixed(2);
-                console.log('pago: ', this.Pago);
-                console.log('total: ', this.total)
             }
         },
         watch: {
@@ -553,8 +586,6 @@
             },
             async saveBudget(budget) {
                 this.$store.commit('setSelectedBudget', budget);
-                // this.selectedBudget = Object.assign({}, budget)
-                console.log('2', this.budget);
                 await this.$store.dispatch('addBudget', budget);
                 this.updateBudgetsIntakes()
             },
@@ -602,5 +633,4 @@
 </script>
 
 <style scoped>
-
 </style>

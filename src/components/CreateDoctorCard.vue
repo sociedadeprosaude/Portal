@@ -326,7 +326,7 @@
                     type: 'doctor'
                 }
 
-                await this.$store.dispatch('deleteDoctor', doctor)
+                //await this.$store.dispatch('deleteDoctor', doctor)
                 await this.$store.dispatch('addDoctor', doctor)
                 // await this.$store.dispatch('getDoctors')
                 //==========================começo da nova função

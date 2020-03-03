@@ -1,7 +1,7 @@
 <template>
     <v-layout row wrap>
         <v-flex sm8 xs12 class="pr-2">
-            <v-layout class="align-center ml-6" row wrap>
+            <v-layout  row wrap class="ml-6 align-center">
                 <v-flex xs12 md5>
                     <v-combobox
                             prepend-icon="school"
@@ -139,7 +139,9 @@
                                             </h4>
                                         </v-flex>
                                       <v-flex xs12 class="mb-1">
+
                                         <v-divider/>
+
                                       </v-flex>
 
                                         <v-flex class="my-0" xs12>
@@ -209,7 +211,9 @@
         <v-flex v-if="!showAlert" xs4 class="text-center hidden-xs-only">
             <v-layout row wrap class="align-center justify-center">
                 <v-flex xs12 class="text-center">
+
                     <select-patient-card ref="patientCard" max-width="1000px"/>
+
                 </v-flex>
                 <v-flex xs12 class="text-center mt-4">
                     <v-date-picker
@@ -254,6 +258,7 @@
                                                         v-model="createConsultationForm.user.name"
                                                         label="Nome do Paciente">
                                                 </v-text-field>
+
                                             </v-flex>
                                             <v-flex xs12 v-if="foundDependents && foundDependents.length > 0">
                                                 <v-select
@@ -292,6 +297,7 @@
                                                         v-model="createConsultationForm.user.cpf"
                                                         label="CPF">
                                                 </v-text-field>
+
                                             </v-flex>
                                             <v-flex xs12 sm6>
                                                 <v-text-field
@@ -358,6 +364,7 @@
                                                         hide-details
                                                         outlined>
                                                 </v-text-field>
+
                                             </v-flex>
                                             <v-flex xs12 sm8>
                                                 <v-progress-circular
@@ -365,6 +372,7 @@
                                                         indeterminate
                                                         color="primary">
                                                 </v-progress-circular>
+
                                                 <v-select
                                                         v-else
                                                         prepend-icon="assignment_turned_in"
@@ -401,6 +409,7 @@
                                                         label="Modalidade"
                                                         chips>
                                                 </v-text-field>
+
                                             </v-flex>
                                             <v-flex xs12 sm6>
                                                 <v-text-field
@@ -439,8 +448,7 @@
                                             <v-card-text>
                                                 Salvando...
                                                 <v-progress-linear indeterminate color="white"
-                                                                   class="mb-0">
-                                                </v-progress-linear>
+                                                                   class="mb-0"/>
                                             </v-card-text>
                                         </v-card>
                                     </v-dialog>
@@ -584,7 +592,9 @@
                 let espArray = Object.values(this.$store.getters.specialties);
                 espArray = espArray.filter(specialty => {
                     if (!specialty.doctors)
+
                         console.log('Teeeee', specialty);
+
                     if (!this.selectedDoctor) {
                         return true;
                     }
@@ -624,12 +634,14 @@
                         if (this.especialidade.name !== a.specialty.name) {
                             response = false;
                         }
+
                     }
                     if (this.clinic) {
                         if (this.clinic !== a.clinic.name) {
                             response = false;
                         }
                     }
+
                     //console.log("resposta:", response)
                     return response;
                 });
@@ -644,7 +656,6 @@
                                                 ...this.$store.getters.doctors
                                             }
                                             return Object.values(docs) */
-
                     let docArray = Object.values(this.$store.getters.doctors);
                     docArray = docArray.filter(doctor => {
                         if (!this.especialidade) {
@@ -666,8 +677,7 @@
                 }
             },
             selectedPatient() {
-                let paciente = this.$store.getters.selectedPatient;
-                return paciente;
+                return this.$store.getters.selectedPatient;
             },
             foundDependents() {
                 return this.selectedPatient.dependents;
@@ -716,7 +726,9 @@
                                       0,
                                       this.findPos(document.getElementById("group-" + val), "group-" + val)
                                     ); */
+
                 if (val === this.consultas[0].date) this.$vuetify.goTo(0, this.options);
+
                 else this.$vuetify.goTo("#group-" + val, this.options);
             }
         },
@@ -754,26 +766,29 @@
                     consultation: consultation.consultations.find(a => {
                         return !a.user;
                     })
+
                 };
 
                 this.thereIsPaymentNumber();
-
                 this.createConsultationForm = this.selectedForm;
             },
 
             specialtyCost() {
                 let espArray = Object.values(this.$store.getters.specialties);
+
                 let cost = undefined;
                 espArray.forEach(specialty => {
                     console.log(specialty);
                     if (specialty.name === this.selectedForm.consultation.specialty.name) {
                         console.log(specialty);
+
                         specialty.doctors.forEach(doctor => {
                             if (doctor.cpf === this.selectedForm.consultation.doctor.cpf) {
                                 cost = {
                                     cost: doctor.cost,
                                     price: doctor.price,
                                     doctorConsultation: doctor
+
                                 };
                                 return cost
                             }
@@ -808,11 +823,12 @@
                             this.loaderPaymentNumber = false
                         })
                         .catch(response => {
-
+                            console.log('kjkjhkjh');
                             let cost = this.specialtyCost();
                             console.log(cost);
                             if (cost && cost.price === 0) {
                                 this.status = "Pago";
+
                                 this.loaderPaymentNumber = false
                             }
                             this.loaderPaymentNumber = false
@@ -884,7 +900,9 @@
                 // this.$store.dispatch("getClinics");
                 // await this.$store.dispatch("getDoctors");
                 await this.listenConsultations();
-                this.$store.dispatch('getConsultations');
+
+                this.$store.dispatch('getConsultations')
+
                 // await this.$store.dispatch("getSpecialties");
                 this.loading = false;
             },
@@ -920,7 +938,9 @@
             },
             findPos(obj, elementId) {
                 var curtop = 0;
+
                 if (elementId === "group-" + this.dates[0]) {
+
                     return [0];
                 } else if (obj.offsetParent) {
                     do {

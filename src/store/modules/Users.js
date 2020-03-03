@@ -1,10 +1,11 @@
 import axios from 'axios'
-import firebase, {firestore} from "firebase";
+import firebase, { firestore } from "firebase";
 import moment from 'moment'
+import functions from "../../utils/functions";
 
 const state = {
     selectedPatient: undefined,
-    selectedDependent : undefined,
+    selectedDependent: undefined,
 };
 
 const mutations = {
@@ -17,11 +18,9 @@ const mutations = {
                 .onSnapshot((querySnapshot) => {
                     consultations = [];
                     querySnapshot.forEach((consultation) => {
-
                         consultations.push({ ...consultation.data() })
                     });
-                    payload = { ...payload, consultations: consultations };
-
+                    payload = { ...payload, consultations: consultations }
                     state.selectedPatient = payload
                 })
 
@@ -29,11 +28,12 @@ const mutations = {
             state.selectedPatient = payload
         }
     },
-    setSelectedDependent(state, payload){
+    setSelectedDependent(state, payload) {
         state.selectedDependent = payload
     },
-    clearSelectedDependent(state){
-        console.log('Cleanup');
+
+    clearSelectedDependent(state) {
+
         state.selectedDependent = undefined
     }
 };
@@ -48,7 +48,7 @@ const actions = {
     // },
 
     async getPatient({}, id) {
-        let userDoc = await firestore().collection('users').doc(id.toString()).get();
+        let userDoc = await firestore().collection('users').doc(id.toString()).get()
         return userDoc.data()
     },
     async searchUser({ commit, getters }, searchFields) {
@@ -62,16 +62,18 @@ const actions = {
         let users = [];
         querySnapshot.forEach(function (doc) {
             // if (doc.data().association_number) {
-            users.push(doc.data())
+            users.push({
+                ...doc.data(),
+                id: doc.id
+            })
             // }
         });
         return users
     },
-    async addUser({getters}, patient) {
+    async addUser({ getters }, patient) {
         try {
 
             functions.removeUndefineds(patient);
-
             if (patient.type) {
                 patient.type = patient.type.toUpperCase()
             }
@@ -86,7 +88,6 @@ const actions = {
             }
             // let identifier = patient.cpf ? patient.cpf : 'RG' + patient.rg
             let foundUser = await firebase.firestore().collection('users').doc(patient.cpf).get();
-
             if (foundUser.exists) {
                 // delete patient.type
                 user = await firebase.firestore().collection('users').doc(patient.cpf).update(patient)
@@ -100,7 +101,7 @@ const actions = {
         }
     },
     async updateUserField(context, payload) {
-        let upd = {}
+        let upd = {};
         if (payload.value === 'delete') {
             upd[payload.field] = firebase.firestore.FieldValue.delete()
         } else {
@@ -108,7 +109,7 @@ const actions = {
         }
         return await firebase.firestore().collection('users').doc(payload.user.cpf).update(upd)
     },
-    async deleteUser({}, user) {
+    async deleteUser({ }, user) {
         try {
             await firebase.firestore().collection('users').doc(user.cpf).delete();
             return
@@ -116,12 +117,12 @@ const actions = {
             throw e
         }
     },
-    editPatient({commit}, payload) {
+    editPatient({ commit }, payload) {
 
     },
-    async setSelectedPatient({commit}, payload) {
+    async setSelectedPatient({ commit }, payload) {
         commit('setSelectedPatient', payload)
-        if (payload.name) this.dispatch('getPatientProntuario', payload)
+        // if (payload.name) this.dispatch('getPatientProntuario', payload)
     },
     async searchUserFromOldDatabase(context, numAss) {
 
@@ -131,8 +132,8 @@ const actions = {
         return res.data[0]
     },
 
-    setSelectedDependent({commit},payload){
-        commit('setSelectedDependent',payload)
+    setSelectedDependent({ commit }, payload) {
+        commit('setSelectedDependent', payload)
     }
 };
 
@@ -141,7 +142,6 @@ const getters = {
         return state.selectedPatient
     },
     selectedDependent(state) {
-        console.log('limpando')
         return state.selectedDependent
     },
 };
