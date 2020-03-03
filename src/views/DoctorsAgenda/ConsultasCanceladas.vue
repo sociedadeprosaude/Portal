@@ -1,11 +1,11 @@
 <template>
     <v-container>
-        <v-layout align-center justify-center row wrap>
+        <v-layout class="align-center justify-center" row wrap>
             <v-card>
 
                 <template>
                     <v-container fluid grid-list-xl>
-                        <v-layout align-center wrap>
+                        <v-layout class="align-center" wrap>
                             <v-flex sm3>
                                     <v-btn text>
                                         <v-icon color="blue">event</v-icon>:
@@ -36,7 +36,7 @@
 
                 <template>
                     <v-container class="align-center justify-center py-0">
-                        <v-layout column align-center justify-center wrap>
+                        <v-layout column class="align-center justify-center" wrap>
                             <v-subheader>Gerenciamento de Consultas Canceladas de Todas as Especilidades e Médicos<br/></v-subheader>
 
                             <v-expansion-panels>
@@ -46,7 +46,7 @@
                                         v-model="panel"
                                 >
                                     <v-expansion-panel-header>
-                                        <v-layout align-center justify-center row wrap>
+                                        <v-layout class="align-center justify-center" row wrap>
 
                                             <v-flex row wrap>
                                                 <v-chip small color="primary" text-color="white">
@@ -61,7 +61,7 @@
                                     </v-expansion-panel-header>
 
                                     <v-expansion-panel-content>
-                                        <v-divider></v-divider>
+                                        <v-divider/>
                                         <v-card class="elevation-0">
                                             <v-list three-line subheader>
                                                 <v-layout wrap>
@@ -153,7 +153,9 @@
                                                         <v-text-field readonly hide-details outlined prepend-icon="credit_card" label="CPF" v-model="index_Selecionado.cpf">
                                                         </v-text-field>
                                                     </v-flex>
-                                                    <v-flex xs12 sm12 md12 lg12><v-divider ></v-divider></v-flex>
+                                                    <v-flex xs12 sm12 md12 lg12>
+                                                        <v-divider/>
+                                                    </v-flex>
                                                     <v-flex xs12 sm6>
                                                         <v-text-field readonly hide-details outlined prepend-icon="person" label="Nome do Médico" v-model="index_Selecionado.medico">
                                                         </v-text-field>
@@ -183,10 +185,12 @@
                                                         </v-text-field>
                                                     </v-flex>
                                                     <v-flex xs12 sm6>
-                                                        <v-text-field prepend-icon="receipt" label="Nº do Recibo" v-model="index_Selecionado.num_recibo" outlined hide-details readonly
-                                                        ></v-text-field>
+                                                        <v-text-field prepend-icon="receipt" label="Nº do Recibo" v-model="index_Selecionado.num_recibo" outlined hide-details readonly>
+                                                        </v-text-field>
                                                     </v-flex>
-                                                    <v-flex xs12 sm12 md12 lg12><v-divider ></v-divider></v-flex>
+                                                    <v-flex xs12 sm12 md12 lg12>
+                                                        <v-divider/>
+                                                    </v-flex>
                                                     <v-flex xs12>
                                                         <v-select
                                                                 prepend-icon="device_unknown"
@@ -196,18 +200,18 @@
                                                                 chips
                                                                 outlined
                                                                 hide-details
-                                                                readonly
-                                                        ></v-select>
+                                                                readonly>
+                                                        </v-select>
                                                     </v-flex>
                                                 </v-layout>
                                             </v-container>
                                         </v-card-text>
-                                        <v-divider></v-divider>
+                                        <v-divider/>
                                         <v-card-actions>
                                             <v-btn color="warning" rounded @click="dialog = false">Voltar<v-icon right>clear</v-icon></v-btn>
-                                            <v-spacer></v-spacer>
+                                            <v-spacer/>
                                             <v-btn color="error" rounded @click="apagar">Apagar<v-icon right>delete</v-icon></v-btn>
-                                            <v-spacer></v-spacer>
+                                            <v-spacer/>
                                             <v-btn color="success" rounded dark :to="{ name: 'RemarcarConsultas', params: { q: {...index_Selecionado}}}">Remarcar<v-icon right>assignment_turned_in</v-icon></v-btn>
                                         </v-card-actions>
                                     </v-card>
@@ -251,31 +255,31 @@
                     return this.index_Selecionado;
                 },
                 set: function (index) {
-                    this.status_Selecionado = index.status
-                    this.index_Selecionado = {...index}
+                    this.status_Selecionado = index.status;
+                    this.index_Selecionado = {...index};
                     //console.log(this.index_Selecionado)
                     this.dialog = true
                 }
             },
             consultas () {
-                let consultas = this.$store.getters.consultationsCanceled
+                let consultas = this.$store.getters.consultationsCanceled;
                 return consultas;
             },
         },
         async mounted() {
-            this.$store.dispatch('getConsultationsCanceled')
-            this.date = moment().format('YYYY-MM-DD')
+            this.$store.dispatch('getConsultationsCanceled');
+            this.date = moment().format('YYYY-MM-DD');
             this.dateFormatted = moment().format('YYYY-MM-DD')
         },
         methods: {
             formatDate (date) {
-                if (!date) return null
-                const [year, month, day] = date.split('-')
+                if (!date) return null;
+                const [year, month, day] = date.split('-');
                 return `${day}/${month}/${year}`
             },
 
             apagar () {
-                this.$store.dispatch('removeAppointmentForever',{... this.index_Selecionado})
+                this.$store.dispatch('removeAppointmentForever',{... this.index_Selecionado});
                 this.dialog = false
             }
         },

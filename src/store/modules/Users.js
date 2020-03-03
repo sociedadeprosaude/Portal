@@ -9,16 +9,19 @@ const state = {
 
 const mutations = {
     async setSelectedPatient(state, payload) {
-        var consultations
-        console.log('Clear USER')
+
+        var consultations;
+
         if (payload) {
             await firebase.firestore().collection('users').doc(payload.cpf).collection('consultations')
                 .onSnapshot((querySnapshot) => {
-                    consultations = []
+                    consultations = [];
                     querySnapshot.forEach((consultation) => {
-                        consultations.push({...consultation.data()})
-                    })
-                    payload = {...payload, consultations: consultations}
+
+                        consultations.push({ ...consultation.data() })
+                    });
+                    payload = { ...payload, consultations: consultations };
+
                     state.selectedPatient = payload
                 })
 
@@ -30,7 +33,7 @@ const mutations = {
         state.selectedDependent = payload
     },
     clearSelectedDependent(state){
-        console.log('Cleanup')
+        console.log('Cleanup');
         state.selectedDependent = undefined
     }
 };
@@ -43,13 +46,19 @@ const actions = {
     //         firestore().collection('users').doc(user.cpf).update({type: user.type.toUpperCase()})
     //     })
     // },
-    async searchUser({commit, getters}, searchFields) {
-        let usersRef = firestore().collection('users')
+
+    async getPatient({}, id) {
+        let userDoc = await firestore().collection('users').doc(id.toString()).get();
+        return userDoc.data()
+    },
+    async searchUser({ commit, getters }, searchFields) {
+        let usersRef = firestore().collection('users');
+
         for (let field in searchFields) {
             if (!searchFields[field] || searchFields[field].length === 0) continue;
             usersRef = usersRef.where(field, field === 'name' ? '>=' : '==', searchFields[field].toUpperCase())
         }
-        let querySnapshot = await usersRef.get()
+        let querySnapshot = await usersRef.get();
         let users = [];
         querySnapshot.forEach(function (doc) {
             // if (doc.data().association_number) {
@@ -60,20 +69,24 @@ const actions = {
     },
     async addUser({getters}, patient) {
         try {
-            for (let data in patient) {
-                if (!patient[data]) {
-                    delete patient[data]
-                }
-            }
+
+            functions.removeUndefineds(patient);
+
             if (patient.type) {
                 patient.type = patient.type.toUpperCase()
             }
-            patient.created_at = moment().format('YYYY-MM-DD HH:mm:ss')
+            patient.created_at = moment().format('YYYY-MM-DD HH:mm:ss');
             // if (patient.type === 'PATIENT') {
             //     patient.association_number = getters.associated.quantity
             // }
-            let user
-            let foundUser = await firebase.firestore().collection('users').doc(patient.cpf).get()
+
+            let user;
+            if (!patient.cpf) {
+                patient.cpf = 'RG' + patient.rg
+            }
+            // let identifier = patient.cpf ? patient.cpf : 'RG' + patient.rg
+            let foundUser = await firebase.firestore().collection('users').doc(patient.cpf).get();
+
             if (foundUser.exists) {
                 // delete patient.type
                 user = await firebase.firestore().collection('users').doc(patient.cpf).update(patient)
@@ -97,7 +110,7 @@ const actions = {
     },
     async deleteUser({}, user) {
         try {
-            await firebase.firestore().collection('users').doc(user.cpf).delete()
+            await firebase.firestore().collection('users').doc(user.cpf).delete();
             return
         } catch (e) {
             throw e
@@ -111,12 +124,10 @@ const actions = {
         if (payload.name) this.dispatch('getPatientProntuario', payload)
     },
     async searchUserFromOldDatabase(context, numAss) {
-        while (numAss.length < 8) {
-            numAss = '0' + numAss
-        }
-        let url = 'http://caixa.sociedadeprosaude.com:84/api/buscar/paciente?field=codigo&query=' + numAss /*00060009*/
-        let res = await axios.get(url)
-        console.log('aa', res.data)
+
+        let url = 'https://caixa.sociedadeprosaude.com/api/api/buscar/paciente?field=sequencia&query=' + numAss /*00060009*/
+        let res = await axios.get(url);
+
         return res.data[0]
     },
 

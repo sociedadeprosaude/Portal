@@ -2,7 +2,10 @@
     <v-container fluid>
         <v-layout wrap row class="justify-center" v-if="!loading">
             <v-flex xs12 class="text-center">
-                <select-patient-card class="hidden-xs-only"></select-patient-card>
+                <alertConsultationCanceled/>
+            </v-flex>
+            <v-flex xs12 class="text-center">
+                <select-patient-card class="hidden-xs-only"/>
             </v-flex>
             <v-flex xs12 v-if="filteredPages.length === 0">
                 <v-card>
@@ -45,7 +48,7 @@
                         </v-card>
                     </v-flex>
                     <v-flex xs12 class="my-4">
-                        <v-divider></v-divider>
+                        <v-divider/>
                     </v-flex>
                 </v-layout>
             </v-flex>
@@ -83,8 +86,8 @@
                 <v-progress-circular
                         size="64"
                         class="white--text"
-                        indeterminate
-                ></v-progress-circular>
+                        indeterminate>
+                </v-progress-circular>
             </v-flex>
         </v-layout>
     </v-container>
@@ -92,11 +95,13 @@
 
 <script>
     import SelectPatientCard from "../components/SelectPatientCard";
+    import alertConsultationCanceled from "../components/doctorsAgenda/alertConsultationCanceled.vue";
 
     export default {
 
         components: {
-            SelectPatientCard
+            SelectPatientCard,
+            alertConsultationCanceled,
         },
 
         mounted() {

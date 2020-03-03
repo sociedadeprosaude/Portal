@@ -14,15 +14,15 @@
             </v-list>
         </v-navigation-drawer>
         <v-app-bar color="primary_dark hidden-xs-only" fixed dark class="hidden-print-only" v-if="selectedUnit">
-            <v-app-bar-nav-icon v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+            <v-app-bar-nav-icon v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer"/>
 
             <v-toolbar-title>
                 <router-link to="/" tag="span" style="cursor: pointer">
                     <v-img v-if="selectedUnit"
                             :src="selectedUnit.logo"
                            aspect-radio="1"
-                           width="240"
-                    ></v-img>
+                           width="240">
+                    </v-img>
                 </router-link>
             </v-toolbar-title>
             <v-toolbar-items>
@@ -32,7 +32,7 @@
                     </v-btn>
                 </v-layout>
             </v-toolbar-items>
-            <v-spacer></v-spacer>
+            <v-spacer/>
             <v-toolbar-items>
                 <v-flex class="mt-n2">
                     <v-card class="transparent" flat v-if="selectedPatient">
@@ -66,17 +66,17 @@
             </v-toolbar-items>
         </v-app-bar>
         <v-app-bar dense flat color="white hidden-sm-and-up" light fixed class="hidden-print-only" v-if="selectedUnit">
-            <v-app-bar-nav-icon hidden v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+            <v-app-bar-nav-icon hidden v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer"/>
             <v-toolbar-title class="ma-0 pa-0">
                 <router-link to="/" tag="span" style="cursor: pointer">
                     <v-img v-if="selectedUnit"
                            :src="selectedUnit.logo"
                            aspect-radio="1"
-                           width="100"
-                    ></v-img>
+                           width="100">
+                    </v-img>
                 </router-link>
             </v-toolbar-title>
-            <v-spacer></v-spacer>
+            <v-spacer/>
             <v-toolbar-items>
                 <v-layout row wrap class="justify-center align-center">
                     <v-btn rounded text @click="selectUnit()">
@@ -90,10 +90,10 @@
                     </v-btn>
                 </v-layout>
             </v-toolbar-items>
-            <v-spacer></v-spacer>
+            <v-spacer/>
         </v-app-bar>
         <v-dialog v-model="patientDialog" transition="dialog-bottom-transition">
-            <select-patient-card></select-patient-card>
+            <select-patient-card/>
         </v-dialog>
         <v-dialog v-model="selectUnitDialog">
             <v-card>
@@ -160,11 +160,17 @@
             }
         },
         methods: {
+            goRoute(route) {
+                console.log('route', route);
+              this.$router.push(route)
+            },
+
             selectUnit(unit) {
                 if (!this.selectUnitDialog) {
-                    this.selectUnitDialog = true
+                    this.selectUnitDialog = true;
                     return
                 }
+                console.log('select unit', unit.name);
                 this.$store.commit('setSelectedUnit', unit)
             }
         }

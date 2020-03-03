@@ -82,7 +82,9 @@ const vuetifyOptions = {
         success: '#4caf50',
         primary_light: '#63a4ff',
         primary_dark: '#003B8F',
-        background: '#EFEFEF'
+        dark_grey: '#808080',
+        background: '#EFEFEF',
+
       },
     },
   },
