@@ -22,7 +22,7 @@
                                     <v-icon>search</v-icon>
                                 </v-btn>
                             </v-flex>
-                            <v-flex xs12 class="my-2" v-if="!loadingDoctors">
+                            <v-flex xs12 class="my-2 mt-6" v-if="!loadingDoctors">
                                 <v-combobox
                                         v-model="selectedDoctor"
                                         auto-select-first
@@ -40,7 +40,7 @@
                             <v-flex xs12 v-else class="my-2">
                                 <v-layout column wrap class="align-center">
                                     <span>Carregando Médicos...</span>
-                                    <v-progress-circular class="primary--text" indeterminate></v-progress-circular>
+                                    <v-progress-circular class="primary--text" indeterminate/>
                                 </v-layout>
                             </v-flex>
                             <v-flex xs12 v-if="searchBudgetBtn">
@@ -91,23 +91,10 @@
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
-                            <v-flex xs12 v-if="selectedBudget" class="mt-3 text-left" style="font-size: 0.8em">
-                                <v-layout row wrap>
-                                    <v-flex xs12>
-                                        <v-divider/>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                        <span>Orçamento: {{selectedBudget.id}}</span>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                        <v-divider/>
-                                    </v-flex>
-                                </v-layout>
-                            </v-flex>
                             <!--                            <v-flex xs12 class="text-center mt-3">-->
                             <!--                                <v-btn outlined color="primary" @click="gerarCodigo()">Gerar Codigo</v-btn>-->
                             <!--                            </v-flex>-->
-                            <v-flex xs12 class="mt-4 v-card"
+                            <v-flex xs12 class="mt-1 v-card"
                                     style="overflow:auto; height:50vh; box-shadow: inset 0px 0px 5px grey;">
                                 <v-layout row wrap>
                                     <v-flex xs12 v-if="exames.length > 0">
@@ -161,8 +148,6 @@
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
-
-
                             <v-spacer/>
                             <v-flex xs12>
                                 <v-spacer/>
@@ -177,7 +162,7 @@
                                           <v-select :items="parcels" v-model="parcel"
                                                     label="Parcelas"></v-select>
                                       </v-flex> -->
-                                    <v-flex sm12 xs12 class="px-3" v-if="payments.length > 1">
+                                    <v-flex sm12 xs12 class="px-3 mt-3" v-if="payments.length > 1">
                                         <v-layout row wrap class="align-center" v-for="(payment, index) in payments"  :key="index">
                                             <v-flex xs10>
                                                 <v-select
@@ -222,7 +207,7 @@
                                             </v-flex>
                                         </v-layout>
                                     </v-flex>
-                                    <v-flex sm12 xs12 class="px-3" v-if="payments.length === 1">
+                                    <v-flex sm12 xs12 class="px-3 mt-3" v-if="payments.length === 1">
                                         <v-layout row wrap class="align-center" v-for="(payment, index) in payments"  :key="index">
                                             <v-flex xs10>
                                                 <v-select
@@ -234,7 +219,25 @@
                                                         v-on="Pagamento">
                                                 </v-select>
                                             </v-flex>
-                                            <v-flex xs10 v-if="payments[index] === 'Crédito'">
+                                            <v-flex xs5 v-if="payments[index] === 'Crédito'">
+                                                <v-currency-field
+                                                        filled
+                                                        v-model="valuesPayments[index]"
+                                                        label="Valor"
+                                                        v-on="Pagamento"
+                                                >
+                                                </v-currency-field>
+                                            </v-flex>
+                                            <v-flex xs10 v-if="payments[index] !== 'Crédito'">
+                                                <v-currency-field
+                                                        filled
+                                                        v-model="valuesPayments[index]"
+                                                        label="Valor"
+                                                        v-on="Pagamento"
+                                                >
+                                                </v-currency-field>
+                                            </v-flex>
+                                            <v-flex xs5 v-if="payments[index] === 'Crédito'">
                                                 <v-select :items="parcels" v-model="parcel"
                                                           label="Parcelas"
                                                           filled>
@@ -295,14 +298,14 @@
                                             <span>Desconto: R$ {{this.moneyDiscount.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
                                         </v-flex>
                                         <v-flex xs12>
-                                            <v-divider color="black"/>
+                                            <v-divider color="primary"/>
                                         </v-flex>
                                         <v-flex xs12>
-                                            <h6 class="title font-weight-bold"> Total: R$
+                                            <h6 class="title font-weight-bold primary--text"> Total: R$
                                                 {{this.total.toLocaleString('en-us', {minimumFractionDigits: 2})}}</h6>
                                         </v-flex>
                                         <v-flex xs12>
-                                            <v-divider color="black"/>
+                                            <v-divider color="primary"/>
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
@@ -378,7 +381,7 @@
                 searchBudgetLoading: false,
                 searchBudgetBtn: false,
                 searchPatient: false,
-                payments: [''],
+                payments: ['Dinheiro'],
                 valuesPayments:[''],
                 moneyDiscout: 0,
                 now: moment().valueOf(),
@@ -453,10 +456,10 @@
             Pagamento(){
                 let tamanho= this.payments.length;
                 console.log('payments:', this.payments);
-                let pagando=0
+                let pagando=0;
                 if(tamanho === 1 && this.payments[0] !== ''){
-                    this.valuesPayments[0]= parseFloat(this.total)
-                    pagando = parseFloat(this.valuesPayments[0])
+                    this.valuesPayments[0]= parseFloat(this.total);
+                    pagando = parseFloat(this.valuesPayments[0]);
                     console.log('pagando=', pagando )
                 }
                 else{
