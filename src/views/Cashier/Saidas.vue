@@ -114,6 +114,7 @@
                     id: moment().valueOf(),
                     date: this.data,
                     paid: this.data,
+                    unit: this.unit,
                     colaborator: this.user,
                     payment_method: 'Dinheiro'
                 })
@@ -143,6 +144,9 @@
             this.$store.dispatch('LoadCategories')
         },
         computed: {
+            unit() {
+              return this.$store.getters.selectedUnit
+            },
             Categorias() {
                 return this.$store.getters.categoria;
             },
