@@ -883,6 +883,7 @@
                     }
                 }
                 return -1;
+                
             },
             consultasByDate(consultations) {
                 let res = {};
