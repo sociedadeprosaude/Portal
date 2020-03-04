@@ -829,7 +829,7 @@
                 // this.clear()
                 this.success = true
                 this.loading = false
-                this.getConsultations()
+                this.$router.push('/agenda/agendamento')
             },
 
             clear() {
