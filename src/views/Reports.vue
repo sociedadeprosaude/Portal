@@ -1,6 +1,5 @@
 <template>
   <v-container>
-  
     <v-layout row wrap>
       <v-flex xs12 class="hidden-print-only">
         <p class="my-headline">Relatórios</p>
@@ -76,7 +75,7 @@
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 4">
         <!-- BestSellingExamsReport ou best-selling-exams-report -->
-         <BestSellingExamsReport/> 
+        <BestSellingExamsReport :date="dateBegin" :date2="dateEnd" />
       </v-flex>
       <v-flex class="hidden-screen-only">
         <p>DE {{dateFormatted}} ATÉ {{dateFormatted2}}</p>
@@ -113,6 +112,8 @@ export default {
     date2: moment().format("YYYY-MM-DD 23:59:59"),
     dateFormatted: moment().format("DD/MM/YYYY"),
     dateFormatted2: moment().format("DD/MM/YYYY"),
+    dateBegin: null,
+    dateEnd: null,
     menu1: false,
     menu2: false,
     verificador: true,
@@ -136,6 +137,8 @@ export default {
         dataInicio: this.date,
         dataFinal: this.date2
       });
+      this.dateBegin = this.dateFormatted;
+      this.dateEnd = this.dateFormatted2;
       this.loading = false;
     },
     formatDate(date) {
