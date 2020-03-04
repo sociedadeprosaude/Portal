@@ -14,6 +14,8 @@
         <v-data-table
           :headers="headers"
           :items="intakesDividedByExam"
+          :sort-by="['quantity']"
+          :sort-desc="[true]"
           item-key="name"
           show-expand
           single-expand
@@ -45,25 +47,52 @@
         </v-data-table>
       </div>
       <div v-else>
-        <TableMostRequestedClinics />
+        <TableExamsAndClinics :intakesDividedByExam="intakesDividedByExam" />
       </div>
+    </v-card>
+
+    <v-card class="mt-4">
+      <v-container>
+        <v-row>
+          <v-col>
+            <span class="my-headline">{{numSales}}</span>
+            <br />total de exames vendidos
+          </v-col>
+          <v-divider vertical />
+          <v-col>
+            <span class="my-headline">R$ {{totalCost}}</span>
+            <br />Custo total dos exames
+          </v-col>
+          <v-divider vertical />
+          <v-col>
+            <span class="my-headline">R$ {{totalPrice}}</span>
+            <br />Preço de venda total dos exames
+          </v-col>
+          <v-divider vertical />
+          <v-col>
+            <span class="my-headline">R$ {{totalProfit}}</span>
+            <br />Lucro liquido total
+          </v-col>
+          <v-divider vertical />
+        </v-row>
+      </v-container>
     </v-card>
   </v-container>
 </template>
 
 <script>
 import moment from "moment";
-import TableMostRequestedClinics from "./TableMostRequestedClinics";
+import TableExamsAndClinics from "./TableExamsAndClinics";
 
 export default {
   name: "BestSellingExamsReport",
-  components: { TableMostRequestedClinics },
+  components: { TableExamsAndClinics },
   props: ["date", "date2"],
   data() {
     return {
       now: moment().format("YYYY-MM-DD HH:mm:ss"),
       total: 0,
-      options: ["Organizar por exames", "Organizar por clinicas"],
+      options: ["Exames", "Exames separados por clinica"],
       optionSelected: 0,
       headers: [
         {
@@ -82,86 +111,95 @@ export default {
           text: "Codigo",
           align: "start",
           sortable: false,
-          value: "intakeId"
+          value: "idIntake"
         },
 
         { text: "Custo", value: "cost", align: "center" },
         { text: "Venda", value: "price", align: "center" },
-        { text: "Clinica", value: "clinic.name" }
+        { text: "Clinica", value: "clinicName" }
       ],
       dateBegin: null,
       dateEnd: null
     };
   },
+  methods: {
+    calcIntakeFromExam(exam, listIntakesExam) {
+      const sumCost = listIntakesExam.reduce((total, e) => total + e.cost, 0);
+      const sumPrice = listIntakesExam.reduce((total, e) => total + e.price, 0);
+      return {
+        name: exam.name,
+        intakes: listIntakesExam,
+        quantity: listIntakesExam.length,
+        totalCost: sumCost,
+        totalPrice: sumPrice,
+        profit: sumPrice - sumCost
+      };
+    }
+  },
 
   computed: {
-    intakes() {
-      return this.$store.getters.intakesReport;
-    },
     intakesWithExam() {
       return this.$store.getters.intakesWithExam;
-    },
-    intakesWithExamLen() {
-      return this.$store.getters.intakesWithExam.length;
     },
     exams() {
       return this.$store.getters.exams;
     },
     intakesDividedByExam() {
-      let sorted = [];
-      let examInIntakeMatched = [];
-      let intakesOfExam = [];
+      let listIntakesRemade = [];
 
-      //  Percorrendo os exames existentes no banco
+      // Criando com exames com os dados necessarios
+      listIntakesRemade = this.intakesWithExam.map(intake =>
+        intake.exams.map(exam => {
+          return {
+            idIntake: intake.id,
+            clinicName: exam.clinic.name,
+            cost: exam.cost,
+            examName: exam.name,
+            price: exam.price
+          };
+        })
+      );
+
+      // Juntando em uma array que o bloco de cima retona uma array de array
+      listIntakesRemade = [].concat.apply([], listIntakesRemade);
+      let listIntakesGroupedByExam = [];
+
+      // Agrupando os intakes que tem ao mesmo exame
       this.exams.forEach(exam => {
-        //Percorrendo os intakes que possuem exames salvo
-        this.intakesWithExam.forEach(intake => {
-          //retornando apenas o exame (da lista de exames) do intake que for igual ao exame procurado atual (o do exams.forEach ali)
-
-          examInIntakeMatched = intake.exams.filter(
-            examInINtake => exam.name == examInINtake.name
+        let listIntakesExam = listIntakesRemade.filter(
+          intake => intake.examName == exam.name
+        );
+        if (listIntakesExam.length != 0)
+          listIntakesGroupedByExam.push(
+            this.calcIntakeFromExam(exam, listIntakesExam)
           );
-          // Se o intake tem o exame procurado adiciona o exame do intake numa array auxiliar
-
-          if (examInIntakeMatched.length != 0)
-            // Ou examInIntakeMatched[0] e tirar o reduce ali embaixo se o banco só permitir 1 tipo de exame por venda
-            // porque ta vindo do banco como uma array de um unico elemento
-            intakesOfExam.push(
-              examInIntakeMatched.map(exam => {
-                exam.intakeId = intake.id;
-                return exam;
-              })
-            );
-        });
-        // Agrupando em uma array o exame do loop atual com os dados dos intakes que possuem este exame
-        if (intakesOfExam.length != 0) {
-          //juntando os exames em uma array de exames (minha logica ali de cima retorna uma array de array);
-          var intakesOfExamMerged = [].concat.apply([], intakesOfExam);
-
-          const sumCost = intakesOfExam.reduce(
-            (total, exams) =>
-              total + exams.reduce((subTotal, exam) => exam.cost, 0),
-            0
-          );
-          const sumPrice = intakesOfExam.reduce(
-            (total, exams) =>
-              total + exams.reduce((subTotal, exam) => exam.price, 0),
-            0
-          );
-
-          sorted.push({
-            name: exam.name,
-            intakes: intakesOfExamMerged,
-            quantity: intakesOfExam.length,
-            totalCost: sumCost,
-            totalPrice: sumPrice,
-            profit: sumPrice - sumCost
-          });
-          intakesOfExam = [];
-        }
       });
-     
-      return sorted;
+
+      return listIntakesGroupedByExam;
+    },
+    numSales() {
+      return this.intakesDividedByExam.reduce(
+        (total, e) => total + e.quantity,
+        0
+      );
+    },
+    totalPrice() {
+      return this.intakesDividedByExam.reduce(
+        (total, e) => total + e.totalPrice,
+        0
+      );
+    },
+    totalCost() {
+      return this.intakesDividedByExam.reduce(
+        (total, e) => total + e.totalCost,
+        0
+      );
+    },
+    totalProfit() {
+      return this.intakesDividedByExam.reduce(
+        (total, e) => total + e.profit,
+        0
+      );
     }
   }
 };
