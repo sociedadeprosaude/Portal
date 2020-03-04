@@ -23,6 +23,14 @@
                                     v-model="paymentMethod"
                                     :items="paymentMethods"></v-select>
                         </v-flex>
+                        <v-flex xs12 sm3 class="mx-3">
+                            <v-select
+                                    outlined
+                                    label="Unidade referente"
+                                    v-model="selectedUnit"
+                                    item-text="name"
+                                    :items="units"></v-select>
+                        </v-flex>
                         <v-spacer></v-spacer>
                         <v-flex xs12 sm2 class="mx-3">
                             <v-currency-field
@@ -188,6 +196,7 @@
         },
         data() {
             return {
+                selectedUnit: this.$store.getters.selectedUnit,
                 category: undefined,
                 paymentMethod: undefined,
                 description: undefined,
@@ -203,6 +212,9 @@
             this.initiate()
         },
         computed: {
+            units() {
+                return [{name: "Todas"}].concat(...this.$store.getters.units)
+            },
             outtakes() {
                 return this.$store.getters.outtakes
             },
@@ -238,6 +250,7 @@
                 this.loading = true
                 let bill = {
                     category: this.category,
+                    unit: this.selectedUnit.name === 'Todas' ? undefined : this.selectedUnit,
                     payment_method: this.paymentMethod,
                     description: this.description,
                     value: this.value,
