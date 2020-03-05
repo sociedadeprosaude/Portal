@@ -19,6 +19,7 @@
           item-key="name"
           show-expand
           single-expand
+          no-data-text="Sem exames no intervalo escolhido"
           :footer-props="{
       itemsPerPageText:'Exames por página',
       pageText:'{0}-{1} de {2}'
