@@ -30,7 +30,7 @@
           <template v-slot:item.totalPrice="{ item }">R$ {{item.totalPrice}}</template>
           <template v-slot:item.totalCost="{ item }">R$ {{item.totalCost}}</template>
           <template v-slot:expanded-item="{ item }">
-            <td :colspan="headers.length+1">
+            <td :colspan="subHeaders.length+1">
               <v-data-table
                 class="subTable"
                 dense
