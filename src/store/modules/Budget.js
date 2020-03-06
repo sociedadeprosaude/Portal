@@ -450,6 +450,7 @@ const actions = {
         var found = false
         let intakes
         return new Promise(async (resolve, reject) => {
+            let examesSpecialties = ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA']
             let procedures
             let type = payload.exam ? 'Exam' : 'Consultation'
             let status = payload.exam ? 'Exame Pago' : 'Consulta Paga'
@@ -462,7 +463,7 @@ const actions = {
             .where('specialty','==',payload.specialty.name).where('status','==',['Exame Pago'])
             
             procedures = await procedureRef.get()
-            if( procedures.empty && type == 'Consultation' && payload.specialty.name == 'ULTRASSONOGRAFIA')
+            if( procedures.empty && type == 'Consultation' && examesSpecialties.indexOf(payload.specialty.name) != -1)
                 procedures = await procedureRefOr.get()
 
             if(!procedures.empty){
