@@ -349,6 +349,36 @@
                                                 ></v-text-field>
                                             </v-flex>
 
+                                            <v-flex xs12 v-show="createConsultationForm.consultation.specialty.name === 'ULTRASSONOGRAFIA' || createConsultationForm.consultation.specialty.name === 'ELETROCARDIOGRAMA' || createConsultationForm.consultation.specialty.name === 'ELETROENCEFALOGRAMA' || createConsultationForm.consultation.specialty.name === 'ECOCARDIOGRAMA' || createConsultationForm.consultation.specialty.name === 'VIDEOLARIGONSCOPIA'">
+                                                <v-combobox
+                                                        prepend-icon="school"
+                                                        v-model="exam"
+                                                        :items="listExam"
+                                                        item-text="name"
+                                                        return-object
+                                                        label="Exame"
+                                                        outlined
+                                                        chips
+                                                        color="blue"
+                                                        clearable
+                                                        hide-details
+                                                >
+                                                    <template v-slot:selection="data">
+                                                        <v-chip
+                                                                :key="JSON.stringify(data.item)"
+                                                                :input-value="data.selected"
+                                                                :disabled="data.disabled"
+                                                                class="v-chip--select-multi"
+                                                                @click.stop="data.parent.selectedIndex = data.index"
+                                                                @input="data.parent.selectItem(data.item)"
+                                                                text-color="white"
+                                                                color="info"
+                                                        >{{ data.item.name }}
+                                                        </v-chip>
+                                                    </template>
+                                                </v-combobox>
+                                            </v-flex>
+
                                             <v-flex xs12 sm4>
                                                 <v-text-field
                                                         v-model="createConsultationForm.consultation.date.split(' ')[1]"
@@ -451,7 +481,7 @@
                                     <submit-button
                                             color="success"
                                             rounded
-                                            :disabled="loaderPaymentNumber || (createConsultationForm.consultation.specialty.name === 'ULTRASSONOGRAFIA' &&!exam)"
+                                            :disabled="loaderPaymentNumber || (createConsultationForm.consultation.specialty.name === 'ULTRASSONOGRAFIA' && !exam) || (createConsultationForm.consultation.specialty.name === 'ELETROCARDIOGRAMA' && !exam) || (createConsultationForm.consultation.specialty.name === 'ELETROENCEFALOGRAMA' && !exam) || (createConsultationForm.consultation.specialty.name === 'ECOCARDIOGRAMA' && !exam) || (createConsultationForm.consultation.specialty.name === 'VIDEOLARIGONSCOPIA' && !exam)"
                                             @reset="resetSchedule"
                                             :success="success"
                                             :loading="scheduleLoading"
@@ -499,6 +529,8 @@
             x: null,
             mode: "",
             alert: false,
+            exam: undefined,
+            exames: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
             loaderPaymentNumber: false,
             menu: false,
             clinic: undefined,
@@ -579,8 +611,7 @@
             },
              listExam() {
               let val = this.$store.getters.exams.filter(a => {
-                //return a.type === this.especialidade.name;
-                return a.type === "ULTRASSONOGRAFIA";
+                  return a.type === this.createConsultationForm.consultation.specialty.name;
               });
               return val;
               //return this.$store.getters.exams;
