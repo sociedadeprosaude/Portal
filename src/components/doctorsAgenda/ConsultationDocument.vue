@@ -31,14 +31,25 @@
                   <span class="primary--text font-weight-bold">CRM:</span>
                   <span class="font-weight-bold">{{consultation.doctor.crm}}</span>
                 </v-flex>
-                <v-flex>
-                  <span class="primary--text font-weight-bold">Especialidade:</span>
+
+                <v-flex v-if="this.consultation.specialty.name !== 'ULTRASSONOGRAFIA' || this.consultation.specialty.name !== 'ELETROCARDIOGRAMA' || this.consultation.specialty.name !== 'ELETROENCEFALOGRAMA' || this.consultation.specialty.name !== 'ECOCARDIOGRAMA' || this.consultation.specialty.name !== 'VIDEOLARIGONSCOPIA'">
+                  <span class="primary--text font-weight-bold">Especialidade: </span>
                   <span class="font-weight-bold">{{this.consultation.specialty.name}}</span>
                 </v-flex>
-                <v-flex>
-                  <span class="primary--text font-weight-bold">Procedimento:</span>
+                <v-flex v-if="this.consultation.specialty.name !== 'ULTRASSONOGRAFIA' || this.consultation.specialty.name !== 'ELETROCARDIOGRAMA' || this.consultation.specialty.name !== 'ELETROENCEFALOGRAMA' || this.consultation.specialty.name !== 'ECOCARDIOGRAMA' || this.consultation.specialty.name !== 'VIDEOLARIGONSCOPIA'">
+                  <span class="primary--text font-weight-bold">Procedimento: </span>
                   <span class="font-weight-bold">{{this.consultation.type}}</span>
                 </v-flex>
+
+                <v-flex v-if="exames.indexOf(consultation.specialty.name) != -1">
+                  <span class="primary--text font-weight-bold">Procedimento: </span>
+                  <span class="font-weight-bold">Exame</span>
+                </v-flex>
+                <v-flex v-if="exames.indexOf(consultation.specialty.name) != -1">
+                  <span class="primary--text font-weight-bold">Exame: {{this.consultation.exam.name}}</span>
+                  <span class="font-weight-bold">{{ exames.indexOf(consultation.specialty.name) != -1 ? this.consultation.exam.name : this.consultation.specialty.name}}</span>
+                </v-flex>
+
                 <v-flex>
                   <span class="primary--text font-weight-bold">Data:</span>
                   <span class="font-weight-bold">{{this.consultation.date | dateFilter}}</span>
@@ -148,6 +159,7 @@
             alt: '',
             p: '',
             pa: '',
+            exames: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
             consultationHour: moment().locale('pt-BR').format('YYYY-MM-DD HH:mm:ss'),
             hoje: moment().locale('pt-BR').format('DD/MM/YYYY HH:mm:ss'),
             dia: moment().format('dddd'),

@@ -349,7 +349,7 @@
                                                 ></v-text-field>
                                             </v-flex>
 
-                                            <v-flex xs12 v-show="createConsultationForm.consultation.specialty.name === 'ULTRASSONOGRAFIA' || createConsultationForm.consultation.specialty.name === 'ELETROCARDIOGRAMA' || createConsultationForm.consultation.specialty.name === 'ELETROENCEFALOGRAMA' || createConsultationForm.consultation.specialty.name === 'ECOCARDIOGRAMA' || createConsultationForm.consultation.specialty.name === 'VIDEOLARIGONSCOPIA'">
+                                            <v-flex xs12 v-show="exames.indexOf(createConsultationForm.consultation.specialty.name) != -1">
                                                 <v-combobox
                                                         prepend-icon="school"
                                                         v-model="exam"
@@ -481,7 +481,7 @@
                                     <submit-button
                                             color="success"
                                             rounded
-                                            :disabled="loaderPaymentNumber || (createConsultationForm.consultation.specialty.name === 'ULTRASSONOGRAFIA' && !exam) || (createConsultationForm.consultation.specialty.name === 'ELETROCARDIOGRAMA' && !exam) || (createConsultationForm.consultation.specialty.name === 'ELETROENCEFALOGRAMA' && !exam) || (createConsultationForm.consultation.specialty.name === 'ECOCARDIOGRAMA' && !exam) || (createConsultationForm.consultation.specialty.name === 'VIDEOLARIGONSCOPIA' && !exam)"
+                                            :disabled="loaderPaymentNumber || (exames.indexOf(createConsultationForm.consultation.specialty.name) != -1 && !exam)"
                                             @reset="resetSchedule"
                                             :success="success"
                                             :loading="scheduleLoading"

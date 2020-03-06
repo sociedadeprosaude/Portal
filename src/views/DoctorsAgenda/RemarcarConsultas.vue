@@ -292,7 +292,7 @@
                                             <v-flex xs12 sm6 v-if="createConsultationForm.consultation.specialty.name !== 'ULTRASSONOGRAFIA' || createConsultationForm.consultation.specialty.name !== 'ELETROCARDIOGRAMA' || createConsultationForm.consultation.specialty.name !== 'ELETROENCEFALOGRAMA' || createConsultationForm.consultation.specialty.name !== 'ECOCARDIOGRAMA' || createConsultationForm.consultation.specialty.name !== 'VIDEOLARIGONSCOPIA'">
                                                 <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="createConsultationForm.consultation.specialty.name"></v-text-field>
                                             </v-flex>
-                                            <v-flex xs12 sm6 v-if="createConsultationForm.consultation.specialty.name === 'ULTRASSONOGRAFIA' || createConsultationForm.consultation.specialty.name === 'ELETROCARDIOGRAMA' || createConsultationForm.consultation.specialty.name === 'ELETROENCEFALOGRAMA' || createConsultationForm.consultation.specialty.name === 'ECOCARDIOGRAMA' || createConsultationForm.consultation.specialty.name === 'VIDEOLARIGONSCOPIA'">
+                                            <v-flex xs12 sm6 v-if="exames.indexOf(createConsultationForm.consultation.specialty.name) != -1">
                                                 <v-text-field readonly hide-details outlined prepend-icon="poll" label="Exame" v-model="createConsultationForm.user.exam.name"></v-text-field>
                                             </v-flex>
                                             <v-flex xs12 sm6 class="text-left" style="position: relative; top: -12px">
@@ -462,6 +462,7 @@
             selectedDoctor: undefined,
             num_recibo: "",
             type: "",
+            exames: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
             createConsultationForm: undefined,
             attendance: "Aguardando Atendimento",
             attendanceOptions: [
