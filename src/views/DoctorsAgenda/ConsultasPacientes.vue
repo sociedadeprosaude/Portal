@@ -247,13 +247,14 @@
                                                               v-model="index_Selecionado.crm" label="CRM">
                                                 </v-text-field>
                                             </v-flex>
-                                            <v-flex xs12 sm6 v-show="index_Selecionado.esp !== 'ULTRASSONOGRAFIA' || index_Selecionado.esp !== 'ULTRASSONOGRAFIA' || index_Selecionado.esp !== 'ULTRASSONOGRAFIA' || index_Selecionado.esp !== 'ULTRASSONOGRAFIA'
-                                            || index_Selecionado.esp !== 'ULTRASSONOGRAFIA'">
-                                                <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="index_Selecionado.esp"></v-text-field>
-                                            </v-flex>
-                                            <v-flex xs12 sm6 v-show="exames.indexOf(index_Selecionado.esp) != -1">
+
+                                            <v-flex xs12 sm6 v-if="exames.indexOf(index_Selecionado.esp) != -1">
                                                 <v-text-field readonly hide-details outlined prepend-icon="poll" label="Exame" v-model="index_Selecionado.exame"></v-text-field>
                                             </v-flex>
+                                            <v-flex xs12 sm6 v-else>
+                                                <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="index_Selecionado.esp"></v-text-field>
+                                            </v-flex>
+
                                             <v-flex xs12 sm6>
                                                 <v-text-field readonly hide-details outlined prepend-icon="event"
                                                               label="Dia da Consulta"
@@ -369,7 +370,7 @@
                                             rounded
                                             dark
                                             :to="{ name: 'AgendarRetorno', params: { q: {...this.index_Selecionado,consultaPaciente:true}}}"
-                                            :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress && exames.indexOf(index_Selecionado.especialidade.name) != -1 ? false : true"
+                                            :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress && exames.indexOf(index_Selecionado.especialidade.name) == -1 ? false : true"
                                             v-if="index_Selecionado.modalidade !== 'Retorno'"
                                     >Retorno
                                         <v-icon>refresh</v-icon>

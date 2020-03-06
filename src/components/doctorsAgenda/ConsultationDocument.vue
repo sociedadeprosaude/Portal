@@ -32,23 +32,27 @@
                   <span class="font-weight-bold">{{consultation.doctor.crm}}</span>
                 </v-flex>
 
-                <v-flex v-if="this.consultation.specialty.name !== 'ULTRASSONOGRAFIA' || this.consultation.specialty.name !== 'ELETROCARDIOGRAMA' || this.consultation.specialty.name !== 'ELETROENCEFALOGRAMA' || this.consultation.specialty.name !== 'ECOCARDIOGRAMA' || this.consultation.specialty.name !== 'VIDEOLARIGONSCOPIA'">
-                  <span class="primary--text font-weight-bold">Especialidade: </span>
-                  <span class="font-weight-bold">{{this.consultation.specialty.name}}</span>
-                </v-flex>
-                <v-flex v-if="this.consultation.specialty.name !== 'ULTRASSONOGRAFIA' || this.consultation.specialty.name !== 'ELETROCARDIOGRAMA' || this.consultation.specialty.name !== 'ELETROENCEFALOGRAMA' || this.consultation.specialty.name !== 'ECOCARDIOGRAMA' || this.consultation.specialty.name !== 'VIDEOLARIGONSCOPIA'">
-                  <span class="primary--text font-weight-bold">Procedimento: </span>
-                  <span class="font-weight-bold">{{this.consultation.type}}</span>
-                </v-flex>
+                <div v-if="exames.indexOf(consultation.specialty.name) != -1">
+                  <v-flex>
+                    <span class="primary--text font-weight-bold">Procedimento: </span>
+                    <span class="font-weight-bold">Exame</span>
+                  </v-flex>
+                  <v-flex>
+                    <span class="primary--text font-weight-bold">Exame: </span>
+                    <span class="font-weight-bold">{{ exames.indexOf(consultation.specialty.name) != -1 ? this.consultation.exam.name : this.consultation.specialty.name}}</span>
+                  </v-flex>
+                </div>
 
-                <v-flex v-if="exames.indexOf(consultation.specialty.name) != -1">
-                  <span class="primary--text font-weight-bold">Procedimento: </span>
-                  <span class="font-weight-bold">Exame</span>
-                </v-flex>
-                <v-flex v-if="exames.indexOf(consultation.specialty.name) != -1">
-                  <span class="primary--text font-weight-bold">Exame: {{this.consultation.exam.name}}</span>
-                  <span class="font-weight-bold">{{ exames.indexOf(consultation.specialty.name) != -1 ? this.consultation.exam.name : this.consultation.specialty.name}}</span>
-                </v-flex>
+                <div v-else>
+                  <v-flex>
+                    <span class="primary--text font-weight-bold">Especialidade: </span>
+                    <span class="font-weight-bold">{{this.consultation.specialty.name}}</span>
+                  </v-flex>
+                  <v-flex>
+                    <span class="primary--text font-weight-bold">Procedimento: </span>
+                    <span class="font-weight-bold">{{this.consultation.type}}</span>
+                  </v-flex>
+                </div>
 
                 <v-flex>
                   <span class="primary--text font-weight-bold">Data:</span>

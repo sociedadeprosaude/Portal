@@ -81,7 +81,7 @@
                                                                     hora: item.date.split(' ')[1],
                                                                     crm: item.doctor.crm,
                                                                     especialidade: item.specialty,
-                                                                    //exame: item.specialty.name === 'ULTRASSONOGRAFIA' ? item.user.exam.name : item.specialty.name,
+                                                                    //exame: exames.indexOf(item.specialty.name) != -1 ? item.user.exam.name : item.specialty.name,
                                                                     esp:item.specialty.name,
                                                                     status: item.status,
                                                                     modalidade: item.type,
@@ -163,12 +163,14 @@
                                                         <v-text-field readonly hide-details outlined prepend-icon="credit_card" v-model="index_Selecionado.crm" label="CRM">
                                                         </v-text-field>
                                                     </v-flex>
-                                                    <v-flex xs12 sm6 v-if="index_Selecionado.esp !== 'ULTRASSONOGRAFIA' || !index_Selecionado.pacienteObj.exam">
-                                                        <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="index_Selecionado.esp"></v-text-field>
-                                                    </v-flex>
-                                                    <v-flex xs12 sm6 v-if="index_Selecionado.esp === 'ULTRASSONOGRAFIA' &&index_Selecionado.pacienteObj.exam">
+
+                                                    <v-flex xs12 sm6 v-if="exames.indexOf(index_Selecionado.esp) != -1 && index_Selecionado.pacienteObj.exam">
                                                         <v-text-field readonly hide-details outlined prepend-icon="poll" label="Exame" v-model="index_Selecionado.pacienteObj.exam.name"></v-text-field>
                                                     </v-flex>
+                                                    <v-flex xs12 sm6 v-else>
+                                                        <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="index_Selecionado.esp"></v-text-field>
+                                                    </v-flex>
+
                                                     <v-flex xs12 sm6>
                                                         <v-text-field readonly hide-details outlined prepend-icon="event" label="Dia da Consulta" v-model="computedDateFormattedSelecionado">
                                                         </v-text-field>
@@ -231,6 +233,7 @@
     export default {
         data: () => ({
             menu: false,
+            exames: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
             attendance:'Aguardando Atendimento',
             attendanceOptions:
                 [
