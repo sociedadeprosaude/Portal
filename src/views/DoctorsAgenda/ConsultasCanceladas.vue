@@ -81,7 +81,7 @@
                                                                     hora: item.date.split(' ')[1],
                                                                     crm: item.doctor.crm,
                                                                     especialidade: item.specialty,
-                                                                    //exame: exames.indexOf(item.specialty.name) != -1 ? item.user.exam.name : item.specialty.name,
+                                                                    exame: exames.indexOf(item.specialty.name) != -1 ? item.user.exam : undefined,
                                                                     esp:item.specialty.name,
                                                                     status: item.status,
                                                                     modalidade: item.type,

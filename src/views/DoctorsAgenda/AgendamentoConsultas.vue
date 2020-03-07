@@ -933,12 +933,14 @@
                 this.loading = true;
                 // this.$store.dispatch("getClinics");
                 // await this.$store.dispatch("getDoctors");
-                await this.listenConsultations();
-                this.$store.dispatch('getConsultations')
+                await this.listenConsultations()
                 // await this.$store.dispatch("getSpecialties");
                 this.loading = false;
             },
             async listenConsultations() {
+                console.log(moment()
+                            .subtract(5, "hours")
+                            .format("YYYY-MM-DD HH:mm:ss"))
                 this.consultationsListenerUnsubscriber = await this.$store.dispatch(
                     "listenConsultations",
                     {

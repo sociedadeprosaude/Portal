@@ -797,7 +797,7 @@
                     status: this.status,
                     type: this.modalidade,
                     payment_number: this.num_recibo,
-
+                    exam: this.query.pacienteObj.exam
                 }
                 form.consultation = {
                     ...form.consultation,
