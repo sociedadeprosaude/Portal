@@ -1040,13 +1040,15 @@
                     ...form.user,
                     status: this.status,
                     type: this.modalidade,
-                    payment_number: this.num_recibo
+                    payment_number: this.num_recibo,
+                    exam:this.exam
                 };
                 form.consultation = {
                     ...form.consultation,
                     status: this.status,
                     type: this.modalidade,
-                    payment_number: this.num_recibo
+                    payment_number: this.num_recibo,
+                    exam:this.exam
                 };
 
                 if (this.payment_numberFound)

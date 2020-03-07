@@ -198,6 +198,10 @@ const actions = {
         let user = payload.user
         let statusName = payload.isConsultation ? 'Consulta Paga' : 'Exame Pago'
         let type = payload.isConsultation ? 'Consultation' : 'Exam'
+        let clinic
+        if(!payload.isConsultation){
+            clinic = {cnpj:payload.examObj.clinic.cnpj,name:payload.examObj.clinic.name}
+        }
         if (consultationFound) {
             let procedures = await firebase.firestore().collection('users').doc(user.cpf).collection('procedures').where('consultation', '==', consultationFound.id)
                 .get()
@@ -210,10 +214,13 @@ const actions = {
                         status: firebase.firestore.FieldValue.arrayUnion(statusName),
                         payment_number: payload.payment_number
                     }
-                    if(!payload.isConsultation)
-                        Object.assign(obj, {exam: payload.examObj});
+                    if(!payload.isConsultation){
+                        delete payload.examObj.clinic
+                        Object.assign(obj, {exam: {...payload.examObj,clinic:clinic}});
+                    }
+                        
                     firebase.firestore().collection('users').doc(user.cpf).collection('procedures').doc(snap.id).update(
-                       {...obj}
+                       {...obj} 
                     )
                 })
             }
@@ -227,8 +234,10 @@ const actions = {
                 specialty:payload.specialty
             }
 
-            if(!payload.isConsultation)
-                Object.assign(obj, {exam: payload.examObj});
+            if(!payload.isConsultation){
+                delete payload.examObj.clinic
+                Object.assign(obj, {exam: {...payload.examObj,clinic:clinic}});
+            }
             firebase.firestore().collection('users').doc(user.cpf).collection('procedures').add(
                 {...obj}
             )

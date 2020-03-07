@@ -115,7 +115,7 @@
                                                             hora: item.date.split(' ')[1],
                                                             crm: item.doctor.crm,
                                                             especialidade: item.specialty,
-                                                            exame: exames.indexOf(item.specialty.name) != -1 ? item.exam.name : item.specialty.name,
+                                                            exame: exames.indexOf(item.specialty.name) != -1 ? item.exam : undefined,
                                                             esp:item.specialty.name,
                                                             status: item.status,
                                                             modalidade: item.type,
@@ -248,8 +248,8 @@
                                                 </v-text-field>
                                             </v-flex>
 
-                                            <v-flex xs12 sm6 v-if="exames.indexOf(index_Selecionado.esp) != -1">
-                                                <v-text-field readonly hide-details outlined prepend-icon="poll" label="Exame" v-model="index_Selecionado.exame"></v-text-field>
+                                            <v-flex xs12 sm6 v-if="index_Selecionado.exame">
+                                                <v-text-field readonly hide-details outlined prepend-icon="poll" label="Exame" v-model="index_Selecionado.exame.name"></v-text-field>
                                             </v-flex>
                                             <v-flex xs12 sm6 v-else>
                                                 <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="index_Selecionado.esp"></v-text-field>
