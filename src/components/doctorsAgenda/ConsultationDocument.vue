@@ -39,7 +39,7 @@
                   </v-flex>
                   <v-flex>
                     <span class="primary--text font-weight-bold">Exame: </span>
-                    <span class="font-weight-bold">{{ exames.indexOf(consultation.specialty.name) != -1 ? this.consultation.exam.name : this.consultation.specialty.name}}</span>
+                    <span class="font-weight-bold">{{ exames.indexOf(consultation.specialty.name) != -1 ? this.consultation.exam.name : undefined}}</span>
                   </v-flex>
                 </div>
 

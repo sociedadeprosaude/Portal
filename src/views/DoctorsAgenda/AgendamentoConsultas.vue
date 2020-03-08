@@ -351,7 +351,7 @@
 
                                             <v-flex xs12 v-show="exames.indexOf(createConsultationForm.consultation.specialty.name) != -1">
                                                 <v-combobox
-                                                        prepend-icon="school"
+                                                        prepend-icon="poll"
                                                         v-model="exam"
                                                         :items="listExam"
                                                         item-text="name"
