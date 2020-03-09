@@ -127,9 +127,18 @@ const actions = {
         delete payload.clinic.id;
         examAndClinic = functions.removeUndefineds(examAndClinic);
 
-        firebase.firestore().collection('clinics/' + payload.clinic.name + '/exams').doc(payload.exam).set(examData);
+        let exam = await firebase.firestore().collection('clinics/' + payload.clinic.name + '/exams').doc(payload.exam).get()
+        if(exam.exists)
+            firebase.firestore().collection('clinics/' + payload.clinic.name + '/exams').doc(payload.exam).update(examData);
+        else
+            firebase.firestore().collection('clinics/' + payload.clinic.name + '/exams').doc(payload.exam).set(examData);
 
-        firebase.firestore().collection('exams/').doc(payload.exam).collection('clinics').doc(payload.clinic.name)
+        exam = await firebase.firestore().collection('exams/').doc(payload.exam).collection('clinics').doc(payload.clinic.name)
+        if(exam.exists)
+            firebase.firestore().collection('exams/').doc(payload.exam).collection('clinics').doc(payload.clinic.name)
+                .update(examAndClinic);
+        else
+            firebase.firestore().collection('exams/').doc(payload.exam).collection('clinics').doc(payload.clinic.name)
             .set(examAndClinic);
     },
 
