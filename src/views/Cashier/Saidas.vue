@@ -10,7 +10,7 @@
         <v-card class="pa-4">
           <v-row justify="center">
             <v-col xs="5">
-              <v-select label="categoria" v-model="categoria" :items="Categorias"></v-select>
+              <v-select label="categoria" v-model="categoria" :items="categories"></v-select>
             </v-col>
             <v-col xs="2">
               <v-tooltip bottom>
@@ -108,7 +108,9 @@ export default {
     enviar() {
       this.loading = true;
       this.success = true;
-
+      // Deletando esses dois campos se tiverem pra não salvar dados desnecessários no banco
+      delete this.unit.exams;
+      delete this.unit.specialties;
       this.$store.dispatch("AddSaida", {
         description: this.descricao,
         category: this.categoria,
@@ -154,17 +156,21 @@ export default {
     }
   },
   computed: {
-    Categorias() {
-      return this.$store.getters.categoria;
+    categories() {
+      return this.$store.getters.outtakesCategories;
     },
     user() {
       return this.$store.getters.user;
     },
     units() {
+      this.unit = this.selectedUnit;
       return [...this.$store.getters.units, { name: this.other }];
     },
     unitsName() {
       return [...this.units.map(unit => unit.name), "OUTRO"];
+    },
+    selectedUnit() {
+      return this.$store.getters.selectedUnit;
     }
   }
 };

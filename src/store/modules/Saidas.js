@@ -15,7 +15,8 @@ const mutations = {
 const actions = {
     async AddSaida({ commit }, payload) {
         try {
-            let res = await firebase.firestore().collection('outtakes/').doc(payload.id.toString()).set({ ...payload });
+            //let res = await firebase.firestore().collection('outtakes/').doc(payload.id.toString()).set({ ...payload });
+            let res = await firebase.firestore().collection('outtakes/').add(payload);
         } catch (e) {
             throw e
         }
