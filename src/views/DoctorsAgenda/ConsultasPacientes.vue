@@ -115,6 +115,7 @@
                                                             hora: item.date.split(' ')[1],
                                                             crm: item.doctor.crm,
                                                             especialidade: item.specialty,
+                                                            exame: exames.indexOf(item.specialty.name) != -1 ? item.exam : undefined,
                                                             esp:item.specialty.name,
                                                             status: item.status,
                                                             modalidade: item.type,
@@ -246,11 +247,14 @@
                                                               v-model="index_Selecionado.crm" label="CRM">
                                                 </v-text-field>
                                             </v-flex>
-                                            <v-flex xs12 sm6>
-                                                <v-text-field readonly hide-details outlined prepend-icon="school"
-                                                              label="Especialidade" v-model="index_Selecionado.esp">
-                                                </v-text-field>
+
+                                            <v-flex xs12 sm6 v-if="index_Selecionado.exame">
+                                                <v-text-field readonly hide-details outlined prepend-icon="poll" label="Exame" v-model="index_Selecionado.exame.name"></v-text-field>
                                             </v-flex>
+                                            <v-flex xs12 sm6 v-else>
+                                                <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="index_Selecionado.esp"></v-text-field>
+                                            </v-flex>
+
                                             <v-flex xs12 sm6>
                                                 <v-text-field readonly hide-details outlined prepend-icon="event"
                                                               label="Dia da Consulta"
@@ -366,7 +370,7 @@
                                             rounded
                                             dark
                                             :to="{ name: 'AgendarRetorno', params: { q: {...this.index_Selecionado,consultaPaciente:true}}}"
-                                            :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress && index_Selecionado.especialidade.name != 'ULTRASSONOGRAFIA' ? false : true"
+                                            :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress && exames.indexOf(index_Selecionado.especialidade.name) == -1 ? false : true"
                                             v-if="index_Selecionado.modalidade !== 'Retorno'"
                                     >Retorno
                                         <v-icon>refresh</v-icon>
@@ -449,6 +453,7 @@
             verifierCard: false,
             hoje: moment().locale('pt-BR').format('YYYY-MM-DD'),
             dialog: false,
+            exames: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
             documentDialog: false,
             y: 'top',
             x: null,
@@ -619,14 +624,15 @@
             },
             apagar() {
                 this.$store.dispatch('eraseAppointment', {
-                    idConsultation: this.index_Selecionado.idConsultation,
-                    idPatient: this.index_Selecionado.cpf,
-                    type: this.index_Selecionado.modalidade,
-                    status: this.index_Selecionado.status,
-                    payment_number: this.index_Selecionado.num_recibo,
-                    specialty: this.index_Selecionado.especialidade.name,
-                    regress: this.index_Selecionado.consultation.regress,
-                    previousConsultation: this.index_Selecionado.consultation.previousConsultation
+                    idConsultation:this.index_Selecionado.idConsultation,
+                    idPatient:this.index_Selecionado.cpf,
+                    type:this.index_Selecionado.modalidade,
+                    status:this.index_Selecionado.status,
+                    payment_number:this.index_Selecionado.num_recibo,
+                    specialty:this.index_Selecionado.especialidade.name,
+                    regress:this.index_Selecionado.consultation.regress,
+                    previousConsultation:this.index_Selecionado.consultation.previousConsultation,
+                    consultation:this.index_Selecionado.consultation
                 })
                 this.clear()
                 this.dialog = false

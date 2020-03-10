@@ -109,9 +109,20 @@ const actions = {
         }
     },
 
-    addAppointment({commit}, payload) {
+    async updateOrSet(context,payload){
+        let documentReference = payload.documentReference
+        let data = payload.data
 
-        console.log('payload', payload);
+        console.log(documentReference)
+
+        let snapshot = await documentReference.get()
+        if(snapshot.exists)
+            documentReference.update(data)
+        else
+            documentReference.set(data) 
+    },
+
+    async addAppointment(context, payload) {
 
         let data = {
             name: payload.doctor,
@@ -137,23 +148,32 @@ const actions = {
             payment_method: payload.payment,
         };
         delete payload.clinic.id
-        firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie
-            + '/doctors').doc(payload.cpf).set(data);
+        let consultation = await firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie
+            + '/doctors').doc(payload.cpf).get()
 
-        firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties').doc(payload.specialtie)
-            .set(info);
+        context.dispatch('updateOrSet',{
+            documentReference:firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie + '/doctors').doc(payload.cpf),
+            data: data })
 
-        firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie)
-            .set(details);
+        context.dispatch('updateOrSet',{
+                documentReference:firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties').doc(payload.specialtie),
+                data: info })
 
-        firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).collection('clinics/').doc(payload.clinic.name)
-            .set(payload.clinic);
+        context.dispatch('updateOrSet',{
+                    documentReference:firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie),
+                    data: details })
 
-        firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf)
-            .set(data);
+        context.dispatch('updateOrSet',{
+                        documentReference: firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).collection('clinics/').doc(payload.clinic.name),
+                        data: payload.clinic })
+        
+        context.dispatch('updateOrSet',{
+                    documentReference: firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf),
+                    data: data})
 
-        firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf).collection('clinics/').doc(payload.clinic.name)
-            .set(payload.clinic);
+        context.dispatch('updateOrSet',{
+                        documentReference: firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf).collection('clinics/').doc(payload.clinic.name),
+                        data: payload.clinic})
     },
 
     addAppointmentFromDoctors({commit}, payload) {
