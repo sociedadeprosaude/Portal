@@ -75,7 +75,7 @@
                 <general-report :report="formattedReport" :loading="loading" :intakes="intakes"></general-report>
             </v-flex>
             <v-flex xs12 v-if="selectedReport === 1">
-                <colaborators-production-report :loading="loading" :intakes="intakes"></colaborators-production-report>
+                <colaborators-production-report :loading="loading" :intakes="formattedReport.intakesArray"></colaborators-production-report>
             </v-flex>
             <v-flex xs12 v-if="selectedReport === 2">
                 <intakes-report :report="formattedReport" :loading="loading" :intakes="intakes"></intakes-report>

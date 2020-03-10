@@ -273,7 +273,7 @@ const actions = {
             dataFinal: payload.dataFinal,
             financialSupportIntakes: financialSupport,
             intakesArray: Object.values(intakes).filter((intake) => {
-                return !intake.cancelled
+                return intake.status !== 'cancelled'
             })
         };
         context.commit('setRelatorio', relatorio)
