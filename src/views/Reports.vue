@@ -103,7 +103,7 @@
             IntakesReport,
             ProceduresPricesAnalises
         },
-        data: vm => ({
+        data: () => ({
             reportOptions: ['Relatório Financeiro Geral', 'Produção do Colaborador','Relatorio de Vendas', 'Analise de preço de exames'],
             selectedReport: 0,
             date: moment().format('YYYY-MM-DD 00:00:00'),

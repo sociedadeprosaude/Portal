@@ -89,7 +89,6 @@ const actions = {
         let totalDebido = 0;
         let totalBruto = 0;
         let totalCusto = 0;
-        let totalCustoOuttakes = 0;
         let totalCustoExams = 0;
         let totalCustoEspecialts = 0;
         let totalGanhoExams = 0;
@@ -107,24 +106,6 @@ const actions = {
                     financialSupport.push(intakes[intake])
                     continue
                 }
-
-                //for (let exam in intakes[intake].exams) {
-                //  if (!exams[intakes[intake].exams[exam].name]) {
-                //     exams[intakes[intake].exams[exam].name] = {
-                //    quantidade: 0,
-                //    name: intakes[intake].exams[exam].name,
-                //    cost: 0,
-                //    price: 0
-                //  }
-                // }
-                //console.log('clinica',intakes[intake].exams[exam].clinic.name)
-                //exams[intakes[intake].exams[exam].name].quantidade++,
-                //    exams[intakes[intake].exams[exam].name].cost += parseFloat(intakes[intake].exams[exam].cost),
-                //    exams[intakes[intake].exams[exam].name].price += parseFloat(intakes[intake].exams[exam].price)
-                //  totalCustoExams += parseFloat(intakes[intake].exams[exam].cost)
-                //  totalGanhoExams += parseFloat(intakes[intake].exams[exam].price)
-                // }
-
                 if (intakes[intake]) {
                     let id = (intakes[intake].id).toString()
                     intaker[intakes[intake].id] = {
@@ -170,20 +151,9 @@ const actions = {
                             quantidade: 0,
                             cost: 0,
                             price: 0,
-                            // doctors: {}
                         }
                     }
-                    // if (!specialties[intakes[intake].specialties[specialtie].name].doctors[intakes[intake].specialties[specialtie].doctor.name]) {
-                    //     specialties[intakes[intake].specialties[specialtie].name].doctors[intakes[intake].specialties[specialtie].doctor.name] = {
-                    //         quantity: 0,
-                    //         cost: 0,
-                    //         price: 0,
-                    //     }
-                    // }
                     specialties[intakes[intake].specialties[specialtie].name].quantidade++
-                    // specialties[intakes[intake].specialties[specialtie].name].doctors[intakes[intake].specialties[specialtie].doctor.name].quantity++
-                    // specialties[intakes[intake].specialties[specialtie].name].doctors[intakes[intake].specialties[specialtie].doctor.name].cost += intakes[intake].specialties[specialtie].cost
-                    // specialties[intakes[intake].specialties[specialtie].name].doctors[intakes[intake].specialties[specialtie].doctor.name] += intakes[intake].specialties[specialtie].price
                     specialties[intakes[intake].specialties[specialtie].name].cost += parseFloat(intakes[intake].specialties[specialtie].cost),
                         specialties[intakes[intake].specialties[specialtie].name].price += parseFloat(intakes[intake].specialties[specialtie].price)
                     totalCustoEspecialts += parseFloat(intakes[intake].specialties[specialtie].cost),
@@ -261,7 +231,6 @@ const actions = {
                         // outtakes[e.data().category].quantidade++;
                         quantidadeOuttakes++;
                         // outtakes[e.data().category].cost += parseFloat(e.data().value);
-                        totalCustoOuttakes += parseFloat(e.data().valuesPayments[i])
                         outtakes.push({
                             ...e.data(),
                             id: e.id
@@ -272,7 +241,6 @@ const actions = {
             }
             else{
                 quantidadeOuttakes++;
-                // totalCustoOuttakes += parseFloat(e.data().value)
                 outtakes.push({
                     ...e.data(),
                     id: e.id
@@ -298,13 +266,15 @@ const actions = {
             totalCustoExams: totalCustoExams,
             totalGanhoExams: totalGanhoExams,
             totalCustoEspecialts: totalCustoEspecialts,
-            // totalCustoOuttakes: totalCustoOuttakes,
             outtakes: outtakes,
             totalGanhoEspecialts: totalGanhoEspecialts,
             intakes: intaker,
             dataInicio: payload.dataInicio,
             dataFinal: payload.dataFinal,
-            financialSupportIntakes: financialSupport
+            financialSupportIntakes: financialSupport,
+            intakesArray: Object.values(intakes).filter((intake) => {
+                return !intake.cancelled
+            })
         };
         context.commit('setRelatorio', relatorio)
         return relatorio
