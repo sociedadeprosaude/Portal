@@ -858,7 +858,7 @@
 
                     this.status = "Pago";
                     this.loaderPaymentNumber = false
-                } else { */
+                } else { /*
 
                     this.$store
                         .dispatch("thereIsIntakes", {
@@ -885,7 +885,7 @@
                             }
                             this.loaderPaymentNumber = false
                         });
-              /*   } */
+              */   }
 
 
             },
