@@ -589,6 +589,8 @@
             },
             async saveBudget(budget) {
                 this.$store.commit('setSelectedBudget', budget);
+                console.log('#patient', this.patient);
+                await this.$store.dispatch('getUserBudgets', this.patient);
                 await this.$store.dispatch('addBudget', budget);
                 this.updateBudgetsIntakes()
             },
