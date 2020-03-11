@@ -12,8 +12,8 @@
                                 label="Email"
                                 persistent-hint
                                 :error="credentialError"
-                                prepend-icon="email"
-                        ></v-text-field>
+                                prepend-icon="email">
+                        </v-text-field>
                         <v-text-field
                                 slot="activator"
                                 v-model="password"
@@ -21,20 +21,20 @@
                                 type="password"
                                 persistent-hint
                                 :error="passwordError"
-                                prepend-icon="fingerprint"
-                        ></v-text-field>
+                                prepend-icon="fingerprint">
+                        </v-text-field>
                     </v-card-text>
                     <v-card-actions>
                         <v-layout row wrap>
                           <v-flex xs12>
-                            <v-progress-linear :indeterminate="true" v-if="loading"></v-progress-linear>
+                            <v-progress-linear :indeterminate="true" v-if="loading"/>
                           </v-flex>
                           <v-flex xs6>
                             <v-btn text class="primary_dark--text" to="/cadastro">
                               Cadastre-se
                             </v-btn>
                           </v-flex>
-                            <v-spacer></v-spacer>
+                            <v-spacer/>
                           <v-flex xs6 class="text-right pr-3">
                             <v-btn text class="primary_dark--text" @click.native="signIn">
                                 Entrar
@@ -75,17 +75,19 @@
         methods: {
             async signIn() {
                 try {
-                    this.loading = true
-                    let user = await firebase.auth().signInWithEmailAndPassword(this.email, this.password)
-                    await this.$store.dispatch('getUser', user)
+
+                    this.loading = true;
+                    let user = await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
+                    await this.$store.dispatch('getUser', user);
+
                     await this.$router.go()
                 } catch (e) {
                     switch (e.code) {
                         case 'auth/user-not-found':
-                            this.errorMessage = 'Usuário não cadastrado'
-                            break
+                            this.errorMessage = 'Usuário não cadastrado';
+                            break;
                         case 'auth/wrong-password':
-                            this.errorMessage = 'Senha incorreta'
+                            this.errorMessage = 'Senha incorreta';
                             break
                     }
                     setTimeout(() => {
