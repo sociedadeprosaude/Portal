@@ -1,4 +1,4 @@
-import firebase, {firestore} from "firebase";
+import firebase, { firestore } from "firebase";
 import functions from "../../utils/functions";
 
 const state = {
@@ -16,7 +16,7 @@ const mutations = {
 }
 
 const actions = {
-    async getOuttakes({commit}) {
+    async getOuttakes({ commit }) {
         let outtakes = []
         try {
             let outtakesCol = await firebase.firestore().collection('outtakes/').get()
@@ -33,12 +33,12 @@ const actions = {
         commit('setOuttakes', outtakes)
         return
     },
-    async getOuttakesCategories({commit}) {
+    async getOuttakesCategories({ commit }) {
         // let outtakesDoc = await
-        firebase.firestore().collection('operational/').doc('outtakes').onSnapshot((outtakesDoc) => {
+        firebase.firestore().collection('operational/').doc('outtakes2').onSnapshot((outtakesDoc) => {
             let categories = []
             if (!outtakesDoc.exists) {
-                firebase.firestore().collection('operational/').doc('outtakes').set({
+                firebase.firestore().collection('operational/').doc('outtakes2').set({
                     categories: []
                 })
             } else {
@@ -53,11 +53,23 @@ const actions = {
     async addOuttakesCategory(context, category) {
         await context.dispatch('getOuttakesCategories')
         let categories = context.getters.outtakesCategories
-        categories.push(category)
-        await firebase.firestore().collection('operational/').doc('outtakes').update({
+        categories.push({ name: category, subCategories: [] })
+        await firebase.firestore().collection('operational/').doc('outtakes2').update({
             categories: categories
         })
     },
+    async addOuttakeSubcategory(context, payload) {
+        await context.dispatch('getOuttakesCategories')
+        let categories = context.getters.outtakesCategories
+        let categoriesName = categories.map(e => e.name);
+        const index = categoriesName.indexOf(payload.category.name);
+        categories[index].subCategories.push(payload.newSubcategory);
+        await firebase.firestore().collection('operational/').doc('outtakes2').update({
+            categories: categories
+        })
+    },
+
+
     async addOuttakes(context, outtake) {
         outtake = functions.removeUndefineds(outtake)
         await firebase.firestore().collection('outtakes/').add(outtake)

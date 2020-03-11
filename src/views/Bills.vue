@@ -6,10 +6,17 @@
           <v-layout row wrap>
             <v-flex xs12 class="text-left">
               <span class="my-headline">Adicionar conta à pagar</span>
+              <outtakesCategories />
             </v-flex>
 
             <v-flex xs12 sm3>
-              <v-combobox outlined v-model="category" :items="categories" label="Categoria"></v-combobox>
+              <v-combobox
+                outlined
+                @input.native="category=$event.srcElement.value"
+                v-model="category"
+                :items="categoriesName"
+                label="Categoria"
+              ></v-combobox>
             </v-flex>
 
             <v-flex xs12 sm3 class="ml-3">
@@ -189,17 +196,20 @@
 
 <script>
 import OuttakeOrder from "../components/OuttakeOrder";
+import outtakesCategories from "@/components/DialogOuttakeCategories";
 import moment from "moment";
 
 export default {
   name: "Bills",
   components: {
-    OuttakeOrder
+    OuttakeOrder,
+    outtakesCategories
   },
   data() {
     return {
       unit: null,
       other: "OUTRO",
+      dialog: false,
       category: undefined,
       paymentMethod: undefined,
       description: undefined,
@@ -239,6 +249,9 @@ export default {
     categories() {
       return this.$store.getters.outtakesCategories;
     },
+    categoriesName() {
+      return this.categories.map(e => e.name);
+    },
     user() {
       return this.$store.getters.user;
     },
@@ -262,6 +275,7 @@ export default {
       // Deletando esses dois campos se tiverem pra não salvar dados desnecessários no banco
       delete this.unit.exams;
       delete this.unit.specialties;
+
       let bill = {
         category: this.category,
         payment_method: this.paymentMethod,
@@ -272,7 +286,8 @@ export default {
         colaborator: this.user,
         unit: this.unit.name != this.other ? this.unit : null
       };
-      if (this.categories.indexOf(this.category) < 0) {
+
+      if (this.categoriesName.indexOf(this.category) < 0) {
         await this.$store.dispatch("addOuttakesCategory", this.category);
       }
       if (this.files.length > 0) {
