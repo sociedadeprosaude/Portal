@@ -69,6 +69,19 @@ const actions = {
         })
     },
 
+    async removeOuttakeSubcategory(context, payload) {
+        await context.dispatch('getOuttakesCategories')
+        let categories = context.getters.outtakesCategories
+        let categoriesName = categories.map(e => e.name);
+        const index = categoriesName.indexOf(payload.category.name);
+        // categories[index].subCategories.push(payload.newSubcategory);
+        const aux = categories[index].subCategories.splice(payload.subIndex, 1);
+
+        await firebase.firestore().collection('operational/').doc('outtakes2').update({
+            categories: categories
+        })
+    },
+
 
     async addOuttakes(context, outtake) {
         outtake = functions.removeUndefineds(outtake)

@@ -10,7 +10,22 @@
         <v-card class="pa-4">
           <v-row justify="center">
             <v-col xs="5">
-              <v-select label="categoria" v-model="categoria" :items="categories"></v-select>
+              <v-select
+                label="categoria"
+                v-model="categoria"
+                :items="categories"
+                item-text="name"
+                return-object
+              ></v-select>
+
+              <v-select
+                v-if="categoria.subCategories"
+                label="subCategoria"
+                v-model="subCategoria"
+                :items="[...categoria.subCategories,'Outro']"
+                item-text="name"
+                return-object
+              ></v-select>
             </v-col>
             <v-col xs="2">
               <v-tooltip bottom>
@@ -61,6 +76,9 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-row>
+      <outtakesCategories />
+    </v-row>
 
     <v-dialog v-model="verificador">
       <v-card>
@@ -81,12 +99,14 @@
 import Vue from "vue";
 import moment from "moment";
 import SubmitButton from "../../components/SubmitButton";
+import outtakesCategories from "@/components/DialogOuttakeCategories";
 
 export default {
-  components: { SubmitButton },
+  components: { SubmitButton, outtakesCategories },
   data: () => ({
     descricao: "",
     categoria: "",
+    subCategoria: "",
     unit: null,
     other: "OUTRO",
     valor: 0,
@@ -107,13 +127,13 @@ export default {
   methods: {
     enviar() {
       this.loading = true;
-      this.success = true;
       // Deletando esses dois campos se tiverem pra não salvar dados desnecessários no banco
       delete this.unit.exams;
       delete this.unit.specialties;
       this.$store.dispatch("AddSaida", {
         description: this.descricao,
-        category: this.categoria,
+        category: this.categoria.name,
+        subCategory: this.subCategoria,
         value: parseFloat(this.valor),
         id: moment().valueOf(),
         date: this.data,
@@ -122,24 +142,19 @@ export default {
         payment_method: "Dinheiro",
         unit: this.unit.name != this.other ? this.unit : null
       });
-      setTimeout(() => {
-        this.success = false;
-      }, 1000);
-
+      this.success = true;
       this.loading = false;
       this.descricao = "";
       this.valor = 0;
       this.categoria = "";
     },
-    adicionarCategoria() {
-      this.$store.dispatch("AddCategorie", { categoria: this.categoriaNova });
+    async adicionarCategoria() {
+      if (this.categoriesName.indexOf(this.categoriaNova) < 0) {
+        await this.$store.dispatch("addOuttakesCategory", this.categoriaNova);
+      }
       this.success = true;
       this.loading = false;
-      this.$store.dispatch("LoadCategories");
-      setTimeout(() => {
-        this.categoriaNova = "";
-        this.verificador = false;
-      }, 1000);
+      await this.$store.dispatch("getOuttakesCategories");
       this.verificador = !this.verificador;
       this.categoriaNova = "";
     },
@@ -147,8 +162,8 @@ export default {
       this.$router.push("/caixa");
     }
   },
-  mounted() {
-    this.$store.dispatch("LoadCategories");
+  async mounted() {
+    await this.$store.dispatch("getOuttakesCategories");
   },
   watch: {
     otherName: function(val) {
@@ -158,6 +173,9 @@ export default {
   computed: {
     categories() {
       return this.$store.getters.outtakesCategories;
+    },
+    categoriesName() {
+      return this.categories.map(e => e.name);
     },
     user() {
       return this.$store.getters.user;

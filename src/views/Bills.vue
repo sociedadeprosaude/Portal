@@ -6,7 +6,6 @@
           <v-layout row wrap>
             <v-flex xs12 class="text-left">
               <span class="my-headline">Adicionar conta à pagar</span>
-              <outtakesCategories />
             </v-flex>
 
             <v-flex xs12 sm3>
@@ -14,8 +13,20 @@
                 outlined
                 @input.native="category=$event.srcElement.value"
                 v-model="category"
-                :items="categoriesName"
+                :items="categories"
+                item-text="name"
+                return-object
                 label="Categoria"
+              ></v-combobox>
+              <v-combobox
+                outlined
+                v-if="category && category.subCategories"
+                label="subCategoria"
+                @input.native="subCategory=$event.srcElement.value"
+                v-model="subCategory"
+                :items="[...category.subCategories,other]"
+                item-text="name"
+                return-object
               ></v-combobox>
             </v-flex>
 
@@ -208,9 +219,10 @@ export default {
   data() {
     return {
       unit: null,
-      other: "OUTRO",
+      other: "Outro",
       dialog: false,
       category: undefined,
+      subCategory: null,
       paymentMethod: undefined,
       description: undefined,
       value: 0.0,
@@ -270,6 +282,22 @@ export default {
       await this.$store.dispatch("getOuttakes");
       this.loading = false;
     },
+    async newSubcategory(category, newSubcategory) {
+      if (
+        category.subCategories.indexOf(newSubcategory) < 0 &&
+        newSubcategory != this.other
+      ) {
+        await this.$store.dispatch("addOuttakeSubcategory", {
+          category,
+          newSubcategory
+        });
+      }
+    },
+    async newCategory(category) {
+      if (this.categoriesName.indexOf(category.name) < 0) {
+        await this.$store.dispatch("addOuttakesCategory", category.name);
+      }
+    },
     async addBill() {
       this.loading = true;
       // Deletando esses dois campos se tiverem pra não salvar dados desnecessários no banco
@@ -277,7 +305,8 @@ export default {
       delete this.unit.specialties;
 
       let bill = {
-        category: this.category,
+        category: this.category.name,
+        subCategory: this.subCategory,
         payment_method: this.paymentMethod,
         description: this.description,
         value: this.value,
@@ -286,10 +315,8 @@ export default {
         colaborator: this.user,
         unit: this.unit.name != this.other ? this.unit : null
       };
-
-      if (this.categoriesName.indexOf(this.category) < 0) {
-        await this.$store.dispatch("addOuttakesCategory", this.category);
-      }
+      await this.newCategory(this.category);
+      await this.newSubcategory(this.category, this.subCategory);
       if (this.files.length > 0) {
         let urls = await this.submitFiles(this.files);
         bill.appends = urls;

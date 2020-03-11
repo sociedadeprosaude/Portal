@@ -2,10 +2,11 @@
   <v-container>
     <v-dialog v-model="dialog" persistent max-width="1280">
       <template v-slot:activator="{ on }">
-        <v-btn v-on="on">Categorias</v-btn>
+        <v-btn v-on="on">Adicionar subCategorias</v-btn>
       </template>
 
       <v-card outlined>
+        <v-card-title>Categorias</v-card-title>
         <v-card-text>
           <v-container>
             <v-expansion-panels>
@@ -17,6 +18,7 @@
                   <v-combobox
                     outlined
                     @input.native="newSub[i]=$event.srcElement.value"
+                    v-model="newSub[i]"
                     :items="item.subCategories"
                     label="Sub Categoria"
                   ></v-combobox>
@@ -54,10 +56,15 @@ export default {
         });
       }
     },
-    removeSubcategory: async function(item, newSubs) {
-      console.log(item);
-      console.log(newSubs);
-      //await this.$store.dispatch("addOuttakeSubcategory",{item,newSub});
+    removeSubcategory: async function(category, delSubcategory) {
+      const subIndex = category.subCategories.indexOf(delSubcategory);
+
+      if (subIndex >= 0) {
+        await this.$store.dispatch("removeOuttakeSubcategory", {
+          category,
+          subIndex
+        });
+      }
     }
   },
 
