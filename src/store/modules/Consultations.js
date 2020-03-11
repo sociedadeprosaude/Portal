@@ -241,16 +241,21 @@ const actions = {
                 //Não havendo encontrado um recibo, há a necessidade adicionar uma nova procedure para quando pagar, criar um intake e atualizar o procedure adicionando Consulta paga no array do status
                 console.log("Criando procedure")
                 //let status = payload.consultation.exam ? 'Consulta Paga' : 'Exame Pago'
-                let type = payload.consultation.exam ? 'Exam' : 'Consultation'
-                firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').add(
-                    {
-                        status: ['Agendado'],
-                        startAt: moment().format('YYYY-MM-DD hh:ss'),
-                        type: type,
-                        consultation: payload.consultation.id,
-                        specialty: payload.consultation.specialty.name
-                    }
-                )
+                
+                let obj = {
+                    status: ['Agendado'],
+                    startAt: moment().format('YYYY-MM-DD hh:ss'),
+                    consultation: payload.consultation.id,
+                    specialty: payload.consultation.specialty.name
+                }
+                if( payload.consultation.exam ) {
+                    obj.type =  'Exam'
+                    obj.exam = payload.consultation.exam
+                }
+                else
+                    obj.type = 'Consultation'
+
+                firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').add(obj)
             }
         } catch (e) {
             throw e

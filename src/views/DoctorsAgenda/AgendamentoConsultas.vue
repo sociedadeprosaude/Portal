@@ -1,7 +1,7 @@
 <template>
     <v-layout row wrap>
         <v-flex sm8 xs12 class="pr-2">
-            <v-layout  row wrap class="ml-6 align-center">
+            <v-layout align-center row wrap class="ml-6">
                 <v-flex xs12 md5>
                     <v-combobox
                             prepend-icon="school"
@@ -31,7 +31,7 @@
                         </template>
                     </v-combobox>
                 </v-flex>
-                <v-spacer/>
+                <v-spacer></v-spacer>
                 <v-flex xs12 md5>
                     <v-combobox
                             prepend-icon="person"
@@ -139,9 +139,7 @@
                                             </h4>
                                         </v-flex>
                                       <v-flex xs12 class="mb-1">
-
-                                        <v-divider/>
-
+                                        <v-divider></v-divider>
                                       </v-flex>
 
                                         <v-flex class="my-0" xs12>
@@ -205,15 +203,13 @@
                 <v-btn class="primary" rounded @click="listenMoreConsultations">Carregar mais</v-btn>
             </v-flex>
             <v-flex xs12 v-else>
-                <v-progress-circular class="primary--text" indeterminate/>
+                <v-progress-circular class="primary--text" indeterminate></v-progress-circular>
             </v-flex>
         </v-flex>
         <v-flex v-if="!showAlert" xs4 class="text-center hidden-xs-only">
             <v-layout row wrap class="align-center justify-center">
                 <v-flex xs12 class="text-center">
-
-                    <select-patient-card ref="patientCard" max-width="1000px"/>
-
+                    <select-patient-card ref="patientCard" max-width="1000px"></select-patient-card>
                 </v-flex>
                 <v-flex xs12 class="text-center mt-4">
                     <v-date-picker
@@ -222,8 +218,8 @@
                             class="mx-4"
                             v-model="date"
                             :allowed-dates="allowedDates"
-                            locale="pt-br">
-                    </v-date-picker>
+                            locale="pt-br"
+                    ></v-date-picker>
                 </v-flex>
             </v-layout>
         </v-flex>
@@ -256,9 +252,8 @@
                                                         outlined
                                                         prepend-icon="person"
                                                         v-model="createConsultationForm.user.name"
-                                                        label="Nome do Paciente">
-                                                </v-text-field>
-
+                                                        label="Nome do Paciente"
+                                                ></v-text-field>
                                             </v-flex>
                                             <v-flex xs12 v-if="foundDependents && foundDependents.length > 0">
                                                 <v-select
@@ -295,9 +290,8 @@
                                                         outlined
                                                         prepend-icon="credit_card"
                                                         v-model="createConsultationForm.user.cpf"
-                                                        label="CPF">
-                                                </v-text-field>
-
+                                                        label="CPF"
+                                                ></v-text-field>
                                             </v-flex>
                                             <v-flex xs12 sm6>
                                                 <v-text-field
@@ -307,11 +301,11 @@
                                                         outlined
                                                         prepend-icon="credit_card"
                                                         v-model="createConsultationForm.user.association_number"
-                                                        label="Nº do associado">
-                                                </v-text-field>
+                                                        label="Nº do associado"
+                                                ></v-text-field>
                                             </v-flex>
                                             <v-flex xs12 sm12 md12 lg12>
-                                                <v-divider/>
+                                                <v-divider></v-divider>
                                             </v-flex>
                                             <v-flex xs12 sm6>
                                                 <v-text-field
@@ -320,8 +314,8 @@
                                                         outlined
                                                         prepend-icon="person"
                                                         v-model="createConsultationForm.consultation.doctor.name"
-                                                        label="Nome do Médico">
-                                                </v-text-field>
+                                                        label="Nome do Médico"
+                                                ></v-text-field>
                                             </v-flex>
                                             <v-flex xs12 sm6>
                                                 <v-text-field
@@ -330,8 +324,8 @@
                                                         outlined
                                                         prepend-icon="credit_card"
                                                         v-model="createConsultationForm.consultation.doctor.crm"
-                                                        label="CRM">
-                                                </v-text-field>
+                                                        label="CRM"
+                                                ></v-text-field>
                                             </v-flex>
                                             <v-flex xs12 sm6>
                                                 <v-text-field
@@ -340,8 +334,8 @@
                                                         outlined
                                                         prepend-icon="school"
                                                         v-model="createConsultationForm.consultation.specialty.name"
-                                                        label="Especialidade">
-                                                </v-text-field>
+                                                        label="Especialidade"
+                                                ></v-text-field>
                                             </v-flex>
 
                                             <v-flex xs12 sm6>
@@ -351,8 +345,8 @@
                                                         v-model="computedDateFormatted"
                                                         readonly
                                                         hide-details
-                                                        outlined>
-                                                </v-text-field>
+                                                        outlined
+                                                ></v-text-field>
                                             </v-flex>
 
                                             <v-flex xs12 v-show="exames.indexOf(createConsultationForm.consultation.specialty.name) != -1">
@@ -392,17 +386,15 @@
                                                         label="Hora da Consulta"
                                                         readonly
                                                         hide-details
-                                                        outlined>
-                                                </v-text-field>
-
+                                                        outlined
+                                                ></v-text-field>
                                             </v-flex>
                                             <v-flex xs12 sm8>
                                                 <v-progress-circular
                                                         v-if="loaderPaymentNumber"
                                                         indeterminate
-                                                        color="primary">
-                                                </v-progress-circular>
-
+                                                        color="primary"
+                                                ></v-progress-circular>
                                                 <v-select
                                                         v-else
                                                         prepend-icon="assignment_turned_in"
@@ -437,9 +429,8 @@
                                                         hide-details
                                                         outlined
                                                         label="Modalidade"
-                                                        chips>
-                                                </v-text-field>
-
+                                                        chips
+                                                ></v-text-field>
                                             </v-flex>
                                             <v-flex xs12 sm6>
                                                 <v-text-field
@@ -450,11 +441,11 @@
                                                         type="number"
                                                         :disabled="status === 'Pago' ? false : true"
                                                         hide-details
-                                                        outlined>
-                                                </v-text-field>
+                                                        outlined
+                                                ></v-text-field>
                                             </v-flex>
                                             <v-flex xs12 sm12 md12 lg12>
-                                                <v-divider/>
+                                                <v-divider></v-divider>
                                             </v-flex>
                                             <v-flex xs12>
                                                 <v-select
@@ -465,20 +456,20 @@
                                                         chips
                                                         readonly
                                                         hide-details
-                                                        outlined>
-                                                </v-select>
+                                                        outlined
+                                                ></v-select>
                                             </v-flex>
                                         </v-layout>
                                     </v-container>
                                 </v-card-text>
-                                <v-divider/>
+                                <v-divider></v-divider>
                                 <v-card-actions>
                                     <v-dialog v-model="loader" hide-overlay persistent width="300">
                                         <v-card color="primary" dark>
                                             <v-card-text>
                                                 Salvando...
                                                 <v-progress-linear indeterminate color="white"
-                                                                   class="mb-0"/>
+                                                                   class="mb-0"></v-progress-linear>
                                             </v-card-text>
                                         </v-card>
                                     </v-dialog>
@@ -486,7 +477,7 @@
                                         Cancelar
                                         <v-icon right>clear</v-icon>
                                     </v-btn>
-                                    <v-spacer/>
+                                    <v-spacer></v-spacer>
                                     <submit-button
                                             color="success"
                                             rounded
@@ -495,14 +486,14 @@
                                             :success="success"
                                             :loading="scheduleLoading"
                                             @click="save"
-                                            text="Confirmar">
-                                    </submit-button>
+                                            text="Confirmar"
+                                    ></submit-button>
                                 </v-card-actions>
                             </v-card>
                         </v-dialog>
                     </div>
                     <v-dialog v-model="dialogPaciente" width="1000">
-                        <pacientes/>
+                        <pacientes></pacientes>
                     </v-dialog>
                 </v-layout>
             </v-container>
@@ -631,9 +622,7 @@
                 let espArray = Object.values(this.$store.getters.specialties);
                 espArray = espArray.filter(specialty => {
                     if (!specialty.doctors)
-
-                        console.log('Teeeee', specialty);
-
+                        console.log('Teeeee', specialty)
                     if (!this.selectedDoctor) {
                         return true;
                     }
@@ -673,14 +662,12 @@
                         if (this.especialidade.name !== a.specialty.name) {
                             response = false;
                         }
-
                     }
                     if (this.clinic) {
                         if (this.clinic !== a.clinic.name) {
                             response = false;
                         }
                     }
-
                     //console.log("resposta:", response)
                     return response;
                 });
@@ -695,6 +682,7 @@
                                                 ...this.$store.getters.doctors
                                             }
                                             return Object.values(docs) */
+
                     let docArray = Object.values(this.$store.getters.doctors);
                     docArray = docArray.filter(doctor => {
                         if (!this.especialidade) {
@@ -716,7 +704,8 @@
                 }
             },
             selectedPatient() {
-                return this.$store.getters.selectedPatient;
+                let paciente = this.$store.getters.selectedPatient;
+                return paciente;
             },
             foundDependents() {
                 return this.selectedPatient.dependents;
@@ -765,9 +754,7 @@
                                       0,
                                       this.findPos(document.getElementById("group-" + val), "group-" + val)
                                     ); */
-
-                if (val === this.consultas[0].date) this.$vuetify.goTo(0, this.options);
-
+                if (val == this.consultas[0].date) this.$vuetify.goTo(0, this.options);
                 else this.$vuetify.goTo("#group-" + val, this.options);
             },
              exam(value){
@@ -815,30 +802,27 @@
                     consultation: consultation.consultations.find(a => {
                         return !a.user;
                     })
+                }
 
-                };
+                this.thereIsPaymentNumber()
 
-                this.thereIsPaymentNumber();
                 this.createConsultationForm = this.selectedForm;
             },
 
             specialtyCost() {
                 let espArray = Object.values(this.$store.getters.specialties);
-
-                let cost = undefined;
+                let cost = undefined
                 espArray.forEach(specialty => {
-                    console.log(specialty);
+                    console.log(specialty)
                     if (specialty.name === this.selectedForm.consultation.specialty.name) {
-                        console.log(specialty);
-
+                        console.log(specialty)
                         specialty.doctors.forEach(doctor => {
                             if (doctor.cpf === this.selectedForm.consultation.doctor.cpf) {
                                 cost = {
                                     cost: doctor.cost,
                                     price: doctor.price,
                                     doctorConsultation: doctor
-
-                                };
+                                }
                                 return cost
                             }
                         });
@@ -854,11 +838,10 @@
 
                 this.loaderPaymentNumber = true;
 
-                if (this.selectedForm.consultation.specialty.name === "ULTRASSONOGRAFIA" || this.selectedForm.consultation.specialty.name === "ECOCARDIOGRAMA") {
-
+               /*  if (this.selectedForm.consultation.specialty.name == "ULTRASSONOGRAFIA" || this.selectedForm.consultation.specialty.name == "ECOCARDIOGRAMA") {
                     this.status = "Pago";
                     this.loaderPaymentNumber = false
-                } else { /*
+                } else { */
 
                     this.$store
                         .dispatch("thereIsIntakes", {
@@ -875,17 +858,16 @@
                             this.loaderPaymentNumber = false
                         })
                         .catch(response => {
-                            console.log('kjkjhkjh');
-                            let cost = this.specialtyCost();
+                            console.log('kjkjhkjh')
+                            let cost = this.specialtyCost()
                             console.log(cost);
-                            if (cost && cost.price === 0) {
-                                this.status = "Pago";
-
+                            if (cost && cost.price == 0) {
+                                this.status = "Pago"
                                 this.loaderPaymentNumber = false
                             }
                             this.loaderPaymentNumber = false
                         });
-              */   }
+              /*   } */
 
 
             },
@@ -935,7 +917,6 @@
                     }
                 }
                 return -1;
-
             },
             consultasByDate(consultations) {
                 let res = {};
@@ -952,8 +933,7 @@
                 this.loading = true;
                 // this.$store.dispatch("getClinics");
                 // await this.$store.dispatch("getDoctors");
-                await this.listenConsultations();
-                this.$store.dispatch('getConsultations')
+                await this.listenConsultations()
                 // await this.$store.dispatch("getSpecialties");
                 this.loading = false;
             },
@@ -992,9 +972,7 @@
             },
             findPos(obj, elementId) {
                 var curtop = 0;
-
-                if (elementId === "group-" + this.dates[0]) {
-
+                if (elementId == "group-" + this.dates[0]) {
                     return [0];
                 } else if (obj.offsetParent) {
                     do {
