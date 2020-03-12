@@ -105,15 +105,16 @@ const actions = {
                     }
                 }
             }
-            upd= payload.user.advances
+            upd= payload.user
             console.log('upd: ',upd)
+            return await firebase.firestore().collection('users').doc(payload.user.cpf).set(upd)
 
         } else {
             console.log('entrei aqui')
             upd[payload.field] = payload.value
             console.log('upd: ', upd)
+            return await firebase.firestore().collection('users').doc(payload.user.cpf).update(upd)
         }
-        return await firebase.firestore().collection('users').doc(payload.user.cpf).update(upd)
     },
     async deleteUser({ }, user) {
         try {
