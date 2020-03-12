@@ -227,8 +227,8 @@
                         payment_number: this.consultation.payment_number
                     })
                     .then(async (obj) => {
+
                         this.loader = false
-                        console.log(obj)
                         window.print()
                     })
                     .catch(async (response) => {
