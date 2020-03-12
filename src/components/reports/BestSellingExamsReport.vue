@@ -119,8 +119,6 @@ export default {
         { text: "Venda", value: "price", align: "center" },
         { text: "Clinica", value: "clinicName" }
       ],
-      dateBegin: null,
-      dateEnd: null
     };
   },
   methods: {

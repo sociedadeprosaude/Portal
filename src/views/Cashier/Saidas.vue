@@ -22,7 +22,7 @@
                 v-if="categoria.subCategories"
                 label="subCategoria"
                 v-model="subCategoria"
-                :items="[...categoria.subCategories,'Outro']"
+                :items="[...categoria.subCategories,this.other]"
                 item-text="name"
                 return-object
               ></v-select>
@@ -108,7 +108,7 @@ export default {
     categoria: "",
     subCategoria: "",
     unit: null,
-    other: "OUTRO",
+    other: "Outro",
     valor: 0,
     verificador: false,
     categoriaNova: "",
@@ -135,8 +135,8 @@ export default {
         category: this.categoria.name,
         subCategory: this.subCategoria,
         value: parseFloat(this.valor),
-        id: moment().valueOf(),
-        date: this.data,
+        //  id: moment().valueOf(),
+        created_at: this.data,
         paid: this.data,
         colaborator: this.user,
         payment_method: "Dinheiro",
@@ -149,7 +149,10 @@ export default {
       this.categoria = "";
     },
     async adicionarCategoria() {
-      if (this.categoriesName.indexOf(this.categoriaNova) < 0) {
+      if (
+        this.categoriesName.indexOf(this.categoriaNova) < 0 &&
+        newSubcategory != this.other
+      ) {
         await this.$store.dispatch("addOuttakesCategory", this.categoriaNova);
       }
       this.success = true;
@@ -183,9 +186,6 @@ export default {
     units() {
       this.unit = this.selectedUnit;
       return [...this.$store.getters.units, { name: this.other }];
-    },
-    unitsName() {
-      return [...this.units.map(unit => unit.name), "OUTRO"];
     },
     selectedUnit() {
       return this.$store.getters.selectedUnit;
