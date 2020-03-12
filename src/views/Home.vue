@@ -195,6 +195,12 @@
                                 permission: 'Caixa',
                                 icon: 'credit_card',
                             },
+                            {
+                                title: 'Desconto A Cima',
+                                icon: 'group',
+                                permission: 'Colaboradores',
+                                to: '/discount'
+                            },
                             // {
                             //     title: 'Exames',
                             //     to: '/exames',

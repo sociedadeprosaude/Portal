@@ -605,7 +605,16 @@
                     newBudget.id = this.selectedBudget.id;
                     this.$store.commit('setSelectedBudget', newBudget)
                 }
+                console.log('budget =================================================================',this.selectedBudget)
                 await this.$store.dispatch('addIntake', this.selectedBudget);
+                let porcentagem = (this.selectedBudget.discount / this.selectedBudget.subTotal)
+
+                console.log('total : ', this.selectedBudget)
+                if(porcentagem >= 0.5 || parseFloat(this.searchBudget.subTotal) >  this.selectedBudget.cost){
+                    console.log('entrei')
+                    this.$store.dispatch('DiscountWarning', {orcamento: this.selectedBudget.id, date: this.selectedBudget.date,
+                        discont: ((this.selectedBudget.discount / this.selectedBudget.subTotal)*100), name:this.selectedBudget.colaborator.name, cpf:this.selectedBudget.colaborator.cpf})
+                }
                 this.updateBudgetsIntakes();
                 this.receipt(this.selectedBudget);
                 this.paymentLoading = false;

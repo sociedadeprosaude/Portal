@@ -10,12 +10,18 @@ import Cids from "../views/DoctorsAgenda/Cids";
 import Declaration from "../views/DoctorsAgenda/Declaration";
 import Teste from "../views/DoctorsAgenda/testescrolling";
 import Patient from "../views/DoctorsAgenda/Patient";
+import Discount from "../views/discount"
 
 export default [
     {
         path: '/agenda/agendamento',
         name: 'AgendamentoConsultas',
         component: AgendamentoConsultas
+    },
+    {
+        path: 'discount',
+        name: 'discont',
+        component: Discount
     },
     {
         path: '/agenda/CadastroConsultasPlantoes',

@@ -9,6 +9,7 @@ const state = {};
 const mutations = {};
 
 const actions = {
+
     async addBudget(context, payload) {
         let copyPayload = Object.assign({}, payload)
         functions.removeUndefineds(copyPayload)
@@ -264,7 +265,6 @@ const actions = {
             }
         }
     },
-
     async updatePaymentNumberConsultation(context,payload){
         await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.id).update({
             status: 'Pago',

@@ -94,8 +94,13 @@ const actions = {
     },
     async updateUserField(context, payload) {
         let upd = {}
-        if (payload.value === 'delete') {
-            upd[payload.field] = firebase.firestore.FieldValue.delete()
+        console.log('payload: ', payload)
+        if (payload.value === 'pay') {
+            let user = firebase.firestore().collection('users').doc(payload.user.cpf).collection('advances').get()
+            console.log('user: ',user);
+            user.forEach((e) => {
+                console.log(e.date())
+            })
         } else {
             upd[payload.field] = payload.value
         }

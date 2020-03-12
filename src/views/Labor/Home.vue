@@ -91,6 +91,7 @@
                                                     </v-flex>
                                                     <v-flex xs12 class="text-right">
                                                         <span class="font-weight-bold">R$ {{advance.value}}</span>
+                                                        <span class="font-weight-bold"> |  Parcelas:{{advance.parcel}}</span>
                                                     </v-flex>
                                                 </v-layout>
                                             </v-card>
@@ -234,11 +235,6 @@
             <v-flex xs12 class="text-center">
                 <paymeny-report :colaborators="colab"></paymeny-report>
             </v-flex>
-            <v-flex xs12 class="text-center">
-                <v-btn @click="makePayments" rounded class="primary">
-                    Pagar
-                </v-btn>
-            </v-flex>
         </v-layout>
         <v-layout row wrap v-else>
             <v-flex xs12 class="text-center">
@@ -273,6 +269,12 @@
                     <v-currency-field
                             v-model="value"
                             label="valor"></v-currency-field>
+                    <v-flex>
+                        <v-select :items="parcels" v-model="parcel"
+                                  label="Parcelas"
+                                  filled>
+                        </v-select>
+                    </v-flex>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -300,7 +302,11 @@
                 salaryDialog: false,
                 advanceDialog: false,
                 value: undefined,
-                selectedUser: undefined
+                selectedUser: undefined,
+                parcels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                parcel:1,
+                months:[],
+                datenow: moment().format('YYYY-MM-DD'),
             }
         },
         computed: {
@@ -400,9 +406,53 @@
                 if (!this.selecteduser.advances) {
                     this.selecteduser.advances = []
                 }
+                for(let i=0; i<this.parcel;i++ ){
+                    if(i+ parseInt(this.datenow.substring(5,7)) > 12 ){
+                        if(parseInt(this.datenow.substring(8,10)) >19){
+                            if(i + 1 + parseInt(this.datenow.substring(5,7)) < 10){
+                                this.months[i]= (parseInt(this.datenow.substring(0,5)) + 1) + '0' + (i + 1 + parseInt(this.datenow.substring(5,7)))
+                            }
+                            else{
+                                this.months[i]= (parseInt(this.datenow.substring(0,5)) + 1) + (i + 1 + parseInt(this.datenow.substring(5,7)))
+                            }
+                        }
+                        else{
+                            if(i+ parseInt(this.datenow.substring(5,7)) < 10){
+                                this.months[i]= (parseInt(this.datenow.substring(0,5)) + 1) + '0' +(i+ parseInt(this.datenow.substring(5,7)))
+                            }
+                            else{
+                                this.months[i]= (parseInt(this.datenow.substring(0,5)) + 1) + (i+ parseInt(this.datenow.substring(5,7)))
+
+                            }
+                        }
+                    }
+                    else{
+                        if(parseInt(this.datenow.substring(8,10)) >19){
+                            if(i + 1 + parseInt(this.datenow.substring(5,7)) <10){
+                                this.months[i]= this.datenow.substring(0,5) + '0' +(i + 1 + parseInt(this.datenow.substring(5,7)))
+                            }
+                            else{
+                                this.months[i]= this.datenow.substring(0,5) + (i + 1 + parseInt(this.datenow.substring(5,7)))
+                            }
+                        }
+                        else{
+                            if(i+ parseInt(this.datenow.substring(5,7)) <10 ){
+                                this.months[i]= this.datenow.substring(0,5) + '0' +(i+ parseInt(this.datenow.substring(5,7)))
+
+                            }
+                            else{
+                                this.months[i]= this.datenow.substring(0,5) + (i+ parseInt(this.datenow.substring(5,7)))
+
+                            }
+                        }
+                    }
+                }
                 this.selecteduser.advances.push({
-                    date: moment().format('YYYY-MM-DD HH:mm:ss'),
-                    value: this.value
+                    date: moment().format('YYYY-MM-DD hh:mm:ss'),
+                    value: this.value,
+                    valueParcel:  this.value/this.parcel,
+                    parcel: this.parcel,
+                    months: this.months
                 })
                 await this.$store.dispatch('updateUserField', {
                     user: this.selecteduser,
@@ -421,18 +471,6 @@
                 })
                 await this.getInitialInfo()
             },
-            async makePayments() {
-                this.loading = true
-                for (let user in this.colab) {
-                    await this.$store.dispatch('updateUserField', {
-                        user: this.colab[user],
-                        field: 'advances',
-                        value: 'delete'
-                    })
-                }
-                await this.getInitialInfo()
-                this.loading = false
-            }
         },
         mounted() {
             this.getInitialInfo()
