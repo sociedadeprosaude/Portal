@@ -45,7 +45,8 @@ const actions = {
             }
             commit('setcolaboratorsWarning', WarningColaborators);
         })
-    },
+    }
+
 
 };
 const getters = {

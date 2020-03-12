@@ -29,8 +29,10 @@
                                 <v-icon size="72">{{page.icon}}</v-icon>
                                 <span class="text-center my-headline">
                         {{page.title}}
+                                                                         <v-icon v-if="(page.title === 'Desconto A Cima' && Warning)">notification_important</v-icon>
                     </span>
                             </v-layout>
+
                         </v-card>
                         <v-card
                                 width="124"
@@ -100,6 +102,7 @@
         },
 
         mounted() {
+            this.$store.dispatch('WarningColaborators')
             //   let perm = [
             //       'Caixa',
             //       'Prontuarios',
@@ -255,6 +258,9 @@
             user() {
                 return this.$store.getters.user
             },
+            Warning(){
+                return this.$store.getters.colaboratorsWarning
+            },
             filteredPages() {
                 // if (!this.user.permissions) return []
                 if(this.user){
@@ -273,6 +279,7 @@
                 }
                 }
         },
+
     }
 </script>
 
@@ -286,7 +293,6 @@
         list-style-type: none;
         padding: 0;
     }
-
     li {
         display: inline-block;
         margin: 0 10px;
