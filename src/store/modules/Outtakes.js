@@ -3,20 +3,36 @@ import functions from "../../utils/functions";
 
 const state = {
     outtakes: [],
-    categories: []
+    categories: [],
 }
 
 const mutations = {
-    setOuttakes(state, payload) {
-        state.outtakes = payload
-    },
-    setOuttakesCategories(state, payload) {
-        state.categories = payload
-    },
+    setOuttakes: (state, payload) => state.outtakes = payload,
+    setOuttakesCategories: (state, payload) => state.categories = payload,
+    setOuttakesReport: (state, payload) => state.outtakesReport = payload
 }
 
 const actions = {
-    async getOuttakes({ commit }) {
+    async getOuttakes(context, payload) {
+        try{
+        let selectedUnit = context.getters.selectedUnit
+        let outtakesSnap = await firebase.firestore().collection('outtakes').where('created_at', '>=', payload.initialDate)
+            .where('created_at', '<=', payload.finalDate)
+            .where('unit.name', '==', selectedUnit.name)
+            .orderBy('created_at').get()
+        let outtakes = []
+        outtakesSnap.forEach(doc => {
+            outtakes.push({
+                id: doc.id,
+                ...doc.data()
+            })
+        });
+        context.commit("setOuttakes", outtakes)
+    }catch(e){
+        console.log(e)
+    }
+    },
+    async getAllOuttakes({ commit }) {
         let outtakes = []
         try {
             let outtakesCol = await firebase.firestore().collection('outtakes/').get()

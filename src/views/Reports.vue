@@ -133,11 +133,16 @@ export default {
         initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
         finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
       });
+
       await this.pesquisar();
       this.loading = false;
     },
     async pesquisar() {
       this.loading = true;
+      this.$store.dispatch("getOuttakes", {
+        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+      });
       this.formattedReport = await this.$store.dispatch("searchReports", {
         dataInicio: this.date,
         dataFinal: this.date2
@@ -161,7 +166,11 @@ export default {
     }
   },
   async mounted() {
-    await this.$store.dispatch("getOuttakes");
+    console.log(moment(this.date).format("YYYY-MM-DD 00:00:00"))
+    this.$store.dispatch("getOuttakes", {
+      initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+      finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+    });
     await this.$store.dispatch("getOuttakesCategories");
     this.getIntakes();
   },

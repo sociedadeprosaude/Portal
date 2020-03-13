@@ -97,6 +97,7 @@ export default {
         { text: "Custo", value: "cost", align: "center" },
         { text: "SubCategoria", value: "subCategory", align: "center" },
         { text: "Status", value: "status", align: "center" },
+        { text: "Criado em", value: "created_at", align: "center" },
         { text: "Pago em", value: "paidIn", align: "center" }
       ],
       dateBegin: null,
@@ -166,6 +167,7 @@ export default {
         paidIn: e.paid
           ? this.formatDateHour(e.paid)
           : "Marcado para " + this.formatDate(e.date_to_pay),
+        created_at:this.formatDateHour(e.created_at),        
         toPayIn: e.date_to_pay,
         info: e.description,
         status: e.paid ? true : false
