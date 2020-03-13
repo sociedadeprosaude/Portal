@@ -162,6 +162,7 @@ export default {
   },
   async mounted() {
     await this.$store.dispatch("getOuttakes");
+    await this.$store.dispatch("getOuttakesCategories");
     this.getIntakes();
   },
   computed: {

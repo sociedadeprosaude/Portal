@@ -151,7 +151,7 @@ export default {
     async adicionarCategoria() {
       if (
         this.categoriesName.indexOf(this.categoriaNova) < 0 &&
-        newSubcategory != this.other
+        this.categoriaNova != this.other
       ) {
         await this.$store.dispatch("addOuttakesCategory", this.categoriaNova);
       }
