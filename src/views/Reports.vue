@@ -80,36 +80,37 @@
             <v-flex class="hidden-screen-only">
                 <p>DE {{dateFormatted}} ATÉ {{dateFormatted2}}</p>
             </v-flex>
-            <v-flex xs6 v-if="selectedReport !== 3">
-                <v-menu
-                        v-model="menu2"
-                        :close-on-content-click="false"
-                        transition="scale-transition"
-                        offset-y
-                        max-width="290px"
-                        min-width="290px"
-                >
-                    <template v-slot:activator="{ on }">
-                        <v-text-field
-                                v-model="dateFormatted2"
-                                label="Data Final"
-                                prepend-icon="event"
-                                readonly
-                                v-on="on"
-                        ></v-text-field>
-                    </template>
-                    <v-date-picker v-model="date2" no-title @input="menu2 = false"></v-date-picker>
-                </v-menu>
-            </v-flex>
-            <v-flex xs12 class="mb-3" v-if="selectedReport !== 3">
-                <v-layout row wrap class="align-center">
-                    <v-flex>
-                        <v-btn @click="getIntakes()" color="blue" v-if="!loading">Pesquisar</v-btn>
-                        <v-progress-circular indeterminate class="primary--text" v-else></v-progress-circular>
-                    </v-flex>
-                    >>>>>>> development
-                </v-layout>
-            </v-flex>
+<!--            =======-->
+<!--            <v-flex xs6 v-if="selectedReport !== 3">-->
+<!--                <v-menu-->
+<!--                        v-model="menu2"-->
+<!--                        :close-on-content-click="false"-->
+<!--                        transition="scale-transition"-->
+<!--                        offset-y-->
+<!--                        max-width="290px"-->
+<!--                        min-width="290px"-->
+<!--                >-->
+<!--                    <template v-slot:activator="{ on }">-->
+<!--                        <v-text-field-->
+<!--                                v-model="dateFormatted2"-->
+<!--                                label="Data Final"-->
+<!--                                prepend-icon="event"-->
+<!--                                readonly-->
+<!--                                v-on="on"-->
+<!--                        ></v-text-field>-->
+<!--                    </template>-->
+<!--                    <v-date-picker v-model="date2" no-title @input="menu2 = false"></v-date-picker>-->
+<!--                </v-menu>-->
+<!--            </v-flex>-->
+<!--            <v-flex xs12 class="mb-3" v-if="selectedReport !== 3">-->
+<!--                <v-layout row wrap class="align-center">-->
+<!--                    <v-flex>-->
+<!--                        <v-btn @click="getIntakes()" color="blue" v-if="!loading">Pesquisar</v-btn>-->
+<!--                        <v-progress-circular indeterminate class="primary&#45;&#45;text" v-else></v-progress-circular>-->
+<!--                    </v-flex>-->
+<!--                    >>>>>>> development-->
+<!--                </v-layout>-->
+<!--            </v-flex>-->
             <v-flex xs12 v-if="selectedReport === 0">
                 <general-report :report="formattedReport" :loading="loading" :intakes="intakes"></general-report>
             </v-flex>
