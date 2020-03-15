@@ -64,22 +64,22 @@
                     </v-flex>
                 </v-layout>
             </v-flex>
-            <v-flex xs12 v-if="selectedReport === 0">
-                <general-report :report="formattedReport" :loading="loading" :intakes="intakes"></general-report>
-            </v-flex>
-            <v-flex xs12 v-if="selectedReport === 1">
-                <colaborators-production-report :loading="loading"
-                                                :intakes="formattedReport.intakesArray"></colaborators-production-report>
-            </v-flex>
-            <v-flex xs12 v-if="selectedReport === 2">
-                <intakes-report :report="formattedReport" :loading="loading" :intakes="intakes"></intakes-report>
-            </v-flex>
-            <v-flex xs12 v-if="selectedReport === 3">
-                <procedures-prices-analises></procedures-prices-analises>
-            </v-flex>
-            <v-flex class="hidden-screen-only">
-                <p>DE {{dateFormatted}} ATÉ {{dateFormatted2}}</p>
-            </v-flex>
+<!--            <v-flex xs12 v-if="selectedReport === 0">-->
+<!--                <general-report :report="formattedReport" :loading="loading" :intakes="intakes"></general-report>-->
+<!--            </v-flex>-->
+<!--            <v-flex xs12 v-if="selectedReport === 1">-->
+<!--                <colaborators-production-report :loading="loading"-->
+<!--                                                :intakes="formattedReport.intakesArray"></colaborators-production-report>-->
+<!--            </v-flex>-->
+<!--            <v-flex xs12 v-if="selectedReport === 2">-->
+<!--                <intakes-report :report="formattedReport" :loading="loading" :intakes="intakes"></intakes-report>-->
+<!--            </v-flex>-->
+<!--            <v-flex xs12 v-if="selectedReport === 3">-->
+<!--                <procedures-prices-analises></procedures-prices-analises>-->
+<!--            </v-flex>-->
+<!--            <v-flex class="hidden-screen-only">-->
+<!--                <p>DE {{dateFormatted}} ATÉ {{dateFormatted2}}</p>-->
+<!--            </v-flex>-->
 <!--            =======-->
 <!--            <v-flex xs6 v-if="selectedReport !== 3">-->
 <!--                <v-menu-->
@@ -124,8 +124,7 @@
                 <procedures-prices-analises></procedures-prices-analises>
             </v-flex>
             <v-flex xs12 v-if="selectedReport === 4">
-                <!-- BestSellingExamsReport ou best-selling-exams-report -->
-                <BestSellingExamsReport :date="dateBegin" :date2="dateEnd"/>
+                <best-selling-exams-report :date="dateBegin" :date2="dateEnd"/>
             </v-flex>
             <v-flex class="hidden-screen-only">
                 <p>DE {{dateFormatted}} ATÉ {{dateFormatted2}}</p>
