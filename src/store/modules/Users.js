@@ -70,6 +70,25 @@ const actions = {
         });
         return users
     },
+   /*  async gambiarra({ commit, getters }, searchFields) {
+        let usersRef = firestore().collection('users').where('type','==','PATIENT');
+        console.log('Vai buscar')
+        //usersRef.where('type','==','PATIENT')
+        let querySnapshot = await usersRef.get();
+        let users = [];
+        querySnapshot.forEach(function (doc) {
+           let data = doc.data()
+           if(data.dependents){
+               
+                data.dependents.forEach((dep)=>{
+                        console.log('Nome do responsável:' + data.name + '-> Dependente' + dep.name)
+                    
+                })
+            }
+        });
+        console.log('Buscou')
+        return users
+    }, */
     async addUser({ getters }, patient) {
         try {
 

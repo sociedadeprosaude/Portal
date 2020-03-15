@@ -54,7 +54,15 @@
             </v-flex>
             <v-flex xs12 class="ma-1 hidden-xs-only">
                 <v-layout row wrap class="align-end justify-end">
-                    <v-card class="card" width="200px" @click="logout()">
+                    <v-card class="card mx-2 my-2" width="200px" @click="profile()">
+                        <v-layout column row>
+                            <v-icon size="72">account_circle</v-icon>
+                            <span class="text-center my-headline">
+                        Perfil
+                    </span>
+                        </v-layout>
+                    </v-card>
+                    <v-card class="mx-2 my-2 card" width="200px" @click="logout()">
                         <v-layout column row>
                             <v-icon size="72">exit_to_app</v-icon>
                             <span class="text-center my-headline">
@@ -66,7 +74,16 @@
             </v-flex>
             <v-flex xs12 class="ma-1 hidden-sm-and-up">
                 <v-layout row wrap class="align-center justify-start">
-                    <v-card class="card py-1 px-2" @click="logout()">
+                     <v-card class="card mx-2 my-2  py-1 px-2" @click="logout()">
+                        <v-layout row wrap class="align-center">
+                            <span class="text-center font-weight-bold">
+                        Perfil
+                    </span>
+                            <v-icon size="24">account_circle</v-icon>
+
+                        </v-layout>
+                    </v-card>
+                    <v-card class="card mx-2 my-2  py-1 px-2" @click="logout()">
                         <v-layout row wrap class="align-center">
                             <span class="text-center font-weight-bold">
                         Sair
@@ -248,6 +265,9 @@
             },
             logout() {
                 this.$store.dispatch('logOut')
+            },
+            profile(){
+                this.$router.push('/conta')
             }
         },
         computed: {

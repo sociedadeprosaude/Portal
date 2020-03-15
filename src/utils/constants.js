@@ -52,7 +52,7 @@ export default {
              messagingSenderId: "251864799857",
              appId: "1:251864799857:web:3ea992014ae2cdad2b19d0"
 
-             /* apiKey: "AIzaSyCdvs5C8J_t9WPQlcZGuuLJ57hwM9_s9BQ",
+            /*  apiKey: "AIzaSyCdvs5C8J_t9WPQlcZGuuLJ57hwM9_s9BQ",
             authDomain: "prosaude-36f66.firebaseapp.com",
             databaseURL: "https://prosaude-36f66.firebaseio.com",
              projectId: "prosaude-36f66",
