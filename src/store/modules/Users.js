@@ -89,6 +89,17 @@ const actions = {
         console.log('Buscou')
         return users
     }, */
+    thereIsUserCPF({commit},payload){
+        return new Promise(async (resolve,reject)=>{
+            try{
+                let foundUser = await firebase.firestore().collection('users').doc(payload).get();
+                resolve(foundUser.exists)
+            }catch(e){
+                reject(e)
+            }
+        })
+       
+    },
     async addUser({ getters }, patient) {
         try {
 
