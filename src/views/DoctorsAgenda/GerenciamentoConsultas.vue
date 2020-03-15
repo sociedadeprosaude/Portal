@@ -173,6 +173,7 @@
                                                             hora: item.date.split(' ')[1],
                                                             crm: item.doctor.crm,
                                                             especialidade: item.specialty,
+                                                            exame: exames.indexOf(item.specialty.name) != -1 ? item.user.exam.name : item.specialty.name,
                                                             status: item.status,
                                                             modalidade: item.type,
                                                             medico:item.doctor.name,
@@ -195,10 +196,10 @@
                                                                     : 'CPF:' + item.user.cpf}}
                                                             </v-list-item-subtitle>
                                                             <br>
-                                                            <!-- <v-list-item-subtitle v-if="item.user.telephones[0]">
+<!--                                                            <v-list-item-subtitle v-if="item.user.telephones[0]">
                                                                Telefone: {{item.user.telephones[0]}}
-                                                            </v-list-item-subtitle> -->
-                                                            <br>
+                                                            </v-list-item-subtitle>
+                                                            <br>-->
                                                             <v-list-item-action-text>
                                                                 {{item.date.split(' ')[0] | dateFilter}} -
                                                                 {{item.date.split(' ')[1]}}
@@ -292,12 +293,14 @@
                                                                           v-model="index_Selecionado.crm" label="CRM">
                                                             </v-text-field>
                                                         </v-flex>
-                                                        <v-flex xs12 sm6>
-                                                            <v-text-field readonly hide-details outlined
-                                                                          prepend-icon="school" label="Especialidade"
-                                                                          v-model="especialidade.name">
-                                                            </v-text-field>
+
+                                                        <v-flex xs12 sm6 v-if="exames.indexOf(especialidade.name) != -1">
+                                                            <v-text-field readonly hide-details outlined prepend-icon="poll" label="Exame" v-model="index_Selecionado.exame"></v-text-field>
                                                         </v-flex>
+                                                        <v-flex xs12 sm6 v-else>
+                                                            <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="especialidade.name"></v-text-field>
+                                                        </v-flex>
+
                                                         <v-flex xs12 sm6>
                                                             <v-text-field readonly hide-details outlined
                                                                           prepend-icon="event" label="Dia da Consulta"
@@ -379,7 +382,7 @@
                                             </v-card-text>
                                             <v-divider></v-divider>
                                             <v-card-actions>
-                                                <v-btn
+<!--                                                <v-btn
                                                         color="warning"
                                                         rounded
                                                         @click="documentDialog = !documentDialog"
@@ -388,7 +391,7 @@
                                                     Prontuario
                                                     <v-icon>insert_drive_file</v-icon>
                                                 </v-btn>
-                                                <v-spacer></v-spacer>
+                                                <v-spacer></v-spacer>-->
                                                 <v-btn
                                                         color="error"
                                                         rounded
@@ -405,7 +408,7 @@
                                                         rounded
                                                         dark
                                                         :to="{ name: 'AgendarRetorno', params: { q: {...this.index_Selecionado}}}"
-                                                        :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress && index_Selecionado.especialidade.name != 'ULTRASSONOGRAFIA' ? false : true"
+                                                        :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress && exames.indexOf(index_Selecionado.especialidade.name) == -1 ? false : true"
                                                         v-if="index_Selecionado.modalidade !== 'Retorno'"
                                                 >Retorno
                                                     <v-icon>refresh</v-icon>
@@ -468,19 +471,19 @@
                 </v-card>
             </v-flex>
         </v-layout>
-        <v-dialog v-model="documentDialog">
+<!--        <v-dialog v-model="documentDialog">
             <consultation-document @close="documentDialog = false" :openDocument="documentDialog"
                                    :consultation="index_Selecionado.consultation"></consultation-document>
-        </v-dialog>
+        </v-dialog>-->
     </v-container>
 </template>
 
 <script>
-    import ConsultationDocument from "../../components/doctorsAgenda/ConsultationDocument";
+/*    import ConsultationDocument from "../../components/doctorsAgenda/ConsultationDocument";*/
     import moment from 'moment/moment'
 
     export default {
-        components: {ConsultationDocument},
+/*        components: {ConsultationDocument},*/
         data: () => ({
             y: 'top',
             x: null,
@@ -489,7 +492,8 @@
             date_choose: '',
             dateFormatted: '',
             menu: false,
-            documentDialog: false,
+            exames: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
+/*            documentDialog: false,*/
             dialog: false,
             alert: false,
             index_Selecionado: {},
@@ -746,7 +750,8 @@
                     payment_number: this.index_Selecionado.num_recibo,
                     specialty: this.especialidade.name,
                     regress: this.index_Selecionado.consultation.regress,
-                    previousConsultation: this.index_Selecionado.consultation.previousConsultation
+                    previousConsultation: this.index_Selecionado.consultation.previousConsultation,
+                    consultation:this.index_Selecionado.consultation
                 })
                 this.clear()
                 this.dialog = false

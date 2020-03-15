@@ -349,6 +349,36 @@
                                                 ></v-text-field>
                                             </v-flex>
 
+                                            <v-flex xs12 v-show="exames.indexOf(createConsultationForm.consultation.specialty.name) != -1">
+                                                <v-combobox
+                                                        prepend-icon="poll"
+                                                        v-model="exam"
+                                                        :items="listExam"
+                                                        item-text="name"
+                                                        return-object
+                                                        label="Exame"
+                                                        outlined
+                                                        chips
+                                                        color="blue"
+                                                        clearable
+                                                        hide-details
+                                                >
+                                                    <template v-slot:selection="data">
+                                                        <v-chip
+                                                                :key="JSON.stringify(data.item)"
+                                                                :input-value="data.selected"
+                                                                :disabled="data.disabled"
+                                                                class="v-chip--select-multi"
+                                                                @click.stop="data.parent.selectedIndex = data.index"
+                                                                @input="data.parent.selectItem(data.item)"
+                                                                text-color="white"
+                                                                color="info"
+                                                        >{{ data.item.name }}
+                                                        </v-chip>
+                                                    </template>
+                                                </v-combobox>
+                                            </v-flex>
+
                                             <v-flex xs12 sm4>
                                                 <v-text-field
                                                         v-model="createConsultationForm.consultation.date.split(' ')[1]"
@@ -451,7 +481,7 @@
                                     <submit-button
                                             color="success"
                                             rounded
-                                            :disabled="loaderPaymentNumber"
+                                            :disabled="loaderPaymentNumber || (exames.indexOf(createConsultationForm.consultation.specialty.name) != -1 && !exam)"
                                             @reset="resetSchedule"
                                             :success="success"
                                             :loading="scheduleLoading"
@@ -499,6 +529,8 @@
             x: null,
             mode: "",
             alert: false,
+            exam: undefined,
+            exames: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
             loaderPaymentNumber: false,
             menu: false,
             clinic: undefined,
@@ -576,6 +608,13 @@
                 });
                 return val;
                 //return this.$store.getters.clinics;
+            },
+             listExam() {
+              let val = this.$store.getters.exams.filter(a => {
+                  return a.type === this.createConsultationForm.consultation.specialty.name;
+              });
+              return val;
+              //return this.$store.getters.exams;
             },
             specialties() {
                 //return this.$store.getters.specialties;
@@ -717,7 +756,16 @@
                                     ); */
                 if (val == this.consultas[0].date) this.$vuetify.goTo(0, this.options);
                 else this.$vuetify.goTo("#group-" + val, this.options);
-            }
+            },
+             exam(value){
+                if(!value){
+                  this.payment_numberFound = undefined;
+                  this.num_recibo = "";
+                  this.status = "Aguardando pagamento";
+                }else if( !value.notFindPayment){
+                  this.thereIsPaymentNumber()
+                }
+              }
         },
 
         mounted() {
@@ -744,6 +792,7 @@
                     }, 1000);
                     return;
                 }
+                this.exam = undefined
                 this.fillConsultationForm(consultation);
                 this.dialog = true;
             },
@@ -789,20 +838,22 @@
 
                 this.loaderPaymentNumber = true;
 
-                if (this.selectedForm.consultation.specialty.name == "ULTRASSONOGRAFIA" || this.selectedForm.consultation.specialty.name == "ECOCARDIOGRAMA") {
+               /*  if (this.selectedForm.consultation.specialty.name == "ULTRASSONOGRAFIA" || this.selectedForm.consultation.specialty.name == "ECOCARDIOGRAMA") {
                     this.status = "Pago";
                     this.loaderPaymentNumber = false
-                } else {
+                } else { */
 
                     this.$store
                         .dispatch("thereIsIntakes", {
                             user: this.selectedForm.user,
                             doctor: this.selectedForm.consultation.doctor,
                             specialty: this.selectedForm.consultation.specialty,
+                            exam:this.exam
                         })
                         .then(obj => {
                             this.payment_numberFound = obj;
                             this.num_recibo = obj.payment_number;
+                            this.exam = obj.exam ?{ ... obj.exam,notFindPayment:true}:undefined
                             this.status = "Pago"
                             this.loaderPaymentNumber = false
                         })
@@ -816,7 +867,7 @@
                             }
                             this.loaderPaymentNumber = false
                         });
-                }
+              /*   } */
 
 
             },
@@ -882,12 +933,14 @@
                 this.loading = true;
                 // this.$store.dispatch("getClinics");
                 // await this.$store.dispatch("getDoctors");
-                await this.listenConsultations();
-                this.$store.dispatch('getConsultations')
+                await this.listenConsultations()
                 // await this.$store.dispatch("getSpecialties");
                 this.loading = false;
             },
             async listenConsultations() {
+                console.log(moment()
+                            .subtract(5, "hours")
+                            .format("YYYY-MM-DD HH:mm:ss"))
                 this.consultationsListenerUnsubscriber = await this.$store.dispatch(
                     "listenConsultations",
                     {
@@ -989,13 +1042,15 @@
                     ...form.user,
                     status: this.status,
                     type: this.modalidade,
-                    payment_number: this.num_recibo
+                    payment_number: this.num_recibo,
+                    exam:this.exam
                 };
                 form.consultation = {
                     ...form.consultation,
                     status: this.status,
                     type: this.modalidade,
-                    payment_number: this.num_recibo
+                    payment_number: this.num_recibo,
+                    exam:this.exam
                 };
 
                 if (this.payment_numberFound)

@@ -84,6 +84,7 @@ const vuetifyOptions = {
         primary_dark: '#003B8F',
         dark_grey: '#808080',
         background: '#EFEFEF'
+
       },
     },
   },

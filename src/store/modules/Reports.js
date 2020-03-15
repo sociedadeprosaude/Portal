@@ -10,7 +10,8 @@ instance.defaults.headers.common['Accept'] = 'application/json'
 
 const state = {
     infos: [],
-    relatorio: []
+    relatorio: [],
+    intakesReport: []
 
 }
 
@@ -18,11 +19,13 @@ const mutations = {
     setRelatorio(state, payload) {
         //console.log('aqyu')
         state.relatorio = payload;
-    }
+    },
+    // SET_INTAKES_REPORT
+    setIntakesReport: (state, payload) => state.intakesReport = payload
 }
 
 const actions = {
-    async getInfos({commit}, payload) {
+    async getInfos({ commit }, payload) {
         instance.get('/api/profits', {
             params: {
                 from: payload.start_date.format('YYYY-MM-DD'),
@@ -59,6 +62,7 @@ const actions = {
                 intakes.push(doc.data())
             }
         }
+        context.commit("setIntakesReport", intakes)
         return intakes
     },
 
@@ -101,7 +105,7 @@ const actions = {
         let relatorio = {};
 
         for (let intake in intakes) {
-            if(!intakes[intake].cancelled_by){
+            if (!intakes[intake].cancelled_by) {
                 if (intakes[intake].type === 'financial_support') {
                     financialSupport.push(intakes[intake])
                     continue
@@ -163,9 +167,9 @@ const actions = {
                     totalCusto += parseFloat(intakes[intake].cost);
                 }
                 totalBruto += parseFloat(intakes[intake].total);
-                if(intakes[intake].payments){
-                    for(let i=0; i< intakes[intake].payments.length; i++){
-                        if(intakes[intake].valuesPayments[i] !== '') {
+                if (intakes[intake].payments) {
+                    for (let i = 0; i < intakes[intake].payments.length; i++) {
+                        if (intakes[intake].valuesPayments[i] !== '') {
 
                             if (intakes[intake].payments[i] === 'Dinheiro') {
                                 totalCaixa += parseFloat(intakes[intake].valuesPayments[i])
@@ -191,7 +195,7 @@ const actions = {
                         }
                     }
                 }
-                else{
+                else {
                     if (intakes[intake].payment_method === 'Dinheiro') {
                         totalCaixa += parseFloat(intakes[intake].total)
                     }
@@ -219,7 +223,7 @@ const actions = {
         let outtakesSnap = await firebase.firestore().collection('outtakes').where('paid', '>=', payload.dataInicio)
             .where('paid', '<=', payload.dataFinal).orderBy('paid').get();
         outtakesSnap.forEach((e) => {
-            if(e.data().payments) {
+            if (e.data().payments) {
                 for (let i = 0; i < e.data().payments.length; i++) {
                     if (e.data().payments[i] === 'Dinheiro') {
                         // if (!outtakes[e.data().category]) {
@@ -235,11 +239,11 @@ const actions = {
                             ...e.data(),
                             id: e.id
                         }
-                    )
+                        )
                     }
                 }
             }
-            else{
+            else {
                 quantidadeOuttakes++;
                 outtakes.push({
                     ...e.data(),
@@ -286,7 +290,9 @@ const actions = {
 const getters = {
     relatorio(state) {
         return state.relatorio;
-    }
+    },
+    intakesReport: (state) => state.intakesReport,
+    intakesWithExam: (state) => state.intakesReport.filter(intake => intake.exams),
 }
 
 export default {

@@ -1,7 +1,9 @@
 <template>
     <v-app id="app">
         <v-content v-if="ready" :class="['background', 'fade-in-anim']">
-            <toolbar class="mb-12 pb-6" v-if="user"></toolbar>
+
+            <toolbar class="mb-12 pb-6" v-if="user"/>
+
             <router-view/>
             <v-dialog v-model="systemDialog.show">
                 <v-card>
@@ -9,7 +11,9 @@
                     <v-card-text>{{systemDialog.body}}</v-card-text>
                     <v-card-actions>
                         <v-btn rounded text @click="systemDialog.show = false">Cancelar</v-btn>
-                        <v-spacer></v-spacer>
+
+                        <v-spacer/>
+
                         <v-btn class="primary" text rounded @click="systemDialog.functionToRun(); systemDialog.show = false;">Ok</v-btn>
                     </v-card-actions>
                 </v-card>
@@ -67,8 +71,10 @@
         watch: {
             loaded(val) {
                 if (val) {
-                    this.$refs['logo'].classList.add('fade-out-anim')
-                    this.$refs['loader'].classList.add('fe-contract')
+
+                    this.$refs['logo'].classList.add('fade-out-anim');
+                    this.$refs['loader'].classList.add('fe-contract');
+
                     setTimeout(() => {
                         this.ready = true
                     }, 1500)
@@ -77,21 +83,25 @@
         },
         methods: {
             async getUser(user) {
-                await this.$store.dispatch('getUser', user)
+                await this.$store.dispatch('getUser', user);
                 await this.$store.dispatch('getProSaudeUnits')
             },
         },
         created() {
-            this.$store.dispatch("loadSpecialties")
-            this.$store.dispatch("getDoctors")
-            this.$store.dispatch("getClinics")
-            this.$store.dispatch("loadExam")
+
+            this.$store.dispatch("loadSpecialties");
+            this.$store.dispatch("getDoctors");
+            this.$store.dispatch("getClinics");
+            this.$store.dispatch("loadExam");
+
             this.$store.dispatch("startConnectionListener")
         },
         mounted() {
             firebase.auth().onAuthStateChanged((user) => {
                 if (!user) {
+
                     this.$router.push('/login')
+
                     return
                 } else if (this.$router.currentRoute.path.includes('login')) {
                     this.$router.push('/')

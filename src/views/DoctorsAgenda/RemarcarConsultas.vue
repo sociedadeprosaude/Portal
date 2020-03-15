@@ -289,14 +289,13 @@
                                                         label="CRM"
                                                 ></v-text-field>
                                             </v-flex>
-                                            <v-flex xs12 sm6>
-                                                <v-text-field
-                                                        readonly
-                                                        prepend-icon="school"
-                                                        v-model="createConsultationForm.consultation.specialty.name"
-                                                        label="Especialidade"
-                                                ></v-text-field>
+                                            <v-flex xs12 sm6 v-if="exames.indexOf(createConsultationForm.consultation.specialty.name) != -1">
+                                                <v-text-field readonly hide-details outlined prepend-icon="poll" label="Exame" v-model="createConsultationForm.user.exam.name"></v-text-field>
                                             </v-flex>
+                                            <v-flex xs12 sm6 v-else>
+                                                <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="createConsultationForm.consultation.specialty.name"></v-text-field>
+                                            </v-flex>
+
                                             <v-flex xs12 sm6 class="text-left" style="position: relative; top: -12px">
                                                 <v-layout row wrap class="align-end ma-0">
                                                     <v-flex xs2>
@@ -464,6 +463,7 @@
             selectedDoctor: undefined,
             num_recibo: "",
             type: "",
+            exames: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
             createConsultationForm: undefined,
             attendance: "Aguardando Atendimento",
             attendanceOptions: [
@@ -710,10 +710,11 @@
                 await this.$store.dispatch("getSpecialties")
 
                 this.query = this.$route.params.q
-                //console.log( {...this.query})
+                console.log( {...this.query})
                 if(!this.query){
                 //this.$router.push('agenda/GerenciamentoConsultas')
                 }
+                
                 this.especialidade = this.query.especialidade
                 this.pacienteSelecionado = this.query.pacienteObj
                 //this.selectedDoctor = this.query.doctor
@@ -796,20 +797,21 @@
                     status: this.status,
                     type: this.modalidade,
                     payment_number: this.num_recibo,
-
+                    exam: this.query.pacienteObj.exam
                 }
                 form.consultation = {
                     ...form.consultation,
                     status: this.status,
                     type: this.modalidade,
                     payment_number: this.num_recibo,
-                    idConsultationCanceled:this.query.idConsultation
+                    idConsultationCanceled:this.query.idConsultation,
+                    exam: this.query.pacienteObj.exam
                 }
+
                 if(this.modalidade == 'Retorno')
                     form.consultation = {...form.consultation,previousConsultation: this.query.consultation.previousConsultation}
                 // return
                 this.loading = true
-                //console.log('Confirmar',form)
                 await this.$store.dispatch('addConsultationAppointmentToUserReschedule', form)
                 //Realizar essa funcao pelo cloud functions
                 await this.$store.dispatch('addUserToConsultationReschedule', form)
