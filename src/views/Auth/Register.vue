@@ -6,6 +6,11 @@
           <v-card class="px-5 py-3" v-if="!registered">
             <v-layout row wrap>
               <v-flex xs12 class="text-left">
+                <v-alert class="text-center" :value="alert" type="error">
+                  Já existe um colaborador com o mesmo CPF!
+                </v-alert>
+              </v-flex>
+              <v-flex xs12 class="text-left">
                 <span class="my-headline">Cadastro</span>
               </v-flex>
               <v-flex xs12>
@@ -30,12 +35,12 @@
               <v-flex xs12>
                 <v-text-field v-model="telephone" v-mask="'(##)#####-####'" label="Telefone"></v-text-field>
               </v-flex>
-             <!--  <v-flex xs12>
+              <!--  <v-flex xs12>
                 <v-checkbox v-model="asDoctor" label="Cadastrar-se como médico"></v-checkbox>
               </v-flex>
               <v-flex xs12>
                 <v-text-field v-if="asDoctor" v-model="crm" v-mask="'#######'" label="CRM"></v-text-field>
-              </v-flex> -->
+              </v-flex>-->
               <v-expand-transition>
                 <v-flex xs12 v-if="loading">
                   <v-progress-linear color="primary" indeterminate></v-progress-linear>
@@ -86,7 +91,8 @@ export default {
       registered: false,
       loading: false,
       asDoctor:false,
-      crm:undefined
+      crm:undefined,
+      alert:false
     };
   },
   methods: {
@@ -107,22 +113,32 @@ export default {
         this.errorMessage = "Confirmação de senha não confere";
         return;
       }
-      this.loading = true;
+      
       try {
-        let resp = await firebase
-          .auth()
-          .createUserWithEmailAndPassword(this.email, this.password);
-        await this.$store.dispatch("addUser", {
-          email: resp.user.email,
-          name: this.name,
-          uid: resp.user.uid,
-          cpf: this.cpf.replace(/\./g, "").replace("-", ""),
-          telephones: [this.telephone],
-          type:this.asDoctor ? "DOCTOR" : "COLABORATOR",
-          crm:this.crm
-          // group: 'colaborador'
-        });
-        this.registered = true;
+        this.$store.dispatch('thereIsUserCPF',this.cpf.replace(/\./g, "").replace("-", ""))
+        .then(async (exits)=>{
+          if(!exits){
+            this.loading = true;
+            let resp = await firebase
+              .auth()
+              .createUserWithEmailAndPassword(this.email, this.password);
+            await this.$store.dispatch("addUser", {
+              email: resp.user.email,
+              name: this.name,
+              uid: resp.user.uid,
+              cpf: this.cpf.replace(/\./g, "").replace("-", ""),
+              telephones: [this.telephone],
+              type:this.asDoctor ? "DOCTOR" : "COLABORATOR",
+              crm:this.crm
+              // group: 'colaborador'
+            });
+            this.registered = true;
+          }else{
+            this.alert = true
+          }
+        })
+        
+        
       } catch (e) {
         this.errorMessage = e.code;
       }

@@ -69,6 +69,25 @@ const actions = {
         firebase.database().ref('permissions/').once('value',(permissions) => {
             commit('setPermissionsList', permissions.val())
         })
+    },
+
+    async updateAccount({commit},payload){
+        try {
+            let id =  payload.cpf
+            id = id.replace('.',"")
+            id = id.replace('.',"")
+            id =  id.replace('-',"")
+            console.log(id)
+            await firebase.firestore().collection('users').doc(id).update({
+                name:payload.name,
+                telephones:payload.telephones,
+                address:payload.address
+            })
+
+            commit('setUser',payload)
+        } catch (e) {
+            console.log(e)
+        }
     }
 }
 
