@@ -85,6 +85,7 @@
                                                                     esp:item.specialty.name,
                                                                     status: item.status,
                                                                     modalidade: item.type,
+                                                                    calls: item.calls,
                                                                     medico:item.doctor.name,
                                                                     doctor:item.doctor,
                                                                     num_recibo:item.payment_number,
@@ -111,10 +112,10 @@
                                                                 <v-list-item-action-text>
                                                                     {{item.date.split(' ')[0] | dateFilter}} -
                                                                     {{item.date.split(' ')[1]}}
-                                                                    <div v-show="calls.length > 0" >
+                                                                    <div v-if="item.calls">
                                                                     <v-icon large color="red">phone_disabled</v-icon>
                                                                     <v-icon color="red">arrow_forward</v-icon>
-                                                                    <v-chip class="white--text" color="red">{{calls.length}}</v-chip>
+                                                                    <v-chip class="white--text" color="red">{{item.calls.length}}</v-chip>
                                                                     </div>
                                                                 </v-list-item-action-text>
                                                             </v-list-item-content>
@@ -143,7 +144,7 @@
                     <v-container>
                         <v-layout>
                             <div class="text-xs-center">
-                                <v-dialog v-model="dialog" width="560">
+                                <v-dialog v-model="dialog" width="700">
                                     <v-card>
                                         <v-card-title class="headline grey lighten-2" primary-title>
                                             Informações
@@ -227,14 +228,13 @@
                                                     <v-flex xs12 v-show="call">
                                                        <v-textarea clearable label="Descrição da ligação" v-model="descriptionCall" outlined hide-details prepend-icon="perm_phone_msg"></v-textarea>
                                                     </v-flex>
-
-                                                    <v-flex xs12 v-show="calls.length > 0">
+                                                    <v-flex xs12 v-if="index_Selecionado.calls">
                                                         <v-select
-                                                                :items="calls"
+                                                                :items="index_Selecionado.calls"
                                                                 item-text="idCall"
                                                                 return-object
                                                                 multiple
-                                                                v-model="calls"
+                                                                v-model="index_Selecionado.calls"
                                                                 chips
                                                                 outlined
                                                                 readonly
@@ -249,8 +249,8 @@
                                                                         @input="data.parent.selectItem(data.item)"
                                                                         text-color="white"
                                                                         color="info"
-                                                                >{{ data.item.dateHourCall }} - {{ data.item.idCall }} - {{ data.item.descriptionCall }}
-                                                                    <br/>
+                                                                >
+                                                                    {{ data.item.dayOfTheWeekCall }}:{{ data.item.dateHourCall }} - {{ data.item.idCall }} - {{ data.item.descriptionCall }}
                                                                 </v-chip>
                                                             </template>
                                                         </v-select>
@@ -291,6 +291,7 @@
             descriptionCall: undefined,
             idCall: undefined,
             dateHourCall: undefined,
+            dayOfTheWeekCall: undefined,
             //================
             exames: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
             attendance:'Aguardando Atendimento',
@@ -346,22 +347,44 @@
             },
 
             apagar () {
-                this.$store.dispatch('removeAppointmentForever',{... this.index_Selecionado});
+                //this.$store.dispatch('removeAppointmentForever',{... this.index_Selecionado});
+                console.log("dados:", this.index_Selecionado)
                 this.dialog = false
             },
 
             registerCall(){
+                this.dateHourCall = moment().locale('pt-BR').format('DD/MM/YYYY HH:mm:ss');
+                this.dayOfTheWeekCall =  moment().format('dddd');
                 let val = {
                     idCall: this.idCall,
                     descriptionCall: this.descriptionCall,
                     dateHourCall: this.dateHourCall,
+                    dayOfTheWeekCall: this.dayOfTheWeekCall,
                 };
-                this.calls.push(val)
-                console.log(this.calls)
+                if (this.index_Selecionado.calls === undefined){
+                    this.calls.push(val)
+                    /*console.log("lista:", this.calls)*/
+                    this.$store.dispatch('addArrayCallsToConsultation', {
+                        calls: this.calls,
+                        idConsultation: this.index_Selecionado.idConsultation,
+                    })
+                    this.calls = []
+                } else {
+                    this.index_Selecionado.calls.push(val)
+                    /*console.log("lista:", this.calls)*/
+                    this.$store.dispatch('addArrayCallsToConsultation', {
+                        calls: this.index_Selecionado.calls,
+                        idConsultation: this.index_Selecionado.idConsultation,
+                    })
+                }
+
                 this.call = undefined
                 this.idCall = undefined
                 this.descriptionCall = undefined
                 this.dateHourCall = undefined
+                this.dayOfTheWeekCall = undefined
+
+                this.dialog = false
             }
         },
     };
