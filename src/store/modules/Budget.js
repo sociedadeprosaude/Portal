@@ -68,6 +68,14 @@ const actions = {
         return budget
     },
 
+    async deleteBudget ({}, data) {
+        let  userId = data.user.cpf.toString();
+        let budgetId = data.budgetId.toString();
+        await firebase.firestore().collection('budgets').doc(budgetId.toString()).delete();
+        await firebase.firestore().collection('users').doc(userId.toString()).collection('budgets').doc(budgetId.toString()).delete();
+        //deselecionar budgets.
+    },
+
     async addBudgetToUser({ }, payload) {
         let copyPayload = Object.assign({}, payload);
         functions.removeUndefineds(copyPayload);
@@ -195,11 +203,11 @@ const actions = {
         context.dispatch('createOrUpdateProcedure', { consultationFound: consultationFound, consultation:payload.consultation, precoVendaZero:precoVendaZero, userRef: payload.userRef, user: payload.user, isConsultation: payload.isConsultation, payment_number: payload.payment_number, specialty: payload.specialty, examObj: payload.examObj })
     },
     async createOrUpdateProcedure({ }, payload) {
-        let consultationFound = payload.consultationFound
-        let user = payload.user
-        let statusName = payload.isConsultation ? 'Consulta Paga' : 'Exame Pago'
-        let type = payload.isConsultation ? 'Consultation' : 'Exam'
-        let clinic
+        let consultationFound = payload.consultationFound;
+        let user = payload.user;
+        let statusName = payload.isConsultation ? 'Consulta Paga' : 'Exame Pago';
+        let type = payload.isConsultation ? 'Consultation' : 'Exam';
+        let clinic;
         /* 
         console.log('-<>',payload)
         if (!payload.isConsultation) {
@@ -208,21 +216,21 @@ const actions = {
 
         if (consultationFound || (payload.precoVendaZero && payload.isConsultation) ) {
             let consultation = payload.precoVendaZero && payload.isConsultation?  payload.consultation : consultationFound
-            console.log('>>',payload.consultation)
+            console.log('>>',payload.consultation);
             let procedures = await firebase.firestore().collection('users').doc(user.cpf).collection('procedures').where('consultation', '==', consultation.id)
                 .get()
 
             if (!procedures.empty){
-                console.log("Atualizando procedure")
+                console.log("Atualizando procedure");
                 procedures.forEach((snap) => {
-                    let data = snap.data()
+                    let data = snap.data();
                     let obj = {
                         status: firebase.firestore.FieldValue.arrayUnion(statusName),
                         payment_number: payload.payment_number
-                    }
+                    };
                     if (!payload.isConsultation) {
                         if(payload.examObj.clinic)
-                            delete payload.examObj.clinic
+                            delete payload.examObj.clinic;
                         //clinic = { cnpj: payload.examObj.clinic.cnpj, name: payload.examObj.clinic.name }
                         Object.assign(obj, { exam: { ...payload.examObj} });
                     }
@@ -233,18 +241,17 @@ const actions = {
                 })
             }
         } else {
-            console.log("Criando procedure")
             let obj = {
                 status: [statusName],
                 payment_number: payload.payment_number,
                 startAt: moment().format('YYYY-MM-DD hh:ss'),
                 type: type,
                 specialty: payload.specialty.name
-            }
+            };
 
             if (!payload.isConsultation) {
                 if(payload.examObj.clinic)
-                    delete payload.examObj.clinic
+                    delete payload.examObj.clinic;
                 Object.assign(obj, { exam: { ...payload.examObj} });
             }
             firebase.firestore().collection('users').doc(user.cpf).collection('procedures').add(
@@ -255,7 +262,7 @@ const actions = {
     },
     async addIntakeToUser(context, payload) {
         let copyPayload = Object.assign({}, payload);
-        functions.removeUndefineds(copyPayload)
+        functions.removeUndefineds(copyPayload);
         // return
         let specialties = copyPayload.specialties ? Object.assign({}, copyPayload.specialties) : undefined;
         let exams = copyPayload.exams ? Object.assign({}, copyPayload.exams) : undefined;
@@ -273,8 +280,8 @@ const actions = {
             let spec = await userRef.collection('intakes').doc(copyPayload.id.toString()).collection('specialties').get();
             spec.forEach((s) => {
                 userRef.collection('intakes').doc(copyPayload.id.toString()).collection('specialties').doc(s.id).delete()
-            })
-            console.log('Vendo', specialties)
+            });
+            console.log('Vendo', specialties);
             for (let spec in specialties) {
 
                 await userRef.collection('intakes').doc(copyPayload.id.toString()).collection('specialties').add({
@@ -290,8 +297,8 @@ const actions = {
                 userRef.collection('intakes').doc(copyPayload.id.toString()).collection('exams').doc(s.id).delete()
             });
             for (let exam in exams) {
-                console.log('->>',exams[exam])
-                functions.removeUndefineds(exams[exam])
+                console.log('->>',exams[exam]);
+                functions.removeUndefineds(exams[exam]);
                 await userRef.collection('intakes').doc(copyPayload.id.toString()).collection('exams').add({
                     ...exams[exam]
                 });
@@ -444,7 +451,7 @@ const actions = {
 
             procedures = await procedureRef.get()
             if (procedures.empty && type == 'Consultation' && examesSpecialties.indexOf(payload.specialty.name) != -1)
-                procedures = await procedureRefOr.get()
+                procedures = await procedureRefOr.get();
 
             if (!procedures.empty) {
                 procedures.forEach((procedure) => {
@@ -490,7 +497,7 @@ const actions = {
                     reject()
             })
         });
-    }
+    },
 };
 
 const getters = {};

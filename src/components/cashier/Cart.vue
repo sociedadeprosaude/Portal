@@ -95,7 +95,7 @@
                             <!--                                <v-btn outlined color="primary" @click="gerarCodigo()">Gerar Codigo</v-btn>-->
                             <!--                            </v-flex>-->
                             <v-flex xs12 class="mt-1 v-card"
-                                    style="overflow:auto; height:50vh; box-shadow: inset 0px 0px 5px grey;">
+                                    style="overflow:auto; height:50vh; box-shadow: inset 0px 5px grey;">
                                 <v-layout row wrap>
                                     <v-flex xs12 v-if="exames.length > 0">
                                         <p class="my-headline">Exames</p>
@@ -444,10 +444,9 @@
                 let itens = this.$store.getters.getShoppingCartItems;
                 let total = 0;
                 for (let item in itens) {
-                    console.log('preco:', itens[item].price);
                     total += parseFloat(itens[item].price);
                 }
-                console.log('total=', total);
+                console.log('total:', total);
                 return total
             },
             total() {
@@ -460,7 +459,6 @@
                 if(tamanho === 1 && this.payments[0] !== ''){
                     this.valuesPayments[0]= parseFloat(this.total);
                     pagando = parseFloat(this.valuesPayments[0]);
-                    console.log('pagando=', pagando )
                 }
                 else{
                     for(let i=0; i < tamanho; i++){
@@ -589,7 +587,6 @@
             },
             async saveBudget(budget) {
                 this.$store.commit('setSelectedBudget', budget);
-                console.log('#patient', this.patient);
                 await this.$store.dispatch('getUserBudgets', this.patient);
                 await this.$store.dispatch('addBudget', budget);
                 this.updateBudgetsIntakes()
@@ -602,9 +599,9 @@
                 }
                 if (!this.selectedBudget) {
                     await this.saveBudget(this.generateBudget())
-                } else {
+                }  else {
                     let newBudget = this.generateBudget();
-                    if(!this.selectedBudget.id) {
+                    if (!this.selectedBudget.id) {
                         this.selectedBudget.id = this.now
                     }
                     newBudget.id = this.selectedBudget.id;
@@ -615,6 +612,15 @@
                 this.receipt(this.selectedBudget);
                 this.paymentLoading = false;
                 this.paymentSuccess = true;
+
+                let data = {
+                    user: this.patient,
+                    budgetId: this.selectedBudget.id.toString(),
+                };
+
+                await this.$store.dispatch('deleteBudget', data);
+                await this.$store.commit('setSelectedBudget', undefined);
+                this.$store.commit('clearShoppingCartItens');
                 this.card = false
                 // window.print();
             },
@@ -623,6 +629,7 @@
                 // this.selectedIntake = intake
                 this.receiptDialog = true
             },
+
             clearCart() {
                 this.$store.commit('clearShoppingCartItens');
                 this.$store.commit('setSelectedBudget', undefined);
