@@ -93,6 +93,10 @@
                                 <span>CNPJ: 09.066.632/0001-22</span>
                             </v-layout>
                         </v-flex>
+                        <v-flex xs6 class="text-end font-italic align-self-end" >
+                            <v-spacer/>
+                            <span> Este orçamento tem validade de 15 dias</span>
+                        </v-flex>
 <!--                        <v-flex xs6 class="primary" style="height: 2px; margin-top: 124px;"></v-flex>-->
                     </v-layout>
                 </v-card>
