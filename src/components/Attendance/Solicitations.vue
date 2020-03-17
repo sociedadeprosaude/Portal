@@ -70,6 +70,16 @@
                                         </template>
                                     </v-select>
                                 </v-flex>
+
+                                <v-flex xs12 v-if="exams.length > 0">
+                                    <h1>Exames Solicitados:</h1>
+                                    <br>
+                                    <ul v-for="(dados,i) in exams" :key="i">
+                                        <li>
+                                            {{dados.name}}
+                                        </li>
+                                    </ul>
+                                </v-flex>
                             </v-layout>
                         </v-container>
                     </v-card-text>
