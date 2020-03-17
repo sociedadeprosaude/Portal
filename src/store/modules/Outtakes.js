@@ -75,6 +75,9 @@ const actions = {
         let categories = context.getters.outtakesCategories
         let categoriesName = categories.map(e => e.name);
         const index = categoriesName.indexOf(payload.category.name);
+        if (!categories[index].subCategories) {
+            categories[index].subCategories = []
+        }
         categories[index].subCategories.push(payload.newSubcategory);
         await firebase.firestore().collection('operational/').doc('outtakes').update({
             categories: categories
