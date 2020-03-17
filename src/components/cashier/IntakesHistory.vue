@@ -84,7 +84,7 @@
                                 </v-flex>
                                 <v-flex xs2>
                                     <v-progress-circular indeterminate v-if="loading"
-                                                         class="primary--text"/>
+                                                         class="primary--text"></v-progress-circular>
                                 </v-flex>
                                 <v-flex xs12 class="text-left">
                             <span class="my-sub-headline">
@@ -108,8 +108,7 @@
             </v-layout>
         </v-card>
         <v-dialog transition="dialog-bottom-transition" fullscreen v-model="receiptDialog" v-if="selectedIntake">
-            <receipt @close="receiptDialog = false" :budget=selectedIntake>
-            </receipt>
+            <receipt @close="receiptDialog = false" :budget=selectedIntake></receipt>
         </v-dialog>
         <v-dialog v-model="cancelBuyDialog" v-if="selectedIntake" max-width="500px">
             <v-card class="pa-2">
@@ -123,13 +122,12 @@
                         <v-text-field
                                 type="password"
                                 v-model="managerPassword"
-                        label="Senha do gerente">
-                        </v-text-field>
+                        label="Senha do gerente"></v-text-field>
                     </v-flex>
                     <v-flex xs12 class="text-right">
                         <span class="red--text mr-4" v-if="error">{{error}}</span>
                         <v-btn @click="cancelBuy(selectedIntake)" rounded class="red white--text" v-if="!loading">Cancelar compra</v-btn>
-                        <v-progress-circular v-else class="primary--text" indeterminate/>
+                        <v-progress-circular v-else class="primary--text" indeterminate></v-progress-circular>
                     </v-flex>
                 </v-layout>
             </v-card>
@@ -166,10 +164,10 @@
         },
         methods: {
             async selectBudget(budget) {
-                this.loading = true;
-                budget = await this.$store.dispatch('getBudget', budget.id.toString());
-                this.$store.commit('clearShoppingCartItens');
-                this.$store.commit('setSelectedBudget', budget);
+                this.loading = true
+                budget = await this.$store.dispatch('getBudget', budget.id.toString())
+                this.$store.commit('clearShoppingCartItens')
+                this.$store.commit('setSelectedBudget', budget)
                 // this.selectedBudget = budget
                 for (let exam in budget.exams) {
                     this.$store.commit('addShoppingCartItem', budget.exams[exam])
@@ -181,33 +179,33 @@
                 // this.$store.commit('setSelectedPatient', budget.user)
             },
             diffByNow(product) {
-                let now = moment();
-                let date = moment(product.date, 'YYYY-MM-DD HH:mm:ss');
+                let now = moment()
+                let date = moment(product.date, 'YYYY-MM-DD HH:mm:ss')
                 return now.valueOf() - date.valueOf()
             },
             async receipt(intake) {
-                this.loading = true;
-                this.selectedIntake = await this.$store.dispatch('getIntakeDetails', intake);
-                this.receiptDialog = true;
+                this.loading = true
+                this.selectedIntake = await this.$store.dispatch('getIntakeDetails', intake)
+                this.receiptDialog = true
                 this.loading = false
             },
             async cancelBuy(intake) {
                 if (!this.cancelBuyDialog) {
-                    this.selectedIntake = intake;
-                    this.cancelBuyDialog = true;
+                    this.selectedIntake = intake
+                    this.cancelBuyDialog = true
                     return
                 }
                 if (this.managerPassword !== constants.MANAGER_PASSWORD) {
-                    this.error = 'Senha incorreta';
+                    this.error = 'Senha incorreta'
                     return
                 } else {
                     this.error = undefined
                 }
-                this.loading = true;
-                intake.user = this.patient;
-                await this.$store.dispatch('cancelIntake', intake);
-                this.patient.intakes = await this.$store.dispatch('getUserIntakes', this.patient);
-                this.$store.commit('setSelectedPatient', this.patient);
+                this.loading = true
+                intake.user = this.patient
+                await this.$store.dispatch('cancelIntake', intake)
+                this.patient.intakes = await this.$store.dispatch('getUserIntakes', this.patient)
+                this.$store.commit('setSelectedPatient', this.patient)
                 this.loading = false
             },
         },
@@ -216,7 +214,6 @@
                 return this.$store.getters.selectedPatient
             },
             intakes() {
-                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                 return this.patient.intakes.sort((a, b) => {
                     if (a.date < b.date) {
                         return 1
@@ -225,7 +222,6 @@
                 })
             },
             budgets() {
-                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                 return this.patient.budgets.sort((a, b) => {
                     if (a.date < b.date) {
                         return 1
