@@ -6,7 +6,7 @@
                     <v-card class="pa-4">
                         <v-layout align-center row wrap>
                             <v-flex xs12 sm4>
-                                <v-select
+                                <v-combobox
                                         prepend-icon="school"
                                         v-model="especialidade"
                                         :items="specialties"
@@ -33,11 +33,11 @@
                                         >{{ data.item.name }}
                                         </v-chip>
                                     </template>
-                                </v-select>
+                                </v-combobox>
                             </v-flex>
                             <v-spacer></v-spacer>
                             <v-flex xs12 sm4>
-                                <v-select
+                                <v-combobox
                                         prepend-icon="person"
                                         v-model="doctor"
                                         :items="doctors"
@@ -63,7 +63,7 @@
                                                 color="info"
                                         >{{ data.item.name }}</v-chip>
                                     </template>
-                                </v-select>
+                                </v-combobox>
                             </v-flex>
                             <v-spacer></v-spacer>
                             <v-flex xs12 sm4>
@@ -111,16 +111,16 @@
                                     :
                                     <v-chip small text-color="white" color="blue">Retorno</v-chip>
                                 </v-btn>
-<!--                                <v-btn text>
-                                    <v-icon color="success">attach_money</v-icon>
+                                <v-btn text>
+                                    <v-icon class="elevation-6 success" color="success">stop</v-icon>
                                     :
-                                    <v-chip small text-color="white" color="success">Pago</v-chip>
+                                    <v-chip small text-color="white" color="blue">Atendidos</v-chip>
                                 </v-btn>
                                 <v-btn text>
-                                    <v-icon color="error">money_off</v-icon>
+                                    <v-icon class="elevation-6 white" color="white">stop</v-icon>
                                     :
-                                    <v-chip small text-color="white" color="error">Aguardando Pagamento</v-chip>
-                                </v-btn>-->
+                                    <v-chip small text-color="white" color="blue">Não Atendidos</v-chip>
+                                </v-btn>
                             </v-flex>
                         </v-layout>
 
@@ -199,7 +199,6 @@
                                                             :class="item.end_at ? 'success' : 'transparent'"
                                                     >
                                                         <v-list-item
-                                                                :disabled="item.end_at ? true : false"
                                                                 @click="visualizarConsulta = {
                                                             idConsultation:item.id,
                                                             idPaciente: item.user.cpf,
@@ -232,10 +231,6 @@
                                                                     : 'CPF:' + item.user.cpf}}
                                                             </v-list-item-subtitle>
                                                             <br>
-                                                            <!-- <v-list-item-subtitle v-if="item.user.telephones[0]">
-                                                               Telefone: {{item.user.telephones[0]}}
-                                                            </v-list-item-subtitle> -->
-                                                            <br>
                                                             <v-list-item-action-text>
                                                                 {{item.date.split(' ')[0] | dateFilter}} -
                                                                 {{item.date.split(' ')[1]}}
@@ -250,12 +245,6 @@
                                                                     <v-icon v-if="item.type === 'Consulta'"
                                                                             color="primary">event
                                                                     </v-icon>
-<!--                                                                    <v-icon v-if="item.status === 'Pago'"
-                                                                            color="success">attach_money
-                                                                    </v-icon>
-                                                                    <v-icon v-if="item.status === 'Aguardando pagamento'"
-                                                                            color="error">money_off
-                                                                    </v-icon>-->
                                                                 </v-btn>
                                                             </v-list-item-action>
                                                         </v-list-item>
@@ -273,12 +262,6 @@
                                 <v-dialog v-model="dialog" persistent max-width="350">
                                     <v-card>
                                         <v-card-title>Deseja Iniciar o Atendimento do Paciente Selecionado ?</v-card-title>
-<!--                                        <v-divider></v-divider>
-                                        <v-card-text>
-                                            <strong>
-                                                nome do paciente aqui
-                                            </strong>
-                                        </v-card-text>-->
                                         <v-divider></v-divider>
                                         <v-card-actions>
                                             <v-btn
