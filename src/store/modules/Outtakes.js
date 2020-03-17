@@ -14,65 +14,61 @@ const mutations = {
 
 const actions = {
     async getOuttakes(context, payload) {
-        try{
-        let selectedUnit = context.getters.selectedUnit
-        let outtakesSnap = await firebase.firestore().collection('outtakes').where('created_at', '>=', payload.initialDate)
-            .where('created_at', '<=', payload.finalDate)
-            .where('unit.name', '==', selectedUnit.name)
-            .orderBy('created_at').get()
-        let outtakes = []
-        outtakesSnap.forEach(doc => {
-            outtakes.push({
-                id: doc.id,
-                ...doc.data()
-            })
-        });
-        context.commit("setOuttakes", outtakes)
-    }catch(e){
-        console.log(e)
-    }
-    },
-    async getAllOuttakes({ commit }) {
-        let outtakes = []
         try {
-            let outtakesCol = await firebase.firestore().collection('outtakes/').get()
-            outtakesCol.forEach((doc) => {
+            let selectedUnit = context.getters.selectedUnit
+            let base = firebase.firestore().collection('outtakes');
+            let outtakesSnap = [];
+            if (payload && payload.initialDate != null) {
+                outtakesSnap = await base.where('created_at', '>=', payload.initialDate)
+                    .where('created_at', '<=', payload.finalDate)
+                    .where('unit.name', '==', selectedUnit.name)
+                    .orderBy('created_at').get()
+            } else outtakesSnap = await base.get();
+            let outtakes = []
+            outtakesSnap.forEach(doc => {
                 outtakes.push({
                     id: doc.id,
                     ...doc.data()
                 })
-            })
-            //console.log(resp)
+            });
+            context.commit("setOuttakes", outtakes)
         } catch (e) {
             console.log(e)
         }
-        commit('setOuttakes', outtakes)
-        return
     },
+
     async getOuttakesCategories({ commit }) {
         // let outtakesDoc = await
-        firebase.firestore().collection('operational/').doc('outtakes2').onSnapshot((outtakesDoc) => {
-            let categories = []
-            if (!outtakesDoc.exists) {
-                firebase.firestore().collection('operational/').doc('outtakes2').set({
-                    categories: []
-                })
-            } else {
-                categories = outtakesDoc.data().categories
-                // outtakesCol.forEach((doc) => {
-                //     categories.push(doc.data())
-                // })
-            }
-            commit('setOuttakesCategories', categories)
-        })
+        return new Promise((resolve, reject) => {
+            firebase.firestore().collection('operational/').doc('outtakes').onSnapshot((outtakesDoc) => {
+                let categories = []
+                if (!outtakesDoc.exists) {
+                    firebase.firestore().collection('operational/').doc('outtakes').set({
+                        categories: []
+                    })
+                } else {
+                    categories = outtakesDoc.data().categories
+                    if (!categories) categories = [];
+
+                    // outtakesCol.forEach((doc) => {
+                    //     categories.push(doc.data())
+                    // })
+                }
+                commit('setOuttakesCategories', categories)
+                resolve();
+            })
+        });
     },
-    async addOuttakesCategory(context, category) {
+    async addOuttakesCategory(context, payload) {
         await context.dispatch('getOuttakesCategories')
         let categories = context.getters.outtakesCategories
-        categories.push({ name: category, subCategories: [] })
-        await firebase.firestore().collection('operational/').doc('outtakes2').update({
+        categories.push({ name: payload.category, subCategories: [] })
+        await firebase.firestore().collection('operational/').doc('outtakes').update({
             categories: categories
         })
+        context.commit('setOuttakesCategories', categories);
+
+
     },
     async addOuttakeSubcategory(context, payload) {
         await context.dispatch('getOuttakesCategories')
@@ -80,7 +76,7 @@ const actions = {
         let categoriesName = categories.map(e => e.name);
         const index = categoriesName.indexOf(payload.category.name);
         categories[index].subCategories.push(payload.newSubcategory);
-        await firebase.firestore().collection('operational/').doc('outtakes2').update({
+        await firebase.firestore().collection('operational/').doc('outtakes').update({
             categories: categories
         })
     },
@@ -93,7 +89,7 @@ const actions = {
         // categories[index].subCategories.push(payload.newSubcategory);
         const aux = categories[index].subCategories.splice(payload.subIndex, 1);
 
-        await firebase.firestore().collection('operational/').doc('outtakes2').update({
+        await firebase.firestore().collection('operational/').doc('outtakes').update({
             categories: categories
         })
     },

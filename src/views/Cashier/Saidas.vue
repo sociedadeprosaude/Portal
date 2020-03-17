@@ -68,8 +68,14 @@
               ></v-select>
             </v-col>
           </v-row>
+
           <v-row>
-            <v-col rigth>
+            <v-col>
+              <p class="my-sub-headline">Data para pagamento</p>
+
+              <v-date-picker locale="pt-br" v-model="dateToPay"></v-date-picker>
+            </v-col>
+            <v-col align-self="center">
               <submit-button text="Enviar" :loading="loading" :success="success" @click="enviar()"></submit-button>
             </v-col>
           </v-row>
@@ -114,6 +120,7 @@ export default {
     categoriaNova: "",
     aviso: false,
     now: moment().valueOf(),
+    dateToPay: moment().format("YYYY-MM-DD"),
     loading: false,
     success: false,
     data: moment().format("YYYY-MM-DD HH:mm:ss"),
@@ -135,9 +142,10 @@ export default {
         category: this.categoria.name,
         subCategory: this.subCategoria,
         value: parseFloat(this.valor),
+        date_to_pay: this.dateToPay,
         //  id: moment().valueOf(),
         created_at: this.data,
-        paid: this.data,
+        // paid: this.data,   // Agora as saidas registradas nessa view não vão ser consideradas pagas
         colaborator: this.user,
         payment_method: "Dinheiro",
         unit: this.unit.name != this.other ? this.unit : null
@@ -153,7 +161,9 @@ export default {
         this.categoriesName.indexOf(this.categoriaNova) < 0 &&
         this.categoriaNova != this.other
       ) {
-        await this.$store.dispatch("addOuttakesCategory", this.categoriaNova);
+        await this.$store.dispatch("addOuttakesCategory", {
+          category: this.categoriaNova
+        });
       }
       this.success = true;
       this.loading = false;

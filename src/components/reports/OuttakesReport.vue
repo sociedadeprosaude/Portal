@@ -7,14 +7,21 @@
     </v-row>
     <v-card>
       <v-card-title>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Procurar"
+          single-line
+          hide-details
+        ></v-text-field>
         <v-spacer></v-spacer>
         <span class="float-right">{{date }} 00:00:00 até {{date2}} 23:59:59</span>
       </v-card-title>
 
       <v-data-table
+        :search="search"
         :headers="headers"
-        :items="optionSelected === 0 ? outtakesDividedByCategory:
-          optionSelected === 1 ? outtakesToPayList : outtakesPaidList"
+        :items=" actualList"
         :sort-by="['quantity']"
         :sort-desc="[true]"
         item-key="name"
@@ -41,7 +48,12 @@
               hide-default-footer
             >
               <template v-slot:item.cost="{ item }">R$ {{item.cost}}</template>
-
+              <template v-slot:item.CRUD="{ item }">
+                <v-row>
+                  <ReadOuttake :item="item" />
+                  <DeleteOuttake :item="item" :cb="cb" />
+                </v-row>
+              </template>
               <template v-slot:item.status="{ item }">
                 <div v-if="item.status" class="green">Pago</div>
                 <div v-else class="red white--text">Pendente</div>
@@ -56,21 +68,42 @@
         <PieOuttake :chart-data="dataCollection" :options="options" />
       </div>
     </v-card>
+
+    <v-card class="mt-4">
+      <v-container>
+        <v-row>
+          <v-col>
+            <span class="my-headline">{{numOuttakes}}</span>
+            <br />total de saídas
+          </v-col>
+          <v-divider vertical />
+          <v-col>
+            <span class="my-headline">R$ {{totalCost}}</span>
+            <br />Custo total das saídas
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card>
   </v-container>
 </template>
 
 <script>
 import moment from "moment";
 import PieOuttake from "./PieOuttake.js";
+import DeleteOuttake from "./CRUD/DeleteOuttake";
+import ReadOuttake from "./CRUD/ReadOuttake";
 
 export default {
   name: "OuttakesReport",
   components: {
-    PieOuttake
+    PieOuttake,
+    DeleteOuttake,
+    ReadOuttake
   },
-  props: ["date", "date2"],
+  props: ["date", "date2", "cb"],
   data() {
     return {
+      search: "",
       paid: false,
       now: moment().format("YYYY-MM-DD HH:mm:ss"),
       total: 0,
@@ -98,7 +131,8 @@ export default {
         { text: "SubCategoria", value: "subCategory", align: "center" },
         { text: "Status", value: "status", align: "center" },
         { text: "Criado em", value: "created_at", align: "center" },
-        { text: "Pago em", value: "paidIn", align: "center" }
+        { text: "Pago em", value: "paidIn", align: "center" },
+        { text: "Ações", value: "CRUD" }
       ],
       dateBegin: null,
       dateEnd: null,
@@ -117,19 +151,22 @@ export default {
   },
 
   methods: {
+    printar: () => console.log("asdasd"),
+
     formatDate(date) {
       const [year, month, day] = date.split("-");
       return `${day}/${month}/${year}`;
     },
-    formatDateHour(date) {
-      return moment(date).format('DD/MM/YYYY, HH:mm')
-    },
-    calcPercentage(sum, total) {
-      return parseFloat(((sum / total) * 100).toFixed(2));
-    },
+    formatDateHour: date => moment(date).format("DD/MM/YYYY, HH:mm"),
+
+    calcPercentage: (sum, total) =>
+      parseFloat(((sum / total) * 100).toFixed(2)),
+
     calcOuttakeInfo(category, listOuttakesCategory, totalCost) {
       const sumCost = this.calcCost(listOuttakesCategory);
-      const percentage = this.calcPercentage(sumCost, totalCost);
+      const percentage = totalCost
+        ? this.calcPercentage(sumCost, totalCost)
+        : 0;
       return {
         name: category.name,
         outtakes: listOuttakesCategory,
@@ -138,14 +175,12 @@ export default {
         totalCost: sumCost
       };
     },
-    calcTotalCost(arr) {
-      return parseFloat(
-        arr.reduce((total, e) => total + e.totalCost, 0).toFixed(2)
-      );
-    },
-    calcCost(arr) {
-      return parseFloat(arr.reduce((total, e) => total + e.cost, 0).toFixed(2));
-    },
+    calcTotalCost: arr =>
+      parseFloat(arr.reduce((total, e) => total + e.totalCost, 0).toFixed(2)),
+
+    calcCost: arr =>
+      parseFloat(arr.reduce((total, e) => total + e.cost, 0).toFixed(2)),
+
     updatePercentage(subList) {
       const totalSubCost = this.calcTotalCost(subList);
       return subList.map(e => {
@@ -167,7 +202,7 @@ export default {
         paidIn: e.paid
           ? this.formatDateHour(e.paid)
           : "Marcado para " + this.formatDate(e.date_to_pay),
-        created_at:this.formatDateHour(e.created_at),        
+        created_at: this.formatDateHour(e.created_at),
         toPayIn: e.date_to_pay,
         info: e.description,
         status: e.paid ? true : false
@@ -194,28 +229,25 @@ export default {
 
     outtakesToPayList() {
       const subList = this.outtakesDividedByCategory.map(e => {
-        const list = e.outtakes.filter(e2 => !e2.status);
-        return this.calcOuttakeInfo(e, list);
+        const listAux = e.outtakes.filter(e2 => !e2.status);
+        const totalCost = this.calcCost(listAux);
+        //não tem como calcular a porcentagem de cada outtake se a lista ainda está sendo criada
+        return this.calcOuttakeInfo(e, listAux, null);
       });
+      // calculando a porcentagem de cada outtake no total da lista filtrada
       return this.updatePercentage(subList);
     },
     outtakesPaidList() {
       const subList = this.outtakesDividedByCategory.map(e => {
-        const list = e.outtakes.filter(e2 => e2.status);
-        return this.calcOuttakeInfo(e, list, this.totalCost);
+        const listAux = e.outtakes.filter(e2 => e2.status);
+        const totalCost = this.calcCost(listAux);
+        return this.calcOuttakeInfo(e, listAux, null);
       });
       return this.updatePercentage(subList);
     },
     dataCollection() {
-      const list =
-        this.optionSelected === 0
-          ? this.outtakesDividedByCategory
-          : this.optionSelected === 1
-          ? this.outtakesToPayList
-          : this.outtakesPaidList;
-
-      const labels = list.map(e => e.name);
-      const data = list.map(e => e.totalCost);
+      const labels = this.actualList.map(e => e.name);
+      const data = this.actualList.map(e => e.totalCost);
       return {
         labels: labels,
         datasets: [
@@ -225,6 +257,22 @@ export default {
           }
         ]
       };
+    },
+    actualList() {
+      return this.optionSelected === 0
+        ? this.outtakesDividedByCategory
+        : this.optionSelected === 1
+        ? this.outtakesToPayList
+        : this.outtakesPaidList;
+    },
+
+    numOuttakes() {
+      return this.actualList.reduce((total, e) => total + e.quantity, 0);
+    },
+    totalCost() {
+      return parseFloat(
+        this.actualList.reduce((total, e) => total + e.totalCost, 0).toFixed(2)
+      );
     }
   }
 };

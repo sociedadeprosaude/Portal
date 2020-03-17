@@ -7,11 +7,19 @@
     </v-row>
     <v-card>
       <v-card-title>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Procurar"
+          single-line
+          hide-details
+        ></v-text-field>
         <v-spacer></v-spacer>
         <span class="float-right">{{date }} 00:00:00 até {{date2}} 23:59:59</span>
       </v-card-title>
       <div v-if="optionSelected === 0">
         <v-data-table
+          :search="search"
           :headers="headers"
           :items="intakesDividedByExam"
           :sort-by="['quantity']"
@@ -48,7 +56,7 @@
         </v-data-table>
       </div>
       <div v-else>
-        <TableExamsAndClinics :intakesDividedByExam="intakesDividedByExam" />
+        <TableExamsAndClinics :intakesDividedByExam="intakesDividedByExam" :search="search" />
       </div>
     </v-card>
 
@@ -91,6 +99,7 @@ export default {
   props: ["date", "date2"],
   data() {
     return {
+      search: "",
       now: moment().format("YYYY-MM-DD HH:mm:ss"),
       total: 0,
       options: ["Exames", "Exames separados por clinica"],
@@ -118,7 +127,7 @@ export default {
         { text: "Custo", value: "cost", align: "center" },
         { text: "Venda", value: "price", align: "center" },
         { text: "Clinica", value: "clinicName" }
-      ],
+      ]
     };
   },
   methods: {

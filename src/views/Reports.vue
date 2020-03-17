@@ -77,7 +77,7 @@
         <BestSellingExamsReport :date="dateBegin" :date2="dateEnd" />
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 5">
-        <OuttakesReport :date="dateBegin" :date2="dateEnd" />
+        <OuttakesReport :date="dateBegin" :date2="dateEnd" :cb="pesquisar" />
       </v-flex>
       <v-flex class="hidden-screen-only">
         <p>DE {{dateFormatted}} ATÉ {{dateFormatted2}}</p>
@@ -166,7 +166,7 @@ export default {
     }
   },
   async mounted() {
-    console.log(moment(this.date).format("YYYY-MM-DD 00:00:00"))
+    console.log(moment(this.date).format("YYYY-MM-DD 00:00:00"));
     this.$store.dispatch("getOuttakes", {
       initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
       finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")

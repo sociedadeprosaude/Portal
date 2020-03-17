@@ -11,7 +11,7 @@
             <v-flex xs12 sm3>
               <v-combobox
                 outlined
-                @input.native="category=$event.srcElement.value"
+                @input.native="category={name:$event.srcElement.value,subCategories:[]}"
                 v-model="category"
                 :items="categories"
                 item-text="name"
@@ -20,11 +20,11 @@
               ></v-combobox>
               <v-combobox
                 outlined
-                v-if="category && category.subCategories"
-                label="subCategoria"
+                v-if="category"
+                label="subcategoria"
                 @input.native="subCategory=$event.srcElement.value"
                 v-model="subCategory"
-                :items="[...category.subCategories,other]"
+                :items="category.subCategories? [...category.subCategories,other]:[other]"
                 item-text="name"
                 return-object
               ></v-combobox>
@@ -221,7 +221,7 @@ export default {
       unit: null,
       other: "Outro",
       dialog: false,
-      category: undefined,
+      category: { name: null },
       subCategory: null,
       paymentMethod: undefined,
       description: undefined,
@@ -288,15 +288,20 @@ export default {
         newSubcategory != this.other
       ) {
         await this.$store.dispatch("addOuttakeSubcategory", {
-          category,
+          category: category,
           newSubcategory
         });
       }
     },
     async newCategory(category) {
       if (this.categoriesName.indexOf(category.name) < 0) {
-        await this.$store.dispatch("addOuttakesCategory", category.name);
+        await this.$store.dispatch("addOuttakesCategory", {
+          category: category.name
+        });
       }
+    },
+    addBill2() {
+      console.log(this.category);
     },
     async addBill() {
       this.loading = true;
