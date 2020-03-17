@@ -2,7 +2,9 @@
     <v-content>
         <v-container fluid>
             <v-card class="elevation-3">
-                <v-card-title class="headline grey lighten-2 justify-center align-center" primary-title>LAUDOS</v-card-title>
+                <v-card-title class="headline grey lighten-2 justify-center align-center" primary-title>
+                    <v-btn style="display: none" text color="transparent" class="transparent"></v-btn><v-spacer></v-spacer>LAUDOS<v-spacer></v-spacer><v-btn color="error" @click="clear()">Fechar</v-btn>
+                </v-card-title>
                 <v-card-text>
                     ULTRASSONOGRAFIA DA TIREÓIDE
 
@@ -33,12 +35,11 @@
 
                     Ultrassom da glândula Tireóide dentro dos limites da normalidade.
                 </v-card-text>
-                <v-divider></v-divider>
+<!--                <v-divider></v-divider>
                 <v-card-actions>
-                    <v-btn color="error" @click="clear()">Fechar</v-btn>
                     <v-spacer></v-spacer>
                     <v-btn color="success" @click="null">Salvar</v-btn>
-                </v-card-actions>
+                </v-card-actions>-->
             </v-card>
         </v-container>
     </v-content>
