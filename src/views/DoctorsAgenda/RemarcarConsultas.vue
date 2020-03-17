@@ -14,7 +14,7 @@
                             rounded
                             chips
                             color="blue"
-                            clearable
+                            disabled
                     >
                         <template v-slot:selection="data">
                             <v-chip
