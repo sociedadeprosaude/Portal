@@ -282,7 +282,7 @@
                 await this.$store.dispatch("getOuttakesCategories");
                 await this.$store.dispatch("getOuttakes", {
                     initialDate: moment().format('YYYY-MM-DD 00:00:00'),
-                    finalDate: moment().add('days', 5).format('YYYY-MM-DD 23:59:59'),
+                    finalDate: moment().add(5, 'days').format('YYYY-MM-DD 23:59:59'),
                 });
                 this.loading = false;
             },
