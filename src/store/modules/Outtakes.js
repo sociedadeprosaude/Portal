@@ -79,6 +79,7 @@ const actions = {
         await firebase.firestore().collection('operational/').doc('outtakes').update({
             categories: categories
         })
+        context.commit('setOuttakesCategories', categories);
     },
 
     async removeOuttakeSubcategory(context, payload) {

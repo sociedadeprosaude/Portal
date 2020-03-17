@@ -287,10 +287,15 @@ export default {
         category.subCategories.indexOf(newSubcategory) < 0 &&
         newSubcategory != this.other
       ) {
-        await this.$store.dispatch("addOuttakeSubcategory", {
-          category: category,
-          newSubcategory
-        });
+        try {
+          await this.$store.dispatch("addOuttakeSubcategory", {
+            category: category,
+            newSubcategory
+          });
+          category.subCategories.push(newSubcategory);
+        } catch (e) {
+          console.log(e);
+        }
       }
     },
     async newCategory(category) {
