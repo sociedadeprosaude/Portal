@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <v-layout row wrap class="justify-center ">
-            <v-flex xs8>
+            <v-flex xs12>
                 <v-alert
                         class="text-left"
                         color="warning"
@@ -9,14 +9,15 @@
                         elevation="2"
                         colored-border
                         icon="error"
-                        v-if="consultation">
+                        v-if="consultation"
+                        @click.native="goRoute('/agenda/ConsultasCanceladas')">
                     <v-layout row wrap>
                         <span><strong>Existem pacientes com consultas canceladas à serem avisados!</strong></span>
                         <v-spacer/>
                         <v-btn text
                                small
                                fab
-                               class="pb-3"
+                               class="pb-3 hidden-xs-only"
                                @click.native="goRoute('/agenda/ConsultasCanceladas')">
                             <v-icon>open_in_new</v-icon>
                         </v-btn>
