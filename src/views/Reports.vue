@@ -74,8 +74,10 @@
         <procedures-prices-analises></procedures-prices-analises>
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 4">
-        <!-- BestSellingExamsReport ou best-selling-exams-report -->
         <BestSellingExamsReport :date="dateBegin" :date2="dateEnd" />
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 5">
+        <OuttakesReport :date="dateBegin" :date2="dateEnd" :cb="pesquisar" />
       </v-flex>
       <v-flex class="hidden-screen-only">
         <p>DE {{dateFormatted}} ATÉ {{dateFormatted2}}</p>
@@ -90,6 +92,7 @@ import GeneralReport from "../components/reports/GeneralReport";
 import IntakesReport from "../components/reports/IntakesReport";
 import ProceduresPricesAnalises from "../components/reports/ProceduresPricesAnalises";
 import BestSellingExamsReport from "@/components/reports/BestSellingExamsReport";
+import OuttakesReport from "@/components/reports/OuttakesReport";
 var moment = require("moment");
 export default {
   components: {
@@ -97,7 +100,8 @@ export default {
     GeneralReport,
     IntakesReport,
     ProceduresPricesAnalises,
-    BestSellingExamsReport
+    BestSellingExamsReport,
+    OuttakesReport
   },
   data: vm => ({
     reportOptions: [
@@ -105,7 +109,8 @@ export default {
       "Produção do Colaborador",
       "Relatorio de Vendas",
       "Analise de preço de exames",
-      "Exames mais vendidos"
+      "Exames mais vendidos",
+      "Relatório de Saídas"
     ],
     selectedReport: 0,
     date: moment().format("YYYY-MM-DD 00:00:00"),
@@ -128,11 +133,16 @@ export default {
         initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
         finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
       });
+
       await this.pesquisar();
       this.loading = false;
     },
     async pesquisar() {
       this.loading = true;
+      this.$store.dispatch("getOuttakes", {
+        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+      });
       this.formattedReport = await this.$store.dispatch("searchReports", {
         dataInicio: this.date,
         dataFinal: this.date2
@@ -155,7 +165,13 @@ export default {
       window.print();
     }
   },
-  mounted() {
+  async mounted() {
+    console.log(moment(this.date).format("YYYY-MM-DD 00:00:00"));
+    this.$store.dispatch("getOuttakes", {
+      initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+      finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+    });
+    await this.$store.dispatch("getOuttakesCategories");
     this.getIntakes();
   },
   computed: {

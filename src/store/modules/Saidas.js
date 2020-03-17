@@ -5,32 +5,33 @@ const state = {
 };
 
 const mutations = {
-    setCategorias(state,payload){
-        state.categoria= payload;
+    setCategorias(state, payload) {
+        state.categoria = payload;
     }
 
 
 };
 
 const actions = {
-    async AddSaida({commit},payload) {
-            try {
-           let res =  await firebase.firestore().collection('outtakes/').doc(payload.id.toString()).set({...payload});
-            } catch (e) {
-                throw e
-            }
-    },
-    async AddCategorie({commit},payload){
+    async AddSaida({ commit }, payload) {
         try {
-            let res = await firebase.firestore().collection('outtakes/outtakes/categories').doc(payload.categoria).set({categoria:payload.categoria});
+            //let res = await firebase.firestore().collection('outtakes/').doc(payload.id.toString()).set({ ...payload });
+            let res = await firebase.firestore().collection('outtakes/').add(payload);
+        } catch (e) {
+            throw e
+        }
+    },
+    async AddCategorie({ commit }, payload) {
+        try {
+            let res = await firebase.firestore().collection('outtakes/outtakes/categories').doc(payload.categoria).set({ categoria: payload.categoria });
         }
         catch (e) {
             throw e
         }
     },
-    async LoadCategories({commit}){
-        try{
-            var categorias= firebase.firestore().collection('outtakes/outtakes/categories').get().then((data) => {
+    async LoadCategories({ commit }) {
+        try {
+            var categorias = firebase.firestore().collection('outtakes/outtakes/categories').get().then((data) => {
                 let Categorias = [];
                 data.forEach((doc) => {
                     Categorias.push(doc.id);
@@ -39,7 +40,7 @@ const actions = {
                 commit('setCategorias', Categorias)
             })
         }
-        catch (e){
+        catch (e) {
             throw e
         }
 
@@ -47,7 +48,7 @@ const actions = {
 };
 
 const getters = {
-    categoria(state){
+    categoria(state) {
         return state.categoria;
     }
 

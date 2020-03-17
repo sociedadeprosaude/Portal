@@ -1,5 +1,6 @@
 <template>
   <v-data-table
+    :search="search"
     :headers="headers"
     :items="intakesDividedByExamAndClinic"
     :sort-by="['quantity']"
@@ -56,7 +57,7 @@ import moment from "moment";
 
 export default {
   name: "TableExamsAndClinics",
-  props: ["intakesDividedByExam"],
+  props: ["intakesDividedByExam", "search"],
   data() {
     return {
       headers: [
