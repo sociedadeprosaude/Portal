@@ -5,14 +5,89 @@
                 <v-btn style="display: none" text color="transparent" class="transparent"></v-btn><v-spacer></v-spacer>SOLICITAÇÃO DE EXAMES<v-spacer></v-spacer><v-btn color="error" @click="clear()">Fechar</v-btn>
             </v-card-title>
             <v-card-text>
-                AINDA SEM MODELO BASE FEITO
-            </v-card-text>
-            <v-divider></v-divider>
-<!--            <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="success" @click="null">Salvar</v-btn>
-            </v-card-actions>-->
-        </v-card>
+                        <v-container grid-list-md>
+                            <v-layout align-center justify-center wrap>
+                                <v-flex xs12 v-if="!loadingExams">
+                                    <v-combobox
+                                            prepend-inner-icon="search"
+                                            prepend-icon="poll"
+                                            :items="listExam"
+                                            item-text="name"
+                                            return-object
+                                            label="Exames"
+                                            outlined
+                                            v-model="newExam"
+                                            clearable
+                                            chips
+                                            hide-details
+                                    ></v-combobox>
+                                </v-flex>
+                                <v-flex xs12 v-else>
+                                    <v-layout column wrap class="align-center">
+                                        <span>Carregando exames...</span>
+                                        <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
+                                    </v-layout>
+                                </v-flex>
+                                <v-flex>
+                                    <v-flex xs12>
+                                        <v-btn v-on:click="addToList" :disabled="!addIsValid" color="success">
+                                            <v-icon>add</v-icon>
+                                            adicionar na lista de exames
+                                        </v-btn>
+                                    </v-flex>
+                                    <v-flex>
+                                        <v-btn v-on:click="deleteFromList" :disabled="!deleteIsValid" color="error">
+                                            <v-icon>delete_forever</v-icon>
+                                            Limpar lista de exames
+                                        </v-btn>
+                                    </v-flex>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <strong>EXAMES SELECIONADOS:</strong>
+                                </v-flex>
+                                <v-flex>
+                                    <v-select
+                                            :items="exams"
+                                            item-text="name"
+                                            return-object
+                                            multiple
+                                            v-model="exams"
+                                            chips
+                                            outlined
+                                    >
+                                        <template v-slot:selection="data">
+                                            <v-chip
+                                                    :key="JSON.stringify(data.item)"
+                                                    :input-value="data.selected"
+                                                    :disabled="data.disabled"
+                                                    class="v-chip--select-multi"
+                                                    @click.stop="data.parent.selectedIndex = data.index"
+                                                    @input="data.parent.selectItem(data.item)"
+                                                    text-color="white"
+                                                    color="info"
+                                            >{{ data.item.name }}
+                                            </v-chip>
+                                        </template>
+                                    </v-select>
+                                </v-flex>
+                            </v-layout>
+                        </v-container>
+                    </v-card-text>
+                    <v-divider></v-divider>
+                    <v-card-actions>
+                        <v-layout align-center justify-center>
+                            <v-spacer></v-spacer>
+                            <submit-button :loading="loading" :success="succes" text="SALVAR" :disabled="!formIsValid" @click="save(), closeDialog()"></submit-button>
+                            <v-btn
+                                    :disabled="!formIsValid"
+                                    @click="save()"
+                                    color="success"
+                            >
+                                SALVAR
+                            </v-btn>
+                        </v-layout>
+                    </v-card-actions>
+                </v-card>
     </v-container>
 </template>
 
@@ -25,26 +100,93 @@
             crm:'55874',
             paciente: 'JACKSON KELVIN DE SOUZA',
             moment: moment,
-            exams: [],
             dateFormatted: '',
             examsOptions: [],
+            //================
+            exams: [],
+            newExam: null,
+            loadingExams: false,
+            loading: false,
+            succes: false
+            //==================
         }),
         computed: {
             formIsValid() {
                 return this.exams.length > 0
             },
+            addIsValid() {
+                return this.newExam
+            },
+            deleteIsValid() {
+                return this.exams.length > 0
+            },
+            listExam() {
+                return this.$store.getters.exams;
+            },
         },
+
         mounted() {
-            this.paciente =  this.consultation.user.dependent ? this.consultation.user.dependent.name : this.consultation.user.name
+            this.paciente =  this.consultation.user.dependent ? this.consultation.user.dependent.name : this.consultation.user.name;
+            this.loadExams();
+            window.addEventListener('keydown', this.handleEnter);
         },
+        beforeDestroy() {
+            window.removeEventListener('keydown', this.handleEnter)
+        },
+
         watch: {
+            //
         },
         methods: {
             clear() {
+                this.exams = [];
                 this.closeDialog()
             },
             closeDialog: function () {
                 this.$emit('close-dialog')
+            },
+            //=================
+            async loadExams() {
+                this.loadingExams = true
+                await this.$store.dispatch('loadExam');
+                this.loadingExams = false
+            },
+            handleEnter(e) {
+                if (e.key === 'Enter') {
+                    this.addToList()
+                }
+            },
+            addToList() {
+                if (this.exams.indexOf(this.newExam) > -1) {
+                    return
+                }
+                this.exams.push(this.newExam);
+                this.newExam = null;
+            },
+            deleteFromList() {
+                this.exams = [];
+            },
+
+            async save() {
+                this.loading = true
+                for (let i in this.exams) {
+                    let examData = {
+                        clinic: this.selectedClinic,
+                        exam: this.exams[i].name,
+                        rules: this.exams[i].rules,
+                        obs: this.obs,
+                        cost: this.cost,
+                        sale: this.sale,
+                    };
+                    //console.log(examData)
+                    // await this.$store.dispatch('addExamToClinic', examData);
+                }
+                this.loading = false;
+                this.succes = true;
+                setTimeout(() => {
+                    this.clear();
+                    this.succes = false
+                }, 1000)
             },
         },
     }
