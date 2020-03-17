@@ -48,7 +48,7 @@ const actions = {
     // },
 
     async getPatient({}, id) {
-        let userDoc = await firestore().collection('users').doc(id.toString()).get()
+        let userDoc = await firestore().collection('users').doc(id.toString()).get();
         return userDoc.data()
     },
     async searchUser({ commit, getters }, searchFields) {
@@ -151,7 +151,7 @@ const actions = {
 
     },
     async setSelectedPatient({ commit }, payload) {
-        commit('setSelectedPatient', payload)
+        commit('setSelectedPatient', payload);
         // if (payload.name) this.dispatch('getPatientProntuario', payload)
     },
     async searchUserFromOldDatabase(context, numAss) {

@@ -105,14 +105,14 @@
                 this.$router.push('/')
             },
             async addIntake(intake) {
-                this.loading = true
-                intake.colaborator = this.user
-                intake.unit = this.unit
-                intake.date = moment().format('YYYY-MM-DD HH:mm:ss')
-                intake.type = 'financial_support'
-                await this.$store.dispatch('addFinancialSupportIntake', intake)
-                this.success = true
-                this.loading = false
+                this.loading = true;
+                intake.colaborator = this.user;
+                intake.unit = this.unit;
+                intake.date = moment().format('YYYY-MM-DD HH:mm:ss');
+                intake.type = 'financial_support';
+                await this.$store.dispatch('addFinancialSupportIntake', intake);
+                this.success = true;
+                this.loading = false;
                 setTimeout(() => {
                     this.success = false
                 }, 1000)

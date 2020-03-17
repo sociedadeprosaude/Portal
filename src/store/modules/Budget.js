@@ -9,6 +9,23 @@ const state = {};
 const mutations = {};
 
 const actions = {
+
+    async deleteOldBudgets (context, user) {
+
+        let userRef = firebase.firestore().collection('users').doc(user.cpf);
+        let date = moment().subtract(15, 'days').format('YYYY-MM-DD');
+        let budgetsSnap = await userRef.collection('budgets').where('date', '<=' , date).get();
+        budgetsSnap.forEach((doc) => {
+            let data = {
+                user: user,
+                budgetId: doc.data().id,
+            };
+            console.log('data', data);
+            this.dispatch('deleteBudget', data);
+        });
+
+    },
+
     async addBudget(context, payload) {
         let copyPayload = Object.assign({}, payload);
         functions.removeUndefineds(copyPayload);
@@ -50,6 +67,7 @@ const actions = {
         }
         // copyPayload = Object.assign({}, payload)
     },
+
     async getBudget({ }, budgetId) {
         let budget = (await firebase.firestore().collection('budgets').doc(budgetId).get()).data();
         let specialtiesCol = await firebase.firestore().collection('budgets').doc(budgetId).collection('specialties').get()
@@ -68,7 +86,7 @@ const actions = {
         return budget
     },
 
-    async deleteBudget ({}, data) {
+    async deleteBudget (context, data) {
         let  userId = data.user.cpf.toString();
         let budgetId = data.budgetId.toString();
         await firebase.firestore().collection('budgets').doc(budgetId.toString()).delete();
@@ -116,6 +134,7 @@ const actions = {
             }
         }
     },
+
     async addIntake(context, payload) {
         let copyPayload = Object.assign({}, payload);
         delete copyPayload.user.budgets;
@@ -202,6 +221,7 @@ const actions = {
 
         context.dispatch('createOrUpdateProcedure', { consultationFound: consultationFound, consultation:payload.consultation, precoVendaZero:precoVendaZero, userRef: payload.userRef, user: payload.user, isConsultation: payload.isConsultation, payment_number: payload.payment_number, specialty: payload.specialty, examObj: payload.examObj })
     },
+
     async createOrUpdateProcedure({ }, payload) {
         let consultationFound = payload.consultationFound;
         let user = payload.user;
@@ -260,6 +280,7 @@ const actions = {
         }
 
     },
+
     async addIntakeToUser(context, payload) {
         let copyPayload = Object.assign({}, payload);
         functions.removeUndefineds(copyPayload);
@@ -372,6 +393,7 @@ const actions = {
     //     await Promise.all(promises)
     //     return intakes
     // },
+
     async getUserIntakes(context, user) {
         let userRef = firebase.firestore().collection('users').doc(user.cpf);
         let intakesSnap = (await userRef.collection('intakes').get()).docs;
@@ -382,6 +404,7 @@ const actions = {
         }
         return intakes
     },
+
     async getUserBudgets(context, user) {
         let userRef = firebase.firestore().collection('users').doc(user.cpf);
         let budgetsSnap = await userRef.collection('budgets').get();
@@ -391,6 +414,7 @@ const actions = {
         });
         return budgets
     },
+
     async getIntakeDetails(context, intake) {
         intake = await firebase.firestore().collection('intakes').doc(intake.id.toString()).get();
         intake = {
@@ -486,6 +510,7 @@ const actions = {
 
         })
     },
+
     async findProcedureId({ commit }, payload) {
         return new Promise(async (resolve, reject) => {
             console.log('FindProcedureId', payload);
