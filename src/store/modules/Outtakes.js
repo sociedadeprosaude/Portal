@@ -1,4 +1,4 @@
-import firebase, { firestore } from "firebase";
+import firebase, {firestore} from "firebase";
 import functions from "../../utils/functions";
 
 const state = {
@@ -18,11 +18,15 @@ const actions = {
             let selectedUnit = context.getters.selectedUnit
             let base = firebase.firestore().collection('outtakes');
             let outtakesSnap = [];
-            if (payload && payload.initialDate != null) {
-                outtakesSnap = await base.where('created_at', '>=', payload.initialDate)
-                    .where('created_at', '<=', payload.finalDate)
-                    .where('unit.name', '==', selectedUnit.name)
-                    .orderBy('created_at').get()
+            if (payload) {
+                outtakesSnap = base.where('unit.name', '==', selectedUnit.name)
+                if (payload.initialDate) {
+                    outtakesSnap.where('created_at', '>=', payload.initialDate)
+                }
+                if (payload.finalDate) {
+                    outtakesSnap.where('created_at', '<=', payload.finalDate)
+                }
+                outtakesSnap = await outtakesSnap.orderBy('created_at').get()
             } else outtakesSnap = await base.get();
             let outtakes = []
             outtakesSnap.forEach(doc => {
@@ -37,7 +41,7 @@ const actions = {
         }
     },
 
-    async getOuttakesCategories({ commit }) {
+    async getOuttakesCategories({commit}) {
         // let outtakesDoc = await
         return new Promise((resolve, reject) => {
             firebase.firestore().collection('operational/').doc('outtakes').onSnapshot((outtakesDoc) => {
@@ -62,7 +66,7 @@ const actions = {
     async addOuttakesCategory(context, payload) {
         await context.dispatch('getOuttakesCategories')
         let categories = context.getters.outtakesCategories
-        categories.push({ name: payload.category, subCategories: [] })
+        categories.push({name: payload.category, subCategories: []})
         await firebase.firestore().collection('operational/').doc('outtakes').update({
             categories: categories
         })
