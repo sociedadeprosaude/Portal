@@ -13,11 +13,17 @@ const mutations = {
 };
 
 const actions = {
-    async AddSaida({commit}, payload) {
+    async AddSaida({ commit }, payload) {
         try {
-            let res = await firebase.firestore().collection('outtakes/').doc(payload.id.toString()).set({...payload});
+            //let res = await firebase.firestore().collection('outtakes/').doc(payload.id.toString()).set({ ...payload });
+            let res = await firebase.firestore().collection('outtakes/').add(payload);
         } catch (e) {
             throw e
+        }
+    },
+    async AddCategorie({ commit }, payload) {
+        try {
+            let res = await firebase.firestore().collection('outtakes/outtakes/categories').doc(payload.categoria).set({ categoria: payload.categoria });
         }
     },
     async AddCategorie({commit}, payload) {
@@ -27,7 +33,7 @@ const actions = {
             throw e
         }
     },
-    async LoadCategories({commit}) {
+    async LoadCategories({ commit }) {
         try {
             var categorias = firebase.firestore().collection('outtakes/outtakes/categories').get().then((data) => {
                 let Categorias = [];
@@ -37,7 +43,8 @@ const actions = {
                 });
                 commit('setCategorias', Categorias)
             })
-        } catch (e) {
+        }
+        catch (e) {
             throw e
         }
 

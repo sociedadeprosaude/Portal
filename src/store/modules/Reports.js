@@ -11,17 +11,14 @@ instance.defaults.headers.common['Accept'] = 'application/json'
 const state = {
     infos: [],
     relatorio: [],
-    intakesReport: []
-
+    intakesReport: [],
+    
 }
 
 const mutations = {
-    setRelatorio(state, payload) {
-        //console.log('aqyu')
-        state.relatorio = payload;
-    },
-    // SET_INTAKES_REPORT
-    setIntakesReport: (state, payload) => state.intakesReport = payload
+    setRelatorio: (state, payload) => state.relatorio = payload,
+    setIntakesReport: (state, payload) => state.intakesReport = payload,
+   
 }
 
 const actions = {
@@ -65,6 +62,8 @@ const actions = {
         context.commit("setIntakesReport", intakes)
         return intakes
     },
+
+    
 
     async searchReports(context, payload) {
         payload.dataFinal = payload.dataFinal + ' 24:00:00';

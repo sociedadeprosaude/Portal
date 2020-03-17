@@ -1,7 +1,9 @@
 <template>
     <v-container fluid>
             <v-card class="elevation-3">
-                <v-card-title class="headline grey lighten-2 justify-center align-center" primary-title>ATESTADO</v-card-title>
+                <v-card-title class="headline grey lighten-2 justify-center align-center" primary-title>
+                    <v-btn style="display: none" text color="transparent" class="transparent"></v-btn><v-spacer></v-spacer>ATESTADO<v-spacer></v-spacer><v-btn color="error" @click="clear()">Fechar</v-btn>
+                </v-card-title>
                 <v-card-text>
                     <v-layout row wrap>
                     <v-flex xs12>
@@ -16,13 +18,13 @@
                         >
                             <template v-slot:selection="data">
                                 <v-chip
-                                        color="primary"
                                         :key="JSON.stringify(data.item)"
                                         :selected="data.selected"
                                         :disabled="data.disabled"
                                         class="v-chip--select-multi"
                                         @click.stop="data.parent.selectedIndex = data.index"
                                         @input="data.parent.selectItem(data.item)"
+                                        color="info"
                                 >
                                     <strong style="font-size: 15px">{{ data.item }}</strong>
                                 </v-chip>
@@ -111,6 +113,7 @@
                                                                             ></v-img>-->
                                     </v-flex>
                                     <v-flex xs12>
+                                        <v-flex xs12><p style="color: white">.</p></v-flex>
                                         <h2 style="text-align: center">LICENÇA MÉDICA</h2>
                                         <br/><br/><br/>
                                         <p style="text-align: center; text-justify: auto">
@@ -140,6 +143,7 @@
                         </v-layout>
                     </v-container>
 
+                    <v-flex xs12><p style="color: white">.</p></v-flex>
                     <v-layout align-center justify-center>
                         <v-btn
                                 align-center
@@ -152,14 +156,7 @@
                             <v-icon right color="white">print</v-icon>
                         </v-btn>
                     </v-layout>
-
                 </v-card-text>
-                <v-divider></v-divider>
-                <v-card-actions>
-                    <v-btn color="error" @click="clear()">Fechar</v-btn>
-                    <v-spacer></v-spacer>
-                    <v-btn color="success" @click="null">Salvar</v-btn>
-                </v-card-actions>
             </v-card>
 
     </v-container>

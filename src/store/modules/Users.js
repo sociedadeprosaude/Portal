@@ -70,6 +70,36 @@ const actions = {
         });
         return users
     },
+   /*  async gambiarra({ commit, getters }, searchFields) {
+        let usersRef = firestore().collection('users').where('type','==','PATIENT');
+        console.log('Vai buscar')
+        //usersRef.where('type','==','PATIENT')
+        let querySnapshot = await usersRef.get();
+        let users = [];
+        querySnapshot.forEach(function (doc) {
+           let data = doc.data()
+           if(data.dependents){
+               
+                data.dependents.forEach((dep)=>{
+                        console.log('Nome do responsável:' + data.name + '-> Dependente' + dep.name)
+                    
+                })
+            }
+        });
+        console.log('Buscou')
+        return users
+    }, */
+    thereIsUserCPF({commit},payload){
+        return new Promise(async (resolve,reject)=>{
+            try{
+                let foundUser = await firebase.firestore().collection('users').doc(payload).get();
+                resolve(foundUser.exists)
+            }catch(e){
+                reject(e)
+            }
+        })
+       
+    },
     async addUser({ getters }, patient) {
         try {
 

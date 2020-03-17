@@ -385,6 +385,16 @@
                           :disabled="status === 'Pago' ? false : true"
                         ></v-text-field>
                       </v-flex>
+                      <v-flex v-if="justifyReturn(createConsultationForm.consultation.date.split(' ')[0])" xs12>
+                        
+                        <v-textarea
+                            v-model="justify"
+                            outlined
+                            name="input-7-4"
+                            label="Justificativa de Retorno "
+                            placeholder="O retorno tem mais de 21 dias. Justifique o motivo do agendamento para essa data."
+                        ></v-textarea>
+                      </v-flex>
                       <v-flex xs12 sm12 md12 lg12>
                         <v-divider></v-divider>
                       </v-flex>
@@ -433,6 +443,7 @@
                   <submit-button
                     color="success"
                     rounded
+                    :disabled="justifyReturn(createConsultationForm.consultation.date.split(' ')[0]) && justify == ''"
                     @reset="success = false"
                     :success="success"
                     :loading="loading"
@@ -558,6 +569,7 @@ export default {
     success: false,
     loading: false,
     pacienteSelecionado: undefined,
+    justify:'',
 
     //-------------------------------------------Scroll------------------------------------------------
     type: "number",
@@ -722,6 +734,13 @@ export default {
     window.addEventListener("scroll", this.handleScroll);
   },
   methods: {
+    justifyReturn(date){
+      var dateConsultation = moment(this.query.data)
+      var today = moment(date)
+      var diff = today.diff(dateConsultation,'days')
+      console.log(diff)
+      return diff > 21
+    },
     scheduleAppointment(consultation) {
       this.fillConsultationForm(consultation);
       this.dialog = true;
@@ -747,7 +766,8 @@ export default {
         consultation: consultation
       };
 
-      console.log("Fill form", form);
+      this.justify = ''
+      //this.justifyReturn()
       this.createConsultationForm = form;
     },
     formatConsultationsArray(consultations) {
@@ -921,6 +941,10 @@ export default {
         payment_number: this.num_recibo,
         previousConsultation: this.query.idConsultation
       };
+      if(this.justify != ''){
+        form.user.justifyReturn = this.justify
+        form.consultation.justifyReturn = this.justify
+      }
       // return
       this.loading = true;
       await this.$store.dispatch("addConsultationAppointmentToUser", form);

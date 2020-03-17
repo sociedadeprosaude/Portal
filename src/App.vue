@@ -74,7 +74,6 @@
 
                     this.$refs['logo'].classList.add('fade-out-anim');
                     this.$refs['loader'].classList.add('fe-contract');
-
                     setTimeout(() => {
                         this.ready = true
                     }, 1500)

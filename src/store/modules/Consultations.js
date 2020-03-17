@@ -435,8 +435,16 @@ const actions = {
         } catch (e) {
             throw e
         }
-    }
-    ,
+    },
+
+    async addArrayCallsToConsultation({ commit }, payload) {
+        /*console.log("vector:", payload)*/
+        try {
+            firebase.firestore().collection('canceled').doc(payload.idConsultation).update({calls: payload.calls})
+        } catch (e) {
+            throw e
+        }
+    },
 
     async removeAppointments({ commit }, consultations) {
         for (let consultation in consultations) {

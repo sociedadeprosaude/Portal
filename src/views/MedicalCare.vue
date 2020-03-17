@@ -75,20 +75,18 @@
                                         transition="scale-transition"
                                         offset-y
                                         min-width="290px"
+                                        disabled
                                 >
                                     <template v-slot:activator="{ on }">
                                         <v-text-field
                                                 v-model="computedDateFormatted"
                                                 label="Data"
                                                 prepend-icon="event"
-                                                readonly
+                                                disabled
                                                 outlined
                                                 rounded
                                                 filled
                                                 chips
-                                                clearable
-                                                hint="Selecione uma data para pesquisar"
-                                                persistent-hint
                                                 v-on="on"
                                         ></v-text-field>
                                     </template>
@@ -97,6 +95,7 @@
                                             v-model="date"
                                             locale="pt-br"
                                             @change="save"
+                                            disabled
                                     ></v-date-picker>
                                 </v-menu>
                             </v-flex>

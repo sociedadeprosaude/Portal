@@ -130,102 +130,136 @@
                 <p>DE {{dateFormatted}} ATÉ {{dateFormatted2}}</p>
             </v-flex>
         </v-layout>
-    </v-container>
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 0">
+        <general-report :report="formattedReport" :loading="loading" :intakes="intakes"></general-report>
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 1">
+        <colaborators-production-report :loading="loading" :intakes="intakes"></colaborators-production-report>
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 2">
+        <intakes-report :report="formattedReport" :loading="loading" :intakes="intakes"></intakes-report>
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 3">
+        <procedures-prices-analises></procedures-prices-analises>
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 4">
+        <BestSellingExamsReport :date="dateBegin" :date2="dateEnd" />
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 5">
+        <OuttakesReport :date="dateBegin" :date2="dateEnd" :cb="pesquisar" />
+      </v-flex>
+      <v-flex class="hidden-screen-only">
+        <p>DE {{dateFormatted}} ATÉ {{dateFormatted2}}</p>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
-    import ColaboratorsProductionReport from "../components/reports/ColaboratorsProductionReport";
-    import GeneralReport from "../components/reports/GeneralReport";
-    import IntakesReport from "../components/reports/IntakesReport";
-    import ProceduresPricesAnalises from "../components/reports/ProceduresPricesAnalises";
-    import BestSellingExamsReport from "@/components/reports/BestSellingExamsReport";
+import ColaboratorsProductionReport from "../components/reports/ColaboratorsProductionReport";
+import GeneralReport from "../components/reports/GeneralReport";
+import IntakesReport from "../components/reports/IntakesReport";
+import ProceduresPricesAnalises from "../components/reports/ProceduresPricesAnalises";
+import BestSellingExamsReport from "@/components/reports/BestSellingExamsReport";
+import OuttakesReport from "@/components/reports/OuttakesReport";
+var moment = require("moment");
+export default {
+  components: {
+    ColaboratorsProductionReport,
+    GeneralReport,
+    IntakesReport,
+    ProceduresPricesAnalises,
+    BestSellingExamsReport,
+    OuttakesReport
+  },
+  data: vm => ({
+    reportOptions: [
+      "Relatório Financeiro Geral",
+      "Produção do Colaborador",
+      "Relatorio de Vendas",
+      "Analise de preço de exames",
+      "Exames mais vendidos",
+      "Relatório de Saídas"
+    ],
+    selectedReport: 0,
+    date: moment().format("YYYY-MM-DD 00:00:00"),
+    date2: moment().format("YYYY-MM-DD 23:59:59"),
+    dateFormatted: moment().format("DD/MM/YYYY"),
+    dateFormatted2: moment().format("DD/MM/YYYY"),
+    dateBegin: null,
+    dateEnd: null,
+    menu1: false,
+    menu2: false,
+    verificador: true,
+    intakes: undefined,
+    formattedReport: undefined,
+    loading: false
+  }),
+  methods: {
+    async getIntakes() {
+      this.loading = true;
+      this.intakes = await this.$store.dispatch("getIntakes", {
+        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+      });
 
-    var moment = require("moment");
-    export default {
-        components: {
-            ColaboratorsProductionReport,
-            GeneralReport,
-            IntakesReport,
-            ProceduresPricesAnalises,
-            BestSellingExamsReport
-        },
-        data() {
-            return {
-                reportOptions: [
-                    "Relatório Financeiro Geral",
-                    "Produção do Colaborador",
-                    "Relatorio de Vendas",
-                    "Analise de preço de exames",
-                    "Exames mais vendidos"
-                ],
-                selectedReport: 0,
-                date: moment().format("YYYY-MM-DD 00:00:00"),
-                date2: moment().format("YYYY-MM-DD 23:59:59"),
-                dateFormatted: moment().format("DD/MM/YYYY"),
-                dateFormatted2: moment().format("DD/MM/YYYY"),
-                dateBegin: null,
-                dateEnd: null,
-                menu1: false,
-                menu2: false,
-                verificador: true,
-                intakes: undefined,
-                formattedReport: undefined,
-                loading: false
-            }
-        },
-        methods: {
-            async getIntakes() {
-                this.loading = true;
-                this.intakes = await this.$store.dispatch("getIntakes", {
-                    initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-                    finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
-                });
-                await this.pesquisar();
-                this.loading = false;
-            },
-            async pesquisar() {
-                this.loading = true;
-                this.formattedReport = await this.$store.dispatch("searchReports", {
-                    dataInicio: this.date,
-                    dataFinal: this.date2
-                });
-                this.dateBegin = this.dateFormatted;
-                this.dateEnd = this.dateFormatted2;
-                this.loading = false;
-            },
-            formatDate(date) {
-                if (!date) return null;
-                const [year, month, day] = date.split("-");
-                return `${day}/${month}/${year}`;
-            },
-            parseDate(date) {
-                if (!date) return null;
-                const [day, month, year] = date.split("/");
-                return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-            },
-            Imprimir() {
-                window.print();
-            }
-        },
-        mounted() {
-            this.getIntakes();
-        },
-        computed: {
-            Relatorio() {
-                return this.$store.getters.relatorio;
-            }
-        },
-        watch: {
-            date(val) {
-                this.dateFormatted = this.formatDate(this.date);
-                // this.getIntakes()
-            },
-            date2(val) {
-                this.dateFormatted2 = this.formatDate(this.date2);
-                // this.getIntakes()
-            }
-        }
-    };
+      await this.pesquisar();
+      this.loading = false;
+    },
+    async pesquisar() {
+      this.loading = true;
+      this.$store.dispatch("getOuttakes", {
+        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+      });
+      this.formattedReport = await this.$store.dispatch("searchReports", {
+        dataInicio: this.date,
+        dataFinal: this.date2
+      });
+      this.dateBegin = this.dateFormatted;
+      this.dateEnd = this.dateFormatted2;
+      this.loading = false;
+    },
+    formatDate(date) {
+      if (!date) return null;
+      const [year, month, day] = date.split("-");
+      return `${day}/${month}/${year}`;
+    },
+    parseDate(date) {
+      if (!date) return null;
+      const [day, month, year] = date.split("/");
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    },
+    Imprimir() {
+      window.print();
+    }
+  },
+  async mounted() {
+    console.log(moment(this.date).format("YYYY-MM-DD 00:00:00"));
+    this.$store.dispatch("getOuttakes", {
+      initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+      finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+    });
+    await this.$store.dispatch("getOuttakesCategories");
+    this.getIntakes();
+  },
+  computed: {
+    Relatorio() {
+      return this.$store.getters.relatorio;
+    }
+  },
+  watch: {
+    date(val) {
+      this.dateFormatted = this.formatDate(this.date);
+      // this.getIntakes()
+    },
+    date2(val) {
+      this.dateFormatted2 = this.formatDate(this.date2);
+      // this.getIntakes()
+    }
+  }
+};
 </script>
 
 <style>
