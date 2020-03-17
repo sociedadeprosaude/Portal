@@ -19,14 +19,13 @@ const actions = {
             let base = firebase.firestore().collection('outtakes');
             let outtakesSnap = [];
             if (payload) {
-                outtakesSnap = base.where('unit.name', '==', selectedUnit.name)
                 if (payload.initialDate) {
-                    outtakesSnap.where('created_at', '>=', payload.initialDate)
+                    base.where('created_at', '>=', payload.initialDate)
                 }
                 if (payload.finalDate) {
-                    outtakesSnap.where('created_at', '<=', payload.finalDate)
+                    base.where('created_at', '<=', payload.finalDate)
                 }
-                outtakesSnap = await outtakesSnap.orderBy('created_at').get()
+                outtakesSnap = await base.orderBy('created_at').get()
             } else outtakesSnap = await base.get();
             let outtakes = []
             outtakesSnap.forEach(doc => {
