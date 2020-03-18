@@ -145,7 +145,7 @@ export default {
         date_to_pay: this.dateToPay,
         //  id: moment().valueOf(),
         created_at: this.data,
-        // paid: this.data,   // Agora as saidas registradas nessa view não vão ser consideradas pagas
+        paid: this.data,
         colaborator: this.user,
         payment_method: "Dinheiro",
         unit: this.unit.name != this.other ? this.unit : null
