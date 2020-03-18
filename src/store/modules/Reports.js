@@ -12,13 +12,13 @@ const state = {
     infos: [],
     relatorio: [],
     intakesReport: [],
-    
+
 }
 
 const mutations = {
     setRelatorio: (state, payload) => state.relatorio = payload,
     setIntakesReport: (state, payload) => state.intakesReport = payload,
-   
+
 }
 
 const actions = {
@@ -63,7 +63,7 @@ const actions = {
         return intakes
     },
 
-    
+
 
     async searchReports(context, payload) {
         payload.dataFinal = payload.dataFinal + ' 24:00:00';
@@ -120,6 +120,9 @@ const actions = {
                     }
                 }
                 for (let exam in intakes[intake].exams) {
+                    if (!intakes[intake].exams[exam].clinic) {
+                        intakes[intake].exams[exam].clinic = context.getters.selectedUnit
+                    }
                     if (!clinics[intakes[intake].exams[exam].clinic.name]) {
                         clinics[intakes[intake].exams[exam].clinic.name] = {
                             quantidade: 0,
