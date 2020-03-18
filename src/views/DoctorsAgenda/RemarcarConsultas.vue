@@ -810,7 +810,7 @@
 
                 if(this.modalidade == 'Retorno')
                     form.consultation = {...form.consultation,previousConsultation: this.query.consultation.previousConsultation}
-                // return
+                
                 this.loading = true
                 await this.$store.dispatch('addConsultationAppointmentToUserReschedule', form)
                 //Realizar essa funcao pelo cloud functions
