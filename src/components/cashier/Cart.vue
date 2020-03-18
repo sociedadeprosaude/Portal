@@ -153,15 +153,7 @@
                                 <v-spacer/>
                             </v-flex>
                             <v-layout row wrap>
-                                <!-- <v-flex xs12>
-                                     <v-select class="mt-5" label="Forma de pagamento" :items="FormasDePagamento"
-                                               v-model="formaPagamento"></v-select>
-                                 </v-flex> -->
                                 <v-flex>
-                                    <!--  <v-flex xs6 v-if="formaPagamento === 'Crédito'">
-                                          <v-select :items="parcels" v-model="parcel"
-                                                    label="Parcelas"></v-select>
-                                      </v-flex> -->
                                     <v-flex sm12 xs12 class="px-3 mt-3" v-if="payments.length > 1">
                                         <v-layout row wrap class="align-center" v-for="(payment, index) in payments"  :key="index">
                                             <v-flex xs10>
@@ -178,7 +170,6 @@
                                                         filled
                                                         v-model="valuesPayments[index]"
                                                         label="Valor"
-                                                        v-on="Pagamento"
                                                 >
                                                 </v-currency-field>
                                             </v-flex>
@@ -187,7 +178,6 @@
                                                         filled
                                                         v-model="valuesPayments[index]"
                                                         label="Valor"
-                                                        v-on="Pagamento"
                                                 >
                                                 </v-currency-field>
                                             </v-flex>
@@ -215,8 +205,7 @@
                                                         rounded
                                                         :items="FormasDePagamento"
                                                         v-model="payments[index]"
-                                                        label="Forma de Pagamento"
-                                                        v-on="Pagamento">
+                                                        label="Forma de Pagamento">
                                                 </v-select>
                                             </v-flex>
                                             <v-flex xs5 v-if="payments[index] === 'Crédito'">
@@ -224,7 +213,6 @@
                                                         filled
                                                         v-model="valuesPayments[index]"
                                                         label="Valor"
-                                                        v-on="Pagamento"
                                                 >
                                                 </v-currency-field>
                                             </v-flex>
@@ -233,7 +221,6 @@
                                                         filled
                                                         v-model="valuesPayments[index]"
                                                         label="Valor"
-                                                        v-on="Pagamento"
                                                 >
                                                 </v-currency-field>
                                             </v-flex>
@@ -289,7 +276,7 @@
                                             <v-divider color="black"/>
                                         </v-flex>
                                         <v-flex>
-                                            <span>Total Até então: {{this.Pago}}</span>
+                                            <span>Total Até então: {{this.paymentValues}}</span>
                                         </v-flex>
                                         <v-flex xs6>
                                             <span>Subtotal: R$ {{this.subTotal.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
@@ -319,7 +306,7 @@
                                         </v-flex>
                                         <v-flex xs6 class="text-center">
                                             <submit-button
-                                                    :disabled="!patient || cartItems.length === 0 || this.Pago !== this.total"
+                                                    :disabled="!patient || cartItems.length === 0 || this.paymentValues !== this.total"
                                                     text="Pagar" :loading="paymentLoading"
                                                     :success="paymentSuccess" color="primary" @click="pay()">
                                                 Pagar
@@ -391,7 +378,6 @@
                 percentageDiscount: 0,
                 moneyDiscount: 0,
                 FormasDePagamento: ["Dinheiro", "Crédito", "Débito"],
-                Pago:0,
                 totalNovo: 0,
                 budgetToPrint: undefined,
                 budgetToPrintDialog: false,
@@ -428,10 +414,6 @@
                 // return this.$store.getters.selectedBudget.consultations
                 return this.$store.getters.getShoppingCartItemsByCategory.consultations
             },
-            //pacotes() {
-            // return this.$store.getters.selectedBudget.packages
-            //     return this.$store.getters.getShoppingCartItemsByCategory.packages
-            // },
             cost() {
                 let itens = this.$store.getters.getShoppingCartItems;
                 let total = 0;
@@ -444,23 +426,19 @@
                 let itens = this.$store.getters.getShoppingCartItems;
                 let total = 0;
                 for (let item in itens) {
-                    console.log('preco:', itens[item].price);
                     total += parseFloat(itens[item].price);
                 }
-                console.log('total=', total);
                 return total
             },
             total() {
                 return (parseFloat(this.subTotal) - parseFloat(this.moneyDiscount)).toFixed(2)
             },
-            Pagamento(){
+            paymentValues() {
                 let tamanho= this.payments.length;
-                console.log('payments:', this.payments);
                 let pagando=0;
                 if(tamanho === 1 && this.payments[0] !== ''){
                     this.valuesPayments[0]= parseFloat(this.total);
                     pagando = parseFloat(this.valuesPayments[0]);
-                    console.log('pagando=', pagando )
                 }
                 else{
                     for(let i=0; i < tamanho; i++){
@@ -469,8 +447,8 @@
                         }
                     }
                 }
-                this.Pago= pagando.toFixed(2);
-            }
+                return pagando.toFixed(2);
+            },
         },
         watch: {
             percentageDiscount: function () {
