@@ -586,15 +586,6 @@
                 this.$store.commit('setSelectedPatient', user)
             },
 
-            async updateIntakes () {
-                let user = this.patient;
-                let intakes = await this.$store.dispatch('getUserIntakes', user);
-                user.intakes = intakes;
-                user.budgets = this.patient.budgets;
-                this.$store.commit('setSelectedPatient', user);
-                console.log('#user' , user);
-            },
-
             async saveBudget(budget) {
                 this.$store.commit('setSelectedBudget', budget);
                 await this.$store.dispatch('getUserBudgets', this.patient);
@@ -619,7 +610,6 @@
                 }
                 await this.$store.dispatch('addIntake', this.selectedBudget);
                 this.updateBudgetsIntakes();
-                //this.updateIntakes();
                 //this.receipt(this.selectedBudget);
                 this.paymentLoading = false;
                 this.paymentSuccess = true;

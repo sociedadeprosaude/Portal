@@ -42,7 +42,7 @@ if (process.env.NODE_ENV === 'development') {
 const vuexLocal = new VuexPersistence({
     storage: window.localStorage,
     modules: ['LocalUnit']
-});
+})
 
 const store = new Vuex.Store({
     // plugins: [vuexLocal.plugin],

@@ -519,8 +519,7 @@
               let user = this.$store.getters.selectedPatient;
               if (user) {
                   this.name = user.name;
-                  this.cpf = user.cpf;
-                  this.$store.dispatch('deleteOldBudgets', user);
+                  this.cpf = user.cpf
                   //this.numAss = user.association_number
               }
               return this.$store.getters.selectedPatient

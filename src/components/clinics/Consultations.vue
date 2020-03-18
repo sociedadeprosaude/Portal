@@ -15,8 +15,8 @@
                                 outlined
                                 readonly
                                 v-model="this.selectedClinic.name"
-                                hide-details>
-                        </v-text-field>
+                                hide-details
+                        ></v-text-field>
                     </v-flex>
                     <v-flex xs12>
                         <v-select
@@ -29,8 +29,8 @@
                                 v-model="consultations"
                                 clearable
                                 chips
-                                hide-details>
-                        </v-select>
+                                hide-details
+                        ></v-select>
                     </v-flex>
                     <v-flex xs12>
                         <v-select
@@ -45,8 +45,8 @@
                                 v-model="doctor"
                                 clearable
                                 chips
-                                hide-details>
-                        </v-select>
+                                hide-details
+                        ></v-select>
                     </v-flex>
                     <v-flex xs12>
                         <v-select
@@ -57,8 +57,8 @@
                                 v-model="payment"
                                 clearable
                                 chips
-                                hide-details>
-                        </v-select>
+                                hide-details
+                        ></v-select>
                     </v-flex>
                     <v-flex xs6>
                         <v-currency-field
@@ -68,8 +68,8 @@
                                 label="Preço de Custo"
                                 prefix="R$"
                                 v-model="cost"
-                                hide-details>
-                        </v-currency-field>
+                                hide-details
+                        ></v-currency-field>
                     </v-flex>
                     <v-flex xs6>
                         <v-currency-field
@@ -79,8 +79,8 @@
                                 label="Preço de Venda"
                                 prefix="R$"
                                 v-model="sale"
-                                hide-details>
-                        </v-currency-field>
+                                hide-details
+                        ></v-currency-field>
                     </v-flex>
                     <v-flex xs12>
                         <v-textarea
@@ -92,17 +92,17 @@
                                 maxlength="280"
                                 full-width
                                 single-line
-                                hide-details>
-                        </v-textarea>
+                                hide-details
+                        ></v-textarea>
                     </v-flex>
                 </v-layout>
             </v-container>
         </v-card-text>
-        <v-divider/>
+        <v-divider></v-divider>
         <v-card-actions>
             <v-layout align-center justify-center>
                 <v-btn color="error" @click="clear()">CANCELAR</v-btn>
-                <v-spacer/>
+                <v-spacer></v-spacer>
                 <v-btn
                     :disabled="!formIsValid"
                     @click="save()"
