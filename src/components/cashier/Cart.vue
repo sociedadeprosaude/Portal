@@ -585,7 +585,6 @@
                 user.budgets = budgets;
                 this.$store.commit('setSelectedPatient', user)
             },
-
             async saveBudget(budget) {
                 this.$store.commit('setSelectedBudget', budget);
                 await this.$store.dispatch('getUserBudgets', this.patient);
@@ -599,8 +598,8 @@
                     return
                 }
                 if (!this.selectedBudget) {
-                   this.$store.commit('setSelectedBudget', this.generateBudget());
-                } else {
+                    await this.saveBudget(this.generateBudget())
+                }  else {
                     let newBudget = this.generateBudget();
                     if (!this.selectedBudget.id) {
                         this.selectedBudget.id = this.now
@@ -610,7 +609,7 @@
                 }
                 await this.$store.dispatch('addIntake', this.selectedBudget);
                 this.updateBudgetsIntakes();
-                //this.receipt(this.selectedBudget);
+                this.receipt(this.selectedBudget);
                 this.paymentLoading = false;
                 this.paymentSuccess = true;
 
