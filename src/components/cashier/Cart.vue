@@ -155,7 +155,8 @@
                             <v-layout row wrap>
                                 <v-flex>
                                     <v-flex sm12 xs12 class="px-3 mt-3" v-if="payments.length > 1">
-                                        <v-layout row wrap class="align-center" v-for="(payment, index) in payments"  :key="index">
+                                        <v-layout row wrap class="align-center" v-for="(payment, index) in payments"
+                                                  :key="index">
                                             <v-flex xs10>
                                                 <v-select
                                                         outlined
@@ -198,7 +199,8 @@
                                         </v-layout>
                                     </v-flex>
                                     <v-flex sm12 xs12 class="px-3 mt-3" v-if="payments.length === 1">
-                                        <v-layout row wrap class="align-center" v-for="(payment, index) in payments"  :key="index">
+                                        <v-layout row wrap class="align-center" v-for="(payment, index) in payments"
+                                                  :key="index">
                                             <v-flex xs10>
                                                 <v-select
                                                         outlined
@@ -330,9 +332,6 @@
         <v-dialog v-model="budgetToPrintDialog" v-if="budgetToPrint">
             <budget-to-print @close="budgetToPrintDialog = false" :budget="budgetToPrint"/>
         </v-dialog>
-        <!--        <v-flex class="hidden-screen-only">-->
-        <!--            <receipt :budgets="selectedBudget"></receipt>-->
-        <!--        </v-flex>-->
         <v-dialog v-model="receiptDialog" v-if="selectedIntake" fullscreen transition="dialog-bottom-transition">
             <receipt @close="receiptDialog = false" :budget=selectedIntake>
             </receipt>
@@ -369,9 +368,8 @@
                 searchBudgetBtn: false,
                 searchPatient: false,
                 payments: ['Dinheiro'],
-                valuesPayments:[''],
+                valuesPayments: [''],
                 moneyDiscout: 0,
-                now: moment().valueOf(),
                 data: moment().format("YYYY-MM-DD HH:mm:ss"),
                 parcelas: '1',
                 totalCusto: 0,
@@ -434,15 +432,14 @@
                 return (parseFloat(this.subTotal) - parseFloat(this.moneyDiscount)).toFixed(2)
             },
             paymentValues() {
-                let tamanho= this.payments.length;
-                let pagando=0;
-                if(tamanho === 1 && this.payments[0] !== ''){
-                    this.valuesPayments[0]= parseFloat(this.total);
+                let tamanho = this.payments.length;
+                let pagando = 0;
+                if (tamanho === 1 && this.payments[0] !== '') {
+                    this.valuesPayments[0] = parseFloat(this.total);
                     pagando = parseFloat(this.valuesPayments[0]);
-                }
-                else{
-                    for(let i=0; i < tamanho; i++){
-                        if(this.valuesPayments[i] !== ''){
+                } else {
+                    for (let i = 0; i < tamanho; i++) {
+                        if (this.valuesPayments[i] !== '') {
                             pagando += parseFloat(this.valuesPayments[i])
                         }
                     }
@@ -484,13 +481,13 @@
                 }
                 this.searchBudgetLoading = false
             },
-            adicionarFormaDePagamento(){
+            adicionarFormaDePagamento() {
                 this.valuesPayments.push('');
                 this.payments.push('')
             },
-            apagarFormaDePagamento(index){
+            apagarFormaDePagamento(index) {
                 this.payments.splice(index, 1);
-                this.valuesPayments.splice(index,1)
+                this.valuesPayments.splice(index, 1)
             },
             removeItem(item) {
                 this.$store.commit('removeShoppingCartItem', item)
@@ -536,7 +533,7 @@
                 })
             },
             generateBudget() {
-                let id = this.now;
+                let id = moment().valueOf()
                 let budget = {
                     id: id,
                     specialties: this.consultas.length > 0 ? this.consultas : undefined,
@@ -544,7 +541,7 @@
                     subTotal: this.subTotal,
                     discount: this.moneyDiscount,
                     total: this.total,
-                    parcel: this.parcel ,
+                    parcel: this.parcel,
                     date: moment().format('YYYY-MM-DD HH:mm:ss'),
                     cost: this.cost,
                     user: this.$store.getters.selectedPatient,
@@ -567,7 +564,6 @@
             },
             async saveBudget(budget) {
                 this.$store.commit('setSelectedBudget', budget);
-                console.log('#patient', this.patient);
                 await this.$store.dispatch('getUserBudgets', this.patient);
                 await this.$store.dispatch('addBudget', budget);
                 this.updateBudgetsIntakes()
@@ -578,16 +574,10 @@
                 if (!user) {
                     return
                 }
-                if (!this.selectedBudget) {
-                    await this.saveBudget(this.generateBudget())
-                } else {
-                    let newBudget = this.generateBudget();
-                    if(!this.selectedBudget.id) {
-                        this.selectedBudget.id = this.now
-                    }
-                    newBudget.id = this.selectedBudget.id;
-                    this.$store.commit('setSelectedBudget', newBudget)
-                }
+                await this.saveBudget(this.generateBudget())
+                let newBudget = this.generateBudget();
+                newBudget.id = this.selectedBudget.id;
+                this.$store.commit('setSelectedBudget', newBudget)
                 await this.$store.dispatch('addIntake', this.selectedBudget);
                 this.updateBudgetsIntakes();
                 this.receipt(this.selectedBudget);
