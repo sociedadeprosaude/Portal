@@ -46,7 +46,7 @@
                         patient: this.consultation.user.cpf
                     })
                 }
-                this.clear()
+                /*this.clear()*/
             }
         },
     };
