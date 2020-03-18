@@ -756,6 +756,9 @@
                 return this.report.intakesArray.reduce((sum, intake) => {
                     for (let payment in intake.payments) {
                         if (intake.payments[payment] === 'Débito' || intake.payments[payment] === '') {
+                            if (isNaN(parseFloat(intake.valuesPayments[payment]))) {
+                                intake.valuesPayments[payment] = 0.00
+                            }
                             return sum + parseFloat(intake.valuesPayments[payment])
                         }
                     }

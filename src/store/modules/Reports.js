@@ -69,15 +69,12 @@ const actions = {
         payload.dataFinal = payload.dataFinal + ' 24:00:00';
         payload.dataInicio = payload.dataInicio + ' 00:00:00';
         let selectedUnit = context.getters.selectedUnit
-        //console.log('data inicial: ', payload.dataInicio);
-        //console.log('data final: ', payload.dataFinal);
 
         let intakesSnap = await firebase.firestore().collection('intakes').where('date', '>=', payload.dataInicio)
             .where('unit.name', '==', selectedUnit.name)
             .where('date', '<=', payload.dataFinal).orderBy('date').get()
         let intakes = []
         for (let doc of intakesSnap.docs) {
-            // promises.push(context.dispatch('getIntakeDetails', intakesSnap.docs[doc]))
             intakes.push(doc.data())
         }
 
@@ -223,7 +220,9 @@ const actions = {
             }
         }
         let outtakesSnap = await firebase.firestore().collection('outtakes').where('paid', '>=', payload.dataInicio)
-            .where('paid', '<=', payload.dataFinal).orderBy('paid').get();
+            .where('paid', '<=', payload.dataFinal)
+            .where('unit.name', '==', selectedUnit.name)
+            .orderBy('paid').get();
         outtakesSnap.forEach((e) => {
             if (e.data().payments) {
                 for (let i = 0; i < e.data().payments.length; i++) {
