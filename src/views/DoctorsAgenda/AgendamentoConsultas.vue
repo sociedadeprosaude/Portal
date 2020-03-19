@@ -464,7 +464,7 @@
                                 </v-card-text>
                                 <v-divider></v-divider>
                                 <v-card-actions>
-                                    <v-dialog v-model="loader" hide-overlay persistent width="300">
+                                    <!-- <v-dialog v-model="loader" hide-overlay persistent width="300">
                                         <v-card color="primary" dark>
                                             <v-card-text>
                                                 Salvando...
@@ -472,7 +472,7 @@
                                                                    class="mb-0"></v-progress-linear>
                                             </v-card-text>
                                         </v-card>
-                                    </v-dialog>
+                                    </v-dialog> -->
                                     <v-btn rounded class="error" @click="dialog = false">
                                         Cancelar
                                         <v-icon right>clear</v-icon>
@@ -617,12 +617,12 @@
               //return this.$store.getters.exams;
             },
             specialties() {
-                //return this.$store.getters.specialties;
 
                 let espArray = Object.values(this.$store.getters.specialties);
                 espArray = espArray.filter(specialty => {
                     if (!specialty.doctors)
                         console.log('Teeeee', specialty)
+
                     if (!this.selectedDoctor) {
                         return true;
                     }
@@ -638,7 +638,6 @@
 
                     return find;
                 });
-                //docArray.unshift({name:'Todos'})
                 return espArray;
             },
             computedDateFormatted() {
@@ -708,7 +707,7 @@
                 return paciente;
             },
             foundDependents() {
-                return this.selectedPatient.dependents;
+                return this.selectedPatient ? this.selectedPatient.dependents:undefined;
             },
             mensagem() {
                 return this.$store.getters.onMensagem;
@@ -813,9 +812,9 @@
                 let espArray = Object.values(this.$store.getters.specialties);
                 let cost = undefined
                 espArray.forEach(specialty => {
-                    console.log(specialty)
-                    if (specialty.name === this.selectedForm.consultation.specialty.name) {
-                        console.log(specialty)
+                    //console.log(specialty)
+                    if (specialty.name === this.selectedForm.consultation.specialty.name && specialty.doctors) {
+                        
                         specialty.doctors.forEach(doctor => {
                             if (doctor.cpf === this.selectedForm.consultation.doctor.cpf) {
                                 cost = {
@@ -858,7 +857,6 @@
                             this.loaderPaymentNumber = false
                         })
                         .catch(response => {
-                            console.log('kjkjhkjh')
                             let cost = this.specialtyCost()
                             console.log(cost);
                             if (cost && cost.price == 0) {
@@ -934,7 +932,7 @@
                 // this.$store.dispatch("getClinics");
                 // await this.$store.dispatch("getDoctors");
                 await this.listenConsultations()
-                // await this.$store.dispatch("getSpecialties");
+                //await this.$store.dispatch("getSpecialties");
                 this.loading = false;
             },
             async listenConsultations() {

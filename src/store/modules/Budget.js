@@ -445,6 +445,8 @@ const actions = {
             procedures = await procedureRef.get()
             if (procedures.empty && type == 'Consultation' && examesSpecialties.indexOf(payload.specialty.name) != -1)
                 procedures = await procedureRefOr.get()
+            
+            console.log('Vai resolver ou rejeitar')
 
             if (!procedures.empty) {
                 procedures.forEach((procedure) => {
