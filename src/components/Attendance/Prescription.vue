@@ -6,7 +6,48 @@
                     <v-btn style="display: none" text color="transparent" class="transparent"></v-btn><v-spacer></v-spacer>PRESCRIÇÃO MÉDICA<v-spacer></v-spacer><v-btn color="error" @click="clear()">Fechar</v-btn>
                 </v-card-title>
                 <v-card-text>
-                    AINDA SEM MODELO BASE FEITO
+                    <v-container fluid>
+                        <v-layout row wrap class="align-center justify-center">
+                        <v-combobox
+                                prepend-inner-icon="search"
+                                prepend-icon="note_add"
+                                v-model="item"
+                                :items="items"
+                                return-object
+                                :item-text="text"
+                                item-key="concentration"
+                                label="Medicamentos"
+                                chips
+                                :search-input.sync="search"
+                                clearable
+                                outlined
+                        >
+                            <template v-slot:no-data>
+                                <v-list-item>
+                                    <v-list-item-content>
+                                        <v-list-item-title>
+                                            <v-chip color="warning"><h2>Faça uma prescrição manual, porque o medicamento <v-chip color="red"><h1>"{{ search }}"</h1></v-chip> não foi encontrado na lista de medicamentos do pró-saúde.</h2></v-chip>
+                                        </v-list-item-title>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </template>
+
+                            <template v-slot:selection="data">
+                                <v-chip
+                                        :key="JSON.stringify(data.item)"
+                                        v-bind="data.attrs"
+                                        :input-value="data.selected"
+                                        :disabled="data.disabled"
+                                        @click:close="data.parent.selectItem(data.item)"
+                                        color="info"
+                                >
+                                    {{ data.item.name }} - {{ data.item.concentration }} - {{ data.item.pharmaceutical }}
+                                </v-chip>
+                            </template>
+                        </v-combobox>
+                            <span>{{item}}</span>
+                        </v-layout>
+                    </v-container>
                 </v-card-text>
 <!--                <v-divider></v-divider>
                 <v-card-actions>
@@ -22,38 +63,49 @@
     export default {
         props:['consultation'],
         data: () => ({
-            name: null,
-            crm: null,
-            email: null,
-            password: null,
-            show: false,
-            specialties: [],
-            specialtiesOptions: [
-                'Clinico Geral',
-                'Cirurgiao Geral',
-                'Cardiologia',
-                'Dermatologia',
-                'Endocrinologia',
-                'Fonoaudiologia',
-                'Gastrenterologia',
-                'Ginecologia',
-                'Infectologia',
-                'Mastologia',
-                'Neurologia',
-                'Neuropediatria',
-                'Nutricionista',
-                'Oncologia',
-                'Obstetrícia',
-                'Ortopedia',
-                'Otorrinolaringologia',
-                'Peneumologia',
-                'Psiquiatria',
-                'Psicologia',
-                'Proctologia',
-                'Pediatria',
-                'Reumatologia',
-                'Urologia'
+            items: [
+                {name:'acetato de betametasona + fosfato dissódico de betametasona',concentration:'3 mg/mL + 3 mg/mL',pharmaceutical:'suspensão injetável',},
+                {name:'acetato de hidrocortisona',concentration:'10 mg/g (1%)',pharmaceutical:'creme',},
+                {name:'acetato de medroxiprogesterona',concentration:'50 mg/mL',pharmaceutical:'suspensão injetável',},
+                {name:'acetato de medroxiprogesterona',concentration:'150 mg/mL',pharmaceutical:'suspensão injetável',},
+                {name:'acetato de medroxiprogesterona',concentration:'10 mg',pharmaceutical:'comprimido',},
+                {name:'acetato de sódio',concentration:'2 mEq/mL',pharmaceutical:'solução injetável',},
+                {name:'acetazolamida',concentration:'200 mg',pharmaceutical:'creme',},
+                {name:'aciclovir',concentration:'100 mg',pharmaceutical:'comprimido',},
+                {name:'ácido fólico',concentration:'5 mg',pharmaceutical:'comprimido',},
+                {name:'ácido fólico',concentration:'0,2 mg/mL',pharmaceutical:'solução oral',},
+                {name:'ácido salicílico',concentration:'50 mg/g (5%)',pharmaceutical:'pomada',},
+                {name:'ácido valproico (valproato de sódio)',concentration:'250 mg',pharmaceutical:'cápsula',},
+                {name:'ácido valproico (valproato de sódio)',concentration:'250 mg',pharmaceutical:'comprimido',},
+                {name:'ácido valproico (valproato de sódio)',concentration:'50 mg/mL',pharmaceutical:'solução oral',},
+                {name:'ácido valproico (valproato de sódio)',concentration:'50 mg/mL',pharmaceutical:'xarope',},
+                {name:'ácido valproico (valproato de sódio)',concentration:'500 mg',pharmaceutical:'comprimido',},
+                {name:'albendazol',concentration:'40 mg/mL',pharmaceutical:'suspensão oral',},
+                {name:'albendazol',concentration:'400 mg',pharmaceutical:'comprimido mastigável',},
+                {name:'alcachofra(Cynara scolymus L.)',concentration:'24 mg a 48 mg de derivados de ácido cafeoilquínico expressos em ácido clorogênico (dose diária)',pharmaceutical:'cápsula',},
+                {name:'alcachofra(Cynara scolymus L.)',concentration:'24 mg a 48 mg de derivados de ácido cafeoilquínico expressos em ácido clorogênico (dose diária)',pharmaceutical:'comprimido',},
+                {name:'alcachofra(Cynara scolymus L.)',concentration:'24 mg a 48 mg de derivados de ácido cafeoilquínico expressos em ácido clorogênico (dose diária)',pharmaceutical:'solução oral',},
+                {name:'alcachofra(Cynara scolymus L.)',concentration:'24 mg a 48 mg de derivados de ácido cafeoilquínico expressos em ácido clorogênico (dose diária)',pharmaceutical:'tintura',},
+                {name:'alcatrão mineral',concentration:'10 mg/g (1%)',pharmaceutical:'pomada',},
+                {name:'alendronato de sódio',concentration:'10 mg',pharmaceutical:'comprimido',},
+                {name:'alendronato de sódio',concentration:'70 mg',pharmaceutical:'comprimido',},
+                {name:'alopurinol',concentration:'100 mg',pharmaceutical:'comprimido',},
+                {name:'alopurinol',concentration:'300 mg',pharmaceutical:'comprimido',},
+                {name:'amoxicilina',concentration:'50 mg/mL',pharmaceutical:'suspensão oral',},
+                {name:'amoxicilina',concentration:'500 mg',pharmaceutical:'cápsula',},
+                {name:'amoxicilina',concentration:'500 mg',pharmaceutical:'comprimido',},
+                {name:'amoxicilina + clavulanato de potássio',concentration:'50 mg/mL + 12,5 mg/mL',pharmaceutical:'comprimido',},
+                {name:'anlodipino',concentration:'5 mg',pharmaceutical:'comprimido',},
+                {name:'anlodipino',concentration:'10 mg',pharmaceutical:'comprimido',},
+                {name:'aroeira (Schinus terebinthifolia Raddi)',concentration:'1,932 mg de ácido gálico',pharmaceutical:'(dose diária)',},
+                {name:'gel vaginal',concentration:'1,932 mg de ácido gálico (dose diária)',pharmaceutical:'óvulo vaginal',},
+                {name:'atenolol',concentration:'50 mg',pharmaceutical:'comprimido',},
+                {name:'atenolol',concentration:'100 mg',pharmaceutical:'comprimido',},
+                {name:'azitromicina',concentration:'500 mg',pharmaceutical:'comprimido',},
+                {name:'azitromicina',concentration:'40 mg/mL',pharmaceutical:'pó para suspensão oral',},
             ],
+            item: '',
+            search: null,
         }),
         computed:{
             formIsValid () {
@@ -61,6 +113,7 @@
             },
         },
         methods: {
+            text: item => item.name + ' - ' + item.concentration + ' - ' + item.pharmaceutical,
             clear() {
                 this.closeDialog()
             },

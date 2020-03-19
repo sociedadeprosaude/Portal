@@ -10,7 +10,7 @@
                                 <v-flex xs12 v-if="!loadingExams">
                                     <v-combobox
                                             prepend-inner-icon="search"
-                                            prepend-icon="poll"
+                                            prepend-icon="assignment"
                                             :items="listExam"
                                             item-text="name"
                                             return-object
