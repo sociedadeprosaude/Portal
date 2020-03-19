@@ -76,6 +76,8 @@ const actions = {
         let intakes = []
         for (let doc of intakesSnap.docs) {
             intakes.push(doc.data())
+            /* if(doc.data().exams)
+                console.log('intake',doc.data()) */
         }
 
         // let intakes = await Promise.all(promises)
@@ -119,6 +121,7 @@ const actions = {
                 for (let exam in intakes[intake].exams) {
                     if (!intakes[intake].exams[exam].clinic) {
                         intakes[intake].exams[exam].clinic = context.getters.selectedUnit
+                        continue
                     }
                     if (!clinics[intakes[intake].exams[exam].clinic.name]) {
                         clinics[intakes[intake].exams[exam].clinic.name] = {

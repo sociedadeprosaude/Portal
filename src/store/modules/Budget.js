@@ -221,8 +221,8 @@ const actions = {
                         payment_number: payload.payment_number
                     }
                     if (!payload.isConsultation) {
-                        if(payload.examObj.clinic)
-                            delete payload.examObj.clinic
+                        /* if(payload.examObj.clinic)
+                            delete payload.examObj.clinic */
                         //clinic = { cnpj: payload.examObj.clinic.cnpj, name: payload.examObj.clinic.name }
                         Object.assign(obj, { exam: { ...payload.examObj} });
                     }
@@ -243,8 +243,8 @@ const actions = {
             }
 
             if (!payload.isConsultation) {
-                if(payload.examObj.clinic)
-                    delete payload.examObj.clinic
+                /* if(payload.examObj.clinic)
+                    delete payload.examObj.clinic */
                 Object.assign(obj, { exam: { ...payload.examObj} });
             }
             firebase.firestore().collection('users').doc(user.cpf).collection('procedures').add(
