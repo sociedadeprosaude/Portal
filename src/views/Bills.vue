@@ -348,7 +348,8 @@
                     value: "delete"
                 });
                 await this.$store.dispatch("getOuttakes", {
-                  finalDate: moment().add(5, 'days').format('YYYY-MM-DD 23:59:59'),
+                    startDate: moment().add(-5, 'days').format('YYYY-MM-DD 00:00:00'),
+                    finalDate: moment().add(5, 'days').format('YYYY-MM-DD 23:59:59'),
                 });
                 this.loading = false;
             },
