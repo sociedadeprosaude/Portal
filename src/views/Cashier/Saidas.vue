@@ -49,7 +49,6 @@
               <v-currency-field
                 label="valor"
                 v-model="valor"
-                :rules="[rules.required||rules.valor]"
                 required
               ></v-currency-field>
             </v-col>
