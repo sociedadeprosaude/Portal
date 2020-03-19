@@ -7,7 +7,7 @@
             <v-card-text>
                         <v-container grid-list-md>
                             <v-layout align-center justify-center wrap>
-                                <v-flex xs12 v-if="!loadingExams">
+                                <v-flex xs11 v-if="!loadingExams">
                                     <v-combobox
                                             prepend-inner-icon="search"
                                             prepend-icon="assignment"
@@ -20,40 +20,6 @@
                                             clearable
                                             chips
                                             hide-details
-                                    ></v-combobox>
-                                </v-flex>
-                                <v-flex xs12 v-else>
-                                    <v-layout column wrap class="align-center">
-                                        <span>Carregando exames...</span>
-                                        <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
-                                    </v-layout>
-                                </v-flex>
-                                <v-flex>
-                                    <v-flex xs12>
-                                        <v-btn v-on:click="addToList" :disabled="!addIsValid" color="success">
-                                            <v-icon>add</v-icon>
-                                            adicionar na lista de exames
-                                        </v-btn>
-                                    </v-flex>
-                                    <v-flex>
-                                        <v-btn v-on:click="deleteFromList" :disabled="!deleteIsValid" color="error">
-                                            <v-icon>delete_forever</v-icon>
-                                            Limpar lista de exames
-                                        </v-btn>
-                                    </v-flex>
-                                </v-flex>
-                                <v-flex xs12>
-                                    <strong>EXAMES SELECIONADOS:</strong>
-                                </v-flex>
-                                <v-flex>
-                                    <v-select
-                                            :items="exams"
-                                            item-text="name"
-                                            return-object
-                                            multiple
-                                            v-model="exams"
-                                            chips
-                                            outlined
                                     >
                                         <template v-slot:selection="data">
                                             <v-chip
@@ -68,7 +34,45 @@
                                             >{{ data.item.name }}
                                             </v-chip>
                                         </template>
-                                    </v-select>
+                                    </v-combobox>
+                                    <v-spacer></v-spacer>
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-btn v-on:click="addToList" :disabled="!addIsValid" color="success">
+                                        <v-icon>add</v-icon>
+                                    </v-btn>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <strong>EXAMES SELECIONADOS:</strong>
+                                </v-flex>
+                                <v-flex>
+                                    <v-combobox
+                                            :items="exams"
+                                            item-text="name"
+                                            return-object
+                                            multiple
+                                            v-model="exams"
+                                            chips
+                                            outlined
+                                            hide-selected
+                                    >
+                                        <template v-slot:selection="data">
+                                            <v-chip
+                                                    close
+                                                    @click="data.select"
+                                                    @click:close="remove(data.item)"
+                                                    :key="JSON.stringify(data.item)"
+                                                    :input-value="data.selected"
+                                                    :disabled="data.disabled"
+                                                    class="v-chip--select-multi"
+                                                    @click.stop="data.parent.selectedIndex = data.index"
+                                                    @input="data.parent.selectItem(data.item)"
+                                                    text-color="white"
+                                                    color="info"
+                                            >{{ data.item.name }}
+                                            </v-chip>
+                                        </template>
+                                    </v-combobox>
                                 </v-flex>
 
                                 <v-flex xs12 v-if="exams.length > 0">
@@ -148,6 +152,10 @@
             //
         },
         methods: {
+            remove (item) {
+                const index = this.exams.indexOf(item)
+                if (index >= 0) this.exams.splice(index, 1)
+            },
             clear() {
                 this.exams = [];
                 this.closeDialog()
