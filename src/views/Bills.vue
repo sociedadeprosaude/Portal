@@ -133,14 +133,55 @@
       <v-flex xs12 class="text-left mt-6">
         <span class="my-headline">Contas à pagar</span>
       </v-flex>
+
       <v-flex xs12>
         <outtake-order :outtakes="pendingOuttakes"></outtake-order>
       </v-flex>
       <v-flex xs12 class="text-left mt-6">
-        <span class="my-headline">Contas pagas</span>
+        <span class="my-headline">
+          {{selectedPaidOuttakesList.length}} Contas pagas
+          <span
+            v-if="selectedOption === 2 && switchDate"
+          >em {{selectedDateFormatted}}</span>
+        </span>
       </v-flex>
+
+      <v-container>
+        <v-row>
+          <v-chip-group row mandatory v-model="selectedOption" active-class="primary--text">
+            <v-chip v-for="option in billsOptions" :key="option">{{ option }}</v-chip>
+          </v-chip-group>
+        </v-row>
+
+        <div v-if="selectedOption === 2">
+          <v-row dense no-gutters align="start" justify="start">
+            <v-col>
+              <v-switch v-model="switchDate" label="Limitar por data"></v-switch>
+              <v-dialog v-if="switchDate" v-model="dialogSelectDate" width="unset">
+                <template v-slot:activator="{ on }">
+                  <v-btn class="primary" v-on="on">Escolher data</v-btn>
+                </template>
+                <v-card>
+                  <v-date-picker locale="pt-br" v-model="selectedDate"></v-date-picker>
+                </v-card>
+              </v-dialog>
+            </v-col>
+            <v-col>
+              <v-switch v-model="switchCategory" label="Limitar por categoria"></v-switch>
+              <v-select
+                v-if="switchCategory"
+                label="categoria"
+                v-model="selectedCategory"
+                :items="categoriesName"
+                outlined
+              ></v-select>
+            </v-col>
+          </v-row>
+        </div>
+      </v-container>
+
       <v-flex xs12 class="mt-4">
-        <v-card class="pa-4 my-4" v-for="bill in paidOuttakes" :key="bill.id">
+        <v-card class="pa-4 my-4" v-for="bill in selectedPaidOuttakesList" :key="bill.id">
           <v-layout row wrap>
             <v-flex xs12>
               <v-layout row wrap>
@@ -201,6 +242,14 @@
           </v-layout>
         </v-card>
       </v-flex>
+
+      <v-container v-if="selectedPaidOuttakesList.length == 0">
+        <v-row align="center" justify="center">
+          <v-col>
+            <v-card elevation="10" class="pa-4">Não há contas pagas que se encaixam nestas condições</v-card>
+          </v-col>
+        </v-row>
+      </v-container>
     </v-layout>
   </v-container>
 </template>
@@ -220,6 +269,14 @@ export default {
     return {
       unit: null,
       other: "Outro",
+      dialogSelectDate: false,
+      switchDate: true,
+      switchCategory: false,
+      selectedOption: 0,
+      selectedDate: moment().format("YYYY-MM-DD"),
+      selectedCategory: "",
+      selectedDateFormatted: moment().format("DD/MM/YYYY"),
+      billsOptions: ["De hoje", "Todas", "Filtrar"],
       dialog: false,
       category: { name: null },
       subCategory: null,
@@ -236,27 +293,55 @@ export default {
   mounted() {
     this.initiate();
   },
+  watch: {
+    selectedDate(val) {
+      this.selectedDate = val;
+      this.dialogSelectDate = false;
+      this.selectedDateFormatted = moment(val).format("DD/MM/YYYY");
+    }
+  },
   computed: {
     outtakes() {
       return this.$store.getters.outtakes;
     },
+    paidOuttakesFromToday() {
+      return this.outtakes
+        .filter(
+          outtake =>
+            outtake.paid &&
+            moment(outtake.paid).format("YYYY-MM-DD") ===
+              moment().format("YYYY-MM-DD")
+        )
+        .sort((a, b) => (b.date_to_pay > a.date_to_pay ? 1 : -1));
+    },
     paidOuttakes() {
       return this.outtakes
-        .filter(outtake => {
-          return outtake.paid;
-        })
-        .sort((a, b) => {
-          return b.date_to_pay > a.date_to_pay ? 1 : -1;
-        });
+        .filter(outtake => outtake.paid)
+        .sort((a, b) => (b.date_to_pay > a.date_to_pay ? 1 : -1));
     },
+    paidOuttakesFilter() {
+      return this.outtakes
+        .filter(
+          outtake =>
+            outtake.paid &&
+            (!this.switchDate ||
+              moment(outtake.paid).format("YYYY-MM-DD") ===
+                moment(this.selectedDate).format("YYYY-MM-DD")) &&
+            (!this.switchCategory || outtake.category === this.selectedCategory)
+        )
+        .sort((a, b) => (b.date_to_pay > a.date_to_pay ? 1 : -1));
+    },
+
+    selectedPaidOuttakesList() {
+      if (this.selectedOption === 0) return this.paidOuttakesFromToday;
+      else if (this.selectedOption === 1) return this.paidOuttakes;
+      else if (this.selectedOption === 2) return this.paidOuttakesFilter;
+    },
+
     pendingOuttakes() {
       return this.outtakes
-        .filter(outtake => {
-          return !outtake.paid;
-        })
-        .sort((a, b) => {
-          return b.date_to_pay < a.date_to_pay ? 1 : -1;
-        });
+        .filter(outtake => !outtake.paid)
+        .sort((a, b) => (b.date_to_pay < a.date_to_pay ? 1 : -1));
     },
     categories() {
       return this.$store.getters.outtakesCategories;
@@ -388,3 +473,29 @@ export default {
 <!--        top: -500px;-->
 <!--    }-->
 <!--</style>-->
+<style lang="scss">
+.v-input--reverse .v-input__slot {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  .v-application--is-ltr & {
+    .v-input--selection-controls__input {
+      margin-right: 0;
+      margin-left: 8px;
+    }
+  }
+  .v-application--is-rtl & {
+    .v-input--selection-controls__input {
+      margin-left: 0;
+      margin-right: 8px;
+    }
+  }
+}
+
+.v-input--expand .v-input__slot {
+  // justify-content: space-between;
+  .v-label {
+    display: block;
+    flex: 1;
+  }
+}
+</style>
