@@ -247,188 +247,148 @@ import OuttakeOrder from "../components/OuttakeOrder";
 import outtakesCategories from "@/components/DialogOuttakeCategories";
 import moment from "moment";
 
-export default {
-  name: "Bills",
-  components: {
-    OuttakeOrder,
-    outtakesCategories
-  },
-  data() {
-    return {
-      unit: null,
-      other: "Outro",
-      billsOptions: ["De hoje", "Todas", "Filtrar"],
-      dialogSelectDate: false,
-      switchDate: true,
-      switchCategory: false,
-      selectedOption: 0,
-      selectedDate: moment().format("YYYY-MM-DD"),
-      selectedCategory: "",
-      category: null,
-      subCategory: null,
-      paymentMethod: undefined,
-      description: undefined,
-      value: 0.0,
-      dateToPay: moment().format("YYYY-MM-DD"),
-      paymentMethods: ["Boleto", "Transferência", "Dinheiro"],
-      loading: false,
-      files: [],
-      filesPreviews: []
-    };
-  },
-  mounted() {
-    this.initiate();
-  },
-  computed: {
-    outtakes() {
-      return this.$store.getters.outtakes;
-    },
-
-    // Pegando as contas PAGAS HOJE, se quiser as CRIADAS e PAGAS HOJE, trocar outtake.paid por outtake.created_at ali no moment
-    paidOuttakesFromToday() {
-      return this.outtakes
-        .filter(
-          outtake =>
-            outtake.paid &&
-            moment(outtake.paid).format("YYYY-MM-DD") ===
-              moment().format("YYYY-MM-DD")
-        )
-        .sort((a, b) => (b.date_to_pay > a.date_to_pay ? 1 : -1));
-    },
-    paidOuttakes() {
-      return this.outtakes
-        .filter(outtake => {
-          return outtake.paid;
-        })
-        .sort((a, b) => {
-          return b.date_to_pay > a.date_to_pay ? 1 : -1;
-        });
-    },
-    paidOuttakesFilter() {
-      return this.outtakes
-        .filter(
-          outtake =>
-            outtake.paid &&
-            (!this.switchDate ||
-              moment(outtake.paid).format("YYYY-MM-DD") ===
-                moment(this.selectedDate).format("YYYY-MM-DD")) &&
-            (!this.switchCategory || outtake.category === this.selectedCategory)
-        )
-        .sort((a, b) => (b.date_to_pay > a.date_to_pay ? 1 : -1));
-    },
-    selectedPaidOuttakesList() {
-      if (this.selectedOption === 0) return this.paidOuttakesFromToday;
-      else if (this.selectedOption === 1) return this.paidOuttakes;
-      else if (this.selectedOption === 2) return this.paidOuttakesFilter;
-    },
-    pendingOuttakes() {
-      return this.outtakes
-        .filter(outtake => {
-          return !outtake.paid;
-        })
-        .sort((a, b) => {
-          return b.date_to_pay < a.date_to_pay ? 1 : -1;
-        });
-    },
-    categories() {
-      return this.$store.getters.outtakesCategories;
-    },
-    categoriesName() {
-      return this.categories.map(e => e.name);
-    },
-    user() {
-      return this.$store.getters.user;
-    },
-    units() {
-      this.unit = this.selectedUnit;
-      return [...this.$store.getters.units, { name: this.other }];
-    },
-    selectedUnit() {
-      return this.$store.getters.selectedUnit;
-    }
-  },
-  methods: {
-    async initiate() {
-      this.loading = true;
-      await this.$store.dispatch("getOuttakesCategories");
-      await this.$store.dispatch("getOuttakes", {
-        finalDate: moment()
-          .add(5, "days")
-          .format("YYYY-MM-DD 23:59:59")
-      });
-      this.loading = false;
-      this.selectedCategory =
-        this.categoriesName[0] != null ? this.categoriesName[0] : "";
-    },
-    async newSubcategory(category, newSubcategory) {
-      if (
-        category.subCategories &&
-        category.subCategories.indexOf(newSubcategory) < 0 &&
-        newSubcategory != this.other
-      ) {
-        try {
-          await this.$store.dispatch("addOuttakeSubcategory", {
-            category: category,
-            newSubcategory
-          });
-          category.subCategories.push(newSubcategory);
-        } catch (e) {
-          console.log(e);
-        }
-      }
-    },
-    async newCategory(category) {
-      if (this.categoriesName.indexOf(category.name) < 0) {
-        await this.$store.dispatch("addOuttakesCategory", {
-          category: category.name
-        });
-      }
-    },
-    addBill2() {
-      console.log(this.category);
-    },
-    async addBill() {
-      this.loading = true;
-      // Deletando esses dois campos se tiverem pra não salvar dados desnecessários no banco
-      delete this.unit.exams;
-      delete this.unit.specialties;
-      let bill = {
-        category: this.category.name,
-        subCategory: this.subCategory,
-        payment_method: this.paymentMethod,
-        description: this.description,
-        value: this.value,
-        date_to_pay: this.dateToPay,
-        created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
-        colaborator: this.user,
-        unit: this.unit.name != this.other ? this.unit : null
-      };
-      await this.newCategory(this.category);
-      if (this.subCategory) {
-        await this.newSubcategory(this.category, this.subCategory);
-      }
-      if (this.files.length > 0) {
-        let urls = await this.submitFiles(this.files);
-        bill.appends = urls;
-      }
-      await this.$store.dispatch("addOuttakes", bill);
-      await this.$store.dispatch("getOuttakes");
-      this.loading = false;
-    },
-    async unpayOuttake(outtake) {
-      this.loading = true;
-      await this.$store.dispatch("updateOuttake", {
-        outtake: outtake,
-        field: "paid",
-        value: "delete"
-      });
-      await this.$store.dispatch("getOuttakes", {
-        finalDate: moment()
-          .add(5, "days")
-          .format("YYYY-MM-DD 23:59:59")
-      });
-      this.loading = false;
-    },
+    export default {
+        name: "Bills",
+        components: {
+            OuttakeOrder,
+            outtakesCategories
+        },
+        data() {
+            return {
+                unit: null,
+                other: "Outro",
+                dialog: false,
+                category: null,
+                subCategory: null,
+                paymentMethod: undefined,
+                description: undefined,
+                value: 0.0,
+                dateToPay: moment().format("YYYY-MM-DD"),
+                paymentMethods: ["Boleto", "Transferência", "Dinheiro"],
+                loading: false,
+                files: [],
+                filesPreviews: []
+            };
+        },
+        mounted() {
+            this.initiate();
+        },
+        computed: {
+            outtakes() {
+                return this.$store.getters.outtakes;
+            },
+            paidOuttakes() {
+                return this.outtakes
+                    .filter(outtake => {
+                        return outtake.paid;
+                    })
+                    .sort((a, b) => {
+                        return b.date_to_pay > a.date_to_pay ? 1 : -1;
+                    });
+            },
+            pendingOuttakes() {
+                return this.outtakes
+                    .filter(outtake => {
+                        return !outtake.paid;
+                    })
+                    .sort((a, b) => {
+                        return b.date_to_pay < a.date_to_pay ? 1 : -1;
+                    });
+            },
+            categories() {
+                return this.$store.getters.outtakesCategories;
+            },
+            categoriesName() {
+                return this.categories.map(e => e.name);
+            },
+            user() {
+                return this.$store.getters.user;
+            },
+            units() {
+                this.unit = this.selectedUnit;
+                return [...this.$store.getters.units, {name: this.other}];
+            },
+            selectedUnit() {
+                return this.$store.getters.selectedUnit;
+            }
+        },
+        methods: {
+            async initiate() {
+                this.loading = true;
+                await this.$store.dispatch("getOuttakesCategories");
+                await this.$store.dispatch("getOuttakes", {
+                    finalDate: moment().add(5, 'days').format('YYYY-MM-DD 23:59:59'),
+                });
+                this.loading = false;
+            },
+            async newSubcategory(category, newSubcategory) {
+                if (
+                    category.subCategories &&
+                    category.subCategories.indexOf(newSubcategory) < 0 &&
+                    newSubcategory != this.other
+                ) {
+                    try {
+                        await this.$store.dispatch("addOuttakeSubcategory", {
+                            category: category,
+                            newSubcategory
+                        });
+                        category.subCategories.push(newSubcategory);
+                    } catch (e) {
+                        console.log(e);
+                    }
+                }
+            },
+            async newCategory(category) {
+                if (this.categoriesName.indexOf(category.name) < 0) {
+                    await this.$store.dispatch("addOuttakesCategory", {
+                        category: category.name
+                    });
+                }
+            },
+            addBill2() {
+                console.log(this.category);
+            },
+            async addBill() {
+                this.loading = true;
+                // Deletando esses dois campos se tiverem pra não salvar dados desnecessários no banco
+                delete this.unit.exams;
+                delete this.unit.specialties;
+                let bill = {
+                    category: this.category.name,
+                    subCategory: this.subCategory,
+                    payment_method: this.paymentMethod,
+                    description: this.description,
+                    value: this.value,
+                    date_to_pay: this.dateToPay,
+                    created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+                    colaborator: this.user,
+                    unit: this.unit.name != this.other ? this.unit : null
+                };
+                await this.newCategory(this.category);
+                if (this.subCategory) {
+                    await this.newSubcategory(this.category, this.subCategory);
+                }
+                if (this.files.length > 0) {
+                    let urls = await this.submitFiles(this.files);
+                    bill.appends = urls;
+                }
+                await this.$store.dispatch("addOuttakes", bill);
+                await this.$store.dispatch("getOuttakes");
+                this.loading = false;
+            },
+            async unpayOuttake(outtake) {
+                this.loading = true;
+                await this.$store.dispatch("updateOuttake", {
+                    outtake: outtake,
+                    field: "paid",
+                    value: "delete"
+                });
+                await this.$store.dispatch("getOuttakes", {
+                    initialDate: moment().add(-5, 'days').format('YYYY-MM-DD 00:00:00'),
+                    finalDate: moment().add(5, 'days').format('YYYY-MM-DD 23:59:59'),
+                });
+                this.loading = false;
+            },
 
     handleFileUpload() {
       let uploadedFiles = this.$refs.files.files;

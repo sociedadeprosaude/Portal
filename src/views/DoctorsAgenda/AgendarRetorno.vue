@@ -12,21 +12,18 @@
                   filled
                   disabled
           ></v-text-field>
-        </v-flex>
-        <v-spacer></v-spacer>
-        <v-flex xs12 md5>
-          <v-combobox
-            prepend-icon="person"
-            v-model="selectedDoctor"
-            :items="doctors"
-            return-object
+           <!-- <v-combobox
+            prepend-icon="school"
+            v-model="especialidade"
+            :items="specialties"
             item-text="name"
-            label="Médicos"
+            return-object
+            label="Especialidade"
             outlined
             rounded
             chips
             color="blue"
-            clearable
+            readonly
           >
             <template v-slot:selection="data">
               <v-chip
@@ -40,19 +37,85 @@
                 color="info"
               >{{ data.item.name }}</v-chip>
             </template>
-          </v-combobox>
+          </v-combobox> -->
         </v-flex>
-
-        <v-flex xs12 md12>
+        <v-spacer></v-spacer>
+        <v-flex xs12 md6>
           <v-text-field
                   prepend-icon="location_city"
-                  v-model="clinic"
+                  v-model="selectedDoctor.name"
                   label="Clínica"
                   outlined
                   rounded
                   filled
                   disabled
           ></v-text-field>
+          <!-- <v-combobox
+            prepend-icon="person"
+            v-model="selectedDoctor"
+            :items="doctors"
+            return-object
+            item-text="name"
+            label="Médicos"
+            outlined
+            rounded
+            chips
+            color="blue"
+            clearable
+            readonly
+          >
+            <template v-slot:selection="data">
+              <v-chip
+                :key="JSON.stringify(data.item)"
+                :input-value="data.selected"
+                :disabled="data.disabled"
+                class="v-chip--select-multi"
+                @click.stop="data.parent.selectedIndex = data.index"
+                @input="data.parent.selectItem(data.item)"
+                text-color="white"
+                color="info"
+              >{{ data.item.name }}</v-chip>
+            </template>
+          </v-combobox> -->
+        </v-flex>
+
+        <v-flex xs12 md12>
+          <v-text-field
+                  prepend-icon="location_city"
+                  v-model="clinic.name"
+                  label="Clínica"
+                  outlined
+                  rounded
+                  filled
+                  disabled
+          ></v-text-field>
+          <!-- <v-select
+            prepend-icon="location_city"
+            v-model="clinic"
+            :items="clinics"
+            item-text="name"
+            label="Clínica"
+            outlined
+            rounded
+            filled
+            chips
+            color="purple"
+            clearable
+            readonly
+          >
+            <template v-slot:selection="data">
+              <v-chip
+                :key="JSON.stringify(data.item)"
+                :input-value="data.selected"
+                :disabled="data.disabled"
+                class="v-chip--select-multi"
+                @click.stop="data.parent.selectedIndex = data.index"
+                @input="data.parent.selectItem(data.item)"
+                text-color="white"
+                color="info"
+              >{{ data.item.name }}</v-chip>
+            </template>
+          </v-select> -->
         </v-flex>
       </v-layout>
       <v-container
@@ -497,8 +560,8 @@ export default {
     dialog: false,
     dialog2: false,
     dialogPaciente: false,
-    selectedDoctor: undefined,
-    clinic: undefined,
+    selectedDoctor: "",
+    clinic: "",
     num_recibo: "",
     type: "",
     createConsultationForm: undefined,
@@ -527,7 +590,7 @@ export default {
     pacientes: "",
     timeout: 4000,
     especialidadeOption: "",
-    especialidade: undefined,
+    especialidade: "",
     showAlert: false,
     snackDialogDone: false,
     snack: false,
@@ -552,7 +615,7 @@ export default {
   }),
 
   computed: {
-/*    clinics() {
+   clinics() {
       let val = this.$store.getters.clinics.filter(a => {
         return a.property;
       });
@@ -561,7 +624,7 @@ export default {
     },
     specialties() {
       return this.$store.getters.specialties;
-    },*/
+    },
     computedDateFormatted() {
       // return this.formatDate(this.index_Selecionado.data);
     },
@@ -584,7 +647,7 @@ export default {
           }
         }
         if (this.clinic) {
-          if (this.clinic !== a.clinic.name) {
+          if (this.clinic.name !== a.clinic.name) {
             response = false;
           }
         }
@@ -795,24 +858,28 @@ export default {
     },
     async initialConfig() {
       this.loading = true;
-      await this.$store.dispatch("getDoctors");
-      await this.$store.dispatch("getConsultations", {
+      //await this.$store.dispatch("getDoctors");
+      //await this.$store.dispatch("getSpecialties");
+      this.query = this.$route.params.q;
+      this.selectedDoctor = this.query.doctor
+      this.especialidade = this.query.especialidade
+      this.clinic = this.query.consultation.clinic
+      await this.$store.dispatch("listenConsultations", {
         start_date: moment().format("YYYY-MM-DD 00:00:00"),
+        specialty:this.especialidade,
+        doctor:this.selectedDoctor,
+        clinic:this.clinic
        /*  final_date: moment()
           .add(30, "days")
           .format("YYYY-MM-DD 23:59:59") */
       });
-      await this.$store.dispatch("getSpecialties");
-
-      this.query = this.$route.params.q;
 
       if (!this.query) {
         //this.$router.push('agenda/GerenciamentoConsultas')
       }
-
       this.selectedDoctor = this.query.doctor
       this.especialidade = this.query.especialidade
-      this.clinic = this.query.consultation.clinic.name
+      this.clinic = this.query.consultation.clinic
       this.pacienteSelecionado = this.query.pacienteObj;
       this.status = this.query.status;
       this.num_recibo = this.query.num_recibo;

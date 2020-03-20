@@ -76,6 +76,13 @@ const actions = {
             if (payload.doctor) {
                 query = query.where('doctor.cpf', '==', payload.doctor.cpf)
             }
+            if (payload.specialty) {
+                query = query.where('specialty.name', '==', payload.specialty.name)
+            }
+
+            if (payload.clinic) {
+                query = query.where('clinic.name', '==', payload.clinic.name)
+            }
             commit('setConsultationLoading', true)
             return query.onSnapshot((querySnapshot) => {
                 consultations = []
@@ -95,6 +102,7 @@ const actions = {
 
     async getConsultations({ commit }, payload) {
         try {
+            console.log("Get consultations")
             let consultations = []
             let query = firebase.firestore().collection('consultations')
                 .where('date', '>=', payload.start_date)
@@ -104,7 +112,17 @@ const actions = {
             if (payload.doctor) {
                 query = query.where('doctor.cpf', '==', payload.doctor.cpf)
             }
+
+            if (payload.specialty) {
+                query = query.where('specialty.name', '==', payload.specialty.name)
+            }
+
+            if (payload.clinic) {
+                query = query.where('clinic.name', '==', payload.clinic.name)
+            }
+            
             let querySnapshot = await query.get()
+            console.log("Get consultations depois")
             consultations = []
             querySnapshot.forEach((document) => {
                 consultations.push({

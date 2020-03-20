@@ -15,7 +15,16 @@
                 </v-flex>
                 <v-spacer></v-spacer>
                 <v-flex xs12 md5>
-                    <v-combobox
+                    <v-text-field
+                            prepend-icon="location_city"
+                            v-model="selectedDoctor.name"
+                            label="Clínica"
+                            outlined
+                            rounded
+                            filled
+                            disabled
+                    ></v-text-field>
+                    <!-- <v-combobox
                             prepend-icon="person"
                             v-model="selectedDoctor"
                             :items="doctors"
@@ -40,13 +49,13 @@
                                     color="info"
                             >{{ data.item.name }}</v-chip>
                         </template>
-                    </v-combobox>
+                    </v-combobox> -->
                 </v-flex>
 
                 <v-flex xs12 md12>
                     <v-text-field
                             prepend-icon="location_city"
-                            v-model="clinic"
+                            v-model="clinic.name"
                             label="Clínica"
                             outlined
                             rounded
@@ -426,7 +435,7 @@
             dialog: false,
             dialog2: false,
             dialogPaciente: false,
-            selectedDoctor: undefined,
+            selectedDoctor: "",
             num_recibo: "",
             type: "",
             exames: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
@@ -455,9 +464,9 @@
             medicosOptions: ["Todos"],
             pacientes: "",
             timeout: 4000,
-            clinic:undefined,
+            clinic:"",
             especialidadeOption: "",
-            especialidade: undefined,
+            especialidade: "",
             showAlert: false,
             snackDialogDone: false,
             snack: false,
@@ -515,7 +524,7 @@
                             }
                         }
                         if(this.clinic){
-                            if(this.clinic !== a.clinic.name){
+                            if(this.clinic.name !== a.clinic.name){
                                 response = false
                             }
                         }
@@ -671,19 +680,19 @@
             },
             async initialConfig() {
                 this.loading = true
-                await this.$store.dispatch('getDoctors')
-                await this.listenConsultations()
-                await this.$store.dispatch("getSpecialties")
-
+                //await this.$store.dispatch('getDoctors')
+                // await this.$store.dispatch("getSpecialties")
                 this.query = this.$route.params.q
-                console.log( {...this.query})
+                this.selectedDoctor = this.query.doctor
+                this.especialidade = this.query.especialidade
+                this.clinic = this.query.consultation.clinic
+                await this.listenConsultations()
+               
+
                 if(!this.query){
                 //this.$router.push('agenda/GerenciamentoConsultas')
                 }
 
-                this.selectedDoctor = this.query.doctor
-                this.especialidade = this.query.especialidade
-                this.clinic = this.query.consultation.clinic.name
                 this.pacienteSelecionado = this.query.pacienteObj
                 this.status = this.query.status
                 this.num_recibo = this.query.num_recibo
@@ -695,6 +704,9 @@
                     start_date: moment()
                         .subtract(4, "hours")
                         .format("YYYY-MM-DD HH:mm:ss"),
+                    specialty:this.especialidade,
+                    doctor:this.selectedDoctor,
+                    clinic:this.clinic,
                     final_date: moment()
                         .add(this.daysToListen, "days")
                         .format("YYYY-MM-DD 23:59:59")
