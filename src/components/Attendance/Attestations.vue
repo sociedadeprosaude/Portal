@@ -147,6 +147,7 @@
                                 round
                                 color="primary"
                                 :disabled="!formIsValid"
+                                @click="dias"
                         >
                             IMPRIMIR
                             <v-icon right color="white">print</v-icon>
@@ -201,6 +202,15 @@
             },
         },
         methods: {
+            dias (){
+                let diferenca = moment(this.dataTheEnd, 'YYYY-MM-DD').diff(moment(this.dataStart, 'YYYY-MM-DD'), 'days')
+                diferenca = diferenca + 1
+                if(diferenca > 15){
+                    this.dataTheEnd = undefined
+                    alert('o periodo selecionado foi que 15 dias, 15 dias é o máximo de dias por atestado.' )
+                }
+                alert(diferenca)
+            },
             save1 (dataStart) {
                 this.$refs.menu1.save1(dataStart)
             },
