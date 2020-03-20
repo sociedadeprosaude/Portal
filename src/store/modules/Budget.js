@@ -419,7 +419,7 @@ const actions = {
         return
     },
 
-    async thereIsIntakes({ commit }, payload) {
+    async thereIsIntakes(context, payload) {
         var found = false;
         let intakes;
         return new Promise(async (resolve, reject) => {
@@ -428,6 +428,8 @@ const actions = {
             let type = payload.exam ? 'Exam' : 'Consultation'
             let status = payload.exam ? 'Exame Pago' : 'Consulta Paga'
             let procedureRef
+            let patient = context.getters.selectedPatient
+            console.log('patiente->>>',patient)
             if(payload.status && payload.payment_number)
                 procedureRef = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', 'Consultation')
                 .where('specialty', '==', payload.specialty.name).where('status', 'array-contains-any', payload.status).where('payment_number','==',payload.payment_number.toString())
