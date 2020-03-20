@@ -293,6 +293,7 @@ const actions = {
 
     async addUserToConsultationReschedule({ commit }, payload) {
         try {
+            functions.removeUndefineds(payload)
             let obj = {
                 user: payload.user,
                 type: payload.consultation.type,
@@ -316,6 +317,7 @@ const actions = {
 
     async addConsultationAppointmentToUserReschedule({ commit }, payload) {
         try {
+            functions.removeUndefineds(payload)
             await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.id).set(payload.consultation)
 
             if (payload.consultation.type == "Retorno") {

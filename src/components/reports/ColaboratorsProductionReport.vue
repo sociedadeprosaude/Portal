@@ -33,7 +33,6 @@
 </template>
 
 <script>
-    import constants from "../../utils/constants";
     export default {
         name: "ColabboratorsProductionReport",
         props: ['intakes', 'loading'],
@@ -46,12 +45,10 @@
         },
         computed: {
             intakesResume() {
-                let resumes = {
-                }
-                for (let intake in this.intakes) {
-                    if (this.intakes[intake].status === 'cancelled') continue
-                    if (!resumes[this.intakes[intake].colaborator.name]) {
-                        resumes[this.intakes[intake].colaborator.name] = {
+                let resumes = {}
+                for (let intake of this.intakes) {
+                    if (!resumes[intake.colaborator.name]) {
+                        resumes[intake.colaborator.name] = {
                             Dinheiro: 0.0,
                             Credito: 0.0,
                             Debito: 0.0,
@@ -59,53 +56,32 @@
                             Consultas: 0
                         }
                     }
-                    if (this.intakes[intake].payments) {
-                        for (let i = 0; i < this.intakes[intake].payments.length; i++) {
-                            if (this.intakes[intake].payments[i] === 'Dinheiro') {
-                                resumes[this.intakes[intake].colaborator.name].Dinheiro += parseFloat(this.intakes[intake].valuesPayments[i])
+                    if (intake.payments) {
+                        for (let i = 0; i < intake.payments.length; i++) {
+                            if (intake.payments[i] === 'Dinheiro') {
+                                resumes[intake.colaborator.name].Dinheiro += parseFloat(intake.valuesPayments[i])
                             }
-                            if (this.intakes[intake].payments[i] === 'Crédito') {
-                                resumes[this.intakes[intake].colaborator.name].Credito += parseFloat(this.intakes[intake].valuesPayments[i])
+                            if (intake.payments[i] === 'Crédito') {
+                                resumes[intake.colaborator.name].Credito += parseFloat(intake.valuesPayments[i])
                             }
-                            if (this.intakes[intake].payments[i] === 'Débito') {
-                                resumes[this.intakes[intake].colaborator.name].Debito += parseFloat(this.intakes[intake].valuesPayments[i])
+                            if (intake.payments[i] === 'Débito' || intake.payments[i] === '') {
+                                resumes[intake.colaborator.name].Debito += parseFloat(intake.valuesPayments[i])
                             }
                         }
                     } else {
-                        resumes[this.intakes[intake].colaborator.name].Dinheiro += parseFloat(this.intakes[intake].total)
+                        resumes[intake.colaborator.name].Dinheiro += parseFloat(intake.total)
                     }
-                    resumes[this.intakes[intake].colaborator.name][this.intakes[intake].payment_method] += this.intakes[intake].total
-                    if (this.intakes[intake].exams) {
-                        resumes[this.intakes[intake].colaborator.name].Exames = resumes[this.intakes[intake].colaborator.name].Exames ? this.intakes[intake].exams.length + resumes[this.intakes[intake].colaborator.name].Exames : this.intakes[intake].exams.length
+                    resumes[intake.colaborator.name][intake.payment_method] += intake.total
+                    if (intake.exams) {
+                        resumes[intake.colaborator.name].Exames = resumes[intake.colaborator.name].Exames ? intake.exams.length + resumes[intake.colaborator.name].Exames : intake.exams.length
                     }
-                    if (this.intakes[intake].specialties) {
-                        resumes[this.intakes[intake].colaborator.name].Consultas = resumes[this.intakes[intake].colaborator.name].Consultas ? this.intakes[intake].specialties.length + resumes[this.intakes[intake].colaborator.name].Consultas : this.intakes[intake].specialties.length
+                    if (intake.specialties) {
+                        resumes[intake.colaborator.name].Consultas = resumes[intake.colaborator.name].Consultas ? intake.specialties.length + resumes[intake.colaborator.name].Consultas : intake.specialties.length
                     }
                 }
                 return resumes
             }
         },
-        // watch: {
-        //     selectedColaborator(val) {
-        //         if (val) {
-        //             this.getIntakes(val)
-        //         }
-        //     }
-        // },
-        methods: {
-            // async getIntakes(colab) {
-            //     this.intakes = await this.$store.dispatch('getColaboratorIntakes', colab)
-            // },
-            // async getColaborators() {
-            //     this.colaborators = await this.$store.dispatch('searchUser', {
-            //         type: 'colaborator'
-            //     })
-            //     console.log(this.colaborators)
-            // }
-        },
-        // mounted() {
-        //     this.getColaborators()
-        // }
     }
 </script>
 

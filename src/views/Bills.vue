@@ -21,7 +21,7 @@
               <v-combobox
                 outlined
                 v-if="category"
-                label="subcategoria"
+                label="Subcategoria"
                 @input.native="subCategory=$event.srcElement.value"
                 v-model="subCategory"
                 :items="category.subCategories? [...category.subCategories,other]:[other]"
@@ -133,17 +133,11 @@
       <v-flex xs12 class="text-left mt-6">
         <span class="my-headline">Contas à pagar</span>
       </v-flex>
-
       <v-flex xs12>
         <outtake-order :outtakes="pendingOuttakes"></outtake-order>
       </v-flex>
       <v-flex xs12 class="text-left mt-6">
-        <span class="my-headline">
-          {{selectedPaidOuttakesList.length}} Contas pagas
-          <span
-            v-if="selectedOption === 2 && switchDate"
-          >em {{selectedDateFormatted}}</span>
-        </span>
+        <span class="my-headline">{{selectedPaidOuttakesList.length}} Contas pagas</span>
       </v-flex>
 
       <v-container>
@@ -263,16 +257,14 @@ export default {
     return {
       unit: null,
       other: "Outro",
+      billsOptions: ["De hoje", "Todas", "Filtrar"],
       dialogSelectDate: false,
       switchDate: true,
       switchCategory: false,
       selectedOption: 0,
       selectedDate: moment().format("YYYY-MM-DD"),
       selectedCategory: "",
-      selectedDateFormatted: moment().format("DD/MM/YYYY"),
-      billsOptions: ["De hoje", "Todas", "Filtrar"],
-      dialog: false,
-      category: { name: null },
+      category: null,
       subCategory: null,
       paymentMethod: undefined,
       description: undefined,
@@ -287,17 +279,12 @@ export default {
   mounted() {
     this.initiate();
   },
-  watch: {
-    selectedDate(val) {
-      this.selectedDate = val;
-      this.dialogSelectDate = false;
-      this.selectedDateFormatted = moment(val).format("DD/MM/YYYY");
-    }
-  },
   computed: {
     outtakes() {
       return this.$store.getters.outtakes;
     },
+
+    // Pegando as contas PAGAS HOJE, se quiser as CRIADAS e PAGAS HOJE, trocar outtake.paid por outtake.created_at ali no moment
     paidOuttakesFromToday() {
       return this.outtakes
         .filter(
@@ -310,8 +297,12 @@ export default {
     },
     paidOuttakes() {
       return this.outtakes
-        .filter(outtake => outtake.paid)
-        .sort((a, b) => (b.date_to_pay > a.date_to_pay ? 1 : -1));
+        .filter(outtake => {
+          return outtake.paid;
+        })
+        .sort((a, b) => {
+          return b.date_to_pay > a.date_to_pay ? 1 : -1;
+        });
     },
     paidOuttakesFilter() {
       return this.outtakes
@@ -325,17 +316,19 @@ export default {
         )
         .sort((a, b) => (b.date_to_pay > a.date_to_pay ? 1 : -1));
     },
-
     selectedPaidOuttakesList() {
       if (this.selectedOption === 0) return this.paidOuttakesFromToday;
       else if (this.selectedOption === 1) return this.paidOuttakes;
       else if (this.selectedOption === 2) return this.paidOuttakesFilter;
     },
-
     pendingOuttakes() {
       return this.outtakes
-        .filter(outtake => !outtake.paid)
-        .sort((a, b) => (b.date_to_pay < a.date_to_pay ? 1 : -1));
+        .filter(outtake => {
+          return !outtake.paid;
+        })
+        .sort((a, b) => {
+          return b.date_to_pay < a.date_to_pay ? 1 : -1;
+        });
     },
     categories() {
       return this.$store.getters.outtakesCategories;
@@ -358,11 +351,18 @@ export default {
     async initiate() {
       this.loading = true;
       await this.$store.dispatch("getOuttakesCategories");
-      await this.$store.dispatch("getOuttakes");
+      await this.$store.dispatch("getOuttakes", {
+        finalDate: moment()
+          .add(5, "days")
+          .format("YYYY-MM-DD 23:59:59")
+      });
       this.loading = false;
+      this.selectedCategory =
+        this.categoriesName[0] != null ? this.categoriesName[0] : "";
     },
     async newSubcategory(category, newSubcategory) {
       if (
+        category.subCategories &&
         category.subCategories.indexOf(newSubcategory) < 0 &&
         newSubcategory != this.other
       ) {
@@ -384,12 +384,14 @@ export default {
         });
       }
     },
+    addBill2() {
+      console.log(this.category);
+    },
     async addBill() {
       this.loading = true;
       // Deletando esses dois campos se tiverem pra não salvar dados desnecessários no banco
       delete this.unit.exams;
       delete this.unit.specialties;
-
       let bill = {
         category: this.category.name,
         subCategory: this.subCategory,
@@ -402,7 +404,9 @@ export default {
         unit: this.unit.name != this.other ? this.unit : null
       };
       await this.newCategory(this.category);
-      await this.newSubcategory(this.category, this.subCategory);
+      if (this.subCategory) {
+        await this.newSubcategory(this.category, this.subCategory);
+      }
       if (this.files.length > 0) {
         let urls = await this.submitFiles(this.files);
         bill.appends = urls;
@@ -418,7 +422,11 @@ export default {
         field: "paid",
         value: "delete"
       });
-      await this.$store.dispatch("getOuttakes");
+      await this.$store.dispatch("getOuttakes", {
+        finalDate: moment()
+          .add(5, "days")
+          .format("YYYY-MM-DD 23:59:59")
+      });
       this.loading = false;
     },
 

@@ -51,14 +51,14 @@ const actions = {
         let userDoc = await firestore().collection('users').doc(id.toString()).get()
         return userDoc.data()
     },
-    async searchUser({ commit, getters }, searchFields) {
+    async searchUser({}, searchFields) {
         let usersRef = firestore().collection('users');
 
         for (let field in searchFields) {
             if (!searchFields[field] || searchFields[field].length === 0) continue;
             usersRef = usersRef.where(field, field === 'name' ? '>=' : '==', searchFields[field].toUpperCase())
         }
-        let querySnapshot = await usersRef.get();
+        let querySnapshot = await usersRef.limit(30).get();
         let users = [];
         querySnapshot.forEach(function (doc) {
             // if (doc.data().association_number) {
@@ -79,10 +79,10 @@ const actions = {
         querySnapshot.forEach(function (doc) {
            let data = doc.data()
            if(data.dependents){
-               
+
                 data.dependents.forEach((dep)=>{
                         console.log('Nome do responsável:' + data.name + '-> Dependente' + dep.name)
-                    
+
                 })
             }
         });
@@ -98,7 +98,7 @@ const actions = {
                 reject(e)
             }
         })
-       
+
     },
     async addUser({ getters }, patient) {
         try {

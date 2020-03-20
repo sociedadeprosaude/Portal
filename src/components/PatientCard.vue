@@ -68,9 +68,6 @@
                                     </span>
                                 </v-layout>
                             </v-flex>
-                            <!--                            <v-flex xs2 class="text-right">-->
-                            <!--                                <img height="64px" :src="require('@/assets/pro_saude_logo.png')">-->
-                            <!--                            </v-flex>-->
                             <v-flex xs4 style="font-size: 0.8em">
                                 <v-layout column wrap>
                                     <span class="font-weight-bold white--text"
@@ -107,14 +104,6 @@
                                     <span class="font-weight-bold white--text">Cidade Nova</span>
                                 </v-layout>
                             </v-flex>
-                            <!--                            <v-flex xs4 class="text-left">-->
-                            <!--                                <v-layout column wrap>-->
-                            <!--                                    <span class="font-weight-bold white&#45;&#45;text"-->
-                            <!--                                          style="font-size: 0.6em">Nascimento</span>-->
-                            <!--                                    <span class="font-weight-bold white&#45;&#45;text"-->
-                            <!--                                          style="font-size: 1.2em">17/05/1973</span>-->
-                            <!--                                </v-layout>-->
-                            <!--                            </v-flex>-->
                         </v-layout>
                     </v-img>
                 </v-card>
