@@ -157,14 +157,8 @@
           <v-row dense no-gutters align="start" justify="start">
             <v-col>
               <v-switch v-model="switchDate" label="Limitar por data"></v-switch>
-              <v-dialog v-if="switchDate" v-model="dialogSelectDate" width="unset">
-                <template v-slot:activator="{ on }">
-                  <v-btn class="primary" v-on="on">Escolher data</v-btn>
-                </template>
-                <v-card>
-                  <v-date-picker locale="pt-br" v-model="selectedDate"></v-date-picker>
-                </v-card>
-              </v-dialog>
+
+              <v-date-picker v-if="switchDate" locale="pt-br" v-model="selectedDate"></v-date-picker>
             </v-col>
             <v-col>
               <v-switch v-model="switchCategory" label="Limitar por categoria"></v-switch>
@@ -390,9 +384,6 @@ export default {
         });
       }
     },
-    addBill2() {
-      console.log(this.category);
-    },
     async addBill() {
       this.loading = true;
       // Deletando esses dois campos se tiverem pra não salvar dados desnecessários no banco
@@ -473,29 +464,3 @@ export default {
 <!--        top: -500px;-->
 <!--    }-->
 <!--</style>-->
-<style lang="scss">
-.v-input--reverse .v-input__slot {
-  flex-direction: row-reverse;
-  justify-content: flex-end;
-  .v-application--is-ltr & {
-    .v-input--selection-controls__input {
-      margin-right: 0;
-      margin-left: 8px;
-    }
-  }
-  .v-application--is-rtl & {
-    .v-input--selection-controls__input {
-      margin-left: 0;
-      margin-right: 8px;
-    }
-  }
-}
-
-.v-input--expand .v-input__slot {
-  // justify-content: space-between;
-  .v-label {
-    display: block;
-    flex: 1;
-  }
-}
-</style>
