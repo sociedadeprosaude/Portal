@@ -159,7 +159,6 @@
                     patient: this.consultation.user.cpf
 
                 })
-
                 this.$router.push("MedicalCare")
             }
         }

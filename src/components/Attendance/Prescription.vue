@@ -8,44 +8,97 @@
                 <v-card-text>
                     <v-container fluid>
                         <v-layout row wrap class="align-center justify-center">
-                        <v-combobox
-                                prepend-inner-icon="search"
-                                prepend-icon="note_add"
-                                v-model="item"
-                                :items="items"
-                                return-object
-                                :item-text="text"
-                                item-key="concentration"
-                                label="Medicamentos"
-                                chips
-                                :search-input.sync="search"
-                                clearable
-                                outlined
-                        >
-                            <template v-slot:no-data>
-                                <v-list-item>
-                                    <v-list-item-content>
-                                        <v-list-item-title>
-                                            <v-chip color="warning"><h2>Faça uma prescrição manual, porque o medicamento <v-chip color="red"><h1>"{{ search }}"</h1></v-chip> não foi encontrado na lista de medicamentos do pró-saúde.</h2></v-chip>
-                                        </v-list-item-title>
-                                    </v-list-item-content>
-                                </v-list-item>
-                            </template>
-
-                            <template v-slot:selection="data">
-                                <v-chip
-                                        :key="JSON.stringify(data.item)"
-                                        v-bind="data.attrs"
-                                        :input-value="data.selected"
-                                        :disabled="data.disabled"
-                                        @click:close="data.parent.selectItem(data.item)"
-                                        color="info"
+                            <v-flex xs11>
+                                <v-combobox
+                                        prepend-inner-icon="search"
+                                        prepend-icon="note_add"
+                                        v-model="item"
+                                        :items="sus"
+                                        return-object
+                                        :item-text="text"
+                                        item-key="concentration"
+                                        label="Medicamentos"
+                                        chips
+                                        :search-input.sync="search"
+                                        clearable
+                                        outlined
                                 >
-                                    {{ data.item.name }} - {{ data.item.concentration }} - {{ data.item.pharmaceutical }}
-                                </v-chip>
-                            </template>
-                        </v-combobox>
-                            <span>{{item}}</span>
+                                    <template v-slot:no-data>
+                                        <v-list-item>
+                                            <v-list-item-content>
+                                                <v-list-item-title>
+                                                    <v-chip color="warning"><h2>Faça uma prescrição manual, porque o medicamento <v-chip color="red"><h1>"{{ search }}"</h1></v-chip> não foi encontrado na lista de medicamentos do pró-saúde.</h2></v-chip>
+                                                </v-list-item-title>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                    </template>
+
+                                    <template v-slot:selection="data">
+                                        <v-chip
+                                                :key="JSON.stringify(data.item)"
+                                                v-bind="data.attrs"
+                                                :input-value="data.selected"
+                                                :disabled="data.disabled"
+                                                @click:close="data.parent.selectItem(data.item)"
+                                                color="info"
+                                        >
+                                            {{ data.item.name }} - {{ data.item.concentration }} - {{ data.item.pharmaceutical }}
+                                        </v-chip>
+                                    </template>
+                                </v-combobox>
+                            </v-flex>
+                            <v-flex xs1>
+                                <v-btn v-on:click="addToList" :disabled="!addIsValid" color="success">
+                                    <v-icon>add</v-icon>
+                                </v-btn>
+                            </v-flex>
+                            <v-flex xs12>
+                                <strong>MEDICAMENTOS SELECIONADOS:</strong>
+                            </v-flex>
+                            <v-flex xs11>
+                                <v-combobox
+                                        :items="medicines"
+                                        item-text="name"
+                                        return-object
+                                        multiple
+                                        v-model="medicines"
+                                        chips
+                                        outlined
+                                        hide-selected
+                                >
+                                    <template v-slot:selection="data">
+                                        <v-chip
+                                                close
+                                                @click="data.select"
+                                                @click:close="remove(data.item)"
+                                                :key="JSON.stringify(data.item)"
+                                                :input-value="data.selected"
+                                                :disabled="data.disabled"
+                                                class="v-chip--select-multi"
+                                                @click.stop="data.parent.selectedIndex = data.index"
+                                                @input="data.parent.selectItem(data.item)"
+                                                text-color="white"
+                                                color="info"
+                                        >{{ data.item.name }} - {{ data.item.concentration}} - {{ data.item.pharmaceutical }}
+                                        </v-chip>
+                                    </template>
+                                </v-combobox>
+                            </v-flex>
+                            <v-flex xs1>
+                                <v-btn v-on:click="deleteFromList" :disabled="!deleteIsValid" color="error">
+                                    <v-icon>delete_forever</v-icon>
+                                </v-btn>
+                            </v-flex>
+
+                            <v-flex xs12 v-if="medicines.length > 0">
+                                <h1>Exames Solicitados:</h1>
+                                <br>
+                                <ul v-for="(dados,i) in medicines" :key="i">
+                                    <li>
+                                        {{dados.name}} - {{dados.concentration}} - {{dados.pharmaceutical}}
+                                    </li>
+                                </ul>
+                            </v-flex>
                         </v-layout>
                     </v-container>
                 </v-card-text>
@@ -63,7 +116,7 @@
     export default {
         props:['consultation'],
         data: () => ({
-            items: [
+            sus: [
                 {name:'acetato de betametasona + fosfato dissódico de betametasona',concentration:'3 mg/mL + 3 mg/mL',pharmaceutical:'suspensão injetável',},
                 {name:'acetato de hidrocortisona',concentration:'10 mg/g (1%)',pharmaceutical:'creme',},
                 {name:'acetato de medroxiprogesterona',concentration:'50 mg/mL',pharmaceutical:'suspensão injetável',},
@@ -104,21 +157,55 @@
                 {name:'azitromicina',concentration:'500 mg',pharmaceutical:'comprimido',},
                 {name:'azitromicina',concentration:'40 mg/mL',pharmaceutical:'pó para suspensão oral',},
             ],
-            item: '',
+            medicines: [],
+            item: undefined,
             search: null,
         }),
         computed:{
-            formIsValid () {
-                return this.email && this.password && this.name && this.crm && this.specialties.length > 0
+            formIsValid() {
+                return this.medicines.length > 0
             },
+            addIsValid() {
+                return this.item
+            },
+            deleteIsValid() {
+                return this.medicines.length > 0
+            },
+        },
+        mounted() {
+            window.addEventListener('keydown', this.handleEnter);
+        },
+        beforeDestroy() {
+            window.removeEventListener('keydown', this.handleEnter)
         },
         methods: {
             text: item => item.name + ' - ' + item.concentration + ' - ' + item.pharmaceutical,
+            remove (item) {
+                const index = this.medicines.indexOf(item)
+                if (index >= 0) this.medicines.splice(index, 1)
+            },
             clear() {
+                this.item = undefined
+                this.medicines = [];
                 this.closeDialog()
             },
             closeDialog: function () {
                 this.$emit('close-dialog')
+            },
+            handleEnter(e) {
+                if (e.key === 'Enter') {
+                    this.addToList()
+                }
+            },
+            addToList() {
+                if (this.medicines.indexOf(this.item) > -1) {
+                    return
+                }
+                this.medicines.push(this.item);
+                this.item = undefined;
+            },
+            deleteFromList() {
+                this.medicines = [];
             },
         },
     }
