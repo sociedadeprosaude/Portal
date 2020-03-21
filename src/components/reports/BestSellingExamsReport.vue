@@ -158,7 +158,13 @@ export default {
         intake.exams.map(exam => {
           return {
             idIntake: intake.id,
-            clinicName: exam.clinic.name,
+
+            // bugFont, Colocando essa verificação pra não dar erro se o objeto não tiver clinica (que era pra ter).
+            // Vai prejudicar a organização do relatório, já que vai aparecer essa msg em vez do nome da clinica
+            clinicName:
+              exam.clinic != null
+                ? exam.clinic.name
+                : "Erro, exame sem clinica",
             cost: exam.cost,
             examName: exam.name,
             price: exam.price
