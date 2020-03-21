@@ -20,10 +20,10 @@ const actions = {
             let outtakesSnap = [];
             if (payload) {
                 if (payload.initialDate) {
-                    base.where('created_at', '>=', payload.initialDate)
+                    base = base.where('created_at', '>=', payload.initialDate)
                 }
                 if (payload.finalDate) {
-                    base.where('created_at', '<=', payload.finalDate)
+                    base = base.where('created_at', '<=', payload.finalDate)
                 }
                 outtakesSnap = await base.orderBy('created_at').get()
             } else outtakesSnap = await base.get();
