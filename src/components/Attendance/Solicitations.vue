@@ -1,4 +1,5 @@
 <template>
+    <v-content>
     <v-container fluid>
         <v-card class="elevation-3">
             <v-card-title class="headline grey lighten-2 justify-center align-center" primary-title>
@@ -41,10 +42,14 @@
                                         <v-icon>add</v-icon>
                                     </v-btn>
                                 </v-flex>
-                                <v-flex xs12>
+                                <v-flex xs12><p style="color: white">.</p></v-flex>
+                                <v-flex xs12><p style="color: white">.</p></v-flex>
+                                <v-flex xs12><p style="color: white">.</p></v-flex>
+                                <v-flex xs12><p style="color: white">.</p></v-flex>
+                                <v-flex xs12 v-if="exams.length > 0">
                                     <strong>EXAMES SELECIONADOS:</strong>
                                 </v-flex>
-                                <v-flex xs11>
+                                <v-flex xs11 v-if="exams.length > 0">
                                     <v-combobox
                                             :items="exams"
                                             item-text="name"
@@ -73,7 +78,7 @@
                                         </template>
                                     </v-combobox>
                                 </v-flex>
-                                <v-flex xs1>
+                                <v-flex xs1 v-if="exams.length > 0">
                                     <v-btn v-on:click="deleteFromList" :disabled="!deleteIsValid" color="error">
                                         <v-icon>delete_forever</v-icon>
                                     </v-btn>
@@ -82,12 +87,15 @@
                                 <v-flex xs12 v-if="exams.length > 0">
                                     <h1>Exames Solicitados:</h1>
                                     <br>
-                                    <ul v-for="(dados,i) in exams" :key="i">
-                                        <li>
-                                            {{dados.name}}
-                                        </li>
-                                    </ul>
+                                    <transition-group name="slide-up">
+                                        <ul v-for="(dados,i) in exams" :key="i">
+                                            <li>
+                                                {{dados.name}}
+                                            </li>
+                                        </ul>
+                                    </transition-group>
                                 </v-flex>
+
                             </v-layout>
                         </v-container>
                     </v-card-text>
@@ -98,6 +106,7 @@
                     </v-card-actions>-->
                 </v-card>
     </v-container>
+    </v-content>
 </template>
 
 <script>
@@ -183,4 +192,17 @@
     }
 </script>
 <style scoped>
+    ul {
+        list-style-type: none;
+    }
+    .slide-up-enter {
+        transform: translateX(10px);
+        opacity: 0;
+    }
+    .slide-up-enter-active {
+        transition: all 0.5s ease;
+    }
+    .slide-up-move {
+        transition: transform 0.5s ease-out;
+    }
 </style>
