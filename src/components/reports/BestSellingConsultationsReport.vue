@@ -22,7 +22,7 @@
                 <v-data-table
                         :headers="headers"
                         :search="search"
-                        :items="intakesDividedByExam"
+                        :items="intakesDividedBySpecialties"
                         :sort-by="['quantity']"
                         :sort-desc="[true]"
                         item-key="name"
@@ -56,8 +56,11 @@
                     </template>
                 </v-data-table>
             </div>
-            <div v-else>
-                <TableExamsAndClinics :intakesDividedByExam="intakesDividedByExam" />
+            <div v-if="optionSelected===1">
+                <TableConsultationClinics :intakesDividedBySpecialties="intakesDividedBySpecialties" />
+            </div>
+            <div v-if="optionSelected===2">
+                <TableConsultationDoctor :intakesDividedBySpecialties="intakesDividedBySpecialties"/>
             </div>
         </v-card>
 
@@ -95,9 +98,11 @@
 </template>
 <script>
     import moment from "moment";
-
+    import TableConsultationClinics from "./TableConsultationClinics";
+    import TableConsultationDoctor from "./TableConsultationDoctors";
     export default {
         name: "BestSellingConsultationsReports",
+        components: {TableConsultationDoctor, TableConsultationClinics},
         props: ["date", "date2"],
         data() {
             return {
@@ -108,39 +113,41 @@
                 optionSelected: 0,
                 headers: [
                     {
-                        text: "Exame",
+                        text: "CONSULTAS",
                         align: "start",
                         sortable: false,
                         value: "name"
                     },
-                    { text: "Quantidade vendida", value: "quantity", align: "center" },
-                    { text: "Custo total", value: "totalCost", align: "center" },
-                    { text: "Venda total", value: "totalPrice", align: "center" },
-                    { text: "Lucro liquido", value: "profit" }
+                    { text: "QUANTIDADE VENDIDA", value: "quantity", align: "center" },
+                    { text: "CUSTO TOTAL", value: "totalCost", align: "center" },
+                    { text: "VENDA TOTAL", value: "totalPrice", align: "center" },
+                    { text: "LUCRO LÍQUIDO", value: "profit" }
                 ],
                 subHeaders: [
                     {
-                        text: "Codigo",
+                        text: "Código",
                         align: "start",
                         sortable: false,
                         value: "idIntake"
                     },
                     { text: "Custo", value: "cost", align: "center" },
                     { text: "Venda", value: "price", align: "center" },
-                    { text: "Clinica", value: "clinicName" }
+                    { text: "Clinica", value: "clinicName" },
+                    { text: "Médico", value: "doctorName"},
                 ],
                 dateBegin: null,
                 dateEnd: null
             };
         },
         methods: {
-            calcIntakeFromExam(exam, listIntakesExam) {
-                const sumCost = listIntakesExam.reduce((total, e) => total + e.cost, 0);
-                const sumPrice = listIntakesExam.reduce((total, e) => total + e.price, 0);
+            calcIntakeFromConsultation(consultation, listIntakesSpecialties) {
+                const sumCost = listIntakesSpecialties.reduce((total, e) => total + e.cost, 0);
+                const sumPrice = listIntakesSpecialties.reduce((total, e) => total + e.price, 0);
+                console.log('consultation-nome', consultation);
                 return {
-                    name: exam.name,
-                    intakes: listIntakesExam,
-                    quantity: listIntakesExam.length,
+                    name: consultation.name,
+                    intakes: listIntakesSpecialties,
+                    quantity: listIntakesSpecialties.length,
                     totalCost: sumCost,
                     totalPrice: sumPrice,
                     profit: sumPrice - sumCost
@@ -148,61 +155,63 @@
             }
         },
         computed: {
-            intakesWithExam() {
-                return this.$store.getters.intakesWithExam;
+            intakesWithConsultation() {
+                return this.$store.getters.intakesWithConsultation;
             },
-            exams() {
-                return this.$store.getters.exams;
+            specialties() {
+                return this.$store.getters.specialties;
             },
-            intakesDividedByExam() {
+            intakesDividedBySpecialties() {
                 let listIntakesRemade = [];
                 // Criando com exames com os dados necessarios
-                listIntakesRemade = this.intakesWithExam.map(intake =>
-                    intake.exams.map(exam => {
+                listIntakesRemade = this.intakesWithConsultation.map(intake =>
+                    intake.specialties.map(consultation => {
+                        console.log('intake', intake);
                         return {
                             idIntake: intake.id,
-                            clinicName: exam.clinic.name,
-                            cost: exam.cost,
-                            examName: exam.name,
-                            price: exam.price
+                            clinicName: consultation.doctor.clinic.name,
+                            cost: consultation.cost,
+                            specialtieName: consultation.name,
+                            price: consultation.price,
+                            doctorName: consultation.doctor.name,
                         };
                     })
                 );
                 // Juntando em uma array que o bloco de cima retona uma array de array
                 listIntakesRemade = [].concat.apply([], listIntakesRemade);
-                let listIntakesGroupedByExam = [];
+                let listIntakesGroupedBySpecialties = [];
                 // Agrupando os intakes que tem ao mesmo exame
-                this.exams.forEach(exam => {
-                    let listIntakesExam = listIntakesRemade.filter(
-                        intake => intake.examName == exam.name
+                this.specialties.forEach(specialtie => {
+                    let listIntakesSpecialties = listIntakesRemade.filter(
+                        intake => intake.specialtieName === specialtie.name
                     );
-                    if (listIntakesExam.length != 0)
-                        listIntakesGroupedByExam.push(
-                            this.calcIntakeFromExam(exam, listIntakesExam)
+                    if (listIntakesSpecialties.length !== 0)
+                        listIntakesGroupedBySpecialties.push(
+                            this.calcIntakeFromConsultation(specialtie, listIntakesSpecialties)
                         );
                 });
-                return listIntakesGroupedByExam;
+                return listIntakesGroupedBySpecialties;
             },
             numSales() {
-                return this.intakesDividedByExam.reduce(
+                return this.intakesDividedBySpecialties.reduce(
                     (total, e) => total + e.quantity,
                     0
                 );
             },
             totalPrice() {
-                return this.intakesDividedByExam.reduce(
+                return this.intakesDividedBySpecialties.reduce(
                     (total, e) => total + e.totalPrice,
                     0
                 );
             },
             totalCost() {
-                return this.intakesDividedByExam.reduce(
+                return this.intakesDividedBySpecialties.reduce(
                     (total, e) => total + e.totalCost,
                     0
                 );
             },
             totalProfit() {
-                return this.intakesDividedByExam.reduce(
+                return this.intakesDividedBySpecialties.reduce(
                     (total, e) => total + e.profit,
                     0
                 );
