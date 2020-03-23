@@ -83,7 +83,7 @@
         </procedures-prices-analises>
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 4">
-        <BestSellingExamsReport :date="dateBegin" :date2="dateEnd" />
+        <best-selling-exams-report :date="dateBegin" :date2="dateEnd" />
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 5">
         <BestSellingConsultationsReport :date="dateBegin" :date2="dateEnd" />
@@ -106,6 +106,7 @@ import ProceduresPricesAnalises from "../components/reports/ProceduresPricesAnal
 import BestSellingExamsReport from "@/components/reports/BestSellingExamsReport";
 import BestSellingConsultationsReport from "@/components/reports/BestSellingConsultationsReport";
 import OuttakesReport from "@/components/reports/OuttakesReport";
+
 var moment = require("moment");
 export default {
   components: {
@@ -181,7 +182,6 @@ export default {
     }
   },
   async mounted() {
-    console.log(moment(this.date).format("YYYY-MM-DD 00:00:00"));
     this.$store.dispatch("getOuttakes", {
       initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
       finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")

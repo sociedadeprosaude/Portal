@@ -12,13 +12,13 @@ const state = {
     infos: [],
     relatorio: [],
     intakesReport: [],
-    
+
 }
 
 const mutations = {
     setRelatorio: (state, payload) => state.relatorio = payload,
     setIntakesReport: (state, payload) => state.intakesReport = payload,
-   
+
 }
 
 const actions = {
@@ -63,22 +63,21 @@ const actions = {
         return intakes
     },
 
-    
+
 
     async searchReports(context, payload) {
         payload.dataFinal = payload.dataFinal + ' 24:00:00';
         payload.dataInicio = payload.dataInicio + ' 00:00:00';
         let selectedUnit = context.getters.selectedUnit
-        //console.log('data inicial: ', payload.dataInicio);
-        //console.log('data final: ', payload.dataFinal);
 
         let intakesSnap = await firebase.firestore().collection('intakes').where('date', '>=', payload.dataInicio)
             .where('unit.name', '==', selectedUnit.name)
             .where('date', '<=', payload.dataFinal).orderBy('date').get()
         let intakes = []
         for (let doc of intakesSnap.docs) {
-            // promises.push(context.dispatch('getIntakeDetails', intakesSnap.docs[doc]))
             intakes.push(doc.data())
+            /* if(doc.data().exams)
+                console.log('intake',doc.data()) */
         }
 
         // let intakes = await Promise.all(promises)
@@ -92,7 +91,6 @@ const actions = {
         let totalDebido = 0;
         let totalBruto = 0;
         let totalCusto = 0;
-        let totalCustoOuttakes = 0;
         let totalCustoExams = 0;
         let totalCustoEspecialts = 0;
         let totalGanhoExams = 0;
@@ -110,24 +108,6 @@ const actions = {
                     financialSupport.push(intakes[intake])
                     continue
                 }
-
-                //for (let exam in intakes[intake].exams) {
-                //  if (!exams[intakes[intake].exams[exam].name]) {
-                //     exams[intakes[intake].exams[exam].name] = {
-                //    quantidade: 0,
-                //    name: intakes[intake].exams[exam].name,
-                //    cost: 0,
-                //    price: 0
-                //  }
-                // }
-                //console.log('clinica',intakes[intake].exams[exam].clinic.name)
-                //exams[intakes[intake].exams[exam].name].quantidade++,
-                //    exams[intakes[intake].exams[exam].name].cost += parseFloat(intakes[intake].exams[exam].cost),
-                //    exams[intakes[intake].exams[exam].name].price += parseFloat(intakes[intake].exams[exam].price)
-                //  totalCustoExams += parseFloat(intakes[intake].exams[exam].cost)
-                //  totalGanhoExams += parseFloat(intakes[intake].exams[exam].price)
-                // }
-
                 if (intakes[intake]) {
                     let id = (intakes[intake].id).toString()
                     intaker[intakes[intake].id] = {
@@ -139,6 +119,10 @@ const actions = {
                     }
                 }
                 for (let exam in intakes[intake].exams) {
+                    if (!intakes[intake].exams[exam].clinic) {
+                        intakes[intake].exams[exam].clinic = context.getters.selectedUnit
+                        continue
+                    }
                     if (!clinics[intakes[intake].exams[exam].clinic.name]) {
                         clinics[intakes[intake].exams[exam].clinic.name] = {
                             quantidade: 0,
@@ -173,20 +157,9 @@ const actions = {
                             quantidade: 0,
                             cost: 0,
                             price: 0,
-                            // doctors: {}
                         }
                     }
-                    // if (!specialties[intakes[intake].specialties[specialtie].name].doctors[intakes[intake].specialties[specialtie].doctor.name]) {
-                    //     specialties[intakes[intake].specialties[specialtie].name].doctors[intakes[intake].specialties[specialtie].doctor.name] = {
-                    //         quantity: 0,
-                    //         cost: 0,
-                    //         price: 0,
-                    //     }
-                    // }
                     specialties[intakes[intake].specialties[specialtie].name].quantidade++
-                    // specialties[intakes[intake].specialties[specialtie].name].doctors[intakes[intake].specialties[specialtie].doctor.name].quantity++
-                    // specialties[intakes[intake].specialties[specialtie].name].doctors[intakes[intake].specialties[specialtie].doctor.name].cost += intakes[intake].specialties[specialtie].cost
-                    // specialties[intakes[intake].specialties[specialtie].name].doctors[intakes[intake].specialties[specialtie].doctor.name] += intakes[intake].specialties[specialtie].price
                     specialties[intakes[intake].specialties[specialtie].name].cost += parseFloat(intakes[intake].specialties[specialtie].cost),
                         specialties[intakes[intake].specialties[specialtie].name].price += parseFloat(intakes[intake].specialties[specialtie].price)
                     totalCustoEspecialts += parseFloat(intakes[intake].specialties[specialtie].cost),
@@ -249,8 +222,11 @@ const actions = {
                 }
             }
         }
+        // bugFont, comentando esse where do unit.name sai o erro, mas tá estranho porque unit.name está no indices lá no firebase.
         let outtakesSnap = await firebase.firestore().collection('outtakes').where('paid', '>=', payload.dataInicio)
-            .where('paid', '<=', payload.dataFinal).orderBy('paid').get();
+            .where('paid', '<=', payload.dataFinal)
+            //.where('unit.name', '==', selectedUnit.name)
+            .orderBy('paid').get();
         outtakesSnap.forEach((e) => {
             if (e.data().payments) {
                 for (let i = 0; i < e.data().payments.length; i++) {
@@ -264,7 +240,6 @@ const actions = {
                         // outtakes[e.data().category].quantidade++;
                         quantidadeOuttakes++;
                         // outtakes[e.data().category].cost += parseFloat(e.data().value);
-                        totalCustoOuttakes += parseFloat(e.data().valuesPayments[i])
                         outtakes.push({
                             ...e.data(),
                             id: e.id
@@ -275,7 +250,6 @@ const actions = {
             }
             else {
                 quantidadeOuttakes++;
-                // totalCustoOuttakes += parseFloat(e.data().value)
                 outtakes.push({
                     ...e.data(),
                     id: e.id
@@ -301,13 +275,15 @@ const actions = {
             totalCustoExams: totalCustoExams,
             totalGanhoExams: totalGanhoExams,
             totalCustoEspecialts: totalCustoEspecialts,
-            // totalCustoOuttakes: totalCustoOuttakes,
             outtakes: outtakes,
             totalGanhoEspecialts: totalGanhoEspecialts,
             intakes: intaker,
             dataInicio: payload.dataInicio,
             dataFinal: payload.dataFinal,
-            financialSupportIntakes: financialSupport
+            financialSupportIntakes: financialSupport,
+            intakesArray: Object.values(intakes).filter((intake) => {
+                return intake.status !== 'cancelled'
+            })
         };
         context.commit('setRelatorio', relatorio)
         return relatorio

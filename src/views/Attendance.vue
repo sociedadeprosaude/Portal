@@ -73,30 +73,41 @@
                 </v-btn>
 
             </v-row>
-
+            <transition name="fade">
             <v-container fluid v-show="MedicalRecords">
                 <medical-records @close-dialog="MedicalRecords = false" :consultation="consultation"></medical-records>
             </v-container>
+            </transition>
 
+            <transition name="fade">
             <v-container fluid v-show="Solicitations">
                 <solicitations @close-dialog="Solicitations = false" :consultation="consultation"></solicitations>
             </v-container>
+            </transition>
 
+            <transition name="fade">
             <v-container fluid v-show="Prescriptions">
                 <prescription @close-dialog="Prescriptions = false" :consultation="consultation"></prescription>
             </v-container>
+            </transition>
 
+            <transition name="fade">
             <v-container fluid v-show="Report">
                 <report @close-dialog="Report = false" :consultation="consultation"></report>
             </v-container>
+            </transition>
 
+            <transition name="fade">
             <v-container fluid v-show="Orientations">
                 <orientations @close-dialog="Orientations = false" :consultation="consultation"></orientations>
             </v-container>
+            </transition>
 
+            <transition name="fade">
             <v-container fluid v-show="Attestations">
                 <attestations @close-dialog="Attestations = false" :consultation="consultation"></attestations>
             </v-container>
+            </transition>
 
         </v-container>
     </v-content>
@@ -159,7 +170,6 @@
                     patient: this.consultation.user.cpf
 
                 })
-
                 this.$router.push("MedicalCare")
             }
         }
@@ -167,4 +177,16 @@
 </script>
 
 <style scoped>
+    .fade-enter {
+        opacity: 0;
+    }
+    .fade-enter-active {
+        transition: opacity 0.5s ease-in;
+    }
+    .fade-leave-active {
+        transition: opacity 0.5s ease-out;
+    }
+    .fade-leave-to {
+        opacity: 0;
+    }
 </style>
