@@ -362,6 +362,12 @@
                                                                     :disabled="index_Selecionado.status === 'Pago' ? false : true"
                                                             ></v-text-field>
                                                         </v-flex>
+
+                                                        <v-flex v-if="index_Selecionado.pacienteObj && index_Selecionado.pacienteObj.type == 'Retorno' && index_Selecionado.pacienteObj.justifyReturn" vxs12 md12>
+                                                            <h1 class="title font-weight-bold">Justificativa do Retorno</h1>
+                                                            <p class="subtitle-1 font-weight-bold text-justify">{{this.index_Selecionado.pacienteObj.justifyReturn}}</p>
+                                                        </v-flex>
+
                                                         <v-flex xs12 sm12 md12 lg12>
                                                             <v-divider></v-divider>
                                                         </v-flex>

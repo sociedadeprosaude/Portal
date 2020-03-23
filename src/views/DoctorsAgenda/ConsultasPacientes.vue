@@ -315,6 +315,12 @@
                                                         readonly
                                                 ></v-text-field>
                                             </v-flex>
+
+                                            <v-flex v-if="index_Selecionado.consultation && index_Selecionado.consultation.type == 'Retorno' && index_Selecionado.consultation.justifyReturn" vxs12 md12>
+                                                <h1 class="title font-weight-bold">Justificativa do Retorno</h1>
+                                                <p class="subtitle-1 font-weight-bold text-justify">{{this.index_Selecionado.consultation.justifyReturn}}</p>
+                                            </v-flex>
+
                                             <v-flex xs12 sm12 md12 lg12>
                                                 <v-divider></v-divider>
                                             </v-flex>
@@ -505,7 +511,7 @@
                 set: function (index) {
                     this.status_Selecionado = index.status
                     this.index_Selecionado = {...index}
-                    console.log('Consulllll->>', this.index_Selecionado.consultation)
+                    console.log('Consulllll->>', this.index_Selecionado)
                     this.statusOptions.splice(1, 1)
                     this.statusOptions.push({text: index.status})
                     this.dialog = true
