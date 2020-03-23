@@ -9,74 +9,86 @@
           <v-chip v-for="report in reportOptions" :key="report">{{ report }}</v-chip>
         </v-chip-group>
       </v-flex>
-      <v-flex xs6 v-if="selectedReport !== 3">
-        <v-menu
-          ref="menu1"
-          v-model="menu1"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          offset-y
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model="dateFormatted"
-              label="Data Inicial"
-              prepend-icon="event"
-              @blur="date = parseDate(dateFormatted)"
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
-        </v-menu>
-      </v-flex>
+      <v-layout row wrap class="align-content-sm-space-between justify-center">
+        <v-flex xs3 class="mt-5 mr-3" v-if="selectedReport !== 3">
+          <v-menu
+                  ref="menu1"
+                  v-model="menu1"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                      v-model="dateFormatted"
+                      label="Data Inicial"
+                      dense
+                      prepend-icon="event"
+                      @blur="date = parseDate(dateFormatted)"
+                      v-on="on">
+              </v-text-field>
+            </template>
+            <v-date-picker v-model="date" no-title @input="menu1 = false">
+            </v-date-picker>
+          </v-menu>
+        </v-flex>
+        <v-flex xs3 class="mt-5 ml-3" v-if="selectedReport !== 3">
+          <v-menu
+                  v-model="menu2"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                      v-model="dateFormatted2"
+                      label="Data Final"
+                      prepend-icon="event"
+                      readonly
+                      dense
+                      v-on="on">
+              </v-text-field>
+            </template>
+            <v-date-picker v-model="date2" no-title @input="menu2 = false">
+            </v-date-picker>
+          </v-menu>
+        </v-flex>
+      </v-layout>
 
-      <v-flex xs6 v-if="selectedReport !== 3">
-        <v-menu
-          v-model="menu2"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          offset-y
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model="dateFormatted2"
-              label="Data Final"
-              prepend-icon="event"
-              readonly
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-date-picker v-model="date2" no-title @input="menu2 = false"></v-date-picker>
-        </v-menu>
-      </v-flex>
       <v-flex xs12 class="mb-3" v-if="selectedReport !== 3">
         <v-layout row wrap class="align-center">
           <v-flex>
             <v-btn @click="getIntakes()" color="blue" v-if="!loading">Pesquisar</v-btn>
-            <v-progress-circular indeterminate class="primary--text" v-else></v-progress-circular>
+            <v-progress-circular indeterminate class="primary--text" v-else/>
           </v-flex>
         </v-layout>
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 0">
-        <general-report :report="formattedReport" :loading="loading" :intakes="intakes"></general-report>
+        <general-report :report="formattedReport" :loading="loading" :intakes="intakes"/>
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 1">
-        <colaborators-production-report :loading="loading" :intakes="intakes"></colaborators-production-report>
+        <colaborators-production-report :loading="loading" :intakes="intakes">
+        </colaborators-production-report>
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 2">
-        <intakes-report :report="formattedReport" :loading="loading" :intakes="intakes"></intakes-report>
+        <intakes-report :report="formattedReport" :loading="loading" :intakes="intakes">
+        </intakes-report>
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 3">
-        <procedures-prices-analises></procedures-prices-analises>
+        <procedures-prices-analises>
+        </procedures-prices-analises>
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 4">
         <BestSellingExamsReport :date="dateBegin" :date2="dateEnd" />
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 5">
+        <BestSellingConsultationsReport :date="dateBegin" :date2="dateEnd" />
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 6">
         <OuttakesReport :date="dateBegin" :date2="dateEnd" :cb="pesquisar" />
       </v-flex>
       <v-flex class="hidden-screen-only">
@@ -92,6 +104,7 @@ import GeneralReport from "../components/reports/GeneralReport";
 import IntakesReport from "../components/reports/IntakesReport";
 import ProceduresPricesAnalises from "../components/reports/ProceduresPricesAnalises";
 import BestSellingExamsReport from "@/components/reports/BestSellingExamsReport";
+import BestSellingConsultationsReport from "@/components/reports/BestSellingConsultationsReport";
 import OuttakesReport from "@/components/reports/OuttakesReport";
 var moment = require("moment");
 export default {
@@ -101,6 +114,7 @@ export default {
     IntakesReport,
     ProceduresPricesAnalises,
     BestSellingExamsReport,
+    BestSellingConsultationsReport,
     OuttakesReport
   },
   data: vm => ({
@@ -110,6 +124,7 @@ export default {
       "Relatorio de Vendas",
       "Analise de preço de exames",
       "Exames mais vendidos",
+      "Consultas mais vendidas",
       "Relatório de Saídas"
     ],
     selectedReport: 0,
