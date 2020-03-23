@@ -42,9 +42,9 @@
         <v-spacer></v-spacer>
         <v-flex xs12 md6>
           <v-text-field
-                  prepend-icon="location_city"
+                  prepend-icon="person"
                   v-model="selectedDoctor.name"
-                  label="Clínica"
+                  label="Médico"
                   outlined
                   rounded
                   filled
