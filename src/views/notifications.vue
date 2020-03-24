@@ -81,7 +81,7 @@
 
         watch: {
             users(){
-                if (this.users) {
+                if (this.users.length !== 0) {
                     let data = {
                         name: 'DiscountColaborator',
                         info: 'Existem ações incomuns quanto ao padrão de descontos!',
@@ -95,7 +95,7 @@
             },
 
             consultation() {
-                if (this.consultation) {
+                if (this.consultation.length !== 0) {
                     let data = {
                         name: 'ConsultationCanceled',
                         info: 'Existem pacientes com consultas canceladas à serem avisados!',
@@ -109,7 +109,7 @@
             },
 
             outtakes () {
-                if (this.outtakes) {
+                if (this.outtakes.length !== 0) {
                     let data = {
                         name: 'outtakes',
                         info: 'Algumas contas vencem hoje. Pague-as agora!',
