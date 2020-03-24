@@ -44,7 +44,7 @@ const actions = {
                 allSpecialties.push({
                     ...specialty,
                     id: specDoc.id,
-                })
+                });
 
 
                 commit('setSpecialties', allSpecialties);

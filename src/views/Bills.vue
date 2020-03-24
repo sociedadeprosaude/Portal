@@ -16,8 +16,8 @@
                 :items="categories"
                 item-text="name"
                 return-object
-                label="Categoria"
-              ></v-combobox>
+                label="Categoria">
+              </v-combobox>
               <v-combobox
                 outlined
                 v-if="category"
@@ -26,8 +26,8 @@
                 v-model="subCategory"
                 :items="category.subCategories? [...category.subCategories,other]:[other]"
                 item-text="name"
-                return-object
-              ></v-combobox>
+                return-object>
+              </v-combobox>
             </v-flex>
 
             <v-flex xs12 sm3 class="ml-3">
@@ -35,8 +35,8 @@
                 outlined
                 label="Método de pagamento"
                 v-model="paymentMethod"
-                :items="paymentMethods"
-              ></v-select>
+                :items="paymentMethods">
+              </v-select>
             </v-flex>
             <v-flex xs12 sm3 class="ml-3">
               <v-select
@@ -45,10 +45,10 @@
                 v-model="unit"
                 :items="units"
                 item-text="name"
-                return-object
-              ></v-select>
+                return-object>
+              </v-select>
             </v-flex>
-            <v-spacer></v-spacer>
+            <v-spacer/>
             <v-flex xs12 sm2 class="mx-3">
               <v-currency-field outlined v-model="value"></v-currency-field>
             </v-flex>
@@ -101,7 +101,7 @@
 
               <!--                            <button v-on:click="submitFile()">Submit</button>-->
             </v-flex>
-            <v-spacer></v-spacer>
+            <v-spacer/>
             <!--                        <v-flex xs12 sm7 class="mt-6">-->
             <!--                            <v-layout row wrap v-if="paymentMethod === paymentMethods[0]">-->
             <!--                                <v-flex xs12>-->
@@ -161,8 +161,8 @@
                 label="categoria"
                 v-model="selectedCategory"
                 :items="categoriesName"
-                outlined
-              ></v-select>
+                outlined>
+              </v-select>
             </v-col>
           </v-row>
         </div>
@@ -174,14 +174,14 @@
             <v-flex xs12>
               <v-layout row wrap>
                 <span>{{bill.category}}</span>
-                <v-divider vertical class="mx-4"></v-divider>
+                <v-divider vertical class="mx-4"/>
                 <span>{{bill.payment_method}}</span>
-                <v-divider vertical class="mx-4"></v-divider>
+                <v-divider vertical class="mx-4"/>
                 <span class="font-weight-bold">{{bill.date_to_pay | dateFilter}}</span>
-                <v-divider vertical class="mx-4"></v-divider>
+                <v-divider vertical class="mx-4"/>
                 <span class="font-weight-bold">{{bill.paid | dateFilter}}</span>
-                <v-divider vertical class="mx-4"></v-divider>
-                <v-spacer></v-spacer>
+                <v-divider vertical class="mx-4"/>
+                <v-spacer/>
                 <span class="font-weight-bold">R$ {{bill.value}}</span>
                 <v-flex xs12>
                   <span>{{bill.description}}</span>
@@ -198,7 +198,7 @@
                         </v-flex>
                       </v-layout>
                     </v-layout>
-                    <v-divider vertical></v-divider>
+                    <v-divider vertical/>
                     <v-layout column wrap>
                       <span class="my-sub-headline mb-4">Comprovante</span>
                       <v-layout row wrap v-if="!loading">

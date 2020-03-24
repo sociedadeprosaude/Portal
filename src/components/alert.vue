@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-layout row wrap class="justify-center">
+        <v-layout row wrap class="justify-center ">
             <v-flex xs12>
                 <v-alert
                         class="text-left"
@@ -8,17 +8,16 @@
                         border="left"
                         elevation="2"
                         colored-border
-                        icon="error"
-                        v-if="consultation"
-                        @click.native="goRoute('/agenda/ConsultasCanceladas')">
+                        icon="notifications_active"
+                        @click.native="goRoute('/notifications')">
                     <v-layout row wrap>
-                        <span><strong>Existem pacientes com consultas canceladas à serem avisados!</strong></span>
+                        <span><strong>Há notificações para serem verificadas!</strong></span>
                         <v-spacer/>
                         <v-btn text
                                small
                                fab
                                class="pb-3 hidden-xs-only"
-                               @click.native="goRoute('/agenda/ConsultasCanceladas')">
+                               @click.native="goRoute('/notifications')">
                             <v-icon>open_in_new</v-icon>
                         </v-btn>
                     </v-layout>
@@ -31,19 +30,15 @@
 <script>
     export default {
 
+        name: "alert",
+
         data: () => ({
 
         }),
 
-        computed: {
-            consultation () {
-                return this.$store.getters.consultationsCanceled;
-            },
-        },
 
         methods:{
             goRoute(route) {
-                console.log('route', route);
                 this.$router.push(route)
             },
         }

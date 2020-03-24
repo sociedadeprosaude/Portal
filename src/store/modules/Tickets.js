@@ -5,32 +5,32 @@ const state = {
     rooms: undefined,
     roomsLoaded: false,
     generalInfo: {}
-}
+};
 
 const mutations = {
     setRooms(state, payload) {
-        state.rooms = payload
+        state.rooms = payload;
         state.roomsLoaded = true
     },
     setGeneralInfo(state, payload) {
         state.generalInfo = payload
     },
-}
+};
 
 const actions = {
 
     async createRoom(context, room) {
-        let selectedClinic = context.getters.selectedUnit
+        let selectedClinic = context.getters.selectedUnit;
         await firebase.firestore().collection('tickets').doc(selectedClinic.name).collection('rooms').doc(room.name).set(room)
     },
     async updateRoom(context, room) {
-        let selectedClinic = context.getters.selectedUnit
+        let selectedClinic = context.getters.selectedUnit;
         await firebase.firestore().collection('tickets').doc(selectedClinic.name).collection('rooms').doc(room.name).update(room)
     },
     async getRooms(context) {
-        let selectedClinic = context.getters.selectedUnit
+        let selectedClinic = context.getters.selectedUnit;
         firebase.firestore().collection('tickets').doc(selectedClinic.name).collection('rooms').onSnapshot((docs) => {
-            let rooms = []
+            let rooms = [];
             for(let doc in docs.docs) {
                 rooms.push(docs.docs[doc].data())
             }
@@ -38,10 +38,10 @@ const actions = {
         })
     },
     async getTicketsGeneralInfo(context) {
-        let selectedClinic = context.getters.selectedUnit
+        let selectedClinic = context.getters.selectedUnit;
         firebase.firestore().collection('tickets').doc(selectedClinic.name).onSnapshot((doc) => {
-            context.commit('setGeneralInfo', doc.data())
-            let info = doc.data()
+            context.commit('setGeneralInfo', doc.data());
+            let info = doc.data();
             if (!info || !info.ticket_number) {
                 info = {
                     ticket_number: 1,
@@ -53,7 +53,7 @@ const actions = {
         })
     },
     async updateGeneralInfo(context, info) {
-        let selectedClinic = context.getters.selectedUnit
+        let selectedClinic = context.getters.selectedUnit;
         try {
             await firebase.firestore().collection('tickets').doc(selectedClinic.name).update(info)
         } catch (e) {
@@ -62,7 +62,7 @@ const actions = {
             }
         }
     },
-}
+};
 
 const getters = {
     rooms (state) {
@@ -74,7 +74,7 @@ const getters = {
     ticketGeneralInfo(state) {
         return state.generalInfo
     }
-}
+};
 
 export default {
     state,

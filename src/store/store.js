@@ -27,7 +27,9 @@ import LocalUnit from "./modules/local/Unit";
 import Outtakes from "./modules/Outtakes";
 import Intakes from "./modules/Intakes";
 import Storage from "./modules/Storage";
+import Discount from "./modules/Discount"
 import Tickets from "./modules/Tickets";
+import alertNotifications from "./modules/alertNotifications";
 
 
 Vue.use(Vuex);
@@ -42,7 +44,7 @@ if (process.env.NODE_ENV === 'development') {
 const vuexLocal = new VuexPersistence({
     storage: window.localStorage,
     modules: ['LocalUnit']
-})
+});
 
 const store = new Vuex.Store({
     // plugins: [vuexLocal.plugin],
@@ -68,7 +70,9 @@ const store = new Vuex.Store({
         Outtakes,
         Intakes,
         Storage,
-        Tickets
+        Tickets,
+        Discount,
+        alertNotifications,
     },
 
     state: {
