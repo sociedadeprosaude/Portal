@@ -2,9 +2,16 @@
     <v-container class="ma-0 pa-0">
         <v-layout row wrap>
             <v-flex class="hidden-print-only" xs12>
-                <v-card id="carrinho" class="ml-5 elevation-2 ">
+                <v-card id="carrinho" class="elevation-2 ">
+
+                    <div style="position:fixed; right:20px; z-index:1">
+                        <v-btn class="my-0" x-large icon @click="$emit('closeCart')">
+                            <v-icon>cancel</v-icon>
+                        </v-btn>
+                    </div>
+                    
                     <v-container>
-                        <v-layout row wrap class="mx-3 align-center">
+                        <v-layout row wrap class=" mx-3 align-center">
                             <v-flex xs6 class="text-center">
                                 <v-btn
                                         @click="searchPatient = !searchPatient"
