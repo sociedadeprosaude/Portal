@@ -383,6 +383,9 @@
                                                                     :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress ? false : true"
                                                             ></v-select>
                                                         </v-flex>
+                                                        <v-flex v-if="index_Selecionado.consultation && index_Selecionado.consultation.type == 'Consulta' && returnOutRule()" vxs12 md12>
+                                                            <p class="subtitle-2 font-italic font-weight-medium text-justify red--text">O retorno não poderá ser marcado, pois o limite de 21 dias após a data da consulta já foi ultrapassado.</p>
+                                                        </v-flex>
                                                     </v-layout>
                                                 </v-container>
                                             </v-card-text>
@@ -414,7 +417,7 @@
                                                         rounded
                                                         dark
                                                         :to="{ name: 'AgendarRetorno', params: { q: {...this.index_Selecionado}}}"
-                                                        :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress && exames.indexOf(index_Selecionado.especialidade.name) == -1 ? false : true"
+                                                        :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress && exames.indexOf(index_Selecionado.especialidade.name) == -1 && !returnOutRule()? false : true"
                                                         v-if="index_Selecionado.modalidade !== 'Retorno'"
                                                 >Retorno
                                                     <v-icon>refresh</v-icon>
@@ -628,6 +631,12 @@
             }
         },
         methods: {
+            returnOutRule(){
+                var dateConsultation = moment(this.index_Selecionado.consultation.date)
+                var today = moment()
+                var diff = today.diff(dateConsultation,'days')
+                return diff > 21
+            },
             async initialConfig() {
                 this.loading = true
                 await this.$store.dispatch("getSpecialties")
