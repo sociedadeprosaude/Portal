@@ -42,13 +42,17 @@
                                         <v-icon>add</v-icon>
                                     </v-btn>
                                 </v-flex>
+
                                 <v-flex xs12><p style="color: white">.</p></v-flex>
                                 <v-flex xs12><p style="color: white">.</p></v-flex>
-                                <v-flex xs12><p style="color: white">.</p></v-flex>
-                                <v-flex xs12><p style="color: white">.</p></v-flex>
+
+                                <transition name="fade">
                                 <v-flex xs12 v-if="exams.length > 0">
                                     <strong>EXAMES SELECIONADOS:</strong>
                                 </v-flex>
+                                </transition>
+
+                                <transition name="fade">
                                 <v-flex xs11 v-if="exams.length > 0">
                                     <v-combobox
                                             :items="exams"
@@ -78,12 +82,17 @@
                                         </template>
                                     </v-combobox>
                                 </v-flex>
+                                </transition>
+
+                                <transition name="fade">
                                 <v-flex xs1 v-if="exams.length > 0">
                                     <v-btn v-on:click="deleteFromList" :disabled="!deleteIsValid" color="error">
                                         <v-icon>delete_forever</v-icon>
                                     </v-btn>
                                 </v-flex>
+                                </transition>
 
+                                <transition name="fade">
                                 <v-flex xs12 v-if="exams.length > 0">
                                     <h1>Exames Solicitados:</h1>
                                     <br>
@@ -95,6 +104,7 @@
                                         </ul>
                                     </transition-group>
                                 </v-flex>
+                                </transition>
 
                             </v-layout>
                         </v-container>
@@ -204,5 +214,17 @@
     }
     .slide-up-move {
         transition: transform 0.5s ease-out;
+    }
+    .fade-enter {
+        opacity: 0;
+    }
+    .fade-enter-active {
+        transition: opacity 0.5s ease-in;
+    }
+    .fade-leave-active {
+        transition: opacity 0.5s ease-out;
+    }
+    .fade-leave-to {
+        opacity: 0;
     }
 </style>
