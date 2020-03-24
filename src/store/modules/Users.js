@@ -3,6 +3,11 @@ import firebase, { firestore } from "firebase";
 import moment from 'moment'
 import functions from "../../utils/functions";
 
+
+function f(arg) {
+    return 0
+}
+
 const state = {
     selectedPatient: undefined,
     selectedDependent: undefined,
@@ -10,9 +15,7 @@ const state = {
 
 const mutations = {
     async setSelectedPatient(state, payload) {
-
         var consultations;
-
         if (payload) {
             await firebase.firestore().collection('users').doc(payload.cpf).collection('consultations')
                 .onSnapshot((querySnapshot) => {
@@ -131,24 +134,49 @@ const actions = {
         }
     },
     async updateUserField(context, payload) {
-        let upd = {};
-        if (payload.value === 'delete') {
-            upd[payload.field] = firebase.firestore.FieldValue.delete()
+        let upd = {}
+        console.log('payload: ', payload)
+        if (payload.value === 'pay') {
+            for(let advance in payload.user.advances){
+                console.log('advance: ', payload.user.advances[advance])
+                payload.user.advances[advance].parcel -=1;
+                for(let mes in payload.user.advances[advance].months){
+                    if(payload.date === payload.user.advances[advance].months[mes]){
+                        payload.user.advances[advance].months.splice(mes,1);
+                    }
+                }
+            }
+            upd= payload.user
+            console.log('upd: ',upd)
+            return await firebase.firestore().collection('users').doc(payload.user.cpf).set(upd)
+
         } else {
+            console.log('entrei aqui')
             upd[payload.field] = payload.value
+            console.log('upd: ', upd)
+            return await firebase.firestore().collection('users').doc(payload.user.cpf).update(upd)
         }
-        return await firebase.firestore().collection('users').doc(payload.user.cpf).update(upd)
     },
     async deleteUser({ }, user) {
         try {
-            await firebase.firestore().collection('users').doc(user.cpf).delete();
+            console.log('user :',user);
+            let adv= 0;
+            for(let advance in user.user.advances) {
+                console.log('advance: ', user.user.advances[advance])
+                for (let mes=0 ; mes< user.user.advances[advance].parcel; mes++) {
+                    console.log('numero de parcelas')
+                    adv += user.user.advances[advance].valueParcel
+                }
+            }
+            console.log('adv:', adv)
+            console.log('uid:', user.user.uid)
+            await firebase.firestore().collection('users').doc(user.user.cpf).delete()
+            //var usuario =firebase.auth(user.user.uid)
+            //console.log('usuario: ',usuario)
             return
         } catch (e) {
             throw e
         }
-    },
-    editPatient({ commit }, payload) {
-
     },
     async setSelectedPatient({ commit }, payload) {
         commit('setSelectedPatient', payload)

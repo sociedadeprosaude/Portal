@@ -27,6 +27,7 @@ import LocalUnit from "./modules/local/Unit";
 import Outtakes from "./modules/Outtakes";
 import Intakes from "./modules/Intakes";
 import Storage from "./modules/Storage";
+import Discount from "./modules/Discount"
 import Tickets from "./modules/Tickets";
 
 
@@ -68,7 +69,8 @@ const store = new Vuex.Store({
         Outtakes,
         Intakes,
         Storage,
-        Tickets
+        Tickets,
+        Discount
     },
 
     state: {
