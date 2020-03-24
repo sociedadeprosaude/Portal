@@ -56,7 +56,14 @@ const actions = {
         let intakes = [];
         for (let doc of intakesSnap.docs) {
             if (doc.data().colaborator) {
-                intakes.push(doc.data())
+                if(payload.colaborator){
+                    if(payload.colaborator.name === doc.data().colaborator.name){
+                        intakes.push(doc.data())
+                    }
+                }
+                else{
+                    intakes.push(doc.data())
+                }
             }
         }
         context.commit("setIntakesReport", intakes);
@@ -75,9 +82,21 @@ const actions = {
             .where('date', '<=', payload.dataFinal).orderBy('date').get();
         let intakes = [];
         for (let doc of intakesSnap.docs) {
-            intakes.push(doc.data())
-            /* if(doc.data().exams)
-                console.log('intake',doc.data()) */
+            if (doc.data().colaborator) {
+                if(payload.colaborator){
+                    console.log('colaborador selecionado')
+                    console.log(payload.colaborator)
+                    console.log(doc.data().colaborator.name)
+
+                    if(payload.colaborator === doc.data().colaborator.name){
+                        console.log('colaborador tem essa consulta')
+                        intakes.push(doc.data())
+                    }
+                }
+                else{
+                    intakes.push(doc.data())
+                }
+            }
         }
 
         // let intakes = await Promise.all(promises)
@@ -101,7 +120,7 @@ const actions = {
         let totalTaxaCredito = 0;
         let quantidadeOuttakes = 0;
         let relatorio = {};
-
+        console.log('intakes: ',intakes)
         for (let intake in intakes) {
             if (!intakes[intake].cancelled_by) {
                 if (intakes[intake].type === 'financial_support') {

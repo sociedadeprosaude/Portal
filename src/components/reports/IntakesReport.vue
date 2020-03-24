@@ -1,23 +1,6 @@
 <template>
     <v-container>
         <v-layout row wrap v-if="report" >
-            <v-layout row wrap class="align-content-sm-space-between justify-center mb-4">
-                <v-flex sm6>
-                    <v-select label="Colaborador"
-                              placeholder="filtar por colaborador"
-                              outlined
-                              :items="colaborators"
-                              append-outer-icon="event"
-                              item-value="name"
-                              v-model="colaborator"
-                              item-text="name"
-                              @click:append-outer="filterIntakesforColaborator(colaborator)"
-                    >
-                    </v-select>
-
-                </v-flex>
-
-            </v-layout>
             <v-flex xs12>
                 <v-card class="pa-4 receipt-to-print">
                     <v-layout row wrap>
@@ -28,173 +11,37 @@
                             <span class="font-italic font-weight-bold">{{report.dataInicio | dateFilter}} até {{report.dataFinal | dateFilter}}</span>
                         </v-flex>
                         <v-flex xs12 v-for="(intake, label) in report.intakes" :key="'intake' + label" class="my-1">
-                            <v-flex xs12>
-                                <v-layout row wrap class="mt-2">
-                                    <v-flex xs12>
-                                        <v-divider/>
-                                    </v-flex>
-                                    <v-flex xs1>
-                                        <v-divider vertical/>
-                                    </v-flex>
-                                    <v-flex xs5 class="font-weight-black">
-                                        Código
-                                    </v-flex>
-                                    <v-flex xs1>
-                                        <v-divider vertical/>
-                                    </v-flex>
-                                    <v-flex xs1 class="font-weight-black">
-                                        Custo
-                                    </v-flex>
-                                    <v-flex xs1>
-                                        <v-divider vertical/>
-                                    </v-flex>
-                                    <v-flex xs2 class="font-weight-black">
-                                        Venda
-                                    </v-flex>
-                                    <v-flex xs1>
-                                        <v-divider vertical/>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                        <v-divider/>
-                                    </v-flex>
-                                </v-layout>
-                            </v-flex>
-                            <v-layout row wrap>
                                 <v-flex xs12>
-                                    <v-divider/>
+                                    <v-layout row wrap class="mt-2">
+                                        <v-flex xs12>
+                                            <v-divider/>
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs5 class="font-weight-black">
+                                            Código
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs1 class="font-weight-black">
+                                            Custo
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs2 class="font-weight-black">
+                                            Venda
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <v-divider/>
+                                        </v-flex>
+                                    </v-layout>
                                 </v-flex>
-                                <v-flex xs1>
-                                    <v-divider vertical/>
-                                </v-flex>
-                                <v-flex xs5>
-                                    {{label}}
-                                </v-flex>
-                                <v-flex xs1>
-                                    <v-divider vertical/>
-                                </v-flex>
-                                <v-flex xs1>
-                                    {{intake.cost | moneyFilter}}
-                                </v-flex>
-                                <v-flex xs1>
-                                    <v-divider vertical/>
-                                </v-flex>
-                                <v-flex xs2>
-                                    {{intake.price | moneyFilter}}
-                                </v-flex>
-                                <v-flex xs1>
-                                    <v-divider vertical/>
-                                </v-flex>
-                                <v-flex xs12>
-                                    <v-divider/>
-                                </v-flex>
-                            </v-layout>
-                            <v-flex xs12 v-if="intake.exams && intake.exams.length > 0">
-                                <v-layout row wrap class="mt-2">
-                                    <v-flex xs12>
-                                        <v-divider/>
-                                    </v-flex>
-                                    <v-flex xs1>
-                                        <v-divider vertical/>
-                                    </v-flex>
-                                    <v-flex xs2 class="font-weight-bold">
-                                        Exames
-                                    </v-flex>
-                                    <v-flex xs1>
-                                        <v-divider vertical/>
-                                    </v-flex>
-                                    <v-flex xs2 class="font-weight-bold">
-                                        Clinica
-                                    </v-flex>
-                                    <v-flex xs1>
-                                        <v-divider vertical/>
-                                    </v-flex>
-                                    <v-flex xs1 class="font-weight-bold">
-                                        Custo
-                                    </v-flex>
-                                    <v-flex xs1>
-                                        <v-divider vertical/>
-                                    </v-flex>
-                                    <v-flex xs2 class="font-weight-bold">
-                                        Venda
-                                    </v-flex>
-                                    <v-flex xs1>
-                                        <v-divider vertical/>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                        <v-divider/>
-                                    </v-flex>
-                                </v-layout>
-                            </v-flex>
-                            <v-flex xs12 v-for="(examees, labels) in intake.exams" :key="'exams' + labels" class="my-1">
-
-                                <v-layout row wrap>
-                                    <v-flex xs12>
-                                        <v-divider/>
-                                    </v-flex>
-                                    <v-flex xs1>
-                                        <v-divider vertical/>
-                                    </v-flex>
-                                    <v-flex xs2>
-                                        {{examees.name}}
-                                    </v-flex>
-                                    <v-flex xs1>
-                                        <v-divider vertical/>
-                                    </v-flex>
-                                    <v-flex xs2 >
-                                        {{examees.clinic.name}}
-                                    </v-flex>
-                                    <v-flex xs1>
-                                        <v-divider vertical/>
-                                    </v-flex>
-                                    <v-flex xs1>
-                                        {{examees.cost | moneyFilter}}
-                                    </v-flex>
-                                    <v-flex xs1>
-                                        <v-divider vertical/>
-                                    </v-flex>
-                                    <v-flex xs2>
-                                        {{examees.price | moneyFilter}}
-                                    </v-flex>
-                                    <v-flex xs1>
-                                        <v-divider vertical/>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                        <v-divider/>
-                                    </v-flex>
-                                </v-layout>
-                            </v-flex>
-                            <v-flex xs12 v-if="intake.specialties && intake.specialties.length > 0">
-                                <v-layout row wrap class="mt-2">
-                                    <v-flex xs12>
-                                        <v-divider/>
-                                    </v-flex>
-                                    <v-flex xs1>
-                                        <v-divider vertical/>
-                                    </v-flex>
-                                    <v-flex xs5 class="font-weight-bold">
-                                        Especialidade
-                                    </v-flex>
-                                    <v-flex xs1>
-                                        <v-divider vertical/>
-                                    </v-flex>
-                                    <v-flex xs1 class="font-weight-bold">
-                                        Custo
-                                    </v-flex>
-                                    <v-flex xs1>
-                                        <v-divider vertical/>
-                                    </v-flex>
-                                    <v-flex xs2 class="font-weight-bold">
-                                        Venda
-                                    </v-flex>
-                                    <v-flex xs1>
-                                        <v-divider vertical/>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                        <v-divider/>
-                                    </v-flex>
-                                </v-layout>
-                            </v-flex>
-                            <v-flex xs12 v-for="(specialtie, labels) in intake.specialties" :key="labels" class="my-1">
                                 <v-layout row wrap>
                                     <v-flex xs12>
                                         <v-divider/>
@@ -203,19 +50,19 @@
                                         <v-divider vertical/>
                                     </v-flex>
                                     <v-flex xs5>
-                                        {{specialtie.name}}
+                                        {{label}}
                                     </v-flex>
                                     <v-flex xs1>
                                         <v-divider vertical/>
                                     </v-flex>
                                     <v-flex xs1>
-                                        {{specialtie.cost | moneyFilter}}
+                                        {{intake.cost | moneyFilter}}
                                     </v-flex>
                                     <v-flex xs1>
                                         <v-divider vertical/>
                                     </v-flex>
                                     <v-flex xs2>
-                                        {{specialtie.price | moneyFilter}}
+                                        {{intake.price | moneyFilter}}
                                     </v-flex>
                                     <v-flex xs1>
                                         <v-divider vertical/>
@@ -224,12 +71,148 @@
                                         <v-divider/>
                                     </v-flex>
                                 </v-layout>
-                            </v-flex>
-                            <v-flex xs12 v-for="i in 3">
-                                <v-divider color="black"/>
-                            </v-flex>
+                                <v-flex xs12 v-if="intake.exams && intake.exams.length > 0">
+                                    <v-layout row wrap class="mt-2">
+                                        <v-flex xs12>
+                                            <v-divider/>
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs2 class="font-weight-bold">
+                                            Exames
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs2 class="font-weight-bold">
+                                            Clinica
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs1 class="font-weight-bold">
+                                            Custo
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs2 class="font-weight-bold">
+                                            Venda
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <v-divider/>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                                <v-flex xs12 v-for="(examees, labels) in intake.exams" :key="'exams' + labels" class="my-1">
 
-                        </v-flex>
+                                    <v-layout row wrap>
+                                        <v-flex xs12>
+                                            <v-divider/>
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs2>
+                                            {{examees.name}}
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs2 >
+                                            {{examees.clinic.name}}
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            {{examees.cost | moneyFilter}}
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs2>
+                                            {{examees.price | moneyFilter}}
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <v-divider/>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                                <v-flex xs12 v-if="intake.specialties && intake.specialties.length > 0">
+                                    <v-layout row wrap class="mt-2">
+                                        <v-flex xs12>
+                                            <v-divider/>
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs5 class="font-weight-bold">
+                                            Especialidade
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs1 class="font-weight-bold">
+                                            Custo
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs2 class="font-weight-bold">
+                                            Venda
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <v-divider/>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                                <v-flex xs12 v-for="(specialtie, labels) in intake.specialties" :key="labels" class="my-1">
+                                    <v-layout row wrap>
+                                        <v-flex xs12>
+                                            <v-divider/>
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs5>
+                                            {{specialtie.name}}
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            {{specialtie.cost | moneyFilter}}
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs2>
+                                            {{specialtie.price | moneyFilter}}
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical/>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <v-divider/>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                                <v-flex xs12 v-for="i in 3">
+                                    <v-divider color="black"/>
+                                </v-flex>
+
+                            </v-flex>
                         <v-flex xs12>
                             <span class="my-headline">Relatório</span>
                         </v-flex>
@@ -448,7 +431,6 @@
 
         mounted() {
             this.$store.dispatch('getColaborators');
-            this.$store.dispatch('getIntakes')
         },
         computed: {
             proceduresQuantity() {
@@ -460,9 +442,10 @@
             },
             examsQuantity(){
                 let quantidade=0;
-                for(let exam in this.report.exams){
-                    quantidade +=this.report.exams[exam].quantidade
-                }
+                    for(let exam in this.report.exams){
+                        quantidade +=this.report.exams[exam].quantidade
+                    }
+
                 return quantidade
             },
             colaborators () {
@@ -474,18 +457,33 @@
         },
         methods: {
             filterIntakesforColaborator(colaborator) {
-
+            console.log('entrei')
                  let listIntakesColaborator = [];
-                 this.intakesReport.filter((intake) => {
+            console.log('Intakes pessoa:', this.report.intakes)
+                 this.report.intakes.filter((intake) => {
                      if (intake.colaborator.name === colaborator) {
                          listIntakesColaborator.push({
-                             intake
+                            colaborator: intake.colaborator,
+                            cost: intake.cost,
+                            date: intake.date,
+                            discount: intake.discount,
+                            exams: intake.exams,
+                             id: intake.id.toString(),
+                             payments: intake.payments,
+                             subTotal: intake.subTotal,
+                             total: intake.total,
+                             unit: intake.unit,
+                             user: intake.user,
+                             valuesPayments: intake.valuesPayments
+
                          })
                      }
                  });
 
                  if (listIntakesColaborator.length !== 0){
                      console.log('list', listIntakesColaborator)
+                     console.log('reports', this.report.intakes)
+                     return listIntakesColaborator
                  }
             }
         }

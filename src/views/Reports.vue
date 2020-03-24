@@ -57,6 +57,19 @@
             </v-date-picker>
           </v-menu>
         </v-flex>
+        <v-flex xs6  v-if="selectedReport === 2">
+          <v-select label="Colaborador"
+                    placeholder="filtar por colaborador"
+                    outlined
+                    :items="colaborators"
+                    append-outer-icon="event"
+                    item-value="name"
+                    v-model="colaborator"
+                    item-text="name"
+          >
+          </v-select>
+
+        </v-flex>
       </v-layout>
 
       <v-flex xs12 class="mb-3" v-if="selectedReport !== 3">
@@ -134,6 +147,7 @@ export default {
     dateFormatted: moment().format("DD/MM/YYYY"),
     dateFormatted2: moment().format("DD/MM/YYYY"),
     dateBegin: null,
+    colaborator: null,
     dateEnd: null,
     menu1: false,
     menu2: false,
@@ -147,7 +161,8 @@ export default {
       this.loading = true;
       this.intakes = await this.$store.dispatch("getIntakes", {
         initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
+        colaborator: this.colaborator
       });
 
       await this.pesquisar();
@@ -157,11 +172,13 @@ export default {
       this.loading = true;
       this.$store.dispatch("getOuttakes", {
         initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
       });
       this.formattedReport = await this.$store.dispatch("searchReports", {
         dataInicio: this.date,
-        dataFinal: this.date2
+        dataFinal: this.date2,
+        colaborator: this.colaborator
+
       });
       this.dateBegin = this.dateFormatted;
       this.dateEnd = this.dateFormatted2;
@@ -184,7 +201,7 @@ export default {
   async mounted() {
     this.$store.dispatch("getOuttakes", {
       initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-      finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+      finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
     });
     await this.$store.dispatch("getOuttakesCategories");
     this.getIntakes();
@@ -192,7 +209,10 @@ export default {
   computed: {
     Relatorio() {
       return this.$store.getters.relatorio;
-    }
+    },
+    colaborators () {
+      return this.$store.getters.colaborators;
+    },
   },
   watch: {
     date(val) {
