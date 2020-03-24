@@ -4,7 +4,7 @@
             <v-flex class="hidden-print-only" xs12>
                 <v-card id="carrinho" class="elevation-2 ">
 
-                    <div style="position:fixed; right:20px; z-index:1">
+                    <div class="hidden-sm-and-up" style="position:fixed; right:20px; z-index:1">
                         <v-btn class="my-0" x-large icon @click="$emit('closeCart')">
                             <v-icon>cancel</v-icon>
                         </v-btn>
