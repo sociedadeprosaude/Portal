@@ -23,6 +23,7 @@ import CardEditor from "./views/CardEditor";
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
 import CashierRoutes from "./routes/CashierRoutes";
 import discount from "./views/discount"
+import notifications from "./views/notifications";
 
 
 Vue.use(Router);
@@ -158,13 +159,21 @@ let mainRoutes = [
       requiresAuth: false,
     }
   },
-]
+  {
+    path: '/notifications',
+    name: 'Notifications',
+    component : notifications,
+    meta: {
+      requiresAuth: false,
+    },
+  },
+];
 
-let routes = mainRoutes.concat(DoctorsAgendaRoutes, CashierRoutes)
+let routes = mainRoutes.concat(DoctorsAgendaRoutes, CashierRoutes);
 let router =  new Router({
   mode: 'history',
   routes: routes
-})
+});
 
 router.afterEach((to, from, next) => {
   if (to.path.includes('agenda')) {
@@ -172,7 +181,7 @@ router.afterEach((to, from, next) => {
   } else {
     store.commit('setDoctorsAgendaToolbar', false)
   }
-})
+});
 
 export default router
 

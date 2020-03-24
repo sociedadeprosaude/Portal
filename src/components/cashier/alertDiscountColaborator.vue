@@ -8,17 +8,17 @@
                         border="left"
                         elevation="2"
                         colored-border
-                        icon="error"
-                        v-if="consultation"
-                        @click.native="goRoute('/agenda/ConsultasCanceladas')">
+                        icon="notification_important"
+                        v-if="users"
+                        @click.native="goRoute('/discount')">
                     <v-layout row wrap>
-                        <span><strong>Existem pacientes com consultas canceladas à serem avisados!</strong></span>
+                        <span><strong>Existem ações incomuns quanto ao padrão de descontos!</strong></span>
                         <v-spacer/>
                         <v-btn text
                                small
                                fab
                                class="pb-3 hidden-xs-only"
-                               @click.native="goRoute('/agenda/ConsultasCanceladas')">
+                               @click.native="goRoute('/discount')">
                             <v-icon>open_in_new</v-icon>
                         </v-btn>
                     </v-layout>
@@ -30,22 +30,23 @@
 
 <script>
     export default {
+        name: "alertDiscountColaborator",
 
-        data: () => ({
+        computed:{
+            users() {
+                return this.$store.getters.colaboratorsWarning
+            }
+        },
 
-        }),
-
-        computed: {
-            consultation () {
-                return this.$store.getters.consultationsCanceled;
-            },
+        mounted () {
+            this.$store.dispatch('WarningColaborators')
         },
 
         methods:{
             goRoute(route) {
-                console.log('route', route);
                 this.$router.push(route)
             },
         }
+
     }
 </script>

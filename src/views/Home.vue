@@ -2,7 +2,7 @@
     <v-container fluid>
         <v-layout wrap row class="justify-center" v-if="!loading">
             <v-flex xs12 sm8 class="text-center">
-                <alertConsultationCanceled/>
+                <alert/>
             </v-flex>
             <v-flex xs12 class="text-center">
                 <select-patient-card class="hidden-xs-only"/>
@@ -114,13 +114,13 @@
 
 <script>
     import SelectPatientCard from "../components/SelectPatientCard";
-    import alertConsultationCanceled from "../components/doctorsAgenda/alertConsultationCanceled.vue";
+    import alert from "../components/alert.vue";
 
     export default {
 
         components: {
             SelectPatientCard,
-            alertConsultationCanceled,
+            alert,
         },
 
         mounted() {
