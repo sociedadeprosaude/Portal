@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <v-layout wrap row class="justify-center" v-if="!loading">
-            <v-flex xs12 sm8 class="text-center">
+            <v-flex xs12 sm8 class="text-center" v-if="notifications">
                 <alert/>
             </v-flex>
             <v-flex xs12 class="text-center">
@@ -124,7 +124,7 @@
         },
 
         mounted() {
-            this.$store.dispatch('WarningColaborators')
+            this.$store.dispatch('loadNotifications');
             //   let perm = [
             //       'Caixa',
             //       'Prontuarios',
@@ -220,7 +220,7 @@
                                 permission: 'Caixa',
                                 icon: 'credit_card',
                             },
-  
+
                             // {
                             //     title: 'Exames',
                             //     to: '/exames',
@@ -278,9 +278,11 @@
             user() {
                 return this.$store.getters.user
             },
-            Warning(){
-                return this.$store.getters.colaboratorsWarning
+
+            notifications () {
+                return this.$store.getters.notification;
             },
+
             filteredPages() {
                 // if (!this.user.permissions) return []
                 if(this.user){

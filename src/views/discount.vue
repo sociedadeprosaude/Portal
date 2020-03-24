@@ -44,9 +44,9 @@
                                 <v-flex xs12>
                                     <v-layout row wrap>
                                         <v-flex xs12>
-                                            <span class="my-headline text-left">Descontos</span>
+                                            <span class="my-headline text-left mt-2">Descontos</span>
                                         </v-flex>
-                                        <v-flex xs3 class="my-2" v-for="intake in user.intakes" :key="intake.orcamento">
+                                        <v-flex xs3 class="my-2 mx-3" v-for="intake in user.intakes" :key="intake.orcamento">
                                             <v-card class="pa-3">
                                                 <v-layout row wrap>
                                                     <v-flex xs12 class="mb-3">

@@ -42,6 +42,20 @@
             this.$store.dispatch('WarningColaborators')
         },
 
+        watch: {
+            users(){
+                if (this.users) {
+                    let data = {
+                        name: 'DiscountColaborator',
+                        info: 'Existem ações incomuns quanto ao padrão de descontos!',
+                        link: '/discount'
+                    };
+                    this.$store.dispatch('addNotifications', data);
+                }
+            }
+
+        },
+
         methods:{
             goRoute(route) {
                 this.$router.push(route)
