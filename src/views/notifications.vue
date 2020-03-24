@@ -33,6 +33,8 @@
    // import alertDiscountColaborator from "../components/cashier/alertDiscountColaborator";
 
 
+    import moment from "moment";
+
     export default {
 
         data () {
@@ -49,6 +51,12 @@
         mounted() {
             this.$store.dispatch('WarningColaborators');
             this.$store.dispatch('getConsultationsCanceled');
+            this.$store.dispatch('getOuttakes');
+            let data = {
+                date: moment().format("YYYY-MM-DD").toString(),
+                outtakes: this.$store.getters.outtakes,
+            };
+            this.$store.dispatch('dueDateToday', data);
             this.$store.dispatch('loadNotifications');
 
         },
@@ -60,6 +68,10 @@
 
             consultation () {
                 return this.$store.getters.consultationsCanceled;
+            },
+
+            outtakes () {
+                return this.$store.getters.alertOuttakes;
             },
 
             notifications () {
@@ -93,6 +105,20 @@
                     this.$store.dispatch('addNotifications', data);
                 } else {
                     this.$store.dispatch('deleteNotification', 'ConsultationCanceled');
+                }
+            },
+
+            outtakes () {
+                if (this.outtakes) {
+                    let data = {
+                        name: 'outtakes',
+                        info: 'Algumas contas vencem hoje. Pague-as agora!',
+                        link: '/bills',
+                        icon: 'monetization_on'
+                    };
+                    this.$store.dispatch('addNotifications', data);
+                } else {
+                    this.$store.dispatch('deleteNotification', 'outtakes');
                 }
             }
         },
