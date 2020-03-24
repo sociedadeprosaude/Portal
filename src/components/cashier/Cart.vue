@@ -2,9 +2,16 @@
     <v-container class="ma-0 pa-0">
         <v-layout row wrap>
             <v-flex class="hidden-print-only" xs12>
-                <v-card id="carrinho" class="ml-5 elevation-2 ">
+                <v-card id="carrinho" class="elevation-2 ">
+
+                    <div style="position:fixed; right:20px; z-index:1">
+                        <v-btn class="my-0" x-large icon @click="$emit('closeCart')">
+                            <v-icon>cancel</v-icon>
+                        </v-btn>
+                    </div>
+                    
                     <v-container>
-                        <v-layout row wrap class="mx-3 align-center">
+                        <v-layout row wrap class=" mx-3 align-center">
                             <v-flex xs6 class="text-center">
                                 <v-btn
                                         @click="searchPatient = !searchPatient"
@@ -368,7 +375,7 @@
                 searchBudgetBtn: false,
                 searchPatient: false,
                 payments: ['Dinheiro'],
-                valuesPayments: [''],
+                valuesPayments:[''],
                 moneyDiscout: 0,
                 data: moment().format("YYYY-MM-DD HH:mm:ss"),
                 parcelas: '1',
@@ -574,17 +581,29 @@
                 if (!user) {
                     return
                 }
+                await this.saveBudget(this.generateBudget())
+                let newBudget = this.generateBudget();
+                newBudget.id = this.selectedBudget.id;
+                this.$store.commit('setSelectedBudget', newBudget)
                 if (!this.selectedBudget) {
                     await this.saveBudget(this.generateBudget())
-                }  else {
+                } else {
                     let newBudget = this.generateBudget();
-                    if (!this.selectedBudget.id) {
+                    if(!this.selectedBudget.id) {
                         this.selectedBudget.id = this.now
                     }
                     newBudget.id = this.selectedBudget.id;
                     this.$store.commit('setSelectedBudget', newBudget)
                 }
                 await this.$store.dispatch('addIntake', this.selectedBudget);
+                let porcentagem = (this.selectedBudget.discount / this.selectedBudget.subTotal)
+
+                console.log('total : ', this.selectedBudget)
+                if(porcentagem >= 0.5 || parseFloat(this.searchBudget.subTotal) >  this.selectedBudget.cost){
+                    console.log('entrei')
+                    this.$store.dispatch('DiscountWarning', {orcamento: this.selectedBudget.id, date: this.selectedBudget.date,
+                        discont: ((this.selectedBudget.discount / this.selectedBudget.subTotal)*100), name:this.selectedBudget.colaborator.name, cpf:this.selectedBudget.colaborator.cpf})
+                }
                 this.updateBudgetsIntakes();
                 this.receipt(this.selectedBudget);
                 this.paymentLoading = false;

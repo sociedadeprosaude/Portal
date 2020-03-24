@@ -32,8 +32,10 @@
                                 <v-icon size="72">{{page.icon}}</v-icon>
                                 <span class="text-center my-headline">
                         {{page.title}}
-                    </span>
+                                    <v-icon v-if="(page.title === 'Desconto A Cima' && Warning)">notification_important</v-icon>
+                        </span>
                             </v-layout>
+
                         </v-card>
                         <v-card
                                 width="124"
@@ -122,6 +124,7 @@
         },
 
         mounted() {
+            this.$store.dispatch('WarningColaborators')
             //   let perm = [
             //       'Caixa',
             //       'Prontuarios',
@@ -217,6 +220,12 @@
                                 permission: 'Caixa',
                                 icon: 'credit_card',
                             },
+                            {
+                                title: 'Desconto A Cima',
+                                icon: 'group',
+                                permission: 'Colaboradores',
+                                to: '/discount'
+                            },
                             // {
                             //     title: 'Exames',
                             //     to: '/exames',
@@ -274,6 +283,9 @@
             user() {
                 return this.$store.getters.user
             },
+            Warning(){
+                return this.$store.getters.colaboratorsWarning
+            },
             filteredPages() {
                 // if (!this.user.permissions) return []
                 if(this.user){
@@ -292,6 +304,7 @@
                 }
                 }
         },
+
     }
 </script>
 
@@ -305,7 +318,6 @@
         list-style-type: none;
         padding: 0;
     }
-
     li {
         display: inline-block;
         margin: 0 10px;

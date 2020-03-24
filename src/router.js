@@ -22,6 +22,7 @@ import CardEditor from "./views/CardEditor";
 
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
 import CashierRoutes from "./routes/CashierRoutes";
+import discount from "./views/discount"
 
 
 Vue.use(Router);
@@ -56,6 +57,14 @@ let mainRoutes = [
     path: '/relatorio',
     name: 'Relatorios',
     component: Reports,
+    meta : {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/discount',
+    name: 'discount',
+    component: discount,
     meta : {
       requiresAuth: true
     }
