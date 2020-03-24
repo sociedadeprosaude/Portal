@@ -29,8 +29,8 @@
                                 <v-icon size="72">{{page.icon}}</v-icon>
                                 <span class="text-center my-headline">
                         {{page.title}}
-                                                                         <v-icon v-if="(page.title === 'Desconto A Cima' && Warning)">notification_important</v-icon>
-                    </span>
+                                    <v-icon v-if="(page.title === 'Desconto A Cima' && Warning)">notification_important</v-icon>
+                        </span>
                             </v-layout>
 
                         </v-card>

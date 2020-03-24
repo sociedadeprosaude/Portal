@@ -3,6 +3,11 @@ import firebase, { firestore } from "firebase";
 import moment from 'moment'
 import functions from "../../utils/functions";
 
+
+function f(arg) {
+    return 0
+}
+
 const state = {
     selectedPatient: undefined,
     selectedDependent: undefined,
@@ -10,6 +15,7 @@ const state = {
 
 const mutations = {
     async setSelectedPatient(state, payload) {
+        f(4)
         var consultations
         if (payload) {
             await firebase.firestore().collection('users').doc(payload.cpf).collection('consultations')
@@ -118,14 +124,24 @@ const actions = {
     },
     async deleteUser({ }, user) {
         try {
-            await firebase.firestore().collection('users').doc(user.cpf).delete()
+            console.log('user :',user);
+            let adv= 0;
+            for(let advance in user.user.advances) {
+                console.log('advance: ', user.user.advances[advance])
+                for (let mes=0 ; mes< user.user.advances[advance].parcel; mes++) {
+                    console.log('numero de parcelas')
+                    adv += user.user.advances[advance].valueParcel
+                }
+            }
+            console.log('adv:', adv)
+            console.log('uid:', user.user.uid)
+            //await firebase.firestore().collection('users').doc(user.user.cpf).delete()
+            //var usuario =firebase.auth(user.user.uid)
+            //console.log('usuario: ',usuario)
             return
         } catch (e) {
             throw e
         }
-    },
-    editPatient({ commit }, payload) {
-
     },
     async setSelectedPatient({ commit }, payload) {
         commit('setSelectedPatient', payload)

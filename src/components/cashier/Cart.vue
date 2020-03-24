@@ -378,7 +378,7 @@
                 searchBudgetLoading: false,
                 searchBudgetBtn: false,
                 searchPatient: false,
-                payments: [''],
+                payments: ['Dinheiro'],
                 valuesPayments:[''],
                 moneyDiscout: 0,
                 now: moment().valueOf(),

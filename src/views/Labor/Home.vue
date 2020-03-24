@@ -46,9 +46,12 @@
                             <!--                                </v-flex>-->
                             <!--                            </v-layout>-->
                             <v-layout row wrap>
-                                <v-flex xs12 class="text-left mb-2">
+                                <v-flex xs10 class="text-left mb-2">
                                     <v-btn rounded class="primary mx-1" @click="setSalary(user)">Salario</v-btn>
                                     <v-btn rounded class="primary mx-1" @click="setAdvance(user)">Adiantamento</v-btn>
+                                </v-flex>
+                                <v-flex xs2>
+                                    <v-btn rounded class="primary mx-1" @click="deleteUser(user)">Apagar</v-btn>
                                 </v-flex>
                                 <v-flex xs12>
                                     <v-divider></v-divider>
@@ -462,6 +465,9 @@
                 await this.getInitialInfo()
                 this.clearValuesForm()
                 this.loading = false
+            },
+            async deleteUser(user){
+                await this.$store.dispatch('deleteUser',{user: user})
             },
             async setUserUnit(unit, user) {
                 await this.$store.dispatch('updateUserField', {
