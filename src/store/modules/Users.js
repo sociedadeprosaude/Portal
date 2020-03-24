@@ -2,6 +2,9 @@ import axios from 'axios'
 import firebase, { firestore } from "firebase";
 import moment from 'moment'
 import functions from "../../utils/functions";
+import admin from "firebase-admin";
+import constants from '@/utils/constants'
+admin.initializeApp(constants.FIREBASE_CONFIG);
 
 
 function f(arg) {
@@ -136,11 +139,11 @@ const actions = {
         }
     },
     async updateUserField(context, payload) {
-        let upd = {}
-        console.log('payload: ', payload)
+        let upd = {};
+        console.log('payload: ', payload);
         if (payload.value === 'pay') {
             for(let advance in payload.user.advances){
-                console.log('advance: ', payload.user.advances[advance])
+                console.log('advance: ', payload.user.advances[advance]);
                 payload.user.advances[advance].parcel -=1;
                 for(let mes in payload.user.advances[advance].months){
                     if(payload.date === payload.user.advances[advance].months[mes]){
@@ -159,22 +162,35 @@ const actions = {
             return await firebase.firestore().collection('users').doc(payload.user.cpf).update(upd)
         }
     },
-    async deleteUser({ }, user) {
+    async deleteUser({}, user) {
         try {
             console.log('user :',user);
             let adv= 0;
             for(let advance in user.user.advances) {
-                console.log('advance: ', user.user.advances[advance])
+                console.log('advance: ', user.user.advances[advance]);
                 for (let mes=0 ; mes< user.user.advances[advance].parcel; mes++) {
-                    console.log('numero de parcelas')
+                    console.log('numero de parcelas');
                     adv += user.user.advances[advance].valueParcel
                 }
             }
-            console.log('adv:', adv)
-            console.log('uid:', user.user.uid)
-            await firebase.firestore().collection('users').doc(user.user.cpf).delete()
+            console.log('adv:', adv);
+            console.log('uid:', user.user.uid);
+            await firebase.firestore().collection('users').doc(user.user.cpf).delete();
+            admin.auth().deleteUser(user.user.uid).then(function() {
+                console.log('Successfully deleted user');
+            })
+                .catch(function(error) {
+                    console.log('Error deleting user:', error);
+                });
             //var usuario =firebase.auth(user.user.uid)
             //console.log('usuario: ',usuario)
+
+            //var user = firebase.auth().currentUser;
+            //user.delete().then(function() {
+                // User deleted.
+            //}).catch(function(error) {
+                // An error happened.
+           // });
             return
         } catch (e) {
             throw e

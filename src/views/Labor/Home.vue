@@ -54,7 +54,7 @@
                                     <v-btn rounded class="primary mx-1" @click="deleteUser(user)">Apagar</v-btn>
                                 </v-flex>
                                 <v-flex xs12>
-                                    <v-divider></v-divider>
+                                    <v-divider/>
                                 </v-flex>
                                 <v-flex xs12>
                                  <span class="mr-3">
