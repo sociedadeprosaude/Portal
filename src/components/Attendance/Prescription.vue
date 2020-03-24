@@ -52,7 +52,7 @@
                                     <v-icon>add</v-icon>
                                 </v-btn>
                             </v-flex>
-                            
+
                             <v-flex xs12><p style="color: white">.</p></v-flex>
                             <v-flex xs12><p style="color: white">.</p></v-flex>
 
