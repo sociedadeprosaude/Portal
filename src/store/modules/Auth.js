@@ -4,7 +4,7 @@ import router from "../../router";
 const state = {
     user: undefined,
     permissions: []
-}
+};
 
 const mutations = {
     setUser(state, payload) {
@@ -13,7 +13,7 @@ const mutations = {
     setPermissionsList(state, payload) {
         state.permissions = payload
     },
-}
+};
 
 const actions = {
     // async registerUser({commit}, user) {
@@ -31,16 +31,16 @@ const actions = {
     //     return
     // },
     async logOut(context) {
-        firebase.auth().signOut()
+        firebase.auth().signOut();
         setTimeout(() => {
             context.commit('setUser', undefined)
-        }, 500)
+        }, 500);
         return
     },
     async getUser({commit}, user) {
         try {
             let userDoc = await firebase.firestore().collection('users/').where('uid', '==', user.uid).get()
-            commit('setUser', userDoc.docs[0].data())
+            commit('setUser', userDoc.docs[0].data());
             if (userDoc.docs[0].data().clinic) {
                 this.commit('setSelectedUnit', userDoc.docs[0].data().clinic)
             }
@@ -48,8 +48,8 @@ const actions = {
         }
         catch (e) {
             if (e.code === 'permission-denied') {
-                await firebase.auth().signOut()
-                await router.push('/login')
+                await firebase.auth().signOut();
+                await router.push('/login');
                 return
             }
         }
@@ -73,23 +73,23 @@ const actions = {
 
     async updateAccount({commit},payload){
         try {
-            let id =  payload.cpf
-            id = id.replace('.',"")
-            id = id.replace('.',"")
-            id =  id.replace('-',"")
-            console.log(id)
+            let id =  payload.cpf;
+            id = id.replace('.',"");
+            id = id.replace('.',"");
+            id =  id.replace('-',"");
+            console.log(id);
             await firebase.firestore().collection('users').doc(id).update({
                 name:payload.name,
                 telephones:payload.telephones,
                 address:payload.address
-            })
+            });
 
             commit('setUser',payload)
         } catch (e) {
             console.log(e)
         }
     }
-}
+};
 
 const getters = {
     permissionsList(state) {
@@ -98,7 +98,7 @@ const getters = {
     user (state) {
         return state.user
     }
-}
+};
 
 export default {
     state,

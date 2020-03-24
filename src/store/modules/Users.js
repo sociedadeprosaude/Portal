@@ -6,6 +6,7 @@ import functions from "../../utils/functions";
 const state = {
     selectedPatient: undefined,
     selectedDependent: undefined,
+
 };
 
 const mutations = {
@@ -35,7 +36,8 @@ const mutations = {
     clearSelectedDependent(state) {
 
         state.selectedDependent = undefined
-    }
+    },
+
 };
 
 const actions = {
