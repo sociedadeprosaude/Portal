@@ -336,6 +336,9 @@
                                                         :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress ? false : true"
                                                 ></v-select>
                                             </v-flex>
+                                            <v-flex v-if="index_Selecionado.consultation && index_Selecionado.consultation.type == 'Consulta' && returnOutRule()" vxs12 md12>
+                                                <p class="subtitle-2 font-italic font-weight-medium text-justify red--text">O retorno não poderá ser marcado, pois o limite de 21 dias após a data da consulta já foi ultrapassado.</p>
+                                            </v-flex>
                                         </v-layout>
                                     </v-container>
                                 </v-card-text>
@@ -376,7 +379,7 @@
                                             rounded
                                             dark
                                             :to="{ name: 'AgendarRetorno', params: { q: {...this.index_Selecionado,consultaPaciente:true}}}"
-                                            :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress && exames.indexOf(index_Selecionado.especialidade.name) == -1 ? false : true"
+                                            :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress && exames.indexOf(index_Selecionado.especialidade.name) == -1 && !returnOutRule() ? false : true"
                                             v-if="index_Selecionado.modalidade !== 'Retorno'"
                                     >Retorno
                                         <v-icon>refresh</v-icon>
@@ -452,7 +455,7 @@
     import Patient from '../../components/SelectPatientCard'
     import ConsultationDocument from "../../components/doctorsAgenda/ConsultationDocument";
     import ConsultationVerifier from "../../components/doctorsAgenda/ConsultationVerifier";
-
+    
     export default {
         components: {Patient, ConsultationDocument, ConsultationVerifier},
         data: () => ({
@@ -594,6 +597,12 @@
             //this.$store.dispatch('setLoader',{loader:false,view:"RetornoConsulta"})
         },
         methods: {
+            returnOutRule(){
+                var dateConsultation = moment(this.index_Selecionado.consultation.date)
+                var today = moment()
+                var diff = today.diff(dateConsultation,'days')
+                return diff > 21
+            },
             formatDate(date) {
                 if (!date) return null
                 var patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
