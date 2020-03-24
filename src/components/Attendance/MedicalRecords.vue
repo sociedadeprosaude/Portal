@@ -7,7 +7,7 @@
             <v-card-text>
                <!-- :editor-toolbar="customToolbar"-->
                 <vue-editor v-model="prontuario"/>
-<!--                <div>{{ prontuario }}</div>-->
+                <div>{{ prontuario }}</div>
                 <!--<strong>{{consultation}}</strong>-->
             </v-card-text>
             <v-divider></v-divider>

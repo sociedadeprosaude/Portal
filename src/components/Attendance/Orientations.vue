@@ -6,15 +6,15 @@
             </v-card-title>
             <v-card-text>
                 <vue-editor v-model="prontuario" :editor-toolbar="customToolbar"/>
-                <h1>{{ prontuario }}</h1>
+<!--                <h1>{{ prontuario }}</h1>-->
 <!--                <strong>{{consultation}}</strong>-->
             </v-card-text>
-<!--            <v-divider></v-divider>
+            <v-divider></v-divider>
             <v-card-actions>
-                &lt;!&ndash;                <v-btn color="error" @click="clear()">Fechar</v-btn>&ndash;&gt;
                 <v-spacer></v-spacer>
-                <v-btn color="success" @click="save()" :disabled="!prontuario">Salvar</v-btn>
-            </v-card-actions>-->
+                <v-btn color="primary" @click="save()" :disabled="!prontuario">Imprimir<v-icon right>print</v-icon></v-btn>
+                <v-spacer></v-spacer>
+            </v-card-actions>
         </v-card>
     </v-container>
 </template>
@@ -25,7 +25,7 @@
         props: ['consultation'],
         components: { VueEditor },
         data: () => ({
-            prontuario: "<p>paciente:</p><p>mulher</p><p>42 anos</p><p>menopausa</p><p><br></p>",
+            prontuario: "<p class=\"ql-align-center\"><br></p><p class=\"ql-align-center\"><strong>LAUDO MÉDICO NEUROLÓGICO</strong></p><p><br></p><p><br></p><p class=\"ql-align-justify\">Paciente: <strong><u>Georgina da Mata Marialva</u></strong> é portadora de quadro demencial senil.</p><p class=\"ql-align-justify\"><strong>Inválida.</strong></p><p class=\"ql-align-justify\"><br></p><p class=\"ql-align-justify\">Necessita de auxilio de pessoa da família para atividade da vida diária.</p><p class=\"ql-align-justify\"><strong><u>CID x: F01.</u></strong></p><p class=\"ql-align-justify\"><br></p><p class=\"ql-align-justify\"><br></p><p class=\"ql-align-right\">Manaus, 24/03/2020</p><p class=\"ql-align-right\"><br></p><p class=\"ql-align-right\"><br></p><p class=\"ql-align-right\"><br></p><p class=\"ql-align-justify\"><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><strong>Dr. Renildo Sergio Batista dos Anjos</strong></p><p class=\"ql-align-right\"> <strong>Neurologia/ Neurocirurgia</strong></p><p class=\"ql-align-right\"> <strong>CRM/ AM 4825</strong></p><p class=\"ql-align-right\"> <strong>RQE – 1749/1750</strong></p>",
             customToolbar: [
                 [],
                 [],
