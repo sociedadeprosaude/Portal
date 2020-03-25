@@ -937,7 +937,7 @@
             },
             async listenConsultations() {
                 console.log(moment()
-                            .subtract(5, "hours")
+                            .subtract(12, "hours")
                             .format("YYYY-MM-DD HH:mm:ss"))
                 this.consultationsListenerUnsubscriber = await this.$store.dispatch(
                     "listenConsultations",
