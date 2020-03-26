@@ -59,9 +59,10 @@
                                             {{dados.name}} - {{dados.concentration}} - {{dados.pharmaceutical}}
                                             <v-layout class="align-center justify-center">
                                                 <v-flex xs12>
-                                            <v-text-field :prefix="dados.name + ' - '+ 'Observações:'" outlined></v-text-field>
+                                                    <v-text-field :prefix="dados.name + ' - '+ 'Observações:'" outlined></v-text-field>
                                                 </v-flex>
                                             </v-layout>
+                                            <!--<v-flex><strong style="color: white">.</strong></v-flex>-->
                                         </li>
                                     </ul>
                                 </v-flex>

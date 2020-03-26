@@ -144,17 +144,11 @@
 
                     <v-flex xs12><p style="color: white">.</p></v-flex>
                     <v-layout align-center justify-center>
-                        <v-btn
-                                align-center
-                                justify-center
-                                round
-                                color="primary"
-                                :disabled="!formIsValid"
-                                @click="dias"
-                        >
-                            IMPRIMIR
-                            <v-icon right color="white">print</v-icon>
-                        </v-btn>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="primary" :disabled="!formIsValid" @click="documentDialog = true"><v-icon left>print</v-icon>GERAR PDF <v-icon right>fa fa-print</v-icon></v-btn>
+                            <v-spacer></v-spacer>
+                        </v-card-actions>
                     </v-layout>
                 </v-card-text>
             </v-card>

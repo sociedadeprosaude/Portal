@@ -12,7 +12,7 @@
             <v-divider></v-divider>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" @click="save()" :disabled="!prontuario">Imprimir<v-icon right>print</v-icon></v-btn>
+                <v-btn color="primary" :disabled="!formIsValid" @click="documentDialog = true"><v-icon left>print</v-icon>GERAR PDF <v-icon right>fa fa-print</v-icon></v-btn>
                 <v-spacer></v-spacer>
             </v-card-actions>
         </v-card>
