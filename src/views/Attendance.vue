@@ -196,10 +196,10 @@
         opacity: 0;
     }
     .fade-enter-active {
-        transition: opacity 0.7s ease-in;
+        transition: opacity 0.6s ease-in;
     }
     .fade-leave-active {
-        transition: opacity 0.7s ease-out;
+        transition: opacity 0.6s ease-out;
     }
     .fade-leave-to {
         opacity: 0;

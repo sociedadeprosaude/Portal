@@ -163,8 +163,6 @@
 </template>
 
 <script>
-    import functions from "../../utils/functions";
-
     var moment = require('moment');
     export default {
         props: ['consultation'],

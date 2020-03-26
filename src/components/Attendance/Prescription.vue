@@ -119,20 +119,29 @@
                         </v-layout>
                     </v-container>
                 </v-card-text>
-<!--                <v-divider></v-divider>
+                <v-divider></v-divider>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="success" @click="null">Salvar</v-btn>
-                </v-card-actions>-->
+                    <v-btn color="primary" :disabled="!formIsValid" @click="documentDialog = true"><v-icon left>print</v-icon>GERAR PDF <v-icon right>fa fa-print</v-icon></v-btn>
+                    <v-spacer></v-spacer>
+                </v-card-actions>
             </v-card>
         </v-container>
+
+        <v-dialog v-model="documentDialog">
+            <prescription-p-d-f @close-dialog="documentDialog = false" :consultation="consultation" :medicines="medicines"></prescription-p-d-f>
+        </v-dialog>
+
     </v-content>
 </template>
 
 <script>
+    import PrescriptionPDF from "./printing/prescriptionPDF";
     export default {
+        components: {PrescriptionPDF},
         props:['consultation'],
         data: () => ({
+            documentDialog: false,
             sus: [
                 {name:'acetato de betametasona + fosfato dissódico de betametasona',concentration:'3 mg/mL + 3 mg/mL',pharmaceutical:'suspensão injetável',},
                 {name:'acetato de hidrocortisona',concentration:'10 mg/g (1%)',pharmaceutical:'creme',},
@@ -362,7 +371,7 @@
                 {name:'glicose',concentration:'50 mg/mL (5%)',pharmaceutical:'solução injetável',},
                 {name:'glicose',concentration:'100 mg/mL (10%)',pharmaceutical:'solução injetável',},
                 {name:'glicose',concentration:'500 mg/mL (50%)',pharmaceutical:'solução injetável',},
-                {name:'guaco (Mikania glomerata Spreng.)',concentration:'guaco (Mikania glomerata Spreng.)',concentration:'0,5 mg a 5 mg de cumarina (dose diária)',pharmaceutical:'tintura',},
+                {name:'guaco (Mikania glomerata Spreng.)',concentration:'0,5 mg a 5 mg de cumarina (dose diária)',pharmaceutical:'tintura',},
                 {name:'guaco (Mikania glomerata Spreng.)',concentration:'0,5 mg a 5 mg de cumarina (dose diária)',pharmaceutical:'xarope',},
                 {name:'guaco (Mikania glomerata Spreng.)',concentration:'0,5 mg a 5 mg de cumarina (dose diária)',pharmaceutical:'solução oral',},
                 {name:'haloperidol',concentration:'1 mg',pharmaceutical:'comprimido',},
