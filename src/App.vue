@@ -3,8 +3,9 @@
         <v-content v-if="ready" :class="['background', 'fade-in-anim']">
 
             <toolbar class="mb-12 pb-6" v-if="user"/>
-
+            <transition name="slide-fade" mode="out-in" appear>
             <router-view/>
+            </transition>
             <v-dialog v-model="systemDialog.show">
                 <v-card>
                     <v-card-title>{{systemDialog.header}}</v-card-title>
@@ -132,5 +133,17 @@
 
     #nav a.router-link-exact-active {
         color: #42b983;
+    }
+    .slide-fade-enter {
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+    .slide-fade-enter-active,
+    .slide-fade-leave-active {
+        transition: all 0.5s ease;
+    }
+    .slide-fade-leave-to {
+        transform: translateY(10px);
+        opacity: 0;
     }
 </style>

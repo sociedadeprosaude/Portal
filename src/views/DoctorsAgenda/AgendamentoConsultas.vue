@@ -814,7 +814,7 @@
                 espArray.forEach(specialty => {
                     //console.log(specialty)
                     if (specialty.name === this.selectedForm.consultation.specialty.name && specialty.doctors) {
-                        
+
                         specialty.doctors.forEach(doctor => {
                             if (doctor.cpf === this.selectedForm.consultation.doctor.cpf) {
                                 cost = {
@@ -852,15 +852,15 @@
                         .then(obj => {
                             this.payment_numberFound = obj;
                             this.num_recibo = obj.payment_number;
-                            this.exam = obj.exam ?{ ... obj.exam,notFindPayment:true}:undefined
-                            this.status = "Pago"
+                            this.exam = obj.exam ?{ ... obj.exam,notFindPayment:true}:undefined;
+                            this.status = "Pago";
                             this.loaderPaymentNumber = false
                         })
                         .catch(response => {
-                            let cost = this.specialtyCost()
+                            let cost = this.specialtyCost();
                             console.log(cost);
                             if (cost && cost.price == 0) {
-                                this.status = "Pago"
+                                this.status = "Pago";
                                 this.loaderPaymentNumber = false
                             }
                             this.loaderPaymentNumber = false
@@ -931,8 +931,8 @@
                 this.loading = true;
                 // this.$store.dispatch("getClinics");
                 // await this.$store.dispatch("getDoctors");
-                await this.listenConsultations()
-                //await this.$store.dispatch("getSpecialties");
+                await this.listenConsultations();
+                // await this.$store.dispatch("getSpecialties");
                 this.loading = false;
             },
             async listenConsultations() {

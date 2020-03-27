@@ -1,8 +1,8 @@
 <template>
     <v-container fluid>
         <v-layout wrap row class="justify-center" v-if="!loading">
-            <v-flex xs12 class="text-center">
-                <alertConsultationCanceled/>
+            <v-flex xs12 sm8 class="text-center" v-if="notifications">
+                <alert/>
             </v-flex>
             <v-flex xs12 class="text-center">
                 <select-patient-card class="hidden-xs-only"/>
@@ -32,8 +32,10 @@
                                 <v-icon size="72">{{page.icon}}</v-icon>
                                 <span class="text-center my-headline">
                         {{page.title}}
-                    </span>
+                                    <v-icon v-if="(page.title === 'Desconto A Cima' && Warning)">notification_important</v-icon>
+                        </span>
                             </v-layout>
+
                         </v-card>
                         <v-card
                                 width="124"
@@ -112,16 +114,17 @@
 
 <script>
     import SelectPatientCard from "../components/SelectPatientCard";
-    import alertConsultationCanceled from "../components/doctorsAgenda/alertConsultationCanceled.vue";
+    import alert from "../components/alert.vue";
 
     export default {
 
         components: {
             SelectPatientCard,
-            alertConsultationCanceled,
+            alert,
         },
 
         mounted() {
+            this.$store.dispatch('loadNotifications');
             //   let perm = [
             //       'Caixa',
             //       'Prontuarios',
@@ -217,6 +220,7 @@
                                 permission: 'Caixa',
                                 icon: 'credit_card',
                             },
+
                             // {
                             //     title: 'Exames',
                             //     to: '/exames',
@@ -274,6 +278,11 @@
             user() {
                 return this.$store.getters.user
             },
+
+            notifications () {
+                return this.$store.getters.notification;
+            },
+
             filteredPages() {
                 // if (!this.user.permissions) return []
                 if(this.user){
@@ -292,6 +301,7 @@
                 }
                 }
         },
+
     }
 </script>
 
@@ -305,7 +315,6 @@
         list-style-type: none;
         padding: 0;
     }
-
     li {
         display: inline-block;
         margin: 0 10px;

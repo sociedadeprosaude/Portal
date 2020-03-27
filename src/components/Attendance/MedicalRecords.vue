@@ -5,7 +5,9 @@
                 <v-btn style="display: none" text color="transparent" class="transparent"></v-btn><v-spacer></v-spacer>PRONTUÁRIO<v-spacer></v-spacer><v-btn color="error" @click="clear()">Fechar</v-btn>
             </v-card-title>
             <v-card-text>
+               <!-- :editor-toolbar="customToolbar"-->
                 <vue-editor v-model="prontuario"/>
+                <div>{{ prontuario }}</div>
                 <!--<strong>{{consultation}}</strong>-->
             </v-card-text>
             <v-divider></v-divider>
@@ -25,6 +27,12 @@
         components: { VueEditor },
         data: () => ({
             prontuario: undefined,
+/*            prontuario: "<p>paciente:</p><p>mulher</p><p>42 anos</p><p>menopausa</p><p><br></p>",*/
+/*            customToolbar: [
+                [],
+                [],
+                []
+            ]*/
         }),
         mounted(){
             //

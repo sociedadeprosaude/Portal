@@ -1,52 +1,60 @@
 <template>
-    <v-container fluid>
-        <v-card class="elevation-3">
-            <v-card-title class="headline grey lighten-2 justify-center align-center" primary-title>
-                <v-btn style="display: none" text color="transparent" class="transparent"></v-btn><v-spacer></v-spacer>SOLICITAÇÃO DE EXAMES<v-spacer></v-spacer><v-btn color="error" @click="clear()">Fechar</v-btn>
-            </v-card-title>
-            <v-card-text>
-                        <v-container grid-list-md>
-                            <v-layout align-center justify-center wrap>
-                                <v-flex xs12 v-if="!loadingExams">
-                                    <v-combobox
-                                            prepend-inner-icon="search"
-                                            prepend-icon="poll"
-                                            :items="listExam"
-                                            item-text="name"
-                                            return-object
-                                            label="Exames"
-                                            outlined
-                                            v-model="newExam"
-                                            clearable
-                                            chips
-                                            hide-details
-                                    ></v-combobox>
-                                </v-flex>
-                                <v-flex xs12 v-else>
-                                    <v-layout column wrap class="align-center">
-                                        <span>Carregando exames...</span>
-                                        <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
-                                    </v-layout>
-                                </v-flex>
-                                <v-flex>
-                                    <v-flex xs12>
-                                        <v-btn v-on:click="addToList" :disabled="!addIsValid" color="success">
-                                            <v-icon>add</v-icon>
-                                            adicionar na lista de exames
-                                        </v-btn>
-                                    </v-flex>
-                                    <v-flex>
-                                        <v-btn v-on:click="deleteFromList" :disabled="!deleteIsValid" color="error">
-                                            <v-icon>delete_forever</v-icon>
-                                            Limpar lista de exames
-                                        </v-btn>
-                                    </v-flex>
-                                </v-flex>
-                                <v-flex xs12>
+    <v-content>
+        <v-container fluid>
+            <v-card class="elevation-3">
+                <v-card-title class="headline grey lighten-2 justify-center align-center" primary-title>
+                    <v-btn style="display: none" text color="transparent" class="transparent"></v-btn><v-spacer></v-spacer>SOLICITAÇÃO DE EXAMES<v-spacer></v-spacer><v-btn color="error" @click="clear()">Fechar</v-btn>
+                </v-card-title>
+                <v-card-text>
+                    <v-container fluid>
+                        <v-layout row wrap class="align-center justify-center">
+                            <v-flex xs11 v-if="!loadingExams">
+                                <v-combobox
+                                        prepend-inner-icon="search"
+                                        prepend-icon="assignment"
+                                        :items="listExam"
+                                        item-text="name"
+                                        return-object
+                                        label="Exames"
+                                        outlined
+                                        v-model="newExam"
+                                        clearable
+                                        chips
+                                        hide-details
+                                >
+                                    <template v-slot:selection="data">
+                                        <v-chip
+                                                :key="JSON.stringify(data.item)"
+                                                :input-value="data.selected"
+                                                :disabled="data.disabled"
+                                                class="v-chip--select-multi"
+                                                @click.stop="data.parent.selectedIndex = data.index"
+                                                @input="data.parent.selectItem(data.item)"
+                                                text-color="white"
+                                                color="info"
+                                        >{{ data.item.name }}
+                                        </v-chip>
+                                    </template>
+                                </v-combobox>
+                            </v-flex>
+                            <v-flex xs1>
+                                <v-btn v-on:click="addToList" :disabled="!addIsValid" color="success">
+                                    <v-icon>add</v-icon>
+                                </v-btn>
+                            </v-flex>
+
+                            <v-flex xs12><p style="color: white">.</p></v-flex>
+                            <v-flex xs12><p style="color: white">.</p></v-flex>
+
+                            <transition name="fade">
+                                <v-flex xs12 v-if="exams.length > 0">
                                     <strong>EXAMES SELECIONADOS:</strong>
                                 </v-flex>
-                                <v-flex>
-                                    <v-select
+                            </transition>
+
+                            <transition name="fade">
+                                <v-flex xs11 v-if="exams.length > 0">
+                                    <v-combobox
                                             :items="exams"
                                             item-text="name"
                                             return-object
@@ -54,9 +62,13 @@
                                             v-model="exams"
                                             chips
                                             outlined
+                                            hide-selected
                                     >
                                         <template v-slot:selection="data">
                                             <v-chip
+                                                    close
+                                                    @click="data.select"
+                                                    @click:close="remove(data.item)"
                                                     :key="JSON.stringify(data.item)"
                                                     :input-value="data.selected"
                                                     :disabled="data.disabled"
@@ -68,57 +80,62 @@
                                             >{{ data.item.name }}
                                             </v-chip>
                                         </template>
-                                    </v-select>
+                                    </v-combobox>
                                 </v-flex>
+                            </transition>
 
+                            <transition name="fade">
+                                <v-flex xs1 v-if="exams.length > 0">
+                                    <v-btn v-on:click="deleteFromList" :disabled="!deleteIsValid" color="error">
+                                        <v-icon>delete_forever</v-icon>
+                                    </v-btn>
+                                </v-flex>
+                            </transition>
+
+                            <transition name="fade">
                                 <v-flex xs12 v-if="exams.length > 0">
                                     <h1>Exames Solicitados:</h1>
                                     <br>
-                                    <ul v-for="(dados,i) in exams" :key="i">
-                                        <li>
-                                            {{dados.name}}
-                                        </li>
-                                    </ul>
+                                    <transition-group name="slide-up">
+                                        <ul v-for="(dados,i) in exams" :key="i">
+                                            <li>
+                                                {{dados.name}}
+                                            </li>
+                                        </ul>
+                                    </transition-group>
                                 </v-flex>
-                            </v-layout>
-                        </v-container>
-                    </v-card-text>
-                    <v-divider></v-divider>
-                    <v-card-actions>
-                        <v-layout align-center justify-center>
-                            <v-spacer></v-spacer>
-                            <submit-button :loading="loading" :success="succes" text="SALVAR" :disabled="!formIsValid" @click="save(), closeDialog()"></submit-button>
-                            <v-btn
-                                    :disabled="!formIsValid"
-                                    @click="save()"
-                                    color="success"
-                            >
-                                SALVAR
-                            </v-btn>
+                            </transition>
+
                         </v-layout>
-                    </v-card-actions>
-                </v-card>
-    </v-container>
+                    </v-container>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary" :disabled="!formIsValid" @click="documentDialog = true"><v-icon left>print</v-icon>GERAR PDF <v-icon right>fa fa-print</v-icon></v-btn>
+                    <v-spacer></v-spacer>
+                </v-card-actions>
+            </v-card>
+        </v-container>
+
+        <v-dialog v-model="documentDialog">
+            <solicitations-p-d-f @close-dialog="documentDialog = false" :consultation="consultation" :exams="exams"></solicitations-p-d-f>
+        </v-dialog>
+
+    </v-content>
 </template>
 
 <script>
-    var moment = require('moment');
+    import SolicitationsPDF from "./printing/solicitationsPDF";
     export default {
+        components: {SolicitationsPDF},
         props:['consultation'],
         data: () => ({
-            medico: 'JACKSON KELVIN DE SOUZA',
-            crm:'55874',
-            paciente: 'JACKSON KELVIN DE SOUZA',
-            moment: moment,
-            dateFormatted: '',
-            examsOptions: [],
-            //================
+            documentDialog: false,
             exams: [],
-            newExam: null,
+            newExam: undefined,
             loadingExams: false,
             loading: false,
             succes: false
-            //==================
         }),
         computed: {
             formIsValid() {
@@ -148,14 +165,18 @@
             //
         },
         methods: {
+            remove (item) {
+                const index = this.exams.indexOf(item)
+                if (index >= 0) this.exams.splice(index, 1)
+            },
             clear() {
+                this.newExam = undefined
                 this.exams = [];
                 this.closeDialog()
             },
             closeDialog: function () {
                 this.$emit('close-dialog')
             },
-            //=================
             async loadExams() {
                 this.loadingExams = true
                 await this.$store.dispatch('loadExam');
@@ -171,35 +192,38 @@
                     return
                 }
                 this.exams.push(this.newExam);
-                this.newExam = null;
+                this.newExam = undefined;
             },
             deleteFromList() {
                 this.exams = [];
-            },
-
-            async save() {
-                this.loading = true
-                for (let i in this.exams) {
-                    let examData = {
-                        clinic: this.selectedClinic,
-                        exam: this.exams[i].name,
-                        rules: this.exams[i].rules,
-                        obs: this.obs,
-                        cost: this.cost,
-                        sale: this.sale,
-                    };
-                    //console.log(examData)
-                    // await this.$store.dispatch('addExamToClinic', examData);
-                }
-                this.loading = false;
-                this.succes = true;
-                setTimeout(() => {
-                    this.clear();
-                    this.succes = false
-                }, 1000)
             },
         },
     }
 </script>
 <style scoped>
+    ul {
+        list-style-type: none;
+    }
+    .slide-up-enter {
+        transform: translateX(10px);
+        opacity: 0;
+    }
+    .slide-up-enter-active {
+        transition: all 0.5s ease;
+    }
+    .slide-up-move {
+        transition: transform 0.5s ease-out;
+    }
+    .fade-enter {
+        opacity: 0;
+    }
+    .fade-enter-active {
+        transition: opacity 0.5s ease-in;
+    }
+    .fade-leave-active {
+        transition: opacity 0.5s ease-out;
+    }
+    .fade-leave-to {
+        opacity: 0;
+    }
 </style>

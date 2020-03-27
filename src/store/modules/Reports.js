@@ -4,7 +4,7 @@ import * as firebase from 'firebase';
 
 const instance = axios.create({
     baseURL: 'http://caixa.instituicaoprosaude.com:82'
-})
+});
 
 instance.defaults.headers.common['Accept'] = 'application/json'
 
@@ -13,13 +13,13 @@ const state = {
     relatorio: [],
     intakesReport: [],
 
-}
+};
 
 const mutations = {
     setRelatorio: (state, payload) => state.relatorio = payload,
     setIntakesReport: (state, payload) => state.intakesReport = payload,
 
-}
+};
 
 const actions = {
     async getInfos({ commit }, payload) {
@@ -33,7 +33,7 @@ const actions = {
                 commit('addInfo', {
                     ...response.data,
                     data: payload.start_date
-                })
+                });
                 // payload.start_date.add(30, 'days')
                 if (payload.final_date.diff(payload.start_date, 'days') > 1) {
                     this.dispatch('getInfos', {
@@ -47,19 +47,26 @@ const actions = {
             })
     },
     async getIntakes(context, payload) {
-        let selectedUnit = context.getters.selectedUnit
+        let selectedUnit = context.getters.selectedUnit;
         let intakesSnap = await firebase.firestore().collection('intakes').where('date', '>=', payload.initialDate)
             .where('date', '<=', payload.finalDate)
             .where('unit.name', '==', selectedUnit.name)
             // .where('colaborator', '>', '')
-            .orderBy('date').get()
-        let intakes = []
+            .orderBy('date').get();
+        let intakes = [];
         for (let doc of intakesSnap.docs) {
             if (doc.data().colaborator) {
-                intakes.push(doc.data())
+                if(payload.colaborator){
+                    if(payload.colaborator.name === doc.data().colaborator.name){
+                        intakes.push(doc.data())
+                    }
+                }
+                else{
+                    intakes.push(doc.data())
+                }
             }
         }
-        context.commit("setIntakesReport", intakes)
+        context.commit("setIntakesReport", intakes);
         return intakes
     },
 
@@ -68,16 +75,28 @@ const actions = {
     async searchReports(context, payload) {
         payload.dataFinal = payload.dataFinal + ' 24:00:00';
         payload.dataInicio = payload.dataInicio + ' 00:00:00';
-        let selectedUnit = context.getters.selectedUnit
+        let selectedUnit = context.getters.selectedUnit;
 
         let intakesSnap = await firebase.firestore().collection('intakes').where('date', '>=', payload.dataInicio)
             .where('unit.name', '==', selectedUnit.name)
-            .where('date', '<=', payload.dataFinal).orderBy('date').get()
-        let intakes = []
+            .where('date', '<=', payload.dataFinal).orderBy('date').get();
+        let intakes = [];
         for (let doc of intakesSnap.docs) {
-            intakes.push(doc.data())
-            /* if(doc.data().exams)
-                console.log('intake',doc.data()) */
+            if (doc.data().colaborator) {
+                if(payload.colaborator){
+                    console.log('colaborador selecionado')
+                    console.log(payload.colaborator)
+                    console.log(doc.data().colaborator.name)
+
+                    if(payload.colaborator === doc.data().colaborator.name){
+                        console.log('colaborador tem essa consulta')
+                        intakes.push(doc.data())
+                    }
+                }
+                else{
+                    intakes.push(doc.data())
+                }
+            }
         }
 
         // let intakes = await Promise.all(promises)
@@ -101,15 +120,15 @@ const actions = {
         let totalTaxaCredito = 0;
         let quantidadeOuttakes = 0;
         let relatorio = {};
-
+        console.log('intakes: ',intakes)
         for (let intake in intakes) {
             if (!intakes[intake].cancelled_by) {
                 if (intakes[intake].type === 'financial_support') {
-                    financialSupport.push(intakes[intake])
+                    financialSupport.push(intakes[intake]);
                     continue
                 }
                 if (intakes[intake]) {
-                    let id = (intakes[intake].id).toString()
+                    let id = (intakes[intake].id).toString();
                     intaker[intakes[intake].id] = {
                         exams: intakes[intake].exams,
                         specialties: intakes[intake].specialties,
@@ -120,7 +139,7 @@ const actions = {
                 }
                 for (let exam in intakes[intake].exams) {
                     if (!intakes[intake].exams[exam].clinic) {
-                        intakes[intake].exams[exam].clinic = context.getters.selectedUnit
+                        intakes[intake].exams[exam].clinic = context.getters.selectedUnit;
                         continue
                     }
                     if (!clinics[intakes[intake].exams[exam].clinic.name]) {
@@ -222,9 +241,10 @@ const actions = {
                 }
             }
         }
+        // bugFont, comentando esse where do unit.name sai o erro, mas tá estranho porque unit.name está no indices lá no firebase.
         let outtakesSnap = await firebase.firestore().collection('outtakes').where('paid', '>=', payload.dataInicio)
             .where('paid', '<=', payload.dataFinal)
-            .where('unit.name', '==', selectedUnit.name)
+            //.where('unit.name', '==', selectedUnit.name)
             .orderBy('paid').get();
         outtakesSnap.forEach((e) => {
             if (e.data().payments) {
@@ -254,7 +274,7 @@ const actions = {
                     id: e.id
                 })
             }
-        })
+        });
 
 
         relatorio = {
@@ -284,12 +304,12 @@ const actions = {
                 return intake.status !== 'cancelled'
             })
         };
-        context.commit('setRelatorio', relatorio)
+        context.commit('setRelatorio', relatorio);
         return relatorio
     }
 
 
-}
+};
 
 const getters = {
     relatorio(state) {
@@ -297,7 +317,8 @@ const getters = {
     },
     intakesReport: (state) => state.intakesReport,
     intakesWithExam: (state) => state.intakesReport.filter(intake => intake.exams),
-}
+    intakesWithConsultation: (state) => state.intakesReport.filter(intake => intake.specialties),
+};
 
 export default {
     state,

@@ -2,9 +2,16 @@
     <v-container class="ma-0 pa-0">
         <v-layout row wrap>
             <v-flex class="hidden-print-only" xs12>
-                <v-card id="carrinho" class="ml-5 elevation-2 ">
+                <v-card id="carrinho" class="elevation-2 ">
+
+                    <div class="hidden-sm-and-up" style="position:fixed; right:20px; z-index:1">
+                        <v-btn class="my-0" x-large icon @click="$emit('closeCart')">
+                            <v-icon>cancel</v-icon>
+                        </v-btn>
+                    </div>
+                    
                     <v-container>
-                        <v-layout row wrap class="mx-3 align-center">
+                        <v-layout row wrap class=" mx-3 align-center">
                             <v-flex xs6 class="text-center">
                                 <v-btn
                                         @click="searchPatient = !searchPatient"
@@ -95,7 +102,7 @@
                             <!--                                <v-btn outlined color="primary" @click="gerarCodigo()">Gerar Codigo</v-btn>-->
                             <!--                            </v-flex>-->
                             <v-flex xs12 class="mt-1 v-card"
-                                    style="overflow:auto; height:50vh; box-shadow: inset 0px 0px 5px grey;">
+                                    style="overflow:auto; height:50vh; box-shadow: inset 0px 5px grey;">
                                 <v-layout row wrap>
                                     <v-flex xs12 v-if="exames.length > 0">
                                         <p class="my-headline">Exames</p>
@@ -368,7 +375,7 @@
                 searchBudgetBtn: false,
                 searchPatient: false,
                 payments: ['Dinheiro'],
-                valuesPayments: [''],
+                valuesPayments:[''],
                 moneyDiscout: 0,
                 data: moment().format("YYYY-MM-DD HH:mm:ss"),
                 parcelas: '1',
@@ -578,11 +585,38 @@
                 let newBudget = this.generateBudget();
                 newBudget.id = this.selectedBudget.id;
                 this.$store.commit('setSelectedBudget', newBudget)
+                if (!this.selectedBudget) {
+                    await this.saveBudget(this.generateBudget())
+                } else {
+                    let newBudget = this.generateBudget();
+                    if(!this.selectedBudget.id) {
+                        this.selectedBudget.id = this.now
+                    }
+                    newBudget.id = this.selectedBudget.id;
+                    this.$store.commit('setSelectedBudget', newBudget)
+                }
                 await this.$store.dispatch('addIntake', this.selectedBudget);
+                let porcentagem = (this.selectedBudget.discount / this.selectedBudget.subTotal)
+
+                console.log('total : ', this.selectedBudget)
+                if(porcentagem >= 0.5 || parseFloat(this.searchBudget.subTotal) >  this.selectedBudget.cost){
+                    console.log('entrei')
+                    this.$store.dispatch('DiscountWarning', {orcamento: this.selectedBudget.id, date: this.selectedBudget.date,
+                        discont: ((this.selectedBudget.discount / this.selectedBudget.subTotal)*100), name:this.selectedBudget.colaborator.name, cpf:this.selectedBudget.colaborator.cpf})
+                }
                 this.updateBudgetsIntakes();
                 this.receipt(this.selectedBudget);
                 this.paymentLoading = false;
                 this.paymentSuccess = true;
+
+                let data = {
+                    user: this.patient,
+                    budgetId: this.selectedBudget.id.toString(),
+                };
+
+                await this.$store.dispatch('deleteBudget', data);
+                await this.$store.commit('setSelectedBudget', undefined);
+                this.$store.commit('clearShoppingCartItens');
                 this.card = false
                 // window.print();
             },
@@ -591,6 +625,7 @@
                 // this.selectedIntake = intake
                 this.receiptDialog = true
             },
+
             clearCart() {
                 this.$store.commit('clearShoppingCartItens');
                 this.$store.commit('setSelectedBudget', undefined);
