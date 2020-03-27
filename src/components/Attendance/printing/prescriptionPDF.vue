@@ -18,7 +18,8 @@
             <v-flex>
                 <v-card flat class="pa-10 receipt-to-print">
                     <v-layout row wrap class="align-center pa-4 mt-4" style="border: 2px solid #2196f3; border-radius: 16px">
-                        <img style="position:absolute;z-index:0;width:400px; heigth:400px; bottom:0" :src="require('@/assets/pro_saude_logo_transparente.png')">
+                        <!--opacity: .3-->
+                        <img style="position:absolute;z-index:0;width:300px; heigth:300px; bottom:0;" :src="require('@/assets/pro_saude_logo_transparente.png')">
                         <v-spacer></v-spacer>
                         <v-flex xs4>
                             <v-divider style="border: 2px solid #2196f3; border-radius: 10px"></v-divider>
@@ -50,14 +51,14 @@
                                     <span>{{ dados.name }} - {{ dados.concentration }} - {{ dados.pharmaceutical }}</span>
                                     <v-layout class="align-center justify-center">
                                         <v-flex xs12>
-                                            <v-text-field dense prefix="Observações:" outlined></v-text-field>
+                                            <v-text-field dense hide-details prefix="Observações:" outlined></v-text-field>
                                         </v-flex>
                                     </v-layout>
                                 </li>
                             </ul>
                         </v-flex>
-
-                        <v-flex xs12 style="height: 500px"></v-flex>
+<!--                        <v-flex xs12 style="height: 300px"></v-flex>-->
+                        <v-flex xs12 style="height: 300px"></v-flex>
                     </v-layout>
                 </v-card>
             </v-flex>
