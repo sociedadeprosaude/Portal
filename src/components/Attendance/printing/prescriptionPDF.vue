@@ -11,31 +11,35 @@
                     <v-icon>print</v-icon>
                 </v-btn>
             </v-flex>
+            <v-flex xs12>
+                <v-divider></v-divider>
+            </v-flex>
+
             <v-flex>
                 <v-card flat class="pa-10 receipt-to-print">
-                    <v-layout
-                            row
-                            wrap
-                            class="align-center pa-4 mt-4"
-                            style="border: 2px solid #2196f3; border-radius: 16px"
-                    >
-                        Dr. JONATAS
-                        CRM:130913
-                        Especialidade: CARDIOLOGIA
-                        Procedimento: Consulta
-                        Data:26/03/2020 - 13:00
+                    <v-layout row wrap class="align-center pa-4 mt-4" style="border: 2px solid #2196f3; border-radius: 16px">
+                        <img style="position:absolute;z-index:0;width:400px; heigth:400px; bottom:0" :src="require('@/assets/pro_saude_logo_transparente.png')">
                         <v-spacer></v-spacer>
-                        Data: {{hoje}} - {{dia}}
-                        <v-flex xs4 >
-                            <v-img v-if="selectedUnit"
-                                   :src="selectedUnit.logo"
-                                   width="400"
-                            ></v-img>
+                        <v-flex xs4>
+                            <v-divider style="border: 2px solid #2196f3; border-radius: 10px"></v-divider>
                         </v-flex>
-                        RYAN DE BARBA NEGRA
-                        CPF:00293048544
-                        Data de Nascimento:27/01/1995
-                        Idade:25
+
+                        <v-flex xs4>
+                            <img :src="consultation.clinic.logo"/>
+                        </v-flex>
+
+                        <v-flex xs4>
+                            <v-divider style="border: 2px solid #2196f3; border-radius: 10px"></v-divider>
+                        </v-flex>
+
+                        <v-flex xs12 class="white" style="color: white">.</v-flex>
+
+                        <v-flex xs12 class="align-center justify-center">
+                            <v-layout row wrap class="align-center justify-center">
+                                <span class="my-sub-headline primary--text" style="font-size: 1.4em;text-decoration: underline">RECEITUÁRIO</span>
+                            </v-layout>
+                        </v-flex>
+
                         <v-spacer></v-spacer>
 
                         <v-flex xs12 class="white" style="color: white">.</v-flex>
@@ -43,18 +47,17 @@
                         <v-flex xs12 v-for="(dados,i) in medicines" :key="i">
                             <ul>
                                 <li style="list-style-type: none;">
-                                    {{dados.name}} - {{dados.concentration}} - {{dados.pharmaceutical}}
+                                    <span>{{ dados.name }} - {{ dados.concentration }} - {{ dados.pharmaceutical }}</span>
                                     <v-layout class="align-center justify-center">
                                         <v-flex xs12>
-                                            <v-text-field :prefix="dados.name + ' - '+ 'Observações:'" outlined></v-text-field>
+                                            <v-text-field dense prefix="Observações:" outlined></v-text-field>
                                         </v-flex>
                                     </v-layout>
-                                    <!--<v-flex><strong style="color: white">.</strong></v-flex>-->
                                 </li>
                             </ul>
                         </v-flex>
 
-                        <v-flex xs12 style="height: 550px"></v-flex>
+                        <v-flex xs12 style="height: 500px"></v-flex>
                     </v-layout>
                 </v-card>
             </v-flex>
@@ -73,9 +76,7 @@
             dia: undefined,
         }),
         computed:{
-            selectedUnit() {
-                return this.$store.getters.selectedUnit
-            },
+            //
         },
         watch:{
             //

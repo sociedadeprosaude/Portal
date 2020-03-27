@@ -11,30 +11,35 @@
                     <v-icon>print</v-icon>
                 </v-btn>
             </v-flex>
+            <v-flex xs12>
+                <v-divider></v-divider>
+            </v-flex>
+
             <v-flex>
                 <v-card flat class="pa-10 receipt-to-print">
-                    <v-layout row wrap class="align-center pa-4 mt-4" style="border: 2px solid #2196f3; border-radius: 16px">
+                    <v-layout row wrap class="align-center pa-4 mt-4" style="z-index:1;position:relative;border: 2px solid #2196f3; border-radius: 16px">
+                        <img style="position:absolute;z-index:0;width:400px; heigth:400px; bottom:0" :src="require('@/assets/pro_saude_logo_transparente.png')">
                         <v-spacer></v-spacer>
                         <v-flex xs4>
                             <v-divider style="border: 2px solid #2196f3; border-radius: 10px"></v-divider>
                         </v-flex>
 
-                        <v-flex xs4 >
-                            <v-img v-if="selectedUnit"
-                                   :src="selectedUnit.logo"
-                                   width="400"
-                            ></v-img>
+                        <v-flex xs4>
+                            <img :src="consultation.clinic.logo"/>
                         </v-flex>
 
                         <v-flex xs4>
                             <v-divider style="border: 2px solid #2196f3; border-radius: 10px"></v-divider>
                         </v-flex>
+
                         <v-flex xs12 class="white" style="color: white">.</v-flex>
-                        <v-layout row wrap class="align-center justify-center">
-                            <v-flex xs12 class="align-center justify-center">
-                                <span class="align-center justify-center">EXAMES</span>
-                            </v-flex>
-                        </v-layout>
+
+                        <v-flex xs12 class="align-center justify-center">
+                            <v-layout row wrap class="align-center justify-center">
+                                <span class="my-sub-headline primary--text" style="font-size: 1.4em;text-decoration: underline">EXAMES</span>
+                            </v-layout>
+                        </v-flex>
+
                         <v-spacer></v-spacer>
 
                         <v-flex xs12 class="white" style="color: white">.</v-flex>
@@ -42,7 +47,7 @@
                         <v-flex xs12 v-for="(dados,i) in exams" :key="i">
                             <ul>
                                 <li style="list-style-type: none;">
-                                    {{dados.name}}
+                                    <span>{{ dados.name }}</span>
                                 </li>
                             </ul>
                         </v-flex>
@@ -65,13 +70,9 @@
             moment: moment,
             hoje: undefined,
             dia: undefined,
-/*            exams: undefined,
-            consultation: undefined*/
         }),
         computed:{
-            selectedUnit() {
-                return this.$store.getters.selectedUnit
-            },
+            //
         },
         watch:{
             //
@@ -79,8 +80,6 @@
         mounted() {
             this.hoje = moment().locale('pt-BR').format('DD/MM/YYYY HH:mm:ss')
             this.dia = moment().format('dddd')
-/*            this.exams = this.consultation
-            this.consultation = this.consultation*/
         },
         methods: {
             print () {
