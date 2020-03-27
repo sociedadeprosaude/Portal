@@ -4,6 +4,7 @@
             <v-card-title class="headline grey lighten-2 justify-center align-center" primary-title>
                 <v-btn style="display: none" text color="transparent" class="transparent"></v-btn><v-spacer></v-spacer>ORIENTAÇÕES<v-spacer></v-spacer><v-btn color="error" @click="clear()">Fechar</v-btn>
             </v-card-title>
+
             <v-card-text>
                 <vue-editor v-model="prontuario" :editor-toolbar="customToolbar"/>
 <!--                <h1>{{ prontuario }}</h1>-->
