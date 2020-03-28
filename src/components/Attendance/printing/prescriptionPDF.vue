@@ -69,7 +69,7 @@
 <script>
     var moment = require('moment');
     export default {
-        name: "solicitationsPDF",
+        name: "prescriptionPDF",
         props:['consultation', 'medicines'],
         data: () => ({
             moment: moment,
