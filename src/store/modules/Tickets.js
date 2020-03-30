@@ -5,7 +5,6 @@ const state = {
     rooms: undefined,
     roomsLoaded: false,
     generalInfo: {},
-    sectors: [],
 };
 
 const mutations = {
@@ -33,6 +32,49 @@ function queryBuilder(clinicName, sectorName, roomName) {
 const actions = {
 
     // usados
+    async saveTicketsHistory() {
+        const firestore = firebase.firestore();
+        // Buscando todas as salas (collectionGroup pega ate as rooms que estao em subcolecoes de colecoes,
+        // recomendo nao criar mais collections com esse nome se nao elas vao ser pegas aqui)
+        firestore.collectionGroup('rooms').get().then((rooms) => {
+            rooms.forEach((room) => {
+                // verificando se a sala teve fila de tickets
+                // Pode tirar esse room.data().clinicDoc do if se aprovado minhas mundanças no sprint
+                if (room.data().tickets.length != 0 && room.data().clinicDoc) {
+                    // Pegando a historia da sala (criei o campo clicnicDoc no metadata da room pra facilitar a query de salvar
+                    firestore.collection('tickets-history').doc(room.data().clinicDoc)
+                        .collection('rooms-history').doc(room.id).get()
+                        .then(async (roomHist) => {
+                            if (roomHist.exists) {
+                                const hist = roomHist.data().history;
+                                hist.push(...room.data().tickets);
+                                await roomHist.ref.update({
+                                    history: hist
+                                });
+                            } else {
+                                await roomHist.ref.set({
+                                    history: room.data().tickets
+                                })
+                            }
+                            // Esvaziando a fila de tickets depois de atualizado o history 
+                            room.ref.update({
+                                tickets: []
+                            });
+                        });
+                }
+            });
+
+        });
+    },
+
+    async resetTickets() {
+        const firestore = firebase.firestore();
+        firestore.collectionGroup('tickets').get().then((docs) => {
+            docs.forEach((doc) => doc.ref.update({
+                ticket_number: 1
+            }));
+        });
+    },
 
     async updateRoom(context, room) {
         let selectedClinic = context.getters.selectedUnit;
@@ -41,7 +83,7 @@ const actions = {
     async createSectorRoom(context, payload) {
         let selectedClinic = context.getters.selectedUnit;
         await queryBuilder(selectedClinic.name, payload.sector.sectorName, payload.room.name)
-            .set({ name: payload.room.name, tickets: [], doctor: null })
+            .set({ name: payload.room.name, tickets: [], doctor: null, clinicDoc: selectedClinic.name })
     },
     async listenRooms(context, payload) {
         // adicionado promise pra so mostrar quando tiver carregado as salas
@@ -115,18 +157,12 @@ const getters = {
     rooms(state) {
         return state.rooms
     },
-    getSectors(state) {
-        return state.sectors
-    },
     roomsLoaded(state) {
         return state.roomsLoaded
     },
     ticketGeneralInfo(state) {
         return state.generalInfo
     },
-    getSector(state) {
-        return sectorName => state.sectors.find(sector => sector.name == sectorName);
-    }
 };
 
 export default {

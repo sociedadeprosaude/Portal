@@ -199,6 +199,7 @@
     <v-dialog v-model="multipleViewDialog" fullscreen transition="dialog-bottom-transition">
       <multiple-visualizer @close="multipleViewDialog = false"></multiple-visualizer>
     </v-dialog>
+
   </v-container>
 </template>
 
@@ -240,14 +241,6 @@ export default {
     rooms() {
       return this.$store.getters.rooms;
     },
-    sectors() {
-      return this.$store.getters.getSectors;
-    },
-
-    sectorInfo() {
-      // return this.$store.getters.rooms;
-      return this.$store.getters.getSector(this.sector.sectorName);
-    },
 
     roomsLoaded() {
       return this.$store.getters.roomsLoaded;
@@ -273,6 +266,7 @@ export default {
     }
   },
   methods: {
+  
     getActualTicket(tickets) {
       let calledTickets = tickets.filter(ticket => {
         return ticket.called_at;

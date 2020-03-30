@@ -39,11 +39,15 @@
         </transition>
       </div>
     </v-row>
+
+    <v-btn v-if="!production" class="primary" @click="saveTickets">Salvar tickets no histórico</v-btn>
+    <v-btn v-if="!production" class="primary" @click="resetLine">Resetar fila</v-btn>
   </v-container>
 </template>
 
 <script>
 import tickets from "@/components/tickets/Tickets";
+import constants from "..//utils/constants";
 export default {
   name: "TicketsDashboard",
   components: {
@@ -54,6 +58,7 @@ export default {
     return {
       choosed: false,
       sector: null,
+      production: null,
       sectors: [
         {
           title: "Consultório",
@@ -75,11 +80,17 @@ export default {
   },
   mounted() {
     this.$store.dispatch("getTicketsGeneralInfo");
+    this.production = constants.IN_PRODUCTION;
   },
   methods: {
+    saveTickets() {
+      this.$store.dispatch("saveTicketsHistory");
+    },
+    resetLine() {
+      this.$store.dispatch("resetTickets");
+    },
     async choose(sector) {
       this.$store.dispatch("listenRooms", sector).then(() => {
-
         this.sector = sector;
       });
     },
