@@ -315,7 +315,7 @@
                                         </v-flex>
                                         <v-flex xs6 class="text-center">
                                             <submit-button
-                                                    :disabled="!patient || cartItems.length === 0 || this.paymentValues !== this.total"
+                                                    :disabled="!patient || cartItems.length === 0 || this.paymentValues !== this.total || this.paymentNull === false"
                                                     text="Pagar" :loading="paymentLoading"
                                                     :success="paymentSuccess" color="primary" @click="pay()">
                                                 Pagar
@@ -376,6 +376,7 @@
                 searchPatient: false,
                 payments: ['Dinheiro'],
                 valuesPayments:[''],
+                payment:{ paymentForm:['Dinheiro'], value:[this.total], parcel:['1']},
                 moneyDiscout: 0,
                 data: moment().format("YYYY-MM-DD HH:mm:ss"),
                 parcelas: '1',
@@ -441,6 +442,7 @@
             paymentValues() {
                 let tamanho = this.payments.length;
                 let pagando = 0;
+                console.log('payment: ',this.payment)
                 if (tamanho === 1 && this.payments[0] !== '') {
                     this.valuesPayments[0] = parseFloat(this.total);
                     pagando = parseFloat(this.valuesPayments[0]);
@@ -452,6 +454,19 @@
                     }
                 }
                 return pagando.toFixed(2);
+            },
+            paymentNull() {
+                let tamanho = this.valuesPayments.length;
+                if (tamanho === 1 && this.valuesPayments[0] !== '') {
+                    return true
+                } else {
+                    for (let i = 0; i < tamanho; i++) {
+                        if (this.valuesPayments[i] === ''){
+                            return false
+                        }
+                    }
+                    return true
+                }
             },
         },
         watch: {
@@ -491,10 +506,17 @@
             adicionarFormaDePagamento() {
                 this.valuesPayments.push('');
                 this.payments.push('')
+                this.payment.paymentForm.push('');
+                this.payment.value.push('');
+                this.payment.parcel.push('1')
             },
             apagarFormaDePagamento(index) {
                 this.payments.splice(index, 1);
-                this.valuesPayments.splice(index, 1)
+                this.valuesPayments.splice(index, 1);
+                this.payment.paymentForm.splice(index, 1);
+                this.payment.value.splice(index, 1);
+                this.payment.parcel.splice(index, 1);
+
             },
             removeItem(item) {
                 this.$store.commit('removeShoppingCartItem', item)
