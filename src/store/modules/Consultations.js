@@ -212,11 +212,6 @@ const actions = {
                 }else{
                     scheduleFound.forEach(async(doc)=>{
                         consultObject = {
-                            /* specialty: consultation.specialty,
-                            date: day.format('YYYY-MM-DD') + ' ' + consultation.hour,
-                            routine_id: routineId,
-                            clinic: consultation.clinic,
-                            doctor: consultation.doctor, */
                             vacancy: Number(consultation.vacancy) + Number(doc.data().vacancy)
                         }
                         await firebase.firestore().collection('schedules').doc(doc.id).update(consultObject)
