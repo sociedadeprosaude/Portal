@@ -647,7 +647,7 @@
                 }
 
                 for(let dependent in this.dependents){
-                    var birthDate = moment( this.dependents[dependent].birthDate,"DD/MM/YYYY").format("DD-MM-YYYY");
+                    var birthDate = moment( this.dependents[dependent].birthDate,"DD/MM/YYYY").format("YYYY-MM-DD");
 
                    copyDependents.push(Object.assign({birthDate:birthDate}, {name:this.dependents[dependent].name,sex:this.dependents[dependent].sex,dependentDegree:this.dependents[dependent].dependentDegree}))
 
@@ -658,7 +658,7 @@
                     email: this.email,
                     rg: this.rg ? this.rg.replace(/\./g, '').replace('-', '').replace('.', '') : undefined,
                     association_number: this.numAss,
-                    birth_date: moment(this.birthDate,"DD/MM/YYYY").format("DD-MM-YYYY"),
+                    birth_date: moment(this.birthDate,"DD/MM/YYYY").format("YYYY-MM-DD"),
                     sex: this.sex,
                     telephones: this.telephones,
                     addresses: this.addresses,

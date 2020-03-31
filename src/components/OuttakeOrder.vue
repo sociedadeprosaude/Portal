@@ -226,7 +226,7 @@ export default {
           unit:outtake.unit,
           recurrent: 'true',
         };
-        console.log('pagamento:', outtake.date_to_pay)
+        console.log('pagamento:', outtake.date_to_pay);
 
         await this.$store.dispatch("addOuttakes", bill);
       }
