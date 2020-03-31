@@ -130,67 +130,7 @@ export default {
           sortable: false,
           value: "idIntake"
         },
-        computed: {
-            intakesWithConsultation() {
-                return this.$store.getters.intakesWithConsultation;
-            },
-            specialties() {
-                return this.$store.getters.specialties;
-            },
-            intakesDividedBySpecialties() {
-                let listIntakesRemade = [];
-                listIntakesRemade = this.intakesWithConsultation.map(intake =>
-                    intake.specialties.map(consultation => {
-                        console.log('intake', intake);
-                        return {
-                            idIntake: intake.id,
-                            clinicName: consultation.doctor.clinic.name,
-                            cost: consultation.cost,
-                            specialtieName: consultation.name,
-                            price: consultation.price,
-                            doctorName: consultation.doctor.name,
-                        };
-                    })
-                );
-                // Juntando em uma array que o bloco de cima retona uma array de array
-                listIntakesRemade = [].concat.apply([], listIntakesRemade);
-                let listIntakesGroupedBySpecialties = [];
-                this.specialties.forEach(specialtie => {
-                    let listIntakesSpecialties = listIntakesRemade.filter(
-                        intake => intake.specialtieName === specialtie.name
-                    );
-                    if (listIntakesSpecialties.length !== 0)
-                        listIntakesGroupedBySpecialties.push(
-                            this.calcIntakeFromConsultation(specialtie, listIntakesSpecialties)
-                        );
-                });
-                return listIntakesGroupedBySpecialties;
-            },
-            numSales() {
-                return this.intakesDividedBySpecialties.reduce(
-                    (total, e) => total + e.quantity,
-                    0
-                );
-            },
-            totalPrice() {
-                return this.intakesDividedBySpecialties.reduce(
-                    (total, e) => total + e.totalPrice,
-                    0
-                );
-            },
-            totalCost() {
-                return this.intakesDividedBySpecialties.reduce(
-                    (total, e) => total + e.totalCost,
-                    0
-                );
-            },
-            totalProfit() {
-                return this.intakesDividedBySpecialties.reduce(
-                    (total, e) => total + e.profit,
-                    0
-                );
-            }
-        }
+      ]
     }
   },
   computed: {
