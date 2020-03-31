@@ -48,12 +48,7 @@
                         <v-flex xs12 v-for="(dados,i) in medicines" :key="i">
                             <ul>
                                 <li style="list-style-type: none;">
-                                    <span>{{ dados.name }} - {{ dados.concentration }} - {{ dados.pharmaceutical }}</span>
-                                    <v-layout class="align-center justify-center">
-                                        <v-flex xs12>
-                                            <v-text-field dense hide-details prefix="Observações:" outlined></v-text-field>
-                                        </v-flex>
-                                    </v-layout>
+                                    <span>{{ dados.name }} - {{ dados.concentration }} - {{ dados.pharmaceutical }} - <label for="obs">Obervações:</label><input type="text" id="obs" name="obs"><br></span>
                                 </li>
                             </ul>
                         </v-flex>

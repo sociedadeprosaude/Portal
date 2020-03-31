@@ -18,42 +18,38 @@
             <v-flex>
                 <v-card flat class="pa-10 receipt-to-print">
                     <v-layout row wrap class="align-center pa-4 mt-4" style="border: 2px solid #2196f3; border-radius: 16px">
-                        <img style="position:absolute;z-index:0;width:300px; heigth:300px; bottom:0" :src="require('@/assets/pro_saude_logo_transparente.png')">
-                        <v-spacer></v-spacer>
-                        <v-flex xs4>
-                            <v-divider style="border: 2px solid #2196f3; border-radius: 10px"></v-divider>
-                        </v-flex>
+                        <v-img :src="require('@/assets/pro_saude_logo_transparente.png')">
 
-                        <v-flex xs4>
-                            <img :src="consultation.clinic.logo"/>
-                        </v-flex>
-
-                        <v-flex xs4>
-                            <v-divider style="border: 2px solid #2196f3; border-radius: 10px"></v-divider>
-                        </v-flex>
-
-                        <v-flex xs12 class="white" style="color: white">.</v-flex>
-
-                        <v-flex xs12 class="align-center justify-center">
-                            <v-layout row wrap class="align-center justify-center">
-                                <span class="my-sub-headline primary--text" style="font-size: 1.4em;text-decoration: underline">EXAMES</span>
+                            <v-layout class="align-center justify-center">
+                                <v-flex xs6>
+                                    <img :src="consultation.clinic.logo"/>
+                                </v-flex>
                             </v-layout>
-                        </v-flex>
 
-                        <v-spacer></v-spacer>
+                            <v-flex xs12 class="transparent" style="color: transparent">.</v-flex>
 
-                        <v-flex xs12 class="white" style="color: white">.</v-flex>
+                            <v-flex xs12 class="align-center justify-center">
+                                <v-layout row wrap class="align-center justify-center">
+                                    <span class="my-sub-headline primary--text" style="font-size: 1.4em;text-decoration: underline">EXAMES</span>
+                                </v-layout>
+                            </v-flex>
 
-                        <v-flex xs12 v-for="(dados,i) in exams" :key="i">
-                            <ul>
-                                <li style="list-style-type: none;">
-                                    <span>{{ dados.name }}</span>
-                                </li>
-                            </ul>
-                        </v-flex>
+                            <v-flex xs12 class="transparent" style="color: transparent">.</v-flex>
 
-                        <v-flex xs12 style="height: 300px"></v-flex>
+                            <v-layout row rap class="align-start justify-start">
+                                <v-flex xs12 v-for="(dados,i) in exams" :key="i">
+                                    <ul>
+                                        <li style="list-style-type: none;">
+                                            <span>{{ dados.name }}</span>
+                                        </li>
+                                    </ul>
+                                </v-flex>
+                            </v-layout>
+
+                        </v-img>
+
                     </v-layout>
+
                 </v-card>
             </v-flex>
         </v-layout>
