@@ -141,6 +141,11 @@ const actions = {
 
         context.commit('setAlertOuttakes', listOuttakes);
     },
+
+    async addRecurrent (context, outtake){
+        outtake = functions.removeUndefineds(outtake);
+        await firebase.firestore().collection('recurrent/').add(outtake);
+    }
 };
 
 const getters = {

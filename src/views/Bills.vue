@@ -411,11 +411,26 @@ export default {
     addBill2() {
       console.log(this.category);
     },
+    async bifurcation () {
+
+      if (this.parcelas){
+        this.value = this.value / this.parcelas;
+        this.date_to_pay = this.date_to_pay; //menos 1 mês
+        for (let parcela in this.parcelas){
+          this.date_to_pay = this.date_to_pay //mais um mês
+          this.addBill();
+        }
+      } else {
+        this.addBill();
+      }
+
+    },
     async addBill() {
       this.loading = true;
       // Deletando esses dois campos se tiverem pra não salvar dados desnecessários no banco
       delete this.unit.exams;
       delete this.unit.specialties;
+
       let bill = {
         category: this.category.name,
         subCategory: this.subCategory,
@@ -438,6 +453,9 @@ export default {
       await this.$store.dispatch("addOuttakes", bill);
       await this.$store.dispatch("getOuttakes");
       this.loading = false;
+      if (this.recorrente){
+        await this.$store.dispatch("addRecurrent", bill);
+      }
     },
     async unpayOuttake(outtake) {
       this.loading = true;
