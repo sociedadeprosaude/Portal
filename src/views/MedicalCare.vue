@@ -66,7 +66,9 @@
                                 </v-combobox>
                             </v-flex>
                             <v-spacer></v-spacer>
+
                             <v-flex xs12 sm4>
+                                <!--disabled-->
                                 <v-menu
                                         ref="menu"
                                         v-model="menu"
@@ -75,14 +77,13 @@
                                         transition="scale-transition"
                                         offset-y
                                         min-width="290px"
-                                        disabled
                                 >
                                     <template v-slot:activator="{ on }">
+                                        <!--disabled-->
                                         <v-text-field
                                                 v-model="computedDateFormatted"
                                                 label="Data"
                                                 prepend-icon="event"
-                                                disabled
                                                 outlined
                                                 rounded
                                                 filled
@@ -90,12 +91,12 @@
                                                 v-on="on"
                                         ></v-text-field>
                                     </template>
+                                    <!--disabled-->
                                     <v-date-picker
                                             ref="picker"
                                             v-model="date"
                                             locale="pt-br"
                                             @change="save"
-                                            disabled
                                     ></v-date-picker>
                                 </v-menu>
                             </v-flex>
