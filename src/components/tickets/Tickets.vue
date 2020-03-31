@@ -141,25 +141,30 @@
                 <v-flex xs12 v-if="room.doctor">
                   <span>{{room.doctor.name}}</span>
                 </v-flex>
-                <v-flex xs12 v-if="room.tickets.length != 0">
-                  <v-layout row wrap>
-                    <v-flex xs5>
-                      <v-layout column wrap>
-                        <span style="font-size: 0.6em">Ultima senha gerada:</span>
-                        <span>{{room.tickets[room.tickets.length - 1].number}}</span>
-                      </v-layout>
-                    </v-flex>
-                    <v-flex xs1>
-                      <v-divider vertical></v-divider>
-                    </v-flex>
-                    <v-flex xs5>
-                      <v-layout column wrap v-if="getActualTicket(room.tickets)">
-                        <span style="font-size: 0.6em">Senha atual:</span>
-                        <span>{{getActualTicket(room.tickets).number}}</span>
-                      </v-layout>
-                    </v-flex>
-                  </v-layout>
-                </v-flex>
+
+                <v-container class="pa-0">
+                  <v-row>
+                    <v-col class="pa-0">
+                      <span style="font-size: 0.8em">Ultima senha:</span>
+                      <br />
+                      <span
+                        v-if="room.tickets.length != 0"
+                      >{{room.tickets[room.tickets.length - 1].number}}</span>
+                      <span v-else>*</span>
+                    </v-col>
+                    <v-divider vertical></v-divider>
+                    <v-col class="pa-0">
+                      <div>
+                        <span style="font-size: 0.8em">Senha atual:</span>
+                        <br />
+                        <span
+                          v-if="room.tickets.length != 0 && getActualTicket(room.tickets)"
+                        >{{getActualTicket(room.tickets).number}}</span>
+                        <span v-else>*</span>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-container>
               </v-layout>
             </v-card>
           </v-flex>
@@ -199,7 +204,6 @@
     <v-dialog v-model="multipleViewDialog" fullscreen transition="dialog-bottom-transition">
       <multiple-visualizer @close="multipleViewDialog = false"></multiple-visualizer>
     </v-dialog>
-
   </v-container>
 </template>
 
@@ -266,7 +270,6 @@ export default {
     }
   },
   methods: {
-  
     getActualTicket(tickets) {
       let calledTickets = tickets.filter(ticket => {
         return ticket.called_at;
@@ -338,6 +341,9 @@ export default {
     openSingleView(room) {
       this.singleViewDialog.room = room;
       this.singleViewDialog.active = true;
+    },
+    openMultipleView() {
+      console.log(this.rooms);
     }
   }
 };
