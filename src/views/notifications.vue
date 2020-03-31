@@ -2,6 +2,7 @@
     <v-container fluid>
         <v-layout  wrap row class="justify-center">
             <v-flex xs12 sm8 class="text-center" v-for="item in notifications">
+                {{item}}
                 <v-alert
                         class="text-left"
                         color="warning"
@@ -109,15 +110,21 @@
             },
 
             outtakes () {
+                console.log('outtakes tamanho: ', this.outtakes.length)
+                console.log('outtakes: ', this.outtakes)
+
                 if (this.outtakes.length !== 0) {
                     let data = {
                         name: 'outtakes',
                         info: 'Algumas contas vencem hoje. Pague-as agora!',
                         link: '/bills',
-                        icon: 'monetization_on'
+                        icon: 'monetization_on',
+                        exist: true
                     };
                     this.$store.dispatch('addNotifications', data);
+                    console.log('notificação ok')
                 } else {
+                    console.log('sem notificação')
                     this.$store.dispatch('deleteNotification', 'outtakes');
                 }
             }
