@@ -10,11 +10,11 @@
                                         <span class="my-headline white--text hidden-xs-only">Buscar Associado</span>
                                         <span class="white--text font-weight-bold hidden-sm-and-up">Buscar Associado</span>
                                     </v-flex>
-                                    <v-spacer></v-spacer>
+                                    <v-spacer/>
                             </v-flex>
                             <v-flex :class="!selectedPatient ? 'xs4' : 'xs12'">
                                 <v-layout row wrap class="text-right">
-                                    <v-spacer></v-spacer>
+                                    <v-spacer/>
 
                                     <v-flex xs1 class="text-right mx-3">
                                         <v-tooltip v-if="selectedPatient" top>
@@ -154,7 +154,7 @@
                                         label="CPF">
                                 </v-text-field>
                             </v-flex>
-                            <v-spacer></v-spacer>
+                            <v-spacer/>
                             <v-flex xs12>
                                 <v-text-field
                                         prepend-icon="credit_card"
@@ -189,7 +189,7 @@
                                                text="Buscar">
                                 </submit-button>
                             </v-flex>
-                            <v-divider></v-divider>
+                            <v-divider/>
                             <v-flex xs12>
                                 <v-card v-for="user in foundUsers" :key="user.cpf" class="my-2" @click="selectUser(user)">
                                     <v-layout row wrap class="align-center">
@@ -378,7 +378,7 @@
                                         </v-text-field>
                                     </v-flex>
 
-                                    <v-spacer></v-spacer>
+                                    <v-spacer/>
                                      <v-flex sm4 xs12 class="px-3">
                                         <v-text-field
                                                 outlined
@@ -439,13 +439,13 @@
                                             </v-progress-circular>
                                         </v-layout>
                                     </v-flex>
-                                    <v-spacer></v-spacer>
+                                    <v-spacer/>
                                     <v-flex xs12 sm3>
                                         <v-select label="UF" hide-details single-line v-model="address.uf"
                                                   :items="states" menu-props="auto">
                                         </v-select>
                                     </v-flex>
-                                    <v-spacer></v-spacer>
+                                    <v-spacer/>
                                     <v-flex xs12 sm3>
                                         <v-select v-if="address.uf" label="Cidade" class="mr-2" single-line
                                                   v-model="address.city" :items="cities[address.uf]" menu-props="auto"
@@ -588,7 +588,7 @@
         methods: {
             dateValid(value){
                 if(value)
-                    return value.length < 10 || moment(value,'DD/MM/YYYY').isValid()
+                    return value.length < 10 || moment(value,'DD/MM/YYYY').isValid();
                 return true
             },
             showSecondUserCard(user) {
@@ -620,7 +620,7 @@
                 address.loading = true;
                 let resp;
                 try {
-                    resp = await this.$store.dispatch('getAddressByCep', address.cep.replace('.', '').replace('-', ''))
+                    resp = await this.$store.dispatch('getAddressByCep', address.cep.replace('.', '').replace('-', ''));
                     if (resp.erro) {
                         address.cepError = true;
                         return
@@ -632,7 +632,7 @@
 
                 address.street = resp.logradouro;
                 address.complement = resp.complemento;
-                address.city = resp.localidade
+                address.city = resp.localidade;
                 address.uf = resp.uf;
                 address.loading = false
             },
@@ -640,14 +640,14 @@
                 if (!this.validateFiedls()) {
                     return
                 }
-                this.loading = true
-                var copyDependents = []
+                this.loading = true;
+                var copyDependents = [];
                 for (let add in this.addresses) {
                     delete this.addresses[add].loading
                 }
 
                 for(let dependent in this.dependents){
-                    var birthDate = moment( this.dependents[dependent].birthDate,"DD/MM/YYYY").format("YYYY-MM-DD")
+                    var birthDate = moment( this.dependents[dependent].birthDate,"DD/MM/YYYY").format("DD-MM-YYYY");
 
                    copyDependents.push(Object.assign({birthDate:birthDate}, {name:this.dependents[dependent].name,sex:this.dependents[dependent].sex,dependentDegree:this.dependents[dependent].dependentDegree}))
 
@@ -658,23 +658,23 @@
                     email: this.email,
                     rg: this.rg ? this.rg.replace(/\./g, '').replace('-', '').replace('.', '') : undefined,
                     association_number: this.numAss,
-                    birth_date: moment(this.birthDate,"DD/MM/YYYY").format("YYYY-MM-DD"),
+                    birth_date: moment(this.birthDate,"DD/MM/YYYY").format("DD-MM-YYYY"),
                     sex: this.sex,
                     telephones: this.telephones,
                     addresses: this.addresses,
                     dependents:copyDependents,
                     type: 'PATIENT'
-                }
-                let foundPatient
-                let identifier
+                };
+                let foundPatient;
+                let identifier;
                 if (patient.cpf) {
-                    foundPatient = await this.$store.dispatch('getPatient', patient.cpf)
+                    foundPatient = await this.$store.dispatch('getPatient', patient.cpf);
                     identifier = {
                         name: 'cpf',
                         value: patient.cpf
                     }
                 } else {
-                    foundPatient = await this.$store.dispatch('getPatient', 'RG' + patient.rg)
+                    foundPatient = await this.$store.dispatch('getPatient', 'RG' + patient.rg);
                     identifier = {
                         name: 'rg',
                         value: patient.rg
@@ -694,10 +694,10 @@
                 this.addUserToFirestore(patient)
             },
             async addUserToFirestore(patient) {
-                await this.$store.dispatch('addUser', patient)
-                this.success = true
-                this.loading = false
-                this.selectUser(patient)
+                await this.$store.dispatch('addUser', patient);
+                this.success = true;
+                this.loading = false;
+                this.selectUser(patient);
                 // this.fillFormUser(patient)
                 setTimeout(() => {
                     this.success = false
@@ -710,7 +710,7 @@
             },
             async selectUser(user) {
                 if (user) {
-                    let intakes = await this.$store.dispatch('getUserIntakes', user)
+                    let intakes = await this.$store.dispatch('getUserIntakes', user);
                     if (intakes) {
                         user.intakes = intakes
                     }
@@ -721,21 +721,21 @@
                     this.fillFormUser(user)
                 }
                 else {
-                    this.cpf= undefined
-                    this.name= undefined
-                    this.numAss= undefined
-                    this.rg = undefined
-                    this.birth_date = undefined
-                    this.email = undefined
-                    this.telephones = ['']
-                    this.addresses = []
-                    this.dependents = []
-                    this.dependentName = undefined
+                    this.cpf= undefined;
+                    this.name= undefined;
+                    this.numAss= undefined;
+                    this.rg = undefined;
+                    this.birth_date = undefined;
+                    this.email = undefined;
+                    this.telephones = [''];
+                    this.addresses = [];
+                    this.dependents = [];
+                    this.dependentName = undefined;
                     this.$emit('removed')
                 }
-                this.$store.commit('setSelectedPatient', user)
-                this.$store.commit('clearSelectedDependent')
-                this.foundUsers = undefined
+                this.$store.commit('setSelectedPatient', user);
+                this.$store.commit('clearSelectedDependent');
+                this.foundUsers = undefined;
                 this.addPatient = false
             },
 
@@ -758,25 +758,25 @@
             },
 
             fillFormUser(user) {
-                this.name = user.name
-                this.cpf = user.cpf
-                this.email = user.email
-                this.rg = user.rg
-                this.numAss = user.association_number
-                this.birthDate = moment(user.birth_date).format('DD-MM-YYYY')
-                this.sex = user.sex
-                this.dependents = user.dependents ? user.dependents : []
-                this.telephones = user.telephones ? user.telephones : ['']
+                this.name = user.name;
+                this.cpf = user.cpf;
+                this.email = user.email;
+                this.rg = user.rg;
+                this.numAss = user.association_number;
+                this.birthDate = moment(user.birth_date).format('DD-MM-YYYY');
+                this.sex = user.sex;
+                this.dependents = user.dependents ? user.dependents : [];
+                this.telephones = user.telephones ? user.telephones : [''];
                 for (let add in user.addresses) {
                     delete user.addresses[add].loading
                 }
-                this.addresses = user.addresses
+                this.addresses = user.addresses;
                 if(user.dependents){
                     for(let index in user.dependents){
                         var patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
-                        var date  = user.dependents[index].birthDate
+                        var date  = user.dependents[index].birthDate;
                         if(!patt.test(date))
-                            date = moment(date,"YYYY-MM-DD").format("DD/MM/YYYY")
+                            date = moment(date,"YYYY-MM-DD").format("DD/MM/YYYY");
                         user.dependents[index].birthDate = date
                     }
                      this.dependents = user.dependents
@@ -807,7 +807,7 @@
                     this.telephones = ['']
                 }
                 let address = {};
-                address.street = oldUser.rua
+                address.street = oldUser.rua;
                 address.complement = oldUser.complemento;
                 address.city = oldUser.cid;
                 address.uf = oldUser.uf;
