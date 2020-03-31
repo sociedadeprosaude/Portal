@@ -767,6 +767,7 @@ export default {
       var dateConsultation = moment(this.query.data)
       var today = moment(date)
       var diff = today.diff(dateConsultation,'days')
+      console.log(diff)
       return diff > 21
     },
     scheduleAppointment(consultation) {

@@ -345,15 +345,6 @@
                                                         :disabled="status === 'Pago' ? false : true"
                                                 ></v-text-field>
                                             </v-flex>
-                                            <v-flex v-if="modalidade === 'Retorno' && justifyReturn(createConsultationForm.consultation.date.split(' ')[0])" xs12>
-                                                <v-textarea
-                                                    v-model="justify"
-                                                    outlined
-                                                    name="input-7-4"
-                                                    label="Justificativa de Retorno "
-                                                    placeholder="O retorno tem mais de 21 dias. Justifique o motivo do agendamento para essa data."
-                                                ></v-textarea>
-                                            </v-flex>
                                             <v-flex xs12 sm12 md12 lg12>
                                                 <v-divider></v-divider>
                                             </v-flex>
@@ -380,7 +371,6 @@
                                     <submit-button
                                             color="success"
                                             rounded
-                                            :disabled="justifyReturn(createConsultationForm.consultation.date.split(' ')[0]) && justify == ''"
                                             @reset="success = false"
                                             :success="success"
                                             :loading="loading"
@@ -447,7 +437,6 @@
             dialogPaciente: false,
             selectedDoctor: "",
             num_recibo: "",
-            justify:"",
             type: "",
             exames: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
             createConsultationForm: undefined,
@@ -627,12 +616,6 @@
             this.consultationsListenerUnsubscriber()
         },
         methods: {
-            justifyReturn(date){
-                var dateConsultation = moment(this.query.data)
-                var today = moment(date)
-                var diff = today.diff(dateConsultation,'days')
-                return diff > 21
-            },
             scheduleAppointment(consultation) {
                 this.fillConsultationForm(consultation)
                 this.dialog = true
@@ -645,8 +628,8 @@
                         return !a.user
                     })
                 }
-                this.justify = ''
                 this.createConsultationForm = form
+                //console.log(form)
             },
             formatConsultationsArray(consultations) {
                 let newArray = []
@@ -709,8 +692,6 @@
                 if(!this.query){
                 //this.$router.push('agenda/GerenciamentoConsultas')
                 }
-
-                console.log(this.query)
 
                 this.pacienteSelecionado = this.query.pacienteObj
                 this.status = this.query.status
@@ -808,10 +789,7 @@
 
                 if(this.modalidade == 'Retorno')
                     form.consultation = {...form.consultation,previousConsultation: this.query.consultation.previousConsultation}
-                if(this.justify != ''){
-                    form.user.justifyReturn = this.justify
-                    form.consultation.justifyReturn = this.justify
-                }
+                
                 this.loading = true
                 await this.$store.dispatch('addConsultationAppointmentToUserReschedule', form)
                 //Realizar essa funcao pelo cloud functions
