@@ -414,10 +414,14 @@ export default {
     async bifurcation () {
 
       if (this.parcelas){
+
+        console.log(this.parcelas);
         this.value = this.value / this.parcelas;
-        this.dateToPay= moment(this.dateToPay).subtract(1,'months').format('YYYY-MM-DD')
-        for (let parcela in this.parcelas){
-          this.dateToPay= moment(this.dateToPay).add(1,'months').format('YYYY-MM-DD')
+
+        this.dateToPay= moment(this.dateToPay).subtract(1,'months').format('YYYY-MM-DD');
+        for (let i in this.parcelas){
+          this.dateToPay= moment(this.dateToPay).add(1,'months').format('YYYY-MM-DD');
+          console.log(i, this.dateToPay);
           this.addBill();
         }
       } else {
@@ -440,7 +444,8 @@ export default {
         date_to_pay: this.dateToPay,
         created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
         colaborator: this.user,
-        unit: this.unit.name != this.other ? this.unit : null
+        unit: this.unit.name != this.other ? this.unit : null,
+        recurrent: this.recorrente ? 'true' : 'false',
       };
       await this.newCategory(this.category);
       if (this.subCategory) {
@@ -453,9 +458,6 @@ export default {
       await this.$store.dispatch("addOuttakes", bill);
       await this.$store.dispatch("getOuttakes");
       this.loading = false;
-      if (this.recorrente){
-        await this.$store.dispatch("addRecurrent", bill);
-      }
     },
     async unpayOuttake(outtake) {
       this.loading = true;

@@ -36,7 +36,7 @@
                           v-if="distanceToToday(bill.date_to_pay) < 3"
                         >warning</v-icon>
                         <v-spacer/>
-                        <v-flex xs5 class="justify-end">
+                        <v-flex xs4 class="justify-end">
                           <v-text-field v-model="bill.value"
                                         dense
                                         outlined
@@ -210,6 +210,12 @@ export default {
         field: "paid",
         value: moment().format("YYYY-MM-DD HH:mm:ss")
       });
+
+      if (outtake.recurrent === 'true') {
+        outtake.date_to_pay = moment(outtake.date_to_pay).add(1, 'months').format('YYYY-MM-DD');
+        await this.$store.dispatch("addOuttakes", outtake);
+      }
+
       await this.$store.dispatch("getOuttakes");
       this.loading = false;
     },
