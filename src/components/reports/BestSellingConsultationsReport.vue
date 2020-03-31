@@ -28,9 +28,9 @@
                         item-key="name"
                         show-expand
                         single-expand
-                        no-data-text="Sem exames no intervalo escolhido"
+                        no-data-text="Sem consultas no intervalo escolhido"
                         :footer-props="{
-      itemsPerPageText:'Exames por página',
+      itemsPerPageText:'Consultas por página',
       pageText:'{0}-{1} de {2}'
     }"
                 >
@@ -163,7 +163,6 @@
             },
             intakesDividedBySpecialties() {
                 let listIntakesRemade = [];
-                // Criando com exames com os dados necessarios
                 listIntakesRemade = this.intakesWithConsultation.map(intake =>
                     intake.specialties.map(consultation => {
                         console.log('intake', intake);
@@ -180,7 +179,6 @@
                 // Juntando em uma array que o bloco de cima retona uma array de array
                 listIntakesRemade = [].concat.apply([], listIntakesRemade);
                 let listIntakesGroupedBySpecialties = [];
-                // Agrupando os intakes que tem ao mesmo exame
                 this.specialties.forEach(specialtie => {
                     let listIntakesSpecialties = listIntakesRemade.filter(
                         intake => intake.specialtieName === specialtie.name

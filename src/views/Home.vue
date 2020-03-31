@@ -209,6 +209,12 @@
                                 icon: 'queue',
                             },
                             {
+                                title: 'Saídas',
+                                to: '/caixa/Saidas',
+                                permission: 'Caixa',
+                                icon: 'attach_money',
+                            },
+                            {
                                 title: 'Contas à pagar',
                                 to: '/bills',
                                 permission: 'Caixa',
