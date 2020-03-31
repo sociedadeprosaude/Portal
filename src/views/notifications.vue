@@ -44,8 +44,7 @@
         },
 
         components: {
-            //alertConsultationCanceled,
-            //alertDiscountColaborator,
+
         },
 
         mounted() {
@@ -81,7 +80,8 @@
 
         watch: {
             users(){
-                if (this.users.length !== 0) {
+
+                if (this.users.length !== undefined) {
                     let data = {
                         name: 'DiscountColaborator',
                         info: 'Existem ações incomuns quanto ao padrão de descontos!',
@@ -109,12 +109,13 @@
             },
 
             outtakes () {
+
                 if (this.outtakes.length !== 0) {
                     let data = {
                         name: 'outtakes',
                         info: 'Algumas contas vencem hoje. Pague-as agora!',
                         link: '/bills',
-                        icon: 'monetization_on'
+                        icon: 'monetization_on',
                     };
                     this.$store.dispatch('addNotifications', data);
                 } else {

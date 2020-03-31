@@ -126,7 +126,7 @@ const actions = {
         let listOuttakes = [];
 
         outtakes.forEach((outtake) => {
-            if (outtake.date_to_pay === date) {
+            if (outtake.date_to_pay === date && !outtake.paid) {
                 listOuttakes.push({
                     outtake
                 })
