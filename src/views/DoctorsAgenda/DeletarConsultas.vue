@@ -603,7 +603,6 @@
             messages: [],
             timeout: 4000,
             mensage_progress: '',
-            consultas: [],
             loading: false
         }),
 
@@ -674,6 +673,10 @@
                 return this.formatDate(this.index_Selecionado.start_date)
             },
 
+            consultas(){
+                return this.$store.getters.consultations
+            },
+
             // consultas() {
             //     let consultas = this.$store.getters.consultations
             //      // .filter((a) => {
@@ -737,10 +740,12 @@
                 let payload = {
                     start_date: this.start_date + ' 00:00',
                     final_date: this.final_date ? this.final_date  + ' 23:59' : undefined,
-                    doctor: this.doctor
+                    doctor: this.doctor,
+                    specialty: this.especialidade,
                 }
+                console.log("khlkjlkhlkh")
                 this.loading = true
-                this.consultas = await this.$store.dispatch('getConsultations', payload)
+                await this.$store.dispatch('listenConsultations', payload)
                 this.loading = false
             },
 

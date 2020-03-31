@@ -4,15 +4,15 @@
       <v-layout align-center row wrap class="ml-6">
         <v-flex xs12 md5>
           <v-text-field
-                  prepend-icon="school"
-                  v-model="especialidade.name"
-                  label="Especialidade"
-                  outlined
-                  rounded
-                  filled
-                  disabled
+            prepend-icon="school"
+            v-model="especialidade.name"
+            label="Especialidade"
+            outlined
+            rounded
+            filled
+            disabled
           ></v-text-field>
-           <!-- <v-combobox
+          <!-- <v-combobox
             prepend-icon="school"
             v-model="especialidade"
             :items="specialties"
@@ -37,18 +37,18 @@
                 color="info"
               >{{ data.item.name }}</v-chip>
             </template>
-          </v-combobox> -->
+          </v-combobox>-->
         </v-flex>
         <v-spacer></v-spacer>
         <v-flex xs12 md6>
           <v-text-field
-                  prepend-icon="location_city"
-                  v-model="selectedDoctor.name"
-                  label="Clínica"
-                  outlined
-                  rounded
-                  filled
-                  disabled
+            prepend-icon="location_city"
+            v-model="selectedDoctor.name"
+            label="Clínica"
+            outlined
+            rounded
+            filled
+            disabled
           ></v-text-field>
           <!-- <v-combobox
             prepend-icon="person"
@@ -76,18 +76,18 @@
                 color="info"
               >{{ data.item.name }}</v-chip>
             </template>
-          </v-combobox> -->
+          </v-combobox>-->
         </v-flex>
 
         <v-flex xs12 md12>
           <v-text-field
-                  prepend-icon="location_city"
-                  v-model="clinic.name"
-                  label="Clínica"
-                  outlined
-                  rounded
-                  filled
-                  disabled
+            prepend-icon="location_city"
+            v-model="clinic.name"
+            label="Clínica"
+            outlined
+            rounded
+            filled
+            disabled
           ></v-text-field>
           <!-- <v-select
             prepend-icon="location_city"
@@ -115,13 +115,13 @@
                 color="info"
               >{{ data.item.name }}</v-chip>
             </template>
-          </v-select> -->
+          </v-select>-->
         </v-flex>
       </v-layout>
       <v-container
         style="width:100%"
         class="align-center justify-center hidden-xs-only py-0"
-        v-for="(consultaGroup, i) in consultasByDate(consultas)"
+        v-for="(scheduleGroup, i) in consultasByDate(schedules)"
         :key="i"
       >
         <v-flex xs12>
@@ -135,7 +135,7 @@
         </v-flex>
         <v-container fluid grid-list-sm class="py-0 my-3">
           <v-layout row wrap>
-            <v-flex v-for="(consulta, j) in consultaGroup" :key="j" xs4>
+            <v-flex v-for="(schedule, j) in scheduleGroup" :key="j" xs4>
               <v-card class="elevation-12" dark style="border-radius:20px">
                 <v-card-text class="white text--primary">
                   <v-container class="py-0 px-0">
@@ -151,15 +151,15 @@
                       <v-flex id="teste" xs10 sm10 md10 lg10 hidden-xs-only class="pl-3 py-2">
                         <div style="height:60px">
                           <h4>
-                            <span class="subheading font-weight-bold">{{consulta.doctor.name}}</span>
+                            <span class="subheading font-weight-bold">{{schedule.doctor.name}}</span>
                             <br />
                             <span
                               class="body-2 font-weight-bold grey--text"
-                            >{{consulta.specialty.name}}</span>
+                            >{{schedule.specialty.name}}</span>
                             <br />
                             <span
                               class="body-2 font-weight-bold grey--text"
-                            >CRM-AM: {{consulta.doctor.crm}}</span>
+                            >CRM-AM: {{schedule.doctor.crm}}</span>
                           </h4>
                         </div>
                       </v-flex>
@@ -170,21 +170,24 @@
                             class="mx-2"
                             color="primary_dark"
                             text-color="white"
-                          >{{consulta.date.split(' ')[1]}}</v-chip>
-                          <v-chip color="primary_dark" text-color="white">Vagas : {{consulta.vagas}}</v-chip>
+                          >{{schedule.date.split(' ')[1]}}</v-chip>
+                          <v-chip
+                            color="primary_dark"
+                            text-color="white"
+                          >Vagas : {{schedule.vacancy}}</v-chip>
                           <v-chip class="mt-1 mr-1" color="primary_dark" text-color="white">
                             Consultas :
-                            {{consulta.numConsultations}}
+                            {{schedule.qtdConsultations ? schedule.qtdConsultations : 0}}
                           </v-chip>
                           <v-chip class="mt-1" color="primary_dark" text-color="white">
                             Retornos :
-                            {{consulta.returns}}
+                            {{schedule.qtdReturns ? schedule.qtdReturns : 0}}
                           </v-chip>
                           <v-chip
                             class="mt-1"
                             color="primary_dark"
                             text-color="white"
-                          >Clinica : {{consulta.clinic.name}}</v-chip>
+                          >Clinica : {{schedule.clinic.name}}</v-chip>
                         </v-layout>
                       </v-flex>
                       <!-- <v-flex x3 sm3 dm3 lg3 class="ml-4">
@@ -198,8 +201,8 @@
                           rounded
                           color="primary_dark"
                           class="mx-0"
-                          :disabled="consulta.vagas === 0"
-                          @click="scheduleAppointment(consulta)"
+                          :disabled="schedule.vacancy === 0"
+                          @click="scheduleAppointment(schedule)"
                         >Agendar</v-btn>
                       </v-flex>
                     </v-layout>
@@ -414,14 +417,16 @@
                           :disabled="status === 'Pago' ? false : true"
                         ></v-text-field>
                       </v-flex>
-                      <v-flex v-if="justifyReturn(createConsultationForm.consultation.date.split(' ')[0])" xs12>
-                        
+                      <v-flex
+                        v-if="justifyReturn(createConsultationForm.consultation.date.split(' ')[0])"
+                        xs12
+                      >
                         <v-textarea
-                            v-model="justify"
-                            outlined
-                            name="input-7-4"
-                            label="Justificativa de Retorno "
-                            placeholder="O retorno tem mais de 21 dias. Justifique o motivo do agendamento para essa data."
+                          v-model="justify"
+                          outlined
+                          name="input-7-4"
+                          label="Justificativa de Retorno "
+                          placeholder="O retorno tem mais de 21 dias. Justifique o motivo do agendamento para essa data."
                         ></v-textarea>
                       </v-flex>
                       <v-flex xs12 sm12 md12 lg12>
@@ -598,7 +603,7 @@ export default {
     success: false,
     loading: false,
     pacienteSelecionado: undefined,
-    justify:'',
+    justify: "",
 
     //-------------------------------------------Scroll------------------------------------------------
     type: "number",
@@ -615,7 +620,7 @@ export default {
   }),
 
   computed: {
-   clinics() {
+    clinics() {
       let val = this.$store.getters.clinics.filter(a => {
         return a.property;
       });
@@ -627,6 +632,29 @@ export default {
     },
     computedDateFormatted() {
       // return this.formatDate(this.index_Selecionado.data);
+    },
+    schedules() {
+      let schedules = this.$store.getters.schedules.filter(a => {
+        let response = true;
+        if (this.selectedDoctor) {
+          if (this.selectedDoctor.cpf !== a.doctor.cpf) {
+            response = false;
+          }
+        }
+        if (this.especialidade) {
+          if (this.especialidade.name !== a.specialty.name) {
+            response = false;
+          }
+        }
+        if (this.clinic) {
+          if (this.clinic.name !== a.clinic.name) {
+            response = false;
+          }
+        }
+        return response;
+      });
+      
+      return schedules;
     },
     consultas() {
       let consultas = this.formatConsultationsArray(
@@ -763,11 +791,11 @@ export default {
     window.addEventListener("scroll", this.handleScroll);
   },
   methods: {
-    justifyReturn(date){
-      var dateConsultation = moment(this.query.data)
-      var today = moment(date)
-      var diff = today.diff(dateConsultation,'days')
-      return diff > 21
+    justifyReturn(date) {
+      var dateConsultation = moment(this.query.data);
+      var today = moment(date);
+      var diff = today.diff(dateConsultation, "days");
+      return diff > 21;
     },
     scheduleAppointment(consultation) {
       this.fillConsultationForm(consultation);
@@ -780,9 +808,7 @@ export default {
         : this.query.consultation.dependent
         ? this.query.consultation.dependent
         : undefined;
-      let consultation = consult.consultations.find(a => {
-        return !a.user;
-      });
+      let consultation = consult;
 
       if (dependent) {
         patient = { ...patient, dependent: dependent };
@@ -794,8 +820,7 @@ export default {
         consultation: consultation
       };
 
-      this.justify = ''
-      //this.justifyReturn()
+      this.justify = "";
       this.createConsultationForm = form;
     },
     formatConsultationsArray(consultations) {
@@ -822,12 +847,10 @@ export default {
         newArray[i].vagas = newArray[i].consultations.filter(a => {
           return !a.user;
         }).length;
-         newArray[i].numConsultations = newArray[i].consultations.filter(a => {
-
+        newArray[i].numConsultations = newArray[i].consultations.filter(a => {
           return a.user && a.type === "Consulta";
         }).length;
         newArray[i].returns = newArray[i].consultations.filter(a => {
-
           return a.user && a.type === "Retorno";
         }).length;
       }
@@ -860,25 +883,25 @@ export default {
       //await this.$store.dispatch("getDoctors");
       //await this.$store.dispatch("getSpecialties");
       this.query = this.$route.params.q;
-      this.selectedDoctor = this.query.doctor
-      this.especialidade = this.query.especialidade
-      this.clinic = this.query.consultation.clinic
-      await this.$store.dispatch("listenConsultations", {
+      this.selectedDoctor = this.query.doctor;
+      this.especialidade = this.query.especialidade;
+      this.clinic = this.query.consultation.clinic;
+      await this.$store.dispatch("getSchedules", {
         start_date: moment().format("YYYY-MM-DD 00:00:00"),
-        specialty:this.especialidade,
-        doctor:this.selectedDoctor,
-        clinic:this.clinic
-       /*  final_date: moment()
+        specialty: this.especialidade,
+        doctor: this.selectedDoctor,
+        clinic: this.clinic
+        /*  final_date: moment()
           .add(30, "days")
           .format("YYYY-MM-DD 23:59:59") */
       });
 
       if (!this.query) {
-        //this.$router.push('agenda/GerenciamentoConsultas')
+        this.$router.back();
       }
-      this.selectedDoctor = this.query.doctor
-      this.especialidade = this.query.especialidade
-      this.clinic = this.query.consultation.clinic
+      this.selectedDoctor = this.query.doctor;
+      this.especialidade = this.query.especialidade;
+      this.clinic = this.query.consultation.clinic;
       this.pacienteSelecionado = this.query.pacienteObj;
       this.status = this.query.status;
       this.num_recibo = this.query.num_recibo;
@@ -975,13 +998,12 @@ export default {
         payment_number: this.num_recibo,
         previousConsultation: this.query.idConsultation
       };
-      if(this.justify != ''){
-        form.user.justifyReturn = this.justify
-        form.consultation.justifyReturn = this.justify
+      if (this.justify != "") {
+        form.user.justifyReturn = this.justify;
+        form.consultation.justifyReturn = this.justify;
       }
-      // return
       this.loading = true;
-      await this.$store.dispatch("addConsultationAppointmentToUser", form);
+      //await this.$store.dispatch("addConsultationAppointmentToUser", form);
       //Realizar essa funcao pelo cloud functions
       await this.$store.dispatch("addUserToConsultation", form);
       this.loading = false;

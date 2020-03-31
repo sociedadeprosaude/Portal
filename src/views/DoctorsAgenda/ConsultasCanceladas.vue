@@ -347,7 +347,7 @@
             },
 
             apagar () {
-                //this.$store.dispatch('removeAppointmentForever',{... this.index_Selecionado});
+                this.$store.dispatch('removeAppointmentForever',{... this.index_Selecionado});
                 console.log("dados:", this.index_Selecionado)
                 this.dialog = false
             },
