@@ -55,6 +55,20 @@
             <v-flex xs12>
               <v-text-field outlined label="Descrição" v-model="description"></v-text-field>
             </v-flex>
+            <v-flex xs1>
+                <v-checkbox color="success" class="font-weight-bold" label="Parcelar" v-model="parcelar"/>
+            </v-flex>
+            <v-flex xs2>
+              <v-text-field hint="Quantidade de parcelas" persistent-hint class="ml-4 mt-4" outlined dense
+                            :disabled="!parcelar" v-model="parcelas" v-mask="mask.number">
+
+              </v-text-field>
+            </v-flex>
+            <v-spacer/>
+            <v-flex xs6>
+              <v-checkbox color="success" class="font-weight-bold" label="Conta recorrente" v-model="recorrente">
+              </v-checkbox>
+            </v-flex>
             <v-flex xs12 sm4>
               <span class="my-sub-headline">Data para pagamento</span>
               <v-date-picker locale="pt-br" v-model="dateToPay"></v-date-picker>
@@ -182,30 +196,7 @@
                 <span class="font-weight-bold">{{bill.paid | dateFilter}}</span>
                 <v-divider vertical class="mx-4"/>
                 <v-spacer/>
-                <v-flex xs3 class="justify-end">
-                  <v-text-field v-model="bill.value"
-                                dense
-                                outlined
-                                persistent-hint
-                                prefix="R$"
-                                :readonly="!isEditing"
-                                prepend-icon="monetization_on"
-                                class="font-weight-bold"
-                                :hint="!isEditing ? 'Clique no icon para editar' : 'Clique no icon para salvar'"
-                  >
-                    <template v-slot:append-outer>
-                      <v-slide-x-reverse-transition
-                              mode="out-in"
-                      >
-                        <v-icon  :key="`icon-${isEditing}`"
-                                 :color="isEditing ? 'success' : 'info'"
-                                 @click="isEditing = !isEditing, editBillValue(bill)"
-                                 v-text="isEditing ? 'mdi-check-outline' : 'mdi-circle-edit-outline'">
-                        </v-icon>
-                      </v-slide-x-reverse-transition>
-                    </template>
-                  </v-text-field>
-                </v-flex>
+                <span class="font-weight-bold">{{bill.value}}</span>
 
                 <v-flex xs12>
                   <span>{{bill.description}}</span>
@@ -269,16 +260,22 @@
 <script>
 import OuttakeOrder from "../components/OuttakeOrder";
 import outtakesCategories from "@/components/DialogOuttakeCategories";
+import {mask} from 'vue-the-mask'
 import moment from "moment";
 export default {
   name: "Bills",
+  directives: {
+    mask,
+  },
   components: {
     OuttakeOrder,
-    outtakesCategories
+    outtakesCategories,
   },
   data() {
     return {
-      isEditing: false,
+      parcelar: false,
+      recorrente: false,
+      parcelas: null,
       unit: null,
       other: "Outro",
       billsOptions: ["De hoje", "Todas", "Filtrar"],
@@ -297,7 +294,10 @@ export default {
       paymentMethods: ["Boleto", "Transferência", "Dinheiro"],
       loading: false,
       files: [],
-      filesPreviews: []
+      filesPreviews: [],
+      mask: {
+        number: '###'
+      }
     };
   },
   mounted() {
@@ -407,17 +407,7 @@ export default {
         });
       }
     },
-    async editBillValue (bill) {
-      if (!this.isEditing) {
 
-        console.log(bill);
-        await this.$store.dispatch("editOuttakes", bill);
-        await this.$store.dispatch("getOuttakes");
-        this.loading = false;
-
-      }
-
-    },
     addBill2() {
       console.log(this.category);
     },

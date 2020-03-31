@@ -27,19 +27,41 @@
                     <v-flex xs12 class="my-2">
                       <v-layout row wrap>
                         <span>{{bill.category}}</span>
-                        <v-divider vertical class="mx-4"></v-divider>
+                        <v-divider vertical class="mx-4"/>
                         <span>{{bill.payment_method}}</span>
-                        <v-divider vertical class="mx-4"></v-divider>
+                        <v-divider vertical class="mx-4"/>
                         <span class="font-weight-bold">{{bill.date_to_pay | dateFilter}}</span>
-                        <v-divider vertical class="mx-4"></v-divider>
-                        <v-icon
-                          class="warning--text"
+                        <v-divider vertical class="mx-4"/>
+                        <v-icon class="warning--text align-start"
                           v-if="distanceToToday(bill.date_to_pay) < 3"
                         >warning</v-icon>
-                        <v-spacer></v-spacer>
-                        <span class="font-weight-bold">R$ {{bill.value}}</span>
+                        <v-spacer/>
+                        <v-flex xs5 class="justify-end">
+                          <v-text-field v-model="bill.value"
+                                        dense
+                                        outlined
+                                        persistent-hint
+                                        prefix="R$"
+                                        :readonly="!isEditing"
+                                        prepend-icon="monetization_on"
+                                        class="font-weight-bold"
+                                        :hint="!isEditing ? 'Clique no icon para editar' : 'Clique no icon para salvar'"
+                          >
+                            <template v-slot:append-outer>
+                              <v-slide-x-reverse-transition
+                                      mode="out-in"
+                              >
+                                <v-icon  :key="`icon-${isEditing}`"
+                                         :color="isEditing ? 'success' : 'info'"
+                                         @click="isEditing = !isEditing, editBillValue(bill)"
+                                         v-text="isEditing ? 'mdi-check-outline' : 'mdi-circle-edit-outline'">
+                                </v-icon>
+                              </v-slide-x-reverse-transition>
+                            </template>
+                          </v-text-field>
+                        </v-flex>
                         <v-flex xs12>
-                          <span>{{bill.description}}</span>
+                          <span class="font-italic">{{bill.description}}</span>
                         </v-flex>
                         <v-flex xs12 sm10 class="mt-4">
                           <v-layout row wrap>
@@ -53,7 +75,7 @@
                                 </v-flex>
                               </v-layout>
                             </v-layout>
-                            <v-divider vertical></v-divider>
+                            <v-divider vertical/>
                             <v-layout column wrap>
                               <span class="my-sub-headline mb-4">Comprovante</span>
                               <v-layout row wrap v-if="!loading">
@@ -64,12 +86,12 @@
                                 </v-flex>
                               </v-layout>
                               <v-flex xs12 sm2 class="text-right" v-else>
-                                <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
+                                <v-progress-circular indeterminate class="primary--text"/>
                               </v-flex>
                             </v-layout>
                           </v-layout>
                         </v-flex>
-                        <v-flex xs12 sm2 class="text-right" v-if="!loading">
+                        <v-flex xs12 class="text-right" v-if="!loading">
                           <v-btn @click="$refs[bill.id][0].click()" class="primary mx-2" fab small>
                             <v-icon>receipt</v-icon>
                           </v-btn>
@@ -81,7 +103,7 @@
                           </v-btn>
                         </v-flex>
                         <v-flex xs12 sm2 class="text-right" v-else>
-                          <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
+                          <v-progress-circular indeterminate class="primary--text"/>
                         </v-flex>
                       </v-layout>
                       <input
@@ -106,8 +128,8 @@
           class="mx-4 sticky"
           v-model="date"
           :allowed-dates="allowedDates"
-          locale="pt-br"
-        ></v-date-picker>
+          locale="pt-br">
+        </v-date-picker>
       </v-col>
     </v-row>
   </v-container>
@@ -120,6 +142,7 @@ export default {
   props: ["outtakes"],
   data() {
     return {
+      isEditing: false,
       loading: false,
       date: moment().format("YYYY-MM-DD"),
       files: [],
@@ -164,6 +187,17 @@ export default {
         res[targetDate].push(outtakes[outtake]);
       }
       return res;
+    },
+    async editBillValue (bill) {
+      if (!this.isEditing) {
+
+        console.log(bill);
+        await this.$store.dispatch("editOuttakes", bill);
+        await this.$store.dispatch("getOuttakes");
+        this.loading = false;
+
+      }
+
     },
     distanceToToday(date) {
       let now = moment();
