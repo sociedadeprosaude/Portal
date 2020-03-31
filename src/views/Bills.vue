@@ -414,13 +414,14 @@ export default {
     async bifurcation () {
 
       if (this.parcelas){
+        console.log('parcelas: ', this.parcelas)
         this.value = this.value / this.parcelas;
-        this.dateToPay= moment(this.dateToPay).subtract(1,'months').format('YYYY-MM-DD')
-        for (let parcela in this.parcelas){
-          this.dateToPay= moment(this.dateToPay).add(1,'months').format('YYYY-MM-DD')
+        for(let i=0; i<this.parcelas; i++){
           this.addBill();
+          this.dateToPay= moment(this.dateToPay).add(1,'months').format('YYYY-MM-DD')
         }
-      } else {
+      }
+      else {
         this.addBill();
       }
 
