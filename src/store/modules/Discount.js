@@ -45,7 +45,11 @@ const actions = {
             }
             commit('setcolaboratorsWarning', WarningColaborators);
         })
-    }
+    },
+    async DiscountWarningDelete(context, payload){
+        await firebase.firestore().collection('discount').doc(payload.cpf).delete();
+        console.log('deletando')
+    },
 
 
 };

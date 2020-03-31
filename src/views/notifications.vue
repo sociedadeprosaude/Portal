@@ -2,7 +2,6 @@
     <v-container fluid>
         <v-layout  wrap row class="justify-center">
             <v-flex xs12 sm8 class="text-center" v-for="item in notifications">
-                {{item}}
                 <v-alert
                         class="text-left"
                         color="warning"
@@ -45,8 +44,7 @@
         },
 
         components: {
-            //alertConsultationCanceled,
-            //alertDiscountColaborator,
+
         },
 
         mounted() {
@@ -82,7 +80,8 @@
 
         watch: {
             users(){
-                if (this.users.length !== 0) {
+
+                if (this.users.length !== undefined) {
                     let data = {
                         name: 'DiscountColaborator',
                         info: 'Existem ações incomuns quanto ao padrão de descontos!',
@@ -110,8 +109,6 @@
             },
 
             outtakes () {
-                console.log('outtakes tamanho: ', this.outtakes.length)
-                console.log('outtakes: ', this.outtakes)
 
                 if (this.outtakes.length !== 0) {
                     let data = {
@@ -119,12 +116,9 @@
                         info: 'Algumas contas vencem hoje. Pague-as agora!',
                         link: '/bills',
                         icon: 'monetization_on',
-                        exist: true
                     };
                     this.$store.dispatch('addNotifications', data);
-                    console.log('notificação ok')
                 } else {
-                    console.log('sem notificação')
                     this.$store.dispatch('deleteNotification', 'outtakes');
                 }
             }
