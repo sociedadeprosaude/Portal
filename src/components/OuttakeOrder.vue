@@ -212,8 +212,23 @@ export default {
       });
 
       if (outtake.recurrent === 'true') {
-        outtake.date_to_pay = moment(outtake.date_to_pay).add(1, 'months').format('YYYY-MM-DD');
-        await this.$store.dispatch("addOuttakes", outtake);
+        console.log('pagamento:', outtake.date_to_pay)
+        console.log('outtakes', outtake)
+        let bill = {
+          category: outtake.category,
+          subCategory: outtake.subCategoria,
+          payment_method: outtake.payment_method,
+          description: outtake.description,
+          value: outtake.value,
+          date_to_pay: moment(outtake.date_to_pay).add(1, 'months').format('YYYY-MM-DD'),
+          created_at: outtake.created_at,
+          colaborator: outtake.colaborator,
+          unit:outtake.unit,
+          recurrent: 'true',
+        };
+        console.log('pagamento:', outtake.date_to_pay)
+
+        await this.$store.dispatch("addOuttakes", bill);
       }
 
       await this.$store.dispatch("getOuttakes");
