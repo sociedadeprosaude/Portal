@@ -153,7 +153,7 @@ export default {
     },
     intakesDividedByExam() {
       let listIntakesRemade = [];
-      // Criando com exames com os dados necessarios
+      // Criando os exames com os dados necessarios
       listIntakesRemade = this.intakesWithExam.map(intake =>
         intake.exams.map(exam => {
           return {
@@ -173,7 +173,7 @@ export default {
       // Juntando em uma array que o bloco de cima retona uma array de array
       listIntakesRemade = [].concat.apply([], listIntakesRemade);
       let listIntakesGroupedByExam = [];
-      // Agrupando os intakes que tem ao mesmo exame
+      // Agrupando os intakes que tem o mesmo exame
       this.exams.forEach(exam => {
         let listIntakesExam = listIntakesRemade.filter(
           intake => intake.examName == exam.name
