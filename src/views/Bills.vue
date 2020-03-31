@@ -182,7 +182,31 @@
                 <span class="font-weight-bold">{{bill.paid | dateFilter}}</span>
                 <v-divider vertical class="mx-4"/>
                 <v-spacer/>
-                <span class="font-weight-bold">R$ {{bill.value}}</span>
+                <v-flex xs3 class="justify-end">
+                  <v-text-field v-model="bill.value"
+                                dense
+                                outlined
+                                persistent-hint
+                                prefix="R$"
+                                :readonly="!isEditing"
+                                prepend-icon="monetization_on"
+                                class="font-weight-bold"
+                                :hint="!isEditing ? 'Clique no icon para editar' : 'Clique no icon para salvar'"
+                  >
+                    <template v-slot:append-outer>
+                      <v-slide-x-reverse-transition
+                              mode="out-in"
+                      >
+                        <v-icon  :key="`icon-${isEditing}`"
+                                 :color="isEditing ? 'success' : 'info'"
+                                 @click="isEditing = !isEditing, editBillValue(bill)"
+                                 v-text="isEditing ? 'mdi-check-outline' : 'mdi-circle-edit-outline'">
+                        </v-icon>
+                      </v-slide-x-reverse-transition>
+                    </template>
+                  </v-text-field>
+                </v-flex>
+
                 <v-flex xs12>
                   <span>{{bill.description}}</span>
                 </v-flex>
@@ -254,6 +278,7 @@ export default {
   },
   data() {
     return {
+      isEditing: false,
       unit: null,
       other: "Outro",
       billsOptions: ["De hoje", "Todas", "Filtrar"],
@@ -381,6 +406,17 @@ export default {
           category: category.name
         });
       }
+    },
+    async editBillValue (bill) {
+      if (!this.isEditing) {
+
+        console.log(bill);
+        await this.$store.dispatch("addOuttakes", bill);
+        await this.$store.dispatch("getOuttakes");
+        this.loading = false;
+
+      }
+
     },
     addBill2() {
       console.log(this.category);
