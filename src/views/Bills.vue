@@ -137,7 +137,7 @@
       </v-flex>
       <v-fade-transition>
         <v-flex xs12 class="text-right mt-4" v-if="!loading">
-          <v-btn @click="addBill()" rounded class="primary">Adicionar</v-btn>
+          <v-btn @click="bifurcation()" rounded class="primary">Adicionar</v-btn>
         </v-flex>
         <v-flex xs12 class="text-right" v-else>
           <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
@@ -415,9 +415,9 @@ export default {
 
       if (this.parcelas){
         this.value = this.value / this.parcelas;
-        this.date_to_pay = this.date_to_pay; //menos 1 mês
+        this.dateToPay= moment(this.dateToPay).subtract(1,'months').format('YYYY-MM-DD')
         for (let parcela in this.parcelas){
-          this.date_to_pay = this.date_to_pay //mais um mês
+          this.dateToPay= moment(this.dateToPay).add(1,'months').format('YYYY-MM-DD')
           this.addBill();
         }
       } else {
