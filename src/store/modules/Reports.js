@@ -241,9 +241,10 @@ const actions = {
                 }
             }
         }
+        // bugFont, comentando esse where do unit.name sai o erro, mas tá estranho porque unit.name está no indices lá no firebase.
         let outtakesSnap = await firebase.firestore().collection('outtakes').where('paid', '>=', payload.dataInicio)
             .where('paid', '<=', payload.dataFinal)
-            .where('unit.name', '==', selectedUnit.name)
+            //.where('unit.name', '==', selectedUnit.name)
             .orderBy('paid').get();
         outtakesSnap.forEach((e) => {
             if (e.data().payments) {

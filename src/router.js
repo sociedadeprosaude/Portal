@@ -17,8 +17,7 @@ import Bills from "./views/Bills";
 
 import MedicalCare from "./views/MedicalCare";
 import Attendance from "./views/Attendance";
-//import Tickets from "./views/Tickets";
-import TicketsDashboard from "./views/TicketsDashboard";
+import Tickets from "./views/Tickets";
 import CardEditor from "./views/CardEditor";
 
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
@@ -147,8 +146,7 @@ let mainRoutes = [
   {
     path: '/senhas',
     name: 'Tickets',
-    //component : Tickets,
-    component : TicketsDashboard,
+    component : Tickets,
     meta: {
       requiresAuth: false,
     }
