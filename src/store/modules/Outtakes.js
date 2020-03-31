@@ -108,6 +108,12 @@ const actions = {
         outtake = functions.removeUndefineds(outtake);
         await firebase.firestore().collection('outtakes/').add(outtake)
     },
+
+    async editOuttakes (context, outtake) {
+        outtake = functions.removeUndefineds(outtake);
+        await firebase.firestore().collection('outtakes/').doc(outtake.id).set(outtake);
+
+    },
     async updateOuttake(context, payload) {
         if (payload.value === 'delete') {
             payload.value = firebase.firestore.FieldValue.delete()

@@ -411,7 +411,7 @@ export default {
       if (!this.isEditing) {
 
         console.log(bill);
-        await this.$store.dispatch("addOuttakes", bill);
+        await this.$store.dispatch("editOuttakes", bill);
         await this.$store.dispatch("getOuttakes");
         this.loading = false;
 
