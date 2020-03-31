@@ -36,7 +36,7 @@
 
                         <v-flex xs12 class="align-center justify-center">
                             <v-layout row wrap class="align-center justify-center">
-                                <span class="my-sub-headline primary--text" style="font-size: 1.4em;text-decoration: underline">LAUDO</span>
+                                <span class="my-sub-headline primary--text" style="font-size: 1.4em;text-decoration: underline">ORIENTAÇÕES</span>
                             </v-layout>
                         </v-flex>
 
@@ -60,7 +60,7 @@
     import { VueEditor } from "vue2-editor";
     var moment = require('moment');
     export default {
-        name: "reportPDF",
+        name: "orientationsPDF",
         props:['consultation', 'item'],
         components: { VueEditor },
         data: () => ({
