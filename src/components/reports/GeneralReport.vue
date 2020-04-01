@@ -33,20 +33,32 @@
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
-                                <v-flex xs4>
+                                <v-flex xs2>
                                     Procedimento
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
-                                <v-flex xs2>
+                                <v-flex xs1>
+                                    Quantidade
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs1>
                                     Custo
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
-                                <v-flex xs2>
+                                <v-flex xs1>
                                     Venda
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs1>
+                                    %
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -80,14 +92,21 @@
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
-                                <v-flex xs2>
+                                <v-flex xs1>
                                     {{spec.cost | moneyFilter}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
-                                <v-flex xs2>
+                                <v-flex xs1>
                                     {{spec.price | moneyFilter}}
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs1>
+                                    <span v-if="spec.price > 0">{{((spec.price - spec.cost) / spec.price) * 100 | moneyFilter}}%</span>
+                                    <span v-else>0%</span>
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -117,14 +136,21 @@
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
-                                <v-flex xs2>
+                                <v-flex xs1>
                                     {{report.totalCustoEspecialts | moneyFilter}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
-                                <v-flex xs2>
+                                <v-flex xs1>
                                     {{totalSpecialtiesIntakes | moneyFilter}}
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs1>
+                                    <span v-if="totalSpecialtiesIntakes > 0">{{((totalSpecialtiesIntakes - report.totalCustoEspecialts) / totalSpecialtiesIntakes) * 100 | moneyFilter}}%</span>
+                                    <span v-else>0%</span>
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -157,14 +183,21 @@
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
-                                <v-flex xs2>
+                                <v-flex xs1>
                                     {{clinics.cost | moneyFilter}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
-                                <v-flex xs2>
+                                <v-flex xs1>
                                     {{clinics.price | moneyFilter}}
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs1>
+                                    <span v-if="clinics.price > 0">{{((clinics.price - clinics.cost) / clinics.price) * 100 | moneyFilter}}%</span>
+                                    <span v-else>0%</span>
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -186,14 +219,21 @@
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
                                         </v-flex>
-                                        <v-flex xs2>
+                                        <v-flex xs1>
                                             {{exam.cost | moneyFilter}}
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
                                         </v-flex>
-                                        <v-flex xs2>
+                                        <v-flex xs1>
                                             {{exam.price | moneyFilter}}
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <v-divider vertical></v-divider>
+                                        </v-flex>
+                                        <v-flex xs1>
+                                            <span v-if="exam.price  > 0">{{((exam.price - exam.cost) / exam.price ) * 100 | moneyFilter}}%</span>
+                                            <span v-else>0%</span>
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
@@ -228,14 +268,21 @@
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
-                                <v-flex xs2>
+                                <v-flex xs1>
                                     {{report.totalCustoExams | moneyFilter}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
-                                <v-flex xs2>
+                                <v-flex xs1>
                                     {{totalExamsIntakes | moneyFilter}}
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs1>
+                                    <span v-if="totalExamsIntakes > 0">{{((totalExamsIntakes - report.totalCustoExams) / totalExamsIntakes) * 100 | moneyFilter}}%</span>
+                                    <span v-else>0%</span>
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
