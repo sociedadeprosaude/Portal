@@ -260,7 +260,7 @@ exports.saveTicketsHistory = functions.pubsub.schedule('0 0 * * *').onRun((conte
             // verificando se a sala teve fila de tickets
             if (room.data().tickets.length != 0) {
                 // Pegando a historia da sala (criei o campo clicnicDoc no metadata da room pra facilitar a query de salvar
-                firestore.collection('tickets-history').doc(room.data().clinicDoc)
+                firestore.collection('tickets-history').doc(room.data().doc_clinic)
                     .collection('rooms-history').doc(room.id).get()
                     .then(async (roomHist) => {
                         if (roomHist.exists) {

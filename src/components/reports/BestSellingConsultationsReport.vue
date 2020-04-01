@@ -36,7 +36,7 @@
           single-expand
           no-data-text="Sem exames no intervalo escolhido"
           :footer-props="{
-      itemsPerPageText:'Exames por página',
+      itemsPerPageText:'Consultas por página',
       pageText:'{0}-{1} de {2}'
     }"
         >
@@ -53,7 +53,10 @@
                 :headers="subHeaders"
                 :items="item.intakes"
                 item-key="intakeId"
-                hide-default-footer
+                :footer-props="{
+      itemsPerPageText:'Itens por página',
+      pageText:'{0}-{1} de {2}'
+    }"
               >
                 <template v-slot:item.price="{ item }">R$ {{item.price.toFixed(2)}}</template>
                 <template v-slot:item.cost="{ item }">R$ {{item.cost.toFixed(2)}}</template>
