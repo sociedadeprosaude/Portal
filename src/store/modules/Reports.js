@@ -120,7 +120,7 @@ const actions = {
         let totalTaxaCredito = 0;
         let quantidadeOuttakes = 0;
         let relatorio = {};
-        console.log('intakes: ',intakes)
+        //console.log('intakes: ',intakes)
         for (let intake in intakes) {
             if (!intakes[intake].cancelled_by) {
                 if (intakes[intake].type === 'financial_support') {

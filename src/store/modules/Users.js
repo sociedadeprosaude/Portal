@@ -14,6 +14,7 @@ function f(arg) {
 const state = {
     selectedPatient: undefined,
     selectedDependent: undefined,
+    users: [],
 
 };
 
@@ -43,6 +44,7 @@ const mutations = {
 
         state.selectedDependent = undefined
     },
+    setUsers: (state, payload) => state.users = payload,
 
 };
 
@@ -55,11 +57,72 @@ const actions = {
     //     })
     // },
 
-    async getPatient({}, id) {
+    async getUsers(context, payload) {
+        try {
+            let selectedUnit = context.getters.selectedUnit;
+            let query = firebase.firestore().collection('users');
+            let usersSnap = [];
+            if (payload) {
+                if (payload.initialDate) {
+                    query = query.where('created_at', '>=', payload.initialDate)
+                }
+                if (payload.finalDate) {
+                    query = query.where('created_at', '<=', payload.finalDate)
+                }
+                if (payload.type) {
+                    query = query.where('type', '==', payload.type)
+                }
+                query = query.orderBy('created_at');
+            }
+            usersSnap = await query.get();
+            let users = [];
+            usersSnap.forEach(doc => {
+                users.push({
+                    id: doc.id,
+                    ...doc.data()
+                })
+            });
+            context.commit("setUsers", users);
+        } catch (e) {
+            console.log(e)
+        }
+    },
+    async getTodayUsers(context, payload) {
+        try {
+            let selectedUnit = context.getters.selectedUnit;
+            let query = firebase.firestore().collection('users');
+            let usersSnap = [];
+            if (payload) {
+                if (payload.initialDate) {
+                    query = query.where('created_at', '>=', payload.initialDate)
+                }
+                if (payload.finalDate) {
+                    query = query.where('created_at', '<=', payload.finalDate)
+                }
+                if (payload.type) {
+                    query = query.where('type', '==', payload.type)
+                }
+                query = query.orderBy('created_at');
+            }
+            usersSnap = await query.get();
+            let users = [];
+            usersSnap.forEach(doc => {
+                users.push({
+                    id: doc.id,
+                    ...doc.data()
+                })
+            });
+            return users;
+        } catch (e) {
+            console.log(e)
+        }
+    },
+
+    async getPatient({ }, id) {
         let userDoc = await firestore().collection('users').doc(id.toString()).get()
         return userDoc.data()
     },
-    async searchUser({}, searchFields) {
+    async searchUser({ }, searchFields) {
         let usersRef = firestore().collection('users');
 
         for (let field in searchFields) {
@@ -78,31 +141,31 @@ const actions = {
         });
         return users
     },
-   /*  async gambiarra({ commit, getters }, searchFields) {
-        let usersRef = firestore().collection('users').where('type','==','PATIENT');
-        console.log('Vai buscar')
-        //usersRef.where('type','==','PATIENT')
-        let querySnapshot = await usersRef.get();
-        let users = [];
-        querySnapshot.forEach(function (doc) {
-           let data = doc.data()
-           if(data.dependents){
-
-                data.dependents.forEach((dep)=>{
-                        console.log('Nome do responsável:' + data.name + '-> Dependente' + dep.name)
-
-                })
-            }
-        });
-        console.log('Buscou')
-        return users
-    }, */
-    thereIsUserCPF({commit},payload){
-        return new Promise(async (resolve,reject)=>{
-            try{
+    /*  async gambiarra({ commit, getters }, searchFields) {
+         let usersRef = firestore().collection('users').where('type','==','PATIENT');
+         console.log('Vai buscar')
+         //usersRef.where('type','==','PATIENT')
+         let querySnapshot = await usersRef.get();
+         let users = [];
+         querySnapshot.forEach(function (doc) {
+            let data = doc.data()
+            if(data.dependents){
+ 
+                 data.dependents.forEach((dep)=>{
+                         console.log('Nome do responsável:' + data.name + '-> Dependente' + dep.name)
+ 
+                 })
+             }
+         });
+         console.log('Buscou')
+         return users
+     }, */
+    thereIsUserCPF({ commit }, payload) {
+        return new Promise(async (resolve, reject) => {
+            try {
                 let foundUser = await firebase.firestore().collection('users').doc(payload).get();
                 resolve(foundUser.exists)
-            }catch(e){
+            } catch (e) {
                 reject(e)
             }
         })
@@ -142,17 +205,17 @@ const actions = {
         let upd = {};
         console.log('payload: ', payload);
         if (payload.value === 'pay') {
-            for(let advance in payload.user.advances){
+            for (let advance in payload.user.advances) {
                 console.log('advance: ', payload.user.advances[advance]);
-                payload.user.advances[advance].parcel -=1;
-                for(let mes in payload.user.advances[advance].months){
-                    if(payload.date === payload.user.advances[advance].months[mes]){
-                        payload.user.advances[advance].months.splice(mes,1);
+                payload.user.advances[advance].parcel -= 1;
+                for (let mes in payload.user.advances[advance].months) {
+                    if (payload.date === payload.user.advances[advance].months[mes]) {
+                        payload.user.advances[advance].months.splice(mes, 1);
                     }
                 }
             }
-            upd= payload.user
-            console.log('upd: ',upd)
+            upd = payload.user
+            console.log('upd: ', upd)
             return await firebase.firestore().collection('users').doc(payload.user.cpf).set(upd)
 
         } else {
@@ -162,13 +225,13 @@ const actions = {
             return await firebase.firestore().collection('users').doc(payload.user.cpf).update(upd)
         }
     },
-    async deleteUser({}, user) {
+    async deleteUser({ }, user) {
         try {
-            console.log('user :',user);
-            let adv= 0;
-            for(let advance in user.user.advances) {
+            console.log('user :', user);
+            let adv = 0;
+            for (let advance in user.user.advances) {
                 console.log('advance: ', user.user.advances[advance]);
-                for (let mes=0 ; mes< user.user.advances[advance].parcel; mes++) {
+                for (let mes = 0; mes < user.user.advances[advance].parcel; mes++) {
                     console.log('numero de parcelas');
                     adv += user.user.advances[advance].valueParcel
                 }
@@ -176,10 +239,10 @@ const actions = {
             console.log('adv:', adv);
             console.log('uid:', user.user.uid);
             await firebase.firestore().collection('users').doc(user.user.cpf).delete();
-            admin.auth().deleteUser(user.user.uid).then(function() {
+            admin.auth().deleteUser(user.user.uid).then(function () {
                 console.log('Successfully deleted user');
             })
-                .catch(function(error) {
+                .catch(function (error) {
                     console.log('Error deleting user:', error);
                 });
             //var usuario =firebase.auth(user.user.uid)
@@ -187,10 +250,10 @@ const actions = {
 
             //var user = firebase.auth().currentUser;
             //user.delete().then(function() {
-                // User deleted.
+            // User deleted.
             //}).catch(function(error) {
-                // An error happened.
-           // });
+            // An error happened.
+            // });
             return
         } catch (e) {
             throw e
@@ -220,6 +283,9 @@ const getters = {
     selectedDependent(state) {
         return state.selectedDependent
     },
+    users(state) {
+        return state.users;
+    }
 };
 
 export default {

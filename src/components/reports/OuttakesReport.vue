@@ -229,7 +229,6 @@ export default {
             this.calcOuttakeInfo(category, listOuttakesCategory, totalCost)
           );
       });
-      console.log(listOuttakesGroupedByCategory);
       return listOuttakesGroupedByCategory;
     },
 
