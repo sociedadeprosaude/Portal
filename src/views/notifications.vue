@@ -79,18 +79,26 @@
         },
 
         watch: {
-            users(){
-
-                if (this.users.length !== undefined) {
+            async users(){
+                let userValid= false;
+                for( let user in this.users){
+                    if(user){
+                        userValid= true
+                        break
+                    }
+                }
+                if (userValid) {
                     let data = {
                         name: 'DiscountColaborator',
                         info: 'Existem ações incomuns quanto ao padrão de descontos!',
                         link: '/discount',
                         icon: 'notification_important',
                     };
-                    this.$store.dispatch('addNotifications', data);
+                    await this.$store.dispatch('addNotifications', data);
+                    await this.$store.dispatch('loadNotifications');
                 } else {
-                    this.$store.dispatch('deleteNotification', 'DiscountColaborator');
+                    await this.$store.dispatch('deleteNotification', 'DiscountColaborator');
+                    await this.$store.dispatch('loadNotifications');
                 }
             },
 

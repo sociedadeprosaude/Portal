@@ -78,7 +78,7 @@
                             <v-divider vertical/>
                             <v-layout column wrap>
                               <span class="my-sub-headline mb-4">Comprovante</span>
-                              <v-layout row wrap v-if="!loading">
+                              <v-layout row wrap v-if="!loadingAnexo">
                                 <v-flex v-for="(append, i) in bill.receipts" :key="i">
                                   <v-card @click="openAppend(append)" flat>
                                     <img :src="append" style="max-width: 124px; max-width: 124px" />
@@ -91,19 +91,21 @@
                             </v-layout>
                           </v-layout>
                         </v-flex>
-                        <v-flex xs12 class="text-right" v-if="!loading">
+                        <v-flex xs12 sm2 class="text-right" v-if="loading && outtakeSelect === bill">
+                          <v-progress-circular indeterminate class="primary--text"/>
+                        </v-flex>
+                        <v-flex xs12 class="text-right"  v-else>
                           <v-btn @click="$refs[bill.id][0].click()" class="primary mx-2" fab small>
                             <v-icon>receipt</v-icon>
                           </v-btn>
                           <v-btn @click="deleteOuttake(bill)" class="error mx-2" fab small>
                             <v-icon>delete</v-icon>
                           </v-btn>
-                          <v-btn @click="payOuttake(bill)" class="success mx-2" fab small>
+                          <v-btn @click="payOuttake(bill)" class="success mx-2" fab small
+                                 placeholder="Complemento"
+                          >
                             <v-icon>attach_money</v-icon>
                           </v-btn>
-                        </v-flex>
-                        <v-flex xs12 sm2 class="text-right" v-else>
-                          <v-progress-circular indeterminate class="primary--text"/>
                         </v-flex>
                       </v-layout>
                       <input
@@ -144,6 +146,8 @@ export default {
     return {
       isEditing: false,
       loading: false,
+      loadingAnexo: false,
+      outtakeSelect: [],
       date: moment().format("YYYY-MM-DD"),
       files: [],
       options: {
@@ -205,6 +209,9 @@ export default {
     },
     async payOuttake(outtake) {
       this.loading = true;
+      console.log(' outtake select :', this.outtakeSelect);
+      this.outtakeSelect= outtake;
+      console.log(' outtake select before:', this.outtakeSelect);
       await this.$store.dispatch("updateOuttake", {
         outtake: outtake,
         field: "paid",
@@ -230,7 +237,7 @@ export default {
 
         await this.$store.dispatch("addOuttakes", bill);
       }
-
+      this.outtakeSelect= []
       await this.$store.dispatch("getOuttakes");
       this.loading = false;
     },
@@ -241,7 +248,7 @@ export default {
       this.loading = false;
     },
     async handleFileUpload(outtake) {
-      this.loading = true;
+      this.loadingAnexo = true;
       await this.$store.dispatch("deleteFile", {
         imagePaths: outtake.receipts,
         path: "outtakes/receipts"
@@ -261,7 +268,7 @@ export default {
         value: urls
       });
       await this.$store.dispatch("getOuttakes");
-      this.loading = false;
+      this.loadingAnexo = false;
     },
     // readFileUrl(file, index) {
     //     let self = this

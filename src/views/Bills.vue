@@ -229,16 +229,16 @@
                     </v-layout>
                   </v-layout>
                 </v-flex>
-                <v-flex xs12 class="text-right" v-if="!loading">
+                <v-flex xs12 class="text-right" v-if="loadingDelete && outtakeSelect === bill">
+                  <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
+                </v-flex>
+                <v-flex xs12 class="text-right"  v-else>
                   <!--                                    <v-btn @click="deleteOuttake(bill)" class="error mx-2" fab small>-->
                   <!--                                        <v-icon>delete</v-icon>-->
                   <!--                                    </v-btn>-->
                   <v-btn @click="unpayOuttake(bill)" class="error mx-2" fab small>
                     <v-icon>money_off</v-icon>
                   </v-btn>
-                </v-flex>
-                <v-flex xs12 class="text-right" v-else>
-                  <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
                 </v-flex>
               </v-layout>
             </v-flex>
@@ -293,6 +293,8 @@ export default {
       dateToPay: moment().format("YYYY-MM-DD"),
       paymentMethods: ["Boleto", "Transferência", "Dinheiro"],
       loading: false,
+      loadingDelete: false,
+      outtakeSelect: [],
       files: [],
       filesPreviews: [],
       mask: {
@@ -457,7 +459,8 @@ export default {
       this.loading = false;
     },
     async unpayOuttake(outtake) {
-      this.loading = true;
+      this.loadingDelete = true;
+      this.outtakeSelect=outtake;
       await this.$store.dispatch("updateOuttake", {
         outtake: outtake,
         field: "paid",
@@ -468,7 +471,8 @@ export default {
           .add(5, "days")
           .format("YYYY-MM-DD 23:59:59")
       });
-      this.loading = false;
+      this.outtakeSelect= [];
+      this.loadingDelete = false;
     },
     handleFileUpload() {
       let uploadedFiles = this.$refs.files.files;

@@ -14,6 +14,7 @@ const actions = {
     async DiscountWarning(context, payload){
         await firebase.firestore().collection('discount').doc(payload.cpf).collection('intakes').
             doc(payload.orcamento.toString()).set(payload)
+        await firebase.firestore().collection('discount').doc(payload.cpf).set({exist: true})
         console.log('adicionado')
     },
     async WarningColaborators({commit}) {
@@ -41,8 +42,8 @@ const actions = {
                             WarningColaborators[Snap.docs[document].id.toString()].qtd +=1
                         }
                     })
-                console.log('warningColaborators: ', WarningColaborators)
             }
+            console.log('colaboradores: ', WarningColaborators)
             commit('setcolaboratorsWarning', WarningColaborators);
         })
     },
@@ -55,7 +56,6 @@ const actions = {
 };
 const getters = {
     colaboratorsWarning(state){
-        console.log('colaborators',state.colaboratorsWarning)
         return state.colaboratorsWarning
     }
 };
