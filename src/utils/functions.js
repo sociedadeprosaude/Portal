@@ -1,4 +1,5 @@
 
+import moment from 'moment'
 const regexToErase = [
     new RegExp(' da '),
     new RegExp(' do '),
@@ -9,7 +10,7 @@ const regexToErase = [
 ]
 
 export default {
-    search: function(search, array) {
+    search: function (search, array) {
         let results = []
         let compare
         for (let el in array) {
@@ -76,27 +77,72 @@ export default {
             result: result
         }
     },
-    removeAccent: function(str)
-    {
+    removeAccent: function (str) {
 
         const accentRegex = "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝŔÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿŕ";
 
         const notAccetnRegex = "AAAAAAACEEEEIIIIDNOOOOOOUUUUYRsBaaaaaaaceeeeiiiionoooooouuuuybyr";
-        let newString="";
-        for(let i=0; i<str.length; i++) {
-            let replace=false;
-            for (let a=0; a<accentRegex.length; a++) {
-                if (str.substr(i,1)==accentRegex.substr(a,1)) {
-                    newString+=notAccetnRegex.substr(a,1);
-                    replace=true;
+        let newString = "";
+        for (let i = 0; i < str.length; i++) {
+            let replace = false;
+            for (let a = 0; a < accentRegex.length; a++) {
+                if (str.substr(i, 1) == accentRegex.substr(a, 1)) {
+                    newString += notAccetnRegex.substr(a, 1);
+                    replace = true;
                     break;
                 }
             }
-            if (replace==false) {
-                newString+=str.substr(i,1);
+            if (replace == false) {
+                newString += str.substr(i, 1);
             }
         }
         return newString;
+    },
+
+    datesOfInterval(payload) {
+        let startDate = moment(payload.start_date, 'YYYY-MM-DD');
+        let finalDate = moment(payload.final_date, 'YYYY-MM-DD');
+        let daysDiff = finalDate.diff(startDate, 'days');
+        //commit('setConsultationCreationTotalDays', daysDiff);
+        let dates = []
+        for (let i = 0; i <= daysDiff; i++) {
+            let day = moment(startDate, 'YYYY-MM-DD').add(i, 'days');
+            //commit('setConsultationCreationActualDay', day.format('YYYY-MM-DD'));
+            //commit('setConsultationCreationDaysCreated', i);
+            if (payload.weekDays.indexOf(day.weekday()) > -1) {
+                dates.push(day)
+            }
+        }
+
+        return dates
+    },
+
+    groupDateByWeek(payload) {
+        let dates = this.datesOfInterval(payload)
+        let weeks = {}
+        for (const key in dates) {
+            let week = dates[key].year().toString() + dates[key].week().toString()
+            // check if the week number exists
+            if (!weeks[week]) {
+                weeks[week] = [];
+            }
+                 
+            weeks[week].push(dates[key].format('YYYY-MM-DD'));
+        }
+
+        return weeks
+    },
+
+    makeWeekSchedule(weekDays,vacancy,hour){
+        let obj = {}
+        weekDays.forEach(element => {
+            obj[element] = {
+                vacancy:Number(vacancy),
+                hour:hour
+            }
+        });
+
+        return obj
     }
 }
 

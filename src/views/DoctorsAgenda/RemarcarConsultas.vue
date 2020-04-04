@@ -12,9 +12,35 @@
             filled
             disabled
           ></v-text-field>
+          <!-- <v-combobox
+            prepend-icon="school"
+            v-model="especialidade"
+            :items="specialties"
+            item-text="name"
+            return-object
+            label="Especialidade"
+            outlined
+            rounded
+            chips
+            color="blue"
+            readonly
+          >
+            <template v-slot:selection="data">
+              <v-chip
+                :key="JSON.stringify(data.item)"
+                :input-value="data.selected"
+                :disabled="data.disabled"
+                class="v-chip--select-multi"
+                @click.stop="data.parent.selectedIndex = data.index"
+                @input="data.parent.selectItem(data.item)"
+                text-color="white"
+                color="info"
+              >{{ data.item.name }}</v-chip>
+            </template>
+          </v-combobox>-->
         </v-flex>
         <v-spacer></v-spacer>
-        <v-flex xs12 md5>
+        <v-flex xs12 md6>
           <v-text-field
             prepend-icon="location_city"
             v-model="selectedDoctor.name"
@@ -25,30 +51,31 @@
             disabled
           ></v-text-field>
           <!-- <v-combobox
-                            prepend-icon="person"
-                            v-model="selectedDoctor"
-                            :items="doctors"
-                            return-object
-                            item-text="name"
-                            label="Médicos"
-                            outlined
-                            rounded
-                            chips
-                            color="blue"
-                            clearable
-                    >
-                        <template v-slot:selection="data">
-                            <v-chip
-                                    :key="JSON.stringify(data.item)"
-                                    :input-value="data.selected"
-                                    :disabled="data.disabled"
-                                    class="v-chip--select-multi"
-                                    @click.stop="data.parent.selectedIndex = data.index"
-                                    @input="data.parent.selectItem(data.item)"
-                                    text-color="white"
-                                    color="info"
-                            >{{ data.item.name }}</v-chip>
-                        </template>
+            prepend-icon="person"
+            v-model="selectedDoctor"
+            :items="doctors"
+            return-object
+            item-text="name"
+            label="Médicos"
+            outlined
+            rounded
+            chips
+            color="blue"
+            clearable
+            readonly
+          >
+            <template v-slot:selection="data">
+              <v-chip
+                :key="JSON.stringify(data.item)"
+                :input-value="data.selected"
+                :disabled="data.disabled"
+                class="v-chip--select-multi"
+                @click.stop="data.parent.selectedIndex = data.index"
+                @input="data.parent.selectItem(data.item)"
+                text-color="white"
+                color="info"
+              >{{ data.item.name }}</v-chip>
+            </template>
           </v-combobox>-->
         </v-flex>
 
@@ -62,115 +89,143 @@
             filled
             disabled
           ></v-text-field>
+          <!-- <v-select
+            prepend-icon="location_city"
+            v-model="clinic"
+            :items="clinics"
+            item-text="name"
+            label="Clínica"
+            outlined
+            rounded
+            filled
+            chips
+            color="purple"
+            clearable
+            readonly
+          >
+            <template v-slot:selection="data">
+              <v-chip
+                :key="JSON.stringify(data.item)"
+                :input-value="data.selected"
+                :disabled="data.disabled"
+                class="v-chip--select-multi"
+                @click.stop="data.parent.selectedIndex = data.index"
+                @input="data.parent.selectItem(data.item)"
+                text-color="white"
+                color="info"
+              >{{ data.item.name }}</v-chip>
+            </template>
+          </v-select>-->
         </v-flex>
       </v-layout>
-      <v-container
+      <v-layout
+        row
+        wrap
         style="width:100%"
-        class="align-center justify-center hidden-xs-only py-0"
+        class="align-center justify-center py-0"
         v-for="(scheduleGroup, i) in consultasByDate(schedules)"
         :key="i"
       >
         <v-flex xs12>
           <div v-bind:id="'group-' + i">
-            <v-card dark color="primary_dark" class="title">
+            <v-card color="primary_dark" class="mx-2">
               <v-card-text
-                class="px-3 text-left my-sub-headline"
+                class="px-3 text-left my-sub-headline white--text"
               >{{i | dateFilter}} - {{daydate(i)}}</v-card-text>
             </v-card>
           </div>
         </v-flex>
-        <v-container fluid grid-list-sm class="py-0 my-3">
+        <v-container fluid grid-list-sm class="py-0 my-3 mx-2">
           <v-layout row wrap>
-            <v-flex v-for="(schedule, j) in scheduleGroup" :key="j" xs4>
-              <v-card class="elevation-12" dark style="border-radius:20px">
-                <v-card-text class="white text--primary">
-                  <v-container class="py-0 px-0">
-                    <v-layout row wrap>
-                      <v-flex x2 sm2 dm2 lg2>
-                        <v-avatar>
-                          <v-btn icon large color="primary_dark">
-                            <v-icon medium color="white">person</v-icon>
-                          </v-btn>
-                        </v-avatar>
-                      </v-flex>
+            <v-flex v-for="(schedule, j) in scheduleGroup" :key="j" sm4 xs12 class="px-2 py-2">
+              <v-card class="pa-4" style="border-radius:20px; height: 100%">
+                <v-layout fill-height>
+                  <v-layout row wrap>
+                    <!--                                        <v-flex xs2 sm2 dm2 lg2>-->
+                    <!--                                            <v-avatar>-->
+                    <!--                                                <v-btn icon large color="primary_dark">-->
+                    <!--                                                    <v-icon medium color="grey">person</v-icon>-->
+                    <!--                                                </v-btn>-->
+                    <!--                                            </v-avatar>-->
+                    <!--                                        </v-flex>-->
 
-                      <v-flex id="teste" xs10 sm10 md10 lg10 hidden-xs-only class="pl-3 py-2">
-                        <div style="height:60px">
-                          <h4>
-                            <span class="subheading font-weight-bold">{{schedule.doctor.name}}</span>
-                            <br />
-                            <span
-                              class="body-2 font-weight-bold grey--text"
-                            >{{schedule.specialty.name}}</span>
-                            <br />
-                            <span
-                              class="body-2 font-weight-bold grey--text"
-                            >CRM-AM: {{schedule.doctor.crm}}</span>
-                          </h4>
-                        </div>
-                      </v-flex>
+                    <v-flex id="teste" xs12 class="pl-3 text-left">
+                      <h4>
+                        <span class="subheading font-weight-bold">{{schedule.doctor.name}}</span>
+                        <br />
+                        <span
+                          class="body-2 font-weight-bold dark_grey--text"
+                        >{{schedule.specialty.name}}</span>
+                        <br />
+                        <!--                                                <span-->
+                        <!--                                                        class="font-weight-bold dark_grey&#45;&#45;text"-->
+                        <!--                                                        style="font-size: 0.8em"-->
+                        <!--                                                >CRM-AM: {{consulta.doctor.crm}}</span>-->
+                      </h4>
+                    </v-flex>
+                    <v-flex xs12 class="mb-1">
+                      <v-divider></v-divider>
+                    </v-flex>
 
-                      <v-flex class="my-0" xs12>
-                        <v-layout row wrap>
+                    <v-flex class="my-0" xs12>
+                      <v-layout row wrap class="text-left font-weight-bold">
+                        <v-flex xs12>
                           <v-chip
                             class="mx-2"
                             color="primary_dark"
                             text-color="white"
                           >{{schedule.date.split(' ')[1]}}</v-chip>
-                          <v-chip
-                            color="primary_dark"
-                            text-color="white"
-                          >Vagas : {{schedule.vacancy}}</v-chip>
-                          <v-chip
-                            class="mt-1 mr-1"
-                            color="primary_dark"
-                            text-color="white"
-                          >Consultas : {{schedule.qtdConsultations ? schedule.qtdConsultations : 0}}</v-chip>
+                          <v-chip color="primary_dark" text-color="white">
+                            Vagas :
+                            {{schedule.vacancy}}
+                          </v-chip>
+                        </v-flex>
+                        <v-flex xs12>
+                          <v-chip class="mt-1 mr-1" color="primary_dark" text-color="white">
+                            Consultas :
+                            {{schedule.qtd_consultations ? schedule.qtd_consultations : 0}}
+                          </v-chip>
+                          <v-chip class="mt-1" color="primary_dark" text-color="white">
+                            Retornos :
+                            {{schedule.qtd_returns ? schedule.qtd_returns : 0}}
+                          </v-chip>
                           <v-chip
                             class="mt-1"
                             color="primary_dark"
                             text-color="white"
-                          >Retornos : {{schedule.qtdReturns ? schedule.qtdReturns : 0}}</v-chip>
-                          <v-chip
-                            class="mt-1"
-                            color="primary_dark"
-                            text-color="white"
-                          >Clinica : {{schedule.clinic.name}}</v-chip>
-                        </v-layout>
-                      </v-flex>
-                      <!-- <v-flex x3 sm3 dm3 lg3 class="ml-4">
-                                              <v-chip
-                                                :color="consultaGroup.color"
-                                                text-color="white"
-                                              >Vagas : {{consulta.vaga}}</v-chip>
-                      </v-flex>-->
-                      <v-flex xs12 class="text-right">
+                          >{{schedule.clinic.name}}</v-chip>
+                        </v-flex>
+                      </v-layout>
+                    </v-flex>
+                    <v-flex xs12 class="text-right">
+                      <v-fade-transition>
                         <v-btn
+                          v-if="isOnline"
                           rounded
-                          color="primary_dark"
+                          color="primary_dark white--text"
                           class="mx-0"
                           :disabled="schedule.vacancy === 0"
                           @click="scheduleAppointment(schedule)"
                         >Agendar</v-btn>
-                      </v-flex>
-                    </v-layout>
-                  </v-container>
-                </v-card-text>
+                        <v-btn v-else rounded color="grey" class="mx-0">Sem conexão</v-btn>
+                      </v-fade-transition>
+                    </v-flex>
+                  </v-layout>
+                </v-layout>
               </v-card>
             </v-flex>
           </v-layout>
         </v-container>
-      </v-container>
-      <v-flex xs12>
+      </v-layout>
+      <v-flex xs12 v-if="!consultationLoading">
         <v-btn class="primary" rounded @click="listenMoreConsultations">Carregar mais</v-btn>
       </v-flex>
+      <v-flex xs12 v-else>
+        <v-progress-circular class="primary--text" indeterminate></v-progress-circular>
+      </v-flex>
     </v-flex>
-    <!--      <v-divider vertical></v-divider>-->
-    <v-flex id="lknlknlk" v-if="!showAlert" xs4 class="text-center">
+    <v-flex v-if="!showAlert" xs4 class="text-center">
       <v-layout row wrap class="align-center justify-center">
-        <!-- <v-flex xs12 class="text-center">
-                    <select-patient-card ref="patientCard" max-width="1000px"></select-patient-card>
-        </v-flex>-->
         <v-flex xs12 class="text-center">
           <v-date-picker
             landscape
@@ -526,7 +581,7 @@ export default {
     loading: false,
     pacienteSelecionado: undefined,
     consultationsListenerUnsubscriber: undefined,
-    daysToListen: 30,
+    daysToListen: 3,
 
     //-------------------------------------------Scroll------------------------------------------------
     type: "number",
@@ -543,16 +598,12 @@ export default {
   }),
 
   computed: {
-    /*            clinics() {
-                let val = this.$store.getters.clinics.filter(a => {
-                    return a.property;
-                });
-                return val;
-                //return this.$store.getters.clinics;
-            },
-            specialties() {
-                return this.$store.getters.specialties;
-            },*/
+    isOnline() {
+      return this.$store.getters.isOnline;
+    },
+    consultationLoading() {
+      return this.$store.getters.consultationsLoading;
+    },
     computedDateFormatted() {
       // return this.formatDate(this.index_Selecionado.data);
     },
@@ -575,10 +626,10 @@ export default {
             response = false;
           }
         }
-        return response;
+        return response
       });
 
-      return schedules;
+      return this.consultationsOfSchedules(schedules);
     },
     consultas() {
       //console.log('Especialidade',this.especialidade)
@@ -689,6 +740,69 @@ export default {
     this.consultationsListenerUnsubscriber();
   },
   methods: {
+    datesOfInterval(weekDays) {
+      let startDate = moment();
+      let dates = [];
+      weekDays = weekDays.map(day => {
+        return Number(day);
+      });
+      let day = startDate;
+      for (let i = 0; i < this.daysToListen; i++) {
+        if (weekDays.indexOf(day.weekday()) > -1) {
+          dates.push(day.format("YYYY-MM-DD"));
+        }
+        day = startDate.add(1, "days");
+      }
+
+      return dates;
+    },
+    numberVacancyAndReturns(schedule) {
+      let consultations = this.consultas;
+      return consultations.reduce(
+        (obj, item) => {
+          let qtd_consultations = obj.qtd_consultations;
+          let qtd_returns = obj.qtd_returns;
+          if (
+            schedule.clinic.name === item.clinic.name &&
+            schedule.specialty.name === item.specialty.name &&
+            schedule.doctor.cpf === item.doctor.cpf &&
+            schedule.date === item.date &&
+            item.user
+          ) {
+            if (item.type === "Consulta") obj.qtd_consultations += 1;
+            else obj.qtd_returns += 1;
+          }
+          return obj;
+        },
+        { qtd_consultations: 0, qtd_returns: 0 }
+      );
+    },
+    consultationsOfSchedules(schedules) {
+      let consultations = [];
+      schedules.forEach(schedule => {
+        let keys = Object.keys(schedule.days);
+        let dates = this.datesOfInterval(keys);
+
+        dates.forEach(date => {
+          let scheduleObj = {
+            clinic: schedule.clinic,
+            doctor: schedule.doctor,
+            date: date + " " + schedule.days[moment(date).weekday()].hour,
+            routine_id: schedule.routine_id,
+            specialty: schedule.specialty,
+            vacancy: schedule.days[moment(date).weekday()].vacancy,
+            id_schedule: schedule.id
+          };
+          let obj = {
+            ...scheduleObj,
+            ...this.numberVacancyAndReturns(scheduleObj)
+          };
+          obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns;
+          consultations.push(obj);
+        });
+      });
+      return consultations;
+    },
     justifyReturn(date) {
       var dateConsultation = moment(this.query.data);
       var today = moment(date);
@@ -789,12 +903,12 @@ export default {
       this.consultationsListenerUnsubscriber = await this.$store.dispatch(
         "getSchedules",
         {
-          start_date: moment()
-            .subtract(4, "hours")
-            .format("YYYY-MM-DD HH:mm:ss"),
           specialty: this.especialidade,
           doctor: this.selectedDoctor,
           clinic: this.clinic,
+          start_date: moment()
+            .subtract(5, "hours")
+            .format("YYYY-MM-DD HH:mm:ss"),
           final_date: moment()
             .add(this.daysToListen, "days")
             .format("YYYY-MM-DD 23:59:59")

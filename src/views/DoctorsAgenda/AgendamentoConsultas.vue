@@ -157,13 +157,13 @@
                                                     </v-chip>
                                                 </v-flex>
                                                 <v-flex xs12>
-                                                    <v-chip class="mt-1 mr-1" color="primary_dark" text-color="white">
+                                                   <v-chip class="mt-1 mr-1" color="primary_dark" text-color="white">
                                                         Consultas :
-                                                        {{schedule.qtdConsultations ? schedule.qtdConsultations : 0}}
+                                                        {{schedule.qtd_consultations ? schedule.qtd_consultations : 0}}
                                                     </v-chip>
                                                     <v-chip class="mt-1" color="primary_dark" text-color="white">
                                                         Retornos :
-                                                        {{schedule.qtdReturns ? schedule.qtdReturns : 0}}
+                                                        {{schedule.qtd_returns ? schedule.qtd_returns : 0}}
                                                     </v-chip>
                                                     <v-chip
                                                             class="mt-1"
@@ -492,9 +492,9 @@
                             </v-card>
                         </v-dialog>
                     </div>
-                    <v-dialog v-model="dialogPaciente" width="1000">
+                    <!-- <v-dialog v-model="dialogPaciente" width="1000">
                         <pacientes></pacientes>
-                    </v-dialog>
+                    </v-dialog> -->
                 </v-layout>
             </v-container>
         </template>
@@ -663,7 +663,7 @@
                     }
                     return response;
                 });
-                return schedules;
+                return this.consultationsOfSchedules(schedules);
             },
             consultas() {
                 let consultas = this.formatConsultationsArray(
@@ -795,6 +795,60 @@
             this.consultationsListenerUnsubscriber();
         },
         methods: {
+            datesOfInterval(weekDays) {
+                let startDate = moment();
+                let dates = []
+                weekDays = weekDays.map((day)=>{ return Number(day)})
+                let day = startDate
+                for (let i = 0; i < this.daysToListen; i++) {
+                    if (weekDays.indexOf(day.weekday()) > -1) {
+                        dates.push(day.format('YYYY-MM-DD'))
+                    }
+                    day = startDate.add(1, 'days');
+                }
+
+                return dates
+            },
+            numberVacancyAndReturns(schedule){
+                let consultations = this.consultas
+                return consultations.reduce((obj,item)=>{
+                    let qtd_consultations = obj.qtd_consultations
+                    let qtd_returns = obj.qtd_returns
+                    if(schedule.clinic.name === item.clinic.name && schedule.specialty.name === item.specialty.name
+                       &&schedule.doctor.cpf === item.doctor.cpf && schedule.date === item.date && item.user){
+                            if(item.type === 'Consulta')
+                                obj.qtd_consultations += 1
+                            else
+                                obj.qtd_returns += 1
+                    }                 
+                    return obj
+                },{qtd_consultations:0,qtd_returns:0})
+            },
+            consultationsOfSchedules(schedules){
+                let consultations = []
+                schedules.forEach((schedule)=>{
+                    let keys = Object.keys(schedule.days)
+                    let dates = this.datesOfInterval(keys)
+                    
+                    dates.forEach((date)=>{
+                        let scheduleObj = {
+                            clinic: schedule.clinic,
+                            doctor: schedule.doctor,
+                            date: date + ' ' + schedule.days[moment(date).weekday()].hour,
+                            routine_id : schedule.routine_id,
+                            specialty: schedule.specialty,
+                            vacancy: schedule.days[moment(date).weekday()].vacancy,
+                            id_schedule: schedule.id,
+                            
+                        }
+                        let obj = {...scheduleObj,...this.numberVacancyAndReturns(scheduleObj)}
+                        obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns
+                        consultations.push(obj)
+                        
+                    })
+                })
+                return consultations
+            },
             formatDate(date) {
                 if (!date) return null;
                 const [year, month, day] = date.split("-");
@@ -933,6 +987,9 @@
             },
             consultasByDate(consultations) {
                 let res = {};
+                consultations.sort((a,b)=>{
+                    return a.date > b.date ? 1 : a.date < b.date ? -1 : 0
+                })
                 for (let cons in consultations) {
                     let targetDate = consultations[cons].date.split(" ")[0];
                     if (!res[targetDate]) {
