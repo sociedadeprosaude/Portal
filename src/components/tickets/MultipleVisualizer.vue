@@ -111,15 +111,20 @@ export default {
     },
     lastTicketCalled() {
       const latest = this.calledTicketsInOrder[0];
-
-      if (!this.lastRoomCalled || this.lastRoomCalled.number != latest.number) {
-        this.animation = "animation";
-        setTimeout(() => {
-          this.animation = "";
-        }, 5000);
-        this.lastRoomCalled = latest;
+      if (latest) {
+        if (
+          !this.lastRoomCalled ||
+          this.lastRoomCalled.number != latest.number
+        ) {
+          this.animation = "animation";
+          setTimeout(() => {
+            this.animation = "";
+          }, 5000);
+          this.lastRoomCalled = latest;
+        }
+        return latest;
       }
-      return latest;
+      return null;
     },
     lastTicketsCalled() {
       return this.calledTicketsInOrder.splice(1, 8);

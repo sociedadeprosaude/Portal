@@ -1,10 +1,5 @@
 <template>
   <v-container>
-    <v-row justify="start">
-      <v-btn @click="back" color="error" rounded class="mb-2 elevation-6">
-        <v-icon left>arrow_back</v-icon>VOLTAR
-      </v-btn>
-    </v-row>
     <v-row>
       <v-col cols="12">
         <v-card class="pa-4">
@@ -15,8 +10,8 @@
                 v-model="categoria"
                 :items="categories"
                 item-text="name"
-                return-object
-              ></v-select>
+                return-object>
+              </v-select>
 
               <v-select
                 v-if="categoria.subCategories"
@@ -24,8 +19,8 @@
                 v-model="subCategoria"
                 :items="[...categoria.subCategories,this.other]"
                 item-text="name"
-                return-object
-              ></v-select>
+                return-object>
+              </v-select>
             </v-col>
             <v-col xs="2">
               <v-tooltip bottom>
@@ -49,13 +44,14 @@
               <v-currency-field
                 label="valor"
                 v-model="valor"
-                required
-              ></v-currency-field>
+                required>
+              </v-currency-field>
             </v-col>
           </v-row>
           <v-row>
             <v-col xs="12">
-              <v-text-field label="Descrição" v-model="descricao"></v-text-field>
+              <v-text-field label="Descrição" v-model="descricao">
+              </v-text-field>
             </v-col>
             <v-col xs="12">
               <v-select
@@ -63,8 +59,8 @@
                 v-model="unit"
                 :items="units"
                 item-text="name"
-                return-object
-              ></v-select>
+                return-object>
+              </v-select>
             </v-col>
           </v-row>
 
@@ -72,10 +68,11 @@
             <v-col>
               <p class="my-sub-headline">Data para pagamento</p>
 
-              <v-date-picker locale="pt-br" v-model="dateToPay"></v-date-picker>
+              <v-date-picker locale="pt-br" v-model="dateToPay"/>
             </v-col>
             <v-col align-self="center">
-              <submit-button text="Enviar" :loading="loading" :success="success" @click="enviar()"></submit-button>
+              <submit-button text="Enviar" :loading="loading" :success="success" @click="enviar()">
+              </submit-button>
             </v-col>
           </v-row>
         </v-card>
@@ -93,8 +90,8 @@
           text="Adicionar"
           :loading="loading"
           :success="success"
-          @click="adicionarCategoria()"
-        ></submit-button>
+          @click="adicionarCategoria()">
+        </submit-button>
       </v-card>
     </v-dialog>
   </v-container>
@@ -147,7 +144,7 @@ export default {
         paid: this.data,
         colaborator: this.user,
         payment_method: "Dinheiro",
-        unit: this.unit.name != this.other ? this.unit : null
+        unit: this.unit.name !== this.other ? this.unit : null
       });
       this.success = true;
       this.loading = false;
@@ -158,7 +155,7 @@ export default {
     async adicionarCategoria() {
       if (
         this.categoriesName.indexOf(this.categoriaNova) < 0 &&
-        this.categoriaNova != this.other
+        this.categoriaNova !== this.other
       ) {
         await this.$store.dispatch("addOuttakesCategory", {
           category: this.categoriaNova

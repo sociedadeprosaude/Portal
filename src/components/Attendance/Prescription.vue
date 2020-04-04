@@ -142,6 +142,9 @@
         props:['consultation'],
         data: () => ({
             documentDialog: false,
+            medicines: [],
+            item: undefined,
+            search: null,
             sus: [
                 {name:'acetato de betametasona + fosfato dissódico de betametasona',concentration:'3 mg/mL + 3 mg/mL',pharmaceutical:'suspensão injetável',},
                 {name:'acetato de hidrocortisona',concentration:'10 mg/g (1%)',pharmaceutical:'creme',},
@@ -507,10 +510,7 @@
                 {name:'unha-de-gato [Uncaria tomentosa (Willd. ex Roem. & Schult.)]',concentration:'0,9 mg de alcaloides oxindólicos pentaclíclicos',pharmaceutical:'gel',},
                 {name:'varfarina sódica',concentration:'1 mg',pharmaceutical:'comprimido',},
                 {name:'varfarina sódica',concentration:'5 mg',pharmaceutical:'comprimido',},
-            ],
-            medicines: [],
-            item: undefined,
-            search: null,
+                ]
         }),
         computed:{
             formIsValid() {

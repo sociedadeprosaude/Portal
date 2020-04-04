@@ -1,41 +1,35 @@
 <template>
-  <v-container>
-    <v-row cols="12">
-      <v-chip-group
-        row
-        mandatory
-        v-model="optionSelected"
-        active-class="primary--text"
-        class="mb-3 ml-2"
-      >
-        <v-chip v-for="option in options" :key="option">{{ option }}</v-chip>
-      </v-chip-group>
-    </v-row>
-    <v-card id="card-to-print">
-      <v-card-title>
-        <v-text-field
-          v-model="search"
-          prepend-inner-icon="mdi-magnify"
-          label="Procurar"
-          single-line
-          rounded
-          hide-details
-        ></v-text-field>
-        <v-spacer />
-        <span class="float-right">{{date}} 00:00:00 até {{date2}} 23:59:59</span>
-      </v-card-title>
-      <div v-if="optionSelected === 0">
-        <v-data-table
-          :headers="headers"
-          :search="search"
-          :items="intakesDividedBySpecialties"
-          :sort-by="['quantity']"
-          :sort-desc="[true]"
-          item-key="name"
-          show-expand
-          single-expand
-          no-data-text="Sem exames no intervalo escolhido"
-          :footer-props="{
+    <v-container>
+        <v-row cols="12">
+            <v-chip-group row mandatory v-model="optionSelected" active-class="primary--text" class="mb-3 ml-2">
+                <v-chip v-for="option in options" :key="option">{{ option }}</v-chip>
+            </v-chip-group>
+        </v-row>
+        <v-card id="card-to-print">
+            <v-card-title>
+                <v-text-field
+                        v-model="search"
+                        prepend-inner-icon="mdi-magnify"
+                        label="Procurar"
+                        single-line
+                        rounded
+                        hide-details>
+                </v-text-field>
+                <v-spacer/>
+                <span class="float-right">{{date}} 00:00:00 até {{date2}} 23:59:59</span>
+            </v-card-title>
+            <div v-if="optionSelected === 0">
+                <v-data-table
+                        :headers="headers"
+                        :search="search"
+                        :items="intakesDividedBySpecialties"
+                        :sort-by="['quantity']"
+                        :sort-desc="[true]"
+                        item-key="name"
+                        show-expand
+                        single-expand
+                        no-data-text="Sem consultas no intervalo escolhido"
+                        :footer-props="{
       itemsPerPageText:'Consultas por página',
       pageText:'{0}-{1} de {2}'
     }"
@@ -139,34 +133,7 @@ export default {
           sortable: false,
           value: "idIntake"
         },
-        { text: "Custo", value: "cost", align: "center" },
-        { text: "Venda", value: "price", align: "center" },
-        { text: "Clinica", value: "clinicName" },
-        { text: "Médico", value: "doctorName" }
-      ],
-      dateBegin: null,
-      dateEnd: null
-    };
-  },
-  methods: {
-    calcIntakeFromConsultation(consultation, listIntakesSpecialties) {
-      const sumCost = listIntakesSpecialties.reduce(
-        (total, e) => total + e.cost,
-        0
-      );
-      const sumPrice = listIntakesSpecialties.reduce(
-        (total, e) => total + e.price,
-        0
-      );
-      console.log("consultation-nome", consultation);
-      return {
-        name: consultation.name,
-        intakes: listIntakesSpecialties,
-        quantity: listIntakesSpecialties.length,
-        totalCost: sumCost,
-        totalPrice: sumPrice,
-        profit: sumPrice - sumCost
-      };
+      ]
     }
   },
   computed: {
