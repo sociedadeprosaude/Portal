@@ -55,6 +55,20 @@
             <v-flex xs12>
               <v-text-field outlined label="Descrição" v-model="description"></v-text-field>
             </v-flex>
+            <v-flex xs1>
+                <v-checkbox color="success" class="font-weight-bold" label="Parcelar" v-model="parcelar"/>
+            </v-flex>
+            <v-flex xs2>
+              <v-text-field hint="Quantidade de parcelas" persistent-hint class="ml-4 mt-4" outlined dense
+                            :disabled="!parcelar" v-model="parcelas" v-mask="mask.number">
+
+              </v-text-field>
+            </v-flex>
+            <v-spacer/>
+            <v-flex xs6>
+              <v-checkbox color="success" class="font-weight-bold" label="Conta recorrente" v-model="recorrente">
+              </v-checkbox>
+            </v-flex>
             <v-flex xs12 sm4>
               <span class="my-sub-headline">Data para pagamento</span>
               <v-date-picker locale="pt-br" v-model="dateToPay"></v-date-picker>
@@ -123,7 +137,7 @@
       </v-flex>
       <v-fade-transition>
         <v-flex xs12 class="text-right mt-4" v-if="!loading">
-          <v-btn @click="addBill()" rounded class="primary">Adicionar</v-btn>
+          <v-btn @click="bifurcation()" rounded class="primary">Adicionar</v-btn>
         </v-flex>
         <v-flex xs12 class="text-right" v-else>
           <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
@@ -182,7 +196,8 @@
                 <span class="font-weight-bold">{{bill.paid | dateFilter}}</span>
                 <v-divider vertical class="mx-4"/>
                 <v-spacer/>
-                <span class="font-weight-bold">R$ {{bill.value}}</span>
+                <span class="font-weight-bold">{{bill.value}}</span>
+
                 <v-flex xs12>
                   <span>{{bill.description}}</span>
                 </v-flex>
@@ -245,15 +260,22 @@
 <script>
 import OuttakeOrder from "../components/OuttakeOrder";
 import outtakesCategories from "@/components/DialogOuttakeCategories";
+import {mask} from 'vue-the-mask'
 import moment from "moment";
 export default {
   name: "Bills",
+  directives: {
+    mask,
+  },
   components: {
     OuttakeOrder,
-    outtakesCategories
+    outtakesCategories,
   },
   data() {
     return {
+      parcelar: false,
+      recorrente: false,
+      parcelas: null,
       unit: null,
       other: "Outro",
       billsOptions: ["De hoje", "Todas", "Filtrar"],
@@ -272,7 +294,10 @@ export default {
       paymentMethods: ["Boleto", "Transferência", "Dinheiro"],
       loading: false,
       files: [],
-      filesPreviews: []
+      filesPreviews: [],
+      mask: {
+        number: '###'
+      }
     };
   },
   mounted() {
@@ -382,14 +407,31 @@ export default {
         });
       }
     },
+
     addBill2() {
       console.log(this.category);
+    },
+    async bifurcation () {
+
+      if (this.parcelas){
+        console.log('parcelas: ', this.parcelas)
+        this.value = this.value / this.parcelas;
+        for(let i=0; i<this.parcelas; i++){
+          this.addBill();
+          this.dateToPay= moment(this.dateToPay).add(1,'months').format('YYYY-MM-DD')
+        }
+      }
+      else {
+        this.addBill();
+      }
+
     },
     async addBill() {
       this.loading = true;
       // Deletando esses dois campos se tiverem pra não salvar dados desnecessários no banco
       delete this.unit.exams;
       delete this.unit.specialties;
+
       let bill = {
         category: this.category.name,
         subCategory: this.subCategory,
@@ -399,7 +441,8 @@ export default {
         date_to_pay: this.dateToPay,
         created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
         colaborator: this.user,
-        unit: this.unit.name != this.other ? this.unit : null
+        unit: this.unit.name != this.other ? this.unit : null,
+        recurrent: this.recorrente ? 'true' : 'false',
       };
       await this.newCategory(this.category);
       if (this.subCategory) {

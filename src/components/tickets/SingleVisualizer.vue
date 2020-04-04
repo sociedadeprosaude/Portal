@@ -108,15 +108,17 @@ export default {
 
     currentTicket() {
       const latest = this.calledTicketsInOrder[0];
-
-      if (!this.lastTicket || this.lastTicket.number != latest.number) {
-        this.animation = "animation";
-        setTimeout(() => {
-          this.animation = "";
-        }, 5000);
-        this.lastTicket = latest;
+      if (latest) {
+        if (!this.lastTicket || this.lastTicket.number != latest.number) {
+          this.animation = "animation";
+          setTimeout(() => {
+            this.animation = "";
+          }, 5000);
+          this.lastTicket = latest;
+        }
+        return latest;
       }
-      return latest;
+      return null;
     }
   },
   methods: {

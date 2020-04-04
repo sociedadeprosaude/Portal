@@ -59,17 +59,17 @@ export default {
         {
           title: "Consultório",
           sectorName: "consultorio",
-          icon: "calendar_today"
+          icon: "assignment_ind"
         },
         {
           title: "Recepção",
           sectorName: "recepcao",
-          icon: "monetization_on"
+          icon: "group"
         },
         {
           title: "Recepção2",
           sectorName: "recepcao2",
-          icon: "monetization_on"
+          icon: "group"
         }
       ]
     };

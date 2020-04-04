@@ -44,7 +44,15 @@
                                 <v-flex xs12>
                                     <v-layout row wrap>
                                         <v-flex xs12>
-                                            <span class="my-headline text-left mt-2">Descontos</span>
+                                            <v-layout row wrap>
+                                                <v-flex xs10>
+                                                    <span class="my-headline text-left mt-2">Descontos</span>
+                                                </v-flex>
+                                                <v-flex xs2>
+                                                    <v-btn class="right" @click="Delete(user)" color="green"> Visto</v-btn>
+                                                </v-flex>
+                                            </v-layout>
+
                                         </v-flex>
                                         <v-flex xs3 class="my-2 mx-3" v-for="intake in user.intakes" :key="intake.orcamento">
                                             <v-card class="pa-3">
@@ -88,6 +96,12 @@
         computed:{
             users(){
                 return this.$store.getters.colaboratorsWarning
+            }
+        },
+        methods:{
+            async Delete(user){
+                await this.$store.dispatch('DiscountWarningDelete',user);
+                await this.$store.dispatch('WarningColaborators')
             }
         },
         mounted() {
