@@ -100,7 +100,7 @@
                     <v-container class="py-0 my-0 ml-0">
                         <v-layout align-center justify-center>
                             <v-card width="700" class="elevation-6">
-                                <!--                        <v-img :src="require('../assets/pro_saude_logo_transparente.png')">-->
+                                <v-img :src="require('@/assets/pro_saude_logo_transparente.png')">
                                 <v-layout align-center row wrap>
                                     <v-flex xs12>
                                         <!--                                    <v-img
@@ -137,7 +137,7 @@
                                         </p>
                                     </v-flex>
                                 </v-layout>
-                                <!--</v-img>-->
+                                </v-img>
                             </v-card>
                         </v-layout>
                     </v-container>
