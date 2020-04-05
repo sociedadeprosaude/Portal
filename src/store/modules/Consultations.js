@@ -131,12 +131,14 @@ const actions = {
                 schedules = []
                 querySnapshot.forEach((schedule) => {
                     let data = schedule.data()
+                    let cancelations_schedules = data.cancelations_schedules ? functions.datesOfInterval(data.cancelations_schedules) : []
                     schedules.push({
                         clinic: data.clinic,
                         doctor: data.doctor,
                         days:data.days,
                         routine_id : data.routine_id,
                         specialty: data.specialty,
+                        cancelations_schedules : cancelations_schedules,
                         id: schedule.id
                     })
                 });
@@ -211,6 +213,15 @@ const actions = {
                 })
             }
     },
+
+    /* if(data.days[day]){
+        let obj = {vacancy:consultation.vacancy,hour:consultation.hour}
+        if(Array.isArray(data.days[day]))
+          
+        data.days[day] = Array.isArray(data.days[day]) ? data.days[day].push(obj) : [data.days[day],obj]
+    }
+    else
+        data.days[day].vacancy = Number(consultation.vacancy) */
 
     async addConsultationAppointmentToUser({ commit }, payload) {
         try {
@@ -476,46 +487,52 @@ const actions = {
         commit('setConsultationDeletionInfo', {})
     },
 
-    async removeAppointmentByDay({ commit }, payload) { // ApagarTodasAsConsultasDoDiaDoMedico
+    async removeScheduleByDay(context,payload){
+        let schedule = await firebase.firestore().collection('schedules')
+            .where('specialty.name', "==", payload.specialty.name).where('doctor.cpf', "==", payload.doctor.cpf).get()
+        schedule.forEach((doc)=>{
+            let data = doc.data()
+            let cancelations_schedules = data.cancelations_schedules ? data.cancelations_schedules : []
+            let obj = {start_date:payload.start_date,final_date:payload.final_date}
+            if(payload.hour)
+                obj.hour = payload.hour
+            if(payload.weekDays)
+                obj.week_days = payload.weekDays  
+            cancelations_schedules.push({...obj})
+            firebase.firestore().collection('schedules').doc(doc.id).update({cancelations_schedules:cancelations_schedules})
+        })
+    },
+
+    async removeAppointmentByDay(context, payload) { // ApagarTodasAsConsultasDoDiaDoMedico
 
         let start = moment(payload.start_date, 'YYYY-MM-DD').format('YYYY-MM-DD 00:00');
         let end = moment(payload.final_date, 'YYYY-MM-DD').format('YYYY-MM-DD 23:59');
-        //console.log(payload.date)
         payload = functions.removeUndefineds(payload);
         try {
             let snapshot = await firebase.firestore().collection('consultations')
-                .where('doctor.cpf', "==", payload.doctor.cpf)
-                .where('date', ">=", start)
-                .where('date', "<=", end)
-                .get();
-
-
+                .where('specialty.name', "==", payload.specialty.name).where('doctor.cpf', "==", payload.doctor.cpf)
+                .where('date', ">=", start).where('date', "<=", end).get();
             snapshot.forEach(async doc => {
 
                 let dateConsultation = moment(doc.data().date);
                 let filterHour = payload.hour ? doc.data().date.split(' ')[1] === payload.hour ? true : false : true
                 let filterDayWeek = payload.weekDays ? payload.weekDays.indexOf(dateConsultation.weekday()) > -1 ? true : false : true
 
-                console.log(doc.data());
-
-                if (filterHour && filterDayWeek)
+                if (filterHour && filterDayWeek){
                     firebase.firestore().collection('consultations').doc(doc.id).delete();
-
+                }
                 if (filterHour && filterDayWeek && doc.data().user) {
                     firebase.firestore().collection('users').doc(doc.data().user.cpf).collection('consultations').doc(doc.id).delete();
                     firebase.firestore().collection('canceled').doc(doc.id).set(doc.data())
                 }
-
-                let schedule = await firebase.firestore().collection('schedules').doc(doc.data().idSchedule).get()
-                if (schedule.exists)
-                    firebase.firestore().collection('schedules').doc(doc.data().idSchedule).delete()
             })
+
+            await context.dispatch('removeScheduleByDay',payload)
         } catch (e) {
             throw e
         }
         return
-    }
-    ,
+    },
     setConsultationHour({ commit }, payload) {
         return new Promise((resolve, reject) => {
             firebase.firestore().collection('consultations').doc(payload.consultation).get()

@@ -743,7 +743,6 @@
                     doctor: this.doctor,
                     specialty: this.especialidade,
                 }
-                console.log("khlkjlkhlkh")
                 this.loading = true
                 await this.$store.dispatch('listenConsultations', payload)
                 this.loading = false
@@ -824,7 +823,7 @@
                     start_date: this.start_date,
                     final_date: this.final_date,
                     doctor: this.doctor,
-                    specialtie: this.especialidade,
+                    specialty: this.especialidade,
                     hour: this.times,
                     weekDays: this.semana
                 }
@@ -834,7 +833,7 @@
                 // this.clear()
                 this.success = true
                 this.loading = false
-                this.$router.push('/agenda/agendamento')
+                //this.$router.push('/agenda/agendamento')
             },
 
             clear() {

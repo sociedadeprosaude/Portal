@@ -211,7 +211,7 @@
                 <v-flex xs12 class="text-center">
                     <select-patient-card ref="patientCard" max-width="1000px"></select-patient-card>
                 </v-flex>
-                <v-flex xs12 class="text-center mt-4">
+                <v-flex xs12 class="text-center mt-4" :style="scrollPos > 520 ? 'position:fixed; top:60px':''">
                     <v-date-picker
                             landscape
                             full-width
@@ -588,10 +588,11 @@
             selected: "Button",
             elements: ["Button", "Radio group"],
             duration: 500,
-            offset: 15,
+            offset: 80,
             easing: "easeInQuint",
             // easings: Object.keys(easings),
-            offsetTop: 0
+            offsetTop: 0,
+            scrollPos:0
             //---------------------------------------------------------------------------------------------------
         }),
 
@@ -795,18 +796,19 @@
             this.consultationsListenerUnsubscriber();
         },
         methods: {
-            datesOfInterval(weekDays) {
+            datesOfInterval(payload) {
+                let weekDays = payload.weekDays
+                //let cancelations_schedules = payload.cancelations_schedules
                 let startDate = moment();
                 let dates = []
                 weekDays = weekDays.map((day)=>{ return Number(day)})
                 let day = startDate
                 for (let i = 0; i < this.daysToListen; i++) {
-                    if (weekDays.indexOf(day.weekday()) > -1) {
+                    if (weekDays.indexOf(day.weekday()) > -1 ) {
                         dates.push(day.format('YYYY-MM-DD'))
                     }
                     day = startDate.add(1, 'days');
                 }
-
                 return dates
             },
             numberVacancyAndReturns(schedule){
@@ -828,23 +830,25 @@
                 let consultations = []
                 schedules.forEach((schedule)=>{
                     let keys = Object.keys(schedule.days)
-                    let dates = this.datesOfInterval(keys)
+                    let dates = this.datesOfInterval({weekDays:keys/* ,cancelations_schedules:schedule.cancelations_schedules */})
                     
                     dates.forEach((date)=>{
-                        let scheduleObj = {
-                            clinic: schedule.clinic,
-                            doctor: schedule.doctor,
-                            date: date + ' ' + schedule.days[moment(date).weekday()].hour,
-                            routine_id : schedule.routine_id,
-                            specialty: schedule.specialty,
-                            vacancy: schedule.days[moment(date).weekday()].vacancy,
-                            id_schedule: schedule.id,
+                        let hourConsultation = schedule.days[moment(date).weekday()].hour
+                        if(schedule.cancelations_schedules.indexOf(date) == -1 && schedule.cancelations_schedules.indexOf(date + ' ' +hourConsultation) == -1){
+                            let scheduleObj = {
+                                clinic: schedule.clinic,
+                                doctor: schedule.doctor,
+                                date: date + ' ' + hourConsultation,
+                                routine_id : schedule.routine_id,
+                                specialty: schedule.specialty,
+                                vacancy: schedule.days[moment(date).weekday()].vacancy,
+                                id_schedule: schedule.id,
                             
+                            }
+                            let obj = {...scheduleObj,...this.numberVacancyAndReturns(scheduleObj)}
+                            obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns
+                            consultations.push(obj)
                         }
-                        let obj = {...scheduleObj,...this.numberVacancyAndReturns(scheduleObj)}
-                        obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns
-                        consultations.push(obj)
-                        
                     })
                 })
                 return consultations
@@ -1032,10 +1036,10 @@
                 this.date = this.consultas[0].date;
             },
             handleScroll(event) {
-                var scrollPos = window.scrollY;
+                this.scrollPos = window.scrollY;
                 var winHeight = window.innerHeight;
                 var docHeight = document.documentElement.scrollHeight; // instead document.body.clientHeight
-                this.offsetTop = (100 * scrollPos) / (docHeight - winHeight);
+                this.offsetTop = (100 * this.scrollPos) / (docHeight - winHeight);
             },
             findPos(obj, elementId) {
                 var curtop = 0;

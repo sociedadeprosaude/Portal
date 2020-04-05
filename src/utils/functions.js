@@ -100,21 +100,28 @@ export default {
     },
 
     datesOfInterval(payload) {
-        let startDate = moment(payload.start_date, 'YYYY-MM-DD');
-        let finalDate = moment(payload.final_date, 'YYYY-MM-DD');
-        let daysDiff = finalDate.diff(startDate, 'days');
-        //commit('setConsultationCreationTotalDays', daysDiff);
         let dates = []
-        for (let i = 0; i <= daysDiff; i++) {
-            let day = moment(startDate, 'YYYY-MM-DD').add(i, 'days');
-            //commit('setConsultationCreationActualDay', day.format('YYYY-MM-DD'));
-            //commit('setConsultationCreationDaysCreated', i);
-            if (payload.weekDays.indexOf(day.weekday()) > -1) {
-                dates.push(day)
+        payload.forEach((obj)=>{
+            let startDate = moment(obj.start_date, 'YYYY-MM-DD');
+            let finalDate = moment(obj.final_date, 'YYYY-MM-DD');
+            let daysDiff = finalDate.diff(startDate, 'days');
+            let day = moment(startDate, 'YYYY-MM-DD')
+            for (let i = 0; i <= daysDiff; i++) {
+                /* if (payload.weekDays.indexOf(day.weekday()) > -1) {
+                    dates.push(day)
+                } */
+                day = moment(startDate, 'YYYY-MM-DD').add(i, 'days');
+                if((obj.week_days && obj.week_days.indexOf(day.weekday()) != -1) || !obj.week_days){
+                    if(obj.hour)
+                        dates.push(day.format('YYYY-MM-DD') + ' ' + obj.hour)
+                    else
+                        dates.push(day.format('YYYY-MM-DD')) 
+                }
+                
             }
-        }
-
-        return dates
+        })
+        console.log(dates)
+        return dates.filter((value, index, self) => self.indexOf(value) === index);
     },
 
     groupDateByWeek(payload) {
