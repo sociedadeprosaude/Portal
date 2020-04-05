@@ -547,12 +547,9 @@
                 return this.formatDate(val ? val: this. index_Selecionado.pacienteObj.dependent.birthDate)
             },
             consultas() {
-                 console.log('/entrou aqui',this.especialidade)
                 let consultas = this.$store.getters.consultations.filter((a) => {
-                    console.log('/entrou aqui',a.date.split(' ')[0])
                     return this.especialidade && this.date ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && a.user : false
                 })
-                console.log('Saiu aqui',consultas)
                 return consultas;
             },
             /* menssagens:{
@@ -643,7 +640,7 @@
                 console.log(this.specialties[0])
                 this.especialidade = this.specialties[0]
                 await this.$store.dispatch('getDoctors')
-                await this.$store.dispatch('getConsultations',
+                await this.$store.dispatch('listenConsultations',
                     {
                         start_date: moment().subtract(10, 'days').format('YYYY-MM-DD'),
                         final_date: moment().add(10, 'days').format('YYYY-MM-DD 23:59:59')

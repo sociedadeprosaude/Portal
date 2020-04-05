@@ -1,6 +1,6 @@
 <template>
     <v-container class="ma-0 pa-0">
-        <v-navigation-drawer v-if="doctorsAgendaToobar" class="hidden-print-only" dark temporary v-model="drawer" absolute>
+        <v-navigation-drawer v-if="doctorsAgendaToobar" class="hidden-print-only" dark absolute temporary v-model="drawer">
             <v-list>
                 <v-list-item
                         v-for="item in menuItems"
