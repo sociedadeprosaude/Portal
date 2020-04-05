@@ -235,7 +235,6 @@ export default {
     outtakesToPayList() {
       const subList = this.outtakesDividedByCategory.map(e => {
         const listAux = e.outtakes.filter(e2 => !e2.status);
-        const totalCost = this.calcCost(listAux);
         //não tem como calcular a porcentagem de cada outtake se a lista ainda está sendo criada
         return this.calcOuttakeInfo(e, listAux, null);
       });
@@ -245,7 +244,6 @@ export default {
     outtakesPaidList() {
       const subList = this.outtakesDividedByCategory.map(e => {
         const listAux = e.outtakes.filter(e2 => e2.status);
-        const totalCost = this.calcCost(listAux);
         return this.calcOuttakeInfo(e, listAux, null);
       });
       return this.updatePercentage(subList);
