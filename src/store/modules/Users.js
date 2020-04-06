@@ -101,7 +101,7 @@ const actions = {
         return new Promise(async (resolve,reject)=>{
             try{
                 let foundUser = await firebase.firestore().collection('users').doc(payload).get();
-                resolve(foundUser.exists)
+                resolve(foundUser.data())
             }catch(e){
                 reject(e)
             }

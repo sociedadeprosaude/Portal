@@ -299,7 +299,7 @@
                             return a === this.pages[0]
                         } else if (this.user.group === 'gerente') {
                             return a === this.pages[0] || a === this.pages[1]
-                        } else if (this.user.group === 'doctors') {
+                        } else if (this.user.group === 'doctor') {
                             return a === this.pages[2]
                         }
                         return false
