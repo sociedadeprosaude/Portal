@@ -15,6 +15,8 @@ let cloudFunctionInstance = axios.create({
 });
 
 const state = {
+    medicines: [],
+    cids: [],
     consultations: [],
     schedules: [],
     consultationsCanceled: [],
@@ -38,6 +40,12 @@ const mutations = {
     setSchedules(state, payload) {
         state.schedules = payload;
         state.loaded = true
+    },
+    setMedicines(state, payload) {
+        state.medicines = payload
+    },
+    setCids(state, payload) {
+        state.cids = payload
     },
     setConsultationsCanceled(state, payload) {
         state.consultationsCanceled = payload
@@ -479,6 +487,49 @@ const actions = {
         }
     },
 
+    async addArrayOfMedicinesToBanc({ commit }, payload) {
+        console.log("banco:", payload.medicines)
+        try {
+            firebase.firestore().collection('medicines').doc('sus').set({ medicines: payload.medicines })
+        } catch (e) {
+            throw e
+        }
+    },
+
+    async getMedicines ({commit}) {
+        firebase.firestore().collection('medicines').onSnapshot(async function (clinicsSnap) {
+            let medicines = [];
+            clinicsSnap.forEach(function (document) {
+                medicines.push({
+                    //.medicines
+                    ...document.data().medicines
+                });
+            });
+            commit('setMedicines', medicines);
+        })
+    },
+    async addArrayOfCidsToBanc({ commit }, payload) {
+        console.log("banco:", payload.cids)
+        try {
+            firebase.firestore().collection('cids').doc('cids').set({ cids: payload.cids })
+        } catch (e) {
+            throw e
+        }
+    },
+
+    async getCids ({commit}) {
+        firebase.firestore().collection('cids').onSnapshot(async function (clinicsSnap) {
+            let cids = [];
+            clinicsSnap.forEach(function (document) {
+                cids.push({
+                    //.medicines
+                    ...document.data().cids
+                });
+            });
+            commit('setCids', cids);
+        })
+    },
+
     async removeAppointments({ commit }, consultations) {
         for (let consultation in consultations) {
             commit('setConsultationDeletionInfo', {
@@ -579,6 +630,12 @@ const getters = {
     },
     schedules(state) {
         return state.schedules
+    },
+    medicines(state) {
+        return state.medicines
+    },
+    cids(state) {
+        return state.cids
     },
     consultationsCanceled(state) {
         return state.consultationsCanceled
