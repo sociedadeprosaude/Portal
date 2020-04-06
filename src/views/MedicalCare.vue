@@ -9,7 +9,7 @@
                                 <v-combobox
                                         prepend-icon="school"
                                         v-model="especialidade"
-                                        :items="specialties"
+                                        :items="user.specialties"
                                         item-text="name"
                                         return-object
                                         label="Especialidade"
@@ -36,7 +36,7 @@
                                 </v-combobox>
                             </v-flex>
                             <v-spacer></v-spacer>
-                            <v-flex xs12 sm4>
+                            <!-- <v-flex xs12 sm4>
                                 <v-combobox
                                         prepend-icon="person"
                                         v-model="doctor"
@@ -65,7 +65,7 @@
                                     </template>
                                 </v-combobox>
                             </v-flex>
-                            <v-spacer></v-spacer>
+                            <v-spacer></v-spacer> -->
 
                             <v-flex xs12 sm4>
                                 <!--disabled-->
@@ -140,7 +140,7 @@
                                         class="elevation-6"
                                         hide-actions
                                         v-model="panel"
-                                        v-if="consultation.doctor.name === doctor.name"
+                                        v-if="consultation.doctor.cpf === user.cpf"
                                 >
                                     <v-expansion-panel-header>
                                         <v-layout class="align-center" row wrap>
@@ -331,11 +331,12 @@
             doctor: undefined,
         }),
         computed: {
-            specialties() {
+            /* specialties() {
                 //return this.$store.getters.specialties;
                 let espArray = Object.values(this.$store.getters.specialties)
+                console.log('Teeeee',this.doctor)
                 espArray = espArray.filter((specialty) => {
-                    //console.log('Teeeee',specialty)
+                    
                     if(!this.doctor) {
                         return true
                     }
@@ -353,7 +354,7 @@
                 })
                 //docArray.unshift({name:'Todos'})
                 return espArray
-            },
+            }, */
 
             computedDateFormatted() {
                 return this.formatDate(this.date)
@@ -361,51 +362,16 @@
             computedDateFormattedSelecionado() {
                 return this.formatDate(this.index_Selecionado.data)
             },
+            user(){
+                return this.$store.getters.user
+            },
             consultas() {
-                //console.log('/entrou aqui',this.especialidade)
                 let consultas = this.$store.getters.consultations.filter((a) => {
-                    //console.log('/entrou aqui',a.date.split(' ')[0])
-                    return this.especialidade && this.date ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && a.user : false
+                    
+                    return this.especialidade && this.date ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && a.user && this.user.cpf === a.doctor.cpf: false
                 })
-                //console.log('Saiu aqui',consultas)
                 return consultas;
             },
-            doctors () {
-                let doctors = Object.values(this.$store.getters.doctors)
-                if(this.especialidade) {
-                    doctors = doctors.filter((a) => {
-                        for (let spe in a.specialties) {
-                            if (a.specialties[spe].name === this.especialidade.name) {
-                                return true
-                            }
-                        }
-                        return false
-                        // return a.specialties.indexOf(this.especialidade.name) > -1
-                    })
-                }
-                return doctors
-            },
-/*            doctors: {
-                get: function() {
-                    let docArray = Object.values(this.$store.getters.doctors);
-                    docArray = docArray.filter(doctor => {
-                        if (!this.especialidade) {
-                            return true;
-                        }
-                        var find = false;
-                        doctor.specialties.forEach(specialty => {
-                            //console.log(doctor.name,specialty.name)
-                            if (specialty.name === this.especialidade.name) {
-                                find = true;
-                                return true;
-                            }
-                        });
-
-                        return find;
-                    });
-                    return docArray;
-                }
-            },*/
             date: {
                 get() {
                     return this.date_choose;
@@ -447,11 +413,10 @@
         methods: {
             async initialConfig() {
                 this.loading = true
-                await this.$store.dispatch("getSpecialties")
-                console.log(this.specialties[0])
-                this.especialidade = this.specialties[0]
-                await this.$store.dispatch('getDoctors')
-                await this.$store.dispatch('getConsultations',
+                //await this.$store.dispatch("getSpecialties")
+                this.especialidade = this.user.specialties[0]
+                //await this.$store.dispatch('getDoctors')
+                await this.$store.dispatch('listenConsultations',
                     {
                         start_date: moment().subtract(10, 'days').format('YYYY-MM-DD'),
                         final_date: moment().add(10, 'days').format('YYYY-MM-DD 23:59:59')
