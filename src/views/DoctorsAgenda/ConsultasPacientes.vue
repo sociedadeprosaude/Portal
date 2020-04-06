@@ -189,7 +189,7 @@
             <v-container>
                 <v-layout>
                     <div class="text-xs-center">
-                        <v-dialog v-model="dialog" width="520">
+                        <v-dialog v-model="dialog" width="560">
                             <v-card>
                                 <v-card-title class="headline grey lighten-2" primary-title>
                                     Atualizar Informações
