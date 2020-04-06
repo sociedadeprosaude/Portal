@@ -230,9 +230,17 @@ const actions = {
             await firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('consultations').doc(copyPayload.consultation.id).set(copyPayload.consultation);
             if (copyPayload.consultation.type === "Retorno") {
                 await firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('consultations').doc(copyPayload.consultation.previousConsultation).update({ regress: copyPayload.consultation.id })
-            }
+                let procedure = await firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').where('type','==','Consultation')
+                .where('consultation','==',copyPayload.consultation.previousConsultation).get()
+                procedure.forEach(doc=>{
+                    console.log('Procedure retorno',doc.id)
+                    firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').doc(doc.id)
+                    .update({
+                        status: firebase.firestore.FieldValue.arrayUnion('Retorno agendado'),
+                    })
+                })
 
-            if (copyPayload.payment_numberFound) {
+            } else if (copyPayload.payment_numberFound) {
                 firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').doc(copyPayload.payment_numberFound.procedureId)
                     .update({
                         status: firebase.firestore.FieldValue.arrayUnion('Agendado'),
