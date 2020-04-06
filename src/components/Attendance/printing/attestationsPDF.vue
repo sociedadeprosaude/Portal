@@ -61,7 +61,8 @@
                                                 <v-flex xs4 lalign-center justify-center>
                                                     <v-divider color="black"></v-divider>
                                                     {{item.medico}}
-                                                    {{item.crm}}
+                                                    <br/>
+                                                    CRM-AM {{item.crm}}
                                                 </v-flex>
                                             </v-layout>
                                         </strong>

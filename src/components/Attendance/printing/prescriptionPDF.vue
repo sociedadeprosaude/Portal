@@ -48,12 +48,22 @@
                         <v-flex xs12 v-for="(dados,i) in medicines" :key="i">
                             <ul>
                                 <li style="list-style-type: none;">
-                                    <span>{{ dados.name }} - {{ dados.concentration }} - {{ dados.pharmaceutical }} - <label for="obs">Obervações:</label><input type="text" id="obs" name="obs"><br></span>
+                                    <span>{{ dados.name }} - {{ dados.concentration }} - {{ dados.pharmaceutical }} - <label for="obs">Obervações:</label><input type="text" id="obs" name="obs"></span><br>
                                 </li>
                             </ul>
                         </v-flex>
-<!--                        <v-flex xs12 style="height: 300px"></v-flex>-->
+
                         <v-flex xs12 style="height: 300px"></v-flex>
+
+                        <v-layout class="align-center justify-center">
+                            <v-flex xs4>
+                                <v-divider color="black"></v-divider>
+                                {{consultation.doctor.name}}
+                                <br/>
+                                CRM-AM {{consultation.doctor.crm}}
+                            </v-flex>
+                        </v-layout>
+
                     </v-layout>
                 </v-card>
             </v-flex>
@@ -96,4 +106,8 @@
 </script>
 
 <style scoped>
+    input {
+        border: 0px solid black;
+/*        border-radius: 1px;*/
+    }
 </style>
