@@ -84,12 +84,8 @@ const actions = {
         for (let doc of intakesSnap.docs) {
             if (doc.data().colaborator) {
                 if(payload.colaborator){
-                    console.log('colaborador selecionado')
-                    console.log(payload.colaborator)
-                    console.log(doc.data().colaborator.name)
 
                     if(payload.colaborator === doc.data().colaborator.name){
-                        console.log('colaborador tem essa consulta')
                         intakes.push(doc.data())
                     }
                 }
@@ -115,12 +111,11 @@ const actions = {
         let totalGanhoExams = 0;
         let totalGanhoEspecialts = 0;
         let totalCredito = 0;
-        let totalSaidas = 0;
         let totalTaxaDebito = 0;
         let totalTaxaCredito = 0;
         let quantidadeOuttakes = 0;
         let relatorio = {};
-        console.log('intakes: ',intakes)
+        let doctors = {}
         for (let intake in intakes) {
             if (!intakes[intake].cancelled_by) {
                 if (intakes[intake].type === 'financial_support') {
@@ -179,10 +174,9 @@ const actions = {
                         }
                     }
                     specialties[intakes[intake].specialties[specialtie].name].quantidade++
-                    specialties[intakes[intake].specialties[specialtie].name].cost += parseFloat(intakes[intake].specialties[specialtie].cost),
-                        specialties[intakes[intake].specialties[specialtie].name].price += parseFloat(intakes[intake].specialties[specialtie].price)
+                    specialties[intakes[intake].specialties[specialtie].name].cost += parseFloat(intakes[intake].specialties[specialtie].cost), specialties[intakes[intake].specialties[specialtie].name].price += parseFloat(intakes[intake].specialties[specialtie].price)
                     totalCustoEspecialts += parseFloat(intakes[intake].specialties[specialtie].cost),
-                        totalGanhoEspecialts += parseFloat(intakes[intake].specialties[specialtie].price)
+                    totalGanhoEspecialts += parseFloat(intakes[intake].specialties[specialtie].price)
                 }
                 if (!intakes[intake].valor) {
                     totalCusto += parseFloat(intakes[intake].cost);
@@ -274,20 +268,46 @@ const actions = {
                 })
             }
         });
+        let consultationsSnap= await firebase.firestore().collection('consultations').where('date', '>=', payload.dataInicio)
+            .where('date', '<=', payload.dataFinal).orderBy('date').get();
+        consultationsSnap.forEach((e) => {
+            if (!doctors[e.data().doctor.name]) {
+                doctors[e.data().doctor.name] = {
+                    doctor: e.data().doctor,
+                    specialties: {},
+                    payment: 0,
+                    quantityTotal: 0
+                }
+            }
+            if (!doctors[e.data().doctor.name].specialties[e.data().specialty.name]) {
+                doctors[e.data().doctor.name].specialties[e.data().specialty.name] = {
+                    quantity: 0,
+                    cost: 0,
+                    costOne: 0
+                }
+            }
+            doctors[e.data().doctor.name].quantityTotal++
+            doctors[e.data().doctor.name].specialties[e.data().specialty.name].quantity++
+                firebase.firestore().collection('specialties').doc(e.data().specialty.name).
+                collection('doctors').doc(e.data().doctor.cpf).get().then( (snap) => {
+                    doctors[e.data().doctor.name].specialties[e.data().specialty.name].cost += parseFloat(snap.data().cost.toFixed(2))
+                    doctors[e.data().doctor.name].specialties[e.data().specialty.name].costOne = parseFloat(snap.data().cost.toFixed(2))
+                    doctors[e.data().doctor.name].payment += parseFloat(snap.data().cost.toFixed(2))
+                })
 
-
+        })
+        console.log('doctors', doctors)
         relatorio = {
             unit: selectedUnit,
-            specialties: specialties,
-            exams: exams,
-            clinics: clinics,
-            credito: totalCredito,
-            debito: totalDebido,
-            dinheiro: totalCaixa,
-            totalBruto: totalBruto,
+            specialties: specialties,        //
+            exams: exams,                    //
+            clinics: clinics,                //
+            credito: totalCredito,          //
+            debito: totalDebido,            //
+            dinheiro: totalCaixa,         //
+            totalBruto: totalBruto,      //
             quantidadeOuttakes: quantidadeOuttakes,
             totalCusto: totalCusto,
-            totalSaidas: totalSaidas,
             totalTaxaCredito: totalTaxaCredito.toFixed(5),
             totalTaxaDebito: totalTaxaDebito.toFixed(5),
             totalCustoExams: totalCustoExams,
@@ -296,6 +316,7 @@ const actions = {
             outtakes: outtakes,
             totalGanhoEspecialts: totalGanhoEspecialts,
             intakes: intaker,
+            doctors: doctors,
             dataInicio: payload.dataInicio,
             dataFinal: payload.dataFinal,
             financialSupportIntakes: financialSupport,

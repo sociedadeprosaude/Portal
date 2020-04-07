@@ -509,7 +509,7 @@
                                                             moneyFilter}}
                                                         </v-flex>
                                                         <v-flex xs1 class="border">
-                                                            {{(totalOuttakesInMoney/this.report.totalBruto *
+                                                            {{((totalOuttakesInMoney + totalOuttakesNotMoney)/this.report.totalBruto *
                                                             100).toFixed(2)}}%
                                                         </v-flex>
                                                     </v-layout>
@@ -538,8 +538,8 @@
                                                         <v-flex xs3 class="border">{{parseFloat(report.totalTaxaCredito)
                                                             | moneyFilter}}
                                                         </v-flex>
-                                                        <v-flex xs3 class="border">{{parseFloat(report.totalTaxaDebito)
-                                                            | moneyFilter}}
+                                                        <v-flex xs3 class="border">{{ totalOuttakesNotMoney |
+                                                            moneyFilter}}
                                                         </v-flex>
                                                         <v-flex xs3 class="border">{{report.totalCustoEspecialts +
                                                             report.totalCustoExams + totalOuttakesInMoney |
@@ -550,7 +550,7 @@
                                                             parseFloat(report.totalTaxaDebito) +
                                                             report.totalCustoEspecialts +
                                                             report.totalCustoExams +
-                                                            totalOuttakesInMoney)/this.report.totalBruto *
+                                                            totalOuttakesInMoney + totalOuttakesNotMoney)/this.report.totalBruto *
                                                             100).toFixed(2)}}%
                                                         </v-flex>
                                                     </v-layout>
@@ -725,7 +725,7 @@
                     return outtake.payment_method === 'Dinheiro'
                 })
                 for (let outtake of moneyOuttakes) {
-                    total += outtake.value
+                    total += parseFloat(outtake.value)
                 }
                 return total
             },
@@ -735,7 +735,7 @@
                     return outtake.payment_method !== 'Dinheiro'
                 })
                 for (let outtake of moneyOuttakes) {
-                    total += outtake.value
+                    total += parseFloat(outtake.value)
                 }
                 return total
             },
