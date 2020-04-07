@@ -2,28 +2,40 @@
     <v-content>
         <v-container fluid>
             <v-layout row wrap class="align-center justify-center">
-                <v-flex xs10>
-                    <v-simple-table dark>
+                <v-flex xs12>
+                    <v-simple-table>
                         <template v-slot:default>
                             <thead>
                             <tr>
-                                <th class="text-left">Hora</th>
-                                <th class="text-center">Segunda</th>
-                                <th class="text-center">Terça</th>
-                                <th class="text-center">Quarta</th>
-                                <th class="text-center">Quinta</th>
-                                <th class="text-center">Sexta</th>
-                                <th class="text-center">Sabado</th>
+                                <th class="text-left primary white--text">Hora</th>
+                                <td class="text-left primary white--text"><v-divider vertical class="white"></v-divider></td>
+                                <th class="text-center primary white--text">Segunda</th>
+                                <td class="text-left primary white--text"><v-divider vertical class="white"></v-divider></td>
+                                <th class="text-center primary white--text">Terça</th>
+                                <td class="text-left primary white--text"><v-divider vertical class="white"></v-divider></td>
+                                <th class="text-center primary white--text">Quarta</th>
+                                <td class="text-left primary white--text"><v-divider vertical class="white"></v-divider></td>
+                                <th class="text-center primary white--text">Quinta</th>
+                                <td class="text-left primary white--text"><v-divider vertical class="white"></v-divider></td>
+                                <th class="text-center primary white--text">Sexta</th>
+                                <td class="text-left primary white--text"><v-divider vertical class="white"></v-divider></td>
+                                <th class="text-center primary white--text">Sabado</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr v-for="item in desserts" :key="item.hour">
                                 <td>{{ item.hour }}</td>
+                                <td><v-divider vertical></v-divider></td>
                                 <td>{{ item.monday }}</td>
+                                <td><v-divider vertical></v-divider></td>
                                 <td>{{ item.tuesday }}</td>
+                                <td><v-divider vertical></v-divider></td>
                                 <td>{{ item.wednesday }}</td>
+                                <td><v-divider vertical></v-divider></td>
                                 <td>{{ item.thursday }}</td>
+                                <td><v-divider vertical></v-divider></td>
                                 <td>{{ item.friday }}</td>
+                                <td><v-divider vertical></v-divider></td>
                                 <td>{{ item.saturday }}</td>
                             </tr>
                             </tbody>
