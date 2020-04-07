@@ -202,7 +202,7 @@
                 return this.formatDate(this.dataTheEnd)
             },
             formIsValid() {
-                return this.dataStart && this.dataTheEnd && this.cid && this.paciente
+                return this.dataStart && this.dataTheEnd && this.cid
             },
             lista() {
                 let arr = this.$store.getters.cids[0]
@@ -213,7 +213,6 @@
                 }
                 return cods;
             }
-
         },
         async mounted() {
             this.dataStart = moment().format('YYYY-MM-DD')
