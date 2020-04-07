@@ -686,8 +686,8 @@
                         body: `${foundPatient.name}, ${identifier.name}: ${identifier.value}, Num. Ass: ${foundPatient.association_number}`,
                         show: true,
                         functionToRun: () => this.addUserToFirestore(patient)
-                    };
-                    this.$store.commit('setSystemDialog', dialog);
+                    }
+                    this.$store.commit('setSystemDialog', dialog)
                     return
                 }
 
