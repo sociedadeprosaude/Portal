@@ -609,11 +609,28 @@ const actions = {
         })
 
     },
-
+    //======================================================atendimento===============================
     async addProntuarioToConsultation({ commit }, payload) {
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ prontuario: payload.prontuario })
     },
-
+    async addReceitaToConsultation({ commit }, payload) {
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ receita: payload.receita })
+    },
+    async addSolicitacaoToConsultation({ commit }, payload) {
+        payload = functions.removeUndefineds(payload);
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ solicitacao: payload.solicitacao })
+    },
+    async addLaudoToConsultation({ commit }, payload) {
+        //console.log(payload)
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ laudo: payload.laudo })
+    },
+    async addAtestadoToConsultation({ commit }, payload) {
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ atestado: payload.atestado })
+    },
+    async addOrientacaoToConsultation({ commit }, payload) {
+        //console.log(payload)
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ orientacao: payload.orientacao })
+    },
     async addTimesToConsultation({ commit }, payload) {
         firebase.firestore().collection('consultations').doc(payload.consultation).update({ start_at: payload.start });
         firebase.firestore().collection('consultations').doc(payload.consultation).update({ end_at: payload.end });
@@ -622,6 +639,7 @@ const actions = {
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ end_at: payload.end });
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ duration: payload.durantion })
     }
+    //======================================================atendimento===============================
 };
 
 const getters = {

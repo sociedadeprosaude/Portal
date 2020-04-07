@@ -92,7 +92,15 @@
             this.dia = moment().format('dddd')
         },
         methods: {
+            save(){
+                this.$store.dispatch('addReceitaToConsultation',{
+                    receita: this.medicines,
+                    consultation: this.consultation.id,
+                    patient: this.consultation.user.id
+                })
+            },
             print () {
+                this.save()
                 window.print()
             },
             clear() {

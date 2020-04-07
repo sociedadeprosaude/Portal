@@ -47,7 +47,7 @@
                                 <v-flex xs12>
                                     <p style="text-align: center; text-justify: auto">
                                         <strong>
-                                            NOME: {{item.paciente}}<br/>
+                                            NOME: {{consultation.user.name}}<br/>
                                             CID: {{ item.cid.slice(0, 3).toUpperCase() }}<br/>
                                             ESTA IMPOSSIBILITADO(A) A COMPARECER A SEU TRABALHO DE:<br/>
                                             {{ item.dataStart | dateFilter }} à {{ item.dataTheEnd | dateFilter }}, {{item.qtdDias}} Dia(s).
@@ -60,9 +60,10 @@
                                             <v-layout align-center justify-center>
                                                 <v-flex xs4 lalign-center justify-center>
                                                     <v-divider color="black"></v-divider>
-                                                    {{item.medico}}
+                                                    {{consultation.doctor.name}}
                                                     <br/>
-                                                    CRM-AM {{item.crm}}
+                                                    CRM-AM {{consultation.doctor.crm}}
+                                                    <!--{{this.item}}-->
                                                 </v-flex>
                                             </v-layout>
                                         </strong>
@@ -101,7 +102,15 @@
             this.dia = moment().format('dddd')
         },
         methods: {
+            save(){
+                this.$store.dispatch('addAtestadoToConsultation',{
+                    atestado: this.item,
+                    consultation: this.consultation.id,
+                    patient: this.consultation.user.id
+                })
+            },
             print () {
+                this.save()
                 window.print()
             },
             clear() {

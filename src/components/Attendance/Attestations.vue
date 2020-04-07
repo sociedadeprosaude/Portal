@@ -127,7 +127,7 @@
                                         <br/><br/><br/>
                                         <p style="text-align: center; text-justify: auto">
                                             <strong>
-                                                NOME: {{paciente}}<br/>
+                                                NOME: {{consultation.user.name}}<br/>
                                                 CID: {{ cid.slice(0, 3).toUpperCase() }}<br/>
                                                 ESTA IMPOSSIBILITADO(A) A COMPARECER A SEU TRABALHO DE:<br/>
                                                 {{ dataStart | dateFilter }} à {{ dataTheEnd | dateFilter }}, {{qtdDias}} Dia(s).
@@ -181,7 +181,6 @@
         components: {AttestationsPDF},
         props: ['consultation'],
         data: () => ({
-            paciente: '',
             moment: moment,
             menu1: false,
             menu2: false,
@@ -220,8 +219,6 @@
             this.dateFormatted = moment().format('YYYY-MM-DD')
             this.daysff()
             this.$store.dispatch('getCids');
-            this.paciente = this.consultation.user.dependent ? this.consultation.user.dependent.name : this.consultation.user.name
-            console.log(this.consultation)
         },
         watch: {
             menu1(val) {
@@ -240,9 +237,6 @@
                     dataStart: this.dataStart,
                     dataTheEnd: this.dataTheEnd,
                     qtdDias: this.qtdDias,
-                    paciente: this.paciente,
-                    medico: this.consultation.doctor.name,
-                    crm: this.consultation.doctor.crm,
                     cid: this.cid,
                 }
                 this.item = aux
