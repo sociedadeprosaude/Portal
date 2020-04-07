@@ -6,6 +6,7 @@
             </v-card-title>
             <v-card-text>
                 <vue-editor v-model="prontuario"/>
+                {{this.consultation.id}}
             </v-card-text>
             <v-divider></v-divider>
             <v-card-actions>
