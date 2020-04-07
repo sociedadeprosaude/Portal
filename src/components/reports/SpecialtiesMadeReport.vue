@@ -125,6 +125,38 @@
                                 </v-flex>
                             </v-layout>
                         </v-flex>
+                        <v-flex xs12>
+                            <v-layout row wrap class="mt-2">
+                                <v-flex xs12>
+                                    <v-divider></v-divider>
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs4>
+                                    <span class="font-weight-bold">TOTAL</span>
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-divider vertical></v-divider>
+                                </v-flex>
+
+                                <v-flex xs2>
+                                    {{QuantityTotal }}
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs2>
+                                    {{CostTotal | moneyFilter}}
+                                </v-flex>
+                                <v-flex xs1>
+                                    <v-divider vertical></v-divider>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <v-divider></v-divider>
+                                </v-flex>
+                            </v-layout>
+                        </v-flex>
 
                     </v-layout>
                 </v-card>
@@ -148,6 +180,20 @@
             }
         },
         computed: {
+            QuantityTotal(){
+                let quantidade = 0
+                for (let doctor in this.report.doctors) {
+                    quantidade += this.report.doctors[doctor].quantityTotal
+                }
+                return quantidade
+            },
+            CostTotal(){
+                let custo = 0
+                for (let doctor in this.report.doctors) {
+                    custo += this.report.doctors[doctor].payment
+                }
+                return custo
+            }
 
         }
     }
