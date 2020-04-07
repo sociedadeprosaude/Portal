@@ -35,8 +35,7 @@
           </transition>
         </div>
       </v-row>
-      <v-btn v-if="!production" class="primary" @click="saveTickets">Salvar tickets no histórico</v-btn>
-      <v-btn v-if="!production" class="primary" @click="resetLine">Resetar fila</v-btn>
+      
     </v-container>
   </v-container>
 </template>
