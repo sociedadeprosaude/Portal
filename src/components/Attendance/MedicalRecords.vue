@@ -7,6 +7,7 @@
             <v-card-text>
                 <vue-editor v-model="prontuario"/>
                 {{this.consultation.id}}
+                {{this.consultation.user.id}}
             </v-card-text>
             <v-divider></v-divider>
             <v-card-actions>
@@ -53,7 +54,7 @@
                     this.$store.dispatch('addProntuarioToConsultation',{
                         prontuario:this.prontuario,
                         consultation: this.consultation.id,
-                        patient: this.consultation.user.cpf
+                        patient: this.consultation.user.id
                     })
                 }
                 this.success = true
