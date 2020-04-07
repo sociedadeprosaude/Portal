@@ -262,6 +262,8 @@ import OuttakeOrder from "../components/OuttakeOrder";
 import outtakesCategories from "@/components/DialogOuttakeCategories";
 import {mask} from 'vue-the-mask'
 import moment from "moment";
+import compress from "compress.js"
+
 export default {
   name: "Bills",
   directives: {
@@ -416,7 +418,7 @@ export default {
     async bifurcation () {
 
       if (this.parcelas){
-        console.log('parcelas: ', this.parcelas)
+        console.log('parcelas: ', this.parcelas);
         this.value = this.value / this.parcelas;
         for(let i=0; i<this.parcelas; i++){
           this.addBill();
