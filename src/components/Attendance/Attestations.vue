@@ -181,7 +181,7 @@
         components: {AttestationsPDF},
         props: ['consultation'],
         data: () => ({
-            paciente: undefined,
+            paciente: '',
             moment: moment,
             menu1: false,
             menu2: false,
