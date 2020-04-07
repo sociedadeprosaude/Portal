@@ -125,7 +125,7 @@
                                 </v-flex>
                             </v-layout>
                         </v-flex>
-                        
+
                     </v-layout>
                 </v-card>
             </v-flex>

@@ -78,16 +78,16 @@
                             <v-divider vertical/>
                             <v-layout column wrap>
                               <span class="my-sub-headline mb-4">Comprovante</span>
-                              <v-layout row wrap v-if="!loadingAnexo">
+                              <v-flex xs12 sm2 class="text-right" v-if="loadingAnexo && outtakeSelect === bill">
+                                <v-progress-circular indeterminate class="primary--text"/>
+                              </v-flex>
+                              <v-layout row wrap v-else>
                                 <v-flex v-for="(append, i) in bill.receipts" :key="i">
                                   <v-card @click="openAppend(append)" flat>
                                     <img :src="append" style="max-width: 124px; max-width: 124px" />
                                   </v-card>
                                 </v-flex>
                               </v-layout>
-                              <v-flex xs12 sm2 class="text-right" v-else>
-                                <v-progress-circular indeterminate class="primary--text"/>
-                              </v-flex>
                             </v-layout>
                           </v-layout>
                         </v-flex>
@@ -249,6 +249,7 @@ export default {
     },
     async handleFileUpload(outtake) {
       this.loadingAnexo = true;
+      this.outtakeSelect= outtake;
       await this.$store.dispatch("deleteFile", {
         imagePaths: outtake.receipts,
         path: "outtakes/receipts"
@@ -269,6 +270,8 @@ export default {
       });
       await this.$store.dispatch("getOuttakes");
       this.loadingAnexo = false;
+      this.outtakeSelect= [];
+
     },
     // readFileUrl(file, index) {
     //     let self = this
