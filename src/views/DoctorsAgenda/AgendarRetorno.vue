@@ -3,7 +3,7 @@
     <v-flex sm8 xs12 class="pr-2">
       <v-layout align-center row wrap class="ml-6">
         <v-flex xs12 md5>
-          <v-text-field
+          <!-- <v-text-field
             prepend-icon="school"
             v-model="especialidade.name"
             label="Especialidade"
@@ -11,8 +11,8 @@
             rounded
             filled
             disabled
-          ></v-text-field>
-          <!-- <v-combobox
+          ></v-text-field> -->
+          <v-combobox
             prepend-icon="school"
             v-model="especialidade"
             :items="specialties"
@@ -23,7 +23,7 @@
             rounded
             chips
             color="blue"
-            readonly
+            
           >
             <template v-slot:selection="data">
               <v-chip
@@ -37,14 +37,14 @@
                 color="info"
               >{{ data.item.name }}</v-chip>
             </template>
-          </v-combobox>-->
+          </v-combobox>
         </v-flex>
         <v-spacer></v-spacer>
         <v-flex xs12 md6>
           <v-text-field
             prepend-icon="location_city"
             v-model="selectedDoctor.name"
-            label="Clínica"
+            label="Médico"
             outlined
             rounded
             filled
