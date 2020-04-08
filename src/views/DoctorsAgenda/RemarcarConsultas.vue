@@ -10,7 +10,6 @@
             outlined
             rounded
             filled
-            disabled
           ></v-text-field>
         </v-flex>
         <v-spacer></v-spacer>
