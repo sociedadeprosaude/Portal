@@ -168,6 +168,12 @@
                                 to: '/senhas',
                                 icon: 'filter_4'
                             },
+                            {
+                                title: 'Tabela Semanal',
+                                permission: 'Agenda Médica',
+                                to: '/weeklyTable',
+                                icon: 'date_range'
+                            },
                         ]
                     },
                     {
