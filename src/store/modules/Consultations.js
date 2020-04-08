@@ -100,11 +100,15 @@ const actions = {
             return query.onSnapshot((querySnapshot) => {
                 consultations = [];
                 querySnapshot.forEach((document) => {
+                    /* if(document.data().user){
+                        console.log(document.data())
+                    } */
                     consultations.push({
                         ...document.data(),
                         id: document.id
                     })
                 });
+                //console.log('listening',consultations)
                 commit('setConsultations', consultations);
                 commit('setConsultationLoading', false)
             })
@@ -301,6 +305,7 @@ const actions = {
            /*  let objUpdateSchedule = copyPayload.consultation.type == "Retorno" ? { qtd_returns: Number(qtd_returns) + 1 } : { qtd_consultations: Number(qtd_consultations) + 1 }
             objUpdateSchedule.vacancy = Number(vacancy - 1) */
             //await firebase.firestore().collection('schedules').doc(idSchedule).update(objUpdateSchedule);
+            console.log('Agendamento',obj)
             let resp = await firebase.firestore().collection('consultations').add(obj);
             if (copyPayload.consultation.type == "Retorno") {
                 await firebase.firestore().collection('consultations').doc(copyPayload.consultation.previousConsultation).update({ regress: resp.id })

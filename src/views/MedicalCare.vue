@@ -77,6 +77,7 @@
                                         transition="scale-transition"
                                         offset-y
                                         min-width="290px"
+                                        disabled
                                 >
                                     <template v-slot:activator="{ on }">
                                         <!--disabled-->
@@ -88,6 +89,7 @@
                                                 rounded
                                                 filled
                                                 chips
+                                                disabled
                                                 v-on="on"
                                         ></v-text-field>
                                     </template>
@@ -97,6 +99,7 @@
                                             v-model="date"
                                             locale="pt-br"
                                             @change="save"
+                                            disabled
                                     ></v-date-picker>
                                 </v-menu>
                             </v-flex>
