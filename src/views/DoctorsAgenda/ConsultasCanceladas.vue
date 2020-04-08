@@ -1,6 +1,20 @@
 <template>
     <v-container>
-        <v-layout class="align-center justify-center" row wrap>
+
+        <v-layout v-if="animation === true"  class="align-center justify-center" row wrap>
+            <div class="text-center">
+                <v-progress-circular
+                        :size="350"
+                        :width="12"
+                        color="primary"
+                        indeterminate
+                >
+                    <span class="headline">CARREGANGO...</span>
+                </v-progress-circular>
+            </div>
+        </v-layout>
+
+        <v-layout v-else-if="animation === false"  class="align-center justify-center" row wrap>
             <v-card>
 
                 <template>
@@ -308,6 +322,7 @@
             index_Selecionado: {},
             status_Selecionado:'',
             especialidade:'',
+            animation: false,
         }),
         computed: {
             computedDateFormattedSelecionado() {
@@ -334,10 +349,14 @@
                 return consultas;
             },
         },
+        created() {
+            this.animation = true
+        },
         async mounted() {
             this.$store.dispatch('getConsultationsCanceled');
             this.date = moment().format('YYYY-MM-DD');
             this.dateFormatted = moment().format('YYYY-MM-DD')
+            setTimeout(() => (this.animation = false), 3000)
         },
         methods: {
             formatDate (date) {
@@ -347,7 +366,7 @@
             },
 
             apagar () {
-                //this.$store.dispatch('removeAppointmentForever',{... this.index_Selecionado});
+                this.$store.dispatch('removeAppointmentForever',{... this.index_Selecionado});
                 console.log("dados:", this.index_Selecionado)
                 this.dialog = false
             },

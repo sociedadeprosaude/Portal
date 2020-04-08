@@ -293,6 +293,7 @@
 
 <script>
     import PaymenyReport from "../../components/labor/PaymenyReport";
+    import moment from "moment";
 
     export default {
         name: "Home",
@@ -335,7 +336,7 @@
                 return this.$store.getters.permissionsList
             },
             groups() {
-                return ['admin', 'colaborador', 'gerente', 'doctors']
+                return ['admin', 'colaborador', 'gerente', 'doctor']
             }
         },
         methods: {
@@ -410,46 +411,17 @@
                     this.selecteduser.advances = []
                 }
                 for(let i=0; i<this.parcel;i++ ){
-                    if(i+ parseInt(this.datenow.substring(5,7)) > 12 ){
-                        if(parseInt(this.datenow.substring(8,10)) >19){
-                            if(i + 1 + parseInt(this.datenow.substring(5,7)) < 10){
-                                this.months[i]= (parseInt(this.datenow.substring(0,5)) + 1) + '0' + (i + 1 + parseInt(this.datenow.substring(5,7)))
-                            }
-                            else{
-                                this.months[i]= (parseInt(this.datenow.substring(0,5)) + 1) + (i + 1 + parseInt(this.datenow.substring(5,7)))
-                            }
+                        if( parseInt(moment(this.datenow).format('DD')) > 19){
+                            this.months[i]= moment(this.datenow).add(i,'months').format('YYYY-MM').toString()
+
                         }
                         else{
-                            if(i+ parseInt(this.datenow.substring(5,7)) < 10){
-                                this.months[i]= (parseInt(this.datenow.substring(0,5)) + 1) + '0' +(i+ parseInt(this.datenow.substring(5,7)))
-                            }
-                            else{
-                                this.months[i]= (parseInt(this.datenow.substring(0,5)) + 1) + (i+ parseInt(this.datenow.substring(5,7)))
+                            this.months[i]= moment(this.datenow).add((i- 1),'months').format('YYYY-MM').toString()
 
-                            }
                         }
-                    }
-                    else{
-                        if(parseInt(this.datenow.substring(8,10)) >19){
-                            if(i + 1 + parseInt(this.datenow.substring(5,7)) <10){
-                                this.months[i]= this.datenow.substring(0,5) + '0' +(i + 1 + parseInt(this.datenow.substring(5,7)))
-                            }
-                            else{
-                                this.months[i]= this.datenow.substring(0,5) + (i + 1 + parseInt(this.datenow.substring(5,7)))
-                            }
-                        }
-                        else{
-                            if(i+ parseInt(this.datenow.substring(5,7)) <10 ){
-                                this.months[i]= this.datenow.substring(0,5) + '0' +(i+ parseInt(this.datenow.substring(5,7)))
-
-                            }
-                            else{
-                                this.months[i]= this.datenow.substring(0,5) + (i+ parseInt(this.datenow.substring(5,7)))
-
-                            }
-                        }
-                    }
+                        console.log('mes: ', this.months[i])
                 }
+                console.log('meses: ', this.months)
                 this.selecteduser.advances.push({
                     date: moment().format('YYYY-MM-DD hh:mm:ss'),
                     value: this.value,

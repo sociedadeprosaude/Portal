@@ -55,9 +55,9 @@ const actions = {
     },
 
     async deleteNotification ({}, notification) {
-
+        console.log('notification: ',notification)
         try {
-            await firebase.firestore().collection('alerts').doc(notification.name).delete();
+            await firebase.firestore().collection('alerts').doc(notification).delete();
             return
         } catch (e) {
             throw e

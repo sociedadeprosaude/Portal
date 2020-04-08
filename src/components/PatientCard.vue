@@ -50,7 +50,7 @@
                     </v-img>
                 </v-card>
             </v-flex>
-            <v-spacer></v-spacer>
+            <v-spacer/>
             <v-flex xs12 class="text-right">
                 <v-card width="100vw" height="100vh">
                     <v-img :src="require('../assets/card_background.jpg')" height="100%" width="100%" class="px-8 py-2">

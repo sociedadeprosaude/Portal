@@ -29,7 +29,7 @@
         single-expand
         no-data-text="Sem saídas no intervalo escolhido"
         :footer-props="{
-      itemsPerPageText:'Saídas por página',
+      itemsPerPageText:'Categorias por página',
       pageText:'{0}-{1} de {2}'
     }"
       >
@@ -45,7 +45,10 @@
               :headers="subHeaders"
               :items="item.outtakes"
               item-key="idOuttake"
-              hide-default-footer
+              :footer-props="{
+      itemsPerPageText:'Saídas por página',
+      pageText:'{0}-{1} de {2}'
+    }"
             >
               <template v-slot:item.cost="{ item }">R$ {{item.cost}}</template>
               <template v-slot:item.CRUD="{ item }">
@@ -151,7 +154,6 @@ export default {
   },
 
   methods: {
-   
     formatDate(date) {
       const [year, month, day] = date.split("-");
       return `${day}/${month}/${year}`;
@@ -177,8 +179,11 @@ export default {
     calcTotalCost: arr =>
       parseFloat(arr.reduce((total, e) => total + e.totalCost, 0).toFixed(2)),
 
+    //BugFont, tem que outtake em que value é string e outros que é number
     calcCost: arr =>
-      parseFloat(arr.reduce((total, e) => total + e.cost, 0).toFixed(2)),
+      parseFloat(
+        arr.reduce((total, e) => total + parseFloat(e.cost), 0).toFixed(2)
+      ),
 
     updatePercentage(subList) {
       const totalSubCost = this.calcTotalCost(subList);
@@ -213,6 +218,7 @@ export default {
     },
     outtakesDividedByCategory() {
       let listOuttakesGroupedByCategory = [];
+
       const totalCost = this.calcCost(this.listOuttakesRemade);
       this.categories.forEach(category => {
         let listOuttakesCategory = this.listOuttakesRemade.filter(
@@ -229,7 +235,6 @@ export default {
     outtakesToPayList() {
       const subList = this.outtakesDividedByCategory.map(e => {
         const listAux = e.outtakes.filter(e2 => !e2.status);
-        const totalCost = this.calcCost(listAux);
         //não tem como calcular a porcentagem de cada outtake se a lista ainda está sendo criada
         return this.calcOuttakeInfo(e, listAux, null);
       });
@@ -239,7 +244,6 @@ export default {
     outtakesPaidList() {
       const subList = this.outtakesDividedByCategory.map(e => {
         const listAux = e.outtakes.filter(e2 => e2.status);
-        const totalCost = this.calcCost(listAux);
         return this.calcOuttakeInfo(e, listAux, null);
       });
       return this.updatePercentage(subList);

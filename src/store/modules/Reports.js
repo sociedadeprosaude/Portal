@@ -120,7 +120,7 @@ const actions = {
         let totalTaxaCredito = 0;
         let quantidadeOuttakes = 0;
         let relatorio = {};
-        console.log('intakes: ',intakes)
+        //console.log('intakes: ',intakes)
         for (let intake in intakes) {
             if (!intakes[intake].cancelled_by) {
                 if (intakes[intake].type === 'financial_support') {
@@ -241,10 +241,9 @@ const actions = {
                 }
             }
         }
-        // bugFont, comentando esse where do unit.name sai o erro, mas tá estranho porque unit.name está no indices lá no firebase.
         let outtakesSnap = await firebase.firestore().collection('outtakes').where('paid', '>=', payload.dataInicio)
             .where('paid', '<=', payload.dataFinal)
-            //.where('unit.name', '==', selectedUnit.name)
+            .where('unit.name', '==', selectedUnit.name)
             .orderBy('paid').get();
         outtakesSnap.forEach((e) => {
             if (e.data().payments) {

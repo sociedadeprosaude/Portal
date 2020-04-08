@@ -97,7 +97,7 @@
                     wrap
                     style="width:100%"
                     class="align-center justify-center py-0"
-                    v-for="(consultaGroup, i) in consultasByDate(consultas)"
+                    v-for="(scheduleGroup, i) in consultasByDate(schedules)"
                     :key="i"
             >
                 <v-flex xs12>
@@ -112,7 +112,7 @@
                 </v-flex>
                 <v-container fluid grid-list-sm class="py-0 my-3 mx-2">
                     <v-layout row wrap>
-                        <v-flex v-for="(consulta, j) in consultaGroup" :key="j" sm4 xs12 class="px-2 py-2">
+                        <v-flex v-for="(schedule, j) in scheduleGroup" :key="j" sm4 xs12 class="px-2 py-2">
                             <v-card class="pa-4" style="border-radius:20px; height: 100%">
                                 <v-layout fill-height>
                                     <v-layout row wrap>
@@ -126,11 +126,11 @@
 
                                         <v-flex id="teste" xs12 class="pl-3 text-left">
                                             <h4>
-                                                <span class="subheading font-weight-bold">{{consulta.doctor.name}}</span>
+                                                <span class="subheading font-weight-bold">{{schedule.doctor.name}}</span>
                                                 <br/>
                                                 <span
                                                         class="body-2 font-weight-bold dark_grey--text"
-                                                >{{consulta.specialty.name}}</span>
+                                                >{{schedule.specialty.name}}</span>
                                                 <br/>
 <!--                                                <span-->
 <!--                                                        class="font-weight-bold dark_grey&#45;&#45;text"-->
@@ -149,27 +149,27 @@
                                                             class="mx-2"
                                                             color="primary_dark"
                                                             text-color="white"
-                                                    >{{consulta.date.split(' ')[1]}}
+                                                    >{{schedule.date.split(' ')[1]}}
                                                     </v-chip>
                                                     <v-chip color="primary_dark" text-color="white">
                                                         Vagas :
-                                                        {{consulta.vagas}}
+                                                        {{schedule.vacancy}}
                                                     </v-chip>
                                                 </v-flex>
                                                 <v-flex xs12>
-                                                    <v-chip class="mt-1 mr-1" color="primary_dark" text-color="white">
+                                                   <v-chip class="mt-1 mr-1" color="primary_dark" text-color="white">
                                                         Consultas :
-                                                        {{consulta.numConsultations}}
+                                                        {{schedule.qtd_consultations ? schedule.qtd_consultations : 0}}
                                                     </v-chip>
                                                     <v-chip class="mt-1" color="primary_dark" text-color="white">
                                                         Retornos :
-                                                        {{consulta.returns}}
+                                                        {{schedule.qtd_returns ? schedule.qtd_returns : 0}}
                                                     </v-chip>
                                                     <v-chip
                                                             class="mt-1"
                                                             color="primary_dark"
                                                             text-color="white"
-                                                    >{{consulta.clinic.name}}
+                                                    >{{schedule.clinic.name}}
                                                     </v-chip>
                                                 </v-flex>
                                             </v-layout>
@@ -180,8 +180,8 @@
                                                        rounded
                                                        color="primary_dark white--text"
                                                        class="mx-0"
-                                                       :disabled="consulta.vagas === 0"
-                                                       @click="scheduleAppointment(consulta)"
+                                                       :disabled="schedule.vacancy === 0"
+                                                       @click="scheduleAppointment(schedule)"
                                                 >Agendar
                                                 </v-btn>
                                                 <v-btn v-else
@@ -211,7 +211,7 @@
                 <v-flex xs12 class="text-center">
                     <select-patient-card ref="patientCard" max-width="1000px"></select-patient-card>
                 </v-flex>
-                <v-flex xs12 class="text-center mt-4">
+                <v-flex xs12 class="text-center mt-4" :style="scrollPos > 520 ? 'position:fixed; top:60px':''">
                     <v-date-picker
                             landscape
                             full-width
@@ -492,9 +492,9 @@
                             </v-card>
                         </v-dialog>
                     </div>
-                    <v-dialog v-model="dialogPaciente" width="1000">
+                    <!-- <v-dialog v-model="dialogPaciente" width="1000">
                         <pacientes></pacientes>
-                    </v-dialog>
+                    </v-dialog> -->
                 </v-layout>
             </v-container>
         </template>
@@ -588,10 +588,11 @@
             selected: "Button",
             elements: ["Button", "Radio group"],
             duration: 500,
-            offset: 15,
+            offset: 80,
             easing: "easeInQuint",
             // easings: Object.keys(easings),
-            offsetTop: 0
+            offsetTop: 0,
+            scrollPos:0
             //---------------------------------------------------------------------------------------------------
         }),
 
@@ -620,8 +621,6 @@
 
                 let espArray = Object.values(this.$store.getters.specialties);
                 espArray = espArray.filter(specialty => {
-                    if (!specialty.doctors)
-                        console.log('Teeeee', specialty)
 
                     if (!this.selectedDoctor) {
                         return true;
@@ -645,12 +644,8 @@
                     this.createConsultationForm.consultation.date.split(" ")[0]
                 );
             },
-            consultas() {
-                let consultas = this.formatConsultationsArray(
-                    this.$store.getters.consultations
-                ).filter(a => {
-                    //console.log("selecionado:", this.clinic)
-                    //console.log("do banco:", a.clinic.name)
+            schedules() {
+                let schedules = this.$store.getters.schedules.filter(a => {
                     let response = true;
                     if (this.selectedDoctor) {
                         if (this.selectedDoctor.cpf !== a.doctor.cpf) {
@@ -667,7 +662,30 @@
                             response = false;
                         }
                     }
-                    //console.log("resposta:", response)
+                    return response;
+                });
+                return this.consultationsOfSchedules(schedules);
+            },
+            consultas() {
+                let consultas = this.formatConsultationsArray(
+                    this.$store.getters.consultations
+                ).filter(a => {
+                    let response = true;
+                    if (this.selectedDoctor) {
+                        if (this.selectedDoctor.cpf !== a.doctor.cpf) {
+                            response = false;
+                        }
+                    }
+                    if (this.especialidade) {
+                        if (this.especialidade.name !== a.specialty.name) {
+                            response = false;
+                        }
+                    }
+                    if (this.clinic) {
+                        if (this.clinic !== a.clinic.name) {
+                            response = false;
+                        }
+                    }
                     return response;
                 });
                 return consultas;
@@ -778,6 +796,63 @@
             this.consultationsListenerUnsubscriber();
         },
         methods: {
+            datesOfInterval(payload) {
+                let weekDays = payload.weekDays
+                //let cancelations_schedules = payload.cancelations_schedules
+                let startDate = moment();
+                let dates = []
+                weekDays = weekDays.map((day)=>{ return Number(day)})
+                let day = startDate
+                for (let i = 0; i < this.daysToListen; i++) {
+                    if (weekDays.indexOf(day.weekday()) > -1 ) {
+                        dates.push(day.format('YYYY-MM-DD'))
+                    }
+                    day = startDate.add(1, 'days');
+                }
+                return dates
+            },
+            numberVacancyAndReturns(schedule){
+                let consultations = this.consultas
+                return consultations.reduce((obj,item)=>{
+                    let qtd_consultations = obj.qtd_consultations
+                    let qtd_returns = obj.qtd_returns
+                    if(schedule.clinic.name === item.clinic.name && schedule.specialty.name === item.specialty.name
+                       &&schedule.doctor.cpf === item.doctor.cpf && schedule.date === item.date && item.user){
+                            if(item.type === 'Consulta')
+                                obj.qtd_consultations += 1
+                            else
+                                obj.qtd_returns += 1
+                    }
+                    return obj
+                },{qtd_consultations:0,qtd_returns:0})
+            },
+            consultationsOfSchedules(schedules){
+                let consultations = []
+                schedules.forEach((schedule)=>{
+                    let keys = Object.keys(schedule.days)
+                    let dates = this.datesOfInterval({weekDays:keys/* ,cancelations_schedules:schedule.cancelations_schedules */})
+
+                    dates.forEach((date)=>{
+                        let hourConsultation = schedule.days[moment(date).weekday()].hour
+                        if(schedule.cancelations_schedules.indexOf(date) == -1 && schedule.cancelations_schedules.indexOf(date + ' ' +hourConsultation) == -1){
+                            let scheduleObj = {
+                                clinic: schedule.clinic,
+                                doctor: schedule.doctor,
+                                date: date + ' ' + hourConsultation,
+                                routine_id : schedule.routine_id,
+                                specialty: schedule.specialty,
+                                vacancy: schedule.days[moment(date).weekday()].vacancy,
+                                id_schedule: schedule.id,
+
+                            }
+                            let obj = {...scheduleObj,...this.numberVacancyAndReturns(scheduleObj)}
+                            obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns
+                            consultations.push(obj)
+                        }
+                    })
+                })
+                return consultations
+            },
             formatDate(date) {
                 if (!date) return null;
                 const [year, month, day] = date.split("-");
@@ -798,13 +873,10 @@
             async fillConsultationForm(consultation) {
                 this.selectedForm = {
                     user: this.selectedPatient,
-                    consultation: consultation.consultations.find(a => {
-                        return !a.user;
-                    })
+                    consultation: consultation
                 }
 
                 this.thereIsPaymentNumber()
-
                 this.createConsultationForm = this.selectedForm;
             },
 
@@ -909,7 +981,8 @@
                     if (
                         array[i].date === consultation.date &&
                         array[i].doctor.cpf === consultation.doctor.cpf &&
-                        array[i].specialty.name === consultation.specialty.name
+                        array[i].specialty.name === consultation.specialty.name &&
+                        array[i].clinic.name === consultation.clinic.name
                     ) {
                         return i;
                     }
@@ -918,6 +991,9 @@
             },
             consultasByDate(consultations) {
                 let res = {};
+                consultations.sort((a,b)=>{
+                    return a.date > b.date ? 1 : a.date < b.date ? -1 : 0
+                })
                 for (let cons in consultations) {
                     let targetDate = consultations[cons].date.split(" ")[0];
                     if (!res[targetDate]) {
@@ -936,11 +1012,8 @@
                 this.loading = false;
             },
             async listenConsultations() {
-                console.log(moment()
-                            .subtract(12, "hours")
-                            .format("YYYY-MM-DD HH:mm:ss"))
                 this.consultationsListenerUnsubscriber = await this.$store.dispatch(
-                    "listenConsultations",
+                    "getSchedules",
                     {
                         start_date: moment()
                             .subtract(5, "hours")
@@ -963,10 +1036,10 @@
                 this.date = this.consultas[0].date;
             },
             handleScroll(event) {
-                var scrollPos = window.scrollY;
+                this.scrollPos = window.scrollY;
                 var winHeight = window.innerHeight;
                 var docHeight = document.documentElement.scrollHeight; // instead document.body.clientHeight
-                this.offsetTop = (100 * scrollPos) / (docHeight - winHeight);
+                this.offsetTop = (100 * this.scrollPos) / (docHeight - winHeight);
             },
             findPos(obj, elementId) {
                 var curtop = 0;
@@ -1060,7 +1133,7 @@
                     };
                 // return
                 this.loading = true;
-                await this.$store.dispatch("addConsultationAppointmentToUser", form);
+                //await this.$store.dispatch("addConsultationAppointmentToUser", form);
                 //Realizar essa funcao pelo cloud functions
                 await this.$store.dispatch("addUserToConsultation", form);
                 this.scheduleLoading = false;

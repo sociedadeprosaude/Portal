@@ -1,86 +1,70 @@
 <template>
-    <v-content>
-        <v-container fluid class="fill-height ma-0 pa-0">
-            <v-layout row wrap class="align-center justify-center white">
-                <v-flex xs6 class="text-left white">
-                    <v-btn class="transparent" text  @click="closeDialog()">
-                        <v-icon>close</v-icon>
-                    </v-btn>
-                </v-flex>
-                <v-flex xs6 class="text-right white">
-                    <v-btn class="transparent" text @click="print()">
-                        <v-icon>print</v-icon>
-                    </v-btn>
-                </v-flex>
-                <v-flex>
-                    <v-container>
-                        <v-card flat class="pa-10 receipt-to-print">
-                            <!--                        <v-flex xs12 class="white" style="color: white">.</v-flex>
-                                                    <v-layout
-                                                            row
-                                                            wrap
-                                                            class="align-center pa-4"
-                                                            style="border: 2px solid #2196f3; border-radius: 16px"
-                                                    >
-                                                        <v-flex xs12 class="mt-2 py-1 px-4">
-                                                            <v-layout row wrap class="align-center"></v-layout>
-                                                        </v-flex>
-                                                    </v-layout>-->
-                            <v-layout
-                                    row
-                                    wrap
-                                    class="align-center pa-4 mt-4"
-                                    style="border: 2px solid #2196f3; border-radius: 16px"
-                            >
-                                Dr. JONATAS
-                                CRM:130913
-                                Especialidade: CARDIOLOGIA
-                                Procedimento: Consulta
-                                Data:26/03/2020 - 13:00
-                                <v-spacer></v-spacer>
-                                Data: {{hoje}} - {{dia}}
-                                <v-flex xs4 >
-                                    <v-img v-if="selectedUnit"
-                                           :src="selectedUnit.logo"
-                                           width="400"
-                                    ></v-img>
+    <v-container fluid class="fill-height ma-0 pa-0">
+        <v-layout row wrap class="align-center justify-center white">
+            <v-flex xs6 class="text-left white">
+                <v-btn class="transparent" text  @click="closeDialog()">
+                    <v-icon>close</v-icon>
+                </v-btn>
+            </v-flex>
+            <v-flex xs6 class="text-right white">
+                <v-btn class="transparent" text @click="print()">
+                    <v-icon>print</v-icon>
+                </v-btn>
+            </v-flex>
+            <v-flex xs12>
+                <v-divider></v-divider>
+            </v-flex>
+
+            <v-flex>
+                <v-card flat class="pa-10 receipt-to-print">
+                    <v-layout row wrap class="align-center pa-4 mt-4" style="border: 2px solid #2196f3; border-radius: 16px">
+                        <v-img :src="require('@/assets/pro_saude_logo_transparente.png')">
+
+                            <v-layout class="align-center justify-center">
+                                <v-flex xs6>
+                                    <img :src="consultation.clinic.logo"/>
                                 </v-flex>
-                                RYAN DE BARBA NEGRA
-                                CPF:00293048544
-                                Data de Nascimento:27/01/1995
-                                Idade:25
-                                <v-spacer></v-spacer>
-
-                                <v-flex xs12 class="white" style="color: white">.</v-flex>
-
-                                <v-flex xs12 v-for="(dados,i) in medicines" :key="i">
-                                    <ul>
-                                        <li style="list-style-type: none;">
-                                            {{dados.name}} - {{dados.concentration}} - {{dados.pharmaceutical}}
-                                            <v-layout class="align-center justify-center">
-                                                <v-flex xs12>
-                                                    <v-text-field :prefix="dados.name + ' - '+ 'Observações:'" outlined></v-text-field>
-                                                </v-flex>
-                                            </v-layout>
-                                            <!--<v-flex><strong style="color: white">.</strong></v-flex>-->
-                                        </li>
-                                    </ul>
-                                </v-flex>
-
-                                <v-flex xs12 style="height: 550px"></v-flex>
                             </v-layout>
-                        </v-card>
-                    </v-container>
-                </v-flex>
-            </v-layout>
-        </v-container>
-    </v-content>
+
+                            <v-flex xs12 class="transparent" style="color: transparent">.</v-flex>
+
+                            <v-flex xs12 class="align-center justify-center">
+                                <v-layout row wrap class="align-center justify-center">
+                                    <span class="my-sub-headline primary--text" style="font-size: 1.4em;text-decoration: underline">EXAMES</span>
+                                </v-layout>
+                            </v-flex>
+
+                            <v-flex xs12 class="transparent" style="color: transparent">.</v-flex>
+
+                            <v-flex xs12 v-for="(dados,i) in medicines" :key="i">
+                                <ul>
+                                    <li style="list-style-type: none;">
+                                        <span>{{ dados.name }} - {{ dados.concentration }} - {{ dados.pharmaceutical }}</span>
+                                        - <label for="obs">Obervações:</label><input type="text" id="obs" name="obs"><br>
+                                    </li>
+                                </ul>
+                            </v-flex>
+
+                        </v-img>
+                        <v-layout class="align-center justify-center">
+                            <v-flex xs4>
+                                <v-divider color="black"></v-divider>
+                                {{consultation.doctor.name}}
+                                <br/>
+                                CRM-AM {{consultation.doctor.crm}}
+                            </v-flex>
+                        </v-layout>
+                    </v-layout>
+                </v-card>
+            </v-flex>
+        </v-layout>
+    </v-container>
 </template>
 
 <script>
     var moment = require('moment');
     export default {
-        name: "solicitationsPDF",
+        name: "prescriptionPDF",
         props:['consultation', 'medicines'],
         data: () => ({
             moment: moment,
@@ -88,9 +72,7 @@
             dia: undefined,
         }),
         computed:{
-            selectedUnit() {
-                return this.$store.getters.selectedUnit
-            },
+            //
         },
         watch:{
             //
@@ -100,7 +82,15 @@
             this.dia = moment().format('dddd')
         },
         methods: {
+            save(){
+                this.$store.dispatch('addReceitaToConsultation',{
+                    receita: this.medicines,
+                    consultation: this.consultation.id,
+                    patient: this.consultation.user.id
+                })
+            },
             print () {
+                this.save()
                 window.print()
             },
             clear() {

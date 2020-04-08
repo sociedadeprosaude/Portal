@@ -161,36 +161,36 @@
                             </v-flex>
                             <v-layout row wrap>
                                 <v-flex>
-                                    <v-flex sm12 xs12 class="px-3 mt-3" v-if="payments.length > 1">
-                                        <v-layout row wrap class="align-center" v-for="(payment, index) in payments"
+                                    <v-flex sm12 xs12 class="px-3 mt-3" v-if="payment.paymentForm.length > 1">
+                                        <v-layout row wrap class="align-center" v-for="(x ,index) in payment.paymentForm"
                                                   :key="index">
                                             <v-flex xs10>
                                                 <v-select
                                                         outlined
                                                         rounded
                                                         :items="FormasDePagamento"
-                                                        v-model="payments[index]"
+                                                        v-model="payment.paymentForm[index]"
                                                         label="Forma de Pagamento">
                                                 </v-select>
                                             </v-flex>
-                                            <v-flex xs5 v-if="payments[index] === 'Crédito'">
+                                            <v-flex xs5 v-if="payment.paymentForm[index] === 'Crédito'">
                                                 <v-currency-field
                                                         filled
-                                                        v-model="valuesPayments[index]"
+                                                        v-model="payment.value[index]"
                                                         label="Valor"
                                                 >
                                                 </v-currency-field>
                                             </v-flex>
-                                            <v-flex xs10 v-if="payments[index] !== 'Crédito'">
+                                            <v-flex xs10 v-if="payment.paymentForm[index] !== 'Crédito'">
                                                 <v-currency-field
                                                         filled
-                                                        v-model="valuesPayments[index]"
+                                                        v-model="payment.value[index]"
                                                         label="Valor"
                                                 >
                                                 </v-currency-field>
                                             </v-flex>
-                                            <v-flex xs5 v-if="payments[index] === 'Crédito'">
-                                                <v-select :items="parcels" v-model="parcel"
+                                            <v-flex xs5 v-if="payment.paymentForm[index] === 'Crédito'">
+                                                <v-select :items="parcels" v-model="payment.parcel[index]"
                                                           label="Parcelas"
                                                           filled>
                                                 </v-select>
@@ -205,36 +205,29 @@
                                             </v-flex>
                                         </v-layout>
                                     </v-flex>
-                                    <v-flex sm12 xs12 class="px-3 mt-3" v-if="payments.length === 1">
-                                        <v-layout row wrap class="align-center" v-for="(payment, index) in payments"
+                                    <v-flex sm12 xs12 class="px-3 mt-3" v-if="payment.paymentForm.length === 1">
+                                        <v-layout row wrap class="align-center" v-for="(x ,index) in payments"
                                                   :key="index">
                                             <v-flex xs10>
                                                 <v-select
                                                         outlined
                                                         rounded
                                                         :items="FormasDePagamento"
-                                                        v-model="payments[index]"
+                                                        v-model="payment.paymentForm[index]"
                                                         label="Forma de Pagamento">
                                                 </v-select>
                                             </v-flex>
-                                            <v-flex xs5 v-if="payments[index] === 'Crédito'">
+                                            <v-flex xs5 v-if="payment.paymentForm[index] === 'Crédito'">
                                                 <v-currency-field
                                                         filled
-                                                        v-model="valuesPayments[index]"
+                                                        v-model="payment.value[index]"
                                                         label="Valor"
                                                 >
                                                 </v-currency-field>
                                             </v-flex>
-                                            <v-flex xs10 v-if="payments[index] !== 'Crédito'">
-                                                <v-currency-field
-                                                        filled
-                                                        v-model="valuesPayments[index]"
-                                                        label="Valor"
-                                                >
-                                                </v-currency-field>
-                                            </v-flex>
-                                            <v-flex xs5 v-if="payments[index] === 'Crédito'">
-                                                <v-select :items="parcels" v-model="parcel"
+
+                                            <v-flex xs10 v-if="payment.paymentForm[index] === 'Crédito'">
+                                                <v-select :items="parcels" v-model="payment.parcel[index]"
                                                           label="Parcelas"
                                                           filled>
                                                 </v-select>
@@ -270,15 +263,15 @@
                                         <v-flex xs12>
                                             <v-divider color="black"/>
                                         </v-flex>
-                                        <v-flex v-for="(payment, index) in payments" :key="index">
-                                            <v-flex xs12 v-if="payments[index] === 'Crédito'">
-                                                <span>Crédito: {{parcel}}x de R$ {{( valuesPayments[index] / parcel).toFixed(2)}}</span>
+                                        <v-flex v-for="(x , index) in payments" :key="index">
+                                            <v-flex xs12 v-if="payment.paymentForm[index] === 'Crédito'">
+                                                <span>Crédito: {{payment.parcel[index]}}x de R$ {{( payment.value[index] / payment.parcel[index]).toFixed(2)}}</span>
                                             </v-flex>
-                                            <v-flex xs12 v-if="payments[index] === 'Débito'">
-                                                <span>Débito: R$ {{( valuesPayments[index])}}</span>
+                                            <v-flex xs12 v-if="payment.paymentForm[index] === 'Débito'">
+                                                <span>Débito: R$ {{( payment.value[index])}}</span>
                                             </v-flex>
-                                            <v-flex xs12 v-if="payments[index] === 'Dinheiro'">
-                                                <span>Dinheiro: R$ {{( valuesPayments[index])}}</span>
+                                            <v-flex xs12 v-if="payment.paymentForm[index] === 'Dinheiro'">
+                                                <span>Dinheiro: R$ {{( payment.value[index])}}</span>
                                             </v-flex>
                                         </v-flex>
                                         <v-flex xs12>
@@ -315,7 +308,7 @@
                                         </v-flex>
                                         <v-flex xs6 class="text-center">
                                             <submit-button
-                                                    :disabled="!patient || cartItems.length === 0 || this.paymentValues !== this.total"
+                                                    :disabled="!patient || cartItems.length === 0 || this.paymentValues !== this.total || this.paymentNull === false"
                                                     text="Pagar" :loading="paymentLoading"
                                                     :success="paymentSuccess" color="primary" @click="pay()">
                                                 Pagar
@@ -376,6 +369,7 @@
                 searchPatient: false,
                 payments: ['Dinheiro'],
                 valuesPayments:[''],
+                payment:{ paymentForm:['Dinheiro'], value:[''], parcel:['1']},
                 moneyDiscout: 0,
                 data: moment().format("YYYY-MM-DD HH:mm:ss"),
                 parcelas: '1',
@@ -439,19 +433,33 @@
                 return (parseFloat(this.subTotal) - parseFloat(this.moneyDiscount)).toFixed(2)
             },
             paymentValues() {
-                let tamanho = this.payments.length;
+                let tamanho = this.payment.paymentForm.length;
                 let pagando = 0;
-                if (tamanho === 1 && this.payments[0] !== '') {
-                    this.valuesPayments[0] = parseFloat(this.total);
-                    pagando = parseFloat(this.valuesPayments[0]);
+                console.log('payment: ',this.payment.paymentForm.length)
+                if (tamanho === 1 && this.payment.paymentForm[0] !== '') {
+                    this.payment.value[0] = parseFloat(this.total)
+                    pagando = parseFloat(this.payment.value[0]);
                 } else {
                     for (let i = 0; i < tamanho; i++) {
-                        if (this.valuesPayments[i] !== '') {
-                            pagando += parseFloat(this.valuesPayments[i])
+                        if (this.payment.value[i] !== '') {
+                            pagando += parseFloat(this.payment.value[i])
                         }
                     }
                 }
                 return pagando.toFixed(2);
+            },
+            paymentNull() {
+                let tamanho = this.payment.paymentForm.length;
+                if (tamanho === 1 && this.payment.value[0] !== '') {
+                    return true
+                } else {
+                    for (let i = 0; i < tamanho; i++) {
+                        if (this.payment.value[i] === ''){
+                            return false
+                        }
+                    }
+                    return true
+                }
             },
         },
         watch: {
@@ -491,10 +499,17 @@
             adicionarFormaDePagamento() {
                 this.valuesPayments.push('');
                 this.payments.push('')
+                this.payment.paymentForm.push('');
+                this.payment.value.push('');
+                this.payment.parcel.push('1')
             },
             apagarFormaDePagamento(index) {
                 this.payments.splice(index, 1);
-                this.valuesPayments.splice(index, 1)
+                this.valuesPayments.splice(index, 1);
+                this.payment.paymentForm.splice(index, 1);
+                this.payment.value.splice(index, 1);
+                this.payment.parcel.splice(index, 1);
+
             },
             removeItem(item) {
                 this.$store.commit('removeShoppingCartItem', item)
@@ -548,15 +563,15 @@
                     subTotal: this.subTotal,
                     discount: this.moneyDiscount,
                     total: this.total,
-                    parcel: this.parcel,
+                    parcel: this.payment.parcel,
                     date: moment().format('YYYY-MM-DD HH:mm:ss'),
                     cost: this.cost,
                     user: this.$store.getters.selectedPatient,
                     colaborator: this.$store.getters.user,
                     parcelar: this.parcelar,
                     doctor: this.selectedDoctor,
-                    payments: this.payments,
-                    valuesPayments: this.valuesPayments,
+                    payments: this.payment.paymentForm,
+                    valuesPayments: this.payment.value,
                     unit: this.selectedUnit
                 };
                 return budget
