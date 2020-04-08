@@ -271,23 +271,24 @@ const actions = {
         let consultationsSnap= await firebase.firestore().collection('consultations').where('date', '>=', payload.dataInicio)
             .where('date', '<=', payload.dataFinal).orderBy('date').get();
         consultationsSnap.forEach((e) => {
-            if (!doctors[e.data().doctor.name]) {
-                doctors[e.data().doctor.name] = {
-                    doctor: e.data().doctor,
-                    specialties: {},
-                    payment: 0,
-                    quantityTotal: 0
+            if(e.data().consultationHour){
+                if (!doctors[e.data().doctor.name]) {
+                    doctors[e.data().doctor.name] = {
+                        doctor: e.data().doctor,
+                        specialties: {},
+                        payment: 0,
+                        quantityTotal: 0
+                    }
                 }
-            }
-            if (!doctors[e.data().doctor.name].specialties[e.data().specialty.name]) {
-                doctors[e.data().doctor.name].specialties[e.data().specialty.name] = {
-                    quantity: 0,
-                    cost: 0,
-                    costOne: 0
+                if (!doctors[e.data().doctor.name].specialties[e.data().specialty.name]) {
+                    doctors[e.data().doctor.name].specialties[e.data().specialty.name] = {
+                        quantity: 0,
+                        cost: 0,
+                        costOne: 0
+                    }
                 }
-            }
-            doctors[e.data().doctor.name].quantityTotal++
-            doctors[e.data().doctor.name].specialties[e.data().specialty.name].quantity++
+                doctors[e.data().doctor.name].quantityTotal++
+                doctors[e.data().doctor.name].specialties[e.data().specialty.name].quantity++
                 firebase.firestore().collection('specialties').doc(e.data().specialty.name).
                 collection('doctors').doc(e.data().doctor.cpf).get().then( (snap) => {
                     doctors[e.data().doctor.name].specialties[e.data().specialty.name].cost += parseFloat(snap.data().cost.toFixed(2))
@@ -295,6 +296,8 @@ const actions = {
                     doctors[e.data().doctor.name].payment += parseFloat(snap.data().cost.toFixed(2))
                 })
 
+
+            }
         })
         console.log('doctors', doctors)
         relatorio = {
