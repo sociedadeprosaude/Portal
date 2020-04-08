@@ -77,6 +77,7 @@ const mutations = {
 
 const actions = {
 
+    
     async listenConsultations({ commit }, payload) {
         try {
             commit('setConsultationsLoaded', false);
@@ -218,8 +219,9 @@ const actions = {
                     consultation.weekDays.forEach((day)=>{
                         if(data.days[day])
                             data.days[day].vacancy = Number(data.days[day].vacancy) + Number(consultation.vacancy)
-                        else
-                            data.days[day].vacancy = Number(consultation.vacancy)
+                        else{
+                            data.days[day] = {vacancy : Number(consultation.vacancy),hour:consultation.hour}
+                        }
                     })
                     await firebase.firestore().collection('schedules').doc(doc.id).update(data)
                 })
@@ -234,6 +236,15 @@ const actions = {
     }
     else
         data.days[day].vacancy = Number(consultation.vacancy) */
+
+    /* async getAConsultations(context,payload){
+        await firebase.firestore().collection('users').doc('13409450297').collection('consultations')
+        .doc("Pjc2Vb3VPyFnmjKpcImf").update({regress:firebase.firestore.FieldValue.delete()})
+        let consultation = await firebase.firestore().collection('users').doc('13409450297').collection('consultations')
+        .doc("Pjc2Vb3VPyFnmjKpcImf").get()
+
+        console.log(consultation.data())
+    }, */
 
     async addConsultationAppointmentToUser({ commit }, payload) {
         try {
