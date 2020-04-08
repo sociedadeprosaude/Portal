@@ -132,7 +132,7 @@ export default {
     BestSellingExamsReport,
     BestSellingConsultationsReport,
     OuttakesReport,
-    SpecialtiesMadeReport
+    SpecialtiesMadeReport,
     NewUsersReport
   },
   data: vm => ({
