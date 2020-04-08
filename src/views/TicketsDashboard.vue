@@ -9,39 +9,34 @@
       </v-btn>
     </v-row>
 
-    <v-container fill-height v-if="!sector" class="box">
-      <v-row align="center" justify="center">
-        <v-card
-          v-for="sector in sectors"
-          :key="sector.title"
-          min-width="300"
-          min-height="250"
-          class="card hidden-xs-only mx-3"
-          @click="choose(sector)"
-        >
-          <v-row align="center" justify="center">
-            <v-col cols="12">
-              <v-icon size="72" class="mt-10">{{sector.icon}}</v-icon>
-            </v-col>
-            <v-col cols="12">
-              <span class="text-center my-headline">{{sector.title}}</span>
-            </v-col>
-          </v-row>
-        </v-card>
+    <v-container fill-height style="height:800px">
+      <v-row v-if="!sector" justify="center" align="center" align-content="center">
+        <v-col align-self="center" cols="12" sm="4" v-for="sector in sectors" :key="sector.title">
+          <v-card class="card mx-3" @click="choose(sector)">
+            <v-container>
+              <v-row align="center" justify="center">
+                <v-col cols="12">
+                  <v-icon size="72" class="mt-10">{{sector.icon}}</v-icon>
+                </v-col>
+                <v-col cols="12">
+                  <span class="text-center my-headline">{{sector.title}}</span>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card>
+        </v-col>
       </v-row>
+
+      <v-row v-else align="center" justify="center">
+        <div>
+          <span class="text-center my-headline">{{sector.title}}</span>
+          <transition name="slide-fade" mode="out-in" appear>
+            <tickets :sector="sector" />
+          </transition>
+        </div>
+      </v-row>
+      
     </v-container>
-
-    <v-row v-else align="center" justify="center">
-      <div>
-        <span class="text-center my-headline">{{sector.title}}</span>
-        <transition name="slide-fade" mode="out-in" appear>
-          <tickets :sector="sector" />
-        </transition>
-      </div>
-    </v-row>
-
-    <v-btn v-if="!production" class="primary" @click="saveTickets">Salvar tickets no histórico</v-btn>
-    <v-btn v-if="!production" class="primary" @click="resetLine">Resetar fila</v-btn>
   </v-container>
 </template>
 
@@ -105,7 +100,4 @@ export default {
 </script>
 
 <style scoped>
-.box {
-  height: 600px;
-}
 </style>

@@ -39,10 +39,10 @@ const actions = {
         firestore.collectionGroup('rooms').get().then((rooms) => {
             rooms.forEach((room) => {
                 // verificando se a sala teve fila de tickets
-                // Pode tirar esse room.data().clinicDoc do if se aprovado minhas mundanças no sprint
-                if (room.data().tickets.length != 0 && room.data().clinicDoc) {
+                // Pode tirar esse room.data().doc_clinic do if se aprovado minhas mundanças no sprint
+                if (room.data().tickets.length != 0 && room.data().doc_clinic) {
                     // Pegando a historia da sala (criei o campo clicnicDoc no metadata da room pra facilitar a query de salvar
-                    firestore.collection('tickets-history').doc(room.data().clinicDoc)
+                    firestore.collection('tickets-history').doc(room.data().doc_clinic)
                         .collection('rooms-history').doc(room.id).get()
                         .then(async (roomHist) => {
                             if (roomHist.exists) {
@@ -83,7 +83,7 @@ const actions = {
     async createSectorRoom(context, payload) {
         let selectedClinic = context.getters.selectedUnit;
         await queryBuilder(selectedClinic.name, payload.sector.sectorName, payload.room.name)
-            .set({ name: payload.room.name, tickets: [], doctor: null, clinicDoc: selectedClinic.name })
+            .set({ name: payload.room.name, tickets: [], doctor: null, doc_clinic: selectedClinic.name })
     },
     async listenRooms(context, payload) {
         // adicionado promise pra so mostrar quando tiver carregado as salas

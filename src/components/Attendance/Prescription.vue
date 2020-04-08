@@ -8,12 +8,12 @@
                 <v-card-text>
                     <v-container fluid>
                         <v-layout row wrap class="align-center justify-center">
-                            <v-flex xs11>
+<!--                            <v-flex xs11>
                                 <v-combobox
                                         prepend-inner-icon="search"
                                         prepend-icon="note_add"
                                         v-model="item"
-                                        :items="sus"
+                                        :items="lista"
                                         return-object
                                         :item-text="text"
                                         item-key="concentration"
@@ -46,9 +46,56 @@
                                         </v-chip>
                                     </template>
                                 </v-combobox>
+                            </v-flex>-->
+
+                            <v-flex xs11>
+                                <v-combobox
+                                        prepend-inner-icon="search"
+                                        prepend-icon="note_add"
+                                        v-model="item"
+                                        :items="lista"
+                                        return-object
+                                        :item-text="text"
+                                        item-key="concentration"
+                                        label="Medicamentos"
+                                        chips
+                                        :search-input.sync="search"
+                                        clearable
+                                        outlined
+                                >
+                                    <template v-slot:no-data>
+                                        <v-flex xs12 class="white"><strong style="color: white">.</strong></v-flex>
+                                        <v-alert
+                                                dense
+                                                outlined
+                                                type="error"
+                                        >
+                                            O medicamento: <strong>{{ search }}</strong> não foi encontrado na lista, escreva-o manualmente na prescrição.
+                                        </v-alert>
+                                    </template>
+
+                                    <template v-slot:selection="data">
+                                        <v-chip
+                                                :key="JSON.stringify(data.item)"
+                                                v-bind="data.attrs"
+                                                :input-value="data.selected"
+                                                :disabled="data.disabled"
+                                                @click:close="data.parent.selectItem(data.item)"
+                                                color="info"
+                                        >
+                                            {{ data.item.name }} - {{ data.item.concentration }} - {{ data.item.pharmaceutical }}
+                                        </v-chip>
+                                    </template>
+                                </v-combobox>
                             </v-flex>
                             <v-flex xs1>
                                 <v-btn v-on:click="addToList" :disabled="!addIsValid" color="success">
+                                    <v-icon>add</v-icon>
+                                </v-btn>
+                            </v-flex>
+                            <v-flex xs12>
+                                <v-btn v-on:click="addToBanc" color="success">
+                                    ADD lista de medicamentos no banco de dados
                                     <v-icon>add</v-icon>
                                 </v-btn>
                             </v-flex>
@@ -522,8 +569,18 @@
             deleteIsValid() {
                 return this.medicines.length > 0
             },
+            lista() {
+                let arr = this.$store.getters.medicines[0]
+/*                console.log(arr)*/
+                let medic = []
+                for (let i in arr){
+                    medic.push(arr[i])
+                }
+                return medic;
+            }
         },
         mounted() {
+            this.$store.dispatch('getMedicines');
             window.addEventListener('keydown', this.handleEnter);
         },
         beforeDestroy() {
@@ -558,6 +615,9 @@
             deleteFromList() {
                 this.medicines = [];
             },
+            addToBanc() {
+                this.$store.dispatch('addArrayOfMedicinesToBanc', { medicines: this.sus })
+            }
         },
     }
 </script>

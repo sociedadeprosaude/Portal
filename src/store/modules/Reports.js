@@ -116,6 +116,7 @@ const actions = {
         let quantidadeOuttakes = 0;
         let relatorio = {};
         let doctors = {}
+        //console.log('intakes: ',intakes)
         for (let intake in intakes) {
             if (!intakes[intake].cancelled_by) {
                 if (intakes[intake].type === 'financial_support') {

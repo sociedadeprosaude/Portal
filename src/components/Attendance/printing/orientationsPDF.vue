@@ -84,7 +84,15 @@
             this.dia = moment().format('dddd')
         },
         methods: {
+            save(){
+                this.$store.dispatch('addOrientacaoToConsultation',{
+                    orientacao: this.item.value,
+                    consultation: this.consultation.id,
+                    patient: this.consultation.user.id
+                })
+            },
             print () {
+                this.save()
                 window.print()
             },
             clear() {

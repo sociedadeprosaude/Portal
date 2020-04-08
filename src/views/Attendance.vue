@@ -182,7 +182,7 @@
                     end: this.endConsultation,
                     durantion: this.timeConsultation,
                     consultation: this.consultation.id,
-                    patient: this.consultation.user.cpf
+                    patient: this.consultation.user.id
 
                 })
                 this.$router.push("MedicalCare")
