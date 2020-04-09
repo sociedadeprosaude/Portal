@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --max_old_space_size=8192",
+    "build-deploy": "vue-cli-service build --max_old_space_size=8192 && firebase deploy --only hosting",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
