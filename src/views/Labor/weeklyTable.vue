@@ -18,7 +18,7 @@
                                 hide-default-header
                                 hide-default-footer
                                 :headers="headers"
-                                :items="desserts"
+                                :items="weeklyTable"
                                 :search="search"
                                 :items-per-page="-1"
                                 item-key="hour"
@@ -44,9 +44,29 @@
                                 </v-avatar>
                             </template>
 
+
                             <template v-slot:item.monday="{ item }">
+                                <strong v-for="(index,i) in item.monday" :key="i">{{index}}</strong>
+                            </template>
+                            <template v-slot:item.tuesday="{ item }">
+                                <strong v-for="(index,i) in item.tuesday" :key="i">{{index}}</strong>
+                            </template>
+                            <template v-slot:item.wednesday="{ item }">
+                                <strong v-for="(index,i) in item.wednesday" :key="i">{{index}}</strong>
+                            </template>
+                            <template v-slot:item.thursday="{ item }">
+                                <strong v-for="(index,i) in item.thursday" :key="i">{{index}}</strong>
+                            </template>
+                            <template v-slot:item.friday="{ item }">
+                                <strong v-for="(index,i) in item.friday" :key="i">{{index}}</strong>
+                            </template>
+                            <template v-slot:item.saturday="{ item }">
+                                <strong v-for="(index,i) in item.saturday" :key="i">{{index}}</strong>
+                            </template>
+
+<!--                            <template v-slot:item.monday="{ item }">
                                 <br/>
-                                <v-chip dark label v-for="(index,i) in item.monday" :key="i"
+                                <v-chip small class="font-weight-bold" style="font-size: 0.8em" dark label v-for="(index,i) in item.monday" :key="i"
                                         :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
                                 >{{index}}</v-chip>
                                 <br/><br/>
@@ -54,7 +74,7 @@
 
                             <template v-slot:item.tuesday="{ item }">
                                 <br/>
-                                <v-chip dark label v-for="(index,i) in item.tuesday" :key="i"
+                                <v-chip small class="font-weight-bold" style="font-size: 0.8em" dark label v-for="(index,i) in item.tuesday" :key="i"
                                         :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
                                 >{{index}}</v-chip>
                                 <br/><br/>
@@ -62,7 +82,7 @@
 
                             <template v-slot:item.wednesday="{ item }">
                                 <br/>
-                                <v-chip dark label v-for="(index,i) in item.wednesday" :key="i"
+                                <v-chip small class="font-weight-bold" style="font-size: 0.8em" dark label v-for="(index,i) in item.wednesday" :key="i"
                                         :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
                                 >{{index}}</v-chip>
                                 <br/><br/>
@@ -70,7 +90,7 @@
 
                             <template v-slot:item.thursday="{ item }">
                                 <br/>
-                                <v-chip dark label v-for="(index,i) in item.thursday" :key="i"
+                                <v-chip small class="font-weight-bold" style="font-size: 0.8em" dark label v-for="(index,i) in item.thursday" :key="i"
                                         :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
                                 >{{index}}</v-chip>
                                 <br/><br/>
@@ -78,7 +98,7 @@
 
                             <template v-slot:item.friday="{ item }">
                                 <br/>
-                                <v-chip dark label v-for="(index,i) in item.friday" :key="i"
+                                <v-chip small class="font-weight-bold" style="font-size: 0.8em" dark label v-for="(index,i) in item.friday" :key="i"
                                         :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
                                 >{{index}}</v-chip>
                                 <br/><br/>
@@ -86,12 +106,12 @@
 
                             <template v-slot:item.saturday="{ item }">
                                 <br/>
-                                <v-chip dark label v-for="(index,i) in item.saturday" :key="i"
+                                <v-chip small class="font-weight-bold" style="font-size: 0.8em" dark label v-for="(index,i) in item.saturday" :key="i"
                                         :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
                                 >{{index}}</v-chip>
                                 <br/><br/>
-                            </template>
-
+                            </template>-->
+                            {{lista}}
                         </v-data-table>
                     </v-card>
 
@@ -116,7 +136,7 @@
                 { text: 'Sexta', value: 'friday', align: 'center', sortable: false },
                 { text: 'Sabado', value: 'saturday', align: 'center', sortable: false },
             ],
-            desserts: [
+            weeklyTable: [
                 {
                     hour: '06:00',
                     monday: [],
@@ -137,12 +157,12 @@
                 },
                 {
                     hour: '07:00',
-                    monday: ['jackson - dermatologista', 'jonatas - cardiologia','jackson - dermatologista', 'jonatas - cardiologia', 'jonatas - cardiologia', 'jonatas - cardiologia'],
-                    tuesday: ['raul - urologia', 'jonatas - cardiologia', 'jonatas - cardiologia', 'jonatas - cardiologia', 'jonatas - cardiologia'],
-                    wednesday: ['jackson - dermatologista', 'jonatas - cardiologia', 'jonatas - cardiologia', 'jonatas - cardiologia'],
-                    thursday: ['raul - urologia', 'jonatas - cardiologia', 'jonatas - cardiologia'],
-                    friday: ['jackson - dermatologista', 'jonatas - cardiologia'],
-                    saturday: ['jackson - dermatologista'],
+                    monday: [],
+                    tuesday: [],
+                    wednesday: [],
+                    thursday: [],
+                    friday: [],
+                    saturday: [],
                 },
                 {
                     hour: '07:30',
@@ -322,40 +342,36 @@
                     friday: [],
                     saturday: [],
                 },
-                {
-                    hour: '17:30',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-                {
-                    hour: '18:00',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
             ],
         }),
         computed:{
             lista() {
                 let arr = this.$store.getters.AllSchedules
-                console.log(arr)
+/*                console.log(arr)*/
                 for (let i in arr) {
-                    this.maps(arr[i])
+                    let data = ''
+                    data = arr[i].doctor.name + ' - ' + arr[i].specialty.name + ' - ' + arr[i].clinic.name
+                    let daysoftheweek = arr[i].days
+                    for (let j in daysoftheweek) {
+                        for (let k in this.weeklyTable) {
+                            if( daysoftheweek[j].hour === this.weeklyTable[k].hour && j == '1'){
+                                this.weeklyTable[k].monday.push(data)
+                            } else if( daysoftheweek[j].hour === this.weeklyTable[k].hour && j == '2'){
+                                this.weeklyTable[k].tuesday.push(data)
+                            } else if( daysoftheweek[j].hour === this.weeklyTable[k].hour && j == '3'){
+                                this.weeklyTable[k].wednesday.push(data)
+                            } else if( daysoftheweek[j].hour === this.weeklyTable[k].hour && j == '4'){
+                                this.weeklyTable[k].thursday.push(data)
+                            } else if( daysoftheweek[j].hour === this.weeklyTable[k].hour && j == '5'){
+                                this.weeklyTable[k].friday.push(data)
+                            } else if( daysoftheweek[j].hour === this.weeklyTable[k].hour && j == '6'){
+                                this.weeklyTable[k].saturday.push(data)
+                            }
+                        }
+                    }
                 }
+                return arr
             },
-            doctorsMap() {
-                let arr = this.$store.getters.AllSchedules
-                for (let i in arr) {
-                    this.maps(arr[i])
-                }
-            }
         },
         watch:{
             //
@@ -364,19 +380,29 @@
             this.$store.dispatch('getAllSchedules');
         },
         methods: {
-            maps(item) {
-                let val = ''
-                val = item.doctor.name + ' - ' + item.specialty.name + ' - ' + item.clinic.name
-                console.log('concatenado', val)
-                let dias = item.days
-                for (let j in dias) {
-                    for (let i in this.desserts) {
-                        if( dias[j].hour === this.desserts[i].hour ){
-                            this.desserts[i].monday.push(val)
+/*            mappingDoctors(item) {
+                let data = ''
+                data = item.doctor.name + ' - ' + item.specialty.name + ' - ' + item.clinic.name
+                let daysoftheweek = item.days
+                for (let j in daysoftheweek) {
+                    for (let i in this.weeklyTable) {
+                        if( daysoftheweek[j].hour === this.weeklyTable[i].hour && j == '1'){
+                            this.weeklyTable[i].monday.push(data)
+                        } else if( daysoftheweek[j].hour === this.weeklyTable[i].hour && j == '2'){
+                            this.weeklyTable[i].tuesday.push(data)
+                        } else if( daysoftheweek[j].hour === this.weeklyTable[i].hour && j == '3'){
+                            this.weeklyTable[i].wednesday.push(data)
+                        } else if( daysoftheweek[j].hour === this.weeklyTable[i].hour && j == '4'){
+                            this.weeklyTable[i].thursday.push(data)
+                        } else if( daysoftheweek[j].hour === this.weeklyTable[i].hour && j == '5'){
+                            this.weeklyTable[i].friday.push(data)
+                        } else if( daysoftheweek[j].hour === this.weeklyTable[i].hour && j == '6'){
+                            this.weeklyTable[i].saturday.push(data)
                         }
                     }
                 }
-            },
+                return true
+            },*/
         },
     }
 </script>
