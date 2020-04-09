@@ -132,6 +132,7 @@ const actions = {
                 });
                 commit('setAllSchedules', AllSchedules);
             })
+            return
         } catch (e) {
             throw e
         }
@@ -224,7 +225,7 @@ const actions = {
         var scheduleFound = await firebase.firestore().collection('schedules')
                  .where('clinic.name','==',consultation.clinic.name)
                  .where('doctor.cpf','==',consultation.doctor.cpf)
-                 .where('specialty.name','==',consultation.specialty.name) 
+                 .where('specialty.name','==',consultation.specialty.name)
                  .get()
             if(scheduleFound.empty){
                 consultObject = {
@@ -249,7 +250,7 @@ const actions = {
     /* if(data.days[day]){
         let obj = {vacancy:consultation.vacancy,hour:consultation.hour}
         if(Array.isArray(data.days[day]))
-          
+
         data.days[day] = Array.isArray(data.days[day]) ? data.days[day].push(obj) : [data.days[day],obj]
     }
     else
@@ -581,7 +582,7 @@ const actions = {
             if(payload.hour)
                 obj.hour = payload.hour
             if(payload.weekDays)
-                obj.week_days = payload.weekDays  
+                obj.week_days = payload.weekDays
             cancelations_schedules.push({...obj})
             firebase.firestore().collection('schedules').doc(doc.id).update({cancelations_schedules:cancelations_schedules})
         })

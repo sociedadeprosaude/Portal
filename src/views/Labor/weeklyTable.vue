@@ -350,6 +350,12 @@
                     this.maps(arr[i])
                 }
             },
+            doctorsMap() {
+                let arr = this.$store.getters.AllSchedules
+                for (let i in arr) {
+                    this.maps(arr[i])
+                }
+            }
         },
         watch:{
             //
