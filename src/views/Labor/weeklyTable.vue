@@ -377,7 +377,7 @@
             //
         },
         mounted() {
-            this.$store.dispatch('getAllSchedules');
+            /*this.$store.dispatch('getAllSchedules');*/
         },
         methods: {
 /*            mappingDoctors(item) {
