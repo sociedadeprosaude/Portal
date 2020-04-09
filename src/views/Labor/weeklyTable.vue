@@ -13,12 +13,12 @@
                             <v-spacer></v-spacer>
                             <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
                         </v-card-title>
-
+                        <!--hide-default-header-->
                         <v-data-table
                                 hide-default-header
                                 hide-default-footer
                                 :headers="headers"
-                                :items="weeklyTable"
+                                :items="doctorsMap"
                                 :search="search"
                                 :items-per-page="-1"
                                 item-key="hour"
@@ -111,7 +111,6 @@
                                 >{{index}}</v-chip>
                                 <br/><br/>
                             </template>-->
-                            {{lista}}
                         </v-data-table>
                     </v-card>
 
@@ -128,7 +127,7 @@
             moment: moment,
             search: '',
             headers: [
-                { text: 'Hora', value: 'hour', align: 'center', sortable: false },
+                { text: 'Hora', value: 'hour', align: 'center', sortable: true },
                 { text: 'Segunda', value: 'monday', align: 'center', sortable: false },
                 { text: 'Terça', value: 'tuesday', align: 'center', sortable: false },
                 { text: 'Quarta', value: 'wednesday', align: 'center', sortable: false },
@@ -136,218 +135,11 @@
                 { text: 'Sexta', value: 'friday', align: 'center', sortable: false },
                 { text: 'Sabado', value: 'saturday', align: 'center', sortable: false },
             ],
-            weeklyTable: [
-                {
-                    hour: '06:00',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-                {
-                    hour: '06:30',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-                {
-                    hour: '07:00',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-                {
-                    hour: '07:30',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-                {
-                    hour: '08:00',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-                {
-                    hour: '08:30',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-                {
-                    hour: '09:00',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-                {
-                    hour: '09:30',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-                {
-                    hour: '10:00',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-                {
-                    hour: '10:30',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-                {
-                    hour: '11:00',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-                {
-                    hour: '11:30',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-                {
-                    hour: '12:00',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-                {
-                    hour: '12:30',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-                {
-                    hour: '13:00',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-                {
-                    hour: '13:30',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },                {
-                    hour: '14:00',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-                {
-                    hour: '14:30',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },                {
-                    hour: '15:00',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-                {
-                    hour: '15:30',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-                {
-                    hour: '16:00',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-                {
-                    hour: '16:30',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-                {
-                    hour: '17:00',
-                    monday: [],
-                    tuesday: [],
-                    wednesday: [],
-                    thursday: [],
-                    friday: [],
-                    saturday: [],
-                },
-            ],
         }),
         computed:{
-            lista() {
+/*            lista() {
                 let arr = this.$store.getters.AllSchedules
-/*                console.log(arr)*/
+/!*                console.log(arr)*!/
                 for (let i in arr) {
                     let data = ''
                     data = arr[i].doctor.name + ' - ' + arr[i].specialty.name + ' - ' + arr[i].clinic.name
@@ -371,6 +163,246 @@
                     }
                 }
                 return arr
+            },*/
+            doctorsMap() {
+                let array = [
+                        {
+                            hour: '06:00',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },
+                        {
+                            hour: '06:30',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },
+                        {
+                            hour: '07:00',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },
+                        {
+                            hour: '07:30',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },
+                        {
+                            hour: '08:00',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },
+                        {
+                            hour: '08:30',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },
+                        {
+                            hour: '09:00',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },
+                        {
+                            hour: '09:30',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },
+                        {
+                            hour: '10:00',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },
+                        {
+                            hour: '10:30',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },
+                        {
+                            hour: '11:00',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },
+                        {
+                            hour: '11:30',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },
+                        {
+                            hour: '12:00',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },
+                        {
+                            hour: '12:30',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },
+                        {
+                            hour: '13:00',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },
+                        {
+                            hour: '13:30',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },                {
+                            hour: '14:00',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },
+                        {
+                            hour: '14:30',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },                {
+                            hour: '15:00',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },
+                        {
+                            hour: '15:30',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },
+                        {
+                            hour: '16:00',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },
+                        {
+                            hour: '16:30',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },
+                        {
+                            hour: '17:00',
+                            monday: [],
+                            tuesday: [],
+                            wednesday: [],
+                            thursday: [],
+                            friday: [],
+                            saturday: [],
+                        },
+                    ]
+                let arr = this.$store.getters.AllSchedules
+                /*                console.log(arr)*/
+                for (let i in arr) {
+                    let data = ''
+                    data = arr[i].doctor.name + ' - ' + arr[i].specialty.name + ' - ' + arr[i].clinic.name
+                    let daysoftheweek = arr[i].days
+                    for (let j in daysoftheweek) {
+                        for (let k in array) {
+                            if( daysoftheweek[j].hour === array[k].hour && j == '1'){
+                                array[k].monday.push(data)
+                                /*this.weeklyTable[k].monday.push(data)*/
+                            } else if( daysoftheweek[j].hour === array[k].hour && j == '2'){
+                                array[k].tuesday.push(data)
+                                /*this.weeklyTable[k].tuesday.push(data)*/
+                            } else if( daysoftheweek[j].hour === array[k].hour && j == '3'){
+                                array[k].wednesday.push(data)
+                                /*this.weeklyTable[k].wednesday.push(data)*/
+                            } else if( daysoftheweek[j].hour === array[k].hour && j == '4'){
+                                array[k].thursday.push(data)
+                                /*this.weeklyTable[k].thursday.push(data)*/
+                            } else if( daysoftheweek[j].hour === array[k].hour && j == '5'){
+                                array[k].friday.push(data)
+                                /*this.weeklyTable[k].friday.push(data)*/
+                            } else if( daysoftheweek[j].hour === array[k].hour && j == '6'){
+                                array[k].saturday.push(data)
+                                /*this.weeklyTable[k].saturday.push(data)*/
+                            }
+                        }
+                    }
+                }
+                return array
             },
         },
         watch:{
@@ -380,29 +412,7 @@
             this.$store.dispatch('getAllSchedules');
         },
         methods: {
-/*            mappingDoctors(item) {
-                let data = ''
-                data = item.doctor.name + ' - ' + item.specialty.name + ' - ' + item.clinic.name
-                let daysoftheweek = item.days
-                for (let j in daysoftheweek) {
-                    for (let i in this.weeklyTable) {
-                        if( daysoftheweek[j].hour === this.weeklyTable[i].hour && j == '1'){
-                            this.weeklyTable[i].monday.push(data)
-                        } else if( daysoftheweek[j].hour === this.weeklyTable[i].hour && j == '2'){
-                            this.weeklyTable[i].tuesday.push(data)
-                        } else if( daysoftheweek[j].hour === this.weeklyTable[i].hour && j == '3'){
-                            this.weeklyTable[i].wednesday.push(data)
-                        } else if( daysoftheweek[j].hour === this.weeklyTable[i].hour && j == '4'){
-                            this.weeklyTable[i].thursday.push(data)
-                        } else if( daysoftheweek[j].hour === this.weeklyTable[i].hour && j == '5'){
-                            this.weeklyTable[i].friday.push(data)
-                        } else if( daysoftheweek[j].hour === this.weeklyTable[i].hour && j == '6'){
-                            this.weeklyTable[i].saturday.push(data)
-                        }
-                    }
-                }
-                return true
-            },*/
+            //
         },
     }
 </script>
