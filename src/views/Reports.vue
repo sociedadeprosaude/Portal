@@ -101,6 +101,9 @@
       <v-flex xs12 v-if="selectedReport === 7">
         <NewUsersReport :date="dateBegin" :date2="dateEnd" :todayNewUsers="todayNewUsers" />
       </v-flex>
+	 <v-flex xs12 v-if="selectedReport === 8">
+        <SpecialtiesMadeReport :report="formattedReport" :loading="loading" :intakes="intakes" />
+      </v-flex>
       <v-flex class="hidden-screen-only">
         <p>DE {{dateFormatted}} ATÉ {{dateFormatted2}}</p>
       </v-flex>
@@ -116,6 +119,7 @@ import ProceduresPricesAnalises from "../components/reports/ProceduresPricesAnal
 import BestSellingExamsReport from "@/components/reports/BestSellingExamsReport";
 import BestSellingConsultationsReport from "@/components/reports/BestSellingConsultationsReport";
 import OuttakesReport from "@/components/reports/OuttakesReport";
+import SpecialtiesMadeReport from "../components/reports/SpecialtiesMadeReport"
 import NewUsersReport from "@/components/reports/NewUsersReport";
 
 var moment = require("moment");
@@ -128,6 +132,7 @@ export default {
     BestSellingExamsReport,
     BestSellingConsultationsReport,
     OuttakesReport,
+    SpecialtiesMadeReport,
     NewUsersReport
   },
   data: vm => ({
@@ -139,6 +144,7 @@ export default {
       "Exames mais vendidos",
       "Consultas mais vendidas",
       "Relatório de Saídas",
+      "Relatório Especialidades",
       "Novos associados"
     ],
     selectedReport: 0,

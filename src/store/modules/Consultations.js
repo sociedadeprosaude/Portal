@@ -18,6 +18,7 @@ const state = {
     medicines: [],
     cids: [],
     consultations: [],
+    AllSchedules: [],
     schedules: [],
     consultationsCanceled: [],
     consultationsByDate: {},
@@ -40,6 +41,9 @@ const mutations = {
     setSchedules(state, payload) {
         state.schedules = payload;
         state.loaded = true
+    },
+    setAllSchedules(state, payload) {
+        state.AllSchedules = payload;
     },
     setMedicines(state, payload) {
         state.medicines = payload
@@ -113,6 +117,23 @@ const actions = {
                 commit('setConsultations', consultations);
                 commit('setConsultationLoading', false)
             })
+        } catch (e) {
+            throw e
+        }
+    },
+
+    async getAllSchedules({ commit }) {
+        try {
+            firebase.firestore().collection('schedules').onSnapshot(async function (AllSchedulesSnap) {
+                let AllSchedules = [];
+                AllSchedulesSnap.forEach(function (document) {
+                    AllSchedules.push({
+                        ...document.data()
+                    });
+                });
+                commit('setAllSchedules', AllSchedules);
+            })
+            return
         } catch (e) {
             throw e
         }
@@ -205,7 +226,7 @@ const actions = {
         var scheduleFound = await firebase.firestore().collection('schedules')
                  .where('clinic.name','==',consultation.clinic.name)
                  .where('doctor.cpf','==',consultation.doctor.cpf)
-                 .where('specialty.name','==',consultation.specialty.name) 
+                 .where('specialty.name','==',consultation.specialty.name)
                  .get()
             if(scheduleFound.empty){
                 consultObject = {
@@ -231,7 +252,7 @@ const actions = {
     /* if(data.days[day]){
         let obj = {vacancy:consultation.vacancy,hour:consultation.hour}
         if(Array.isArray(data.days[day]))
-          
+
         data.days[day] = Array.isArray(data.days[day]) ? data.days[day].push(obj) : [data.days[day],obj]
     }
     else
@@ -572,7 +593,7 @@ const actions = {
             if(payload.hour)
                 obj.hour = payload.hour
             if(payload.weekDays)
-                obj.week_days = payload.weekDays  
+                obj.week_days = payload.weekDays
             cancelations_schedules.push({...obj})
             firebase.firestore().collection('schedules').doc(doc.id).update({cancelations_schedules:cancelations_schedules})
         })
@@ -664,6 +685,9 @@ const getters = {
     },
     schedules(state) {
         return state.schedules
+    },
+    AllSchedules(state) {
+        return state.AllSchedules
     },
     medicines(state) {
         return state.medicines
