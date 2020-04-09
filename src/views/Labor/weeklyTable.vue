@@ -93,7 +93,6 @@
                             </template>
 
                         </v-data-table>
-                        {{lista}}
                     </v-card>
 
                 </v-flex>
@@ -107,7 +106,6 @@
     export default {
         data: () => ({
             moment: moment,
-            test:'',
             search: '',
             headers: [
                 { text: 'Hora', value: 'hour', align: 'center', sortable: false },
@@ -121,12 +119,12 @@
             desserts: [
                 {
                     hour: '06:00',
-                    monday: ['lucas - dermatologista'],
-                    tuesday: ['lucas - dermatologista'],
-                    wednesday: ['lucas - dermatologista'],
-                    thursday: ['adria - ginecologia'],
-                    friday: ['lucas - dermatologista'],
-                    saturday: ['lucas - dermatologista'],
+                    monday: [],
+                    tuesday: [],
+                    wednesday: [],
+                    thursday: [],
+                    friday: [],
+                    saturday: [],
                 },
                 {
                     hour: '06:30',
@@ -148,12 +146,12 @@
                 },
                 {
                     hour: '07:30',
-                    monday: ['monica - dermatologista', 'carlos - cardiologia'],
-                    tuesday: ['adria - ginecologia','jackson - dermatologista', 'jonatas - cardiologia'],
-                    wednesday: ['monica - dermatologista', 'carlos - cardiologia'],
-                    thursday: ['adria - ginecologia'],
-                    friday: ['lucas - dermatologista'],
-                    saturday: ['lucas - dermatologista', 'carlos- cardiologia'],
+                    monday: [],
+                    tuesday: [],
+                    wednesday: [],
+                    thursday: [],
+                    friday: [],
+                    saturday: [],
                 },
                 {
                     hour: '08:00',
@@ -347,18 +345,10 @@
         computed:{
             lista() {
                 let arr = this.$store.getters.AllSchedules
-                /*console.log(arr)*/
-                let data = []
-                for (let i in arr){
-                    data.push(arr[i])
-/*                    console.log(arr[i].doctor.name)
-                    console.log(arr[i].specialty.name)
-                    console.log(arr[i].clinic.name)
-                    console.log(arr[i].days)*/
-                    /*console.log(val)*/
+                console.log(arr)
+                for (let i in arr) {
                     this.maps(arr[i])
                 }
-                return data;
             },
         },
         watch:{
@@ -369,16 +359,17 @@
         },
         methods: {
             maps(item) {
-/*                console.log('item:', item)*/
                 let val = ''
-                val = item.doctor.name + ' - ' + item.specialty.name +  ' - ' + item.clinic.name
-                console.log('concatenado',val)
-                let data = []
-                for (let i in item.days){
-                    data.push(item.days[i])
-                    console.log('dia:', i,'hora:',item.days[i].hour)
+                val = item.doctor.name + ' - ' + item.specialty.name + ' - ' + item.clinic.name
+                console.log('concatenado', val)
+                let dias = item.days
+                for (let j in dias) {
+                    for (let i in this.desserts) {
+                        if( dias[j].hour === this.desserts[i].hour ){
+                            this.desserts[i].monday.push(val)
+                        }
+                    }
                 }
-                return data;
             },
         },
     }
