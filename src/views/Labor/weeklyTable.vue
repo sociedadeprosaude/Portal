@@ -43,7 +43,7 @@
 
                             <template v-slot:item.monday="{ item }">
                                 <br/>
-                                <v-chip small class="font-weight-bold" style="font-size: 0.8em" dark label v-for="(index,i) in item.monday" :key="i"
+                                <v-chip small class="font-weight-bold" dark label v-for="(index,i) in item.monday" :key="i"
                                         :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
                                 >{{index}}</v-chip>
                                 <br/><br/>
@@ -69,7 +69,7 @@
                     </v-card>
 
                 </v-flex>
-
+<v-flex><span style="color: white">.</span></v-flex>
                 <v-flex xs12>
 
                     <v-card>
@@ -81,7 +81,7 @@
                             <v-spacer></v-spacer>
                             <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
                         </v-card-title>
-                        <!--hide-default-header-->
+
                         <v-data-table
                                 hide-default-header
                                 hide-default-footer
@@ -109,72 +109,30 @@
                                 </v-avatar>
                             </template>
 
-                            <!--                            <template v-slot:item.monday="{ item }">
-                                                            <strong v-for="(index,i) in item.monday" :key="i">{{index}}</strong>
-                                                        </template>
-                                                        <template v-slot:item.tuesday="{ item }">
-                                                            <strong v-for="(index,i) in item.tuesday" :key="i">{{index}}</strong>
-                                                        </template>
-                                                        <template v-slot:item.wednesday="{ item }">
-                                                            <strong v-for="(index,i) in item.wednesday" :key="i">{{index}}</strong>
-                                                        </template>
-                                                        <template v-slot:item.thursday="{ item }">
-                                                            <strong v-for="(index,i) in item.thursday" :key="i">{{index}}</strong>
-                                                        </template>
-                                                        <template v-slot:item.friday="{ item }">
-                                                            <strong v-for="(index,i) in item.friday" :key="i">{{index}}</strong>
-                                                        </template>
-                                                        <template v-slot:item.saturday="{ item }">
-                                                            <strong v-for="(index,i) in item.saturday" :key="i">{{index}}</strong>
-                                                        </template>-->
+                            <template v-slot:item.thursday="{ item }">
+                                <br/>
+                                <v-chip small class="font-weight-bold" dark label v-for="(index,i) in item.thursday" :key="i"
+                                        :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
+                                >{{index}}</v-chip>
+                                <br/><br/>
+                            </template>
 
-<!--                                                        <template v-slot:item.monday="{ item }">
-                                                            <br/>
-                                                            <v-chip small class="font-weight-bold" style="font-size: 0.8em" dark label v-for="(index,i) in item.monday" :key="i"
-                                                                    :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
-                                                            >{{index}}</v-chip>
-                                                            <br/><br/>
-                                                        </template>
+                            <template v-slot:item.friday="{ item }">
+                                <br/>
+                                <v-chip small class="font-weight-bold" dark label v-for="(index,i) in item.friday" :key="i"
+                                        :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
+                                >{{index}}</v-chip>
+                                <br/><br/>
+                            </template>
 
-                                                        <template v-slot:item.tuesday="{ item }">
-                                                            <br/>
-                                                            <v-chip small class="font-weight-bold" style="font-size: 0.8em" dark label v-for="(index,i) in item.tuesday" :key="i"
-                                                                    :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
-                                                            >{{index}}</v-chip>
-                                                            <br/><br/>
-                                                        </template>
+                            <template v-slot:item.saturday="{ item }">
+                                <br/>
+                                <v-chip small class="font-weight-bold" dark label v-for="(index,i) in item.saturday" :key="i"
+                                        :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
+                                >{{index}}</v-chip>
+                                <br/><br/>
+                            </template>
 
-                                                        <template v-slot:item.wednesday="{ item }">
-                                                            <br/>
-                                                            <v-chip small class="font-weight-bold" style="font-size: 0.8em" dark label v-for="(index,i) in item.wednesday" :key="i"
-                                                                    :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
-                                                            >{{index}}</v-chip>
-                                                            <br/><br/>
-                                                        </template>-->
-
-                                                        <template v-slot:item.thursday="{ item }">
-                                                            <br/>
-                                                            <v-chip small class="font-weight-bold" style="font-size: 0.8em" dark label v-for="(index,i) in item.thursday" :key="i"
-                                                                    :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
-                                                            >{{index}}</v-chip>
-                                                            <br/><br/>
-                                                        </template>
-
-                                                        <template v-slot:item.friday="{ item }">
-                                                            <br/>
-                                                            <v-chip small class="font-weight-bold" style="font-size: 0.8em" dark label v-for="(index,i) in item.friday" :key="i"
-                                                                    :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
-                                                            >{{index}}</v-chip>
-                                                            <br/><br/>
-                                                        </template>
-
-                                                        <template v-slot:item.saturday="{ item }">
-                                                            <br/>
-                                                            <v-chip small class="font-weight-bold" style="font-size: 0.8em" dark label v-for="(index,i) in item.saturday" :key="i"
-                                                                    :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
-                                                            >{{index}}</v-chip>
-                                                            <br/><br/>
-                                                        </template>
                         </v-data-table>
                     </v-card>
 
