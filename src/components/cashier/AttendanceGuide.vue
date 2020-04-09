@@ -138,18 +138,18 @@
                     <thead>
                       <tr>
                         <th class="primary text-left white--text">EXAME</th>
-                        <th class="primary text-left white--text">REGRAS</th>
-                        <th class="primary text-left white--text">OBSERVAÇÃO</th>
+<!--                        <th class="primary text-left white&#45;&#45;text">REGRAS</th>
+                        <th class="primary text-left white&#45;&#45;text">OBSERVAÇÃO</th>-->
                       </tr>
                     </thead>
                     <tbody>
                       <tr v-for="(item, index) in items" :key="index">
                         <td class="primary--text" style="text-align: justify">{{ item.name }}</td>
-                        <td
-                          class="primary--text"
+<!--                        <td
+                          class="primary&#45;&#45;text"
                           style="text-align: justify; font-size: 0.6em"
                         >{{ item.rules }}</td>
-                        <td class="primary--text" style="text-align: justify">{{ item.clinic.obs }}</td>
+                        <td class="primary&#45;&#45;text" style="text-align: justify">{{ item.clinic.obs }}</td>-->
                       </tr>
                     </tbody>
                   </template>
