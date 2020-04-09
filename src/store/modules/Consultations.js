@@ -18,6 +18,7 @@ const state = {
     medicines: [],
     cids: [],
     consultations: [],
+    AllSchedules: [],
     schedules: [],
     consultationsCanceled: [],
     consultationsByDate: {},
@@ -40,6 +41,9 @@ const mutations = {
     setSchedules(state, payload) {
         state.schedules = payload;
         state.loaded = true
+    },
+    setAllSchedules(state, payload) {
+        state.AllSchedules = payload;
     },
     setMedicines(state, payload) {
         state.medicines = payload
@@ -111,6 +115,22 @@ const actions = {
                 //console.log('listening',consultations)
                 commit('setConsultations', consultations);
                 commit('setConsultationLoading', false)
+            })
+        } catch (e) {
+            throw e
+        }
+    },
+
+    async getAllSchedules({ commit }) {
+        try {
+            firebase.firestore().collection('schedules').onSnapshot(async function (AllSchedulesSnap) {
+                let AllSchedules = [];
+                AllSchedulesSnap.forEach(function (document) {
+                    AllSchedules.push({
+                        ...document.data()
+                    });
+                });
+                commit('setAllSchedules', AllSchedules);
             })
         } catch (e) {
             throw e
@@ -653,6 +673,9 @@ const getters = {
     },
     schedules(state) {
         return state.schedules
+    },
+    AllSchedules(state) {
+        return state.AllSchedules
     },
     medicines(state) {
         return state.medicines

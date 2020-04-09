@@ -93,6 +93,7 @@
                             </template>
 
                         </v-data-table>
+                        {{lista}}
                     </v-card>
 
                 </v-flex>
@@ -106,6 +107,7 @@
     export default {
         data: () => ({
             moment: moment,
+            test:'',
             search: '',
             headers: [
                 { text: 'Hora', value: 'hour', align: 'center', sortable: false },
@@ -343,16 +345,41 @@
             ],
         }),
         computed:{
-            //
+            lista() {
+                let arr = this.$store.getters.AllSchedules
+                /*console.log(arr)*/
+                let data = []
+                for (let i in arr){
+                    data.push(arr[i])
+/*                    console.log(arr[i].doctor.name)
+                    console.log(arr[i].specialty.name)
+                    console.log(arr[i].clinic.name)
+                    console.log(arr[i].days)*/
+                    /*console.log(val)*/
+                    this.maps(arr[i])
+                }
+                return data;
+            },
         },
         watch:{
             //
         },
         mounted() {
-            //
+            this.$store.dispatch('getAllSchedules');
         },
         methods: {
-            //
+            maps(item) {
+/*                console.log('item:', item)*/
+                let val = ''
+                val = item.doctor.name + ' - ' + item.specialty.name +  ' - ' + item.clinic.name
+                console.log('concatenado',val)
+                let data = []
+                for (let i in item.days){
+                    data.push(item.days[i])
+                    console.log('dia:', i,'hora:',item.days[i].hour)
+                }
+                return data;
+            },
         },
     }
 </script>
