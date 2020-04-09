@@ -3,11 +3,13 @@
         <v-container fluid>
             <v-layout row wrap class="align-center justify-center">
                 <v-flex xs12>
-                    
+
                     <v-card>
 
                         <v-card-title>
-                            Tabela Semanal dos Médicos - Especialidades - Unidades
+                            Tabela Semanal dos Médicos - Especialidades - Unidades:
+                            <v-divider vertical  class="mx-4" inset></v-divider>
+                            <v-chip label dark color="primary"> Médico - Especialidade - Unidade </v-chip>
                             <v-spacer></v-spacer>
                             <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
                         </v-card-title>
@@ -49,6 +51,7 @@
                                 >{{index}}</v-chip>
                                 <br/><br/>
                             </template>
+
                             <template v-slot:item.tuesday="{ item }">
                                 <br/>
                                 <v-chip dark label v-for="(index,i) in item.tuesday" :key="i"
@@ -56,6 +59,7 @@
                                 >{{index}}</v-chip>
                                 <br/><br/>
                             </template>
+
                             <template v-slot:item.wednesday="{ item }">
                                 <br/>
                                 <v-chip dark label v-for="(index,i) in item.wednesday" :key="i"
@@ -63,6 +67,7 @@
                                 >{{index}}</v-chip>
                                 <br/><br/>
                             </template>
+
                             <template v-slot:item.thursday="{ item }">
                                 <br/>
                                 <v-chip dark label v-for="(index,i) in item.thursday" :key="i"
@@ -70,6 +75,7 @@
                                 >{{index}}</v-chip>
                                 <br/><br/>
                             </template>
+
                             <template v-slot:item.friday="{ item }">
                                 <br/>
                                 <v-chip dark label v-for="(index,i) in item.friday" :key="i"
@@ -77,6 +83,7 @@
                                 >{{index}}</v-chip>
                                 <br/><br/>
                             </template>
+
                             <template v-slot:item.saturday="{ item }">
                                 <br/>
                                 <v-chip dark label v-for="(index,i) in item.saturday" :key="i"
