@@ -647,26 +647,26 @@ const actions = {
 
     },
     //======================================================atendimento===============================
-    async addProntuarioToConsultation({ commit }, payload) {
-        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ prontuario: payload.prontuario })
+    async addMedicalRecordsToConsultation({ commit }, payload) {
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ MedicalRecords: payload.MedicalRecords })
     },
-    async addReceitaToConsultation({ commit }, payload) {
-        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ receita: payload.receita })
+    async addPrescriptionToConsultation({ commit }, payload) {
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ Prescription: payload.Prescription })
     },
-    async addSolicitacaoToConsultation({ commit }, payload) {
+    async addSolicitationsToConsultation({ commit }, payload) {
         payload = functions.removeUndefineds(payload);
-        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ solicitacao: payload.solicitacao })
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ Solicitations: payload.Solicitations })
     },
-    async addLaudoToConsultation({ commit }, payload) {
+    async addReportToConsultation({ commit }, payload) {
         //console.log(payload)
-        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ laudo: payload.laudo })
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ Report: payload.Report })
     },
-    async addAtestadoToConsultation({ commit }, payload) {
-        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ atestado: payload.atestado })
+    async addAttestationsToConsultation({ commit }, payload) {
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ aAttestations: payload.Attestations })
     },
-    async addOrientacaoToConsultation({ commit }, payload) {
+    async addOrientationsToConsultation({ commit }, payload) {
         //console.log(payload)
-        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ orientacao: payload.orientacao })
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ Orientations: payload.Orientations })
     },
     async addTimesToConsultation({ commit }, payload) {
         firebase.firestore().collection('consultations').doc(payload.consultation).update({ start_at: payload.start });
