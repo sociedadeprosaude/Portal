@@ -5,10 +5,11 @@
         <v-card class="py-2 px-4">
           <v-layout row wrap>
             <v-flex xs12 class="text-left">
-              <span class="my-headline">Adicionar conta à pagar</span>
+              <span class="my-headline hidden-xs-only">Adicionar conta à pagar</span>
+              <h3 class="font-weight-bold text-center hidden-md-and-up">Adicionar conta à pagar</h3>
             </v-flex>
 
-            <v-flex xs12 sm3>
+            <v-flex xs12 sm3 class="mt-2">
               <v-combobox
                 outlined
                 @input.native="category={name:$event.srcElement.value,subCategories:[]}"
@@ -16,7 +17,8 @@
                 :items="categories"
                 item-text="name"
                 return-object
-                label="Categoria">
+                label="Categoria"
+                >
               </v-combobox>
               <v-combobox
                 outlined
@@ -30,7 +32,7 @@
               </v-combobox>
             </v-flex>
 
-            <v-flex xs12 sm3 class="ml-3">
+            <v-flex xs12 sm3 class="mt-2 ml-md-3">
               <v-select
                 outlined
                 label="Método de pagamento"
@@ -38,7 +40,7 @@
                 :items="paymentMethods">
               </v-select>
             </v-flex>
-            <v-flex xs12 sm3 class="ml-3">
+            <v-flex xs12 sm3 class="mt-2  ml-md-3">
               <v-select
                 outlined
                 label="Unidade"
@@ -49,23 +51,23 @@
               </v-select>
             </v-flex>
             <v-spacer/>
-            <v-flex xs12 sm2 class="mx-3">
+            <v-flex xs12 sm2 class="mt-2">
               <v-currency-field outlined v-model="value"></v-currency-field>
             </v-flex>
             <v-flex xs12>
               <v-text-field outlined label="Descrição" v-model="description"></v-text-field>
             </v-flex>
-            <v-flex xs1>
+            <v-flex xs4 md1>
                 <v-checkbox color="success" class="font-weight-bold" label="Parcelar" v-model="parcelar"/>
             </v-flex>
-            <v-flex xs2>
+            <v-flex xs5 md2>
               <v-text-field hint="Quantidade de parcelas" persistent-hint class="ml-4 mt-4" outlined dense
                             :disabled="!parcelar" v-model="parcelas" v-mask="mask.number">
 
               </v-text-field>
             </v-flex>
             <v-spacer/>
-            <v-flex xs6>
+            <v-flex xs6 md6>
               <v-checkbox color="success" class="font-weight-bold" label="Conta recorrente" v-model="recorrente">
               </v-checkbox>
             </v-flex>
@@ -416,7 +418,7 @@ export default {
     async bifurcation () {
 
       if (this.parcelas){
-        console.log('parcelas: ', this.parcelas)
+        console.log('parcelas: ', this.parcelas);
         this.value = this.value / this.parcelas;
         for(let i=0; i<this.parcelas; i++){
           this.addBill();
