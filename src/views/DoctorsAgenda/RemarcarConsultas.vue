@@ -10,34 +10,7 @@
             outlined
             rounded
             filled
-            disabled
           ></v-text-field>
-          <!-- <v-combobox
-            prepend-icon="school"
-            v-model="especialidade"
-            :items="specialties"
-            item-text="name"
-            return-object
-            label="Especialidade"
-            outlined
-            rounded
-            chips
-            color="blue"
-            readonly
-          >
-            <template v-slot:selection="data">
-              <v-chip
-                :key="JSON.stringify(data.item)"
-                :input-value="data.selected"
-                :disabled="data.disabled"
-                class="v-chip--select-multi"
-                @click.stop="data.parent.selectedIndex = data.index"
-                @input="data.parent.selectItem(data.item)"
-                text-color="white"
-                color="info"
-              >{{ data.item.name }}</v-chip>
-            </template>
-          </v-combobox>-->
         </v-flex>
         <v-spacer></v-spacer>
         <v-flex xs12 md6>
@@ -50,33 +23,6 @@
             filled
             disabled
           ></v-text-field>
-          <!-- <v-combobox
-            prepend-icon="person"
-            v-model="selectedDoctor"
-            :items="doctors"
-            return-object
-            item-text="name"
-            label="Médicos"
-            outlined
-            rounded
-            chips
-            color="blue"
-            clearable
-            readonly
-          >
-            <template v-slot:selection="data">
-              <v-chip
-                :key="JSON.stringify(data.item)"
-                :input-value="data.selected"
-                :disabled="data.disabled"
-                class="v-chip--select-multi"
-                @click.stop="data.parent.selectedIndex = data.index"
-                @input="data.parent.selectItem(data.item)"
-                text-color="white"
-                color="info"
-              >{{ data.item.name }}</v-chip>
-            </template>
-          </v-combobox>-->
         </v-flex>
 
         <v-flex xs12 md12>
@@ -626,16 +572,14 @@ export default {
             response = false;
           }
         }
-        return response
+        return response;
       });
 
       return this.consultationsOfSchedules(schedules);
     },
     consultas() {
       //console.log('Especialidade',this.especialidade)
-      let consultas = this.formatConsultationsArray(
-        this.$store.getters.consultations
-      ).filter(a => {
+      let consultas = this.$store.getters.consultations.filter(a => {
         /* return this.especialidade && this.selectedDoctor ? this.especialidade.name === a.specialty.name &&
                            this.selectedDoctor.cpf === a.doctor.cpf :  false */
 
@@ -740,7 +684,9 @@ export default {
     this.consultationsListenerUnsubscriber();
   },
   methods: {
-    datesOfInterval(weekDays) {
+    datesOfInterval(payload) {
+      let weekDays = payload.weekDays;
+      //let cancelations_schedules = payload.cancelations_schedules
       let startDate = moment();
       let dates = [];
       weekDays = weekDays.map(day => {
@@ -753,15 +699,16 @@ export default {
         }
         day = startDate.add(1, "days");
       }
-
       return dates;
     },
     numberVacancyAndReturns(schedule) {
       let consultations = this.consultas;
+      let cont = 0;
       return consultations.reduce(
         (obj, item) => {
           let qtd_consultations = obj.qtd_consultations;
           let qtd_returns = obj.qtd_returns;
+
           if (
             schedule.clinic.name === item.clinic.name &&
             schedule.specialty.name === item.specialty.name &&
@@ -769,8 +716,9 @@ export default {
             schedule.date === item.date &&
             item.user
           ) {
-            if (item.type === "Consulta") obj.qtd_consultations += 1;
-            else obj.qtd_returns += 1;
+            if (item.type === "Consulta") {
+              obj.qtd_consultations = obj.qtd_consultations + 1;
+            } else obj.qtd_returns += 1;
           }
           return obj;
         },
@@ -781,24 +729,34 @@ export default {
       let consultations = [];
       schedules.forEach(schedule => {
         let keys = Object.keys(schedule.days);
-        let dates = this.datesOfInterval(keys);
+        let dates = this.datesOfInterval({
+          weekDays: keys /* ,cancelations_schedules:schedule.cancelations_schedules */
+        });
 
         dates.forEach(date => {
-          let scheduleObj = {
-            clinic: schedule.clinic,
-            doctor: schedule.doctor,
-            date: date + " " + schedule.days[moment(date).weekday()].hour,
-            routine_id: schedule.routine_id,
-            specialty: schedule.specialty,
-            vacancy: schedule.days[moment(date).weekday()].vacancy,
-            id_schedule: schedule.id
-          };
-          let obj = {
-            ...scheduleObj,
-            ...this.numberVacancyAndReturns(scheduleObj)
-          };
-          obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns;
-          consultations.push(obj);
+          let hourConsultation = schedule.days[moment(date).weekday()].hour;
+          if (
+            schedule.cancelations_schedules.indexOf(date) == -1 &&
+            schedule.cancelations_schedules.indexOf(
+              date + " " + hourConsultation
+            ) == -1
+          ) {
+            let scheduleObj = {
+              clinic: schedule.clinic,
+              doctor: schedule.doctor,
+              date: date + " " + hourConsultation,
+              routine_id: schedule.routine_id,
+              specialty: schedule.specialty,
+              vacancy: schedule.days[moment(date).weekday()].vacancy,
+              id_schedule: schedule.id
+            };
+            let obj = {
+              ...scheduleObj,
+              ...this.numberVacancyAndReturns(scheduleObj)
+            };
+            obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns;
+            consultations.push(obj);
+          }
         });
       });
       return consultations;

@@ -26,6 +26,7 @@ import CashierRoutes from "./routes/CashierRoutes";
 import discount from "./views/discount"
 import notifications from "./views/notifications";
 
+import weeklyTable from "./views/Labor/weeklyTable";
 
 Vue.use(Router);
 let mainRoutes = [
@@ -140,6 +141,14 @@ let mainRoutes = [
     path: '/Attendance',
     name: 'Attendance',
     component : Attendance,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/weeklyTable',
+    name: 'weeklyTable',
+    component : weeklyTable,
     meta: {
       requiresAuth: false,
     }

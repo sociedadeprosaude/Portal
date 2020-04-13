@@ -1,176 +1,182 @@
 <template>
   <v-container>
-    <v-layout row wrap>
-      <v-flex sm4 xs6>
+    <v-row>
+      <v-col sm="12" md="4">
         <v-tooltip top v-if="doctorsLoaded">
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on" class="primary" rounded @click="skipNextTicket">
+            <v-btn width="100%" v-on="on" class="primary" rounded @click="skipNextTicket">
               Proxima senha:
               {{ticketInfo.ticket_number}}
             </v-btn>
           </template>
           <span>Pular próxima senha</span>
         </v-tooltip>
-      </v-flex>
-      <v-flex sm4>
-        <v-btn class="primary" rounded @click="multipleViewDialog = true">
+      </v-col>
+
+      <v-col sm="6" md="4">
+        <v-btn width="100%" class="primary" rounded @click="multipleViewDialog = true">
           <span>Visualizador geral</span>
         </v-btn>
-      </v-flex>
-      <v-flex sm4 xs6 class="text-right">
+      </v-col>
+
+      <v-col sm="6" md="4">
         <v-fade-transition mode="out-in">
           <v-card class="pa-4" v-if="createRoomController">
-            <v-layout row wrap>
-              <v-flex xs8 class="text-left">
+            <v-row>
+              <v-col sm="8" class="text-left">
                 <span class="my-headline">Adicionar sala</span>
-              </v-flex>
-              <v-flex xs4 class="text-right">
+              </v-col>
+              <v-col sm="4" class="text-right">
                 <v-btn small class="primary" fab @click="createRoomController = false">
                   <v-icon>minimize</v-icon>
                 </v-btn>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field v-model="room.name" label="Nome da Sala"></v-text-field>
-              </v-flex>
-              <v-flex xs12 class="text-right">
+              </v-col>
+            </v-row>
+            <v-row cols="12">
+              <v-text-field v-model="room.name" label="Nome da Sala"></v-text-field>
+            </v-row>
+            <v-row>
+              <v-col cols="12" class="text-right">
                 <submit-button
                   text="Criar Sala"
                   :loading="loading"
                   :success="success"
                   @click="createRoom(room)"
                 ></submit-button>
-              </v-flex>
-            </v-layout>
+              </v-col>
+            </v-row>
           </v-card>
           <v-btn
             v-else
             rounded
+            width="100%"
             class="primary"
             @click="createRoomController = !createRoomController"
           >Adicionar Sala</v-btn>
         </v-fade-transition>
-      </v-flex>
-      <v-flex xs12 class="mt-4">
-        <v-layout row wrap>
-          <v-flex class="px-2" xs6 sm3 v-for="room in rooms" :key="room.name">
-            <v-card class="pa-4">
-              <v-layout row wrap class="justify-center">
-                <v-flex xs10 class="text-left">
-                  <span class="my-sub-headline">{{room.name}}</span>
-                </v-flex>
-                <v-flex xs12 class="my-2">
-                  <v-layout row wrap>
-                    <v-tooltip top v-if="doctorsLoaded">
-                      <template v-slot:activator="{ on }">
-                        <v-btn
-                          v-on="on"
-                          @click="selectedRoom = room, doctorsListDialog.active = true"
-                          text
-                          fab
-                          x-small
-                          class="primary my-2"
-                        >
-                          <v-icon>person</v-icon>
-                        </v-btn>
-                      </template>
-                      <span>Selecionar médico</span>
-                    </v-tooltip>
-                    <v-progress-circular indeterminate class="primary--text" v-else></v-progress-circular>
-                    <v-tooltip top v-if="doctorsLoaded">
-                      <template v-slot:activator="{ on }">
-                        <v-btn
-                          v-on="on"
-                          @click="generateNextTicket(room)"
-                          text
-                          fab
-                          x-small
-                          class="primary ml-2 my-2"
-                        >
-                          <v-icon>post_add</v-icon>
-                        </v-btn>
-                      </template>
-                      <span>Gerar senha</span>
-                    </v-tooltip>
-                    <v-tooltip top v-if="doctorsLoaded">
-                      <template v-slot:activator="{ on }">
-                        <v-btn
-                          v-on="on"
-                          @click="callNextTicket(room)"
-                          text
-                          fab
-                          x-small
-                          class="primary ml-2 my-2"
-                        >
-                          <v-icon>add_alert</v-icon>
-                        </v-btn>
-                      </template>
-                      <span>Chamar próxima senha</span>
-                    </v-tooltip>
-                    <v-tooltip top v-if="doctorsLoaded">
-                      <template v-slot:activator="{ on }">
-                        <v-btn
-                          v-on="on"
-                          @click="callNextTicket(room)"
-                          text
-                          fab
-                          x-small
-                          class="primary ml-2 my-2"
-                        >
-                          <v-icon>notification_important</v-icon>
-                        </v-btn>
-                      </template>
-                      <span>Alertar senha atual</span>
-                    </v-tooltip>
-                    <v-tooltip top v-if="doctorsLoaded">
-                      <template v-slot:activator="{ on }">
-                        <v-btn
-                          v-on="on"
-                          @click="openSingleView(room)"
-                          text
-                          fab
-                          x-small
-                          class="primary ml-2 my-2"
-                        >
-                          <v-icon>personal_video</v-icon>
-                        </v-btn>
-                      </template>
-                      <span>Visualizador único</span>
-                    </v-tooltip>
-                  </v-layout>
-                </v-flex>
-                <v-flex xs12 v-if="room.doctor">
-                  <span>{{room.doctor.name}}</span>
-                </v-flex>
+      </v-col>
+    </v-row>
 
-                <v-container class="pa-0">
-                  <v-row>
-                    <v-col class="pa-0">
-                      <span style="font-size: 0.8em">Ultima senha:</span>
-                      <br />
-                      <span
-                        v-if="room.tickets.length != 0"
-                      >{{room.tickets[room.tickets.length - 1].number}}</span>
-                      <span v-else>*</span>
-                    </v-col>
-                    <v-divider vertical></v-divider>
-                    <v-col class="pa-0">
-                      <div>
-                        <span style="font-size: 0.8em">Senha atual:</span>
-                        <br />
-                        <span
-                          v-if="room.tickets.length != 0 && getActualTicket(room.tickets)"
-                        >{{getActualTicket(room.tickets).number}}</span>
-                        <span v-else>*</span>
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-layout>
-            </v-card>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-    </v-layout>
+    <v-row class="mt-4">
+      <v-col cols="12" sm="6" lg="4" xl="3" v-for="room in rooms" :key="room.name">
+        <v-card class="pa-4">
+          <v-row class="justify-center">
+            <v-col class="text-left">
+              <span class="my-sub-headline">{{room.name}}</span>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-tooltip top v-if="doctorsLoaded">
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    v-on="on"
+                    @click="selectedRoom = room, doctorsListDialog.active = true"
+                    text
+                    fab
+                    x-small
+                    class="primary my-2"
+                  >
+                    <v-icon>person</v-icon>
+                  </v-btn>
+                </template>
+                <span>Selecionar médico</span>
+              </v-tooltip>
+              <v-progress-circular indeterminate class="primary--text" v-else></v-progress-circular>
+              <v-tooltip top v-if="doctorsLoaded">
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    v-on="on"
+                    @click="generateNextTicket(room)"
+                    text
+                    fab
+                    x-small
+                    class="primary ml-2 my-2"
+                  >
+                    <v-icon>post_add</v-icon>
+                  </v-btn>
+                </template>
+                <span>Gerar senha</span>
+              </v-tooltip>
+              <v-tooltip top v-if="doctorsLoaded">
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    v-on="on"
+                    @click="callNextTicket(room)"
+                    text
+                    fab
+                    x-small
+                    class="primary ml-2 my-2"
+                  >
+                    <v-icon>add_alert</v-icon>
+                  </v-btn>
+                </template>
+                <span>Chamar próxima senha</span>
+              </v-tooltip>
+              <v-tooltip top v-if="doctorsLoaded">
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    v-on="on"
+                    @click="callNextTicket(room)"
+                    text
+                    fab
+                    x-small
+                    class="primary ml-2 my-2"
+                  >
+                    <v-icon>notification_important</v-icon>
+                  </v-btn>
+                </template>
+                <span>Alertar senha atual</span>
+              </v-tooltip>
+              <v-tooltip top v-if="doctorsLoaded">
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    v-on="on"
+                    @click="openSingleView(room)"
+                    text
+                    fab
+                    x-small
+                    class="primary ml-2 my-2"
+                  >
+                    <v-icon>personal_video</v-icon>
+                  </v-btn>
+                </template>
+                <span>Visualizador único</span>
+              </v-tooltip>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col v-if="room.doctor">{{room.doctor.name}}</v-col>
+          </v-row>
+          <v-row>
+            <v-container class="pa-0">
+              <v-row>
+                <v-col class="pa-0">
+                  <span style="font-size: 0.8em">Ultima senha:</span>
+                  <br />
+                  <span
+                    v-if="room.tickets.length != 0"
+                  >{{room.tickets[room.tickets.length - 1].number}}</span>
+                  <span v-else>*</span>
+                </v-col>
+                <v-divider vertical></v-divider>
+                <v-col class="pa-0">
+                  <div>
+                    <span style="font-size: 0.8em">Senha atual:</span>
+                    <br />
+                    <span
+                      v-if="room.tickets.length != 0 && getActualTicket(room.tickets)"
+                    >{{getActualTicket(room.tickets).number}}</span>
+                    <span v-else>*</span>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-row>
+        </v-card>
+      </v-col>
+    </v-row>
+
     <v-dialog
       max-width="720px"
       content-class="bottom-dialog"

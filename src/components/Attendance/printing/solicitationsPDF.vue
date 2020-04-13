@@ -48,6 +48,15 @@
 
                         </v-img>
 
+                        <v-layout class="align-center justify-center">
+                            <v-flex xs4>
+                                <v-divider color="black"></v-divider>
+                                {{consultation.doctor.name}}
+                                <br/>
+                                CRM-AM {{consultation.doctor.crm}}
+                            </v-flex>
+                        </v-layout>
+
                     </v-layout>
 
                 </v-card>
@@ -77,7 +86,15 @@
             this.dia = moment().format('dddd')
         },
         methods: {
+            save(){
+                this.$store.dispatch('addSolicitacaoToConsultation',{
+                    solicitacao: this.exams,
+                    consultation: this.consultation.id,
+                    patient: this.consultation.user.id
+                })
+            },
             print () {
+                this.save()
                 window.print()
             },
             clear() {

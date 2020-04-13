@@ -13,13 +13,34 @@ const heavyFunctionsRuntimeOpts = {
     memory: '2GB'
 }
 
+exports.removeUnnappointedConsultations = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (request, response) => {
+    let db = admin.firestore()
+    var startDate = moment(request.query.date, 'YYYY-MM-DD HH:mm')
+    var finalDate = moment(startDate).add(5, 'days')
+    console.log(`Datas: ${startDate.format('DD/MM/YYYY HH:mm')} até ${finalDate.format('DD/MM/YYYY HH:mm')}`)
+    let consCollection = await db.collection('consultations').where('date', '>', startDate.format('YYYY-MM-DD HH:mm')).where('date', '<', finalDate.format('YYYY-MM-DD HH:mm')).get()
+    console.log('size: ', consCollection.docs.length)
+    while(consCollection.docs.length > 0) {
+        console.log(`Deletando: ${startDate.format('DD/MM/YYYY HH:mm')} até ${finalDate.format('DD/MM/YYYY HH:mm')}`)
+        consCollection.forEach((docRef) => {
+            if (!docRef.data().user) {
+                db.collection('consultations').doc(docRef.id).delete()
+            }
+        })
+        startDate = moment(finalDate)
+        finalDate = moment(startDate).add(5, 'days')
+        // eslint-disable-next-line no-await-in-loop
+        consCollection = await db.collection('consultations').where('date', '>', startDate.format('YYYY-MM-DD HH:mm')).where('date', '<', finalDate.format('YYYY-MM-DD HH:mm')).get()
+    }
+    response.status(200).send('Engage Destruction')
+    return
+})
+
 exports.createConsultations = functions.https.onRequest((request, response) => {
     let consultation = request.body
-    console.log('cons', consultation.start_date, consultation)
     let startDate = moment(consultation.start_date, 'YYYY-MM-DD')
     let finalDate = moment(consultation.final_date, 'YYYY-MM-DD')
     let daysDiff = finalDate.diff(startDate, 'days')
-    console.log('daysdiff', daysDiff)
     let routineId = moment().valueOf()
     for (let i = 0; i <= daysDiff; i++) {
         let day = moment(consultation.start_date, 'YYYY-MM-DD').add(i, 'days')
@@ -255,12 +276,14 @@ exports.saveTicketsHistory = functions.pubsub.schedule('0 0 * * *').onRun((conte
     const firestore = admin.firestore();
     // Buscando todas as salas (collectionGroup pega ate as rooms que estao em subcolecoes de colecoes,
     // recomendo nao criar mais collections com esse nome se nao elas vao ser pegas aqui)
+    // eslint-disable-next-line promise/catch-or-return
     firestore.collectionGroup('rooms').get().then((rooms) => {
         rooms.forEach((room) => {
             // verificando se a sala teve fila de tickets
-            if (room.data().tickets.length != 0) {
+            if (room.data().tickets.length !== 0) {
                 // Pegando a historia da sala (criei o campo clicnicDoc no metadata da room pra facilitar a query de salvar
-                firestore.collection('tickets-history').doc(room.data().clinicDoc)
+                // eslint-disable-next-line promise/catch-or-return
+                firestore.collection('tickets-history').doc(room.data().doc_clinic)
                     .collection('rooms-history').doc(room.id).get()
                     .then(async (roomHist) => {
                         if (roomHist.exists) {
@@ -274,24 +297,27 @@ exports.saveTicketsHistory = functions.pubsub.schedule('0 0 * * *').onRun((conte
                                 history: room.data().tickets
                             })
                         }
-                        // Esvaziando a fila de tickets depois de atualizado o history 
+                        // Esvaziando a fila de tickets depois de atualizado o history
                         room.ref.update({
                             tickets: []
                         });
+                        return
                     });
             }
         });
-
+        return
     });
     return null;
 });
 
 exports.resetTicketsCount = functions.pubsub.schedule('0 0 * * *').onRun((context) => {
     const firestore = admin.firestore();
+    // eslint-disable-next-line promise/catch-or-return
     firestore.collectionGroup('tickets').get().then((docs) => {
         docs.forEach((doc) => doc.ref.update({
             ticket_number: 1
         }));
+        return
     });
     return null;
 });

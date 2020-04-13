@@ -667,9 +667,8 @@
                 return this.consultationsOfSchedules(schedules);
             },
             consultas() {
-                let consultas = this.formatConsultationsArray(
-                    this.$store.getters.consultations
-                ).filter(a => {
+                let consultas =
+                    this.$store.getters.consultations.filter(a => {
                     let response = true;
                     if (this.selectedDoctor) {
                         if (this.selectedDoctor.cpf !== a.doctor.cpf) {
@@ -813,16 +812,18 @@
             },
             numberVacancyAndReturns(schedule){
                 let consultations = this.consultas
+                let cont = 0
                 return consultations.reduce((obj,item)=>{
                     let qtd_consultations = obj.qtd_consultations
                     let qtd_returns = obj.qtd_returns
-                    if(schedule.clinic.name === item.clinic.name && schedule.specialty.name === item.specialty.name
-                       &&schedule.doctor.cpf === item.doctor.cpf && schedule.date === item.date && item.user){
-                            if(item.type === 'Consulta')
-                                obj.qtd_consultations += 1
-                            else
+                    
+                    if( schedule.clinic.name === item.clinic.name && schedule.specialty.name === item.specialty.name
+                       && schedule.doctor.cpf === item.doctor.cpf && schedule.date === item.date  && item.user){
+                            if(item.type === 'Consulta'){
+                                obj.qtd_consultations = obj.qtd_consultations +  1     
+                            }else
                                 obj.qtd_returns += 1
-                    }                 
+                    }        
                     return obj
                 },{qtd_consultations:0,qtd_returns:0})
             },
@@ -831,7 +832,7 @@
                 schedules.forEach((schedule)=>{
                     let keys = Object.keys(schedule.days)
                     let dates = this.datesOfInterval({weekDays:keys/* ,cancelations_schedules:schedule.cancelations_schedules */})
-                    
+
                     dates.forEach((date)=>{
                         let hourConsultation = schedule.days[moment(date).weekday()].hour
                         if(schedule.cancelations_schedules.indexOf(date) == -1 && schedule.cancelations_schedules.indexOf(date + ' ' +hourConsultation) == -1){
@@ -843,7 +844,7 @@
                                 specialty: schedule.specialty,
                                 vacancy: schedule.days[moment(date).weekday()].vacancy,
                                 id_schedule: schedule.id,
-                            
+
                             }
                             let obj = {...scheduleObj,...this.numberVacancyAndReturns(scheduleObj)}
                             obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns
@@ -886,7 +887,7 @@
                 espArray.forEach(specialty => {
                     //console.log(specialty)
                     if (specialty.name === this.selectedForm.consultation.specialty.name && specialty.doctors) {
-                        
+
                         specialty.doctors.forEach(doctor => {
                             if (doctor.cpf === this.selectedForm.consultation.doctor.cpf) {
                                 cost = {

@@ -11,7 +11,7 @@
                         <v-combobox
                                 prepend-icon="spellcheck"
                                 v-model="cid"
-                                :items="cidOptions"
+                                :items="lista"
                                 outlined
                                 chips
                                 clearable
@@ -32,6 +32,17 @@
                             </template>
                         </v-combobox>
                     </v-flex>
+
+                        <v-flex xs12>
+                            <v-btn v-on:click="addToBanc" color="success">
+                                ADD lista de Cids no banco de dados
+                                <v-icon>add</v-icon>
+                            </v-btn>
+                        </v-flex>
+                        <v-flex xs12>
+                            .
+                        </v-flex>
+
                     <v-flex xs5>
                         <v-menu
                                 ref="menu1"
@@ -116,7 +127,7 @@
                                         <br/><br/><br/>
                                         <p style="text-align: center; text-justify: auto">
                                             <strong>
-                                                NOME: {{paciente}}<br/>
+                                                NOME: {{consultation.user.name}}<br/>
                                                 CID: {{ cid.slice(0, 3).toUpperCase() }}<br/>
                                                 ESTA IMPOSSIBILITADO(A) A COMPARECER A SEU TRABALHO DE:<br/>
                                                 {{ dataStart | dateFilter }} à {{ dataTheEnd | dateFilter }}, {{qtdDias}} Dia(s).
@@ -129,8 +140,9 @@
                                                 <v-layout align-center justify-center>
                                                     <v-flex xs4 lalign-center justify-center>
                                                         <v-divider color="black"></v-divider>
-                                                        {{medico}}
-                                                        {{crm}}
+                                                        {{consultation.doctor.name}}
+                                                        <br/>
+                                                        CRM-AM {{consultation.doctor.crm}}
                                                     </v-flex>
                                                 </v-layout>
                                             </strong>
@@ -169,9 +181,6 @@
         components: {AttestationsPDF},
         props: ['consultation'],
         data: () => ({
-            medico: 'JACKSON KELVIN DE SOUZA',
-            crm: '55874',
-            paciente: 'JACKSON KELVIN DE SOUZA',
             moment: moment,
             menu1: false,
             menu2: false,
@@ -192,15 +201,24 @@
                 return this.formatDate(this.dataTheEnd)
             },
             formIsValid() {
-                return this.dataStart && this.dataTheEnd && this.cid && this.paciente
+                return this.dataStart && this.dataTheEnd && this.cid
             },
+            lista() {
+                let arr = this.$store.getters.cids[0]
+/*                console.log(arr)*/
+                let cods = []
+                for (let i in arr){
+                    cods.push(arr[i])
+                }
+                return cods;
+            }
         },
         async mounted() {
             this.dataStart = moment().format('YYYY-MM-DD')
             this.dataTheEnd = moment().format('YYYY-MM-DD')
             this.dateFormatted = moment().format('YYYY-MM-DD')
             this.daysff()
-            this.paciente = this.consultation.user.dependent ? this.consultation.user.dependent.name : this.consultation.user.name
+            this.$store.dispatch('getCids');
         },
         watch: {
             menu1(val) {
@@ -219,9 +237,6 @@
                     dataStart: this.dataStart,
                     dataTheEnd: this.dataTheEnd,
                     qtdDias: this.qtdDias,
-                    paciente: this.paciente,
-                    medico: this.medico,
-                    crm: this.crm,
                     cid: this.cid,
                 }
                 this.item = aux
@@ -257,6 +272,9 @@
                 }
                 //console.log(dias)
                 return dias.indexOf(val) !== -1;
+            },
+            addToBanc() {
+                this.$store.dispatch('addArrayOfCidsToBanc', { cids: this.cidOptions })
             }
         }
     }
