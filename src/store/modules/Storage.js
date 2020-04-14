@@ -1,5 +1,8 @@
 import firebase, {storage} from "firebase";
 import moment from "moment";
+import Compress from "compress.js"
+import image from "compress.js/src/core/image";
+const compress = new Compress();
 
 const state = {
 };
@@ -9,24 +12,38 @@ const mutations = {
 };
 
 const actions = {
-    async uploadFileToStorage({}, payload) {
 
+    async uploadFileToStorage({}, payload) {
         let storageRef = firebase.storage().ref().child(payload.path);
-            // .child(moment().valueOf().toString())
+            //.child(moment().valueOf().toString())
         let filesUrl = [];
+        let filesImage = [];
         let counter = 0;
         let now = moment().valueOf().toString();
-        for(let file in payload.files) {
-            // let upTask = await storageRef.child(now + '+' + counter.toString()).put(payload.files[file])
-            // filesUrl.push(await upTask.snapshot.ref.getDownloadURL())
-            console.log(payload.files[file]);
-            let storageFile = await storageRef.child(now + '+' + counter.toString() ).put(payload.files[file]);
+        const files = payload.files;
+        let images = await compress.compress(files, {
+            size: 4,
+            quality: .50,
+            maxWidth: 1920, // the max width of the output image, defaults to 1920px
+            maxHeight: 1920, // the max height of the output image, defaults to 1920px
+            resize: true,
+        });
+
+        console.log(images);
+        for (let file in images){
+                filesImage.push(images[file]);
+
+        }
+
+        for (let file in filesImage){
+            let storageFile = await storageRef.child(now + '+' + counter.toString()).put(filesImage[file]);
             let url = await storageFile.metadata.ref.getDownloadURL();
             filesUrl.push(url);
             counter = counter + 1;
         }
         console.log(filesUrl);
         return filesUrl
+
     },
     async deleteFile({}, payload) {
 
