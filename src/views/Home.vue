@@ -1,10 +1,10 @@
 <template>
     <v-container fluid>
         <v-layout wrap row class="justify-center" v-if="!loading">
-            <v-flex xs12 sm8 class="text-center" v-if="notifications">
+            <v-flex xs12 sm8 class="text-center" v-if="notifications && user.group !== 'doctor'">
                 <alert/>
             </v-flex>
-            <v-flex xs12 class="text-center">
+            <v-flex v-if="user.group !== 'doctor'" xs12 class="text-center">
                 <select-patient-card class="hidden-xs-only"/>
             </v-flex>
             <v-flex xs12 v-if="filteredPages.length === 0">
@@ -231,6 +231,12 @@
                                 to: '/editor',
                                 permission: 'Caixa',
                                 icon: 'credit_card',
+                            },
+                            {
+                                title: 'Pagar Convênios',
+                                to: '/PaymentCovenants',
+                                permission: 'Caixa',
+                                icon: 'receipt',
                             },
 
                             // {

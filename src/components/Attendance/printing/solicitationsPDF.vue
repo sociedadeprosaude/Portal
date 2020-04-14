@@ -87,8 +87,8 @@
         },
         methods: {
             save(){
-                this.$store.dispatch('addSolicitacaoToConsultation',{
-                    solicitacao: this.exams,
+                this.$store.dispatch('addSolicitationsToConsultation',{
+                    Solicitations: this.exams,
                     consultation: this.consultation.id,
                     patient: this.consultation.user.id
                 })

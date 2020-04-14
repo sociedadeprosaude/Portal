@@ -9,6 +9,7 @@ import Exams from '@/views/Exams'
 import Labor from '@/views/Labor/Home'
 import Reports from '@/views/Reports'
 import Bundles from '@/views/Cashier/Bundles'
+import PaymentCovenants from './views/PaymentCovenants'
 
 import Doctors from '@/views/Doctors'
 import Clinics from "@/views/Clinics"
@@ -125,6 +126,14 @@ let mainRoutes = [
     path: '/bills',
     name: 'bills',
     component : Bills,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/PaymentCovenants',
+    name: 'PaymentCovenants',
+    component : PaymentCovenants,
     meta: {
       requiresAuth: false,
     }

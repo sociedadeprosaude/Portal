@@ -1,4 +1,5 @@
 import firebase, {firestore} from "firebase";
+import moment from "moment";
 
 const state = {
     clinics: [],
@@ -6,13 +7,19 @@ const state = {
     selectedClinic: null,
     units: [],
     loaded: false,
-    unitsLoaded: false
+    unitsLoaded: false,
+    covenants: [],
+    accontClinics: []
+
 };
 
 const mutations = {
     setClinics(state, payload) {
         state.clinics = payload
         state.loaded = true
+    },
+    setAccontClinics(state,payload){
+        state.accontClinics = payload
     },
     setAllClinics(state, payload) {
         state.allClinics = payload;
@@ -24,6 +31,8 @@ const mutations = {
         state.units = payload
         state.unitsLoaded = true
     },
+    setCovenants: (state, payload) => state.covenants = payload,
+
 };
 
 const actions = {
@@ -37,41 +46,11 @@ const actions = {
                     ...document.data()
                 });
             });
-
-
-            // for (let clinic in clinics) {
-            //     let exams = []
-            //     let specialties = []
-            //     let examsSnap = await firebase.firestore().collection('clinics').doc(clinics[clinic].name)
-            //         .collection('exams').get();
-            //
-            //     examsSnap.forEach(function (doc) {
-            //         exams.push({
-            //             id: doc.id,
-            //             ...doc.data(),
-            //         });
-            //     });
-            //
-            //     let specialtySnap = await firebase.firestore().collection('clinics').doc(clinics[clinic].name)
-            //         .collection('specialties').get();
-            //
-            //     specialtySnap.forEach(function (doc) {
-            //         specialties.push({
-            //             id: doc.id,
-            //             ...doc.data(),
-            //         });
-            //     });
-            //
-            //     clinics[clinic].exams = exams
-            //     clinics[clinic].specialties = specialties
-            // }
-
             commit('setClinics', clinics);
         })
     },
 
     async addClinic({commit}, clinic) {
-
 
         try {
             for (let data in clinic) {
@@ -230,7 +209,91 @@ const actions = {
         commit('setSelectedClinic', payload);
 
     },
+    async CalculedValuePaymentClinic(context, payload) {
+        var DataInit=''
+        if(!payload.payments){
+            DataInit = moment(payload.paymentDay).subtract(1, "months").format("YYYY-MM-DD 00:00:00")
+        }
+        else{
+            DataInit = moment(payload.payments[parseInt(payload.payments.length) - 1].paymentDay).format("YYYY-MM-DD 00:00:00")
+        }
+        payload.paymentDay = moment(payload.paymentDay).format("YYYY-MM-DD 23:59:59")
+        let cost = 0;
+        await firebase.firestore().collection('intakes').where('date', '>=', DataInit)
+            .where('date', '<=', payload.paymentDay).orderBy('date').get().then((querySnapshot) =>{
+                querySnapshot.forEach((doc) =>{
+                    if(!doc.data().cancelled_by && doc.data().exams){
+                        for(let exam in doc.data().exams){
+                            if(doc.data().exams[exam].clinic){
+                                if (doc.data().exams[exam].clinic.name === payload.name) {
+                                    cost += parseFloat(doc.data().exams[exam].cost)
+                                }
+                            }
+                        }
+                    }
+                })
+        });
+        context.commit('setCovenants', cost);
+        return cost
+    },
+    async PayClinic(context, payload){
+        var DataInit=''
+        if(!payload.payments){
+            DataInit = moment(payload.paymentDay).subtract(1, "months").format("YYYY-MM-DD 00:00:00")
+        }
+        else{
+            DataInit = moment(payload.payments[parseInt(payload.payments.length) - 1].paymentDay).format("YYYY-MM-DD 00:00:00")
+        }
+        payload.paymentDay = moment(payload.paymentDay).format("YYYY-MM-DD 23:59:59")
+        let cost = 0;
+        await firebase.firestore().collection('intakes').where('date', '>=', DataInit)
+            .where('date', '<=', payload.paymentDay).orderBy('date').get().then((querySnapshot) =>{
+                querySnapshot.forEach((doc) =>{
+                    if(!doc.data().cancelled_by && doc.data().exams){
+                        for(let exam in doc.data().exams){
+                            if(doc.data().exams[exam].clinic){
+                                if (doc.data().exams[exam].clinic.name === payload.name) {
+                                    cost += parseFloat(doc.data().exams[exam].cost)
+                                }
+                            }
+                        }
+                    }
+                })
+            });
+        await firebase.firestore().collection('clinics').get().then((querySnapsho) =>{
+            querySnapsho.forEach((doc) =>{
+                if(doc.data().name === payload.name) {
+                    var payment= {
+                        value: cost,
+                        paymentDay: moment().format("YYYY-MM-DD")
+                    }
+                    var paymentDay= moment(doc.data().paymentDay).add(1,"months").format('YYYY-MM-DD')
+                    var paymentDayFormat = moment(paymentDay).format('DD/MM/YYYY')
+                    if (!doc.data().payments) {
+                        firebase.firestore().collection('clinics').doc(doc.data().name).update({payments: [payment], paymentDay:paymentDay, paymentDayFormat: paymentDayFormat})
+                    }
+                    else {
+                        var payments = doc.data().payments
+                        payments.push(payment)
+                        var clinic= firebase.firestore().collection('clinics').doc(doc.data().name);
+                        var setMerge= clinic.set({
+                            payments: payments,
+                            paymentDay: paymentDay,
+                            paymentDayFormat: paymentDayFormat
+                        },{merge:true})
+                    }
 
+                }
+            })
+        })
+    },
+    async AddPaymentDay(context,payload){
+        var clinic= firebase.firestore().collection('clinics').doc(payload.clinic.name);
+        var setMerge= clinic.set({
+            paymentDay: payload.paymentDay,
+            paymentDayFormat: payload.paymentDayFormat
+        },{merge:true})
+    },
     async loadClinics({commit}) {
         return new Promise((resolve, reject) => {
             let clinics = [];
@@ -305,6 +368,34 @@ const actions = {
             })
         })
     },
+    async getPaymentClinics({commit}){
+        let accountsClinics = [];
+       firebase.firestore().collection('clinics').get().then((querySnapshot) =>{
+           querySnapshot.forEach((doc) => {
+               if(!accountsClinics[doc.data().name]){
+                   if(!doc.data().payments){
+                       accountsClinics[doc.data().name] = {
+                           name: doc.data().name,
+                           paymentDay: doc.data().paymentDay,
+                           paymentDayFormat: doc.data().paymentDayFormat,
+                           lastPayment: moment(doc.data().paymentDay).subtract(1, "months")
+                       }
+                   }
+                   else{
+                       accountsClinics[doc.data().name] = {
+                           name: doc.data().name,
+                           paymentDay: doc.data().paymentDay,
+                           paymentDayFormat: doc.data().paymentDayFormat,
+                           lastPayment: doc.data().payments[parseInt(doc.data().payments.length) - 1].paymentDay
+
+                       }
+                   }
+               }
+           })
+           console.log('accontsClinics', accountsClinics)
+           commit("setAccontClinics",accountsClinics)
+       })
+    },
     async getClinicExams(context, clinic) {
         let examSnap = await firebase.firestore().collection('clinics').doc(clinic.id).collection('exams').get()
         let exams = []
@@ -339,12 +430,16 @@ const actions = {
             return
         }
         firebase.firestore().collection('clinics').doc(clin.name).update({property: true})
-    }
+    },
+
 };
 
 const getters = {
     clinics(state) {
         return state.clinics
+    },
+    accontClinics(state){
+        return state.accontClinics
     },
 
     allClinics(state) {
@@ -364,7 +459,11 @@ const getters = {
 
     clinicsLoaded(state) {
         return state.loaded
-    }
+    },
+
+    covenants(state) {
+        return state.covenants;
+    },
 };
 
 export default {

@@ -498,6 +498,7 @@
     import SubmitButton from "./SubmitButton";
     import PatientCard from "./PatientCard";
     import PatientTag from "./PatientTag";
+    import axios from 'axios';
 
     let moment = require("moment");
     export default {
@@ -565,8 +566,8 @@
                         return rule || 'Data inválida'
                     }
                 ],
-                states: ['AC', 'AL', 'AM'],
-                cities: {'AC': [], 'AL': [], 'AM': ['Iranduba', 'Manaus', 'Parintins', 'AUTAZES']},
+                states: ['AM'],
+                cities: {'AC': [], 'AL': [], 'AM': []},
                 foundUsers: undefined,
                 foundDependents:undefined,
                 success: false,
@@ -833,6 +834,13 @@
         },
         mounted() {
            window.addEventListener('keydown', this.handleEnter)
+           axios.get('http://servicodados.ibge.gov.br/api/v1/localidades/estados/13/municipios')
+           .then((response)=>{
+               
+               response.data.forEach(city => {
+                   this.cities['AM'].push(city.nome)
+               });
+           })
         },
         beforeDestroy() {
             window.removeEventListener('keydown', this.handleEnter)

@@ -51,8 +51,8 @@
                 //console.log(this.consultation)
                 this.loading = true
                 if(this.prontuario){
-                    this.$store.dispatch('addProntuarioToConsultation',{
-                        prontuario:this.prontuario,
+                    this.$store.dispatch('addMedicalRecordsToConsultation',{
+                        MedicalRecords:this.prontuario,
                         consultation: this.consultation.id,
                         patient: this.consultation.user.id
                     })

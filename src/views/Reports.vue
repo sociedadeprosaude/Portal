@@ -101,8 +101,11 @@
       <v-flex xs12 v-if="selectedReport === 7">
         <NewUsersReport :date="dateBegin" :date2="dateEnd" :todayNewUsers="todayNewUsers" />
       </v-flex>
-	 <v-flex xs12 v-if="selectedReport === 8">
+	  <v-flex xs12 v-if="selectedReport === 8">
         <SpecialtiesMadeReport :report="formattedReport" :loading="loading" :intakes="intakes" />
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 9">
+        <ConsultationScheduledExecuted :report="formattedReport" :loading="loading" :intakes="intakes" />
       </v-flex>
       <v-flex class="hidden-screen-only">
         <p>DE {{dateFormatted}} ATÉ {{dateFormatted2}}</p>
@@ -121,6 +124,7 @@ import BestSellingConsultationsReport from "@/components/reports/BestSellingCons
 import OuttakesReport from "@/components/reports/OuttakesReport";
 import SpecialtiesMadeReport from "../components/reports/SpecialtiesMadeReport"
 import NewUsersReport from "@/components/reports/NewUsersReport";
+import ConsultationScheduledExecuted from "../components/reports/ConsultationScheduledExecuted"
 
 var moment = require("moment");
 export default {
@@ -132,8 +136,9 @@ export default {
     BestSellingExamsReport,
     BestSellingConsultationsReport,
     OuttakesReport,
+    NewUsersReport,
     SpecialtiesMadeReport,
-    NewUsersReport
+    ConsultationScheduledExecuted,
   },
   data: vm => ({
     reportOptions: [
@@ -144,8 +149,9 @@ export default {
       "Exames mais vendidos",
       "Consultas mais vendidas",
       "Relatório de Saídas",
+      "Novos associados",
       "Relatório Especialidades",
-      "Novos associados"
+      "Relatório Consulta Marcada x Realizada"
     ],
     selectedReport: 0,
     date: moment().format("YYYY-MM-DD 00:00:00"),

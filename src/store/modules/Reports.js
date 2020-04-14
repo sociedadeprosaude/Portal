@@ -95,28 +95,17 @@ const actions = {
             }
         }
 
-        // let intakes = await Promise.all(promises)
         let exams = {};
         let clinics = {};
         let specialties = {};
         let intaker = {};
         let outtakes = [];
         let financialSupport = [];
-        let totalCaixa = 0;
-        let totalDebido = 0;
-        let totalBruto = 0;
-        let totalCusto = 0;
-        let totalCustoExams = 0;
-        let totalCustoEspecialts = 0;
-        let totalGanhoExams = 0;
-        let totalGanhoEspecialts = 0;
-        let totalCredito = 0;
-        let totalTaxaDebito = 0;
-        let totalTaxaCredito = 0;
         let quantidadeOuttakes = 0;
         let relatorio = {};
-        let doctors = {}
-        //console.log('intakes: ',intakes)
+        let doctors = {};
+        let consultations= {};
+
         for (let intake in intakes) {
             if (!intakes[intake].cancelled_by) {
                 if (intakes[intake].type === 'financial_support') {
@@ -160,12 +149,8 @@ const actions = {
                     clinics[intakes[intake].exams[exam].clinic.name].exams[intakes[intake].exams[exam].name].price += intakes[intake].exams[exam].price
                     clinics[intakes[intake].exams[exam].clinic.name].cost += parseFloat(intakes[intake].exams[exam].cost)
                     clinics[intakes[intake].exams[exam].clinic.name].price += parseFloat(intakes[intake].exams[exam].price)
-                    totalCustoExams += parseFloat(intakes[intake].exams[exam].cost)
-                    totalGanhoExams += parseFloat(intakes[intake].exams[exam].price)
                 }
 
-
-                //ESPECIALIDADES
                 for (let specialtie in intakes[intake].specialties) {
                     if (!specialties[intakes[intake].specialties[specialtie].name]) {
                         specialties[intakes[intake].specialties[specialtie].name] = {
@@ -176,63 +161,6 @@ const actions = {
                     }
                     specialties[intakes[intake].specialties[specialtie].name].quantidade++
                     specialties[intakes[intake].specialties[specialtie].name].cost += parseFloat(intakes[intake].specialties[specialtie].cost), specialties[intakes[intake].specialties[specialtie].name].price += parseFloat(intakes[intake].specialties[specialtie].price)
-                    totalCustoEspecialts += parseFloat(intakes[intake].specialties[specialtie].cost),
-                    totalGanhoEspecialts += parseFloat(intakes[intake].specialties[specialtie].price)
-                }
-                if (!intakes[intake].valor) {
-                    totalCusto += parseFloat(intakes[intake].cost);
-                }
-                totalBruto += parseFloat(intakes[intake].total);
-                if (intakes[intake].payments) {
-                    for (let i = 0; i < intakes[intake].payments.length; i++) {
-                        if (intakes[intake].valuesPayments[i] !== '') {
-
-                            if (intakes[intake].payments[i] === 'Dinheiro') {
-                                totalCaixa += parseFloat(intakes[intake].valuesPayments[i])
-                            }
-                            if (intakes[intake].payments[i] === 'Débito') {
-                                totalTaxaDebito += ((parseFloat(intakes[intake].total) * 0.0299) / 100)
-                                totalDebido += parseFloat(intakes[intake].valuesPayments[i])
-                            }
-                            if (intakes[intake].payments[i] === 'Crédito') {
-                                if (intakes[intake].parcel === 1) {
-                                    totalTaxaCredito += ((intakes[intake].valuesPayments[i] * 0.026) / 100)
-                                } else if (intakes[intake].parcel === 2) {
-                                    totalTaxaCredito += (((intakes[intake].valuesPayments[i] * 0.026) / 100) + ((intakes[intake].valuesPayments[i] * 0.0191) / 100))
-                                } else if (intakes[intake].parcel === 3) {
-                                    totalTaxaCredito += (((intakes[intake].valuesPayments[i] * 0.026) / 100) + ((intakes[intake].valuesPayments[i] * 0.0254) / 100))
-                                } else if (intakes[intake].parcel === 4) {
-                                    totalTaxaCredito += (((intakes[intake].valuesPayments[i] * 0.026) / 100) + ((intakes[intake].valuesPayments[i] * 0.0317) / 100))
-                                } else if (intakes[intake].parcel === 5) {
-                                    totalTaxaCredito += (((intakes[intake].valuesPayments[i] * 0.026) / 100) + ((intakes[intake].valuesPayments[i] * 0.0378) / 100))
-                                }
-                                totalCredito += parseFloat(intakes[intake].valuesPayments[i])
-                            }
-                        }
-                    }
-                }
-                else {
-                    if (intakes[intake].payment_method === 'Dinheiro') {
-                        totalCaixa += parseFloat(intakes[intake].total)
-                    }
-                    if (intakes[intake].payment_method === 'Débito') {
-                        totalTaxaDebito += ((intakes[intake].total * 0.0299) / 100)
-                        totalDebido += parseFloat(intakes[intake].total)
-                    }
-                    if (intakes[intake].payment_method === 'Crédito') {
-                        if (intakes[intake].parcel === 1) {
-                            totalTaxaCredito += ((intakes[intake].total * 0.026) / 100)
-                        } else if (intakes[intake].parcel === 2) {
-                            totalTaxaCredito += (((intakes[intake].total * 0.026) / 100) + ((intakes[intake].total * 0.0191) / 100))
-                        } else if (intakes[intake].parcel === 3) {
-                            totalTaxaCredito += (((intakes[intake].total * 0.026) / 100) + ((intakes[intake].total * 0.0254) / 100))
-                        } else if (intakes[intake].parcel === 4) {
-                            totalTaxaCredito += (((intakes[intake].total * 0.026) / 100) + ((intakes[intake].total * 0.0317) / 100))
-                        } else if (intakes[intake].parcel === 5) {
-                            totalTaxaCredito += (((intakes[intake].total * 0.026) / 100) + ((intakes[intake].total * 0.0378) / 100))
-                        }
-                        totalCredito += parseFloat(intakes[intake].total)
-                    }
                 }
             }
         }
@@ -244,20 +172,11 @@ const actions = {
             if (e.data().payments) {
                 for (let i = 0; i < e.data().payments.length; i++) {
                     if (e.data().payments[i] === 'Dinheiro') {
-                        // if (!outtakes[e.data().category]) {
-                        //     outtakes[e.data().category] = {
-                        //         quantidade: 0,
-                        //         cost: 0,
-                        //     }
-                        // }
-                        // outtakes[e.data().category].quantidade++;
                         quantidadeOuttakes++;
-                        // outtakes[e.data().category].cost += parseFloat(e.data().value);
                         outtakes.push({
                             ...e.data(),
                             id: e.id
-                        }
-                        )
+                        })
                     }
                 }
             }
@@ -272,7 +191,20 @@ const actions = {
         let consultationsSnap= await firebase.firestore().collection('consultations').where('date', '>=', payload.dataInicio)
             .where('date', '<=', payload.dataFinal).orderBy('date').get();
         consultationsSnap.forEach((e) => {
+            console.log(e.data())
+            if(!consultations[e.data().specialty.name]){
+                consultations[e.data().specialty.name]= {
+                    name: e.data().specialty.name,
+                    quantity:0,
+                    executed:0,
+                    scheduled:0
+                }
+            }
             if(e.data().consultationHour){
+                consultations[e.data().specialty.name].quantity +=1
+                consultations[e.data().specialty.name].scheduled +=1
+                consultations[e.data().specialty.name].executed +=1
+
                 if (!doctors[e.data().doctor.name]) {
                     doctors[e.data().doctor.name] = {
                         doctor: e.data().doctor,
@@ -296,33 +228,26 @@ const actions = {
                     doctors[e.data().doctor.name].specialties[e.data().specialty.name].costOne = parseFloat(snap.data().cost.toFixed(2))
                     doctors[e.data().doctor.name].payment += parseFloat(snap.data().cost.toFixed(2))
                 })
-
+            }
+            else{
+                consultations[e.data().specialty.name].quantity +=1
+                consultations[e.data().specialty.name].scheduled +=1
 
             }
-        })
-        console.log('doctors', doctors)
+        });
+        console.log('clinics: ', clinics)
         relatorio = {
             unit: selectedUnit,
-            specialties: specialties,        //
-            exams: exams,                    //
-            clinics: clinics,                //
-            credito: totalCredito,          //
-            debito: totalDebido,            //
-            dinheiro: totalCaixa,         //
-            totalBruto: totalBruto,      //
-            quantidadeOuttakes: quantidadeOuttakes,
-            totalCusto: totalCusto,
-            totalTaxaCredito: totalTaxaCredito.toFixed(5),
-            totalTaxaDebito: totalTaxaDebito.toFixed(5),
-            totalCustoExams: totalCustoExams,
-            totalGanhoExams: totalGanhoExams,
-            totalCustoEspecialts: totalCustoEspecialts,
+            specialties: specialties,
+            exams: exams,
+            clinics: clinics,
+            quantidadeOuttakes: quantidadeOuttakes,  //
             outtakes: outtakes,
-            totalGanhoEspecialts: totalGanhoEspecialts,
             intakes: intaker,
             doctors: doctors,
             dataInicio: payload.dataInicio,
             dataFinal: payload.dataFinal,
+            consultations: consultations,
             financialSupportIntakes: financialSupport,
             intakesArray: Object.values(intakes).filter((intake) => {
                 return intake.status !== 'cancelled'

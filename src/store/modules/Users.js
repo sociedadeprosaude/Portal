@@ -206,7 +206,6 @@ const actions = {
         console.log('payload: ', payload);
         if (payload.value === 'pay') {
             for (let advance in payload.user.advances) {
-                console.log('advance: ', payload.user.advances[advance]);
                 payload.user.advances[advance].parcel -= 1;
                 for (let mes in payload.user.advances[advance].months) {
                     if (payload.date === payload.user.advances[advance].months[mes]) {
@@ -215,13 +214,10 @@ const actions = {
                 }
             }
             upd = payload.user
-            console.log('upd: ', upd)
             return await firebase.firestore().collection('users').doc(payload.user.cpf).set(upd)
 
         } else {
-            console.log('entrei aqui')
             upd[payload.field] = payload.value
-            console.log('upd: ', upd)
             return await firebase.firestore().collection('users').doc(payload.user.cpf).update(upd)
         }
     },

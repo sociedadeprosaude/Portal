@@ -73,6 +73,7 @@ const store = new Vuex.Store({
         Tickets,
         Discount,
         alertNotifications,
+
     },
 
     state: {
