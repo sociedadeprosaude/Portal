@@ -7,59 +7,22 @@
           wrap
           style="width:100%"
           class="align-center justify-center py-0"
-          v-for="(outtakesGroup, i) in outtakesByDate(outtakes)"
+          v-for="(outtakesGroup, i) in outtakesByDate(accont)"
           :key="i"
         >
-          <v-flex xs12>
-            <div v-bind:id="'group-' + i">
-              <v-card color="primary_dark" class="mx-2">
-                <v-card-text
-                  class="px-3 text-left my-sub-headline white--text"
-                >{{i | dateFilter}} - {{daydate(i)}} - {{outtakesGroup.length}} conta(s)</v-card-text>
-              </v-card>
-            </div>
-          </v-flex>
+
           <v-container fluid grid-list-sm class="py-0 my-3 mx-2">
             <v-row>
               <v-col>
-                <v-card class="pa-4 my-4" v-for="(bill) in outtakesGroup" :key="bill.id">
+                <v-card class="pa-4 my-4" v-for="(bill) in accont" :key="bill.name">
                   <v-layout row wrap>
                     <v-flex xs12 class="my-2">
                       <v-layout row wrap>
-                        <span>{{bill.category}}</span>
+                        <span>{{bill.name}}</span>
                         <v-divider vertical class="mx-4"/>
-                        <span>{{bill.payment_method}}</span>
+                        <span>{{bill.paymentDayFormat}}</span>
                         <v-divider vertical class="mx-4"/>
-                        <span class="font-weight-bold">{{bill.date_to_pay | dateFilter}}</span>
-                        <v-divider vertical class="mx-4"/>
-                        <v-icon class="warning--text align-start"
-                          v-if="distanceToToday(bill.date_to_pay) < 3"
-                        >warning</v-icon>
                         <v-spacer/>
-                        <v-flex xs4 class="justify-end">
-                          <v-text-field v-model="bill.value"
-                                        dense
-                                        outlined
-                                        persistent-hint
-                                        prefix="R$"
-                                        :readonly="!isEditing"
-                                        prepend-icon="monetization_on"
-                                        class="font-weight-bold"
-                                        :hint="!isEditing ? 'Clique no icon para editar' : 'Clique no icon para salvar'"
-                          >
-                            <template v-slot:append-outer>
-                              <v-slide-x-reverse-transition
-                                      mode="out-in"
-                              >
-                                <v-icon  :key="`icon-${isEditing}`"
-                                         :color="isEditing ? 'success' : 'info'"
-                                         @click="isEditing = !isEditing, editBillValue(bill)"
-                                         v-text="isEditing ? 'mdi-check-outline' : 'mdi-circle-edit-outline'">
-                                </v-icon>
-                              </v-slide-x-reverse-transition>
-                            </template>
-                          </v-text-field>
-                        </v-flex>
                         <v-flex xs12>
                           <span class="font-italic">{{bill.description}}</span>
                         </v-flex>
@@ -140,8 +103,8 @@
 <script>
 import moment from "moment";
 export default {
-  name: "OuttakeOrder",
-  props: ["outtakes"],
+  name: "ClinicsPaymentOrder",
+  props: ["accont"],
   data() {
     return {
       isEditing: false,
@@ -178,7 +141,6 @@ export default {
       );
     },
     daydate(date) {
-      console.log(this.outtakes)
       var dateMoment = moment(date);
       return this.semanaOptions[dateMoment.day()];
     },

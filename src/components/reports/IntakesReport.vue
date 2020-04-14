@@ -468,7 +468,7 @@
                             date: intake.date,
                             discount: intake.discount,
                             exams: intake.exams,
-                             id: intake.id.toString(),
+                             id: intake.id,
                              payments: intake.payments,
                              subTotal: intake.subTotal,
                              total: intake.total,
