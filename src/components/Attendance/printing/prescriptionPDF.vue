@@ -83,8 +83,8 @@
         },
         methods: {
             save(){
-                this.$store.dispatch('addReceitaToConsultation',{
-                    receita: this.medicines,
+                this.$store.dispatch('addPrescriptionToConsultation',{
+                    Prescription: this.medicines,
                     consultation: this.consultation.id,
                     patient: this.consultation.user.id
                 })

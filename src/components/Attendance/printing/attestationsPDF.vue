@@ -103,8 +103,8 @@
         },
         methods: {
             save(){
-                this.$store.dispatch('addAtestadoToConsultation',{
-                    atestado: this.item,
+                this.$store.dispatch('addAttestationsToConsultation',{
+                    Attestations: this.item,
                     consultation: this.consultation.id,
                     patient: this.consultation.user.id
                 })

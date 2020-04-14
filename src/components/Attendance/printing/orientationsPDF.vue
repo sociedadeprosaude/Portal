@@ -85,8 +85,8 @@
         },
         methods: {
             save(){
-                this.$store.dispatch('addOrientacaoToConsultation',{
-                    orientacao: this.item.value,
+                this.$store.dispatch('addOrientationsToConsultation',{
+                    Orientations: this.item.value,
                     consultation: this.consultation.id,
                     patient: this.consultation.user.id
                 })

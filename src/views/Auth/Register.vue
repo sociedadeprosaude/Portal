@@ -117,7 +117,7 @@ export default {
       try {
         this.$store.dispatch('thereIsUserCPF',this.cpf.replace(/\./g, "").replace("-", ""))
         .then(async (exits)=>{
-          if(!exits || (exits.type && exits.type === 'DOCTOR') ){
+          if(!exits || (exits.type && exits.type === 'DOCTOR' && !exits.uid) ){
             this.loading = true;
             let resp = await firebase
               .auth()
@@ -129,7 +129,7 @@ export default {
               cpf: this.cpf.replace(/\./g, "").replace("-", ""),
               telephones: [this.telephone],
               type:exits ? "DOCTOR" : "COLABORATOR",
-              // group: 'colaborador'
+              group: 'doctor'
             });
             this.registered = true;
           }else{

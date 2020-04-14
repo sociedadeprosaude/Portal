@@ -85,8 +85,8 @@
         },
         methods: {
             save(){
-                this.$store.dispatch('addLaudoToConsultation',{
-                    laudo: this.item.value,
+                this.$store.dispatch('addReportToConsultation',{
+                    Report: this.item.value,
                     consultation: this.consultation.id,
                     patient: this.consultation.user.id
                 })

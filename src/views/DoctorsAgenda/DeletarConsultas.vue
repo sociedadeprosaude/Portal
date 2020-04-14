@@ -65,7 +65,37 @@
                             </template>
                         </v-combobox>
                     </v-flex>
-                    <v-flex xs12 sm5>
+                    <v-flex xs12 md12>
+                    <v-select
+                            prepend-icon="location_city"
+                            v-model="clinic"
+                            :items="clinics"
+                            item-text="name"
+                            return-object
+                            label="Clínica"
+                            outlined
+                            rounded
+                            filled
+                            chips
+                            color="purple"
+                            clearable
+                    >
+                        <template v-slot:selection="data">
+                            <v-chip
+                                    :key="JSON.stringify(data.item)"
+                                    :input-value="data.selected"
+                                    :disabled="data.disabled"
+                                    class="v-chip--select-multi"
+                                    @click.stop="data.parent.selectedIndex = data.index"
+                                    @input="data.parent.selectItem(data.item)"
+                                    text-color="white"
+                                    color="info"
+                            >{{ data.item.name }}
+                            </v-chip>
+                        </template>
+                    </v-select>
+                </v-flex>
+                    <v-flex xs3 sm3>
                         <v-menu
                                 ref="menu"
                                 v-model="startMenu"
@@ -103,7 +133,7 @@
                         </v-menu>
                     </v-flex>
                     <v-spacer></v-spacer>
-                    <v-flex xs12 sm5>
+                    <v-flex xs3 sm3>
                         <v-menu
                                 ref="menu"
                                 v-model="finishMenu"
@@ -140,7 +170,6 @@
                             ></v-date-picker>
                         </v-menu>
                     </v-flex>
-
                     <v-flex xs12>
                     <v-layout class="align-end justify-end">
                         <v-btn color="black" dark @click="filterHour ? filterHour = false: filterHour = true">
@@ -234,6 +263,7 @@
                     <v-btn
                             v-if="Object.keys(consultationsDeletionInfo).length === 0"
                             @click="deleteConsultasDia"
+                            class="mr-3"
                             :loading="loading"
                             :success="success"
                             color="error"
@@ -241,6 +271,18 @@
                             :disabled="!formIsValid"
                     >
                         DELETAR
+                        <v-icon right>delete_outline</v-icon>
+                    </v-btn>
+                    <v-btn
+                            v-if="Object.keys(consultationsDeletionInfo).length === 0"
+                            @click="deleteAllSchedule"
+                            :loading="loading"
+                            :success="success"
+                            color="error"
+                            rounded
+                            :disabled="!doctor || !especialidade || !clinic"
+                    >
+                        DELETAR TUDO
                         <v-icon right>delete_forever</v-icon>
                     </v-btn>
                     <span v-else class="ml-4">
@@ -536,7 +578,8 @@
             finishMenu: false,
             panel: [true],
             date_choose: '',
-            especialidade: '',
+            especialidade: undefined,
+            clinic:undefined,
             dialog: false,
             alert: false,
             doctor: null,
@@ -607,20 +650,20 @@
         }),
 
         computed: {
-            // loading() {
-            //   return !this.$store.getters.consultationsLoaded
-            // },
+            clinics() {
+                let val = this.$store.getters.clinics.filter(a => {
+                    return a.property;
+                });
+                return val;
+                //return this.$store.getters.clinics;
+            },
 
             consultationsDeletionInfo() {
               return this.$store.getters.consultationsDeletionInfo
             },
 
             formIsValid() {
-                return this.start_date && this.final_date && this.doctor && this.especialidade
-            },
-
-            formIsValids() {
-                return this.start_date && this.final_date && this.doctor && this.especialidade
+                return this.start_date && this.final_date && this.doctor && this.especialidade && this.clinic
             },
 
             specialties() {
@@ -817,6 +860,18 @@
                 return `${day}/${month}/${year}`
             },
 
+            async deleteAllSchedule(){
+                this.loading = true
+                var payload = {
+                    doctor: this.doctor,
+                    specialty: this.especialidade,
+                    clinic: this.clinic
+                }
+                await this.$store.dispatch('deleteAllSchedule', payload)
+                this.success = true
+                this.loading = false
+            },
+
             async deleteConsultasDia() {
                 this.loading = true
                 var deletar = {
@@ -825,10 +880,9 @@
                     doctor: this.doctor,
                     specialty: this.especialidade,
                     hour: this.times,
-                    weekDays: this.semana
+                    weekDays: this.semana,
+                    clinic:this.clinic
                 }
-
-                console.log(deletar)
                 await this.$store.dispatch('removeAppointmentByDay', deletar)
                 // this.clear()
                 this.success = true
