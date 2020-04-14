@@ -243,15 +243,26 @@ export default {
       }
       this.outtakeSelect= [];
       await this.$store.dispatch("getOuttakes");
+      await this.$store.dispatch("getOuttakesPending", {
+        finalDate: moment()
+                .add(5, "days")
+                .format("YYYY-MM-DD 23:59:59")
+      });
       this.loading = false;
     },
     async deleteOuttake(outtake) {
       this.loading = true;
       await this.$store.dispatch("deleteOuttake", outtake);
       await this.$store.dispatch("getOuttakes");
+      await this.$store.dispatch("getOuttakesPending", {
+        finalDate: moment()
+                .add(5, "days")
+                .format("YYYY-MM-DD 23:59:59")
+      });
       this.loading = false;
     },
     async handleFileUpload(outtake) {
+
       this.loadingAnexo = true;
       this.outtakeSelect= outtake;
       await this.$store.dispatch("deleteFile", {
@@ -260,19 +271,29 @@ export default {
       });
       let uploadedFiles = this.$refs[outtake.id][0].files;
 
-      for (var i = 0; i < uploadedFiles.length; i++) {
+
+      for (let i = 0; i < uploadedFiles.length; i++) {
+
         if (this.files.indexOf(uploadedFiles[i]) < 0) {
           this.files.push(uploadedFiles[i]);
           // this.readFileUrl(uploadedFiles[i], index - 1)
         }
       }
+
       let urls = await this.submitFiles(this.files);
       await this.$store.dispatch("updateOuttake", {
         outtake: outtake,
         field: "receipts",
         value: urls
       });
+
       await this.$store.dispatch("getOuttakes");
+      await this.$store.dispatch("getOuttakesPending", {
+        finalDate: moment()
+                .add(5, "days")
+                .format("YYYY-MM-DD 23:59:59")
+      });
+      this.files = [];
       this.loadingAnexo = false;
       this.outtakeSelect= [];
 

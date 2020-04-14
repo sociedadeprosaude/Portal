@@ -37,8 +37,8 @@
                 outlined
                 label="Método de pagamento"
                 v-model="paymentMethod"
-                :items="paymentMethods"
-              ></v-select>
+                :items="paymentMethods">
+              </v-select>
             </v-flex>
             <v-flex xs12 sm3 class="mt-2  ml-md-3">
               <v-select
@@ -47,8 +47,8 @@
                 v-model="unit"
                 :items="units"
                 item-text="name"
-                return-object
-              ></v-select>
+                return-object>
+              </v-select>
             </v-flex>
             <v-spacer/>
             <v-flex xs12 sm2 class="mt-2">
@@ -177,8 +177,8 @@
                 label="categoria"
                 v-model="selectedCategory"
                 :items="categoriesName"
-                outlined
-              ></v-select>
+                outlined>
+              </v-select>
             </v-col>
           </v-row>
         </div>
@@ -313,6 +313,7 @@ export default {
       dateToPay: moment().format("YYYY-MM-DD"),
       paymentMethods: ["Boleto", "Transferência", "Dinheiro"],
       loading: false,
+      loadingFilter: false,
       loadingDelete: false,
       outtakeSelect: [],
       files: [],
@@ -327,6 +328,7 @@ export default {
   },
   computed: {
     outtakesPaid() {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       return this.$store.getters.outtakesPaid.sort((a, b) => {
         return b.date_to_pay > a.date_to_pay ? 1 : -1;
       });
@@ -343,6 +345,7 @@ export default {
       else if (this.selectedOption === 1) return this.outtakesPaid;
     },
     pendingOuttakes() {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       return this.$store.getters.outtakesPending.sort((a, b) => {
         return b.date_to_pay < a.date_to_pay ? 1 : -1;
       });
