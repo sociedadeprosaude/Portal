@@ -476,11 +476,6 @@ export default {
       }
       await this.$store.dispatch("addOuttakes", bill);
       await this.$store.dispatch("getOuttakes");
-      await this.$store.dispatch("getOuttakesPending", {
-        finalDate: moment()
-                .add(5, "days")
-                .format("YYYY-MM-DD 23:59:59")
-      });
       this.loading = false;
     },
     async unpayOuttake(outtake) {
@@ -496,7 +491,6 @@ export default {
           .add(5, "days")
           .format("YYYY-MM-DD 23:59:59")
       });
-
       this.outtakeSelect= [];
       this.loadingDelete = false;
     },
