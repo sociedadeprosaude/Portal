@@ -1,0 +1,17 @@
+[debug] [2020-04-14T20:44:04.508Z] ----------------------------------------------------------------------
+[debug] [2020-04-14T20:44:04.510Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy --only hosting
+[debug] [2020-04-14T20:44:04.510Z] CLI Version:   7.11.0
+[debug] [2020-04-14T20:44:04.510Z] Platform:      darwin
+[debug] [2020-04-14T20:44:04.510Z] Node Version:  v10.16.0
+[debug] [2020-04-14T20:44:04.512Z] Time:          Tue Apr 14 2020 17:44:04 GMT-0300 (Brasilia Standard Time)
+[debug] [2020-04-14T20:44:04.513Z] ----------------------------------------------------------------------
+[debug] [2020-04-14T20:44:04.513Z] 
+[debug] [2020-04-14T20:44:04.528Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-04-14T20:44:04.528Z] > authorizing via signed-in user
+[debug] [2020-04-14T20:44:04.529Z] [iam] checking project prosaude-36f66 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2020-04-14T20:44:04.530Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2020-04-14T20:44:04.531Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2020-04-14T20:44:04.811Z] <<< HTTP RESPONSE 200
+[debug] [2020-04-14T20:44:04.844Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/prosaude-36f66:testIamPermissions  
+
