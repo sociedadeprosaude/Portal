@@ -583,9 +583,27 @@ const actions = {
         commit('setConsultationDeletionInfo', {})
     },
 
+    async deleteAllSchedule({commit},payload){
+        functions.removeUndefineds(payload)
+        let schedule = await firebase.firestore().collection('schedules')
+            .where('specialty.name','==',payload.specialty.name)
+            .where('doctor.cpf','==',payload.doctor.cpf)
+            .where('clinic.cnpj','==',payload.clinic.cnpj)
+            .get()
+        
+        if(!schedule.empty){
+            schedule.forEach((snap)=>{
+                firebase.firestore().collection('schedules').doc(snap.id).delete()
+            })
+        }
+
+    },
+
     async removeScheduleByDay(context,payload){
         let schedule = await firebase.firestore().collection('schedules')
-            .where('specialty.name', "==", payload.specialty.name).where('doctor.cpf', "==", payload.doctor.cpf).get()
+            .where('specialty.name', "==", payload.specialty.name)
+            .where('doctor.cpf', "==", payload.doctor.cpf)
+            .where('clinic.cnpj','==',payload.clinic.cnpj).get()
         schedule.forEach((doc)=>{
             let data = doc.data()
             let cancelations_schedules = data.cancelations_schedules ? data.cancelations_schedules : []
@@ -606,7 +624,8 @@ const actions = {
         payload = functions.removeUndefineds(payload);
         try {
             let snapshot = await firebase.firestore().collection('consultations')
-                .where('specialty.name', "==", payload.specialty.name).where('doctor.cpf', "==", payload.doctor.cpf)
+                .where('specialty.name', "==", payload.specialty.name)
+                .where('doctor.cpf', "==", payload.doctor.cpf).where('clinic.name','==',payload.clinic.cnpj)
                 .where('date', ">=", start).where('date', "<=", end).get();
             snapshot.forEach(async doc => {
 
