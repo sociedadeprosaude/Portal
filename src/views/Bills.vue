@@ -326,6 +326,7 @@ export default {
       dateToPay: moment().format("YYYY-MM-DD"),
       paymentMethods: ["Boleto", "Transferência", "Dinheiro"],
       loading: false,
+      loadingFilter:false,
       loadingDelete: false,
       outtakeSelect: [],
       files: [],
