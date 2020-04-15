@@ -41,7 +41,7 @@
         </v-flex>
         <v-spacer></v-spacer>
         <v-flex xs12 md6>
-          <v-text-field
+<!--          <v-text-field
             prepend-icon="location_city"
             v-model="selectedDoctor.name"
             label="Médico"
@@ -49,34 +49,33 @@
             rounded
             filled
             disabled
-          ></v-text-field>
-          <!-- <v-combobox
-            prepend-icon="person"
-            v-model="selectedDoctor"
-            :items="doctors"
-            return-object
-            item-text="name"
-            label="Médicos"
-            outlined
-            rounded
-            chips
-            color="blue"
-            clearable
-            readonly
+          ></v-text-field>-->
+          <v-combobox
+                  prepend-icon="person"
+                  v-model="selectedDoctor"
+                  :items="doctors"
+                  item-text="name"
+                  return-object
+                  label="Especialidade"
+                  outlined
+                  rounded
+                  chips
+                  color="blue"
+
           >
             <template v-slot:selection="data">
               <v-chip
-                :key="JSON.stringify(data.item)"
-                :input-value="data.selected"
-                :disabled="data.disabled"
-                class="v-chip--select-multi"
-                @click.stop="data.parent.selectedIndex = data.index"
-                @input="data.parent.selectItem(data.item)"
-                text-color="white"
-                color="info"
+                      :key="JSON.stringify(data.item)"
+                      :input-value="data.selected"
+                      :disabled="data.disabled"
+                      class="v-chip--select-multi"
+                      @click.stop="data.parent.selectedIndex = data.index"
+                      @input="data.parent.selectItem(data.item)"
+                      text-color="white"
+                      color="info"
               >{{ data.item.name }}</v-chip>
             </template>
-          </v-combobox>-->
+          </v-combobox>
         </v-flex>
 
         <v-flex xs12 md12>
@@ -692,14 +691,15 @@ export default {
       return consultas;
     },
     doctors: {
-      get: function() {
+      get: function () {
         /* let docs = {
-                        0: {
-                            name: 'Todos'
-                        },
-                        ...this.$store.getters.doctors
-                    }
-                    return Object.values(docs) */
+                                    0: {
+                                        name: 'Todos'
+                                    },
+                                    ...this.$store.getters.doctors
+                                }
+                                return Object.values(docs) */
+
         let docArray = Object.values(this.$store.getters.doctors);
         docArray = docArray.filter(doctor => {
           if (!this.especialidade) {
