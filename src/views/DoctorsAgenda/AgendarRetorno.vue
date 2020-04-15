@@ -1001,9 +1001,10 @@ export default {
     },
     async initialConfig() {
       this.loading = true;
-      //await this.$store.dispatch("getDoctors");
-      //await this.$store.dispatch("getSpecialties");
+      await this.$store.dispatch("getDoctors");
+      await this.$store.dispatch("getSpecialties");
       this.query = this.$route.params.q;
+      /*console.log('rota:',this.query)*/
       this.selectedDoctor = this.query.doctor;
       this.especialidade = this.query.especialidade;
       this.clinic = this.query.consultation.clinic;
