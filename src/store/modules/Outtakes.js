@@ -25,6 +25,7 @@ const mutations = {
 
 const actions = {
     async getOuttakes(context, payload) {
+
         try {
             let selectedUnit = context.getters.selectedUnit;
             let base = firebase.firestore().collection('outtakes');
@@ -45,7 +46,8 @@ const actions = {
                     ...doc.data()
                 })
             });
-            context.commit("setOuttakes", outtakes)
+            context.commit("setOuttakes", outtakes);
+            console.log(outtakes);
         } catch (e) {
             console.log(e)
         }
@@ -208,9 +210,14 @@ const actions = {
         if (payload.value === 'delete') {
             payload.value = firebase.firestore.FieldValue.delete()
         }
+
+
         await firebase.firestore().collection('outtakes/').doc(payload.outtake.id).update({
             [payload.field]: payload.value
         })
+
+
+
     },
     async deleteOuttake(context, outtake) {
         await firebase.firestore().collection('outtakes/').doc(outtake.id).delete()
