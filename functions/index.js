@@ -66,6 +66,13 @@ exports.createConsultations = functions.https.onRequest((request, response) => {
     return
 })
 
+exports.addMessage = functions.https.onRequest(async (req, res) => {
+    cors(request, response, () => {
+        response.status(200).send('success aí cara. Foco!')
+    });
+  });
+  
+
 exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate(async (change, context) => {
     let db = admin.firestore()
     let userRef = db.collection('users').doc(context.params.cpf)
