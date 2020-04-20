@@ -18,7 +18,7 @@
                                 hide-default-header
                                 hide-default-footer
                                 :headers="headers"
-                                :items="doctorsMap"
+                                :items="doctorsMapping"
                                 :search="search"
                                 :items-per-page="-1"
                                 item-key="hour"
@@ -227,8 +227,8 @@
             ],
         }),
         computed:{
-            doctorsMap() {
-                let array = [
+            doctorsMapping() {
+                let weeklyTable = [
                     {
                         hour: '06:00',
                         monday: [],
@@ -435,28 +435,28 @@
                         saturday: [],
                     },
                 ]
-                let arr = this.$store.getters.AllSchedules
-                for (let i in arr) {
-                    let daysoftheweek = arr[i].days
-                    for (let j in daysoftheweek) {
-                        for (let k in array) {
-                            if( daysoftheweek[j].hour === array[k].hour && j == '1'){
-                                array[k].monday.push(arr[i])
-                            } else if( daysoftheweek[j].hour === array[k].hour && j == '2'){
-                                array[k].tuesday.push(arr[i])
-                            } else if( daysoftheweek[j].hour === array[k].hour && j == '3'){
-                                array[k].wednesday.push(arr[i])
-                            } else if( daysoftheweek[j].hour === array[k].hour && j == '4'){
-                                array[k].thursday.push(arr[i])
-                            } else if( daysoftheweek[j].hour === array[k].hour && j == '5'){
-                                array[k].friday.push(arr[i])
-                            } else if( daysoftheweek[j].hour === array[k].hour && j == '6'){
-                                array[k].saturday.push(arr[i])
+                let schedules = this.$store.getters.AllSchedules
+                for (let schedule in schedules) {
+                    let daysOfTheWeek = schedules[schedule].days
+                    for (let dayOfTheWeek in daysOfTheWeek) {
+                        for (let weeklyItem in weeklyTable) {
+                            if( daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '1'){
+                                weeklyTable[weeklyItem].monday.push(schedules[schedule])
+                            } else if( daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '2'){
+                                weeklyTable[weeklyItem].tuesday.push(schedules[schedule])
+                            } else if( daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '3'){
+                                weeklyTable[weeklyItem].wednesday.push(schedules[schedule])
+                            } else if( daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '4'){
+                                weeklyTable[weeklyItem].thursday.push(schedules[schedule])
+                            } else if( daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '5'){
+                                weeklyTable[weeklyItem].friday.push(schedules[schedule])
+                            } else if( daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '6'){
+                                weeklyTable[weeklyItem].saturday.push(schedules[schedule])
                             }
                         }
                     }
                 }
-                return array
+                return weeklyTable
             },
         },
         watch:{
