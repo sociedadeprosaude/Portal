@@ -328,3 +328,65 @@ exports.resetTicketsCount = functions.pubsub.schedule('0 0 * * *').onRun((contex
     });
     return null;
 });
+
+exports.deleteScheduleByDay = functions.runWith(heavyFunctionsRuntimeOpts).https.onCall(async (data, context) => {
+    let payload = data.payload
+    let schedule = await admin.firestore().collection('schedules')
+        .where('specialty.name', "==", payload.specialty.name)
+        .where('doctor.cpf', "==", payload.doctor.cpf)
+        .where('clinic.cnpj', '==', payload.clinic.cnpj).get()
+    schedule.forEach((doc) => {
+        let data = doc.data()
+        let cancelations_schedules = data.cancelations_schedules ? data.cancelations_schedules : []
+        let obj = { start_date: payload.start_date, final_date: payload.final_date }
+        if (payload.hour)
+            obj.hour = payload.hour
+        if (payload.weekDays)
+            obj.week_days = payload.weekDays
+        cancelations_schedules.push({ ...obj })
+        admin.firestore().collection('schedules').doc(doc.id).update({ cancelations_schedules: cancelations_schedules })
+    })
+    removeConsultations(payload)
+    return {Message:"Success"}
+});
+
+exports.deleteSchedule = functions.firestore
+    .document('schedules/{scheduleID}')
+    .onDelete(async (snap, context) => {
+        const deletedSchedule = snap.data();
+        await removeConsultations(deletedSchedule)
+    });
+
+async function removeConsultations(payload) {
+    let start = moment().format('YYYY-MM-DD 00:00');
+    try {
+        let query = await admin.firestore().collection('consultations')
+            .where('specialty.name', "==", payload.specialty.name)
+            .where('doctor.cpf', "==", payload.doctor.cpf).where('clinic.cnpj', '==', payload.clinic.cnpj)
+            .where('date', ">=", start)
+        if (payload.final_date){
+            let end = moment(payload.final_date, 'YYYY-MM-DD').format('YYYY-MM-DD 23:59');
+            query.where('date', "<=", end)
+        }
+            
+
+        let snapshot = await query.get()
+        snapshot.forEach(async doc => {
+
+            let dateConsultation = moment(doc.data().date);
+            let filterHour = payload.hour ? doc.data().date.split(' ')[1] === payload.hour ? true : false : true
+            let filterDayWeek = payload.weekDays ? payload.weekDays.indexOf(dateConsultation.weekday()) > -1 ? true : false : true
+
+            if (filterHour && filterDayWeek) {
+                admin.firestore().collection('consultations').doc(doc.id).delete();
+            }
+            if (filterHour && filterDayWeek && doc.data().user) {
+                admin.firestore().collection('users').doc(doc.data().user.cpf).collection('consultations').doc(doc.id).delete();
+                admin.firestore().collection('canceled').doc(doc.id).set(doc.data())
+            }
+        })
+    } catch (e) {
+        throw e
+    }
+    return
+}
