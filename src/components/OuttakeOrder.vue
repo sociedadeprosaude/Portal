@@ -178,7 +178,7 @@ export default {
       );
     },
     daydate(date) {
-      console.log(this.outtakes)
+
       var dateMoment = moment(date);
       return this.semanaOptions[dateMoment.day()];
     },
@@ -220,8 +220,8 @@ export default {
       });
 
       if (outtake.recurrent === 'true') {
-        console.log('pagamento:', outtake.date_to_pay)
-        console.log('outtakes', outtake)
+        console.log('pagamento:', outtake.date_to_pay);
+        console.log('outtakes', outtake);
         let bill = {
           category: outtake.category,
           subCategory: outtake.subCategoria,
@@ -238,7 +238,7 @@ export default {
 
         await this.$store.dispatch("addOuttakes", bill);
       }
-      this.outtakeSelect= []
+      this.outtakeSelect= [];
       await this.$store.dispatch("getOuttakes");
       this.loading = false;
     },

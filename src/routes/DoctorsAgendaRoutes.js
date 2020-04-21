@@ -1,4 +1,4 @@
-import AgendamentoConsultas from "../views/DoctorsAgenda/AgendamentoConsultas";
+import AgendamentoConsultas from "../views/DoctorsAgenda/SchedulingConsultation";
 import CadastroConsultasPlantoes from "../views/DoctorsAgenda/CadastroConsultasPlantoes";
 import DeletarConsultas from "../views/DoctorsAgenda/DeletarConsultas";
 import GerenciamentoConsultas from "../views/DoctorsAgenda/GerenciamentoConsultas";
