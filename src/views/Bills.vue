@@ -28,8 +28,8 @@
                 v-model="subCategory"
                 :items="category.subCategories? [...category.subCategories,other]:[other]"
                 item-text="name"
-                return-object
-              ></v-combobox>
+                return-object>
+              </v-combobox>
             </v-flex>
 
             <v-flex xs12 sm3 class="mt-2 ml-md-3">
@@ -476,6 +476,11 @@ export default {
       }
       await this.$store.dispatch("addOuttakes", bill);
       await this.$store.dispatch("getOuttakes");
+      await this.$store.dispatch("getOuttakesPending", {
+        finalDate: moment()
+                .add(5, "days")
+                .format("YYYY-MM-DD 23:59:59")
+      });
       this.loading = false;
     },
     async unpayOuttake(outtake) {

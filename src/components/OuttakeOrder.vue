@@ -182,7 +182,7 @@ export default {
       );
     },
     daydate(date) {
-      console.log(this.outtakes)
+      console.log(this.outtakes);
       var dateMoment = moment(date);
       return this.semanaOptions[dateMoment.day()];
     },
@@ -249,6 +249,7 @@ export default {
                 .add(5, "days")
                 .format("YYYY-MM-DD 23:59:59")
       });
+      await this.$store.dispatch("getOuttakesPaidToday");
       this.loading = false;
     },
     async deleteOuttake(outtake) {
