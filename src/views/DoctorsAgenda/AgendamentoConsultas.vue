@@ -817,7 +817,7 @@
                     let qtd_consultations = obj.qtd_consultations
                     let qtd_returns = obj.qtd_returns
                     
-                    if( schedule.clinic.name === item.clinic.name && schedule.specialty.name === item.specialty.name
+                    if( schedule.clinic.cnpj === item.clinic.cnpj && schedule.specialty.name === item.specialty.name
                        && schedule.doctor.cpf === item.doctor.cpf && schedule.date === item.date  && item.user){
                             if(item.type === 'Consulta'){
                                 obj.qtd_consultations = obj.qtd_consultations +  1     

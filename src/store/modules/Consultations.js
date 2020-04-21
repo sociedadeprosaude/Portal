@@ -437,9 +437,7 @@ const actions = {
             console.log(payload.consultation);
             functions.removeUndefineds(payload);
             let FieldValue = firebase.firestore.FieldValue;
-            await firebase.firestore().collection('consultations').doc(payload.idConsultation).update({
-                user: FieldValue.delete()
-            });
+            await firebase.firestore().collection('consultations').doc(payload.idConsultation).delete()
             await firebase.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.idConsultation).update({ status: 'Cancelado' })
 
             //Para consultas que são do tipo Retorno
@@ -493,10 +491,7 @@ const actions = {
 
                 //console.log('É uma consulta e possui um retorno')
 
-                await firebase.firestore().collection('consultations').doc(payload.regress).update({
-                    user: FieldValue.delete(),
-                    previousConsultation: FieldValue.delete()
-                });
+                await firebase.firestore().collection('consultations').doc(payload.regress).delete()
                 await firebase.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.regress).update({ status: 'Cancelado' })
 
             }
