@@ -436,7 +436,6 @@ export default {
     },
     async bifurcation() {
       if (this.parcelas) {
-        //console.log('parcelas: ', this.parcelas)
         this.value = this.value / this.parcelas;
         for (let i = 0; i < this.parcelas; i++) {
           this.addBill();
