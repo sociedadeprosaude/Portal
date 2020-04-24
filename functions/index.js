@@ -1,10 +1,10 @@
 const functions = require('firebase-functions');
 var admin = require('firebase-admin');
-const cors = require('cors')({ origin: true });
+const cors = require('cors')({origin: true});
 
 var papa = require('papaparse');
 var moment = require('moment');
-const { parse } = require('json2csv');
+const {parse} = require('json2csv');
 admin.initializeApp();
 const defaultRoute = '/analise-exames'
 
@@ -20,7 +20,7 @@ exports.removeUnnappointedConsultations = functions.runWith(heavyFunctionsRuntim
     console.log(`Datas: ${startDate.format('DD/MM/YYYY HH:mm')} até ${finalDate.format('DD/MM/YYYY HH:mm')}`)
     let consCollection = await db.collection('consultations').where('date', '>', startDate.format('YYYY-MM-DD HH:mm')).where('date', '<', finalDate.format('YYYY-MM-DD HH:mm')).get()
     console.log('size: ', consCollection.docs.length)
-    while(consCollection.docs.length > 0) {
+    while (consCollection.docs.length > 0) {
         console.log(`Deletando: ${startDate.format('DD/MM/YYYY HH:mm')} até ${finalDate.format('DD/MM/YYYY HH:mm')}`)
         consCollection.forEach((docRef) => {
             if (!docRef.data().user) {
@@ -321,3 +321,40 @@ exports.resetTicketsCount = functions.pubsub.schedule('0 0 * * *').onRun((contex
     });
     return null;
 });
+
+exports.getSpecialtiesWithPrice = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (request, response) => {
+    response.set('Access-Control-Allow-Origin', '*');
+    response.set('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS');
+    response.set('Access-Control-Allow-Headers', '*');
+    let minParcel = 40
+    let scheduleCollection = await admin.firestore().collection('schedules').get()
+    let availableSpecialties = []
+    for (let scheduleDoc of scheduleCollection.docs) {
+        let schedule = scheduleDoc.data()
+        if (availableSpecialties.indexOf(schedule.specialty.name) < 0) {
+            availableSpecialties.push(schedule.specialty.name)
+        }
+    }
+    let specialtiesSnap = await admin.firestore().collection('specialties').get()
+
+    let allSpecialties = [];
+    allSpecialties = specialtiesSnap.docs.map(doc => ({...doc.data(), id: doc.id}))
+
+    let formattedSpecialties = allSpecialties.filter((spec) => {
+        return spec.doctors && spec.doctors.length > 0 && availableSpecialties.indexOf(spec.name) > -1
+    }).map((spec) => {
+        let price = spec.doctors[0].price
+        let specWithPrice = {
+            ...spec,
+            price: price,
+            numOfParcels: Math.floor(price / minParcel),
+            valueOfParcels: price / Math.floor(price / minParcel)
+        }
+        delete specWithPrice.doctors
+        return specWithPrice
+    })
+
+    response.status(200).send(formattedSpecialties.slice(0, 5))
+})
+
+
