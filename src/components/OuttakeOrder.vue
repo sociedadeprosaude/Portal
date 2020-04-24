@@ -200,7 +200,6 @@ export default {
     async editBillValue (bill) {
       if (!this.isEditing) {
 
-        console.log(bill);
         await this.$store.dispatch("editOuttakes", bill);
         await this.$store.dispatch("getOuttakes");
         this.loading = false;
@@ -214,9 +213,7 @@ export default {
     },
     async payOuttake(outtake) {
       this.loading = true;
-      console.log(' outtake select :', this.outtakeSelect);
       this.outtakeSelect= outtake;
-      console.log(' outtake select before:', this.outtakeSelect);
       await this.$store.dispatch("updateOuttake", {
         outtake: outtake,
         field: "paid",
@@ -224,8 +221,6 @@ export default {
       });
 
       if (outtake.recurrent === 'true') {
-        console.log('pagamento:', outtake.date_to_pay);
-        console.log('outtakes', outtake);
         let bill = {
           category: outtake.category,
           subCategory: outtake.subCategoria,
@@ -238,7 +233,6 @@ export default {
           unit:outtake.unit,
           recurrent: 'true',
         };
-        console.log('pagamento:', outtake.date_to_pay);
 
         await this.$store.dispatch("addOuttakes", bill);
       }
@@ -249,6 +243,7 @@ export default {
                 .add(5, "days")
                 .format("YYYY-MM-DD 23:59:59")
       });
+      await this.$store.dispatch("getOuttakesPaidToday");
       this.loading = false;
     },
     async deleteOuttake(outtake) {

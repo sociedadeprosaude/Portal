@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --max_old_space_size=8192",
+    "build": "node --max_old_space_size=8192 node_modules/.bin/vue-cli-service build --open",
     "build-deploy": "vue-cli-service build --max_old_space_size=8192 && firebase deploy --only hosting",
     "lint": "vue-cli-service lint"
   },

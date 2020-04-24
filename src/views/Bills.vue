@@ -28,8 +28,8 @@
                 v-model="subCategory"
                 :items="category.subCategories? [...category.subCategories,other]:[other]"
                 item-text="name"
-                return-object
-              ></v-combobox>
+                return-object>
+              </v-combobox>
             </v-flex>
 
             <v-flex xs12 sm3 class="mt-2 ml-md-3">
@@ -313,7 +313,7 @@ export default {
       dateToPay: moment().format("YYYY-MM-DD"),
       paymentMethods: ["Boleto", "Transferência", "Dinheiro"],
       loading: false,
-      loadingFilter: false,
+      loadingFilter:false,
       loadingDelete: false,
       outtakeSelect: [],
       files: [],
@@ -436,7 +436,6 @@ export default {
     },
     async bifurcation() {
       if (this.parcelas) {
-        //console.log('parcelas: ', this.parcelas)
         this.value = this.value / this.parcelas;
         for (let i = 0; i < this.parcelas; i++) {
           this.addBill();

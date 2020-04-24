@@ -437,9 +437,7 @@ const actions = {
             console.log(payload.consultation);
             functions.removeUndefineds(payload);
             let FieldValue = firebase.firestore.FieldValue;
-            await firebase.firestore().collection('consultations').doc(payload.idConsultation).update({
-                user: FieldValue.delete()
-            });
+            await firebase.firestore().collection('consultations').doc(payload.idConsultation).delete()
             await firebase.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.idConsultation).update({ status: 'Cancelado' })
 
             //Para consultas que são do tipo Retorno
@@ -493,10 +491,7 @@ const actions = {
 
                 //console.log('É uma consulta e possui um retorno')
 
-                await firebase.firestore().collection('consultations').doc(payload.regress).update({
-                    user: FieldValue.delete(),
-                    previousConsultation: FieldValue.delete()
-                });
+                await firebase.firestore().collection('consultations').doc(payload.regress).delete()
                 await firebase.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.regress).update({ status: 'Cancelado' })
 
             }
@@ -617,8 +612,7 @@ const actions = {
         })
     },
 
-    async removeAppointmentByDay(context, payload) { // ApagarTodasAsConsultasDoDiaDoMedico
-
+    async removeConsultations(context,payload){
         let start = moment(payload.start_date, 'YYYY-MM-DD').format('YYYY-MM-DD 00:00');
         let end = moment(payload.final_date, 'YYYY-MM-DD').format('YYYY-MM-DD 23:59');
         payload = functions.removeUndefineds(payload);
@@ -627,6 +621,7 @@ const actions = {
                 .where('specialty.name', "==", payload.specialty.name)
                 .where('doctor.cpf', "==", payload.doctor.cpf).where('clinic.name','==',payload.clinic.cnpj)
                 .where('date', ">=", start).where('date', "<=", end).get();
+
             snapshot.forEach(async doc => {
 
                 let dateConsultation = moment(doc.data().date);
@@ -641,8 +636,18 @@ const actions = {
                     firebase.firestore().collection('canceled').doc(doc.id).set(doc.data())
                 }
             })
+        } catch (e) {
+            throw e
+        }
+        return
+    }, */
 
-            await context.dispatch('removeScheduleByDay',payload)
+    async removeAppointmentByDay(context, payload) { // ApagarTodasAsConsultasDoDiaDoMedico
+        try {
+            var deleteScheduleByDay = firebase.functions().httpsCallable('deleteScheduleByDay');
+            await deleteScheduleByDay({payload: payload})
+            //await context.dispatch('removeConsultations',payload)
+            //await context.dispatch('removeScheduleByDay',payload)
         } catch (e) {
             throw e
         }
@@ -665,7 +670,6 @@ const actions = {
         })
 
     },
-    //======================================================atendimento===============================
     async addMedicalRecordsToConsultation({ commit }, payload) {
         firebase.firestore().collection('consultations').doc(payload.consultation).update({ MedicalRecords: payload.MedicalRecords });
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ MedicalRecords: payload.MedicalRecords })
@@ -698,8 +702,7 @@ const actions = {
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ start_at: payload.start });
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ end_at: payload.end });
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ duration: payload.durantion })
-    }
-    //======================================================atendimento===============================
+    
 };
 
 const getters = {

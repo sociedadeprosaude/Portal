@@ -47,7 +47,6 @@ const actions = {
                 })
             });
             context.commit("setOuttakes", outtakes);
-            console.log(outtakes);
         } catch (e) {
             console.log(e)
         }

@@ -18,7 +18,7 @@
                                 hide-default-header
                                 hide-default-footer
                                 :headers="headers"
-                                :items="doctorsMap"
+                                :items="doctorsMapping"
                                 :search="search"
                                 :items-per-page="-1"
                                 item-key="hour"
@@ -48,71 +48,154 @@
                             <template v-slot:item.monday="{ item }">
                                 <strong v-for="(index,i) in item.monday" :key="i">
                                     <br/>
+                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="info">
+                                        <template v-slot:activator="{ on }">
+                                            <v-card
+                                                    v-on="on"
+                                                    class="white--text pa-1 my-n2"
+                                                    color="grey"
+                                            >
+                                                {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                            </v-card>
+                                        </template>
+                                        <span><strong>período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong></span>
+                                    </v-tooltip>
                                     <v-card
+                                            v-else
                                             class="white--text pa-1 my-n2"
                                             :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
-                                >
-                                        {{index}}
+                                    >
+                                        {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                     </v-card>
                                 </strong>
                                 <br/>
                             </template>
+
                             <template v-slot:item.tuesday="{ item }">
                                 <strong v-for="(index,i) in item.tuesday" :key="i">
                                     <br/>
+                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="info">
+                                        <template v-slot:activator="{ on }">
+                                            <v-card
+                                                    v-on="on"
+                                                    class="white--text pa-1 my-n2"
+                                                    color="grey"
+                                            >
+                                                {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                            </v-card>
+                                        </template>
+                                        <span><strong>período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong></span>
+                                    </v-tooltip>
                                     <v-card
+                                            v-else
                                             class="white--text pa-1 my-n2"
                                             :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
                                     >
-                                        {{index}}
+                                        {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                     </v-card>
                                 </strong>
                                 <br/>
                             </template>
+
                             <template v-slot:item.wednesday="{ item }">
                                 <strong v-for="(index,i) in item.wednesday" :key="i">
                                     <br/>
+                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="info">
+                                        <template v-slot:activator="{ on }">
+                                            <v-card
+                                                    v-on="on"
+                                                    class="white--text pa-1 my-n2"
+                                                    color="grey"
+                                            >
+                                                {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                            </v-card>
+                                        </template>
+                                        <span><strong>período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong></span>
+                                    </v-tooltip>
                                     <v-card
+                                            v-else
                                             class="white--text pa-1 my-n2"
                                             :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
                                     >
-                                        {{index}}
+                                        {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                     </v-card>
                                 </strong>
                                 <br/>
                             </template>
+
                             <template v-slot:item.thursday="{ item }">
                                 <strong v-for="(index,i) in item.thursday" :key="i">
                                     <br/>
+                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="info">
+                                        <template v-slot:activator="{ on }">
+                                            <v-card
+                                                    v-on="on"
+                                                    class="white--text pa-1 my-n2"
+                                                    color="grey"
+                                            >
+                                                {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                            </v-card>
+                                        </template>
+                                        <span><strong>período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong></span>
+                                    </v-tooltip>
                                     <v-card
+                                            v-else
                                             class="white--text pa-1 my-n2"
                                             :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
                                     >
-                                        {{index}}
+                                        {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                     </v-card>
                                 </strong>
                                 <br/>
                             </template>
+
                             <template v-slot:item.friday="{ item }">
                                 <strong v-for="(index,i) in item.friday" :key="i">
                                     <br/>
+                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="info">
+                                        <template v-slot:activator="{ on }">
+                                            <v-card
+                                                    v-on="on"
+                                                    class="white--text pa-1 my-n2"
+                                                    color="grey"
+                                            >
+                                                {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                            </v-card>
+                                        </template>
+                                        <span><strong>período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong></span>
+                                    </v-tooltip>
                                     <v-card
+                                            v-else
                                             class="white--text pa-1 my-n2"
                                             :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
                                     >
-                                        {{index}}
+                                        {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                     </v-card>
                                 </strong>
                                 <br/>
                             </template>
+
                             <template v-slot:item.saturday="{ item }">
                                 <strong v-for="(index,i) in item.saturday" :key="i">
                                     <br/>
+                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="info">
+                                        <template v-slot:activator="{ on }">
+                                            <v-card
+                                                    v-on="on"
+                                                    class="white--text pa-1 my-n2"
+                                                    color="grey"
+                                            >
+                                                {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                            </v-card>
+                                        </template>
+                                        <span><strong>período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong></span>
+                                    </v-tooltip>
                                     <v-card
+                                            v-else
                                             class="white--text pa-1 my-n2"
                                             :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
                                     >
-                                        {{index}}
+                                        {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                     </v-card>
                                 </strong>
                                 <br/>
@@ -144,8 +227,8 @@
             ],
         }),
         computed:{
-            doctorsMap() {
-                let array = [
+            doctorsMapping() {
+                let weeklyTable = [
                     {
                         hour: '06:00',
                         monday: [],
@@ -352,30 +435,28 @@
                         saturday: [],
                     },
                 ]
-                let arr = this.$store.getters.AllSchedules
-                for (let i in arr) {
-                    let data = ''
-                    data = arr[i].doctor.name + ' - ' + arr[i].specialty.name + ' - ' + arr[i].clinic.name
-                    let daysoftheweek = arr[i].days
-                    for (let j in daysoftheweek) {
-                        for (let k in array) {
-                            if( daysoftheweek[j].hour === array[k].hour && j == '1'){
-                                array[k].monday.push(data)
-                            } else if( daysoftheweek[j].hour === array[k].hour && j == '2'){
-                                array[k].tuesday.push(data)
-                            } else if( daysoftheweek[j].hour === array[k].hour && j == '3'){
-                                array[k].wednesday.push(data)
-                            } else if( daysoftheweek[j].hour === array[k].hour && j == '4'){
-                                array[k].thursday.push(data)
-                            } else if( daysoftheweek[j].hour === array[k].hour && j == '5'){
-                                array[k].friday.push(data)
-                            } else if( daysoftheweek[j].hour === array[k].hour && j == '6'){
-                                array[k].saturday.push(data)
+                let schedules = this.$store.getters.AllSchedules
+                for (let schedule in schedules) {
+                    let daysOfTheWeek = schedules[schedule].days
+                    for (let dayOfTheWeek in daysOfTheWeek) {
+                        for (let weeklyItem in weeklyTable) {
+                            if( daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '1'){
+                                weeklyTable[weeklyItem].monday.push(schedules[schedule])
+                            } else if( daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '2'){
+                                weeklyTable[weeklyItem].tuesday.push(schedules[schedule])
+                            } else if( daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '3'){
+                                weeklyTable[weeklyItem].wednesday.push(schedules[schedule])
+                            } else if( daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '4'){
+                                weeklyTable[weeklyItem].thursday.push(schedules[schedule])
+                            } else if( daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '5'){
+                                weeklyTable[weeklyItem].friday.push(schedules[schedule])
+                            } else if( daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '6'){
+                                weeklyTable[weeklyItem].saturday.push(schedules[schedule])
                             }
                         }
                     }
                 }
-                return array
+                return weeklyTable
             },
         },
         watch:{
