@@ -475,7 +475,6 @@
                     else res[targetDate].numRegress += 1
                     res[targetDate].consultations.push(consultations[cons])
                 }
-                //console.log('foi aqui também',res)
                 return res
             },
 
