@@ -550,8 +550,6 @@
                 let consultas = this.$store.getters.consultations.filter((a) => {
                     return this.especialidade && this.date ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && a.user : false
                 })
-
-                console.log('Geren',consultas)
                 return consultas;
             },
             /* menssagens:{
@@ -699,7 +697,6 @@
                     else res[targetDate].numRegress += 1
                     res[targetDate].consultations.push(consultations[cons])
                 }
-                console.log('foi aqui também',res)
                 return res
             },
 
