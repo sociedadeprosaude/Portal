@@ -10,6 +10,7 @@ const mutations = {
 
 const actions = {
     async uploadFileToStorage({}, payload) {
+
         let storageRef = firebase.storage().ref().child(payload.path);
         let filesUrl = [];
         let counter = 0;
@@ -17,11 +18,14 @@ const actions = {
         for(let file in payload.files) {
             let storageFile = await storageRef.child(now + '+' + counter.toString()).put(payload.files[file]);
             let url = await storageFile.metadata.ref.getDownloadURL();
-            filesUrl.push(url)
+            filesUrl.push(url);
+            counter = counter + 1;
         }
+        console.log(filesUrl);
         return filesUrl
     },
     async deleteFile({}, payload) {
+
         try {
             for (let path in payload.imagePaths) {
                 let imagePath = payload.imagePaths[path];

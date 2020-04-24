@@ -5,10 +5,11 @@
         <v-card class="py-2 px-4">
           <v-layout row wrap>
             <v-flex xs12 class="text-left">
-              <span class="my-headline">Adicionar conta à pagar</span>
+              <span class="my-headline hidden-xs-only">Adicionar conta à pagar</span>
+              <h3 class="font-weight-bold text-center hidden-md-and-up">Adicionar conta à pagar</h3>
             </v-flex>
 
-            <v-flex xs12 sm3>
+            <v-flex xs12 sm3 class="mt-2">
               <v-combobox
                 outlined
                 @input.native="category={name:$event.srcElement.value,subCategories:[]}"
@@ -17,7 +18,8 @@
                 item-text="name"
                 return-object
                 label="Categoria"
-              ></v-combobox>
+                >
+              </v-combobox>
               <v-combobox
                 outlined
                 v-if="category"
@@ -26,63 +28,48 @@
                 v-model="subCategory"
                 :items="category.subCategories? [...category.subCategories,other]:[other]"
                 item-text="name"
-                return-object
-              ></v-combobox>
+                return-object>
+              </v-combobox>
             </v-flex>
 
-            <v-flex xs12 sm3 class="ml-3">
+            <v-flex xs12 sm3 class="mt-2 ml-md-3">
               <v-select
                 outlined
                 label="Método de pagamento"
                 v-model="paymentMethod"
-                :items="paymentMethods"
-              ></v-select>
+                :items="paymentMethods">
+              </v-select>
             </v-flex>
-            <v-flex xs12 sm3 class="ml-3">
+            <v-flex xs12 sm3 class="mt-2  ml-md-3">
               <v-select
                 outlined
                 label="Unidade"
                 v-model="unit"
                 :items="units"
                 item-text="name"
-                return-object
-              ></v-select>
+                return-object>
+              </v-select>
             </v-flex>
-            <v-spacer />
-            <v-flex xs12 sm2 class="mx-3">
+            <v-spacer/>
+            <v-flex xs12 sm2 class="mt-2">
               <v-currency-field outlined v-model="value"></v-currency-field>
             </v-flex>
             <v-flex xs12>
               <v-text-field outlined label="Descrição" v-model="description"></v-text-field>
             </v-flex>
-            <v-flex xs1>
-              <v-checkbox
-                color="success"
-                class="font-weight-bold"
-                label="Parcelar"
-                v-model="parcelar"
-              />
+            <v-flex xs4 md1>
+                <v-checkbox color="success" class="font-weight-bold" label="Parcelar" v-model="parcelar"/>
             </v-flex>
-            <v-flex xs2>
-              <v-text-field
-                hint="Quantidade de parcelas"
-                persistent-hint
-                class="ml-4 mt-4"
-                outlined
-                dense
-                :disabled="!parcelar"
-                v-model="parcelas"
-                v-mask="mask.number"
-              ></v-text-field>
+            <v-flex xs5 md2>
+              <v-text-field hint="Quantidade de parcelas" persistent-hint class="ml-4 mt-4" outlined dense
+                            :disabled="!parcelar" v-model="parcelas" v-mask="mask.number">
+
+              </v-text-field>
             </v-flex>
-            <v-spacer />
-            <v-flex xs6>
-              <v-checkbox
-                color="success"
-                class="font-weight-bold"
-                label="Conta recorrente"
-                v-model="recorrente"
-              ></v-checkbox>
+            <v-spacer/>
+            <v-flex xs6 md6>
+              <v-checkbox color="success" class="font-weight-bold" label="Conta recorrente" v-model="recorrente">
+              </v-checkbox>
             </v-flex>
             <v-flex xs12 sm4>
               <span class="my-sub-headline">Data para pagamento</span>
@@ -190,8 +177,8 @@
                 label="categoria"
                 v-model="selectedCategory"
                 :items="categoriesName"
-                outlined
-              ></v-select>
+                outlined>
+              </v-select>
             </v-col>
           </v-row>
         </div>
@@ -341,6 +328,7 @@ export default {
   },
   computed: {
     outtakesPaid() {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       return this.$store.getters.outtakesPaid.sort((a, b) => {
         return b.date_to_pay > a.date_to_pay ? 1 : -1;
       });
@@ -357,6 +345,7 @@ export default {
       else if (this.selectedOption === 1) return this.outtakesPaid;
     },
     pendingOuttakes() {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       return this.$store.getters.outtakesPending.sort((a, b) => {
         return b.date_to_pay < a.date_to_pay ? 1 : -1;
       });
@@ -447,7 +436,6 @@ export default {
     },
     async bifurcation() {
       if (this.parcelas) {
-        //console.log('parcelas: ', this.parcelas)
         this.value = this.value / this.parcelas;
         for (let i = 0; i < this.parcelas; i++) {
           this.addBill();
@@ -487,6 +475,11 @@ export default {
       }
       await this.$store.dispatch("addOuttakes", bill);
       await this.$store.dispatch("getOuttakes");
+      await this.$store.dispatch("getOuttakesPending", {
+        finalDate: moment()
+                .add(5, "days")
+                .format("YYYY-MM-DD 23:59:59")
+      });
       this.loading = false;
     },
     async unpayOuttake(outtake) {
