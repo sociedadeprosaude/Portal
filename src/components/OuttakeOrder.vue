@@ -24,26 +24,30 @@
               <v-col>
                 <v-card class="pa-4 my-4" v-for="(bill) in outtakesGroup" :key="bill.id">
                   <v-layout row wrap>
-                    <v-flex xs12 class="my-2">
+                    <v-flex xs12 md12 class="my-2">
                       <v-layout row wrap>
-                        <span>{{bill.category}}</span>
-                        <v-divider vertical class="mx-4"/>
-                        <span>{{bill.payment_method}}</span>
-                        <v-divider vertical class="mx-4"/>
-                        <span class="font-weight-bold">{{bill.date_to_pay | dateFilter}}</span>
-                        <v-divider vertical class="mx-4"/>
-                        <v-icon class="warning--text align-start"
-                          v-if="distanceToToday(bill.date_to_pay) < 3"
-                        >warning</v-icon>
-                        <v-spacer/>
-                        <v-flex xs4 class="justify-end">
+                        <v-flex xs12 md3 class="text-center">
+                          <span>{{bill.category}}</span>
+                        </v-flex>
+                        <v-divider vertical class="mx-4 hidden-xs-only"/>
+                        <v-flex xs12 md2 class="text-center">
+                          <span>{{bill.payment_method}}</span>
+                        </v-flex>
+                        <v-divider vertical class="mx-4 hidden-xs-only"/>
+                        <v-flex xs12 md2 class="text-center">
+                          <span class="font-weight-bold">{{bill.date_to_pay | dateFilter}}</span>
+                          <v-icon class="warning--text align-start ml-2"
+                                  v-if="distanceToToday(bill.date_to_pay) < 3"
+                          >warning</v-icon>
+                        </v-flex>
+                        <v-divider vertical class="mx-4 hidden-xs-only"/>
+                        <v-flex xs12 md3 class="mt-xs-2">
                           <v-text-field v-model="bill.value"
                                         dense
                                         outlined
                                         persistent-hint
-                                        prefix="R$"
                                         :readonly="!isEditing"
-                                        prepend-icon="monetization_on"
+                                        prepend-inner-icon="monetization_on"
                                         class="font-weight-bold"
                                         :hint="!isEditing ? 'Clique no icon para editar' : 'Clique no icon para salvar'"
                           >
@@ -61,7 +65,7 @@
                           </v-text-field>
                         </v-flex>
                         <v-flex xs12>
-                          <span class="font-italic">{{bill.description}}</span>
+                          <span class="font-italic font-weight-bold">{{bill.description}}</span>
                         </v-flex>
                         <v-flex xs12 sm10 class="mt-4">
                           <v-layout row wrap>
@@ -178,7 +182,6 @@ export default {
       );
     },
     daydate(date) {
-      console.log(this.outtakes)
       var dateMoment = moment(date);
       return this.semanaOptions[dateMoment.day()];
     },
@@ -196,7 +199,6 @@ export default {
     async editBillValue (bill) {
       if (!this.isEditing) {
 
-        console.log(bill);
         await this.$store.dispatch("editOuttakes", bill);
         await this.$store.dispatch("getOuttakes");
         this.loading = false;
@@ -210,9 +212,7 @@ export default {
     },
     async payOuttake(outtake) {
       this.loading = true;
-      console.log(' outtake select :', this.outtakeSelect);
       this.outtakeSelect= outtake;
-      console.log(' outtake select before:', this.outtakeSelect);
       await this.$store.dispatch("updateOuttake", {
         outtake: outtake,
         field: "paid",
@@ -220,8 +220,6 @@ export default {
       });
 
       if (outtake.recurrent === 'true') {
-        console.log('pagamento:', outtake.date_to_pay)
-        console.log('outtakes', outtake)
         let bill = {
           category: outtake.category,
           subCategory: outtake.subCategoria,
@@ -234,21 +232,32 @@ export default {
           unit:outtake.unit,
           recurrent: 'true',
         };
-        console.log('pagamento:', outtake.date_to_pay);
 
         await this.$store.dispatch("addOuttakes", bill);
       }
-      this.outtakeSelect= []
+      this.outtakeSelect= [];
       await this.$store.dispatch("getOuttakes");
+      await this.$store.dispatch("getOuttakesPending", {
+        finalDate: moment()
+                .add(5, "days")
+                .format("YYYY-MM-DD 23:59:59")
+      });
+      await this.$store.dispatch("getOuttakesPaidToday");
       this.loading = false;
     },
     async deleteOuttake(outtake) {
       this.loading = true;
       await this.$store.dispatch("deleteOuttake", outtake);
       await this.$store.dispatch("getOuttakes");
+      await this.$store.dispatch("getOuttakesPending", {
+        finalDate: moment()
+                .add(5, "days")
+                .format("YYYY-MM-DD 23:59:59")
+      });
       this.loading = false;
     },
     async handleFileUpload(outtake) {
+
       this.loadingAnexo = true;
       this.outtakeSelect= outtake;
       await this.$store.dispatch("deleteFile", {
@@ -257,19 +266,29 @@ export default {
       });
       let uploadedFiles = this.$refs[outtake.id][0].files;
 
-      for (var i = 0; i < uploadedFiles.length; i++) {
+
+      for (let i = 0; i < uploadedFiles.length; i++) {
+
         if (this.files.indexOf(uploadedFiles[i]) < 0) {
           this.files.push(uploadedFiles[i]);
           // this.readFileUrl(uploadedFiles[i], index - 1)
         }
       }
+
       let urls = await this.submitFiles(this.files);
       await this.$store.dispatch("updateOuttake", {
         outtake: outtake,
         field: "receipts",
         value: urls
       });
+
       await this.$store.dispatch("getOuttakes");
+      await this.$store.dispatch("getOuttakesPending", {
+        finalDate: moment()
+                .add(5, "days")
+                .format("YYYY-MM-DD 23:59:59")
+      });
+      this.files = [];
       this.loadingAnexo = false;
       this.outtakeSelect= [];
 
