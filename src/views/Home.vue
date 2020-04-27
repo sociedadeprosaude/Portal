@@ -226,12 +226,7 @@
                                 permission: 'Caixa',
                                 icon: 'receipt',
                             },
-                            {
-                                title: 'Editor de cartao',
-                                to: '/editor',
-                                permission: 'Caixa',
-                                icon: 'credit_card',
-                            },
+
                             {
                                 title: 'Pagar Convênios',
                                 to: '/PaymentCovenants',

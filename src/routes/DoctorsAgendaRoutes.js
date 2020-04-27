@@ -2,8 +2,8 @@ import AgendamentoConsultas from "../views/DoctorsAgenda/SchedulingConsultation"
 import CadastroConsultasPlantoes from "../views/DoctorsAgenda/RegistrationConsultationsShifts";
 import DeletarConsultas from "../views/DoctorsAgenda/DeletarConsultas";
 import GerenciamentoConsultas from "../views/DoctorsAgenda/GerenciamentoConsultas";
-import ConsultasPacientes from "../views/DoctorsAgenda/ConsultasPacientes";
-import ConsultasCanceladas from "../views/DoctorsAgenda/ConsultasCanceladas";
+import ConsultasPacientes from "../views/DoctorsAgenda/PatientConsultations";
+import ConsultasCanceladas from "../views/DoctorsAgenda/CanceledConsultations";
 import RemarcarConsultas from "../views/DoctorsAgenda/RemarcarConsultas";
 import AgendarRetorno from "../views/DoctorsAgenda/ScheduleReturn";
 import Cids from "../views/DoctorsAgenda/Cids";

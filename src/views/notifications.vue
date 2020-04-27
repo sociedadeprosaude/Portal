@@ -29,23 +29,10 @@
 </template>
 
 <script>
-    //import alertConsultationCanceled from "../components/doctorsAgenda/alertConsultationCanceled.vue";
-   // import alertDiscountColaborator from "../components/cashier/alertDiscountColaborator";
-
 
     import moment from "moment";
 
     export default {
-
-        data () {
-            return {
-
-            }
-        },
-
-        components: {
-
-        },
 
         mounted() {
             this.$store.dispatch('WarningColaborators');
@@ -83,7 +70,7 @@
                 let userValid= false;
                 for( let user in this.users){
                     if(user){
-                        userValid= true
+                        userValid= true;
                         break
                     }
                 }

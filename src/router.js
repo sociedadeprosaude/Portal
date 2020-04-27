@@ -20,7 +20,7 @@ import MedicalCare from "./views/MedicalCare";
 import Attendance from "./views/Attendance";
 //import Tickets from "./views/Tickets";
 import TicketsDashboard from "./views/TicketsDashboard";
-import CardEditor from "./views/CardEditor";
+
 
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
 import CashierRoutes from "./routes/CashierRoutes";
@@ -171,14 +171,7 @@ let mainRoutes = [
       requiresAuth: false,
     }
   },
-  {
-    path: '/editor',
-    name: 'Editor',
-    component : CardEditor,
-    meta: {
-      requiresAuth: false,
-    }
-  },
+
   {
     path: '/notifications',
     name: 'Notifications',

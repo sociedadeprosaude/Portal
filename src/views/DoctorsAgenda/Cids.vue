@@ -1,46 +1,39 @@
 <template>
-    <v-container>
+    <v-container class="py-0 my-0">
         <v-layout row wrap>
-
-            <template>
-                <v-container class="py-0 my-0">
-                    <v-layout align-center row wrap>
-                        <v-flex xs12>
-                            <v-combobox
-                                    prepend-icon="spellcheck"
-                                    v-model="cid"
-                                    :items="cidOptions"
-                                    outlined
-                                    chips
-                                    filled
-                                    clearable
-                                    placeholder="Digite o Codigo do CID para Pesquisar"
-                            >
-                                <template v-slot:selection="data">
-                                    <v-chip
-                                            :key="JSON.stringify(data.item)"
-                                            :input-value="data.selected"
-                                            :disabled="data.disabled"
-                                            class="v-chip--select-multi"
-                                            @click.stop="data.parent.selectedIndex = data.index"
-                                            @input="data.parent.selectItem(data.item)"
-                                            color="primary"
-                                    >
-                                        <strong class="white--text" color="primary">{{ data.item }}</strong>
-                                    </v-chip>
-                                </template>
-                            </v-combobox>
-                        </v-flex>
-                        <v-flex xs12>
-                            <h1 style="text-align: center">{{cid}}</h1>
-                        </v-flex>
-                    </v-layout>
-                </v-container>
-            </template>
-
+            <v-flex xs12>
+                <v-combobox
+                        prepend-icon="spellcheck"
+                        v-model="cid"
+                        :items="cidOptions"
+                        outlined
+                        chips
+                        filled
+                        clearable
+                        placeholder="Digite o Codigo do CID para Pesquisar"
+                >
+                    <template v-slot:selection="data">
+                        <v-chip
+                                :key="JSON.stringify(data.item)"
+                                :input-value="data.selected"
+                                :disabled="data.disabled"
+                                class="v-chip--select-multi"
+                                @click.stop="data.parent.selectedIndex = data.index"
+                                @input="data.parent.selectItem(data.item)"
+                                color="primary"
+                        >
+                            <strong class="white--text" color="primary">{{ data.item }}</strong>
+                        </v-chip>
+                    </template>
+                </v-combobox>
+            </v-flex>
+            <v-flex xs12>
+                <h1 style="text-align: center">{{cid}}</h1>
+            </v-flex>
         </v-layout>
     </v-container>
 </template>
+
 
 <script>
     export default {
