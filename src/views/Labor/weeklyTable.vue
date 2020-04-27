@@ -8,10 +8,10 @@
 
                         <v-card-title>
                             Tabela Semanal dos Médicos - Especialidades - Unidades:
-                            <v-divider vertical  class="mx-4" inset></v-divider>
+                            <v-divider vertical  class="mx-4" inset/>
                             <v-chip label dark color="primary"> Médico - Especialidade - Unidade </v-chip>
-                            <v-spacer></v-spacer>
-                            <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
+                            <v-spacer/>
+                            <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details/>
                         </v-card-title>
 
                         <v-data-table
@@ -63,7 +63,7 @@
                                     <v-card
                                             v-else
                                             class="white--text pa-1 my-n2"
-                                            :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
+                                            :color="i === '0' ? 'blue' : i === '1' ? 'green' : i === '2' ? 'red' : i === '3' ? 'purple' : i === '4' ? 'orange' : 'pink'"
                                     >
                                         {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                     </v-card>
@@ -115,7 +115,7 @@
                                     <v-card
                                             v-else
                                             class="white--text pa-1 my-n2"
-                                            :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
+                                            :color="i === '0' ? 'blue' : i === '1' ? 'green' : i === '2' ? 'red' : i === '3' ? 'purple' : i === '4' ? 'orange' : 'pink'"
                                     >
                                         {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                     </v-card>
