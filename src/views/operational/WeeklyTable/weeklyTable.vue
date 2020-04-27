@@ -63,7 +63,7 @@
                                     <v-card
                                             v-else
                                             class="white--text pa-1 my-n2"
-                                            :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
+                                            :color="i === '0' ? 'blue' : i === '1' ? 'green' : i === '2' ? 'red' : i === '3' ? 'purple' : i === '4' ? 'orange' : 'pink'"
                                     >
                                         {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                     </v-card>
@@ -117,7 +117,7 @@
                                     <v-card
                                             v-else
                                             class="white--text pa-1 my-n2"
-                                            :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
+                                            :color="i === '0' ? 'blue' : i === '1' ? 'green' : i === '2' ? 'red' : i === '3' ? 'purple' : i === '4' ? 'orange' : 'pink'"
                                     >
                                         {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                     </v-card>

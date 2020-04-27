@@ -62,15 +62,15 @@
         </v-layout>
         <v-dialog v-model="addCategory" width="500px" class="pa-7">
             <v-card>
-                    Adicionar Nova Categoria
-                    <v-text-field v-model="newCategory"/>
-                    <submit-button
-                            text="Adicionar"
-                            :loading="loading"
-                            :success="success"
-                            @click="saveNewCategory()">
-                    </submit-button>
-                </v-card>
+                Adicionar Nova Categoria
+                <v-text-field v-model="newCategory"/>
+                <submit-button
+                        text="Adicionar"
+                        :loading="loading"
+                        :success="success"
+                        @click="saveNewCategory()">
+                </submit-button>
+            </v-card>
         </v-dialog>
     </v-container>
 </template>
@@ -116,7 +116,7 @@
                 return this.$store.getters.user;
             },
             units () {
-
+                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                 this.unit = this.selectedUnit;
                 return [...this.$store.getters.units, { name: this.other }];
             },
