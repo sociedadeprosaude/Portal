@@ -1,7 +1,6 @@
 <template>
     <v-container>
         <v-layout row wrap>
-
             <template>
                 <v-container class="py-0 my-0">
                     <v-layout align-center row wrap>

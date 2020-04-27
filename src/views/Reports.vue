@@ -144,7 +144,7 @@ export default {
     reportOptions: [
       "Relatório Financeiro Geral",
       "Produção do Colaborador",
-      "Relatorio de Vendas",
+      "Relatório de Vendas",
       "Analise de preço de exames",
       "Exames mais vendidos",
       "Consultas mais vendidas",
