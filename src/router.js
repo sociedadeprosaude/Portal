@@ -8,7 +8,7 @@ import Register from '@/views/Auth/Register'
 import Exams from '@/views/Exams'
 import Labor from '@/views/Labor/Labor'
 import Reports from '@/views/Reports'
-import Bundles from '@/views/operational/Cashier/Bundles'
+import Bundles from "./views/Operational/Cashier/Bundles";
 import PaymentCovenants from './views/PaymentCovenants'
 
 import Doctors from '@/views/Doctors'
