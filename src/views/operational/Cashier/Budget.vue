@@ -46,10 +46,10 @@
 
 <script>
 
-    import ProceduresSearch from "../../components/cashier/ProceduresSearch";
-    import Cart from "../../components/cashier/Cart";
-    import IntakesHistory from "../../components/cashier/IntakesHistory";
-    import Receipt from "../../components/cashier/Receipt";
+    import ProceduresSearch from "../../../components/cashier/ProceduresSearch";
+    import Cart from "../../../components/cashier/Cart";
+    import IntakesHistory from "../../../components/cashier/IntakesHistory";
+    import Receipt from "../../../components/cashier/Receipt";
 
     export default {
         data: () => ({

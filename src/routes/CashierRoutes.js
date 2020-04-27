@@ -1,7 +1,7 @@
-import Home from "../views/Cashier/Cashier";
-import Orçamento from "../views/Cashier/Budget";
-import Saidas from "../views/Cashier/Outflows";
-import Bundles from "../views/Cashier/Bundles";
+import Home from "../views/operational/Cashier/Cashier";
+import Orçamento from "../views/operational/Cashier/Budget";
+import Saidas from "../views/operational/Cashier/Outflows";
+import Bundles from "../views/operational/Cashier/Bundles";
 
 export default [
     {

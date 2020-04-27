@@ -410,9 +410,9 @@
 
 <script>
     import moment from 'moment/moment'
-    import Patient from '../../components/SelectPatientCard'
-    import ConsultationDocument from "../../components/doctorsAgenda/ConsultationDocument";
-    import ConsultationVerifier from "../../components/doctorsAgenda/ConsultationVerifier";
+    import Patient from '../../../components/SelectPatientCard'
+    import ConsultationDocument from "../../../components/doctorsAgenda/ConsultationDocument";
+    import ConsultationVerifier from "../../../components/doctorsAgenda/ConsultationVerifier";
     
     export default {
         components: {Patient, ConsultationDocument, ConsultationVerifier},

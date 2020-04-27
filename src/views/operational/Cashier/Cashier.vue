@@ -54,8 +54,8 @@
 </template>
 
 <script>
-    import SubmitButton from "../../components/SubmitButton";
-    import moment from 'moment';
+    import SubmitButton from "../../../components/SubmitButton";
+    import moment from 'moment/moment';
 
     export default {
         data() {

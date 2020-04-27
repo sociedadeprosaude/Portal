@@ -6,9 +6,9 @@ import Account from '@/views/Auth/Account'
 import Login from '@/views/Auth/Login'
 import Register from '@/views/Auth/Register'
 import Exams from '@/views/Exams'
-import Labor from '@/views/Labor/Home'
+import Labor from '@/views/Labor/Labor'
 import Reports from '@/views/Reports'
-import Bundles from '@/views/Cashier/Bundles'
+import Bundles from '@/views/operational/Cashier/Bundles'
 import PaymentCovenants from './views/PaymentCovenants'
 
 import Doctors from '@/views/Doctors'
@@ -18,8 +18,7 @@ import Bills from "./views/Bills";
 
 import MedicalCare from "./views/MedicalCare";
 import Attendance from "./views/Attendance";
-//import Tickets from "./views/Tickets";
-import TicketsDashboard from "./views/TicketsDashboard";
+import TicketsDashboard from "./views/operational/Tickets/TicketsDashboard";
 
 
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
@@ -27,7 +26,7 @@ import CashierRoutes from "./routes/CashierRoutes";
 import discount from "./views/discount"
 import notifications from "./views/notifications";
 
-import weeklyTable from "./views/Labor/weeklyTable";
+import weeklyTable from "./views/operational/WeeklyTable/weeklyTable";
 
 Vue.use(Router);
 let mainRoutes = [
@@ -165,7 +164,6 @@ let mainRoutes = [
   {
     path: '/senhas',
     name: 'Tickets',
-    //component : Tickets,
     component : TicketsDashboard,
     meta: {
       requiresAuth: false,

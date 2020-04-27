@@ -3,17 +3,18 @@
         <v-container fluid>
             <v-layout row wrap class="align-center justify-center">
                 <v-flex xs12>
-
                     <v-card>
-
                         <v-card-title>
                             Tabela Semanal dos Médicos - Especialidades - Unidades:
-                            <v-divider vertical  class="mx-4" inset></v-divider>
-                            <v-chip label dark color="primary"> Médico - Especialidade - Unidade </v-chip>
+                            <v-divider vertical class="mx-4" inset>
+                            </v-divider>
+                            <v-chip label dark color="primary">
+                                Médico - Especialidade - Unidade
+                            </v-chip>
                             <v-spacer></v-spacer>
-                            <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
+                            <v-text-field v-model="search" append-icon="search" label="Search" single-line
+                                          hide-details></v-text-field>
                         </v-card-title>
-
                         <v-data-table
                                 hide-default-header
                                 hide-default-footer
@@ -37,14 +38,11 @@
                                 </tr>
                                 </thead>
                             </template>
-
                             <template v-slot:item.hour="{ item }">
                                 <v-avatar tile color="primary">
                                     <span style="color: white">{{item.hour}}</span>
                                 </v-avatar>
                             </template>
-
-
                             <template v-slot:item.monday="{ item }">
                                 <strong v-for="(index,i) in item.monday" :key="i">
                                     <br/>
@@ -58,7 +56,9 @@
                                                 {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                             </v-card>
                                         </template>
-                                        <span><strong>período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong></span>
+                                        <span>
+                                            <strong>Período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong>
+                                        </span>
                                     </v-tooltip>
                                     <v-card
                                             v-else
@@ -70,7 +70,6 @@
                                 </strong>
                                 <br/>
                             </template>
-
                             <template v-slot:item.tuesday="{ item }">
                                 <strong v-for="(index,i) in item.tuesday" :key="i">
                                     <br/>
@@ -84,7 +83,9 @@
                                                 {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                             </v-card>
                                         </template>
-                                        <span><strong>período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong></span>
+                                        <span>
+                                            <strong>Período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong>
+                                        </span>
                                     </v-tooltip>
                                     <v-card
                                             v-else
@@ -96,7 +97,6 @@
                                 </strong>
                                 <br/>
                             </template>
-
                             <template v-slot:item.wednesday="{ item }">
                                 <strong v-for="(index,i) in item.wednesday" :key="i">
                                     <br/>
@@ -110,7 +110,9 @@
                                                 {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                             </v-card>
                                         </template>
-                                        <span><strong>período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong></span>
+                                        <span>
+                                            <strong>Período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong>
+                                        </span>
                                     </v-tooltip>
                                     <v-card
                                             v-else
@@ -122,7 +124,6 @@
                                 </strong>
                                 <br/>
                             </template>
-
                             <template v-slot:item.thursday="{ item }">
                                 <strong v-for="(index,i) in item.thursday" :key="i">
                                     <br/>
@@ -136,7 +137,9 @@
                                                 {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                             </v-card>
                                         </template>
-                                        <span><strong>período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong></span>
+                                        <span>
+                                            <strong>Período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong>
+                                        </span>
                                     </v-tooltip>
                                     <v-card
                                             v-else
@@ -148,7 +151,6 @@
                                 </strong>
                                 <br/>
                             </template>
-
                             <template v-slot:item.friday="{ item }">
                                 <strong v-for="(index,i) in item.friday" :key="i">
                                     <br/>
@@ -162,7 +164,9 @@
                                                 {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                             </v-card>
                                         </template>
-                                        <span><strong>período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong></span>
+                                        <span>
+                                            <strong>Período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong>
+                                        </span>
                                     </v-tooltip>
                                     <v-card
                                             v-else
@@ -174,7 +178,6 @@
                                 </strong>
                                 <br/>
                             </template>
-
                             <template v-slot:item.saturday="{ item }">
                                 <strong v-for="(index,i) in item.saturday" :key="i">
                                     <br/>
@@ -188,7 +191,9 @@
                                                 {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                             </v-card>
                                         </template>
-                                        <span><strong>período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong></span>
+                                        <span>
+                                            <strong>Período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong>
+                                        </span>
                                     </v-tooltip>
                                     <v-card
                                             v-else
@@ -200,10 +205,8 @@
                                 </strong>
                                 <br/>
                             </template>
-
                         </v-data-table>
                     </v-card>
-
                 </v-flex>
             </v-layout>
         </v-container>
@@ -211,22 +214,22 @@
 </template>
 
 <script>
-    var moment = require('moment');
+    var moment = require('moment/moment');
     export default {
         data: () => ({
             moment: moment,
             search: '',
             headers: [
-                { text: 'Hora', value: 'hour', align: 'center', sortable: true },
-                { text: 'Segunda', value: 'monday', align: 'center', sortable: false },
-                { text: 'Terça', value: 'tuesday', align: 'center', sortable: false },
-                { text: 'Quarta', value: 'wednesday', align: 'center', sortable: false },
-                { text: 'Quinta', value: 'thursday', align: 'center', sortable: false },
-                { text: 'Sexta', value: 'friday', align: 'center', sortable: false },
-                { text: 'Sabado', value: 'saturday', align: 'center', sortable: false },
+                {text: 'Hora', value: 'hour', align: 'center', sortable: true},
+                {text: 'Segunda', value: 'monday', align: 'center', sortable: false},
+                {text: 'Terça', value: 'tuesday', align: 'center', sortable: false},
+                {text: 'Quarta', value: 'wednesday', align: 'center', sortable: false},
+                {text: 'Quinta', value: 'thursday', align: 'center', sortable: false},
+                {text: 'Sexta', value: 'friday', align: 'center', sortable: false},
+                {text: 'Sabado', value: 'saturday', align: 'center', sortable: false},
             ],
         }),
-        computed:{
+        computed: {
             doctorsMapping() {
                 let weeklyTable = [
                     {
@@ -372,7 +375,7 @@
                         thursday: [],
                         friday: [],
                         saturday: [],
-                    },                {
+                    }, {
                         hour: '14:00',
                         monday: [],
                         tuesday: [],
@@ -389,7 +392,7 @@
                         thursday: [],
                         friday: [],
                         saturday: [],
-                    },                {
+                    }, {
                         hour: '15:00',
                         monday: [],
                         tuesday: [],
@@ -440,17 +443,17 @@
                     let daysOfTheWeek = schedules[schedule].days
                     for (let dayOfTheWeek in daysOfTheWeek) {
                         for (let weeklyItem in weeklyTable) {
-                            if( daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '1'){
+                            if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '1') {
                                 weeklyTable[weeklyItem].monday.push(schedules[schedule])
-                            } else if( daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '2'){
+                            } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '2') {
                                 weeklyTable[weeklyItem].tuesday.push(schedules[schedule])
-                            } else if( daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '3'){
+                            } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '3') {
                                 weeklyTable[weeklyItem].wednesday.push(schedules[schedule])
-                            } else if( daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '4'){
+                            } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '4') {
                                 weeklyTable[weeklyItem].thursday.push(schedules[schedule])
-                            } else if( daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '5'){
+                            } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '5') {
                                 weeklyTable[weeklyItem].friday.push(schedules[schedule])
-                            } else if( daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '6'){
+                            } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '6') {
                                 weeklyTable[weeklyItem].saturday.push(schedules[schedule])
                             }
                         }
@@ -459,15 +462,9 @@
                 return weeklyTable
             },
         },
-        watch:{
-            //
-        },
         mounted() {
             this.$store.dispatch('getAllSchedules');
-        },
-        methods: {
-            //
-        },
+        }
     }
 </script>
 

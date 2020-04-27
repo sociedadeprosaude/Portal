@@ -1,15 +1,15 @@
-import AgendamentoConsultas from "../views/DoctorsAgenda/SchedulingConsultation";
-import CadastroConsultasPlantoes from "../views/DoctorsAgenda/RegistrationConsultationsShifts";
-import DeletarConsultas from "../views/DoctorsAgenda/DeletarConsultas";
-import GerenciamentoConsultas from "../views/DoctorsAgenda/GerenciamentoConsultas";
-import ConsultasPacientes from "../views/DoctorsAgenda/PatientConsultations";
-import ConsultasCanceladas from "../views/DoctorsAgenda/CanceledConsultations";
-import RemarcarConsultas from "../views/DoctorsAgenda/RemarcarConsultas";
-import AgendarRetorno from "../views/DoctorsAgenda/ScheduleReturn";
-import Cids from "../views/DoctorsAgenda/Cids";
-import Declaration from "../views/DoctorsAgenda/Declaration";
-import Teste from "../views/DoctorsAgenda/testescrolling";
-import Patient from "../views/DoctorsAgenda/Patient";
+import AgendamentoConsultas from "../views/operational/DoctorsAgenda/SchedulingConsultation";
+import CadastroConsultasPlantoes from "../views/operational/DoctorsAgenda/RegistrationConsultationsShifts";
+import DeletarConsultas from "../views/operational/DoctorsAgenda/DeletarConsultas";
+import GerenciamentoConsultas from "../views/operational/DoctorsAgenda/GerenciamentoConsultas";
+import ConsultasPacientes from "../views/operational/DoctorsAgenda/PatientConsultations";
+import ConsultasCanceladas from "../views/operational/DoctorsAgenda/CanceledConsultations";
+import RemarcarConsultas from "../views/operational/DoctorsAgenda/RemarcarConsultas";
+import AgendarRetorno from "../views/operational/DoctorsAgenda/ScheduleReturn";
+import Cids from "../views/operational/DoctorsAgenda/Cids";
+import Declaration from "../views/operational/DoctorsAgenda/Declaration";
+import Teste from "../views/operational/DoctorsAgenda/testescrolling";
+import Patient from "../views/operational/DoctorsAgenda/Patient";
 import Discount from "../views/discount"
 
 export default [

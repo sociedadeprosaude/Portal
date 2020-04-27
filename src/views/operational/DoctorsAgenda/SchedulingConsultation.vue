@@ -490,10 +490,10 @@
 
 <script>
 
-    import SelectPatientCard from "../../components/SelectPatientCard";
-    import SubmitButton from "../../components/SubmitButton";
+    import SelectPatientCard from "../../../components/SelectPatientCard";
+    import SubmitButton from "../../../components/SubmitButton";
 
-    let moment = require("moment");
+    let moment = require("moment/moment");
 
     export default {
         components: {SelectPatientCard, SubmitButton},

@@ -561,8 +561,8 @@
 </template>
 
 <script>
-    import SubmitButton from "../../components/SubmitButton";
-    var moment = require('moment');
+    import SubmitButton from "../../../components/SubmitButton";
+    var moment = require('moment/moment');
     export default {
         components: {
             SubmitButton

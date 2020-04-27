@@ -1,20 +1,53 @@
 <template>
   <v-layout row wrap>
-    <v-flex sm8 xs12 class="pr-2">
+    <v-flex xs8>
       <v-layout align-center row wrap class="ml-6">
         <v-flex xs12 md5>
-          <v-combobox
+          <v-text-field
             prepend-icon="school"
-            v-model="especialidade"
-            :items="specialties"
-            item-text="name"
-            return-object
+            v-model="especialidade.name"
             label="Especialidade"
             outlined
             rounded
+            filled
+          ></v-text-field>
+        </v-flex>
+        <v-spacer></v-spacer>
+        <v-flex xs12 md6>
+          <v-text-field
+            prepend-icon="location_city"
+            v-model="selectedDoctor.name"
+            label="Clínica"
+            outlined
+            rounded
+            filled
+            disabled
+          ></v-text-field>
+        </v-flex>
+
+        <v-flex xs12 md12>
+          <v-text-field
+            prepend-icon="location_city"
+            v-model="clinic.name"
+            label="Clínica"
+            outlined
+            rounded
+            filled
+            disabled
+          ></v-text-field>
+          <!-- <v-select
+            prepend-icon="location_city"
+            v-model="clinic"
+            :items="clinics"
+            item-text="name"
+            label="Clínica"
+            outlined
+            rounded
+            filled
             chips
-            color="blue"
-            
+            color="purple"
+            clearable
+            readonly
           >
             <template v-slot:selection="data">
               <v-chip
@@ -28,48 +61,7 @@
                 color="info"
               >{{ data.item.name }}</v-chip>
             </template>
-          </v-combobox>
-        </v-flex>
-        <v-spacer></v-spacer>
-        <v-flex xs12 md6>
-          <v-combobox
-                  prepend-icon="person"
-                  v-model="selectedDoctor"
-                  :items="doctors"
-                  item-text="name"
-                  return-object
-                  label="Especialidade"
-                  outlined
-                  rounded
-                  chips
-                  color="blue"
-
-          >
-            <template v-slot:selection="data">
-              <v-chip
-                      :key="JSON.stringify(data.item)"
-                      :input-value="data.selected"
-                      :disabled="data.disabled"
-                      class="v-chip--select-multi"
-                      @click.stop="data.parent.selectedIndex = data.index"
-                      @input="data.parent.selectItem(data.item)"
-                      text-color="white"
-                      color="info"
-              >{{ data.item.name }}</v-chip>
-            </template>
-          </v-combobox>
-        </v-flex>
-
-        <v-flex xs12 md12>
-          <v-text-field
-            prepend-icon="location_city"
-            v-model="clinic.name"
-            label="Clínica"
-            outlined
-            rounded
-            filled
-            disabled
-          ></v-text-field>
+          </v-select>-->
         </v-flex>
       </v-layout>
       <v-layout
@@ -95,6 +87,13 @@
               <v-card class="pa-4" style="border-radius:20px; height: 100%">
                 <v-layout fill-height>
                   <v-layout row wrap>
+                    <!--                                        <v-flex xs2 sm2 dm2 lg2>-->
+                    <!--                                            <v-avatar>-->
+                    <!--                                                <v-btn icon large color="primary_dark">-->
+                    <!--                                                    <v-icon medium color="grey">person</v-icon>-->
+                    <!--                                                </v-btn>-->
+                    <!--                                            </v-avatar>-->
+                    <!--                                        </v-flex>-->
 
                     <v-flex id="teste" xs12 class="pl-3 text-left">
                       <h4>
@@ -104,6 +103,10 @@
                           class="body-2 font-weight-bold dark_grey--text"
                         >{{schedule.specialty.name}}</span>
                         <br />
+                        <!--                                                <span-->
+                        <!--                                                        class="font-weight-bold dark_grey&#45;&#45;text"-->
+                        <!--                                                        style="font-size: 0.8em"-->
+                        <!--                                                >CRM-AM: {{consulta.doctor.crm}}</span>-->
                       </h4>
                     </v-flex>
                     <v-flex xs12 class="mb-1">
@@ -167,9 +170,9 @@
         <v-progress-circular class="primary--text" indeterminate></v-progress-circular>
       </v-flex>
     </v-flex>
-    <v-flex v-if="!showAlert" xs4 class="text-center hidden-xs-only">
+    <v-flex v-if="!showAlert" xs4 class="text-center">
       <v-layout row wrap class="align-center justify-center">
-        <v-flex xs12 class="text-center mt-4">
+        <v-flex xs12 class="text-center">
           <v-date-picker
             landscape
             full-width
@@ -185,7 +188,7 @@
       <v-container>
         <v-layout>
           <div class="text-xs-center">
-            <v-dialog v-model="dialog" v-if="createConsultationForm" width="520">
+            <v-dialog v-model="dialog" v-if="createConsultationForm" width="500">
               <v-card>
                 <v-card-title
                   class="headline grey lighten-2"
@@ -210,7 +213,7 @@
                           label="CPF"
                         ></v-text-field>
                       </v-flex>
-                      <v-flex xs6>
+                      <v-flex xs12 sm6>
                         <v-text-field
                           v-if="createConsultationForm.user.association_number"
                           readonly
@@ -219,7 +222,6 @@
                           label="Nº do associado"
                         ></v-text-field>
                       </v-flex>
-
                       <v-flex xs12 v-if="createConsultationForm.user.dependent">
                         <v-text-field
                           readonly
@@ -266,14 +268,31 @@
                           label="CRM"
                         ></v-text-field>
                       </v-flex>
-                      <v-flex xs12 sm6>
+                      <v-flex
+                        xs12
+                        sm6
+                        v-if="exames.indexOf(createConsultationForm.consultation.specialty.name) != -1"
+                      >
                         <v-text-field
                           readonly
-                          prepend-icon="school"
-                          v-model="createConsultationForm.consultation.specialty.name"
-                          label="Especialidade"
+                          hide-details
+                          outlined
+                          prepend-icon="poll"
+                          label="Exame"
+                          v-model="createConsultationForm.user.exam.name"
                         ></v-text-field>
                       </v-flex>
+                      <v-flex xs12 sm6 v-else>
+                        <v-text-field
+                          readonly
+                          hide-details
+                          outlined
+                          prepend-icon="school"
+                          label="Especialidade"
+                          v-model="createConsultationForm.consultation.specialty.name"
+                        ></v-text-field>
+                      </v-flex>
+
                       <v-flex xs12 sm6 class="text-left" style="position: relative; top: -12px">
                         <v-layout row wrap class="align-end ma-0">
                           <v-flex xs2>
@@ -307,6 +326,7 @@
                           </v-flex>
                         </v-layout>
                       </v-flex>
+
                       <v-flex xs12 sm8>
                         <v-select
                           readonly
@@ -350,14 +370,14 @@
                         ></v-text-field>
                       </v-flex>
                       <v-flex
-                        v-if="justifyReturn(createConsultationForm.consultation.date.split(' ')[0])"
+                        v-if="modalidade === 'Retorno' && justifyReturn(createConsultationForm.consultation.date.split(' ')[0])"
                         xs12
                       >
                         <v-textarea
                           v-model="justify"
-                          name="input-7-1"
                           outlined
-                          label=" Justificativa de Retorno "
+                          name="input-7-4"
+                          label="Justificativa de Retorno "
                           placeholder="O retorno tem mais de 21 dias. Justifique o motivo do agendamento para essa data."
                         ></v-textarea>
                       </v-flex>
@@ -379,14 +399,6 @@
                 </v-card-text>
                 <v-divider></v-divider>
                 <v-card-actions>
-                  <v-dialog v-model="loader" hide-overlay persistent width="300">
-                    <v-card color="primary" dark>
-                      <v-card-text>
-                        Salvando...
-                        <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
-                      </v-card-text>
-                    </v-card>
-                  </v-dialog>
                   <v-btn rounded class="error" @click="dialog = false">
                     Cancelar
                     <v-icon right>clear</v-icon>
@@ -401,7 +413,6 @@
                     :loading="loading"
                     @click="save"
                     text="Confirmar"
-                    v-if="status === 'Pago' && num_recibo !== ''"
                   ></submit-button>
                 </v-card-actions>
               </v-card>
@@ -414,26 +425,26 @@
       </v-container>
     </template>
 
-    <v-dialog v-model="snackbar" hide-overlay max-width="500px">
-      <v-card color="white">
-        <v-card-title class="text-xs-center ma-1">
-          <h3>
-            {{this.mensagem}}
-            <v-icon dark color="success">done_outline</v-icon>
-          </h3>
-        </v-card-title>
-        <v-card-text class="text-xs-center">
-          <div>
-            <h4 class="text--primary">Você deseja continuar com o paciente selecionado?</h4>
-          </div>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn flat color="primary" @click="keepPatient">Sim</v-btn>
-          <v-btn color="primary" flat @click="clearPatient">Não</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <!-- <v-dialog v-model="snackbar" hide-overlay max-width="500px">
+            <v-card color="white">
+                <v-card-title class="text-xs-center ma-1">
+                    <h3>
+                        {{this.mensagem}}
+                        <v-icon dark color="success">done_outline</v-icon>
+                    </h3>
+                </v-card-title>
+                <v-card-text class="text-xs-center">
+                    <div>
+                        <h4 class="text--primary">Você deseja continuar com o paciente selecionado?</h4>
+                    </div>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn flat color="primary" @click="keepPatient">Sim</v-btn>
+                    <v-btn color="primary" flat @click="clearPatient">Não</v-btn>
+                </v-card-actions>
+            </v-card>
+    </v-dialog>-->
     <v-btn
       v-if="offsetTop > 2"
       class="mr-2"
@@ -452,10 +463,11 @@
 
 <script>
 import Pacientes from "./Patient";
-import SelectPatientCard from "../../components/SelectPatientCard";
-import SubmitButton from "../../components/SubmitButton";
+import SelectPatientCard from "../../../components/SelectPatientCard";
+import SubmitButton from "../../../components/SubmitButton";
 
-var moment = require("moment");
+var moment = require("moment/moment");
+// import * as easings from "vuetify/es5/util/easing-patterns";
 export default {
   components: { Pacientes, SelectPatientCard, SubmitButton },
 
@@ -469,9 +481,16 @@ export default {
     dialog2: false,
     dialogPaciente: false,
     selectedDoctor: "",
-    clinic: "",
     num_recibo: "",
+    justify: "",
     type: "",
+    exames: [
+      "ULTRASSONOGRAFIA",
+      "ELETROCARDIOGRAMA",
+      "ELETROENCEFALOGRAMA",
+      "ECOCARDIOGRAMA",
+      "VIDEOLARIGONSCOPIA"
+    ],
     createConsultationForm: undefined,
     attendance: "Aguardando Atendimento",
     attendanceOptions: [
@@ -489,7 +508,7 @@ export default {
     ],
     status: "Aguardando pagamento",
     statusOptions: [{ text: "Aguardando pagamento" }, { text: "Pago" }],
-    modalidade: "Retorno",
+    modalidade: "",
     date: moment().format("YYYY-MM-DD"),
     dates: [],
     times: "",
@@ -497,6 +516,7 @@ export default {
     medicosOptions: ["Todos"],
     pacientes: "",
     timeout: 4000,
+    clinic: "",
     especialidadeOption: "",
     especialidade: "",
     showAlert: false,
@@ -505,12 +525,12 @@ export default {
     changeDoctorsOptions: true,
     success: false,
     loading: false,
+    pacienteSelecionado: undefined,
     consultationsListenerUnsubscriber: undefined,
     daysToListen: 3,
-    pacienteSelecionado: undefined,
-    justify: "",
 
     //-------------------------------------------Scroll------------------------------------------------
+    type: "number",
     number: 9999,
     selector: "#first",
     selected: "Button",
@@ -530,18 +550,10 @@ export default {
     consultationLoading() {
       return this.$store.getters.consultationsLoading;
     },
-    clinics() {
-      let val = this.$store.getters.clinics.filter(a => {
-        return a.property;
-      });
-      return val;
-    },
-    specialties() {
-      return this.$store.getters.specialties;
-    },
     computedDateFormatted() {
       // return this.formatDate(this.index_Selecionado.data);
     },
+
     schedules() {
       let schedules = this.$store.getters.schedules.filter(a => {
         let response = true;
@@ -566,7 +578,11 @@ export default {
       return this.consultationsOfSchedules(schedules);
     },
     consultas() {
+      //console.log('Especialidade',this.especialidade)
       let consultas = this.$store.getters.consultations.filter(a => {
+        /* return this.especialidade && this.selectedDoctor ? this.especialidade.name === a.specialty.name &&
+                           this.selectedDoctor.cpf === a.doctor.cpf :  false */
+
         let response = true;
         if (this.selectedDoctor) {
           if (this.selectedDoctor.cpf !== a.doctor.cpf) {
@@ -588,7 +604,15 @@ export default {
       return consultas;
     },
     doctors: {
-      get: function () {
+      get: function() {
+        /* let docs = {
+                        0: {
+                            name: 'Todos'
+                        },
+                        ...this.$store.getters.doctors
+                    }
+                    return Object.values(docs) */
+
         let docArray = Object.values(this.$store.getters.doctors);
         docArray = docArray.filter(doctor => {
           if (!this.especialidade) {
@@ -605,6 +629,7 @@ export default {
 
           return find;
         });
+        //docArray.unshift({name:'Todos'})
         return docArray;
       }
     },
@@ -612,28 +637,6 @@ export default {
       let paciente = this.$store.getters.selectedPatient;
       return paciente;
     },
-    loader() {
-      return this.$store.getters.statusLoaderAC;
-    },
-    snackbar: {
-      get: function() {
-        var snack = this.$store.getters.onSnackbarAC;
-        if (!this.snack && this.snackDialogDone) {
-          this.snackDialogDone = false;
-        } else if (snack) {
-          this.dialog = false;
-          this.snack = snack;
-        }
-        return this.snack;
-      },
-      set: function(val) {
-        this.snack = val;
-      }
-    },
-    mensagem() {
-      return this.$store.getters.onMensagem;
-    },
-    //------------------------------------------Scroll-------------------------------------------------
     target() {
       const value = this[this.type];
       if (!isNaN(value)) return Number(value);
@@ -661,6 +664,10 @@ export default {
       });
     },
     date(val) {
+      /* window.scrollTo(
+                  0,
+                  this.findPos(document.getElementById("group-" + val), "group-" + val)
+                ); */
       if (val == this.consultas[0].date) this.$vuetify.goTo(0, this.options);
       else this.$vuetify.goTo("#group-" + val, this.options);
     }
@@ -673,9 +680,13 @@ export default {
   created() {
     window.addEventListener("scroll", this.handleScroll);
   },
+  beforeDestroy() {
+    this.consultationsListenerUnsubscriber();
+  },
   methods: {
     datesOfInterval(payload) {
       let weekDays = payload.weekDays;
+      //let cancelations_schedules = payload.cancelations_schedules
       let startDate = moment();
       let dates = [];
       weekDays = weekDays.map(day => {
@@ -750,42 +761,6 @@ export default {
       });
       return consultations;
     },
-    consultationsOfSchedules(schedules) {
-      let consultations = [];
-      schedules.forEach(schedule => {
-        let keys = Object.keys(schedule.days);
-        let dates = this.datesOfInterval({
-          weekDays: keys /* ,cancelations_schedules:schedule.cancelations_schedules */
-        });
-
-        dates.forEach(date => {
-          let hourConsultation = schedule.days[moment(date).weekday()].hour;
-          if (
-            schedule.cancelations_schedules.indexOf(date) == -1 &&
-            schedule.cancelations_schedules.indexOf(
-              date + " " + hourConsultation
-            ) == -1
-          ) {
-            let scheduleObj = {
-              clinic: schedule.clinic,
-              doctor: schedule.doctor,
-              date: date + " " + hourConsultation,
-              routine_id: schedule.routine_id,
-              specialty: schedule.specialty,
-              vacancy: schedule.days[moment(date).weekday()].vacancy,
-              id_schedule: schedule.id
-            };
-            let obj = {
-              ...scheduleObj,
-              ...this.numberVacancyAndReturns(scheduleObj)
-            };
-            obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns;
-            consultations.push(obj);
-          }
-        });
-      });
-      return consultations;
-    },
     justifyReturn(date) {
       var dateConsultation = moment(this.query.data);
       var today = moment(date);
@@ -796,25 +771,12 @@ export default {
       this.fillConsultationForm(consultation);
       this.dialog = true;
     },
-    fillConsultationForm(consult) {
+    fillConsultationForm(consultation) {
       let patient = this.query.pacienteObj;
-      let dependent = this.query.pacienteObj.dependent
-        ? this.query.pacienteObj.dependent
-        : this.query.consultation.dependent
-        ? this.query.consultation.dependent
-        : undefined;
-      let consultation = consult;
-
-      if (dependent) {
-        patient = { ...patient, dependent: dependent };
-        consultation = { ...consultation, dependent: dependent };
-      }
-
       let form = {
         user: patient,
         consultation: consultation
       };
-
       this.justify = "";
       this.createConsultationForm = form;
     },
@@ -875,24 +837,24 @@ export default {
     },
     async initialConfig() {
       this.loading = true;
-      await this.$store.dispatch("getDoctors");
-      await this.$store.dispatch("getSpecialties");
+      //await this.$store.dispatch('getDoctors')
+      // await this.$store.dispatch("getSpecialties")
       this.query = this.$route.params.q;
-      /*console.log('rota:',this.query)*/
       this.selectedDoctor = this.query.doctor;
       this.especialidade = this.query.especialidade;
       this.clinic = this.query.consultation.clinic;
       await this.listenConsultations();
 
       if (!this.query) {
-        this.$router.back();
+        //this.$router.push('agenda/GerenciamentoConsultas')
       }
-      this.selectedDoctor = this.query.doctor;
-      this.especialidade = this.query.especialidade;
-      this.clinic = this.query.consultation.clinic;
+
+      console.log(this.query);
+
       this.pacienteSelecionado = this.query.pacienteObj;
       this.status = this.query.status;
       this.num_recibo = this.query.num_recibo;
+      this.modalidade = this.query.modalidade;
       this.loading = false;
     },
     async listenConsultations() {
@@ -915,7 +877,7 @@ export default {
       if (this.consultationsListenerUnsubscriber) {
         this.consultationsListenerUnsubscriber();
       }
-      this.daysToListen += 3;
+      this.daysToListen += 10;
       this.listenConsultations();
     },
     backTop() {
@@ -950,66 +912,56 @@ export default {
     },
     keepPatient() {
       this.snackDialogDone = true;
-      this.snackbar = false;
+      //this.snackbar = false;
     },
     clearPatient() {
       this.snackDialogDone = true;
-      this.snackbar = false;
+      //this.snackbar = false;
       this.$store.dispatch("selecionarPaciente", null);
     },
     clearRecibo() {
       this.num_recibo = "";
     },
-    call() {
-      var consulta = this.$store.getters.idConsultation({
-        data: this.index_Selecionado.data,
-        hora: this.index_Selecionado.hora,
-        crm: this.index_Selecionado.crm,
-        status: this.status,
-        modalidade: this.modalidade,
-        num_recibo: this.num_recibo
-      });
-
-      this.$store.dispatch("scheduleAppointment", {
-        pacienteSelecionado: this.pacienteSelecionado,
-        status: this.status,
-        modalidade: this.modalidade,
-        consulta: consulta,
-        especialidade: this.especialidade,
-        num_recibo: this.num_recibo
-      });
-      this.clear();
-    },
+    // formatDate(date) {
+    //     if (!date) return null;
+    //     const [year, month, day] = date.split("-");
+    //     return `${day}/${month}/${year}`;
+    // },
     clear() {
       this.num_recibo = "";
       this.status = "Aguardando pagamento";
     },
-    resetSchedule() {
-      this.dialog = false;
-      this.success = false;
-    },
     async save() {
-      this.loading = true;
       let form = this.createConsultationForm;
       form.user = {
         ...form.user,
         status: this.status,
         type: this.modalidade,
-        payment_number: this.num_recibo
+        payment_number: this.num_recibo,
+        exam: this.query.pacienteObj.exam
       };
       form.consultation = {
         ...form.consultation,
         status: this.status,
         type: this.modalidade,
         payment_number: this.num_recibo,
-        previousConsultation: this.query.idConsultation
+        idConsultationCanceled: this.query.idConsultation,
+        exam: this.query.pacienteObj.exam
       };
+
+      if (this.modalidade == "Retorno")
+        form.consultation = {
+          ...form.consultation,
+          previousConsultation: this.query.consultation.previousConsultation
+        };
       if (this.justify != "") {
         form.user.justifyReturn = this.justify;
         form.consultation.justifyReturn = this.justify;
       }
       this.loading = true;
-      await this.$store.dispatch("addUserToConsultation", form);
+      //await this.$store.dispatch("addConsultationAppointmentToUserReschedule",form);
+      //Realizar essa funcao pelo cloud functions
+      await this.$store.dispatch("addUserToConsultationReschedule", form);
       this.loading = false;
       this.success = true;
       this.dialog = false;

@@ -12,7 +12,7 @@
 
 <script>
 
-import RegisterOutflows from "../../components/cashier/RegisterOutflows";
+import RegisterOutflows from "../../../components/cashier/RegisterOutflows";
 import outtakesCategories from "@/components/DialogOuttakeCategories";
 
 export default {

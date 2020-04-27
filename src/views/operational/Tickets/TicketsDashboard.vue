@@ -42,7 +42,7 @@
 
 <script>
 import tickets from "@/components/tickets/Tickets";
-import constants from "..//utils/constants";
+import constants from "../../../utils/constants";
 export default {
   name: "TicketsDashboard",
   components: {

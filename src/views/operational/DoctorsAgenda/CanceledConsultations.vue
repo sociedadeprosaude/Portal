@@ -286,7 +286,7 @@
 </template>
 
 <script>
-    let moment = require('moment');
+    let moment = require('moment/moment');
     export default {
         data: () => ({
             menu: false,
