@@ -226,7 +226,6 @@
                                 permission: 'Caixa',
                                 icon: 'receipt',
                             },
-
                             {
                                 title: 'Pagar Convênios',
                                 to: '/PaymentCovenants',

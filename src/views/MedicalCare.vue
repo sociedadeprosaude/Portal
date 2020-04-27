@@ -1,24 +1,23 @@
 <template>
-    <v-content>
-        <v-container fluid>
-            <v-layout align-center row wrap>
-                <v-flex xs12>
-                    <v-card class="pa-4">
-                        <v-layout align-center row wrap>
-                            <v-flex xs12 sm4>
-                                <v-combobox
-                                        prepend-icon="school"
-                                        v-model="especialidade"
-                                        :items="user.specialties"
-                                        item-text="name"
-                                        return-object
-                                        label="Especialidade"
-                                        outlined
-                                        rounded
-                                        filled
-                                        chips
-                                        color="blue"
-                                        clearable
+    <v-container fluid>
+        <v-layout class="align-center " row wrap>
+            <v-flex xs12>
+                <v-card class="pa-4">
+                    <v-layout class="align-center " row wrap>
+                        <v-flex xs12 sm4>
+                            <v-combobox
+                                    prepend-icon="school"
+                                    v-model="especialidade"
+                                    :items="user.specialties"
+                                    item-text="name"
+                                    return-object
+                                    label="Especialidade"
+                                    outlined
+                                    rounded
+                                    filled
+                                    chips
+                                    color="blue"
+                                    clearable
                                 >
                                     <template v-slot:selection="data">
                                         <v-chip
@@ -34,42 +33,10 @@
                                         </v-chip>
                                     </template>
                                 </v-combobox>
-                            </v-flex>
-                            <v-spacer></v-spacer>
-                            <!-- <v-flex xs12 sm4>
-                                <v-combobox
-                                        prepend-icon="person"
-                                        v-model="doctor"
-                                        :items="doctors"
-                                        return-object
-                                        item-text="name"
-                                        label="Médicos"
-                                        outlined
-                                        rounded
-                                        chips
-                                        filled
-                                        color="blue"
-                                        clearable
-                                >
-                                    <template v-slot:selection="data">
-                                        <v-chip
-                                                :key="JSON.stringify(data.item)"
-                                                :input-value="data.selected"
-                                                :disabled="data.disabled"
-                                                class="v-chip--select-multi"
-                                                @click.stop="data.parent.selectedIndex = data.index"
-                                                @input="data.parent.selectItem(data.item)"
-                                                text-color="white"
-                                                color="info"
-                                        >{{ data.item.name }}</v-chip>
-                                    </template>
-                                </v-combobox>
-                            </v-flex>
-                            <v-spacer></v-spacer> -->
-
-                            <v-flex xs12 sm4>
-                                <!--disabled-->
-                                <v-menu
+                        </v-flex>
+                        <v-spacer/>
+                        <v-flex xs12 sm4>
+                            <v-menu
                                         ref="menu"
                                         v-model="menu"
                                         :close-on-content-click="false"
@@ -90,54 +57,53 @@
                                                 filled
                                                 chips
                                                 disabled
-                                                v-on="on"
-                                        ></v-text-field>
+                                                v-on="on">
+                                        </v-text-field>
                                     </template>
-                                    <!--disabled-->
                                     <v-date-picker
                                             ref="picker"
                                             v-model="date"
                                             locale="pt-br"
                                             @change="save"
-                                            disabled
-                                    ></v-date-picker>
+                                            disabled>
+                                    </v-date-picker>
                                 </v-menu>
-                            </v-flex>
-                            <v-spacer></v-spacer>
-                            <v-flex xs12>
-                                <v-btn text>
-                                    <v-icon color="blue">event</v-icon>
-                                    :
-                                    <v-chip small text-color="white" color="blue">Consulta</v-chip>
-                                </v-btn>
-                                <v-btn text>
-                                    <v-icon color="blue">restore</v-icon>
-                                    :
-                                    <v-chip small text-color="white" color="blue">Retorno</v-chip>
-                                </v-btn>
-                                <v-btn text>
-                                    <v-icon class="elevation-6 success" color="success">stop</v-icon>
-                                    :
-                                    <v-chip small text-color="white" color="blue">Atendidos</v-chip>
-                                </v-btn>
-                                <v-btn text>
-                                    <v-icon class="elevation-6 white" color="white">stop</v-icon>
-                                    :
-                                    <v-chip small text-color="white" color="blue">Não Atendidos</v-chip>
-                                </v-btn>
-                            </v-flex>
-                        </v-layout>
+                        </v-flex>
+                        <v-spacer/>
+                        <v-flex xs12>
+                            <v-btn text>
+                                <v-icon color="blue">event</v-icon>
+                                :
+                                <v-chip small text-color="white" color="blue">Consulta</v-chip>
+                            </v-btn>
+                            <v-btn text>
+                                <v-icon color="blue">restore</v-icon>
+                                :
+                                <v-chip small text-color="white" color="blue">Retorno</v-chip>
+                            </v-btn>
+                            <v-btn text>
+                                <v-icon class="elevation-6 success" color="success">stop</v-icon>
+                                :
+                                <v-chip small text-color="white" color="blue">Atendidos</v-chip>
+                            </v-btn>
+                            <v-btn text>
+                                <v-icon class="elevation-6 white" color="white">stop</v-icon>
+                                :
+                                <v-chip small text-color="white" color="blue">Não Atendidos</v-chip>
+                            </v-btn>
+                        </v-flex>
+                    </v-layout>
 
-                        <v-alert type="warning" :value="consultasByDoctors(consultas).length == 0">
-                            Não há consultas marcadas
-                        </v-alert>
+                    <v-alert type="warning" :value="consultasByDoctors(consultas).length === 0">
+                        Não há consultas marcadas
+                    </v-alert>
 
-                        <v-layout column align-center justify-center wrap>
-                            <v-subheader v-if="consultasByDoctors(consultas).length != 0"><b>Data: {{date |
+                    <v-layout column class="align-center justify-center" wrap>
+                            <v-subheader v-if="consultasByDoctors(consultas).length !== 0"><b>Data: {{date |
                                 dateFilter}} - {{daydate(date)}}</b></v-subheader>
 
-                            <v-expansion-panels>
-                                <v-expansion-panel
+                        <v-expansion-panels>
+                            <v-expansion-panel
                                         v-for="(consultation, i) in consultasByDoctors(consultas)"
                                         :key="i"
                                         class="elevation-6"
@@ -191,7 +157,7 @@
                                     </v-expansion-panel-header>
 
                                     <v-expansion-panel-content>
-                                        <v-divider></v-divider>
+                                        <v-divider/>
                                         <v-card class="elevation-0">
                                             <v-list three-line subheader>
                                                 <v-layout wrap>
@@ -258,40 +224,31 @@
                                         </v-card>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
-                            </v-expansion-panels>
-                        </v-layout>
+                        </v-expansion-panels>
+                    </v-layout>
 
-                        <template>
-                            <v-row justify="center">
-                                <v-dialog v-model="dialog" persistent max-width="350">
-                                    <v-card>
-                                        <v-card-title>Deseja Iniciar o Atendimento do Paciente Selecionado ?</v-card-title>
-                                        <v-divider></v-divider>
-                                        <v-card-actions>
-                                            <v-btn
-                                                    color="error"
-                                                    @click="dialog = false"
-                                            >
-                                                NÃO
-                                            </v-btn>
-                                            <v-spacer></v-spacer>
-                                            <v-btn
-                                                    color="success"
-                                                    :to="{ name: 'Attendance', params: { q: {...this.index_Selecionado}}}"
-                                            >
-                                                SIM
-                                            </v-btn>
-                                        </v-card-actions>
-                                    </v-card>
-                                </v-dialog>
-                            </v-row>
-                        </template>
+                    <template>
+                        <v-row justify="center">
+                            <v-dialog v-model="dialog" persistent max-width="350">
+                                <v-card>
+                                    <v-card-title>Deseja Iniciar o Atendimento do Paciente Selecionado ?</v-card-title>
+                                    <v-divider/>
+                                    <v-card-actions>
+                                        <v-btn color="error" @click="dialog = false">NÃO</v-btn>
+                                        <v-spacer/>
+                                        <v-btn color="success"
+                                               :to="{ name: 'Attendance', params: { q: {...this.index_Selecionado}}}"
+                                        >SIM</v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+                        </v-row>
+                    </template>
 
-                    </v-card>
-                </v-flex>
-            </v-layout>
-        </v-container>
-    </v-content>
+                </v-card>
+            </v-flex>
+        </v-layout>
+    </v-container>
 </template>
 
 <script>
@@ -334,30 +291,6 @@
             doctor: undefined,
         }),
         computed: {
-            /* specialties() {
-                //return this.$store.getters.specialties;
-                let espArray = Object.values(this.$store.getters.specialties)
-                console.log('Teeeee',this.doctor)
-                espArray = espArray.filter((specialty) => {
-                    
-                    if(!this.doctor) {
-                        return true
-                    }
-                    var find = false
-                    specialty.doctors.forEach((doctor)=>{
-
-                        if(doctor.cpf === this.doctor.cpf){
-                            find = true
-                            return true
-                        }
-
-                    })
-
-                    return find
-                })
-                //docArray.unshift({name:'Todos'})
-                return espArray
-            }, */
 
             computedDateFormatted() {
                 return this.formatDate(this.date)
@@ -391,11 +324,11 @@
                 },
                 set: function (index) {
 
-                    if (this.especialidade != '') {
-                        this.status_Selecionado = index.status
-                        this.index_Selecionado = {...index}
-                        this.statusOptions.splice(1, 1)
-                        this.statusOptions.push({text: index.status})
+                    if (this.especialidade !== '') {
+                        this.status_Selecionado = index.status;
+                        this.index_Selecionado = {...index};
+                        this.statusOptions.splice(1, 1);
+                        this.statusOptions.push({text: index.status});
                         this.dialog = true
                     } else {
                         alert('Escolha uma especialidade!')
@@ -404,8 +337,8 @@
             },
         },
         mounted() {
-            this.initialConfig()
-            this.date = moment().format('YYYY-MM-DD')
+            this.initialConfig();
+            this.date = moment().format('YYYY-MM-DD');
             this.dateFormatted = moment().format('YYYY-MM-DD')
         },
         watch: {
@@ -415,30 +348,27 @@
         },
         methods: {
             async initialConfig() {
-                this.loading = true
-                //await this.$store.dispatch("getSpecialties")
-                this.especialidade = this.user.specialties[0]
+                this.loading = true;
+                this.especialidade = this.user.specialties[0];
                 //await this.$store.dispatch('getDoctors')
                 await this.$store.dispatch('listenConsultations',
                     {
                         start_date: moment().subtract(10, 'days').format('YYYY-MM-DD'),
                         final_date: moment().add(10, 'days').format('YYYY-MM-DD 23:59:59')
-                    })
+                    });
                 this.loading = false
             },
 
             formatConsultationsArray(consultations) {
-                let newArray = []
+                let newArray = [];
                 for (let consultation in consultations) {
-                    let inArrayIndex = this.checkConsultationIsInArray(newArray, consultations[consultation])
+                    let inArrayIndex = this.checkConsultationIsInArray(newArray, consultations[consultation]);
                     if (inArrayIndex === -1) {
                         newArray.push({
                             ...consultations[consultation],
-                            // vagas: consultations[consultation].user ? 0 : 1,
                             consultations: [consultations[consultation]]
                         })
                     } else {
-                        // newArray[inArrayIndex].vagas++
                         newArray[inArrayIndex].consultations.push(consultations[consultation])
                     }
                 }
@@ -460,9 +390,9 @@
             },
 
             consultasByDoctors(consultations) {
-                let res = {}
+                let res = {};
                 for (let cons in consultations) {
-                    let targetDate = consultations[cons].doctor.cpf
+                    let targetDate = consultations[cons].doctor.cpf;
                     if (!res[targetDate]) {
                         res[targetDate] = {
                             doctor: consultations[cons].doctor,
@@ -471,11 +401,10 @@
                             consultations: []
                         }
                     }
-                    if (consultations[cons].type == 'Consulta') res[targetDate].numConsultations += 1
-                    else res[targetDate].numRegress += 1
+                    if (consultations[cons].type === 'Consulta') res[targetDate].numConsultations += 1;
+                    else res[targetDate].numRegress += 1;
                     res[targetDate].consultations.push(consultations[cons])
                 }
-                //console.log('foi aqui também',res)
                 return res
             },
 
@@ -487,12 +416,10 @@
                 this.$refs.menu.save(date)
             },
             formatDate(date) {
-                if (!date) return null
-                const [year, month, day] = date.split('-')
+                if (!date) return null;
+                const [year, month, day] = date.split('-');
                 return `${day}/${month}/${year}`
             },
         },
     }
 </script>
-<style scoped>
-</style>
