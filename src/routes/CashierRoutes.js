@@ -1,6 +1,6 @@
 import Home from "../views/operational/Cashier/Cashier";
-import Budget from "../views/Operational/Cashier/Budget";
-import Outflows from "../views/Operational/Cashier/Outflows";
+import Budget from "../views/operational/Cashier/Budget";
+import Outflows from "../views/operational/Cashier/Outflows";
 import Bundles from "../views/operational/Cashier/Bundles";
 
 export default [
