@@ -1,7 +1,6 @@
 import Home from "../views/Cashier/Cashier";
 import Orçamento from "../views/Cashier/Budget";
-import Relatorio from "../views/Cashier/Relatorio";
-import Saidas from "../views/Cashier/Saidas";
+import Saidas from "../views/Cashier/Outflows";
 import Bundles from "../views/Cashier/Bundles";
 
 export default [
@@ -15,11 +14,7 @@ export default [
         name:'orçamento',
         component: Orçamento
     },
-    {
-        path:'/caixa/Relatorio',
-        name:'relatorio',
-        component: Relatorio
-    },
+
     {
         path:'/caixa/Saidas',
         name:'Saidas',
