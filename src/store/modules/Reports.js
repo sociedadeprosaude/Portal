@@ -51,7 +51,6 @@ const actions = {
         let intakesSnap = await firebase.firestore().collection('intakes').where('date', '>=', payload.initialDate)
             .where('date', '<=', payload.finalDate)
             .where('unit.name', '==', selectedUnit.name)
-            // .where('colaborator', '>', '')
             .orderBy('date').get();
         let intakes = [];
         for (let doc of intakesSnap.docs) {

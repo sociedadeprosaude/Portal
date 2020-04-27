@@ -16,8 +16,8 @@
                 :items="categories"
                 item-text="name"
                 return-object
-                label="Categoria"
-              ></v-combobox>
+                label="Categoria">
+              </v-combobox>
               <v-combobox
                 outlined
                 v-if="category"
@@ -26,8 +26,8 @@
                 v-model="subCategory"
                 :items="category.subCategories? [...category.subCategories,other]:[other]"
                 item-text="name"
-                return-object
-              ></v-combobox>
+                return-object>
+              </v-combobox>
             </v-flex>
 
             <v-flex xs12 sm3 class="ml-3">
@@ -35,8 +35,8 @@
                 outlined
                 label="Método de pagamento"
                 v-model="paymentMethod"
-                :items="paymentMethods"
-              ></v-select>
+                :items="paymentMethods">
+              </v-select>
             </v-flex>
             <v-flex xs12 sm3 class="ml-3">
               <v-select
@@ -45,8 +45,8 @@
                 v-model="unit"
                 :items="units"
                 item-text="name"
-                return-object
-              ></v-select>
+                return-object>
+              </v-select>
             </v-flex>
             <v-spacer />
             <v-flex xs12 sm2 class="mx-3">
@@ -72,8 +72,8 @@
                 dense
                 :disabled="!parcelar"
                 v-model="parcelas"
-                v-mask="mask.number"
-              ></v-text-field>
+                v-mask="mask.number">
+              </v-text-field>
             </v-flex>
             <v-spacer />
             <v-flex xs6>
@@ -81,8 +81,8 @@
                 color="success"
                 class="font-weight-bold"
                 label="Conta recorrente"
-                v-model="recorrente"
-              ></v-checkbox>
+                v-model="recorrente">
+              </v-checkbox>
             </v-flex>
             <v-flex xs12 sm4>
               <span class="my-sub-headline">Data para pagamento</span>
@@ -190,8 +190,8 @@
                 label="categoria"
                 v-model="selectedCategory"
                 :items="categoriesName"
-                outlined
-              ></v-select>
+                outlined>
+              </v-select>
             </v-col>
           </v-row>
         </div>

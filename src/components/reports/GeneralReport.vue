@@ -136,7 +136,7 @@
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
-                                <v-flex xs2>
+                                <v-flex xs1>
                                     {{totalCostSpecialtiesIntakes | moneyFilter}}
                                 </v-flex>
                                 <v-flex xs1>
@@ -268,7 +268,7 @@
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
                                 </v-flex>
-                                <v-flex xs2>
+                                <v-flex xs1>
                                     {{totalCostExamsIntakes | moneyFilter}}
                                 </v-flex>
                                 <v-flex xs1>
@@ -699,7 +699,7 @@
             return {
                 now: moment().format('YYYY-MM-DD HH:mm:ss'),
                 total: 0,
-                reportOptions: ['Relatorio Geral', 'Relatorio Geral Detalhado'],
+                reportOptions: ['Relatório Geral', 'Relatório Geral Detalhado', 'Relatório Geral de Todas Unidades'],
                 reportSelected: 0
             }
         },
