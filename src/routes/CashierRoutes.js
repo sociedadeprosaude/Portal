@@ -1,4 +1,4 @@
-import Home from "../views/Cashier/Home";
+import Home from "../views/Cashier/Cashier";
 import Orçamento from "../views/Cashier/Orçamento";
 import Relatorio from "../views/Cashier/Relatorio";
 import Saidas from "../views/Cashier/Saidas";

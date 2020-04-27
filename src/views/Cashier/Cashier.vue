@@ -1,14 +1,5 @@
 <template>
     <v-container fluid>
-        <!--    <v-layout align-left justify-left>-->
-        <!--      <v-btn-->
-        <!--              @click="back"-->
-        <!--              color="primary"-->
-        <!--              rounded-->
-        <!--              class="mb-2 elevation-6"-->
-        <!--      ><v-icon>close</v-icon>-->
-        <!--      </v-btn>-->
-        <!--    </v-layout>-->
         <v-layout column wrap class="justify-center">
             <v-layout row wrap class="justify-center mt-10">
                 <v-flex xs3>
@@ -19,27 +10,16 @@
                 </v-flex>
             </v-layout>
             <v-layout row wrap class="justify-center">
-                <!--      <v-flex xs4 class= "text-center" >-->
-                <!--        <v-btn fab large dark class="botao" color="primary" @click="pacotes">-->
-                <!--          <v-icon size="80" >create_new_folder</v-icon>-->
-                <!--        </v-btn>-->
-                <!--        <p class="word">Pacotes</p>-->
-                <!--      </v-flex>-->
                 <v-flex xs3>
-                    <v-btn fab dark class="botao" color="primary" @click="orcamento">
+                    <v-btn fab dark class="button" color="primary" @click="budget">
                         <v-icon size="80">shopping_cart</v-icon>
                     </v-btn>
                 </v-flex>
-
                 <v-flex xs3>
-                    <v-btn fab dark class="botao" color="primary" @click="intakeDialog = !intakeDialog">
+                    <v-btn fab dark class="button" color="primary" @click="intakeDialog = !intakeDialog">
                         <v-icon size="80">attach_money</v-icon>
                     </v-btn>
                 </v-flex>
-
-
-
-
             </v-layout>
             <v-dialog content-class="bottom-dialog" v-model="intakeDialog" transition="dialog-bottom-transition" max-width="720px">
                 <v-card class="pa-3">
@@ -75,6 +55,8 @@
 
 <script>
     import SubmitButton from "../../components/SubmitButton";
+    import moment from 'moment';
+
     export default {
         data() {
             return {
@@ -103,15 +85,10 @@
         },
         methods: {
 
-            orcamento() {
+            budget() {
                 this.$router.push('/caixa/Orçamento')
             },
-            saidas() {
-                this.$router.push('/caixa/Saidas')
-            },
-            back() {
-                this.$router.push('/')
-            },
+
             async addIntake(intake) {
                 this.loading = true;
                 intake.colaborator = this.user;
@@ -130,7 +107,8 @@
 </script>
 
 <style scoped>
-    .botao {
+
+    .button {
         margin-top: 10%;
         width: 120px;
         height: 120px;
