@@ -9,7 +9,6 @@ import AgendarRetorno from "../views/DoctorsAgenda/ScheduleReturn";
 import Cids from "../views/DoctorsAgenda/Cids";
 import Declaration from "../views/DoctorsAgenda/Declaration";
 import Teste from "../views/DoctorsAgenda/testescrolling";
-import Patient from "../views/DoctorsAgenda/Patient";
 import Discount from "../views/discount"
 
 export default [

@@ -78,7 +78,7 @@
         </v-layout>
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 0">
-        <general-report :report="formattedReport" :loading="loading" :intakes="intakes" />
+        <general-report :report="formattedReport" :loading="loading" :intakes="intakes"  :reportAllUnits="formattedReportAllUnits"/>
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 1">
         <colaborators-production-report :loading="loading" :intakes="intakes"></colaborators-production-report>
@@ -197,6 +197,11 @@ export default {
         dataFinal: this.date2,
         colaborator: this.colaborator
       });
+      this.formattedReportAllUnits = await this.$store.dispatch("searchReportsAllClinics", {
+        dataInicio: this.date,
+        dataFinal: this.date2,
+        colaborator: this.colaborator
+      });
       this.dateBegin = this.dateFormatted;
       this.dateEnd = this.dateFormatted2;
       this.loading = false;
@@ -236,6 +241,9 @@ export default {
   computed: {
     Relatorio() {
       return this.$store.getters.relatorio;
+    },
+    ReportAllClinics() {
+      return this.$store.getters.reportAllClinics;
     },
     colaborators() {
       return this.$store.getters.colaborators;
