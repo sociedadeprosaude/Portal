@@ -1,5 +1,5 @@
 import Home from "../views/Cashier/Cashier";
-import Orçamento from "../views/Cashier/Orçamento";
+import Orçamento from "../views/Cashier/Budget";
 import Relatorio from "../views/Cashier/Relatorio";
 import Saidas from "../views/Cashier/Saidas";
 import Bundles from "../views/Cashier/Bundles";

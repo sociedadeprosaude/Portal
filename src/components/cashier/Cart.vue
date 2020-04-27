@@ -435,7 +435,6 @@
             paymentValues() {
                 let tamanho = this.payment.paymentForm.length;
                 let pagando = 0;
-                console.log('payment: ',this.payment.paymentForm.length)
                 if (tamanho === 1 && this.payment.paymentForm[0] !== '') {
                     this.payment.value[0] = parseFloat(this.total)
                     pagando = parseFloat(this.payment.value[0]);
@@ -613,9 +612,8 @@
                 await this.$store.dispatch('addIntake', this.selectedBudget);
                 let porcentagem = (this.selectedBudget.discount / this.selectedBudget.subTotal)
 
-                console.log('total : ', this.selectedBudget)
                 if(porcentagem >= 0.5 || parseFloat(this.searchBudget.subTotal) >  this.selectedBudget.cost){
-                    console.log('entrei')
+
                     this.$store.dispatch('DiscountWarning', {orcamento: this.selectedBudget.id, date: this.selectedBudget.date,
                         discont: ((this.selectedBudget.discount / this.selectedBudget.subTotal)*100), name:this.selectedBudget.colaborator.name, cpf:this.selectedBudget.colaborator.cpf})
                 }
