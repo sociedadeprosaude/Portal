@@ -166,6 +166,7 @@ export default {
     verificador: true,
     intakes: undefined,
     formattedReport: undefined,
+    formattedReportAllUnits: undefined,
     loading: false,
     todayNewUsers: []
   }),
