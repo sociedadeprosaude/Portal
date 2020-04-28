@@ -116,11 +116,7 @@
               </v-layout>
             </v-flex>
             <v-flex xs6 class="align-start pt-6">
-                 <!-- <v-layout column wrap class="justify-start align-start  d-print-block">
-                    <span class="font-weight-bold">{{patient.name}}</span>
-                    <span class="font-weight-bold">{{patient.association_number}}</span>
-                    <span class="font-weight-bold">{{patient.birth_date | dateFilter}}</span>
-                  </v-layout> -->
+
                   <v-layout column wrap class="justify-start align-start">
                     <span class="font-weight-bold">{{selectedDependent ? selectedDependent.name : patient.name}}</span>
                     <span v-if="!selectedDependent" class="font-weight-bold">{{patient.association_number}}</span>
@@ -138,18 +134,11 @@
                     <thead>
                       <tr>
                         <th class="primary text-left white--text">EXAME</th>
-<!--                        <th class="primary text-left white&#45;&#45;text">REGRAS</th>
-                        <th class="primary text-left white&#45;&#45;text">OBSERVAÇÃO</th>-->
                       </tr>
                     </thead>
                     <tbody>
                       <tr v-for="(item, index) in items" :key="index">
                         <td class="primary--text" style="text-align: justify">{{ item.name }}</td>
-<!--                        <td
-                          class="primary&#45;&#45;text"
-                          style="text-align: justify; font-size: 0.6em"
-                        >{{ item.rules }}</td>
-                        <td class="primary&#45;&#45;text" style="text-align: justify">{{ item.clinic.obs }}</td>-->
                       </tr>
                     </tbody>
                   </template>
@@ -165,9 +154,6 @@
                 <span>CNPJ: 09.066.632/0001-22</span>
               </v-layout>
             </v-flex>
-            <!--                        <v-flex xs1 class="text-center mt-12">
-                            <img src="@/assets/logo-pro-saude.png" height="50px">
-            </v-flex>-->
             <v-flex xs6 class="primary" style="height: 2px; margin-top: 124px;"></v-flex>
           </v-layout>
         </v-card>

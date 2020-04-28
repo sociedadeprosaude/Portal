@@ -8,46 +8,6 @@
                 <v-card-text>
                     <v-container fluid>
                         <v-layout row wrap class="align-center justify-center">
-<!--                            <v-flex xs11>
-                                <v-combobox
-                                        prepend-inner-icon="search"
-                                        prepend-icon="note_add"
-                                        v-model="item"
-                                        :items="lista"
-                                        return-object
-                                        :item-text="text"
-                                        item-key="concentration"
-                                        label="Medicamentos"
-                                        chips
-                                        :search-input.sync="search"
-                                        clearable
-                                        outlined
-                                >
-                                    <template v-slot:no-data>
-                                        <v-list-item>
-                                            <v-list-item-content>
-                                                <v-list-item-title>
-                                                    <v-chip color="warning"><h2>Faça uma prescrição manual, porque o medicamento <v-chip color="red"><h1>"{{ search }}"</h1></v-chip> não foi encontrado na lista de medicamentos do pró-saúde.</h2></v-chip>
-                                                </v-list-item-title>
-                                            </v-list-item-content>
-                                        </v-list-item>
-                                    </template>
-
-                                    <template v-slot:selection="data">
-                                        <v-chip
-                                                :key="JSON.stringify(data.item)"
-                                                v-bind="data.attrs"
-                                                :input-value="data.selected"
-                                                :disabled="data.disabled"
-                                                @click:close="data.parent.selectItem(data.item)"
-                                                color="info"
-                                        >
-                                            {{ data.item.name }} - {{ data.item.concentration }} - {{ data.item.pharmaceutical }}
-                                        </v-chip>
-                                    </template>
-                                </v-combobox>
-                            </v-flex>-->
-
                             <v-flex xs11>
                                 <v-combobox
                                         prepend-inner-icon="search"
@@ -624,27 +584,5 @@
 <style scoped>
     ul {
         list-style-type: none;
-    }
-    .slide-up-enter {
-        transform: translateX(-10px);
-        opacity: 0;
-    }
-    .slide-up-enter-active {
-        transition: all 0.5s ease;
-    }
-    .slide-up-move {
-        transition: transform 0.5s ease-in;
-    }
-    .fade-enter {
-        opacity: 0;
-    }
-    .fade-enter-active {
-        transition: opacity 0.5s ease-in;
-    }
-    .fade-leave-active {
-        transition: opacity 0.5s ease-out;
-    }
-    .fade-leave-to {
-        opacity: 0;
     }
 </style>

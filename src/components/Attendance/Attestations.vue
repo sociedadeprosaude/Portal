@@ -114,12 +114,6 @@
                                 <v-img :src="require('@/assets/pro_saude_logo_transparente.png')">
                                 <v-layout align-center row wrap>
                                     <v-flex xs12>
-                                        <!--                                    <v-img
-                                                                                    :src="require('../assets/logo-pro-saude.png')"
-                                                                                    class="my-3"
-                                                                                    contain
-                                                                                    height="50"
-                                                                            ></v-img>-->
                                     </v-flex>
                                     <v-flex xs12>
                                         <v-flex xs12><p style="color: white">.</p></v-flex>

@@ -84,7 +84,6 @@
                                 </v-layout>
                             </v-flex>
                             <v-flex xs12 class="text-left" style="height: 50px">
-                                <!--                                <span class="font-weight-bold white&#45;&#45;text" style="font-size: 1.0em">Luiz Fernando Sarmento Nicolau</span>-->
                             </v-flex>
                             <v-flex xs6 class="text-left pt-4">
                                 <v-layout column wrap>

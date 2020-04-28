@@ -134,7 +134,6 @@
                 return this.$store.getters.specialties;
             },
             formIsValid() {
-                /*return this.sale && this.cost && this.consultations && this.doctors.length > 0 && this.payment*/
                 return this.consultations && this.doctors.length > 0 && this.payment
             },
             selectedClinic() {
@@ -150,7 +149,6 @@
                             }
                         }
                         return false
-                        // return a.specialties.indexOf(this.especialidade.name) > -1
                     })
                 }
                 return doctors
@@ -163,7 +161,7 @@
         },
 
         watch: {
-            //
+
         },
 
         methods:{
@@ -193,7 +191,6 @@
                 this.doctor = [];
                 this.payment = '';
                 this.closeDialog()
-                //this.$store.dispatch('selectClinic', null);
             },
 
             closeDialog: function() {

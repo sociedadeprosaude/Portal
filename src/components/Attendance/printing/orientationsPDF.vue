@@ -18,7 +18,6 @@
             <v-flex>
                 <v-card flat class="pa-10 receipt-to-print">
                     <v-layout row wrap class="align-center pa-4 mt-4" style="border: 2px solid #2196f3; border-radius: 16px">
-                        <!--<img style="position:absolute;z-index:0;width:300px; heigth:300px; bottom:0" :src="require('@/assets/pro_saude_logo_transparente.png')">-->
                         <v-spacer></v-spacer>
                         <v-flex xs4>
                             <v-divider style="border: 2px solid #2196f3; border-radius: 10px"></v-divider>
@@ -47,8 +46,6 @@
                                 <vue-editor v-model="item.value" :editor-toolbar="customToolbar"/>
                             </v-card-text>
                         </v-flex>
-
-                        <!--<v-flex xs12 style="height: 300px"></v-flex>-->
                     </v-layout>
                 </v-card>
             </v-flex>
@@ -74,10 +71,8 @@
             ]
         }),
         computed:{
-            //
         },
         watch:{
-            //
         },
         mounted() {
             this.hoje = moment().locale('pt-BR').format('DD/MM/YYYY HH:mm:ss')

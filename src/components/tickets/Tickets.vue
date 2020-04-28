@@ -288,7 +288,6 @@ export default {
     async createRoom(room) {
       this.loading = true;
       const sector = this.sector;
-      // await this.$store.dispatch("createRoom", room );
       await this.$store.dispatch("createSectorRoom", { sector, room });
       this.loading = false;
       this.success = true;
@@ -300,7 +299,6 @@ export default {
       room.doctor = doctor;
       this.loading = true;
       const sector = this.sector;
-      // await this.$store.dispatch("updateRoom2", room );
       await this.$store.dispatch("updateSectorRoom", { sector, room });
       this.loading = false;
     },
@@ -317,7 +315,6 @@ export default {
       ticketInfo.last_updated = moment().format("YYYY-MM-DD HH:mm:ss");
       await this.$store.dispatch("updateGeneralInfo", this.ticketInfo);
       const sector = this.sector;
-      // await this.$store.dispatch("updateRoom2", room );
       await this.$store.dispatch("updateSectorRoom", { sector, room });
     },
     async callNextTicket(room) {
@@ -330,7 +327,6 @@ export default {
         "YYYY-MM-DD HH:mm:ss"
       );
       const sector = this.sector;
-      // await this.$store.dispatch("updateRoom2", room );
       await this.$store.dispatch("updateSectorRoom", { sector, room });
     },
     reset() {

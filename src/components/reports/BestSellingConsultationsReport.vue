@@ -152,7 +152,6 @@ export default {
         (total, e) => total + e.price,
         0
       );
-
       return {
         name: consultation.name,
         intakes: listIntakesSpecialties,
@@ -187,10 +186,8 @@ export default {
           };
         })
       );
-      // Juntando em uma array que o bloco de cima retona uma array de array
       listIntakesRemade = [].concat.apply([], listIntakesRemade);
       let listIntakesGroupedBySpecialties = [];
-      // Agrupando os intakes que tem ao mesmo exame
       this.specialties.forEach(specialtie => {
         let listIntakesSpecialties = listIntakesRemade.filter(
           intake => intake.specialtieName === specialtie.name

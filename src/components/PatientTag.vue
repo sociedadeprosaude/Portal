@@ -47,9 +47,6 @@
                                     </span>
                                 </v-layout>
                             </v-flex>
-                            <!--                            <v-flex xs2 class="text-right">-->
-                            <!--                                <img height="64px" :src="require('@/assets/pro_saude_logo.png')">-->
-                            <!--                            </v-flex>-->
                             <v-flex xs4 style="font-size: 0.8em">
                                 <v-layout column wrap>
                                     <span class="font-weight-bold white--text"
@@ -66,7 +63,6 @@
                                 </v-layout>
                             </v-flex>
                             <v-flex xs12 class="text-left" style="height: 50px">
-                                <!--                                <span class="font-weight-bold white&#45;&#45;text" style="font-size: 1.0em">Luiz Fernando Sarmento Nicolau</span>-->
                             </v-flex>
                             <v-flex xs6 class="text-left pt-4">
                                 <v-layout column wrap>
@@ -86,14 +82,6 @@
                                     <span class="font-weight-bold white--text">Cidade Nova</span>
                                 </v-layout>
                             </v-flex>
-                            <!--                            <v-flex xs4 class="text-left">-->
-                            <!--                                <v-layout column wrap>-->
-                            <!--                                    <span class="font-weight-bold white&#45;&#45;text"-->
-                            <!--                                          style="font-size: 0.6em">Nascimento</span>-->
-                            <!--                                    <span class="font-weight-bold white&#45;&#45;text"-->
-                            <!--                                          style="font-size: 1.2em">17/05/1973</span>-->
-                            <!--                                </v-layout>-->
-                            <!--                            </v-flex>-->
                         </v-layout>
                     </v-img>
                 </v-card>
@@ -106,10 +94,8 @@
     export default {
         name: "PatientTag",
         props: ['user'],
-
         data() {
             return {
-                // actualDate: moment(this.user.created_at).format('MM/YY'),
                 validDate: moment().add(1, 'year').format('MM/YY')
             }
         },

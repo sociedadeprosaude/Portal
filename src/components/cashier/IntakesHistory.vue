@@ -122,12 +122,10 @@
 <script>
 import Receipt from "./Receipt";
 import constants from "../../utils/constants";
-// import AttendanceGuide from "./AttendanceGuide";
 
 export default {
   name: "IntakesHistory",
   components: {
-    // AttendanceGuide,
     Receipt
   },
   data() {
@@ -151,7 +149,6 @@ export default {
       budget = await this.$store.dispatch("getBudget", budget.id.toString());
       this.$store.commit("clearShoppingCartItens");
       this.$store.commit("setSelectedBudget", budget);
-      // this.selectedBudget = budget
       for (let exam in budget.exams) {
         this.$store.commit("addShoppingCartItem", budget.exams[exam]);
       }
@@ -159,7 +156,6 @@ export default {
         this.$store.commit("addShoppingCartItem", budget.specialties[spec]);
       }
       this.loading = false;
-      // this.$store.commit('setSelectedPatient', budget.user)
     },
     diffByNow(product) {
       let now = moment();

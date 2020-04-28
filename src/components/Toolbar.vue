@@ -26,7 +26,6 @@
           <v-btn rounded text @click="selectUnit()">
             <v-icon>cached</v-icon>
           </v-btn>
-          <!--                    <span class="white&#45;&#45;text">Exames carregados: {{examsLoaded}}</span>-->
         </v-layout>
       </v-toolbar-items>
       <v-spacer />
@@ -42,24 +41,10 @@
                   <br />
                   TELEFONE: {{selectedPatient.telephones ? selectedPatient.telephones[0] : 'Número não informado'}}
                 </v-list-item-subtitle>
-                <!--                                <v-list-tile-subtitle v-else>Número: {{selectedPatient.association_number}}
-                </v-list-tile-subtitle>-->
               </v-list-item-content>
             </v-list-item>
           </v-card>
         </v-flex>
-        <!--
-                                <v-dialog v-model="dialog" width="1000">
-                                    <template v-slot:activator="{ on }">
-                                        <v-btn color="transparent" v-on="on" class="elevation-0">
-                                            <v-icon left>search</v-icon>
-                                            associados
-                                            <v-icon right>person_add</v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <pacientes></pacientes>
-                                </v-dialog>
-        -->
       </v-toolbar-items>
     </v-app-bar>
     <v-app-bar

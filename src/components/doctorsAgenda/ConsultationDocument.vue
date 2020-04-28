@@ -132,8 +132,44 @@
                     </v-layout>
                 </v-card>
             </v-flex>
-        </v-layout>
-    </v-container>
+            <v-flex xs6 class="text-center">
+              <v-layout row wrap justify-end align-end>
+                <v-flex xs5>
+                  <span class="my-sub-headline primary--text" style="font-size: 1.4em">Triagem</span>
+                  <v-text-field prefix="Peso:" type="number" suffix="KG" hide-details v-model="p"></v-text-field>
+                  <v-text-field
+                    prefix="Altura:"
+                    type="number"
+                    suffix="cm"
+                    hide-details
+                    v-model="alt"
+                  ></v-text-field>
+                  <v-text-field
+                    prefix="P.A:"
+                    suffix="PA"
+                    v-mask="'##x##'"
+                    v-model="pa"
+                    hide-details
+                  ></v-text-field>
+                </v-flex>
+              </v-layout>
+            </v-flex>
+            <v-flex xs12 class="mt-2 py-1 px-4">
+              <v-layout row wrap class="align-center"></v-layout>
+            </v-flex>
+          </v-layout>
+          <v-layout
+            row
+            wrap
+            class="align-center pa-4 mt-4"
+            style="border: 2px solid #2196f3; border-radius: 16px"
+          >
+            <v-flex xs12 style="height: 550px"></v-flex>
+          </v-layout>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
@@ -144,15 +180,7 @@
         name: "Receipt",
         props: ['consultation', 'openDocument'],
         computed: {
-            /* idade () {
-                var date = this.dependent ? this.dependent.birthDate : this.user.birth_date
-                 var patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
-              
-                if(patt.test(date))
-                    date = moment(date,"DD/MM/YYYY").format("YYYY-MM-DD")
-                
-                return moment().diff(moment(date, 'YYYY-MM-DD'), 'years')
-            }, */
+
             user() {
                 return this.$store.getters.selectedPatient
             },
@@ -204,17 +232,13 @@
                 return cost
             },
 
-            formatDates() {
-
-                let date = this.dependent ? this.dependent.birthDate : this.user.birth_date
+             formatDates(){
+                
+                let date = this.dependent ? this.dependent.birthDate : this.user.birth_date;
                 let patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
-
-                if (patt.test(date))
-                    date = moment(date, "DD/MM/YYYY").format("YYYY-MM-DD")
-
-                this.idade = moment().diff(moment(date, 'YYYY-MM-DD'), 'years')
-                this.birthDate = moment(date).format('DD/MM/YYYY')
-
+                if(patt.test(date)) date = moment(date,"DD/MM/YYYY").format("YYYY-MM-DD");
+                this.idade = moment().diff(moment(date, 'YYYY-MM-DD'), 'years');
+                this.birthDate = moment(date).format('DD/MM/YYYY');
             },
             async print() {
                 this.loader = true;
@@ -256,15 +280,10 @@
             },
             saveConsultationHour() {
                 this.inititize()
-                if (this.openDocument) {
-                    this.$store.dispatch('setConsultationHour', {
-                        consultation: this.consultation.id,
-                        patient: this.user.cpf,
-                        consultationHour: this.consultationHour,
-                        day: this.dia
-                    })
-                        .then((result) => {
-                            if (result) {
+                if(this.openDocument){
+                    this.$store.dispatch('setConsultationHour',{consultation:this.consultation.id,patient:this.user.cpf ,consultationHour:this.consultationHour,day:this.dia})
+                        .then((result)=>{
+                            if(result){
                                 this.consultationHour = result.consultationHour
                                 this.hoje = moment(result.consultationHour).locale('pt-BR').format('DD/MM/YYYY HH:mm:ss')
                                 this.dia = result.day

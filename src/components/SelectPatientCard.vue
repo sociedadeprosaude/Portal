@@ -56,20 +56,6 @@
                                             <span>Agendamento de Consultas</span>
                                         </v-tooltip>
                                     </v-flex>
-                                    <!-- <v-flex v-if="selectedPatient && selectedPatient.dependents" xs1 class="text-right mx-3">
-                                        <v-tooltip  top>
-                                            <template v-slot:activator="{ on }">
-                                                <v-btn
-                                                        v-on="on"
-                                                        @click="listDependents()"
-                                                        rounded text class="white--text transparent">
-                                                    <v-icon>child_friendly</v-icon>
-                                                </v-btn>
-                                            </template>
-                                            <span>Selecionar dependentes</span>
-                                        </v-tooltip>
-
-                                    </v-flex> -->
                                     <v-flex xs1 class="text-right mx-3">
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
@@ -521,7 +507,6 @@
               if (user) {
                   this.name = user.name;
                   this.cpf = user.cpf
-                  //this.numAss = user.association_number
               }
               return this.$store.getters.selectedPatient
           },
@@ -699,7 +684,6 @@
                 this.success = true;
                 this.loading = false;
                 this.selectUser(patient);
-                // this.fillFormUser(patient)
                 setTimeout(() => {
                     this.success = false
                 }, 1000)

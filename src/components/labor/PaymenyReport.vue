@@ -194,14 +194,10 @@
                 this.loading = false
             },
             async getInitialInfo() {
-                // await this.$store.dispatch('getPermissionList')
                 await this.$store.dispatch('getColaborators')
                 await this.$store.dispatch('getColaboratorsDoctors')
                 this.loading = false
             },
-            GetSalary(){
-
-            }
         }
     }
 </script>

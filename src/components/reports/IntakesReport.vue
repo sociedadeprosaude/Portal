@@ -456,32 +456,6 @@
             }
         },
         methods: {
-            filterIntakesforColaborator(colaborator) {
-                 let listIntakesColaborator = [];
-                 this.report.intakes.filter((intake) => {
-                     if (intake.colaborator.name === colaborator) {
-                         listIntakesColaborator.push({
-                            colaborator: intake.colaborator,
-                            cost: intake.cost,
-                            date: intake.date,
-                            discount: intake.discount,
-                            exams: intake.exams,
-                             id: intake.id,
-                             payments: intake.payments,
-                             subTotal: intake.subTotal,
-                             total: intake.total,
-                             unit: intake.unit,
-                             user: intake.user,
-                             valuesPayments: intake.valuesPayments
-
-                         })
-                     }
-                 });
-
-                 if (listIntakesColaborator.length !== 0){
-                     return listIntakesColaborator
-                 }
-            }
         }
     }
 

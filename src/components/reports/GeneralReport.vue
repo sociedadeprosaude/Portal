@@ -396,7 +396,6 @@
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs1>
-                                            <!--                                            {{outtake.quantidade}}-->
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>

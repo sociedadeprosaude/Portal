@@ -230,15 +230,6 @@
             </v-card-text>
             <v-divider></v-divider>
             <v-card-actions>
-              <!-- <v-dialog v-model="loader" hide-overlay persistent width="300">
-                                        <v-card color="primary" dark>
-                                            <v-card-text>
-                                                Salvando...
-                                                <v-progress-linear indeterminate color="white"
-                                                                   class="mb-0"></v-progress-linear>
-                                            </v-card-text>
-                                        </v-card>
-              </v-dialog>-->
               <v-btn rounded class="error" @click="$emit('close')">
                 Cancelar
                 <v-icon right>clear</v-icon>
@@ -277,7 +268,6 @@
                   return a.type === this.createConsultationForm.consultation.specialty.name;
               });
               return val;
-              //return this.$store.getters.exams;
             },
         },
         methods: {

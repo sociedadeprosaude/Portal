@@ -360,7 +360,6 @@
                     return a.name === this.selectedClinic.name;
                 });
                 return val
-                //return this.$store.getters.clinics
             },
 
             allExams () {
@@ -395,7 +394,6 @@
         },
 
         watch: {
-            //
         },
 
         methods:{
@@ -422,7 +420,6 @@
                     obs: this.obs,
                     payment: this.payment,
                 };
-
                 this.$store.dispatch('addAppointment', data);
                 this.clear()
             },
@@ -435,7 +432,6 @@
                     rules: this.exam.rules,
                     obs: this.exam.obs,
                 };
-
                 this.$store.dispatch('addExamToClinic', examData);
                 this.clear()
             },
@@ -461,7 +457,6 @@
                     this.exam = undefined;
                 }
                 this.option = undefined;
-                //this.$store.dispatch('selectClinic', null);
             },
 
             closeDialog: function() {

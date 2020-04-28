@@ -219,7 +219,6 @@ export default {
         return a.name === this.selectedClinic.name;
       });
       return val;
-      //return this.$store.getters.clinics
     },
 
     allExams() {
@@ -250,7 +249,6 @@ export default {
   methods: {
     clear() {
       this.closeDialog()
-      //this.$store.dispatch("selectClinic", null);
     },
 
     closeDialog: function() {
@@ -274,7 +272,7 @@ export default {
       this.$store.dispatch("loadClinics");
     },
     preprocessSpec(index, index2) {
-     this.specialtie = this.allSpecialties[index].doctors[index2].specialtie;
+      this.specialtie = this.allSpecialties[index].doctors[index2].specialtie;
       this.cpf = this.allSpecialties[index].doctors[index2].cpf;
       this.doctor = this.allSpecialties[index].doctors[index2].name;
       this.cost = this.allSpecialties[index].doctors[index2].cost;
