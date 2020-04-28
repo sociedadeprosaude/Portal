@@ -15,6 +15,10 @@
                             <v-layout row wrap>
 
                                 <v-spacer/>
+                                <v-btn text dark color="primary"  @click="selectClinic(this.clinicSelected), dataClinic = true">
+
+                                    teste
+                                </v-btn>
 
                                 <v-dialog v-model="dialog" persistent width="500px">
                                     <template v-slot:activator="{ on }">
@@ -221,7 +225,7 @@
                             </v-layout>
                         </v-flex>
                         <v-toolbar flat color="white">
-                            <v-spacer></v-spacer>
+                            <v-spacer/>
                             <template>
                                 <v-container>
                                     <v-flex>
@@ -232,7 +236,7 @@
                                                 color="black"
                                                 single-line
                                                 hide-details
-                                        ></v-text-field>
+                                        />
                                     </v-flex>
                                 </v-container>
                             </template>
@@ -301,6 +305,9 @@
             <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
         </v-overlay>
 
+
+
+        <v-dialog v-model="dataClinic" text hide-overlay><RegisterNewClinic @close-dialog="dataClinic = false"></RegisterNewClinic></v-dialog>
         <v-dialog v-model="Product" width="850px" text hide-overlay><Products @close-dialog="Product = false"></Products></v-dialog>
         <v-dialog v-model="Configuration" width="800px" text hide-overlay><Configurations @close-dialog="Configuration = false"></Configurations></v-dialog>
         <v-dialog v-model="Consultation" width="500px" text hide-overlay><Consultations @close-dialog="Consultation = false"></Consultations></v-dialog>
@@ -309,14 +316,14 @@
         <v-dialog v-if="selectedClin" v-model="areyoushure" max-width="350px">
             <v-card>
                 <v-card-title class="headline">Apagar Clínica ?</v-card-title>
-                <v-divider></v-divider>
+                <v-divider/>
                 <v-card-text class="headline">
                     {{ selectedClin.name }}
                 </v-card-text>
-                <v-divider></v-divider>
+                <v-divider/>
                 <v-card-actions>
                     <v-btn rounded color="error" @click="areyoushure = false">Cancelar</v-btn>
-                    <v-spacer></v-spacer>
+                    <v-spacer/>
                     <v-btn rounded color="success" @click="deleteItem(selectedClin)">Confirmar</v-btn>
                 </v-card-actions>
             </v-card>
@@ -333,11 +340,14 @@
     import Products from "../../components/clinics/Products";
     import Configurations from "../../components/clinics/Configurations";
     import SubmitButton from "../../components/SubmitButton";
+    import RegisterNewClinic from "../../components/clinics/RegisterNewClinic";
+
     export default {
-        components: {Configurations, Products, Consultations, Exams, SubmitButton},
+        components: {Configurations, Products, Consultations, Exams, SubmitButton, RegisterNewClinic},
         directives: {mask},
         data: () => ({
             Exam: false,
+            dataClinic: false,
             Consultation: false,
             areyoushure: false,
             selectedClin: undefined,
@@ -454,8 +464,13 @@
             },
 
             clinicSelected () {
-                //console.log(this.$store.getters.selectedClinic);
-                return this.$store.getters.selectedClinic;
+                let clinic = this.$store.getters.selectedClinic;
+                if (clinic) {
+                    return clinic;
+                } else {
+                    return this.defaultItem;
+                }
+
             },
 
 
@@ -513,12 +528,7 @@
         },
 
         methods: {
-            async fixExamsWithouClinics(clinic) {
-                this.loading = true
-                let clinicExams = await this.$store.dispatch('getClinicExams', clinic)
-                await this.$store.dispatch('setClinicOnExams', {clinic: clinic, exams: clinicExams})
-                this.loading = false
-            },
+
 
             async loadClinics() {
               this.loading = true;
@@ -527,6 +537,11 @@
             },
 
             selectClinic(item) {
+                console.log(item)
+                if (!item) {
+                    console.log('if');
+                    this.$store.dispatch('selectClinic', this.defaultItem);
+                }
                 this.editedIndex = this.clinics.indexOf(item);
                 this.editedItem = Object.assign({}, item);
                 this.$store.dispatch('selectClinic', item);
