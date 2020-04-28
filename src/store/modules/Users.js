@@ -119,7 +119,7 @@ const actions = {
     },
 
     async getPatient({ }, id) {
-        let userDoc = await firestore().collection('users').doc(id.toString()).get()
+        let userDoc = await firestore().collection('users').doc(id.toString()).get();
         return userDoc.data()
     },
     async searchUser({ }, searchFields) {
@@ -132,34 +132,15 @@ const actions = {
         let querySnapshot = await usersRef.limit(30).get();
         let users = [];
         querySnapshot.forEach(function (doc) {
-            // if (doc.data().association_number) {
+
             users.push({
                 ...doc.data(),
                 id: doc.id
             })
-            // }
+
         });
         return users
     },
-    /*  async gambiarra({ commit, getters }, searchFields) {
-         let usersRef = firestore().collection('users').where('type','==','PATIENT');
-         console.log('Vai buscar')
-         //usersRef.where('type','==','PATIENT')
-         let querySnapshot = await usersRef.get();
-         let users = [];
-         querySnapshot.forEach(function (doc) {
-            let data = doc.data()
-            if(data.dependents){
- 
-                 data.dependents.forEach((dep)=>{
-                         console.log('Nome do responsável:' + data.name + '-> Dependente' + dep.name)
- 
-                 })
-             }
-         });
-         console.log('Buscou')
-         return users
-     }, */
     thereIsUserCPF({ commit }, payload) {
         return new Promise(async (resolve, reject) => {
             try {
@@ -213,7 +194,7 @@ const actions = {
                     }
                 }
             }
-            upd = payload.user
+            upd = payload.user;
             return await firebase.firestore().collection('users').doc(payload.user.cpf).set(upd)
 
         } else {
@@ -241,15 +222,7 @@ const actions = {
                 .catch(function (error) {
                     console.log('Error deleting user:', error);
                 });
-            //var usuario =firebase.auth(user.user.uid)
-            //console.log('usuario: ',usuario)
 
-            //var user = firebase.auth().currentUser;
-            //user.delete().then(function() {
-            // User deleted.
-            //}).catch(function(error) {
-            // An error happened.
-            // });
             return
         } catch (e) {
             throw e

@@ -250,7 +250,7 @@ export default {
         ...this.user,
         address: this.address
       });
-      this.loading = false
+      this.loading = false;
       this.success = true
     },
     addUser() {
