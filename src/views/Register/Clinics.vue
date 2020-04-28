@@ -248,12 +248,10 @@
 
                         <v-tooltip top color="error">
                             <template v-slot:activator="{ on }">
-                                <!--<v-btn v-on="on" @click="deleteItem(item)" small dark fab color="error" class="mr-2"><v-icon>delete</v-icon></v-btn>-->
                                 <v-btn v-on="on" @click="confirmDeletion(item)" small dark fab color="error" class="mr-2"><v-icon>delete</v-icon></v-btn>
                             </template>
                             <span>Apagar Clinica</span>
                         </v-tooltip>
-<!--                        <v-btn small dark fab color="primary_light" class="mr-2" @click="fixExamsWithouClinics(item)"><v-icon>assignment</v-icon></v-btn>-->
                         <v-tooltip top color="primary">
                             <template v-slot:activator="{ on }">
                                 <v-btn v-on="on" small dark fab color="primary" class="mr-2" @click="selectClinic(item), Consultation = true"><v-icon>assignment</v-icon></v-btn>
@@ -492,15 +490,6 @@
                                 this.editedItem.address.neighborhood = response.data.bairro;
                                 this.editedItem.address.city = response.data.localidade;
                                 var array = this.stateOptions;
-                                /* console.log(
-                                    array.find(function(element) {
-                                        if(element.includes('AM')){
-                                            return element;
-                                        }
-
-                                        return '';
-                                    })
-                                ); */
                                 this.editedItem.state = array.find(function (element) {
                                     if (element.includes(response.data.uf)) {
                                         return element;
@@ -547,8 +536,6 @@
                 this.editedItem.startSaturday = this.editedItem.agenda[5].length > 0 ? this.editedItem.agenda[5].split('-')[0] : ''
                 this.editedItem.endSaturday = this.editedItem.agenda[5].length > 0 ? this.editedItem.agenda[5].split('-')[1] : ''
 
-                // this.complement = this.editedItem.address.complement
-                // this.number = this.editedItem.address.number
                 this.dialog = true;
             },
 

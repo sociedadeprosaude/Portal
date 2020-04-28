@@ -550,12 +550,8 @@
                             </v-expansion-panels>
                         </v-layout>
                     </v-container>
-
-
                 </v-layout>
-
             </v-card>
-            <!--<v-progress-circular v-if="loading" indeterminate class="primary&#45;&#45;text"></v-progress-circular>-->
         </v-layout>
     </v-container>
 </template>
@@ -655,7 +651,6 @@
                     return a.property;
                 });
                 return val;
-                //return this.$store.getters.clinics;
             },
 
             consultationsDeletionInfo() {
@@ -667,11 +662,9 @@
             },
 
             specialties() {
-                //return this.$store.getters.specialties;
 
                 let espArray = Object.values(this.$store.getters.specialties);
                 espArray = espArray.filter(specialty => {
-                    //console.log('Teeeee',specialty)
                     if (!this.doctor) {
                         return true;
                     }
@@ -685,7 +678,6 @@
 
                     return find;
                 });
-                //docArray.unshift({name:'Todos'})
                 return espArray;
             },
 
@@ -699,7 +691,6 @@
                             }
                         }
                         return false
-                        // return a.specialties.indexOf(this.especialidade.name) > -1
                     })
                 }
                 return doctors
@@ -720,35 +711,6 @@
                 return this.$store.getters.consultations
             },
 
-            // consultas() {
-            //     let consultas = this.$store.getters.consultations
-            //      // .filter((a) => {
-            //      //
-            //      //     let response = true
-            //      //    if(this.doctor){
-            //      //        if(this.doctor.cpf !== a.doctor.cpf){
-            //      //            response = false
-            //      //        }
-            //      //    }
-            //      //    if(this.especialidade){
-            //      //        if(this.especialidade.name !== a.specialty.name ){
-            //      //            response = false
-            //      //        }
-            //      //    }
-            //      //    if(!a.user){
-            //      //        response = false
-            //      //    }
-            //      //    else{
-            //      //        console.log(a.user)
-            //      //    }
-            //      //    //console.log("resposta:", response)
-            //      //    return response
-            //      //
-            //      //     //return this.especialidade && this.start_date && this.doctor ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && this.doctor.cpf == a.doctor.cpf && a.user : false
-            //      // })
-            //     return consultas;
-            // },
-
             date: {
                 get() {
                     return this.date_choose;
@@ -759,12 +721,6 @@
             },
         },
         async mounted() {
-            // this.start_date = moment().format('YYYY-MM-DD')
-            // this.final_date = moment().format('YYYY-MM-DD')
-            // this.getConsultations({
-            //     start_date: moment().format('YYYY-MM-DD 00:00:00'),
-            //     final_date: moment().format('YYYY-MM-DD 23:59:59')
-            // })
             await this.$store.dispatch('getSpecialties')
             await this.$store.dispatch('getDoctors')
             this.start_date = moment().format('YYYY-MM-DD')
@@ -798,11 +754,9 @@
                     if (inArrayIndex === -1) {
                         newArray.push({
                             ...consultations[consultation],
-                            // vagas: consultations[consultation].user ? 0 : 1,
                             consultations: [consultations[consultation]]
                         })
                     } else {
-                        // newArray[inArrayIndex].vagas++
                         newArray[inArrayIndex].consultations.push(consultations[consultation])
                     }
                 }
@@ -884,10 +838,8 @@
                     clinic:this.clinic
                 }
                 await this.$store.dispatch('removeAppointmentByDay', deletar)
-                // this.clear()
                 this.success = true
                 this.loading = false
-                //this.$router.push('/agenda/agendamento')
             },
 
             clear() {

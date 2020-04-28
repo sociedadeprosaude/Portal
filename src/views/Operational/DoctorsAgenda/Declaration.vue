@@ -91,7 +91,6 @@
                 <v-layout align-center justify-center>
                 <v-card width="400" class="elevation-6 " style="-webkit-print-color-adjust:exact">
                     <img style="position:absolute;z-index:0;width:200px; heigth:200px; bottom:0" :src="require('@/assets/pro_saude_logo_transparente.png')">
-                    <!-- <v-img :src="require('../assets/pro_saude_logo_transparente.png')"> -->
                 <v-layout style="z-index:1;position:relative;" align-center row wrap>
                     <v-flex xs12>
                         <img :src="selectedUnit.logo" height="50px" contain class="my-3">

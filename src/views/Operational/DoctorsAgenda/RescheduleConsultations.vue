@@ -35,33 +35,6 @@
             filled
             disabled
           ></v-text-field>
-          <!-- <v-select
-            prepend-icon="location_city"
-            v-model="clinic"
-            :items="clinics"
-            item-text="name"
-            label="Clínica"
-            outlined
-            rounded
-            filled
-            chips
-            color="purple"
-            clearable
-            readonly
-          >
-            <template v-slot:selection="data">
-              <v-chip
-                :key="JSON.stringify(data.item)"
-                :input-value="data.selected"
-                :disabled="data.disabled"
-                class="v-chip--select-multi"
-                @click.stop="data.parent.selectedIndex = data.index"
-                @input="data.parent.selectItem(data.item)"
-                text-color="white"
-                color="info"
-              >{{ data.item.name }}</v-chip>
-            </template>
-          </v-select>-->
         </v-flex>
       </v-layout>
       <v-layout
@@ -87,14 +60,6 @@
               <v-card class="pa-4" style="border-radius:20px; height: 100%">
                 <v-layout fill-height>
                   <v-layout row wrap>
-                    <!--                                        <v-flex xs2 sm2 dm2 lg2>-->
-                    <!--                                            <v-avatar>-->
-                    <!--                                                <v-btn icon large color="primary_dark">-->
-                    <!--                                                    <v-icon medium color="grey">person</v-icon>-->
-                    <!--                                                </v-btn>-->
-                    <!--                                            </v-avatar>-->
-                    <!--                                        </v-flex>-->
-
                     <v-flex id="teste" xs12 class="pl-3 text-left">
                       <h4>
                         <span class="subheading font-weight-bold">{{schedule.doctor.name}}</span>
@@ -103,10 +68,6 @@
                           class="body-2 font-weight-bold dark_grey--text"
                         >{{schedule.specialty.name}}</span>
                         <br />
-                        <!--                                                <span-->
-                        <!--                                                        class="font-weight-bold dark_grey&#45;&#45;text"-->
-                        <!--                                                        style="font-size: 0.8em"-->
-                        <!--                                                >CRM-AM: {{consulta.doctor.crm}}</span>-->
                       </h4>
                     </v-flex>
                     <v-flex xs12 class="mb-1">
@@ -424,27 +385,6 @@
         </v-layout>
       </v-container>
     </template>
-
-    <!-- <v-dialog v-model="snackbar" hide-overlay max-width="500px">
-            <v-card color="white">
-                <v-card-title class="text-xs-center ma-1">
-                    <h3>
-                        {{this.mensagem}}
-                        <v-icon dark color="success">done_outline</v-icon>
-                    </h3>
-                </v-card-title>
-                <v-card-text class="text-xs-center">
-                    <div>
-                        <h4 class="text--primary">Você deseja continuar com o paciente selecionado?</h4>
-                    </div>
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn flat color="primary" @click="keepPatient">Sim</v-btn>
-                    <v-btn color="primary" flat @click="clearPatient">Não</v-btn>
-                </v-card-actions>
-            </v-card>
-    </v-dialog>-->
     <v-btn
       v-if="offsetTop > 2"
       class="mr-2"
@@ -467,7 +407,6 @@ import SelectPatientCard from "../../../components/SelectPatientCard";
 import SubmitButton from "../../../components/SubmitButton";
 
 var moment = require("moment/moment");
-// import * as easings from "vuetify/es5/util/easing-patterns";
 export default {
   components: { Pacientes, SelectPatientCard, SubmitButton },
 
@@ -528,8 +467,6 @@ export default {
     pacienteSelecionado: undefined,
     consultationsListenerUnsubscriber: undefined,
     daysToListen: 3,
-
-    //-------------------------------------------Scroll------------------------------------------------
     type: "number",
     number: 9999,
     selector: "#first",
@@ -538,9 +475,7 @@ export default {
     duration: 500,
     offset: 15,
     easing: "easeInQuint",
-    // easings: Object.keys(easings),
     offsetTop: 0
-    //---------------------------------------------------------------------------------------------------
   }),
 
   computed: {
@@ -549,9 +484,6 @@ export default {
     },
     consultationLoading() {
       return this.$store.getters.consultationsLoading;
-    },
-    computedDateFormatted() {
-      // return this.formatDate(this.index_Selecionado.data);
     },
 
     schedules() {
@@ -578,11 +510,7 @@ export default {
       return this.consultationsOfSchedules(schedules);
     },
     consultas() {
-      //console.log('Especialidade',this.especialidade)
       let consultas = this.$store.getters.consultations.filter(a => {
-        /* return this.especialidade && this.selectedDoctor ? this.especialidade.name === a.specialty.name &&
-                           this.selectedDoctor.cpf === a.doctor.cpf :  false */
-
         let response = true;
         if (this.selectedDoctor) {
           if (this.selectedDoctor.cpf !== a.doctor.cpf) {
@@ -605,14 +533,6 @@ export default {
     },
     doctors: {
       get: function() {
-        /* let docs = {
-                        0: {
-                            name: 'Todos'
-                        },
-                        ...this.$store.getters.doctors
-                    }
-                    return Object.values(docs) */
-
         let docArray = Object.values(this.$store.getters.doctors);
         docArray = docArray.filter(doctor => {
           if (!this.especialidade) {
@@ -620,7 +540,6 @@ export default {
           }
           var find = false;
           doctor.specialties.forEach(specialty => {
-            //console.log(doctor.name,specialty.name)
             if (specialty.name === this.especialidade.name) {
               find = true;
               return true;
@@ -629,7 +548,6 @@ export default {
 
           return find;
         });
-        //docArray.unshift({name:'Todos'})
         return docArray;
       }
     },
@@ -653,7 +571,6 @@ export default {
       if (this.selected === "Button") return this.$refs.button;
       else if (this.selected === "Radio group") return this.$refs.radio;
     }
-    //-----------------------------------------------------------------------------------------------------
   },
   watch: {
     medico(value) {
@@ -664,10 +581,6 @@ export default {
       });
     },
     date(val) {
-      /* window.scrollTo(
-                  0,
-                  this.findPos(document.getElementById("group-" + val), "group-" + val)
-                ); */
       if (val == this.consultas[0].date) this.$vuetify.goTo(0, this.options);
       else this.$vuetify.goTo("#group-" + val, this.options);
     }
@@ -686,7 +599,6 @@ export default {
   methods: {
     datesOfInterval(payload) {
       let weekDays = payload.weekDays;
-      //let cancelations_schedules = payload.cancelations_schedules
       let startDate = moment();
       let dates = [];
       weekDays = weekDays.map(day => {
@@ -730,7 +642,7 @@ export default {
       schedules.forEach(schedule => {
         let keys = Object.keys(schedule.days);
         let dates = this.datesOfInterval({
-          weekDays: keys /* ,cancelations_schedules:schedule.cancelations_schedules */
+          weekDays: keys
         });
 
         dates.forEach(date => {
@@ -790,11 +702,9 @@ export default {
         if (inArrayIndex === -1) {
           newArray.push({
             ...consultations[consultation],
-            // vagas: consultations[consultation].user ? 0 : 1,
             consultations: [consultations[consultation]]
           });
         } else {
-          // newArray[inArrayIndex].vagas++
           newArray[inArrayIndex].consultations.push(
             consultations[consultation]
           );
@@ -837,19 +747,11 @@ export default {
     },
     async initialConfig() {
       this.loading = true;
-      //await this.$store.dispatch('getDoctors')
-      // await this.$store.dispatch("getSpecialties")
       this.query = this.$route.params.q;
       this.selectedDoctor = this.query.doctor;
       this.especialidade = this.query.especialidade;
       this.clinic = this.query.consultation.clinic;
       await this.listenConsultations();
-
-      if (!this.query) {
-        //this.$router.push('agenda/GerenciamentoConsultas')
-      }
-
-      console.log(this.query);
 
       this.pacienteSelecionado = this.query.pacienteObj;
       this.status = this.query.status;
@@ -887,7 +789,7 @@ export default {
     handleScroll(event) {
       var scrollPos = window.scrollY;
       var winHeight = window.innerHeight;
-      var docHeight = document.documentElement.scrollHeight; // instead document.body.clientHeight
+      var docHeight = document.documentElement.scrollHeight;
       this.offsetTop = (100 * scrollPos) / (docHeight - winHeight);
     },
     findPos(obj, elementId) {
@@ -912,21 +814,14 @@ export default {
     },
     keepPatient() {
       this.snackDialogDone = true;
-      //this.snackbar = false;
     },
     clearPatient() {
       this.snackDialogDone = true;
-      //this.snackbar = false;
       this.$store.dispatch("selecionarPaciente", null);
     },
     clearRecibo() {
       this.num_recibo = "";
     },
-    // formatDate(date) {
-    //     if (!date) return null;
-    //     const [year, month, day] = date.split("-");
-    //     return `${day}/${month}/${year}`;
-    // },
     clear() {
       this.num_recibo = "";
       this.status = "Aguardando pagamento";
@@ -959,8 +854,6 @@ export default {
         form.consultation.justifyReturn = this.justify;
       }
       this.loading = true;
-      //await this.$store.dispatch("addConsultationAppointmentToUserReschedule",form);
-      //Realizar essa funcao pelo cloud functions
       await this.$store.dispatch("addUserToConsultationReschedule", form);
       this.loading = false;
       this.success = true;

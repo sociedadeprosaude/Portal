@@ -653,7 +653,6 @@
                     easing: this.easing
                 };
             },
-
         },
         watch: {
 
@@ -721,7 +720,7 @@
                 let consultations = [];
                 schedules.forEach((schedule)=>{
                     let keys = Object.keys(schedule.days);
-                    let dates = this.datesOfInterval({weekDays:keys/* ,cancelations_schedules:schedule.cancelations_schedules */});
+                    let dates = this.datesOfInterval({weekDays:keys});
 
                     dates.forEach((date)=>{
                         let hourConsultation = schedule.days[moment(date).weekday()].hour;

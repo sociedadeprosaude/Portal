@@ -136,7 +136,6 @@
         mounted() {
             this.startConsultation = moment().format('HH:mm:ss');
             this.query = this.$route.params.q;
-            console.log("parametro passado pela rota:", {...this.query});
             if (!this.query) {
                 this.$router.push('MedicalCare')
             }

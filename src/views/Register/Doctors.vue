@@ -180,20 +180,12 @@
                     let holder = {
                         ...this.doctors[doc],
                         specialties: this.getSpecialties(this.doctors[doc]),
-                        // acoes: 'edit'
                     }
                     array.push(holder)
                 }
                 return array
             },
         },
-
-        // watch: {
-        //     dialog(val) {
-        //         val || this.close()
-        //     }
-        // },
-
         mounted() {
             this.$store.dispatch('getClinics');
             this.$store.dispatch('getDoctors');
@@ -214,7 +206,6 @@
                 this.loading = false;
                 setTimeout(() => {
                     this.specialty = undefined;
-                    // this.createSpecialtyDialog = false
                 }, 1000)
             },
             addDoctor() {
@@ -227,7 +218,6 @@
                 for (const key in item.specialties) {
                     especialidades += item.specialties[key].name + ', '
                 }
-                //Remo os ultimos dois caracteres do objeto, no caso um espaço e vírgula.
                 especialidades = especialidades.slice(0, especialidades.length - 2);
                 return especialidades
             },
@@ -236,9 +226,6 @@
                 let doctor = this.doctors[item.cpf]
                 this.selectedDoctor = doctor
                 this.editDoctorDialog = true
-                // this.editedIndex = this.desserts.indexOf(item)
-                // this.editedItem = Object.assign({}, item)
-                // this.dialog = true
             },
 
             confirmDeletion(item) {
@@ -250,21 +237,12 @@
                 this.loading = true
                 await this.$store.dispatch('deleteConsultations', doctor)
                 await this.$store.dispatch('deleteDoctor', doctor)
-                // await this.$store.dispatch('getDoctors')
                 this.success = true
                 this.loading = false
                 setTimeout(() => {
                     this.confirmDeletionDialog = false
                 }, 800)
             },
-
-            // close() {
-            //     this.dialog = false;
-            //     setTimeout(() => {
-            //         this.editedItem = Object.assign({}, this.defaultItem);
-            //         this.editedIndex = -1
-            //     }, 300)
-            // },
         }
     }
 </script>

@@ -1,12 +1,12 @@
 import CanceledConsultations from "../views/Operational/DoctorsAgenda/CanceledConsultations";
 import Cids from "../views/Operational/DoctorsAgenda/Cids";
 import Declaration from "../views/Operational/DoctorsAgenda/Declaration";
-import DeletarConsultas from "../views/Operational/DoctorsAgenda/DeletarConsultas";
-import GerenciamentoConsultas from "../views/Operational/DoctorsAgenda/GerenciamentoConsultas";
+import DeletarConsultas from "../views/Operational/DoctorsAgenda/DeleteConsultations";
+import GerenciamentoConsultas from "../views/Operational/DoctorsAgenda/ManagementConsultations";
 import PatientConsultations from "../views/Operational/DoctorsAgenda/PatientConsultations";
 import RegistrationConsultationsShifts from "../views/Register/RegistrationConsultationsShifts";
 import SchedulingConsultation from "../views/Operational/DoctorsAgenda/SchedulingConsultation";
-import RemarcarConsultas from "../views/Operational/DoctorsAgenda/RemarcarConsultas";
+import RemarcarConsultas from "../views/Operational/DoctorsAgenda/RescheduleConsultations";
 import ScheduleReturn from "../views/Operational/DoctorsAgenda/ScheduleReturn";
 
 
@@ -70,6 +70,5 @@ export default [
         path: '/agenda/Declaration',
         name: 'Declaration',
         component: Declaration,
-    },
-
+    }
 ]

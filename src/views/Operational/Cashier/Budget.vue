@@ -64,8 +64,8 @@
         },
         methods: {
             getTouches(evt) {
-                return evt.touches ||             // browser API
-                    evt.originalEvent.touches; // jQuery
+                return evt.touches ||
+                    evt.originalEvent.touches;
             },
             handleTouchStart(evt) {
                 const firstTouch = this.getTouches(evt)[0];
@@ -83,7 +83,7 @@
                 let xDiff = this.xDown - xUp;
                 let yDiff = this.yDown - yUp;
 
-                if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {/*most significant*/
+                if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {
                     if ( xDiff > 0 ) {
                         this.intakes = false
 

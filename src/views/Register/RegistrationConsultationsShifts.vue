@@ -376,11 +376,9 @@
               return this.$store.getters.consultationsCreationInfo
             },
             specialties() {
-                //return this.$store.getters.specialties;
 
                 let espArray = Object.values(this.$store.getters.specialties);
                 espArray = espArray.filter(specialty => {
-                    //console.log('Teeeee',specialty)
                     if (!this.medicos) {
                         return true;
                     }
@@ -394,7 +392,6 @@
 
                     return find;
                 });
-                //docArray.unshift({name:'Todos'})
                 return espArray;
             },
             formIsValid () {
@@ -429,7 +426,6 @@
                             }
                         }
                         return false
-                        // return a.specialties.indexOf(this.especialidade.name) > -1
                     })
                 }
                 return doctors
@@ -439,7 +435,6 @@
                     return a.property;
                 });
                 return val;
-                //return this.$store.getters.clinics;
             }
         },
         mounted() {
@@ -500,7 +495,6 @@
                 await this.$store.dispatch('createConsultation', consultation)
                 this.success = true
                 this.loading = false
-                // this.clear()
             }
         }
     }

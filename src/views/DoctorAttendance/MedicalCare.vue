@@ -47,7 +47,6 @@
                                         disabled
                                 >
                                     <template v-slot:activator="{ on }">
-                                        <!--disabled-->
                                         <v-text-field
                                                 v-model="computedDateFormatted"
                                                 label="Data"
@@ -314,7 +313,6 @@
                 },
                 set(val) {
                     this.date_choose = val
-                    //this.$store.dispatch('loadScheduledAppointment', {especialidade: this.especialidade})
 
                 }
             },
@@ -350,7 +348,6 @@
             async initialConfig() {
                 this.loading = true;
                 this.especialidade = this.user.specialties[0];
-                //await this.$store.dispatch('getDoctors')
                 await this.$store.dispatch('listenConsultations',
                     {
                         start_date: moment().subtract(10, 'days').format('YYYY-MM-DD'),

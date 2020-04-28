@@ -85,10 +85,7 @@
                                                                         </v-flex>
                                                                         <v-spacer></v-spacer>
                                                                         <v-flex xs12 sm3>
-                                                                            <!-- <v-select required label = "Grau de Dependência*" v-model = "dependents.grau"
-                                                                                      :rules = "[v => !!v || 'Selecione um valor']" :items = "['filho(a)', 'neto(a)']"
-                                                                                      class = "mr-3">
-                                                                            </v-select> -->
+
                                                                             <v-select required label = "Grau de Dependência*" v-model = "dependents.grau"
                                                                                        :items = "['filho(a)', 'neto(a)']"
                                                                                       class = "mr-3">
@@ -453,7 +450,6 @@
                 val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'));
             },
             cep(val){
-                //console.log(val)
                 if(val.length == 8){
                     axios
                     .get('https://viacep.com.br/ws/'+ val + '/json/')

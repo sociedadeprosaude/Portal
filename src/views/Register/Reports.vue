@@ -211,9 +211,6 @@ export default {
       const [day, month, year] = date.split("/");
       return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     },
-    Imprimir() {
-      window.print();
-    }
   },
   async mounted() {
     this.$store.dispatch("getOuttakes", {
@@ -234,9 +231,6 @@ export default {
     this.getIntakes();
   },
   computed: {
-    Relatorio() {
-      return this.$store.getters.relatorio;
-    },
     colaborators() {
       return this.$store.getters.colaborators;
     }
@@ -244,11 +238,9 @@ export default {
   watch: {
     date(val) {
       this.dateFormatted = this.formatDate(this.date);
-      // this.getIntakes()
     },
     date2(val) {
       this.dateFormatted2 = this.formatDate(this.date2);
-      // this.getIntakes()
     }
   }
 };

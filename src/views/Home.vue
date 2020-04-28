@@ -137,7 +137,6 @@
                                 title: 'Agenda Médica',
                                 permission: 'Agenda Médica',
                                 to: '/agenda/agendamento',
-                                // external_url: 'https://agenda-medica.firebaseapp.com',
                                 icon: 'calendar_today'
                             },
                             {
@@ -264,7 +263,6 @@
             },
 
             filteredPages() {
-                // if (!this.user.permissions) return []
                 if(this.user){
                     return this.pages.filter(a => {
                         if (this.user.group === 'admin') {
@@ -285,7 +283,6 @@
     }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
     h1, h2 {
         font-weight: normal;

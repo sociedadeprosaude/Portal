@@ -510,7 +510,6 @@ export default {
     pacienteSelecionado: undefined,
     justify: "",
 
-    //-------------------------------------------Scroll------------------------------------------------
     number: 9999,
     selector: "#first",
     selected: "Button",
@@ -518,9 +517,7 @@ export default {
     duration: 500,
     offset: 15,
     easing: "easeInQuint",
-    // easings: Object.keys(easings),
     offsetTop: 0
-    //---------------------------------------------------------------------------------------------------
   }),
 
   computed: {
@@ -538,9 +535,6 @@ export default {
     },
     specialties() {
       return this.$store.getters.specialties;
-    },
-    computedDateFormatted() {
-      // return this.formatDate(this.index_Selecionado.data);
     },
     schedules() {
       let schedules = this.$store.getters.schedules.filter(a => {
@@ -596,7 +590,6 @@ export default {
           }
           var find = false;
           doctor.specialties.forEach(specialty => {
-            //console.log(doctor.name,specialty.name)
             if (specialty.name === this.especialidade.name) {
               find = true;
               return true;
@@ -633,7 +626,6 @@ export default {
     mensagem() {
       return this.$store.getters.onMensagem;
     },
-    //------------------------------------------Scroll-------------------------------------------------
     target() {
       const value = this[this.type];
       if (!isNaN(value)) return Number(value);
@@ -650,7 +642,6 @@ export default {
       if (this.selected === "Button") return this.$refs.button;
       else if (this.selected === "Radio group") return this.$refs.radio;
     }
-    //-----------------------------------------------------------------------------------------------------
   },
   watch: {
     medico(value) {
@@ -719,7 +710,7 @@ export default {
       schedules.forEach(schedule => {
         let keys = Object.keys(schedule.days);
         let dates = this.datesOfInterval({
-          weekDays: keys /* ,cancelations_schedules:schedule.cancelations_schedules */
+          weekDays: keys
         });
 
         dates.forEach(date => {
@@ -755,7 +746,7 @@ export default {
       schedules.forEach(schedule => {
         let keys = Object.keys(schedule.days);
         let dates = this.datesOfInterval({
-          weekDays: keys /* ,cancelations_schedules:schedule.cancelations_schedules */
+          weekDays: keys
         });
 
         dates.forEach(date => {
@@ -828,11 +819,9 @@ export default {
         if (inArrayIndex === -1) {
           newArray.push({
             ...consultations[consultation],
-            // vagas: consultations[consultation].user ? 0 : 1,
             consultations: [consultations[consultation]]
           });
         } else {
-          // newArray[inArrayIndex].vagas++
           newArray[inArrayIndex].consultations.push(
             consultations[consultation]
           );
@@ -878,7 +867,6 @@ export default {
       await this.$store.dispatch("getDoctors");
       await this.$store.dispatch("getSpecialties");
       this.query = this.$route.params.q;
-      /*console.log('rota:',this.query)*/
       this.selectedDoctor = this.query.doctor;
       this.especialidade = this.query.especialidade;
       this.clinic = this.query.consultation.clinic;
@@ -925,7 +913,7 @@ export default {
     handleScroll(event) {
       var scrollPos = window.scrollY;
       var winHeight = window.innerHeight;
-      var docHeight = document.documentElement.scrollHeight; // instead document.body.clientHeight
+      var docHeight = document.documentElement.scrollHeight;
       this.offsetTop = (100 * scrollPos) / (docHeight - winHeight);
     },
     findPos(obj, elementId) {
