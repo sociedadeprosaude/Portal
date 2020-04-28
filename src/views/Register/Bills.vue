@@ -127,26 +127,9 @@
                   />
                 </label>
               </v-layout>
-
-              <!--                            <button v-on:click="submitFile()">Submit</button>-->
             </v-flex>
             <v-spacer />
-            <!--                        <v-flex xs12 sm7 class="mt-6">-->
-            <!--                            <v-layout row wrap v-if="paymentMethod === paymentMethods[0]">-->
-            <!--                                <v-flex xs12>-->
-            <!--                                    <v-text-field-->
-            <!--                                            outlined-->
-            <!--                                            label="Número do boleto"></v-text-field>-->
-            <!--                                </v-flex>-->
-            <!--                            </v-layout>-->
-            <!--                            <v-layout row wrap v-if="paymentMethod === paymentMethods[1]">-->
-            <!--                                <v-flex xs12>-->
-            <!--                                    <v-text-field-->
-            <!--                                            outlined-->
-            <!--                                            label="Número do boleto"></v-text-field>-->
-            <!--                                </v-flex>-->
-            <!--                            </v-layout>-->
-            <!--                        </v-flex>-->
+
           </v-layout>
         </v-card>
       </v-flex>
@@ -271,12 +254,10 @@
                   </v-layout>
                 </v-flex>
                 <v-flex xs12 class="text-right" v-if="loadingDelete && outtakeSelect === bill">
-                  <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
+                  <v-progress-circular indeterminate class="primary--text"/>
                 </v-flex>
                 <v-flex xs12 class="text-right"  v-else>
-                  <!--                                    <v-btn @click="deleteOuttake(bill)" class="error mx-2" fab small>-->
-                  <!--                                        <v-icon>delete</v-icon>-->
-                  <!--                                    </v-btn>-->
+
                   <v-btn @click="unpayOuttake(bill)" class="error mx-2" fab small>
                     <v-icon>money_off</v-icon>
                   </v-btn>
@@ -410,7 +391,7 @@ export default {
       if (
         category.subCategories &&
         category.subCategories.indexOf(newSubcategory) < 0 &&
-        newSubcategory != this.other
+        newSubcategory !== this.other
       ) {
         try {
           await this.$store.dispatch("addOuttakeSubcategory", {
@@ -447,7 +428,6 @@ export default {
     },
     async bifurcation() {
       if (this.parcelas) {
-        //console.log('parcelas: ', this.parcelas)
         this.value = this.value / this.parcelas;
         for (let i = 0; i < this.parcelas; i++) {
           this.addBill();
@@ -461,7 +441,6 @@ export default {
     },
     async addBill() {
       this.loading = true;
-      // Deletando esses dois campos se tiverem pra não salvar dados desnecessários no banco
       delete this.unit.exams;
       delete this.unit.specialties;
 
@@ -474,7 +453,7 @@ export default {
         date_to_pay: this.dateToPay,
         created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
         colaborator: this.user,
-        unit: this.unit.name != this.other ? this.unit : null,
+        unit: this.unit.name !== this.other ? this.unit : null,
         recurrent: this.recorrente ? "true" : "false"
       };
       await this.newCategory(this.category);
@@ -539,10 +518,3 @@ export default {
   }
 };
 </script>
-
-<!--<style scoped>-->
-<!--    input[type="file"]{-->
-<!--        position: absolute;-->
-<!--        top: -500px;-->
-<!--    }-->
-<!--</style>-->
