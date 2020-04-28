@@ -1,6 +1,5 @@
 <template>
     <v-content>
-
         <template>
             <v-row justify="center">
                 <transition name="fade">
@@ -17,13 +16,7 @@
                                 </v-btn>
                             </template>
                             <v-card>
-                                <v-card-title>Deseja Finalizar o Atendimento ?</v-card-title>
-        <!--                        <v-divider></v-divider>
-                                <v-card-text>
-                                    <strong>
-                                            nome do paciente aqui
-                                    </strong>
-                                </v-card-text>-->
+
                                 <v-divider></v-divider>
                                 <v-card-actions>
                                     <v-btn
@@ -35,7 +28,7 @@
                                     <v-spacer></v-spacer>
                                     <v-btn
                                             color="success"
-                                            @click="save()"
+                                            @click="saveAttendance()"
                                     >
                                         SIM
                                     </v-btn>
@@ -46,9 +39,7 @@
                 </transition>
             </v-row>
         </template>
-
         <v-container>
-
             <v-row justify="space-around">
                 <transition name="fade">
                     <div v-show="open">
@@ -132,13 +123,10 @@
         components: {Solicitations, Attestations, Orientations, Prescription, MedicalRecords, Report},
         data: () => ({
             dialog: false,
-            //o de cima é de finalizar
-            query: undefined,//val que recebe parametro da view anterior
-            //tempo de abertura, fechamento e diferença(total time consultation)
+            query: undefined,
             startConsultation: undefined,
             endConsultation: undefined,
             timeConsultation: undefined,
-            //os de baixo são componentes de docs
             Attestations: false,
             Orientations: false,
             Report: false,
@@ -168,15 +156,11 @@
             }
         },
         watch:{
-            //
         },
         methods: {
-            save(){
+            saveAttendance(){
                 this.endConsultation = moment().format('HH:mm:ss')
                 this.timeConsultation = moment(this.endConsultation, 'HH:mm:ss').diff(moment(this.startConsultation, 'HH:mm:ss'), 'minutes')
-                //console.log("começou:",this.startConsultation)
-                //console.log("terminou:",this.endConsultation)
-                //console.log("tempo total em minutos:",this.timeConsultation)
                 this.$store.dispatch('addTimesToConsultation', {
                     start: this.startConsultation,
                     end: this.endConsultation,
@@ -190,18 +174,3 @@
         }
     }
 </script>
-
-<style scoped>
-    .fade-enter {
-        opacity: 0;
-    }
-    .fade-enter-active {
-        transition: opacity 0.6s ease-in;
-    }
-    .fade-leave-active {
-        transition: opacity 0.6s ease-out;
-    }
-    .fade-leave-to {
-        opacity: 0;
-    }
-</style>

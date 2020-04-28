@@ -75,7 +75,6 @@
         methods: {
             async signIn() {
                 try {
-
                     this.loading = true;
                     let user = await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
                     await this.$store.dispatch('getUser', user);
@@ -102,10 +101,5 @@
                 this.$router.push('/')
             }
         }
-        // components: {VTextField}
     }
 </script>
-
-<style scoped>
-
-</style>

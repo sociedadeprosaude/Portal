@@ -1,195 +1,204 @@
 <template>
-    <v-container>
-        <v-layout row wrap>
+    <v-container grid-list-md>
+        <v-layout  wrap>
             <v-flex xs12>
                 <v-card>
                     <v-card-title class="headline grey lighten-2" primary-title>
-                        <span class="headline">Dados da Clínica</span>
+                        <span class="headline">{{ formTitle }}</span>
                     </v-card-title>
-                    <v-card-text grid-list-md>
-                        <v-layout wrap>
-                            <v-flex xs6>
-                                <v-text-field
-                                        v-model="clinic.name"
-                                        label="Nome da Clinica"
-                                        placeholder="Nome da Clinica"
-                                        outlined
-                                        clearable
-                                        hide-details
-                                />
-                            </v-flex>
-                            <v-flex xs6>
-                                <v-text-field
-                                        v-mask="mask.cnpj"
-                                        v-model="clinic.cnpj"
-                                        label="CNPJ"
-                                        placeholder="CNPJ"
-                                        outlined
-                                        clearable
-                                        hide-details
-                                />
-                            </v-flex>
-                            <v-flex xs6>
-                                <v-text-field
-                                        v-mask="mask.telephone"
-                                        v-model="clinic.telephone[0]"
-                                        label="Telefone"
-                                        placeholder="Telefone"
-                                        outlined
-                                        clearable
-                                        hide-details
-                                />
-                            </v-flex>
-                            <v-flex xs6>
-                                <v-text-field
-                                        v-model="cep"
-                                        v-mask="mask.cep"
-                                        label="CEP"
-                                        placeholder="CEP"
-                                        outlined
-                                        clearable
-                                        hide-details
-                                />
-                            </v-flex>
-                            <v-flex xs12>
-                                <v-alert
-                                        v-model="alertCEP"
-                                        dense
-                                        outlined
-                                        dismissible
-                                        type="warning"
-                                >O CEP não foi localizado</v-alert>
-                            </v-flex>
-                            <v-flex xs12>
-                                <v-text-field
-                                        v-model="clinic.address.street"
-                                        label="Logradouro"
-                                        placeholder="Logradouro"
-                                        outlined
-                                        hide-details
-                                        clearable
-                                />
-                            </v-flex>
-                            <v-flex xs4>
-                                <v-text-field
-                                        v-model="clinic.address.number"
-                                        label="Nº"
-                                        placeholder="ex.: 157"
-                                        outlined
-                                        hide-details
-                                        clearable
-                                />
-                            </v-flex>
-                            <v-flex xs8>
-                                <v-text-field
-                                        v-model="clinic.address.neighborhood"
-                                        label="Bairro"
-                                        placeholder="Bairro"
-                                        outlined
-                                        hide-details
-                                        clearable
-                                />
-                            </v-flex>
-                            <v-flex xs12>
-                                <v-text-field
-                                        v-model="clinic.address.complement"
-                                        label="Complemento"
-                                        placeholder="Complemento"
-                                        outlined
-                                        hide-details
-                                        clearable
-                                />
-                            </v-flex>
-                            <v-flex xs7>
-                                <v-select
-                                        :items="states"
-                                        label="Estado"
-                                        placeholder="Estado"
-                                        v-model="clinic.address.state"
-                                        outlined
-                                        chips
-                                        hide-details
-                                        clearable
-                                />
-                            </v-flex>
-                            <v-flex xs5>
-                                <v-text-field
-                                        label="Cidade"
-                                        placeholder="Cidade"
-                                        v-model="clinic.address.city"
-                                        outlined
-                                        chips
-                                        hide-details
-                                        clearable
-                                        :items="cities[address.state]"
-                                        v-if="clinic.address.uf"
-                                />
-                            </v-flex>
-                            <p class="text-justify">Horario de Funcionamento de Segunda-Feira a Sexta-Feira:</p>
-                            <v-flex xs6>
-                                <v-text-field
-                                        v-model="clinic.startWeek"
-                                        label="Abre as:"
-                                        placeholder="Ex.: 08:00"
-                                        outlined
-                                        v-mask="mask.time"
-                                        clearable
-                                        hide-details
-                                />
-                            </v-flex>
-                            <v-spacer/>
-                            <v-flex xs6>
-                                <v-text-field
-                                        v-model="clinic.endWeek"
-                                        label="Fecha as:"
-                                        placeholder="Ex.: 18:00"
-                                        outlined
-                                        v-mask="mask.time"
-                                        clearable
-                                        hide-details
-                                />
-                            </v-flex>
-                            <p class="text-justify">Horario de Funcionamento de Sábado:</p>
-                            <v-flex xs6>
-                                <v-text-field
-                                        v-model="clinic.startSaturday"
-                                        label="Abre as:"
-                                        placeholder="Ex.: 06:00"
-                                        outlined
-                                        v-mask="mask.time"
-                                        clearable
-                                        hide-details
-                                />
-                            </v-flex>
-                            <v-spacer/>
-                            <v-flex xs6>
-                                <v-text-field
-                                        v-model="clinic.endSaturday"
-                                        label="Fecha as:"
-                                        placeholder="Ex.: 12:00"
-                                        outlined
-                                        v-mask="mask.time"
-                                        clearable
-                                        hide-details
-                                />
-                            </v-flex>
-                        </v-layout>
+
+                    <v-card-text>
+                        <v-container grid-list-md>
+                            <v-layout wrap>
+
+                                <v-flex xs6>
+                                    <v-text-field
+                                            v-model="editedItem.name"
+                                            label="Nome da Clinica"
+                                            placeholder="Nome da Clinica"
+                                            outlined
+                                            clearable
+                                            hide-details
+                                    ></v-text-field>
+                                </v-flex>
+                                <v-flex xs6>
+                                    <v-text-field
+                                            v-mask="mask.cnpj"
+                                            v-model="editedItem.cnpj"
+                                            label="CNPJ"
+                                            placeholder="CNPJ"
+                                            outlined
+                                            clearable
+                                            hide-details
+                                    ></v-text-field>
+                                </v-flex>
+                                <v-flex xs6>
+                                    <v-text-field
+                                            v-mask="mask.telephone"
+                                            v-model="editedItem.telephone[0]"
+                                            label="Telefone"
+                                            placeholder="Telefone"
+                                            outlined
+                                            clearable
+                                            hide-details
+                                    ></v-text-field>
+                                </v-flex>
+                                <v-flex xs6>
+                                    <v-text-field
+                                            v-model="cep"
+                                            v-mask="mask.cep"
+                                            label="CEP"
+                                            placeholder="CEP"
+                                            outlined
+                                            clearable
+                                            hide-details
+                                    ></v-text-field>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <v-alert
+                                            v-model="alertCEP"
+                                            dense
+                                            outlined
+                                            dismissible
+                                            type="warning"
+                                    >
+                                        O CEP não foi localizado
+                                    </v-alert>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <v-text-field
+                                            v-model="editedItem.address.street"
+                                            label="Logradouro"
+                                            placeholder="Logradouro"
+                                            outlined
+                                            hide-details
+                                            clearable
+                                    ></v-text-field>
+                                </v-flex>
+                                <v-flex xs4>
+                                    <v-text-field
+                                            v-model="editedItem.address.number"
+                                            label="Nº"
+                                            placeholder="ex.: 157"
+                                            outlined
+                                            hide-details
+                                            clearable
+                                    ></v-text-field>
+                                </v-flex>
+                                <v-flex xs8>
+                                    <v-text-field
+                                            v-model="editedItem.address.neighborhood"
+                                            label="Bairro"
+                                            placeholder="Bairro"
+                                            outlined
+                                            hide-details
+                                            clearable
+                                    ></v-text-field>
+                                </v-flex>
+
+                                <v-flex xs12>
+                                    <v-text-field
+                                            v-model="editedItem.address.complement"
+                                            label="Complemento"
+                                            placeholder="Complemento"
+                                            outlined
+                                            hide-details
+                                            clearable
+                                    ></v-text-field>
+                                </v-flex>
+                                <v-flex xs7>
+                                    <v-select
+                                            :items="stateOptions"
+                                            label="Estado"
+                                            placeholder="Estado"
+                                            v-model="editedItem.address.state"
+                                            outlined
+                                            chips
+                                            hide-details
+                                            clearable
+                                    ></v-select>
+                                </v-flex>
+                                <v-flex xs5>
+                                    <v-text-field
+                                            label="Cidade"
+                                            placeholder="Cidade"
+                                            v-model="editedItem.address.city"
+                                            outlined
+                                            chips
+                                            hide-details
+                                            clearable
+                                    ></v-text-field>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <p class="text-justify">Horario de Funcionamento de Segunda-Feira a
+                                        Sexta-Feira:</p>
+                                </v-flex>
+                                <v-flex xs6>
+                                    <v-text-field
+                                            v-model="editedItem.startWeek"
+                                            label="Abre as:"
+                                            placeholder="Ex.: 08:00"
+                                            outlined
+                                            v-mask="mask.time"
+                                            clearable
+                                            hide-details
+                                    ></v-text-field>
+                                </v-flex>
+                                <v-spacer></v-spacer>
+                                <v-flex xs6>
+                                    <v-text-field
+                                            v-model="editedItem.endWeek"
+                                            label="Fecha as:"
+                                            placeholder="Ex.: 18:00"
+                                            outlined
+                                            v-mask="mask.time"
+                                            clearable
+                                            hide-details
+                                    ></v-text-field>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <p class="text-justify">Horario de Funcionamento de Sábado:</p>
+                                </v-flex>
+                                <v-flex xs6>
+                                    <v-text-field
+                                            v-model="editedItem.startSaturday"
+                                            label="Abre as:"
+                                            placeholder="Ex.: 06:00"
+                                            outlined
+                                            v-mask="mask.time"
+                                            clearable
+                                            hide-details
+                                    ></v-text-field>
+                                </v-flex>
+                                <v-spacer></v-spacer>
+                                <v-flex xs6>
+                                    <v-text-field
+                                            v-model="editedItem.endSaturday"
+                                            label="Fecha as:"
+                                            placeholder="Ex.: 12:00"
+                                            outlined
+                                            v-mask="mask.time"
+                                            clearable
+                                            hide-details
+                                    ></v-text-field>
+                                </v-flex>
+                            </v-layout>
+                        </v-container>
                     </v-card-text>
-                    <v-divider/>
+                    <v-divider></v-divider>
                     <v-card-actions>
                         <v-btn rounded color="error" @click="close">Cancelar</v-btn>
-                        <v-spacer/>
-                            <submit-button
-                                    color="success"
-                                    @click="save"
-                                    :disabled="!formIsValid"
-                                    text="Salvar"
-                                    :loading="loading"
-                                    :success="success"
-                            />
-                        </v-card-actions>
-                </v-card>
-            </v-flex>
+                        <v-spacer></v-spacer>
+                        <submit-button
+                                color="success"
+                                @click="save"
+                                :disabled="!formIsValid"
+                                text="Salvar"
+                                :loading="loading"
+                                :success="success"
+                        ></submit-button>
+                    </v-card-actions>
+                </v-card>            </v-flex>
         </v-layout>
     </v-container>
 </template>
@@ -211,11 +220,59 @@
             alertCEP: false,
             states: ['AM'],
             cities: {'AC': [], 'AL': [], 'AM': []},
+            stateOptions: [
+                'Acre (AC)',
+                'Alagoas (AL)',
+                'Amapá (AP)',
+                'Amazonas (AM)',
+                'Bahia (BA)',
+                'Ceará (CE)',
+                'Distrito Federal (DF)',
+                'Espírito Santo (ES)',
+                'Goiás (GO)',
+                'Maranhão (MA)',
+                'Mato Grosso (MT)',
+                'Mato Grosso do Sul (MS)',
+                'Minas Gerais (MG)',
+                'Pará (PA)',
+                'Paraíba (PB)',
+                'Paraná (PR)',
+                'Pernambuco (PE)',
+                'Piauí (PI)',
+                'Rio de Janeiro (RJ)',
+                'Rio Grande do Norte (RN)',
+                'Rio Grande do Sul (RS)',
+                'Rondônia (RO)',
+                'Roraima (RR)',
+                'Santa Catarina (SC)',
+                'São Paulo (SP)',
+                'Sergipe (SE)',
+                'Tocantins (TO)'
+            ],
             mask: {
                 cnpj: '##.###.###/####-##',
                 telephone: '(##) #####-####',
                 cep: '########',
                 time: '##:##',
+            },
+            editedIndex: -1,
+            editedItem: {
+                name: '',
+                cnpj: '',
+                telephone: [],
+                address: {
+                    street: '',
+                    number: '',
+                    neighborhood: '',
+                    cep: '',
+                    complement: '',
+                    state: '',
+                    city: '',
+                },
+                startWeek: '',
+                endWeek: '',
+                startSaturday: '',
+                endSaturday: ''
             },
 
         }),
@@ -232,17 +289,11 @@
         },
 
         computed:{
-            clinic () {
-                return this.$store.getters.selectedClinic;
-            },
-            clinics() {
-                return this.$store.getters.clinics;
-            },
-            newClinic () {
-                return !this.clinic.name;
-            },
             formIsValid() {
-                return this.clinic.name && this.clinic.telephone[0]
+                return this.editedItem.name && this.editedItem.telephone[0]
+            },
+            formTitle() {
+                return this.editedIndex === -1 ? 'Formulario de Cadastro de Clinicas' : 'Formulario de Cadastro de Clinicas'
             },
         },
 
@@ -260,15 +311,6 @@
                                 this.editedItem.address.neighborhood = response.data.bairro;
                                 this.editedItem.address.city = response.data.localidade;
                                 var array = this.stateOptions;
-                                /* console.log(
-                                    array.find(function(element) {
-                                        if(element.includes('AM')){
-                                            return element;
-                                        }
-
-                                        return '';
-                                    })
-                                ); */
                                 this.editedItem.state = array.find(function (element) {
                                     if (element.includes(response.data.uf)) {
                                         return element;
@@ -287,6 +329,10 @@
             },
         },
         methods: {
+            newClinic(){
+                this.$store.dispatch('selectClinic', this.defaultItem);
+                this.editedItem = Object.assign({}, this.defaultItem);
+            },
             async save() {
                 let clinic = await this.formatDataClinic();
                 await this.$store.dispatch('addClinic', clinic);
@@ -300,23 +346,20 @@
 
             formatDataClinic () {
                 this.loading = true;
-                if (this.newClinic) {
-                    this.clinics.push(this.clinic);
-                }
                 return {
                     address: {
-                        neighboor: this.clinic.address.neighborhood,
+                        neighboor: this.editedItem.address.neighborhood,
                         cep: this.cep,
-                        city: this.clinic.address.city,
-                        complement: this.clinic.address.complement,
-                        state: this.clinic.address.state,
-                        street: this.clinic.address.street,
-                        number: this.clinic.address.number,
+                        city: this.editedItem.address.city,
+                        complement: this.editedItem.address.complement,
+                        state: this.editedItem.address.state,
+                        street: this.editedItem.address.street,
+                        number: this.editedItem.address.number,
                     },
-                    id: this.clinic.id,
-                    name: this.clinic.name.toUpperCase(),
-                    cnpj: this.clinic.cnpj,
-                    telephone: this.clinic.telephone,
+                    id: this.editedItem.id,
+                    name: this.editedItem.name.toUpperCase(),
+                    cnpj: this.editedItem.cnpj,
+                    telephone: this.editedItem.telephone,
                     agenda: this.formatScheduleClinic(),
                 };
 
@@ -326,9 +369,9 @@
                 let schedule = [];
                 for (let i = 0; i < 7; i++) {
                     if (i < 5) {
-                        schedule.push(this.clinic.startWeek + '-' + this.clinic.endWeek)
+                        schedule.push(this.editedItem.startWeek + '-' + this.editedItem.endWeek)
                     } else if (i === 5) {
-                        schedule.push(this.clinic.startSaturday + '-' + this.clinic.endSaturday)
+                        schedule.push(this.editedItem.startSaturday + '-' + this.editedItem.endSaturday)
                     }
                 }
                 return schedule;

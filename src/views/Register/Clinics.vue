@@ -15,18 +15,12 @@
                             <v-layout row wrap>
 
                                 <v-spacer/>
-                                <v-btn text dark color="primary"  @click="selectClinic(this.clinicSelected), dataClinic = true">
-
-                                    teste
+                                <v-btn text dark color="primary"  @click="selectClinic(clinicSelected), dataClinic = true">
+                                    <v-icon left>add</v-icon>
+                                    Nova Clinica
                                 </v-btn>
 
                                 <v-dialog v-model="dialog" persistent width="500px">
-                                    <template v-slot:activator="{ on }">
-                                        <v-btn text color="primary" dark class="mb-2 " v-on="on" @click="newClinic()">
-                                            <v-icon left>add</v-icon>
-                                            Nova Clinica
-                                        </v-btn>
-                                    </template>
                                     <v-card>
                                         <v-card-title class="headline grey lighten-2" primary-title>
                                             <span class="headline">{{ formTitle }}</span>
@@ -462,7 +456,6 @@
             clinics() {
                 return this.$store.getters.clinics;
             },
-
             clinicSelected () {
                 let clinic = this.$store.getters.selectedClinic;
                 if (clinic) {
@@ -537,9 +530,7 @@
             },
 
             selectClinic(item) {
-                console.log(item)
                 if (!item) {
-                    console.log('if');
                     this.$store.dispatch('selectClinic', this.defaultItem);
                 }
                 this.editedIndex = this.clinics.indexOf(item);
@@ -568,12 +559,7 @@
 
             async deleteItem(item) {
                 const index = this.clinics.indexOf(item);
-                /*confirm('Are you sure you want to delete this item?')*/
-/*                this.loading = true*/
                 await this.$store.dispatch('deleteClinic', item)
-                // await this.$store.dispatch('getClinics')
-/*                this.success = true
-                this.loading = false*/
                 setTimeout(() => { this.areyoushure = false }, 1000)
             },
 
@@ -584,7 +570,6 @@
                     this.editedIndex = -1
                 }, 300)
             },
-
 
             newClinic () {
                 this.$store.dispatch('selectClinic', this.defaultItem);

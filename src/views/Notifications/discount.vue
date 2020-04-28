@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <v-layout row wrap >
+        <v-layout row wrap>
             <v-flex xs12>
                 <span class="my-headline">Colaboradores</span>
             </v-flex>
@@ -49,12 +49,14 @@
                                                     <span class="my-headline text-left mt-2">Descontos</span>
                                                 </v-flex>
                                                 <v-flex xs2>
-                                                    <v-btn class="right" @click="Delete(user)" color="green"> Visto</v-btn>
+                                                    <v-btn class="right" @click="Delete(user)" color="green"> Visto
+                                                    </v-btn>
                                                 </v-flex>
                                             </v-layout>
 
                                         </v-flex>
-                                        <v-flex xs3 class="my-2 mx-3" v-for="intake in user.intakes" :key="intake.orcamento">
+                                        <v-flex xs3 class="my-2 mx-3" v-for="intake in user.intakes"
+                                                :key="intake.orcamento">
                                             <v-card class="pa-3">
                                                 <v-layout row wrap>
                                                     <v-flex xs12 class="mb-3">
@@ -88,19 +90,17 @@
 <script>
 
     export default {
-        data () {
-            return {
-
-            }
+        data() {
+            return {}
         },
-        computed:{
-            users(){
+        computed: {
+            users() {
                 return this.$store.getters.colaboratorsWarning
             }
         },
-        methods:{
-            async Delete(user){
-                await this.$store.dispatch('DiscountWarningDelete',user);
+        methods: {
+            async Delete(user) {
+                await this.$store.dispatch('DiscountWarningDelete', user);
                 await this.$store.dispatch('WarningColaborators')
             }
         },

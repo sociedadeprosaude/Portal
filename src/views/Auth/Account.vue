@@ -2,21 +2,11 @@
   <v-container fluid>
     <v-layout row wrap align-center justify-center>
       <v-flex xs8 sm4>
-        <!-- <img src="../../assets/logo-pro-saude.png" height="100px" class="mb-5 mt-5"> -->
         <v-card>
           <v-card-title>
             <h2>Minha Conta</h2>
           </v-card-title>
           <v-card-text>
-            <!-- <v-flex xs12 mb-2>
-              <span>Nome: {{user.name}}</span>
-            </v-flex>
-            <v-flex xs12 mb-2>
-              <span>Nome de Usuário: {{user.username}}</span>
-            </v-flex>
-            <v-flex xs12 mb-2>
-              <span>Email: {{user.email}}</span>
-            </v-flex>-->
             <v-layout row wrap>
               <v-flex xs12>
                 <v-text-field v-model="user.name" label="Nome Completo"></v-text-field>
@@ -45,7 +35,6 @@
                   <v-btn @click="getAddressByCep(address)" class="transparent" text>
                     <v-icon>search</v-icon>
                   </v-btn>
-                  <!-- <v-progress-circular indeterminate color="white" v-else></v-progress-circular> -->
                 </v-layout>
               </v-flex>
               <v-flex xs2>
@@ -81,29 +70,10 @@
               <v-flex xs12>
                 <v-text-field label="Complemento" v-model="address.complement"></v-text-field>
               </v-flex>
-              <!-- <v-flex xs12>
-                  <v-text-field v-model="password" label="Senha" type="password"></v-text-field>
-                </v-flex>
-                <v-flex xs12>
-                  <v-text-field
-                    v-model="confirm_password"
-                    label="Confirmação de senha"
-                    type="password"
-                  ></v-text-field>
-              </v-flex>-->
             </v-layout>
           </v-card-text>
 
           <v-card-actions class="text-right">
-            <!-- <v-tooltip bottom>
-              <v-btn slot="activator" flat class="primary_dark--text" @click.native="changePassword">
-                Alterar Senha
-              </v-btn>
-              <span>Ainda não disponível</span>
-            </v-tooltip>
-            <v-btn flat class="primary_dark--text" @click.native="dialog = true">
-              Adicionar Usuário
-            </v-btn>-->
             <v-spacer></v-spacer>
             <submit-button
               color="success"
@@ -198,7 +168,6 @@ export default {
     };
   },
   mounted() {
-    //this.initialConfig()
   },
   computed: {
     address: {
@@ -243,7 +212,6 @@ export default {
     reset() {
       this.success = false;
     },
-    changePassword() {},
     updateAccount() {
       this.loading = true
       this.$store.dispatch("updateAccount", {
@@ -271,7 +239,6 @@ export default {
       });
     },
     async getAddressByCep(address) {
-      //address.loading = true;
       let resp;
       let foundAddress = undefined;
       try {
@@ -280,11 +247,9 @@ export default {
           address.cep.replace(".", "").replace("-", "")
         );
         if (resp.erro) {
-          //address.cepError = true;
           return;
         }
       } catch (e) {
-        //address.loading = false;
         return;
       }
       foundAddress = {

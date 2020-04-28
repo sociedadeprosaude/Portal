@@ -35,12 +35,6 @@
               <v-flex xs12>
                 <v-text-field v-model="telephone" v-mask="'(##)#####-####'" label="Telefone"></v-text-field>
               </v-flex>
-              <!--  <v-flex xs12>
-                <v-checkbox v-model="asDoctor" label="Cadastrar-se como médico"></v-checkbox>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field v-if="asDoctor" v-model="crm" v-mask="'#######'" label="CRM"></v-text-field>
-              </v-flex>-->
               <v-expand-transition>
                 <v-flex xs12 v-if="loading">
                   <v-progress-linear color="primary" indeterminate></v-progress-linear>
@@ -113,7 +107,6 @@ export default {
         this.errorMessage = "Confirmação de senha não confere";
         return;
       }
-      
       try {
         this.$store.dispatch('thereIsUserCPF',this.cpf.replace(/\./g, "").replace("-", ""))
         .then(async (exits)=>{
@@ -136,8 +129,6 @@ export default {
             this.alert = true
           }
         })
-        
-        
       } catch (e) {
         this.errorMessage = e.code;
       }
