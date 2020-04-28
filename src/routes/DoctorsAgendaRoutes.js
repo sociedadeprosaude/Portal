@@ -4,7 +4,7 @@ import Declaration from "../views/Operational/DoctorsAgenda/Declaration";
 import DeletarConsultas from "../views/Operational/DoctorsAgenda/DeletarConsultas";
 import GerenciamentoConsultas from "../views/Operational/DoctorsAgenda/GerenciamentoConsultas";
 import PatientConsultations from "../views/Operational/DoctorsAgenda/PatientConsultations";
-import RegistrationConsultationsShifts from "../views/Operational/DoctorsAgenda/RegistrationConsultationsShifts";
+import RegistrationConsultationsShifts from "../views/Register/RegistrationConsultationsShifts";
 import SchedulingConsultation from "../views/Operational/DoctorsAgenda/SchedulingConsultation";
 import Teste from '../views/Operational/DoctorsAgenda/testescrolling'
 import Patient from "../views/Operational/DoctorsAgenda/Patient"

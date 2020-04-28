@@ -310,7 +310,7 @@
 </template>
 
 <script>
-    import SubmitButton from "../../../components/SubmitButton";
+    import SubmitButton from "../../components/SubmitButton";
     var moment = require('moment/moment');
     export default {
         components: {
