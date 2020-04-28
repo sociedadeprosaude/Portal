@@ -15,7 +15,7 @@ const state = {
 
 const mutations = {
     setClinics(state, payload) {
-        state.clinics = payload
+        state.clinics = payload;
         state.loaded = true
     },
     setAccontClinics(state,payload){
