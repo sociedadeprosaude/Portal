@@ -11,9 +11,9 @@
                             <v-chip label dark color="primary">
                                 Médico - Especialidade - Unidade
                             </v-chip>
-                            <v-spacer></v-spacer>
+                            <v-spacer/>
                             <v-text-field v-model="search" append-icon="search" label="Search" single-line
-                                          hide-details></v-text-field>
+                                          hide-details/>
                         </v-card-title>
                         <v-data-table
                                 hide-default-header
@@ -90,7 +90,7 @@
                                     <v-card
                                             v-else
                                             class="white--text pa-1 my-n2"
-                                            :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
+                                            :color="i === '0' ? 'blue' : i === '1' ? 'green' : i === '2' ? 'red' : i === '3' ? 'purple' : i === '4' ? 'orange' : 'pink'"
                                     >
                                         {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                     </v-card>
@@ -144,7 +144,7 @@
                                     <v-card
                                             v-else
                                             class="white--text pa-1 my-n2"
-                                            :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
+                                            :color="i === '0' ? 'blue' : i === '1' ? 'green' : i === '2' ? 'red' : i === '3' ? 'purple' : i === '4' ? 'orange' : 'pink'"
                                     >
                                         {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                     </v-card>
@@ -171,7 +171,7 @@
                                     <v-card
                                             v-else
                                             class="white--text pa-1 my-n2"
-                                            :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
+                                            :color="i === '0' ? 'blue' : i === '1' ? 'green' : i === '2' ? 'red' : i === '3' ? 'purple' : i === '4' ? 'orange' : 'pink'"
                                     >
                                         {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                     </v-card>
@@ -198,7 +198,7 @@
                                     <v-card
                                             v-else
                                             class="white--text pa-1 my-n2"
-                                            :color="i == '0' ? 'blue' : i == '1' ? 'green' : i == '2' ? 'red' : i == '3' ? 'purple' : i == '4' ? 'orange' : 'pink'"
+                                            :color="i === '0' ? 'blue' : i === '1' ? 'green' : i === '2' ? 'red' : i === '3' ? 'purple' : i === '4' ? 'orange' : 'pink'"
                                     >
                                         {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                     </v-card>
@@ -214,7 +214,7 @@
 </template>
 
 <script>
-    var moment = require('moment/moment');
+    let moment = require('moment/moment');
     export default {
         data: () => ({
             moment: moment,
@@ -443,17 +443,17 @@
                     let daysOfTheWeek = schedules[schedule].days
                     for (let dayOfTheWeek in daysOfTheWeek) {
                         for (let weeklyItem in weeklyTable) {
-                            if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '1') {
+                            if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek === '1') {
                                 weeklyTable[weeklyItem].monday.push(schedules[schedule])
-                            } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '2') {
+                            } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek === '2') {
                                 weeklyTable[weeklyItem].tuesday.push(schedules[schedule])
-                            } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '3') {
+                            } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek === '3') {
                                 weeklyTable[weeklyItem].wednesday.push(schedules[schedule])
-                            } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '4') {
+                            } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek === '4') {
                                 weeklyTable[weeklyItem].thursday.push(schedules[schedule])
-                            } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '5') {
+                            } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek === '5') {
                                 weeklyTable[weeklyItem].friday.push(schedules[schedule])
-                            } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek == '6') {
+                            } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek === '6') {
                                 weeklyTable[weeklyItem].saturday.push(schedules[schedule])
                             }
                         }
@@ -467,6 +467,3 @@
         }
     }
 </script>
-
-<style scoped>
-</style>
