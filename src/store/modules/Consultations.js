@@ -286,9 +286,6 @@ const actions = {
             let copyPayload = Object.assign({}, payload);
             functions.removeUndefineds(copyPayload);
             let id_schedule = copyPayload.consultation.id_schedule
-            /* let vacancy = copyPayload.consultation.vacancy
-            let qtd_returns = copyPayload.consultation.qtd_returns ? copyPayload.consultation.qtd_returns : 0
-            let qtd_consultations = copyPayload.consultation.qtd_consultations ? copyPayload.consultation.qtd_consultations : 0 */
             delete copyPayload.consultation.id
             delete copyPayload.consultation.vacancy
             delete copyPayload.consultation.qtd_consultations
@@ -318,8 +315,6 @@ const actions = {
             let copyPayload = Object.assign({}, payload);
             functions.removeUndefineds(copyPayload);
             let id_schedule = copyPayload.consultation.id_schedule;
-            let qtd_returns = copyPayload.consultation.qtd_returns ? copyPayload.consultation.qtd_returns : 0
-            let qtd_consultations = copyPayload.consultation.qtd_consultations ? copyPayload.consultation.qtd_consultations : 0 */
             let idConsultationCanceled = copyPayload.consultation.idConsultationCanceled
             delete copyPayload.consultation.id;
             delete copyPayload.consultation.vacancy;
