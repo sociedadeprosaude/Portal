@@ -380,7 +380,7 @@
                     </div>
                 </v-layout>
             </v-container>
-        </template> <!-- componentizar -->
+        </template>
         <v-snackbar
                 v-model="snackbar"
                 :bottom="y === 'bottom'"
@@ -392,10 +392,8 @@
                 :timeout="timeout"
                 :vertical="mode === 'vertical'"
         >
-            {{this.mensagem}}<!--
-                <v-icon dark>done_all</v-icon> -->
+            {{this.mensagem}}
             <v-icon dark>done_outline</v-icon>
-            <!-- <v-icon dark>done</v-icon> -->
         </v-snackbar>
         <v-dialog v-model="documentDialog">
             <consultation-document @close="documentDialog = false" :openDocument="documentDialog"
@@ -425,7 +423,6 @@
             y: 'top',
             x: null,
             mode: '',
-            /* panel:[true], */
             attendance: 'Aguardando Atendimento',
             attendanceOptions:
                 [

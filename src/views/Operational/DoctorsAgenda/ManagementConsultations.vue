@@ -196,10 +196,6 @@
                                                                     : 'CPF:' + item.user.cpf}}
                                                             </v-list-item-subtitle>
                                                             <br>
-<!--                                                            <v-list-item-subtitle v-if="item.user.telephones[0]">
-                                                               Telefone: {{item.user.telephones[0]}}
-                                                            </v-list-item-subtitle>
-                                                            <br>-->
                                                             <v-list-item-action-text>
                                                                 {{item.date.split(' ')[0] | dateFilter}} -
                                                                 {{item.date.split(' ')[1]}}
@@ -391,22 +387,12 @@
                                             </v-card-text>
                                             <v-divider></v-divider>
                                             <v-card-actions>
-<!--                                                <v-btn
-                                                        color="warning"
-                                                        rounded
-                                                        @click="documentDialog = !documentDialog"
-                                                        :disabled="status_Selecionado === 'Pago' && !index_Selecionado.consultation.regress ? false : true"
-                                                >
-                                                    Prontuario
-                                                    <v-icon>insert_drive_file</v-icon>
-                                                </v-btn>
-                                                <v-spacer></v-spacer>-->
                                                 <v-btn
                                                         color="error"
                                                         rounded
                                                         :loading="this.mensage_progress == 'Apagando...' && loader"
                                                         :disabled="index_Selecionado.status === 'Cancelado' ? false : true"
-                                                        @click="apagar()"
+                                                        @click="deleted()"
                                                 >
                                                     Apagar
                                                     <v-icon>delete</v-icon>
@@ -423,16 +409,6 @@
                                                     <v-icon>refresh</v-icon>
                                                 </v-btn>
                                                 <v-spacer></v-spacer>
-                                                <!-- <v-btn
-                                                        color="success"
-                                                        rounded
-                                                        :disabled="loader"
-                                                        :loading="this.mensage_progress == 'Atualizando...' && loader"
-                                                        @click="atualizar()"
-                                                        v-if="index_Selecionado.status === 'Pago' && index_Selecionado.num_recibo !== ''"
-                                                >Atualizar
-                                                    <v-icon>done</v-icon>
-                                                </v-btn> -->
                                                 <v-spacer></v-spacer>
                                                 <v-dialog
                                                         v-model="loader"
@@ -472,27 +448,20 @@
                             :timeout="timeout"
                             :vertical="mode === 'vertical'"
                     >
-                        {{this.mensagem}}<!--
-                <v-icon dark>done_all</v-icon> -->
+                        {{this.mensagem}}
                         <v-icon dark>done_outline</v-icon>
-                        <!-- <v-icon dark>done</v-icon> -->
                     </v-snackbar>
                 </v-card>
             </v-flex>
         </v-layout>
-<!--        <v-dialog v-model="documentDialog">
-            <consultation-document @close="documentDialog = false" :openDocument="documentDialog"
-                                   :consultation="index_Selecionado.consultation"></consultation-document>
-        </v-dialog>-->
+
     </v-container>
 </template>
 
 <script>
-/*    import ConsultationDocument from "../../components/doctorsAgenda/ConsultationDocument";*/
     import moment from 'moment/moment'
 
     export default {
-/*        components: {ConsultationDocument},*/
         data: () => ({
             y: 'top',
             x: null,
@@ -502,7 +471,6 @@
             dateFormatted: '',
             menu: false,
             exames: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
-/*            documentDialog: false,*/
             dialog: false,
             alert: false,
             index_Selecionado: {},
@@ -551,37 +519,14 @@
                     return this.especialidade && this.date ? this.especialidade.name === a.specialty.name && this.date === a.date.split(' ')[0] && a.user : false
                 })
 
-                console.log('Geren',consultas)
                 return consultas;
             },
-            /* menssagens:{
-                set(val){
-                    this.messages = val
-
-                },
-                get(){
-
-                   //  return this.$store.getters.consultationsBySpecialties({data:this.date,especialidade:this.especialidade})
-
-                }
-
-            }, */
-            /* especialidade:{
-                get(){
-                    return this.especialidade_choose
-                },
-                 set(val){
-                    this.especialidade_choose = val
-                }
-            }, */
             date: {
                 get() {
                     return this.date_choose;
                 },
                 set(val) {
                     this.date_choose = val
-                    //this.$store.dispatch('loadScheduledAppointment', {especialidade: this.especialidade})
-
                 }
             },
             visualizarConsulta: {
@@ -591,7 +536,6 @@
                 set: function (index) {
 
                     if (this.especialidade != '') {
-                        console.log(index)
                         this.status_Selecionado = index.status
                         this.index_Selecionado = {...index}
                         this.statusOptions.splice(1, 1)
@@ -639,7 +583,6 @@
             async initialConfig() {
                 this.loading = true
                 await this.$store.dispatch("getSpecialties")
-                console.log(this.specialties[0])
                 this.especialidade = this.specialties[0]
                 await this.$store.dispatch('getDoctors')
                 await this.$store.dispatch('listenConsultations',
@@ -658,11 +601,9 @@
                     if (inArrayIndex === -1) {
                         newArray.push({
                             ...consultations[consultation],
-                            // vagas: consultations[consultation].user ? 0 : 1,
                             consultations: [consultations[consultation]]
                         })
                     } else {
-                        // newArray[inArrayIndex].vagas++
                         newArray[inArrayIndex].consultations.push(consultations[consultation])
                     }
                 }
@@ -699,7 +640,6 @@
                     else res[targetDate].numRegress += 1
                     res[targetDate].consultations.push(consultations[cons])
                 }
-                console.log('foi aqui também',res)
                 return res
             },
 
@@ -728,34 +668,11 @@
                 this.$store.dispatch('eraseAppointment', {...this.index_Selecionado, especialidade: this.especialidade})
                 this.clear()
             },
-            call_atualizar() {
-                this.index_Selecionado.pacienteObj.status = this.index_Selecionado.status
-                this.index_Selecionado.pacienteObj.num_recibo = this.index_Selecionado.num_recibo
-                this.$store.dispatch('updateAppointment', {
-                    ...this.index_Selecionado,
-                    especialidade: this.especialidade
-                })
-                this.clear()
-            },
             clear() {
                 this.num_recibo = ''
                 this.status = 'Aguardando pagamento'
             },
-            atualizar() {
-
-                this.index_Selecionado.pacienteObj.status = this.index_Selecionado.status
-                this.index_Selecionado.pacienteObj.payment_number = this.index_Selecionado.payment_number
-                this.$store.dispatch('updateAppointment', {
-                    status: this.index_Selecionado.status,
-                    payment_number: this.index_Selecionado.num_recibo,
-                    idConsultation: this.index_Selecionado.idConsultation,
-                    idPatient: this.index_Selecionado.cpf
-                })
-                this.clear()
-                this.dialog = false
-
-            },
-            apagar() {
+            deleted() {
                 this.$store.dispatch('eraseAppointment', {
                     idConsultation: this.index_Selecionado.idConsultation,
                     idPatient: this.index_Selecionado.cpf,

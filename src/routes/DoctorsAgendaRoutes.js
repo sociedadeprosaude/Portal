@@ -2,12 +2,12 @@ import CanceledConsultations from "../views/Operational/DoctorsAgenda/CanceledCo
 import Cids from "../views/Operational/DoctorsAgenda/Cids";
 import Declaration from "../views/Operational/DoctorsAgenda/Declaration";
 import DeletarConsultas from "../views/Operational/DoctorsAgenda/DeleteConsultations";
-import GerenciamentoConsultas from "../views/Operational/DoctorsAgenda/GerenciamentoConsultas";
+import GerenciamentoConsultas from "../views/Operational/DoctorsAgenda/ManagementConsultations";
 import PatientConsultations from "../views/Operational/DoctorsAgenda/PatientConsultations";
 import RegistrationConsultationsShifts from "../views/Register/RegistrationConsultationsShifts";
 import SchedulingConsultation from "../views/Operational/DoctorsAgenda/SchedulingConsultation";
 import Teste from '../views/Operational/DoctorsAgenda/testescrolling'
-import RemarcarConsultas from "../views/Operational/DoctorsAgenda/RemarcarConsultas";
+import RemarcarConsultas from "../views/Operational/DoctorsAgenda/RescheduleConsultations";
 import ScheduleReturn from "../views/Operational/DoctorsAgenda/ScheduleReturn";
 
 
