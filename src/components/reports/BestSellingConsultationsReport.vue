@@ -152,7 +152,7 @@ export default {
         (total, e) => total + e.price,
         0
       );
-      console.log("consultation-nome", consultation);
+
       return {
         name: consultation.name,
         intakes: listIntakesSpecialties,
@@ -172,10 +172,8 @@ export default {
     },
     intakesDividedBySpecialties() {
       let listIntakesRemade = [];
-      // Criando com exames com os dados necessarios
       listIntakesRemade = this.intakesWithConsultation.map(intake =>
         intake.specialties.map(consultation => {
-          //console.log("intake", intake);
           return {
             idIntake: intake.id,
             clinicName:

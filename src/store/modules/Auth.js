@@ -16,20 +16,7 @@ const mutations = {
 };
 
 const actions = {
-    // async registerUser({commit}, user) {
-    //     user = {
-    //         ...user,
-    //         status: 'pending'
-    //     }
-    //     try {
-    //     let resp = await firebase.database().ref('colaboradores/').child(user.uid).set(user)
-    //         //console.log(resp)
-    //     } catch (e) {
-    //         console.log(e)
-    //     }
-    //     commit('setUser', user)
-    //     return
-    // },
+
     async logOut(context) {
         firebase.auth().signOut();
         setTimeout(() => {
@@ -77,7 +64,6 @@ const actions = {
             id = id.replace('.',"");
             id = id.replace('.',"");
             id =  id.replace('-',"");
-            console.log(id);
             await firebase.firestore().collection('users').doc(id).update({
                 name:payload.name,
                 telephones:payload.telephones,

@@ -445,7 +445,7 @@
                         }
                         let find = false;
                         doctor.specialties.forEach(specialty => {
-                            //console.log(doctor.name,specialty.name)
+
                             if (specialty.name === this.especialidade.name) {
                                 find = true;
                                 return true;
@@ -656,7 +656,7 @@
                     })
                     .catch(response => {
                         let cost = this.specialtyCost();
-                        console.log(cost);
+
                         if (cost && cost.price === 0) {
                             this.status = "Pago";
                             this.loaderPaymentNumber = false

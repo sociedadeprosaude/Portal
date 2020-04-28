@@ -105,15 +105,12 @@ const actions = {
             return query.onSnapshot((querySnapshot) => {
                 consultations = [];
                 querySnapshot.forEach((document) => {
-                    /* if(document.data().user){
-                        console.log(document.data())
-                    } */
+
                     consultations.push({
                         ...document.data(),
                         id: document.id
                     })
                 });
-                //console.log('listening',consultations)
                 commit('setConsultations', consultations);
                 commit('setConsultationLoading', false)
             })
@@ -197,19 +194,7 @@ const actions = {
                     });
                     commit('setConsultationsCanceled', consultationsCanceled)
                 })
-            /*.get()
-        let consultationsCanceled = []
-        canceledSnap.forEach(function (document) {
-            //console.log(document.data())
-            consultationsCanceled.push({
-                ...document.data(),
-                id: document.id
-            })
-        })
-        console.log(consultationsCanceled)
-        commit('setConsultationsCanceled', consultationsCanceled)
-        return consultationsCanceled
-             */
+
         } catch (e) {
             throw e
         }
@@ -249,23 +234,6 @@ const actions = {
             }
     },
 
-    /* if(data.days[day]){
-        let obj = {vacancy:consultation.vacancy,hour:consultation.hour}
-        if(Array.isArray(data.days[day]))
-
-        data.days[day] = Array.isArray(data.days[day]) ? data.days[day].push(obj) : [data.days[day],obj]
-    }
-    else
-        data.days[day].vacancy = Number(consultation.vacancy) */
-
-    /* async getAConsultations(context,payload){
-        await firebase.firestore().collection('users').doc('13409450297').collection('consultations')
-        .doc("Pjc2Vb3VPyFnmjKpcImf").update({regress:firebase.firestore.FieldValue.delete()})
-        let consultation = await firebase.firestore().collection('users').doc('13409450297').collection('consultations')
-        .doc("Pjc2Vb3VPyFnmjKpcImf").get()
-
-        console.log(consultation.data())
-    }, */
 
     async addConsultationAppointmentToUser({ commit }, payload) {
         try {
@@ -277,7 +245,7 @@ const actions = {
                 let procedure = await firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').where('type','==','Consultation')
                 .where('consultation','==',copyPayload.consultation.previousConsultation).get()
                 procedure.forEach(doc=>{
-                    console.log('Procedure retorno',doc.id)
+
                     firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').doc(doc.id)
                     .update({
                         status: firebase.firestore.FieldValue.arrayUnion('Retorno agendado'),
@@ -291,9 +259,6 @@ const actions = {
                         consultation: copyPayload.consultation.id,
                     })
             } else {
-                //Não havendo encontrado um recibo, há a necessidade adicionar uma nova procedure para quando pagar, criar um intake e atualizar o procedure adicionando Consulta paga no array do status
-                console.log("Criando procedure");
-                //let status = payload.consultation.exam ? 'Consulta Paga' : 'Exame Pago'
 
                 let obj = {
                     status: ['Agendado'],
@@ -332,17 +297,14 @@ const actions = {
             let obj = {
                 ...copyPayload.consultation,
                 user: copyPayload.user
-            }
+            };
 
-           /*  let objUpdateSchedule = copyPayload.consultation.type == "Retorno" ? { qtd_returns: Number(qtd_returns) + 1 } : { qtd_consultations: Number(qtd_consultations) + 1 }
-            objUpdateSchedule.vacancy = Number(vacancy - 1) */
-            //await firebase.firestore().collection('schedules').doc(idSchedule).update(objUpdateSchedule);
-            console.log('Agendamento',obj)
+
             let resp = await firebase.firestore().collection('consultations').add(obj);
-            if (copyPayload.consultation.type == "Retorno") {
+            if (copyPayload.consultation.type === "Retorno") {
                 await firebase.firestore().collection('consultations').doc(copyPayload.consultation.previousConsultation).update({ regress: resp.id })
             }
-            copyPayload.consultation.id = resp.id
+            copyPayload.consultation.id = resp.id;
             await context.dispatch('addConsultationAppointmentToUser', { ...copyPayload })
 
             return (await firebase.firestore().collection('consultations').doc(resp.id).get()).data()
@@ -354,19 +316,17 @@ const actions = {
     async addUserToConsultationReschedule(context, payload) {
         try {
             let copyPayload = Object.assign({}, payload);
-            console.log('reschedule', copyPayload)
             functions.removeUndefineds(copyPayload);
-            let id_schedule = copyPayload.consultation.id_schedule
-            /* let vacancy = copyPayload.consultation.vacancy
+            let id_schedule = copyPayload.consultation.id_schedule;
             let qtd_returns = copyPayload.consultation.qtd_returns ? copyPayload.consultation.qtd_returns : 0
             let qtd_consultations = copyPayload.consultation.qtd_consultations ? copyPayload.consultation.qtd_consultations : 0 */
             let idConsultationCanceled = copyPayload.consultation.idConsultationCanceled
-            delete copyPayload.consultation.id
-            delete copyPayload.consultation.vacancy
-            delete copyPayload.idConsultationCanceled
-            delete copyPayload.consultation.qtd_consultations
-            delete copyPayload.consultation.qtd_returns
-            copyPayload.consultation.id_schedule = id_schedule
+            delete copyPayload.consultation.id;
+            delete copyPayload.consultation.vacancy;
+            delete copyPayload.idConsultationCanceled;
+            delete copyPayload.consultation.qtd_consultations;
+            delete copyPayload.consultation.qtd_returns;
+            copyPayload.consultation.id_schedule = id_schedule;
             let obj = {
                 ...copyPayload.consultation,
                 user: copyPayload.user
@@ -397,7 +357,6 @@ const actions = {
     async addConsultationAppointmentToUserReschedule({ commit }, payload) {
         try {
             let copyPayload = Object.assign({}, payload);
-            console.log('reschedule2', copyPayload)
             functions.removeUndefineds(copyPayload);
             await firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('consultations').doc(copyPayload.consultation.id).set(copyPayload.consultation);
             if (copyPayload.consultation.type === "Retorno") {
@@ -409,20 +368,6 @@ const actions = {
         }
     },
 
-    async updateAppointment({ commit }, payload) { //atualizarConsulta
-        //console.log(payload)
-        try {
-            let obj = {
-                payment_number: payload.payment_number,
-                status: payload.status
-            };
-            await firebase.firestore().collection('consultations').doc(payload.idConsultation).update(obj);
-            await firebase.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.idConsultation)
-                .update(obj)
-        } catch (e) {
-            throw e
-        }
-    },
 
     async SearchCosultation({ commit }) {
         try {
@@ -434,7 +379,7 @@ const actions = {
 
     async eraseAppointment({ commit }, payload) { // apagarConsulta
         try {
-            console.log(payload.consultation);
+
             functions.removeUndefineds(payload);
             let FieldValue = firebase.firestore.FieldValue;
             await firebase.firestore().collection('consultations').doc(payload.idConsultation).update({
@@ -444,7 +389,7 @@ const actions = {
 
             //Para consultas que são do tipo Retorno
             if (payload.type === 'Retorno') {
-                //console.log('É um retorno')
+
                 await firebase.firestore().collection('consultations').doc(payload.previousConsultation).update({
                     regress: FieldValue.delete()
                 });
@@ -489,9 +434,8 @@ const actions = {
 
 
             //Para consultas do tipo Consulta e possuem um retorno associado. É necessário remover o agendamento do retorno associado
-            if (payload.regress != undefined) {
+            if (payload.regress !== undefined) {
 
-                //console.log('É uma consulta e possui um retorno')
 
                 await firebase.firestore().collection('consultations').doc(payload.regress).update({
                     user: FieldValue.delete(),
@@ -507,7 +451,7 @@ const actions = {
     },
 
     async removeAppointmentForever({ commit }, payload) {//apagar consulta de cancelados para semopre.
-        //console.log(payload.idConsultation)
+
         try {
             firebase.firestore().collection('canceled').doc(payload.idConsultation).delete()
         } catch (e) {
@@ -516,7 +460,6 @@ const actions = {
     },
 
     async addArrayCallsToConsultation({ commit }, payload) {
-        /*console.log("vector:", payload)*/
         try {
             firebase.firestore().collection('canceled').doc(payload.idConsultation).update({ calls: payload.calls })
         } catch (e) {
@@ -525,7 +468,7 @@ const actions = {
     },
 
     async addArrayOfMedicinesToBanc({ commit }, payload) {
-        console.log("banco:", payload.medicines)
+
         try {
             firebase.firestore().collection('medicines').doc('sus').set({ medicines: payload.medicines })
         } catch (e) {
@@ -546,7 +489,6 @@ const actions = {
         })
     },
     async addArrayOfCidsToBanc({ commit }, payload) {
-        console.log("banco:", payload.cids)
         try {
             firebase.firestore().collection('cids').doc('cids').set({ cids: payload.cids })
         } catch (e) {
@@ -656,16 +598,15 @@ const actions = {
                         firebase.firestore().collection('consultations').doc(payload.consultation).update({ consultationHour: payload });
                         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ consultationHour: payload });
                         reject('Não tem!')
-                        //console.log('Não tem!')
+
                     } else {
-                        //console.log('Tem sim!',doc.data())
+
                         resolve(doc.data().consultationHour)
                     }
                 })
         })
 
     },
-    //======================================================atendimento===============================
     async addMedicalRecordsToConsultation({ commit }, payload) {
         firebase.firestore().collection('consultations').doc(payload.consultation).update({ MedicalRecords: payload.MedicalRecords });
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ MedicalRecords: payload.MedicalRecords })

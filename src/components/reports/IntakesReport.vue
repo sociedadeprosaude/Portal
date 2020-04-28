@@ -457,9 +457,7 @@
         },
         methods: {
             filterIntakesforColaborator(colaborator) {
-            console.log('entrei')
                  let listIntakesColaborator = [];
-            console.log('Intakes pessoa:', this.report.intakes)
                  this.report.intakes.filter((intake) => {
                      if (intake.colaborator.name === colaborator) {
                          listIntakesColaborator.push({
@@ -481,8 +479,6 @@
                  });
 
                  if (listIntakesColaborator.length !== 0){
-                     console.log('list', listIntakesColaborator)
-                     console.log('reports', this.report.intakes)
                      return listIntakesColaborator
                  }
             }

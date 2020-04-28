@@ -274,8 +274,7 @@ export default {
       this.$store.dispatch("loadClinics");
     },
     preprocessSpec(index, index2) {
-      //console.log("shavdhsavd:",this.allSpecialties[index].doctors[index2])
-      this.specialtie = this.allSpecialties[index].doctors[index2].specialtie;
+     this.specialtie = this.allSpecialties[index].doctors[index2].specialtie;
       this.cpf = this.allSpecialties[index].doctors[index2].cpf;
       this.doctor = this.allSpecialties[index].doctors[index2].name;
       this.cost = this.allSpecialties[index].doctors[index2].cost;
@@ -288,7 +287,6 @@ export default {
         clinic: this.selectedClinic,
         specialtie: this.specialtie
       };
-      //console.log('disgraça:',info);
       this.$store.dispatch("deleteAppointment", info);
       this.dialog2 = false;
       this.$store.dispatch("loadClinics");

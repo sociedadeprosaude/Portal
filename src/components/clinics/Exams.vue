@@ -215,7 +215,6 @@
                         cost: this.cost,
                         sale: this.sale,
                     };
-                    //console.log(examData)
                     await this.$store.dispatch('addExamToClinic', examData);
                 }
                 this.loading = false;

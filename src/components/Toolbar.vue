@@ -169,7 +169,6 @@ export default {
   },
   methods: {
     goRoute(route) {
-      console.log("route", route);
       this.$router.push(route);
     },
 
@@ -178,8 +177,6 @@ export default {
         this.selectUnitDialog = true;
         return;
       }
-
-      console.log("select unit", unit.name);
       this.$store.commit("setSelectedUnit", unit);
     }
   }

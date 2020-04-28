@@ -400,7 +400,6 @@
 
         methods:{
             pre(index, index2) {
-                //console.log("shavdhsavd:",this.allSpecialties[index].doctors[index2])
                 this.specialtie = this.allSpecialties[index].doctors[index2].specialtie;
                 this.cpf = this.allSpecialties[index].doctors[index2].cpf;
                 this.crm = this.allSpecialties[index].doctors[index2].crm;
@@ -423,7 +422,7 @@
                     obs: this.obs,
                     payment: this.payment,
                 };
-                //console.log("Q?:",data)
+
                 this.$store.dispatch('addAppointment', data);
                 this.clear()
             },
@@ -436,7 +435,7 @@
                     rules: this.exam.rules,
                     obs: this.exam.obs,
                 };
-                //console.log("payload:",examData)
+
                 this.$store.dispatch('addExamToClinic', examData);
                 this.clear()
             },

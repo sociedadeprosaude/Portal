@@ -28,22 +28,7 @@ const actions = {
             throw e
         }
     },
-    async LoadCategories({ commit }) {
-        try {
-            var categorias = firebase.firestore().collection('outtakes/outtakes/categories').get().then((data) => {
-                let Categorias = [];
-                data.forEach((doc) => {
-                    Categorias.push(doc.id);
-                    //console.log('doc',doc.id)
-                });
-                commit('setCategorias', Categorias)
-            })
-        }
-        catch (e) {
-            throw e
-        }
 
-    }
 };
 
 const getters = {

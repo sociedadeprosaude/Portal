@@ -101,7 +101,6 @@ export default {
           tickets.push(formattedTicket);
         }
       }
-      console.log();
       return tickets.sort((ticketA, ticketB) => {
         return moment(ticketB.called_at).diff(
           moment(ticketA.called_at),

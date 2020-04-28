@@ -157,8 +157,6 @@ const actions = {
 
     addAppointmentFromDoctors({commit}, payload) {
 
-        //console.log('antes:', payload);
-
         let data = {
             name: payload.doctor,
             specialtie: payload.specialtie,
@@ -169,8 +167,6 @@ const actions = {
             crm: payload.crm,
             cpf: payload.cpf
         };
-
-        //console.log("me mostra formatado:", data)
 
         let info = {
             name: payload.specialtie,
@@ -192,7 +188,6 @@ const actions = {
     },
 
     deleteAppointment({commit}, payload) {
-        //console.log('payload', payload);
         delete payload.clinic.id
         firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie + '/doctors').doc(payload.cpf)
             .delete();
@@ -391,17 +386,16 @@ const actions = {
                        }
                    }
                }
-           })
-           console.log('accontsClinics', accountsClinics)
+           });
            commit("setAccontClinics",accountsClinics)
        })
     },
     async getClinicExams(context, clinic) {
         let examSnap = await firebase.firestore().collection('clinics').doc(clinic.id).collection('exams').get()
-        let exams = []
+        let exams = [];
         examSnap.forEach((doc) => {
             exams.push(doc.data())
-        })
+        });
         return exams
     },
     async getClinicSpecialties(context, clinic) {

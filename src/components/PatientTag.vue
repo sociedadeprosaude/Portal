@@ -106,9 +106,7 @@
     export default {
         name: "PatientTag",
         props: ['user'],
-        mounted() {
-            console.log(this.user)
-        },
+
         data() {
             return {
                 // actualDate: moment(this.user.created_at).format('MM/YY'),

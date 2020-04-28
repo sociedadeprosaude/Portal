@@ -570,9 +570,8 @@
                 return this.medicines.length > 0
             },
             lista() {
-                let arr = this.$store.getters.medicines[0]
-/*                console.log(arr)*/
-                let medic = []
+                let arr = this.$store.getters.medicines[0];
+                let medic = [];
                 for (let i in arr){
                     medic.push(arr[i])
                 }

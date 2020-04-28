@@ -191,7 +191,6 @@ const actions = {
         let consultationsSnap= await firebase.firestore().collection('consultations').where('date', '>=', payload.dataInicio)
             .where('date', '<=', payload.dataFinal).orderBy('date').get();
         consultationsSnap.forEach((e) => {
-            console.log(e.data())
             if(!consultations[e.data().specialty.name]){
                 consultations[e.data().specialty.name]= {
                     name: e.data().specialty.name,
@@ -230,12 +229,11 @@ const actions = {
                 })
             }
             else{
-                consultations[e.data().specialty.name].quantity +=1
+                consultations[e.data().specialty.name].quantity +=1;
                 consultations[e.data().specialty.name].scheduled +=1
 
             }
         });
-        console.log('clinics: ', clinics)
         relatorio = {
             unit: selectedUnit,
             specialties: specialties,

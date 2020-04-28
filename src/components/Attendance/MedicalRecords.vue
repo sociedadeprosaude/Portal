@@ -48,7 +48,7 @@
                 this.$emit('close-dialog')
             },
             save(){
-                //console.log(this.consultation)
+
                 this.loading = true
                 if(this.prontuario){
                     this.$store.dispatch('addMedicalRecordsToConsultation',{

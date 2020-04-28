@@ -31,8 +31,6 @@ const actions = {
 
         };
 
-        console.log('dataBundle', dataBundle);
-
         try {
             for (let data in bundle){
                 if (!bundle[data]) {
@@ -92,8 +90,6 @@ const actions = {
 
             bundle[item].exams = exams;
         }
-
-        console.log(bundle);
         
         return bundle;
     },

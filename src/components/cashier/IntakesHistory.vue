@@ -203,29 +203,10 @@ export default {
       return this.$store.getters.selectedPatient;
     },
     intakes() {
-      /* return this.patient.intakes.sort((a, b) => {
-                    if (a.date < b.date) {
-                        return 1
-                    }
-                    return -1
-                }) */
-      /* console.log('Histórico de vendas') */
-
       return this.patient.intakes;
     },
     budgets() {
-      var array = this.patient.budgets;
-      /* console.log('budgets')
-                array.sort((a, b) => {
-                    if (a > b) {
-                        return -1;
-                    }
-                    if (b > a) {
-                        return 1;
-                    }
-                    return 0;
-                }) */
-      return array;
+      return this.patient.budgets;
     }
   }
 };

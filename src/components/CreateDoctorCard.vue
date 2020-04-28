@@ -295,15 +295,15 @@
                 this.$emit('close')
             },
             clear() {
-                this.name = undefined
-                this.crm = undefined
-                this.cpf = undefined
-                this.specialties = undefined
-                this.clinic = undefined
+                this.name = undefined;
+                this.crm = undefined;
+                this.cpf = undefined;
+                this.specialties = undefined;
+                this.clinic = undefined;
                 this.$emit('clean')
             },
             async save() {
-                this.loading = true
+                this.loading = true;
                 for (let spec in this.specialties) {
                     if (!this.specialties[spec].cost) {
                         this.specialties[spec].cost = 0.00
@@ -319,17 +319,10 @@
                     crm: this.crm,
                     specialties: this.specialties,
                     clinics: this.clinic,
-                    // birth_date: this.birthDate,
-                    // sex: this.sex,
-                    // telephones: this.telephones,
-                    // addresses: this.addresses,
                     type: 'doctor'
-                }
+                };
+                await this.$store.dispatch('addDoctor', doctor);
 
-                //await this.$store.dispatch('deleteDoctor', doctor)
-                await this.$store.dispatch('addDoctor', doctor)
-                // await this.$store.dispatch('getDoctors')
-                //==========================começo da nova função
                 for (let i in this.clinic) {
                     for (let j in this.specialties) {
                         let data = {
@@ -343,16 +336,15 @@
                             price: this.specialties[j].price,
                             paymentMethod: this.specialties[j].payment_method,
                         };
-                        //console.log("imprimir:",data)
+
                         await this.$store.dispatch('addAppointmentFromDoctors', data);
                     }
                 }
-                //=============fim da nova função
-                this.success = true
-                this.loading = false
-                this.clear()
+                this.success = true;
+                this.loading = false;
+                this.clear();
                 setTimeout(() => {
-                    this.success = false
+                    this.success = false;
                     this.close()
                 }, 800)
             }

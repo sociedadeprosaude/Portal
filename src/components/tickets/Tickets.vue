@@ -348,9 +348,7 @@ export default {
       this.singleViewDialog.room = room;
       this.singleViewDialog.active = true;
     },
-    openMultipleView() {
-      console.log(this.rooms);
-    }
+
   }
 };
 </script>
