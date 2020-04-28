@@ -198,7 +198,7 @@
 
 <script>
     import {mask} from 'vue-the-mask'
-    import SubmitButton from "./SubmitButton";
+    import SubmitButton from "../SubmitButton";
 
     export default {
         name: "CreateDoctorCard",

@@ -487,7 +487,7 @@
 
 <script>
 
-    import SelectPatientCard from "../../../components/SelectPatientCard";
+    import SelectPatientCard from "../../../components/Patient/SelectPatientCard";
     import SubmitButton from "../../../components/SubmitButton";
 
     let moment = require("moment/moment");

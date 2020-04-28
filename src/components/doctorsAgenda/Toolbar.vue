@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import SelectPatientCard from "./SelectPatientCard";
+import SelectPatientCard from "../Patient/SelectPatientCard";
 export default {
   name: "AgendaToolbar",
   components: {

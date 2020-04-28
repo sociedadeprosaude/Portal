@@ -19,7 +19,7 @@
                     v-model="newSub[i]"
                     :items="item.subCategories"
                     label="Sub Categoria"
-                  ></v-combobox>
+                  />
                   <v-row justify="space-around">
                     <v-btn outlined @click="newSubcategory(item,newSub[i])">Adicionar</v-btn>
                     <v-btn outlined @click="removeSubcategory(item,newSub[i])">remover</v-btn>
@@ -31,7 +31,7 @@
         </v-card-text>
 
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer/>
           <v-btn text @click="dialog = false;">Fechar</v-btn>
         </v-card-actions>
       </v-card>

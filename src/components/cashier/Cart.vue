@@ -338,7 +338,7 @@
 </template>
 
 <script>
-    import SelectPatientCard from "../SelectPatientCard";
+    import SelectPatientCard from "../Patient/SelectPatientCard";
     import SubmitButton from "../SubmitButton";
     import BudgetToPrint from "./BudgetToPrint";
     import Receipt from "./Receipt";

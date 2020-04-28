@@ -113,7 +113,7 @@
 </template>
 
 <script>
-    import SelectPatientCard from "../components/SelectPatientCard";
+    import SelectPatientCard from "../components/Patient/SelectPatientCard";
     import alert from "../components/alert.vue";
 
     export default {

@@ -408,7 +408,7 @@
 
 <script>
     import moment from 'moment/moment'
-    import Patient from '../../../components/SelectPatientCard'
+    import Patient from '../../../components/Patient/SelectPatientCard'
     import ConsultationDocument from "../../../components/doctorsAgenda/ConsultationDocument";
     import ConsultationVerifier from "../../../components/doctorsAgenda/ConsultationVerifier";
     

@@ -170,7 +170,7 @@
 </template>
 
 <script>
-    import SelectPatientCard from "../../../components/SelectPatientCard";
+    import SelectPatientCard from "../../../components/Patient/SelectPatientCard";
     var moment = require('moment/moment');
     export default {
         components: {SelectPatientCard},

@@ -481,7 +481,7 @@
 
 <script>
     import {mask} from 'vue-the-mask'
-    import SubmitButton from "./SubmitButton";
+    import SubmitButton from "../SubmitButton";
     import PatientCard from "./PatientCard";
     import PatientTag from "./PatientTag";
     import axios from 'axios';
