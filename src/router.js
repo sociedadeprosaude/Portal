@@ -17,7 +17,7 @@ import Units from "./views/Units";
 import Bills from "./views/Register/Bills";
 
 import MedicalCare from "./views/DoctorAttendance/MedicalCare";
-import TicketsDashboard from "./views/Operational/Tickets/TicketsDashboard";
+import TicketsDashboard from "./views/operational/Tickets/TicketsDashboard";
 
 
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
@@ -25,7 +25,7 @@ import CashierRoutes from "./routes/CashierRoutes";
 import discount from "./views/Notifications/discount"
 import notifications from "./views/Notifications/notifications";
 
-import weeklyTable from "./views/Operational/WeeklyTable/weeklyTable";
+import weeklyTable from "./views/operational/WeeklyTable/weeklyTable";
 
 Vue.use(Router);
 let mainRoutes = [
