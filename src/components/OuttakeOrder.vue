@@ -196,7 +196,6 @@ export default {
     async editBillValue (bill) {
       if (!this.isEditing) {
 
-        console.log(bill);
         await this.$store.dispatch("editOuttakes", bill);
         await this.$store.dispatch("getOuttakes");
         this.loading = false;
@@ -210,9 +209,7 @@ export default {
     },
     async payOuttake(outtake) {
       this.loading = true;
-      console.log(' outtake select :', this.outtakeSelect);
       this.outtakeSelect= outtake;
-      console.log(' outtake select before:', this.outtakeSelect);
       await this.$store.dispatch("updateOuttake", {
         outtake: outtake,
         field: "paid",
@@ -220,8 +217,6 @@ export default {
       });
 
       if (outtake.recurrent === 'true') {
-        console.log('pagamento:', outtake.date_to_pay);
-        console.log('outtakes', outtake);
         let bill = {
           category: outtake.category,
           subCategory: outtake.subCategoria,
@@ -272,7 +267,6 @@ export default {
       for (var i = 0; i < uploadedFiles.length; i++) {
         if (this.files.indexOf(uploadedFiles[i]) < 0) {
           this.files.push(uploadedFiles[i]);
-          // this.readFileUrl(uploadedFiles[i], index - 1)
         }
       }
       let urls = await this.submitFiles(this.files);
@@ -286,15 +280,6 @@ export default {
       this.outtakeSelect= [];
 
     },
-    // readFileUrl(file, index) {
-    //     let self = this
-    //     let reader = new FileReader();
-    //     reader.onload = function (e) {
-    //         self.filesPreviews[index] = e.target.result
-    //         self.$forceUpdate()
-    //     }
-    //     reader.readAsDataURL(file);
-    // },
     removeFile(index) {
       this.files.splice(index, 1);
       this.filesPreviews.splice(index, 1);

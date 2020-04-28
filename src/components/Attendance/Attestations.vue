@@ -114,12 +114,6 @@
                                 <v-img :src="require('@/assets/pro_saude_logo_transparente.png')">
                                 <v-layout align-center row wrap>
                                     <v-flex xs12>
-                                        <!--                                    <v-img
-                                                                                    :src="require('../assets/logo-pro-saude.png')"
-                                                                                    class="my-3"
-                                                                                    contain
-                                                                                    height="50"
-                                                                            ></v-img>-->
                                     </v-flex>
                                     <v-flex xs12>
                                         <v-flex xs12><p style="color: white">.</p></v-flex>
@@ -205,7 +199,6 @@
             },
             lista() {
                 let arr = this.$store.getters.cids[0]
-/*                console.log(arr)*/
                 let cods = []
                 for (let i in arr){
                     cods.push(arr[i])
@@ -270,7 +263,6 @@
                     let day = moment(this.dataStart, 'YYYY-MM-DD').add(i, 'days')
                     dias.push(day.format('YYYY-MM-DD'))
                 }
-                //console.log(dias)
                 return dias.indexOf(val) !== -1;
             },
             addToBanc() {

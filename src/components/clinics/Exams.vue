@@ -126,13 +126,6 @@
                 <v-btn color="error" @click="clear(), closeDialog()">CANCELAR</v-btn>
                 <v-spacer></v-spacer>
                 <submit-button :loading="loading" :success="succes" text="SALVAR" :disabled="!formIsValid" @click="save(), closeDialog()"></submit-button>
-<!--                <v-btn-->
-<!--                        :disabled="!formIsValid"-->
-<!--                        @click="save()"-->
-<!--                        color="success"-->
-<!--                >-->
-<!--                    SALVAR-->
-<!--                </v-btn>-->
             </v-layout>
         </v-card-actions>
     </v-card>
@@ -157,7 +150,6 @@
         },
         computed: {
             formIsValid() {
-                /*return this.sale && this.cost && this.exams.length > 0*/
                 return this.exams.length > 0
             },
             addIsValid() {
@@ -215,7 +207,6 @@
                         cost: this.cost,
                         sale: this.sale,
                     };
-                    //console.log(examData)
                     await this.$store.dispatch('addExamToClinic', examData);
                 }
                 this.loading = false;
@@ -231,8 +222,6 @@
                 this.sale = 0;
                 this.obs = null;
                 this.exams = [];
-                // this.closeDialog()
-                // this.$store.dispatch('selectClinic', null);
             },
 
             closeDialog: function() {

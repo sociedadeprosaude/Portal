@@ -179,7 +179,6 @@ export default {
     calcTotalCost: arr =>
       parseFloat(arr.reduce((total, e) => total + e.totalCost, 0).toFixed(2)),
 
-    //BugFont, tem que outtake em que value é string e outros que é number
     calcCost: arr =>
       parseFloat(
         arr.reduce((total, e) => total + parseFloat(e.cost), 0).toFixed(2)
@@ -235,10 +234,8 @@ export default {
     outtakesToPayList() {
       const subList = this.outtakesDividedByCategory.map(e => {
         const listAux = e.outtakes.filter(e2 => !e2.status);
-        //não tem como calcular a porcentagem de cada outtake se a lista ainda está sendo criada
         return this.calcOuttakeInfo(e, listAux, null);
       });
-      // calculando a porcentagem de cada outtake no total da lista filtrada
       return this.updatePercentage(subList);
     },
     outtakesPaidList() {

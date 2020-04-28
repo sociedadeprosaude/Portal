@@ -95,7 +95,6 @@
             </v-flex>
             <v-flex xs6 class="text-center">
               <v-layout row wrap justify-end align-end>
-                <!--<v-layout column wrap>-->
                 <v-flex xs5>
                   <span class="my-sub-headline primary--text" style="font-size: 1.4em">Triagem</span>
                   <v-text-field prefix="Peso:" type="number" suffix="KG" hide-details v-model="p"></v-text-field>
@@ -114,7 +113,6 @@
                     hide-details
                   ></v-text-field>
                 </v-flex>
-                <!--</v-layout>-->
               </v-layout>
             </v-flex>
             <v-flex xs12 class="mt-2 py-1 px-4">
@@ -142,15 +140,7 @@
         name: "Receipt",
         props: ['consultation','openDocument'],
         computed: {
-            /* idade () {
-                var date = this.dependent ? this.dependent.birthDate : this.user.birth_date
-                 var patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
-              
-                if(patt.test(date))
-                    date = moment(date,"DD/MM/YYYY").format("YYYY-MM-DD")
-                
-                return moment().diff(moment(date, 'YYYY-MM-DD'), 'years')
-            }, */
+
             user() {
                 return this.$store.getters.selectedPatient
             },
@@ -206,19 +196,16 @@
                 
                 var date = this.dependent ? this.dependent.birthDate : this.user.birth_date
                  var patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
-                console.log('date',date)
                 if(patt.test(date))
                     date = moment(date,"DD/MM/YYYY").format("YYYY-MM-DD")
                 
                 this.idade = moment().diff(moment(date, 'YYYY-MM-DD'), 'years')
                 this.birthDate = moment(date).format('DD/MM/YYYY')
-                //return moment().diff(moment(date, 'YYYY-MM-DD'), 'years')
             },
             async print(){
                 this.loader = true
                 let cost = this.specialtyCost()
                 if (cost && cost.price === 0) {
-                    console.log('Recibo',this.consultation.payment_number)
                     this.$store
                     .dispatch("thereIsIntakes", {
                         user: this.user,
@@ -254,7 +241,6 @@
                 if(this.openDocument){
                     this.$store.dispatch('setConsultationHour',{consultation:this.consultation.id,patient:this.user.cpf ,consultationHour:this.consultationHour,day:this.dia})
                         .then((result)=>{
-                            //console.log('Tem Mesmo',result)
                             if(result){
                                 this.consultationHour = result.consultationHour
                                 this.hoje = moment(result.consultationHour).locale('pt-BR').format('DD/MM/YYYY HH:mm:ss')

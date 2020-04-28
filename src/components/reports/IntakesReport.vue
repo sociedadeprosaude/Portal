@@ -456,36 +456,6 @@
             }
         },
         methods: {
-            filterIntakesforColaborator(colaborator) {
-            console.log('entrei')
-                 let listIntakesColaborator = [];
-            console.log('Intakes pessoa:', this.report.intakes)
-                 this.report.intakes.filter((intake) => {
-                     if (intake.colaborator.name === colaborator) {
-                         listIntakesColaborator.push({
-                            colaborator: intake.colaborator,
-                            cost: intake.cost,
-                            date: intake.date,
-                            discount: intake.discount,
-                            exams: intake.exams,
-                             id: intake.id,
-                             payments: intake.payments,
-                             subTotal: intake.subTotal,
-                             total: intake.total,
-                             unit: intake.unit,
-                             user: intake.user,
-                             valuesPayments: intake.valuesPayments
-
-                         })
-                     }
-                 });
-
-                 if (listIntakesColaborator.length !== 0){
-                     console.log('list', listIntakesColaborator)
-                     console.log('reports', this.report.intakes)
-                     return listIntakesColaborator
-                 }
-            }
         }
     }
 

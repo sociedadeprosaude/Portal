@@ -35,7 +35,6 @@ export default {
       await this.$store.dispatch("deleteOuttake", { id: this.item.idOuttake });
       this.dialog = false;
       this.loading = false;
-      //callback, que no caso é pesquisar denovo os outtakes
       this.cb();
     }
   }

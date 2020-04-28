@@ -188,7 +188,6 @@
                 return this.$store.getters.user;
             },
             units() {
-                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                 this.unit = this.selectedUnit;
                 return [...this.$store.getters.units, { name: this.other }];
             },

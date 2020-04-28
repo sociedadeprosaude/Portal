@@ -179,7 +179,6 @@
                 this.loading = true;
                 this.$store.commit('setSelectedBudget', budget)
                 for (let exam in budget.exams) {
-                    //console.log('exams', budget.exams[exam])
                     this.$store.commit('addShoppingCartItem', budget.exams[exam])
                 }
                 for (let spec in budget.specialties) {

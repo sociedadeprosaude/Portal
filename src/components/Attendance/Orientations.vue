@@ -76,10 +76,8 @@
             },
         },
         mounted(){
-            //
         },
         watch: {
-            //
         },
         methods: {
             clear() {

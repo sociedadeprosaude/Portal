@@ -162,7 +162,6 @@
         },
 
         watch: {
-            //
         },
         methods: {
             remove (item) {
@@ -203,27 +202,5 @@
 <style scoped>
     ul {
         list-style-type: none;
-    }
-    .slide-up-enter {
-        transform: translateX(10px);
-        opacity: 0;
-    }
-    .slide-up-enter-active {
-        transition: all 0.5s ease;
-    }
-    .slide-up-move {
-        transition: transform 0.5s ease-out;
-    }
-    .fade-enter {
-        opacity: 0;
-    }
-    .fade-enter-active {
-        transition: opacity 0.5s ease-in;
-    }
-    .fade-leave-active {
-        transition: opacity 0.5s ease-out;
-    }
-    .fade-leave-to {
-        opacity: 0;
     }
 </style>

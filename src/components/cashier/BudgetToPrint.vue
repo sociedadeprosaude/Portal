@@ -26,15 +26,6 @@
                                 </v-flex>
                             </v-layout>
                         </v-flex>
-<!--                        <v-flex xs6 v-else></v-flex>-->
-<!--                        <v-flex xs6 class="text-left">-->
-<!--                            <v-layout column wrap>-->
-<!--                                <span class="primary&#45;&#45;text font-weight-bold mt-2">{{this.budget.user.addresses[0].street}} {{this.budget.user.addresses[0].number}}</span>-->
-<!--                                <span v-if="this.budget.user.addresses[0].complement" class="primary&#45;&#45;text font-weight-bold mt-2">{{this.budget.user.addresses[0].complement}}</span>-->
-<!--                                <span class="primary&#45;&#45;text font-weight-bold">{{this.budget.user.addresses[0].city}} - {{this.budget.user.addresses[0].uf}}</span>-->
-<!--                                <span class="primary&#45;&#45;text font-weight-bold">{{this.budget.user.addresses[0].cep}}</span>-->
-<!--                            </v-layout>-->
-<!--                        </v-flex>-->
                         <v-flex xs3 class="align-start pt-6">
                             <v-layout column wrap class="justify-start align-start">
                                 <span class="primary--text font-weight-bold">Orçamento #</span>
@@ -97,7 +88,6 @@
                             <v-spacer/>
                             <span> Este orçamento tem validade de 15 dias</span>
                         </v-flex>
-<!--                        <v-flex xs6 class="primary" style="height: 2px; margin-top: 124px;"></v-flex>-->
                     </v-layout>
                 </v-card>
             </v-flex>

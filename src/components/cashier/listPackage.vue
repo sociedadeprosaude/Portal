@@ -145,13 +145,9 @@
         computed: {
 
             selectedPackage () {
-                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                 let item= this.$store.getters.selectedBundle;
                 if(item){
-
-                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties,vue/no-side-effects-in-computed-properties
                     this.percentageDiscount= item.percentageDiscount ? parseFloat(item.percentageDiscount) : 0;
-                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.moneyDiscount = item.percentageDiscount ? parseFloat(item.moneyDiscount) : 0;
                 }
                 return this.$store.getters.selectedBundle;
@@ -233,7 +229,6 @@
                     price: this.price,
                     total: (this.price - this.moneyDiscount),
                     name: this.$store.getters.getNameBundle.toUpperCase(),
-                    //specialties: this.editedPackage.specialties,
                 };
 
            

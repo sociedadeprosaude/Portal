@@ -149,41 +149,6 @@
         },
         methods: {
             print(ref) {
-                // for (let holder in this.$refs) {
-                //     if (this.$refs[holder].$el) {
-                //         if (holder === ref) {
-                //             this.$refs[holder].$el.classList.add('receipt-to-print')
-                //             this.$refs[holder][0].scrollTop = 0
-                //         } else {
-                //             this.$refs[holder].$el.classList.remove('receipt-to-print')
-                //         }
-                //     } else {
-                //         if (holder === ref) {
-                //             this.$refs[holder][0].$el.classList.add('receipt-to-print')
-                //             this.$refs[holder][0].scrollTop = 0
-                //         } else {
-                //             this.$refs[holder][0].$el.classList.remove('receipt-to-print')
-                //         }
-                //     }
-                // }
-
-                // document.getElementById(ref).scrollTo(0, 0)
-
-                // var mywindow = window.open('', 'PRINT', 'height=400,width=600');
-                //
-                // mywindow.document.write('<html><head><title>' + document.title  + '</title>');
-                // mywindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />')
-                // mywindow.document.write('</head><body >');
-                // mywindow.document.write('<h1>' + document.title  + '</h1>');
-                // mywindow.document.write(document.getElementById('receipt').innerHTML);
-                // mywindow.document.write('</body></html>');
-                //
-                // mywindow.document.close(); // necessary for IE >= 10
-                // mywindow.focus(); // necessary for IE >= 10*/
-                //
-                // mywindow.print();
-                // mywindow.close();
-
                 window.print()
             }
         }

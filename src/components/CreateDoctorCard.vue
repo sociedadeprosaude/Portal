@@ -209,20 +209,6 @@
         components: {
             SubmitButton
         },
-        // beforeDestroy() {
-        //     this.doctor = undefined
-        // },
-        // watch: {
-        //     doctor() {
-        //         if (this.doctor) {
-        //             this.name = this.doctor.name
-        //             this.cpf = this.doctor.cpf
-        //             this.crm = this.doctor.crm
-        //             this.specialties = this.doctor.specialties
-        //             this.clinic = this.doctor.clinics
-        //         }
-        //     }
-        // },
         mounted() {
             this.$store.dispatch('getClinics')
             this.$store.dispatch('getSpecialties')
@@ -257,31 +243,25 @@
                     return a.property;
                 });
                 return val;
-                //return this.$store.getters.clinics;
             },
             specialtyOptions() {
                 return JSON.parse(JSON.stringify(this.$store.getters.specialties))
             },
             formIsValid() {
                 if (!this.name || this.name.length <= 0) {
-                    // this.error = 'Coloque o nome completo do médico'
                     return false
                 }
                 if (!this.cpf || this.cpf.length <= 0) {
-                    // this.error = 'Coloque o cpf completo do médico'
                     return false
                 }
                 if (!this.crm || this.crm.length <= 0) {
-                    // this.error = 'Coloque o crm completo do médico'
                     return false
                 }
                 if (!this.specialties || this.specialties.length <= 0) {
-                    // this.error = 'Coloque as especialidades do médico'
                     return false
                 } else {
                     for (let spec in this.specialties) {
                         if (!this.specialties[spec].payment_method) {
-                            // this.error = 'Adicione os valores de custo'
                             return false
                         }
                     }
@@ -291,7 +271,6 @@
         },
         methods: {
             close() {
-                // this.clear()
                 this.$emit('close')
             },
             clear() {
@@ -319,17 +298,9 @@
                     crm: this.crm,
                     specialties: this.specialties,
                     clinics: this.clinic,
-                    // birth_date: this.birthDate,
-                    // sex: this.sex,
-                    // telephones: this.telephones,
-                    // addresses: this.addresses,
                     type: 'doctor'
                 }
-
-                //await this.$store.dispatch('deleteDoctor', doctor)
                 await this.$store.dispatch('addDoctor', doctor)
-                // await this.$store.dispatch('getDoctors')
-                //==========================começo da nova função
                 for (let i in this.clinic) {
                     for (let j in this.specialties) {
                         let data = {
@@ -343,11 +314,9 @@
                             price: this.specialties[j].price,
                             paymentMethod: this.specialties[j].payment_method,
                         };
-                        //console.log("imprimir:",data)
                         await this.$store.dispatch('addAppointmentFromDoctors', data);
                     }
                 }
-                //=============fim da nova função
                 this.success = true
                 this.loading = false
                 this.clear()

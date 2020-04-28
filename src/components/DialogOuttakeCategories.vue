@@ -13,8 +13,6 @@
               <v-expansion-panel v-for="(item,i) in categories" :key="i">
                 <v-expansion-panel-header>{{item.name}}</v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <!-- Leve gambiarra, combobox não atualiza o model enquanto escreve, so se clicar em outro canto
-                  esse input.native atualiza o model enquanto escreve-->
                   <v-combobox
                     outlined
                     @input.native="newSub[i]=$event.srcElement.value"

@@ -43,7 +43,6 @@
 
         methods:{
             goRoute(route) {
-                console.log('route', route);
                 this.$router.push(route)
             },
         }
