@@ -506,17 +506,12 @@
             menu: false,
             clinic: undefined,
             dialog: false,
-            dialog2: false,
             selectedDoctor: undefined,
             numberReceipt: "",
             type: "",
             createConsultationForm: undefined,
             payment_numberFound: undefined,
             attendance: "Aguardando Atendimento",
-            attendanceOptions: [
-                {text: "Aguardando Atendimento"},
-                {text: "Atendimento Realizado"}
-            ],
             semanaOptions: [
                 "Domingo",
                 "Segunda-feira",
@@ -531,13 +526,8 @@
             modalidade: "Consulta",
             date: moment().format("YYYY-MM-DD"),
             dates: [],
-            times: "",
-            timesOptions: [],
-            medicosOptions: ["Todos"],
-            pacientes: "",
             timeout: 4000,
             dateFormatted: "",
-            especialidadeOption: "",
             especialidade: undefined,
             showAlert: false,
             snackDialogDone: false,
@@ -550,10 +540,7 @@
             consultationsListenerUnsubscriber: undefined,
             daysToListen: 3,
             selectedForm: undefined,
-
             type: "number",
-            number: 9999,
-            selector: "#first",
             selected: "Button",
             elements: ["Button", "Radio group"],
             duration: 500,
@@ -564,35 +551,27 @@
         }),
 
         computed: {
-            isOnline() {
-                return this.$store.getters.isOnline
-            },
-
             consultationLoading() {
                 return this.$store.getters.consultationsLoading;
             },
 
             clinics() {
-                let val = this.$store.getters.clinics.filter(a => {
+                return this.$store.getters.clinics.filter(a => {
                     return a.property;
                 });
-                return val;
             },
 
             listExam() {
-                let val = this.$store.getters.exams.filter(a => {
+                return this.$store.getters.exams.filter(a => {
                     return a.type === this.createConsultationForm.consultation.specialty.name;
                 });
-                return val;
             },
 
             specialties() {
                 let espArray = Object.values(this.$store.getters.specialties);
                 espArray = espArray.filter(specialty => {
 
-                    if (!this.selectedDoctor) {
-                        return true;
-                    }
+                    if (!this.selectedDoctor) return true;
                     let find = false;
                     if (specialty.doctors) {
                         specialty.doctors.forEach(doctor => {
@@ -602,7 +581,6 @@
                             }
                         });
                     }
-
                     return find;
                 });
                 return espArray;
@@ -618,55 +596,38 @@
                 let schedules = this.$store.getters.schedules.filter(a => {
                     let response = true;
                     if (this.selectedDoctor) {
-                        if (this.selectedDoctor.cpf !== a.doctor.cpf) {
-                            response = false;
-                        }
+                        if (this.selectedDoctor.cpf !== a.doctor.cpf) response = false;
                     }
                     if (this.especialidade) {
-                        if (this.especialidade.name !== a.specialty.name) {
-                            response = false;
-                        }
+                        if (this.especialidade.name !== a.specialty.name) response = false;
                     }
                     if (this.clinic) {
-                        if (this.clinic !== a.clinic.name) {
-                            response = false;
-                        }
+                        if (this.clinic !== a.clinic.name) response = false;
                     }
                     return response;
                 });
                 return this.consultationsOfSchedules(schedules);
             },
             consultas() {
-                let consultas =
-                    this.$store.getters.consultations.filter(a => {
-                        let response = true;
-                        if (this.selectedDoctor) {
-                            if (this.selectedDoctor.cpf !== a.doctor.cpf) {
-                                response = false;
-                            }
-                        }
-                        if (this.especialidade) {
-                            if (this.especialidade.name !== a.specialty.name) {
-                                response = false;
-                            }
-                        }
-                        if (this.clinic) {
-                            if (this.clinic !== a.clinic.name) {
-                                response = false;
-                            }
-                        }
-                        return response;
-                    });
-                return consultas;
+                return this.$store.getters.consultations.filter(a => {
+                    let response = true;
+                    if (this.selectedDoctor) {
+                        if (this.selectedDoctor.cpf !== a.doctor.cpf) response = false;
+                    }
+                    if (this.especialidade) {
+                        if (this.especialidade.name !== a.specialty.name) response = false;
+                    }
+                    if (this.clinic) {
+                        if (this.clinic !== a.clinic.name) response = false;
+                    }
+                    return response;
+                });
             },
             doctors: {
                 get: function () {
-
                     let docArray = Object.values(this.$store.getters.doctors);
                     docArray = docArray.filter(doctor => {
-                        if (!this.especialidade) {
-                            return true;
-                        }
+                        if (!this.especialidade) return true;
                         let find = false;
                         doctor.specialties.forEach(specialty => {
                             if (specialty.name === this.especialidade.name) {
@@ -674,27 +635,16 @@
                                 return true;
                             }
                         });
-
                         return find;
                     });
                     return docArray;
                 }
             },
             selectedPatient() {
-                let paciente = this.$store.getters.selectedPatient;
-                return paciente;
+                return this.$store.getters.selectedPatient;
             },
             foundDependents() {
                 return this.selectedPatient ? this.selectedPatient.dependents:undefined;
-            },
-            mensagem() {
-                return this.$store.getters.onMensagem;
-            },
-
-            target() {
-                const value = this[this.type];
-                if (!isNaN(value)) return Number(value);
-                else return value;
             },
             options() {
                 return {
@@ -703,22 +653,11 @@
                     easing: this.easing
                 };
             },
-            element() {
-                if (this.selected === "Button") return this.$refs.button;
-                else if (this.selected === "Radio group") return this.$refs.radio;
-            }
         },
         watch: {
-            medico(value) {
-                this.dates = [];
-                this.$store.dispatch("loadAppointment", {
-                    especialidade: this.especialidadeOption,
-                    medico: value
-                });
-            },
-            date(val) {
 
-                if (val == this.consultas[0].date) this.$vuetify.goTo(0, this.options);
+            date(val) {
+                if (val === this.consultas[0].date) this.$vuetify.goTo(0, this.options);
                 else this.$vuetify.goTo("#group-" + val, this.options);
             },
             exam(value){
@@ -785,7 +724,7 @@
 
                     dates.forEach((date)=>{
                         let hourConsultation = schedule.days[moment(date).weekday()].hour;
-                        if(schedule.cancelations_schedules.indexOf(date) == -1 && schedule.cancelations_schedules.indexOf(date + ' ' +hourConsultation) == -1){
+                        if(schedule.cancelations_schedules.indexOf(date) === -1 && schedule.cancelations_schedules.indexOf(date + ' ' +hourConsultation) === -1){
                             let scheduleObj = {
                                 clinic: schedule.clinic,
                                 doctor: schedule.doctor,
@@ -992,6 +931,3 @@
         }
     };
 </script>
-
-<style scoped>
-</style>
