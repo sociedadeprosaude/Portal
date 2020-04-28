@@ -43,10 +43,9 @@ const actions = {
             }
         }
         if (copyPayload.user) {
-            // await firebase.firestore().collection('budgets').doc(payload.id.toString()).collection('user').doc(user.cpf).set(user)
             context.dispatch('addBudgetToUser', payload)
         }
-        // copyPayload = Object.assign({}, payload)
+
     },
     async getBudget({ }, budgetId) {
         let budget = (await firebase.firestore().collection('budgets').doc(budgetId).get()).data();
@@ -86,8 +85,6 @@ const actions = {
 
         functions.removeUndefineds(specialties);
         functions.removeUndefineds(exams);
-
-
 
         let userRef = firebase.firestore().collection('users').doc(user.cpf);
         await userRef.collection('budgets').doc(copyPayload.id.toString()).set(copyPayload);
@@ -177,17 +174,17 @@ const actions = {
     },
 
     async verifyUnpaidConsultation(context, payload) {
-        var consultationFound = undefined //variável usada para a tabela de procedimentos
-        var precoVendaZero = payload.isConsultation && payload.specialty.price == 0
+        let consultationFound = undefined;
+        let precoVendaZero = payload.isConsultation && payload.specialty.price === 0;
         if (!precoVendaZero) {
             let consultationRef =  payload.userRef.collection('consultations').where('specialty.name', '==', payload.specialty.name).where('status', '==', 'Aguardando pagamento')
                 //.get()
 
             if(!payload.isConsultation)
-                consultationRef.where('exam.name','==',payload.examObj.name)
-            let consultations = await consultationRef.get()
+                consultationRef.where('exam.name','==',payload.examObj.name);
+            let consultations = await consultationRef.get();
             consultations.forEach(async (c) => {
-                consultationFound = c
+                consultationFound = c;
                 context.dispatch('updatePaymentNumberConsultation', { user: payload.user, consultation: c, payment_number: payload.payment_number })
             })  
         }
@@ -215,9 +212,6 @@ const actions = {
                         payment_number: payload.payment_number
                     };
                     if (!payload.isConsultation) {
-                        /* if(payload.examObj.clinic)
-                            delete payload.examObj.clinic */
-                        //clinic = { cnpj: payload.examObj.clinic.cnpj, name: payload.examObj.clinic.name }
                         Object.assign(obj, { exam: { ...payload.examObj} });
                     }
 
@@ -302,18 +296,6 @@ const actions = {
         })
     },
 
-    async createProcedure(context, payload) {
-        await firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').add(
-            {
-                status: [payload.status],
-                payment_number: payload.payment_number.toString(),
-                startAt: moment().format('YYYY-MM-DD hh:ss'),
-                type: 'Consultation',
-                specialty: payload.specialty.name
-            }
-        )
-    },
-
 
     async getUserIntakes(context, user) {
         let userRef = firebase.firestore().collection('users').doc(user.cpf);
@@ -370,17 +352,16 @@ const actions = {
     },
 
     async thereIsIntakes(context, payload) {
-        var found = false;
-        let intakes;
+
         return new Promise(async (resolve, reject) => {
-            let examesSpecialties = ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA']
+            let examesSpecialties = ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'];
             let procedures;
             let type = payload.exam ? 'Exam' : 'Consultation';
             let status = payload.exam ? 'Exame Pago' : 'Consulta Paga';
             let procedureRef;
             if(payload.status && payload.payment_number)
                 procedureRef = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', 'Consultation')
-                .where('specialty', '==', payload.specialty.name).where('status', 'array-contains-any', payload.status).where('payment_number','==',payload.payment_number.toString())
+                .where('specialty', '==', payload.specialty.name).where('status', 'array-contains-any', payload.status).where('payment_number','==',payload.payment_number.toString());
             else{
                 procedureRef = payload.exam ? procedureRef = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)
                 .where('specialty', '==', payload.specialty.name).where('status', '==', [status]).where('exam.name', '==', payload.exam.name)
@@ -392,8 +373,8 @@ const actions = {
             let procedureRefOr = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', 'Exam')
                 .where('specialty', '==', payload.specialty.name).where('status', '==', ['Exame Pago'])
 
-            procedures = await procedureRef.get()
-            if (procedures.empty && type == 'Consultation' && examesSpecialties.indexOf(payload.specialty.name) != -1)
+            procedures = await procedureRef.get();
+            if (procedures.empty && type === 'Consultation' && examesSpecialties.indexOf(payload.specialty.name) !== -1)
                 procedures = await procedureRefOr.get();
 
             if (!procedures.empty) {
@@ -403,29 +384,6 @@ const actions = {
             } else {
                 reject('Payment Number not found')
             }
-
-
-            /* intakes = await firebase.firestore().collection('users').doc(payload.user.cpf).collection('intakes')/* .
-            where('type', '==','specialty').where('used','==',false).where('name','==',payload.specialty.name)
-            .where('doctor.cpf','==',payload.doctor.cpf) //
-                .get()
-            for (const key in intakes.docs) {
-
-                let payment_number = intakes.docs[key].id
-                let specialties
-                specialties = await firebase.firestore().collection('users').doc(payload.user.cpf).collection('intakes')
-                    .doc(payment_number).collection('specialties').where('name', '==', payload.specialty.name)
-                    .where('used', '==', false)
-                    .where('doctor.cpf', '==', payload.doctor.cpf).get()
-                specialties.forEach((doc) => {
-                    found = true
-                    resolve({ uid: doc.id, ...doc.data(), payment_number: payment_number })
-                })
-            }
-
-            if (!found) {
-                reject('Payment Number not found')
-            } */
 
         })
     },

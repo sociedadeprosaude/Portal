@@ -40,22 +40,7 @@ const actions = {
                 return
             }
         }
-        // return firebase.firestore().collection('users/').doc(user.cpf).get('value',(user) => {
-        //     commit('setUser', user.val())
-        //     return user
-        // })
-    },
-    async setUserPermissions({}, payload) {
-        try {
-            firebase.database().ref('colaboradores/').child(payload.user.uid).child('permissions').set(payload.permissions)
-        } catch (e) {
-            console.log(e)
-        }
-    },
-    getPermissionList({commit}) {
-        firebase.database().ref('permissions/').once('value',(permissions) => {
-            commit('setPermissionsList', permissions.val())
-        })
+
     },
 
     async updateAccount({commit},payload){
@@ -78,9 +63,7 @@ const actions = {
 };
 
 const getters = {
-    permissionsList(state) {
-        return state.permissions
-    },
+
     user (state) {
         return state.user
     }

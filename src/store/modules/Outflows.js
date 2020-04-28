@@ -21,13 +21,7 @@ const actions = {
             throw e
         }
     },
-    async AddCategorie({commit}, payload) {
-        try {
-            let res = await firebase.firestore().collection('outtakes/outtakes/categories').doc(payload.categoria).set({categoria: payload.categoria});
-        } catch (e) {
-            throw e
-        }
-    },
+
 
 };
 
