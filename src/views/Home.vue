@@ -76,7 +76,7 @@
             </v-flex>
             <v-flex xs12 class="ma-1 hidden-sm-and-up">
                 <v-layout row wrap class="align-center justify-start">
-                     <v-card class="card mx-2 my-2  py-1 px-2" @click="logout()">
+                    <v-card class="card mx-2 my-2  py-1 px-2" @click="logout()">
                         <v-layout row wrap class="align-center">
                             <span class="text-center font-weight-bold">
                         Perfil
@@ -117,12 +117,10 @@
     import alert from "../components/alert.vue";
 
     export default {
-
         components: {
             SelectPatientCard,
             alert,
         },
-
         mounted() {
             this.$store.dispatch('loadNotifications');
         },
@@ -137,7 +135,6 @@
                                 title: 'Agenda Médica',
                                 permission: 'Agenda Médica',
                                 to: '/agenda/agendamento',
-                                // external_url: 'https://agenda-medica.firebaseapp.com',
                                 icon: 'calendar_today'
                             },
                             {
@@ -250,7 +247,7 @@
             logout() {
                 this.$store.dispatch('logOut')
             },
-            profile(){
+            profile() {
                 this.$router.push('/conta')
             }
         },
@@ -259,13 +256,13 @@
                 return this.$store.getters.user
             },
 
-            notifications () {
+            notifications() {
                 return this.$store.getters.notification;
             },
 
             filteredPages() {
                 // if (!this.user.permissions) return []
-                if(this.user){
+                if (this.user) {
                     return this.pages.filter(a => {
                         if (this.user.group === 'admin') {
                             return true
@@ -279,13 +276,12 @@
                         return false
                     })
                 }
-                }
+            }
         },
 
     }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
     h1, h2 {
         font-weight: normal;
@@ -295,6 +291,7 @@
         list-style-type: none;
         padding: 0;
     }
+
     li {
         display: inline-block;
         margin: 0 10px;

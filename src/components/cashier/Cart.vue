@@ -567,7 +567,7 @@
                     cost: this.cost,
                     user: this.$store.getters.selectedPatient,
                     colaborator: this.$store.getters.user,
-                    parcelar: this.parcelar,
+                    parcel: this.parcel,
                     doctor: this.selectedDoctor,
                     payments: this.payment.paymentForm,
                     valuesPayments: this.payment.value,
