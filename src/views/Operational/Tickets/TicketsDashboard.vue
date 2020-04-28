@@ -78,12 +78,6 @@ export default {
     this.production = constants.IN_PRODUCTION;
   },
   methods: {
-    saveTickets() {
-      this.$store.dispatch("saveTicketsHistory");
-    },
-    resetLine() {
-      this.$store.dispatch("resetTickets");
-    },
     async choose(sector) {
       this.$store.dispatch("listenRooms", sector).then(() => {
         this.sector = sector;

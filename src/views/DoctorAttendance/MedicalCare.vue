@@ -47,7 +47,6 @@
                                         disabled
                                 >
                                     <template v-slot:activator="{ on }">
-                                        <!--disabled-->
                                         <v-text-field
                                                 v-model="computedDateFormatted"
                                                 label="Data"
@@ -314,7 +313,6 @@
                 },
                 set(val) {
                     this.date_choose = val
-                    //this.$store.dispatch('loadScheduledAppointment', {especialidade: this.especialidade})
 
                 }
             },

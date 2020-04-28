@@ -587,7 +587,7 @@ export default {
         if (this.selectedDoctor) {
           if (this.selectedDoctor.cpf !== a.doctor.cpf) {
             response = false;
-          }
+          f
         }
         if (this.especialidade) {
           if (this.especialidade.name !== a.specialty.name) {
