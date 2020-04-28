@@ -125,22 +125,6 @@
 
         mounted() {
             this.$store.dispatch('loadNotifications');
-            //   let perm = [
-            //       'Caixa',
-            //       'Prontuarios',
-            //       'Relatórios',
-            //       'Exames',
-            //       'Agenda Médica',
-            //       'Senhas',
-            //       'Colaboradores'
-            //   ]
-            // firebase.database().ref('permissions/') .set(perm)
-            // let user = firebase.auth().currentUser;
-            // if (!user) {
-            //     this.$router.push('/login')
-            //     return
-            // }
-            // this.getUser(user)
         },
         data() {
             return {
@@ -233,18 +217,6 @@
                                 icon: 'receipt',
                             },
 
-                            // {
-                            //     title: 'Exames',
-                            //     to: '/exames',
-                            //     permission: 'Exames',
-                            //     icon: 'insert_drive_file'
-                            // },
-                            // {
-                            //     title: 'Unidades',
-                            //     permission: 'Colaboradores',
-                            //     to: '/units',
-                            //     icon: 'storefront'
-                            // }
                         ]
                     },
                     {
@@ -253,7 +225,6 @@
                             {
                                 title: 'Atendimentos de Consultas e Retornos',
                                 to: '/MedicalCare',
-                                /*permission: 'doctors',*/
                                 icon: 'assignment_ind',
                             },
                         ]
@@ -275,9 +246,6 @@
         methods: {
             goToExternalUrl(url) {
                 window.open(url)
-            },
-            onSalesSelected() {
-                this.$router.push('/caixa')
             },
             logout() {
                 this.$store.dispatch('logOut')
