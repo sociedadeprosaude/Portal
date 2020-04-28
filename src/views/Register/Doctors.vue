@@ -131,8 +131,8 @@
 </template>
 
 <script>
-    import CreateDoctorCard from "../components/CreateDoctorCard";
-    import SubmitButton from "../components/SubmitButton";
+    import CreateDoctorCard from "../../components/CreateDoctorCard";
+    import SubmitButton from "../../components/SubmitButton";
 
     export default {
         components: {

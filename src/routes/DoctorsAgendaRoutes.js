@@ -1,22 +1,24 @@
-import AgendamentoConsultas from "../views/operational/DoctorsAgenda/SchedulingConsultation";
-import CadastroConsultasPlantoes from "../views/operational/DoctorsAgenda/RegistrationConsultationsShifts";
-import DeletarConsultas from "../views/operational/DoctorsAgenda/DeletarConsultas";
-import GerenciamentoConsultas from "../views/operational/DoctorsAgenda/GerenciamentoConsultas";
-import ConsultasPacientes from "../views/operational/DoctorsAgenda/PatientConsultations";
-import ConsultasCanceladas from "../views/operational/DoctorsAgenda/CanceledConsultations";
-import RemarcarConsultas from "../views/operational/DoctorsAgenda/RemarcarConsultas";
-import AgendarRetorno from "../views/operational/DoctorsAgenda/ScheduleReturn";
-import Cids from "../views/operational/DoctorsAgenda/Cids";
-import Declaration from "../views/operational/DoctorsAgenda/Declaration";
-import Teste from "../views/operational/DoctorsAgenda/testescrolling";
-import Patient from "../views/operational/DoctorsAgenda/Patient";
-import Discount from "../views/discount"
+import CanceledConsultations from "../views/Operational/DoctorsAgenda/CanceledConsultations";
+import Cids from "../views/Operational/DoctorsAgenda/Cids";
+import Declaration from "../views/Operational/DoctorsAgenda/Declaration";
+import DeletarConsultas from "../views/Operational/DoctorsAgenda/DeletarConsultas";
+import GerenciamentoConsultas from "../views/Operational/DoctorsAgenda/GerenciamentoConsultas";
+import PatientConsultations from "../views/Operational/DoctorsAgenda/PatientConsultations";
+import RegistrationConsultationsShifts from "../views/Operational/DoctorsAgenda/RegistrationConsultationsShifts";
+import SchedulingConsultation from "../views/Operational/DoctorsAgenda/SchedulingConsultation";
+import Teste from '../views/Operational/DoctorsAgenda/testescrolling'
+import Patient from "../views/Operational/DoctorsAgenda/Patient"
+import RemarcarConsultas from "../views/Operational/DoctorsAgenda/RemarcarConsultas";
+import ScheduleReturn from "../views/Operational/DoctorsAgenda/ScheduleReturn";
+
+
+import Discount from "../views/Notifications/discount"
 
 export default [
     {
         path: '/agenda/agendamento',
         name: 'AgendamentoConsultas',
-        component: AgendamentoConsultas
+        component: SchedulingConsultation
     },
     {
         path: 'discount',
@@ -26,7 +28,7 @@ export default [
     {
         path: '/agenda/CadastroConsultasPlantoes',
         name: 'CadastroConsultasPlantoes',
-        component: CadastroConsultasPlantoes
+        component: RegistrationConsultationsShifts
     },
     {
         path: '/agenda/DeletarConsultas',
@@ -41,13 +43,13 @@ export default [
     {
         path: '/agenda/ConsultasPacientes',
         name: 'ConsultasPacientes',
-        component: ConsultasPacientes,
+        component: PatientConsultations,
         props: (route) => ({ query: route.query.q }),
     },
     {
         path:'/agenda/ConsultasCanceladas',
         name:'ConsultasCanceladas',
-        component: ConsultasCanceladas,
+        component: CanceledConsultations,
     },
     {
         path:'/agenda/RemarcarConsultas',
@@ -58,7 +60,7 @@ export default [
     {
         path: '/agenda/AgendarRetorno',
         name: 'AgendarRetorno',
-        component: AgendarRetorno,
+        component: ScheduleReturn,
         props: (route) => ({ query: route.query.q }),
     },
     {

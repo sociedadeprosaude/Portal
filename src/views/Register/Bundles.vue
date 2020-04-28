@@ -14,8 +14,8 @@
 </template>
 
 <script>
-    import listPackage from "../../../components/cashier/listPackage";
-    import searchPackage from "../../../components/cashier/searchPackage";
+    import listPackage from "../../components/cashier/listPackage";
+    import searchPackage from "../../components/cashier/searchPackage";
 
     export default {
 

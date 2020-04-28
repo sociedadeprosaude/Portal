@@ -188,7 +188,7 @@
 </template>
 
 <script>
-    import SubmitButton from "../components/SubmitButton";
+    import SubmitButton from "../../components/SubmitButton";
 
     export default {
         components: {

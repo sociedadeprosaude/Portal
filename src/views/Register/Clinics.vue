@@ -336,11 +336,11 @@
 <script>
     import {mask} from 'vue-the-mask';
     import axios from 'axios';
-    import Exams from "../components/clinics/Exams";
-    import Consultations from "../components/clinics/Consultations";
-    import Products from "../components/clinics/Products";
-    import Configurations from "../components/clinics/Configurations";
-    import SubmitButton from "../components/SubmitButton";
+    import Exams from "../../components/clinics/Exams";
+    import Consultations from "../../components/clinics/Consultations";
+    import Products from "../../components/clinics/Products";
+    import Configurations from "../../components/clinics/Configurations";
+    import SubmitButton from "../../components/SubmitButton";
     export default {
         components: {Configurations, Products, Consultations, Exams, SubmitButton},
         directives: {mask},

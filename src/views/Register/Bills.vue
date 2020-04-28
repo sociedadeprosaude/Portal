@@ -291,7 +291,7 @@
 </template>
 
 <script>
-import OuttakeOrder from "../components/OuttakeOrder";
+import OuttakeOrder from "../../components/OuttakeOrder";
 import outtakesCategories from "@/components/DialogOuttakeCategories";
 import { mask } from "vue-the-mask";
 import moment from "moment";

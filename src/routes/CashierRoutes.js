@@ -1,13 +1,13 @@
-import Home from "../views/operational/Cashier/Cashier";
-import Budget from "../views/operational/Cashier/Budget";
-import Outflows from "../views/operational/Cashier/Outflows";
-import Bundles from "../views/operational/Cashier/Bundles";
+import Bundles from "../views/Register/Bundles"
+import Budget from "../views/Operational/Cashier/Budget";
+import Cashier from "../views/Operational/Cashier/Cashier";
+import Outflows from "../views/Register/Outflows";
 
 export default [
     {
         path: '/caixa',
         name: 'home',
-        component: Home
+        component: Cashier
     },
     {
         path:'/caixa/Orçamento',

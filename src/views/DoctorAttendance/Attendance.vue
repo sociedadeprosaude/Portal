@@ -122,12 +122,12 @@
 
 <script>
     var moment = require('moment');
-    import MedicalRecords from "../components/Attendance/MedicalRecords";
-    import Prescription from "../components/Attendance/Prescription";
-    import Orientations from "../components/Attendance/Orientations";
-    import Attestations from "../components/Attendance/Attestations";
-    import Solicitations from "../components/Attendance/Solicitations";
-    import Report from "../components/Attendance/Report";
+    import MedicalRecords from "../../components/Attendance/MedicalRecords";
+    import Prescription from "../../components/Attendance/Prescription";
+    import Orientations from "../../components/Attendance/Orientations";
+    import Attestations from "../../components/Attendance/Attestations";
+    import Solicitations from "../../components/Attendance/Solicitations";
+    import Report from "../../components/Attendance/Report";
     export default {
         components: {Solicitations, Attestations, Orientations, Prescription, MedicalRecords, Report},
         data: () => ({

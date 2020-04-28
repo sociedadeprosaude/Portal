@@ -115,16 +115,16 @@
 </template>
 
 <script>
-import ColaboratorsProductionReport from "../components/reports/ColaboratorsProductionReport";
-import GeneralReport from "../components/reports/GeneralReport";
-import IntakesReport from "../components/reports/IntakesReport";
-import ProceduresPricesAnalises from "../components/reports/ProceduresPricesAnalises";
+import ColaboratorsProductionReport from "../../components/reports/ColaboratorsProductionReport";
+import GeneralReport from "../../components/reports/GeneralReport";
+import IntakesReport from "../../components/reports/IntakesReport";
+import ProceduresPricesAnalises from "../../components/reports/ProceduresPricesAnalises";
 import BestSellingExamsReport from "@/components/reports/BestSellingExamsReport";
 import BestSellingConsultationsReport from "@/components/reports/BestSellingConsultationsReport";
 import OuttakesReport from "@/components/reports/OuttakesReport";
-import SpecialtiesMadeReport from "../components/reports/SpecialtiesMadeReport"
+import SpecialtiesMadeReport from "../../components/reports/SpecialtiesMadeReport"
 import NewUsersReport from "@/components/reports/NewUsersReport";
-import ConsultationScheduledExecuted from "../components/reports/ConsultationScheduledExecuted"
+import ConsultationScheduledExecuted from "../../components/reports/ConsultationScheduledExecuted"
 
 var moment = require("moment");
 export default {
