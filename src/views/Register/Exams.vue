@@ -286,9 +286,6 @@
             validateRegister() {
                 this.loading = true;
                 this.registerProduct()
-                /* this.registerProduct();
-                this.loader = true
-                this.sucessRegister = true; */
             },
 
             async registerProduct() {
@@ -369,14 +366,6 @@
 
     .round-card {
         border-radius: 20px;
-
-    }
-
-    .center-card {
-        height: 100%;
-        justify-content: center;
-        align-content: center;
-        align-items: center;
 
     }
 </style>

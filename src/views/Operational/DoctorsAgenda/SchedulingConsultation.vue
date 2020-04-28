@@ -466,9 +466,6 @@
                             </v-card>
                         </v-dialog>
                     </div>
-                    <!-- <v-dialog v-model="dialogPaciente" width="1000">
-                        <pacientes></pacientes>
-                    </v-dialog> -->
                 </v-layout>
             </v-container>
         </template>
@@ -554,7 +551,6 @@
             daysToListen: 3,
             selectedForm: undefined,
 
-            //-------------------------------------------Scroll------------------------------------------------
             type: "number",
             number: 9999,
             selector: "#first",
@@ -563,10 +559,8 @@
             duration: 500,
             offset: 80,
             easing: "easeInQuint",
-            // easings: Object.keys(easings),
             offsetTop: 0,
             scrollPos:0
-            //---------------------------------------------------------------------------------------------------
         }),
 
         computed: {
@@ -675,7 +669,6 @@
                         }
                         let find = false;
                         doctor.specialties.forEach(specialty => {
-                            //console.log(doctor.name,specialty.name)
                             if (specialty.name === this.especialidade.name) {
                                 find = true;
                                 return true;
@@ -684,7 +677,6 @@
 
                         return find;
                     });
-                    //docArray.unshift({name:'Todos'})
                     return docArray;
                 }
             },
@@ -715,7 +707,6 @@
                 if (this.selected === "Button") return this.$refs.button;
                 else if (this.selected === "Radio group") return this.$refs.radio;
             }
-            //-----------------------------------------------------------------------------------------------------
         },
         watch: {
             medico(value) {
@@ -726,10 +717,7 @@
                 });
             },
             date(val) {
-                /* window.scrollTo(
-                                      0,
-                                      this.findPos(document.getElementById("group-" + val), "group-" + val)
-                                    ); */
+
                 if (val == this.consultas[0].date) this.$vuetify.goTo(0, this.options);
                 else this.$vuetify.goTo("#group-" + val, this.options);
             },
@@ -793,7 +781,7 @@
                 let consultations = [];
                 schedules.forEach((schedule)=>{
                     let keys = Object.keys(schedule.days);
-                    let dates = this.datesOfInterval({weekDays:keys/* ,cancelations_schedules:schedule.cancelations_schedules */});
+                    let dates = this.datesOfInterval({weekDays:keys});
 
                     dates.forEach((date)=>{
                         let hourConsultation = schedule.days[moment(date).weekday()].hour;
@@ -886,7 +874,6 @@
                     })
                     .catch(response => {
                         let cost = this.specialtyCost();
-                        console.log(cost);
                         if (cost && cost.price === 0) {
                             this.status = "Pago";
                             this.loaderPaymentNumber = false
@@ -991,10 +978,7 @@
                         ...form.consultation,
                         dependent: form.user.dependent
                     };
-                // return
                 this.loading = true;
-                //await this.$store.dispatch("addConsultationAppointmentToUser", form);
-                //Realizar essa funcao pelo cloud functions
                 await this.$store.dispatch("addUserToConsultation", form);
                 this.scheduleLoading = false;
                 this.success = true;
