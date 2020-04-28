@@ -400,6 +400,7 @@
     </v-btn>
   </v-layout>
 </template>
+
 <script>
 import Pacientes from "./Patient";
 import SelectPatientCard from "../../../components/SelectPatientCard";

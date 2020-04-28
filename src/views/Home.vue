@@ -137,7 +137,6 @@
                                 title: 'Agenda Médica',
                                 permission: 'Agenda Médica',
                                 to: '/agenda/agendamento',
-                                // external_url: 'https://agenda-medica.firebaseapp.com',
                                 icon: 'calendar_today'
                             },
                             {

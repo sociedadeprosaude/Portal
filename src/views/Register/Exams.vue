@@ -276,7 +276,6 @@
             },
 
             clearSearch() {
-                this.isLoading = false;
                 this.searchData = null;
                 this.editedExam = Object.assign({}, this.defaultExam);
                 this.$store.dispatch('selectExam', null);

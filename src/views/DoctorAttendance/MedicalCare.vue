@@ -348,7 +348,6 @@
             async initialConfig() {
                 this.loading = true;
                 this.especialidade = this.user.specialties[0];
-                //await this.$store.dispatch('getDoctors')
                 await this.$store.dispatch('listenConsultations',
                     {
                         start_date: moment().subtract(10, 'days').format('YYYY-MM-DD'),

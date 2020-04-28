@@ -523,7 +523,6 @@
         },
         mounted() {
             this.date = moment().format('YYYY-MM-DD')
-            this.dateFormatted = moment().format('YYYY-MM-DD')
         },
         methods: {
             returnOutRule(){

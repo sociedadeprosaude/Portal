@@ -6,7 +6,6 @@ import GerenciamentoConsultas from "../views/Operational/DoctorsAgenda/Managemen
 import PatientConsultations from "../views/Operational/DoctorsAgenda/PatientConsultations";
 import RegistrationConsultationsShifts from "../views/Register/RegistrationConsultationsShifts";
 import SchedulingConsultation from "../views/Operational/DoctorsAgenda/SchedulingConsultation";
-import Teste from '../views/Operational/DoctorsAgenda/testescrolling'
 import RemarcarConsultas from "../views/Operational/DoctorsAgenda/RescheduleConsultations";
 import ScheduleReturn from "../views/Operational/DoctorsAgenda/ScheduleReturn";
 
@@ -71,10 +70,5 @@ export default [
         path: '/agenda/Declaration',
         name: 'Declaration',
         component: Declaration,
-    },
-    {
-        path: '/agenda/teste',
-        name: 'Declaration',
-        component: Teste,
     }
 ]
