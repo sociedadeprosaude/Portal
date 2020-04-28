@@ -92,23 +92,4 @@
             }
         }
     };
-  },
-  mounted() {
-    this.$store.dispatch("getTicketsGeneralInfo");
-    this.production = constants.IN_PRODUCTION;
-  },
-  methods: {
-    async choose(sector) {
-      this.$store.dispatch("listenRooms", sector).then(() => {
-        this.sector = sector;
-      });
-    },
-    close() {
-      this.sector = null;
-    },
-    back() {
-      this.$router.back();
-    }
-  }
-};
 </script>
