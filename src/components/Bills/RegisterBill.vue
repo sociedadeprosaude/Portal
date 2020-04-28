@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <v-layout row wrap>
+        <v-layout rpw wrap>
             <v-flex xs12>
                 <v-card class="py-2 px-4">
                     <v-layout row wrap>
@@ -29,11 +29,10 @@
                             </v-combobox>
                         </v-flex>
                         <v-flex xs12 sm3 class="ml-3">
-                            <v-select
-                                    outlined
-                                    label="Método de pagamento"
-                                    v-model="paymentMethod"
-                                    :items="paymentMethods">
+                            <v-select outlined
+                                      label="Método de pagamento"
+                                      v-model="paymentMethod"
+                                      :items="paymentMethods">
                             </v-select>
                         </v-flex>
                         <v-flex xs12 sm3 class="ml-3">
@@ -46,12 +45,12 @@
                                     return-object>
                             </v-select>
                         </v-flex>
-                        <v-spacer/>
+                        <v-spacer />
                         <v-flex xs12 sm2 class="mx-3">
-                            <v-currency-field outlined v-model="value"></v-currency-field>
+                            <v-currency-field outlined v-model="value"/>
                         </v-flex>
                         <v-flex xs12>
-                            <v-text-field outlined label="Descrição" v-model="description"></v-text-field>
+                            <v-text-field outlined label="Descrição" v-model="description"/>
                         </v-flex>
                         <v-flex xs1>
                             <v-checkbox
@@ -73,7 +72,7 @@
                                     v-mask="mask.number">
                             </v-text-field>
                         </v-flex>
-                        <v-spacer/>
+                        <v-spacer />
                         <v-flex xs6>
                             <v-checkbox
                                     color="success"
@@ -84,7 +83,7 @@
                         </v-flex>
                         <v-flex xs12 sm4>
                             <span class="my-sub-headline">Data para pagamento</span>
-                            <v-date-picker locale="pt-br" v-model="dateToPay"></v-date-picker>
+                            <v-date-picker locale="pt-br" v-model="dateToPay"/>
                         </v-flex>
                         <v-flex xs12 sm8>
                             <v-layout column wrap>
@@ -105,7 +104,7 @@
                                                 <v-icon>close</v-icon>
                                             </v-btn>
                                             <v-layout column wrap>
-                                                <img style="max-height: 124px; max-width: 124px" :src="preview"/>
+                                                <img style="max-height: 124px; max-width: 124px" :src="preview" />
                                                 <span>{{files[i].name}}</span>
                                             </v-layout>
                                         </v-card>
@@ -126,7 +125,7 @@
                                 </label>
                             </v-layout>
                         </v-flex>
-                        <v-spacer/>
+                        <v-spacer />
                     </v-layout>
                 </v-card>
             </v-flex>
@@ -135,64 +134,52 @@
                     <v-btn @click="bifurcation()" rounded class="primary">Adicionar</v-btn>
                 </v-flex>
                 <v-flex xs12 class="text-right" v-else>
-                    <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
+                    <v-progress-circular indeterminate class="primary--text"/>
                 </v-flex>
             </v-fade-transition>
         </v-layout>
     </v-container>
 </template>
-
 <script>
-    import OuttakeOrder from "../../components/OuttakeOrder";
-    import outtakesCategories from "@/components/DialogOuttakeCategories";
-    import {mask} from "vue-the-mask";
+
+    import { mask } from "vue-the-mask";
     import moment from "moment";
 
     export default {
-        name: "AddNewBill",
         directives: {
             mask
         },
-        components: {
-            OuttakeOrder,
-            outtakesCategories
-        },
-        data() {
-            return {
-                other: "Outro",
-                category: null,
-                subCategory: null,
-                paymentMethods: ["Boleto", "Transferência", "Dinheiro"],
-                paymentMethod: undefined,
-                unit: null,
-                description: undefined,
-                value: 0.0,
-                parcel: false,
-                parcels: null,
-                recurrent: false,
-                dateToPay: moment().format("YYYY-MM-DD"),
-                filesPreviews: [],
-                mask: {
-                    number: "###"
-                },
-                selectedCategory: "",
-                loading: false,
-                files: [],
-            };
-        },
-        mounted() {
+
+        data: () => ({
+            parcel: false,
+            recurrent: false,
+            parcels: null,
+            unit: null,
+            other: "Outro",
+            selectedCategory: "",
+            category: null,
+            subCategory: null,
+            paymentMethod: undefined,
+            description: undefined,
+            value: 0.0,
+            dateToPay: moment().format("YYYY-MM-DD"),
+            paymentMethods: ["Boleto", "Transferência", "Dinheiro"],
+            loading: false,
+            files: [],
+            filesPreviews: [],
+            mask: {
+                number: "###"
+            }
+        }),
+
+        mounted () {
             this.initiate();
         },
+
         computed: {
+
             categories() {
                 return this.$store.getters.outtakesCategories;
-            },
-            units() {
-                this.unit = this.selectedUnit;
-                return [...this.$store.getters.units, { name: this.other }];
-            },
-            selectedUnit() {
-                return this.$store.getters.selectedUnit;
             },
             categoriesName() {
                 return this.categories.map(e => e.name);
@@ -200,11 +187,25 @@
             user() {
                 return this.$store.getters.user;
             },
+            units() {
+                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                this.unit = this.selectedUnit;
+                return [...this.$store.getters.units, { name: this.other }];
+            },
+            selectedUnit() {
+                return this.$store.getters.selectedUnit;
+            }
         },
-        watch: {
 
-        },
         methods: {
+
+            async initiate() {
+                this.loading = true;
+                await this.$store.dispatch("getOuttakesCategories");
+                this.loading = false;
+                this.selectedCategory =
+                    this.categoriesName[0] != null ? this.categoriesName[0] : "";
+            },
             async newSubcategory(category, newSubcategory) {
                 if (
                     category.subCategories &&
@@ -222,39 +223,13 @@
                     }
                 }
             },
+
+
             async newCategory(category) {
                 if (this.categoriesName.indexOf(category.name) < 0) {
                     await this.$store.dispatch("addOuttakesCategory", {
                         category: category.name
                     });
-                }
-            },
-            removeFile(index) {
-                this.files.splice(index, 1);
-                this.filesPreviews.splice(index, 1);
-            },
-            async submitFiles(files) {
-                return await this.$store.dispatch("uploadFileToStorage", {
-                    files: files,
-                    path: "/outtakes/orders"
-                });
-            },
-            readFileUrl(file, index) {
-                let self = this;
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    self.filesPreviews[index] = e.target.result;
-                    self.$forceUpdate();
-                };
-                reader.readAsDataURL(file);
-            },
-            handleFileUpload() {
-                let uploadedFiles = this.$refs.files.files;
-                for (var i = 0; i < uploadedFiles.length; i++) {
-                    if (this.files.indexOf(uploadedFiles[i]) < 0) {
-                        let index = this.files.push(uploadedFiles[i]);
-                        this.readFileUrl(uploadedFiles[i], index - 1);
-                    }
                 }
             },
             async bifurcation() {
@@ -292,28 +267,47 @@
                     await this.newSubcategory(this.category, this.subCategory);
                 }
                 if (this.files.length > 0) {
-                    let urls = await this.submitFiles(this.files);
-                    bill.appends = urls;
+                    bill.appends = await this.submitFiles(this.files);
                 }
                 await this.$store.dispatch("addOuttakes", bill);
                 await this.$store.dispatch("getOuttakes");
-                this.loading = false;
-            },
-            async initiate() {
-                this.loading = true;
-                await this.$store.dispatch("getOuttakesCategories");
                 await this.$store.dispatch("getOuttakesPending", {
                     finalDate: moment()
                         .add(5, "days")
                         .format("YYYY-MM-DD 23:59:59")
                 });
-                await this.$store.dispatch("getOuttakesPaidToday");
                 this.loading = false;
-                this.selectedCategory = this.categoriesName[0] != null ? this.categoriesName[0] : "";
             },
-        },
-        openAppend(append) {
-            window.open(append);
+
+            handleFileUpload() {
+                let uploadedFiles = this.$refs.files.files;
+                for (let i = 0; i < uploadedFiles.length; i++) {
+                    if (this.files.indexOf(uploadedFiles[i]) < 0) {
+                        let index = this.files.push(uploadedFiles[i]);
+                        this.readFileUrl(uploadedFiles[i], index - 1);
+                    }
+                }
+            },
+            readFileUrl(file, index) {
+                let self = this;
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    self.filesPreviews[index] = e.target.result;
+                    self.$forceUpdate();
+                };
+                reader.readAsDataURL(file);
+            },
+            removeFile(index) {
+                this.files.splice(index, 1);
+                this.filesPreviews.splice(index, 1);
+            },
+            async submitFiles(files) {
+                return await this.$store.dispatch("uploadFileToStorage", {
+                    files: files,
+                    path: "/outtakes/orders"
+                });
+            },
+
         }
-    };
+    }
 </script>

@@ -234,18 +234,30 @@ export default {
           unit:outtake.unit,
           recurrent: 'true',
         };
-        console.log('pagamento:', outtake.date_to_pay);
+
 
         await this.$store.dispatch("addOuttakes", bill);
       }
       this.outtakeSelect= [];
       await this.$store.dispatch("getOuttakes");
+      await this.$store.dispatch("getOuttakesPending", {
+        finalDate: moment()
+                .add(5, "days")
+                .format("YYYY-MM-DD 23:59:59")
+      });
+      await this.$store.dispatch("getOuttakesPaidToday");
       this.loading = false;
     },
     async deleteOuttake(outtake) {
       this.loading = true;
       await this.$store.dispatch("deleteOuttake", outtake);
       await this.$store.dispatch("getOuttakes");
+      await this.$store.dispatch("getOuttakesPending", {
+        finalDate: moment()
+                .add(5, "days")
+                .format("YYYY-MM-DD 23:59:59")
+      });
+      await this.$store.dispatch("getOuttakesPaidToday");
       this.loading = false;
     },
     async handleFileUpload(outtake) {

@@ -1,32 +1,33 @@
 <template>
   <v-container>
     <v-layout row wrap>
-        <add-new-bill></add-new-bill>
-
-        <v-flex xs12 class="text-left mt-6">
+      <RegisterBill/>
+      <v-flex xs12 class="text-left mt-6">
         <span class="my-headline">{{pendingOuttakes.length}} Contas à pagar</span>
       </v-flex>
       <v-flex xs12>
-        <outtake-order :outtakes="pendingOuttakes"></outtake-order>
+        <outtake-order :outtakes="pendingOuttakes"/>
       </v-flex>
       <v-flex xs12 class="text-left mt-6">
         <span class="my-headline">{{selectedPaidOuttakesList.length}} Contas pagas</span>
       </v-flex>
+
       <v-container>
         <v-row>
           <v-chip-group row mandatory v-model="selectedOption" active-class="primary--text">
             <v-chip v-for="option in billsOptions" :key="option">{{ option }}</v-chip>
           </v-chip-group>
         </v-row>
+
         <div v-if="selectedOption === 1">
           <v-row dense no-gutters align="start" justify="start">
             <v-col>
-              <v-switch v-model="switchDate" label="Limitar por data"></v-switch>
+              <v-switch v-model="switchDate" label="Limitar por data"/>
 
-              <v-date-picker v-if="switchDate" locale="pt-br" v-model="selectedDate"></v-date-picker>
+              <v-date-picker v-if="switchDate" locale="pt-br" v-model="selectedDate"/>
             </v-col>
             <v-col>
-              <v-switch v-model="switchCategory" label="Limitar por categoria"></v-switch>
+              <v-switch v-model="switchCategory" label="Limitar por categoria"/>
               <v-select
                 v-if="switchCategory"
                 label="categoria"
@@ -38,29 +39,33 @@
           </v-row>
         </div>
       </v-container>
+
       <v-container v-if="loadingFilter">
         <v-row align="center" justify="center">
           <v-col>
             <v-card elevation="10" class="pa-4">
-              <v-progress-circular indeterminate color="primary"></v-progress-circular>
+              <v-progress-circular indeterminate color="primary"/>
             </v-card>
           </v-col>
         </v-row>
       </v-container>
-      <v-container v-else-if="selectedPaidOuttakesList.length == 0 && this.selectedOption === 0">
+
+      <v-container v-else-if="selectedPaidOuttakesList.length === 0 && this.selectedOption === 0">
         <v-row align="center" justify="center">
           <v-col>
             <v-card elevation="10" class="pa-4">Não há contas pagas hoje</v-card>
           </v-col>
         </v-row>
       </v-container>
-      <v-container v-else-if="selectedPaidOuttakesList.length == 0 && this.selectedOption === 1">
+
+      <v-container v-else-if="selectedPaidOuttakesList.length === 0 && this.selectedOption === 1">
         <v-row align="center" justify="center">
           <v-col>
             <v-card elevation="10" class="pa-4">Não há contas pagas que se encaixam nestas condições</v-card>
           </v-col>
         </v-row>
       </v-container>
+
       <v-flex xs12 class="mt-4" v-else>
         <v-card class="pa-4 my-4" v-for="bill in selectedPaidOuttakesList" :key="bill.id">
           <v-layout row wrap>
@@ -76,6 +81,7 @@
                 <v-divider vertical class="mx-4" />
                 <v-spacer />
                 <span class="font-weight-bold">{{bill.value}}</span>
+
                 <v-flex xs12>
                   <span>{{bill.description}}</span>
                 </v-flex>
@@ -111,6 +117,7 @@
                   <v-progress-circular indeterminate class="primary--text"/>
                 </v-flex>
                 <v-flex xs12 class="text-right"  v-else>
+
                   <v-btn @click="unpayOuttake(bill)" class="error mx-2" fab small>
                     <v-icon>money_off</v-icon>
                   </v-btn>
@@ -126,8 +133,7 @@
 
 <script>
 import OuttakeOrder from "../../components/OuttakeOrder";
-import outtakesCategories from "@/components/DialogOuttakeCategories";
-import AddNewBill from "../../components/Bills/AddNewBill"
+import RegisterBill from "../../components/Bills/RegisterBill";
 import { mask } from "vue-the-mask";
 import moment from "moment";
 export default {
@@ -137,11 +143,12 @@ export default {
   },
   components: {
     OuttakeOrder,
-    outtakesCategories,
-      AddNewBill
+    RegisterBill
+
   },
   data() {
     return {
+      other: "Outro",
       billsOptions: ["De hoje", "Filtrar"],
       dialogSelectDate: false,
       switchDate: true,
@@ -149,12 +156,15 @@ export default {
       selectedOption: 0,
       selectedDate: moment().format("YYYY-MM-DD"),
       selectedCategory: "",
-      paymentMethods: ["Boleto", "Transferência", "Dinheiro"],
       loading: false,
       loadingFilter:false,
       loadingDelete: false,
       outtakeSelect: [],
       files: [],
+      filesPreviews: [],
+      mask: {
+        number: "###"
+      }
     };
   },
   mounted() {
@@ -166,11 +176,13 @@ export default {
         return b.date_to_pay > a.date_to_pay ? 1 : -1;
       });
     },
+
     outtakesPaidToday() {
       return this.$store.getters.outtakesPaidToday.sort((a, b) =>
         b.date_to_pay > a.date_to_pay ? 1 : -1
       );
     },
+
     selectedPaidOuttakesList() {
       if (this.selectedOption === 0) return this.outtakesPaidToday;
       else if (this.selectedOption === 1) return this.outtakesPaid;
@@ -180,12 +192,14 @@ export default {
         return b.date_to_pay < a.date_to_pay ? 1 : -1;
       });
     },
-      categories() {
-          return this.$store.getters.outtakesCategories;
-      },
-      categoriesName() {
-          return this.categories.map(e => e.name);
-      },
+    categories() {
+      return this.$store.getters.outtakesCategories;
+    },
+    categoriesName() {
+      return this.categories.map(e => e.name);
+    },
+
+
   },
   watch: {
     selectedDate(val) {
@@ -212,7 +226,8 @@ export default {
       });
       await this.$store.dispatch("getOuttakesPaidToday");
       this.loading = false;
-      this.selectedCategory = this.categoriesName[0] != null ? this.categoriesName[0] : "";
+      this.selectedCategory =
+        this.categoriesName[0] != null ? this.categoriesName[0] : "";
     },
 
     async getOuttakesPaid() {
@@ -228,6 +243,7 @@ export default {
       });
       this.loadingFilter = false;
     },
+
     async unpayOuttake(outtake) {
       this.loadingDelete = true;
       this.outtakeSelect=outtake;
@@ -244,34 +260,7 @@ export default {
       this.outtakeSelect= [];
       this.loadingDelete = false;
     },
-    handleFileUpload() {
-      let uploadedFiles = this.$refs.files.files;
-      for (var i = 0; i < uploadedFiles.length; i++) {
-        if (this.files.indexOf(uploadedFiles[i]) < 0) {
-          let index = this.files.push(uploadedFiles[i]);
-          this.readFileUrl(uploadedFiles[i], index - 1);
-        }
-      }
-    },
-    readFileUrl(file, index) {
-      let self = this;
-      let reader = new FileReader();
-      reader.onload = function(e) {
-        self.filesPreviews[index] = e.target.result;
-        self.$forceUpdate();
-      };
-      reader.readAsDataURL(file);
-    },
-    removeFile(index) {
-      this.files.splice(index, 1);
-      this.filesPreviews.splice(index, 1);
-    },
-    async submitFiles(files) {
-      return await this.$store.dispatch("uploadFileToStorage", {
-        files: files,
-        path: "/outtakes/orders"
-      });
-    },
+
     openAppend(append) {
       window.open(append);
     }
