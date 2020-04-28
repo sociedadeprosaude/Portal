@@ -2,12 +2,10 @@
     <v-container fluid class=" fill-height">
         <v-layout row wrap class="justify-center">
             <v-flex>
-                <searchPackage>
-                </searchPackage>
+                <searchPackage/>
             </v-flex>
             <v-flex sm3>
-                <listPackage>
-                </listPackage>
+                <listPackage/>
             </v-flex>
         </v-layout>
     </v-container>

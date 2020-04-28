@@ -14,19 +14,11 @@
                         <v-flex xs12 class="text-right pa-2">
                             <v-layout row wrap>
 
-                                <v-btn
-                                        @click="back"
-                                        color="primary"
-                                        rounded
-                                        class="mb-2 elevation-6"
-                                ><v-icon>close</v-icon>
-                                </v-btn>
-
-                                <v-spacer></v-spacer>
+                                <v-spacer/>
 
                                 <v-dialog v-model="dialog" persistent width="500px">
                                     <template v-slot:activator="{ on }">
-                                        <v-btn rounded color="primary" dark class="mb-2 elevation-6" v-on="on" @click="newClinic()">
+                                        <v-btn text color="primary" dark class="mb-2 " v-on="on" @click="newClinic()">
                                             <v-icon left>add</v-icon>
                                             Nova Clinica
                                         </v-btn>
@@ -578,10 +570,6 @@
                 }, 300)
             },
 
-            back() {
-                this.$router.back()
-            },
-
 
             newClinic () {
                 this.$store.dispatch('selectClinic', this.defaultItem);
@@ -621,9 +609,7 @@
                     }
                 }
                 clinicData.agenda = agenda
-                // console.log(clinicData)
-                // this.loading = false
-                // return
+
                 await this.$store.dispatch('addClinic', clinicData)
                 await this.$store.dispatch('getClinics')
                 this.success = true
@@ -635,5 +621,3 @@
         },
     }
 </script>
-<style scoped>
-</style>
