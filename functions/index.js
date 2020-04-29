@@ -70,7 +70,7 @@ exports.addMessage = functions.https.onRequest(async (req, res) => {
     cors(request, response, () => {
         response.status(200).send('success aí cara. Foco!')
     });
-  });
+});
 
 
 exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate(async (change, context) => {
@@ -373,16 +373,16 @@ exports.deleteScheduleByDay = functions.runWith(heavyFunctionsRuntimeOpts).https
     schedule.forEach((doc) => {
         let data = doc.data()
         let cancelations_schedules = data.cancelations_schedules ? data.cancelations_schedules : []
-        let obj = { start_date: payload.start_date, final_date: payload.final_date }
+        let obj = {start_date: payload.start_date, final_date: payload.final_date}
         if (payload.hour)
             obj.hour = payload.hour
         if (payload.weekDays)
             obj.week_days = payload.weekDays
-        cancelations_schedules.push({ ...obj })
-        admin.firestore().collection('schedules').doc(doc.id).update({ cancelations_schedules: cancelations_schedules })
+        cancelations_schedules.push({...obj})
+        admin.firestore().collection('schedules').doc(doc.id).update({cancelations_schedules: cancelations_schedules})
     })
     removeConsultations(payload)
-    return {Message:"Success"}
+    return {Message: "Success"}
 });
 
 exports.deleteSchedule = functions.firestore
@@ -399,7 +399,7 @@ async function removeConsultations(payload) {
             .where('specialty.name', "==", payload.specialty.name)
             .where('doctor.cpf', "==", payload.doctor.cpf).where('clinic.cnpj', '==', payload.clinic.cnpj)
             .where('date', ">=", start)
-        if (payload.final_date){
+        if (payload.final_date) {
             let end = moment(payload.final_date, 'YYYY-MM-DD').format('YYYY-MM-DD 23:59');
             query.where('date', "<=", end)
         }
@@ -424,4 +424,84 @@ async function removeConsultations(payload) {
         throw e
     }
     return
+}
+
+
+exports.getConsultationsAndIntakesByDayPeriodAndWeekDays = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (request, response) => {
+    let start_date = request.query.start_date
+    let final_date = request.query.final_date
+    let consultations = await getCollectionFromPeriod(start_date, final_date, 'consultations')
+    let intakes = await getCollectionFromPeriod(start_date, final_date, 'intakes')
+    let doneConsultations = consultations.filter((cons) => {
+        return cons.consultationHour
+    })
+    let paidConsultations = consultations.filter((cons) => {
+        return cons.status === 'Pago'
+    })
+    doneConsultations = splitCollectionByDayPeriod(doneConsultations)
+    doneConsultations.morning = getCollectionByDayOfTheWeek(doneConsultations.morning)
+    doneConsultations.afternoon = getCollectionByDayOfTheWeek(doneConsultations.afternoon)
+
+    paidConsultations = splitCollectionByDayPeriod(paidConsultations)
+    paidConsultations.morning = getCollectionByDayOfTheWeek(paidConsultations.morning)
+    paidConsultations.afternoon = getCollectionByDayOfTheWeek(paidConsultations.afternoon)
+
+    intakes = splitCollectionByDayPeriod(intakes)
+    intakes.morning = getCollectionByDayOfTheWeek(intakes.morning)
+    intakes.afternoon = getCollectionByDayOfTheWeek(intakes.afternoon)
+    response.status(200).send({
+        'Consultas Feitas': doneConsultations,
+        'Consultas Pagas': paidConsultations,
+        'Vendas realizadas': intakes
+    })
+});
+
+function getCollectionByDayOfTheWeek(collection) {
+    let daysOfWeek = {}
+    for (let item of collection) {
+        console.log(item)
+        let date = moment(item.date, 'YYYY-MM-DD HH:mm:ss')
+        let dayOfWeek = date.weekday()
+        if (!daysOfWeek[dayOfWeek]) {
+            daysOfWeek[dayOfWeek] = 0
+        }
+        daysOfWeek[dayOfWeek]++
+    }
+    return daysOfWeek
+}
+
+function splitCollectionByDayPeriod(collection) {
+    let morningConsultation = collection.filter((cons) => {
+        let date = moment(cons.date, 'YYYY-MM-DD HH:mm:ss')
+        return date.hours() <= 12
+    })
+    let afternoonConsultation = collection.filter((cons) => {
+        let date = moment(cons.date, 'YYYY-MM-DD HH:mm:ss')
+        return date.hours() >= 12
+    })
+    return {
+        morning: morningConsultation,
+        afternoon: afternoonConsultation
+    }
+}
+
+async function getCollectionFromPeriod(start_date, final_date, collectionKey) {
+    try {
+        let query = admin.firestore().collection(collectionKey)
+        if (start_date) {
+            query = query.where('date', ">=", start_date)
+        }
+        if (final_date) {
+            query = query.where('date', "<=", final_date)
+        }
+
+        let consultationsCollection = await query.get()
+
+        let consultations = consultationsCollection.docs.map((doc) => {
+            return doc.data()
+        })
+        return consultations
+    } catch (e) {
+        throw e
+    }
 }
