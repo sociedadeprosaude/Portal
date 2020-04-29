@@ -182,7 +182,7 @@ export default {
       );
     },
     daydate(date) {
-      console.log(this.outtakes)
+
       var dateMoment = moment(date);
       return this.semanaOptions[dateMoment.day()];
     },

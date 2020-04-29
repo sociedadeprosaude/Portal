@@ -95,22 +95,15 @@
                                                                             </v-select>
                                                                         </v-flex>
                                                                         <v-flex xs12 sm8>
-                                                                            <!-- <v-text-field required label="Nome*" v-model = "dependents.nome" :counter="50" maxlength="50"
-                                                                                          :rules="rules.nomeRules && rules.CampoObrigatorio" class="ml-3" prepend-icon="person"></v-text-field> -->
                                                                             <v-text-field required label="Nome*" v-model = "dependents.nome" :counter="50" maxlength="50"
                                                                                           class="ml-3" prepend-icon="person"></v-text-field>
                                                                         </v-flex>
                                                                         <v-spacer></v-spacer>
                                                                         <v-flex xs12 sm3>
-                                                                            <!-- <v-select v-model = "dependents.sexo" :items = "['FEMININO' , 'MASCULINO']"
-                                                                                      class = "mr-3" required label = "Sexo*" :rules = "[v => !!v || 'Selecione um valor']">
-                                                                            </v-select> -->
-                                                                            <v-select v-model = "dependents.sexo" :items = "['FEMININO' , 'MASCULINO']"
+                                                                           <v-select v-model = "dependents.sexo" :items = "['FEMININO' , 'MASCULINO']"
                                                                                       class = "mr-3" required label = "Sexo*" >
                                                                             </v-select>
                                                                         </v-flex>
-
-                                                                        <!-- <v-flex xs12 sm2><v-text-field prepend-icon="event" label="Data de Nascimento*" v-model="dependents.dataNascimento" :mask="mask.maskDateOfBirth" :rules = "rules.CampoObrigatorio"></v-text-field></v-flex> -->
                                                                         <v-flex xs12 sm2><v-text-field prepend-icon="event" label="Data de Nascimento*" v-model="dependents.dataNascimento" :mask="mask.maskDateOfBirth" ></v-text-field></v-flex>
 
                                                                         <v-spacer></v-spacer>
@@ -212,11 +205,9 @@
                                                     </v-flex>
                                                     <v-spacer></v-spacer>
                                                     <v-flex xs12 sm3>
-                                                        <!-- <v-select label="UF" hide-details single-line v-model="editedPatient.uf" :items="dataList.estados" menu-props="auto"></v-select> -->
                                                         <v-text-field label="UF" readonly v-model="editedPatient.uf"></v-text-field>
                                                     </v-flex>
                                                     <v-flex xs12 sm4>
-                                                        <!-- <v-select label="Cidade" class="mr-2" single-line v-model="editedPatient.cidade" :items="dataList.cidades" menu-props="auto" hide-details></v-select> -->
                                                         <v-text-field label="Cidade" class="mr-2" readonly v-model="editedPatient.cidade"></v-text-field>
                                                     </v-flex>
 
@@ -468,18 +459,9 @@
                     .get('https://viacep.com.br/ws/'+ val + '/json/')
                     .then((response) => {
                         this.editedPatient.logradouro = response.data.logradouro + ', ' + response.data.bairro;
-                        //this.editedPatient. = response.data.bairro;
                         this.editedPatient.cidade = response.data.localidade;
                         var array = this.dataList.estados;
-                        /* console.log(
-                            array.find(function(element) { 
-                                                    if(element.includes('AM')){
-                                                        return element; 
-                                                    }
-                                                      
-                                                    return '';
-                                                })
-                        ) */
+
                         var uf = response.data.uf
                         this.editedPatient.uf = array.find(function(element) { 
                                                     if(element.includes(uf)){

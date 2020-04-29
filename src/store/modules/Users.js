@@ -2,9 +2,7 @@ import axios from 'axios'
 import firebase, { firestore } from "firebase";
 import moment from 'moment'
 import functions from "../../utils/functions";
-import admin from "firebase-admin";
 import constants from '@/utils/constants'
-admin.initializeApp(constants.FIREBASE_CONFIG);
 
 
 function f(arg) {
