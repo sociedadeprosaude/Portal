@@ -35,16 +35,7 @@
                             </v-flex>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
-                            <!--                            <v-layout row wrap>-->
-                            <!--                                <v-flex xs12>-->
-                            <!--                                    <span class="my-headline text-left">Permissões</span>-->
-                            <!--                                </v-flex>-->
-                            <!--                                <v-flex xs12 v-for="perm in permissions" :key="perm">-->
-                            <!--                                    <v-btn-->
-                            <!--                                            @click="setPermission(user, perm)"-->
-                            <!--                                            rounded :color="user.permissions ? user.permissions.indexOf(perm) > -1 ? 'primary' : '' : ''">{{perm}}</v-btn>-->
-                            <!--                                </v-flex>-->
-                            <!--                            </v-layout>-->
+
                             <v-layout row wrap>
                                 <v-flex xs10 class="text-left mb-2">
                                     <v-btn rounded class="primary mx-1" @click="setSalary(user)">Salario</v-btn>
@@ -327,11 +318,6 @@
                     return a.status !== 'pending' && a.uid
                 })
             },
-            pendingColab() {
-                return this.$store.getters.colaborators.filter(a => {
-                    return a.status === 'pending'
-                })
-            },
             permissions() {
                 return this.$store.getters.permissionsList
             },
@@ -341,7 +327,6 @@
         },
         methods: {
             async getInitialInfo() {
-                // await this.$store.dispatch('getPermissionList')
                 await this.$store.dispatch('getColaborators')
                 await this.$store.dispatch('getColaboratorsDoctors')
                 this.loading = false
@@ -356,22 +341,6 @@
                 }
                 this.$store.dispatch('getColaborators')
                 this.$store.dispatch('getColaboratorsDoctors')
-            },
-            async setPermission(user, permission) {
-                let permissions = user.permissions
-                if (!user.permissions) {
-                    permissions = [permission]
-                } else {
-                    if (permissions.indexOf(permission) > -1) {
-                        permissions.splice(permissions.indexOf(permission), 1)
-                    } else {
-                        permissions.push(permission)
-                    }
-                }
-                this.$store.dispatch('setUserPermissions', {
-                    user: user,
-                    permissions: permissions
-                })
             },
             clearValuesForm() {
                 this.salaryDialog = false

@@ -78,7 +78,7 @@
         </v-layout>
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 0">
-        <general-report :report="formattedReport" :loading="loading" :intakes="intakes" />
+        <general-report :report="formattedReport" :loading="loading" :intakes="intakes"  :reportAllUnits="formattedReportAllUnits"/>
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 1">
         <colaborators-production-report :loading="loading" :intakes="intakes"></colaborators-production-report>
@@ -144,7 +144,7 @@ export default {
     reportOptions: [
       "Relatório Financeiro Geral",
       "Produção do Colaborador",
-      "Relatorio de Vendas",
+      "Relatório de Vendas",
       "Analise de preço de exames",
       "Exames mais vendidos",
       "Consultas mais vendidas",
@@ -166,6 +166,7 @@ export default {
     verificador: true,
     intakes: undefined,
     formattedReport: undefined,
+    formattedReportAllUnits: undefined,
     loading: false,
     todayNewUsers: []
   }),
@@ -193,6 +194,11 @@ export default {
         finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
       });
       this.formattedReport = await this.$store.dispatch("searchReports", {
+        dataInicio: this.date,
+        dataFinal: this.date2,
+        colaborator: this.colaborator
+      });
+      this.formattedReportAllUnits = await this.$store.dispatch("searchReportsAllClinics", {
         dataInicio: this.date,
         dataFinal: this.date2,
         colaborator: this.colaborator
@@ -236,6 +242,9 @@ export default {
   computed: {
     Relatorio() {
       return this.$store.getters.relatorio;
+    },
+    ReportAllClinics() {
+      return this.$store.getters.reportAllClinics;
     },
     colaborators() {
       return this.$store.getters.colaborators;

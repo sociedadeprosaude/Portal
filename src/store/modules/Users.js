@@ -2,14 +2,15 @@ import axios from 'axios'
 import firebase, { firestore } from "firebase";
 import moment from 'moment'
 import functions from "../../utils/functions";
-import admin from "firebase-admin";
 import constants from '@/utils/constants'
-admin.initializeApp(constants.FIREBASE_CONFIG);
 
 
 function f(arg) {
     return 0
 }
+String.prototype.replaceAll = String.prototype.replaceAll || function(needle, replacement) {
+    return this.split(needle).join(replacement);
+};
 
 const state = {
     selectedPatient: undefined,
@@ -124,9 +125,13 @@ const actions = {
     },
     async searchUser({ }, searchFields) {
         let usersRef = firestore().collection('users');
-
+        console.log('searchFields: ', searchFields)
         for (let field in searchFields) {
             if (!searchFields[field] || searchFields[field].length === 0) continue;
+            if(field === 'cpf'){
+                searchFields[field] = searchFields[field].replaceAll('.','')
+                searchFields[field] = searchFields[field].replace('-','')
+            }
             usersRef = usersRef.where(field, field === 'name' ? '>=' : '==', searchFields[field].toUpperCase())
         }
         let querySnapshot = await usersRef.limit(30).get();

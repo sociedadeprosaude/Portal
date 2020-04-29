@@ -17,8 +17,7 @@
                 :items="categories"
                 item-text="name"
                 return-object
-                label="Categoria"
-                >
+                label="Categoria">
               </v-combobox>
               <v-combobox
                 outlined
@@ -60,15 +59,25 @@
             <v-flex xs4 md1>
                 <v-checkbox color="success" class="font-weight-bold" label="Parcelar" v-model="parcelar"/>
             </v-flex>
-            <v-flex xs5 md2>
-              <v-text-field hint="Quantidade de parcelas" persistent-hint class="ml-4 mt-4" outlined dense
-                            :disabled="!parcelar" v-model="parcelas" v-mask="mask.number">
-
+            <v-flex xs2>
+              <v-text-field
+                hint="Quantidade de parcelas"
+                persistent-hint
+                class="ml-4 mt-4"
+                outlined
+                dense
+                :disabled="!parcelar"
+                v-model="parcelas"
+                v-mask="mask.number">
               </v-text-field>
             </v-flex>
-            <v-spacer/>
-            <v-flex xs6 md6>
-              <v-checkbox color="success" class="font-weight-bold" label="Conta recorrente" v-model="recorrente">
+            <v-spacer />
+            <v-flex xs6>
+              <v-checkbox
+                color="success"
+                class="font-weight-bold"
+                label="Conta recorrente"
+                v-model="recorrente">
               </v-checkbox>
             </v-flex>
             <v-flex xs12 sm4>
@@ -412,7 +421,7 @@ export default {
         }
       }
     },
-    
+
     async getOuttakesPaid() {
       this.loadingFilter = true;
       await this.$store.dispatch("getOuttakesPaid", {

@@ -182,6 +182,7 @@ export default {
       );
     },
     daydate(date) {
+
       var dateMoment = moment(date);
       return this.semanaOptions[dateMoment.day()];
     },
@@ -271,7 +272,6 @@ export default {
 
         if (this.files.indexOf(uploadedFiles[i]) < 0) {
           this.files.push(uploadedFiles[i]);
-          // this.readFileUrl(uploadedFiles[i], index - 1)
         }
       }
 
@@ -293,15 +293,7 @@ export default {
       this.outtakeSelect= [];
 
     },
-    // readFileUrl(file, index) {
-    //     let self = this
-    //     let reader = new FileReader();
-    //     reader.onload = function (e) {
-    //         self.filesPreviews[index] = e.target.result
-    //         self.$forceUpdate()
-    //     }
-    //     reader.readAsDataURL(file);
-    // },
+
     removeFile(index) {
       this.files.splice(index, 1);
       this.filesPreviews.splice(index, 1);
