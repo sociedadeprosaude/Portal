@@ -558,6 +558,24 @@
                 success: false,
             }
         },
+        computed: {
+            selectedPatient() {
+                let user = this.$store.getters.selectedPatient;
+                if (user) {
+                    this.name = user.name;
+                    this.cpf = user.cpf
+                    //this.numAss = user.association_number
+                }
+                return this.$store.getters.selectedPatient
+            },
+            selectedDependent(){
+                let dependent = this.$store.getters.selectedDependent;
+                if(dependent){
+                   this.dependentName = dependent.name
+                }
+                return dependent
+            }
+         },
         watch: {
             cpf(val) {
                 if(this.selectedPatient && val !== this.selectedPatient.cpf)
@@ -627,13 +645,13 @@
                     return
                 }
                 this.loading = true;
-                var copyDependents = [];
+                let copyDependents = [];
                 for (let add in this.addresses) {
                     delete this.addresses[add].loading
                 }
 
                 for(let dependent in this.dependents){
-                    var birthDate = moment( this.dependents[dependent].birthDate,"DD/MM/YYYY").format("YYYY-MM-DD");
+                    let birthDate = moment( this.dependents[dependent].birthDate,"DD/MM/YYYY").format("YYYY-MM-DD");
 
                    copyDependents.push(Object.assign({birthDate:birthDate}, {name:this.dependents[dependent].name,sex:this.dependents[dependent].sex,dependentDegree:this.dependents[dependent].dependentDegree}))
 
@@ -672,8 +690,8 @@
                         body: `${foundPatient.name}, ${identifier.name}: ${identifier.value}, Num. Ass: ${foundPatient.association_number}`,
                         show: true,
                         functionToRun: () => this.addUserToFirestore(patient)
-                    }
-                    this.$store.commit('setSystemDialog', dialog)
+                    };
+                    this.$store.commit('setSystemDialog', dialog);
                     return
                 }
 
@@ -685,9 +703,24 @@
                 this.loading = false;
                 this.selectUser(patient);
                 setTimeout(() => {
-                    this.success = false
+                    this.success = false;
+                    this.catchAssNumberNewPatient(patient);
                 }, 1000)
             },
+
+            async catchAssNumberNewPatient (patient) {
+                let users = await this.$store.dispatch('searchUser', {
+                    name: patient.name,
+                    cpf: patient.cpf,
+                    type: 'patient'
+                });
+                if (!users[0].association_number){
+                    this.catchAssNumberNewPatient(patient)
+                } else {
+                    await this.selectUser(users[0]);
+                }
+            },
+
             selectDependent(dependent){
                 this.$store.dispatch('setSelectedDependent',dependent);
                 this.dependentName = dependent.name;
@@ -724,19 +757,13 @@
                 this.addPatient = false
             },
 
-            async listDependents() {
-                this.loading = true;
-                this.foundDependents = this.selectedPatient.dependents;
-                this.loading = false
-            },
 
             async searchPatient() {
                 this.loading = true;
                 let users = await this.$store.dispatch('searchUser', {
                     name: this.name,
                     cpf: this.cpf,
-                    association_number: this.numAss,
-                    type: 'patient'
+                    association_number: this.numAss
                 });
                 this.foundUsers = users;
                 this.loading = false

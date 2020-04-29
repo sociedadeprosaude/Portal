@@ -622,7 +622,7 @@ export default {
           let qtd_returns = obj.qtd_returns;
 
           if (
-            schedule.clinic.name === item.clinic.name &&
+            schedule.clinic.cnpj === item.clinic.cnpj &&
             schedule.specialty.name === item.specialty.name &&
             schedule.doctor.cpf === item.doctor.cpf &&
             schedule.date === item.date &&

@@ -8,6 +8,9 @@ import constants from '@/utils/constants'
 function f(arg) {
     return 0
 }
+String.prototype.replaceAll = String.prototype.replaceAll || function(needle, replacement) {
+    return this.split(needle).join(replacement);
+};
 
 const state = {
     selectedPatient: undefined,
@@ -109,14 +112,18 @@ const actions = {
     },
 
     async getPatient({ }, id) {
-        let userDoc = await firestore().collection('users').doc(id.toString()).get()
+        let userDoc = await firestore().collection('users').doc(id.toString()).get();
         return userDoc.data()
     },
     async searchUser({ }, searchFields) {
         let usersRef = firestore().collection('users');
-
+        console.log('searchFields: ', searchFields)
         for (let field in searchFields) {
             if (!searchFields[field] || searchFields[field].length === 0) continue;
+            if(field === 'cpf'){
+                searchFields[field] = searchFields[field].replaceAll('.','')
+                searchFields[field] = searchFields[field].replace('-','')
+            }
             usersRef = usersRef.where(field, field === 'name' ? '>=' : '==', searchFields[field].toUpperCase())
         }
         let querySnapshot = await usersRef.limit(30).get();
@@ -194,7 +201,12 @@ const actions = {
                 }
             }
             await firebase.firestore().collection('users').doc(user.user.cpf).delete();
-            admin.auth().deleteUser(user.user.uid).then(function () {}).catch(function (error) {});
+            admin.auth().deleteUser(user.user.uid).then(function () {
+            })
+                .catch(function (error) {
+                    console.log('Error deleting user:', error);
+                });
+
             return
         } catch (e) {
             throw e

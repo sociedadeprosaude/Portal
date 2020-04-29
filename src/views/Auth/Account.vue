@@ -263,6 +263,7 @@ selectedPermissions.push(permission)"
                 };
                 this.address = foundAddress;
             }
+
         }
     };
 </script>

@@ -103,7 +103,7 @@
                     <v-container fluid grid-list-xl>
                         <v-layout align-center wrap>
 
-                            <v-flex sm3>
+                            <!-- <v-flex sm3>
                                 <v-menu
                                         ref="menu1"
                                         v-model="menu1"
@@ -168,7 +168,7 @@
                                     ></v-date-picker>
                                 </v-menu>
                             </v-flex>
-                            <v-spacer></v-spacer>
+                            <v-spacer></v-spacer> -->
                             <v-flex sm6>
                                 <v-select
                                         v-model="semana"
@@ -199,19 +199,12 @@
                                     </template>
                                 </v-select>
                             </v-flex>
-                        </v-layout>
-                    </v-container>
-                </template>
-
-                <template>
-                    <v-container fluid grid-list-xl>
-                        <v-layout align-center wrap>
-                            <v-flex xs12 sm6>
+                            <v-flex xs12 sm6 md3>
                                 <v-select
                                         v-model="times"
                                         prepend-icon="alarm_add"
                                         :items="timesOptions"
-                                        label="Horários"
+                                        label="Horário"
                                         attach
                                         outlined
                                         rounded
@@ -236,8 +229,7 @@
                                     </template>
                                 </v-select>
                             </v-flex>
-                            <v-spacer></v-spacer>
-                            <v-flex xs12 sm6 md6>
+                            <v-flex xs12 sm6 md3>
                                 <v-text-field
                                         prepend-icon="looks_6"
                                         v-model="vagas"
@@ -252,6 +244,14 @@
                                         clearable
                                 ></v-text-field>
                             </v-flex>
+                        </v-layout>
+                    </v-container>
+                </template>
+
+                <template>
+                    <v-container fluid grid-list-xl>
+                        <v-layout align-center wrap>
+                            
                         </v-layout>
                     </v-container>
                 </template>

@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <v-layout  wrap row class="justify-center">
-            <v-flex xs12 sm8 class="text-center" v-for="item in notifications">
+            <v-flex xs12 sm8 class="text-center" v-for="item in notifications" v-bind:key="item.link">
                 <v-alert
                         class="text-left"
                         color="warning"
@@ -9,8 +9,10 @@
                         elevation="2"
                         colored-border
                         :icon="item.icon"
-                        :to="item.link">
-                    <v-layout row wrap>
+                        :to="item.link"
+                        @click.native="goRoute(item.link)"
+               >
+                    <v-layout row wrap >
                         <span><strong>{{item.info}}</strong></span>
                         <v-spacer/>
                         <v-btn text

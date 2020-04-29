@@ -170,7 +170,7 @@
                             ></v-date-picker>
                         </v-menu>
                     </v-flex>
-                    <v-flex xs12>
+                    <v-flex class="my-3" xs12>
                     <v-layout class="align-end justify-end">
                         <v-btn color="black" dark @click="filterHour ? filterHour = false: filterHour = true">
                             Filtro de Hora :<v-icon right>alarm</v-icon>
@@ -181,69 +181,70 @@
                         </v-btn>
                     </v-layout>
                     </v-flex>
-
-                    <v-flex xs12><p></p></v-flex>
-
-                    <v-flex xs12 sm5 v-show="filterHour">
-                        <v-select
-                                v-model="times"
-                                prepend-icon="alarm_add"
-                                :items="timesOptions"
-                                label="Horários"
-                                attach
-                                outlined
-                                rounded
-                                filled
-                                hint="Selecione o horario que deseja Apagar"
-                                persistent-hint
-                                chips
-                                color="green"
-                                clearable
-                        >
-                            <template v-slot:selection="data">
-                                <v-chip
-                                        :key="JSON.stringify(data.item)"
-                                        :input-value="data.selected"
-                                        :disabled="data.disabled"
-                                        class="v-chip--select-multi"
-                                        @click.stop="data.parent.selectedIndex = data.index"
-                                        @input="data.parent.selectItem(data.item)"
-                                        text-color="white"
-                                        color="info"
-                                >{{ data.item.text }}</v-chip>
-                            </template>
-                        </v-select>
-                    </v-flex>
-                    <v-spacer></v-spacer>
-                    <v-flex xs12 sm5 v-show="filterDayWeek">
-                        <v-select
-                                v-model="semana"
-                                prepend-icon="event"
-                                :items="semanaOptions"
-                                label="Dias da Semana"
-                                hint="Selecione o(s) dia(s) da semana que deseja apagar"
-                                persistent-hint
-                                outlined
-                                rounded
-                                multiple
-                                filled
-                                chips
-                                color="blue"
-                                clearable
-                        >
-                            <template v-slot:selection="data">
-                                <v-chip
-                                        :key="JSON.stringify(data.item)"
-                                        :input-value="data.selected"
-                                        :disabled="data.disabled"
-                                        class="v-chip--select-multi"
-                                        @click.stop="data.parent.selectedIndex = data.index"
-                                        @input="data.parent.selectItem(data.item)"
-                                        text-color="white"
-                                        color="info"
-                                >{{ data.item.text }}</v-chip>
-                            </template>
-                        </v-select>
+                    <v-flex class="mb-3" xs12>
+                        <v-layout class="align-end justify-end">
+                            <v-flex xs12 sm5 v-show="filterHour">
+                            <v-select
+                                    v-model="times"
+                                    prepend-icon="alarm_add"
+                                    :items="timesOptions"
+                                    label="Horários"
+                                    attach
+                                    outlined
+                                    rounded
+                                    filled
+                                    hint="Selecione o horario que deseja Apagar"
+                                    persistent-hint
+                                    chips
+                                    color="green"
+                                    clearable
+                            >
+                                <template v-slot:selection="data">
+                                    <v-chip
+                                            :key="JSON.stringify(data.item)"
+                                            :input-value="data.selected"
+                                            :disabled="data.disabled"
+                                            class="v-chip--select-multi"
+                                            @click.stop="data.parent.selectedIndex = data.index"
+                                            @input="data.parent.selectItem(data.item)"
+                                            text-color="white"
+                                            color="info"
+                                    >{{ data.item.text }}</v-chip>
+                                </template>
+                            </v-select>
+                        </v-flex>
+                        <v-spacer></v-spacer>
+                        <v-flex xs12 sm5 v-show="filterDayWeek">
+                            <v-select
+                                    v-model="semana"
+                                    prepend-icon="event"
+                                    :items="semanaOptions"
+                                    label="Dias da Semana"
+                                    hint="Selecione o(s) dia(s) da semana que deseja apagar"
+                                    persistent-hint
+                                    outlined
+                                    rounded
+                                    multiple
+                                    filled
+                                    chips
+                                    color="blue"
+                                    clearable
+                            >
+                                <template v-slot:selection="data">
+                                    <v-chip
+                                            :key="JSON.stringify(data.item)"
+                                            :input-value="data.selected"
+                                            :disabled="data.disabled"
+                                            class="v-chip--select-multi"
+                                            @click.stop="data.parent.selectedIndex = data.index"
+                                            @input="data.parent.selectItem(data.item)"
+                                            text-color="white"
+                                            color="info"
+                                    >{{ data.item.text }}</v-chip>
+                                </template>
+                            </v-select>
+                        </v-flex>
+                    </v-layout>
                     </v-flex>
 
                 </v-layout>
@@ -819,7 +820,8 @@
                 var payload = {
                     doctor: this.doctor,
                     specialty: this.especialidade,
-                    clinic: this.clinic
+                    clinic: this.clinic,
+                    start_date: this.start_date,
                 }
                 await this.$store.dispatch('deleteAllSchedule', payload)
                 this.success = true

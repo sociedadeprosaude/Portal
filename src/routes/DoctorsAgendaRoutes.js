@@ -9,7 +9,6 @@ import SchedulingConsultation from "../views/Operational/DoctorsAgenda/Schedulin
 import RemarcarConsultas from "../views/Operational/DoctorsAgenda/RescheduleConsultations";
 import ScheduleReturn from "../views/Operational/DoctorsAgenda/ScheduleReturn";
 
-
 import Discount from "../views/Notifications/discount"
 
 export default [

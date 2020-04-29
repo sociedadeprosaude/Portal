@@ -1,10 +1,10 @@
 const functions = require('firebase-functions');
 var admin = require('firebase-admin');
-const cors = require('cors')({ origin: true });
+const cors = require('cors')({origin: true});
 
 var papa = require('papaparse');
 var moment = require('moment');
-const { parse } = require('json2csv');
+const {parse} = require('json2csv');
 admin.initializeApp();
 const defaultRoute = '/analise-exames'
 
@@ -20,7 +20,7 @@ exports.removeUnnappointedConsultations = functions.runWith(heavyFunctionsRuntim
     console.log(`Datas: ${startDate.format('DD/MM/YYYY HH:mm')} até ${finalDate.format('DD/MM/YYYY HH:mm')}`)
     let consCollection = await db.collection('consultations').where('date', '>', startDate.format('YYYY-MM-DD HH:mm')).where('date', '<', finalDate.format('YYYY-MM-DD HH:mm')).get()
     console.log('size: ', consCollection.docs.length)
-    while(consCollection.docs.length > 0) {
+    while (consCollection.docs.length > 0) {
         console.log(`Deletando: ${startDate.format('DD/MM/YYYY HH:mm')} até ${finalDate.format('DD/MM/YYYY HH:mm')}`)
         consCollection.forEach((docRef) => {
             if (!docRef.data().user) {
@@ -65,6 +65,13 @@ exports.createConsultations = functions.https.onRequest((request, response) => {
     });
     return
 })
+
+exports.addMessage = functions.https.onRequest(async (req, res) => {
+    cors(request, response, () => {
+        response.status(200).send('success aí cara. Foco!')
+    });
+  });
+
 
 exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate(async (change, context) => {
     let db = admin.firestore()
@@ -321,3 +328,100 @@ exports.resetTicketsCount = functions.pubsub.schedule('0 0 * * *').onRun((contex
     });
     return null;
 });
+
+exports.getSpecialtiesWithPrice = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (request, response) => {
+    response.set('Access-Control-Allow-Origin', '*');
+    response.set('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS');
+    response.set('Access-Control-Allow-Headers', '*');
+    let minParcel = 40
+    let scheduleCollection = await admin.firestore().collection('schedules').get()
+    let availableSpecialties = []
+    for (let scheduleDoc of scheduleCollection.docs) {
+        let schedule = scheduleDoc.data()
+        if (availableSpecialties.indexOf(schedule.specialty.name) < 0) {
+            availableSpecialties.push(schedule.specialty.name)
+        }
+    }
+    let specialtiesSnap = await admin.firestore().collection('specialties').get()
+
+    let allSpecialties = [];
+    allSpecialties = specialtiesSnap.docs.map(doc => ({...doc.data(), id: doc.id}))
+
+    let formattedSpecialties = allSpecialties.filter((spec) => {
+        return spec.doctors && spec.doctors.length > 0 && availableSpecialties.indexOf(spec.name) > -1
+    }).map((spec) => {
+        let price = spec.doctors[0].price
+        let specWithPrice = {
+            ...spec,
+            price: price,
+            numOfParcels: Math.floor(price / minParcel),
+            valueOfParcels: price / Math.floor(price / minParcel)
+        }
+        delete specWithPrice.doctors
+        return specWithPrice
+    })
+
+    response.status(200).send(formattedSpecialties.slice(0, 5))
+})
+
+exports.deleteScheduleByDay = functions.runWith(heavyFunctionsRuntimeOpts).https.onCall(async (data, context) => {
+    let payload = data.payload
+    let schedule = await admin.firestore().collection('schedules')
+        .where('specialty.name', "==", payload.specialty.name)
+        .where('doctor.cpf', "==", payload.doctor.cpf)
+        .where('clinic.cnpj', '==', payload.clinic.cnpj).get()
+    schedule.forEach((doc) => {
+        let data = doc.data()
+        let cancelations_schedules = data.cancelations_schedules ? data.cancelations_schedules : []
+        let obj = { start_date: payload.start_date, final_date: payload.final_date }
+        if (payload.hour)
+            obj.hour = payload.hour
+        if (payload.weekDays)
+            obj.week_days = payload.weekDays
+        cancelations_schedules.push({ ...obj })
+        admin.firestore().collection('schedules').doc(doc.id).update({ cancelations_schedules: cancelations_schedules })
+    })
+    removeConsultations(payload)
+    return {Message:"Success"}
+});
+
+exports.deleteSchedule = functions.firestore
+    .document('schedules/{scheduleID}')
+    .onDelete(async (snap, context) => {
+        const deletedSchedule = snap.data();
+        await removeConsultations(deletedSchedule)
+    });
+
+async function removeConsultations(payload) {
+    let start = moment().format('YYYY-MM-DD 00:00');
+    try {
+        let query = await admin.firestore().collection('consultations')
+            .where('specialty.name', "==", payload.specialty.name)
+            .where('doctor.cpf', "==", payload.doctor.cpf).where('clinic.cnpj', '==', payload.clinic.cnpj)
+            .where('date', ">=", start)
+        if (payload.final_date){
+            let end = moment(payload.final_date, 'YYYY-MM-DD').format('YYYY-MM-DD 23:59');
+            query.where('date', "<=", end)
+        }
+
+
+        let snapshot = await query.get()
+        snapshot.forEach(async doc => {
+
+            let dateConsultation = moment(doc.data().date);
+            let filterHour = payload.hour ? doc.data().date.split(' ')[1] === payload.hour ? true : false : true
+            let filterDayWeek = payload.weekDays ? payload.weekDays.indexOf(dateConsultation.weekday()) > -1 ? true : false : true
+
+            if (filterHour && filterDayWeek) {
+                admin.firestore().collection('consultations').doc(doc.id).delete();
+            }
+            if (filterHour && filterDayWeek && doc.data().user) {
+                admin.firestore().collection('users').doc(doc.data().user.cpf).collection('consultations').doc(doc.id).delete();
+                admin.firestore().collection('canceled').doc(doc.id).set(doc.data())
+            }
+        })
+    } catch (e) {
+        throw e
+    }
+    return
+}
