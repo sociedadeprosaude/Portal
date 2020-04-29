@@ -120,7 +120,7 @@ const actions = {
     },
 
     async getPatient({ }, id) {
-        let userDoc = await firestore().collection('users').doc(id.toString()).get()
+        let userDoc = await firestore().collection('users').doc(id.toString()).get();
         return userDoc.data()
     },
     async searchUser({ }, searchFields) {
@@ -142,10 +142,10 @@ const actions = {
                 ...doc.data(),
                 id: doc.id
             })
+
         });
         return users
     },
-
     thereIsUserCPF({ commit }, payload) {
         return new Promise(async (resolve, reject) => {
             try {
@@ -199,7 +199,7 @@ const actions = {
                     }
                 }
             }
-            upd = payload.user
+            upd = payload.user;
             return await firebase.firestore().collection('users').doc(payload.user.cpf).set(upd)
 
         } else {
@@ -227,15 +227,7 @@ const actions = {
                 .catch(function (error) {
                     console.log('Error deleting user:', error);
                 });
-            //var usuario =firebase.auth(user.user.uid)
-            //console.log('usuario: ',usuario)
 
-            //var user = firebase.auth().currentUser;
-            //user.delete().then(function() {
-            // User deleted.
-            //}).catch(function(error) {
-            // An error happened.
-            // });
             return
         } catch (e) {
             throw e

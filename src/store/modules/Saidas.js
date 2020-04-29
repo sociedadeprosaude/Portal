@@ -9,7 +9,6 @@ const mutations = {
         state.categoria = payload;
     }
 
-
 };
 
 const actions = {
