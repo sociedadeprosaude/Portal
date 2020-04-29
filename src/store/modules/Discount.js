@@ -13,9 +13,9 @@ const mutations = {
 const actions = {
     async DiscountWarning(context, payload){
         await firebase.firestore().collection('discount').doc(payload.cpf).collection('intakes').
-            doc(payload.orcamento.toString()).set(payload)
+            doc(payload.orcamento.toString()).set(payload);
         await firebase.firestore().collection('discount').doc(payload.cpf).set({exist: true})
-        console.log('adicionado')
+
     },
     async WarningColaborators({commit}) {
         firebase.firestore().collection('discount').get().then(async (Snap) => {
@@ -38,18 +38,16 @@ const actions = {
                                 discount: e.data().discont,
                                 name: e.data().name,
                                 orcamento: e.data().orcamento
-                            }
+                            };
                             WarningColaborators[Snap.docs[document].id.toString()].qtd +=1
                         }
                     })
             }
-            console.log('colaboradores: ', WarningColaborators)
             commit('setcolaboratorsWarning', WarningColaborators);
         })
     },
     async DiscountWarningDelete(context, payload){
         await firebase.firestore().collection('discount').doc(payload.cpf).delete();
-        console.log('deletando')
     },
 
 
@@ -59,7 +57,7 @@ const getters = {
         return state.colaboratorsWarning
     }
 };
-0
+
 
 export default {
     state,

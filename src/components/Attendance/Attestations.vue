@@ -114,12 +114,6 @@
                                 <v-img :src="require('@/assets/pro_saude_logo_transparente.png')">
                                 <v-layout align-center row wrap>
                                     <v-flex xs12>
-                                        <!--                                    <v-img
-                                                                                    :src="require('../assets/logo-pro-saude.png')"
-                                                                                    class="my-3"
-                                                                                    contain
-                                                                                    height="50"
-                                                                            ></v-img>-->
                                     </v-flex>
                                     <v-flex xs12>
                                         <v-flex xs12><p style="color: white">.</p></v-flex>
@@ -204,9 +198,8 @@
                 return this.dataStart && this.dataTheEnd && this.cid
             },
             lista() {
-                let arr = this.$store.getters.cids[0]
-/*                console.log(arr)*/
-                let cods = []
+                let arr = this.$store.getters.cids[0];
+                let cods = [];
                 for (let i in arr){
                     cods.push(arr[i])
                 }
@@ -214,10 +207,10 @@
             }
         },
         async mounted() {
-            this.dataStart = moment().format('YYYY-MM-DD')
-            this.dataTheEnd = moment().format('YYYY-MM-DD')
-            this.dateFormatted = moment().format('YYYY-MM-DD')
-            this.daysff()
+            this.dataStart = moment().format('YYYY-MM-DD');
+            this.dataTheEnd = moment().format('YYYY-MM-DD');
+            this.dateFormatted = moment().format('YYYY-MM-DD');
+            this.daysff();
             this.$store.dispatch('getCids');
         },
         watch: {
@@ -225,9 +218,9 @@
                 val && setTimeout(() => (this.$refs.picker.activePicker = 'MONTH'))
             },
             menu2(val) {
-                val && setTimeout(() => (this.$refs.picker.activePicker = 'MONTH'))
-                let diferenca = moment(this.dataTheEnd, 'YYYY-MM-DD').diff(moment(this.dataStart, 'YYYY-MM-DD'), 'days')
-                diferenca = diferenca + 1
+                val && setTimeout(() => (this.$refs.picker.activePicker = 'MONTH'));
+                let diferenca = moment(this.dataTheEnd, 'YYYY-MM-DD').diff(moment(this.dataStart, 'YYYY-MM-DD'), 'days');
+                diferenca = diferenca + 1;
                 this.qtdDias = diferenca
             },
         },
@@ -238,8 +231,8 @@
                     dataTheEnd: this.dataTheEnd,
                     qtdDias: this.qtdDias,
                     cid: this.cid,
-                }
-                this.item = aux
+                };
+                this.item = aux;
                 this.documentDialog = true
             },
             save1(dataStart) {
@@ -250,7 +243,7 @@
             },
             formatDate(date) {
                 if (!date) return null
-                const [year, month, day] = date.split('-')
+                const [year, month, day] = date.split('-');
                 return `${day}/${month}/${year}`
             },
             clear() {
@@ -260,17 +253,16 @@
                 this.$emit('close-dialog')
             },
             daysff(val) {
-                let diferenca = moment(this.dataTheEnd, 'YYYY-MM-DD').diff(moment(this.dataStart, 'YYYY-MM-DD'), 'days')
-                diferenca = diferenca + 1
-                this.qtdDias = diferenca
+                let diferenca = moment(this.dataTheEnd, 'YYYY-MM-DD').diff(moment(this.dataStart, 'YYYY-MM-DD'), 'days');
+                diferenca = diferenca + 1;
+                this.qtdDias = diferenca;
 
                 let daysDiff = 14;
-                let dias = []
+                let dias = [];
                 for (let i = 0; i <= daysDiff; i++) {
-                    let day = moment(this.dataStart, 'YYYY-MM-DD').add(i, 'days')
+                    let day = moment(this.dataStart, 'YYYY-MM-DD').add(i, 'days');
                     dias.push(day.format('YYYY-MM-DD'))
                 }
-                //console.log(dias)
                 return dias.indexOf(val) !== -1;
             },
             addToBanc() {

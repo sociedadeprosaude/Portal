@@ -5,29 +5,27 @@ import Home from '@/views/Home'
 import Account from '@/views/Auth/Account'
 import Login from '@/views/Auth/Login'
 import Register from '@/views/Auth/Register'
-import Exams from '@/views/Exams'
-import Labor from '@/views/Labor/Home'
-import Reports from '@/views/Reports'
-import Bundles from '@/views/Cashier/Bundles'
-import PaymentCovenants from './views/PaymentCovenants'
+import Exams from "./views/Register/Exams";
+import Labor from "./views/Personal/Labor";
+import Reports from "./views/Register/Reports";
+import Bundles from "./views/Register/Bundles";
+import PaymentCovenants from "./views/Register/PaymentCovenants";
 
-import Doctors from '@/views/Doctors'
-import Clinics from "@/views/Clinics"
+import Doctors from "./views/Register/Doctors";
+import Clinics from "./views/Register/Clinics";
 import Units from "./views/Units";
-import Bills from "./views/Bills";
+import Bills from "./views/Register/Bills";
 
-import MedicalCare from "./views/MedicalCare";
-import Attendance from "./views/Attendance";
-//import Tickets from "./views/Tickets";
-import TicketsDashboard from "./views/TicketsDashboard";
-import CardEditor from "./views/CardEditor";
+import MedicalCare from "./views/DoctorAttendance/MedicalCare";
+import TicketsDashboard from "./views/Operational/Tickets/TicketsDashboard";
+
 
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
 import CashierRoutes from "./routes/CashierRoutes";
-import discount from "./views/discount"
-import notifications from "./views/notifications";
+import discount from "./views/Notifications/discount"
+import notifications from "./views/Notifications/notifications";
 
-import weeklyTable from "./views/Labor/weeklyTable";
+import weeklyTable from "./views/Operational/WeeklyTable/weeklyTable";
 
 Vue.use(Router);
 let mainRoutes = [
@@ -146,14 +144,7 @@ let mainRoutes = [
       requiresAuth: false,
     }
   },
-  {
-    path: '/Attendance',
-    name: 'Attendance',
-    component : Attendance,
-    meta: {
-      requiresAuth: false,
-    }
-  },
+
   {
     path: '/weeklyTable',
     name: 'weeklyTable',
@@ -165,20 +156,12 @@ let mainRoutes = [
   {
     path: '/senhas',
     name: 'Tickets',
-    //component : Tickets,
     component : TicketsDashboard,
     meta: {
       requiresAuth: false,
     }
   },
-  {
-    path: '/editor',
-    name: 'Editor',
-    component : CardEditor,
-    meta: {
-      requiresAuth: false,
-    }
-  },
+
   {
     path: '/notifications',
     name: 'Notifications',

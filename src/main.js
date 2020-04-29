@@ -49,14 +49,6 @@ Vue.use(VCurrencyField, {
 window.moment = require('moment');
 window.moment.locale('pt-br');
 
-// if (window.location.href.includes('localhost')) {
-//   process.env.NODE_ENV = 'development'
-//   console.log(process.env.NODE_ENV)
-// }
-// if (process.env.NODE_ENV === 'development') {
-//
-// } else {
-// }
 
 const token = localStorage.getItem('token');
 if (token) {
@@ -98,12 +90,6 @@ new Vue({
   created() {
     firebase.initializeApp(constants.FIREBASE_CONFIG);
     firebase.firestore().enablePersistence()
-    // firebase.auth().onAuthStateChanged((user) => {
-    //   if (user) {
-    //     this.$router.push('/')
-    //   } else {
-    //     this.$router.push('/login')
-    //   }
-    // })
+
   },
 }).$mount('#app');

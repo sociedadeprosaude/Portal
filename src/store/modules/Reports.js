@@ -231,7 +231,7 @@ const actions = {
                 })
             }
             else{
-                consultations[e.data().specialty.name].quantity +=1
+                consultations[e.data().specialty.name].quantity +=1;
                 consultations[e.data().specialty.name].scheduled +=1
 
             }

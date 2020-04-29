@@ -119,14 +119,14 @@ export default {
                 }
                 
             }
-        })
-        console.log(dates)
+        });
+
         return dates.filter((value, index, self) => self.indexOf(value) === index);
     },
 
     groupDateByWeek(payload) {
-        let dates = this.datesOfInterval(payload)
-        let weeks = {}
+        let dates = this.datesOfInterval(payload);
+        let weeks = {};
         for (const key in dates) {
             let week = dates[key].year().toString() + dates[key].week().toString()
             // check if the week number exists

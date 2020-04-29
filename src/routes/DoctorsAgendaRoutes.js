@@ -1,21 +1,21 @@
-import AgendamentoConsultas from "../views/DoctorsAgenda/SchedulingConsultation";
-import CadastroConsultasPlantoes from "../views/DoctorsAgenda/RegistrationConsultationsShifts";
-import DeletarConsultas from "../views/DoctorsAgenda/DeletarConsultas";
-import GerenciamentoConsultas from "../views/DoctorsAgenda/GerenciamentoConsultas";
-import ConsultasPacientes from "../views/DoctorsAgenda/ConsultasPacientes";
-import ConsultasCanceladas from "../views/DoctorsAgenda/ConsultasCanceladas";
-import RemarcarConsultas from "../views/DoctorsAgenda/RemarcarConsultas";
-import AgendarRetorno from "../views/DoctorsAgenda/ScheduleReturn";
-import Cids from "../views/DoctorsAgenda/Cids";
-import Declaration from "../views/DoctorsAgenda/Declaration";
-import Teste from "../views/DoctorsAgenda/testescrolling";
-import Discount from "../views/discount"
+import CanceledConsultations from "../views/Operational/DoctorsAgenda/CanceledConsultations";
+import Cids from "../views/Operational/DoctorsAgenda/Cids";
+import Declaration from "../views/Operational/DoctorsAgenda/Declaration";
+import DeletarConsultas from "../views/Operational/DoctorsAgenda/DeleteConsultations";
+import GerenciamentoConsultas from "../views/Operational/DoctorsAgenda/ManagementConsultations";
+import PatientConsultations from "../views/Operational/DoctorsAgenda/PatientConsultations";
+import RegistrationConsultationsShifts from "../views/Register/RegistrationConsultationsShifts";
+import SchedulingConsultation from "../views/Operational/DoctorsAgenda/SchedulingConsultation";
+import RemarcarConsultas from "../views/Operational/DoctorsAgenda/RescheduleConsultations";
+import ScheduleReturn from "../views/Operational/DoctorsAgenda/ScheduleReturn";
+
+import Discount from "../views/Notifications/discount"
 
 export default [
     {
         path: '/agenda/agendamento',
         name: 'AgendamentoConsultas',
-        component: AgendamentoConsultas
+        component: SchedulingConsultation
     },
     {
         path: 'discount',
@@ -25,7 +25,7 @@ export default [
     {
         path: '/agenda/CadastroConsultasPlantoes',
         name: 'CadastroConsultasPlantoes',
-        component: CadastroConsultasPlantoes
+        component: RegistrationConsultationsShifts
     },
     {
         path: '/agenda/DeletarConsultas',
@@ -40,13 +40,13 @@ export default [
     {
         path: '/agenda/ConsultasPacientes',
         name: 'ConsultasPacientes',
-        component: ConsultasPacientes,
+        component: PatientConsultations,
         props: (route) => ({ query: route.query.q }),
     },
     {
         path:'/agenda/ConsultasCanceladas',
         name:'ConsultasCanceladas',
-        component: ConsultasCanceladas,
+        component: CanceledConsultations,
     },
     {
         path:'/agenda/RemarcarConsultas',
@@ -57,7 +57,7 @@ export default [
     {
         path: '/agenda/AgendarRetorno',
         name: 'AgendarRetorno',
-        component: AgendarRetorno,
+        component: ScheduleReturn,
         props: (route) => ({ query: route.query.q }),
     },
     {
@@ -69,10 +69,5 @@ export default [
         path: '/agenda/Declaration',
         name: 'Declaration',
         component: Declaration,
-    },
-    {
-        path: '/agenda/teste',
-        name: 'Declaration',
-        component: Teste,
     }
 ]

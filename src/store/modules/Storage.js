@@ -31,7 +31,6 @@ const actions = {
                 let imagePath = payload.imagePaths[path];
                 let name = imagePath.substr(imagePath.indexOf('%2F') + 3, (imagePath.indexOf('?')) - (imagePath.indexOf('%2F') + 3)).replace('%2B', '+');
                 name = name.substr(name.indexOf('%2F') + 3, name.length);
-                // name = name.replace('%20', ' ');
                 let storagePath = firebase.storage().ref();
                 await storagePath.child(`${payload.path}/${name}`).delete();
             }

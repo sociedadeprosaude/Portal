@@ -1,29 +1,24 @@
-import Home from "../views/Cashier/Home";
-import Orçamento from "../views/Cashier/Orçamento";
-import Relatorio from "../views/Cashier/Relatorio";
-import Saidas from "../views/Cashier/Saidas";
-import Bundles from "../views/Cashier/Bundles";
+import Bundles from "../views/Register/Bundles"
+import Budget from "../views/Operational/Cashier/Budget";
+import Cashier from "../views/Operational/Cashier/Cashier";
+import Outflows from "../views/Register/Outflows";
 
 export default [
     {
         path: '/caixa',
         name: 'home',
-        component: Home
+        component: Cashier
     },
     {
         path:'/caixa/Orçamento',
         name:'orçamento',
-        component: Orçamento
+        component: Budget
     },
-    {
-        path:'/caixa/Relatorio',
-        name:'relatorio',
-        component: Relatorio
-    },
+
     {
         path:'/caixa/Saidas',
         name:'Saidas',
-        component: Saidas
+        component: Outflows
     },
     {
         path:'/caixa/Bundles',

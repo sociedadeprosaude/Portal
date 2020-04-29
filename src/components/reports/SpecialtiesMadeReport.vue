@@ -1,4 +1,4 @@
-<template>
+ <template>
     <v-container>
         <v-layout row wrap v-if="report">
             <v-flex xs12>

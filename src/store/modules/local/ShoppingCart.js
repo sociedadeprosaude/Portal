@@ -7,7 +7,6 @@ const state = {
 
 const mutations = {
     setSelectedBudget(state, payload) {
-        //console.log('SetSelectedBudget',payload)
         state.budget = payload
     },
     setShoppingCartItems(state, payload) {
@@ -52,29 +51,18 @@ const getters = {
         let exams = state.items.filter((a) => {
             if(a.clinic){
                 if(a.priceDiscount){
-                    console.log('dentro de um pacote')
                     let trocarNumero= a.price;
                     a.price= a.priceDiscount;
                     a.priceAntigo = trocarNumero;
                     return a.clinic
                 }
                 else{
-                    console.log('fora de um pacote')
+
                     return a.clinic
                 }
             }
         });
-        //   let packages = state.items.filter((a) => {
-        //      console.log('é um pacote:',a.doctor && a.clinic)
-        //     if(!a.clinic && !a.doctor){
-        //       let trocarNumero= a.price;
-        //     a.price= a.priceDiscount;
-        //   a.priceAntigo = trocarNumero;
-        // return !a.clinic && !a.doctor
-        //       }
-        //     });
-        console.log('consultas:', consultations)
-        console.log('exames:', exams)
+
         return {
             consultations: consultations,
             exams: exams,

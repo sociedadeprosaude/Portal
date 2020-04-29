@@ -23,7 +23,7 @@
         },
         methods: {
             async loadInitialInfo() {
-                this.$store.dispatch('getProSaudeUnits')
+                await this.$store.dispatch('getProSaudeUnits');
                 await this.$store.dispatch('getClinics')
             },
             setProperty(clin) {
@@ -35,7 +35,3 @@
         }
     }
 </script>
-
-<style scoped>
-
-</style>

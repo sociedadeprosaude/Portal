@@ -1,6 +1,6 @@
 <template>
     <v-container fluid fill-height>
-        <v-layout row wrap align-center justify-center style="margin-bottom: 30vh">
+        <v-layout row wrap class="align-center justify-center" style="margin-bottom: 30vh">
             <v-flex xs8 sm4 class="text-xs-center">
                 <img :src="require('../../assets/pro_saude_logo.png')"
                      width="100px" class="mb-5 mt-5">
@@ -26,20 +26,20 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-layout row wrap>
-                          <v-flex xs12>
-                            <v-progress-linear :indeterminate="true" v-if="loading"/>
-                          </v-flex>
-                          <v-flex xs6>
-                            <v-btn text class="primary_dark--text" to="/cadastro">
-                              Cadastre-se
-                            </v-btn>
-                          </v-flex>
+                            <v-flex xs12>
+                                <v-progress-linear :indeterminate="true" v-if="loading"/>
+                            </v-flex>
+                            <v-flex xs6>
+                                <v-btn text class="primary_dark--text" to="/cadastro">
+                                    Cadastre-se
+                                </v-btn>
+                            </v-flex>
                             <v-spacer/>
-                          <v-flex xs6 class="text-right pr-3">
-                            <v-btn text class="primary_dark--text" @click.native="signIn">
-                                Entrar
-                            </v-btn>
-                          </v-flex>
+                            <v-flex xs6 class="text-right pr-3">
+                                <v-btn text class="primary_dark--text" @click.native="signIn">
+                                    Entrar
+                                </v-btn>
+                            </v-flex>
                         </v-layout>
                     </v-card-actions>
                 </v-card>
@@ -75,7 +75,6 @@
         methods: {
             async signIn() {
                 try {
-
                     this.loading = true;
                     let user = await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
                     await this.$store.dispatch('getUser', user);
@@ -102,10 +101,5 @@
                 this.$router.push('/')
             }
         }
-        // components: {VTextField}
     }
 </script>
-
-<style scoped>
-
-</style>

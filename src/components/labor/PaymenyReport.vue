@@ -25,7 +25,7 @@
                                         prepend-icon="event"
                                         readonly
                                         v-on="on"
-                                ></v-text-field>
+                                />
                             </template>
                             <v-date-picker
                                     v-model="date"
@@ -33,7 +33,7 @@
                                     no-title
                                     scrollable
                             >
-                                <v-spacer></v-spacer>
+                                <v-spacer/>
                                 <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
                                 <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
                             </v-date-picker>
@@ -51,43 +51,42 @@
                             <v-flex xs4>
                                 <span>Nome</span>
                             </v-flex>
-                            <v-spacer></v-spacer>
+                            <v-spacer/>
                             <v-flex xs3 class="text-center">
                                 <span>Salario</span>
                             </v-flex>
-                            <v-spacer></v-spacer>
+                            <v-spacer/>
                             <v-flex xs2>
                                 <span>Adiantamento</span>
                             </v-flex>
-                            <v-spacer></v-spacer>
+                            <v-spacer/>
                             <v-flex xs3>
                                 <span>Adiantamentos Restantes</span>
                             </v-flex>
                         </v-layout>
                     </v-flex>
                     <v-flex xs12>
-                        <v-divider></v-divider>
+                        <v-divider/>
                     </v-flex>
                     <v-flex xs12 v-for="colab in colaborators" :key="colab.name">
                         <v-layout row wrap>
                             <v-flex xs4>
                                 <span>{{colab.name}}</span>
                             </v-flex>
-                            <v-spacer></v-spacer>
+                            <v-spacer/>
                             <v-flex xs3 class="text-center">
                                 <span>{{colab.salary}}</span>
                             </v-flex>
-                            <v-spacer></v-spacer>
+                            <v-spacer/>
                             <v-flex xs2>
                                 <span>{{sumUserAdvancesMouth(colab)}}</span>
                             </v-flex>
-                            <v-spacer></v-spacer>
+                            <v-spacer/>
                             <v-flex xs3>
                                 <span>{{sumUserAdvances(colab)}}</span>
                             </v-flex>
                             <v-flex xs12>
-
-                                <v-divider></v-divider>
+                                <v-divider/>
                             </v-flex>
                         </v-layout>
                     </v-flex>
@@ -195,14 +194,10 @@
                 this.loading = false
             },
             async getInitialInfo() {
-                // await this.$store.dispatch('getPermissionList')
                 await this.$store.dispatch('getColaborators')
                 await this.$store.dispatch('getColaboratorsDoctors')
                 this.loading = false
             },
-            GetSalary(){
-
-            }
         }
     }
 </script>

@@ -52,12 +52,6 @@ const actions = {
             commit('setSpecialtiesLoaded', true);
 
         })
-        // let data = await firebase.firestore().collection('specialties').get()
-
-
-        // if (data) return data
-        // else reject(console.log('erro ao carregar dados de pacotes', data))
-
 
     },
 

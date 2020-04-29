@@ -18,7 +18,7 @@ import Clinics from "./modules/Clinics"
 import Consultations from "./modules/Consultations";
 import LayoutControl from "./modules/local/LayoutControl";
 import Specialties from "./modules/Specialties";
-import Saidas from "./modules/Saidas"
+import Saidas from "./modules/Outflows"
 import Budget from "./modules/Budget"
 import ShoppingCart from "./modules/local/ShoppingCart";
 import Operational from "./modules/Operational";

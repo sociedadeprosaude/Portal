@@ -31,23 +31,7 @@ const actions = {
         await firebase.firestore().collection('exams').onSnapshot(async (examsSnap) => {
             let exams = [];
             for (let exam in examsSnap.docs) {
-                let document = examsSnap.docs[exam]
-
-                // firebase.firestore().collection('exams/' + document.data().name + '/clinics').get().then((data) => {
-                //     let clinics = [];
-                //     data.forEach((doc) => {
-                //         clinics.push({
-                //             clinic: doc.data().clinic,
-                //             cost: doc.data().cost,
-                //             price: doc.data().price,
-                //         });
-                //     });
-                //     // console.log('meta', document.data().name)
-                //     commit('setExamClinics', {
-                //         exam: document.data().name,
-                //         clinics: clinics
-                //     })
-                // })
+                let document = examsSnap.docs[exam];
 
                 exams.push({
                     name: document.data().name,
@@ -57,28 +41,16 @@ const actions = {
                 });
             }
 
-            //console.log(exams);
             commit('setExams', exams);
             return exams
         })
     },
     async searchExam(context, search) {
-        // console.log(search, getters.exams())
-        let exams = []
+
+        let exams = [];
         if (search) {
             exams = functions.search(search, context.getters.exams).slice(0, 100)
         }
-
-        // let examsSnap
-        // if (!search) {
-        //     examsSnap = await firebase.firestore().collection('exams').limit(30).get()
-        // } else {
-        //     examsSnap = await firebase.firestore().collection('exams').where('name', '>=', search).limit(30).get()
-        // }
-        // let exams = [];
-        // examsSnap.forEach((doc) => {
-        //     exams.push(doc.data())
-        // });
         return exams
     },
     async addExam({commit}, exam) {

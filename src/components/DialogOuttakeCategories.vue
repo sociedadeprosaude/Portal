@@ -13,15 +13,13 @@
               <v-expansion-panel v-for="(item,i) in categories" :key="i">
                 <v-expansion-panel-header>{{item.name}}</v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <!-- Leve gambiarra, combobox não atualiza o model enquanto escreve, so se clicar em outro canto
-                  esse input.native atualiza o model enquanto escreve-->
                   <v-combobox
                     outlined
                     @input.native="newSub[i]=$event.srcElement.value"
                     v-model="newSub[i]"
                     :items="item.subCategories"
                     label="Sub Categoria"
-                  ></v-combobox>
+                  />
                   <v-row justify="space-around">
                     <v-btn outlined @click="newSubcategory(item,newSub[i])">Adicionar</v-btn>
                     <v-btn outlined @click="removeSubcategory(item,newSub[i])">remover</v-btn>
@@ -33,7 +31,7 @@
         </v-card-text>
 
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer/>
           <v-btn text @click="dialog = false;">Fechar</v-btn>
         </v-card-actions>
       </v-card>

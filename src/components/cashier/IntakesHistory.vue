@@ -122,12 +122,10 @@
 <script>
 import Receipt from "./Receipt";
 import constants from "../../utils/constants";
-// import AttendanceGuide from "./AttendanceGuide";
 
 export default {
   name: "IntakesHistory",
   components: {
-    // AttendanceGuide,
     Receipt
   },
   data() {
@@ -151,7 +149,6 @@ export default {
       budget = await this.$store.dispatch("getBudget", budget.id.toString());
       this.$store.commit("clearShoppingCartItens");
       this.$store.commit("setSelectedBudget", budget);
-      // this.selectedBudget = budget
       for (let exam in budget.exams) {
         this.$store.commit("addShoppingCartItem", budget.exams[exam]);
       }
@@ -159,7 +156,6 @@ export default {
         this.$store.commit("addShoppingCartItem", budget.specialties[spec]);
       }
       this.loading = false;
-      // this.$store.commit('setSelectedPatient', budget.user)
     },
     diffByNow(product) {
       let now = moment();
@@ -203,29 +199,10 @@ export default {
       return this.$store.getters.selectedPatient;
     },
     intakes() {
-      /* return this.patient.intakes.sort((a, b) => {
-                    if (a.date < b.date) {
-                        return 1
-                    }
-                    return -1
-                }) */
-      /* console.log('Histórico de vendas') */
-
       return this.patient.intakes;
     },
     budgets() {
-      var array = this.patient.budgets;
-      /* console.log('budgets')
-                array.sort((a, b) => {
-                    if (a > b) {
-                        return -1;
-                    }
-                    if (b > a) {
-                        return 1;
-                    }
-                    return 0;
-                }) */
-      return array;
+      return this.patient.budgets;
     }
   }
 };
