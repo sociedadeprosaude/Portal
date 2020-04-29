@@ -56,20 +56,6 @@
                                             <span>Agendamento de Consultas</span>
                                         </v-tooltip>
                                     </v-flex>
-                                    <!-- <v-flex v-if="selectedPatient && selectedPatient.dependents" xs1 class="text-right mx-3">
-                                        <v-tooltip  top>
-                                            <template v-slot:activator="{ on }">
-                                                <v-btn
-                                                        v-on="on"
-                                                        @click="listDependents()"
-                                                        rounded text class="white--text transparent">
-                                                    <v-icon>child_friendly</v-icon>
-                                                </v-btn>
-                                            </template>
-                                            <span>Selecionar dependentes</span>
-                                        </v-tooltip>
-
-                                    </v-flex> -->
                                     <v-flex xs1 class="text-right mx-3">
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
@@ -515,24 +501,6 @@
             PatientCard,
             PatientTag
         },
-        computed: {
-          selectedPatient() {
-              let user = this.$store.getters.selectedPatient;
-              if (user) {
-                  this.name = user.name;
-                  this.cpf = user.cpf
-                  //this.numAss = user.association_number
-              }
-              return this.$store.getters.selectedPatient
-          },
-          selectedDependent(){
-            let dependent = this.$store.getters.selectedDependent;
-            if(dependent){
-                this.dependentName = dependent.name
-            }
-            return dependent
-          }
-        },
         data() {
             return {
                 patientCard: false,
@@ -573,6 +541,24 @@
                 success: false,
             }
         },
+        computed: {
+            selectedPatient() {
+                let user = this.$store.getters.selectedPatient;
+                if (user) {
+                    this.name = user.name;
+                    this.cpf = user.cpf
+                    //this.numAss = user.association_number
+                }
+                return this.$store.getters.selectedPatient
+            },
+            selectedDependent(){
+                let dependent = this.$store.getters.selectedDependent;
+                if(dependent){
+                   this.dependentName = dependent.name
+                }
+                return dependent
+            }
+         },
         watch: {
             cpf(val) {
                 if(this.selectedPatient && val !== this.selectedPatient.cpf)
@@ -751,8 +737,7 @@
                 let users = await this.$store.dispatch('searchUser', {
                     name: this.name,
                     cpf: this.cpf,
-                    association_number: this.numAss,
-                    type: 'patient'
+                    association_number: this.numAss
                 });
                 this.foundUsers = users;
                 this.loading = false
