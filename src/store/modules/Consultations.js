@@ -578,7 +578,7 @@ const actions = {
         commit('setConsultationDeletionInfo', {})
     },
 
-    async deleteAllSchedule(context,payload){
+    async deleteAllSchedule({commit},payload){
         functions.removeUndefineds(payload)
         let schedule = await firebase.firestore().collection('schedules')
             .where('specialty.name','==',payload.specialty.name)
@@ -591,11 +591,10 @@ const actions = {
                 firebase.firestore().collection('schedules').doc(snap.id).delete()
             })
         }
-        
-        //await context.dispatch('removeConsultations',payload)
+
     },
 
-    /* async removeScheduleByDay(context,payload){
+    async removeScheduleByDay(context,payload){
         let schedule = await firebase.firestore().collection('schedules')
             .where('specialty.name', "==", payload.specialty.name)
             .where('doctor.cpf', "==", payload.doctor.cpf)
@@ -618,14 +617,11 @@ const actions = {
         let end = moment(payload.final_date, 'YYYY-MM-DD').format('YYYY-MM-DD 23:59');
         payload = functions.removeUndefineds(payload);
         try {
-            let query = await firebase.firestore().collection('consultations')
+            let snapshot = await firebase.firestore().collection('consultations')
                 .where('specialty.name', "==", payload.specialty.name)
-                .where('doctor.cpf', "==", payload.doctor.cpf).where('clinic.cnpj','==',payload.clinic.cnpj)
-                .where('date', ">=", start)
-            if(payload.final_date)
-                query.where('date', "<=", end)
+                .where('doctor.cpf', "==", payload.doctor.cpf).where('clinic.name','==',payload.clinic.cnpj)
+                .where('date', ">=", start).where('date', "<=", end).get();
 
-            let snapshot = await query.get()
             snapshot.forEach(async doc => {
 
                 let dateConsultation = moment(doc.data().date);
@@ -674,7 +670,6 @@ const actions = {
         })
 
     },
-    //======================================================atendimento===============================
     async addMedicalRecordsToConsultation({ commit }, payload) {
         firebase.firestore().collection('consultations').doc(payload.consultation).update({ MedicalRecords: payload.MedicalRecords });
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ MedicalRecords: payload.MedicalRecords })
@@ -707,8 +702,7 @@ const actions = {
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ start_at: payload.start });
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ end_at: payload.end });
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({ duration: payload.durantion })
-    }
-    //======================================================atendimento===============================
+    
 };
 
 const getters = {
