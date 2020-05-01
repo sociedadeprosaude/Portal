@@ -27,7 +27,7 @@ const mutations = {
 
 const actions = {
 
-    async loadExam({commit}) {
+    async loadExam({ commit }) {
         await firebase.firestore().collection('exams').onSnapshot(async (examsSnap) => {
             let exams = [];
             for (let exam in examsSnap.docs) {
@@ -37,6 +37,7 @@ const actions = {
                     name: document.data().name,
                     rules: document.data().rules,
                     type: document.data().type,
+                    price: document.data().price
                     // clinics: clinics,
                 });
             }
@@ -53,7 +54,7 @@ const actions = {
         }
         return exams
     },
-    async addExam({commit}, exam) {
+    async addExam({ commit }, exam) {
         try {
             for (let data in exam) {
                 if (!exam[data]) {
@@ -69,7 +70,7 @@ const actions = {
         }
     },
 
-    async removeClinicFromExam({commit}, payload) {//apagar exames da clinica e clinica do exames
+    async removeClinicFromExam({ commit }, payload) {//apagar exames da clinica e clinica do exames
         delete payload.clinic.id;
         try {
             firebase.firestore().collection('exams/' + payload.product + '/clinics').doc(payload.clinic.name).delete();
@@ -78,7 +79,7 @@ const actions = {
         }
     },
 
-    async addExamToClinic({commit}, payload) {
+    async addExamToClinic({ commit }, payload) {
         let examData = {
             name: payload.exam,
             cost: payload.cost,
@@ -100,21 +101,21 @@ const actions = {
         examAndClinic = functions.removeUndefineds(examAndClinic);
 
         let exam = await firebase.firestore().collection('clinics/' + payload.clinic.name + '/exams').doc(payload.exam).get()
-        if(exam.exists)
+        if (exam.exists)
             firebase.firestore().collection('clinics/' + payload.clinic.name + '/exams').doc(payload.exam).update(examData);
         else
             firebase.firestore().collection('clinics/' + payload.clinic.name + '/exams').doc(payload.exam).set(examData);
 
         exam = await firebase.firestore().collection('exams/').doc(payload.exam).collection('clinics').doc(payload.clinic.name)
-        if(exam.exists)
+        if (exam.exists)
             firebase.firestore().collection('exams/').doc(payload.exam).collection('clinics').doc(payload.clinic.name)
                 .update(examAndClinic);
         else
             firebase.firestore().collection('exams/').doc(payload.exam).collection('clinics').doc(payload.clinic.name)
-            .set(examAndClinic);
+                .set(examAndClinic);
     },
 
-    async loadSelectedExams({commit, getters}, payload) {
+    async loadSelectedExams({ commit, getters }, payload) {
         payload = payload.toUpperCase();
         try {
             // let exams = getters.exams
