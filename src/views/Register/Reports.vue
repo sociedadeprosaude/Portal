@@ -107,6 +107,9 @@
       <v-flex xs12 v-if="selectedReport === 9">
         <ConsultationScheduledExecuted :report="formattedReport" :loading="loading" :intakes="intakes"/>
       </v-flex>
+      <v-flex xs12 v-if="selectedReport === 10">
+        <CustomersPerProcedureReport :report="formattedReport" :loading="loading"/>
+      </v-flex>
       <v-flex class="hidden-screen-only">
         <p>DE {{dateFormatted}} ATÉ {{dateFormatted2}}</p>
       </v-flex>
@@ -125,6 +128,7 @@ import OuttakesReport from "@/components/reports/OuttakesReport";
 import SpecialtiesMadeReport from "../../components/reports/SpecialtiesMadeReport"
 import NewUsersReport from "@/components/reports/NewUsersReport";
 import ConsultationScheduledExecuted from "../../components/reports/ConsultationScheduledExecuted"
+import CustomersPerProcedureReport from "../../components/reports/CustomersPerProcedureReport"
 
 var moment = require("moment");
 export default {
@@ -139,6 +143,7 @@ export default {
     NewUsersReport,
     SpecialtiesMadeReport,
     ConsultationScheduledExecuted,
+    CustomersPerProcedureReport
   },
   data: vm => ({
     reportOptions: [
@@ -151,7 +156,8 @@ export default {
       "Relatório de Saídas",
       "Novos associados",
       "Relatório Especialidades",
-      "Relatório Consulta Marcada x Realizada"
+      "Relatório Consulta Marcada x Realizada",
+      "Relatorio Paciente por Procedimento"
     ],
     selectedReport: 0,
     date: moment().format("YYYY-MM-DD 00:00:00"),

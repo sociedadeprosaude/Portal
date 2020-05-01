@@ -71,9 +71,6 @@ const actions = {
         context.commit("setIntakesReport", intakes);
         return intakes
     },
-
-
-
     async searchReports(context, payload) {
         payload.dataFinal = payload.dataFinal + ' 24:00:00';
         payload.dataInicio = payload.dataInicio + ' 00:00:00';
@@ -435,7 +432,7 @@ const actions = {
         };
         context.commit('setReportAllClinics', relatorio);
         return relatorio
-    }
+    },
 
 
 };
