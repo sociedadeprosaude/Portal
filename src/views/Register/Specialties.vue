@@ -9,32 +9,35 @@
       <v-flex xs12>
         <v-card class="round-card">
           <v-card-title class="ml-2 mr-3">
-            <p v-if="searchExam" class="titleExam font-italic font-weight-bold">EXAMES</p>
             <p
-              v-if="registerExam"
-              class="titleExam font-italic font-weight-bold"
-            >CADASTRAR NOVO EXAME</p>
+              v-if="searchSpecialty"
+              class="titleSpecialty font-italic font-weight-bold"
+            >Especialidades</p>
+            <p
+              v-if="registerSpecialty"
+              class="titleSpecialty font-italic font-weight-bold"
+            >CADASTRAR NOVA ESPECIALIDADE</p>
             <v-spacer></v-spacer>
             <v-btn
-              v-if="registerExam"
+              v-if="registerSpecialty"
               color="primary"
               small
               dark
               fab
-              @click="registerExam= !registerExam, searchExam = !searchExam"
+              @click="registerSpecialty= !registerSpecialty, searchSpecialty = !searchSpecialty"
             >
               <v-icon>keyboard_arrow_up</v-icon>
             </v-btn>
           </v-card-title>
           <v-card-text>
-            <v-flex xs12 v-if="searchExam">
+            <v-flex xs12 v-if="searchSpecialty">
               <v-layout>
                 <v-flex xs11>
-                  <v-text-field v-model="searchText" label="Exame"></v-text-field>
+                  <v-text-field v-model="searchText" label="Especialidade"></v-text-field>
                 </v-flex>
                 <v-flex xs1 class="text-center">
                   <v-btn
-                    v-if="selectedExam"
+                    v-if="selectedSpecialty"
                     style="justify-content: center"
                     text
                     icon
@@ -49,51 +52,23 @@
                     text
                     icon
                     color="blue lighten-2"
-                    @click="registerExam = !registerExam, searchExam = !searchExam, registed = false"
+                    @click="registerSpecialty = !registerSpecialty, searchSpecialty = !searchSpecialty, registed = false"
                   >
-                    <v-icon v-if="searchExam">add</v-icon>
+                    <v-icon v-if="searchSpecialty">add</v-icon>
                   </v-btn>
                 </v-flex>
               </v-layout>
-              <v-card v-if="selectedExam" class="round-card">
+              <v-card v-if="selectedSpecialty" class="round-card">
                 <v-card-title>
-                  <h4 class="font-italic font-weight-bold primary--text">{{editedExam.name}}</h4>
+                  <h4 class="font-italic font-weight-bold primary--text">{{editedSpecialty.name}}</h4>
                 </v-card-title>
-                <v-flex xs12 sm6>
-                  <v-select
-                    label="Especialidade"
-                    prepend-icon="school"
-                    v-model="editedExam.type"
-                    :items="specialties"
-                    item-text="name"
-                    return-object
-                    outlined
-                    rounded
-                    filled
-                    chips
-                    color="pink"
-                    clearable
-                  >
-                    <template v-slot:selection="data">
-                      <v-chip
-                        :key="JSON.stringify(data.item)"
-                        :input-value="data.selected"
-                        :disabled="data.disabled"
-                        class="v-chip--select-multi"
-                        @click.stop="data.parent.selectedIndex = data.index"
-                        @input="data.parent.selectItem(data.item)"
-                        text-color="white"
-                        color="info"
-                      >{{ data.item.name }}</v-chip>
-                    </template>
-                  </v-select>
-                </v-flex>
+
                 <v-card-text>
                   <v-layout wrap>
                     <v-flex xs12 sm12>
                       <v-textarea
                         label=" Regras "
-                        v-model="editedExam.rules"
+                        v-model="editedSpecialty.rules"
                         outlined
                         prepend-icon="report_problem"
                         class="mt-5"
@@ -103,7 +78,7 @@
                 </v-card-text>
               </v-card>
             </v-flex>
-            <v-flex xs12 v-if="registerExam">
+            <v-flex xs12 v-if="registerSpecialty">
               <v-card grid-list-x1 fluid class="mt-4">
                 <v-form v-model="validRegister" lazy-validation>
                   <v-card-text>
@@ -113,45 +88,18 @@
                           outlined
                           required
                           label="Nome"
-                          v-model="editedExam.name"
+                          v-model="editedSpecialty.name"
                           prepend-icon="description"
                           :rules="rules.campoObrigatorio"
                           class="ml-3 mr-3"
                         ></v-text-field>
                       </v-flex>
-                      <v-flex xs12 sm12>
-                        <v-select
-                          class="ml-3 mr-3"
-                          label="Tipo"
-                          prepend-icon="school"
-                          v-model="editedExam.type"
-                          :items="specialties"
-                          item-text="name"
-                          return-object
-                          outlined
-                          chips
-                          color="pink"
-                          clearable
-                        >
-                          <template v-slot:selection="data">
-                            <v-chip
-                              :key="JSON.stringify(data.item)"
-                              :input-value="data.selected"
-                              :disabled="data.disabled"
-                              class="v-chip--select-multi"
-                              @click.stop="data.parent.selectedIndex = data.index"
-                              @input="data.parent.selectItem(data.item)"
-                              text-color="white"
-                              color="info"
-                            >{{ data.item.name }}</v-chip>
-                          </template>
-                        </v-select>
-                      </v-flex>
+
                       <v-flex xs12 sm12>
                         <v-textarea
                           outlined
                           label="Regras"
-                          v-model="editedExam.rules"
+                          v-model="editedSpecialty.rules"
                           class="ml-3 mr-3"
                           prepend-icon="report_problem"
                         ></v-textarea>
@@ -161,7 +109,7 @@
                           outlined
                           required
                           label="Preço"
-                          v-model="editedExam.price"
+                          v-model="editedSpecialty.price"
                           prepend-icon="attach_money"
                           :rules="rules.campoObrigatorio"
                           class="ml-3 mr-3"
@@ -174,7 +122,7 @@
                     <submit-button
                       :loading="loading"
                       :success="success"
-                      text="Cadastrar Exame"
+                      text="Cadastrar Especialidade"
                       :disabled="!formRegister"
                       @click="validateRegister()"
                       class="ma-3"
@@ -192,15 +140,15 @@
                     <v-dialog v-model="alertDelete" persistent max-width="350">
                       <v-card>
                         <v-card-title>
-                          <strong>Deseja excluir este exame?</strong>
+                          <strong>Deseja excluir esta especialidade?</strong>
                         </v-card-title>
-                        <v-card-text>Este exame será excluído permanentemente.</v-card-text>
+                        <v-card-text>Este especialidade será excluído permanentemente.</v-card-text>
                         <v-card-actions>
                           <v-spacer></v-spacer>
                           <v-btn
                             color="error"
                             text
-                            @click="alertDelete = false, deleteExam()"
+                            @click="alertDelete = false, deleteSpecialty()"
                           >EXCLUIR</v-btn>
                           <v-btn color="primary" text @click="alertDelete = false">CANCELAR</v-btn>
                         </v-card-actions>
@@ -216,11 +164,11 @@
       <v-flex xs12 v-if="loading" class="my-4">
         <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
       </v-flex>
-      <v-flex xs2 v-for="exam in exams" :key="exam.name" class="mt-4">
-        <v-card class="ma-3 pa-3 white" @click="editExam(exam)" ripple>
+      <v-flex xs2 v-for="especialty in specialties" :key="especialty.name" class="mt-4">
+        <v-card class="ma-3 pa-3 white" @click="editSpecialty(especialty)" ripple>
           <v-layout row wrap>
             <v-flex xs12>
-              <span class="font-weight-bold">{{exam.name}}</span>
+              <span class="font-weight-bold">{{especialty.name}}</span>
             </v-flex>
           </v-layout>
         </v-card>
@@ -237,12 +185,12 @@ export default {
     SubmitButton
   },
   data: () => ({
-    exams: [],
+    specialties: [],
     loading: false,
     success: false,
     searchText: undefined,
-    searchExam: true,
-    registerExam: false,
+    searchSpecialty: true,
+    registerSpecialty: false,
     searchData: null,
     validRegister: true,
     editData: false,
@@ -251,19 +199,17 @@ export default {
 
     alertDelete: false,
 
-    editedExam: {
+    editedSpecialty: {
       id: "",
       name: "",
       rules: "",
-      type: "",
       price: 10
     },
 
-    defaultExam: {
+    defaultSpecialty: {
       id: "",
       name: "",
       rules: "",
-      type: "",
       price: 10
     },
 
@@ -273,30 +219,21 @@ export default {
   }),
 
   computed: {
-    specialties() {
-      let specialties = this.$store.getters.specialties.slice();
-      for (let spec in specialties) {
-        delete specialties[spec].doctors;
-      }
-      return specialties;
-    },
-
     formRegister() {
-      return this.editedExam.name;
+      return this.editedSpecialty.name;
     },
 
-    selectedExam() {
-      return this.$store.getters.selectedExam;
+    selectedSpecialty() {
+      return this.$store.getters.selectedSpecialty;
     }
   },
 
   mounted() {
     //So chamar uma vez isso aqui
-    //this.$store.dispatch("setPricesExams");
-    
-    this.$store.dispatch("getSpecialties");
+    //this.$store.dispatch("setPricesspecialties");
+
     window.addEventListener("keydown", this.handleEnter);
-    this.searchExams();
+    this.searchSpecialtys();
   },
   beforeDestroy() {
     window.removeEventListener("keydown", this.handleEnter);
@@ -305,33 +242,33 @@ export default {
   methods: {
     handleEnter(e) {
       if (e.key === "Enter") {
-        if (this.registerExam) {
+        if (this.registerSpecialty) {
           this.validateRegister();
         } else {
-          this.searchExams(this.searchText);
+          this.searchSpecialtys(this.searchText);
         }
       }
     },
-    async searchExams(searchText) {
+    async searchSpecialtys(searchText) {
       this.loading = true;
       this.loading = true;
       const data = searchText ? this.capitalize(searchText) : undefined;
-      this.exams = await this.$store.dispatch("searchExam", data);
+      this.specialties = await this.$store.dispatch("searchSpecialty", data);
       this.loading = false;
     },
 
     alert() {
-      if (this.selectedExam === null) {
-        alert("Exame não cadastrado");
-        this.editedExam = Object.assign({}, this.defaultExam);
-        this.editedExam.name = this.searchData;
+      if (this.selectedSpecialty === null) {
+        alert("Especialidade não cadastrado");
+        this.editedSpecialty = Object.assign({}, this.defaultSpecialty);
+        this.editedSpecialty.name = this.searchData;
       }
     },
 
     clearSearch() {
       this.searchData = null;
-      this.editedExam = Object.assign({}, this.defaultExam);
-      this.$store.dispatch("selectExam", null);
+      this.editedSpecialty = Object.assign({}, this.defaultSpecialty);
+      this.$store.dispatch("selectSpecialty", null);
     },
 
     validateRegister() {
@@ -340,23 +277,22 @@ export default {
     },
 
     async registerProduct() {
-      const examData = {
+      const specialtyData = {
         id: "",
-        name: this.capitalize(this.editedExam.name).replace(/\//g, "-"),
-        rules: this.editedExam.rules,
-        type: this.editedExam.type ? this.editedExam.type.name : undefined,
-        price: Number(this.editedExam.price)
+        name: this.capitalize(this.editedSpecialty.name).replace(/\//g, "-"),
+        rules: this.editedSpecialty.rules,
+        price: Number(this.editedSpecialty.price)
       };
-      await this.$store.dispatch("addExam", examData);
+      await this.$store.dispatch("updateSpecialty", specialtyData);
       this.success = true;
       this.loading = false;
-      this.searchExams();
+      this.searchSpecialtys();
       setTimeout(() => {
-        this.editedExam = {
+        this.editedSpecialty = {
           id: "",
           name: "",
           rules: "",
-          type: this.editedExam.type ? this.editedExam.type : "",
+
           price: 10
         };
         this.success = false;
@@ -364,13 +300,12 @@ export default {
     },
 
     endRegister() {
-      this.editedExam = Object.assign({}, this.defaultExam);
+      this.editedSpecialty = Object.assign({}, this.defaultSpecialty);
 
-      if (this.registerExam === true) {
-        this.$store.dispatch("selectExam", null);
-        this.registerExam = false;
+      if (this.registerSpecialty === true) {
+        this.registerSpecialty = false;
         this.sucessRegister = false;
-        this.searchExam = true;
+        this.searchSpecialty = true;
         this.searchData = null;
         this.editData = false;
         this.registed = false;
@@ -386,33 +321,32 @@ export default {
       this.$router.back();
     },
 
-    editExam(exam) {
-      this.editedExam = Object.assign({}, exam);
-      this.registerExam = true;
-      this.searchExam = false;
+    editSpecialty(specialty) {
+      this.editedSpecialty = Object.assign({}, specialty);
+      this.registerSpecialty = true;
+      this.searchSpecialty = false;
       this.registed = true;
     },
 
-    async deleteExam() {
+    async deleteSpecialty() {
       this.loading = true;
-      await this.$store.dispatch("deleteExam", this.editedExam.name);
+      await this.$store.dispatch("deleteSpecialty", this.editedSpecialty.name);
       this.loading = false;
-      this.editedExam = {
+      this.editedSpecialty = {
         id: "",
         name: "",
         rules: "",
-        type: "",
         price: 10
       };
       this.registed = false;
-      this.searchExams();
+      this.searchSpecialtys();
     }
   }
 };
 </script>
 
 <style>
-.titleExam {
+.titleSpecialty {
   color: #757575;
   font-size: 20px;
 }

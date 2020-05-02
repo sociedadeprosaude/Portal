@@ -168,6 +168,26 @@ const actions = {
             clinics.push(doc.data())
         })
         return clinics
+    },
+
+    async setPricesExams(context, payload) {
+        const firestore = firebase.firestore()
+        var num = 0;
+        firestore.collection('exams').get()
+            .then(async (exams) => {
+                await Promise.all(exams.docs.map(async (examRef) => {
+                    return new Promise(async (resolve, reject) => {
+                        let queryClinics = firestore.collection('exams').doc(examRef.id).collection('clinics');
+                        let clinics = await queryClinics.get();
+                        if (!clinics.empty) {
+                            examRef.ref.update({ price: clinics.docs[0].data().price })
+                            num++;
+                        }
+                        resolve();
+                    });
+                }));
+                console.log(num + ' preços de exames atualizados.');
+            }).catch((err) => response.send('erro ' + err));
     }
 };
 
