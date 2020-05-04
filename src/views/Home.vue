@@ -181,6 +181,12 @@
                                 to: '/exams'
                             },
                             {
+                                title: 'Especialidades',
+                                icon: 'poll',
+                                permission: 'Caixa',
+                                to: '/specialties'
+                            },
+                            {
                                 title: 'Relatórios',
                                 to: '/relatorio',
                                 permission: 'Relatórios',
