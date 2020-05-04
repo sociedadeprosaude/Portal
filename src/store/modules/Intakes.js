@@ -7,9 +7,7 @@ const state = {
 }
 
 const mutations = {
-    // setOuttakes(state, payload) {
-    //     state.outtakes = payload
-    // },
+
     setIntakesCategories(state, payload) {
         state.categories = payload
     },
@@ -27,9 +25,6 @@ const actions = {
                 })
             } else {
                 categories = outtakesDoc.data().categories
-                // outtakesCol.forEach((doc) => {
-                //     categories.push(doc.data())
-                // })
             }
             commit('setIntakesCategories', categories)
         })
@@ -54,7 +49,11 @@ const actions = {
         await context.dispatch('addIntakesCategory', intake.category)
         await firebase.firestore().collection('intakes/').add(intake)
     },
+    async getSpecificIntake({commit}, intake){
+        var SpecificIntake = await firebase.firestore().collection('intakes').doc(intake).get()
 
+        console.log('intake: ', SpecificIntake.data())
+    }
 };
 
 const getters = {
