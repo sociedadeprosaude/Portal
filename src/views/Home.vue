@@ -1,11 +1,11 @@
 <template>
     <v-container fluid>
         <v-layout wrap row class="justify-center" v-if="!loading">
-            <v-flex xs12 sm8 class="text-center" v-if="notifications && user.group !== 'doctor'">
+            <v-flex xs12 sm8 class="text-center" v-if="notifications && user.group !== 'doctor' && user.group !== 'clinic'">
                 <alert/>
             </v-flex>
-            <v-flex v-if="user.group !== 'doctor'" xs12 class="text-center">
-                <select-patient-card class="hidden-xs-only"/>
+            <v-flex v-if="user.group !== 'doctor' && user.group !== 'clinic'" xs12 class="text-center">
+                <select-patient-card class="hidden-xs-only"  />
             </v-flex>
             <v-flex xs12 v-if="filteredPages.length === 0">
                 <v-card>
@@ -238,7 +238,19 @@
                                 icon: 'supervisor_account'
                             },
                         ]
-                    }
+                    },
+                    {
+                        title: 'Clinicas Associadas',
+                        pages: [
+                            {
+                                title: 'Dar Baixa nos Exames',
+                                permission: 'clinic',
+                                to: '/DischargeProcedures',
+                                icon: 'supervisor_account'
+                            },
+                        ]
+                    },
+
                 ]
             }
         },
@@ -251,7 +263,7 @@
             },
             profile(){
                 this.$router.push('/conta')
-            }
+            },
         },
         computed: {
             user() {
@@ -273,7 +285,10 @@
                             return a === this.pages[0] || a === this.pages[1]
                         } else if (this.user.group === 'doctor') {
                             return a === this.pages[2]
+                        } else if (this.user.group === 'clinic') {
+                            return a === this.pages[4]
                         }
+
                         return false
                     })
                 }

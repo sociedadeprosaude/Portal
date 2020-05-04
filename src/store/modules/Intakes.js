@@ -3,7 +3,8 @@ import functions from "../../utils/functions";
 
 const state = {
     intakes: [],
-    categories: []
+    categories: [],
+    intakesClinic: []
 }
 
 const mutations = {
@@ -11,6 +12,9 @@ const mutations = {
     setIntakesCategories(state, payload) {
         state.categories = payload
     },
+    setIntakesClinic(state, payload){
+        state.intakesClinic =  payload
+    }
 };
 
 const actions = {
@@ -50,9 +54,39 @@ const actions = {
         await firebase.firestore().collection('intakes/').add(intake)
     },
     async getSpecificIntake({commit}, intake){
-        var SpecificIntake = await firebase.firestore().collection('intakes').doc(intake).get()
-
-        console.log('intake: ', SpecificIntake.data())
+        var SpecificIntake = await firebase.firestore().collection('intakes').doc(intake.number).get()
+        let exams= []
+        let patient= SpecificIntake.data().user.name
+        let intakeNumber= intake.number
+        let intakeClinic = {}
+        for(let exam in SpecificIntake.data().exams){
+            if(SpecificIntake.data().exams[exam].clinic.cnpj === intake.cnpj){
+                console.log('exam: ', SpecificIntake.data().exams[exam])
+                if(SpecificIntake.data().exams[exam].realized){
+                    exams.push({
+                        name: SpecificIntake.data().exams[exam].name,
+                        price: SpecificIntake.data().exams[exam].cost,
+                        rules: SpecificIntake.data().exams[exam].rules,
+                        realized: SpecificIntake.data().exams[exam].realized,
+                    });
+                }
+            else{
+                    exams.push({
+                        name: SpecificIntake.data().exams[exam].name,
+                        price: SpecificIntake.data().exams[exam].cost,
+                        rules: SpecificIntake.data().exams[exam].rules,
+                        realized: false,
+                        intakeNumber: intakeNumber
+                    });
+                }
+            }
+            intakeClinic = {
+                exams: exams,
+                patient: patient
+            }
+            console.log(intakeClinic)
+        }
+        commit('setIntakesClinic', intakeClinic)
     }
 };
 
@@ -60,6 +94,9 @@ const getters = {
 
     intakesCategories(state) {
         return state.categories
+    },
+    intakesClinic(state){
+        return state.intakesClinic
     }
 };
 

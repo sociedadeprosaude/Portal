@@ -99,6 +99,7 @@
                                 email: resp.user.email,
                                 uid: resp.user.uid,
                                 type: "CLINIC",
+                                group:"clinic",
                                 cnpj:this.$router.currentRoute.params.id
                             });
                             this.registered = true;

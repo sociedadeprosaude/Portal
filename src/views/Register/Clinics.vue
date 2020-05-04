@@ -514,9 +514,6 @@
         },
 
         methods: {
-            linkNewClinicUser(clinic){
-
-            },
 
             async loadClinics() {
               this.loading = true;
