@@ -314,11 +314,13 @@
 
         },
 
-        async mounted() {
-            let clinic = await this.$store.getters.clinic;
-            let indexClinic  = await this.$store.getters.indexClinic;
-            this.addDataToClinicExist(clinic, indexClinic);
+
+         async beforeUpdate () {
+             let clinic = await this.$store.getters.clinic;
+             let indexClinic  = await this.$store.getters.indexClinic;
+             this.addDataToClinicExist(clinic, indexClinic);
         },
+        
 
         methods: {
             closeDialog : function () {
@@ -328,11 +330,11 @@
 
             clearData() {
                 this.$store.dispatch('selectClinic', this.defaultItem);
+                this.$store.dispatch('putIndex', null);
             },
 
             addDataToClinicExist (clinic, indexClinic) {
-                console.log(indexClinic);
-                if (indexClinic !== -1){
+                if (indexClinic !== -1 && indexClinic !==null){
                     this.cep = this.clinic.address.cep;
                     this.clinic.startWeek = this.clinic.agenda[0].split('-')[0];
                     this.clinic.endWeek = this.clinic.agenda[0].split('-')[1];
@@ -342,7 +344,6 @@
                 } else {
                     this.cep = '';
                 }
-                console.log(this.cep)
             },
 
             async save() {
