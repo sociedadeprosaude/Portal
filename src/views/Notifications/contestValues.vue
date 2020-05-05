@@ -10,29 +10,35 @@
                                     {{exam.name}}
                                 </p>
                             </v-flex>
-                            <v-flex xs1>
-                                <v-divider class="primary" vertical/>
-                            </v-flex>
-                            <v-flex xs1 class="text-center align-center justify-center">
-                                <p class="mt-5"> PREÇO ATUAL: {{exam.price}}</p>
-                            </v-flex>
-                            <v-flex xs1>
-                                <v-divider class="primary" vertical/>
-                            </v-flex>
+                            <v-divider class="primary" vertical/>
+
                             <v-flex xs2 class="text-center align-center justify-center">
-                                <p class="mt-5"> PREÇO REQUERIDO: {{exam.NewValue}}</p>
+                                <p class="mt-5">
+                                    <span class="font-weight-bold">PREÇO ATUAL: </span>
+                                    <span class="font-italic" >{{exam.price}}</span>
+
+                                </p>
                             </v-flex>
-                            <v-flex xs1>
-                                <v-divider class="primary" vertical/>
+
+                            <v-divider class="primary" vertical/>
+
+                            <v-flex xs3 class="text-center align-center justify-center">
+                                <p class="mt-5">
+                                    <span class="font-weight-bold">PREÇO REQUERIDO:</span>
+                                    <span class="font-italic" > {{exam.NewValue}}</span>
+                                </p>
                             </v-flex>
-                            <v-flex xs1>
-                                <v-btn class="mt-4" rounded color="success" @click="updateExamInContestValue (exam, intake)">Alterar</v-btn>
-                            </v-flex>
-                            <v-flex xs1>
-                                <v-divider class="primary" vertical/>
-                            </v-flex>
-                            <v-flex xs1>
-                                <v-btn class="mt-4" rounded color="error" @click="deleteExamInContestValue(exam, intake)">Cancelar</v-btn>
+
+                            <v-divider class="primary" vertical/>
+                            <v-spacer/>
+
+                            <v-flex xs3 class="text-right mt-4">
+                                <v-btn class="mx-2" icon small rounded color="success" @click="updateExamInContestValue (exam, intake)">
+                                    <v-icon>done</v-icon>
+                                </v-btn>
+                                <v-btn class="mx-2" icon small rounded color="error" @click="deleteExamInContestValue(exam, intake)">
+                                    <v-icon>delete</v-icon>
+                                </v-btn>
                             </v-flex>
                         </v-layout>
                     </v-card>

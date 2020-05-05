@@ -469,8 +469,8 @@ const actions = {
         firebase.firestore().collection('clinics').doc(clin.name).update({property: true})
     },
     async addNewContestValue ({commit}, payload){
-        var clinic = await firebase.firestore().collection('contestValues').doc(payload.numberIntake).get()
-        let exams= []
+        let clinic = await firebase.firestore().collection('contestValues').doc(payload.numberIntake).get();
+        let exams= [];
         if(clinic.data()){
             for(let exam in clinic.data().exams){
                 exams.push(clinic.data().exams[exam])
