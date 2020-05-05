@@ -205,35 +205,99 @@ const actions = {
         delete consultation.doctor.clinics;
         delete consultation.doctor.specialties;
         delete consultation.specialty.doctors;
-        let days = functions.makeWeekSchedule(consultation.weekDays, consultation.vacancy, consultation.hour)
+        let days = functions.makeWeekSchedule(consultation.weekDays, consultation.vacancy, consultation.hour);
         let routineId = moment().valueOf();
-        let consultObject
-        var scheduleFound = await firebase.firestore().collection('schedules')
+        let consultObject;
+        let scheduleFound = await firebase.firestore().collection('schedules')
             .where('clinic.name', '==', consultation.clinic.name)
             .where('doctor.cpf', '==', consultation.doctor.cpf)
             .where('specialty.name', '==', consultation.specialty.name)
-            .get()
+            .get();
         if (scheduleFound.empty) {
             consultObject = {
                 specialty: consultation.specialty, days: days, routine_id: routineId,
                 clinic: consultation.clinic, doctor: consultation.doctor,
             };
-            await firebase.firestore().collection('schedules').add(consultObject)
+            await firebase.firestore().collection('schedules').add(consultObject);
+            let idFound = await firebase.firestore().collection('schedules')
+                .where('clinic.name', '==', consultation.clinic.name)
+                .where('doctor.cpf', '==', consultation.doctor.cpf)
+                .where('specialty.name', '==', consultation.specialty.name)
+                .get();
+            idFound.forEach(async (doc) => {
+                await firebase.firestore().collection('users').doc(consultation.doctor.cpf)
+                    .collection('specialties').doc(consultation.specialty.name)
+                    .collection('clinics').doc(consultation.clinic.name)
+                    .collection('schedules').doc(doc.id).set(consultObject);
+                await firebase.firestore().collection('specialties').doc(consultation.specialty.name).update({
+                    "status" : "ACTIVATE"
+                });
+                consultation.doctor.status = "ACTIVATE";
+                await firebase.firestore().collection('users').doc(consultation.doctor.cpf).update(consultation.doctor);
+            });
+
         } else {
             scheduleFound.forEach(async (doc) => {
-                let data = doc.data()
+                let data = doc.data();
                 consultation.weekDays.forEach((day) => {
                     if (data.days[day])
-                        data.days[day].vacancy = Number(data.days[day].vacancy) + Number(consultation.vacancy)
+                        data.days[day].vacancy = Number(data.days[day].vacancy) + Number(consultation.vacancy);
                     else {
                         data.days[day] = {vacancy: Number(consultation.vacancy), hour: consultation.hour}
                     }
-                })
-                await firebase.firestore().collection('schedules').doc(doc.id).update(data)
+                });
+                await firebase.firestore().collection('schedules').doc(doc.id).update(data);
+                await firebase.firestore().collection('users').doc(consultation.doctor.cpf)
+                    .collection('specialties').doc(consultation.specialty.name)
+                    .collection('clinics').doc(consultation.clinic.name)
+                    .collection('schedules').doc(doc.id).update(data);
             })
         }
     },
 
+    async deactivateScheduleDoctor ({commit}, payload){
+        payload = functions.removeUndefineds(payload);
+        for (let i in payload.specialties) {
+          let scheduleFound = await firebase.firestore().collection('schedules')
+                .where('clinic.name', '==', payload.clinic.name)
+                .where('doctor.cpf', '==', payload.doctor.cpf)
+                .where('specialty.name', '==', payload.specialties[i])
+                .get();
+
+            scheduleFound.forEach(async (doc) => {
+                await firebase.firestore().collection('schedules').doc(doc.id).delete();
+                await firebase.firestore().collection('users').doc(payload.doctor.cpf)
+                    .collection('specialties').doc(payload.specialties[i])
+                    .collection('clinics').doc(payload.clinic.name)
+                    .collection('schedules').doc(doc.id).delete();
+            });
+            console.log(payload.specialties[i]);
+            await this.dispatch('checkStatusSpecialty', payload.specialties[i]);
+        }
+        await this.dispatch('checkStatusDoctor', payload.doctor);
+    },
+
+    async checkStatusDoctor ({commit}, doctor){
+
+        let scheduleFound = await firebase.firestore().collection('schedules')
+            .where('doctor.cpf', '==', doctor.cpf)
+            .get();
+        if (scheduleFound.empty){
+            doctor.status = "DESACTIVATE";
+            await firebase.firestore().collection('users').doc(doctor.cpf).update(doctor);
+        }
+    },
+
+    async checkStatusSpecialty ({commit}, specialty) {
+        let scheduleFound = await firebase.firestore().collection('schedules')
+            .where('specialty.name', '==', specialty)
+            .get();
+        if (scheduleFound.empty){
+            await firebase.firestore().collection('specialties').doc(specialty).update({
+                "status" : "DESACTIVATE"
+            });
+        }
+    },
 
     async addConsultationAppointmentToUser({commit}, payload) {
         try {
