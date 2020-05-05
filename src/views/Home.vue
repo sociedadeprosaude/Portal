@@ -243,7 +243,7 @@
                         title: 'Clinicas Associadas',
                         pages: [
                             {
-                                title: 'Dar Baixa nos Exames',
+                                title: 'Check Exames',
                                 permission: 'clinic',
                                 to: '/DischargeProcedures',
                                 icon: 'supervisor_account'
@@ -278,7 +278,7 @@
                 if(this.user){
                     return this.pages.filter(a => {
                         if (this.user.group === 'admin') {
-                            return true
+                            return a === this.pages[0] || a === this.pages[1] || a === this.pages[2] || a === this.pages[3]
                         } else if (this.user.group === 'colaborador') {
                             return a === this.pages[0]
                         } else if (this.user.group === 'gerente') {
