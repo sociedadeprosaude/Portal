@@ -479,7 +479,9 @@ const actions = {
             await firebase.firestore().collection('contestValues').doc(payload.numberIntake).update({exams:exams})
         }
         else{
+            exams.push(payload.exams)
             await firebase.firestore().collection('contestValues').doc(payload.numberIntake).set(payload)
+            await firebase.firestore().collection('contestValues').doc(payload.numberIntake).update({exams:exams})
         }
     },
     async getClinic({commit}, payload){
