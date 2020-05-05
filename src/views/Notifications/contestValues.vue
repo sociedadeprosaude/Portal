@@ -26,13 +26,13 @@
                                 <v-divider class="primary" vertical/>
                             </v-flex>
                             <v-flex xs1>
-                                <v-btn class="mt-4" rounded color="success">Alterar</v-btn>
+                                <v-btn class="mt-4" rounded color="success" @click="updateExamInContestValue (exam, intake)">Alterar</v-btn>
                             </v-flex>
                             <v-flex xs1>
                                 <v-divider class="primary" vertical/>
                             </v-flex>
                             <v-flex xs1>
-                                <v-btn class="mt-4" rounded color="error">Cancelar</v-btn>
+                                <v-btn class="mt-4" rounded color="error" @click="deleteExamInContestValue(exam, intake)">Cancelar</v-btn>
                             </v-flex>
                         </v-layout>
                     </v-card>
@@ -52,11 +52,38 @@
         },
         data() {
             return {
+                listUpdatedExams: []
 
             };
         },
         methods: {
 
+            async deleteExamInContestValue(exam, intake) {
+                this.listUpdatedExams = intake.exams;
+                if (this.listUpdatedExams.length === 1) {
+                    this.listUpdatedExams = [];
+                } else {
+                    this.listUpdatedExams.splice(this.listUpdatedExams.indexOf(exam), 1);
+                }
+
+                let data = {
+                    intake: intake,
+                    exams: this.listUpdatedExams,
+                };
+                await this.$store.dispatch('updateContestValue', data);
+                await this.$store.dispatch('getContestValue');
+            },
+
+            async updateExamInContestValue (exam, intake){
+                let data = {
+                    exam: exam,
+                    newValue: exam.NewValue,
+                    intakeId: intake.numberIntake,
+                    clinic: intake.clinic,
+                };
+                await this.$store.dispatch('updateNewValueExam', data);
+                this.deleteExamInContestValue(exam, intake);
+            }
         },
         computed: {
             intakes(){
