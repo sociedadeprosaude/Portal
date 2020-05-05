@@ -320,7 +320,7 @@
              let indexClinic  = await this.$store.getters.indexClinic;
              this.addDataToClinicExist(clinic, indexClinic);
         },
-        
+
 
         methods: {
             closeDialog : function () {
