@@ -111,6 +111,7 @@ const actions = {
             for (let document in doctorsSnap.docs) {
                 doctors[doctorsSnap.docs[document].id] = doctorsSnap.docs[document].data()
             }
+            console.log(doctors);
             commit('setDoctors', doctors);
         })
     },

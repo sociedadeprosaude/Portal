@@ -232,8 +232,9 @@ const actions = {
                 await firebase.firestore().collection('specialties').doc(consultation.specialty.name).update({
                     "status" : "ACTIVATE"
                 });
-                consultation.doctor.status = "ACTIVATE";
-                await firebase.firestore().collection('users').doc(consultation.doctor.cpf).update(consultation.doctor);
+                await firebase.firestore().collection('users').doc(consultation.doctor.cpf).update({
+                    "status" : "ACTIVATE"
+                });
             });
 
         } else {
@@ -271,7 +272,7 @@ const actions = {
                     .collection('clinics').doc(payload.clinic.name)
                     .collection('schedules').doc(doc.id).delete();
             });
-            console.log(payload.specialties[i]);
+
             await this.dispatch('checkStatusSpecialty', payload.specialties[i]);
         }
         await this.dispatch('checkStatusDoctor', payload.doctor);
@@ -283,8 +284,9 @@ const actions = {
             .where('doctor.cpf', '==', doctor.cpf)
             .get();
         if (scheduleFound.empty){
-            doctor.status = "DESACTIVATE";
-            await firebase.firestore().collection('users').doc(doctor.cpf).update(doctor);
+            await firebase.firestore().collection('users').doc(doctor.cpf).update({
+                "status": "DESACTIVATE"
+            });
         }
     },
 

@@ -216,6 +216,7 @@
                     };
                     array.push(holder)
                 }
+                console.log(array)
                 return array
             },
         },
@@ -253,6 +254,7 @@
             getSpecialties(item) {
                 if (!item.specialties) return '';
                 let especialidades = '';
+                console.log(item.specialties);
                 for (const key in item.specialties) {
                     especialidades += item.specialties[key].name + ', '
                 }
@@ -271,7 +273,6 @@
                 this.confirmDeletionDialog = true
             },
             deactivateDoctor(item) {
-
                 this.selectedDoctor = item;
                 this.clinics = item.clinics;
                 this.specialtiesDoctor = item.specialties.split(', ');
