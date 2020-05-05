@@ -140,6 +140,7 @@
                 this.ContestExam.NewValue = this.NewValue
                 await this.$store.dispatch('addNewContestValue',{exams:this.ContestExam, value:this.NewValue, cnpj:this.user.cnpj, numberIntake:this.intakes.intakeNumber, clinic:clinic.docs[0].id})
                 this.dialogContestValue = !this.dialogContestValue
+                this.NewValue=0
 
             },
             async SendCheckExams(){
