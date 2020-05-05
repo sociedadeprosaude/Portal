@@ -49,7 +49,7 @@ const actions = {
             });
         } else {
             console.log('else', item.intake.id);
-            await firebase.firestore().collection('contestValue').doc(item.intake.id.toString()).delete();
+            await firebase.firestore().collection('contestValues').doc(item.intake.id.toString()).delete();
         }
 
     },
