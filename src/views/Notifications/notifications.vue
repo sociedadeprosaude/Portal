@@ -39,6 +39,7 @@
         mounted() {
             this.$store.dispatch('WarningColaborators');
             this.$store.dispatch('getConsultationsCanceled');
+            this.$store.dispatch('getContestValue');
             this.$store.dispatch('getOuttakes');
             let data = {
                 date: moment().format("YYYY-MM-DD").toString(),
@@ -65,6 +66,9 @@
             notifications () {
                 return this.$store.getters.notification;
             },
+            contestvalue(){
+                return this.$store.getters.contestValue;
+            }
         },
 
         watch: {
@@ -90,8 +94,8 @@
                     await this.$store.dispatch('loadNotifications');
                 }
             },
-
             consultation() {
+                console.log('consultation')
                 if (this.consultation.length !== 0) {
                     let data = {
                         name: 'ConsultationCanceled',
@@ -104,9 +108,8 @@
                     this.$store.dispatch('deleteNotification', 'ConsultationCanceled');
                 }
             },
-
             outtakes () {
-
+                console.log('outake')
                 if (this.outtakes.length !== 0) {
                     let data = {
                         name: 'outtakes',
@@ -114,6 +117,21 @@
                         link: '/bills',
                         icon: 'monetization_on',
                     };
+                    this.$store.dispatch('addNotifications', data);
+                } else {
+                    this.$store.dispatch('deleteNotification', 'outtakes');
+                }
+            },
+            contestvalue() {
+                console.log('contest aqui',this.contestvalue)
+                if (this.contestvalue.length !== 0) {
+                    let data = {
+                        name: 'contestValue',
+                        info: 'Algumas Clinicas Associadas acreditam que tem exames com preços errados',
+                        link: '/ContestValueAlert',
+                        icon: 'assignment_late',
+                    };
+                    console.log('entrei')
                     this.$store.dispatch('addNotifications', data);
                 } else {
                     this.$store.dispatch('deleteNotification', 'outtakes');

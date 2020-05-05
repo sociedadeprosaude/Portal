@@ -62,13 +62,18 @@
                                     Dia: {{clinic.paymentDayFormat}}
                                 </span>
                             </v-flex>
-                            <v-flex xs4 v-if="cost !=='' && clinica === clinic">
+                            <v-flex xs3 v-if="cost !=='' && clinica === clinic">
                                 <span class="font-weight-bold">Custo :{{cost}} </span>
                             </v-flex>
-                            <v-flex xs4 v-else>
+                            <v-flex xs3 v-else>
                                 <v-btn @click="CalculateValue(clinic)">ver valor até o momento</v-btn>
                             </v-flex>
-                            <v-flex xs3>
+                            <v-divider></v-divider>
+                            <v-flex xs2>
+                                <v-btn @click="checkReceipts(clinic)">Verificar Recibos</v-btn>
+                            </v-flex>
+                            <v-divider></v-divider>
+                            <v-flex xs2>
                                 <v-btn @click="Pay(clinic)">Pagar</v-btn>
                             </v-flex>
                         </v-expansion-panel-header>
@@ -110,7 +115,31 @@
                 </v-flex>
             </v-card>
         </v-dialog>
-
+        <v-dialog v-model="intakesObserv">
+            <v-card>
+                <v-layout row wrap>
+                    <v-flex xs12 v-for="intake in intakes">
+                        <v-card>
+                            <v-layout row wrap>
+                                <v-flex xs12>
+                                    <p>{{intake.id}}</p>
+                                </v-flex>
+                                <v-flex xs12 v-for="exam in intakes.exams">
+                                    <v-layout row wrap>
+                                        <v-flex xs12>
+                                            <p>{{exam.name}}</p>
+                                        </v-flex>
+                                        <v-flex xs3>
+                                            <p>{{exam.cost}}</p>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                            </v-layout>
+                        </v-card>
+                    </v-flex>
+                </v-layout>
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -129,6 +158,8 @@
                 change: false,
                 clinica:[],
                 cost:'',
+                intakes:[],
+                intakesObserv:false,
                 menu2:false,
                 dateFormatted2: moment().format("DD/MM/YYYY"),
                 date2: moment().format("YYYY-MM-DD 23:59:59"),
@@ -166,6 +197,13 @@
                 this.cost=''
                 this.clinica = clinic
                 this.cost = await this.$store.dispatch('CalculedValuePaymentClinic', clinic)
+            },
+            async checkReceipts(clinic){
+                console.log(clinic)
+                this.intakes = await this.$store.dispatch('GetReceiptsClinic', clinic)
+                this.intakesObserv=true
+                console.log('intakes: ', this.intakes)
+
             },
             async Pay(clinic){
                 await this.$store.dispatch('PayClinic', clinic)

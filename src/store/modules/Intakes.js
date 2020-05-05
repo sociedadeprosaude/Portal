@@ -61,7 +61,6 @@ const actions = {
         let intakeClinic = {}
         for(let exam in SpecificIntake.data().exams){
             if(SpecificIntake.data().exams[exam].clinic.cnpj === intake.cnpj){
-                console.log('exam: ', SpecificIntake.data().exams[exam])
                 if(SpecificIntake.data().exams[exam].realized){
                     exams.push({
                         name: SpecificIntake.data().exams[exam].name,
@@ -76,17 +75,28 @@ const actions = {
                         price: SpecificIntake.data().exams[exam].cost,
                         rules: SpecificIntake.data().exams[exam].rules,
                         realized: false,
-                        intakeNumber: intakeNumber
                     });
                 }
             }
             intakeClinic = {
                 exams: exams,
-                patient: patient
+                patient: patient,
+                intakeNumber: intakeNumber
             }
-            console.log(intakeClinic)
         }
         commit('setIntakesClinic', intakeClinic)
+    },
+    async updatingSpecificIntake({commit}, intake){
+        var SpecificIntake = await firebase.firestore().collection('intakes').doc(intake.number).get()
+        var Exams= SpecificIntake.data().exams
+        for(let exam in Exams){
+            for(let UpdateExam in intake.exams){
+                if (Exams[exam].name === intake.exams[UpdateExam].name){
+                    Exams[exam].realized = intake.exams[UpdateExam].realized
+                }
+            }
+        }
+        await firebase.firestore().collection('intakes').doc(intake.number).update({exams:Exams})
     }
 };
 

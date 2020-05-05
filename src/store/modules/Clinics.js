@@ -9,7 +9,8 @@ const state = {
     loaded: false,
     unitsLoaded: false,
     covenants: [],
-    accontClinics: []
+    accontClinics: [],
+    contestValue:[]
 
 };
 
@@ -32,6 +33,8 @@ const mutations = {
         state.unitsLoaded = true
     },
     setCovenants: (state, payload) => state.covenants = payload,
+    setContestValue: (state, payload) => state.contestValue = payload,
+
 
 };
 
@@ -179,7 +182,6 @@ const actions = {
         firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).collection('clinics/')
             .doc(payload.clinic.name).set(payload.clinic);
 
-        //firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf).set(data);
 
         firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf).collection('clinics/')
             .doc(payload.clinic.name).set(payload.clinic);
@@ -201,6 +203,55 @@ const actions = {
         commit('setSelectedClinic', payload);
 
     },
+    async GetReceiptsClinic(context, payload) {
+        let DataInit='';
+        console.log('payload: ', payload)
+        if(!payload.payments){
+            DataInit = moment(payload.paymentDay).subtract(1, "months").format("YYYY-MM-DD 00:00:00")
+        }
+        else{
+            DataInit = moment(payload.payments[parseInt(payload.payments.length) - 1].paymentDay).format("YYYY-MM-DD 00:00:00")
+        }
+        payload.paymentDay = moment(payload.paymentDay).format("YYYY-MM-DD 23:59:59");
+        let cost = 0;
+        await firebase.firestore().collection('intakes').where('date', '>=', DataInit)
+            .where('date', '<=', payload.paymentDay).orderBy('date').get().then((querySnapshot) =>{
+                let intakes= []
+                querySnapshot.forEach((doc) =>{
+                    if(!doc.data().cancelled_by && doc.data().exams){
+                        let exams= []
+                        let patient= doc.data().user.name
+                        let intakeNumber= doc.data().id
+                        let intakeClinic = {}
+                        for(let exam in doc.data().exams) {
+                            if (doc.data().exams[exam].clinic.name === payload.name) {
+                                if (doc.data().exams[exam].realized === true) {
+                                    exams.push({
+                                        name: doc.data().exams[exam].name,
+                                        price: doc.data().exams[exam].cost,
+                                        rules: doc.data().exams[exam].rules,
+                                        realized: doc.data().exams[exam].realized,
+                                    });
+                                    intakeClinic = {
+                                        exams: exams,
+                                        patient: patient,
+                                        intakeNumber: intakeNumber
+                                    }
+                                    console.log('entrei')
+                                }
+                            }
+                            console.log(intakeClinic.length)
+                            if(intakeClinic.length !== 0){
+                                intakes.push(intakeClinic)
+                            }
+                        }
+                    }
+                })
+                console.log('int antes',intakes)
+                return intakes
+            });
+    },
+
     async CalculedValuePaymentClinic(context, payload) {
         let DataInit='';
         if(!payload.payments){
@@ -217,7 +268,7 @@ const actions = {
                     if(!doc.data().cancelled_by && doc.data().exams){
                         for(let exam in doc.data().exams){
                             if(doc.data().exams[exam].clinic){
-                                if (doc.data().exams[exam].clinic.name === payload.name) {
+                                if ((doc.data().exams[exam].clinic.name === payload.name) && doc.data().exams[exam].realized === true ) {
                                     cost += parseFloat(doc.data().exams[exam].cost)
                                 }
                             }
@@ -245,7 +296,7 @@ const actions = {
                     if(!doc.data().cancelled_by && doc.data().exams){
                         for(let exam in doc.data().exams){
                             if(doc.data().exams[exam].clinic){
-                                if (doc.data().exams[exam].clinic.name === payload.name) {
+                                if (doc.data().exams[exam].clinic.name === payload.name  && doc.data().exams[exam].realized === true ) {
                                     cost += parseFloat(doc.data().exams[exam].cost)
                                 }
                             }
@@ -392,12 +443,42 @@ const actions = {
         }
         firebase.firestore().collection('clinics').doc(clin.name).update({property: true})
     },
+    async addNewContestValue ({commit}, payload){
+        var clinic = await firebase.firestore().collection('contestValues').doc(payload.numberIntake).get()
+        let exams= []
+        if(clinic.data().exams){
+            exams.push(clinic.data().exams)
+            exams.push(payload.exams)
+            await firebase.firestore().collection('contestValues').doc(payload.numberIntake).update({exams:exams})
+        }
+        else{
+            await firebase.firestore().collection('contestValues').doc(payload.numberIntake).set(payload)
+        }
+    },
+    async getClinic({commit}, payload){
+        return await firebase.firestore().collection('clinics').where("cnpj" ,"==", payload).get()
+    },
+    async getContestValue ({commit}){
+        await firebase.firestore().collection('contestValues').onSnapshot((querySnapshot) => {
+            let ContestValues = [];
+            querySnapshot.forEach((document) => {
+                ContestValues.push({
+                    ...document.data(),
+                    id: document.id
+                })
+            });
+            commit('setContestValue', ContestValues)
+        })
+    }
 
 };
 
 const getters = {
     clinics(state) {
         return state.clinics
+    },
+    contestValue(state){
+        return state.contestValue
     },
     accontClinics(state){
         return state.accontClinics

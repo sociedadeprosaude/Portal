@@ -10,6 +10,7 @@ import Labor from "./views/Personal/Labor";
 import Reports from "./views/Register/Reports";
 import Bundles from "./views/Register/Bundles";
 import PaymentCovenants from "./views/Register/PaymentCovenants";
+import ContestValue from "./views/Notifications/contestValues"
 
 import Doctors from "./views/Register/Doctors";
 import Clinics from "./views/Register/Clinics";
@@ -46,6 +47,14 @@ let mainRoutes = [
     path: '/login',
     name: 'Login',
     component: Login,
+  },
+  {
+    path: '/ContestValueAlert',
+    name: 'ContestValue',
+    component: ContestValue,
+    meta : {
+      requiresAuth: true
+    }
   },
   {
     path: '/cadastro',
