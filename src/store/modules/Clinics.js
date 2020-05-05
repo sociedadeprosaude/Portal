@@ -47,13 +47,11 @@ const actions = {
 
     async updateContestValue ({commit}, item) {
         let newListExams = item.exams;
-        console.log(newListExams);
         if (newListExams.length !== 0){
             await firebase.firestore().collection('contestValues').doc(item.intake.id).update({
                 "exams": newListExams
             });
         } else {
-            console.log('else', item.intake.id);
             await firebase.firestore().collection('contestValues').doc(item.intake.id.toString()).delete();
         }
 

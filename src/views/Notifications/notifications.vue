@@ -95,7 +95,6 @@
                 }
             },
             consultation() {
-                console.log('consultation')
                 if (this.consultation.length !== 0) {
                     let data = {
                         name: 'ConsultationCanceled',
@@ -109,7 +108,6 @@
                 }
             },
             outtakes () {
-                console.log('outake')
                 if (this.outtakes.length !== 0) {
                     let data = {
                         name: 'outtakes',
@@ -123,7 +121,6 @@
                 }
             },
             contestvalue() {
-                console.log('contest aqui',this.contestvalue)
                 if (this.contestvalue.length !== 0) {
                     let data = {
                         name: 'contestValue',
@@ -131,7 +128,6 @@
                         link: '/ContestValueAlert',
                         icon: 'assignment_late',
                     };
-                    console.log('entrei')
                     this.$store.dispatch('addNotifications', data);
                 } else {
                     this.$store.dispatch('deleteNotification', 'outtakes');
