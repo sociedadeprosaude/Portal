@@ -130,7 +130,7 @@
                     };
                     this.$store.dispatch('addNotifications', data);
                 } else {
-                    this.$store.dispatch('deleteNotification', 'outtakes');
+                    this.$store.dispatch('deleteNotification', 'contestValue');
                 }
             }
         },
