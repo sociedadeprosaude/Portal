@@ -45,6 +45,32 @@ const mutations = {
 
 const actions = {
 
+    async updateContestValue ({commit}, item) {
+        let newListExams = item.exams;
+        console.log(newListExams);
+        if (newListExams.length !== 0){
+            await firebase.firestore().collection('contestValues').doc(item.intake.id).update({
+                "exams": newListExams
+            });
+        } else {
+            console.log('else', item.intake.id);
+            await firebase.firestore().collection('contestValue').doc(item.intake.id.toString()).delete();
+        }
+
+    },
+
+    async updateNewValueExam ({commit}, item){
+        let value = item.newValue.toString();
+        await firebase.firestore().collection('intakes').doc(item.intakeId)
+            .collection('exams').doc(item.exam.name).update({
+                "cost": value,
+            });
+        await firebase.firestore().collection('clinics').doc(item.clinic)
+            .collection('exams').doc(item.exam.name).update({
+                "cost": value,
+            })
+    },
+
     async getClinics({commit}) {
         firebase.firestore().collection('clinics').onSnapshot(async function (clinicsSnap) {
             let clinics = [];
@@ -104,7 +130,7 @@ const actions = {
         if(snapshot.exists)
             documentReference.update(data);
         else
-            documentReference.set(data) 
+            documentReference.set(data)
     },
 
     async addAppointment(context, payload) {
@@ -151,7 +177,7 @@ const actions = {
         context.dispatch('updateOrSet',{
                         documentReference: firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).collection('clinics/').doc(payload.clinic.name),
                         data: payload.clinic });
-        
+
         context.dispatch('updateOrSet',{
                     documentReference: firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf),
                     data: data});
