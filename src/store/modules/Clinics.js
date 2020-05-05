@@ -10,7 +10,9 @@ const state = {
     unitsLoaded: false,
     covenants: [],
     accontClinics: [],
-    contestValue:[]
+    contestValue:[],
+    IntakesExamsClinics: []
+
 
 };
 
@@ -21,6 +23,9 @@ const mutations = {
     },
     setAccontClinics(state,payload){
         state.accontClinics = payload
+    },
+    setIntakesExamsClinics(state, payload){
+        state.IntakesExamsClinics= payload
     },
     setAllClinics(state, payload) {
         state.allClinics = payload;
@@ -205,7 +210,6 @@ const actions = {
     },
     async GetReceiptsClinic(context, payload) {
         let DataInit='';
-        console.log('payload: ', payload)
         if(!payload.payments){
             DataInit = moment(payload.paymentDay).subtract(1, "months").format("YYYY-MM-DD 00:00:00")
         }
@@ -232,23 +236,20 @@ const actions = {
                                         rules: doc.data().exams[exam].rules,
                                         realized: doc.data().exams[exam].realized,
                                     });
-                                    intakeClinic = {
-                                        exams: exams,
-                                        patient: patient,
-                                        intakeNumber: intakeNumber
-                                    }
-                                    console.log('entrei')
                                 }
                             }
-                            console.log(intakeClinic.length)
-                            if(intakeClinic.length !== 0){
-                                intakes.push(intakeClinic)
+                        }
+                        if(exams.length !== 0){
+                            intakeClinic = {
+                                exams: exams,
+                                patient: patient,
+                                intakeNumber: intakeNumber
                             }
+                            intakes.push(intakeClinic)
                         }
                     }
                 })
-                console.log('int antes',intakes)
-                return intakes
+                context.commit('setIntakesExamsClinics',intakes)
             });
     },
 
@@ -446,8 +447,10 @@ const actions = {
     async addNewContestValue ({commit}, payload){
         var clinic = await firebase.firestore().collection('contestValues').doc(payload.numberIntake).get()
         let exams= []
-        if(clinic.data().exams){
-            exams.push(clinic.data().exams)
+        if(clinic.data()){
+            for(let exam in clinic.data().exams){
+                exams.push(clinic.data().exams[exam])
+            }
             exams.push(payload.exams)
             await firebase.firestore().collection('contestValues').doc(payload.numberIntake).update({exams:exams})
         }
@@ -506,6 +509,9 @@ const getters = {
     covenants(state) {
         return state.covenants;
     },
+    IntakesExamsClinics(state){
+        return state.IntakesExamsClinics
+    }
 };
 
 export default {

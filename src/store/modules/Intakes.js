@@ -4,7 +4,7 @@ import functions from "../../utils/functions";
 const state = {
     intakes: [],
     categories: [],
-    intakesClinic: []
+    intakesClinic: [],
 }
 
 const mutations = {
@@ -14,7 +14,7 @@ const mutations = {
     },
     setIntakesClinic(state, payload){
         state.intakesClinic =  payload
-    }
+    },
 };
 
 const actions = {
