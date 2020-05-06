@@ -428,6 +428,9 @@ async function removeConsultations(payload) {
 
 
 exports.getConsultationsAndIntakesByDayPeriodAndWeekDays = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (request, response) => {
+    response.set('Access-Control-Allow-Origin', '*');
+    response.set('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS');
+    response.set('Access-Control-Allow-Headers', '*');
     let start_date = request.query.start_date
     let final_date = request.query.final_date
     let consultations = await getCollectionFromPeriod(start_date, final_date, 'consultations')
