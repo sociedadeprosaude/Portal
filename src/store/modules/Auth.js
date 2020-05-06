@@ -16,20 +16,7 @@ const mutations = {
 };
 
 const actions = {
-    // async registerUser({commit}, user) {
-    //     user = {
-    //         ...user,
-    //         status: 'pending'
-    //     }
-    //     try {
-    //     let resp = await firebase.database().ref('colaboradores/').child(user.uid).set(user)
-    //         //console.log(resp)
-    //     } catch (e) {
-    //         console.log(e)
-    //     }
-    //     commit('setUser', user)
-    //     return
-    // },
+
     async logOut(context) {
         firebase.auth().signOut();
         setTimeout(() => {
@@ -53,22 +40,7 @@ const actions = {
                 return
             }
         }
-        // return firebase.firestore().collection('users/').doc(user.cpf).get('value',(user) => {
-        //     commit('setUser', user.val())
-        //     return user
-        // })
-    },
-    async setUserPermissions({}, payload) {
-        try {
-            firebase.database().ref('colaboradores/').child(payload.user.uid).child('permissions').set(payload.permissions)
-        } catch (e) {
-            console.log(e)
-        }
-    },
-    getPermissionList({commit}) {
-        firebase.database().ref('permissions/').once('value',(permissions) => {
-            commit('setPermissionsList', permissions.val())
-        })
+
     },
 
     async updateAccount({commit},payload){
@@ -77,7 +49,6 @@ const actions = {
             id = id.replace('.',"");
             id = id.replace('.',"");
             id =  id.replace('-',"");
-            console.log(id);
             await firebase.firestore().collection('users').doc(id).update({
                 name:payload.name,
                 telephones:payload.telephones,
@@ -92,9 +63,7 @@ const actions = {
 };
 
 const getters = {
-    permissionsList(state) {
-        return state.permissions
-    },
+
     user (state) {
         return state.user
     }

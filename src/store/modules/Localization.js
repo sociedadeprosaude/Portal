@@ -3,13 +3,13 @@ import axios from 'axios'
 const state = {
     user: {},
     permissions: []
-}
+};
 
-const mutations = {}
+const mutations = {};
 
 const actions = {
     async getAddressByCep({}, cep) {
-        console.log('chegou aqui')
+
         try {
             let resp = await axios.get('https://viacep.com.br/ws/' + cep + '/json/')
             return resp.data
@@ -17,9 +17,9 @@ const actions = {
             throw e
         }
     },
-}
+};
 
-const getters = {}
+const getters = {};
 
 export default {
     state,

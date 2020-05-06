@@ -42,7 +42,6 @@ const mutations = {
 
     clearItemsPackage (state) {
         state.items = [];
-        console.log(state.items);
     }
 };
 

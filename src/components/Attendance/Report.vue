@@ -107,10 +107,8 @@
             },
         },
         mounted(){
-            //
         },
         watch: {
-          //
         },
         methods: {
             clear() {

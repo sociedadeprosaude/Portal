@@ -13,30 +13,14 @@ const mutations = {
     setIntakesCategories(state, payload) {
         state.categories = payload
     },
-}
+};
 
 const actions = {
-    // async getOuttakes({commit}) {
-    //     let outtakes = []
-    //     try {
-    //         let outtakesCol = await firebase.firestore().collection('outtakes/').get()
-    //         outtakesCol.forEach((doc) => {
-    //             outtakes.push({
-    //                 id: doc.id,
-    //                 ...doc.data()
-    //             })
-    //         })
-    //         //console.log(resp)
-    //     } catch (e) {
-    //         console.log(e)
-    //     }
-    //     commit('setOuttakes', outtakes)
-    //     return
-    // },
+
     async getIntakesCategories({commit}) {
-        // let outtakesDoc = await
+
         firebase.firestore().collection('operational/').doc('intakes').onSnapshot((outtakesDoc) => {
-            let categories = []
+            let categories = [];
             if (!outtakesDoc.exists) {
                 firebase.firestore().collection('operational/').doc('intakes').set({
                     categories: []
@@ -70,27 +54,15 @@ const actions = {
         await context.dispatch('addIntakesCategory', intake.category)
         await firebase.firestore().collection('intakes/').add(intake)
     },
-    // async updateOuttake(context, payload) {
-    //     if (payload.value === 'delete') {
-    //         payload.value = firebase.firestore.FieldValue.delete()
-    //     }
-    //     await firebase.firestore().collection('outtakes/').doc(payload.outtake.id).update({
-    //         [payload.field]: payload.value
-    //     })
-    // },
-    // async deleteOuttake(context, outtake) {
-    //     await firebase.firestore().collection('outtakes/').doc(outtake.id).delete()
-    // }
-}
+
+};
 
 const getters = {
-    // outtakes(state) {
-    //     return state.outtakes
-    // },
+
     intakesCategories(state) {
         return state.categories
     }
-}
+};
 
 export default {
     state,

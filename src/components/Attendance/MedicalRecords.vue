@@ -19,7 +19,6 @@
                         :success="success"
                         text="Salvar"
                 ></submit-button>
-<!--                <v-btn color="success" @click="save()" :disabled="!prontuario">Salvar</v-btn>-->
             </v-card-actions>
         </v-card>
     </v-container>
@@ -37,7 +36,6 @@
             success: false,
         }),
         mounted(){
-            //
         },
         methods: {
             clear() {
@@ -48,7 +46,6 @@
                 this.$emit('close-dialog')
             },
             save(){
-                //console.log(this.consultation)
                 this.loading = true
                 if(this.prontuario){
                     this.$store.dispatch('addMedicalRecordsToConsultation',{
@@ -59,7 +56,6 @@
                 }
                 this.success = true
                 this.loading = false
-                /*this.clear()*/
             }
         },
     };

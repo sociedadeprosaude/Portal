@@ -98,9 +98,7 @@
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
-                            <!--                            <v-flex xs12 class="text-center mt-3">-->
-                            <!--                                <v-btn outlined color="primary" @click="gerarCodigo()">Gerar Codigo</v-btn>-->
-                            <!--                            </v-flex>-->
+
                             <v-flex xs12 class="mt-1 v-card"
                                     style="overflow:auto; height:50vh; box-shadow: inset 0px 5px grey;">
                                 <v-layout row wrap>
@@ -340,7 +338,7 @@
 </template>
 
 <script>
-    import SelectPatientCard from "../SelectPatientCard";
+    import SelectPatientCard from "../Patient/SelectPatientCard";
     import SubmitButton from "../SubmitButton";
     import BudgetToPrint from "./BudgetToPrint";
     import Receipt from "./Receipt";
@@ -383,7 +381,6 @@
                 selectedIntake: undefined,
                 selectedDoctor: undefined,
                 receiptDialog: false,
-                // selectedBudget: undefined
             }
         },
         computed: {
@@ -406,11 +403,9 @@
                 return this.$store.getters.getShoppingCartItems
             },
             exames() {
-                // return this.$store.getters.selectedBudget.exams
                 return this.$store.getters.getShoppingCartItemsByCategory.exams
             },
             consultas() {
-                // return this.$store.getters.selectedBudget.consultations
                 return this.$store.getters.getShoppingCartItemsByCategory.consultations
             },
             cost() {
@@ -435,7 +430,6 @@
             paymentValues() {
                 let tamanho = this.payment.paymentForm.length;
                 let pagando = 0;
-                console.log('payment: ',this.payment.paymentForm.length)
                 if (tamanho === 1 && this.payment.paymentForm[0] !== '') {
                     this.payment.value[0] = parseFloat(this.total)
                     pagando = parseFloat(this.payment.value[0]);
@@ -465,7 +459,6 @@
         watch: {
             percentageDiscount: function () {
                 this.moneyDiscount = ((this.percentageDiscount * this.subTotal) / 100);
-                // this.totalNovo = this.total - this.moneyDiscount
             },
         },
         methods: {
@@ -474,7 +467,6 @@
                 let budget = await this.$store.dispatch('getBudget', this.searchBudgetNumber);
                 if (budget) {
                     this.$store.commit('setSelectedBudget', budget);
-                    // this.selectedBudget = budget
                     for (let exam in budget.exams) {
                         this.$store.commit('addShoppingCartItem', budget.exams[exam])
                     }
@@ -613,9 +605,8 @@
                 await this.$store.dispatch('addIntake', this.selectedBudget);
                 let porcentagem = (this.selectedBudget.discount / this.selectedBudget.subTotal)
 
-                console.log('total : ', this.selectedBudget)
                 if(porcentagem >= 0.5 || parseFloat(this.searchBudget.subTotal) >  this.selectedBudget.cost){
-                    console.log('entrei')
+
                     this.$store.dispatch('DiscountWarning', {orcamento: this.selectedBudget.id, date: this.selectedBudget.date,
                         discont: ((this.selectedBudget.discount / this.selectedBudget.subTotal)*100), name:this.selectedBudget.colaborator.name, cpf:this.selectedBudget.colaborator.cpf})
                 }
@@ -633,11 +624,9 @@
                 await this.$store.commit('setSelectedBudget', undefined);
                 this.$store.commit('clearShoppingCartItens');
                 this.card = false
-                // window.print();
             },
             async receipt(intake) {
                 this.selectedIntake = await this.$store.dispatch('getIntakeDetails', intake);
-                // this.selectedIntake = intake
                 this.receiptDialog = true
             },
 
@@ -646,7 +635,6 @@
                 this.$store.commit('setSelectedBudget', undefined);
                 let user = undefined;
                 this.$store.commit('setSelectedPatient', user)
-                // this.selectedBudget = undefined
 
             },
 

@@ -34,7 +34,7 @@
     </v-app>
 </template>
 <script>
-    import Toolbar from "./components/Toolbar";
+    import Toolbar from "./components/doctorsAgenda/Toolbar";
     import firebase from 'firebase'
 
     export default {

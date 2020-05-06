@@ -113,7 +113,7 @@
 </template>
 
 <script>
-    import SelectPatientCard from "../components/SelectPatientCard";
+    import SelectPatientCard from "../components/Patient/SelectPatientCard";
     import alert from "../components/alert.vue";
 
     export default {
@@ -125,22 +125,6 @@
 
         mounted() {
             this.$store.dispatch('loadNotifications');
-            //   let perm = [
-            //       'Caixa',
-            //       'Prontuarios',
-            //       'Relatórios',
-            //       'Exames',
-            //       'Agenda Médica',
-            //       'Senhas',
-            //       'Colaboradores'
-            //   ]
-            // firebase.database().ref('permissions/') .set(perm)
-            // let user = firebase.auth().currentUser;
-            // if (!user) {
-            //     this.$router.push('/login')
-            //     return
-            // }
-            // this.getUser(user)
         },
         data() {
             return {
@@ -153,7 +137,6 @@
                                 title: 'Agenda Médica',
                                 permission: 'Agenda Médica',
                                 to: '/agenda/agendamento',
-                                // external_url: 'https://agenda-medica.firebaseapp.com',
                                 icon: 'calendar_today'
                             },
                             {
@@ -198,6 +181,12 @@
                                 to: '/exams'
                             },
                             {
+                                title: 'Especialidades',
+                                icon: 'poll',
+                                permission: 'Caixa',
+                                to: '/specialties'
+                            },
+                            {
                                 title: 'Relatórios',
                                 to: '/relatorio',
                                 permission: 'Relatórios',
@@ -227,30 +216,12 @@
                                 icon: 'receipt',
                             },
                             {
-                                title: 'Editor de cartao',
-                                to: '/editor',
-                                permission: 'Caixa',
-                                icon: 'credit_card',
-                            },
-                            {
                                 title: 'Pagar Convênios',
                                 to: '/PaymentCovenants',
                                 permission: 'Caixa',
                                 icon: 'receipt',
                             },
 
-                            // {
-                            //     title: 'Exames',
-                            //     to: '/exames',
-                            //     permission: 'Exames',
-                            //     icon: 'insert_drive_file'
-                            // },
-                            // {
-                            //     title: 'Unidades',
-                            //     permission: 'Colaboradores',
-                            //     to: '/units',
-                            //     icon: 'storefront'
-                            // }
                         ]
                     },
                     {
@@ -259,7 +230,6 @@
                             {
                                 title: 'Atendimentos de Consultas e Retornos',
                                 to: '/MedicalCare',
-                                /*permission: 'doctors',*/
                                 icon: 'assignment_ind',
                             },
                         ]
@@ -282,9 +252,6 @@
             goToExternalUrl(url) {
                 window.open(url)
             },
-            onSalesSelected() {
-                this.$router.push('/caixa')
-            },
             logout() {
                 this.$store.dispatch('logOut')
             },
@@ -302,7 +269,6 @@
             },
 
             filteredPages() {
-                // if (!this.user.permissions) return []
                 if(this.user){
                     return this.pages.filter(a => {
                         if (this.user.group === 'admin') {
@@ -323,7 +289,6 @@
     }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
     h1, h2 {
         font-weight: normal;

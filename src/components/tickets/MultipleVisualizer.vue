@@ -101,7 +101,6 @@ export default {
           tickets.push(formattedTicket);
         }
       }
-      console.log();
       return tickets.sort((ticketA, ticketB) => {
         return moment(ticketB.called_at).diff(
           moment(ticketA.called_at),
@@ -139,10 +138,6 @@ export default {
 </script>
 
 <style scoped>
-.animation {
-  animation: fade-in 1s infinite;
-}
-
 @keyframes fade-in {
   0% {
     opacity: 0.5;

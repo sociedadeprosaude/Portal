@@ -63,7 +63,6 @@
                                                     {{consultation.doctor.name}}
                                                     <br/>
                                                     CRM-AM {{consultation.doctor.crm}}
-                                                    <!--{{this.item}}-->
                                                 </v-flex>
                                             </v-layout>
                                         </strong>
@@ -92,10 +91,8 @@
             dia: undefined,
         }),
         computed:{
-            //
         },
         watch:{
-            //
         },
         mounted() {
             this.hoje = moment().locale('pt-BR').format('DD/MM/YYYY HH:mm:ss')

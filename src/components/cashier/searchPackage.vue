@@ -53,11 +53,7 @@
                                            :color="categorySelect === 'exam' ? 'accent' : 'primary_light'"
                                            @click="selectCategory('exam')">Exames
                                     </v-btn>
-                                    <!--
-                                    <v-btn outlined text :color="color.buttonAppointment" class="button-select mx-2" rounded
-                                           @click="selectAppointment">Consultas
-                                    </v-btn>
-                                    -->
+
                                     <v-btn outlined text rounded class="mx-2"
                                            :color="categorySelect === 'clinic' ? 'accent' : 'primary_light'"
                                            @click="selectCategory('clinic')">Clinicas
@@ -95,23 +91,6 @@
                                                     </v-btn>
                                                 </v-slide-item>
                                             </v-slide-group>
-                                            <!--
-                                            <v-slide-group v-if="categorySelect === 'appointment'" show-arrows multiple>
-                                                <v-slide-item
-                                                        v-for="(n,i) in item.doctors" v-slot:default="{ active, toggle }" :key="i">
-                                                    <v-btn class="mx-2"
-                                                           :input-value="active"
-                                                           active-class="blue white--text"
-                                                           depressed
-                                                           rounded
-                                                           @mousedown="toggle"
-                                                           @click="addSpecialties('PRO-SAUDE' , item , n, categorySelect, n.price, n.cost)"
-                                                    >
-                                                        {{n.name}} | {{n.price}}
-                                                    </v-btn>
-                                                </v-slide-item>
-                                            </v-slide-group>
-                                            -->
                                         </v-card-text>
                                         <v-card-text>
                                             <v-slide-group v-if="categorySelect === 'clinic' && item.exams" show-arrows multiple>
@@ -129,25 +108,6 @@
                                                 </v-slide-item>
                                             </v-slide-group>
                                         </v-card-text>
-                                        <!--
-                                            <v-card-text>
-                                                <v-slide-group v-if="categorySelect === 'clinic' && item.specialties" show-arrows multiple>
-                                                    <v-slide-item
-                                                            v-for="(n,index) in doctors"  v-slot:default="{ active, toggle }" :key="index">
-                                                        <v-btn class="mx-2"
-                                                               :input-value="active"
-                                                               active-class="blue white--text"
-                                                               depressed
-                                                               rounded
-                                                               @mousedown="toggle"
-                                                               @click="addProducts(item.nome, n.nome, 'appointment', n.venda,n.custo)"
-                                                        >
-                                                            {{ n.produto}} | {{n.nome}} | {{n.venda}}
-                                                        </v-btn>
-                                                    </v-slide-item>
-                                                </v-slide-group>
-                                            </v-card-text>
-                                            -->
                                     </v-card>
                                 </v-flex>
                             </v-card-text>
@@ -199,7 +159,6 @@
             },
             listPackage (){
                 return Object.values(this.$store.getters.bundles);
-                //return this.$store.getters.bundles;
             },
 
             formRegister () {
@@ -259,10 +218,8 @@
 
                     this.searchPackage = false;
                     this.registerPackage= true;
-                    console.log(this.searchData);
                     this.$store.commit('setSelectedBundle', this.searchData);
                     let name = this.searchData.name.toUpperCase();
-                    console.log('name', name);
                     this.$store.commit('setNameBundle', name);
                     for (let exam in this.searchData.exams) {
                         this.$store.commit('addItemsPackage', this.searchData.exams[exam])
@@ -309,7 +266,6 @@
                 this.loading = true;
                 this.$store.commit('setSelectedBundle', bundle);
                 for (let exam in bundle.exams) {
-                    //console.log('exams', budget.exams[exam])
                     this.$store.commit('addItemsPackage', bundle.exams[exam])
                 }
                 this.loading = false
