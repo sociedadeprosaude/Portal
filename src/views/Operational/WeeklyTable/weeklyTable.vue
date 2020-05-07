@@ -218,6 +218,8 @@
     export default {
         data: () => ({
             moment: moment,
+            today: '2020-15-05',
+            //today: '2020-27-05',
             search: '',
             headers: [
                 {text: 'Hora', value: 'hour', align: 'center', sortable: true},
