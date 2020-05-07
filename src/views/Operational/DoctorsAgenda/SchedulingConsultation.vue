@@ -551,6 +551,9 @@
         }),
 
         computed: {
+            isOnline() {
+                return this.$store.getters.isOnline
+            },
             consultationLoading() {
                 return this.$store.getters.consultationsLoading;
             },
