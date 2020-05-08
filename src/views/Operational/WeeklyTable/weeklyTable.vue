@@ -49,7 +49,7 @@
                             <template v-slot:item.monday="{ item }">
                                 <strong v-for="(index,i) in item.monday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="primary">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
@@ -61,6 +61,10 @@
                                         </template>
                                         <span>
                                             <strong>Período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong>
+                                            <br/>
+                                            <strong v-if="index.cancelations_schedules.length == 2">Período de cancelamento: {{index.cancelations_schedules[1].start_date | dateFilter}} a {{index.cancelations_schedules[1].final_date | dateFilter}}</strong>
+                                            <br/>
+                                            <strong v-if="index.cancelations_schedules.length == 3">Período de cancelamento: {{index.cancelations_schedules[2].start_date | dateFilter}} a {{index.cancelations_schedules[2].final_date | dateFilter}}</strong>
                                         </span>
                                     </v-tooltip>
                                     <v-card
@@ -77,7 +81,7 @@
                             <template v-slot:item.tuesday="{ item }">
                                 <strong v-for="(index,i) in item.tuesday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="primary">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
@@ -89,6 +93,10 @@
                                         </template>
                                         <span>
                                             <strong>Período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong>
+                                            <br/>
+                                            <strong v-if="index.cancelations_schedules.length == 2">Período de cancelamento: {{index.cancelations_schedules[1].start_date | dateFilter}} a {{index.cancelations_schedules[1].final_date | dateFilter}}</strong>
+                                            <br/>
+                                            <strong v-if="index.cancelations_schedules.length == 3">Período de cancelamento: {{index.cancelations_schedules[2].start_date | dateFilter}} a {{index.cancelations_schedules[2].final_date | dateFilter}}</strong>
                                         </span>
                                     </v-tooltip>
                                     <v-card
@@ -105,7 +113,7 @@
                             <template v-slot:item.wednesday="{ item }">
                                 <strong v-for="(index,i) in item.wednesday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="primary">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
@@ -117,6 +125,10 @@
                                         </template>
                                         <span>
                                             <strong>Período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong>
+                                            <br/>
+                                            <strong v-if="index.cancelations_schedules.length == 2">Período de cancelamento: {{index.cancelations_schedules[1].start_date | dateFilter}} a {{index.cancelations_schedules[1].final_date | dateFilter}}</strong>
+                                            <br/>
+                                            <strong v-if="index.cancelations_schedules.length == 3">Período de cancelamento: {{index.cancelations_schedules[2].start_date | dateFilter}} a {{index.cancelations_schedules[2].final_date | dateFilter}}</strong>
                                         </span>
                                     </v-tooltip>
                                     <v-card
@@ -133,7 +145,7 @@
                             <template v-slot:item.thursday="{ item }">
                                 <strong v-for="(index,i) in item.thursday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="primary">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
@@ -145,6 +157,10 @@
                                         </template>
                                         <span>
                                             <strong>Período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong>
+                                            <br/>
+                                            <strong v-if="index.cancelations_schedules.length == 2">Período de cancelamento: {{index.cancelations_schedules[1].start_date | dateFilter}} a {{index.cancelations_schedules[1].final_date | dateFilter}}</strong>
+                                            <br/>
+                                            <strong v-if="index.cancelations_schedules.length == 3">Período de cancelamento: {{index.cancelations_schedules[2].start_date | dateFilter}} a {{index.cancelations_schedules[2].final_date | dateFilter}}</strong>
                                         </span>
                                     </v-tooltip>
                                     <v-card
@@ -161,7 +177,7 @@
                             <template v-slot:item.friday="{ item }">
                                 <strong v-for="(index,i) in item.friday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="primary">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
@@ -173,6 +189,10 @@
                                         </template>
                                         <span>
                                             <strong>Período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong>
+                                            <br/>
+                                            <strong v-if="index.cancelations_schedules.length == 2">Período de cancelamento: {{index.cancelations_schedules[1].start_date | dateFilter}} a {{index.cancelations_schedules[1].final_date | dateFilter}}</strong>
+                                            <br/>
+                                            <strong v-if="index.cancelations_schedules.length == 3">Período de cancelamento: {{index.cancelations_schedules[2].start_date | dateFilter}} a {{index.cancelations_schedules[2].final_date | dateFilter}}</strong>
                                         </span>
                                     </v-tooltip>
                                     <v-card
@@ -189,7 +209,7 @@
                             <template v-slot:item.saturday="{ item }">
                                 <strong v-for="(index,i) in item.saturday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="primary">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
@@ -201,6 +221,10 @@
                                         </template>
                                         <span>
                                             <strong>Período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong>
+                                            <br/>
+                                            <strong v-if="index.cancelations_schedules.length == 2">Período de cancelamento: {{index.cancelations_schedules[1].start_date | dateFilter}} a {{index.cancelations_schedules[1].final_date | dateFilter}}</strong>
+                                            <br/>
+                                            <strong v-if="index.cancelations_schedules.length == 3">Período de cancelamento: {{index.cancelations_schedules[2].start_date | dateFilter}} a {{index.cancelations_schedules[2].final_date | dateFilter}}</strong>
                                         </span>
                                     </v-tooltip>
                                     <v-card
@@ -227,8 +251,9 @@
     export default {
         data: () => ({
             moment: moment,
-            today: '2020-15-05',
-            //today: '2020-27-05',
+            //today: '2020-05-15',
+            //today: '2020-05-30',
+            today: moment().format("YYYY-MM-DD"),
             search: '',
             headers: [
                 {text: 'Hora', value: 'hour', align: 'center', sortable: true},
@@ -456,16 +481,27 @@
                         for (let weeklyItem in weeklyTable) {
                             if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek === '1') {
                                 weeklyTable[weeklyItem].monday.push(schedules[schedule])
+
                             } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek === '2') {
+
                                 weeklyTable[weeklyItem].tuesday.push(schedules[schedule])
+
                             } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek === '3') {
+
                                 weeklyTable[weeklyItem].wednesday.push(schedules[schedule])
+
                             } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek === '4') {
+
                                 weeklyTable[weeklyItem].thursday.push(schedules[schedule])
+
                             } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek === '5') {
+
                                 weeklyTable[weeklyItem].friday.push(schedules[schedule])
+
                             } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek === '6') {
+
                                 weeklyTable[weeklyItem].saturday.push(schedules[schedule])
+
                             }
                         }
                     }
