@@ -25,6 +25,7 @@
                                 item-key="hour"
                                 class="elevation-1"
                         >
+
                             <template v-slot:header="{}">
                                 <thead>
                                 <tr>
@@ -38,15 +39,17 @@
                                 </tr>
                                 </thead>
                             </template>
+
                             <template v-slot:item.hour="{ item }">
                                 <v-avatar tile color="primary">
                                     <span style="color: white">{{item.hour}}</span>
                                 </v-avatar>
                             </template>
+
                             <template v-slot:item.monday="{ item }">
                                 <strong v-for="(index,i) in item.monday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="info">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
@@ -63,17 +66,18 @@
                                     <v-card
                                             v-else
                                             class="white--text pa-1 my-n2"
-                                            :color="i === '0' ? 'blue' : i === '1' ? 'green' : i === '2' ? 'red' : i === '3' ? 'purple' : i === '4' ? 'orange' : 'pink'"
+                                            :color="i === 0 ? 'blue' : i === 1 ? 'green' : i === 2 ? 'red' : i === 3 ? 'purple' : i === 4 ? 'orange' : 'pink'"
                                     >
                                         {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                     </v-card>
                                 </strong>
                                 <br/>
                             </template>
+
                             <template v-slot:item.tuesday="{ item }">
                                 <strong v-for="(index,i) in item.tuesday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="info">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
@@ -90,17 +94,18 @@
                                     <v-card
                                             v-else
                                             class="white--text pa-1 my-n2"
-                                            :color="i === '0' ? 'blue' : i === '1' ? 'green' : i === '2' ? 'red' : i === '3' ? 'purple' : i === '4' ? 'orange' : 'pink'"
+                                            :color="i === 0 ? 'blue' : i === 1 ? 'green' : i === 2 ? 'red' : i === 3 ? 'purple' : i === 4 ? 'orange' : 'pink'"
                                     >
                                         {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                     </v-card>
                                 </strong>
                                 <br/>
                             </template>
+
                             <template v-slot:item.wednesday="{ item }">
                                 <strong v-for="(index,i) in item.wednesday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="info">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
@@ -117,17 +122,18 @@
                                     <v-card
                                             v-else
                                             class="white--text pa-1 my-n2"
-                                            :color="i === '0' ? 'blue' : i === '1' ? 'green' : i === '2' ? 'red' : i === '3' ? 'purple' : i === '4' ? 'orange' : 'pink'"
+                                            :color="i === 0 ? 'blue' : i === 1 ? 'green' : i === 2 ? 'red' : i === 3 ? 'purple' : i === 4 ? 'orange' : 'pink'"
                                     >
                                         {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                     </v-card>
                                 </strong>
                                 <br/>
                             </template>
+
                             <template v-slot:item.thursday="{ item }">
                                 <strong v-for="(index,i) in item.thursday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="info">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
@@ -144,17 +150,18 @@
                                     <v-card
                                             v-else
                                             class="white--text pa-1 my-n2"
-                                            :color="i === '0' ? 'blue' : i === '1' ? 'green' : i === '2' ? 'red' : i === '3' ? 'purple' : i === '4' ? 'orange' : 'pink'"
+                                            :color="i === 0 ? 'blue' : i === 1 ? 'green' : i === 2 ? 'red' : i === 3 ? 'purple' : i === 4 ? 'orange' : 'pink'"
                                     >
                                         {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                     </v-card>
                                 </strong>
                                 <br/>
                             </template>
+
                             <template v-slot:item.friday="{ item }">
                                 <strong v-for="(index,i) in item.friday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="info">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
@@ -171,17 +178,18 @@
                                     <v-card
                                             v-else
                                             class="white--text pa-1 my-n2"
-                                            :color="i === '0' ? 'blue' : i === '1' ? 'green' : i === '2' ? 'red' : i === '3' ? 'purple' : i === '4' ? 'orange' : 'pink'"
+                                            :color="i === 0 ? 'blue' : i === 1 ? 'green' : i === 2 ? 'red' : i === 3 ? 'purple' : i === 4 ? 'orange' : 'pink'"
                                     >
                                         {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                     </v-card>
                                 </strong>
                                 <br/>
                             </template>
+
                             <template v-slot:item.saturday="{ item }">
                                 <strong v-for="(index,i) in item.saturday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="info">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
@@ -198,13 +206,14 @@
                                     <v-card
                                             v-else
                                             class="white--text pa-1 my-n2"
-                                            :color="i === '0' ? 'blue' : i === '1' ? 'green' : i === '2' ? 'red' : i === '3' ? 'purple' : i === '4' ? 'orange' : 'pink'"
+                                            :color="i === 0 ? 'blue' : i === 1 ? 'green' : i === 2 ? 'red' : i === 3 ? 'purple' : i === 4 ? 'orange' : 'pink'"
                                     >
                                         {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
                                     </v-card>
                                 </strong>
                                 <br/>
                             </template>
+
                         </v-data-table>
                     </v-card>
                 </v-flex>
