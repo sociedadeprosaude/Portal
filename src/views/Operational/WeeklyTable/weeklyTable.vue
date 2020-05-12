@@ -61,10 +61,8 @@
                                         </template>
                                         <span>
                                             <strong>Período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong>
-                                            <br/>
-                                            <strong v-if="index.cancelations_schedules.length == 2">Período de cancelamento: {{index.cancelations_schedules[1].start_date | dateFilter}} a {{index.cancelations_schedules[1].final_date | dateFilter}}</strong>
-                                            <br/>
-                                            <strong v-if="index.cancelations_schedules.length == 3">Período de cancelamento: {{index.cancelations_schedules[2].start_date | dateFilter}} a {{index.cancelations_schedules[2].final_date | dateFilter}}</strong>
+                                            <div v-if="index.cancelations_schedules.length == 2"><strong>Período de cancelamento: {{index.cancelations_schedules[1].start_date | dateFilter}} a {{index.cancelations_schedules[1].final_date | dateFilter}}</strong></div>
+                                            <div v-if="index.cancelations_schedules.length == 3"><strong>Período de cancelamento: {{index.cancelations_schedules[2].start_date | dateFilter}} a {{index.cancelations_schedules[2].final_date | dateFilter}}</strong></div>
                                         </span>
                                     </v-tooltip>
                                     <v-card
@@ -93,10 +91,8 @@
                                         </template>
                                         <span>
                                             <strong>Período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong>
-                                            <br/>
-                                            <strong v-if="index.cancelations_schedules.length == 2">Período de cancelamento: {{index.cancelations_schedules[1].start_date | dateFilter}} a {{index.cancelations_schedules[1].final_date | dateFilter}}</strong>
-                                            <br/>
-                                            <strong v-if="index.cancelations_schedules.length == 3">Período de cancelamento: {{index.cancelations_schedules[2].start_date | dateFilter}} a {{index.cancelations_schedules[2].final_date | dateFilter}}</strong>
+                                            <div v-if="index.cancelations_schedules.length == 2"><strong>Período de cancelamento: {{index.cancelations_schedules[1].start_date | dateFilter}} a {{index.cancelations_schedules[1].final_date | dateFilter}}</strong></div>
+                                            <div v-if="index.cancelations_schedules.length == 3"><strong>Período de cancelamento: {{index.cancelations_schedules[2].start_date | dateFilter}} a {{index.cancelations_schedules[2].final_date | dateFilter}}</strong></div>
                                         </span>
                                     </v-tooltip>
                                     <v-card
@@ -125,10 +121,8 @@
                                         </template>
                                         <span>
                                             <strong>Período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong>
-                                            <br/>
-                                            <strong v-if="index.cancelations_schedules.length == 2">Período de cancelamento: {{index.cancelations_schedules[1].start_date | dateFilter}} a {{index.cancelations_schedules[1].final_date | dateFilter}}</strong>
-                                            <br/>
-                                            <strong v-if="index.cancelations_schedules.length == 3">Período de cancelamento: {{index.cancelations_schedules[2].start_date | dateFilter}} a {{index.cancelations_schedules[2].final_date | dateFilter}}</strong>
+                                            <div v-if="index.cancelations_schedules.length == 2"><strong>Período de cancelamento: {{index.cancelations_schedules[1].start_date | dateFilter}} a {{index.cancelations_schedules[1].final_date | dateFilter}}</strong></div>
+                                            <div v-if="index.cancelations_schedules.length == 3"><strong>Período de cancelamento: {{index.cancelations_schedules[2].start_date | dateFilter}} a {{index.cancelations_schedules[2].final_date | dateFilter}}</strong></div>
                                         </span>
                                     </v-tooltip>
                                     <v-card
@@ -157,10 +151,8 @@
                                         </template>
                                         <span>
                                             <strong>Período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong>
-                                            <br/>
-                                            <strong v-if="index.cancelations_schedules.length == 2">Período de cancelamento: {{index.cancelations_schedules[1].start_date | dateFilter}} a {{index.cancelations_schedules[1].final_date | dateFilter}}</strong>
-                                            <br/>
-                                            <strong v-if="index.cancelations_schedules.length == 3">Período de cancelamento: {{index.cancelations_schedules[2].start_date | dateFilter}} a {{index.cancelations_schedules[2].final_date | dateFilter}}</strong>
+                                            <div v-if="index.cancelations_schedules.length == 2"><strong>Período de cancelamento: {{index.cancelations_schedules[1].start_date | dateFilter}} a {{index.cancelations_schedules[1].final_date | dateFilter}}</strong></div>
+                                            <div v-if="index.cancelations_schedules.length == 3"><strong>Período de cancelamento: {{index.cancelations_schedules[2].start_date | dateFilter}} a {{index.cancelations_schedules[2].final_date | dateFilter}}</strong></div>
                                         </span>
                                     </v-tooltip>
                                     <v-card
@@ -189,10 +181,8 @@
                                         </template>
                                         <span>
                                             <strong>Período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong>
-                                            <br/>
-                                            <strong v-if="index.cancelations_schedules.length == 2">Período de cancelamento: {{index.cancelations_schedules[1].start_date | dateFilter}} a {{index.cancelations_schedules[1].final_date | dateFilter}}</strong>
-                                            <br/>
-                                            <strong v-if="index.cancelations_schedules.length == 3">Período de cancelamento: {{index.cancelations_schedules[2].start_date | dateFilter}} a {{index.cancelations_schedules[2].final_date | dateFilter}}</strong>
+                                            <div v-if="index.cancelations_schedules.length == 2"><strong>Período de cancelamento: {{index.cancelations_schedules[1].start_date | dateFilter}} a {{index.cancelations_schedules[1].final_date | dateFilter}}</strong></div>
+                                            <div v-if="index.cancelations_schedules.length == 3"><strong>Período de cancelamento: {{index.cancelations_schedules[2].start_date | dateFilter}} a {{index.cancelations_schedules[2].final_date | dateFilter}}</strong></div>
                                         </span>
                                     </v-tooltip>
                                     <v-card
@@ -221,10 +211,8 @@
                                         </template>
                                         <span>
                                             <strong>Período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong>
-                                            <br/>
-                                            <strong v-if="index.cancelations_schedules.length == 2">Período de cancelamento: {{index.cancelations_schedules[1].start_date | dateFilter}} a {{index.cancelations_schedules[1].final_date | dateFilter}}</strong>
-                                            <br/>
-                                            <strong v-if="index.cancelations_schedules.length == 3">Período de cancelamento: {{index.cancelations_schedules[2].start_date | dateFilter}} a {{index.cancelations_schedules[2].final_date | dateFilter}}</strong>
+                                            <div v-if="index.cancelations_schedules.length == 2"><strong>Período de cancelamento: {{index.cancelations_schedules[1].start_date | dateFilter}} a {{index.cancelations_schedules[1].final_date | dateFilter}}</strong></div>
+                                            <div v-if="index.cancelations_schedules.length == 3"><strong>Período de cancelamento: {{index.cancelations_schedules[2].start_date | dateFilter}} a {{index.cancelations_schedules[2].final_date | dateFilter}}</strong></div>
                                         </span>
                                     </v-tooltip>
                                     <v-card
@@ -251,7 +239,7 @@
     export default {
         data: () => ({
             moment: moment,
-            //today: '2020-05-15',
+            //today: '2020-05-16',
             //today: '2020-05-30',
             today: moment().format("YYYY-MM-DD"),
             search: '',
@@ -475,33 +463,45 @@
                     },
                 ]
                 let schedules = this.$store.getters.AllSchedules
+
+                for (let schedule in schedules) {
+                    if(schedules[schedule].cancelations_schedules){
+                        for(let canceled in schedules[schedule].cancelations_schedules) {
+                            if(this.today > schedules[schedule].cancelations_schedules[canceled].final_date){
+                                let deleted = schedules[schedule].cancelations_schedules.shift()
+                                this.$store.dispatch('copyCanceledSchedules', {
+                                    schedule: schedules[schedule],
+                                    cancelations_schedules: deleted,
+                                });
+                                if( schedules[schedule].cancelations_schedules.length === 0){
+                                    delete schedules[schedule].cancelations_schedules
+                                }
+                                this.$store.dispatch('updateCanceledSchedules', {
+                                    cancelations_schedules: schedules[schedule].cancelations_schedules,
+                                    id: schedules[schedule].id,
+                                    schedule: schedules[schedule],
+                                });
+                            }
+                        }
+                    }
+                }
+
                 for (let schedule in schedules) {
                     let daysOfTheWeek = schedules[schedule].days
                     for (let dayOfTheWeek in daysOfTheWeek) {
                         for (let weeklyItem in weeklyTable) {
                             if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek === '1') {
                                 weeklyTable[weeklyItem].monday.push(schedules[schedule])
-
                             } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek === '2') {
-
                                 weeklyTable[weeklyItem].tuesday.push(schedules[schedule])
-
                             } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek === '3') {
-
                                 weeklyTable[weeklyItem].wednesday.push(schedules[schedule])
-
                             } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek === '4') {
-
                                 weeklyTable[weeklyItem].thursday.push(schedules[schedule])
-
                             } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek === '5') {
-
                                 weeklyTable[weeklyItem].friday.push(schedules[schedule])
-
                             } else if (daysOfTheWeek[dayOfTheWeek].hour === weeklyTable[weeklyItem].hour && dayOfTheWeek === '6') {
-
                                 weeklyTable[weeklyItem].saturday.push(schedules[schedule])
-
                             }
                         }
                     }
