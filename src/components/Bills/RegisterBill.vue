@@ -8,24 +8,28 @@
                             <span class="my-headline">Adicionar conta à pagar</span>
                         </v-flex>
                         <v-flex xs12 sm3>
+                            <!--@input.native="category={name:$event.srcElement.value,subCategories:[]}"-->
                             <v-combobox
                                     outlined
-                                    @input.native="category={name:$event.srcElement.value,subCategories:[]}"
                                     v-model="category"
                                     :items="categories"
                                     item-text="name"
                                     return-object
-                                    label="Categoria">
+                                    label="Categoria"
+                                    clearable
+                            >
                             </v-combobox>
+                            <!--@input.native="subCategory=$event.srcElement.value"-->
                             <v-combobox
                                     outlined
                                     v-if="category"
                                     label="Subcategoria"
-                                    @input.native="subCategory=$event.srcElement.value"
                                     v-model="subCategory"
                                     :items="category.subCategories? [...category.subCategories,other]:[other]"
                                     item-text="name"
-                                    return-object>
+                                    return-object
+                                    clearable
+                            >
                             </v-combobox>
                         </v-flex>
                         <v-flex xs12 sm3 class="ml-3">
