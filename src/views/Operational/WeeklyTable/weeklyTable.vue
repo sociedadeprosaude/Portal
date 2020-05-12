@@ -49,7 +49,7 @@
                             <template v-slot:item.monday="{ item }">
                                 <strong v-for="(index,i) in item.monday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today" color="primary">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today && index.cancelations_schedules[0].start_date <= today" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
@@ -79,7 +79,7 @@
                             <template v-slot:item.tuesday="{ item }">
                                 <strong v-for="(index,i) in item.tuesday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today" color="primary">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today && index.cancelations_schedules[0].start_date <= today" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
@@ -109,7 +109,7 @@
                             <template v-slot:item.wednesday="{ item }">
                                 <strong v-for="(index,i) in item.wednesday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today" color="primary">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today && index.cancelations_schedules[0].start_date <= today" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
@@ -139,7 +139,7 @@
                             <template v-slot:item.thursday="{ item }">
                                 <strong v-for="(index,i) in item.thursday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today" color="primary">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today && index.cancelations_schedules[0].start_date <= today" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
@@ -169,7 +169,7 @@
                             <template v-slot:item.friday="{ item }">
                                 <strong v-for="(index,i) in item.friday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today" color="primary">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today && index.cancelations_schedules[0].start_date <= today" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
@@ -199,7 +199,7 @@
                             <template v-slot:item.saturday="{ item }">
                                 <strong v-for="(index,i) in item.saturday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today" color="primary">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today && index.cancelations_schedules[0].start_date <= today" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
