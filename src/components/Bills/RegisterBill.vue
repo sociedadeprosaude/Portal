@@ -115,7 +115,14 @@
                                     </v-layout>
                                 </v-flex>
                                 <v-flex xs12>
-                                    <v-btn class="primary" rounded @click="$refs.files.click()">Adicionar Anexo</v-btn>
+                                    <v-fade-transition>
+                                        <v-flex xs12 class="text-center" v-if="!uploading">
+                                            <v-btn class="primary" rounded @click="$refs.files.click()">Adicionar Anexo</v-btn>
+                                        </v-flex>
+                                        <v-flex xs12 class="text-center" v-else>
+                                            <v-progress-circular indeterminate class="primary--text"/>
+                                        </v-flex>
+                                    </v-fade-transition>
                                 </v-flex>
                                 <label>
                                     <input
@@ -169,6 +176,7 @@
             dateToPay: moment().format("YYYY-MM-DD"),
             paymentMethods: ["Boleto", "Transferência", "Dinheiro"],
             loading: false,
+            uploading: false,
             files: [],
             filesPreviews: [],
             mask: {
@@ -283,6 +291,7 @@
             },
 
             handleFileUpload() {
+                this.uploading = true
                 let uploadedFiles = this.$refs.files.files;
                 for (let i = 0; i < uploadedFiles.length; i++) {
                     if (this.files.indexOf(uploadedFiles[i]) < 0) {
@@ -290,6 +299,7 @@
                         this.readFileUrl(uploadedFiles[i], index - 1);
                     }
                 }
+                setTimeout(() => (this.uploading = false), 2000)
             },
             readFileUrl(file, index) {
                 let self = this;
