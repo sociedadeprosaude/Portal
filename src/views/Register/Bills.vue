@@ -68,6 +68,7 @@
                         <v-flex xs12>
                             <v-layout row wrap>
                                 <span>{{bill.category}}</span>
+                                <br>
                                 <span>{{bill.subCategory}}</span>
                                 <v-divider vertical class="mx-4"/>
                                 <span>{{bill.payment_method}}</span>
