@@ -39,6 +39,7 @@
         mounted() {
             this.$store.dispatch('WarningColaborators');
             this.$store.dispatch('getConsultationsCanceled');
+            this.$store.dispatch('getContestValue');
             this.$store.dispatch('getOuttakes');
             let data = {
                 date: moment().format("YYYY-MM-DD").toString(),
@@ -65,6 +66,9 @@
             notifications () {
                 return this.$store.getters.notification;
             },
+            contestvalue(){
+                return this.$store.getters.contestValue;
+            }
         },
 
         watch: {
@@ -90,7 +94,6 @@
                     await this.$store.dispatch('loadNotifications');
                 }
             },
-
             consultation() {
                 if (this.consultation.length !== 0) {
                     let data = {
@@ -104,9 +107,7 @@
                     this.$store.dispatch('deleteNotification', 'ConsultationCanceled');
                 }
             },
-
             outtakes () {
-
                 if (this.outtakes.length !== 0) {
                     let data = {
                         name: 'outtakes',
@@ -117,6 +118,19 @@
                     this.$store.dispatch('addNotifications', data);
                 } else {
                     this.$store.dispatch('deleteNotification', 'outtakes');
+                }
+            },
+            contestvalue() {
+                if (this.contestvalue.length !== 0) {
+                    let data = {
+                        name: 'contestValue',
+                        info: 'Algumas Clinicas Associadas acreditam que tem exames com preços errados',
+                        link: '/ContestValueAlert',
+                        icon: 'assignment_late',
+                    };
+                    this.$store.dispatch('addNotifications', data);
+                } else {
+                    this.$store.dispatch('deleteNotification', 'contestValue');
                 }
             }
         },
