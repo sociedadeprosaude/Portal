@@ -1,5 +1,6 @@
 import firebase, {firestore} from "firebase";
 import moment from "moment";
+import functions from "../../utils/functions";
 
 const state = {
     clinics: [],
@@ -42,10 +43,10 @@ const actions = {
             let clinics = [];
             clinicsSnap.forEach(function (document) {
                 clinics.push({
-                    id: document.id,
                     ...document.data()
                 });
             });
+            functions.removeUndefineds(clinics)
             commit('setClinics', clinics);
         })
     },
