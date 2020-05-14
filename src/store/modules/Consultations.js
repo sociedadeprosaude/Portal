@@ -528,7 +528,7 @@ const actions = {
         }
 
     },
-
+    //TODO
     async removeScheduleByDay(context, payload) {
         let schedule = await firebase.firestore().collection('schedules')
             .where('specialty.name', "==", payload.specialty.name)
@@ -546,7 +546,7 @@ const actions = {
             firebase.firestore().collection('schedules').doc(doc.id).update({cancelations_schedules: cancelations_schedules})
         })
     },
-
+    //TODO
     async removeConsultations(context, payload) {
         let start = moment(payload.start_date, 'YYYY-MM-DD').format('YYYY-MM-DD 00:00');
         let end = moment(payload.final_date, 'YYYY-MM-DD').format('YYYY-MM-DD 23:59');

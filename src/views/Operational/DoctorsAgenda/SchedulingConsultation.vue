@@ -531,6 +531,10 @@
             especialidade: undefined,
             showAlert: false,
             snackDialogDone: false,
+            attendanceOptions: [
+                {text: "Aguardando Atendimento"},
+                {text: "Atendimento Realizado"}
+            ],
             snack: false,
             changeDoctorsOptions: true,
             success: false,
@@ -551,6 +555,9 @@
         }),
 
         computed: {
+            isOnline() {
+                return this.$store.getters.isOnline
+            },
             consultationLoading() {
                 return this.$store.getters.consultationsLoading;
             },
@@ -704,7 +711,6 @@
             numberVacancyAndReturns(schedule) {
                 let consultations = this.consultas;
                 return consultations.reduce((obj,item)=>{
-
                     if (schedule.clinic.name === item.clinic.name && schedule.specialty.name === item.specialty.name
                         && schedule.doctor.cpf === item.doctor.cpf && schedule.date === item.date  && item.user){
                         if (item.type === 'Consulta') {
@@ -718,13 +724,16 @@
 
             consultationsOfSchedules(schedules){
                 let consultations = [];
+                let now = moment().subtract(5, "hours")
                 schedules.forEach((schedule)=>{
                     let keys = Object.keys(schedule.days);
                     let dates = this.datesOfInterval({weekDays:keys});
 
                     dates.forEach((date)=>{
                         let hourConsultation = schedule.days[moment(date).weekday()].hour;
-                        if(schedule.cancelations_schedules.indexOf(date) === -1 && schedule.cancelations_schedules.indexOf(date + ' ' +hourConsultation) === -1){
+                        if(schedule.cancelations_schedules.indexOf(date) === -1 
+                            && schedule.cancelations_schedules.indexOf(date + ' ' +hourConsultation) === -1
+                            && moment(date + ' ' +hourConsultation).isSameOrAfter(now)){
                             let scheduleObj = {
                                 clinic: schedule.clinic,
                                 doctor: schedule.doctor,
@@ -771,26 +780,6 @@
                 this.createConsultationForm = this.selectedForm;
             },
 
-            specialtyCost() {
-                let espArray = Object.values(this.$store.getters.specialties);
-                let cost = undefined;
-                espArray.forEach(specialty => {
-                    if (specialty.name === this.selectedForm.consultation.specialty.name && specialty.doctors) {
-                        specialty.doctors.forEach(doctor => {
-                            if (doctor.cpf === this.selectedForm.consultation.doctor.cpf) {
-                                cost = {
-                                    cost: doctor.cost,
-                                    price: doctor.price,
-                                    doctorConsultation: doctor
-                                };
-                                return cost
-                            }
-                        });
-                    }
-                });
-                return cost
-            },
-
             async thereIsPaymentNumber() {
                 this.payment_numberFound = undefined;
                 this.numberReceipt = "";
@@ -812,7 +801,7 @@
                         this.loaderPaymentNumber = false
                     })
                     .catch(response => {
-                        let cost = this.specialtyCost();
+                        let cost = response.cost
                         if (cost && cost.price === 0) {
                             this.status = "Pago";
                             this.loaderPaymentNumber = false

@@ -425,3 +425,61 @@ async function removeConsultations(payload) {
     }
     return
 }
+
+exports.thereIsPaymentNumber = functions.runWith(heavyFunctionsRuntimeOpts).https.onCall(async (data, context) => {
+    let payload = data.payload
+    let examesSpecialties = ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'];
+    let procedures;
+    let type = payload.exam ? 'Exam' : 'Consultation';
+    let status = payload.exam ? 'Exame Pago' : 'Consulta Paga';
+    let procedureRef;
+    if (payload.status && payload.payment_number)
+        procedureRef = admin.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', 'Consultation')
+            .where('specialty', '==', payload.specialty.name).where('status', 'array-contains-any', payload.status).where('payment_number', '==', payload.payment_number.toString());
+    else {
+        procedureRef = payload.exam ? procedureRef = admin.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)
+            .where('specialty', '==', payload.specialty.name).where('status', '==', [status]).where('exam.name', '==', payload.exam.name)
+            : procedureRef = admin.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)
+                .where('specialty', '==', payload.specialty.name).where('status', '==', [status])
+    }
+
+
+    let procedureRefOr = admin.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', 'Exam')
+        .where('specialty', '==', payload.specialty.name).where('status', '==', ['Exame Pago'])
+
+    procedures = await procedureRef.get();
+    if (procedures.empty && type === 'Consultation' && examesSpecialties.indexOf(payload.specialty.name) !== -1)
+        procedures = await procedureRefOr.get();
+
+    if (!procedures.empty) {
+        let payment_found
+        procedures.forEach((procedure) => {
+            payment_found = procedure
+        })
+        return {Found:{procedureId: payment_found.id, ...payment_found.data()}}
+    } else {
+        let cost = await specialtyCost(payload.specialty.name,payload.doctor.cpf)
+        return {NotFound:cost};
+    }
+});
+
+async function specialtyCost(specialtyName,doctorCPF){
+    let specialties = await admin.firestore().collection('specialties').get()
+    specialties = convertCollectionIntoArray(specialties)
+
+    let cost = undefined;
+    specialties.forEach(specialty => {
+        if (specialty.name === specialtyName && specialty.doctors) {
+            specialty.doctors.forEach(doctor => {
+                if (doctor.cpf === doctorCPF) {
+                    cost = {
+                        cost: doctor.cost,
+                        price: doctor.price,
+                        doctorConsultation: doctor
+                    };
+                }
+            });
+        }
+    });
+    return cost
+}

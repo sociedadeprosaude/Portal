@@ -54,7 +54,18 @@ const actions = {
         })
 
     },
-
+    /* specialtyCost(context,payload) {
+        return new Promise(async (resolve, reject) => {
+            var findCostSpecialty = firebase.functions().httpsCallable('specialtyCost');
+            findCostSpecialty({specialtyName: payload.specialtyName,doctorCPF:payload.doctorCPF}).then((result)=> {
+                console.log('Success',result)
+                resolve({ ...result.data})
+            }).catch(function(error) {
+                console.log('Error',error)
+                reject('specialty cost not found')
+            });
+        })
+    }, */
 
 };
 
