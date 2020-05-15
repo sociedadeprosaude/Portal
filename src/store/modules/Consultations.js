@@ -553,60 +553,10 @@ const actions = {
         firebase.firestore().collection('historyOfCanceledSchedules').add(copy)
     },
 
-    async removeScheduleByDay(context, payload) {
-        let schedule = await firebase.firestore().collection('schedules')
-            .where('specialty.name', "==", payload.specialty.name)
-            .where('doctor.cpf', "==", payload.doctor.cpf)
-            .where('clinic.cnpj', '==', payload.clinic.cnpj).get()
-        schedule.forEach((doc) => {
-            let data = doc.data()
-            let cancelations_schedules = data.cancelations_schedules ? data.cancelations_schedules : []
-            let obj = {start_date: payload.start_date, final_date: payload.final_date}
-            if (payload.hour)
-                obj.hour = payload.hour
-            if (payload.weekDays)
-                obj.week_days = payload.weekDays
-            cancelations_schedules.push({...obj})
-            firebase.firestore().collection('schedules').doc(doc.id).update({cancelations_schedules: cancelations_schedules})
-        })
-    },
-    //TODO
-    async removeConsultations(context, payload) {
-        let start = moment(payload.start_date, 'YYYY-MM-DD').format('YYYY-MM-DD 00:00');
-        let end = moment(payload.final_date, 'YYYY-MM-DD').format('YYYY-MM-DD 23:59');
-        payload = functions.removeUndefineds(payload);
-        try {
-            let snapshot = await firebase.firestore().collection('consultations')
-                .where('specialty.name', "==", payload.specialty.name)
-                .where('doctor.cpf', "==", payload.doctor.cpf).where('clinic.name', '==', payload.clinic.cnpj)
-                .where('date', ">=", start).where('date', "<=", end).get();
-
-            snapshot.forEach(async doc => {
-
-                let dateConsultation = moment(doc.data().date);
-                let filterHour = payload.hour ? doc.data().date.split(' ')[1] === payload.hour ? true : false : true
-                let filterDayWeek = payload.weekDays ? payload.weekDays.indexOf(dateConsultation.weekday()) > -1 ? true : false : true
-
-                if (filterHour && filterDayWeek) {
-                    firebase.firestore().collection('consultations').doc(doc.id).delete();
-                }
-                if (filterHour && filterDayWeek && doc.data().user) {
-                    firebase.firestore().collection('users').doc(doc.data().user.cpf).collection('consultations').doc(doc.id).delete();
-                    firebase.firestore().collection('canceled').doc(doc.id).set(doc.data())
-                }
-            })
-        } catch (e) {
-            throw e
-        }
-        return
-    },
-
     async removeAppointmentByDay(context, payload) {
         try {
             var deleteScheduleByDay = firebase.functions().httpsCallable('deleteScheduleByDay');
             await deleteScheduleByDay({payload: payload})
-            //await context.dispatch('removeConsultations',payload)
-            //await context.dispatch('removeScheduleByDay',payload)
         } catch (e) {
             throw e
         }
