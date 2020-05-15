@@ -125,7 +125,8 @@ const actions = {
                 let AllSchedules = [];
                 AllSchedulesSnap.forEach(function (document) {
                     AllSchedules.push({
-                        ...document.data()
+                        ...document.data(),
+                        id: document.id
                     });
                 });
                 commit('setAllSchedules', AllSchedules);
@@ -528,7 +529,30 @@ const actions = {
         }
 
     },
-    //TODO
+
+    async updateCanceledSchedules ({commit},payload) {
+        functions.removeUndefineds(payload)
+        if(payload.cancelations_schedules){
+            firebase.firestore().collection('schedules').doc(payload.id).update({cancelations_schedules: payload.cancelations_schedules})
+        } else {
+            firebase.firestore().collection('schedules').doc(payload.id).set(payload.schedule)
+        }
+    },
+
+    async copyCanceledSchedules ({commit},payload) {
+        functions.removeUndefineds(payload)
+        let copy = {
+            cancelations_schedules: payload.cancelations_schedules,
+            id: payload.schedule.id,
+            clinic: payload.schedule.clinic,
+            days: payload.schedule.days,
+            doctor: payload.schedule.doctor,
+            routine_id: payload.schedule.routine_id,
+            specialty: payload.schedule.specialty,
+        }
+        firebase.firestore().collection('historyOfCanceledSchedules').add(copy)
+    },
+
     async removeScheduleByDay(context, payload) {
         let schedule = await firebase.firestore().collection('schedules')
             .where('specialty.name', "==", payload.specialty.name)

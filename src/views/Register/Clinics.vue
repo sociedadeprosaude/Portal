@@ -204,6 +204,8 @@
                                         <v-card-actions>
                                             <v-btn rounded color="error" @click="close">Cancelar</v-btn>
                                             <v-spacer></v-spacer>
+                                            <v-btn rounded color="success"  :to="{ name: 'RegisterNewUserClinic', params: {id: editedItem.cnpj } }">Gerar Link para Usuario
+                                            </v-btn>
                                             <submit-button
                                                     color="success"
                                                     @click="save"
@@ -333,9 +335,11 @@
     import Configurations from "../../components/clinics/Configurations";
     import SubmitButton from "../../components/SubmitButton";
     import RegisterNewClinic from "../../components/clinics/RegisterNewClinic";
+    import RegisterClinicPassword from "../../components/clinics/RegisterClinicPassword";
+
 
     export default {
-        components: {Configurations, Products, Consultations, Exams, SubmitButton, RegisterNewClinic},
+        components: {Configurations, Products, Consultations, Exams, SubmitButton, RegisterNewClinic, RegisterClinicPassword},
         directives: {mask},
         data: () => ({
             Exam: false,
@@ -510,7 +514,6 @@
         },
 
         methods: {
-
 
             async loadClinics() {
               this.loading = true;

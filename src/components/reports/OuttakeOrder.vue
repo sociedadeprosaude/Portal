@@ -28,6 +28,8 @@
                       <v-layout row wrap>
                         <v-flex xs12 md3 class="text-center">
                           <span>{{bill.category}}</span>
+                          <br>
+                          <span>{{bill.subCategory}}</span>
                         </v-flex>
                         <v-divider vertical class="mx-4 hidden-xs-only"/>
                         <v-flex xs12 md2 class="text-center">

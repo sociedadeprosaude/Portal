@@ -1,4 +1,5 @@
 import firebase from "firebase";
+import functions from "../../utils/functions";
 
 const state = {
     specialties: [],
@@ -18,8 +19,33 @@ const mutations = {
 
 const actions = {
 
-    async loadSpecialties({commit}) {
-        firebase.firestore().collection('specialties').onSnapshot(async function(data) {
+    async updateSpecialty({ commit }, specialty) {
+
+        try {
+            for (let data in specialty) {
+                if (!specialty[data]) {
+                    delete specialty[data]
+                }
+            }
+            let specialtyRef;
+            specialtyRef = await firebase.firestore().collection('specialties').doc(specialty.name).update(specialty);
+            return specialtyRef
+        } catch (e) {
+            throw e
+        }
+    },
+
+    async searchSpecialty(context, search) {
+
+        let specialties = [];
+        if (search) {
+            specialties = functions.search(search, context.getters.specialties).slice(0, 100)
+        }
+        return specialties
+    },
+
+    async loadSpecialties({ commit }) {
+        firebase.firestore().collection('specialties').onSnapshot(async function (data) {
             let allSpecialties = [];
             for (let specDoc in data.docs) {
                 let specialty = data.docs[specDoc].data();
