@@ -43,7 +43,7 @@
                             <v-layout row wrap>
                                 <v-flex class="ml-2" sm12>
                                     <v-card v-for="item in items" class="my-3" :key="item.id">
-                                        <v-card-title class="pt-2 " v-text="item.name"></v-card-title>
+                                        <v-card-title class="pt-2 " v-text="item.name"/>
                                         <v-card-text v-if="categorySelect === 'exam'">
                                             <v-slide-group >
                                                 <v-slide-item v-for="n in item.clinics"

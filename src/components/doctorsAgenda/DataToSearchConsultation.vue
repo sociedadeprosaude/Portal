@@ -92,10 +92,10 @@
             consultations () {
                 return this.$store.getters.consultations.filter(a => {
                     if (this.doctor) {
-                        if (this.doctor.cpf !== a.doctor.cpf) return  false;
+                        if (this.doctor.cpf !== a.doctor.cpf) return false;
                     }
                     if (this.specialty) {
-                        if (this.specialty.name !== a.specialty.name) return  false;
+                        if (this.specialty.name !== a.specialty.name) return false;
                     }
                     if (this.clinic) {
                         if (this.clinic !== a.clinic.name) return false;
@@ -139,14 +139,13 @@
                             .subtract(5, "hours")
                             .format("YYYY-MM-DD HH:mm:ss"),
                         final_date: moment()
-                            .add(this.daysToListen, "days")
+                            .add(3, "days")
                             .format("YYYY-MM-DD 23:59:59")
                     }
                 );
             },
 
             consultationsByDate(consultations) {
-                console.log('consultation : ', consultations)
                 let res = {};
                 consultations.sort((a,b)=>{
                     return a.date > b.date ? 1 : a.date < b.date ? -1 : 0
@@ -157,8 +156,7 @@
                         res[targetDate] = [];
                     }
                     res[targetDate].push(consultations[cons]);
-                }
-                console.log('res: ', res)
+                };
                 this.$emit('GetConsultations', res);
                 return res;
             },

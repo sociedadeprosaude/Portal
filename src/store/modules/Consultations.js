@@ -157,7 +157,7 @@ const actions = {
                 query = query.where('clinic.name', '==', payload.clinic.name)
             }
             commit('setConsultationLoading', true);
-            dispatch('listenConsultations', payload)
+            dispatch('listenConsultations', payload);
             return query.onSnapshot((querySnapshot) => {
                 schedules = []
                 querySnapshot.forEach((schedule) => {
