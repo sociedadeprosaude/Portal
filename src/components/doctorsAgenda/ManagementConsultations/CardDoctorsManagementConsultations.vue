@@ -1,19 +1,12 @@
 <template>
     <v-container>
-        <v-layout row wrap>
+        <v-layout row wrap v-if="especialtie">
             <v-flex xs12 v-for="(consultation, i) in ConsultationsByDoctors(consultations)">
                 <v-card>
                     <v-layout row wrap>
                         <v-flex xs12 >
                             <v-card color="indigo darken-4">
                                 <v-layout row wrap>
-                                    <v-flex xs2>
-                                        <v-btn @click="printConsultation(consultation)">
-                                        </v-btn>
-                                    </v-flex>
-                                    <v-flex xs10>
-                                        <v-spacer></v-spacer>
-                                    </v-flex>
                                     <v-flex xs5>
                                         <p class="white--text text-left">{{consultation.doctor.name}}</p>
                                     </v-flex>
@@ -46,7 +39,7 @@
                             <v-divider></v-divider>
                         </v-flex>
                         <v-flex sm4  v-for="item in consultation.consultations">
-                            <v-card outlined class="borderCard">
+                            <v-card outlined class="borderCard" @click="patientSelect(item)">
                                 <v-layout row wrap>
                                     <v-flex xs12>
                                         <p class="text-left">{{item.user.name}}</p>
@@ -83,6 +76,7 @@
                 "Sexta-feira",
                 "Sábado"
             ],
+            patientSelected:[]
         }),
         computed: {
             consultations() {
@@ -128,10 +122,11 @@
                 var dateMoment = moment(date);
                 return this.semanaOptions[dateMoment.day()];
             },
-            printConsultation(consultation){
-                console.log('consultation', consultation)
-            }
-        },
+            patientSelect: function (item) {
+                this.$emit('patientSelect',item.user)
+                this.$emit('consultationSelect',item)
+            },
+        }
     }
 </script>
 <style scoped>

@@ -83,7 +83,6 @@ const actions = {
 
 
     async listenConsultations({commit}, payload) {
-        console.log('payload: ', payload)
         try {
             commit('setConsultationsLoaded', false);
             let consultations = [];
