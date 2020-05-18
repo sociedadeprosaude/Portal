@@ -4,53 +4,54 @@
             <v-flex xs12 v-for="(consultation, i) in ConsultationsByDoctors(consultations)">
                 <v-card>
                     <v-layout row wrap>
-                        <v-flex xs12 >
-                            <v-card color="indigo darken-4">
-                                <v-layout row wrap>
+                        <v-flex xs12>
+                            <v-card color="primary">
+                                <v-layout row wrap class="py-2 px-3">
                                     <v-flex xs5>
-                                        <p class="white--text text-left">{{consultation.doctor.name}}</p>
+                                        <p class="white--text text-left font-weight-bold">
+                                            <v-icon dark left large>account_circle</v-icon>
+                                            {{consultation.doctor.name}}
+                                        </p>
                                     </v-flex>
+                                    <v-spacer/>
                                     <v-flex xs3>
-                                        <v-spacer></v-spacer>
-                                    </v-flex>
-                                    <v-flex xs4>
-                                        <p class="white--text"> N° de Consultas: {{consultation.numConsultations}}</p>
+                                        <p class="white--text font-weight-bold text-left"> N° de Consultas: {{consultation.numConsultations}}</p>
                                     </v-flex>
                                     <v-flex xs5>
-                                        <p class="white--text text-left"> CRM: {{consultation.doctor.crm}}</p>
+                                        <p class="white--text text-left font-weight-bold"> CRM: {{consultation.doctor.crm}}</p>
                                     </v-flex>
+                                    <v-spacer/>
                                     <v-flex xs3>
-                                        <v-spacer></v-spacer>
-                                    </v-flex>
-                                    <v-flex xs4>
-                                        <p class="white--text"> N° de Retorno: {{consultation.numRegress}}</p>
+                                        <p class="white--text font-weight-bold text-left"> N° de Retorno: {{consultation.numRegress}}</p>
                                     </v-flex>
                                     <v-flex xs5>
-                                        <p class="white--text text-left"> CPF: {{consultation.doctor.cpf}}</p>
+                                        <p class="white--text text-left font-weight-bold"> CPF: {{consultation.doctor.cpf}}</p>
                                     </v-flex>
                                 </v-layout>
                             </v-card>
                         </v-flex>
-                        <v-flex xs12>
-                            <p class="text-left" v-if="ConsultationsByDoctors(consultations).length != 0">{{date |
+                        <v-flex xs12 class="mt-4 mb-3">
+                            <p class="text-left primary--text font-weight-bold ml-2" v-if="ConsultationsByDoctors(consultations).length !== 0">{{date |
                                 dateFilter}} - {{daydate(date)}}</p>
+                            <v-divider class="primary"/>
                         </v-flex>
-                        <v-flex xs12>
-                            <v-divider></v-divider>
-                        </v-flex>
-                        <v-flex sm4  v-for="item in consultation.consultations">
-                            <v-card outlined class="borderCard" @click="patientSelect(item)">
-                                <v-layout row wrap>
-                                    <v-flex xs12>
-                                        <p class="text-left">{{item.user.name}}</p>
+                        <v-flex sm4 v-for="item in consultation.consultations" class="mt-3 mb-2">
+                            <v-card outlined class="borderCard mx-2 mr-2 grey_light" @click="patientSelect(item)">
+                                <v-layout row wrap class="mt-2">
+                                    <v-flex xs4>
+                                        <v-icon large>person</v-icon>
+                                        <br>
+                                        <v-icon small class="mt-1">donut_large</v-icon>
                                     </v-flex>
-                                    <v-flex xs12>
-                                        <p class="text-left">{{item.date.substring(11,16)}}</p>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                        <p class="text-left">Agendado em: {{item.date.substring(0,10)}}</p>
+                                    <v-flex xs8 class="mb-3">
+                                        <v-flex xs12>
+                                            <h4 class="text-left font-weight-bold">{{item.user.name}}</h4>
+                                            <h5 class="text-left mt-1">{{item.date.substring(11,16)}}</h5>
+                                            <h5 class="text-left">Agendado em: {{item.date.substring(0,10)}}</h5>
+                                        </v-flex>
                                     </v-flex>
                                 </v-layout>
+
                             </v-card>
                         </v-flex>
                     </v-layout>
@@ -65,7 +66,7 @@
 
     export default {
         name: "CardDoctorsManagementConsultations",
-        props: ['especialtie','date'],
+        props: ['especialtie', 'date'],
         data: () => ({
             semanaOptions: [
                 "Domingo",
@@ -76,7 +77,7 @@
                 "Sexta-feira",
                 "Sábado"
             ],
-            patientSelected:[]
+            patientSelected: []
         }),
         computed: {
             consultations() {
@@ -89,14 +90,12 @@
             this.initialConfig()
 
         },
-        watch: {
-
-        },
+        watch: {},
         methods: {
             ConsultationsByDoctors(consultations) {
-                let res = {}
+                let res = {};
                 for (let cons in consultations) {
-                    let targetDate = consultations[cons].doctor.cpf
+                    let targetDate = consultations[cons].doctor.cpf;
                     if (!res[targetDate]) {
                         res[targetDate] = {
                             doctor: consultations[cons].doctor,
@@ -105,8 +104,8 @@
                             consultations: []
                         }
                     }
-                    if (consultations[cons].type == 'Consulta') res[targetDate].numConsultations += 1
-                    else res[targetDate].numRegress += 1
+                    if (consultations[cons].type === 'Consulta') res[targetDate].numConsultations += 1;
+                    else res[targetDate].numRegress += 1;
                     res[targetDate].consultations.push(consultations[cons])
                 }
                 return res
@@ -123,14 +122,16 @@
                 return this.semanaOptions[dateMoment.day()];
             },
             patientSelect: function (item) {
-                this.$emit('patientSelect',item.user)
-                this.$emit('consultationSelect',item)
+                this.$emit('patientSelect', item.user);
+                this.$emit('consultationSelect', item)
             },
         }
     }
 </script>
 <style scoped>
-    .borderCard{
+    .borderCard {
         border-radius: 50%;
+        border: #808080 solid;
     }
+
 </style>

@@ -9,14 +9,11 @@
                                     :items="specialties"
                                     item-text="name"
                                     return-object
-                                    label="Especialidade"
+                                    placeholder="Especialidade"
                                     outlined
                                     color="write"
-                            >
-                            </v-combobox>
-                        </v-flex>
-                        <v-flex sm2>
-                            <v-spacer></v-spacer>
+                                    class="mr-3"
+                            />
                         </v-flex>
                         <v-flex xs4>
                             <v-menu
@@ -32,18 +29,20 @@
                                     <v-text-field
                                             outlined
                                             v-model="dateFormatted"
-                                            label="Data Inicial"
+                                            placeholder="Data Inicial"
+                                            hint="Data Inicial"
                                             @blur="date = parseDate(dateFormatted)"
                                             v-on="on"
-                                    ></v-text-field>
+                                            class="mx-3"
+                                    />
                                 </template>
-                                <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
+                                <v-date-picker v-model="date" no-title @input="menu1 = false"/>
                             </v-menu>
                         </v-flex>
                     </v-layout>
                     <v-layout aling-center row wrap>
                         <v-flex xs12>
-                            <CardDoctorsManagementConsultations @consultationSelect="consultatioSelect= $event" @patientSelect="patientSelected = $event" :especialtie="especialtie" :date="date"></CardDoctorsManagementConsultations>
+                            <CardDoctorsManagementConsultations @consultationSelect="consultatioSelect= $event" @patientSelect="patientSelected = $event" :especialtie="especialtie" :date="date"/>
                         </v-flex>
                     </v-layout>
                 </v-card>
@@ -54,88 +53,63 @@
                         <v-flex xs12>
                             <p class="white--text text-left title">Consultas</p>
                         </v-flex>
-                        <v-flex xs12>
-                            <v-divider color="white"></v-divider>
+                        <v-flex xs12 class="mb-2">
+                            <v-divider color="white"/>
                         </v-flex>
-                        <v-flex xs12 class="spacerH">
-                            <v-spacer></v-spacer>
-                        </v-flex>
-                        <v-flex xs1>
-                            <v-spacer></v-spacer>
-                        </v-flex>
-                        <v-flex xs10>
+                        <v-flex xs12 class="mt-3 mx-7">
                             <v-card class="cardw">
                                 <v-layout row wrap>
                                     <v-flex xs4>
                                         <p class="font-weight-black">Paciente</p>
                                     </v-flex>
                                     <v-flex xs8>
-                                        <v-spacer></v-spacer>
+                                        <v-spacer/>
                                     </v-flex>
                                     <v-flex xs12>
-                                        <CardPatientManagementConsultations :patient="patientSelected"></CardPatientManagementConsultations>
+                                        <CardPatientManagementConsultations :patient="patientSelected"/>
                                     </v-flex>
                                 </v-layout>
                             </v-card>
                         </v-flex>
-                        <v-flex xs1>
-                            <v-spacer></v-spacer>
+                        <v-flex xs12 class="mt-4 mb-2">
+                            <v-divider color="white"/>
                         </v-flex>
-                        <v-flex xs12 class="spacerH">
-                            <v-spacer></v-spacer>
-                        </v-flex>
-                        <v-flex xs12>
-                            <v-divider color="white"></v-divider>
-                        </v-flex>
-                        <v-flex xs12 class="spacerH">
-                            <v-spacer></v-spacer>
-                        </v-flex>
-                        <v-flex xs1>
-                            <v-spacer></v-spacer>
-                        </v-flex>
-                        <v-flex xs10>
-                            <v-card class="cardConsultation">
+                        <v-flex xs12 class="mt-3 mx-7">
+                            <v-card class="cardConsultation ">
                                 <v-layout row wrap>
                                     <v-flex xs4>
                                         <p class="font-weight-black">Consulta</p>
                                     </v-flex>
                                     <v-flex xs8>
-                                        <v-spacer></v-spacer>
+                                        <v-spacer/>
                                     </v-flex>
                                     <v-flex xs12>
-                                        <card-consultation-management-consultations :consultation="consultatioSelect"></card-consultation-management-consultations>
+                                        <card-consultation-management-consultations :consultation="consultatioSelect"/>
                                     </v-flex>
                                 </v-layout>
                             </v-card>
                         </v-flex>
-                        <v-flex xs1>
-                            <v-spacer></v-spacer>
-                        </v-flex>
-                        <v-flex xs12 class="spacerH">
-                            <v-spacer></v-spacer>
-                        </v-flex>
-                        <v-card-actions>
+                        <v-card-actions class="ml-4 mt-4 ">
                             <v-btn
-                                    color="error"
+                                    color="white"
                                     rounded
                                     :disabled="consultatioSelect.status === 'Cancelado'"
                                     @click="deleted()"
-                            >
-                                Cancelar
-                                <v-icon>delete</v-icon>
-                            </v-btn>
-                            <v-spacer></v-spacer>
+                                    class="mx-2"
+                            > Cancelar </v-btn>
                             <v-btn
-                                    color="blue"
+                                    color="white"
                                     rounded
-                                    dark
+                                    class="mx-2"
                                     :to="{ name: 'AgendarRetorno', params: { q: {...this.consultatioSelect}}}"
                                     :disabled="consultatioSelect.status !== 'Pago'"
                                     v-if="consultatioSelect.type !== 'Retorno'"
                             >Retorno
-                                <v-icon>refresh</v-icon>
                             </v-btn>
                         </v-card-actions>
+                        <v-flex xs12 class="mt-4 mb-2">
+                            <v-divider color="white"/>
+                        </v-flex>
                     </v-layout>
                 </v-card>
             </v-flex>
@@ -166,8 +140,8 @@
             },
         },
         mounted() {
-            this.initialConfig()
-            this.date = moment().format('YYYY-MM-DD')
+            this.initialConfig();
+            this.date = moment().format('YYYY-MM-DD');
             this.dateFormatted = moment().format('DD/MM/YYYY')
         },
         watch: {
@@ -177,25 +151,25 @@
         },
         methods: {
             async initialConfig() {
-                await this.$store.dispatch("getSpecialties")
+                await this.$store.dispatch("getSpecialties");
                 this.especialidade = this.specialties[0]
             },
             formatDate (date) {
-                if (!date) return null
+                if (!date) return null;
 
-                const [year, month, day] = date.split('-')
+                const [year, month, day] = date.split('-');
                 return `${day}/${month}/${year}`
             },
             parseDate (date) {
-                if (!date) return null
+                if (!date) return null;
 
-                const [month, day, year] = date.split('/')
+                const [month, day, year] = date.split('/');
                 return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
             },
             returnOutRule(item){
-                var dateConsultation = moment(item.consultation.date)
-                var today = moment()
-                var diff = today.diff(dateConsultation,'days')
+                let dateConsultation = moment(item.consultation.date);
+                let today = moment();
+                let diff = today.diff(dateConsultation,'days');
                 return diff > 21
             },
             deleted() {
@@ -209,15 +183,11 @@
                     regress: this.consultatioSelect.consultation.regress,
                     previousConsultation: this.consultatioSelect.consultation.previousConsultation,
                     consultation:this.consultatioSelect.consultation
-                })
-                this.clear()
+                });
+                this.clear();
                 this.dialog = false
 
             },
-            verConsole(item){
-                console.log('item: ', item)
-            }
-
         },
     }
 </script>
@@ -230,7 +200,6 @@
     .cardConsultation{
         width: 100%;
         height: 300px;
-        align-self: center;
     }
     .spacerH{
         height: 10px;
