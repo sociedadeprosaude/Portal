@@ -30,7 +30,7 @@
                                     <v-spacer></v-spacer>
                                     <v-flex xs1>
                                         <v-btn icon class="grey my-1 mx-1" dark x-small text fab>
-                                            <v-icon @click="deactivateDoctor(item)">power_settings_new</v-icon>
+                                            <v-icon @click="deactivateDoctor(consultation.doctor)">power_settings_new</v-icon>
                                         </v-btn>
                                     </v-flex>
                                 </v-layout>
@@ -63,36 +63,34 @@
                     </v-layout>
                 </v-card>
             </v-flex>
+            <v-dialog v-model="confirmDeactivate" max-width="500px" persistent>
+                <v-card>
+                    <v-card-title>
+                        <v-spacer/>
+                        <v-btn text @click="confirmDeactivate = false, cleanSpecialtyToDeactivate()" x-small fab>
+                            <v-icon>close</v-icon>
+                        </v-btn>
+                    </v-card-title>
+                    <v-select :items="specialtiesDoctor" v-model="specialtyToDeactivate" outlined persistent-hint
+                              class="mx-5 mb-4" multiple return-object chips
+                              hint="Selecione as especialidades para desativar"/>
+                    <v-select :items="clinics" v-model="clinicsToDeactivate" outlined persistent-hint item-value="name"
+                              item-text="name"
+                              class="mx-5 mb-4" multiple return-object chips hint="Selecione a unidade"/>
+                    <v-card-text>
+                        <span>Desativar </span>
+                        <span class="font-weight-bold justify-center">{{selectedDoctor.name}}</span>
+                        <span> ?</span>
+                    </v-card-text>
+                    <v-card-actions class="mx-3">
+                        <v-spacer/>
+                        <submit-button text="Confirmar" :loading="loading" :success="success" @reset="success = false"
+                                       @click="confirmDesactivateDoctor(selectedDoctor)">
+                        </submit-button>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
         </v-layout>
-        <v-dialog v-model="confirmDeactivate" max-width="500px" persistent>
-            <v-card>
-                <v-card-title>
-                    <v-spacer/>
-                    <v-btn text @click="confirmDeactivate = false, cleanSpecialtyToDeactivate()" x-small fab>
-                        <v-icon>close</v-icon>
-                    </v-btn>
-                </v-card-title>
-                <v-select :items="specialtiesDoctor" v-model="specialtyToDeactivate" outlined persistent-hint
-                          class="mx-5 mb-4" multiple return-object chips
-                          hint="Selecione as especialidades para desativar"/>
-                <v-select :items="clinics" v-model="clinicsToDeactivate" outlined persistent-hint item-value="name"
-                          item-text="name"
-                          class="mx-5 mb-4" multiple return-object chips hint="Selecione a unidade"/>
-                <v-card-text>
-                    <span>Desativar </span>
-                    <span class="font-weight-bold justify-center">{{selectedDoctor.name}}</span>
-                    <span> ?</span>
-                </v-card-text>
-                <v-card-actions class="mx-3">
-                    <v-spacer/>
-                    <submit-button text="Confirmar" :loading="loading" :success="success" @reset="success = false"
-                                   @click="confirmDesactivateDoctor(selectedDoctor)">
-                    </submit-button>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-
-
     </v-container>
 </template>
 
@@ -114,8 +112,12 @@
             ],
             selectedDoctor:[],
             specialtiesDoctor:'',
-            confirmDeactivate:'',
-            patientSelected: []
+            success:false,
+            loading:false,
+            confirmDeactivate:false,
+            patientSelected: [],
+            specialtyToDeactivate:[],
+            clinicsToDeactivate:[]
         }),
         computed: {
             consultations() {
@@ -130,6 +132,11 @@
         },
         watch: {},
         methods: {
+
+            cleanSpecialtyToDeactivate(){
+                this.specialtyToDeactivate=[]
+                this.clinicsToDeactivate=[]
+            },
             ConsultationsByDoctors(consultations) {
                 let res = {};
                 for (let cons in consultations) {
