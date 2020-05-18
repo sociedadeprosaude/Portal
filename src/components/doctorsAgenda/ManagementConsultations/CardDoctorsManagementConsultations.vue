@@ -27,6 +27,12 @@
                                     <v-flex xs5>
                                         <p class="white--text text-left font-weight-bold"> CPF: {{consultation.doctor.cpf}}</p>
                                     </v-flex>
+                                    <v-spacer></v-spacer>
+                                    <v-flex xs1>
+                                        <v-btn icon class="grey my-1 mx-1" dark x-small text fab>
+                                            <v-icon @click="deactivateDoctor(item)">power_settings_new</v-icon>
+                                        </v-btn>
+                                    </v-flex>
                                 </v-layout>
                             </v-card>
                         </v-flex>
@@ -58,6 +64,35 @@
                 </v-card>
             </v-flex>
         </v-layout>
+        <v-dialog v-model="confirmDeactivate" max-width="500px" persistent>
+            <v-card>
+                <v-card-title>
+                    <v-spacer/>
+                    <v-btn text @click="confirmDeactivate = false, cleanSpecialtyToDeactivate()" x-small fab>
+                        <v-icon>close</v-icon>
+                    </v-btn>
+                </v-card-title>
+                <v-select :items="specialtiesDoctor" v-model="specialtyToDeactivate" outlined persistent-hint
+                          class="mx-5 mb-4" multiple return-object chips
+                          hint="Selecione as especialidades para desativar"/>
+                <v-select :items="clinics" v-model="clinicsToDeactivate" outlined persistent-hint item-value="name"
+                          item-text="name"
+                          class="mx-5 mb-4" multiple return-object chips hint="Selecione a unidade"/>
+                <v-card-text>
+                    <span>Desativar </span>
+                    <span class="font-weight-bold justify-center">{{selectedDoctor.name}}</span>
+                    <span> ?</span>
+                </v-card-text>
+                <v-card-actions class="mx-3">
+                    <v-spacer/>
+                    <submit-button text="Confirmar" :loading="loading" :success="success" @reset="success = false"
+                                   @click="confirmDesactivateDoctor(selectedDoctor)">
+                    </submit-button>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+
     </v-container>
 </template>
 
@@ -77,6 +112,9 @@
                 "Sexta-feira",
                 "Sábado"
             ],
+            selectedDoctor:[],
+            specialtiesDoctor:'',
+            confirmDeactivate:'',
             patientSelected: []
         }),
         computed: {
@@ -110,6 +148,12 @@
                 }
                 return res
             },
+            deactivateDoctor(item) {
+                this.selectedDoctor = item;
+                this.clinics = item.clinics;
+                this.specialtiesDoctor = item.specialties.split(', ');
+                this.confirmDeactivate = true;
+            },
             async initialConfig() {
                 await this.$store.dispatch('listenConsultations',
                     {
@@ -124,6 +168,23 @@
             patientSelect: function (item) {
                 this.$emit('patientSelect', item.user);
                 this.$emit('consultationSelect', item)
+            },
+            async confirmDesactivateDoctor(item) {
+                this.loading = true;
+                for (let i in this.clinicsToDeactivate) {
+                    let data = {
+                        doctor: item,
+                        specialties: this.specialtyToDeactivate,
+                        clinic: this.clinicsToDeactivate[i],
+                    };
+                    await this.$store.dispatch('deactivateScheduleDoctor', data);
+                }
+                this.success = true;
+                this.loading = false;
+                this.cleanSpecialtyToDeactivate();
+                setTimeout(() => {
+                    this.confirmDeactivate = false
+                }, 800)
             },
         }
     }
