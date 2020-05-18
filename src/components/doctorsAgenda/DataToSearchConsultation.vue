@@ -26,32 +26,32 @@
 
     export default {
         components: {DataDoctorToSearchConsultation, CardPatient},
+
         data: () => ({
 
             date: moment().format("YYYY-MM-DD"),
+            consultationsListenerUnsubscriber: undefined,
 
         }),
 
-        async mounted()  {
-             await this.$store.dispatch(
-                "getSchedules",
-                {
-                    start_date: moment()
-                        .subtract(5, "hours")
-                        .format("YYYY-MM-DD HH:mm:ss"),
-                    final_date: moment()
-                        .add(this.daysToListen, "days")
-                        .format("YYYY-MM-DD 23:59:59")
-                }
-            );
+        mounted() {
+
+            this.listenConsultations()
         },
+
+        beforeDestroy() {
+            this.consultationsListenerUnsubscriber();
+        },
+
+
 
         watch: {
 
-            date (val) {
+            date(val) {
                 if (val === this.consultations[0].date) this.$vuetify.goTo(0, this.options);
                 else this.$vuetify.goTo("#group-" + val, this.options);
             },
+
             doctor () {
                 return this.$store.getters.doctorSelected
             },
@@ -63,8 +63,6 @@
             specialty () {
                 return this.$store.getters.selectedSpecialty
             },
-
-
 
 
         },
@@ -90,6 +88,21 @@
                     easing: "easeInQuint",
                 };
             },
+
+            consultations () {
+                return this.$store.getters.consultations.filter(a => {
+                    if (this.doctor) {
+                        if (this.doctor.cpf !== a.doctor.cpf) return  false;
+                    }
+                    if (this.specialty) {
+                        if (this.specialty.name !== a.specialty.name) return  false;
+                    }
+                    if (this.clinic) {
+                        if (this.clinic !== a.clinic.name) return false;
+                    }
+                    return true;
+                });
+            },
             schedules() {
                 let schedules = this.$store.getters.schedules.filter(a => {
                     let response = true;
@@ -107,37 +120,33 @@
                 return this.consultationsOfSchedules(schedules);
             },
 
-            consultations () {
-                return this.$store.getters.consultations.filter(a => {
-                    if (this.doctor) {
-                        if (this.doctor.cpf !== a.doctor.cpf) return  false;
-                    }
-                    if (this.specialty) {
-                        if (this.specialty.name !== a.specialty.name) return false;
-                    }
-                    if (this.clinic) {
-                        if (this.clinic !== a.clinic.name) return false;
-                    }
-                    return true;
-                });
-            }
-
-
-
         },
 
         methods: {
 
+
             allowedDates(val) {
                 return (
-                    Object.keys(this.consultationsDateFilter(this.consultations)).indexOf(val) !== -1
+                    Object.keys(this.consultationsByDate(this.consultations)).indexOf(val) !== -1
                 );
             },
 
-            consultationsDateFilter (consultations) {
+            async listenConsultations() {
+                this.consultationsListenerUnsubscriber = await this.$store.dispatch(
+                    "getSchedules",
+                    {
+                        start_date: moment()
+                            .subtract(5, "hours")
+                            .format("YYYY-MM-DD HH:mm:ss"),
+                        final_date: moment()
+                            .add(this.daysToListen, "days")
+                            .format("YYYY-MM-DD 23:59:59")
+                    }
+                );
+            },
+
+            consultationsByDate(consultations) {
                 console.log('consultation : ', consultations)
-
-
                 let res = {};
                 consultations.sort((a,b)=>{
                     return a.date > b.date ? 1 : a.date < b.date ? -1 : 0
@@ -152,20 +161,7 @@
                 console.log('res: ', res)
                 return res;
             },
-            numberVacancyAndReturns(schedule) {
-                let consultations = this.consultations;
-                return consultations.reduce((obj,item)=>{
 
-                    if (schedule.clinic.name === item.clinic.name && schedule.specialty.name === item.specialty.name
-                        && schedule.doctor.cpf === item.doctor.cpf && schedule.date === item.date  && item.user){
-                        if (item.type === 'Consulta') {
-                            obj.qtd_consultations = obj.qtd_consultations +  1
-                        } else
-                            obj.qtd_returns += 1
-                    }
-                    return obj
-                },{qtd_consultations:0,qtd_returns:0})
-            },
             consultationsOfSchedules(schedules){
                 let consultations = [];
                 schedules.forEach((schedule)=>{
