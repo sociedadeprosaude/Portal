@@ -2,7 +2,7 @@
     <v-container>
         <v-layout row wrap style="width:100%"
                   class="align-center justify-center py-0"
-                  v-for="(scheduleGroup, i) in consultationsByDate(schedules)"
+                  v-for="(scheduleGroup, i) in Consultations"
                   :key="i">
             <v-flex xs12 class="align-start justify-start">
                 <div v-bind:id="'group-' + i" class="text-left">
@@ -84,7 +84,7 @@
     let moment = require("moment/moment");
 
     export default {
-
+        props:['Consultations'],
         data: () => ({
             semanaOptions: [
                 "Domingo",

@@ -150,6 +150,7 @@
                     res[targetDate].push(consultations[cons]);
                 }
                 console.log('res: ', res)
+                this.$emit('GetConsultations', res);
                 return res;
             },
             numberVacancyAndReturns(schedule) {

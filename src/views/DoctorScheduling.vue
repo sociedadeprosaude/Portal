@@ -2,10 +2,10 @@
     <v-container fluid class="ma-0 pa-0">
         <v-layout row wrap>
             <v-flex sm3 lg3 class="primary">
-                <DataToSearchConsultation/>
+                <DataToSearchConsultation @GetConsultations="consultations= $event"/>
             </v-flex>
             <v-flex sm6 lg6>
-                <SchedulesConsultations/>
+                <SchedulesConsultations :Consultations="consultations"/>
             </v-flex>
             <v-flex sm3 lg3 class="primary">
                 <DataCashierConsultation/>
@@ -20,7 +20,10 @@
     import DataCashierConsultation from "../components/doctorsAgenda/DataCashierConsultation"
 
     export default {
-        components: {DataToSearchConsultation, SchedulesConsultations, DataCashierConsultation}
+        components: {DataToSearchConsultation, SchedulesConsultations, DataCashierConsultation},
+        data: ()=> ({
+            consultations:{}
+    })
     }
 </script>
 
