@@ -17,6 +17,8 @@ import Clinics from "./views/Register/Clinics";
 import Units from "./views/Units";
 import Bills from "./views/Register/Bills";
 
+import DoctorScheduling from './views/DoctorScheduling'
+
 import MedicalCare from "./views/DoctorAttendance/MedicalCare";
 import TicketsDashboard from "./views/Operational/Tickets/TicketsDashboard";
 
@@ -175,6 +177,15 @@ let mainRoutes = [
     path: '/notifications',
     name: 'Notifications',
     component : notifications,
+    meta: {
+      requiresAuth: false,
+    },
+  },
+
+  {
+    path: '/agendamento',
+    name: 'doctorScheduling',
+    component : DoctorScheduling,
     meta: {
       requiresAuth: false,
     },
