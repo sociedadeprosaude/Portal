@@ -2,7 +2,6 @@ import CanceledConsultations from "../views/Operational/DoctorsAgenda/CanceledCo
 import Cids from "../views/Operational/DoctorsAgenda/Cids";
 import Declaration from "../views/Operational/DoctorsAgenda/Declaration";
 import DeletarConsultas from "../views/Operational/DoctorsAgenda/DeleteConsultations";
-import GerenciamentoConsultas from "../views/Operational/DoctorsAgenda/ManagementConsultations";
 import NewGerenciamentoConsultas from "../views/Operational/NewDorctorsAgenda/ManagementConsultationsNew";
 import PatientConsultations from "../views/Operational/DoctorsAgenda/PatientConsultations";
 import RegistrationConsultationsShifts from "../views/Register/RegistrationConsultationsShifts";
@@ -35,11 +34,6 @@ export default [
     },
     {
         path: '/agenda/GerenciamentoConsultas',
-        name: 'GerenciamentoConsultas',
-        component: GerenciamentoConsultas
-    },
-    {
-        path: '/agenda/GerenciamentoConsultasNew',
         name: 'NewGerenciamentoConsultas',
         component: NewGerenciamentoConsultas
     },
