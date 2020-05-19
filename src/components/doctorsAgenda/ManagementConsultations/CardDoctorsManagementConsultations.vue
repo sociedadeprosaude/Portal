@@ -67,10 +67,13 @@
                 <v-progress-circular class="primary--text" indeterminate/>
             </v-flex>
             <v-flex xs12 v-if="consultations.length === 0 && loadingConsultations === false">
-                <p>Não a consulta a para hoje :(</p>
+                <p>Não a consultas marcadas para hoje :(</p>
             </v-flex>
           <v-dialog v-if="selectedDoctor" v-model="confirmDeactivate" max-width="500px" persistent>
-                <v-card>
+              <v-flex xs12 v-if="loading">
+                  <v-progress-circular class="primary--text" indeterminate/>
+              </v-flex>
+                <v-card v-else>
                     <v-card-title>
                         <v-spacer/>
                         <v-btn text @click="confirmDeactivate = false, cleanSpecialtyToDeactivate()" x-small fab>
@@ -78,12 +81,12 @@
                         </v-btn>
                     </v-card-title>
                     <v-select :items="specialtiesDoctor" v-model="specialtyToDeactivate" outlined persistent-hint
-                              item-text="name" item-value="name"
-                              class="mx-5 mb-4" multiple return-object chips
-                              hint="Selecione as especialidades para desativar"/>
-                    <v-select :items="clinics" v-model="clinicsToDeactivate" outlined persistent-hint item-value="name"
                               item-text="name"
-                              class="mx-5 mb-4" multiple return-object chips hint="Selecione a unidade"/>
+                              class="mx-5 mb-4" return-object chips
+                              hint="Selecione as especialidades para desativar"/>
+                    <v-select :items="clinics" v-model="clinicsToDeactivate" outlined persistent-hint
+                              item-text="name"
+                              class="mx-5 mb-4" return-object chips hint="Selecione a unidade"/>
                     <v-card-text>
                         <span>Desativar </span>
                         <span class="font-weight-bold justify-center">{{selectedDoctor.name}}</span>
@@ -92,10 +95,15 @@
                     <v-card-actions class="mx-3">
                         <v-spacer/>
                         <submit-button text="Confirmar" :loading="loading" :success="success" @reset="success = false"
-                                       @click="confirmDesactivateDoctor(doctor)">
+                                       @click="deleteAllSchedule(doctor)">
                         </submit-button>
                     </v-card-actions>
                 </v-card>
+            </v-dialog>
+            <v-dialog v-model="success" max-width="300px">
+                <v-alert type="success">
+                    Médico apagado com sucesso.
+                </v-alert>
             </v-dialog>
         </v-layout>
     </v-container>
@@ -127,8 +135,8 @@
             loadingConsultations:false,
             confirmDeactivate:false,
             patientSelected: [],
-            specialtyToDeactivate:[],
-            clinicsToDeactivate:[]
+            specialtyToDeactivate:{},
+            clinicsToDeactivate:{}
         }),
         computed: {
             consultations() {
@@ -195,22 +203,17 @@
                 this.$emit('patientSelect', item.user);
                 this.$emit('consultationSelect', item)
             },
-            async confirmDesactivateDoctor(item) {
-                this.loading = true;
-                for (let i in this.clinicsToDeactivate) {
-                    let data = {
-                        doctor: item,
-                        specialties: this.specialtyToDeactivate,
-                        clinic: this.clinicsToDeactivate[i],
-                    };
-                    await this.$store.dispatch('deactivateScheduleDoctor', data);
+            async deleteAllSchedule(doctor){
+                this.loading = true
+                var payload = {
+                    doctor: doctor,
+                    specialty: this.specialtyToDeactivate,
+                    clinic: this.clinicsToDeactivate,
                 }
-                this.success = true;
-                this.loading = false;
-                this.cleanSpecialtyToDeactivate();
-                setTimeout(() => {
-                    this.confirmDeactivate = false
-                }, 800)
+                await this.$store.dispatch('deleteAllSchedule', payload)
+                this.success = true
+                this.loading = false
+                this.confirmDeactivate= false
             },
         }
     }
