@@ -2,11 +2,15 @@
     <v-container class="ma-0 pa-0">
         <v-row class="align-center justify-center">
             <v-col cols="12" xs="12" class="primary">
-                <v-card class="primary elevation-0 white--text" height="50px">
-                    <span style="font-weight: bold;"> R$ {{ totalPayable }}</span>
+            <v-card class="primary elevation-0 white--text" height="50px">
+                <v-card-title class="font-weight-bold display-1 align-lg-center justify-center">
+                    R$ {{ totalPayable }}
                     <br/>
-                    <span>Débito Restante</span>
-                </v-card>
+                </v-card-title>
+                <v-card-subtitle class="white--text">Débito Restante</v-card-subtitle>
+            </v-card>
+            </v-col>
+            <v-col cols="12" xs="12" class="primary">
                 <v-card-actions class="white--text">
                     <v-chip-group column active-class="primary--text">
                         <v-chip v-for="(day,i) in dates" :key="i" class="white" small @click="mappingDates(day)">
@@ -77,18 +81,20 @@
                                             <v-btn @click="$refs[bill.id][0].click()" class="primary mx-2" fab small>
                                                 <v-icon>receipt</v-icon>
                                             </v-btn>
-                                            <v-btn @click="deleteOuttake(bill)" class="error mx-2" fab small>
+                                            <v-btn v-show="user === 'admin' || user === 'caixa'" @click="deleteOuttake(bill)" class="error mx-2" fab small>
                                                 <v-icon>delete</v-icon>
                                             </v-btn>
-                                            <v-btn @click="payOuttake(bill)" class="success mx-2" fab small
-                                                   placeholder="Complemento"
-                                            >
+                                            <v-btn v-show="user === 'admin' || user === 'caixa'" @click="payOuttake(bill)" class="success mx-2" fab small
+                                                   placeholder="Complemento">
                                                 <v-icon>attach_money</v-icon>
                                             </v-btn>
                                         </v-flex>
 
                                         <v-flex xs12><v-divider></v-divider></v-flex>
-
+                                        <v-flex xs12 class="text-centert">
+                                            <span>Colaborador: </span><span style="font-weight: bold">{{bill.colaborator.name}}</span>
+                                        </v-flex>
+                                        <v-flex xs12><v-divider></v-divider></v-flex>
                                         <v-flex xs12 class="my-2">
                                             <v-layout row wrap>
                                                 <v-flex xs12 md2 class="text-center">
@@ -203,6 +209,9 @@
             };
         },
         computed: {
+            user() {
+                return this.$store.getters.user.group;
+            },
             dates () {
                 let holder = this.outtakesByDate(this.outtakes)
                 let dates = []
