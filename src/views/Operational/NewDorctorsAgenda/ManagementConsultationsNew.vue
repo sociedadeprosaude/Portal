@@ -28,7 +28,7 @@
                                 <template v-slot:activator="{ on }">
                                     <v-text-field
                                             outlined
-                                            v-model="dateFormatted"
+                                            v-model="computedDateFormatted"
                                             placeholder="Data Inicial"
                                             hint="Data Inicial"
                                             @blur="date = parseDate(dateFormatted)"
@@ -36,7 +36,7 @@
                                             class="mx-3"
                                     />
                                 </template>
-                                <v-date-picker v-model="date" no-title @input="menu1 = false"/>
+                                <v-date-picker v-model="date" no-title @input="menu1 = false" @change="getConsultations(date)"></v-date-picker>
                             </v-menu>
                         </v-flex>
                     </v-layout>
@@ -48,70 +48,7 @@
                 </v-card>
             </v-flex>
             <v-flex xs4>
-                <v-card class="pa-4" color="indigo darken-4">
-                    <v-layout row wrap aling-center>
-                        <v-flex xs12>
-                            <p class="white--text text-left title">Consultas</p>
-                        </v-flex>
-                        <v-flex xs12 class="mb-2">
-                            <v-divider color="white"/>
-                        </v-flex>
-                        <v-flex xs12 class="mt-3 mx-7">
-                            <v-card class="cardw">
-                                <v-layout row wrap>
-                                    <v-flex xs4>
-                                        <p class="font-weight-black">Paciente</p>
-                                    </v-flex>
-                                    <v-flex xs8>
-                                        <v-spacer/>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                        <CardPatientManagementConsultations :patient="patientSelected"/>
-                                    </v-flex>
-                                </v-layout>
-                            </v-card>
-                        </v-flex>
-                        <v-flex xs12 class="mt-4 mb-2">
-                            <v-divider color="white"/>
-                        </v-flex>
-                        <v-flex xs12 class="mt-3 mx-7">
-                            <v-card class="cardConsultation ">
-                                <v-layout row wrap>
-                                    <v-flex xs4>
-                                        <p class="font-weight-black">Consulta</p>
-                                    </v-flex>
-                                    <v-flex xs8>
-                                        <v-spacer/>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                        <card-consultation-management-consultations :consultation="consultatioSelect"/>
-                                    </v-flex>
-                                </v-layout>
-                            </v-card>
-                        </v-flex>
-                        <v-card-actions class="ml-4 mt-4 ">
-                            <v-btn
-                                    color="white"
-                                    rounded
-                                    :disabled="consultatioSelect.status === 'Cancelado'"
-                                    @click="deleted()"
-                                    class="mx-2"
-                            > Cancelar </v-btn>
-                            <v-btn
-                                    color="white"
-                                    rounded
-                                    class="mx-2"
-                                    :to="{ name: 'AgendarRetorno', params: { q: {...this.consultatioSelect}}}"
-                                    :disabled="consultatioSelect.status !== 'Pago'"
-                                    v-if="consultatioSelect.type !== 'Retorno'"
-                            >Retorno
-                            </v-btn>
-                        </v-card-actions>
-                        <v-flex xs12 class="mt-4 mb-2">
-                            <v-divider color="white"/>
-                        </v-flex>
-                    </v-layout>
-                </v-card>
+                <CardInformationManagementConsultations :patient="patientSelected" :consultation="consultatioSelect"></CardInformationManagementConsultations>
             </v-flex>
         </v-layout>
 </template>
@@ -119,10 +56,9 @@
 <script>
     import moment from 'moment/moment'
     import CardDoctorsManagementConsultations from '../../../components/doctorsAgenda/ManagementConsultations/CardDoctorsManagementConsultations'
-    import CardPatientManagementConsultations from '../../../components/doctorsAgenda/ManagementConsultations/CardPatientManagementConsultations'
-    import CardConsultationManagementConsultations from '../../../components/doctorsAgenda/ManagementConsultations/CardConsultationManagementConsultations'
+    import CardInformationManagementConsultations from '../../../components/doctorsAgenda/ManagementConsultations/CardInformationManagementConsultations'
     export default {
-        components:{CardDoctorsManagementConsultations, CardPatientManagementConsultations, CardConsultationManagementConsultations},
+        components:{CardDoctorsManagementConsultations, CardInformationManagementConsultations},
         data: vm  => ({
             date: new Date().toISOString().substr(0, 10),
             dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
@@ -154,54 +90,33 @@
                 await this.$store.dispatch("getSpecialties");
                 this.especialidade = this.specialties[0]
             },
+
             formatDate (date) {
                 if (!date) return null;
-
                 const [year, month, day] = date.split('-');
                 return `${day}/${month}/${year}`
             },
+
             parseDate (date) {
                 if (!date) return null;
-
                 const [month, day, year] = date.split('/');
                 return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
             },
+
             returnOutRule(item){
                 let dateConsultation = moment(item.consultation.date);
                 let today = moment();
                 let diff = today.diff(dateConsultation,'days');
                 return diff > 21
             },
-            deleted() {
-                this.$store.dispatch('eraseAppointment', {
-                    idConsultation: this.consultatioSelect.routine_id,
-                    idPatient: this.consultatioSelect.user.cpf,
-                    type: this.consultatioSelect.type,
-                    status: this.consultatioSelect.status,
-                    payment_number: this.consultatioSelect.payment_number,
-                    specialty: this.consultatioSelect.specialty.name,
-                    regress: this.consultatioSelect.consultation.regress,
-                    previousConsultation: this.consultatioSelect.consultation.previousConsultation,
-                    consultation:this.consultatioSelect.consultation
-                });
-                this.clear();
-                this.dialog = false
 
-            },
+            getConsultations(date){
+                console.log('consultations')
+                console.log('date: ', date)
+            }
         },
     }
 </script>
 <style scoped>
-    .cardw{
-        width: 100%;
-        height: 150px;
-        align-self: center;
-    }
-    .cardConsultation{
-        width: 100%;
-        height: 300px;
-    }
-    .spacerH{
-        height: 10px;
-    }
+
 </style>

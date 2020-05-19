@@ -28,11 +28,11 @@
                                         <p class="white--text text-left font-weight-bold"> CPF: {{consultation.doctor.cpf}}</p>
                                     </v-flex>
                                     <v-spacer></v-spacer>
-                                    <v-flex xs1>
+                                   <!-- <v-flex xs1>
                                         <v-btn icon class="grey my-1 mx-1" dark x-small text fab>
                                             <v-icon @click="deactivateDoctor(consultation.doctor)">power_settings_new</v-icon>
                                         </v-btn>
-                                    </v-flex>
+                                    </v-flex> -->
                                 </v-layout>
                             </v-card>
                         </v-flex>
@@ -63,7 +63,7 @@
                     </v-layout>
                 </v-card>
             </v-flex>
-            <v-dialog v-model="confirmDeactivate" max-width="500px" persistent>
+        <!--    <v-dialog v-if="selectedDoctor" v-model="confirmDeactivate" max-width="500px" persistent>
                 <v-card>
                     <v-card-title>
                         <v-spacer/>
@@ -89,7 +89,7 @@
                         </submit-button>
                     </v-card-actions>
                 </v-card>
-            </v-dialog>
+            </v-dialog>  -->
         </v-layout>
     </v-container>
 </template>
@@ -156,6 +156,7 @@
                 return res
             },
             deactivateDoctor(item) {
+                console.log('item: ', item)
                 this.selectedDoctor = item;
                 this.clinics = item.clinics;
                 this.specialtiesDoctor = item.specialties.split(', ');
