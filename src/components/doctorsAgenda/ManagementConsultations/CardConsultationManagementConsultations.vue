@@ -20,6 +20,9 @@
                 <p class="text-left">ESPECIALIDADE: {{consultation.specialty.id}}</p>
             </v-flex>
             <v-flex xs12>
+                <p class="text-left">Tipo: {{consultation.type}} </p>
+            </v-flex>
+            <v-flex xs12>
                 <p class="text-left">Status: {{consultation.status}}</p>
             </v-flex>
         </v-layout>

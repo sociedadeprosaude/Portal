@@ -28,11 +28,11 @@
                                         <p class="white--text text-left font-weight-bold"> CPF: {{consultation.doctor.cpf}}</p>
                                     </v-flex>
                                     <v-spacer></v-spacer>
-                                   <!-- <v-flex xs1>
+                                    <v-flex xs1>
                                         <v-btn icon class="grey my-1 mx-1" dark x-small text fab>
                                             <v-icon @click="deactivateDoctor(consultation.doctor)">power_settings_new</v-icon>
                                         </v-btn>
-                                    </v-flex> -->
+                                    </v-flex>
                                 </v-layout>
                             </v-card>
                         </v-flex>
@@ -63,7 +63,13 @@
                     </v-layout>
                 </v-card>
             </v-flex>
-        <!--    <v-dialog v-if="selectedDoctor" v-model="confirmDeactivate" max-width="500px" persistent>
+            <v-flex xs12 v-if="loadingConsultations">
+                <v-progress-circular class="primary--text" indeterminate/>
+            </v-flex>
+            <v-flex xs12 v-if="consultations.length === 0 && loadingConsultations === false">
+                <p>Não a consulta a para hoje :(</p>
+            </v-flex>
+          <v-dialog v-if="selectedDoctor" v-model="confirmDeactivate" max-width="500px" persistent>
                 <v-card>
                     <v-card-title>
                         <v-spacer/>
@@ -72,6 +78,7 @@
                         </v-btn>
                     </v-card-title>
                     <v-select :items="specialtiesDoctor" v-model="specialtyToDeactivate" outlined persistent-hint
+                              item-text="name" item-value="name"
                               class="mx-5 mb-4" multiple return-object chips
                               hint="Selecione as especialidades para desativar"/>
                     <v-select :items="clinics" v-model="clinicsToDeactivate" outlined persistent-hint item-value="name"
@@ -85,20 +92,22 @@
                     <v-card-actions class="mx-3">
                         <v-spacer/>
                         <submit-button text="Confirmar" :loading="loading" :success="success" @reset="success = false"
-                                       @click="confirmDesactivateDoctor(selectedDoctor)">
+                                       @click="confirmDesactivateDoctor(doctor)">
                         </submit-button>
                     </v-card-actions>
                 </v-card>
-            </v-dialog>  -->
+            </v-dialog>
         </v-layout>
     </v-container>
 </template>
 
 <script>
     import moment from 'moment/moment'
-
+    import SubmitButton from '../../../components/SubmitButton'
     export default {
         name: "CardDoctorsManagementConsultations",
+        components:{SubmitButton},
+
         props: ['especialtie', 'date'],
         data: () => ({
             semanaOptions: [
@@ -110,10 +119,12 @@
                 "Sexta-feira",
                 "Sábado"
             ],
+            clinics:[],
             selectedDoctor:[],
             specialtiesDoctor:'',
             success:false,
             loading:false,
+            loadingConsultations:false,
             confirmDeactivate:false,
             patientSelected: [],
             specialtyToDeactivate:[],
@@ -121,16 +132,24 @@
         }),
         computed: {
             consultations() {
+                if(moment().format('YYYY-MM-DD') !== this.date){
+                    console.log('entrei')
+                    this.loadingConsultations = !this.loadingConsultations
+                }
                 return this.$store.getters.consultations.filter((a) => {
                     return this.especialtie && this.date ? this.especialtie.name === a.specialty.name && this.date === a.date.split(' ')[0] && a.user : false
                 });
             },
+            doctor(){
+                    return this.$store.getters.doctor
+            }
         },
         mounted() {
             this.initialConfig()
 
         },
-        watch: {},
+        watch: {
+        },
         methods: {
 
             cleanSpecialtyToDeactivate(){
@@ -155,19 +174,18 @@
                 }
                 return res
             },
-            deactivateDoctor(item) {
-                console.log('item: ', item)
-                this.selectedDoctor = item;
-                this.clinics = item.clinics;
-                this.specialtiesDoctor = item.specialties.split(', ');
-                this.confirmDeactivate = true;
+            async deactivateDoctor(item) {
+                await this.$store.dispatch('getDoctor',item.cpf)
+                console.log('doctor: ', this.doctor)
+                if(this.doctor.cpf === item.cpf){
+                    this.selectedDoctor = this.doctor;
+                    this.clinics = this.doctor.clinics;
+                    this.specialtiesDoctor = this.doctor.specialties;
+                    this.confirmDeactivate = true;
+                }
             },
             async initialConfig() {
-                await this.$store.dispatch('listenConsultations',
-                    {
-                        start_date: moment().subtract(10, 'days').format('YYYY-MM-DD'),
-                        final_date: moment().add(10, 'days').format('YYYY-MM-DD 23:59:59')
-                    })
+
             },
             daydate(date) {
                 var dateMoment = moment(date);

@@ -672,6 +672,7 @@
                 this.status = 'Aguardando pagamento'
             },
             deleted() {
+                console.log('consultation: ', this.index_Selecionado)
                 this.$store.dispatch('eraseAppointment', {
                     idConsultation: this.index_Selecionado.idConsultation,
                     idPatient: this.index_Selecionado.cpf,

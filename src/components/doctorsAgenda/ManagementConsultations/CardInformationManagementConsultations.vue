@@ -98,18 +98,17 @@
 
             },
             deletedConsultation() {
+                console.log('consultation: ', this.consultation)
                 this.$store.dispatch('eraseAppointment', {
-                    idConsultation: this.consultation.routine_id,
+                    idConsultation: this.consultation.id,
                     idPatient: this.consultation.user.cpf,
                     type: this.consultation.type,
-                    status: this.consultation.status,
+                    status: 'Cancelado',
                     payment_number: this.consultation.payment_number,
                     specialty: this.consultation.specialty.name,
-                    regress: this.consultation.consultation.regress,
-                    previousConsultation: this.consultation.consultation.previousConsultation,
-                    consultation:this.consultation.consultation
+                    previousConsultation: this.consultation.previousConsultation,
+                    consultation:this.consultation
                 });
-                this.clear();
                 this.dialog = false
 
             },
@@ -125,7 +124,7 @@
     }
     .cardConsultation{
         width: 100%;
-        height: 300px;
+        height: 350px;
     }
     .spacerH{
         height: 10px;

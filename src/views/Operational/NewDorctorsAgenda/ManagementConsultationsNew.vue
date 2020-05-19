@@ -31,12 +31,11 @@
                                             v-model="computedDateFormatted"
                                             placeholder="Data Inicial"
                                             hint="Data Inicial"
-                                            @blur="date = parseDate(dateFormatted)"
                                             v-on="on"
                                             class="mx-3"
                                     />
                                 </template>
-                                <v-date-picker v-model="date" no-title @input="menu1 = false" @change="getConsultations(date)"></v-date-picker>
+                                <v-date-picker v-model="date" no-title @input="menu1 = false" @change="getConsultationsDorctors()"></v-date-picker>
                             </v-menu>
                         </v-flex>
                     </v-layout>
@@ -63,6 +62,7 @@
             date: new Date().toISOString().substr(0, 10),
             dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
             menu1: false,
+            loadingConsultations:false,
             especialtie: '',
             patientSelected:{},
             consultatioSelect:{}
@@ -89,6 +89,8 @@
             async initialConfig() {
                 await this.$store.dispatch("getSpecialties");
                 this.especialidade = this.specialties[0]
+                this.getConsultationsDorctors()
+
             },
 
             formatDate (date) {
@@ -109,10 +111,14 @@
                 let diff = today.diff(dateConsultation,'days');
                 return diff > 21
             },
-
-            getConsultations(date){
-                console.log('consultations')
-                console.log('date: ', date)
+            async getConsultationsDorctors(){
+                this.loadingConsultations= true
+                await this.$store.dispatch('listenConsultations',
+                    {
+                        start_date: this.date,
+                        final_date: moment().add(10, 'days').format('YYYY-MM-DD 23:59:59')
+                    })
+                this.loadingConsultations= false
             }
         },
     }
