@@ -2,7 +2,7 @@
     <v-container class="ma-0 pa-0" fluid>
         <v-layout row wrap >
             <v-flex xs12>
-                <v-btn rounded small class="mx-1">
+                <v-btn rounded small class="mx-1"  @click="selectCategory('exam')">
                     Exames
                 </v-btn>
                 <v-btn rounded small class="mx-1">
@@ -18,10 +18,16 @@
             <v-flex xs12 class="mt-4 mx-3">
                 <v-card>
                     <v-card-title>
-                        <v-text-field placeholder="Pesquisa"/>
+                        <v-text-field placeholder="Pesquisa"
+                                      v-model="search"
+                                      :loading="loading"
+                                      id="search"
+                                      single-line
+                                      :disabled="!categorySelect"
+                        />
                         <v-spacer/>
                         <v-btn icon>
-                            <v-icon >local_grocery_store</v-icon>
+                            <v-icon>local_grocery_store</v-icon>
                         </v-btn>
                     </v-card-title>
                     <v-card-text>
@@ -36,7 +42,19 @@
 <script>
     import CartShopping from "../doctorsAgenda/CartShopping"
     export default {
-        components: {CartShopping}
+        components: {CartShopping},
+        data (){
+            return {
+                categorySelect: 'appointment',
+                search: '',
+                loading: undefined
+            }
+        },
+        methods: {
+            selectCategory(category) {
+                this.categorySelect = category
+            },
+        }
     }
 
 </script>
