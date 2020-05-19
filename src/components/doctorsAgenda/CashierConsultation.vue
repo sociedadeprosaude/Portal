@@ -3,22 +3,30 @@
         <v-layout row wrap>
             <v-flex xs12>
                 <v-btn rounded small class="mx-1" @click="selectCategory('exam')"
-                       :color="categorySelect === 'exam' ? 'primary' : 'background'">
+                       :color="categorySelect === 'exam' ? 'background' : 'primary'" v-if="!historyPatient">
                     Exames
                 </v-btn>
                 <v-btn rounded small class="mx-1" @click="selectCategory('appointment')"
-                       :color="categorySelect === 'appointment' ? 'primary' : 'background'">
+                       :color="categorySelect === 'appointment' ? 'background' : 'primary'" v-if="!historyPatient">
                     Consultas
                 </v-btn>
                 <v-btn rounded small class="mx-1"  @click="selectCategory('package')"
-                       :color="categorySelect === 'package' ? 'primary' : 'background'">
+                       :color="categorySelect === 'package' ? 'background' : 'primary'" v-if="!historyPatient">
                     Pacotes
                 </v-btn>
-                <v-btn small text icon dark>
+                <v-btn rounded small class="mx-1" v-if="historyPatient" @click="selectOptionHistoryPatient('budgets')"
+                       :color="optionPatient === 'budgets' ? 'background' : 'primary'">
+                    Orçamentos
+                </v-btn>
+                <v-btn rounded small class="mx-1" v-if="historyPatient"  @click="selectOptionHistoryPatient('intakes')"
+                       :color="optionPatient === 'intakes' ? 'background' : 'primary'">
+                    Vendas
+                </v-btn>
+                <v-btn small text icon dark v-if="patient" @click="historyPatient = !historyPatient">
                     <v-icon>more_vert</v-icon>
                 </v-btn>
             </v-flex>
-            <v-flex xs12 class="mt-4 mx-3">
+            <v-flex xs12 class="mt-4 mx-3" v-if="!historyPatient">
                 <v-card>
                     <v-card-title>
                         <v-text-field placeholder="Pesquisa"
@@ -29,13 +37,31 @@
                                       :disabled="!categorySelect"
                         />
                         <v-spacer/>
-                        <v-btn icon>
+                        <v-btn icon @click="cartPatient = !cartPatient">
                             <v-icon>local_grocery_store</v-icon>
                         </v-btn>
                     </v-card-title>
-                    <v-card-text>
+                    <v-card-text v-if="cartPatient">
+                        <CartPatient/>
+                    </v-card-text>
+                    <v-card-text v-if="!cartPatient">
                         <CartShopping :Items="items" :categorySelect="categorySelect"/>
                     </v-card-text>
+                </v-card>
+            </v-flex>
+            <v-flex xs12 class="mt-4 mx-3" v-if="cartPatient && !historyPatient">
+                <v-card>
+                    <v-card-title>
+                        <h5>Detalhes do pagamento</h5>
+                    </v-card-title>
+                    <v-card-text>
+                        <DetailsPayment/>
+                    </v-card-text>
+                </v-card>
+            </v-flex>
+            <v-flex xs12 v-if="historyPatient" class="mt-4 mx-3">
+                <v-card>
+                    <HistoryCashierPatient :option="optionPatient"/>
                 </v-card>
             </v-flex>
         </v-layout>
@@ -43,14 +69,21 @@
 </template>
 
 <script>
-    import CartShopping from "../doctorsAgenda/CartShopping"
+    import CartShopping from "../doctorsAgenda/CartShopping";
+    import CartPatient from "../doctorsAgenda/CartPatient";
+    import DetailsPayment from "../doctorsAgenda/DetailsPaymentCashier";
+    import HistoryCashierPatient from "../doctorsAgenda/HistoryCashierPatient"
+
     export default {
-        components: {CartShopping},
+        components: {CartShopping, CartPatient, DetailsPayment, HistoryCashierPatient},
         data (){
             return {
                 categorySelect: 'appointment',
                 search: '',
-                loading: undefined
+                loading: undefined,
+                cartPatient: false,
+                historyPatient: false,
+                optionPatient: 'budgets',
             }
         },
 
@@ -82,6 +115,9 @@
         watch: {
             categorySelect: function () {
                 this.search = ''
+            },
+            patient () {
+                return this.$store.getters.selectedPatient;
             }
         },
 
@@ -125,12 +161,19 @@
                     default:
                         return []
                 }
+            },
+            patient () {
+                return this.$store.getters.selectedPatient
             }
         },
 
         methods: {
             selectCategory(category) {
                 this.categorySelect = category
+            },
+
+            selectOptionHistoryPatient (option){
+                this.optionPatient = option
             },
 
             async selectBudget(budget) {
