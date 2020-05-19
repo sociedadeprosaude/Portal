@@ -153,6 +153,7 @@ const getters = {
     doctors(state) {
         return state.doctors
     },
+
     doctorsLoaded(state) {
         return state.loaded
     }
