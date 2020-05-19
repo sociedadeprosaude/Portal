@@ -175,6 +175,7 @@
             selectCategory(category) {
                 this.categorySelect = category
             },
+
             async selectBudget(budget) {
                 this.loading = true;
                 this.$store.commit('setSelectedBudget', budget);
@@ -216,7 +217,7 @@
                     clearTimeout(self.typingTimer);
                     self.typingTimer = setTimeout(() => {
                         if (self.categorySelect === 'exam') {
-                            self.loading = true
+                            self.loading = true;
                             self.$store.dispatch("loadSelectedExams", self.search.toUpperCase()).then(() => {
                                 self.loading = false
                             });
