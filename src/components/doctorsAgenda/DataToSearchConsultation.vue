@@ -104,6 +104,7 @@
                     return true;
                 });
             },
+
             schedules() {
 
                 let schedules = this.$store.getters.schedules.filter(a => {

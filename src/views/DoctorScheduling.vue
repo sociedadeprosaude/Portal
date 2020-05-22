@@ -22,7 +22,7 @@
     export default {
         components: {DataToSearchConsultation, SchedulesConsultations, DataCashierConsultation},
         data: ()=> ({
-            consultations:{}
+            schedules: {},
     })
     }
 </script>

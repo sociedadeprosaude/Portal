@@ -11,14 +11,14 @@
                     </v-layout>
                 </v-card-text>
                 <v-card-text v-if="categorySelect === 'appointment'" class="ma-0 pa-0 my-1">
-                    <v-layout row v-for="(n, index) in item.doctors" :key="n.crm + index" class="my-2">
+                    <v-layout row v-for="n in item.doctors" :key="n.crm" class="my-2">
                         <v-flex xs12 class="align-center justify-center text-center">
                             <span class="font-weight-bold">{{n.name}}</span>
                         </v-flex>
                         <v-flex xs12>
                             <v-divider/>
                         </v-flex>
-                        <v-layout row no-wrap v-for="(clinic, index) in n.clinics" :key="n.cnpj + index" class="align-center justify-center text-center my-1">
+                        <v-layout row no-wrap v-for="clinic in n.clinics" class="align-center justify-center text-center my-1">
                             <v-btn rounded dense x-small class="blue_grey" block width="100%"
                                    @click="addProduct(item, n, 'appointment', clinic)">{{clinic.name}}</v-btn>
                         </v-layout>
@@ -69,7 +69,8 @@
                     default:
                 }
                 this.$store.commit('addShoppingCartItem', holder)
-            }
+            },
+
         }
     }
 </script>
