@@ -11,6 +11,10 @@ import Auth from '@/store/modules/Auth'
 import Labor from '@/store/modules/Labor'
 import Reports from './modules/Reports'
 
+import AddInformationInConsultation from "./modules/AddInformationInConsultation";
+import Cids from "./modules/Cids";
+import Medicines from "./modules/Medicines";
+
 import Localization from "./modules/Localization"
 import Bundles from "./modules/Bundles";
 import Doctors from "./modules/Doctors"
@@ -53,6 +57,8 @@ const store = new Vuex.Store({
         Users,
         Reports,
         Labor,
+        Cids,
+        AddInformationInConsultation,
         Localization,
         Doctors,
         Clinics,
@@ -62,6 +68,7 @@ const store = new Vuex.Store({
         Bundles,
         Specialties,
         Saidas,
+        Medicines,
         Budget,
         ShoppingCart,
         ItemsPackage,

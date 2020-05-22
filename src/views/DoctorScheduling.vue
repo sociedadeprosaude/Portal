@@ -2,10 +2,10 @@
     <v-container fluid class="ma-0 pa-0">
         <v-layout row wrap>
             <v-flex sm3 lg3 class="primary">
-                <DataToSearchConsultation @GetConsultations="consultations= $event"/>
+                <DataToSearchConsultation @GetConsultations="schedules= $event"/>
             </v-flex>
             <v-flex sm6 lg6>
-                <SchedulesConsultations :Consultations="consultations"/>
+                <SchedulesConsultations :Consultations="schedules"/>
             </v-flex>
             <v-flex sm3 lg3 class="primary">
                 <DataCashierConsultation/>

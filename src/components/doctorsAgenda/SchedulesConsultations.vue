@@ -2,7 +2,7 @@
     <v-container>
         <v-layout row wrap style="width:100%"
                   class="align-center justify-center py-0"
-                  v-for="(scheduleGroup, i) in Consultations"
+                  v-for="(scheduleGroup, i) in consultationsByDate(schedules)"
                   :key="i">
             <v-flex xs12 class="align-start justify-start">
                 <div v-bind:id="'group-' + i" class="text-left">
@@ -99,7 +99,7 @@
 
         watch: {
             doctor () {
-                return this.$store.getters.selectedDoctor
+                return this.$store.getters.doctorSelected
             },
 
             clinic () {
@@ -113,6 +113,18 @@
         },
 
         computed: {
+
+            doctor () {
+                return this.$store.getters.doctorSelected;
+            },
+
+            clinic () {
+                return this.$store.getters.selectedClinic
+            },
+
+            specialty () {
+                return this.$store.getters.selectedSpecialty
+            },
 
             isOnline() {
                 return this.$store.getters.isOnline

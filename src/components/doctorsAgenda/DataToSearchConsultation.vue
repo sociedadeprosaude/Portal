@@ -48,7 +48,7 @@
         watch: {
 
             date(val) {
-                if (val === this.consultations[0].date) this.$vuetify.goTo(0, this.options);
+                if (val === this.schedules[0].date) this.$vuetify.goTo(0, this.options);
                 else this.$vuetify.goTo("#group-" + val, this.options);
             },
 
@@ -90,6 +90,7 @@
             },
 
             consultations () {
+
                 return this.$store.getters.consultations.filter(a => {
                     if (this.doctor) {
                         if (this.doctor.cpf !== a.doctor.cpf) return false;
@@ -104,6 +105,7 @@
                 });
             },
             schedules() {
+
                 let schedules = this.$store.getters.schedules.filter(a => {
                     let response = true;
                     if (this.doctor) {
@@ -127,7 +129,7 @@
 
             allowedDates(val) {
                 return (
-                    Object.keys(this.consultationsByDate(this.consultations)).indexOf(val) !== -1
+                    Object.keys(this.consultationsByDate(this.schedules)).indexOf(val) !== -1
                 );
             },
 
@@ -156,7 +158,7 @@
                         res[targetDate] = [];
                     }
                     res[targetDate].push(consultations[cons]);
-                };
+                }
                 this.$emit('GetConsultations', res);
                 return res;
             },
@@ -180,13 +182,43 @@
                                 id_schedule: schedule.id,
 
                             };
-                            let obj = {...scheduleObj,...this.numberVacancyAndReturns(scheduleObj)}
-                            obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns
+                            let obj = {...scheduleObj,...this.numberVacancyAndReturns(scheduleObj)};
+                            obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns;
                             consultations.push(obj)
                         }
                     })
                 });
                 return consultations
+            },
+
+            datesOfInterval(payload) {
+                let weekDays = payload.weekDays;
+                let startDate = moment();
+                let dates = [];
+                weekDays = weekDays.map((day)=>{ return Number(day)});
+                let day = startDate;
+                for (let i = 0; i < 3; i++) {
+                    if (weekDays.indexOf(day.weekday()) > -1 ) {
+                        dates.push(day.format('YYYY-MM-DD'))
+                    }
+                    day = startDate.add(1, 'days');
+                }
+                return dates
+            },
+
+            numberVacancyAndReturns(schedule) {
+                let consultations = this.consultations;
+                return consultations.reduce((obj,item)=>{
+
+                    if (schedule.clinic.name === item.clinic.name && schedule.specialty.name === item.specialty.name
+                        && schedule.doctor.cpf === item.doctor.cpf && schedule.date === item.date  && item.user){
+                        if (item.type === 'Consulta') {
+                            obj.qtd_consultations = obj.qtd_consultations +  1
+                        } else
+                            obj.qtd_returns += 1
+                    }
+                    return obj
+                },{qtd_consultations:0,qtd_returns:0})
             },
 
 
