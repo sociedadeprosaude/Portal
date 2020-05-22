@@ -24,7 +24,9 @@
                                                     {{schedule.specialty.name}}
                                             </span>
                                             <v-spacer/>
-                                            <v-chip color="primary_dark" class="mb-2" small text-color="white">{{schedule.clinic.name}}</v-chip>
+                                            <v-chip color="primary_dark" class="mb-2" small text-color="white">
+                                                {{schedule.clinic.name}}
+                                            </v-chip>
                                         </v-layout>
                                     </v-flex>
                                     <v-flex xs12 class="mb-1">
@@ -33,7 +35,8 @@
                                     <v-flex class="my-0" xs12>
                                         <v-layout row wrap class="text-left font-weight-bold">
                                             <v-flex xs12>
-                                                <v-chip small class="mx-2" color="primary_dark" text-color="white">{{schedule.date.split(' ')[1]}}
+                                                <v-chip small class="mx-2" color="primary_dark" text-color="white">
+                                                    {{schedule.date.split(' ')[1]}}
                                                 </v-chip>
                                                 <v-chip small color="primary_dark" text-color="white">
                                                     Vagas :
@@ -78,10 +81,10 @@
                 <div class="text-xs-center">
                     <v-dialog v-model="dialog" v-if="createConsultationForm" max-width="520">
                         <SchedulingForm @close-dialog="dialog = false"
-                                        :createConsultationForm = "createConsultationForm"
-                                        :loaderPaymentNumber = "loaderPaymentNumber"
-                                        :exam = "exam"
-                                        :numberReceipt = "numberReceipt"
+                                        :createConsultationForm="createConsultationForm"
+                                        :loaderPaymentNumber="loaderPaymentNumber"
+                                        :exam="exam"
+                                        :numberReceipt="numberReceipt"
                         />
                     </v-dialog>
                 </div>
@@ -98,10 +101,11 @@
 <script>
 
     import SchedulingForm from "../doctorsAgenda/SchedulingForm"
+
     let moment = require("moment/moment");
 
     export default {
-        props:['Consultations'],
+        props: ['Consultations'],
         components: {SchedulingForm},
         data: () => ({
             semanaOptions: [
@@ -124,15 +128,15 @@
         }),
 
         watch: {
-            doctor () {
+            doctor() {
                 return this.$store.getters.doctorSelected
             },
 
-            clinic () {
+            clinic() {
                 return this.$store.getters.selectedClinic
             },
 
-            specialty () {
+            specialty() {
                 return this.$store.getters.selectedSpecialty
             },
 
@@ -140,15 +144,15 @@
 
         computed: {
 
-            doctor () {
+            doctor() {
                 return this.$store.getters.doctorSelected;
             },
 
-            clinic () {
+            clinic() {
                 return this.$store.getters.selectedClinic
             },
 
-            specialty () {
+            specialty() {
                 return this.$store.getters.selectedSpecialty
             },
 
@@ -173,7 +177,7 @@
                 return this.consultationsOfSchedules(schedules);
             },
 
-            consultations () {
+            consultations() {
                 return this.$store.getters.consultations.filter(a => {
                     let response = true;
                     if (this.doctor) {
@@ -193,7 +197,7 @@
                 return this.$store.getters.selectedPatient;
             },
             foundDependents() {
-                return this.selectedPatient ? this.selectedPatient.dependents:undefined;
+                return this.selectedPatient ? this.selectedPatient.dependents : undefined;
             },
             computedDateFormatted() {
                 return this.formatDate(
@@ -216,10 +220,12 @@
                 let weekDays = payload.weekDays;
                 let startDate = moment();
                 let dates = [];
-                weekDays = weekDays.map((day)=>{ return Number(day)});
+                weekDays = weekDays.map((day) => {
+                    return Number(day)
+                });
                 let day = startDate;
-                for (let i = 0; i < this.daysToListen ; i++) {
-                    if (weekDays.indexOf(day.weekday()) > -1 ) {
+                for (let i = 0; i < this.daysToListen; i++) {
+                    if (weekDays.indexOf(day.weekday()) > -1) {
                         dates.push(day.format('YYYY-MM-DD'))
                     }
                     day = startDate.add(1, 'days');
@@ -233,52 +239,53 @@
                 return `${day}/${month}/${year}`;
             },
 
-            consultationsOfSchedules(schedules){
+            consultationsOfSchedules(schedules) {
                 let consultations = [];
-                schedules.forEach((schedule)=>{
+                schedules.forEach((schedule) => {
                     let keys = Object.keys(schedule.days);
-                    let dates = this.datesOfInterval({weekDays:keys});
+                    let dates = this.datesOfInterval({weekDays: keys});
 
-                    dates.forEach((date)=>{
+                    dates.forEach((date) => {
                         let hourConsultation = schedule.days[moment(date).weekday()].hour;
-                        if(schedule.cancelations_schedules.indexOf(date) === -1 && schedule.cancelations_schedules.indexOf(date + ' ' +hourConsultation) === -1){
+                        if (schedule.cancelations_schedules.indexOf(date) === -1 && schedule.cancelations_schedules.indexOf(date + ' ' + hourConsultation) === -1) {
                             let scheduleObj = {
                                 clinic: schedule.clinic,
                                 doctor: schedule.doctor,
                                 date: date + ' ' + hourConsultation,
-                                routine_id : schedule.routine_id,
+                                routine_id: schedule.routine_id,
                                 specialty: schedule.specialty,
                                 vacancy: schedule.days[moment(date).weekday()].vacancy,
                                 id_schedule: schedule.id,
 
                             };
-                            let obj = {...scheduleObj,...this.numberVacancyAndReturns(scheduleObj)};
+                            let obj = {...scheduleObj, ...this.numberVacancyAndReturns(scheduleObj)};
                             obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns;
                             consultations.push(obj)
                         }
                     })
                 });
                 return consultations
+
             },
 
             numberVacancyAndReturns(schedule) {
                 let consultations = this.consultations;
-                return consultations.reduce((obj,item)=>{
+                return consultations.reduce((obj, item) => {
 
                     if (schedule.clinic.name === item.clinic.name && schedule.specialty.name === item.specialty.name
-                        && schedule.doctor.cpf === item.doctor.cpf && schedule.date === item.date  && item.user){
+                        && schedule.doctor.cpf === item.doctor.cpf && schedule.date === item.date && item.user) {
                         if (item.type === 'Consulta') {
-                            obj.qtd_consultations = obj.qtd_consultations +  1
+                            obj.qtd_consultations = obj.qtd_consultations + 1
                         } else
                             obj.qtd_returns += 1
                     }
                     return obj
-                },{qtd_consultations:0,qtd_returns:0})
+                }, {qtd_consultations: 0, qtd_returns: 0})
             },
 
             consultationsByDate(consultations) {
                 let res = {};
-                consultations.sort((a,b)=>{
+                consultations.sort((a, b) => {
                     return a.date > b.date ? 1 : a.date < b.date ? -1 : 0
                 });
                 for (let cons in consultations) {
@@ -288,6 +295,7 @@
                     }
                     res[targetDate].push(consultations[cons]);
                 }
+                this.$emit('refreshDate', res);
                 return res;
             },
 
@@ -325,12 +333,12 @@
                     user: this.selectedForm.user,
                     doctor: this.selectedForm.consultation.doctor,
                     specialty: this.selectedForm.consultation.specialty,
-                    exam:this.exam
+                    exam: this.exam
                 })
                     .then(obj => {
                         this.payment_numberFound = obj;
                         this.numberReceipt = obj.payment_number;
-                        this.exam = obj.exam ?{ ... obj.exam,notFindPayment:true}:undefined;
+                        this.exam = obj.exam ? {...obj.exam, notFindPayment: true} : undefined;
                         this.status = "Pago";
                         this.loaderPaymentNumber = false
                     })
@@ -347,11 +355,10 @@
 
             async listenMoreConsultations() {
                 this.daysToListen = this.daysToListen + 3;
-                this.consultationsOfSchedules(this.schedules);
+                await this.consultationsOfSchedules(this.schedules);
+
 
             },
-
-
         }
     }
 

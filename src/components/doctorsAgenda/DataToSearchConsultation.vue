@@ -26,11 +26,13 @@
 
     export default {
         components: {DataDoctorToSearchConsultation, CardPatient},
+        props: ['moreSchedules'],
 
         data: () => ({
 
             date: moment().format("YYYY-MM-DD"),
             consultationsListenerUnsubscriber: undefined,
+            daysToListen: 3,
 
         }),
 
@@ -63,6 +65,13 @@
             specialty () {
                 return this.$store.getters.selectedSpecialty
             },
+            refreshDates () {
+                console.log('eu')
+                if (this.moreSchedules){
+                    console.log('não')
+                }
+                console.log('te amo ')
+            }
 
 
         },
@@ -123,29 +132,24 @@
                 return this.consultationsOfSchedules(schedules);
             },
 
+            refreshDates () {
+                if (this.moreSchedules){
+                    console.log(this.moreSchedules)
+                }
+                console.log('nops')
+            },
+
         },
 
         methods: {
 
-
             allowedDates(val) {
+
                 return (
                     Object.keys(this.consultationsByDate(this.schedules)).indexOf(val) !== -1
                 );
-            },
 
-            async listenConsultations() {
-                this.consultationsListenerUnsubscriber = await this.$store.dispatch(
-                    "getSchedules",
-                    {
-                        start_date: moment()
-                            .subtract(5, "hours")
-                            .format("YYYY-MM-DD HH:mm:ss"),
-                        final_date: moment()
-                            .add(3, "days")
-                            .format("YYYY-MM-DD 23:59:59")
-                    }
-                );
+
             },
 
             consultationsByDate(consultations) {
@@ -198,7 +202,7 @@
                 let dates = [];
                 weekDays = weekDays.map((day)=>{ return Number(day)});
                 let day = startDate;
-                for (let i = 0; i < 3; i++) {
+                for (let i = 0; i < this.daysToListen ; i++) {
                     if (weekDays.indexOf(day.weekday()) > -1 ) {
                         dates.push(day.format('YYYY-MM-DD'))
                     }
@@ -221,8 +225,19 @@
                     return obj
                 },{qtd_consultations:0,qtd_returns:0})
             },
-
-
+            async listenConsultations() {
+                this.consultationsListenerUnsubscriber = await this.$store.dispatch(
+                    "getSchedules",
+                    {
+                        start_date: moment()
+                            .subtract(5, "hours")
+                            .format("YYYY-MM-DD HH:mm:ss"),
+                        final_date: moment()
+                            .add(this.daysToListen, "days")
+                            .format("YYYY-MM-DD 23:59:59")
+                    }
+                );
+            },
         }
     }
 
