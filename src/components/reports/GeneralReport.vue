@@ -87,7 +87,7 @@
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs1>
-                                    {{spec.quantidade}}
+                                    {{spec.quantity}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -178,7 +178,7 @@
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs1>
-                                    {{clinics.quantidade}}
+                                    {{clinics.quantity}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -310,7 +310,7 @@
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs1>
-                                    {{outtake.quantidade}}
+                                    {{outtake.quantity}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -353,7 +353,7 @@
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs1>
-                                    {{report.quantidadeOuttakes}}
+                                    {{report.quantityOuttakes}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -396,7 +396,7 @@
                                             <v-divider vertical></v-divider>
                                         </v-flex>
                                         <v-flex xs1>
-                                            <!--                                            {{outtake.quantidade}}-->
+                                            <!--                                            {{outtake.quantity}}-->
                                         </v-flex>
                                         <v-flex xs1>
                                             <v-divider vertical></v-divider>
@@ -709,7 +709,7 @@
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs1>
-                                    Quantidade
+                                    quantity
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -756,7 +756,7 @@
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs1>
-                                    {{spec.quantidade}}
+                                    {{spec.quantity}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -847,7 +847,7 @@
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs1>
-                                    {{clinics.quantidade}}
+                                    {{clinics.quantity}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -979,7 +979,7 @@
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs1>
-                                    {{outtake.quantidade}}
+                                    {{outtake.quantity}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -1022,7 +1022,7 @@
                                     <v-divider vertical></v-divider>
                                 </v-flex>
                                 <v-flex xs1>
-                                    {{report.quantidadeOuttakes}}
+                                    {{report.quantityOuttakes}}
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-divider vertical></v-divider>
@@ -1394,16 +1394,16 @@
             proceduresQuantity() {
                 let procQt = 0
                 for (let specialty in this.report.specialties) {
-                    procQt += this.report.specialties[specialty].quantidade
+                    procQt += this.report.specialties[specialty].quantity
                 }
                 return procQt
             },
             examsQuantity() {
-                let quantidade = 0
+                let quantity = 0
                 for (let clinic in this.report.clinics) {
-                    quantidade += this.report.clinics[clinic].quantidade
+                    quantity += this.report.clinics[clinic].quantity
                 }
-                return quantidade
+                return quantity
             },
             totalExamsIntakes() {
                 return this.report.intakesArray.reduce((sum, intake) => {
@@ -1561,16 +1561,16 @@
             proceduresQuantityAllClinics() {
                 let procQt = 0
                 for (let specialty in this.reportAllUnits.specialties) {
-                    procQt += this.reportAllUnits.specialties[specialty].quantidade
+                    procQt += this.reportAllUnits.specialties[specialty].quantity
                 }
                 return procQt
             },
             examsQuantityAllClinics() {
-                let quantidade = 0
+                let quantity = 0
                 for (let clinic in this.reportAllUnits.clinics) {
-                    quantidade += this.reportAllUnits.clinics[clinic].quantidade
+                    quantity += this.reportAllUnits.clinics[clinic].quantity
                 }
-                return quantidade
+                return quantity
             },
             totalExamsIntakesAllClinics() {
                 return this.reportAllUnits.intakesArray.reduce((sum, intake) => {
