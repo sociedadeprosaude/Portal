@@ -59,7 +59,7 @@
                     </v-card-text>
                 </v-card>
             </v-flex>
-            <v-flex xs12 v-if="historyPatient" class="mt-4 mx-3">
+            <v-flex xs12 v-if="historyPatient"  class="mt-4 mx-3">
                 <v-card>
                     <HistoryCashierPatient :option="optionPatient"/>
                 </v-card>
@@ -163,6 +163,10 @@
                 }
             },
             patient () {
+                if (!this.$store.getters.selectedPatient) {
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                    this.historyPatient = false;
+                }
                 return this.$store.getters.selectedPatient
             }
         },

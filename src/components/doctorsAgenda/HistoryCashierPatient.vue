@@ -114,6 +114,7 @@
 <script>
     import Receipt from "../cashier/Receipt";
     import constants from "../../utils/constants";
+    let moment = require('moment');
 
     export default {
         props: ['option'],
@@ -185,6 +186,7 @@
                 this.loading = false;
             }
         },
+
         computed: {
             patient() {
                 return this.$store.getters.selectedPatient;
