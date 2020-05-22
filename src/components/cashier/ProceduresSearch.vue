@@ -204,6 +204,7 @@
                         holder.clinic = selection;
                         holder.cost = selection.cost;
                         holder.price = selection.price;
+                        holder.realized = false;
                         break;
                     default:
                 }
