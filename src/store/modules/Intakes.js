@@ -3,15 +3,17 @@ import functions from "../../utils/functions";
 
 const state = {
     intakes: [],
-    categories: []
+    categories: [],
+    intakesClinic: [],
 }
 
 const mutations = {
-    // setOuttakes(state, payload) {
-    //     state.outtakes = payload
-    // },
+
     setIntakesCategories(state, payload) {
         state.categories = payload
+    },
+    setIntakesClinic(state, payload){
+        state.intakesClinic =  payload
     },
 };
 
@@ -27,9 +29,6 @@ const actions = {
                 })
             } else {
                 categories = outtakesDoc.data().categories
-                // outtakesCol.forEach((doc) => {
-                //     categories.push(doc.data())
-                // })
             }
             commit('setIntakesCategories', categories)
         })
@@ -54,13 +53,60 @@ const actions = {
         await context.dispatch('addIntakesCategory', intake.category)
         await firebase.firestore().collection('intakes/').add(intake)
     },
-
+    async getSpecificIntake({commit}, intake){
+        var SpecificIntake = await firebase.firestore().collection('intakes').doc(intake.number).get()
+        let exams= []
+        let patient= SpecificIntake.data().user.name
+        let intakeNumber= intake.number
+        let intakeClinic = {}
+        for(let exam in SpecificIntake.data().exams){
+            if(SpecificIntake.data().exams[exam].clinic.cnpj === intake.cnpj){
+                if(SpecificIntake.data().exams[exam].realized){
+                    exams.push({
+                        name: SpecificIntake.data().exams[exam].name,
+                        price: SpecificIntake.data().exams[exam].cost,
+                        rules: SpecificIntake.data().exams[exam].rules,
+                        realized: SpecificIntake.data().exams[exam].realized,
+                    });
+                }
+            else{
+                    exams.push({
+                        name: SpecificIntake.data().exams[exam].name,
+                        price: SpecificIntake.data().exams[exam].cost,
+                        rules: SpecificIntake.data().exams[exam].rules,
+                        realized: false,
+                    });
+                }
+            }
+            intakeClinic = {
+                exams: exams,
+                patient: patient,
+                intakeNumber: intakeNumber
+            }
+        }
+        commit('setIntakesClinic', intakeClinic)
+    },
+    async updatingSpecificIntake({commit}, intake){
+        var SpecificIntake = await firebase.firestore().collection('intakes').doc(intake.number).get()
+        var Exams= SpecificIntake.data().exams
+        for(let exam in Exams){
+            for(let UpdateExam in intake.exams){
+                if (Exams[exam].name === intake.exams[UpdateExam].name){
+                    Exams[exam].realized = intake.exams[UpdateExam].realized
+                }
+            }
+        }
+        await firebase.firestore().collection('intakes').doc(intake.number).update({exams:Exams})
+    }
 };
 
 const getters = {
 
     intakesCategories(state) {
         return state.categories
+    },
+    intakesClinic(state){
+        return state.intakesClinic
     }
 };
 

@@ -71,14 +71,10 @@ const actions = {
         context.commit("setIntakesReport", intakes);
         return intakes
     },
-
-
-
     async searchReports(context, payload) {
         payload.dataFinal = payload.dataFinal + ' 24:00:00';
         payload.dataInicio = payload.dataInicio + ' 00:00:00';
         let selectedUnit = context.getters.selectedUnit;
-
         let intakesSnap = await firebase.firestore().collection('intakes').where('date', '>=', payload.dataInicio)
             .where('unit.name', '==', selectedUnit.name)
             .where('date', '<=', payload.dataFinal).orderBy('date').get();
@@ -135,15 +131,27 @@ const actions = {
                             name: intakes[intake].exams[exam].clinic.name,
                             cost: 0,
                             price: 0,
-                            exams: {}
+                            exams: {},
+                            property: false
                         }
+                    }
+                    if(intakes[intake].exams[exam].clinic.property === true) {
+                        clinics[intakes[intake].exams[exam].clinic.name].property = true
+                    }
+                    else{
+                        clinics[intakes[intake].exams[exam].clinic.name].property = false
                     }
                     if (!clinics[intakes[intake].exams[exam].clinic.name].exams[intakes[intake].exams[exam].name]) {
                         clinics[intakes[intake].exams[exam].clinic.name].exams[intakes[intake].exams[exam].name] = {
                             quantity: 0,
                             cost: 0,
-                            price: 0
+                            price: 0,
+                            name: intakes[intake].exams[exam].name,
+                            type: ''
                         }
+                    }
+                    if(intakes[intake].exams[exam].type){
+                        clinics[intakes[intake].exams[exam].clinic.name].exams[intakes[intake].exams[exam].name].type = intakes[intake].exams[exam].type
                     }
                     clinics[intakes[intake].exams[exam].clinic.name].quantidade++
                     clinics[intakes[intake].exams[exam].clinic.name].exams[intakes[intake].exams[exam].name].quantity++
@@ -156,12 +164,12 @@ const actions = {
                 for (let specialtie in intakes[intake].specialties) {
                     if (!specialties[intakes[intake].specialties[specialtie].name]) {
                         specialties[intakes[intake].specialties[specialtie].name] = {
-                            quantidade: 0,
+                            quantity: 0,
                             cost: 0,
                             price: 0,
                         }
                     }
-                    specialties[intakes[intake].specialties[specialtie].name].quantidade++
+                    specialties[intakes[intake].specialties[specialtie].name].quantity++
                     specialties[intakes[intake].specialties[specialtie].name].cost += parseFloat(intakes[intake].specialties[specialtie].cost), specialties[intakes[intake].specialties[specialtie].name].price += parseFloat(intakes[intake].specialties[specialtie].price)
                 }
             }
@@ -236,6 +244,7 @@ const actions = {
 
             }
         });
+        console.log('specialties: ', specialties)
         relatorio = {
             unit: selectedUnit,
             specialties: specialties,
@@ -323,9 +332,10 @@ const actions = {
                         clinics[intakes[intake].exams[exam].clinic.name].exams[intakes[intake].exams[exam].name] = {
                             quantity: 0,
                             cost: 0,
-                            price: 0
+                            price: 0,
                         }
                     }
+
                     clinics[intakes[intake].exams[exam].clinic.name].quantidade++
                     clinics[intakes[intake].exams[exam].clinic.name].exams[intakes[intake].exams[exam].name].quantity++
                     clinics[intakes[intake].exams[exam].clinic.name].exams[intakes[intake].exams[exam].name].cost += intakes[intake].exams[exam].cost
@@ -435,7 +445,7 @@ const actions = {
         };
         context.commit('setReportAllClinics', relatorio);
         return relatorio
-    }
+    },
 
 
 };

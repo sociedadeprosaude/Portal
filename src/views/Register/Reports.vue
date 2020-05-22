@@ -112,73 +112,120 @@
                 <p>DE {{dateFormatted}} ATÉ {{dateFormatted2}}</p>
             </v-flex>
         </v-layout>
-    </v-container>
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 0">
+        <general-report :report="formattedReport" :loading="loading" :intakes="intakes"  :reportAllUnits="formattedReportAllUnits"/>
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 1">
+        <luiz-fernando-report :report="formattedReport" :loading="loading" :intakes="intakes"  :reportAllUnits="formattedReportAllUnits"/>
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 2">
+        <colaborators-production-report :loading="loading" :intakes="intakes"></colaborators-production-report>
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 3">
+        <intakes-report :report="formattedReport" :loading="loading" :intakes="intakes"></intakes-report>
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 4">
+        <procedures-prices-analises></procedures-prices-analises>
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 5">
+        <best-selling-exams-report :date="dateBegin" :date2="dateEnd"/>
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 6">
+        <BestSellingConsultationsReport :date="dateBegin" :date2="dateEnd"/>
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 7">
+        <OuttakesReport :date="dateBegin" :date2="dateEnd" :cb="pesquisar"/>
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 8">
+        <NewUsersReport :date="dateBegin" :date2="dateEnd" :todayNewUsers="todayNewUsers"/>
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 9">
+        <SpecialtiesMadeReport :report="formattedReport" :loading="loading" :intakes="intakes"/>
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 10">
+        <ConsultationScheduledExecuted :report="formattedReport" :loading="loading" :intakes="intakes"/>
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 11">
+        <CustomersPerProcedureReport :report="formattedReport" :loading="loading"/>
+      </v-flex>
+      <v-flex class="hidden-screen-only">
+        <p>DE {{dateFormatted}} ATÉ {{dateFormatted2}}</p>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
-    import ColaboratorsProductionReport from "../../components/reports/ColaboratorsProductionReport";
-    import GeneralReport from "../../components/reports/GeneralReport";
-    import IntakesReport from "../../components/reports/IntakesReport";
-    import ProceduresPricesAnalises from "../../components/reports/ProceduresPricesAnalises";
-    import BestSellingExamsReport from "@/components/reports/BestSellingExamsReport";
-    import BestSellingConsultationsReport from "@/components/reports/BestSellingConsultationsReport";
-    import OuttakesReport from "@/components/reports/OuttakesReport";
-    import SpecialtiesMadeReport from "../../components/reports/SpecialtiesMadeReport"
-    import NewUsersReport from "@/components/reports/NewUsersReport";
-    import ConsultationScheduledExecuted from "../../components/reports/ConsultationScheduledExecuted"
+import ColaboratorsProductionReport from "../../components/reports/ColaboratorsProductionReport";
+import GeneralReport from "../../components/reports/GeneralReport";
+import LuizFernandoReport from "../../components/reports/LuizFernandoReport";
+import IntakesReport from "../../components/reports/IntakesReport";
+import ProceduresPricesAnalises from "../../components/reports/ProceduresPricesAnalises";
+import BestSellingExamsReport from "@/components/reports/BestSellingExamsReport";
+import BestSellingConsultationsReport from "@/components/reports/BestSellingConsultationsReport";
+import OuttakesReport from "@/components/reports/OuttakesReport";
+import SpecialtiesMadeReport from "../../components/reports/SpecialtiesMadeReport"
+import NewUsersReport from "@/components/reports/NewUsersReport";
+import ConsultationScheduledExecuted from "../../components/reports/ConsultationScheduledExecuted"
+import CustomersPerProcedureReport from "../../components/reports/CustomersPerProcedureReport"
 
-    var moment = require("moment");
-    export default {
-        components: {
-            ColaboratorsProductionReport,
-            GeneralReport,
-            IntakesReport,
-            ProceduresPricesAnalises,
-            BestSellingExamsReport,
-            BestSellingConsultationsReport,
-            OuttakesReport,
-            NewUsersReport,
-            SpecialtiesMadeReport,
-            ConsultationScheduledExecuted,
-        },
-        data: vm => ({
-            reportOptions: [
-                "Relatório Financeiro Geral",
-                "Produção do Colaborador",
-                "Relatório de Vendas",
-                "Analise de preço de exames",
-                "Exames mais vendidos",
-                "Consultas mais vendidas",
-                "Relatório de Saídas",
-                "Novos associados",
-                "Relatório Especialidades",
-                "Relatório Consulta Marcada x Realizada"
-            ],
-            selectedReport: 0,
-            date: moment().format("YYYY-MM-DD 00:00:00"),
-            date2: moment().format("YYYY-MM-DD 23:59:59"),
-            dateFormatted: moment().format("DD/MM/YYYY"),
-            dateFormatted2: moment().format("DD/MM/YYYY"),
-            dateBegin: null,
-            colaborator: null,
-            dateEnd: null,
-            menu1: false,
-            menu2: false,
-            verificador: true,
-            intakes: undefined,
-            formattedReport: undefined,
-            formattedReportAllUnits: undefined,
-            loading: false,
-            todayNewUsers: []
-        }),
-        methods: {
-            async getIntakes() {
-                this.loading = true;
-                this.intakes = await this.$store.dispatch("getIntakes", {
-                    initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-                    finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
-                    colaborator: this.colaborator
-                });
+var moment = require("moment");
+export default {
+  components: {
+    ColaboratorsProductionReport,
+    GeneralReport,
+    IntakesReport,
+    ProceduresPricesAnalises,
+    BestSellingExamsReport,
+    BestSellingConsultationsReport,
+    OuttakesReport,
+    NewUsersReport,
+    SpecialtiesMadeReport,
+    ConsultationScheduledExecuted,
+    CustomersPerProcedureReport,
+    LuizFernandoReport
+  },
+  data: vm => ({
+    reportOptions: [
+      "Relatório Financeiro Geral",
+            "Relatório Luiz Fernando",
+      "Produção do Colaborador",
+      "Relatório de Vendas",
+      "Analise de preço de exames",
+      "Exames mais vendidos",
+      "Consultas mais vendidas",
+      "Relatório de Saídas",
+      "Novos associados",
+      "Relatório Especialidades",
+      "Relatório Consulta Marcada x Realizada",
+      "Relatorio Paciente por Procedimento"
+    ],
+    selectedReport: 0,
+    date: moment().format("YYYY-MM-DD 00:00:00"),
+    date2: moment().format("YYYY-MM-DD 23:59:59"),
+    dateFormatted: moment().format("DD/MM/YYYY"),
+    dateFormatted2: moment().format("DD/MM/YYYY"),
+    dateBegin: null,
+    colaborator: null,
+    dateEnd: null,
+    menu1: false,
+    menu2: false,
+    verificador: true,
+    intakes: undefined,
+    formattedReport: undefined,
+    formattedReportAllUnits: undefined,
+    loading: false,
+    todayNewUsers: []
+  }),
+  methods: {
+    async getIntakes() {
+      this.loading = true;
+      this.intakes = await this.$store.dispatch("getIntakes", {
+        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
+        colaborator: this.colaborator
+      });
 
                 await this.pesquisar();
                 this.loading = false;

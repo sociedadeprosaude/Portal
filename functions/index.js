@@ -1,10 +1,10 @@
 const functions = require('firebase-functions');
 var admin = require('firebase-admin');
-const cors = require('cors')({origin: true});
+const cors = require('cors')({ origin: true });
 
 var papa = require('papaparse');
 var moment = require('moment');
-const {parse} = require('json2csv');
+const { parse } = require('json2csv');
 admin.initializeApp();
 const defaultRoute = '/analise-exames'
 
@@ -70,7 +70,7 @@ exports.addMessage = functions.https.onRequest(async (req, res) => {
     cors(request, response, () => {
         response.status(200).send('success aí cara. Foco!')
     });
-  });
+});
 
 
 exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate(async (change, context) => {
@@ -345,7 +345,7 @@ exports.getSpecialtiesWithPrice = functions.runWith(heavyFunctionsRuntimeOpts).h
     let specialtiesSnap = await admin.firestore().collection('specialties').get()
 
     let allSpecialties = [];
-    allSpecialties = specialtiesSnap.docs.map(doc => ({...doc.data(), id: doc.id}))
+    allSpecialties = specialtiesSnap.docs.map(doc => ({ ...doc.data(), id: doc.id }))
 
     let formattedSpecialties = allSpecialties.filter((spec) => {
         return spec.doctors && spec.doctors.length > 0 && availableSpecialties.indexOf(spec.name) > -1
@@ -373,16 +373,16 @@ exports.deleteScheduleByDay = functions.runWith(heavyFunctionsRuntimeOpts).https
     schedule.forEach((doc) => {
         let data = doc.data()
         let cancelations_schedules = data.cancelations_schedules ? data.cancelations_schedules : []
-        let obj = { start_date: payload.start_date, final_date: payload.final_date }
+        let obj = {start_date: payload.start_date, final_date: payload.final_date}
         if (payload.hour)
             obj.hour = payload.hour
         if (payload.weekDays)
             obj.week_days = payload.weekDays
-        cancelations_schedules.push({ ...obj })
-        admin.firestore().collection('schedules').doc(doc.id).update({ cancelations_schedules: cancelations_schedules })
+        cancelations_schedules.push({...obj})
+        admin.firestore().collection('schedules').doc(doc.id).update({cancelations_schedules: cancelations_schedules})
     })
     removeConsultations(payload)
-    return {Message:"Success"}
+    return { Message: "Success" }
 });
 
 exports.deleteSchedule = functions.firestore
@@ -399,7 +399,7 @@ async function removeConsultations(payload) {
             .where('specialty.name', "==", payload.specialty.name)
             .where('doctor.cpf', "==", payload.doctor.cpf).where('clinic.cnpj', '==', payload.clinic.cnpj)
             .where('date', ">=", start)
-        if (payload.final_date){
+        if (payload.final_date) {
             let end = moment(payload.final_date, 'YYYY-MM-DD').format('YYYY-MM-DD 23:59');
             query.where('date', "<=", end)
         }
@@ -425,3 +425,192 @@ async function removeConsultations(payload) {
     }
     return
 }
+
+
+exports.getConsultationsAndIntakesByDayPeriodAndWeekDays = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (request, response) => {
+    response.set('Access-Control-Allow-Origin', '*');
+    response.set('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS');
+    response.set('Access-Control-Allow-Headers', '*');
+    let start_date = request.query.start_date
+    let final_date = request.query.final_date
+    let consultations = await getCollectionFromPeriod(start_date, final_date, 'consultations')
+    let intakes = await getCollectionFromPeriod(start_date, final_date, 'intakes')
+    let doneConsultations = consultations.filter((cons) => {
+        return cons.consultationHour
+    })
+    let paidConsultations = consultations.filter((cons) => {
+        return cons.status === 'Pago'
+    })
+    doneConsultations = splitCollectionByDayPeriod(doneConsultations)
+    doneConsultations.morning = getCollectionByDayOfTheWeek(doneConsultations.morning)
+    doneConsultations.afternoon = getCollectionByDayOfTheWeek(doneConsultations.afternoon)
+
+    paidConsultations = splitCollectionByDayPeriod(paidConsultations)
+    paidConsultations.morning = getCollectionByDayOfTheWeek(paidConsultations.morning)
+    paidConsultations.afternoon = getCollectionByDayOfTheWeek(paidConsultations.afternoon)
+
+    intakes = splitCollectionByDayPeriod(intakes)
+    intakes.morning = getCollectionByDayOfTheWeek(intakes.morning)
+    intakes.afternoon = getCollectionByDayOfTheWeek(intakes.afternoon)
+    response.status(200).send({
+        'Consultas Feitas': doneConsultations,
+        'Consultas Pagas': paidConsultations,
+        'Vendas realizadas': intakes
+    })
+});
+
+function getCollectionByDayOfTheWeek(collection) {
+    let daysOfWeek = {}
+    for (let item of collection) {
+        console.log(item)
+        let date = moment(item.date, 'YYYY-MM-DD HH:mm:ss')
+        let dayOfWeek = date.weekday()
+        if (!daysOfWeek[dayOfWeek]) {
+            daysOfWeek[dayOfWeek] = 0
+        }
+        daysOfWeek[dayOfWeek]++
+    }
+    return daysOfWeek
+}
+
+function splitCollectionByDayPeriod(collection) {
+    let morningConsultation = collection.filter((cons) => {
+        let date = moment(cons.date, 'YYYY-MM-DD HH:mm:ss')
+        return date.hours() <= 12
+    })
+    let afternoonConsultation = collection.filter((cons) => {
+        let date = moment(cons.date, 'YYYY-MM-DD HH:mm:ss')
+        return date.hours() >= 12
+    })
+    return {
+        morning: morningConsultation,
+        afternoon: afternoonConsultation
+    }
+}
+
+async function getCollectionFromPeriod(start_date, final_date, collectionKey) {
+    try {
+        let query = admin.firestore().collection(collectionKey)
+        if (start_date) {
+            query = query.where('date', ">=", start_date)
+        }
+        if (final_date) {
+            query = query.where('date', "<=", final_date)
+        }
+
+        let consultationsCollection = await query.get()
+
+        let consultations = consultationsCollection.docs.map((doc) => {
+            return doc.data()
+        })
+        return consultations
+    } catch (e) {
+        throw e
+    }
+}
+//Função pra ser chamada uma unica vez pra colocar o price dos /exams que nao tem price.
+exports.setPricesExams = functions.https.onRequest(async (request, response) => {
+    const firestore = admin.firestore();
+    var num = 0;
+    firestore.collection('exams').get()
+        .then(async (exams) => {
+            await Promise.all(exams.docs.map(async (examRef) => {
+                return new Promise(async (resolve, reject) => {
+                    let queryClinics = firestore.collection('exams').doc(examRef.id).collection('clinics');
+                    let clinics = await queryClinics.get();
+                    if (!clinics.empty) {
+                        examRef.ref.update({ price: clinics.docs[0].data().price })
+                        num++;
+                    }
+                    resolve();
+                });
+
+            }));
+            response.send(num + ' preços de exames atualizados.');
+            return null;
+        }).catch((err) => response.send('erro ' + err));
+});
+
+
+
+exports.onUpdateExam = functions.firestore.document('exams/{name}').onUpdate((change, context) => {
+    const firestore = admin.firestore();
+    const examUpdated = change.after.data();
+    const price = examUpdated.price;
+    if (price) {
+        //Updatando o price das clinicas da subCollection clinics presente dentro da collection /exams
+        firestore.collection('exams').doc(examUpdated.name).collection('clinics').get()
+            .then((docs) => {
+                if (!docs.empty) docs.forEach((doc) => doc.ref.update({ price: price }))
+                return null
+            })
+            .catch(err => console.log(err));
+
+        //Updatando o price dos exames da subCollection exams presente dentro da collection /clinics
+        firestore.collection('clinics').get()
+            .then((clinics) =>
+                clinics.forEach((clinic) => {
+                    firestore.collection('clinics').doc(clinic.id).collection('exams').doc(examUpdated.name).get()
+                        .then((doc) => {
+                            if (doc.exists) doc.ref.update({ price: price })
+                            return null
+                        })
+                        .catch(err => console.log(err));
+                }))
+            .catch(err => console.log(err));
+
+        //Updatando o price dos exames da subCollection exams presente dentro da collection /packages
+        firestore.collection('packages').get()
+            .then((packages) =>
+                packages.forEach((packageRef) => {
+                    firestore.collection('packages').doc(packageRef.id).collection('exams').doc(examUpdated.name).get()
+                        .then((doc) => {
+                            if (doc.exists) doc.ref.update({ price: price })
+                            return null
+                        })
+                        .catch(err => console.log(err));
+                }))
+            .catch(err => console.log(err));
+    }
+});
+
+exports.onUpdateSpecialty = functions.firestore.document('specialties/{name}').onUpdate((change, context) => {
+    const firestore = admin.firestore();
+    const specialtyUpdated = change.after.data();
+    const price = specialtyUpdated.price;
+    if (price) {
+        //Updatando o price dos doctors da subCollection clinics presente dentro da collection /specialties
+        firestore.collection('specialties').doc(specialtyUpdated.name).collection('doctors').get()
+            .then((docs) => {
+                if (!docs.empty) docs.forEach((doc) => doc.ref.update({ price: price }))
+                return null
+            })
+            .catch(err => console.log(err));
+
+        //Updatando o price dos exames da subCollection specialties presente dentro da collection /clinics
+        firestore.collection('clinics').get()
+            .then((clinics) =>
+                clinics.forEach((clinic) => {
+                    firestore.collection('clinics').doc(clinic.id).collection('specialties').doc(specialtyUpdated.name).get()
+                        .then((doc) => {
+                            if (doc.exists) doc.ref.update({ price: price })
+                            return null
+                        })
+                        .catch(err => console.log(err));
+                }))
+            .catch(err => console.log(err));
+
+        //Updatando o price dos exames da subCollection specialties presente dentro da collection /packages
+        // firestore.collection('packages').get()
+        //     .then((packages) =>
+        //         packages.forEach((packageRef) => {
+        //             firestore.collection('packages').doc(packageRef.id).collection('specialties').doc(specialtyUpdated.name).get()
+        //                 .then((doc) => {
+        //                     if (doc.exists) doc.ref.update({ price: price })
+        //                     return null
+        //                 })
+        //                 .catch(err => console.log(err));
+        //         }))
+        //     .catch(err => console.log(err));
+    }
+});

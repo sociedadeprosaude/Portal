@@ -161,14 +161,112 @@
             <v-flex xs12 v-if="loading" class="my-4">
                 <v-progress-circular indeterminate class="primary--text"/>
             </v-flex>
-            <v-flex xs2 v-for="exam in exams" :key="exam.name" class="mt-4">
-                <v-card class="ma-3 pa-3 white" @click="editExam(exam)" ripple>
-                    <v-layout row wrap>
-                        <v-flex xs12>
-                            <span class="font-weight-bold">{{exam.name}}</span>
-                        </v-flex>
+            <v-flex xs12 v-if="registerExam">
+              <v-card grid-list-x1 fluid class="mt-4">
+                <v-form v-model="validRegister" lazy-validation>
+                  <v-card-text>
+                    <v-layout wrap>
+                      <v-flex xs12 sm12>
+                        <v-text-field
+                          outlined
+                          required
+                          label="Nome"
+                          v-model="editedExam.name"
+                          prepend-icon="description"
+                          :rules="rules.campoObrigatorio"
+                          class="ml-3 mr-3"
+                        ></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 sm12>
+                        <v-select
+                          class="ml-3 mr-3"
+                          label="Tipo"
+                          prepend-icon="school"
+                          v-model="editedExam.type"
+                          :items="specialties"
+                          item-text="name"
+                          return-object
+                          outlined
+                          chips
+                          color="pink"
+                          clearable
+                        >
+                          <template v-slot:selection="data">
+                            <v-chip
+                              :key="JSON.stringify(data.item)"
+                              :input-value="data.selected"
+                              :disabled="data.disabled"
+                              class="v-chip--select-multi"
+                              @click.stop="data.parent.selectedIndex = data.index"
+                              @input="data.parent.selectItem(data.item)"
+                              text-color="white"
+                              color="info"
+                            >{{ data.item.name }}</v-chip>
+                          </template>
+                        </v-select>
+                      </v-flex>
+                      <v-flex xs12 sm12>
+                        <v-textarea
+                          outlined
+                          label="Regras"
+                          v-model="editedExam.rules"
+                          class="ml-3 mr-3"
+                          prepend-icon="report_problem"
+                        ></v-textarea>
+                      </v-flex>
+                      <v-flex xs12 sm12>
+                        <v-text-field
+                          outlined
+                          required
+                          label="Preço"
+                          v-model="editedExam.price"
+                          prepend-icon="attach_money"
+                          :rules="rules.campoObrigatorio"
+                          class="ml-3 mr-3"
+                        ></v-text-field>
+                      </v-flex>
                     </v-layout>
-                </v-card>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <submit-button
+                      :loading="loading"
+                      :success="success"
+                      text="Cadastrar Exame"
+                      :disabled="!formRegister"
+                      @click="validateRegister()"
+                      class="ma-3"
+                    ></submit-button>
+                    <v-btn
+                      color="error"
+                      fab
+                      small
+                      v-if="registed"
+                      :disabled="loading"
+                      @click="alertDelete = true"
+                    >
+                      <v-icon>delete</v-icon>
+                    </v-btn>
+                    <v-dialog v-model="alertDelete" persistent max-width="350">
+                      <v-card>
+                        <v-card-title>
+                          <strong>Deseja excluir este exame?</strong>
+                        </v-card-title>
+                        <v-card-text>Este exame será excluído permanentemente.</v-card-text>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn
+                            color="error"
+                            text
+                            @click="alertDelete = false, deleteExam()"
+                          >EXCLUIR</v-btn>
+                          <v-btn color="primary" text @click="alertDelete = false">CANCELAR</v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
+                  </v-card-actions>
+                </v-form>
+              </v-card>
             </v-flex>
         </v-layout>
     </v-container>
@@ -297,17 +395,17 @@
             },
         },
     }
+  }
+};
 </script>
 
 <style>
-    .titleExam {
+.titleExam {
+  color: #757575;
+  font-size: 20px;
+}
 
-        color: #757575;
-        font-size: 20px;
-    }
-
-    .round-card {
-        border-radius: 20px;
-
-    }
+.round-card {
+  border-radius: 20px;
+}
 </style>

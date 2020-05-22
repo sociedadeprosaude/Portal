@@ -148,6 +148,40 @@ const actions = {
         })
 
     },
+    thereIsUserUID({ commit }, payload) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let foundUser = await firebase.firestore().collection('users').doc(payload).get();
+                resolve(foundUser.data())
+            }catch(e){
+                reject(e)
+            }
+        })
+
+    },
+    async addClinicUser({ getters }, clinic) {
+        try {
+
+            functions.removeUndefineds(clinic);
+            if (clinic.type) {
+                clinic.type = clinic.type.toUpperCase()
+            }
+            clinic.created_at = moment().format('YYYY-MM-DD HH:mm:ss');
+
+            let user;
+            let foundUser = await firebase.firestore().collection('users').doc(clinic.uid).get();
+            if (foundUser.exists) {
+                user = await firebase.firestore().collection('users').doc(clinic.uid).update(clinic)
+            } else {
+                user = await firebase.firestore().collection('users').doc(clinic.uid).set(clinic)
+            }
+
+            return user
+        } catch (e) {
+            throw e
+        }
+    },
+
     async addUser({ getters }, patient) {
         try {
 
