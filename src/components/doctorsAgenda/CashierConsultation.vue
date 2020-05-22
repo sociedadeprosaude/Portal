@@ -165,7 +165,7 @@
             patient () {
                 if (!this.$store.getters.selectedPatient) {
                     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-                    this.historyPatient = false;
+                    this.historyPatient = false ;
                 }
                 return this.$store.getters.selectedPatient
             }

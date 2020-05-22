@@ -34,9 +34,9 @@
 
         }),
 
-        mounted() {
+        async mounted() {
 
-            this.listenConsultations()
+            await this.listenConsultations()
         },
 
         beforeDestroy() {

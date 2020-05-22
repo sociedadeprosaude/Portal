@@ -75,16 +75,28 @@
                         </v-card>
                     </v-flex>
                 </v-layout>
+                <div class="text-xs-center">
+                    <v-dialog v-model="dialog" v-if="createConsultationForm" max-width="520">
+                        <SchedulingForm @close-dialog="dialog = false"
+                                        :createConsultationForm = "createConsultationForm"
+                                        :loaderPaymentNumber = "loaderPaymentNumber"
+                                        :exam = "exam"
+                                        :numberReceipt = "numberReceipt"
+                        />
+                    </v-dialog>
+                </div>
             </v-container>
         </v-layout>
     </v-container>
 </template>
 <script>
 
+    import SchedulingForm from "../doctorsAgenda/SchedulingForm"
     let moment = require("moment/moment");
 
     export default {
         props:['Consultations'],
+        components: {SchedulingForm},
         data: () => ({
             semanaOptions: [
                 "Domingo",
@@ -95,6 +107,11 @@
                 "Sexta-feira",
                 "Sábado"
             ],
+            dialog: false,
+            createConsultationForm: undefined,
+            exam: undefined,
+            loaderPaymentNumber: false,
+            exams: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
         }),
 
         watch: {
@@ -161,12 +178,22 @@
                     }
                     return response;
                 });
-            }
+            },
+
+            selectedPatient() {
+                return this.$store.getters.selectedPatient;
+            },
+            foundDependents() {
+                return this.selectedPatient ? this.selectedPatient.dependents:undefined;
+            },
+            computedDateFormatted() {
+                return this.formatDate(
+                    this.createConsultationForm.consultation.date.split(" ")[0]
+                );
+            },
         },
 
         methods: {
-
-
 
             dayDate(date) {
                 let dateMoment = moment(date);
@@ -186,6 +213,12 @@
                     day = startDate.add(1, 'days');
                 }
                 return dates
+            },
+
+            formatDate(date) {
+                if (!date) return null;
+                const [year, month, day] = date.split("-");
+                return `${day}/${month}/${year}`;
             },
 
             consultationsOfSchedules(schedules){
@@ -245,6 +278,62 @@
                 }
                 return res;
             },
+
+            scheduleAppointment(consultation) {
+                if (!this.selectedPatient) {
+                    this.$refs.patientCard.$el.classList.add("shaking-ease-anim");
+                    setTimeout(() => {
+                        this.$refs.patientCard.$el.classList.remove("shaking-ease-anim");
+                    }, 1000);
+                    return;
+                }
+                this.exam = undefined;
+                this.fillConsultationForm(consultation);
+                this.dialog = true;
+            },
+
+            async fillConsultationForm(consultation) {
+                this.selectedForm = {
+                    user: this.selectedPatient,
+                    consultation: consultation
+                };
+
+                this.thereIsPaymentNumber();
+                this.createConsultationForm = this.selectedForm;
+            },
+
+            async thereIsPaymentNumber() {
+                this.payment_numberFound = undefined;
+                this.numberReceipt = "";
+                this.status = "Aguardando pagamento";
+
+                this.loaderPaymentNumber = true;
+
+                this.$store.dispatch("thereIsIntakes", {
+                    user: this.selectedForm.user,
+                    doctor: this.selectedForm.consultation.doctor,
+                    specialty: this.selectedForm.consultation.specialty,
+                    exam:this.exam
+                })
+                    .then(obj => {
+                        this.payment_numberFound = obj;
+                        this.numberReceipt = obj.payment_number;
+                        this.exam = obj.exam ?{ ... obj.exam,notFindPayment:true}:undefined;
+                        this.status = "Pago";
+                        this.loaderPaymentNumber = false
+                    })
+                    .catch(response => {
+                        let cost = this.specialtyCost();
+                        if (cost && cost.price === 0) {
+                            this.status = "Pago";
+                            this.loaderPaymentNumber = false
+                        }
+                        this.loaderPaymentNumber = false
+                    });
+
+            },
+
+
         }
     }
 

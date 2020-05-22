@@ -505,7 +505,9 @@
             selectedPatient() {
                 let user = this.$store.getters.selectedPatient;
                 if (user) {
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.name = user.name;
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.cpf = user.cpf
                 }
                 return this.$store.getters.selectedPatient
