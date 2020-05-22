@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <v-layout row wrap v-if="!loading">
+        <v-layout row wrap v-if="!loading && !intakesObserv">
             <v-flex xs12>
                 <span class="my-headline">Convênios</span>
             </v-flex>
@@ -62,13 +62,18 @@
                                     Dia: {{clinic.paymentDayFormat}}
                                 </span>
                             </v-flex>
-                            <v-flex xs4 v-if="cost !=='' && clinica === clinic">
+                            <v-flex xs3 v-if="cost !=='' && clinica === clinic">
                                 <span class="font-weight-bold">Custo :{{cost}} </span>
                             </v-flex>
-                            <v-flex xs4 v-else>
+                            <v-flex xs3 v-else>
                                 <v-btn @click="CalculateValue(clinic)">ver valor até o momento</v-btn>
                             </v-flex>
-                            <v-flex xs3>
+                            <v-divider></v-divider>
+                            <v-flex xs2>
+                                <v-btn @click="checkReceipts(clinic)">Verificar Recibos</v-btn>
+                            </v-flex>
+                            <v-divider></v-divider>
+                            <v-flex xs2>
                                 <v-btn @click="Pay(clinic)">Pagar</v-btn>
                             </v-flex>
                         </v-expansion-panel-header>
@@ -111,16 +116,20 @@
             </v-card>
         </v-dialog>
 
+        <v-card v-if="intakesObserv">
+            <clinicsIntakes @close-dialog="intakesObserv = false" :clinic="clinicSelected"></clinicsIntakes>
+        </v-card>
     </v-container>
 </template>
 
 <script>
     import moment from "moment";
+    import clinicsIntakes from "../../components/PaymentCovenants/ClinicsIntakes"
 
     export default {
         name: "Home",
         components: {
-
+            clinicsIntakes
         },
         data() {
             return {
@@ -128,7 +137,10 @@
                 value: undefined,
                 change: false,
                 clinica:[],
+                clinicSelected:[],
                 cost:'',
+                intakes:[],
+                intakesObserv:false,
                 menu2:false,
                 dateFormatted2: moment().format("DD/MM/YYYY"),
                 date2: moment().format("YYYY-MM-DD 23:59:59"),
@@ -166,6 +178,11 @@
                 this.cost=''
                 this.clinica = clinic
                 this.cost = await this.$store.dispatch('CalculedValuePaymentClinic', clinic)
+            },
+            async checkReceipts(clinic){
+                this.clinicSelected = clinic
+                this.intakesObserv=true
+
             },
             async Pay(clinic){
                 await this.$store.dispatch('PayClinic', clinic)

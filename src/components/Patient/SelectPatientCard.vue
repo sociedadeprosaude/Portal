@@ -253,7 +253,7 @@
                                         outlined
                                         rounded
                                         filled
-                                        placeholder="Campo obrigatório *"
+                                        placeholder="Campo obrigatório*"
                                         v-model="birthDate"
                                         :rules="rules"
                                         v-mask="mask.date"
@@ -743,7 +743,7 @@
                     this.name= undefined;
                     this.numAss= undefined;
                     this.rg = undefined;
-                    this.birth_date = undefined;
+                    this.birthDate = undefined;
                     this.email = undefined;
                     this.telephones = [''];
                     this.addresses = [];
@@ -769,13 +769,13 @@
                 this.loading = false
             },
 
-            fillFormUser(user) {
+            async fillFormUser(user) {
                 this.name = user.name;
                 this.cpf = user.cpf;
                 this.email = user.email;
                 this.rg = user.rg;
                 this.numAss = user.association_number;
-                this.birthDate = moment(user.birth_date).format('DD-MM-YYYY');
+                this.birthDate = await moment(user.birth_date).format('DD/MM/YYYY');
                 this.sex = user.sex;
                 this.dependents = user.dependents ? user.dependents : [];
                 this.telephones = user.telephones ? user.telephones : [''];
@@ -785,8 +785,8 @@
                 this.addresses = user.addresses;
                 if(user.dependents){
                     for(let index in user.dependents){
-                        var patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
-                        var date  = user.dependents[index].birthDate;
+                        let patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
+                        let date  = user.dependents[index].birthDate;
                         if(!patt.test(date))
                             date = moment(date,"YYYY-MM-DD").format("DD/MM/YYYY");
                         user.dependents[index].birthDate = date

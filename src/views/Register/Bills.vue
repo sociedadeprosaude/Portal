@@ -25,13 +25,15 @@
                         </v-col>
                         <v-col>
                             <v-switch v-model="switchCategory" label="Limitar por categoria"/>
-                            <v-select
+                            <v-combobox
                                     v-if="switchCategory"
                                     label="categoria"
                                     v-model="selectedCategory"
                                     :items="categoriesName"
-                                    outlined>
-                            </v-select>
+                                    outlined
+                                    clearable
+                            >
+                            </v-combobox>
                         </v-col>
                     </v-row>
                 </div>
@@ -66,6 +68,8 @@
                         <v-flex xs12>
                             <v-layout row wrap>
                                 <span>{{bill.category}}</span>
+                                <br>
+                                <span>{{bill.subCategory}}</span>
                                 <v-divider vertical class="mx-4"/>
                                 <span>{{bill.payment_method}}</span>
                                 <v-divider vertical class="mx-4"/>

@@ -204,7 +204,8 @@
                                         <v-card-actions>
                                             <v-btn rounded color="error" @click="close">Cancelar</v-btn>
                                             <v-spacer></v-spacer>
-                                            <v-btn rounded color="success"  @click="">Gerar Usuario</v-btn>
+                                            <v-btn rounded color="success"  :to="{ name: 'RegisterNewUserClinic', params: {id: editedItem.cnpj } }">Gerar Link para Usuario
+                                            </v-btn>
                                             <submit-button
                                                     color="success"
                                                     @click="save"
@@ -513,7 +514,6 @@
         },
 
         methods: {
-
 
             async loadClinics() {
               this.loading = true;
