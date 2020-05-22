@@ -87,6 +87,12 @@
                 </div>
             </v-container>
         </v-layout>
+        <v-flex xs12 v-if="!consultationLoading">
+            <v-btn class="primary" rounded @click="listenMoreConsultations">Carregar mais</v-btn>
+        </v-flex>
+        <v-flex xs12 v-else>
+            <v-progress-circular class="primary--text" indeterminate/>
+        </v-flex>
     </v-container>
 </template>
 <script>
@@ -108,10 +114,13 @@
                 "Sábado"
             ],
             dialog: false,
+            numberReceipt: "",
             createConsultationForm: undefined,
             exam: undefined,
             loaderPaymentNumber: false,
             exams: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
+            consultationsListenerUnsubscriber: undefined,
+            daysToListen: 3,
         }),
 
         watch: {
@@ -191,6 +200,9 @@
                     this.createConsultationForm.consultation.date.split(" ")[0]
                 );
             },
+            consultationLoading() {
+                return this.$store.getters.consultationsLoading;
+            },
         },
 
         methods: {
@@ -206,7 +218,7 @@
                 let dates = [];
                 weekDays = weekDays.map((day)=>{ return Number(day)});
                 let day = startDate;
-                for (let i = 0; i < 3; i++) {
+                for (let i = 0; i < this.daysToListen ; i++) {
                     if (weekDays.indexOf(day.weekday()) > -1 ) {
                         dates.push(day.format('YYYY-MM-DD'))
                     }
@@ -240,8 +252,8 @@
                                 id_schedule: schedule.id,
 
                             };
-                            let obj = {...scheduleObj,...this.numberVacancyAndReturns(scheduleObj)}
-                            obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns
+                            let obj = {...scheduleObj,...this.numberVacancyAndReturns(scheduleObj)};
+                            obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns;
                             consultations.push(obj)
                         }
                     })
@@ -330,6 +342,12 @@
                         }
                         this.loaderPaymentNumber = false
                     });
+
+            },
+
+            async listenMoreConsultations() {
+                this.daysToListen = this.daysToListen + 3;
+                this.consultationsOfSchedules(this.schedules);
 
             },
 

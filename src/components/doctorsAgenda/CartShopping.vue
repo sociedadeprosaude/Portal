@@ -7,7 +7,9 @@
                 <v-card-text v-if="categorySelect === 'exam'" class="ma-0 pa-0 my-1">
                     <v-layout row v-for="n in item.clinics" :key="n.name" class="my-2" style="width: 100%">
                         <v-btn rounded dense x-small block class="blue_grey"
-                               @click="addProduct(item, n, 'exam')">{{n.name}}</v-btn>
+                               @click="addProduct(item, n, 'exam')">
+                            {{n.name}} <v-spacer/> {{n.price}}
+                        </v-btn>
                     </v-layout>
                 </v-card-text>
                 <v-card-text v-if="categorySelect === 'appointment'" class="ma-0 pa-0 my-1">
@@ -20,13 +22,17 @@
                         </v-flex>
                         <v-layout row no-wrap v-for="clinic in n.clinics" class="align-center justify-center text-center my-1">
                             <v-btn rounded dense x-small class="blue_grey" block width="100%"
-                                   @click="addProduct(item, n, 'appointment', clinic)">{{clinic.name}}</v-btn>
+                                   @click="addProduct(item, n, 'appointment', clinic)">
+                                {{clinic.name}} <v-spacer/> {{n.price}}
+                            </v-btn>
                         </v-layout>
                     </v-layout>
                 </v-card-text>
                 <v-card-text v-if="categorySelect === 'package'" >
                    <v-layout row v-for="n in item.clinics" :key="n.name" class="my-2" style="width: 100%">
-                       <v-btn rounded dense x-small block class="blue_grey" @click="selectBudget(item)">{{n.name}}</v-btn>
+                       <v-btn rounded dense x-small block class="blue_grey" @click="selectBudget(item)">
+                           {{n.name}} <v-spacer/> {{n.price}}
+                       </v-btn>
                    </v-layout>
                 </v-card-text>
             </v-card>

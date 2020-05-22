@@ -217,20 +217,6 @@
                                         outlined>
                                 </v-text-field>
                             </v-flex>
-                            <v-flex xs12 sm12 md12 lg12>
-                                <v-divider/>
-                            </v-flex>
-                            <v-flex xs12>
-                                <v-select
-                                        prepend-icon="device_unknown"
-                                        v-model="attendance"
-                                        label="Atendimento"
-                                        chips
-                                        readonly
-                                        hide-details
-                                        outlined>
-                                </v-select>
-                            </v-flex>
                         </v-layout>
                     </v-container>
                 </v-card-text>
@@ -269,7 +255,6 @@
             success: false,
             scheduleLoading: false,
             modalidade: "Consulta",
-            attendance: "Aguardando Atendimento",
             status: "Aguardando pagamento",
             statusOptions: [{text: "Aguardando pagamento"}, {text: "Pago"}],
             exams: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
