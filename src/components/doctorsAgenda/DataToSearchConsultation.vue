@@ -4,16 +4,16 @@
             <v-flex sm12>
                 <DataDoctorToSearchConsultation/>
             </v-flex>
-            <v-flex xs12 class="mt-4">
+            <v-flex class="mt-4" xs12>
                 <v-date-picker
-                        class="mx-2"
-                        v-model="date"
-                        locale="pt-br"
                         :allowed-dates="allowedDates"
+                        class="mx-2"
+                        locale="pt-br"
+                        v-model="date"
                 />
             </v-flex>
-            <v-flex sm12 class="text-center mt-8 ml-2"  >
-                <CardPatient ref="patientCard" max-width="300px"/>
+            <v-flex class="text-center mt-8 ml-2" sm12>
+                <CardPatient max-width="300px" ref="patientCard"/>
             </v-flex>
         </v-layout>
     </v-container>
@@ -26,25 +26,16 @@
 
     export default {
         components: {DataDoctorToSearchConsultation, CardPatient},
-        props: ['moreSchedules'],
+        props: ['daysToListen'],
 
         data: () => ({
-
             date: moment().format("YYYY-MM-DD"),
             consultationsListenerUnsubscriber: undefined,
-            daysToListen: 3,
-
         }),
 
         async mounted() {
-
             await this.listenConsultations()
         },
-
-        beforeDestroy() {
-            this.consultationsListenerUnsubscriber();
-        },
-
 
 
         watch: {
@@ -54,39 +45,31 @@
                 else this.$vuetify.goTo("#group-" + val, this.options);
             },
 
-            doctor () {
+            doctor() {
                 return this.$store.getters.doctorSelected
             },
 
-            clinic () {
+            clinic() {
                 return this.$store.getters.selectedClinic
             },
 
-            specialty () {
+            specialty() {
                 return this.$store.getters.selectedSpecialty
             },
-            refreshDates () {
-                console.log('eu')
-                if (this.moreSchedules){
-                    console.log('não')
-                }
-                console.log('te amo ')
-            }
-
 
         },
 
         computed: {
 
-            doctor () {
+            doctor() {
                 return this.$store.getters.doctorSelected;
             },
 
-            clinic () {
+            clinic() {
                 return this.$store.getters.selectedClinic
             },
 
-            specialty () {
+            specialty() {
                 return this.$store.getters.selectedSpecialty
             },
 
@@ -98,24 +81,7 @@
                 };
             },
 
-            consultations () {
-
-                return this.$store.getters.consultations.filter(a => {
-                    if (this.doctor) {
-                        if (this.doctor.cpf !== a.doctor.cpf) return false;
-                    }
-                    if (this.specialty) {
-                        if (this.specialty.name !== a.specialty.name) return false;
-                    }
-                    if (this.clinic) {
-                        if (this.clinic !== a.clinic.name) return false;
-                    }
-                    return true;
-                });
-            },
-
             schedules() {
-
                 let schedules = this.$store.getters.schedules.filter(a => {
                     let response = true;
                     if (this.doctor) {
@@ -132,29 +98,51 @@
                 return this.consultationsOfSchedules(schedules);
             },
 
-            refreshDates () {
-                if (this.moreSchedules){
-                    console.log(this.moreSchedules)
-                }
-                console.log('nops')
+            selectedPatient() {
+                return this.$store.getters.selectedPatient;
+            },
+            consultations() {
+                return this.$store.getters.consultations.filter(a => {
+                    let response = true;
+                    if (this.doctor) {
+                        if (this.doctor.cpf !== a.doctor.cpf) response = false;
+                    }
+                    if (this.specialty) {
+                        if (this.specialty.name !== a.specialty.name) response = false;
+                    }
+                    if (this.clinic) {
+                        if (this.clinic !== a.clinic.name) response = false;
+                    }
+                    return response;
+                });
             },
 
         },
 
         methods: {
+            async listenConsultations() {
+                this.consultationsListenerUnsubscriber = await this.$store.dispatch(
+                    "getSchedules",
+                    {
+                        start_date: moment()
+                            .subtract(5, "hours")
+                            .format("YYYY-MM-DD HH:mm:ss"),
+                        final_date: moment()
+                            .add(this.daysToListen, "days")
+                            .format("YYYY-MM-DD 23:59:59")
+                    }
+                );
+            },
 
             allowedDates(val) {
-
                 return (
                     Object.keys(this.consultationsByDate(this.schedules)).indexOf(val) !== -1
                 );
-
-
             },
 
             consultationsByDate(consultations) {
                 let res = {};
-                consultations.sort((a,b)=>{
+                consultations.sort((a, b) => {
                     return a.date > b.date ? 1 : a.date < b.date ? -1 : 0
                 });
                 for (let cons in consultations) {
@@ -168,26 +156,26 @@
                 return res;
             },
 
-            consultationsOfSchedules(schedules){
+            consultationsOfSchedules(schedules) {
                 let consultations = [];
-                schedules.forEach((schedule)=>{
+                schedules.forEach((schedule) => {
                     let keys = Object.keys(schedule.days);
-                    let dates = this.datesOfInterval({weekDays:keys});
+                    let dates = this.datesOfInterval({weekDays: keys});
 
-                    dates.forEach((date)=>{
+                    dates.forEach((date) => {
                         let hourConsultation = schedule.days[moment(date).weekday()].hour;
-                        if(schedule.cancelations_schedules.indexOf(date) === -1 && schedule.cancelations_schedules.indexOf(date + ' ' +hourConsultation) === -1){
+                        if (schedule.cancelations_schedules.indexOf(date) === -1 && schedule.cancelations_schedules.indexOf(date + ' ' + hourConsultation) === -1) {
                             let scheduleObj = {
                                 clinic: schedule.clinic,
                                 doctor: schedule.doctor,
                                 date: date + ' ' + hourConsultation,
-                                routine_id : schedule.routine_id,
+                                routine_id: schedule.routine_id,
                                 specialty: schedule.specialty,
                                 vacancy: schedule.days[moment(date).weekday()].vacancy,
                                 id_schedule: schedule.id,
 
                             };
-                            let obj = {...scheduleObj,...this.numberVacancyAndReturns(scheduleObj)};
+                            let obj = {...scheduleObj, ...this.numberVacancyAndReturns(scheduleObj)};
                             obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns;
                             consultations.push(obj)
                         }
@@ -200,10 +188,12 @@
                 let weekDays = payload.weekDays;
                 let startDate = moment();
                 let dates = [];
-                weekDays = weekDays.map((day)=>{ return Number(day)});
+                weekDays = weekDays.map((day) => {
+                    return Number(day)
+                });
                 let day = startDate;
-                for (let i = 0; i < this.daysToListen ; i++) {
-                    if (weekDays.indexOf(day.weekday()) > -1 ) {
+                for (let i = 0; i < this.daysToListen; i++) {
+                    if (weekDays.indexOf(day.weekday()) > -1) {
                         dates.push(day.format('YYYY-MM-DD'))
                     }
                     day = startDate.add(1, 'days');
@@ -213,30 +203,17 @@
 
             numberVacancyAndReturns(schedule) {
                 let consultations = this.consultations;
-                return consultations.reduce((obj,item)=>{
+                return consultations.reduce((obj, item) => {
 
                     if (schedule.clinic.name === item.clinic.name && schedule.specialty.name === item.specialty.name
-                        && schedule.doctor.cpf === item.doctor.cpf && schedule.date === item.date  && item.user){
+                        && schedule.doctor.cpf === item.doctor.cpf && schedule.date === item.date && item.user) {
                         if (item.type === 'Consulta') {
-                            obj.qtd_consultations = obj.qtd_consultations +  1
+                            obj.qtd_consultations = obj.qtd_consultations + 1
                         } else
                             obj.qtd_returns += 1
                     }
                     return obj
-                },{qtd_consultations:0,qtd_returns:0})
-            },
-            async listenConsultations() {
-                this.consultationsListenerUnsubscriber = await this.$store.dispatch(
-                    "getSchedules",
-                    {
-                        start_date: moment()
-                            .subtract(5, "hours")
-                            .format("YYYY-MM-DD HH:mm:ss"),
-                        final_date: moment()
-                            .add(this.daysToListen, "days")
-                            .format("YYYY-MM-DD 23:59:59")
-                    }
-                );
+                }, {qtd_consultations: 0, qtd_returns: 0})
             },
         }
     }
