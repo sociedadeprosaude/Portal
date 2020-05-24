@@ -886,10 +886,10 @@
                 let form = this.createConsultationForm;
                 form.user = {
                     ...form.user,
-                    status: this.status,
+                    /* status: this.status,
                     type: this.modalidade,
                     payment_number: this.numberReceipt,
-                    exam:this.exam
+                    exam:this.exam */
                 };
                 form.consultation = {
                     ...form.consultation,

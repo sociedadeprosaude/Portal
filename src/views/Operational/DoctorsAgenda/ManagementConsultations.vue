@@ -173,7 +173,7 @@
                                                             hora: item.date.split(' ')[1],
                                                             crm: item.doctor.crm,
                                                             especialidade: item.specialty,
-                                                            exame: exames.indexOf(item.specialty.name) != -1 ? item.user.exam.name : item.specialty.name,
+                                                            exame: exames.indexOf(item.specialty.name) != -1 ? item.exam.name : item.specialty.name,
                                                             status: item.status,
                                                             modalidade: item.type,
                                                             medico:item.doctor.name,
@@ -673,15 +673,15 @@
             },
             deleted() {
                 this.$store.dispatch('eraseAppointment', {
-                    idConsultation: this.index_Selecionado.idConsultation,
+                    id: this.index_Selecionado.idConsultation,
                     idPatient: this.index_Selecionado.cpf,
                     type: this.index_Selecionado.modalidade,
                     status: this.index_Selecionado.status,
                     payment_number: this.index_Selecionado.num_recibo,
-                    specialty: this.especialidade.name,
+                    specialty: this.especialidade,
                     regress: this.index_Selecionado.consultation.regress,
                     previousConsultation: this.index_Selecionado.consultation.previousConsultation,
-                    consultation:this.index_Selecionado.consultation
+                    exam:this.index_Selecionado.consultation.exam
                 })
                 this.clear()
                 this.dialog = false

@@ -782,7 +782,7 @@
                 for (let add in user.addresses) {
                     delete user.addresses[add].loading
                 }
-                this.addresses = user.addresses;
+                this.addresses = user.addresses ? user.addresses: [];
                 if(user.dependents){
                     for(let index in user.dependents){
                         let patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);

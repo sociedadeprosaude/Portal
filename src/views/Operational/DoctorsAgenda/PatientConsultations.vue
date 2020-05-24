@@ -553,15 +553,15 @@
 
             apagar() {
                 this.$store.dispatch('eraseAppointment', {
-                    idConsultation:this.index_Selecionado.idConsultation,
+                    id:this.index_Selecionado.idConsultation,
                     idPatient:this.index_Selecionado.cpf,
                     type:this.index_Selecionado.modalidade,
                     status:this.index_Selecionado.status,
                     payment_number:this.index_Selecionado.num_recibo,
-                    specialty:this.index_Selecionado.especialidade.name,
+                    specialty:this.index_Selecionado.especialidade,
                     regress:this.index_Selecionado.consultation.regress,
                     previousConsultation:this.index_Selecionado.consultation.previousConsultation,
-                    consultation:this.index_Selecionado.consultation
+                    exam:this.index_Selecionado.consultation.exam
                 })
                 this.clear()
                 this.dialog = false

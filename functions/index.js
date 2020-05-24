@@ -671,3 +671,121 @@ exports.onUpdateSpecialty = functions.firestore.document('specialties/{name}').o
         //     .catch(err => console.log(err));
     }
 });
+
+exports.cancelAppointment = functions.runWith(heavyFunctionsRuntimeOpts).https.onCall(async (data, context) => {
+    let payload = data.payload
+
+    let FieldValue = admin.firestore.FieldValue;
+    await admin.firestore().collection('consultations').doc(payload.id).delete()
+    await admin.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.id).update({ status: 'Cancelado' })
+
+    //Para consultas que são do tipo Retorno
+    if (payload.type === 'Retorno') {
+
+        await admin.firestore().collection('consultations').doc(payload.previousConsultation).update({
+            regress: FieldValue.delete()
+        });
+        await admin.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.previousConsultation).update({
+            regress: FieldValue.delete()
+        })
+    }
+
+    admin.firestore().collection('users').doc(payload.idPatient).collection('procedures')
+        .where('consultation', '==', payload.id).get()
+        .then((procedure) => {
+            procedure.forEach((doc) => {
+                let data = doc.data();
+
+                if (payload.type === "Consulta" && payload.payment_number !== "") {
+                    //let thereIsExam = payload.consultation.exam ? payload.consultation.exam : payload.consultation.user && payload.consultation.user.exam ? payload.consultation.user.exam : undefined
+                    let thereIsExam = payload.exam ? payload.exam : undefined
+                    let status = thereIsExam ? 'Exame Pago' : 'Consulta Paga';
+                    let type = thereIsExam ? 'Exam' : 'Consultation';
+                    let obj = {
+                        status: [status],
+                        payment_number: data.payment_number,
+                        startAt: data.startAt,
+                        type: type,
+                        specialty: data.specialty
+                    };
+
+                    if (thereIsExam)
+                        obj = { ...obj, exam: thereIsExam };
+                    admin.firestore().collection('users').doc(payload.idPatient).collection('procedures').add(
+                        { ...obj }
+                    )
+                }
+
+                admin.firestore().collection('users').doc(payload.idPatient).collection('procedures').doc(doc.id).delete()
+                data.status.push('Cancelado');
+                admin.firestore().collection('users').doc(payload.idPatient).collection('proceduresFinished').doc(doc.id)
+                    .set(data);
+                return;
+            })
+        });
+
+
+    //Para consultas do tipo Consulta e possuem um retorno associado. É necessário remover o agendamento do retorno associado
+    if (payload.regress !== undefined) {
+        await admin.firestore().collection('consultations').doc(payload.regress).delete()
+        await admin.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.regress).update({ status: 'Cancelado' })
+    }
+
+    return 'Appointment Cancelled'
+});
+
+exports.addUserToConsultation = functions.runWith(heavyFunctionsRuntimeOpts).https.onCall(async (data, context) => {
+    let payload = data.payload
+    let obj = {
+        ...payload.consultation,
+        user: payload.user
+    };
+    let resp = await admin.firestore().collection('consultations').add(obj);
+    if (payload.consultation.type === "Retorno") {
+        await admin.firestore().collection('consultations').doc(payload.consultation.previousConsultation).update({ regress: resp.id })
+    }
+    payload.consultation.id = resp.id;
+    await addConsultationAppointmentToUser({ ...payload })
+
+    return {Message:"Success new consultation "+resp.id}
+});
+
+async function addConsultationAppointmentToUser(payload) {
+    let copyPayload = Object.assign({}, payload);
+    console.log('Aqui no adicionar consultation to appointment')
+    await admin.firestore().collection('users').doc(copyPayload.user.cpf).collection('consultations').doc(copyPayload.consultation.id).set(copyPayload.consultation);
+    if (copyPayload.consultation.type === "Retorno") {
+        await admin.firestore().collection('users').doc(copyPayload.user.cpf).collection('consultations').doc(copyPayload.consultation.previousConsultation).update({ regress: copyPayload.consultation.id })
+        let procedure = await admin.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').where('type', '==', 'Consultation')
+            .where('consultation', '==', copyPayload.consultation.previousConsultation).get()
+        procedure.forEach(doc => {
+
+            admin.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').doc(doc.id)
+                .update({
+                    status: admin.firestore.FieldValue.arrayUnion('Retorno agendado'),
+                })
+        })
+
+    } else if (copyPayload.payment_numberFound) {
+        admin.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').doc(copyPayload.payment_numberFound.procedureId)
+            .update({
+                status: admin.firestore.FieldValue.arrayUnion('Agendado'),
+                consultation: copyPayload.consultation.id,
+            })
+    } else {
+
+        let obj = {
+            status: ['Agendado'],
+            startAt: moment().format('YYYY-MM-DD hh:ss'),
+            consultation: copyPayload.consultation.id,
+            specialty: copyPayload.consultation.specialty.name
+        };
+        if (copyPayload.consultation.exam) {
+            obj.type = 'Exam';
+            obj.exam = copyPayload.consultation.exam
+        } else
+            obj.type = 'Consultation';
+
+        admin.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').add(obj)
+    }
+}
