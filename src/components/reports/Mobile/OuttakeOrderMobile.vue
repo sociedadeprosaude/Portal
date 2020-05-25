@@ -2,22 +2,17 @@
     <v-container class="ma-0 pa-0">
         <v-row class="align-center justify-center">
             <v-col cols="12" xs="12" class="primary">
-            <v-card class="primary elevation-0 white--text" height="50px">
-                <v-card-title class="font-weight-bold display-1 align-lg-center justify-center">
-                    R$ {{ totalPayable }}
-                    <br/>
-                </v-card-title>
-                <v-card-subtitle class="white--text">Débito Restante</v-card-subtitle>
-            </v-card>
-            </v-col>
-            <v-col cols="12" xs="12" class="primary">
-                <v-card-actions class="white--text">
+                <v-card class="primary elevation-0 white--text">
+                    <v-card-title class="font-weight-bold display-1 align-lg-center justify-center">
+                        R$ {{ totalPayable }}
+                    </v-card-title>
+                    <v-card-subtitle class="white--text">Débito Restante</v-card-subtitle>
                     <v-chip-group column active-class="primary--text">
-                        <v-chip v-for="(day,i) in dates" :key="i" class="white" small @click="mappingDates(day)">
-                            <span style="font-weight: bold;"> {{ day | dateFilter }} </span>
-                        </v-chip>
+                            <v-chip v-for="(day,i) in dates" :key="i" class="white" small @click="mappingDates(day)">
+                                <span style="font-weight: bold;"> {{ day | dateFilter }} </span>
+                            </v-chip>
                     </v-chip-group>
-                </v-card-actions>
+                </v-card>
             </v-col>
         </v-row>
         <v-row>
