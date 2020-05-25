@@ -1,6 +1,6 @@
 <template>
     <v-layout row wrap>
-       <v-spacer></v-spacer>
+        <v-spacer/>
         <v-flex xs12>
             <v-card class="pa-4" color="indigo darken-4">
                 <v-layout row wrap aling-center>
@@ -50,7 +50,8 @@
                                 :disabled="consultation.status === 'Cancelado'"
                                 @click="deletedConsultation()"
                                 class="mx-2"
-                        > Cancelar </v-btn>
+                        > Cancelar
+                        </v-btn>
                         <v-btn
                                 color="white"
                                 rounded
@@ -59,6 +60,15 @@
                                 :disabled="consultation.status !== 'Pago'"
                                 v-if="consultation.type !== 'Retorno'"
                         >Retorno
+                        </v-btn>
+                        <v-btn
+                                color="white"
+                                rounded
+                                class="mx-2"
+                                :disabled="consultation.consultationHour"
+                                @click="setConsultationHour(consultation)"
+                        >
+                            Atender
                         </v-btn>
                     </v-card-actions>
                     <v-flex xs12 class="mt-4 mb-2">
@@ -72,33 +82,31 @@
 
 
 <script>
-    import CardConsultationManagementConsultations from '../../../components/doctorsAgenda/ManagementConsultations/CardConsultationManagementConsultations'
-    import CardPatientManagementConsultations from '../../../components/doctorsAgenda/ManagementConsultations/CardPatientManagementConsultations'
+    import CardConsultationManagementConsultations
+        from '../../../components/doctorsAgenda/ManagementConsultations/CardConsultationManagementConsultations'
+    import CardPatientManagementConsultations
+        from '../../../components/doctorsAgenda/ManagementConsultations/CardPatientManagementConsultations'
+    let moment = require('moment');
+
     export default {
         name: "CardInformationManagementConsultations",
-        props: ['patient','consultation'],
-        components:{CardConsultationManagementConsultations, CardPatientManagementConsultations},
+        props: ['patient', 'consultation'],
+        components: {CardConsultationManagementConsultations, CardPatientManagementConsultations},
 
-        data: () => ({
-
-        }),
-        computed: {
-
-        },
+        data: () => ({}),
+        computed: {},
         mounted() {
             this.initialConfig()
 
         },
-        watch: {
-
-        },
+        watch: {},
         methods: {
 
             async initialConfig() {
 
             },
             deletedConsultation() {
-                console.log('consultation: ', this.consultation)
+                console.log('consultation: ', this.consultation);
                 this.$store.dispatch('eraseAppointment', {
                     idConsultation: this.consultation.id,
                     idPatient: this.consultation.user.cpf,
@@ -107,26 +115,33 @@
                     payment_number: this.consultation.payment_number,
                     specialty: this.consultation.specialty.name,
                     previousConsultation: this.consultation.previousConsultation,
-                    consultation:this.consultation
+                    consultation: this.consultation
                 });
                 this.dialog = false
 
             },
+            setConsultationHour(consultation) {
+                console.log(consultation);
+                let consultation_hour = moment().format('YYYY-MM-DD hh:mm:ss');
+                console.log(consultation_hour)
+            }
 
         },
     }
 </script>
 <style scoped>
-    .cardw{
+    .cardw {
         width: 100%;
         height: 150px;
         align-self: center;
     }
-    .cardConsultation{
+
+    .cardConsultation {
         width: 100%;
         height: 350px;
     }
-    .spacerH{
+
+    .spacerH {
         height: 10px;
     }
 </style>

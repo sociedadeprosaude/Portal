@@ -51,9 +51,6 @@
             async initialConfig() {
 
             },
-            printF(item){
-                console.log('item: ', item)
-            },
             dateFormat(item){
                let date= item.substring(8,10) + '/' + item.substring(5,7) + '/' + item.substring(0,4)
                 return date
