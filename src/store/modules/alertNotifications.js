@@ -15,7 +15,6 @@ const mutations = {
 const actions = {
 
     async addNotifications ({commit}, data){
-
         try {
             for (let item in data){
                 if (!data[item]) {

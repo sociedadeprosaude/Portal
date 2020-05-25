@@ -81,33 +81,36 @@
         <general-report :report="formattedReport" :loading="loading" :intakes="intakes"  :reportAllUnits="formattedReportAllUnits"/>
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 1">
-        <colaborators-production-report :loading="loading" :intakes="intakes"></colaborators-production-report>
+        <luiz-fernando-report :report="formattedReport" :loading="loading" :intakes="intakes"  :reportAllUnits="formattedReportAllUnits"/>
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 2">
-        <intakes-report :report="formattedReport" :loading="loading" :intakes="intakes"></intakes-report>
+        <colaborators-production-report :loading="loading" :intakes="intakes"></colaborators-production-report>
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 3">
-        <procedures-prices-analises></procedures-prices-analises>
+        <intakes-report :report="formattedReport" :loading="loading" :intakes="intakes"></intakes-report>
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 4">
-        <best-selling-exams-report :date="dateBegin" :date2="dateEnd"/>
+        <procedures-prices-analises></procedures-prices-analises>
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 5">
-        <BestSellingConsultationsReport :date="dateBegin" :date2="dateEnd"/>
+        <best-selling-exams-report :date="dateBegin" :date2="dateEnd"/>
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 6">
-        <OuttakesReport :date="dateBegin" :date2="dateEnd" :cb="pesquisar"/>
+        <BestSellingConsultationsReport :date="dateBegin" :date2="dateEnd"/>
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 7">
-        <NewUsersReport :date="dateBegin" :date2="dateEnd" :todayNewUsers="todayNewUsers"/>
+        <OuttakesReport :date="dateBegin" :date2="dateEnd" :cb="pesquisar"/>
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 8">
-        <SpecialtiesMadeReport :report="formattedReport" :loading="loading" :intakes="intakes"/>
+        <NewUsersReport :date="dateBegin" :date2="dateEnd" :todayNewUsers="todayNewUsers"/>
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 9">
-        <ConsultationScheduledExecuted :report="formattedReport" :loading="loading" :intakes="intakes"/>
+        <SpecialtiesMadeReport :report="formattedReport" :loading="loading" :intakes="intakes"/>
       </v-flex>
       <v-flex xs12 v-if="selectedReport === 10">
+        <ConsultationScheduledExecuted :report="formattedReport" :loading="loading" :intakes="intakes"/>
+      </v-flex>
+      <v-flex xs12 v-if="selectedReport === 11">
         <CustomersPerProcedureReport :report="formattedReport" :loading="loading"/>
       </v-flex>
       <v-flex class="hidden-screen-only">
@@ -120,6 +123,7 @@
 <script>
 import ColaboratorsProductionReport from "../../components/reports/ColaboratorsProductionReport";
 import GeneralReport from "../../components/reports/GeneralReport";
+import LuizFernandoReport from "../../components/reports/LuizFernandoReport";
 import IntakesReport from "../../components/reports/IntakesReport";
 import ProceduresPricesAnalises from "../../components/reports/ProceduresPricesAnalises";
 import BestSellingExamsReport from "@/components/reports/BestSellingExamsReport";
@@ -143,11 +147,13 @@ export default {
     NewUsersReport,
     SpecialtiesMadeReport,
     ConsultationScheduledExecuted,
-    CustomersPerProcedureReport
+    CustomersPerProcedureReport,
+    LuizFernandoReport
   },
   data: vm => ({
     reportOptions: [
       "Relatório Financeiro Geral",
+            "Relatório Luiz Fernando",
       "Produção do Colaborador",
       "Relatório de Vendas",
       "Analise de preço de exames",

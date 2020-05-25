@@ -11,9 +11,12 @@ import Labor from "./views/Personal/Labor";
 import Reports from "./views/Register/Reports";
 import Bundles from "./views/Register/Bundles";
 import PaymentCovenants from "./views/Register/PaymentCovenants";
+import ContestValue from "./views/Notifications/contestValues"
 
 import Doctors from "./views/Register/Doctors";
 import Clinics from "./views/Register/Clinics";
+import RegisterNewUserClinic from "./views/Register/Clinic/RegisterClinic"
+import DischargeProcedures from "./views/Register/Clinic/DischargeProcedures"
 import Units from "./views/Units";
 import Bills from "./views/Register/Bills";
 
@@ -27,7 +30,10 @@ import discount from "./views/Notifications/discount"
 import notifications from "./views/Notifications/notifications";
 
 import weeklyTable from "./views/Operational/WeeklyTable/weeklyTable";
-
+const Clinic = {
+  props: ['id'],
+  template: '<div>Clinic {{ id }}</div>'
+}
 Vue.use(Router);
 let mainRoutes = [
   {
@@ -42,6 +48,14 @@ let mainRoutes = [
     path: '/login',
     name: 'Login',
     component: Login,
+  },
+  {
+    path: '/ContestValueAlert',
+    name: 'ContestValue',
+    component: ContestValue,
+    meta : {
+      requiresAuth: true
+    }
   },
   {
     path: '/cadastro',
@@ -109,14 +123,32 @@ let mainRoutes = [
     path: '/clinics',
     name: 'clinics',
     component: Clinics,
-    meta : {
+    meta: {
       requiresAuth: false
+    }
+  },
+  {
+    path: '/clinics/RegisterNewUserClinic/Clinic/:id',
+    name: 'RegisterNewUserClinic',
+    component: RegisterNewUserClinic,
+    props: true,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+
+  {
+    path: '/DischargeProcedures',
+    name: 'DischargeProcedures',
+    component: DischargeProcedures,
+    meta: {
+      requiresAuth: false,
     }
   },
   {
     path: '/bundles',
     name: 'bundles',
-    component : Bundles,
+    component: Bundles,
     meta: {
       requiresAuth: false,
     }

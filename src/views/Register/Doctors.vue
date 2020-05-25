@@ -21,6 +21,10 @@
                                     <v-icon>close</v-icon>
                                 </v-btn>
                                 <v-spacer></v-spacer>
+                                <v-btn rounded color="primary" dark class="mb-2 mx-2" @click="modifySpecialtyDialog()">
+                                    <v-icon>edit</v-icon>
+                                    <v-icon>school</v-icon>
+                                </v-btn>
                                 <v-btn rounded color="primary" dark class="mb-2 mx-2" @click="addSpecialtyDialog()">
                                     <v-icon>add</v-icon>
                                     <v-icon>school</v-icon>
@@ -116,12 +120,161 @@
                             <v-text-field repend-icon="school" v-model="specialty" label="Especialidade" outlined
                                           rounded filled></v-text-field>
                         </v-flex>
+
+                        <v-flex xs12>
+                            <v-select
+                                    label="É Necessário Agendar Exame(s) ?"
+                                    v-model="exam"
+                                    :items="typeOptions"
+                                    outlined
+                                    rounded
+                                    filled
+                                    chips
+                                    color="pink"
+                                    clearable
+                                    hide-details
+                            >
+                                <template v-slot:selection="data">
+                                    <v-chip
+                                            :key="JSON.stringify(data.item)"
+                                            :input-value="data.selected"
+                                            :disabled="data.disabled"
+                                            class="v-chip--select-multi"
+                                            @click.stop="data.parent.selectedIndex = data.index"
+                                            @input="data.parent.selectItem(data.item)"
+                                            text-color="white"
+                                            color="info"
+                                    >
+                                        {{ data.item.text }}
+                                    </v-chip>
+                                </template>
+                            </v-select>
+                        </v-flex>
+
                     </v-layout>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <submit-button text="Adicionar" :loading="loading" :success="success" @reset="success = false"
                                    @click="addSpecialty">
+                    </submit-button>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="editSpecialtyDialog" max-width="500px">
+            <v-card>
+                <v-card-title>
+                    Editar Especialidade Médica
+                    <v-spacer></v-spacer>
+                    <v-btn text @click="editSpecialtyDialog = false">
+                        <v-icon>close</v-icon>
+                    </v-btn>
+                </v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                    <v-layout row wrap class="align-center justify-center">
+                        <strong>CADASTRADAS:</strong>
+                        <v-flex xs12 class="my-4 mx-2">
+                            <v-select
+                                    label="Selecione a Especialidade para Editar"
+                                    v-model="specialty"
+                                    :items="specialties"
+                                    outlined
+                                    rounded
+                                    filled
+                                    return-object
+                                    item-text="name"
+                                    chips
+                                    color="pink"
+                                    clearable
+                                    hide-details
+                            >
+                                <template v-slot:selection="data">
+                                    <v-chip
+                                            :key="JSON.stringify(data.item)"
+                                            :input-value="data.selected"
+                                            :disabled="data.disabled"
+                                            class="v-chip--select-multi"
+                                            @click.stop="data.parent.selectedIndex = data.index"
+                                            @input="data.parent.selectItem(data.item)"
+                                            text-color="white"
+                                            color="info"
+                                    >
+                                        {{ data.item.name }}
+                                    </v-chip>
+                                </template>
+                            </v-select>
+                        </v-flex>
+                        <v-divider></v-divider>
+
+                        <v-flex xs12 class="my-4 mx-2">
+                            <v-select
+                                    label="Especialidade Selecionda para Edição"
+                                    v-model="specialty"
+                                    :items="specialties"
+                                    outlined
+                                    rounded
+                                    filled
+                                    return-object
+                                    item-text="name"
+                                    chips
+                                    readonly
+                                    color="pink"
+                                    hide-details
+                            >
+                                <template v-slot:selection="data">
+                                    <v-chip
+                                            :key="JSON.stringify(data.item)"
+                                            :input-value="data.selected"
+                                            :disabled="data.disabled"
+                                            class="v-chip--select-multi"
+                                            @click.stop="data.parent.selectedIndex = data.index"
+                                            @input="data.parent.selectItem(data.item)"
+                                            text-color="white"
+                                            color="info"
+                                    >
+                                        {{ data.item.name }}
+                                    </v-chip>
+                                </template>
+                            </v-select>
+                        </v-flex>
+
+                        <v-flex xs12>
+                            <v-select
+                                    label="É Necessário Agendar Exame(s) ?"
+                                    v-model="exam"
+                                    :items="typeOptions"
+                                    outlined
+                                    rounded
+                                    filled
+                                    chips
+                                    color="pink"
+                                    clearable
+                                    hide-details
+                            >
+                                <template v-slot:selection="data">
+                                    <v-chip
+                                            :key="JSON.stringify(data.item)"
+                                            :input-value="data.selected"
+                                            :disabled="data.disabled"
+                                            class="v-chip--select-multi"
+                                            @click.stop="data.parent.selectedIndex = data.index"
+                                            @input="data.parent.selectItem(data.item)"
+                                            text-color="white"
+                                            color="info"
+                                    >
+                                        {{ data.item.text }}
+                                    </v-chip>
+                                </template>
+                            </v-select>
+                        </v-flex>
+
+                    </v-layout>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <submit-button text="Editar" :loading="loading" :success="success" @reset="success = false"
+                                   @click="editSpecialty">
                     </submit-button>
                 </v-card-actions>
             </v-card>
@@ -144,12 +297,18 @@
             editDoctorDialog: false,
             confirmDeletionDialog: false,
             createSpecialtyDialog: false,
+            editSpecialtyDialog: false,
             selectedDoctor: undefined,
             specialty: undefined,
             loading: false,
             success: false,
             search: '',
             dialog: false,
+            exam: undefined,
+            typeOptions:[
+                { text:'sim', value: true },
+                { text:'não', value: false }
+                ],
             headers: [
                 {
                     text: 'Nome',
@@ -199,13 +358,31 @@
             async addSpecialty() {
                 this.loading = true;
                 await this.$store.dispatch('addSpecialty', {
-                    name: this.specialty.toUpperCase()
+                    name: this.specialty.toUpperCase(),
+                    exam: this.exam
                 });
                 await this.$store.dispatch('getSpecialties');
                 this.success = true;
                 this.loading = false;
                 setTimeout(() => {
                     this.specialty = undefined;
+                    this.exam = undefined;
+                }, 1000)
+            },
+            modifySpecialtyDialog() {
+                this.editSpecialtyDialog = true
+            },
+            async editSpecialty() {
+                this.loading = true;
+                await this.$store.dispatch('editSpecialty', {
+                    name: this.specialty.name.toUpperCase(),
+                    exam: this.exam
+                });
+                this.success = true;
+                this.loading = false;
+                setTimeout(() => {
+                    this.specialty = undefined;
+                    this.exam = undefined;
                 }, 1000)
             },
             addDoctor() {
