@@ -144,7 +144,7 @@
                                                     </span>
                                                     <v-spacer/>
                                                     <p class="text-right">
-                                                        R$ {{(item.doctor.price).toFixed(2)}}
+                                                        R$ {{(item.price).toFixed(2)}}
                                                     </p>
                                                 </v-layout>
                                             </v-card-text>
@@ -405,6 +405,7 @@
                 return this.$store.getters.getShoppingCartItemsByCategory.exams
             },
             consultas() {
+                console.log(this.$store.getters.getShoppingCartItemsByCategory.consultations)
                 return this.$store.getters.getShoppingCartItemsByCategory.consultations
             },
             cost() {
