@@ -405,7 +405,6 @@
                 return this.$store.getters.getShoppingCartItemsByCategory.exams
             },
             consultas() {
-                console.log(this.$store.getters.getShoppingCartItemsByCategory.consultations)
                 return this.$store.getters.getShoppingCartItemsByCategory.consultations
             },
             cost() {
