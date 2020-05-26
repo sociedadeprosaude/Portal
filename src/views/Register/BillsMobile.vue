@@ -1,5 +1,185 @@
 <template>
     <v-container>
+
+        <div class="text-center">
+            <v-dialog hide-overlay transition="dialog-bottom-transition" persistent fullscreen v-model="dialogRegisterBill">
+                <register-bill-mobile @close-dialog="dialogRegisterBill = false"></register-bill-mobile>
+            </v-dialog>
+
+            <v-dialog class="fill-height" hide-overlay transition="dialog-bottom-transition" persistent fullscreen v-model="dialogPaidBills">
+                <v-card>
+                    <v-toolbar dark color="primary">
+                        <v-toolbar-title>Lançamentos</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-btn icon dark @click="dialogPaidBills = false">
+                            <v-icon>close</v-icon>
+                        </v-btn>
+                    </v-toolbar>
+
+                    <v-flex xs12>
+                        <v-container>
+                            <v-row>
+                                <v-row justify="center">
+                                    <v-flex xs10>
+                                        <v-menu
+                                                v-model="menu"
+                                                :close-on-content-click="false"
+                                                :nudge-right="40"
+                                                transition="scale-transition"
+                                                offset-y
+                                                min-width="290px"
+                                        >
+                                            <template v-slot:activator="{ on }">
+                                                <v-text-field
+                                                        v-model="computedDateFormatted"
+                                                        label="Selecione o Mês para Pesquisar"
+                                                        prepend-icon="event"
+                                                        readonly
+                                                        outlined
+                                                        rounded
+                                                        v-on="on"
+                                                ></v-text-field>
+                                            </template>
+                                            <v-date-picker type="month" locale="pt-br" v-model="selectedMonth" @input="menu = false"></v-date-picker>
+                                        </v-menu>
+                                    </v-flex>
+                                    <v-flex xs12>
+                                        <v-chip-group class="pa-5" column active-class="primary--text">
+                                            <v-chip color="grey" v-for="(month,i) in months" :key="i" class="white" small>
+                                                <span style="font-weight: bold;"> {{ month.format('MM/YYYY') }} </span>
+                                            </v-chip>
+                                        </v-chip-group>
+                                    </v-flex>
+                                </v-row>
+                            </v-row>
+
+
+                            <v-container v-if="loadingFilter">
+                                <v-row align="center" justify="center">
+                                    <v-col>
+                                        <v-card elevation="10" class="pa-4">
+                                            <v-progress-circular indeterminate color="primary"/>
+                                        </v-card>
+                                    </v-col>
+                                </v-row>
+                            </v-container>
+
+                            <v-container v-else-if="selectedPaidOuttakesList.length === 0">
+                                <v-row align="center" justify="center">
+                                    <v-col>
+                                        <v-card elevation="10" class="pa-4">Não há contas pagas neste mês</v-card>
+                                    </v-col>
+                                </v-row>
+                            </v-container>
+
+                            <v-flex xs12 class="mt-4" v-else>
+                                <v-card class="pa-4 my-4" v-for="bill in selectedPaidOuttakesList" :key="bill.id" @click="dialogInfoPaidBill = true">
+                                    <v-layout class="align-center justify-center" row wrap>
+                                        <v-flex xs11>
+                                            <div>
+                                                <span style="color: #003B8F; font-weight: bold;"> {{ bill.date_to_pay | dateFilter }} - {{ daydate(bill.date_to_pay) }}</span>
+                                                <v-flex xs12 class="primary" style="height: 2px;"></v-flex>
+                                            </div>
+                                        </v-flex>
+                                        <v-flex xs6 class="text-start">
+                                            <span style="font-weight: bold;">Categoria: {{bill.category}}</span>
+                                            <br>
+                                            <span>SubCategoria: {{bill.subCategory}}</span>
+                                        </v-flex>
+                                        <v-flex xs5 class="text-right">
+                                            <span class="font-weight-bold">R$ {{bill.value}}</span>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-card>
+                            </v-flex>
+                        </v-container></v-flex>
+                </v-card>
+            </v-dialog>
+
+            <v-dialog hide-overlay transition="dialog-bottom-transition" v-model="dialogInfoPaidBill">
+                <v-container>
+                    <v-layout class="align-center justify-center" row wrap>
+                        <v-flex xs12>
+                            <v-card>
+                                <v-toolbar dark color="primary">
+                                    <v-toolbar-title>INFO</v-toolbar-title>
+                                    <v-spacer></v-spacer>
+                                    <v-btn icon dark @click="dialogInfoPaidBill = false">
+                                        <v-icon>close</v-icon>
+                                    </v-btn>
+                                </v-toolbar>
+
+                                <!--                            <v-flex xs12>
+                                                                <v-card class="pa-4 my-4">
+                                                                    <v-layout row wrap>
+                                                                        <v-flex xs12>
+                                                                            <v-layout row wrap>
+                                                                                <span>{{bill.category}}</span>
+                                                                                <br>
+                                                                                <span>{{bill.subCategory}}</span>
+                                                                                <v-divider vertical class="mx-4"/>
+                                                                                <span>{{bill.payment_method}}</span>
+                                                                                <v-divider vertical class="mx-4"/>
+                                                                                <span class="font-weight-bold">{{bill.date_to_pay | dateFilter}}</span>
+                                                                                <v-divider vertical class="mx-4"/>
+                                                                                <span class="font-weight-bold">{{bill.paid | dateFilter}}</span>
+                                                                                <v-divider vertical class="mx-4"/>
+                                                                                <v-spacer/>
+                                                                                <span class="font-weight-bold">{{bill.value}}</span>
+
+                                                                                <v-flex xs12>
+                                                                                    <span>{{bill.description}}</span>
+                                                                                </v-flex>
+                                                                                <v-flex xs12 sm10 class="mt-4">
+                                                                                    <v-layout row wrap>
+                                                                                        <v-layout column wrap>
+                                                                                            <span class="my-sub-headline mb-4">Anexos</span>
+                                                                                            <v-layout row wrap>
+                                                                                                <v-flex v-for="(append, i) in bill.appends" :key="i">
+                                                                                                    <v-card @click="openAppend(append)" flat>
+                                                                                                        <img :src="append" style="max-width: 124px; max-width: 124px"/>
+                                                                                                    </v-card>
+                                                                                                </v-flex>
+                                                                                            </v-layout>
+                                                                                        </v-layout>
+                                                                                        <v-divider vertical/>
+                                                                                        <v-layout column wrap>
+                                                                                            <span class="my-sub-headline mb-4">Comprovante</span>
+                                                                                            <v-layout row wrap v-if="!loading">
+                                                                                                <v-flex v-for="(append, i) in bill.receipts" :key="i">
+                                                                                                    <v-card @click="openAppend(append)" flat>
+                                                                                                        <img :src="append" style="max-width: 124px; max-width: 124px"/>
+                                                                                                    </v-card>
+                                                                                                </v-flex>
+                                                                                            </v-layout>
+                                                                                            <v-flex xs12 sm2 class="text-right" v-else>
+                                                                                                <v-progress-circular indeterminate
+                                                                                                                     class="primary&#45;&#45;text"></v-progress-circular>
+                                                                                            </v-flex>
+                                                                                        </v-layout>
+                                                                                    </v-layout>
+                                                                                </v-flex>
+                                                                                <v-flex xs12 class="text-right" v-if="loadingDelete && outtakeSelect === bill">
+                                                                                    <v-progress-circular indeterminate class="primary&#45;&#45;text"/>
+                                                                                </v-flex>
+                                                                                <v-flex xs12 class="text-right" v-else>
+
+                                                                                    <v-btn @click="unpayOuttake(bill)" class="error mx-2" fab small>
+                                                                                        <v-icon>money_off</v-icon>
+                                                                                    </v-btn>
+                                                                                </v-flex>
+                                                                            </v-layout>
+                                                                        </v-flex>
+                                                                    </v-layout>
+                                                                </v-card>
+                                                            </v-flex>-->
+                            </v-card>
+                        </v-flex>
+                    </v-layout>
+                </v-container>
+            </v-dialog>
+        </div>
+
         <v-row class="align-center justify-center">
             <outtake-order-mobile class="mt-n9" :outtakes="pendingOuttakes"></outtake-order-mobile>
         </v-row>
@@ -26,188 +206,6 @@
             </v-row>
         </v-container>
 
-        <v-dialog hide-overlay transition="dialog-bottom-transition" persistent fullscreen v-model="dialogRegisterBill">
-            <register-bill-mobile @close-dialog="dialogRegisterBill = false"></register-bill-mobile>
-        </v-dialog>
-
-        <v-dialog class="fill-height" hide-overlay transition="dialog-bottom-transition" persistent fullscreen v-model="dialogPaidBills">
-            <v-container>
-                <v-layout class="align-center justify-center" row wrap>
-                    <v-flex xs12>
-                        <v-card>
-                            <v-toolbar dark color="primary">
-                                <v-toolbar-title>Lançamentos</v-toolbar-title>
-                                <v-spacer></v-spacer>
-                                <v-btn icon dark @click="dialogPaidBills = false">
-                                    <v-icon>close</v-icon>
-                                </v-btn>
-                            </v-toolbar>
-
-                            <v-flex xs12>
-                                <v-container>
-                                    <v-row>
-                                        <v-row justify="center">
-                                            <v-flex xs10>
-                                                <v-menu
-                                                        v-model="menu"
-                                                        :close-on-content-click="false"
-                                                        :nudge-right="40"
-                                                        transition="scale-transition"
-                                                        offset-y
-                                                        min-width="290px"
-                                                >
-                                                    <template v-slot:activator="{ on }">
-                                                        <v-text-field
-                                                                v-model="computedDateFormatted"
-                                                                label="Selecione o Mês para Pesquisar"
-                                                                prepend-icon="event"
-                                                                readonly
-                                                                outlined
-                                                                rounded
-                                                                v-on="on"
-                                                        ></v-text-field>
-                                                    </template>
-                                                    <v-date-picker type="month" locale="pt-br" v-model="selectedMonth" @input="menu = false"></v-date-picker>
-                                                </v-menu>
-                                            </v-flex>
-                                            <v-flex xs12>
-                                                <v-chip-group class="pa-5" column active-class="primary--text">
-                                                    <v-chip color="grey" v-for="(month,i) in months" :key="i" class="white" small>
-                                                        <span style="font-weight: bold;"> {{ month.text }} </span>
-                                                    </v-chip>
-                                                </v-chip-group>
-                                            </v-flex>
-                                        </v-row>
-                                    </v-row>
-
-
-                                <v-container v-if="loadingFilter">
-                                    <v-row align="center" justify="center">
-                                        <v-col>
-                                            <v-card elevation="10" class="pa-4">
-                                                <v-progress-circular indeterminate color="primary"/>
-                                            </v-card>
-                                        </v-col>
-                                    </v-row>
-                                </v-container>
-
-                                <v-container v-else-if="selectedPaidOuttakesList.length === 0">
-                                    <v-row align="center" justify="center">
-                                        <v-col>
-                                            <v-card elevation="10" class="pa-4">Não há contas pagas neste mês</v-card>
-                                        </v-col>
-                                    </v-row>
-                                </v-container>
-
-                                <v-flex xs12 class="mt-4" v-else>
-                                    <v-card class="pa-4 my-4" v-for="bill in selectedPaidOuttakesList" :key="bill.id" @click="dialogInfoPaidBill = true">
-                                        <v-layout class="align-center justify-center" row wrap>
-                                            <v-flex xs11>
-                                                <div>
-                                                    <span style="color: #003B8F; font-weight: bold;"> {{ bill.date_to_pay | dateFilter }} - {{ daydate(bill.date_to_pay) }}</span>
-                                                    <v-flex xs12 class="primary" style="height: 2px;"></v-flex>
-                                                </div>
-                                            </v-flex>
-                                            <v-flex xs6 class="text-start">
-                                                <span style="font-weight: bold;">Categoria: {{bill.category}}</span>
-                                                <br>
-                                                <span>SubCategoria: {{bill.subCategory}}</span>
-                                            </v-flex>
-                                            <v-flex xs5 class="text-right">
-                                                <span class="font-weight-bold">R$ {{bill.value}}</span>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-card>
-                                </v-flex>
-                                </v-container></v-flex>
-                        </v-card>
-                    </v-flex>
-                </v-layout>
-            </v-container>
-        </v-dialog>
-
-        <v-dialog hide-overlay transition="dialog-bottom-transition" v-model="dialogInfoPaidBill">
-            <v-container>
-                <v-layout class="align-center justify-center" row wrap>
-                    <v-flex xs12>
-                        <v-card>
-                            <v-toolbar dark color="primary">
-                                <v-toolbar-title>INFO</v-toolbar-title>
-                                <v-spacer></v-spacer>
-                                <v-btn icon dark @click="dialogInfoPaidBill = false">
-                                    <v-icon>close</v-icon>
-                                </v-btn>
-                            </v-toolbar>
-
-<!--                            <v-flex xs12>
-                                <v-card class="pa-4 my-4">
-                                    <v-layout row wrap>
-                                        <v-flex xs12>
-                                            <v-layout row wrap>
-                                                <span>{{bill.category}}</span>
-                                                <br>
-                                                <span>{{bill.subCategory}}</span>
-                                                <v-divider vertical class="mx-4"/>
-                                                <span>{{bill.payment_method}}</span>
-                                                <v-divider vertical class="mx-4"/>
-                                                <span class="font-weight-bold">{{bill.date_to_pay | dateFilter}}</span>
-                                                <v-divider vertical class="mx-4"/>
-                                                <span class="font-weight-bold">{{bill.paid | dateFilter}}</span>
-                                                <v-divider vertical class="mx-4"/>
-                                                <v-spacer/>
-                                                <span class="font-weight-bold">{{bill.value}}</span>
-
-                                                <v-flex xs12>
-                                                    <span>{{bill.description}}</span>
-                                                </v-flex>
-                                                <v-flex xs12 sm10 class="mt-4">
-                                                    <v-layout row wrap>
-                                                        <v-layout column wrap>
-                                                            <span class="my-sub-headline mb-4">Anexos</span>
-                                                            <v-layout row wrap>
-                                                                <v-flex v-for="(append, i) in bill.appends" :key="i">
-                                                                    <v-card @click="openAppend(append)" flat>
-                                                                        <img :src="append" style="max-width: 124px; max-width: 124px"/>
-                                                                    </v-card>
-                                                                </v-flex>
-                                                            </v-layout>
-                                                        </v-layout>
-                                                        <v-divider vertical/>
-                                                        <v-layout column wrap>
-                                                            <span class="my-sub-headline mb-4">Comprovante</span>
-                                                            <v-layout row wrap v-if="!loading">
-                                                                <v-flex v-for="(append, i) in bill.receipts" :key="i">
-                                                                    <v-card @click="openAppend(append)" flat>
-                                                                        <img :src="append" style="max-width: 124px; max-width: 124px"/>
-                                                                    </v-card>
-                                                                </v-flex>
-                                                            </v-layout>
-                                                            <v-flex xs12 sm2 class="text-right" v-else>
-                                                                <v-progress-circular indeterminate
-                                                                                     class="primary&#45;&#45;text"></v-progress-circular>
-                                                            </v-flex>
-                                                        </v-layout>
-                                                    </v-layout>
-                                                </v-flex>
-                                                <v-flex xs12 class="text-right" v-if="loadingDelete && outtakeSelect === bill">
-                                                    <v-progress-circular indeterminate class="primary&#45;&#45;text"/>
-                                                </v-flex>
-                                                <v-flex xs12 class="text-right" v-else>
-
-                                                    <v-btn @click="unpayOuttake(bill)" class="error mx-2" fab small>
-                                                        <v-icon>money_off</v-icon>
-                                                    </v-btn>
-                                                </v-flex>
-                                            </v-layout>
-                                        </v-flex>
-                                    </v-layout>
-                                </v-card>
-                            </v-flex>-->
-                        </v-card>
-                    </v-flex>
-                </v-layout>
-            </v-container>
-        </v-dialog>
 
     </v-container>
 </template>
@@ -252,18 +250,23 @@
                     "Sexta-feira",
                     "Sábado"
                 ],
-                months:[
-                    {text: 'Janeiro', value: '01'},
-                    {text: 'Fevereiro', value: '02'},
-                    {text: 'Março', value: '03'},
-                    {text: 'Dezembro', value: '12'},
-                ]
             };
         },
         mounted() {
             this.initiate();
         },
         computed: {
+            months() {
+                let now = moment()
+                let fiveMonthsAgo = now.add(-5, 'M').clone()
+                let momentDates = []
+                for (let i = 0; i < 12; i++) {
+                    momentDates.push(fiveMonthsAgo.clone())
+                    fiveMonthsAgo = fiveMonthsAgo.add(1,'M')
+                }
+                console.log('dates', momentDates[0].format(`MMMM${now.year() == momentDates[0].year() ? '' : '/YYYY'}`))
+                return momentDates
+            },
             computedDateFormatted () {
                 return this.formatDate(this.selectedMonth)
             },

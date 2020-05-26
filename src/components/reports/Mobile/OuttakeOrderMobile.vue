@@ -7,11 +7,13 @@
                         R$ {{ totalPayable }}
                     </v-card-title>
                     <v-card-subtitle class="white--text">Débito Restante</v-card-subtitle>
-                    <v-chip-group column active-class="primary--text">
+                    <!--<v-sheet elevation="0" class="pa-10 primary">-->
+                    <v-chip-group active-class="primary--text">
                             <v-chip v-for="(day,i) in dates" :key="i" class="white" small @click="mappingDates(day)">
                                 <span style="font-weight: bold;"> {{ day | dateFilter }} </span>
                             </v-chip>
                     </v-chip-group>
+                    <!--</v-sheet>-->
                 </v-card>
             </v-col>
         </v-row>

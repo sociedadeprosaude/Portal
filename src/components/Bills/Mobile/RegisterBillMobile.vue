@@ -1,193 +1,187 @@
 <template>
-    <v-container>
-        <v-layout class="align-center justify-center" row wrap>
-            <v-flex xs12>
-                <v-card>
-                    <v-toolbar dark color="primary">
-                        <v-toolbar-title>Registro de Contas a Pagar</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                        <v-btn icon dark @click="clear">
-                            <v-icon>close</v-icon>
-                        </v-btn>
-                    </v-toolbar>
+    <v-card>
+        <v-card-title class="primary" primary-title>
+            <span style="color: white">Registro de Lançamentos</span>
+            <v-spacer></v-spacer>
+            <v-btn icon dark @click="clear">
+                <v-icon>close</v-icon>
+            </v-btn>
+        </v-card-title>
+
+        <v-flex xs12>
+            <v-card>
+                <v-layout row wrap class="align-center justify-center pa-3">
+                    <v-flex xs12>
+                        <v-select
+                                outlined
+                                rounded
+                                label="Unidade"
+                                v-model="unit"
+                                :items="units"
+                                item-text="name"
+                                return-object>
+                        </v-select>
+                    </v-flex>
+                    <v-flex xs12>
+                        <v-currency-field label="Valor" prefix="R$" clearable rounded outlined v-model="value"/>
+                    </v-flex>
+                    <v-flex xs12>
+                        <!--@input.native="category={name:$event.srcElement.value,subCategories:[]}"-->
+                        <v-combobox
+                                rounded
+                                outlined
+                                v-model="category"
+                                :items="categories"
+                                item-text="name"
+                                return-object
+                                label="Categoria"
+                                clearable
+                        ></v-combobox>
+                        <!--@input.native="subCategory=$event.srcElement.value"-->
+                        <v-combobox
+                                rounded
+                                outlined
+                                v-if="category"
+                                label="Subcategoria"
+                                v-model="subCategory"
+                                :items="category.subCategories? [...category.subCategories,other]:[other]"
+                                item-text="name"
+                                return-object
+                                clearable
+                        ></v-combobox>
+                    </v-flex>
+                    <v-flex xs12>
+                        <v-textarea clearable outlined rounded label="Descrição" v-model="description"/>
+                    </v-flex>
+                    <v-flex xs12>
+                        <v-select outlined
+                                  rounded
+                                  label="Método de pagamento"
+                                  v-model="paymentMethod"
+                                  :items="paymentMethods">
+                        </v-select>
+                    </v-flex>
+                    <v-flex xs6>
+                        <v-checkbox
+                                color="success"
+                                class="font-weight-bold"
+                                label="Parcelar"
+                                v-model="parcel"
+                        />
+                    </v-flex>
+                    <v-flex xs6>
+                        <v-text-field
+                                hint="Quantidade de parcelas"
+                                persistent-hint
+                                rounded
+                                outlined
+                                dense
+                                :disabled="!parcel"
+                                v-model="parcels"
+                                v-mask="mask.number">
+                        </v-text-field>
+                    </v-flex>
+                    <v-flex xs12>
+                        <v-checkbox
+                                color="success"
+                                class="font-weight-bold"
+                                label="Conta recorrente"
+                                v-model="recurrent">
+                        </v-checkbox>
+                    </v-flex>
 
                     <v-flex xs12>
-                        <v-card>
-                            <v-layout row wrap class="align-center justify-center pa-3">
-                                <v-flex xs12>
-                                    <v-select
-                                            outlined
-                                            rounded
-                                            label="Unidade"
-                                            v-model="unit"
-                                            :items="units"
-                                            item-text="name"
-                                            return-object>
-                                    </v-select>
-                                </v-flex>
-                                <v-flex xs12>
-                                    <v-currency-field label="Valor" prefix="R$" clearable rounded outlined v-model="value"/>
-                                </v-flex>
-                                <v-flex xs12>
-                                    <!--@input.native="category={name:$event.srcElement.value,subCategories:[]}"-->
-                                    <v-combobox
-                                            rounded
-                                            outlined
-                                            v-model="category"
-                                            :items="categories"
-                                            item-text="name"
-                                            return-object
-                                            label="Categoria"
-                                            clearable
-                                    ></v-combobox>
-                                    <!--@input.native="subCategory=$event.srcElement.value"-->
-                                    <v-combobox
-                                            rounded
-                                            outlined
-                                            v-if="category"
-                                            label="Subcategoria"
-                                            v-model="subCategory"
-                                            :items="category.subCategories? [...category.subCategories,other]:[other]"
-                                            item-text="name"
-                                            return-object
-                                            clearable
-                                    ></v-combobox>
-                                </v-flex>
-                                <v-flex xs12>
-                                    <v-textarea clearable outlined rounded label="Descrição" v-model="description"/>
-                                </v-flex>
-                                <v-flex xs12>
-                                    <v-select outlined
-                                              rounded
-                                              label="Método de pagamento"
-                                              v-model="paymentMethod"
-                                              :items="paymentMethods">
-                                    </v-select>
-                                </v-flex>
-                                <v-flex xs6>
-                                    <v-checkbox
-                                            color="success"
-                                            class="font-weight-bold"
-                                            label="Parcelar"
-                                            v-model="parcel"
-                                    />
-                                </v-flex>
-                                <v-flex xs6>
-                                    <v-text-field
-                                            hint="Quantidade de parcelas"
-                                            persistent-hint
-                                            rounded
-                                            outlined
-                                            dense
-                                            :disabled="!parcel"
-                                            v-model="parcels"
-                                            v-mask="mask.number">
-                                    </v-text-field>
-                                </v-flex>
-                                <v-flex xs12>
-                                    <v-checkbox
-                                            color="success"
-                                            class="font-weight-bold"
-                                            label="Conta recorrente"
-                                            v-model="recurrent">
-                                    </v-checkbox>
-                                </v-flex>
+                        <v-menu
+                                v-model="menu"
+                                :close-on-content-click="false"
+                                :nudge-right="40"
+                                transition="scale-transition"
+                                offset-y
+                                min-width="290px"
+                        >
+                            <template v-slot:activator="{ on }">
+                                <v-text-field
+                                        v-model="computedDateFormatted"
+                                        label="Data para Pagamento"
+                                        prepend-icon="event"
+                                        readonly
+                                        outlined
+                                        rounded
+                                        v-on="on"
+                                ></v-text-field>
+                            </template>
+                            <v-date-picker locale="pt-br" v-model="dateToPay" @input="menu = false"></v-date-picker>
+                        </v-menu>
+                    </v-flex>
 
-                                <v-flex xs12>
-                                    <v-menu
-                                            v-model="menu"
-                                            :close-on-content-click="false"
-                                            :nudge-right="40"
-                                            transition="scale-transition"
-                                            offset-y
-                                            min-width="290px"
-                                    >
-                                        <template v-slot:activator="{ on }">
-                                            <v-text-field
-                                                    v-model="computedDateFormatted"
-                                                    label="Data para Pagamento"
-                                                    prepend-icon="event"
-                                                    readonly
-                                                    outlined
-                                                    rounded
-                                                    v-on="on"
-                                            ></v-text-field>
-                                        </template>
-                                        <v-date-picker locale="pt-br" v-model="dateToPay" @input="menu = false"></v-date-picker>
-                                    </v-menu>
-                                </v-flex>
+                    <v-flex xs12>
+                        <v-layout column wrap>
+                            <v-flex xs12>
+                                <span class="my-sub-headline">Anexos</span>
+                            </v-flex>
+                            <v-flex xs12>
+                                <v-layout row wrap class="align-center justify-center">
+                                    <v-card class="pa-2 ma-2" v-for="(preview, i) in filesPreviews" :key="i">
+                                        <v-btn
+                                                @click="removeFile(i)"
+                                                class="grey"
+                                                small
+                                                fab
+                                                text
+                                                style="position: absolute; right: 0;"
+                                        >
+                                            <v-icon>close</v-icon>
+                                        </v-btn>
+                                        <v-layout column wrap>
+                                            <img style="max-height: 124px; max-width: 124px" :src="preview" />
+                                            <span>{{files[i].name}}</span>
+                                        </v-layout>
+                                    </v-card>
+                                </v-layout>
+                            </v-flex>
 
-                                <v-flex xs12>
-                                    <v-layout column wrap>
-                                        <v-flex xs12>
-                                            <span class="my-sub-headline">Anexos</span>
-                                        </v-flex>
-                                        <v-flex xs12>
-                                            <v-layout row wrap class="align-center justify-center">
-                                                <v-card class="pa-2 ma-2" v-for="(preview, i) in filesPreviews" :key="i">
-                                                    <v-btn
-                                                            @click="removeFile(i)"
-                                                            class="grey"
-                                                            small
-                                                            fab
-                                                            text
-                                                            style="position: absolute; right: 0;"
-                                                    >
-                                                        <v-icon>close</v-icon>
-                                                    </v-btn>
-                                                    <v-layout column wrap>
-                                                        <img style="max-height: 124px; max-width: 124px" :src="preview" />
-                                                        <span>{{files[i].name}}</span>
-                                                    </v-layout>
-                                                </v-card>
-                                            </v-layout>
-                                        </v-flex>
-
-                                        <v-flex xs12>
-                                            <v-fade-transition>
-                                                <v-flex xs12 class="text-center" v-if="!uploading">
-                                                    <v-btn class="primary" rounded @click="$refs.files.click()">Adicionar Anexo</v-btn>
-                                                </v-flex>
-                                                <v-flex xs12 class="text-center" v-else>
-                                                    <v-progress-circular indeterminate class="primary--text"/>
-                                                </v-flex>
-                                            </v-fade-transition>
-                                        </v-flex>
-                                        <label>
-                                            <input
-                                                    v-show="false"
-                                                    type="file"
-                                                    id="files"
-                                                    ref="files"
-                                                    multiple
-                                                    v-on:change="handleFileUpload()"
-                                            />
-                                        </label>
-                                    </v-layout>
-                                </v-flex>
-                                <v-divider></v-divider>
-                                <v-flex class="transparent"><span style="color: transparent">.</span></v-flex>
-                                <v-spacer/>
-                                <v-flex class="transparent"><span style="color: transparent">.</span></v-flex>
-                                <v-spacer/>
-                                <v-flex class="transparent"><span style="color: transparent">.</span></v-flex>
-                                <v-spacer/>
-                                <v-flex class="transparent"><span style="color: transparent">.</span></v-flex>
+                            <v-flex xs12>
                                 <v-fade-transition>
-                                    <v-flex xs12 class="text-center mt-4" v-if="!loading">
-                                        <v-btn @click="bifurcation()" rounded class="primary">Adicionar</v-btn>
+                                    <v-flex xs12 class="text-center" v-if="!uploading">
+                                        <v-btn class="primary" rounded @click="$refs.files.click()">Adicionar Anexo</v-btn>
                                     </v-flex>
                                     <v-flex xs12 class="text-center" v-else>
                                         <v-progress-circular indeterminate class="primary--text"/>
                                     </v-flex>
                                 </v-fade-transition>
-                            </v-layout>
-                        </v-card>
+                            </v-flex>
+                            <label>
+                                <input
+                                        v-show="false"
+                                        type="file"
+                                        id="files"
+                                        ref="files"
+                                        multiple
+                                        v-on:change="handleFileUpload()"
+                                />
+                            </label>
+                        </v-layout>
                     </v-flex>
-                </v-card>
-            </v-flex>
-        </v-layout>
-    </v-container>
+                    <v-divider></v-divider>
+                    <v-flex class="transparent"><span style="color: transparent">.</span></v-flex>
+                    <v-spacer/>
+                    <v-flex class="transparent"><span style="color: transparent">.</span></v-flex>
+                    <v-spacer/>
+                    <v-flex class="transparent"><span style="color: transparent">.</span></v-flex>
+                    <v-spacer/>
+                    <v-flex class="transparent"><span style="color: transparent">.</span></v-flex>
+                    <v-fade-transition>
+                        <v-flex xs12 class="text-center mt-4" v-if="!loading">
+                            <v-btn @click="bifurcation()" rounded class="primary">Adicionar</v-btn>
+                        </v-flex>
+                        <v-flex xs12 class="text-center" v-else>
+                            <v-progress-circular indeterminate class="primary--text"/>
+                        </v-flex>
+                    </v-fade-transition>
+                </v-layout>
+            </v-card>
+        </v-flex>
+    </v-card>
 </template>
 
 <script>
@@ -368,3 +362,6 @@
         }
     }
 </script>
+
+<style scoped>
+</style>
