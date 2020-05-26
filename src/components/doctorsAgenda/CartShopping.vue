@@ -29,9 +29,12 @@
                     </v-layout>
                 </v-card-text>
                 <v-card-text v-if="categorySelect === 'package'" >
-                   <v-layout row v-for="n in item.clinics" :key="n.name" class="my-2" style="width: 100%">
-                       <v-btn rounded dense x-small block class="blue_grey" @click="selectBudget(item)">
-                           {{n.name}} <v-spacer/> {{n.price}}
+                   <v-layout row  class="my-2" style="width: 100%">
+                       <v-btn rounded dense x-small block class="blue_grey" @click="selectBudget(item)" v-if="item.percentageDiscount">
+                           {{item.name}} <v-spacer/> | {{(item.price * parseFloat(item.percentageDiscount)) / 100}}
+                       </v-btn>
+                       <v-btn rounded dense x-small block class="blue_grey" @click="selectBudget(item)" v-else>
+                           {{item.name}} <v-spacer/> | {{item.price}}
                        </v-btn>
                    </v-layout>
                 </v-card-text>
