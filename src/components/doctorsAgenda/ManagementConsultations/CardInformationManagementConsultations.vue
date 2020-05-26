@@ -65,6 +65,7 @@
                                 color="white"
                                 rounded
                                 class="mx-2"
+                                :disabled="consultation.status !== 'Pago' && consultation.consultation_hour"
                                 @click="setConsultationHour(consultation)"
                         >
                             Atender

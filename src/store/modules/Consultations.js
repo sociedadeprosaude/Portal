@@ -296,16 +296,16 @@ const actions = {
 
     },
 
-    async updateCanceledSchedules ({commit},payload) {
+    async updateCanceledSchedules({commit}, payload) {
         functions.removeUndefineds(payload)
-        if(payload.cancelations_schedules){
+        if (payload.cancelations_schedules) {
             firebase.firestore().collection('schedules').doc(payload.id).update({cancelations_schedules: payload.cancelations_schedules})
         } else {
             firebase.firestore().collection('schedules').doc(payload.id).set(payload.schedule)
         }
     },
 
-    async copyCanceledSchedules ({commit},payload) {
+    async copyCanceledSchedules({commit}, payload) {
         functions.removeUndefineds(payload)
         let copy = {
             cancelations_schedules: payload.cancelations_schedules,
@@ -395,15 +395,15 @@ const actions = {
         })
 
     },
-    async addConsultationHourInConsultation ({commit}, data){
+    async addConsultationHourInConsultation({commit}, data) {
 
-            firebase.firestore().collection('consultations').doc(data.id).update({
-                consultation_hour: data.consultation_hour,
-            });
-            firebase.firestore().collection('users').doc(data.consultation.user.cpf)
-                .collection('consultations').doc(data.id).update({
-                consultation_hour: data.consultation_hour,
-            })
+        firebase.firestore().collection('consultations').doc(data.id).update({
+            consultation_hour: data.consultation_hour,
+        });
+        firebase.firestore().collection('users').doc(data.consultation.user.cpf)
+            .collection('consultations').doc(data.id).update({
+            consultation_hour: data.consultation_hour,
+        })
 
     },
 
@@ -440,7 +440,8 @@ const actions = {
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({end_at: payload.end});
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({duration: payload.durantion})
 
-};
+    }
+}
 
 const getters = {
     consultations(state) {
