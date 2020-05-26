@@ -3,9 +3,12 @@
         <v-layout row nowrap style="width: 100%">
             <v-card v-for="(item, i) in Items" :key="i" class="my-2 grey_light" width="100%">
                 <v-layout row wrap v-if="categorySelect === 'package'" class="align-center justify-center text-center my-1">
-                        <v-btn rounded dense x-small class="blue_grey" block width="100%" @click="selectBudget(item)">
-                            {{item.name}} <v-spacer/> {{item.price}}
-                        </v-btn>
+                    <v-btn rounded dense x-small block class="blue_grey" @click="selectBudget(item)" v-if="item.percentageDiscount">
+                        {{item.name}} <v-spacer/> | {{(item.price * parseFloat(item.percentageDiscount)) / 100}}
+                    </v-btn>
+                    <v-btn rounded dense x-small block class="blue_grey" @click="selectBudget(item)" v-else>
+                        {{item.name}} <v-spacer/> | {{item.price}}
+                    </v-btn>
                 </v-layout>
                 <h4 v-else class="text-left ml-2">{{item.name}}</h4>
                 <v-divider v-else/>
@@ -37,16 +40,6 @@
                             </v-btn>
                         </v-layout>
                     </v-layout>
-                </v-card-text>
-                <v-card-text v-if="categorySelect === 'package'" >
-                   <v-layout row  class="my-2" style="width: 100%">
-                       <v-btn rounded dense x-small block class="blue_grey" @click="selectBudget(item)" v-if="item.percentageDiscount">
-                           {{item.name}} <v-spacer/> | {{(item.price * parseFloat(item.percentageDiscount)) / 100}}
-                       </v-btn>
-                       <v-btn rounded dense x-small block class="blue_grey" @click="selectBudget(item)" v-else>
-                           {{item.name}} <v-spacer/> | {{item.price}}
-                       </v-btn>
-                   </v-layout>
                 </v-card-text>
             </v-card>
         </v-layout>
