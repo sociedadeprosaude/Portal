@@ -148,7 +148,7 @@
                 let item= this.$store.getters.selectedBundle;
                 if(item){
                     this.percentageDiscount= item.percentageDiscount ? parseFloat(item.percentageDiscount) : 0;
-                    this.moneyDiscount = item.percentageDiscount ? parseFloat(item.moneyDiscount) : 0;
+                    this.moneyDiscount = item.percentageDiscount ? parseFloat(item.moneyDiscount).toLocaleString('en-us', {minimumFractionDigits: 2}) : 0;
                 }
                 return this.$store.getters.selectedBundle;
 
@@ -234,10 +234,11 @@
            
                 for (let exam in this.exams) {
 
-                    this.exams[exam].priceDiscount = this.exams[exam].price - ((this.percentageDiscount / 100) * this.exams[exam].price)
+                    this.exams[exam].price = this.exams[exam].price - ((this.percentageDiscount / 100) * this.exams[exam].price)
                 }
+                console.log('package: ',packageData)
 
-                this.$store.dispatch('addBundle', packageData).then(() => {
+               this.$store.dispatch('addBundle', packageData).then(() => {
                     this.clearSearch();
                     this.$store.dispatch('loadBundle');
                 });

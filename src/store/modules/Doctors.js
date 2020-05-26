@@ -6,7 +6,8 @@ import moment from "moment";
 const state = {
     doctors: {},
     specialties: [],
-    loaded: false
+    loaded: false,
+    doctorSelected: null,
 };
 
 const mutations = {
@@ -19,6 +20,9 @@ const mutations = {
     },
     deleteDoctor(state, payload) {
         Vue.delete(state.doctors, payload.cpf)
+    },
+    setDoctorSelected (state, payload){
+        state.doctorSelected = payload;
     }
 };
 
@@ -156,6 +160,9 @@ const actions = {
         } catch (e) {
             throw e
         }
+    },
+    async selectDoctor ({commit}, doctor) {
+        commit('setDoctorSelected', doctor)
     }
 };
 
@@ -166,6 +173,9 @@ const getters = {
 
     doctorsLoaded(state) {
         return state.loaded
+    },
+    doctorSelected (state){
+        return state.doctorSelected
     }
 };
 

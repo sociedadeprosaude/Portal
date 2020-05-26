@@ -16,19 +16,19 @@
         <v-app-bar color="primary_dark hidden-xs-only" fixed dark class="hidden-print-only" v-if="selectedUnit">
             <v-app-bar-nav-icon v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer"/>
 
-      <v-toolbar-title>
-        <router-link to="/" tag="span" style="cursor: pointer">
-          <v-img v-if="selectedUnit" :src="selectedUnit.logo" aspect-radio="1" width="240"></v-img>
-        </router-link>
-      </v-toolbar-title>
-      <v-toolbar-items>
-        <v-layout row wrap class="justify-center align-center">
-          <v-btn rounded text @click="selectUnit()">
-            <v-icon>cached</v-icon>
-          </v-btn>
-        </v-layout>
-      </v-toolbar-items>
-      <v-spacer />
+             <v-toolbar-title>
+                <router-link to="/" tag="span" style="cursor: pointer">
+                 <v-img v-if="selectedUnit" :src="selectedUnit.logo" aspect-radio="1" width="240"></v-img>
+                </router-link>
+             </v-toolbar-title>
+             <v-toolbar-items>
+                <v-layout row wrap class="justify-center align-center">
+               <v-btn rounded text @click="selectUnit()" v-if="!user.clinic">
+                    <v-icon>cached</v-icon>
+                </v-btn>
+                 </v-layout>
+             </v-toolbar-items>
+             <v-spacer />
       <v-toolbar-items>
         <v-flex class="mt-n2">
           <v-card class="transparent" flat v-if="selectedPatient">
@@ -65,7 +65,7 @@
       <v-spacer />
       <v-toolbar-items>
         <v-layout row wrap class="justify-center align-center">
-          <v-btn rounded text @click="selectUnit()">
+         <v-btn rounded text @click="selectUnit()">
             <v-icon class="black--text">cached</v-icon>
           </v-btn>
           <v-btn class="hidden-sm-and-up" text @click="patientDialog = !patientDialog">
@@ -82,7 +82,7 @@
       <v-card>
         <v-layout row wrap class="align-center justify-center">
           <v-flex xs12 sm4 v-for="unit in units" :key="unit.id" class="text-center">
-            <v-btn @click="selectUnit(unit)" height="124px">
+            <v-btn @click="selectUnit(unit)" height="124px"  v-if="!user.clinic">
               <img :src="unit.logo" width="256px" />
             </v-btn>
           </v-flex>
@@ -99,6 +99,7 @@ export default {
   components: {
     SelectPatientCard
   },
+    props:['user'],
   data() {
     return {
       drawer: false,
@@ -156,7 +157,6 @@ export default {
     goRoute(route) {
       this.$router.push(route);
     },
-
     selectUnit(unit) {
       if (!this.selectUnitDialog) {
         this.selectUnitDialog = true;

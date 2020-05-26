@@ -240,7 +240,6 @@
                                             </v-flex>
                                         </v-layout>
                                     </v-flex>
-
                                     <v-layout wrap>
                                         <v-flex xs5>
                                             <v-text-field label="Desconto: %"
