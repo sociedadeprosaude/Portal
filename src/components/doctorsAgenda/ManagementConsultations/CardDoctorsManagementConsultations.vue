@@ -199,6 +199,7 @@
                 return this.semanaOptions[dateMoment.day()];
             },
             patientSelect: function (item) {
+                this.selectUser(item.user)
                 this.$emit('patientSelect', item.user);
                 this.$emit('consultationSelect', item)
             },
@@ -213,6 +214,21 @@
                 this.success = true;
                 this.loading = false;
                 this.confirmDeactivate= false
+            },
+            async selectUser(user) {
+                console.log('user: ', user)
+                if (user) {
+                    let intakes = await this.$store.dispatch('getUserIntakes', user);
+                    if (intakes) {
+                        user.intakes = intakes
+                    }
+                    let budgets = await this.$store.dispatch('getUserBudgets', user);
+                    if (budgets) {
+                        user.budgets = budgets
+                    }
+                }
+                this.$store.commit('setSelectedPatient', user);
+                this.$store.commit('clearSelectedDependent');
             },
         }
     }

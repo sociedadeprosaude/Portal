@@ -75,15 +75,10 @@
                     </v-flex>
                 </v-layout>
             </v-card>
-            <transition name="fade">
-                <v-container fluid v-show="Report">
-                    <report @close-dialog="Report = false" :consultation="consultation"/>
-                </v-container>
-            </transition>
-            <v-dialog v-model="documentDialog">
-                <ReportPDF @close-dialog="documentDialog = false" :consultation="consultation" :item="item"/>
-            </v-dialog>
         </v-flex>
+        <v-dialog v-model="documentDialog">
+            <consultation-document :consultation="consultation" ></consultation-document>
+        </v-dialog>
     </v-layout>
 </template>
 
@@ -93,20 +88,18 @@
         from '../../../components/doctorsAgenda/ManagementConsultations/CardConsultationManagementConsultations'
     import CardPatientManagementConsultations
         from '../../../components/doctorsAgenda/ManagementConsultations/CardPatientManagementConsultations'
-    import Report from '../../../components/Attendance/Report'
-    import ReportPDF from "../../../components/Attendance/printing/reportPDF";
+    import ConsultationDocument from "../commons/ConsultationDocument"
 
     let moment = require('moment');
 
     export default {
         name: "CardInformationManagementConsultations",
         props: ['patient', 'consultation'],
-        components: {CardConsultationManagementConsultations, CardPatientManagementConsultations, Report, ReportPDF},
+        components: {CardConsultationManagementConsultations, CardPatientManagementConsultations, ConsultationDocument},
 
         data: () => ({
-            Report: false,
-            documentDialog: false,
-            item: 'NOVO'
+            item: 'NOVO',
+            documentDialog:false
         }),
         computed: {
 
@@ -145,8 +138,6 @@
                 };
                 this.$store.dispatch('addConsultationHourInConsultation', data);
                 this.consultation.consultation_hour = consultation_hour;
-                console.log(this.consultation);
-                this.Report =  true;
                 this.documentDialog = true;
             }
 
