@@ -39,7 +39,7 @@ const actions = {
             });
             for (let exam in exams) {
                 functions.removeUndefineds(exams[exam]);
-                await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).collection('specialties').add(exams[exam])
+                await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).collection('exams').add(exams[exam])
             }
         }
         if (copyPayload.user) {
@@ -186,7 +186,7 @@ const actions = {
             consultations.forEach(async (c) => {
                 consultationFound = c;
                 context.dispatch('updatePaymentNumberConsultation', { user: payload.user, consultation: c, payment_number: payload.payment_number })
-            })  
+            })
         }
 
 

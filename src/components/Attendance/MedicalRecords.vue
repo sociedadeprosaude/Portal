@@ -2,23 +2,24 @@
     <v-container fluid>
         <v-card class="elevation-3">
             <v-card-title class="headline grey lighten-2 justify-center align-center" primary-title>
-                <v-btn style="display: none" text color="transparent" class="transparent"></v-btn><v-spacer></v-spacer>PRONTUÁRIO<v-spacer></v-spacer><v-btn color="error" @click="clear()">Fechar</v-btn>
+                <v-btn style="display: none" text color="transparent" class="transparent"/>
+                <v-spacer/>PRONTUÁRIO<v-spacer/><v-btn color="error" @click="clear()">Fechar</v-btn>
             </v-card-title>
             <v-card-text>
                 <vue-editor v-model="prontuario"/>
                 {{this.consultation.id}}
                 {{this.consultation.user.id}}
             </v-card-text>
-            <v-divider></v-divider>
+            <v-divider/>
             <v-card-actions>
-                <v-spacer></v-spacer>
+                <v-spacer/>
                 <submit-button
                         @click="save()"
                         :disabled="!prontuario"
                         :loading="loading"
                         :success="success"
                         text="Salvar"
-                ></submit-button>
+                />
             </v-card-actions>
         </v-card>
     </v-container>
@@ -39,14 +40,14 @@
         },
         methods: {
             clear() {
-                this.prontuario = undefined,
+                this.prontuario = undefined;
                 this.closeDialog()
             },
             closeDialog: function () {
                 this.$emit('close-dialog')
             },
             save(){
-                this.loading = true
+                this.loading = true;
                 if(this.prontuario){
                     this.$store.dispatch('addMedicalRecordsToConsultation',{
                         MedicalRecords:this.prontuario,
@@ -54,7 +55,7 @@
                         patient: this.consultation.user.id
                     })
                 }
-                this.success = true
+                this.success = true;
                 this.loading = false
             }
         },

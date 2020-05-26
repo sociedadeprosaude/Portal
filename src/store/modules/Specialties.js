@@ -3,7 +3,8 @@ import functions from "../../utils/functions";
 
 const state = {
     specialties: [],
-    loaded: false
+    loaded: false,
+    selectedSpecialty: null,
 };
 
 const mutations = {
@@ -13,6 +14,9 @@ const mutations = {
     },
     setSpecialtiesLoaded(state, payload) {
         state.loaded = payload
+    },
+    setSelectedSpecialty (state, payload){
+        state.selectedSpecialty = payload;
     }
 
 };
@@ -49,24 +53,6 @@ const actions = {
             let allSpecialties = [];
             for (let specDoc in data.docs) {
                 let specialty = data.docs[specDoc].data();
-                // let doctors = [];
-                // let docsCollection = await firebase.firestore().collection('specialties/' + specialty.name + '/doctors').get()
-                // for (let doctorDoc in docsCollection.docs) {
-                //     let doctor = docsCollection.docs[doctorDoc].data()
-                //     doctor.clinics = []
-                //     let clinCollection = await firebase.firestore().collection('specialties/' + specialty.name + '/doctors').doc(doctor.cpf).collection('clinics').get()
-                //     clinCollection.forEach((clinDoc) => {
-                //         doctor.clinics.push(clinDoc.data())
-                //     })
-                //     doctors.push({
-                //         ...doctor,
-                //         price: doctor.price,
-                //         cost: doctor.cost,
-                //         payment_method: doctor.payment_method,
-                //     });
-                // }
-
-
                 allSpecialties.push({
                     ...specialty,
                     id: specDoc.id,
@@ -80,18 +66,11 @@ const actions = {
         })
 
     },
-    /* specialtyCost(context,payload) {
-        return new Promise(async (resolve, reject) => {
-            var findCostSpecialty = firebase.functions().httpsCallable('specialtyCost');
-            findCostSpecialty({specialtyName: payload.specialtyName,doctorCPF:payload.doctorCPF}).then((result)=> {
-                console.log('Success',result)
-                resolve({ ...result.data})
-            }).catch(function(error) {
-                console.log('Error',error)
-                reject('specialty cost not found')
-            });
-        })
-    }, */
+
+    async selectSpecialty ({commit}, specialty) {
+        commit('setSelectedSpecialty', specialty)
+    }
+
 
 };
 
@@ -102,6 +81,9 @@ const getters = {
     },
     specialtiesLoaded(state) {
         return state.loaded
+    },
+    selectedSpecialty (state){
+        return state.selectedSpecialty
     }
 
 };

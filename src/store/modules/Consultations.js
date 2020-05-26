@@ -1,4 +1,4 @@
-import firebase, { firestore } from "firebase";
+import firebase, {firestore} from "firebase";
 import moment from 'moment'
 import axios from 'axios'
 import Vue from 'vue'
@@ -15,20 +15,13 @@ let cloudFunctionInstance = axios.create({
 });
 
 const state = {
-    medicines: [],
-    cids: [],
     consultations: [],
     AllSchedules: [],
     schedules: [],
     consultationsCanceled: [],
     consultationsByDate: {},
-    consultationsCreationInfo: {
-    },
-    consultationsDeletionInfo: {
-        // removed: 2,
-        // total: 300,
-        // day: '2020-03-23'
-    },
+    consultationsCreationInfo: {},
+    consultationsDeletionInfo: {},
     loaded: false,
     loading: false
 };
@@ -45,42 +38,20 @@ const mutations = {
     setAllSchedules(state, payload) {
         state.AllSchedules = payload;
     },
-    setMedicines(state, payload) {
-        state.medicines = payload
-    },
-    setCids(state, payload) {
-        state.cids = payload
-    },
+
     setConsultationsCanceled(state, payload) {
         state.consultationsCanceled = payload
     },
     setConsultationsLoaded(state, payload) {
         state.loaded = payload
     },
-    setConsultationCreationTotalDays(state, payload) {
-        state.consultationsCreationInfo.total = payload
-    },
-    setConsultationCreationDaysCreated(state, payload) {
-        Vue.set(state.consultationsCreationInfo, 'created', payload)
-        // state.consultationsCreationInfo.created = payload
-    },
-    setConsultationCreationActualDay(state, payload) {
-        Vue.set(state.consultationsCreationInfo, 'day', payload)
-        // state.consultationsCreationInfo.day = payload
-    },
-    setConsultationDeletionInfo(state, payload) {
-        state.consultationsDeletionInfo = payload
-    },
+
     setConsultationLoading(state, payload) {
         state.loading = payload
     }
-    // setConsultationsByDate(state, payload) {
-    //     state.consultationsByDate = payload
-    // },
 };
 
 const actions = {
-
 
     async listenConsultations({commit}, payload) {
         try {
@@ -138,14 +109,15 @@ const actions = {
     },
 
     async getSchedules({commit, dispatch}, payload) {
+        console.log('oi:', payload)
         try {
             commit('setConsultationsLoaded', false);
             let schedules = [];
-            let start_date = moment(payload.start_date)
-            let final_date = moment(payload.final_date)
-            let weekStart = start_date.year().toString() + start_date.week().toString()
-            let weekFinal = final_date.year().toString() + final_date.week().toString()
-            let query = firebase.firestore().collection('schedules')
+            let start_date = moment(payload.start_date);
+            let final_date = moment(payload.final_date);
+            let weekStart = start_date.year().toString() + start_date.week().toString();
+            let weekFinal = final_date.year().toString() + final_date.week().toString();
+            let query = firebase.firestore().collection('schedules');
 
             if (payload.doctor) {
                 query = query.where('doctor.cpf', '==', payload.doctor.cpf)
@@ -158,11 +130,11 @@ const actions = {
                 query = query.where('clinic.name', '==', payload.clinic.name)
             }
             commit('setConsultationLoading', true);
-            dispatch('listenConsultations', payload)
+            dispatch('listenConsultations', payload);
             return query.onSnapshot((querySnapshot) => {
-                schedules = []
+                schedules = [];
                 querySnapshot.forEach((schedule) => {
-                    let data = schedule.data()
+                    let data = schedule.data();
                     let cancelations_schedules = data.cancelations_schedules ? functions.datesOfInterval(data.cancelations_schedules) : []
                     schedules.push({
                         clinic: data.clinic,
@@ -206,14 +178,14 @@ const actions = {
         delete consultation.doctor.clinics;
         delete consultation.doctor.specialties;
         delete consultation.specialty.doctors;
-        let days = functions.makeWeekSchedule(consultation.weekDays, consultation.vacancy, consultation.hour)
+        let days = functions.makeWeekSchedule(consultation.weekDays, consultation.vacancy, consultation.hour);
         let routineId = moment().valueOf();
-        let consultObject
-        var scheduleFound = await firebase.firestore().collection('schedules')
+        let consultObject;
+        let scheduleFound = await firebase.firestore().collection('schedules')
             .where('clinic.name', '==', consultation.clinic.name)
             .where('doctor.cpf', '==', consultation.doctor.cpf)
             .where('specialty.name', '==', consultation.specialty.name)
-            .get()
+            .get();
         if (scheduleFound.empty) {
             consultObject = {
                 specialty: consultation.specialty, days: days, routine_id: routineId,
@@ -375,7 +347,7 @@ const actions = {
         }
     },
 
-    async removeAppointmentForever({commit}, payload) {//apagar consulta de cancelados para semopre.
+    async removeAppointmentForever({commit}, payload) {
 
         try {
             firebase.firestore().collection('canceled').doc(payload.idConsultation).delete()
@@ -384,79 +356,13 @@ const actions = {
         }
     },
 
-    async addArrayCallsToConsultation({commit}, payload) {
-        try {
-            firebase.firestore().collection('canceled').doc(payload.idConsultation).update({calls: payload.calls})
-        } catch (e) {
-            throw e
-        }
-    },
-
-    async addArrayOfMedicinesToBanc({commit}, payload) {
-
-        try {
-            firebase.firestore().collection('medicines').doc('sus').set({medicines: payload.medicines})
-        } catch (e) {
-            throw e
-        }
-    },
-
-    async getMedicines({commit}) {
-        firebase.firestore().collection('medicines').onSnapshot(async function (clinicsSnap) {
-            let medicines = [];
-            clinicsSnap.forEach(function (document) {
-                medicines.push({
-                    //.medicines
-                    ...document.data().medicines
-                });
-            });
-            commit('setMedicines', medicines);
-        })
-    },
-    async addArrayOfCidsToBanc({commit}, payload) {
-        try {
-            firebase.firestore().collection('cids').doc('cids').set({cids: payload.cids})
-        } catch (e) {
-            throw e
-        }
-    },
-
-    async getCids({commit}) {
-        firebase.firestore().collection('cids').onSnapshot(async function (clinicsSnap) {
-            let cids = [];
-            clinicsSnap.forEach(function (document) {
-                cids.push({
-                    //.medicines
-                    ...document.data().cids
-                });
-            });
-            commit('setCids', cids);
-        })
-    },
-
-    async removeAppointments({commit}, consultations) {
-        for (let consultation in consultations) {
-            commit('setConsultationDeletionInfo', {
-                total: consultations.length,
-                day: consultations[consultation].date,
-                removed: consultation
-            });
-            await firebase.firestore().collection('consultations').doc(consultations[consultation].id).delete();
-            if (consultations[consultation].user) {
-                await firebase.firestore().collection('users').doc(consultations[consultation].user.cpf).collection('consultations').doc(consultations[consultation].id).delete();
-                await firebase.firestore().collection('canceled').doc(consultations[consultation].id).set(consultations[consultation])
-            }
-        }
-        commit('setConsultationDeletionInfo', {})
-    },
-
     async deleteAllSchedule({commit}, payload) {
-        functions.removeUndefineds(payload)
+        functions.removeUndefineds(payload);
         let schedule = await firebase.firestore().collection('schedules')
             .where('specialty.name', '==', payload.specialty.name)
             .where('doctor.cpf', '==', payload.doctor.cpf)
             .where('clinic.cnpj', '==', payload.clinic.cnpj)
-            .get()
+            .get();
 
         if (!schedule.empty) {
             schedule.forEach((snap) => {
@@ -491,13 +397,14 @@ const actions = {
 
     async removeAppointmentByDay(context, payload) {
         try {
-            var deleteScheduleByDay = firebase.functions().httpsCallable('deleteScheduleByDay');
+            let deleteScheduleByDay = firebase.functions().httpsCallable('deleteScheduleByDay');
             await deleteScheduleByDay({payload: payload})
         } catch (e) {
             throw e
         }
         return
     },
+
     setConsultationHour({commit}, payload) {
         return new Promise((resolve, reject) => {
             firebase.firestore().collection('consultations').doc(payload.consultation).get()
@@ -515,41 +422,8 @@ const actions = {
         })
 
     },
-    async addMedicalRecordsToConsultation({commit}, payload) {
-        firebase.firestore().collection('consultations').doc(payload.consultation).update({MedicalRecords: payload.MedicalRecords});
-        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({MedicalRecords: payload.MedicalRecords})
-    },
-    async addPrescriptionToConsultation({commit}, payload) {
-        firebase.firestore().collection('consultations').doc(payload.consultation).update({Prescription: payload.Prescription});
-        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({Prescription: payload.Prescription})
-    },
-    async addSolicitationsToConsultation({commit}, payload) {
-        payload = functions.removeUndefineds(payload);
-        firebase.firestore().collection('consultations').doc(payload.consultation).update({Solicitations: payload.Solicitations});
-        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({Solicitations: payload.Solicitations})
-    },
-    async addReportToConsultation({commit}, payload) {
-        firebase.firestore().collection('consultations').doc(payload.consultation).update({Report: payload.Report});
-        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({Report: payload.Report})
-    },
-    async addAttestationsToConsultation({commit}, payload) {
-        firebase.firestore().collection('consultations').doc(payload.consultation).update({Attestations: payload.Attestations});
-        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({Attestations: payload.Attestations})
-    },
-    async addOrientationsToConsultation({commit}, payload) {
-        firebase.firestore().collection('consultations').doc(payload.consultation).update({Orientations: payload.Orientations});
-        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({Orientations: payload.Orientations})
-    },
-    async addTimesToConsultation({commit}, payload) {
-        firebase.firestore().collection('consultations').doc(payload.consultation).update({start_at: payload.start});
-        firebase.firestore().collection('consultations').doc(payload.consultation).update({end_at: payload.end});
-        firebase.firestore().collection('consultations').doc(payload.consultation).update({duration: payload.durantion});
-        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({start_at: payload.start});
-        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({end_at: payload.end});
-        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({duration: payload.durantion})
 
-    },
-}
+};
 
 const getters = {
     consultations(state) {
@@ -561,17 +435,9 @@ const getters = {
     AllSchedules(state) {
         return state.AllSchedules
     },
-    medicines(state) {
-        return state.medicines
-    },
-    cids(state) {
-        return state.cids
-    },
+
     consultationsCanceled(state) {
         return state.consultationsCanceled
-    },
-    consultationsLoaded(state) {
-        return state.loaded
     },
     consultationsCreationInfo(state) {
         return state.consultationsCreationInfo
@@ -582,7 +448,7 @@ const getters = {
     consultationsLoading(state) {
         return state.loading
     }
-}
+};
 
 export default {
     state,

@@ -812,6 +812,7 @@
             },
 
             consultationsByDate(consultations) {
+                console.log('consultation : ', consultations)
                 let res = {};
                 consultations.sort((a,b)=>{
                     return a.date > b.date ? 1 : a.date < b.date ? -1 : 0
@@ -823,6 +824,7 @@
                     }
                     res[targetDate].push(consultations[cons]);
                 }
+                console.log('res: ', res)
                 return res;
             },
 
