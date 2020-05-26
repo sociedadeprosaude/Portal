@@ -39,7 +39,7 @@ const actions = {
             });
             for (let exam in exams) {
                 functions.removeUndefineds(exams[exam]);
-                await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).collection('specialties').add(exams[exam])
+                await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).collection('exams').add(exams[exam])
             }
         }
         if (copyPayload.user) {
@@ -186,7 +186,7 @@ const actions = {
             consultations.forEach(async (c) => {
                 consultationFound = c;
                 context.dispatch('updatePaymentNumberConsultation', { user: payload.user, consultation: c, payment_number: payload.payment_number })
-            })  
+            })
         }
 
 
@@ -367,8 +367,8 @@ const actions = {
                 .where('specialty', '==', payload.specialty.name).where('status', '==', [status]).where('exam.name', '==', payload.exam.name)
                 : procedureRef = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)
                     .where('specialty', '==', payload.specialty.name).where('status', '==', [status])
-            }    
-            
+            }
+
 
             let procedureRefOr = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', 'Exam')
                 .where('specialty', '==', payload.specialty.name).where('status', '==', ['Exame Pago'])
