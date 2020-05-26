@@ -157,7 +157,6 @@
                     case 'appointment':
                         return this.specialties;
                     case 'package':
-                        console.log(this.package)
                         return this.package;
                     default:
                         return []
