@@ -2,20 +2,19 @@
     <v-container fluid class="ma-0 pa-0">
         <v-layout row nowrap style="width: 100%">
             <v-card v-for="(item, i) in Items" :key="i" class="my-2 grey_light" width="100%">
-                
                 <v-layout row wrap v-if="categorySelect === 'package'"
                           class="align-center justify-center text-center my-1">
                     <v-btn rounded dense x-small class="blue_grey" block width="100%" @click="selectBudget(item)"
                            v-if="item.percentageDiscount">
                         {{item.name}}
                         <v-spacer/>
-                        {{(item.price * parseFloat(item.percentageDiscount)) / 100}}
+                        {{parseFloat((item.price * parseFloat(item.percentageDiscount)) / 100).toFixed(2)}}
                     </v-btn>
 
                     <v-btn rounded dense x-small block class="blue_grey" @click="selectBudget(item)" v-else>
                         {{item.name}}
                         <v-spacer/>
-                        {{item.price}}
+                        {{parseFloat(item.price).toFixed(2)}}
                     </v-btn>
                 </v-layout>
                 <h4 v-else class="text-left ml-2">{{item.name}}</h4>
@@ -48,6 +47,29 @@
                             </v-btn>
                         </v-layout>
                     </v-layout>
+                </v-card-text>
+                <v-card-text v-if="categorySelect === 'package'">
+                    <v-flex xs12 class="align-center justify-center text-center pa-0">
+                        <span class="font-weight-bold" v-if="item.exams.length !== 0">Exames</span>
+                    </v-flex>
+                    <v-divider/>
+                    <v-layout row v-for="n in item.exams" :key="n.name" class="my-2 justify-center"
+                              style="width: 100%" v-if="item.exams">
+                        <h5>{{n.name}}
+                            <v-spacer/>
+                        </h5>
+                    </v-layout>
+                    <v-flex xs12 class="align-center justify-center text-center">
+                        <span class="font-weight-bold" v-if="item.consultations.length !== 0">Consultas</span>
+                    </v-flex>
+                    <v-divider/>
+                    <v-layout row v-for="n in item.consultations" :key="n.name" class="my-2 justify-center"
+                              style="width: 100%" v-if="item.consultations">
+                        <h5>{{n.name}}
+                            <v-spacer/>
+                        </h5>
+                    </v-layout>
+
                 </v-card-text>
             </v-card>
         </v-layout>
