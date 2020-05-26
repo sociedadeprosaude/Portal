@@ -15,9 +15,9 @@
 </template>
 
 <script>
-    import DataToSearchConsultation from "../components/doctorsAgenda/DataToSearchConsultation"
-    import SchedulesConsultations from "../components/doctorsAgenda/SchedulesConsultations"
-    import DataCashierConsultation from "../components/doctorsAgenda/DataCashierConsultation"
+    import DataToSearchConsultation from "../../../components/doctorsAgenda/DataToSearchConsultation"
+    import SchedulesConsultations from "../../../components/doctorsAgenda/SchedulesConsultations"
+    import DataCashierConsultation from "../../../components/doctorsAgenda/DataCashierConsultation"
 
     export default {
         components: {DataToSearchConsultation, SchedulesConsultations, DataCashierConsultation},

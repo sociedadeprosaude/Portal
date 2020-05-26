@@ -20,7 +20,7 @@ import DischargeProcedures from "./views/Register/Clinic/DischargeProcedures"
 import Units from "./views/Units";
 import Bills from "./views/Register/Bills";
 
-import DoctorScheduling from './views/DoctorScheduling'
+import DoctorScheduling from './views/Operational/DoctorsAgenda/DoctorScheduling'
 
 import MedicalCare from "./views/DoctorAttendance/MedicalCare";
 import TicketsDashboard from "./views/Operational/Tickets/TicketsDashboard";

@@ -5,9 +5,10 @@ import DeletarConsultas from "../views/Operational/DoctorsAgenda/DeleteConsultat
 import GerenciamentoConsultas from "../views/Operational/DoctorsAgenda/ManagementConsultations";
 import PatientConsultations from "../views/Operational/DoctorsAgenda/PatientConsultations";
 import RegistrationConsultationsShifts from "../views/Register/RegistrationConsultationsShifts";
-import SchedulingConsultation from "../views/Operational/DoctorsAgenda/SchedulingConsultation";
+//import SchedulingConsultation from "../views/Operational/DoctorsAgenda/SchedulingConsultation";
 import RemarcarConsultas from "../views/Operational/DoctorsAgenda/RescheduleConsultations";
 import ScheduleReturn from "../views/Operational/DoctorsAgenda/ScheduleReturn";
+import DoctorScheduling from '../views/Operational/DoctorsAgenda/DoctorScheduling'
 
 import Discount from "../views/Notifications/discount"
 
@@ -15,7 +16,7 @@ export default [
     {
         path: '/agenda/agendamento',
         name: 'AgendamentoConsultas',
-        component: SchedulingConsultation
+        component: DoctorScheduling
     },
     {
         path: 'discount',
