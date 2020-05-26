@@ -35,7 +35,7 @@
                                             class="mx-3"
                                     />
                                 </template>
-                                <v-date-picker v-model="date" no-title @input="menu1 = false" @change="getConsultationsDorctors()"></v-date-picker>
+                                <v-date-picker v-model="date" no-title @input="menu1 = false" @change="getConsultationsDorctors()"/>
                             </v-menu>
                         </v-flex>
                     </v-layout>
@@ -47,7 +47,7 @@
                 </v-card>
             </v-flex>
             <v-flex xs4>
-                <CardInformationManagementConsultations :patient="patientSelected" :consultation="consultatioSelect"></CardInformationManagementConsultations>
+                <CardInformationManagementConsultations :patient="patientSelected" :consultation="consultatioSelect"/>
             </v-flex>
         </v-layout>
 </template>
@@ -88,7 +88,7 @@
         methods: {
             async initialConfig() {
                 await this.$store.dispatch("getSpecialties");
-                this.especialidade = this.specialties[0]
+                this.especialidade = this.specialties[0];
                 this.getConsultationsDorctors()
 
             },
@@ -112,12 +112,12 @@
                 return diff > 21
             },
             async getConsultationsDorctors(){
-                this.loadingConsultations= true
+                this.loadingConsultations= true;
                 await this.$store.dispatch('listenConsultations',
                     {
                         start_date: this.date,
                         final_date: moment().add(10, 'days').format('YYYY-MM-DD 23:59:59')
-                    })
+                    });
                 this.loadingConsultations= false
             }
         },

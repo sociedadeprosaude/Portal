@@ -377,7 +377,7 @@ const actions = {
 
             functions.removeUndefineds(payload);
             let FieldValue = firebase.firestore.FieldValue;
-            await firebase.firestore().collection('consultations').doc(payload.idConsultation).delete()
+            await firebase.firestore().collection('consultations').doc(payload.idConsultation).delete();
             await firebase.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.idConsultation).update({status: 'Cancelado'})
 
             //Para consultas que são do tipo Retorno
@@ -429,7 +429,7 @@ const actions = {
             if (payload.regress !== undefined) {
 
 
-                await firebase.firestore().collection('consultations').doc(payload.regress).delete()
+                await firebase.firestore().collection('consultations').doc(payload.regress).delete();
                 await firebase.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.regress).update({status: 'Cancelado'})
 
             }
@@ -629,6 +629,18 @@ const actions = {
         })
 
     },
+    async addConsultationHourInConsultation ({commit}, data){
+
+            firebase.firestore().collection('consultations').doc(data.id).update({
+                consultation_hour: data.consultation_hour,
+            });
+            firebase.firestore().collection('users').doc(data.consultation.user.cpf)
+                .collection('consultations').doc(data.id).update({
+                consultation_hour: data.consultation_hour,
+            })
+
+    },
+
     async addMedicalRecordsToConsultation({commit}, payload) {
         firebase.firestore().collection('consultations').doc(payload.consultation).update({MedicalRecords: payload.MedicalRecords});
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({MedicalRecords: payload.MedicalRecords})

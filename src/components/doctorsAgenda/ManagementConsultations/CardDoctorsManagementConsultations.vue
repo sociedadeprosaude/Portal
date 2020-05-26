@@ -27,7 +27,7 @@
                                     <v-flex xs5>
                                         <p class="white--text text-left font-weight-bold"> CPF: {{consultation.doctor.cpf}}</p>
                                     </v-flex>
-                                    <v-spacer></v-spacer>
+                                    <v-spacer/>
                                     <v-flex xs1>
                                         <v-btn icon class="grey my-1 mx-1" dark x-small text fab>
                                             <v-icon @click="deactivateDoctor(consultation.doctor)">power_settings_new</v-icon>
@@ -141,7 +141,7 @@
         computed: {
             consultations() {
                 if(moment().format('YYYY-MM-DD') !== this.date){
-                    console.log('entrei')
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.loadingConsultations = !this.loadingConsultations
                 }
                 return this.$store.getters.consultations.filter((a) => {
@@ -161,7 +161,7 @@
         methods: {
 
             cleanSpecialtyToDeactivate(){
-                this.specialtyToDeactivate=[]
+                this.specialtyToDeactivate=[];
                 this.clinicsToDeactivate=[]
             },
             ConsultationsByDoctors(consultations) {
@@ -183,8 +183,7 @@
                 return res
             },
             async deactivateDoctor(item) {
-                await this.$store.dispatch('getDoctor',item.cpf)
-                console.log('doctor: ', this.doctor)
+                await this.$store.dispatch('getDoctor',item.cpf);
                 if(this.doctor.cpf === item.cpf){
                     this.selectedDoctor = this.doctor;
                     this.clinics = this.doctor.clinics;
@@ -196,7 +195,7 @@
 
             },
             daydate(date) {
-                var dateMoment = moment(date);
+                let dateMoment = moment(date);
                 return this.semanaOptions[dateMoment.day()];
             },
             patientSelect: function (item) {
@@ -204,15 +203,15 @@
                 this.$emit('consultationSelect', item)
             },
             async deleteAllSchedule(doctor){
-                this.loading = true
-                var payload = {
+                this.loading = true;
+                let payload = {
                     doctor: doctor,
                     specialty: this.specialtyToDeactivate,
                     clinic: this.clinicsToDeactivate,
-                }
-                await this.$store.dispatch('deleteAllSchedule', payload)
-                this.success = true
-                this.loading = false
+                };
+                await this.$store.dispatch('deleteAllSchedule', payload);
+                this.success = true;
+                this.loading = false;
                 this.confirmDeactivate= false
             },
         }

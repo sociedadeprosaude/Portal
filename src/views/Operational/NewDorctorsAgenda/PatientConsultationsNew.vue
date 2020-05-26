@@ -16,7 +16,7 @@
                 </v-card>
             </v-flex>
             <v-flex xs4>
-                <CardInformationManagementConsultations :patient="patient" :consultation="consultatioSelect"></CardInformationManagementConsultations>
+                <CardInformationManagementConsultations :patient="patient" :consultation="consultatioSelect"/>
             </v-flex>
         </v-layout>
 </template>
@@ -41,22 +41,25 @@
                 return this.formatDate(this.date)
             },
             patient() {
-                var val = this.$store.getters.selectedPatient
+                let val = this.$store.getters.selectedPatient;
                 if (val != null) {
-                    var consultas = []
-                    this.QtdConsultations = 0
-                    this.QtdReturn = 0
+                    let consultas = [];
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                    this.QtdConsultations = 0;
+                    this.QtdReturn = 0;
                     for (const key in val.consultations) {
 
                         if (val.consultations[key].type === 'Consulta') {
+                            // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                             this.QtdConsultations += 1
                         } else {
+                            // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                             this.QtdReturn += 1
                         }
                         consultas.push(val.consultations[key])
 
                     }
-                    val.consultations = consultas
+                    val.consultations = consultas;
                     val.consultations.sort(function(a, b) {
 
                         if (a.date < b.date) {

@@ -65,7 +65,6 @@
                                 color="white"
                                 rounded
                                 class="mx-2"
-                                :disabled="consultation.consultationHour"
                                 @click="setConsultationHour(consultation)"
                         >
                             Atender
@@ -76,6 +75,14 @@
                     </v-flex>
                 </v-layout>
             </v-card>
+            <transition name="fade">
+                <v-container fluid v-show="Report">
+                    <report @close-dialog="Report = false" :consultation="consultation"/>
+                </v-container>
+            </transition>
+            <v-dialog v-model="documentDialog">
+                <ReportPDF @close-dialog="documentDialog = false" :consultation="consultation" :item="item"/>
+            </v-dialog>
         </v-flex>
     </v-layout>
 </template>
@@ -86,27 +93,36 @@
         from '../../../components/doctorsAgenda/ManagementConsultations/CardConsultationManagementConsultations'
     import CardPatientManagementConsultations
         from '../../../components/doctorsAgenda/ManagementConsultations/CardPatientManagementConsultations'
+    import Report from '../../../components/Attendance/Report'
+    import ReportPDF from "../../../components/Attendance/printing/reportPDF";
+
     let moment = require('moment');
 
     export default {
         name: "CardInformationManagementConsultations",
         props: ['patient', 'consultation'],
-        components: {CardConsultationManagementConsultations, CardPatientManagementConsultations},
+        components: {CardConsultationManagementConsultations, CardPatientManagementConsultations, Report, ReportPDF},
 
-        data: () => ({}),
-        computed: {},
+        data: () => ({
+            Report: false,
+            documentDialog: false,
+            item: 'NOVO'
+        }),
+        computed: {
+
+        },
         mounted() {
             this.initialConfig()
 
         },
-        watch: {},
+        watch: {
+        },
         methods: {
 
             async initialConfig() {
 
             },
             deletedConsultation() {
-                console.log('consultation: ', this.consultation);
                 this.$store.dispatch('eraseAppointment', {
                     idConsultation: this.consultation.id,
                     idPatient: this.consultation.user.cpf,
@@ -121,9 +137,17 @@
 
             },
             setConsultationHour(consultation) {
-                console.log(consultation);
                 let consultation_hour = moment().format('YYYY-MM-DD hh:mm:ss');
-                console.log(consultation_hour)
+                let data = {
+                    consultation_hour: consultation_hour,
+                    consultation: consultation,
+                    id: consultation.id,
+                };
+                this.$store.dispatch('addConsultationHourInConsultation', data);
+                this.consultation.consultation_hour = consultation_hour;
+                console.log(this.consultation);
+                this.Report =  true;
+                this.documentDialog = true;
             }
 
         },
