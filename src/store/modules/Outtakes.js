@@ -88,7 +88,6 @@ const actions = {
         try {
             let query = firebase.firestore().collection('outtakes');
             let outtakesSnap = [];
-            console.log('payload:', payload)
             if (payload) {
                 if (payload.initialDate) {
                     query = query.where('paid', '>=', payload.initialDate)

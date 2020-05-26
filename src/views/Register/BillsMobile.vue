@@ -20,33 +20,11 @@
                         <v-container>
                             <v-row>
                                 <v-row justify="center">
-                                    <v-flex xs10>
-                                        <v-menu
-                                                v-model="menu"
-                                                :close-on-content-click="false"
-                                                :nudge-right="40"
-                                                transition="scale-transition"
-                                                offset-y
-                                                min-width="290px"
-                                        >
-                                            <template v-slot:activator="{ on }">
-                                                <v-text-field
-                                                        v-model="computedDateFormatted"
-                                                        label="Selecione o Mês para Pesquisar"
-                                                        prepend-icon="event"
-                                                        readonly
-                                                        outlined
-                                                        rounded
-                                                        v-on="on"
-                                                ></v-text-field>
-                                            </template>
-                                            <v-date-picker type="month" locale="pt-br" v-model="selectedMonth" @input="menu = false"></v-date-picker>
-                                        </v-menu>
-                                    </v-flex>
                                     <v-flex xs12>
                                         <v-chip-group class="pa-5" column active-class="primary--text">
-                                            <v-chip color="grey" v-for="(month,i) in months" :key="i" class="white" small>
-                                                <span style="font-weight: bold;"> {{ month.format('MM/YYYY') }} </span>
+                                            <v-chip color="grey" v-for="(month,i) in months" :key="i" class="white" @click="mapMonths(month)">
+                                                <span v-if="month.format('YYYY') === year" style="font-weight: bold;"> {{ month.format('MMMM') }}</span>
+                                                <span v-if="month.format('YYYY') !== year" style="font-weight: bold;"> {{ month.format('MM/YYYY') }}</span>
                                             </v-chip>
                                         </v-chip-group>
                                     </v-flex>
@@ -73,7 +51,7 @@
                             </v-container>
 
                             <v-flex xs12 class="mt-4" v-else>
-                                <v-card class="pa-4 my-4" v-for="bill in selectedPaidOuttakesList" :key="bill.id" @click="dialogInfoPaidBill = true">
+                                <v-card class="pa-4 my-4" v-for="bill in selectedPaidOuttakesList" :key="bill.id" @click="mapping(bill)">
                                     <v-layout class="align-center justify-center" row wrap>
                                         <v-flex xs11>
                                             <div>
@@ -98,17 +76,9 @@
 
             <v-dialog hide-overlay transition="dialog-bottom-transition" v-model="dialogInfoPaidBill">
                 <v-container>
-                    <v-layout class="align-center justify-center" row wrap>
-                        <v-flex xs12>
+                    <v-row class="align-center justify-center">
+                        <v-col cols="12" xs="12" class="primary">
                             <v-card>
-                                <v-toolbar dark color="primary">
-                                    <v-toolbar-title>INFO</v-toolbar-title>
-                                    <v-spacer></v-spacer>
-                                    <v-btn icon dark @click="dialogInfoPaidBill = false">
-                                        <v-icon>close</v-icon>
-                                    </v-btn>
-                                </v-toolbar>
-
                                 <!--                            <v-flex xs12>
                                                                 <v-card class="pa-4 my-4">
                                                                     <v-layout row wrap>
@@ -174,8 +144,8 @@
                                                                 </v-card>
                                                             </v-flex>-->
                             </v-card>
-                        </v-flex>
-                    </v-layout>
+                        </v-col>
+                    </v-row>
                 </v-container>
             </v-dialog>
         </div>
@@ -226,7 +196,7 @@
                 dialogPaidBills: false,
                 dialogRegisterBill: false,
                 other: "Outro",
-                menu: false,
+                year: moment().format('YYYY'),
                 selectedMonth: '',
                 dialogSelectDate: false,
                 switchDate: true,
@@ -264,11 +234,7 @@
                     momentDates.push(fiveMonthsAgo.clone())
                     fiveMonthsAgo = fiveMonthsAgo.add(1,'M')
                 }
-                console.log('dates', momentDates[0].format(`MMMM${now.year() == momentDates[0].year() ? '' : '/YYYY'}`))
                 return momentDates
-            },
-            computedDateFormatted () {
-                return this.formatDate(this.selectedMonth)
             },
             outtakesPaidMonth(){
                 return this.$store.getters.outtakesPaidMonth.sort((a, b) => {
@@ -296,15 +262,17 @@
             },
         },
         methods: {
+            mapping(bill) {
+                this.dialogInfoPaidBill = true
+                console.log('kill', bill)
+            },
+            mapMonths(month){
+              this.selectedMonth = month.format('YYYY-MM');
+            },
             daydate(date) {
 
                 var dateMoment = moment(date);
                 return this.semanaOptions[dateMoment.day()];
-            },
-            formatDate (date) {
-                if (!date) return null
-                const [year, month] = date.split('-')
-                return `${month}/${year}`
             },
             async initiate() {
                 this.loading = true;
@@ -314,7 +282,6 @@
                         .add(5, "days")
                         .format("YYYY-MM-DD 23:59:59")
                 });
-                //await this.$store.dispatch("getOuttakesPaidToday");
                 this.loading = false;
                 this.selectedCategory =
                     this.categoriesName[0] != null ? this.categoriesName[0] : "";
@@ -323,10 +290,8 @@
                 this.loadingFilter = true;
                 let start = this.selectedMonth
                 start = start+'-01'
-                console.log(start)
                 let end = this.selectedMonth
                 end = end +'-'+ moment(start, 'YYYY-MM-DD').endOf('month').format('DD')
-                console.log(end)
                 await this.$store.dispatch("getOuttakesPaidMonth", {
                     initialDate: this.switchDate
                         ? moment(start).format("YYYY-MM-DD 00:00:00")
