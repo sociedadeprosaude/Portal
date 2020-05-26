@@ -29,12 +29,6 @@
                                     <span class="hidden-xs-only">{{specialtiesLoaded ? 'Consultas' : 'Carregando consultas...'}}</span>
                                     <img src="@/assets/icons/doctor.svg" height="24px" class="hidden-sm-and-up">
                                 </v-btn>
-                                <v-btn outlined class="mx-2"
-                                       :color="categorySelect === 'package' ? 'accent' : 'primary_light'" rounded
-                                       @click="selectCategory('package')">
-                                    <span class="hidden-xs-only">Pacotes</span>
-                                    <img src="@/assets/icons/box.svg" height="24px" class="hidden-sm-and-up">
-                                </v-btn>
                             </v-flex>
                         </v-card-title>
                     </v-flex>
@@ -120,7 +114,7 @@
             return {
                 categorySelect: 'appointment',
                 search: '',
-                loading: undefined
+                loading: undefined,
             }
         },
         watch: {
@@ -182,8 +176,8 @@
                 for (let exam in budget.exams) {
                     this.$store.commit('addShoppingCartItem', budget.exams[exam])
                 }
-                for (let spec in budget.consultations) {
-                    this.$store.commit('addShoppingCartItem', budget.consultations[spec])
+                for (let spec in budget.specialties) {
+                    this.$store.commit('addShoppingCartItem', budget.specialties[spec])
                 }
                 this.loading = false
             },

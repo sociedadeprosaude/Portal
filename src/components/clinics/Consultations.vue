@@ -2,12 +2,12 @@
     <v-card width="500" >
         <v-card-title class="headline grey lighten-2" primary-title>
             <span class="headline">Cadastro de Consultas</span>
-            <v-spacer></v-spacer>
+            <v-spacer/>
             <v-btn small color="error" @click="clear()"><v-icon>close</v-icon></v-btn>
         </v-card-title>
         <v-card-text>
             <v-container grid-list-md>
-                <v-layout align-center justify-center wrap>
+                <v-layout class="align-center justify-center" wrap>
                     <v-flex xs12>
                         <v-text-field
                                 prepend-icon="business"
@@ -16,7 +16,7 @@
                                 readonly
                                 v-model="this.selectedClinic.name"
                                 hide-details
-                        ></v-text-field>
+                        />
                     </v-flex>
                     <v-flex xs12>
                         <v-select
@@ -30,7 +30,7 @@
                                 clearable
                                 chips
                                 hide-details
-                        ></v-select>
+                        />
                     </v-flex>
                     <v-flex xs12>
                         <v-select
@@ -46,7 +46,7 @@
                                 clearable
                                 chips
                                 hide-details
-                        ></v-select>
+                        />
                     </v-flex>
                     <v-flex xs12>
                         <v-select
@@ -58,7 +58,7 @@
                                 clearable
                                 chips
                                 hide-details
-                        ></v-select>
+                        />
                     </v-flex>
                     <v-flex xs6>
                         <v-currency-field
@@ -69,7 +69,7 @@
                                 prefix="R$"
                                 v-model="cost"
                                 hide-details
-                        ></v-currency-field>
+                        />
                     </v-flex>
                     <v-flex xs6>
                         <v-currency-field
@@ -80,7 +80,7 @@
                                 prefix="R$"
                                 v-model="sale"
                                 hide-details
-                        ></v-currency-field>
+                        />
                     </v-flex>
                     <v-flex xs12>
                         <v-textarea
@@ -93,16 +93,16 @@
                                 full-width
                                 single-line
                                 hide-details
-                        ></v-textarea>
+                        />
                     </v-flex>
                 </v-layout>
             </v-container>
         </v-card-text>
-        <v-divider></v-divider>
+        <v-divider/>
         <v-card-actions>
-            <v-layout align-center justify-center>
+            <v-layout class="align-center justify-center">
                 <v-btn color="error" @click="clear()">CANCELAR</v-btn>
-                <v-spacer></v-spacer>
+                <v-spacer/>
                 <v-btn
                     :disabled="!formIsValid"
                     @click="save()"

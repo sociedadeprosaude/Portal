@@ -1,16 +1,16 @@
 <template>
     <v-container class="ma-0 pa-0">
         <v-layout row wrap>
-            <v-flex xs12>
+            <v-flex xs12 sm12>
                 <v-expand-transition mode="out-in">
                     <v-card class="primary_light white--text pa-2" :max-width="maxWidth" v-if="!addPatient">
                         <v-layout row wrap>
                             <v-flex v-if="!selectedPatient" xs8>
-                                 <v-flex sm6 xs8 class="text-left mb-3">
-                                        <span class="my-headline white--text hidden-xs-only">Buscar Associado</span>
-                                        <span class="white--text font-weight-bold hidden-sm-and-up">Buscar Associado</span>
-                                    </v-flex>
-                                    <v-spacer/>
+                                <v-flex sm6 xs8 class="text-left mb-3">
+                                    <span class="font-weight-bold white--text hidden-xs-only">Buscar Associado</span>
+                                    <span class="white--text font-weight-bold hidden-sm-and-up">Buscar Associado</span>
+                                </v-flex>
+                                <v-spacer/>
                             </v-flex>
                             <v-flex :class="!selectedPatient ? 'xs4' : 'xs12'">
                                 <v-layout row wrap class="text-right">
@@ -20,11 +20,11 @@
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn
-                                                    v-on="on"
-                                                    to="/agenda/Declaration"
-                                                    rounded text class="white--text transparent">
-                                                <v-icon>print</v-icon>
-                                            </v-btn>
+                                                        v-on="on"
+                                                        to="/agenda/Declaration"
+                                                        rounded text class="white--text transparent">
+                                                    <v-icon>print</v-icon>
+                                                </v-btn>
                                             </template>
                                             <span>Declaração de Comparecimento</span>
                                         </v-tooltip>
@@ -33,11 +33,11 @@
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn
-                                                    v-on="on"
-                                                    to="/agenda/ConsultasPacientes"
-                                                    rounded text class="white--text transparent">
-                                                <v-icon>date_range</v-icon>
-                                            </v-btn>
+                                                        v-on="on"
+                                                        to="/agenda/ConsultasPacientes"
+                                                        rounded text class="white--text transparent">
+                                                    <v-icon>date_range</v-icon>
+                                                </v-btn>
                                             </template>
                                             <span>Gerenciamento de Consultas do Paciente</span>
                                         </v-tooltip>
@@ -47,11 +47,11 @@
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template  v-slot:activator="{ on }">
                                                 <v-btn
-                                                    v-on="on"
-                                                    to="/agenda/agendamento"
-                                                    rounded text class="white--text transparent">
-                                                <v-icon>calendar_today</v-icon>
-                                            </v-btn>
+                                                        v-on="on"
+                                                        to="/agenda/agendamento"
+                                                        rounded text class="white--text transparent">
+                                                    <v-icon>calendar_today</v-icon>
+                                                </v-btn>
                                             </template>
                                             <span>Agendamento de Consultas</span>
                                         </v-tooltip>
@@ -88,12 +88,12 @@
                                     <v-flex xs1 class="text-right mx-3">
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
-                                               <v-btn
-                                                    v-on="on"
-                                                    @click="selectUser(undefined)"
-                                                    rounded text class="white--text transparent">
-                                                <v-icon>delete</v-icon>
-                                            </v-btn>
+                                                <v-btn
+                                                        v-on="on"
+                                                        @click="selectUser(undefined)"
+                                                        rounded text class="white--text transparent">
+                                                    <v-icon>delete</v-icon>
+                                                </v-btn>
                                             </template>
                                             <span>Deselecionar Dados do Paciente</span>
                                         </v-tooltip>
@@ -103,12 +103,12 @@
                                     <v-flex xs1 class="text-right mx-3">
                                         <v-tooltip top>
                                             <template v-slot:activator="{ on }">
-                                               <v-btn
-                                                    v-on="on"
-                                                    @click="addPatient = !addPatient"
-                                                    rounded text class="white--text transparent">
-                                                <v-icon>group_add</v-icon>
-                                            </v-btn>
+                                                <v-btn
+                                                        v-on="on"
+                                                        @click="addPatient = !addPatient"
+                                                        rounded text class="white--text transparent">
+                                                    <v-icon>group_add</v-icon>
+                                                </v-btn>
                                             </template>
                                             <span>Cadastrar Novo Paciente</span>
                                         </v-tooltip>
@@ -171,7 +171,7 @@
                                 <submit-button class="mx-3 mb-3" @click="searchPatientOldDatabase()" :loading="loading"
                                                :success="success" text="Buscar antigo sistema">
                                 </submit-button>
-                                <submit-button class="mb-3" @click="searchPatient()" :loading="loading" :success="success"
+                                <submit-button class="mx-3 mb-3" @click="searchPatient()" :loading="loading" :success="success"
                                                text="Buscar">
                                 </submit-button>
                             </v-flex>
@@ -233,27 +233,27 @@
                             </v-flex>
                             <v-row>
                                 <v-col cols="12">
-                                     <v-text-field
-                                        outlined
-                                        rounded
-                                        filled
-                                        placeholder="Campo obrigatório *"
-                                        prepend-icon="account_circle"
-                                        v-model="name"
-                                        label="Nome">
-                                </v-text-field>
+                                    <v-text-field
+                                            outlined
+                                            rounded
+                                            filled
+                                            placeholder="Campo obrigatório *"
+                                            prepend-icon="account_circle"
+                                            v-model="name"
+                                            label="Nome">
+                                    </v-text-field>
                                 </v-col>
-                               
+
                             </v-row>
                             <v-flex sm12 xs12 class="px-3">
-                                
+
                             </v-flex>
                             <v-flex sm4 xs12 class="px-3">
                                 <v-text-field
                                         outlined
                                         rounded
                                         filled
-                                        placeholder="Campo obrigatório*"
+                                        placeholder="Campo obrigatório *"
                                         v-model="birthDate"
                                         :rules="rules"
                                         v-mask="mask.date"
@@ -365,7 +365,7 @@
                                     </v-flex>
 
                                     <v-spacer/>
-                                     <v-flex sm4 xs12 class="px-3">
+                                    <v-flex sm4 xs12 class="px-3">
                                         <v-text-field
                                                 outlined
                                                 rounded
@@ -377,7 +377,7 @@
                                                 label="Data de Nascimento">
                                         </v-text-field>
                                     </v-flex>
-                                     <v-flex sm4 xs12 class="px-3">
+                                    <v-flex sm4 xs12 class="px-3">
                                         <v-select outlined rounded filled label="Sexo"
                                                   :items="['Feminino' , 'Masculino']"
                                                   v-model="dependent.sex">
@@ -471,10 +471,10 @@
             </v-flex>
         </v-layout>
         <v-dialog v-model="patientCard">
-            <patient-card :user="selectedPatient"></patient-card>
+            <patient-card :user="selectedPatient"/>
         </v-dialog>
         <v-dialog v-model="patientTag">
-            <patient-tag :user="selectedPatient"></patient-tag>
+            <patient-tag :user="selectedPatient"/>
         </v-dialog>
     </v-container>
 </template>
@@ -502,21 +502,23 @@
             PatientTag
         },
         computed: {
-          selectedPatient() {
-              let user = this.$store.getters.selectedPatient;
-              if (user) {
-                  this.name = user.name;
-                  this.cpf = user.cpf
-              }
-              return this.$store.getters.selectedPatient
-          },
-          selectedDependent(){
-            let dependent = this.$store.getters.selectedDependent;
-            if(dependent){
-                this.dependentName = dependent.name
+            selectedPatient() {
+                let user = this.$store.getters.selectedPatient;
+                if (user) {
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                    this.name = user.name;
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                    this.cpf = user.cpf
+                }
+                return this.$store.getters.selectedPatient
+            },
+            selectedDependent(){
+                let dependent = this.$store.getters.selectedDependent;
+                if(dependent){
+                    this.dependentName = dependent.name
+                }
+                return dependent
             }
-            return dependent
-          }
         },
         data() {
             return {
@@ -571,11 +573,11 @@
             selectedDependent(){
                 let dependent = this.$store.getters.selectedDependent;
                 if(dependent){
-                   this.dependentName = dependent.name
+                    this.dependentName = dependent.name
                 }
                 return dependent
             }
-         },
+        },
         watch: {
             cpf(val) {
                 if(this.selectedPatient && val !== this.selectedPatient.cpf)
@@ -653,7 +655,7 @@
                 for(let dependent in this.dependents){
                     let birthDate = moment( this.dependents[dependent].birthDate,"DD/MM/YYYY").format("YYYY-MM-DD");
 
-                   copyDependents.push(Object.assign({birthDate:birthDate}, {name:this.dependents[dependent].name,sex:this.dependents[dependent].sex,dependentDegree:this.dependents[dependent].dependentDegree}))
+                    copyDependents.push(Object.assign({birthDate:birthDate}, {name:this.dependents[dependent].name,sex:this.dependents[dependent].sex,dependentDegree:this.dependents[dependent].dependentDegree}))
 
                 }
                 let patient = {
@@ -743,7 +745,7 @@
                     this.name= undefined;
                     this.numAss= undefined;
                     this.rg = undefined;
-                    this.birthDate = undefined;
+                    this.birth_date = undefined;
                     this.email = undefined;
                     this.telephones = [''];
                     this.addresses = [];
@@ -769,13 +771,13 @@
                 this.loading = false
             },
 
-            async fillFormUser(user) {
+            fillFormUser(user) {
                 this.name = user.name;
                 this.cpf = user.cpf;
                 this.email = user.email;
                 this.rg = user.rg;
                 this.numAss = user.association_number;
-                this.birthDate = await moment(user.birth_date).format('DD/MM/YYYY');
+                this.birthDate = moment(user.birth_date).format('DD-MM-YYYY');
                 this.sex = user.sex;
                 this.dependents = user.dependents ? user.dependents : [];
                 this.telephones = user.telephones ? user.telephones : [''];
@@ -785,15 +787,15 @@
                 this.addresses = user.addresses;
                 if(user.dependents){
                     for(let index in user.dependents){
-                        let patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
-                        let date  = user.dependents[index].birthDate;
+                        var patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
+                        var date  = user.dependents[index].birthDate;
                         if(!patt.test(date))
                             date = moment(date,"YYYY-MM-DD").format("DD/MM/YYYY");
                         user.dependents[index].birthDate = date
                     }
-                     this.dependents = user.dependents
+                    this.dependents = user.dependents
                 }else{
-                     this.dependents = []
+                    this.dependents = []
                 }
 
             },
@@ -844,18 +846,17 @@
             }
         },
         mounted() {
-           window.addEventListener('keydown', this.handleEnter)
-           axios.get('http://servicodados.ibge.gov.br/api/v1/localidades/estados/13/municipios')
-           .then((response)=>{
-               
-               response.data.forEach(city => {
-                   this.cities['AM'].push(city.nome)
-               });
-           })
+            window.addEventListener('keydown', this.handleEnter)
+            axios.get('http://servicodados.ibge.gov.br/api/v1/localidades/estados/13/municipios')
+                .then((response)=>{
+
+                    response.data.forEach(city => {
+                        this.cities['AM'].push(city.nome)
+                    });
+                })
         },
         beforeDestroy() {
             window.removeEventListener('keydown', this.handleEnter)
         }
     }
 </script>
-
