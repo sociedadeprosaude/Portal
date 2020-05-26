@@ -109,6 +109,7 @@ const actions = {
     },
 
     async getSchedules({commit, dispatch}, payload) {
+        console.log('oi:', payload)
         try {
             commit('setConsultationsLoaded', false);
             let schedules = [];
