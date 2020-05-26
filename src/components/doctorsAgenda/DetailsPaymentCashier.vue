@@ -1,0 +1,469 @@
+<template>
+    <v-container fluid class="ma-0 pa-0">
+        <v-layout row wrap>
+            <v-flex>
+                <v-flex sm12 xs12 v-if="payment.paymentForm.length > 1">
+                    <v-layout row wrap class="align-center" v-for="(x ,index) in payment.paymentForm" :key="index">
+                        <v-flex xs12>
+                            <v-select
+                                    outlined
+                                    dense
+                                    :items="FormasDePagamento"
+                                    v-model="payment.paymentForm[index]"
+                                    hint="Forma de Pagamento"
+                                    :append-outer-icon="index === 0 ? 'add_circle' : 'remove_circle'"
+                                    @click:append-outer="index === 0 ? adicionarFormaDePagamento() : apagarFormaDePagamento(index)"
+                            />
+                        </v-flex>
+                        <v-flex xs5 v-if="payment.paymentForm[index] === 'Crédito'">
+                            <v-currency-field
+                                    dense
+                                    outlined
+                                    v-model="payment.value[index]"
+                                    label="Valor"
+                            />
+                        </v-flex>
+                        <v-flex xs10 v-if="payment.paymentForm[index] !== 'Crédito'">
+                            <v-currency-field
+                                    outlined
+                                    dense
+                                    v-model="payment.value[index]"
+                                    label="Valor"
+                            />
+                        </v-flex>
+                        <v-flex xs6 v-if="payment.paymentForm[index] === 'Crédito'" class="ml-4">
+                            <v-select
+                                    :items="parcels"
+                                    v-model="payment.parcel[index]"
+                                    label="Parcelas"
+                                    filled
+                                    dense
+                                    outlined
+                            >
+                            </v-select>
+                        </v-flex>
+                    </v-layout>
+                </v-flex>
+                <v-flex sm12 xs12 v-if="payment.paymentForm.length === 1">
+                    <v-layout row wrap class="align-center" v-for="(x ,index) in payments" :key="index">
+                        <v-flex xs12>
+                            <v-select
+                                    outlined
+                                    dense
+                                    :items="FormasDePagamento"
+                                    v-model="payment.paymentForm[index]"
+                                    hint="Forma de pagamento"
+                                    append-outer-icon="add_circle"
+                                    @click:append-outer="index === 0 ? adicionarFormaDePagamento() : apagarFormaDePagamento(index)"
+                            />
+                        </v-flex>
+                        <v-flex xs5 v-if="payment.paymentForm[index] === 'Crédito'">
+                            <v-currency-field
+                                    outlined
+                                    dense
+                                    v-model="payment.value[index]"
+                                    label="Valor"
+                            />
+                        </v-flex>
+                        <v-flex xs6 v-if="payment.paymentForm[index] === 'Crédito'" class="ml-4">
+                            <v-select :items="parcels"
+                                      v-model="payment.parcel[index]"
+                                      label="Parcelas"
+                                      outlined
+                                      dense
+                            />
+                        </v-flex>
+                    </v-layout>
+                </v-flex>
+                <v-layout wrap>
+                    <v-flex xs6>
+                        <v-text-field
+                                label="Desconto: %"
+                                v-model="percentageDiscount"
+                                outlined
+                                dense
+                        />
+                    </v-flex>
+                    <v-flex xs5 class="ml-4">
+                        <v-text-field
+                                disabled
+                                label="Desconto: R$ "
+                                v-model="moneyDiscount"
+                                dense
+                                outlined
+                        />
+                    </v-flex>
+                </v-layout>
+            </v-flex>
+            <v-flex xs12>
+                <v-layout row wrap v-if="payment.paymentForm.length > 1">
+                    <v-flex xs12>
+                        <v-divider color="black"/>
+                    </v-flex>
+                    <v-flex v-for="(x , index) in payments" :key="index">
+                        <v-flex xs12 v-if="payment.paymentForm[index] === 'Crédito'">
+                            <span>Crédito: {{payment.parcel[index]}}x de R$ {{( payment.value[index] / payment.parcel[index]).toFixed(2)}}</span>
+                        </v-flex>
+                        <v-flex xs12 v-if="payment.paymentForm[index] === 'Débito'">
+                            <span>Débito: R$ {{( payment.value[index])}}</span>
+                        </v-flex>
+                        <v-flex xs12 v-if="payment.paymentForm[index] === 'Dinheiro'">
+                            <span>Dinheiro: R$ {{( payment.value[index])}}</span>
+                        </v-flex>
+                    </v-flex>
+                </v-layout>
+                <v-flex xs12>
+                    <v-divider color="black"/>
+                </v-flex>
+                <v-layout row wrap>
+                    <v-flex xs6>
+                        <span>Subtotal: R$ {{this.subTotal.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
+                    </v-flex>
+                    <v-flex xs6>
+                        <span>Desconto: R$ {{this.moneyDiscount.toLocaleString('en-us', {minimumFractionDigits: 2})}}</span>
+                    </v-flex>
+                </v-layout>
+
+                <v-flex xs12>
+                    <v-divider/>
+                </v-flex>
+                <v-flex xs12 class="my-2">
+                    <h6 class="title font-weight-bold primary--text"> Total: R$
+                        {{this.total.toLocaleString('en-us', {minimumFractionDigits: 2})}}</h6>
+                </v-flex>
+                <v-flex xs12>
+                    <v-divider/>
+                </v-flex>
+            </v-flex>
+            <v-spacer/>
+            <v-flex xs12 class="mt-3">
+                <v-layout row wrap class="align-end fill-height">
+                    <v-flex xs4 class="text-center mt-4">
+                        <v-btn outlined color="primary" @click="clearCart()">Novo</v-btn>
+                    </v-flex>
+                    <v-flex xs4 class="text-center">
+                        <v-btn :disabled="cartItems.length === 0" outlined
+                               color="primary" @click="imprimir()">Imprimir
+                        </v-btn>
+                    </v-flex>
+                    <v-flex xs4 class="text-center">
+                        <submit-button
+                                :disabled="!patient || cartItems.length === 0 || this.paymentValues !== this.total || this.paymentNull === false"
+                                text="Pagar" :loading="paymentLoading"
+                                :success="paymentSuccess" color="primary" @click="pay()">
+                            Pagar
+                        </submit-button>
+                    </v-flex>
+                </v-layout>
+            </v-flex>
+        </v-layout>
+    </v-container>
+</template>
+<script>
+
+    import SubmitButton from "../SubmitButton";
+
+
+    export default {
+        name: "Cart",
+        components: {
+
+            SubmitButton,
+
+        },
+        data() {
+            return {
+                xDown: undefined,
+                yDown: undefined,
+                parcel: 1,
+                parcels: [1, 2, 3, 4, 5],
+                paymentLoading: false,
+                quantParcelas: ["1", "2", "3", "4", "5"],
+                paymentSuccess: false,
+                searchBudgetError: undefined,
+                searchBudgetNumber: undefined,
+                searchBudgetLoading: false,
+                searchBudgetBtn: false,
+                searchPatient: false,
+                payments: ['Dinheiro'],
+                valuesPayments: [''],
+                payment: {paymentForm: ['Dinheiro'], value: [''], parcel: ['1']},
+                moneyDiscout: 0,
+                data: moment().format("YYYY-MM-DD HH:mm:ss"),
+                parcelas: '1',
+                totalCusto: 0,
+                percentageDiscount: 0,
+                moneyDiscount: 0,
+                FormasDePagamento: ["Dinheiro", "Crédito", "Débito"],
+                totalNovo: 0,
+                budgetToPrint: undefined,
+                budgetToPrintDialog: false,
+                selectedIntake: undefined,
+                selectedDoctor: undefined,
+                receiptDialog: false,
+            }
+        },
+        computed: {
+            loadingDoctors() {
+                return !this.$store.getters.doctorsLoaded
+            },
+            doctors() {
+                return Object.values(this.$store.getters.doctors)
+            },
+            selectedUnit() {
+                return this.$store.getters.selectedUnit
+            },
+            selectedBudget() {
+                return this.$store.getters.selectedBudget
+            },
+            patient() {
+                return this.$store.getters.selectedPatient
+            },
+            cartItems() {
+                return this.$store.getters.getShoppingCartItems
+            },
+            exames() {
+                return this.$store.getters.getShoppingCartItemsByCategory.exams
+            },
+            consultas() {
+                return this.$store.getters.getShoppingCartItemsByCategory.consultations
+            },
+            cost() {
+                let itens = this.$store.getters.getShoppingCartItems;
+                let total = 0;
+                for (let item in itens) {
+                    total += parseFloat(itens[item].cost)
+                }
+                return total
+            },
+            subTotal() {
+                let itens = this.$store.getters.getShoppingCartItems;
+                let total = 0;
+                for (let item in itens) {
+                    total += parseFloat(itens[item].price);
+                }
+                return total
+            },
+            total() {
+                return (parseFloat(this.subTotal) - parseFloat(this.moneyDiscount)).toFixed(2)
+            },
+            paymentValues() {
+                let tamanho = this.payment.paymentForm.length;
+                let pagando = 0;
+                if (tamanho === 1 && this.payment.paymentForm[0] !== '') {
+                    this.payment.value[0] = parseFloat(this.total)
+                    pagando = parseFloat(this.payment.value[0]);
+                } else {
+                    for (let i = 0; i < tamanho; i++) {
+                        if (this.payment.value[i] !== '') {
+                            pagando += parseFloat(this.payment.value[i])
+                        }
+                    }
+                }
+                return pagando.toFixed(2);
+            },
+            paymentNull() {
+                let tamanho = this.payment.paymentForm.length;
+                if (tamanho === 1 && this.payment.value[0] !== '') {
+                    return true
+                } else {
+                    for (let i = 0; i < tamanho; i++) {
+                        if (this.payment.value[i] === '') {
+                            return false
+                        }
+                    }
+                    return true
+                }
+            },
+        },
+        watch: {
+            percentageDiscount: function () {
+                this.moneyDiscount = ((this.percentageDiscount * this.subTotal) / 100);
+            },
+        },
+        methods: {
+            async searchBudget() {
+                this.searchBudgetLoading = true;
+                let budget = await this.$store.dispatch('getBudget', this.searchBudgetNumber);
+                if (budget) {
+                    this.$store.commit('setSelectedBudget', budget);
+                    for (let exam in budget.exams) {
+                        this.$store.commit('addShoppingCartItem', budget.exams[exam])
+                    }
+                    for (let spec in budget.specialties) {
+                        this.$store.commit('addShoppingCartItem', budget.specialties[spec])
+                    }
+                    let intakes = await this.$store.dispatch('getUserIntakes', budget.user);
+                    if (intakes) {
+                        budget.user.intakes = intakes
+                    }
+                    let budgets = await this.$store.dispatch('getUserBudgets', budget.user);
+                    if (budgets) {
+                        budget.user.budgets = budgets
+                    }
+                    this.$store.commit('setSelectedPatient', budget.user);
+                    this.searchBudgetBtn = false
+                } else {
+                    this.searchBudgetError = 'Orçamento não encontrado'
+                }
+                this.searchBudgetLoading = false
+            },
+            adicionarFormaDePagamento() {
+                this.valuesPayments.push('');
+                this.payments.push('')
+                this.payment.paymentForm.push('');
+                this.payment.value.push('');
+                this.payment.parcel.push('1')
+            },
+            apagarFormaDePagamento(index) {
+                this.payments.splice(index, 1);
+                this.valuesPayments.splice(index, 1);
+                this.payment.paymentForm.splice(index, 1);
+                this.payment.value.splice(index, 1);
+                this.payment.parcel.splice(index, 1);
+
+            },
+            removeItem(item) {
+                this.$store.commit('removeShoppingCartItem', item)
+            },
+            shareOrcamento() {
+                var text = "";
+                if (this.exames.length > 0) {
+                    text = "Exames\n";
+                    for (let index = 0; index < this.exames.length; index++) {
+                        text += "\t" + this.exames[index].nome + "\n\tClinica: " + this.exames[index].clinica + "\n\tPreço: " + this.exames[index].preco + "\n"
+                    }
+                }
+                if (this.consultas.length > 0) {
+                    text += this.exames.length ? "\n\nConsultas\n" : "Consultas\n";
+                    for (let index = 0; index < this.consultas.length; index++) {
+                        text += "\t" + this.consultas[index].nome + "\n\tClinica: " + this.consultas[index].clinica + "\n\tPreço: " + this.consultas[index].preco + "\n"
+
+                    }
+                }
+
+                text += "\n\nSubtotal: R$" + this.total.toLocaleString('en-us', {minimumFractionDigits: 2});
+                text += "\nDesconto: R$" + this.moneyDiscount.toLocaleString('en-us', {minimumFractionDigits: 2});
+                text += "\nTotal: R$" + this.totalNovo.toLocaleString('en-us', {minimumFractionDigits: 2});
+                return text
+            },
+            imprimir() {
+                this.saveBudget(this.generateBudget());
+                this.budgetToPrint = this.selectedBudget;
+                this.budgetToPrintDialog = true
+            },
+            pesquisarUsuario() {
+                this.$store.dispatch('searchPatient', this.codigo).then(() => {
+                    this.categorySelect = 'appointment';
+                    for (this.i = 0; this.i < this.pedid[0].consultas.length; this.i++) {
+                        this.addProducts(this.pedid[0].consultas[this.i], this.pedid[0].consultas[this.i].preco, this.pedid[0].consultas[this.i].custo, this.pedid[0].consultas[this.i].clinica)
+                    }
+                    this.categorySelect = 'exams';
+                    for (this.i = 0; this.i < this.pedid[0].exames.length; this.i++) {
+                        this.addProducts(this.pedid[0].exames[this.i], this.pedid[0].exames[this.i].price, this.pedid[0].exames[this.i].cost, this.pedid[0].exames[this.i].clinic)
+                    }
+                }).catch(() => {
+                    this.aviso = true;
+                })
+            },
+            generateBudget() {
+                let id = moment().valueOf()
+                let budget = {
+                    id: id,
+                    specialties: this.consultas.length > 0 ? this.consultas : undefined,
+                    exams: this.exames.length > 0 ? this.exames : undefined,
+                    subTotal: this.subTotal,
+                    discount: this.moneyDiscount,
+                    total: this.total,
+                    parcel: this.payment.parcel,
+                    date: moment().format('YYYY-MM-DD HH:mm:ss'),
+                    cost: this.cost,
+                    user: this.$store.getters.selectedPatient,
+                    colaborator: this.$store.getters.user,
+                    parcelar: this.parcelar,
+                    doctor: this.selectedDoctor,
+                    payments: this.payment.paymentForm,
+                    valuesPayments: this.payment.value,
+                    unit: this.selectedUnit
+                };
+                return budget
+            },
+            async updateBudgetsIntakes() {
+                let user = this.patient;
+                let intakes = await this.$store.dispatch('getUserIntakes', user);
+                let budgets = await this.$store.dispatch('getUserBudgets', user);
+                user.intakes = intakes;
+                user.budgets = budgets;
+                this.$store.commit('setSelectedPatient', user)
+            },
+            async saveBudget(budget) {
+                this.$store.commit('setSelectedBudget', budget);
+                await this.$store.dispatch('getUserBudgets', this.patient);
+                await this.$store.dispatch('addBudget', budget);
+                this.updateBudgetsIntakes()
+            },
+            async pay() {
+                this.paymentLoading = true;
+                let user = this.patient;
+                if (!user) {
+                    return
+                }
+                await this.saveBudget(this.generateBudget())
+                let newBudget = this.generateBudget();
+                newBudget.id = this.selectedBudget.id;
+                this.$store.commit('setSelectedBudget', newBudget)
+                if (!this.selectedBudget) {
+                    await this.saveBudget(this.generateBudget())
+                } else {
+                    let newBudget = this.generateBudget();
+                    if (!this.selectedBudget.id) {
+                        this.selectedBudget.id = this.now
+                    }
+                    newBudget.id = this.selectedBudget.id;
+                    this.$store.commit('setSelectedBudget', newBudget)
+                }
+                await this.$store.dispatch('addIntake', this.selectedBudget);
+                let porcentagem = (this.selectedBudget.discount / this.selectedBudget.subTotal)
+
+                if (porcentagem >= 0.5 || parseFloat(this.searchBudget.subTotal) > this.selectedBudget.cost) {
+
+                    this.$store.dispatch('DiscountWarning', {
+                        orcamento: this.selectedBudget.id,
+                        date: this.selectedBudget.date,
+                        discont: ((this.selectedBudget.discount / this.selectedBudget.subTotal) * 100),
+                        name: this.selectedBudget.colaborator.name,
+                        cpf: this.selectedBudget.colaborator.cpf
+                    })
+                }
+                this.updateBudgetsIntakes();
+                this.receipt(this.selectedBudget);
+                this.paymentLoading = false;
+                this.paymentSuccess = true;
+
+                let data = {
+                    user: this.patient,
+                    budgetId: this.selectedBudget.id.toString(),
+                };
+
+                await this.$store.dispatch('deleteBudget', data);
+                await this.$store.commit('setSelectedBudget', undefined);
+                this.$store.commit('clearShoppingCartItens');
+                this.card = false
+            },
+            async receipt(intake) {
+                this.selectedIntake = await this.$store.dispatch('getIntakeDetails', intake);
+                this.receiptDialog = true
+            },
+
+            clearCart() {
+                this.$store.commit('clearShoppingCartItens');
+                this.$store.commit('setSelectedBudget', undefined);
+                let user = undefined;
+                this.$store.commit('setSelectedPatient', user)
+
+            },
+
+
+        }
+    }
+</script>

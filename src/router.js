@@ -10,6 +10,7 @@ import Specialties from "./views/Register/Specialties";
 import Labor from "./views/Personal/Labor";
 import Reports from "./views/Register/Reports";
 import Bundles from "./views/Register/Bundles";
+import NewBundles from "./views/Register/Bundle/NewBudget";
 import PaymentCovenants from "./views/Register/PaymentCovenants";
 import ContestValue from "./views/Notifications/contestValues"
 
@@ -19,6 +20,8 @@ import RegisterNewUserClinic from "./views/Register/Clinic/RegisterClinic"
 import DischargeProcedures from "./views/Register/Clinic/DischargeProcedures"
 import Units from "./views/Units";
 import Bills from "./views/Register/Bills";
+
+import DoctorScheduling from './views/DoctorScheduling'
 
 import MedicalCare from "./views/DoctorAttendance/MedicalCare";
 import TicketsDashboard from "./views/Operational/Tickets/TicketsDashboard";
@@ -146,9 +149,17 @@ let mainRoutes = [
     }
   },
   {
-    path: '/bundles',
+    path: '/bundlesNew',
     name: 'bundles',
     component: Bundles,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/bundles',
+    name: 'Newbundles',
+    component: NewBundles,
     meta: {
       requiresAuth: false,
     }
@@ -207,6 +218,15 @@ let mainRoutes = [
     path: '/notifications',
     name: 'Notifications',
     component : notifications,
+    meta: {
+      requiresAuth: false,
+    },
+  },
+
+  {
+    path: '/agendamento',
+    name: 'doctorScheduling',
+    component : DoctorScheduling,
     meta: {
       requiresAuth: false,
     },

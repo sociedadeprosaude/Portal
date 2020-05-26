@@ -7,7 +7,8 @@ const state = {
     doctors: {},
     doctor:{},
     specialties: [],
-    loaded: false
+    loaded: false,
+    doctorSelected: null,
 };
 
 const mutations = {
@@ -23,31 +24,17 @@ const mutations = {
     },
     deleteDoctor(state, payload) {
         Vue.delete(state.doctors, payload.cpf)
+    },
+    setDoctorSelected (state, payload){
+        state.doctorSelected = payload;
     }
 };
 
 const actions = {
-    // async searchUser({commit, getters}, searchFields) {
-    //     let usersRef = firestore().collection('users')
-    //     for (let field in searchFields) {
-    //         if (!searchFields[field]) continue
-    //         usersRef = usersRef.where(field, field === 'name' ? '>=' : '==', searchFields[field].toUpperCase())
-    //     }
-    //     let querySnapshot = await usersRef.get()
-    //     let users = []
-    //     querySnapshot.forEach(function (doc) {
-    //         users.push(doc.data())
-    //     })
-    //     return users
-    // },
+
     async addDoctor ({commit}, doctor) {
         try {
             doctor = functions.removeUndefineds(doctor)
-            // for (let data in doctor) {
-            //     if (!doctor[data]) {
-            //         delete doctor[data]
-            //     }
-            // }
             doctor.type = "DOCTOR"
             let docCopy = JSON.parse(JSON.stringify(doctor))
             delete docCopy.specialties;
@@ -194,6 +181,9 @@ const actions = {
             return doctor
         })
     },
+    async selectDoctor ({commit}, doctor) {
+        commit('setDoctorSelected', doctor)
+    }
 };
 
 const getters = {
@@ -205,6 +195,9 @@ const getters = {
     },
     doctorsLoaded(state) {
         return state.loaded
+    },
+    doctorSelected (state){
+        return state.doctorSelected
     }
 };
 
