@@ -396,7 +396,7 @@
                 this.searchExams()
             },
         },
-    };
+    }
 </script>
 
 <style>

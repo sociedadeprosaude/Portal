@@ -241,21 +241,20 @@
             </v-card>
         </v-layout>
     </v-container>
-</template>\
+</template>
 <script>
 
     import SubmitButton from "../SubmitButton";
 
     export default {
 
-        props: ['createConsultationForm', 'loaderPaymentNumber', 'exam', 'numberReceipt'],
+        props: ['createConsultationForm', 'loaderPaymentNumber', 'exam', 'numberReceipt','status','payment_numberFound'],
         components: {SubmitButton},
 
         data: () => ({
             success: false,
             scheduleLoading: false,
             modalidade: "Consulta",
-            status: "Aguardando pagamento",
             statusOptions: [{text: "Aguardando pagamento"}, {text: "Pago"}],
             exams: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
         }),

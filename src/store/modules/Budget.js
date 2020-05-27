@@ -352,39 +352,16 @@ const actions = {
     },
 
     async thereIsIntakes(context, payload) {
-
         return new Promise(async (resolve, reject) => {
-            let examesSpecialties = ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'];
-            let procedures;
-            let type = payload.exam ? 'Exam' : 'Consultation';
-            let status = payload.exam ? 'Exame Pago' : 'Consulta Paga';
-            let procedureRef;
-            if(payload.status && payload.payment_number)
-                procedureRef = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', 'Consultation')
-                .where('specialty', '==', payload.specialty.name).where('status', 'array-contains-any', payload.status).where('payment_number','==',payload.payment_number.toString());
-            else{
-                procedureRef = payload.exam ? procedureRef = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)
-                .where('specialty', '==', payload.specialty.name).where('status', '==', [status]).where('exam.name', '==', payload.exam.name)
-                : procedureRef = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)
-                    .where('specialty', '==', payload.specialty.name).where('status', '==', [status])
-            }
-
-
-            let procedureRefOr = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', 'Exam')
-                .where('specialty', '==', payload.specialty.name).where('status', '==', ['Exame Pago'])
-
-            procedures = await procedureRef.get();
-            if (procedures.empty && type === 'Consultation' && examesSpecialties.indexOf(payload.specialty.name) !== -1)
-                procedures = await procedureRefOr.get();
-
-            if (!procedures.empty) {
-                procedures.forEach((procedure) => {
-                    resolve({ procedureId: procedure.id, ...procedure.data() })
-                })
-            } else {
-                reject('Payment Number not found')
-            }
-
+            var findPaymentNumber = firebase.functions().httpsCallable('thereIsPaymentNumber');
+            findPaymentNumber({payload: payload}).then((result)=> {
+                if(result.data.Found)
+                    resolve({ ...result.data.Found})
+                else
+                    reject({ cost: {...result.data.NotFound}})
+            }).catch(function(error) {
+                reject('Error')
+            });
         })
     },
 
