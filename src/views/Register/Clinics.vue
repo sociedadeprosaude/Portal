@@ -159,7 +159,6 @@
 
 
     export default {
-        components: {Configurations, Products, Consultations, Exams, SubmitButton, RegisterNewClinic, RegisterClinicPassword},
         data: () => ({
             Exam: false,
             Consultation: false,

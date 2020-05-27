@@ -635,6 +635,7 @@
             },
 
             async thereIsPaymentNumber() {
+                console.log('lççlçlçlçl')
                 this.payment_numberFound = undefined;
                 this.numberReceipt = "";
                 this.status = "Aguardando pagamento";

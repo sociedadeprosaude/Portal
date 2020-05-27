@@ -85,6 +85,8 @@
                                         :loaderPaymentNumber="loaderPaymentNumber"
                                         :exam="exam"
                                         :numberReceipt="numberReceipt"
+                                        :status="status"
+                                        :payment_numberFound="payment_numberFound"
                         />
                     </v-dialog>
                 </div>
@@ -119,6 +121,8 @@
             ],
             dialog: false,
             numberReceipt: "",
+            payment_numberFound:undefined,
+            status:"",
             createConsultationForm: undefined,
             exam: undefined,
             loaderPaymentNumber: false,
@@ -195,33 +199,13 @@
                         this.loaderPaymentNumber = false
                     })
                     .catch(response => {
-                        let cost = this.specialtyCost();
+                        let cost = response.cost
                         if (cost && cost.price === 0) {
                             this.status = "Pago";
                             this.loaderPaymentNumber = false
                         }
                         this.loaderPaymentNumber = false
                     });
-            },
-
-            specialtyCost() {
-                let espArray = Object.values(this.$store.getters.specialties);
-                let cost = undefined;
-                espArray.forEach(specialty => {
-                    if (specialty.name === this.selectedForm.consultation.specialty.name && specialty.doctors) {
-                        specialty.doctors.forEach(doctor => {
-                            if (doctor.cpf === this.selectedForm.consultation.doctor.cpf) {
-                                cost = {
-                                    cost: doctor.cost,
-                                    price: doctor.price,
-                                    doctorConsultation: doctor
-                                };
-                                return cost
-                            }
-                        });
-                    }
-                });
-                return cost
             },
 
             async listenMoreConsultations() {

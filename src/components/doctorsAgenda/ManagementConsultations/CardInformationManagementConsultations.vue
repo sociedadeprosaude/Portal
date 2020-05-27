@@ -50,6 +50,7 @@
                                 :disabled="consultation.status === 'Cancelado'"
                                 @click="deletedConsultation()"
                                 class="mx-2"
+                                :loading="cancelLoading"
                         > Cancelar
                         </v-btn>
                         <v-btn
@@ -57,7 +58,7 @@
                                 rounded
                                 class="mx-2"
                                 :to="{ name: 'AgendarRetorno', params: { q: {...this.consultation}}}"
-                                :disabled="consultation.status !== 'Pago'"
+                                :disabled="consultation.status !== 'Pago' || consultation.regress"
                                 v-if="consultation.type !== 'Retorno'"
                         >Retorno
                         </v-btn>
@@ -100,14 +101,17 @@
 
         data: () => ({
             item: 'NOVO',
-            documentDialog:false
+            documentDialog:false,
+            cancelLoading:false
         }),
         computed: {
-
+            selectedPatient() {
+                return this.$store.getters.selectedPatient
+            },
         },
         mounted() {
             this.initialConfig()
-
+            console.log(this.consultation)
         },
         watch: {
         },
@@ -116,18 +120,23 @@
             async initialConfig() {
 
             },
-            deletedConsultation() {
-                this.$store.dispatch('eraseAppointment', {
-                    idConsultation: this.consultation.id,
-                    idPatient: this.consultation.user.cpf,
+            async deletedConsultation() {
+                this.cancelLoading = true
+                let obj = {
+                    id: this.consultation.id,
+                    idPatient: this.consultation.user ? this.consultation.user.cpf : this.selectedPatient.cpf,
                     type: this.consultation.type,
                     status: 'Cancelado',
                     payment_number: this.consultation.payment_number,
-                    specialty: this.consultation.specialty.name,
+                    specialty: this.consultation.specialty,
                     previousConsultation: this.consultation.previousConsultation,
-                    consultation: this.consultation
-                });
-                this.dialog = false
+                    consultation: this.consultation,
+                    exam:this.consultation.exam
+                }
+
+                console.log(obj)
+                await this.$store.dispatch('eraseAppointment', obj);
+                this.cancelLoading = false
 
             },
             setConsultationHour(consultation) {

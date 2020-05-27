@@ -240,7 +240,7 @@
                           outlined
                           prepend-icon="poll"
                           label="Exame"
-                          v-model="createConsultationForm.user.exam.name"
+                          v-model="createConsultationForm.exam.name"
                         ></v-text-field>
                       </v-flex>
                       <v-flex xs12 sm6 v-else>
