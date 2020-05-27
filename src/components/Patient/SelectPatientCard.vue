@@ -759,6 +759,7 @@
 
 
             async searchPatient() {
+
                 this.loading = true;
                 let users = await this.$store.dispatch('searchUser', {
                     name: this.name,

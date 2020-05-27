@@ -21,7 +21,6 @@ const actions = {
             filesUrl.push(url);
             counter = counter + 1;
         }
-        console.log(filesUrl);
         return filesUrl
     },
     async deleteFile({}, payload) {

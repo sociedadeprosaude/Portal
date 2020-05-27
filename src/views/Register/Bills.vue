@@ -168,6 +168,9 @@
             };
         },
         mounted() {
+            if(this.$vuetify.breakpoint.name === 'xs'){
+                this.$router.push('/BillsMobile')
+            }
             this.initiate();
         },
         computed: {

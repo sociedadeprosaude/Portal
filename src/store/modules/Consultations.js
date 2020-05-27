@@ -191,141 +191,87 @@ const actions = {
                 specialty: consultation.specialty, days: days, routine_id: routineId,
                 clinic: consultation.clinic, doctor: consultation.doctor,
             };
-            await firebase.firestore().collection('schedules').add(consultObject)
+            await firebase.firestore().collection('schedules').add(consultObject);
+            let idFound = await firebase.firestore().collection('schedules')
+                .where('clinic.name', '==', consultation.clinic.name)
+                .where('doctor.cpf', '==', consultation.doctor.cpf)
+                .where('specialty.name', '==', consultation.specialty.name)
+                .get();
+            idFound.forEach(async (doc) => {
+                await firebase.firestore().collection('users').doc(consultation.doctor.cpf)
+                    .collection('specialties').doc(consultation.specialty.name)
+                    .collection('clinics').doc(consultation.clinic.name)
+                    .collection('schedules').doc(doc.id).set(consultObject);
+                await firebase.firestore().collection('specialties').doc(consultation.specialty.name).update({
+                    "status" : "ACTIVATE"
+                });
+                await firebase.firestore().collection('users').doc(consultation.doctor.cpf).update({
+                    "status" : "ACTIVATE"
+                });
+            });
+
         } else {
             scheduleFound.forEach(async (doc) => {
-                let data = doc.data()
+                let data = doc.data();
                 consultation.weekDays.forEach((day) => {
                     if (data.days[day])
-                        data.days[day].vacancy = Number(data.days[day].vacancy) + Number(consultation.vacancy)
+                        data.days[day].vacancy = Number(data.days[day].vacancy) + Number(consultation.vacancy);
                     else {
                         data.days[day] = {vacancy: Number(consultation.vacancy), hour: consultation.hour}
                     }
-                })
-                await firebase.firestore().collection('schedules').doc(doc.id).update(data)
+                });
+                await firebase.firestore().collection('schedules').doc(doc.id).update(data);
+                await firebase.firestore().collection('users').doc(consultation.doctor.cpf)
+                    .collection('specialties').doc(consultation.specialty.name)
+                    .collection('clinics').doc(consultation.clinic.name)
+                    .collection('schedules').doc(doc.id).update(data);
             })
         }
     },
+    async deactivateScheduleDoctor ({commit}, payload){
+        payload = functions.removeUndefineds(payload);
+        for (let i in payload.specialties) {
+          let scheduleFound = await firebase.firestore().collection('schedules')
+                .where('clinic.name', '==', payload.clinic.name)
+                .where('doctor.cpf', '==', payload.doctor.cpf)
+                .where('specialty.name', '==', payload.specialties[i])
+                .get();
 
+            scheduleFound.forEach(async (doc) => {
+                await firebase.firestore().collection('schedules').doc(doc.id).delete();
+                await firebase.firestore().collection('users').doc(payload.doctor.cpf)
+                    .collection('specialties').doc(payload.specialties[i])
+                    .collection('clinics').doc(payload.clinic.name)
+                    .collection('schedules').doc(doc.id).delete();
+            });
 
-    /* async addConsultationAppointmentToUser({commit}, payload) {
-        try {
-            let copyPayload = Object.assign({}, payload);
-            functions.removeUndefineds(copyPayload);
-            await firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('consultations').doc(copyPayload.consultation.id).set(copyPayload.consultation);
-            if (copyPayload.consultation.type === "Retorno") {
-                await firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('consultations').doc(copyPayload.consultation.previousConsultation).update({regress: copyPayload.consultation.id})
-                let procedure = await firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').where('type', '==', 'Consultation')
-                    .where('consultation', '==', copyPayload.consultation.previousConsultation).get()
-                procedure.forEach(doc => {
-
-                    firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').doc(doc.id)
-                        .update({
-                            status: firebase.firestore.FieldValue.arrayUnion('Retorno agendado'),
-                        })
-                })
-
-            } else if (copyPayload.payment_numberFound) {
-                firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').doc(copyPayload.payment_numberFound.procedureId)
-                    .update({
-                        status: firebase.firestore.FieldValue.arrayUnion('Agendado'),
-                        consultation: copyPayload.consultation.id,
-                    })
-            } else {
-
-                let obj = {
-                    status: ['Agendado'],
-                    startAt: moment().format('YYYY-MM-DD hh:ss'),
-                    consultation: copyPayload.consultation.id,
-                    specialty: copyPayload.consultation.specialty.name
-                };
-                if (copyPayload.consultation.exam) {
-                    obj.type = 'Exam';
-                    obj.exam = copyPayload.consultation.exam
-                } else
-                    obj.type = 'Consultation';
-
-                firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').add(obj)
-            }
-        } catch (e) {
-            throw e
+            await this.dispatch('checkStatusSpecialty', payload.specialties[i]);
         }
-    }, */
+        await this.dispatch('checkStatusDoctor', payload.doctor);
+    },
 
-    async addUserToConsultation(context, payload) {
+    async checkStatusDoctor ({commit}, doctor){
 
-        try {
-            let copyPayload = Object.assign({}, payload);
-            functions.removeUndefineds(copyPayload);
-            let id_schedule = copyPayload.consultation.id_schedule
-            delete copyPayload.consultation.id
-            delete copyPayload.consultation.vacancy
-            delete copyPayload.consultation.qtd_consultations
-            delete copyPayload.consultation.qtd_returns
-            copyPayload.consultation.id_schedule = id_schedule
-            console.log('kjbkj', copyPayload)
-            var appointmentFunction = firebase.functions().httpsCallable('addUserToConsultation');
-            var response = await appointmentFunction({payload: {...copyPayload}})
-            
-            
-        } catch (e) {
-            throw e
+        let scheduleFound = await firebase.firestore().collection('schedules')
+            .where('doctor.cpf', '==', doctor.cpf)
+            .get();
+        if (scheduleFound.empty){
+            await firebase.firestore().collection('users').doc(doctor.cpf).update({
+                "status": "DESACTIVATE"
+            });
         }
     },
 
-    async addUserToConsultationReschedule(context, payload) {
-        try {
-            let copyPayload = Object.assign({}, payload);
-            functions.removeUndefineds(copyPayload);
-            let id_schedule = copyPayload.consultation.id_schedule;
-            let idConsultationCanceled = copyPayload.consultation.idConsultationCanceled
-            delete copyPayload.consultation.id;
-            delete copyPayload.consultation.vacancy;
-            delete copyPayload.idConsultationCanceled;
-            delete copyPayload.consultation.qtd_consultations;
-            delete copyPayload.consultation.qtd_returns;
-            copyPayload.consultation.id_schedule = id_schedule;
-            let obj = {
-                ...copyPayload.consultation,
-                user: copyPayload.user
-            }
-
-            /* let objUpdateSchedule = copyPayload.consultation.type == "Retorno" ? { qtd_returns: Number(qtd_returns) + 1 } : { qtd_consultations: Number(qtd_consultations) + 1 }
-            objUpdateSchedule.vacancy = Number(vacancy - 1)
-            await firebase.firestore().collection('schedules').doc(idSchedule).update(objUpdateSchedule); */
-
-            if (copyPayload.consultation.type == "Retorno")
-                obj.previousConsultation = copyPayload.consultation.previousConsultation;
-            let resp = await firebase.firestore().collection('consultations').add(obj);
-            await firebase.firestore().collection('canceled').doc(idConsultationCanceled).delete();
-
-            if (copyPayload.consultation.type == "Retorno") {
-                await firebase.firestore().collection('consultations').doc(copyPayload.consultation.previousConsultation).update({regress: resp.id})
-            }
-            copyPayload.consultation.id = resp.id
-            await context.dispatch('addConsultationAppointmentToUserReschedule', {...copyPayload})
-
-            return (await firebase.firestore().collection('consultations').doc(resp.id).get()).data()
-
-        } catch (e) {
-            throw e
+    async checkStatusSpecialty ({commit}, specialty) {
+        let scheduleFound = await firebase.firestore().collection('schedules')
+            .where('specialty.name', '==', specialty)
+            .get();
+        if (scheduleFound.empty){
+            await firebase.firestore().collection('specialties').doc(specialty).update({
+                "status" : "DESACTIVATE"
+            });
         }
     },
-
-    async addConsultationAppointmentToUserReschedule({commit}, payload) {
-        try {
-            let copyPayload = Object.assign({}, payload);
-            functions.removeUndefineds(copyPayload);
-            await firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('consultations').doc(copyPayload.consultation.id).set(copyPayload.consultation);
-            if (copyPayload.consultation.type === "Retorno") {
-                await firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('consultations').doc(copyPayload.consultation.previousConsultation).update({regress: copyPayload.consultation.id})
-            }
-
-        } catch (e) {
-            throw e
-        }
-    },
-
 
     async SearchCosultation({commit}) {
         try {
@@ -372,16 +318,16 @@ const actions = {
 
     },
 
-    async updateCanceledSchedules ({commit},payload) {
+    async updateCanceledSchedules({commit}, payload) {
         functions.removeUndefineds(payload)
-        if(payload.cancelations_schedules){
+        if (payload.cancelations_schedules) {
             firebase.firestore().collection('schedules').doc(payload.id).update({cancelations_schedules: payload.cancelations_schedules})
         } else {
             firebase.firestore().collection('schedules').doc(payload.id).set(payload.schedule)
         }
     },
 
-    async copyCanceledSchedules ({commit},payload) {
+    async copyCanceledSchedules({commit}, payload) {
         functions.removeUndefineds(payload)
         let copy = {
             cancelations_schedules: payload.cancelations_schedules,
@@ -422,8 +368,53 @@ const actions = {
         })
 
     },
+    async addConsultationHourInConsultation({commit}, data) {
 
-};
+        firebase.firestore().collection('consultations').doc(data.id).update({
+            consultation_hour: data.consultation_hour,
+        });
+        firebase.firestore().collection('users').doc(data.consultation.user.cpf)
+            .collection('consultations').doc(data.id).update({
+            consultation_hour: data.consultation_hour,
+        })
+
+    },
+
+    async addMedicalRecordsToConsultation({commit}, payload) {
+        firebase.firestore().collection('consultations').doc(payload.consultation).update({MedicalRecords: payload.MedicalRecords});
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({MedicalRecords: payload.MedicalRecords})
+    },
+    async addPrescriptionToConsultation({commit}, payload) {
+        firebase.firestore().collection('consultations').doc(payload.consultation).update({Prescription: payload.Prescription});
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({Prescription: payload.Prescription})
+    },
+    async addSolicitationsToConsultation({commit}, payload) {
+        payload = functions.removeUndefineds(payload);
+        firebase.firestore().collection('consultations').doc(payload.consultation).update({Solicitations: payload.Solicitations});
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({Solicitations: payload.Solicitations})
+    },
+    async addReportToConsultation({commit}, payload) {
+        firebase.firestore().collection('consultations').doc(payload.consultation).update({Report: payload.Report});
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({Report: payload.Report})
+    },
+    async addAttestationsToConsultation({commit}, payload) {
+        firebase.firestore().collection('consultations').doc(payload.consultation).update({Attestations: payload.Attestations});
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({Attestations: payload.Attestations})
+    },
+    async addOrientationsToConsultation({commit}, payload) {
+        firebase.firestore().collection('consultations').doc(payload.consultation).update({Orientations: payload.Orientations});
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({Orientations: payload.Orientations})
+    },
+    async addTimesToConsultation({commit}, payload) {
+        firebase.firestore().collection('consultations').doc(payload.consultation).update({start_at: payload.start});
+        firebase.firestore().collection('consultations').doc(payload.consultation).update({end_at: payload.end});
+        firebase.firestore().collection('consultations').doc(payload.consultation).update({duration: payload.durantion});
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({start_at: payload.start});
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({end_at: payload.end});
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({duration: payload.durantion})
+
+    }
+}
 
 const getters = {
     consultations(state) {
