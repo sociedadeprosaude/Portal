@@ -524,7 +524,7 @@ const getters = {
     contestValue(state){
         return state.contestValue
     },
-      
+
     accontClinics(state){
         return state.accontClinics
     },
