@@ -99,7 +99,6 @@
                                 <v-layout column wrap>
                                     <span class="font-weight-bold white--text"
                                           style="font-size: 0.6em">Válido nas unidades</span>
-                                    <span class="font-weight-bold white--text">Matriz</span>
                                     <span class="font-weight-bold white--text">Cidade Nova</span>
                                 </v-layout>
                             </v-flex>
