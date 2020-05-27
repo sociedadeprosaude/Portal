@@ -204,6 +204,26 @@
                     });
             },
 
+            specialtyCost() {
+                let espArray = Object.values(this.$store.getters.specialties);
+                let cost = undefined;
+                espArray.forEach(specialty => {
+                    if (specialty.name === this.selectedForm.consultation.specialty.name && specialty.doctors) {
+                        specialty.doctors.forEach(doctor => {
+                            if (doctor.cpf === this.selectedForm.consultation.doctor.cpf) {
+                                cost = {
+                                    cost: doctor.cost,
+                                    price: doctor.price,
+                                    doctorConsultation: doctor
+                                };
+                                return cost
+                            }
+                        });
+                    }
+                });
+                return cost
+            },
+
             async listenMoreConsultations() {
                 this.daysToListen += 3;
                 this.$emit('refreshDate', this.daysToListen);

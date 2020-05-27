@@ -117,7 +117,6 @@ const actions = {
     },
     async searchUser({ }, searchFields) {
         let usersRef = firestore().collection('users');
-        console.log('searchFields: ', searchFields)
         for (let field in searchFields) {
             if (!searchFields[field] || searchFields[field].length === 0) continue;
             if(field === 'cpf'){
