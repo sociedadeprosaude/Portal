@@ -203,17 +203,17 @@
                                 permission: 'Caixa',
                                 icon: 'queue',
                             },
-                            {
+/*                            {
                                 title: 'Saídas',
                                 to: '/caixa/Saidas',
                                 permission: 'Caixa',
                                 icon: 'attach_money',
-                            },
+                            },*/
                             {
-                                title: 'Contas à pagar',
+                                title: 'Financeiro',
                                 to: '/bills',
                                 permission: 'Caixa',
-                                icon: 'receipt',
+                                icon: 'attach_money',
                             },
                             {
                                 title: 'Pagar Convênios',

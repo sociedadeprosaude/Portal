@@ -20,6 +20,7 @@ import RegisterNewUserClinic from "./views/Register/Clinic/RegisterClinic"
 import DischargeProcedures from "./views/Register/Clinic/DischargeProcedures"
 import Units from "./views/Units";
 import Bills from "./views/Register/Bills";
+import BillsMobile from "./views/Register/BillsMobile";
 
 import DoctorScheduling from './views/Operational/DoctorsAgenda/DoctorScheduling'
 
@@ -176,6 +177,14 @@ let mainRoutes = [
     path: '/bills',
     name: 'bills',
     component : Bills,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/BillsMobile',
+    name: 'BillsMobile',
+    component : BillsMobile,
     meta: {
       requiresAuth: false,
     }

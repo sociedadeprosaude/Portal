@@ -31,7 +31,6 @@
                           <br>
                           <span>{{bill.subCategory}}</span>
                         </v-flex>
-                        <v-divider vertical class="mx-4 hidden-xs-only"/>
                         <v-flex xs12 md2 class="text-center">
                           <span>{{bill.payment_method}}</span>
                         </v-flex>
@@ -66,6 +65,13 @@
                             </template>
                           </v-text-field>
                         </v-flex>
+                        <v-flex xs12>
+                        <v-divider class="mx-10"/>
+                        </v-flex>
+                        <v-flex xs12 class="text-centert">
+                          <span>Colaborador: </span><span style="font-weight: bold">{{bill.colaborator.name}}</span>
+                        </v-flex>
+                        <v-divider class="mx-10"/>
                         <v-flex xs12>
                           <span class="font-italic font-weight-bold">{{bill.description}}</span>
                         </v-flex>
@@ -104,12 +110,11 @@
                           <v-btn @click="$refs[bill.id][0].click()" class="primary mx-2" fab small>
                             <v-icon>receipt</v-icon>
                           </v-btn>
-                          <v-btn @click="deleteOuttake(bill)" class="error mx-2" fab small>
+                          <v-btn v-show="user === 'admin' || user === 'caixa'" @click="deleteOuttake(bill)" class="error mx-2" fab small>
                             <v-icon>delete</v-icon>
                           </v-btn>
-                          <v-btn @click="payOuttake(bill)" class="success mx-2" fab small
-                                 placeholder="Complemento"
-                          >
+                          <v-btn v-show="user === 'admin' || user === 'caixa'" @click="payOuttake(bill)" class="success mx-2" fab small
+                                 placeholder="Complemento">
                             <v-icon>attach_money</v-icon>
                           </v-btn>
                         </v-flex>
@@ -171,6 +176,11 @@ export default {
         "Sábado"
       ]
     };
+  },
+  computed: {
+    user() {
+      return this.$store.getters.user.group;
+    },
   },
   watch: {
     date(val) {
