@@ -45,8 +45,75 @@ const actions = {
         if (copyPayload.user) {
             context.dispatch('addBudgetToUser', payload)
         }
-
     },
+
+    async addIntake(context, payload) {
+        let copyPayload = Object.assign({}, payload);
+        functions.removeUndefineds(copyPayload);
+
+        delete copyPayload.user.budgets;
+        delete copyPayload.user.consultations;
+        delete copyPayload.user.intakes;
+
+        let specialties = copyPayload.specialties ? Object.assign({}, copyPayload.specialties) : undefined;
+        let exams = copyPayload.exams ? Object.assign({}, copyPayload.exams) : undefined;
+
+        if (copyPayload.specialties) {
+            copyPayload.specialties = Object.values(copyPayload.specialties)
+        }
+        if (copyPayload.exams) {
+            copyPayload.exams = Object.values(copyPayload.exams)
+        }
+        if (copyPayload.specialties) {
+            for (let specialty of copyPayload.specialties) {
+                if (specialty.doctor.clinics) delete specialty.doctor.clinics;
+
+                if (specialty.doctor.clinic && specialty.doctor.clinic.exams) {
+                    delete specialty.doctor.clinic.exams
+                }
+                if (specialty.doctor.clinic && specialty.doctor.clinic.specialties) {
+                    delete specialty.doctor.clinic.specialties
+                }
+            }
+        }
+
+        functions.removeUndefineds(copyPayload);
+        functions.removeUndefineds(specialties);
+        functions.removeUndefineds(exams);
+
+
+        await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).set(copyPayload);
+        if (specialties) {
+
+            let spec = await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).collection('specialties').get();
+            for (let doc in spec.docs) {
+                await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).collection('specialties').doc(spec.docs[doc].id).delete()
+            }
+            for (let spec in specialties) {
+                if (specialties[spec].doctor.rules === null) {
+                    delete specialties[spec].doctor.rules
+                }
+                await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).collection('specialties').doc(specialties[spec].name).set(specialties[spec])
+
+
+            }
+        }
+        if (exams) {
+
+            let spec = await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).collection('exams').get();
+            for (let doc in spec.docs) {
+                await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).collection('exams').doc(spec.docs[doc].id).delete()
+            }
+            for (let exam in exams) {
+                functions.removeUndefineds(exams[exam]);
+                await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).collection('exams').doc(exams[exam].name).set(exams[exam])
+            }
+        }
+        if (copyPayload.user) {
+            await context.dispatch('addIntakeToUser', payload)
+        }
+    },
+
     async getBudget({ }, budgetId) {
         let budget = (await firebase.firestore().collection('budgets').doc(budgetId).get()).data();
         let specialtiesCol = await firebase.firestore().collection('budgets').doc(budgetId).collection('specialties').get()
@@ -70,7 +137,6 @@ const actions = {
         let budgetId = data.budgetId.toString();
         await firebase.firestore().collection('budgets').doc(budgetId.toString()).delete();
         await firebase.firestore().collection('users').doc(userId.toString()).collection('budgets').doc(budgetId.toString()).delete();
-        //deselecionar budgets.
     },
 
     async addBudgetToUser({ }, payload) {
@@ -108,69 +174,6 @@ const actions = {
                 await userRef.collection('budgets').doc(copyPayload.id.toString()).collection('specialties').add(exams[exam])
             }
         }
-    },
-    async addIntake(context, payload) {
-        let copyPayload = Object.assign({}, payload);
-        delete copyPayload.user.budgets;
-        delete copyPayload.user.consultations;
-        delete copyPayload.user.intakes;
-
-        let specialties = copyPayload.specialties ? Object.assign(copyPayload.specialties) : undefined;
-        let exams = copyPayload.exams ? Object.assign({}, copyPayload.exams) : undefined;
-        if (copyPayload.specialties) {
-            copyPayload.specialties = Object.values(copyPayload.specialties)
-        }
-        if (copyPayload.exams) {
-            copyPayload.exams = Object.values(copyPayload.exams)
-        }
-
-        if (copyPayload.specialties) {
-            for (let specialty of copyPayload.specialties) {
-                if (specialty.doctor.clinics) delete specialty.doctor.clinics;
-
-                if (specialty.doctor.clinic && specialty.doctor.clinic.exams) {
-                    delete specialty.doctor.clinic.exams
-                }
-                if (specialty.doctor.clinic && specialty.doctor.clinic.specialties) {
-                    delete specialty.doctor.clinic.specialties
-                }
-            }
-        }
-
-        functions.removeUndefineds(copyPayload);
-        functions.removeUndefineds(specialties);
-        functions.removeUndefineds(exams);
-
-
-        await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).set(copyPayload);
-        if (specialties) {
-            let spec = await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).collection('specialties').get();
-            for (let doc in spec.docs) {
-                await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).collection('specialties').doc(spec.docs[doc].id).delete()
-            }
-            for (let spec in specialties) {
-                if (specialties[spec].doctor.rules === null) {
-                    delete specialties[spec].doctor.rules
-                }
-                await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).collection('specialties').doc(specialties[spec].name).set(specialties[spec])
-
-
-            }
-        }
-        if (exams) {
-            let spec = await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).collection('exams').get();
-            for (let doc in spec.docs) {
-                await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).collection('exams').doc(spec.docs[doc].id).delete()
-            }
-            for (let exam in exams) {
-                functions.removeUndefineds(exams[exam]);
-                await firebase.firestore().collection('intakes').doc(copyPayload.id.toString()).collection('exams').doc(exams[exam].name).set(exams[exam])
-            }
-        }
-        if (copyPayload.user) {
-            await context.dispatch('addIntakeToUser', payload)
-        }
-
     },
 
     async verifyUnpaidConsultation(context, payload) {

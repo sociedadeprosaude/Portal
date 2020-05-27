@@ -120,10 +120,16 @@ const actions = {
         for (let field in searchFields) {
             if (!searchFields[field] || searchFields[field].length === 0) continue;
             if(field === 'cpf'){
-                searchFields[field] = searchFields[field].replaceAll('.','')
-                searchFields[field] = searchFields[field].replace('-','')
+                searchFields[field] = searchFields[field].replaceAll('.','');
+                searchFields[field] = searchFields[field].replace('-','');
+                usersRef = usersRef.where(field, field === 'cpf' ? '>=' : '==', searchFields[field])
             }
-            usersRef = usersRef.where(field, field === 'name' ? '>=' : '==', searchFields[field].toUpperCase())
+            if (field === 'association_number'){
+                usersRef = usersRef.where('association_number' ,'>=', searchFields[field])
+            }
+            if (field === 'name'){
+                usersRef = usersRef.where(field, field === 'name' ? '>=' : '==', searchFields[field].toUpperCase())
+            }
         }
         let querySnapshot = await usersRef.limit(30).get();
         let users = [];

@@ -546,10 +546,10 @@
                 if (!user) {
                     return
                 }
-                await this.saveBudget(this.generateBudget())
+                await this.saveBudget(this.generateBudget());
                 let newBudget = this.generateBudget();
                 newBudget.id = this.selectedBudget.id;
-                this.$store.commit('setSelectedBudget', newBudget)
+                this.$store.commit('setSelectedBudget', newBudget);
                 if (!this.selectedBudget) {
                     await this.saveBudget(this.generateBudget())
                 } else {
