@@ -1,4 +1,5 @@
 import firebase from "firebase";
+import functions from "../../utils/functions";
 
 const state = {
     bundles : [],
@@ -20,7 +21,6 @@ const mutations = {
 const actions = {
 
     async addBundle ({commit}, bundle){
-
         let dataBundle = {
             name : bundle.name,
             cost: bundle.cost,
@@ -38,7 +38,7 @@ const actions = {
                 }
             }
             let bundleRef;
-
+            functions.removeUndefineds(bundle);
             bundleRef = await firebase.firestore().collection('packages').doc(bundle.name).set(bundle);
 
 
@@ -51,7 +51,22 @@ const actions = {
                     cost: bundle.exams[i].cost,
                     priceDiscount: bundle.exams[i].priceDiscount,
                 };
+                functions.removeUndefineds(examData);
                 firebase.firestore().collection('packages/' + bundle.name + '/exams').doc(bundle.exams[i].name)
+                    .set(examData);
+
+            }
+            for (let i in bundle.consultations){
+
+                let examData = {
+                    name: bundle.consultations[i].name,
+                    clinic: bundle.consultations[i].clinic,
+                    price: bundle.consultations[i].price,
+                    cost: bundle.consultations[i].cost,
+                    priceDiscount: bundle.consultations[i].priceDiscount,
+                };
+                functions.removeUndefineds(examData);
+                firebase.firestore().collection('packages/' + bundle.name + '/specialities').doc(bundle.consultations[i].name)
                     .set(examData);
 
             }
@@ -72,35 +87,6 @@ const actions = {
                 data.forEach((doc) => {
 
                     let bundle = doc.data();
-                    let specialties = [];
-                    let exams = [];
-
-                    firebase.firestore().collection('package/' + bundle.name + '/specialities').get()
-                        .then((data) => {
-                            data.forEach((doc) => {
-                                specialties.push({
-                                    name: doc.data().name,
-                                    clinic: doc.data().clinic,
-                                    price: doc.data().price,
-                                    cost: doc.data().cost,
-                                    doctor: doc.data().doctor,
-                                });
-                            });
-                        });
-
-                    firebase.firestore().collection('packages/' + bundle.name + '/exams').get()
-                        .then((data) => {
-                            data.forEach((doc) => {
-                                exams.push({
-                                    name: doc.data().name,
-                                    clinic: doc.data().clinic,
-                                    price: doc.data().price,
-                                    cost: doc.data().cost,
-                                    priceDiscount: doc.data().priceDiscount,
-                                })
-                            })
-                        });
-
                     allPackages.push({
                         name:bundle.name,
                         id: bundle.id,
@@ -109,12 +95,11 @@ const actions = {
                         total: bundle.total,
                         moneyDiscount: bundle.moneyDiscount,
                         percentageDiscount: bundle.percentageDiscount,
-                        exams: exams,
-                        specialties: specialties,
+                        exams: bundle.exams,
+                        consultations: bundle.consultations,
                     });
 
                 });
-
                 commit('setBundles', allPackages);
 
                 if (data) resolve (data);
@@ -125,7 +110,6 @@ const actions = {
     },
 
     async deletePackage({}, bundle) {
-
         try {
             await firebase.firestore().collection('packages').doc(bundle.name).delete();
             return

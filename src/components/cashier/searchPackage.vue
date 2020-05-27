@@ -5,7 +5,8 @@
                 <v-card class="round-card elevation-0">
                     <v-flex xs12 class="text-right pa-2" v-if="searchPackage">
                         <v-layout row wrap >
-                            <v-combobox v-model="searchData"
+                          <v-combobox
+                                        v-model="searchData"
                                         :items="listPackage"
                                         item-text="name"
                                         auto-select-first
@@ -17,19 +18,11 @@
                                         return-object
                                         @click:clear = "clearSearch"
                                         outlined class="mr-2 ml-2"
-                                        :disabled="!searchPackage">
-                                <template v-slot:no-data>
-                                    <v-list-item>
-                                        <v-list-item-content>
-                                            <v-list-item-title>
-                                                Sem resultado para "<strong> {{ searchBundle }} </strong>"
-                                            </v-list-item-title>
-                                        </v-list-item-content>
-                                    </v-list-item>
-                                </template>
+                                        :disabled="!searchPackage"
+                          >
                             </v-combobox>
                             <v-btn small fab color="primary" dark class="mb-2 mr-2"
-                                   @click="(registerPackage =! registerPackage, searchPackage =! searchPackage),newPackage()">
+                                   @click="(registerPackage = !registerPackage, searchPackage = !searchPackage),newPackage()">
                                 <v-icon>add</v-icon>
                             </v-btn>
                             <v-btn small fab color="primary" dark class="mb-2 mr-2"

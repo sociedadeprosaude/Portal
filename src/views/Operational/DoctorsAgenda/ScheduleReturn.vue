@@ -61,15 +61,34 @@
         </v-flex>
 
         <v-flex xs12 md12>
-          <v-text-field
-            prepend-icon="location_city"
-            v-model="clinic.name"
-            label="Clínica"
-            outlined
-            rounded
-            filled
-            disabled
-          ></v-text-field>
+          <v-select
+                  prepend-icon="location_city"
+                  v-model="clinic"
+                  :items="clinics"
+                  item-text="name"
+                  label="Clínica"
+                  outlined
+                  rounded
+                  return-object
+                  filled
+                  chips
+                  color="purple"
+                  clearable
+          >
+            <template v-slot:selection="data">
+              <v-chip
+                      :key="JSON.stringify(data.item)"
+                      :input-value="data.selected"
+                      :disabled="data.disabled"
+                      class="v-chip--select-multi"
+                      @click.stop="data.parent.selectedIndex = data.index"
+                      @input="data.parent.selectItem(data.item)"
+                      text-color="white"
+                      color="info"
+              >{{ data.item.name }}
+              </v-chip>
+            </template>
+          </v-select>
         </v-flex>
       </v-layout>
       <v-layout
@@ -528,10 +547,9 @@ export default {
       return this.$store.getters.consultationsLoading;
     },
     clinics() {
-      let val = this.$store.getters.clinics.filter(a => {
+      return this.$store.getters.clinics.filter(a => {
         return a.property;
       });
-      return val;
     },
     specialties() {
       return this.$store.getters.specialties;
