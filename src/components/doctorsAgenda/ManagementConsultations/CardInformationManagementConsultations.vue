@@ -50,6 +50,7 @@
                                 :disabled="consultation.status === 'Cancelado'"
                                 @click="deletedConsultation()"
                                 class="mx-2"
+                                :loading="cancelLoading"
                         > Cancelar
                         </v-btn>
                         <v-btn
@@ -100,10 +101,13 @@
 
         data: () => ({
             item: 'NOVO',
-            documentDialog:false
+            documentDialog:false,
+            cancelLoading:false
         }),
         computed: {
-
+            selectedPatient() {
+                return this.$store.getters.selectedPatient
+            },
         },
         mounted() {
             this.initialConfig()
@@ -116,10 +120,11 @@
             async initialConfig() {
 
             },
-            deletedConsultation() {
-                this.$store.dispatch('eraseAppointment', {
+            async deletedConsultation() {
+                this.cancelLoading = true
+                let obj = {
                     id: this.consultation.id,
-                    idPatient: this.consultation.user.cpf,
+                    idPatient: this.consultation.user ? this.consultation.user.cpf : this.selectedPatient.cpf,
                     type: this.consultation.type,
                     status: 'Cancelado',
                     payment_number: this.consultation.payment_number,
@@ -127,8 +132,11 @@
                     previousConsultation: this.consultation.previousConsultation,
                     consultation: this.consultation,
                     exam:this.consultation.exam
-                });
-                this.dialog = false
+                }
+
+                console.log(obj)
+                await this.$store.dispatch('eraseAppointment', obj);
+                this.cancelLoading = false
 
             },
             setConsultationHour(consultation) {
