@@ -500,7 +500,7 @@
                                       0,
                                       this.findPos(document.getElementById("group-" + val), "group-" + val)
                                     ); */
-                if (val == this.consultas[0].date) this.$vuetify.goTo(0, this.options);
+                if (val === this.consultas[0].date) this.$vuetify.goTo(0, this.options);
                 else this.$vuetify.goTo("#group-" + val, this.options);
             },
             exam(value){
