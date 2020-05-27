@@ -6,6 +6,7 @@ const state = {
     outtakes: [],
 
     outtakesPaid: [],
+    outtakesPaidMonth: [],
     outtakesPaidToday: [],
     outtakesPending: [],
     categories: [],
@@ -14,7 +15,7 @@ const state = {
 
 const mutations = {
     setOuttakes: (state, payload) => state.outtakes = payload,
-
+    setOuttakesPaidMonth: (state, payload) => state.outtakesPaidMonth = payload,
     setOuttakesPaid: (state, payload) => state.outtakesPaid = payload,
     setOuttakesPaidToday: (state, payload) => state.outtakesPaidToday = payload,
     setOuttakesPending: (state, payload) => state.outtakesPending = payload,
@@ -78,6 +79,37 @@ const actions = {
                 })
             });
             context.commit("setOuttakesPaid", outtakes)
+        } catch (e) {
+            console.log(e)
+        }
+    },
+
+    async getOuttakesPaidMonth(context, payload) {
+        try {
+            let query = firebase.firestore().collection('outtakes');
+            let outtakesSnap = [];
+            if (payload) {
+                if (payload.initialDate) {
+                    query = query.where('paid', '>=', payload.initialDate)
+                }
+                if (payload.finalDate) {
+                    query = query.where('paid', '<=', payload.finalDate)
+                }
+                if (payload.category) {
+                    query = query.where('category', '==', payload.category)
+                }
+            }
+            // adicionando esse orderBy('paid') faz com que so os docs com o campo paid sejam retornandos
+            // assim filtrando ja na query pra so pegar as saidas pagas
+            outtakesSnap = await query.orderBy('paid').get();
+            let outtakes = [];
+            outtakesSnap.forEach(doc => {
+                outtakes.push({
+                    id: doc.id,
+                    ...doc.data()
+                })
+            });
+            context.commit("setOuttakesPaidMonth", outtakes)
         } catch (e) {
             console.log(e)
         }
@@ -250,6 +282,9 @@ const getters = {
     },
     outtakesPaid(state) {
         return state.outtakesPaid
+    },
+    outtakesPaidMonth(state){
+        return state.outtakesPaidMonth
     },
     outtakesPaidToday(state) {
         return state.outtakesPaidToday

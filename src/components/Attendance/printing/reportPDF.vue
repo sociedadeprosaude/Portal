@@ -2,7 +2,7 @@
     <v-container fluid class="fill-height ma-0 pa-0">
         <v-layout row wrap class="align-center justify-center white">
             <v-flex xs6 class="text-left white">
-                <v-btn class="transparent" text  @click="closeDialog()">
+                <v-btn class="transparent" text @click="closeDialog()">
                     <v-icon>close</v-icon>
                 </v-btn>
             </v-flex>
@@ -12,15 +12,16 @@
                 </v-btn>
             </v-flex>
             <v-flex xs12>
-                <v-divider></v-divider>
+                <v-divider/>
             </v-flex>
 
             <v-flex>
                 <v-card flat class="pa-10 receipt-to-print">
-                    <v-layout row wrap class="align-center pa-4 mt-4" style="border: 2px solid #2196f3; border-radius: 16px">
-                        <v-spacer></v-spacer>
+                    <v-layout row wrap class="align-center pa-4 mt-4"
+                              style="border: 2px solid #2196f3; border-radius: 16px">
+                        <v-spacer/>
                         <v-flex xs4>
-                            <v-divider style="border: 2px solid #2196f3; border-radius: 10px"></v-divider>
+                            <v-divider style="border: 2px solid #2196f3; border-radius: 10px"/>
                         </v-flex>
 
                         <v-flex xs4>
@@ -28,18 +29,19 @@
                         </v-flex>
 
                         <v-flex xs4>
-                            <v-divider style="border: 2px solid #2196f3; border-radius: 10px"></v-divider>
+                            <v-divider style="border: 2px solid #2196f3; border-radius: 10px"/>
                         </v-flex>
 
                         <v-flex xs12 class="white" style="color: white">.</v-flex>
 
                         <v-flex xs12 class="align-center justify-center">
                             <v-layout row wrap class="align-center justify-center">
-                                <span class="my-sub-headline primary--text" style="font-size: 1.4em;text-decoration: underline">LAUDO</span>
+                                <span class="my-sub-headline primary--text"
+                                      style="font-size: 1.4em;text-decoration: underline">LAUDO</span>
                             </v-layout>
                         </v-flex>
 
-                        <v-spacer></v-spacer>
+                        <v-spacer/>
 
                         <v-flex xs12 v-if="item">
                             <v-card-text>
@@ -54,12 +56,13 @@
 </template>
 
 <script>
-    import { VueEditor } from "vue2-editor";
+    import {VueEditor} from "vue2-editor";
+
     var moment = require('moment');
     export default {
         name: "reportPDF",
-        props:['consultation', 'item'],
-        components: { VueEditor },
+        props: ['consultation', 'item'],
+        components: {VueEditor},
         data: () => ({
             moment: moment,
             hoje: undefined,
@@ -70,24 +73,22 @@
                 []
             ]
         }),
-        computed:{
-        },
-        watch:{
-        },
+        computed: {},
+        watch: {},
         mounted() {
             this.hoje = moment().locale('pt-BR').format('DD/MM/YYYY HH:mm:ss')
             this.dia = moment().format('dddd')
         },
         methods: {
-            save(){
-                this.$store.dispatch('addReportToConsultation',{
+            save() {
+                this.$store.dispatch('addReportToConsultation', {
                     Report: this.item.value,
                     consultation: this.consultation.id,
                     patient: this.consultation.user.id
                 })
             },
-            print () {
-                this.save()
+            print() {
+                this.save();
                 window.print()
             },
             clear() {
