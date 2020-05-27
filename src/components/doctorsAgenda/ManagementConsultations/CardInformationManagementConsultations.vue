@@ -58,7 +58,7 @@
                                 rounded
                                 class="mx-2"
                                 :to="{ name: 'AgendarRetorno', params: { q: {...this.consultation}}}"
-                                :disabled="consultation.status !== 'Pago'"
+                                :disabled="consultation.status !== 'Pago' || consultation.regress"
                                 v-if="consultation.type !== 'Retorno'"
                         >Retorno
                         </v-btn>
@@ -111,7 +111,7 @@
         },
         mounted() {
             this.initialConfig()
-
+            console.log(this.consultation)
         },
         watch: {
         },
