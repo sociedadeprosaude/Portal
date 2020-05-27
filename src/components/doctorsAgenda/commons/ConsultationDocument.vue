@@ -1,101 +1,142 @@
 <template>
     <v-container v-if="consultation" fluid class="fill-height ma-0 pa-0">
-        <v-layout row wrap>
-            <v-flex xs6 class="text-left white">
-                <v-btn class="transparent" text @click="$emit('close')">
-                    <v-icon>close</v-icon>
-                </v-btn>
-            </v-flex>
-            <v-flex xs6 class="text-right white">
-                <v-btn class="transparent" text :loading="loader" @click="print()">
-                    <v-icon>print</v-icon>
-                </v-btn>
-            </v-flex>
+        <v-layout>
             <v-flex>
-                <v-card flat class="pa-10 item-to-print">
-                    <v-flex xs12 class="white" style="color: white">.</v-flex>
-                    <v-layout
-                            row
-                            wrap
-                            class="align-center pa-4"
-                            style="border: 2px solid #2196f3; border-radius: 16px"
-                    >
-                        <v-flex xs6 class="text-left">
-                            <v-layout column wrap>
-                                <strong>Hoje: {{ hoje }} - {{dia}}</strong>
-                                <span
-                                        class="my-sub-headline primary--text"
-                                        style="font-size: 1.4em"
-                                >Dr. {{consultation.doctor.name}}</span>
-                                <v-flex>
-                                    <span class="primary--text font-weight-bold">CRM:</span>
-                                    <span class="font-weight-bold">{{consultation.doctor.crm}}</span>
-                                </v-flex>
-
-                                <div v-if="exames.indexOf(consultation.specialty.name) != -1">
-                                    <v-flex>
-                                        <span class="primary--text font-weight-bold">Procedimento: </span>
-                                        <span class="font-weight-bold">Exame</span>
-                                    </v-flex>
-                                    <v-flex>
-                                        <span class="primary--text font-weight-bold">Exame: </span>
-                                        <span class="font-weight-bold">{{ exames.indexOf(consultation.specialty.name) != -1 ? this.consultation.exam.name : undefined}}</span>
-                                    </v-flex>
-                                </div>
-
-                                <div v-else>
-                                    <v-flex>
-                                        <span class="primary--text font-weight-bold">Especialidade: </span>
-                                        <span class="font-weight-bold">{{this.consultation.specialty.name}}</span>
-                                    </v-flex>
-                                    <v-flex>
-                                        <span class="primary--text font-weight-bold">Procedimento: </span>
-                                        <span class="font-weight-bold">{{this.consultation.type}}</span>
-                                    </v-flex>
-                                </div>
-
-                                <v-flex>
-                                    <span class="primary--text font-weight-bold">Data:</span>
-                                    <span class="font-weight-bold">{{this.consultation.date | dateFilter}}</span>
-                                </v-flex>
-                            </v-layout>
+                <v-card>
+                    <v-layout row wrap>
+                        <v-flex xs6 class="text-left white">
+                            <v-btn class="transparent" text @click="$emit('close')">
+                                <v-icon>close</v-icon>
+                            </v-btn>
                         </v-flex>
-                        <v-spacer></v-spacer>
-                        <v-flex xs4>
-                            <v-img v-if="selectedUnit"
-                                   :src="selectedUnit.logo"
-                                   width="400"
-                            ></v-img>
+                        <v-flex xs6 class="text-right white">
+                            <v-btn class="transparent" text :loading="loader" @click="print()">
+                                <v-icon>print</v-icon>
+                            </v-btn>
+                        </v-flex>
+                        <v-flex>
+                            <v-card flat class="pa-10 item-to-print">
+                                <v-flex xs12 class="white" style="color: white">.</v-flex>
+                                <v-layout
+                                        row
+                                        wrap
+                                        class="align-center pa-4"
+                                        style="border: 2px solid #2196f3; border-radius: 16px"
+                                >
+                                    <v-flex xs6 class="text-left">
+                                        <v-layout column wrap>
+                                            <strong>Hoje: {{ hoje }} - {{dia}}</strong>
+                                            <span
+                                                    class="my-sub-headline primary--text"
+                                                    style="font-size: 1.4em"
+                                            >Dr. {{consultation.doctor.name}}</span>
+                                            <v-flex>
+                                                <span class="primary--text font-weight-bold">CRM:</span>
+                                                <span class="font-weight-bold">{{consultation.doctor.crm}}</span>
+                                            </v-flex>
 
-                        </v-flex>
-                        <v-flex xs12>
-                            <v-divider class="primary my-2"></v-divider>
-                        </v-flex>
-                        <v-flex xs6 class="text-left">
-                            <v-layout column wrap align-start justify-start>
+                                            <div v-if="exames.indexOf(consultation.specialty.name) != -1">
+                                                <v-flex>
+                                                    <span class="primary--text font-weight-bold">Procedimento: </span>
+                                                    <span class="font-weight-bold">Exame</span>
+                                                </v-flex>
+                                                <v-flex>
+                                                    <span class="primary--text font-weight-bold">Exame: </span>
+                                                    <span class="font-weight-bold">{{ exames.indexOf(consultation.specialty.name) != -1 ? this.consultation.exam.name : undefined}}</span>
+                                                </v-flex>
+                                            </div>
+
+                                            <div v-else>
+                                                <v-flex>
+                                                    <span class="primary--text font-weight-bold">Especialidade: </span>
+                                                    <span class="font-weight-bold">{{this.consultation.specialty.name}}</span>
+                                                </v-flex>
+                                                <v-flex>
+                                                    <span class="primary--text font-weight-bold">Procedimento: </span>
+                                                    <span class="font-weight-bold">{{this.consultation.type}}</span>
+                                                </v-flex>
+                                            </div>
+
+                                            <v-flex>
+                                                <span class="primary--text font-weight-bold">Data:</span>
+                                                <span class="font-weight-bold">{{this.consultation.date | dateFilter}}</span>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-flex>
+                                    <v-spacer></v-spacer>
+                                    <v-flex xs4>
+                                        <v-img v-if="selectedUnit"
+                                               :src="selectedUnit.logo"
+                                               width="400"
+                                        ></v-img>
+
+                                    </v-flex>
+                                    <v-flex xs12>
+                                        <v-divider class="primary my-2"></v-divider>
+                                    </v-flex>
+                                    <v-flex xs6 class="text-left">
+                                        <v-layout column wrap align-start justify-start>
                 <span
                         class="my-sub-headline primary--text"
                         style="font-size: 1.4em"
                 >{{dependent ? dependent.name : user.name}}</span>
-                                <v-flex v-if="!dependent">
-                                    <span class="primary--text font-weight-bold">CPF:</span>
-                                    <span class="font-weight-bold">{{user.cpf}}</span>
-                                </v-flex>
-                                <v-flex>
-                                    <span class="primary--text font-weight-bold">Data de Nascimento:</span>
-                                    <span class="font-weight-bold">{{this.birthDate}}</span>
-                                    <br/>
-                                </v-flex>
-                                <v-flex>
-                                    <span class="primary--text font-weight-bold">Idade:</span>
-                                    <span class="font-weight-bold">{{idade}}</span>
-                                    <br/>
-                                </v-flex>
-                            </v-layout>
+                                            <v-flex v-if="!dependent">
+                                                <span class="primary--text font-weight-bold">CPF:</span>
+                                                <span class="font-weight-bold">{{user.cpf}}</span>
+                                            </v-flex>
+                                            <v-flex>
+                                                <span class="primary--text font-weight-bold">Data de Nascimento:</span>
+                                                <span class="font-weight-bold">{{this.birthDate}}</span>
+                                                <br/>
+                                            </v-flex>
+                                            <v-flex>
+                                                <span class="primary--text font-weight-bold">Idade:</span>
+                                                <span class="font-weight-bold">{{idade}}</span>
+                                                <br/>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-flex>
+                                    <v-flex xs6 class="text-center">
+                                        <v-layout row wrap justify-end align-end>
+                                            <!--<v-layout column wrap>-->
+                                            <v-flex xs5>
+                                                <span class="my-sub-headline primary--text" style="font-size: 1.4em">Triagem</span>
+                                                <v-text-field prefix="Peso:" type="number" suffix="KG" hide-details
+                                                              v-model="p"></v-text-field>
+                                                <v-text-field
+                                                        prefix="Altura:"
+                                                        type="number"
+                                                        suffix="cm"
+                                                        hide-details
+                                                        v-model="alt"
+                                                ></v-text-field>
+                                                <v-text-field
+                                                        prefix="P.A:"
+                                                        suffix="PA"
+                                                        v-mask="'##x##'"
+                                                        v-model="pa"
+                                                        hide-details
+                                                ></v-text-field>
+                                            </v-flex>
+                                            <!--</v-layout>-->
+                                        </v-layout>
+                                    </v-flex>
+                                    <v-flex xs12 class="mt-2 py-1 px-4">
+                                        <v-layout row wrap class="align-center"></v-layout>
+                                    </v-flex>
+                                </v-layout>
+                                <v-layout
+                                        row
+                                        wrap
+                                        class="align-center pa-4 mt-4"
+                                        style="border: 2px solid #2196f3; border-radius: 16px"
+                                >
+                                    <v-flex xs12 style="height: 550px"></v-flex>
+                                </v-layout>
+                            </v-card>
                         </v-flex>
                         <v-flex xs6 class="text-center">
                             <v-layout row wrap justify-end align-end>
-                                <!--<v-layout column wrap>-->
                                 <v-flex xs5>
                                     <span class="my-sub-headline primary--text" style="font-size: 1.4em">Triagem</span>
                                     <v-text-field prefix="Peso:" type="number" suffix="KG" hide-details
@@ -115,7 +156,6 @@
                                             hide-details
                                     ></v-text-field>
                                 </v-flex>
-                                <!--</v-layout>-->
                             </v-layout>
                         </v-flex>
                         <v-flex xs12 class="mt-2 py-1 px-4">
@@ -132,48 +172,12 @@
                     </v-layout>
                 </v-card>
             </v-flex>
-            <v-flex xs6 class="text-center">
-              <v-layout row wrap justify-end align-end>
-                <v-flex xs5>
-                  <span class="my-sub-headline primary--text" style="font-size: 1.4em">Triagem</span>
-                  <v-text-field prefix="Peso:" type="number" suffix="KG" hide-details v-model="p"></v-text-field>
-                  <v-text-field
-                    prefix="Altura:"
-                    type="number"
-                    suffix="cm"
-                    hide-details
-                    v-model="alt"
-                  ></v-text-field>
-                  <v-text-field
-                    prefix="P.A:"
-                    suffix="PA"
-                    v-mask="'##x##'"
-                    v-model="pa"
-                    hide-details
-                  ></v-text-field>
-                </v-flex>
-              </v-layout>
-            </v-flex>
-            <v-flex xs12 class="mt-2 py-1 px-4">
-              <v-layout row wrap class="align-center"></v-layout>
-            </v-flex>
-          </v-layout>
-          <v-layout
-            row
-            wrap
-            class="align-center pa-4 mt-4"
-            style="border: 2px solid #2196f3; border-radius: 16px"
-          >
-            <v-flex xs12 style="height: 550px"></v-flex>
-          </v-layout>
-        </v-card>
-      </v-flex>
-    </v-layout>
-  </v-container>
+        </v-layout>
+    </v-container>
 </template>
 
 <script>
-    var moment = require("moment");
+    var moment = require("moment/moment");
     import {mask} from 'vue-the-mask';
 
     export default {

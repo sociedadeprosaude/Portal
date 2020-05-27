@@ -6,6 +6,7 @@ const state = {
     clinics: [],
     allClinics: [],
     selectedClinic: null,
+    indexClinic : null,
     units: [],
     loaded: false,
     unitsLoaded: false,
@@ -33,6 +34,9 @@ const mutations = {
     },
     setSelectedClinic(state, payload) {
         state.selectedClinic = payload;
+    },
+    setIndexClinic (state, payload){
+        state.indexClinic = payload;
     },
     setUnits(state, payload) {
         state.units = payload;
@@ -233,6 +237,12 @@ const actions = {
         commit('setSelectedClinic', payload);
 
     },
+
+
+    putIndex ({commit}, payload) {
+        commit('setIndexClinic', payload);
+    },
+
     async GetReceiptsClinic(context, payload) {
         let DataInit='';
         if(!payload.payments){
@@ -507,9 +517,15 @@ const getters = {
     clinics(state) {
         return state.clinics
     },
+
+    indexClinic (state) {
+        return state.indexClinic
+    },
+
     contestValue(state){
         return state.contestValue
     },
+
     accontClinics(state){
         return state.accontClinics
     },

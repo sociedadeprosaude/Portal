@@ -79,7 +79,6 @@ const vuetifyOptions = {
         blue_grey:'#90A4AE',
         grey_light: '#BDBDBD'
 
-
       },
     },
   },
