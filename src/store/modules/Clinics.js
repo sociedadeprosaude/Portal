@@ -520,11 +520,12 @@ const getters = {
 
     indexClinic (state) {
         return state.indexClinic
+    },
 
     contestValue(state){
         return state.contestValue
     },
-      
+
     accontClinics(state){
         return state.accontClinics
     },
@@ -554,7 +555,7 @@ const getters = {
     IntakesExamsClinics(state){
         return state.IntakesExamsClinics
     }
-};
+    }
 
 export default {
     state,
