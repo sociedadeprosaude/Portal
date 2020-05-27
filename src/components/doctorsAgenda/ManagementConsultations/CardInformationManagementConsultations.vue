@@ -118,14 +118,15 @@
             },
             deletedConsultation() {
                 this.$store.dispatch('eraseAppointment', {
-                    idConsultation: this.consultation.id,
+                    id: this.consultation.id,
                     idPatient: this.consultation.user.cpf,
                     type: this.consultation.type,
                     status: 'Cancelado',
                     payment_number: this.consultation.payment_number,
-                    specialty: this.consultation.specialty.name,
+                    specialty: this.consultation.specialty,
                     previousConsultation: this.consultation.previousConsultation,
-                    consultation: this.consultation
+                    consultation: this.consultation,
+                    exam:this.consultation.exam
                 });
                 this.dialog = false
 

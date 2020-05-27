@@ -999,9 +999,9 @@ export default {
       let form = this.createConsultationForm;
       form.user = {
         ...form.user,
-        status: this.status,
+        /* status: this.status,
         type: this.modalidade,
-        payment_number: this.num_recibo
+        payment_number: this.num_recibo */
       };
       form.consultation = {
         ...form.consultation,

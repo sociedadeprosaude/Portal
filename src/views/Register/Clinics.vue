@@ -159,8 +159,7 @@
 
 
     export default {
-        components: {Configurations, Products, Consultations, Exams, SubmitButton, RegisterNewClinic, RegisterClinicPassword},
-        directives: {mask},
+        components: {Configurations, Products, Consultations, Exams, RegisterNewClinic, RegisterClinicPassword},
         data: () => ({
             Exam: false,
             Consultation: false,

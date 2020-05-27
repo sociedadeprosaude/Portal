@@ -520,7 +520,7 @@ const getters = {
 
     indexClinic (state) {
         return state.indexClinic
-
+    },
     contestValue(state){
         return state.contestValue
     },
