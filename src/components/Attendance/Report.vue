@@ -65,17 +65,17 @@
                 {{ item.value }}
             </v-card-text>
 
-            <v-divider></v-divider>
+            <v-divider/>
             <v-card-actions>
-                <v-spacer></v-spacer>
+                <v-spacer/>
                 <v-btn color="primary" :disabled="!formIsValid" @click="documentDialog = true"><v-icon left>print</v-icon>GERAR PDF <v-icon right>fa fa-print</v-icon></v-btn>
-                <v-spacer></v-spacer>
+                <v-spacer/>
             </v-card-actions>
         </v-card>
     </v-container>
 
     <v-dialog v-model="documentDialog">
-        <report-p-d-f @close-dialog="documentDialog = false" :consultation="consultation" :item="item"></report-p-d-f>
+        <report-p-d-f @close-dialog="documentDialog = false" :consultation="consultation" :item="item"/>
     </v-dialog>
 
     </v-content>

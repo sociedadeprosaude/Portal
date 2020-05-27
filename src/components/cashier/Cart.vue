@@ -204,7 +204,7 @@
                                         </v-layout>
                                     </v-flex>
                                     <v-flex sm12 xs12 class="px-3 mt-3" v-if="payment.paymentForm.length === 1">
-                                        <v-layout row wrap class="align-center" v-for="(x ,index) in payments"
+                                        <v-layout row wrap class="align-center" v-for="(x ,index) in payment.paymentForm"
                                                   :key="index">
                                             <v-flex xs10>
                                                 <v-select
@@ -260,7 +260,7 @@
                                         <v-flex xs12>
                                             <v-divider color="black"/>
                                         </v-flex>
-                                        <v-flex v-for="(x , index) in payments" :key="index">
+                                        <v-flex v-for="(x , index) in payment.paymentForm" :key="index">
                                             <v-flex xs12 v-if="payment.paymentForm[index] === 'Crédito'">
                                                 <span>Crédito: {{payment.parcel[index]}}x de R$ {{( payment.value[index] / payment.parcel[index]).toFixed(2)}}</span>
                                             </v-flex>
@@ -364,8 +364,6 @@
                 searchBudgetLoading: false,
                 searchBudgetBtn: false,
                 searchPatient: false,
-                payments: ['Dinheiro'],
-                valuesPayments:[''],
                 payment:{ paymentForm:['Dinheiro'], value:[''], parcel:['1']},
                 moneyDiscout: 0,
                 data: moment().format("YYYY-MM-DD HH:mm:ss"),
@@ -488,15 +486,11 @@
                 this.searchBudgetLoading = false
             },
             adicionarFormaDePagamento() {
-                this.valuesPayments.push('');
-                this.payments.push('')
                 this.payment.paymentForm.push('');
                 this.payment.value.push('');
                 this.payment.parcel.push('1')
             },
             apagarFormaDePagamento(index) {
-                this.payments.splice(index, 1);
-                this.valuesPayments.splice(index, 1);
                 this.payment.paymentForm.splice(index, 1);
                 this.payment.value.splice(index, 1);
                 this.payment.parcel.splice(index, 1);
@@ -505,45 +499,10 @@
             removeItem(item) {
                 this.$store.commit('removeShoppingCartItem', item)
             },
-            shareOrcamento() {
-                var text = "";
-                if (this.exames.length > 0) {
-                    text = "Exames\n";
-                    for (let index = 0; index < this.exames.length; index++) {
-                        text += "\t" + this.exames[index].nome + "\n\tClinica: " + this.exames[index].clinica + "\n\tPreço: " + this.exames[index].preco + "\n"
-                    }
-                }
-                if (this.consultas.length > 0) {
-                    text += this.exames.length ? "\n\nConsultas\n" : "Consultas\n";
-                    for (let index = 0; index < this.consultas.length; index++) {
-                        text += "\t" + this.consultas[index].nome + "\n\tClinica: " + this.consultas[index].clinica + "\n\tPreço: " + this.consultas[index].preco + "\n"
-
-                    }
-                }
-
-                text += "\n\nSubtotal: R$" + this.total.toLocaleString('en-us', {minimumFractionDigits: 2});
-                text += "\nDesconto: R$" + this.moneyDiscount.toLocaleString('en-us', {minimumFractionDigits: 2});
-                text += "\nTotal: R$" + this.totalNovo.toLocaleString('en-us', {minimumFractionDigits: 2});
-                return text
-            },
             imprimir() {
                 this.saveBudget(this.generateBudget());
                 this.budgetToPrint = this.selectedBudget;
                 this.budgetToPrintDialog = true
-            },
-            pesquisarUsuario() {
-                this.$store.dispatch('searchPatient', this.codigo).then(() => {
-                    this.categorySelect = 'appointment';
-                    for (this.i = 0; this.i < this.pedid[0].consultas.length; this.i++) {
-                        this.addProducts(this.pedid[0].consultas[this.i], this.pedid[0].consultas[this.i].preco, this.pedid[0].consultas[this.i].custo, this.pedid[0].consultas[this.i].clinica)
-                    }
-                    this.categorySelect = 'exams';
-                    for (this.i = 0; this.i < this.pedid[0].exames.length; this.i++) {
-                        this.addProducts(this.pedid[0].exames[this.i], this.pedid[0].exames[this.i].price, this.pedid[0].exames[this.i].cost, this.pedid[0].exames[this.i].clinic)
-                    }
-                }).catch(() => {
-                    this.aviso = true;
-                })
             },
             generateBudget() {
                 let id = moment().valueOf()

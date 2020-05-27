@@ -2,8 +2,8 @@ import CanceledConsultations from "../views/Operational/DoctorsAgenda/CanceledCo
 import Cids from "../views/Operational/DoctorsAgenda/Cids";
 import Declaration from "../views/Operational/DoctorsAgenda/Declaration";
 import DeletarConsultas from "../views/Operational/DoctorsAgenda/DeleteConsultations";
-import GerenciamentoConsultas from "../views/Operational/DoctorsAgenda/ManagementConsultations";
-import PatientConsultations from "../views/Operational/DoctorsAgenda/PatientConsultations";
+import NewGerenciamentoConsultas from "../views/Operational/NewDorctorsAgenda/ManagementConsultationsNew";
+import PatientConsultationsNew from "../views/Operational/NewDorctorsAgenda/PatientConsultationsNew";
 import RegistrationConsultationsShifts from "../views/Register/RegistrationConsultationsShifts";
 //import SchedulingConsultation from "../views/Operational/DoctorsAgenda/SchedulingConsultation";
 import RemarcarConsultas from "../views/Operational/DoctorsAgenda/RescheduleConsultations";
@@ -35,13 +35,13 @@ export default [
     },
     {
         path: '/agenda/GerenciamentoConsultas',
-        name: 'GerenciamentoConsultas',
-        component: GerenciamentoConsultas
+        name: 'NewGerenciamentoConsultas',
+        component: NewGerenciamentoConsultas
     },
     {
         path: '/agenda/ConsultasPacientes',
-        name: 'ConsultasPacientes',
-        component: PatientConsultations,
+        name: 'PatientConsultationsNew',
+        component: PatientConsultationsNew,
         props: (route) => ({ query: route.query.q }),
     },
     {

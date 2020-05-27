@@ -5,6 +5,7 @@ import moment from "moment";
 
 const state = {
     doctors: {},
+    doctor:{},
     specialties: [],
     loaded: false,
     doctorSelected: null,
@@ -14,6 +15,9 @@ const mutations = {
     setDoctors(state, payload) {
         state.doctors = payload
         state.loaded = true
+    },
+    setDoctor(state, payload) {
+        state.doctor = payload
     },
     setSpecialties(state, payload) {
         state.specialties = payload
@@ -170,6 +174,13 @@ const actions = {
             throw e
         }
     },
+    async getDoctor({commit},payload) {
+        firebase.firestore().collection('users').doc(payload).onSnapshot(async (doctorsSnap) => {
+            let doctor = doctorsSnap.data()
+            commit('setDoctor',doctor)
+            return doctor
+        })
+    },
     async selectDoctor ({commit}, doctor) {
         commit('setDoctorSelected', doctor)
     }
@@ -178,6 +189,9 @@ const actions = {
 const getters = {
     doctors(state) {
         return state.doctors
+    },
+    doctor(state) {
+        return state.doctor
     },
     doctorsLoaded(state) {
         return state.loaded

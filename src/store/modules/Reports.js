@@ -244,7 +244,6 @@ const actions = {
 
             }
         });
-        console.log('specialties: ', specialties)
         relatorio = {
             unit: selectedUnit,
             specialties: specialties,

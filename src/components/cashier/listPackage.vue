@@ -236,7 +236,6 @@
 
                     this.exams[exam].price = this.exams[exam].price - ((this.percentageDiscount / 100) * this.exams[exam].price)
                 }
-                console.log('package: ',packageData)
 
                this.$store.dispatch('addBundle', packageData).then(() => {
                     this.clearSearch();
