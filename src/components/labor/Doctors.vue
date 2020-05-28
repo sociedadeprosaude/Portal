@@ -71,7 +71,6 @@
 
             async getInitialInfo() {
                 await this.$store.dispatch('getColaboratorsDoctors');
-                
             },
 
             setGroup(user, group) {
