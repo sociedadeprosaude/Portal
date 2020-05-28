@@ -101,8 +101,19 @@ const actions = {
     },
     async createSectorRoom(context, payload) {
         let selectedClinic = context.getters.selectedUnit;
-        await queryBuilder(selectedClinic.name, payload.sector.sectorName, payload.room.name)
-            .set({name: payload.room.name, tickets: [], doctor: null, doc_clinic: selectedClinic.name})
+        await queryBuilder(selectedClinic.name, payload.sector.name)
+            .update(
+                {
+                    rooms: {
+                        [payload.room.name]: {
+                            name: payload.room.name,
+                            tickets: [],
+                            doctor: null,
+                            doc_clinic: selectedClinic.name
+                        }
+                    },
+                }
+            )
     },
     async listenRooms(context, payload) {
         let selectedClinic = context.getters.selectedUnit;
@@ -117,17 +128,17 @@ const actions = {
     async getTicketsGeneralInfo(context) {
         let selectedClinic = context.getters.selectedUnit;
         let generalInfoDoc = await queryBuilder(selectedClinic.name, null).get()
-            context.commit('setGeneralInfo', generalInfoDoc.data());
+        context.commit('setGeneralInfo', generalInfoDoc.data());
 
-            let info = generalInfoDoc.data();
-            if (!info || !info.ticket_number)
-                context.dispatch('updateGeneralInfo', {
-                    ticket_number: 1,
-                    last_updated: moment().format('YYYY-MM-DD HH:mm:ss')
-                });
+        let info = generalInfoDoc.data();
+        if (!info || !info.ticket_number)
+            context.dispatch('updateGeneralInfo', {
+                ticket_number: 1,
+                last_updated: moment().format('YYYY-MM-DD HH:mm:ss')
+            });
     },
 
-     listenTicketsSectors(context) {
+    listenTicketsSectors(context) {
         let selectedClinic = context.getters.selectedUnit;
         firebase.firestore().collection('tickets').doc(selectedClinic.name).collection('sectors')
             .onSnapshot((collection) => {
@@ -172,8 +183,17 @@ const actions = {
     },
     async updateSectorRoom({getters}, payload) {
         let selectedClinic = getters.selectedUnit;
-        await queryBuilder(selectedClinic.name, payload.sector.sectorName, payload.room.name)
-            .update(payload.room);
+        console.log('pl', payload, {
+            rooms: {
+                [payload.room.name]: payload.room
+            }
+        })
+        await queryBuilder(selectedClinic.name, payload.sector.name)
+            .update({
+                rooms: {
+                    [payload.room.name]: payload.room
+                }
+            });
     },
     async getRooms(context) {
         let selectedClinic = context.getters.selectedUnit;

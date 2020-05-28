@@ -143,9 +143,6 @@
             async choose(sector) {
                 console.log('sector', sector)
                 this.$router.push('/senhas/' + sector.name)
-                this.$store.dispatch("listenRooms", sector).then(() => {
-                    this.sector = sector;
-                });
             },
             resetCreation() {
                 this.creation = {
