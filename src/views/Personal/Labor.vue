@@ -11,9 +11,10 @@
             </v-flex>
             <Doctors/>
 
-            <v-flex xs12 class="text-center">
-                <paymeny-report :colaborators="collaborators"/>
+            <v-flex xs12>
+                <span class="my-headline">Pagamentos</span>
             </v-flex>
+            <paymeny-report :colaborators="collaborators"/>
         </v-layout>
 
         <v-layout row wrap v-else>
@@ -37,6 +38,13 @@
             PaymenyReport,
             Collaborators,
             Doctors
+        },
+        data: () => ({
+            loading: true,
+        }),
+        async mounted(){
+            await this.$store.dispatch('getColaborators');
+            this.loading = false
         },
         computed: {
             collaborators () {
