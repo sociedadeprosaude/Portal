@@ -52,7 +52,8 @@
                             width="100%"
                             class="primary"
                             @click="createRoomController = !createRoomController"
-                    >Adicionar Sala</v-btn>
+                    >Adicionar Sala
+                    </v-btn>
                 </v-fade-transition>
             </v-col>
         </v-row>
@@ -61,8 +62,13 @@
             <v-col cols="12" sm="6" lg="4" xl="3" v-for="room in rooms" :key="room.name">
                 <v-card class="pa-4">
                     <v-row class="justify-center">
-                        <v-col class="text-left">
+                        <v-col cols="10" class="text-left">
                             <span class="my-sub-headline">{{room.name}}</span>
+                        </v-col>
+                        <v-col cols="2">
+                            <v-btn x-small fab class="red" @click="deleteRoom(room)">
+                                <v-icon class="white--text">delete</v-icon>
+                            </v-btn>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -153,7 +159,7 @@
                             <v-row>
                                 <v-col class="pa-0">
                                     <span style="font-size: 0.8em">Ultima senha:</span>
-                                    <br />
+                                    <br/>
                                     <span
                                             v-if="room.tickets.length != 0"
                                     >{{room.tickets[room.tickets.length - 1].number}}</span>
@@ -163,7 +169,7 @@
                                 <v-col class="pa-0">
                                     <div>
                                         <span style="font-size: 0.8em">Senha atual:</span>
-                                        <br />
+                                        <br/>
                                         <span
                                                 v-if="room.tickets.length != 0 && getActualTicket(room.tickets)"
                                         >{{getActualTicket(room.tickets).number}}</span>
@@ -189,7 +195,8 @@
                         <span class="my-headline">{{selectedRoom.name}}</span>
                     </v-flex>
                     <v-flex xs12>
-                        <v-text-field prepend-icon="search" label="Médico" v-model="doctorsListDialog.search"></v-text-field>
+                        <v-text-field prepend-icon="search" label="Médico"
+                                      v-model="doctorsListDialog.search"></v-text-field>
                     </v-flex>
                     <v-flex xs12 class="mt-2" v-for="doctor in doctors" :key="doctor.crm">
                         <v-card flat @click="setDoctorToRoom(selectedRoom, doctor)">
@@ -210,6 +217,19 @@
         </v-dialog>
         <v-dialog v-model="multipleViewDialog" fullscreen transition="dialog-bottom-transition">
             <multiple-visualizer :sector="sector" @close="multipleViewDialog = false"></multiple-visualizer>
+        </v-dialog>
+        <v-dialog v-model="deletionRoom.deleteRoomDialog" max-width="500px">
+            <v-card>
+                <v-col cols="12">
+                    <span class="my-headline">Deletar {{deletionRoom.selectedRoom.name}}</span>
+                </v-col>
+                <v-col cols="12" align="end">
+                    <v-btn v-if="!deletionRoom.deleting" @click="deleteRoom(deletionRoom.selectedRoom)" rounded class="red">
+                        <span class="white--text">Deletar</span>
+                    </v-btn>
+                    <v-progress-circular indeterminate color="primary" v-else></v-progress-circular>
+                </v-col>
+            </v-card>
         </v-dialog>
     </v-container>
 </template>
@@ -245,7 +265,12 @@
                     active: false,
                     room: {}
                 },
-                multipleViewDialog: false
+                multipleViewDialog: false,
+                deletionRoom: {
+                    deleteRoomDialog: false,
+                    deleting: false,
+                    selectedRoom: {}
+                }
             };
         },
         computed: {
@@ -301,7 +326,7 @@
             async createRoom(room) {
                 this.loading = true;
                 const sector = this.sector;
-                await this.$store.dispatch("createSectorRoom", { sector, room });
+                await this.$store.dispatch("createSectorRoom", {sector, room});
                 this.loading = false;
                 this.success = true;
                 setTimeout(() => {
@@ -312,7 +337,7 @@
                 room.doctor = doctor;
                 this.loading = true;
                 const sector = this.sector;
-                await this.$store.dispatch("updateSectorRoom", { sector, room });
+                await this.$store.dispatch("updateSectorRoom", {sector, room});
                 this.loading = false;
             },
             async generateNextTicket(room) {
@@ -320,7 +345,6 @@
                 if (!room.tickets) {
                     room.tickets = [];
                 }
-                console.log('info', Object.assign({}, ticketInfo))
                 room.tickets.push({
                     number: this.ticketInfo.ticket_number,
                     created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
@@ -330,7 +354,7 @@
                 ticketInfo.last_updated = moment().format("YYYY-MM-DD HH:mm:ss");
                 await this.$store.dispatch("updateGeneralInfo", this.ticketInfo);
                 const sector = this.sector;
-                await this.$store.dispatch("updateSectorRoom", { sector, room });
+                await this.$store.dispatch("updateSectorRoom", {sector, room});
             },
             async callNextTicket(room) {
                 let ticketIndex = room.tickets.findIndex(ticket => {
@@ -342,7 +366,18 @@
                     "YYYY-MM-DD HH:mm:ss"
                 );
                 const sector = this.sector;
-                await this.$store.dispatch("updateSectorRoom", { sector, room });
+                await this.$store.dispatch("updateSectorRoom", {sector, room});
+            },
+            async deleteRoom(room) {
+                this.deletionRoom.selectedRoom = room
+                if (!this.deletionRoom.deleteRoomDialog) {
+                    this.deletionRoom.deleteRoomDialog = true
+                    return
+                }
+                this.deletionRoom.deleting = true
+                await this.$store.dispatch('deleteSectorRoom', {room: room, sector: this.sector})
+                this.deletionRoom.deleting = false
+                this.deletionRoom.deleteRoomDialog = false
             },
             alertActualTicket(room) {
 

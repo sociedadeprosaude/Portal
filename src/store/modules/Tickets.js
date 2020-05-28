@@ -101,17 +101,19 @@ const actions = {
     },
     async createSectorRoom(context, payload) {
         let selectedClinic = context.getters.selectedUnit;
+        payload.sector.rooms = {
+            ...payload.sector.rooms,
+            [payload.room.name]: {
+                name: payload.room.name,
+                tickets: [],
+                doctor: null,
+                doc_clinic: selectedClinic.name
+            }
+        }
         await queryBuilder(selectedClinic.name, payload.sector.name)
             .update(
                 {
-                    rooms: {
-                        [payload.room.name]: {
-                            name: payload.room.name,
-                            tickets: [],
-                            doctor: null,
-                            doc_clinic: selectedClinic.name
-                        }
-                    },
+                    rooms: payload.sector.rooms,
                 }
             )
     },
@@ -174,26 +176,31 @@ const actions = {
             }
         }
     },
+    async updateSectorRoom({getters}, payload) {
+        let selectedClinic = getters.selectedUnit;
+        payload.sector.rooms = {
+            ...payload.sector.rooms,
+            [payload.room.name]: payload.room
+        }
+        await queryBuilder(selectedClinic.name, payload.sector.name)
+            .update({
+                rooms: payload.sector.rooms
+            });
+    },
+    async deleteSectorRoom(context, payload) {
+        let selectedClinic = context.getters.selectedUnit;
+        delete payload.sector.rooms[payload.room.name]
+        await queryBuilder(selectedClinic.name, payload.sector.name)
+            .update({
+                rooms: payload.sector.rooms
+            });
+    },
 
     // desusados
 
     async createRoom(context, room) {
         let selectedClinic = context.getters.selectedUnit;
         await queryBuilder(selectedClinic.name, null, null).doc(room.name).set(room);
-    },
-    async updateSectorRoom({getters}, payload) {
-        let selectedClinic = getters.selectedUnit;
-        console.log('pl', payload, {
-            rooms: {
-                [payload.room.name]: payload.room
-            }
-        })
-        await queryBuilder(selectedClinic.name, payload.sector.name)
-            .update({
-                rooms: {
-                    [payload.room.name]: payload.room
-                }
-            });
     },
     async getRooms(context) {
         let selectedClinic = context.getters.selectedUnit;
