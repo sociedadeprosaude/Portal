@@ -4,7 +4,7 @@
             <v-flex xs12>
                 <span class="my-headline">Colaboradores</span>
             </v-flex>
-            <Collaborators/>
+            <Collaborators :collaborators="collaborators"/>
 
             <v-flex xs12>
                 <span class="my-headline">Médicos</span>
@@ -12,7 +12,7 @@
             <Doctors/>
 
             <v-flex xs12 class="text-center">
-                <paymeny-report :colaborators="colab"/>
+                <paymeny-report :colaborators="collaborators"/>
             </v-flex>
         </v-layout>
 
@@ -38,6 +38,13 @@
             Collaborators,
             Doctors
         },
+        computed: {
+            collaborators () {
+                return this.$store.getters.colaborators.filter(a => {
+                    return a.status !== 'pending'
+                })
+            },
+        }
 
 
     }

@@ -126,6 +126,7 @@
     export default {
 
         name: "Collaborators",
+        props: ['collaborators'],
 
         data: () => ({
             loading: true,
@@ -144,11 +145,6 @@
         },
 
         computed: {
-            collaborators () {
-                return this.$store.getters.colaborators.filter(a => {
-                    return a.status !== 'pending'
-                })
-            },
 
             units() {
                 return this.$store.getters.units
