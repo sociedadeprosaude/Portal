@@ -38,7 +38,7 @@
                   :items="doctors"
                   item-text="name"
                   return-object
-                  label="Especialidade"
+                  label="Médico"
                   outlined
                   rounded
                   chips
@@ -806,12 +806,8 @@ export default {
       this.dialog = true;
     },
     fillConsultationForm(consult) {
-      let patient = this.query.pacienteObj;
-      let dependent = this.query.pacienteObj.dependent
-        ? this.query.pacienteObj.dependent
-        : this.query.consultation.dependent
-        ? this.query.consultation.dependent
-        : undefined;
+      let patient = this.query.pacienteObj ? this.query.pacienteObj : this.selectedPatient;
+      let dependent = this.query.dependent ? this.query.dependent : undefined
       let consultation = consult;
 
       if (dependent) {
@@ -886,19 +882,20 @@ export default {
       await this.$store.dispatch("getSpecialties");
       this.query = this.$route.params.q;
       this.selectedDoctor = this.query.doctor;
-      this.especialidade = this.query.especialidade;
-      this.clinic = this.query.consultation.clinic;
+      this.especialidade = this.query.specialty;
+      console.log(this.query)
+      this.clinic = this.query.clinic;
       await this.listenConsultations();
 
       if (!this.query) {
         this.$router.back();
       }
-      this.selectedDoctor = this.query.doctor;
+      /* this.selectedDoctor = this.query.doctor;
       this.especialidade = this.query.especialidade;
-      this.clinic = this.query.consultation.clinic;
-      this.pacienteSelecionado = this.query.pacienteObj;
+      this.clinic = this.query.consultation.clinic; */
+      this.pacienteSelecionado = this.query.user ? this.query.user : this.selectedPatient;
       this.status = this.query.status;
-      this.num_recibo = this.query.num_recibo;
+      this.num_recibo = this.query.payment_number;
       this.loading = false;
     },
     async listenConsultations() {
@@ -999,19 +996,19 @@ export default {
       let form = this.createConsultationForm;
       form.user = {
         ...form.user,
-        status: this.status,
+        /* status: this.status,
         type: this.modalidade,
-        payment_number: this.num_recibo
+        payment_number: this.num_recibo */
       };
       form.consultation = {
         ...form.consultation,
         status: this.status,
         type: this.modalidade,
         payment_number: this.num_recibo,
-        previousConsultation: this.query.idConsultation
+        previousConsultation: this.query.id
       };
       if (this.justify != "") {
-        form.user.justifyReturn = this.justify;
+        //form.user.justifyReturn = this.justify;
         form.consultation.justifyReturn = this.justify;
       }
       this.loading = true;

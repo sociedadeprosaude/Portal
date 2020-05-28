@@ -8,51 +8,6 @@ const mutations = {};
 
 const actions = {
 
-
-    async addConsultationAppointmentToUser({commit}, payload) {
-        try {
-            let copyPayload = Object.assign({}, payload);
-            functions.removeUndefineds(copyPayload);
-            await firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('consultations').doc(copyPayload.consultation.id).set(copyPayload.consultation);
-            if (copyPayload.consultation.type === "Retorno") {
-                await firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('consultations').doc(copyPayload.consultation.previousConsultation).update({regress: copyPayload.consultation.id})
-                let procedure = await firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').where('type', '==', 'Consultation')
-                    .where('consultation', '==', copyPayload.consultation.previousConsultation).get()
-                procedure.forEach(doc => {
-
-                    firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').doc(doc.id)
-                        .update({
-                            status: firebase.firestore.FieldValue.arrayUnion('Retorno agendado'),
-                        })
-                })
-
-            } else if (copyPayload.payment_numberFound) {
-                firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').doc(copyPayload.payment_numberFound.procedureId)
-                    .update({
-                        status: firebase.firestore.FieldValue.arrayUnion('Agendado'),
-                        consultation: copyPayload.consultation.id,
-                    })
-            } else {
-
-                let obj = {
-                    status: ['Agendado'],
-                    startAt: moment().format('YYYY-MM-DD hh:ss'),
-                    consultation: copyPayload.consultation.id,
-                    specialty: copyPayload.consultation.specialty.name
-                };
-                if (copyPayload.consultation.exam) {
-                    obj.type = 'Exam';
-                    obj.exam = copyPayload.consultation.exam
-                } else
-                    obj.type = 'Consultation';
-
-                firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').add(obj)
-            }
-        } catch (e) {
-            throw e
-        }
-    },
-
     async addUserToConsultationReschedule(context, payload) {
         try {
             let copyPayload = Object.assign({}, payload);
@@ -117,20 +72,10 @@ const actions = {
             delete copyPayload.consultation.qtd_consultations
             delete copyPayload.consultation.qtd_returns
             copyPayload.consultation.id_schedule = id_schedule
-            let obj = {
-                ...copyPayload.consultation,
-                user: copyPayload.user
-            };
-
-
-            let resp = await firebase.firestore().collection('consultations').add(obj);
-            if (copyPayload.consultation.type === "Retorno") {
-                await firebase.firestore().collection('consultations').doc(copyPayload.consultation.previousConsultation).update({regress: resp.id})
-            }
-            copyPayload.consultation.id = resp.id;
-            await context.dispatch('addConsultationAppointmentToUser', {...copyPayload})
-
-            return (await firebase.firestore().collection('consultations').doc(resp.id).get()).data()
+            var appointmentFunction = firebase.functions().httpsCallable('addUserToConsultation');
+            var response = await appointmentFunction({payload: {...copyPayload}})
+            
+            
         } catch (e) {
             throw e
         }
