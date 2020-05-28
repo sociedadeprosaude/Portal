@@ -14,7 +14,7 @@
                 <p class="text-left">Hora: {{consultation.date.substring(11,16)}}</p>
             </v-flex>
             <v-flex xs12>
-                <p class="text-left">Recibo: {{consultation.routine_id}}</p>
+                <p class="text-left">Recibo: {{consultation.payment_number}}</p>
             </v-flex>
             <v-flex xs12>
                 <p class="text-left">ESPECIALIDADE: {{consultation.specialty.id}}</p>
