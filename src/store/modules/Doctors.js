@@ -1,11 +1,11 @@
-import firebase, {firestore} from "firebase";
+import firebase from "firebase";
 import functions from '../../utils/functions'
 import Vue from 'vue'
 import moment from "moment";
 
 const state = {
     doctors: {},
-    doctor:{},
+    doctor: {},
     specialties: [],
     loaded: false,
     doctorSelected: null,
@@ -25,7 +25,7 @@ const mutations = {
     deleteDoctor(state, payload) {
         Vue.delete(state.doctors, payload.cpf)
     },
-    setDoctorSelected (state, payload){
+    setDoctorSelected(state, payload) {
         state.doctorSelected = payload;
     }
 };
@@ -60,7 +60,7 @@ const actions = {
                         ...details,
                         ...doctor.specialties[spec]
                     });
-                doctor.specialties[spec] = functions.removeUndefineds(doctor.specialties[spec])
+                doctor.specialties[spec] = functions.removeUndefineds(doctor.specialties[spec]);
                 delete holder.clinics;
                 await firebase.firestore().collection('specialties').doc(doctor.specialties[spec].name).collection('doctors').doc(doctor.cpf).set(holder)
             }
@@ -100,7 +100,7 @@ const actions = {
                 firebase.firestore().collection('users').doc(doctor.cpf).collection('clinics').doc(doc.id).delete()
             });
 
-            await firebase.firestore().collection('users').doc(doctor.cpf).delete()
+            await firebase.firestore().collection('users').doc(doctor.cpf).delete();
             for (let spec in doctor.specialties) {
                 await firebase.firestore().collection('specialties').doc(doctor.specialties[spec].name).collection('doctors').doc(doctor.cpf).delete()
             }
@@ -119,24 +119,21 @@ const actions = {
             for (let document in doctorsSnap.docs) {
                 doctors[doctorsSnap.docs[document].id] = doctorsSnap.docs[document].data()
             }
-            console.log(doctors);
             commit('setDoctors', doctors);
         })
     },
     async editSpecialty({}, specialty) {
-        specialty = functions.removeUndefineds(specialty)
+        specialty = functions.removeUndefineds(specialty);
         try {
-            let speRef = await firebase.firestore().collection('specialties').doc(specialty.name).update(specialty);
-            return speRef
+            return await firebase.firestore().collection('specialties').doc(specialty.name).update(specialty)
         } catch (e) {
             throw e
         }
     },
     async addSpecialty({}, specialty) {
-        specialty = functions.removeUndefineds(specialty)
+        specialty = functions.removeUndefineds(specialty);
         try {
-            let speRef = await firebase.firestore().collection('specialties').doc(specialty.name).set(specialty);
-            return speRef
+            return await firebase.firestore().collection('specialties').doc(specialty.name).set(specialty)
         } catch (e) {
             throw e
         }
@@ -165,14 +162,14 @@ const actions = {
             throw e
         }
     },
-    async getDoctor({commit},payload) {
+    async getDoctor({commit}, payload) {
         firebase.firestore().collection('users').doc(payload).onSnapshot(async (doctorsSnap) => {
-            let doctor = doctorsSnap.data()
-            commit('setDoctor',doctor)
+            let doctor = doctorsSnap.data();
+            commit('setDoctor', doctor);
             return doctor
         })
     },
-    async selectDoctor ({commit}, doctor) {
+    async selectDoctor({commit}, doctor) {
         commit('setDoctorSelected', doctor)
     }
 };
@@ -187,7 +184,7 @@ const getters = {
     doctorsLoaded(state) {
         return state.loaded
     },
-    doctorSelected (state){
+    doctorSelected(state) {
         return state.doctorSelected
     }
 };

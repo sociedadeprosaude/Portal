@@ -264,6 +264,12 @@ const actions = {
 
     setSelectedDependent({ commit }, payload) {
         commit('setSelectedDependent', payload)
+    },
+
+    updateAccessedTo ({}, payload){
+        firebase.firestore().collection('users').doc(payload.id).update({
+            accessed_to: payload.accessed_to
+        })
     }
 };
 
