@@ -1,10 +1,13 @@
-import firebase, { firestore } from "firebase";
+import firebase, {firestore} from "firebase";
 import moment from "moment";
+import functions from "../../utils/functions";
 
 const state = {
     rooms: undefined,
     roomsLoaded: false,
     generalInfo: {},
+
+    sectors: undefined
 };
 
 const mutations = {
@@ -17,6 +20,22 @@ const mutations = {
     },
     setSectors(state, payload) {
         state.sectors = payload;
+    }
+};
+
+const getters = {
+    rooms(state) {
+        return state.rooms
+    },
+    roomsLoaded(state) {
+        return state.roomsLoaded
+    },
+    ticketGeneralInfo(state) {
+        return state.generalInfo
+    },
+
+    sectors(state) {
+        return state.sectors
     }
 };
 
@@ -56,7 +75,7 @@ const actions = {
                                     history: room.data().tickets
                                 })
                             }
-                            // Esvaziando a fila de tickets depois de atualizado o history 
+                            // Esvaziando a fila de tickets depois de atualizado o history
                             room.ref.update({
                                 tickets: []
                             });
@@ -83,36 +102,57 @@ const actions = {
     async createSectorRoom(context, payload) {
         let selectedClinic = context.getters.selectedUnit;
         await queryBuilder(selectedClinic.name, payload.sector.sectorName, payload.room.name)
-            .set({ name: payload.room.name, tickets: [], doctor: null, doc_clinic: selectedClinic.name })
+            .set({name: payload.room.name, tickets: [], doctor: null, doc_clinic: selectedClinic.name})
     },
     async listenRooms(context, payload) {
-        // adicionado promise pra so mostrar quando tiver carregado as salas
-        return new Promise((resolve, reject) => {
-            let selectedClinic = context.getters.selectedUnit;
-            // parando de ouvir se já tiver ouvindo
-            if (subscribeRooms) subscribeRooms();
-            subscribeRooms = queryBuilder(selectedClinic.name, payload.sectorName).collection('rooms').onSnapshot((docs) => {
-                let rooms = [];
-                for (let doc in docs.docs) rooms.push(docs.docs[doc].data())
-                context.commit('setRooms', rooms);
-                resolve();
-            });
+        let selectedClinic = context.getters.selectedUnit;
+        if (subscribeRooms) subscribeRooms();
+        subscribeRooms = queryBuilder(selectedClinic.name, payload.sectorName).collection('rooms').onSnapshot((docs) => {
+            let rooms = [];
+            for (let doc in docs.docs) rooms.push(docs.docs[doc].data())
+            context.commit('setRooms', rooms);
         });
     },
     // Configurando os tickets pra atualizarem realTime.
     async getTicketsGeneralInfo(context) {
         let selectedClinic = context.getters.selectedUnit;
-        queryBuilder(selectedClinic.name, null).onSnapshot((doc) => {
-            context.commit('setGeneralInfo', doc.data());
-            let info = doc.data();
+        let generalInfoDoc = await queryBuilder(selectedClinic.name, null).get()
+            context.commit('setGeneralInfo', generalInfoDoc.data());
+
+            let info = generalInfoDoc.data();
             if (!info || !info.ticket_number)
-                // Caso pra quando o banco ta vazio.
                 context.dispatch('updateGeneralInfo', {
                     ticket_number: 1,
                     last_updated: moment().format('YYYY-MM-DD HH:mm:ss')
                 });
-        });
     },
+
+     listenTicketsSectors(context) {
+        let selectedClinic = context.getters.selectedUnit;
+        firebase.firestore().collection('tickets').doc(selectedClinic.name).collection('sectors')
+            .onSnapshot((collection) => {
+                let sectors = functions.firebaseCollectionToArray(collection)
+                console.log('sectors', sectors)
+                context.commit('setSectors', sectors)
+            })
+    },
+
+    async createTicketsSector(context, sectorName) {
+        let selectedClinic = context.getters.selectedUnit;
+        let sectorInfo = {
+            name: sectorName,
+            created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+            created_by: context.getters.user
+        }
+        await firebase.firestore().collection('tickets').doc(selectedClinic.name).collection('sectors').doc(sectorName).set(sectorInfo)
+    },
+
+
+    async deleteSector(context, sector) {
+        let selectedClinic = context.getters.selectedUnit;
+        await firebase.firestore().collection('tickets').doc(selectedClinic.name).collection('sectors').doc(sector.name).delete()
+    },
+
     async updateGeneralInfo(context, info) {
         let selectedClinic = context.getters.selectedUnit;
         try {
@@ -130,7 +170,7 @@ const actions = {
         let selectedClinic = context.getters.selectedUnit;
         await queryBuilder(selectedClinic.name, null, null).doc(room.name).set(room);
     },
-    async updateSectorRoom({ getters }, payload) {
+    async updateSectorRoom({getters}, payload) {
         let selectedClinic = getters.selectedUnit;
         await queryBuilder(selectedClinic.name, payload.sector.sectorName, payload.room.name)
             .update(payload.room);
@@ -145,24 +185,6 @@ const actions = {
     },
 
 
-
-
-
-
-
-
-};
-
-const getters = {
-    rooms(state) {
-        return state.rooms
-    },
-    roomsLoaded(state) {
-        return state.roomsLoaded
-    },
-    ticketGeneralInfo(state) {
-        return state.generalInfo
-    },
 };
 
 export default {
