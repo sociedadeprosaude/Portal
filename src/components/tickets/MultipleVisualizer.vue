@@ -52,6 +52,7 @@ import constants from "../../utils/constants";
 
 export default {
   name: "SingleVisualizer",
+  props: ['sector'],
   mounted() {
     this.clockInterval = setInterval(() => {
       this.$nextTick(() => {
@@ -72,8 +73,11 @@ export default {
     };
   },
   computed: {
+    // rooms() {
+    //   return this.$store.getters.rooms;
+    // },
     rooms() {
-      return this.$store.getters.rooms;
+      return this.sector ? this.sector.rooms : []
     },
     doctorName() {
       let names = this.room.doctor.name.split(" ");

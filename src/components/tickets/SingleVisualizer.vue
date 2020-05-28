@@ -74,7 +74,6 @@ export default {
   },
   computed: {
     rooms() {
-      console.log('secc', this.sector)
       return this.sector ? this.sector.rooms : []
     },
     room() {

@@ -209,7 +209,7 @@
             ></single-visualizer>
         </v-dialog>
         <v-dialog v-model="multipleViewDialog" fullscreen transition="dialog-bottom-transition">
-            <multiple-visualizer @close="multipleViewDialog = false"></multiple-visualizer>
+            <multiple-visualizer :sector="sector" @close="multipleViewDialog = false"></multiple-visualizer>
         </v-dialog>
     </v-container>
 </template>
