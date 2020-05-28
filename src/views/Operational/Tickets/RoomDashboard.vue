@@ -117,7 +117,7 @@
                                 <template v-slot:activator="{ on }">
                                     <v-btn
                                             v-on="on"
-                                            @click="callNextTicket(room)"
+                                            @click="alertActualTicket(room)"
                                             text
                                             fab
                                             x-small
@@ -203,6 +203,7 @@
         </v-dialog>
         <v-dialog v-model="singleViewDialog.active" fullscreen transition="dialog-bottom-transition">
             <single-visualizer
+                    :sector="sector"
                     @close="singleViewDialog.active = false"
                     :selectedRoom="singleViewDialog.room"
             ></single-visualizer>
@@ -284,6 +285,7 @@
         methods: {
             async initialInfo() {
                 if (!this.sector) {
+                    this.$store.dispatch("getTicketsGeneralInfo");
                     this.$store.dispatch('listenTicketsSectors')
                 }
             },
@@ -310,7 +312,6 @@
                 room.doctor = doctor;
                 this.loading = true;
                 const sector = this.sector;
-                // console.log('s', this.sector)
                 await this.$store.dispatch("updateSectorRoom", { sector, room });
                 this.loading = false;
             },
@@ -319,9 +320,11 @@
                 if (!room.tickets) {
                     room.tickets = [];
                 }
+                console.log('info', Object.assign({}, ticketInfo))
                 room.tickets.push({
                     number: this.ticketInfo.ticket_number,
-                    created_at: moment().format("YYYY-MM-DD HH:mm:ss")
+                    created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+                    doctor: room.doctor
                 });
                 ticketInfo.ticket_number++;
                 ticketInfo.last_updated = moment().format("YYYY-MM-DD HH:mm:ss");
@@ -340,6 +343,9 @@
                 );
                 const sector = this.sector;
                 await this.$store.dispatch("updateSectorRoom", { sector, room });
+            },
+            alertActualTicket(room) {
+
             },
             reset() {
                 let ticketInfo = this.ticketInfo;

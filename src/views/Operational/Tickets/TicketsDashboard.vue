@@ -141,7 +141,6 @@
                 this.creation.deletingDialog = false
             },
             async choose(sector) {
-                console.log('sector', sector)
                 this.$router.push('/senhas/' + sector.name)
             },
             resetCreation() {

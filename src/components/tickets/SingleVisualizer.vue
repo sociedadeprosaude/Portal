@@ -52,7 +52,7 @@ import constants from "../../utils/constants";
 
 export default {
   name: "SingleVisualizer",
-  props: ["selectedRoom"],
+  props: ["selectedRoom", "sector"],
   mounted() {
     this.clockInterval = setInterval(() => {
       this.$nextTick(() => {
@@ -73,10 +73,12 @@ export default {
     };
   },
   computed: {
+    rooms() {
+      console.log('secc', this.sector)
+      return this.sector ? this.sector.rooms : []
+    },
     room() {
-      return this.$store.getters.rooms.find(room => {
-        return room.name === this.selectedRoom.name;
-      });
+      return this.rooms[this.selectedRoom.name]
     },
     doctorName() {
       if (this.room.doctor) {
