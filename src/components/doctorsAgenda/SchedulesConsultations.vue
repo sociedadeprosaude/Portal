@@ -185,7 +185,7 @@
                 this.status = "Aguardando pagamento";
                 this.loaderPaymentNumber = true;
 
-                this.$store.dispatch("ther  eIsIntakes", {
+                this.$store.dispatch("thereIsIntakes", {
                     user: this.selectedForm.user,
                     doctor: this.selectedForm.consultation.doctor,
                     specialty: this.selectedForm.consultation.specialty,
