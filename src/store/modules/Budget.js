@@ -72,19 +72,9 @@ const actions = {
         await firebase.firestore().collection('users').doc(userId.toString()).collection('budgets').doc(budgetId.toString()).delete();
     },
 
-    async addBudgetToUser({ }, payload) {
+    async addIntake(context, payload) {
         let copyPayload = Object.assign({}, payload);
         functions.removeUndefineds(copyPayload);
-        let specialties = copyPayload.specialties ? Object.assign({}, copyPayload.specialties) : undefined;
-        let exams = copyPayload.exams ? Object.assign({}, copyPayload.exams) : undefined;
-        let user = copyPayload.user ? Object.assign({}, copyPayload.user) : undefined;
-        delete copyPayload.specialties;
-        delete copyPayload.exams;
-        delete copyPayload.user;
-
-        functions.removeUndefineds(specialties);
-        functions.removeUndefineds(exams);
-
         let userRef = firebase.firestore().collection('users').doc(user.cpf);
         await userRef.collection('budgets').doc(copyPayload.id.toString()).set(copyPayload);
 
@@ -196,6 +186,55 @@ const actions = {
             budgets.push(doc.data())
         });
         return budgets
+    },
+
+    async getIntakeDetails(context, intake) {
+        intake = await firebase.firestore().collection('intakes').doc(intake.id.toString()).get();
+        intake = {
+            ...intake.data(),
+            id: intake.id
+        };
+        let examsSnap = await firebase.firestore().collection('intakes').doc(intake.id.toString()).collection('exams').get();
+        let specialtiesSnap = await firebase.firestore().collection('intakes').doc(intake.id.toString()).collection('specialties').get();
+        let exams = [];
+        let specialties = [];
+        examsSnap.forEach((e) => {
+            exams.push(e.data())
+        });
+        specialtiesSnap.forEach((c) => {
+            specialties.push(c.data())
+        });
+        intake.exams = exams;
+        intake.specialties = specialties;
+        return intake
+    },
+
+    async cancelIntake(context, intake) {
+        await firebase.firestore().collection('intakes').doc(intake.id.toString()).update(
+            {
+                status: constants.INTAKE_STATUS.CANCELLED,
+                cancelled_by: context.getters.user
+            });
+        await firebase.firestore().collection('users').doc(intake.user.cpf).collection('intakes').doc(intake.id.toString()).update(
+            {
+                status: constants.INTAKE_STATUS.CANCELLED,
+                cancelled_by: context.getters.user
+            });
+        return
+    },
+
+    async thereIsIntakes(context, payload) {
+        return new Promise(async (resolve, reject) => {
+            let findPaymentNumber = firebase.functions().httpsCallable('thereIsPaymentNumber');
+            findPaymentNumber({payload: payload}).then((result)=> {
+                if(result.data.Found)
+                    resolve({ ...result.data.Found});
+                else
+                    reject({ cost: {...result.data.NotFound}})
+            }).catch(function(error) {
+                reject('Error')
+            });
+        })
     },
 
 

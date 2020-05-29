@@ -212,7 +212,7 @@
                                         label="Nº do Recibo"
                                         v-model="numberReceipt"
                                         type="number"
-                                        :disabled="status === 'Pago' ? false : true"
+                                        :disabled="status!=='Pago'"
                                         hide-details
                                         outlined>
                                 </v-text-field>
@@ -635,7 +635,6 @@
             },
 
             async thereIsPaymentNumber() {
-                console.log('lççlçlçlçl')
                 this.payment_numberFound = undefined;
                 this.numberReceipt = "";
                 this.status = "Aguardando pagamento";
@@ -762,10 +761,7 @@
                         ...form.consultation,
                         dependent: form.user.dependent
                     };
-                // return
                 this.loading = true;
-                //await this.$store.dispatch("addConsultationAppointmentToUser", form);
-                //Realizar essa funcao pelo cloud functions
                 await this.$store.dispatch("addUserToConsultation", form);
                 this.scheduleLoading = false;
                 this.success = true;

@@ -210,6 +210,11 @@
 
             async listenMoreConsultations() {
                 this.daysToListen += 3;
+                await this.$store.dispatch('listenConsultations',
+                    {
+                        start_date: new Date().toISOString().substr(0, 10),
+                        final_date: moment().add(this.daysToListen, 'days').format('YYYY-MM-DD 23:59:59')
+                    });
                 this.$emit('refreshDate', this.daysToListen);
             },
         }

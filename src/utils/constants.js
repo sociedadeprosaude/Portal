@@ -32,7 +32,6 @@ export default {
     },
 
     IN_PRODUCTION: process.env.NODE_ENV === 'production',
-
     FIREBASE_CONFIG: process.env.NODE_ENV === 'production' ?
         {
             apiKey: "AIzaSyCdvs5C8J_t9WPQlcZGuuLJ57hwM9_s9BQ",
@@ -53,5 +52,16 @@ export default {
             messagingSenderId: "251864799857",
             appId: "1:251864799857:web:3ea992014ae2cdad2b19d0"
         }
+//matriz
+// {
+//     apiKey: "AIzaSyACymfaKNI2_ygz4ss2y_hGGFvDa6MZ1ms",
+//         authDomain: "prosaudematriz-87ff4.firebaseapp.com",
+//     databaseURL: "https://prosaudematriz-87ff4.firebaseio.com",
+//     projectId: "prosaudematriz-87ff4",
+//     storageBucket: "prosaudematriz-87ff4.appspot.com",
+//     messagingSenderId: "543764593483",
+//     appId: "1:543764593483:web:f6dcb3d40005de61f286ce",
+//     measurementId: "G-QESKRX308C"
+// }
 
 }
