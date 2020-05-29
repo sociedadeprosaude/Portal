@@ -185,7 +185,7 @@
                 this.status = "Aguardando pagamento";
                 this.loaderPaymentNumber = true;
 
-                this.$store.dispatch("thereIsIntakes", {
+                this.$store.dispatch("ther  eIsIntakes", {
                     user: this.selectedForm.user,
                     doctor: this.selectedForm.consultation.doctor,
                     specialty: this.selectedForm.consultation.specialty,
@@ -211,6 +211,11 @@
 
             async listenMoreConsultations() {
                 this.daysToListen += 3;
+                await this.$store.dispatch('listenConsultations',
+                    {
+                        start_date: new Date().toISOString().substr(0, 10),
+                        final_date: moment().add(this.daysToListen, 'days').format('YYYY-MM-DD 23:59:59')
+                    });
                 this.$emit('refreshDate', this.daysToListen);
             },
         }

@@ -34,7 +34,7 @@
         }),
 
         async mounted() {
-            await this.listenConsultations()
+            await this.listenConsultations();
         },
 
 
@@ -59,6 +59,9 @@
 
             schedules () {
                 return this.$store.getters.schedules
+            },
+            consultations () {
+                return this.$store.getters.consultations
             }
 
         },
@@ -124,6 +127,7 @@
         },
 
         methods: {
+
             async listenConsultations() {
                 this.consultationsListenerUnsubscriber = await this.$store.dispatch(
                     "getSchedules",
@@ -206,6 +210,7 @@
             },
 
             numberVacancyAndReturns(schedule) {
+
                 let consultations = this.consultations;
                 return consultations.reduce((obj, item) => {
 
