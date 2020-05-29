@@ -199,8 +199,7 @@
                         this.loaderPaymentNumber = false
                     })
                     .catch(response => {
-
-                        let cost = response.cost;
+                        let cost = response.cost
                         if (cost && cost.price === 0) {
                             this.status = "Pago";
                             this.loaderPaymentNumber = false

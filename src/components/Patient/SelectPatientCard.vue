@@ -753,10 +753,18 @@
                 }
                 this.$store.commit('setSelectedPatient', user);
                 this.$store.commit('clearSelectedDependent');
+                this.updateAccessedTo(user);
                 this.foundUsers = undefined;
                 this.addPatient = false
             },
 
+            async updateAccessedTo (user) {
+
+                await this.$store.dispatch('updateAccessedTo', {
+                    accessed_to: moment().format('YYYY-MM-DD HH:mm:ss'),
+                    id: user.cpf
+                })
+            },
 
             async searchPatient() {
 
