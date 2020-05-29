@@ -57,6 +57,10 @@
                 return this.$store.getters.selectedSpecialty
             },
 
+            schedules () {
+                return this.$store.getters.schedules
+            }
+
         },
 
         computed: {
