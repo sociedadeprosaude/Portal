@@ -15,150 +15,139 @@
                 </v-card>
             </v-col>
         </v-row>
-        <v-row class="align-center justify-center">
-            <v-col cols="12" xs="12">
-                <v-layout
-                        row
-                        wrap
-                        class="align-center justify-center"
-                        v-for="(outtakesGroup, i) in outtakesByDate(outtakes)"
-                        :key="i"
-                >
-                    <v-flex xs11>
-                        <div v-bind:id="'group-' + i">
-                            <span style="color: #003B8F; font-weight: bold;"> {{i | dateFilter}} - {{daydate(i)}} - {{outtakesGroup.length}} conta(s)</span>
-                            <v-flex xs12 class="primary" style="height: 2px;"></v-flex>
-                        </div>
-                    </v-flex>
 
-                    <v-container fluid grid-list-sm class="py-0 my-3 mx-2">
-                        <v-row>
-                            <v-col cols="12" xs="12">
-                                <v-card class="pa-2 my-3 elevation-0" v-for="(bill) in outtakesGroup" :key="bill.id">
+        <v-row class="align-center justify-center"
+               v-for="(outtakesGroup, i) in outtakesByDate(outtakes)"
+               :key="i"
+        >
+            <v-col cols="11" xs="11" class="mx-3">
+                <div v-bind:id="'group-' + i">
+                    <span style="color: #003B8F; font-weight: bold; font-size: small"> {{i | dateFilter}} - {{daydate(i)}} - {{outtakesGroup.length}} conta(s)</span>
+                    <v-flex xs12 class="primary" style="height: 2px;"></v-flex>
+                </div>
+                
+                <v-card class="pa-2 my-3 elevation-0" v-for="(bill) in outtakesGroup" :key="bill.id">
+                    <v-layout row wrap>
+                        <v-flex xs4>
+                            <v-img :src="bill.unit.logo" width="175px"></v-img>
+                        </v-flex>
+                        <v-flex xs8>
+                            <v-text-field v-model="bill.value"
+                                          dense
+                                          rounded
+                                          outlined
+                                          persistent-hint
+                                          :readonly="!isEditing"
+                                          prepend-inner-icon="monetization_on"
+                                          class="font-weight-bold"
+                                          :hint="!isEditing ? 'Clique no icon para editar' : 'Clique no icon para salvar'"
+                            >
+                                <template v-slot:append-outer>
+                                    <v-slide-x-reverse-transition
+                                            mode="out-in"
+                                    >
+                                        <v-icon  :key="`icon-${isEditing}`"
+                                                 :color="isEditing ? 'success' : 'info'"
+                                                 @click="isEditing = !isEditing, editBillValue(bill)"
+                                                 v-text="isEditing ? 'mdi-check-outline' : 'mdi-circle-edit-outline'">
+                                        </v-icon>
+                                    </v-slide-x-reverse-transition>
+                                </template>
+                            </v-text-field>
+                        </v-flex>
+                        <v-flex xs5 class="text-start">
+                            <span style="font-weight: bold;">{{bill.category}}</span>
+                            <br>
+                            <span>{{bill.subCategory}}</span>
+                        </v-flex>
+                        <v-flex xs7 class="text-right" v-if="loading && outtakeSelect === bill">
+                            <v-progress-circular indeterminate class="primary--text"/>
+                        </v-flex>
+                        <v-flex xs7 class="text-right" v-else>
+                            <v-btn @click="$refs[bill.id][0].click()" class="primary mx-2" fab x-small>
+                                <v-icon>receipt</v-icon>
+                            </v-btn>
+                            <v-btn v-show="user === 'admin' || user === 'caixa'" @click="deleteOuttake(bill)" class="error mx-2" fab x-small>
+                                <v-icon>delete</v-icon>
+                            </v-btn>
+                            <v-btn v-show="user === 'admin' || user === 'caixa'" @click="payOuttake(bill)" class="success mx-2" fab x-small placeholder="Complemento">
+                                <v-icon>attach_money</v-icon>
+                            </v-btn>
+                        </v-flex>
+
+                        <v-flex xs12><v-divider></v-divider></v-flex>
+                        <v-flex xs12 class="text-centert">
+                            <span>Colaborador: </span><span style="font-weight: bold">{{bill.colaborator.name}}</span>
+                        </v-flex>
+                        <v-flex xs12><v-divider></v-divider></v-flex>
+                        <v-flex xs12 class="my-2">
+                            <v-layout row wrap>
+                                <v-flex xs12 md2 class="text-center">
+                                    Metodo de Pagamento: <span class="font-weight-bold">{{bill.payment_method}}</span>
+                                </v-flex>
+                                <v-flex xs12 md2 class="text-center">
+                                    Data para Pagamento: <span class="font-weight-bold">{{bill.date_to_pay | dateFilter}}</span>
+                                    <v-icon class="warning--text align-start ml-2"
+                                            v-if="distanceToToday(bill.date_to_pay) < 3 && !(distanceToToday(bill.date_to_pay) <= 0)"
+                                    >warning</v-icon>
+                                    <v-icon class="error--text align-start ml-2"
+                                            v-if="today > bill.date_to_pay"
+                                    >error</v-icon>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <span class="font-italic font-weight-bold">{{bill.description}}</span>
+                                </v-flex>
+
+                                <v-flex xs12><v-divider></v-divider></v-flex>
+
+                                <v-flex xs12 class="mt-4">
                                     <v-layout row wrap>
-                                        <v-flex xs4>
-                                            <v-img :src="bill.unit.logo" width="175px"></v-img>
-                                        </v-flex>
-                                        <v-flex xs8>
-                                            <v-text-field v-model="bill.value"
-                                                          dense
-                                                          rounded
-                                                          outlined
-                                                          persistent-hint
-                                                          :readonly="!isEditing"
-                                                          prepend-inner-icon="monetization_on"
-                                                          class="font-weight-bold"
-                                                          :hint="!isEditing ? 'Clique no icon para editar' : 'Clique no icon para salvar'"
-                                            >
-                                                <template v-slot:append-outer>
-                                                    <v-slide-x-reverse-transition
-                                                            mode="out-in"
-                                                    >
-                                                        <v-icon  :key="`icon-${isEditing}`"
-                                                                 :color="isEditing ? 'success' : 'info'"
-                                                                 @click="isEditing = !isEditing, editBillValue(bill)"
-                                                                 v-text="isEditing ? 'mdi-check-outline' : 'mdi-circle-edit-outline'">
-                                                        </v-icon>
-                                                    </v-slide-x-reverse-transition>
-                                                </template>
-                                            </v-text-field>
-                                        </v-flex>
-                                        <v-flex xs5 class="text-start">
-                                            <span style="font-weight: bold;">{{bill.category}}</span>
-                                            <br>
-                                            <span>{{bill.subCategory}}</span>
-                                        </v-flex>
-                                        <v-flex xs7 class="text-right" v-if="loading && outtakeSelect === bill">
-                                            <v-progress-circular indeterminate class="primary--text"/>
-                                        </v-flex>
-                                        <v-flex xs7 class="text-right" v-else>
-                                            <v-btn @click="$refs[bill.id][0].click()" class="primary mx-2" fab x-small>
-                                                <v-icon>receipt</v-icon>
-                                            </v-btn>
-                                            <v-btn v-show="user === 'admin' || user === 'caixa'" @click="deleteOuttake(bill)" class="error mx-2" fab x-small>
-                                                <v-icon>delete</v-icon>
-                                            </v-btn>
-                                            <v-btn v-show="user === 'admin' || user === 'caixa'" @click="payOuttake(bill)" class="success mx-2" fab x-small placeholder="Complemento">
-                                                <v-icon>attach_money</v-icon>
-                                            </v-btn>
-                                        </v-flex>
-
-                                        <v-flex xs12><v-divider></v-divider></v-flex>
-                                        <v-flex xs12 class="text-centert">
-                                            <span>Colaborador: </span><span style="font-weight: bold">{{bill.colaborator.name}}</span>
-                                        </v-flex>
-                                        <v-flex xs12><v-divider></v-divider></v-flex>
-                                        <v-flex xs12 class="my-2">
+                                        <v-layout column wrap>
+                                            <span class="my-sub-headline mb-4">Anexos</span>
                                             <v-layout row wrap>
-                                                <v-flex xs12 md2 class="text-center">
-                                                    Metodo de Pagamento: <span class="font-weight-bold">{{bill.payment_method}}</span>
-                                                </v-flex>
-                                                <v-flex xs12 md2 class="text-center">
-                                                    Data para Pagamento: <span class="font-weight-bold">{{bill.date_to_pay | dateFilter}}</span>
-                                                    <v-icon class="warning--text align-start ml-2"
-                                                            v-if="distanceToToday(bill.date_to_pay) < 3 && !(distanceToToday(bill.date_to_pay) <= 0)"
-                                                    >warning</v-icon>
-                                                    <v-icon class="error--text align-start ml-2"
-                                                             v-if="today > bill.date_to_pay"
-                                                    >error</v-icon>
-                                                </v-flex>
-                                                <v-flex xs12>
-                                                    <span class="font-italic font-weight-bold">{{bill.description}}</span>
-                                                </v-flex>
-
-                                                <v-flex xs12><v-divider></v-divider></v-flex>
-
-                                                <v-flex xs12 class="mt-4">
-                                                    <v-layout row wrap>
-                                                        <v-layout column wrap>
-                                                            <span class="my-sub-headline mb-4">Anexos</span>
-                                                            <v-layout row wrap>
-                                                                <v-flex v-for="(append, i) in bill.appends" :key="i">
-                                                                    <v-card @click="openAppend(append)" flat>
-                                                                        <v-avatar>
-                                                                            <img :src="append" style="max-width: 124px; max-width: 124px" />
-                                                                        </v-avatar>
-                                                                    </v-card>
-                                                                </v-flex>
-                                                            </v-layout>
-                                                        </v-layout>
-
-                                                        <v-divider vertical/>
-
-                                                        <v-layout column wrap>
-                                                            <span class="my-sub-headline mb-4">Comprovante</span>
-                                                            <v-flex xs12 sm2 class="text-right" v-if="loadingAnexo && outtakeSelect === bill">
-                                                                <v-progress-circular indeterminate class="primary--text"/>
-                                                            </v-flex>
-                                                            <v-layout row wrap v-else>
-                                                                <v-flex v-for="(append, i) in bill.receipts" :key="i">
-                                                                    <v-card @click="openAppend(append)" flat>
-                                                                        <v-avatar>
-                                                                            <img :src="append" style="max-width: 124px; max-width: 124px" />
-                                                                        </v-avatar>
-                                                                    </v-card>
-                                                                </v-flex>
-                                                            </v-layout>
-                                                        </v-layout>
-                                                    </v-layout>
+                                                <v-flex v-for="(append, i) in bill.appends" :key="i">
+                                                    <v-card @click="openAppend(append)" flat>
+                                                        <v-avatar>
+                                                            <img :src="append" style="max-width: 124px; max-width: 124px" />
+                                                        </v-avatar>
+                                                    </v-card>
                                                 </v-flex>
                                             </v-layout>
-                                            <input
-                                                    v-show="false"
-                                                    type="file"
-                                                    :id="bill.id"
-                                                    :ref="bill.id"
-                                                    multiple
-                                                    v-on:change="handleFileUpload(bill)"
-                                            />
-                                        </v-flex>
+                                        </v-layout>
+
+                                        <v-divider vertical/>
+
+                                        <v-layout column wrap>
+                                            <span class="my-sub-headline mb-4">Comprovante</span>
+                                            <v-flex xs12 sm2 class="text-right" v-if="loadingAnexo && outtakeSelect === bill">
+                                                <v-progress-circular indeterminate class="primary--text"/>
+                                            </v-flex>
+                                            <v-layout row wrap v-else>
+                                                <v-flex v-for="(append, i) in bill.receipts" :key="i">
+                                                    <v-card @click="openAppend(append)" flat>
+                                                        <v-avatar>
+                                                            <img :src="append" style="max-width: 124px; max-width: 124px" />
+                                                        </v-avatar>
+                                                    </v-card>
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-layout>
                                     </v-layout>
-                                </v-card>
-                            </v-col>
-                        </v-row>
-                    </v-container>
-                </v-layout>
+                                </v-flex>
+                            </v-layout>
+                            <input
+                                    v-show="false"
+                                    type="file"
+                                    :id="bill.id"
+                                    :ref="bill.id"
+                                    multiple
+                                    v-on:change="handleFileUpload(bill)"
+                            />
+                        </v-flex>
+                    </v-layout>
+                </v-card>
             </v-col>
+
         </v-row>
     </v-container>
 </template>
