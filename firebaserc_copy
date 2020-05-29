@@ -1,0 +1,18 @@
+{
+  "targets": {
+  "prosaude-36f66": {
+        "hosting": {
+          "portal": [
+            "prosaude-36f66.firebaseapp.com"
+          ]
+        }
+      },
+    "prosaudematriz-87ff4": {
+      "hosting": {
+        "portal": [
+          "prosaudematriz-87ff4"
+        ]
+      }
+    }
+  }
+}

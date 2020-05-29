@@ -115,9 +115,9 @@ export default {
                     if(obj.hour)
                         dates.push(day.format('YYYY-MM-DD') + ' ' + obj.hour)
                     else
-                        dates.push(day.format('YYYY-MM-DD')) 
+                        dates.push(day.format('YYYY-MM-DD'))
                 }
-                
+
             }
         });
 
@@ -133,7 +133,7 @@ export default {
             if (!weeks[week]) {
                 weeks[week] = [];
             }
-                 
+
             weeks[week].push(dates[key].format('YYYY-MM-DD'));
         }
 
@@ -150,6 +150,15 @@ export default {
         });
 
         return obj
+    },
+
+    firebaseCollectionToArray(collection) {
+        return collection.docs.map((doc) => {
+            return {
+                id: doc.id,
+                ...doc.data()
+            }
+        })
     }
 }
 

@@ -72,19 +72,9 @@ const actions = {
         await firebase.firestore().collection('users').doc(userId.toString()).collection('budgets').doc(budgetId.toString()).delete();
     },
 
-    async addBudgetToUser({ }, payload) {
+    async addIntake(context, payload) {
         let copyPayload = Object.assign({}, payload);
         functions.removeUndefineds(copyPayload);
-        let specialties = copyPayload.specialties ? Object.assign({}, copyPayload.specialties) : undefined;
-        let exams = copyPayload.exams ? Object.assign({}, copyPayload.exams) : undefined;
-        let user = copyPayload.user ? Object.assign({}, copyPayload.user) : undefined;
-        delete copyPayload.specialties;
-        delete copyPayload.exams;
-        delete copyPayload.user;
-
-        functions.removeUndefineds(specialties);
-        functions.removeUndefineds(exams);
-
         let userRef = firebase.firestore().collection('users').doc(user.cpf);
         await userRef.collection('budgets').doc(copyPayload.id.toString()).set(copyPayload);
 
@@ -235,10 +225,10 @@ const actions = {
 
     async thereIsIntakes(context, payload) {
         return new Promise(async (resolve, reject) => {
-            var findPaymentNumber = firebase.functions().httpsCallable('thereIsPaymentNumber');
+            let findPaymentNumber = firebase.functions().httpsCallable('thereIsPaymentNumber');
             findPaymentNumber({payload: payload}).then((result)=> {
                 if(result.data.Found)
-                    resolve({ ...result.data.Found})
+                    resolve({ ...result.data.Found});
                 else
                     reject({ cost: {...result.data.NotFound}})
             }).catch(function(error) {

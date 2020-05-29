@@ -26,6 +26,7 @@ import DoctorScheduling from './views/Operational/DoctorsAgenda/DoctorScheduling
 
 import MedicalCare from "./views/DoctorAttendance/MedicalCare";
 import TicketsDashboard from "./views/Operational/Tickets/TicketsDashboard";
+import RoomDashboard from "./views/Operational/Tickets/RoomDashboard";
 
 
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
@@ -218,6 +219,14 @@ let mainRoutes = [
     path: '/senhas',
     name: 'Tickets',
     component : TicketsDashboard,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/senhas/:sector_name',
+    name: 'Roons',
+    component : RoomDashboard,
     meta: {
       requiresAuth: false,
     }

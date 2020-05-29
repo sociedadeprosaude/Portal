@@ -722,7 +722,10 @@ exports.cancelAppointment = functions.runWith(heavyFunctionsRuntimeOpts).https.o
                     .set(data);
                 return;
             })
-        });
+            return
+        }).catch(() => {
+
+    })
 
 
     //Para consultas do tipo Consulta e possuem um retorno associado. É necessário remover o agendamento do retorno associado

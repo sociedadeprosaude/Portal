@@ -199,7 +199,8 @@
                         this.loaderPaymentNumber = false
                     })
                     .catch(response => {
-                        let cost = response.cost
+
+                        let cost = response.cost;
                         if (cost && cost.price === 0) {
                             this.status = "Pago";
                             this.loaderPaymentNumber = false
@@ -210,6 +211,11 @@
 
             async listenMoreConsultations() {
                 this.daysToListen += 3;
+                await this.$store.dispatch('listenConsultations',
+                    {
+                        start_date: new Date().toISOString().substr(0, 10),
+                        final_date: moment().add(this.daysToListen, 'days').format('YYYY-MM-DD 23:59:59')
+                    });
                 this.$emit('refreshDate', this.daysToListen);
             },
         }
