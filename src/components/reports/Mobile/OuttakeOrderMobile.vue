@@ -2,27 +2,24 @@
     <v-container class="ma-0 pa-0">
         <v-row class="align-center justify-center">
             <v-col cols="12" xs="12" class="primary">
-                <v-card class="primary elevation-0 white--text">
-                    <v-card-title class="font-weight-bold display-1 align-lg-center justify-center">
+                <v-card class="primary elevation-0 white--text mt-n5">
+                    <v-card-title class="font-weight-bold align-lg-center justify-center">
                         R$ {{ totalPayable }}
                     </v-card-title>
-                    <v-card-subtitle class="white--text">Débito Restante</v-card-subtitle>
-                    <!--<v-sheet elevation="0" class="pa-10 primary">-->
-                    <v-chip-group active-class="primary--text">
-                            <v-chip v-for="(day,i) in dates" :key="i" class="white" small @click="mappingDates(day)">
+                    <v-card-subtitle style="font-size: x-small" class="white--text">Débito Restante</v-card-subtitle>
+                    <v-chip-group active-class="primary--text" class="mt-n5 mb-n3 mx-0 my-0">
+                            <v-chip v-for="(day,i) in dates" :key="i" class="white" x-small @click="mappingDates(day)">
                                 <span style="font-weight: bold;"> {{ day | dateFilter }} </span>
                             </v-chip>
                     </v-chip-group>
-                    <!--</v-sheet>-->
                 </v-card>
             </v-col>
         </v-row>
-        <v-row>
-            <v-col sm="12" md="8">
+        <v-row class="align-center justify-center">
+            <v-col cols="12" xs="12">
                 <v-layout
                         row
                         wrap
-                        style="width:100%"
                         class="align-center justify-center"
                         v-for="(outtakesGroup, i) in outtakesByDate(outtakes)"
                         :key="i"
@@ -36,13 +33,13 @@
 
                     <v-container fluid grid-list-sm class="py-0 my-3 mx-2">
                         <v-row>
-                            <v-col>
-                                <v-card class="pa-2 my-3" v-for="(bill) in outtakesGroup" :key="bill.id">
+                            <v-col cols="12" xs="12">
+                                <v-card class="pa-2 my-3 elevation-0" v-for="(bill) in outtakesGroup" :key="bill.id">
                                     <v-layout row wrap>
-                                        <v-flex xs6>
+                                        <v-flex xs4>
                                             <v-img :src="bill.unit.logo" width="175px"></v-img>
                                         </v-flex>
-                                        <v-flex xs6>
+                                        <v-flex xs8>
                                             <v-text-field v-model="bill.value"
                                                           dense
                                                           rounded
@@ -75,14 +72,13 @@
                                             <v-progress-circular indeterminate class="primary--text"/>
                                         </v-flex>
                                         <v-flex xs7 class="text-right" v-else>
-                                            <v-btn @click="$refs[bill.id][0].click()" class="primary mx-2" fab small>
+                                            <v-btn @click="$refs[bill.id][0].click()" class="primary mx-2" fab x-small>
                                                 <v-icon>receipt</v-icon>
                                             </v-btn>
-                                            <v-btn v-show="user === 'admin' || user === 'caixa'" @click="deleteOuttake(bill)" class="error mx-2" fab small>
+                                            <v-btn v-show="user === 'admin' || user === 'caixa'" @click="deleteOuttake(bill)" class="error mx-2" fab x-small>
                                                 <v-icon>delete</v-icon>
                                             </v-btn>
-                                            <v-btn v-show="user === 'admin' || user === 'caixa'" @click="payOuttake(bill)" class="success mx-2" fab small
-                                                   placeholder="Complemento">
+                                            <v-btn v-show="user === 'admin' || user === 'caixa'" @click="payOuttake(bill)" class="success mx-2" fab x-small placeholder="Complemento">
                                                 <v-icon>attach_money</v-icon>
                                             </v-btn>
                                         </v-flex>
@@ -163,15 +159,6 @@
                     </v-container>
                 </v-layout>
             </v-col>
-<!--            <v-col sm="12" md="4" order-sm="first" order-md="last">
-                <v-date-picker
-                        full-width
-                        class="mx-4 sticky"
-                        v-model="date"
-                        :allowed-dates="allowedDates"
-                        locale="pt-br">
-                </v-date-picker>
-            </v-col>-->
         </v-row>
     </v-container>
 </template>
@@ -223,6 +210,8 @@
                 for(let item in holder){
                     total = total + holder[item][0].value
                 }
+                //total = Math.round(total)
+                total = total.toFixed(2)
                 return total
             }
         },
@@ -369,10 +358,4 @@
 </script>
 
 <style scoped>
-    .sticky {
-        top: 100px;
-        position: sticky;
-        position: -webkit-sticky;
-        z-index: 1;
-    }
 </style>
