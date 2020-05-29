@@ -97,7 +97,7 @@
                 </v-layout>
             </v-flex>
             <v-flex xs12 class="text-right">
-                <span>1.8</span>
+                <span>1.9</span>
             </v-flex>
         </v-layout>
         <v-layout row wrap v-else class="align-center">
