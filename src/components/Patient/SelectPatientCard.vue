@@ -563,8 +563,8 @@
                 let user = this.$store.getters.selectedPatient;
                 if (user) {
                     this.name = user.name;
-                    this.cpf = user.cpf
-                    //this.numAss = user.association_number
+                    this.cpf = user.cpf;
+                   // this.numAss = user.association_number
                 }
                 return this.$store.getters.selectedPatient
             },
@@ -661,7 +661,7 @@
                     cpf: this.cpf ? this.cpf.replace(/\./g, '').replace('-', '') : undefined,
                     email: this.email,
                     rg: this.rg ? this.rg.replace(/\./g, '').replace('-', '').replace('.', '') : undefined,
-                    association_number: this.numAss,
+                    association_number: this.numAss.toString(),
                     birth_date: moment(this.birthDate,"DD/MM/YYYY").format("YYYY-MM-DD"),
                     sex: this.sex,
                     telephones: this.telephones,
