@@ -125,38 +125,7 @@
                                         <v-layout row wrap class="align-center"></v-layout>
                                     </v-flex>
                                 </v-layout>
-                                <v-layout
-                                        row
-                                        wrap
-                                        class="align-center pa-4 mt-4"
-                                        style="border: 2px solid #2196f3; border-radius: 16px"
-                                >
-                                    <v-flex xs12 style="height: 550px"></v-flex>
-                                </v-layout>
                             </v-card>
-                        </v-flex>
-                        <v-flex xs6 class="text-center">
-                            <v-layout row wrap justify-end align-end>
-                                <v-flex xs5>
-                                    <span class="my-sub-headline primary--text" style="font-size: 1.4em">Triagem</span>
-                                    <v-text-field prefix="Peso:" type="number" suffix="KG" hide-details
-                                                  v-model="p"></v-text-field>
-                                    <v-text-field
-                                            prefix="Altura:"
-                                            type="number"
-                                            suffix="cm"
-                                            hide-details
-                                            v-model="alt"
-                                    ></v-text-field>
-                                    <v-text-field
-                                            prefix="P.A:"
-                                            suffix="PA"
-                                            v-mask="'##x##'"
-                                            v-model="pa"
-                                            hide-details
-                                    ></v-text-field>
-                                </v-flex>
-                            </v-layout>
                         </v-flex>
                         <v-flex xs12 class="mt-2 py-1 px-4">
                             <v-layout row wrap class="align-center"></v-layout>
