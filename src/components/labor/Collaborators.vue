@@ -6,7 +6,7 @@
                     <v-expansion-panel v-for="(user, i) in collaborators" :key="i">
                         <v-expansion-panel-header>
                             <v-flex xs4>
-                                <span>{{user.name}}</span>
+                                <span>{{user.name.toUpperCase()}}</span>
                             </v-flex>
                             <v-flex xs4>
                                 <span>{{user.email}}</span>
@@ -126,6 +126,7 @@
     export default {
 
         name: "Collaborators",
+        props: ['collaborators'],
 
         data: () => ({
             loading: true,
@@ -144,11 +145,6 @@
         },
 
         computed: {
-            collaborators () {
-                return this.$store.getters.colaborators.filter(a => {
-                    return a.status !== 'pending'
-                })
-            },
 
             units() {
                 return this.$store.getters.units

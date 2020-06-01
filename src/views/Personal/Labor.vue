@@ -4,16 +4,17 @@
             <v-flex xs12>
                 <span class="my-headline">Colaboradores</span>
             </v-flex>
-            <Collaborators/>
+            <Collaborators :collaborators="collaborators"/>
 
             <v-flex xs12>
                 <span class="my-headline">Médicos</span>
             </v-flex>
             <Doctors/>
 
-            <v-flex xs12 class="text-center">
-                <paymeny-report :colaborators="colab"/>
+            <v-flex xs12>
+                <span class="my-headline">Pagamentos</span>
             </v-flex>
+            <paymeny-report :colaborators="collaborators"/>
         </v-layout>
 
         <v-layout row wrap v-else>
@@ -38,6 +39,20 @@
             Collaborators,
             Doctors
         },
+        data: () => ({
+            loading: true,
+        }),
+        async mounted(){
+            await this.$store.dispatch('getColaborators');
+            this.loading = false
+        },
+        computed: {
+            collaborators () {
+                return this.$store.getters.colaborators.filter(a => {
+                    return a.status !== 'pending'
+                })
+            },
+        }
 
 
     }
