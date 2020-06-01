@@ -661,7 +661,7 @@
                     cpf: this.cpf ? this.cpf.replace(/\./g, '').replace('-', '') : undefined,
                     email: this.email,
                     rg: this.rg ? this.rg.replace(/\./g, '').replace('-', '').replace('.', '') : undefined,
-                    association_number: this.numAss.toString(),
+                    association_number: this.numAss ? this.numAss.toString() : undefined,
                     birth_date: moment(this.birthDate,"DD/MM/YYYY").format("YYYY-MM-DD"),
                     sex: this.sex,
                     telephones: this.telephones,
