@@ -30,7 +30,7 @@
                     </v-layout>
                 </v-card-text>
                 <v-card-text v-if="categorySelect === 'appointment'" class="ma-0 pa-0 my-1">
-                    <v-layout row v-for="n in item.doctors" :key="n.crm" class="my-2">
+                    <v-layout row v-for="n in item.doctors" class="my-2">
                         <v-flex xs12 class="align-center justify-center text-center">
                             <span class="font-weight-bold">{{n.name}}</span>
                         </v-flex>

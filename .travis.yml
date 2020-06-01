@@ -4,7 +4,6 @@ node_js:
 branches:
   only:
     - production
-    - master
 install:
   - npm install -g firebase-tools
 before_script:
@@ -12,7 +11,7 @@ before_script:
 script:
   - npm run build
   - ls -la
-  - firebase use prosaude-36f66 --token $FIREBASE_TOKEN
+  - firebase use $SITE_URL --token $FIREBASE_TOKEN
   - firebase target:apply hosting portal $SITE_URL
   - firebase deploy --token $FIREBASE_TOKEN --only hosting
 #after_script:
