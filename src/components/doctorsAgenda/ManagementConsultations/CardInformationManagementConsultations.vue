@@ -79,7 +79,7 @@
             </v-card>
         </v-flex>
         <v-dialog v-model="documentDialog">
-            <consultation-document :consultation="consultation" ></consultation-document>
+            <consultation-document @close="documentDialog=false" :consultation="consultation" ></consultation-document>
         </v-dialog>
     </v-layout>
 </template>
