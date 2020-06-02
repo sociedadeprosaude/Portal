@@ -157,17 +157,21 @@
                 </v-layout>
             </v-flex>
         </v-layout>
+        <v-dialog v-model="budgetToPrintDialog" v-if="budgetToPrint">
+            <budget-to-print @close="budgetToPrintDialog = false" :budget="budgetToPrint"/>
+        </v-dialog>
     </v-container>
 </template>
 <script>
 
     import SubmitButton from "../SubmitButton";
+    import BudgetToPrint from "../../components/cashier/BudgetToPrint";
 
 
     export default {
         name: "Cart",
         components: {
-
+            BudgetToPrint,
             SubmitButton,
 
         },
