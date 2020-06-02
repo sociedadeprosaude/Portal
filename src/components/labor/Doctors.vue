@@ -57,7 +57,7 @@
 
             doctors() {
                 return this.$store.getters.colaboratorsDoctors.filter(a => {
-                    return a.status !== 'pending' && a.uid
+                    return a.status !== 'pending' && a.crm
                 })
             },
 
