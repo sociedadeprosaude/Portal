@@ -2,7 +2,7 @@ import firebase, {firestore} from "firebase";
 
 const state = {
     colabortors: [],
-    colaboratorsDoctors: [],
+    colaboratorDoctors: [],
 };
 
 const mutations = {
@@ -10,7 +10,7 @@ const mutations = {
         state.colabortors = payload
     },
     setColaboratorDoctor(state, payload) {
-        state.colaboratorsDoctors = payload
+        state.colaboratorDoctors = payload
     },
 };
 
@@ -18,7 +18,7 @@ const actions = {
     async getColaborators(context) {
         try {
             let colabList = await context.dispatch('searchUser', {
-                type: 'colaborator'
+                type: 'COLABORATOR'
             });
             context.commit('setColaborators', colabList.sort((a, b) => {
                 if (a.name > b.name) return 1;
@@ -33,7 +33,7 @@ const actions = {
     async getColaboratorsDoctors(context) {
         try {
             let colabList = await context.dispatch('searchUser', {
-                type: 'doctor'
+                type: 'DOCTOR'
             });
             context.commit('setColaboratorDoctor', colabList.sort((a, b) => {
                 if (a.name > b.name) return 1;
@@ -67,7 +67,7 @@ const getters = {
         return state.colabortors
     },
     colaboratorsDoctors(state) {
-        return state.colaboratorsDoctors
+        return state.colaboratorDoctors
     },
 };
 

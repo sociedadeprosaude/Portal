@@ -133,6 +133,12 @@ const actions = {
             else if (field === 'association_number' ){
                 usersRef = usersRef.where('association_number' ,'>=', searchFields[field]);
                 break
+                }
+            else{
+                if(field === 'type'){
+                    usersRef = usersRef.where('type' ,'==', searchFields[field]);
+                    break
+                }
             }
 
 
