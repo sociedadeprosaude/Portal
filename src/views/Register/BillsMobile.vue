@@ -18,19 +18,16 @@
 
                     <v-flex xs12>
                         <v-container>
-                            <v-row>
-                                <v-row justify="center">
-                                    <v-flex xs12>
-                                        <v-chip-group class="pa-5" column active-class="primary--text">
-                                            <v-chip color="grey" v-for="(month,i) in months" :key="i" class="white" @click="mapMonths(month)">
-                                                <span v-if="month.format('YYYY') === year" style="font-weight: bold;"> {{ month.format('MMMM') }}</span>
-                                                <span v-if="month.format('YYYY') !== year" style="font-weight: bold;"> {{ month.format('MM/YYYY') }}</span>
-                                            </v-chip>
-                                        </v-chip-group>
-                                    </v-flex>
-                                </v-row>
+                            <v-row justify="space-around">
+                                <v-col cols="12" xs="12">
+                                    <v-chip-group class="mt-n6" active-class="primary--text">
+                                        <v-chip color="grey lighten-2" v-for="(month,i) in months" :key="i" class="white" @click="mapMonths(month)">
+                                            <span v-if="month.format('YYYY') === year" style="font-weight: bold; font-size: small"> {{ month.format('MMMM') }}</span>
+                                            <span v-if="month.format('YYYY') !== year" style="font-weight: bold; font-size: small"> {{ month.format('MM/YYYY') }}</span>
+                                        </v-chip>
+                                    </v-chip-group>
+                                </v-col>
                             </v-row>
-
 
                             <v-container v-if="loadingFilter">
                                 <v-row align="center" justify="center">
@@ -51,7 +48,7 @@
                             </v-container>
 
                             <v-flex xs12 class="mt-4" v-else>
-                                <v-card class="pa-4 my-4" v-for="bill in selectedPaidOuttakesList" :key="bill.id" @click="mapping(bill)">
+                                <v-card class="pa-4 my-4 elevation-0" v-for="bill in selectedPaidOuttakesList" :key="bill.id" @click="mapping(bill)">
                                     <v-layout class="align-center justify-center" row wrap>
                                         <v-flex xs11>
                                             <div>
@@ -74,14 +71,13 @@
                 </v-card>
             </v-dialog>
 
-            <v-dialog hide-overlay transition="dialog-bottom-transition" v-model="dialogInfoPaidBill">
+            <v-dialog hide-overlay persistent transition="dialog-bottom-transition" v-model="dialogInfoPaidBill">
                 <v-card outlined>
+                    <v-btn icon @click="dialogInfoPaidBill = false">
+                        <v-icon color="black">close</v-icon>
+                    </v-btn>
                     <v-card-title class="headline font-weight-bold align-center justify-center">
                         {{bill.category}}
-                        <v-spacer></v-spacer>
-                        <v-btn icon @click="dialogInfoPaidBill = false">
-                            <v-icon color="black">close</v-icon>
-                        </v-btn>
                     </v-card-title>
                     <v-card-title class="headline font-weight-bold align-center justify-center">
                         <span style="font-weight: bold; color: red">R$ {{ bill.value }}</span>
@@ -133,6 +129,7 @@
                     </v-card-text>
                 </v-card>
             </v-dialog>
+
         </div>
 
         <v-row class="align-center justify-center">
