@@ -1,21 +1,21 @@
 <template>
-    <v-container v-if="consultation" fluid class="fill-height ma-0 pa-0">
+    <v-container v-if="consultation" fluid class=" ma-0 pa-0">
         <v-layout>
             <v-flex>
-                <v-card>
+                <v-card flat class="item-to-print ma-0 mb-0" >
                     <v-layout row wrap>
-                        <v-flex xs6 class="text-left white">
-                            <v-btn class="transparent" text @click="$emit('close')">
+                        <v-flex xs6 class="text-left hidden-print-only">
+                            <v-btn  text @click="$emit('close')">
                                 <v-icon>close</v-icon>
                             </v-btn>
                         </v-flex>
-                        <v-flex xs6 class="text-right white">
-                            <v-btn class="transparent" text :loading="loader" @click="print()">
+                        <v-flex xs6 class="text-right hidden-print-only">
+                            <v-btn text :loading="loader" @click="print()">
                                 <v-icon>print</v-icon>
                             </v-btn>
                         </v-flex>
                         <v-flex>
-                            <v-card flat class="pa-10 item-to-print">
+                            <v-card flat class="pa-10 py-2">
                                 <v-flex xs12 class="white" style="color: white">.</v-flex>
                                 <v-layout
                                         row
@@ -127,17 +127,23 @@
                                 </v-layout>
                             </v-card>
                         </v-flex>
-                        <v-flex xs12 class="mt-2 py-1 px-4">
-                            <v-layout row wrap class="align-center"></v-layout>
+                        <v-flex>
+                            <v-card flat class="pa-10 py-2">
+                                <v-flex xs12 class="white" style="color: white">.</v-flex>
+                                <v-layout
+                                        row
+                                        wrap
+                                        class="align-center pa-4"
+                                        style="border: 2px solid #2196f3; border-radius: 16px"
+                                >
+                                    <v-flex xs12 style="height: 550px" >
+                                    </v-flex>
+                                    <v-flex xs12 class="mt-2 py-1 px-4">
+                                        <v-layout row wrap class="align-center"></v-layout>
+                                    </v-flex>
+                                </v-layout>
+                            </v-card>
                         </v-flex>
-                    </v-layout>
-                    <v-layout
-                            row
-                            wrap
-                            class="align-center pa-4 mt-4"
-                            style="border: 2px solid #2196f3; border-radius: 16px"
-                    >
-                        <v-flex xs12 style="height: 550px"></v-flex>
                     </v-layout>
                 </v-card>
             </v-flex>
