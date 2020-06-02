@@ -148,7 +148,7 @@
 </template>
 
 <script>
-
+    import {mask} from 'vue-the-mask';
     import Exams from "../../components/clinics/Exams";
     import Consultations from "../../components/clinics/Consultations";
     import Products from "../../components/clinics/Products";
@@ -156,9 +156,9 @@
     import RegisterNewClinic from "../../components/clinics/RegisterNewClinic";
     import RegisterClinicPassword from "../../components/clinics/RegisterClinicPassword";
     import SubmitButton from "../../components/SubmitButton";
-
-
     export default {
+        components: {Configurations, Products, Consultations, Exams, SubmitButton, RegisterNewClinic, RegisterClinicPassword},
+        directives: {mask},
         data: () => ({
             Exam: false,
             Consultation: false,
