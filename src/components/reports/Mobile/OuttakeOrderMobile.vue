@@ -25,13 +25,15 @@
                     <span style="color: #003B8F; font-weight: bold; font-size: small"> {{i | dateFilter}} - {{daydate(i)}} - {{outtakesGroup.length}} conta(s)</span>
                     <v-flex xs12 class="primary" style="height: 2px;"></v-flex>
                 </div>
-                
+            </v-col>
+            <v-col cols="12" xs="12">
                 <v-card class="pa-2 my-3 elevation-0" v-for="(bill) in outtakesGroup" :key="bill.id">
                     <v-layout row wrap>
                         <v-flex xs4>
                             <v-img :src="bill.unit.logo" width="175px"></v-img>
                         </v-flex>
-                        <v-flex xs8>
+                        <v-flex xs1><span style="color: transparent">.</span></v-flex>
+                        <v-flex xs7>
                             <v-text-field v-model="bill.value"
                                           dense
                                           rounded
@@ -56,9 +58,9 @@
                             </v-text-field>
                         </v-flex>
                         <v-flex xs5 class="text-start">
-                            <span style="font-weight: bold;">{{bill.category}}</span>
+                            <span style="font-weight: bold; font-size: small">{{bill.category}}</span>
                             <br>
-                            <span>{{bill.subCategory}}</span>
+                            <span style="font-weight: bold; font-size: small">{{bill.subCategory}}</span>
                         </v-flex>
                         <v-flex xs7 class="text-right" v-if="loading && outtakeSelect === bill">
                             <v-progress-circular indeterminate class="primary--text"/>
@@ -74,19 +76,18 @@
                                 <v-icon>attach_money</v-icon>
                             </v-btn>
                         </v-flex>
-
-                        <v-flex xs12><v-divider></v-divider></v-flex>
+                        <v-flex xs12><v-divider color="grey"></v-divider></v-flex>
                         <v-flex xs12 class="text-centert">
-                            <span>Colaborador: </span><span style="font-weight: bold">{{bill.colaborator.name}}</span>
+                            <span>Colaborador: </span><span style="font-weight: bold; font-size: small">{{bill.colaborator.name}}</span>
                         </v-flex>
-                        <v-flex xs12><v-divider></v-divider></v-flex>
+                        <v-flex xs12><v-divider color="grey"></v-divider></v-flex>
                         <v-flex xs12 class="my-2">
                             <v-layout row wrap>
                                 <v-flex xs12 md2 class="text-center">
-                                    Metodo de Pagamento: <span class="font-weight-bold">{{bill.payment_method}}</span>
+                                    <span>Metodo de Pagamento: </span><span style="font-weight: bold; font-size: small">{{bill.payment_method}}</span>
                                 </v-flex>
                                 <v-flex xs12 md2 class="text-center">
-                                    Data para Pagamento: <span class="font-weight-bold">{{bill.date_to_pay | dateFilter}}</span>
+                                    <span>Data para Pagamento: </span><span style="font-weight: bold; font-size: small">{{bill.date_to_pay | dateFilter}}</span>
                                     <v-icon class="warning--text align-start ml-2"
                                             v-if="distanceToToday(bill.date_to_pay) < 3 && !(distanceToToday(bill.date_to_pay) <= 0)"
                                     >warning</v-icon>
@@ -95,10 +96,10 @@
                                     >error</v-icon>
                                 </v-flex>
                                 <v-flex xs12>
-                                    <span class="font-italic font-weight-bold">{{bill.description}}</span>
+                                    <span style="font-weight: bold; font-size: small; font-style: italic">{{bill.description}}</span>
                                 </v-flex>
 
-                                <v-flex xs12><v-divider></v-divider></v-flex>
+                                <v-flex xs12><v-divider color="grey"></v-divider></v-flex>
 
                                 <v-flex xs12 class="mt-4">
                                     <v-layout row wrap>
