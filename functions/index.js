@@ -631,6 +631,54 @@ exports.onUpdateExam = functions.firestore.document('exams/{name}').onUpdate((ch
     }
 });
 
+
+
+exports.fixSchedulesPrices = functions.https.onRequest(async (req, res) => {
+    const firestore = admin.firestore();
+    let snapshot = await firestore.collection('schedules').get()
+    snapshot.forEach((schedule)=>{
+        let data = schedule.data()
+        console.log('Specialty->',data)
+        if(!data.specialty.price){
+            firestore.collection('specialties').doc(data.specialty.name).get()
+            .then((specialty) => {
+                if (specialty.exists){
+                    let specialtyData = specialty.data()
+                    schedule.ref.update({
+                        specialty:{name:specialtyData.name,id:specialtyData.id,price:specialtyData.price}
+                    })           
+                } 
+            })
+            .catch(err => console.log(err));
+        }
+    })
+    res.status(200).send('Sucesso! Executando function para concertar especialidades de schedules sem preço'); 
+});
+
+exports.fixSpecialtiesPrices = functions.https.onRequest(async (req, res) => {
+    const firestore = admin.firestore();
+    let snapshot = await firestore.collection('specialties').get()
+    snapshot.forEach((specialty)=>{
+        let data = specialty.data()
+        if(!data.price){
+            firestore.collection('specialties').doc(data.name).collection('doctors').get()
+            .then((docs) => {
+                if (!docs.empty){
+                    let firstPrice = undefined
+                    docs.forEach((doc)=> {
+                        if(!firstPrice)
+                            firstPrice = doc.data().price
+                    })
+
+                    specialty.ref.update({price:firstPrice})
+                } 
+            })
+            .catch(err => console.log(err));
+        }
+    })
+    res.status(200).send('Sucesso! Executando function para concertar especialidades sem preço'); 
+});
+
 exports.onUpdateSpecialty = functions.firestore.document('specialties/{name}').onUpdate((change, context) => {
     const firestore = admin.firestore();
     const specialtyUpdated = change.after.data();
@@ -669,6 +717,21 @@ exports.onUpdateSpecialty = functions.firestore.document('specialties/{name}').o
         //                 .catch(err => console.log(err));
         //         }))
         //     .catch(err => console.log(err));
+    }else{
+        firestore.collection('specialties').doc(specialtyUpdated.name).collection('doctors').get()
+            .then((docs) => {
+                if (!docs.empty){
+                    let firstPrice = undefined
+                    docs.forEach((doc)=> {
+                        if(!firstPrice)
+                            firstPrice = doc.data().price
+                    })
+
+                    firestore.collection('specialties').doc(specialtyUpdated.name).update({price:firstPrice})
+                } 
+                return null
+            })
+            .catch(err => console.log(err));
     }
 });
 
