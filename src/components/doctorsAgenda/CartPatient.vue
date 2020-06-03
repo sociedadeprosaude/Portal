@@ -1,7 +1,7 @@
 <template>
     <v-container fluid class="ma-0 pa-0">
         <v-layout row nowrap style="width: 100%">
-            <v-card class="my-2 grey_light" width="100%" v-if="exams.length > 0">
+            <v-card class="my-2 background" width="100%" v-if="exams.length > 0">
                 <h4 class="text-left ml-2">Exames</h4>
                 <v-divider/>
                 <v-card-text v-for="(item) in exams" :key="item.name" class="ma-0 pa-0 my-1">
@@ -21,7 +21,7 @@
                     <v-btn rounded dense x-small class="error" block width="100%" @click="removeItem(item)">Remover Item</v-btn>
                 </v-card-text>
             </v-card>
-            <v-card class="my-2 grey_light" width="100%" v-if="consultations.length > 0">
+            <v-card class="my-2 background" width="100%" v-if="consultations.length > 0">
                 <h4 class="text-left ml-2">Consultas</h4>
                 <v-divider/>
                 <v-card-text v-for="(item) in consultations" :key="item.doctor.name" class="ma-0 pa-0 my-1">
@@ -44,7 +44,6 @@
                     <v-btn rounded dense x-small class="error" block width="100%" @click="removeItem(item)">Remover Item</v-btn>
                 </v-card-text>
             </v-card>
-
         </v-layout>
     </v-container>
 </template>

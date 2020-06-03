@@ -2,6 +2,16 @@
     <v-container fluid class="ma-0 pa-0">
         <v-layout row wrap>
             <v-flex>
+                <v-flex sm12 xs12>
+                    <v-combobox label="Médico"
+                                v-model="doctor"
+                                outlined
+                                dense
+                                :items="doctors"
+                                item-text="name"
+                                return-object
+                    />
+                </v-flex>
                 <v-flex sm12 xs12 v-if="payment.paymentForm.length > 1">
                     <v-layout row wrap class="align-center" v-for="(x ,index) in payment.paymentForm" :key="index">
                         <v-flex xs12>
@@ -157,18 +167,24 @@
                 </v-layout>
             </v-flex>
         </v-layout>
+        <v-dialog v-model="budgetToPrintDialog" v-if="budgetToPrint">
+            <budget-to-print @close="budgetToPrintDialog = false" :budget="budgetToPrint"/>
+        </v-dialog>
     </v-container>
 </template>
 <script>
 
-    import SubmitButton from "../SubmitButton"
+
+    import SubmitButton from "../SubmitButton";
+    import BudgetToPrint from "../../components/cashier/BudgetToPrint";
+
     let moment = require('moment');
 
 
     export default {
         name: "Cart",
         components: {
-
+            BudgetToPrint,
             SubmitButton,
 
         },
@@ -200,7 +216,7 @@
                 budgetToPrint: undefined,
                 budgetToPrintDialog: false,
                 selectedIntake: undefined,
-                selectedDoctor: undefined,
+                doctor: undefined,
                 receiptDialog: false,
             }
         },
@@ -312,7 +328,7 @@
             },
             adicionarFormaDePagamento() {
                 this.valuesPayments.push('');
-                this.payments.push('')
+                this.payments.push('');
                 this.payment.paymentForm.push('');
                 this.payment.value.push('');
                 this.payment.parcel.push('1')
@@ -328,49 +344,15 @@
             removeItem(item) {
                 this.$store.commit('removeShoppingCartItem', item)
             },
-            shareOrcamento() {
-                var text = "";
-                if (this.exames.length > 0) {
-                    text = "Exames\n";
-                    for (let index = 0; index < this.exames.length; index++) {
-                        text += "\t" + this.exames[index].nome + "\n\tClinica: " + this.exames[index].clinica + "\n\tPreço: " + this.exames[index].preco + "\n"
-                    }
-                }
-                if (this.consultas.length > 0) {
-                    text += this.exames.length ? "\n\nConsultas\n" : "Consultas\n";
-                    for (let index = 0; index < this.consultas.length; index++) {
-                        text += "\t" + this.consultas[index].nome + "\n\tClinica: " + this.consultas[index].clinica + "\n\tPreço: " + this.consultas[index].preco + "\n"
-
-                    }
-                }
-
-                text += "\n\nSubtotal: R$" + this.total.toLocaleString('en-us', {minimumFractionDigits: 2});
-                text += "\nDesconto: R$" + this.moneyDiscount.toLocaleString('en-us', {minimumFractionDigits: 2});
-                text += "\nTotal: R$" + this.totalNovo.toLocaleString('en-us', {minimumFractionDigits: 2});
-                return text
-            },
             imprimir() {
                 this.saveBudget(this.generateBudget());
                 this.budgetToPrint = this.selectedBudget;
                 this.budgetToPrintDialog = true
             },
-            pesquisarUsuario() {
-                this.$store.dispatch('searchPatient', this.codigo).then(() => {
-                    this.categorySelect = 'appointment';
-                    for (this.i = 0; this.i < this.pedid[0].consultas.length; this.i++) {
-                        this.addProducts(this.pedid[0].consultas[this.i], this.pedid[0].consultas[this.i].preco, this.pedid[0].consultas[this.i].custo, this.pedid[0].consultas[this.i].clinica)
-                    }
-                    this.categorySelect = 'exams';
-                    for (this.i = 0; this.i < this.pedid[0].exames.length; this.i++) {
-                        this.addProducts(this.pedid[0].exames[this.i], this.pedid[0].exames[this.i].price, this.pedid[0].exames[this.i].cost, this.pedid[0].exames[this.i].clinic)
-                    }
-                }).catch(() => {
-                    this.aviso = true;
-                })
-            },
+
             generateBudget() {
                 let id = moment().valueOf();
-                let budget = {
+                return {
                     id: id,
                     specialties: this.consultas.length > 0 ? this.consultas : undefined,
                     exams: this.exames.length > 0 ? this.exames : undefined,
@@ -383,12 +365,11 @@
                     user: this.$store.getters.selectedPatient,
                     colaborator: this.$store.getters.user,
                     parcelar: this.parcelar,
-                    doctor: this.selectedDoctor,
+                    doctor: this.doctor ? this.doctor : undefined,
                     payments: this.payment.paymentForm,
                     valuesPayments: this.payment.value,
                     unit: this.selectedUnit
-                };
-                return budget
+                }
             },
             async updateBudgetsIntakes() {
                 let user = this.patient;
@@ -413,21 +394,13 @@
                 await this.saveBudget(this.generateBudget());
                 let newBudget = this.generateBudget();
                 newBudget.id = this.selectedBudget.id;
-                console.log(newBudget);
+
                 this.$store.commit('setSelectedBudget', newBudget);
                 if (!this.selectedBudget) {
                     await this.saveBudget(this.generateBudget())
-                } else {
-                    let newBudget = this.generateBudget();
-                    if (!this.selectedBudget.id) {
-                        this.selectedBudget.id = this.now
-                    }
-                    newBudget.id = this.selectedBudget.id;
-                    this.$store.commit('setSelectedBudget', newBudget)
                 }
                 await this.$store.dispatch('addIntake', this.selectedBudget);
                 let porcentagem = (this.selectedBudget.discount / this.selectedBudget.subTotal);
-
                 if (porcentagem >= 0.5 || parseFloat(this.searchBudget.subTotal) > this.selectedBudget.cost) {
 
                     await this.$store.dispatch('DiscountWarning', {
@@ -438,6 +411,7 @@
                         cpf: this.selectedBudget.colaborator.cpf
                     })
                 }
+
                 this.updateBudgetsIntakes();
                 this.receipt(this.selectedBudget);
                 this.paymentLoading = false;
@@ -447,10 +421,12 @@
                     user: this.patient,
                     budgetId: this.selectedBudget.id.toString(),
                 };
+
                 await this.$store.dispatch('deleteBudget', data);
                 await this.$store.commit('setSelectedBudget', undefined);
                 this.$store.commit('clearShoppingCartItens');
-                this.card = false
+                this.card = false;
+                this.clearCart();
             },
             async receipt(intake) {
                 this.selectedIntake = await this.$store.dispatch('getIntakeDetails', intake);

@@ -4,7 +4,7 @@
             <v-flex sm3 lg3 class="primary">
                 <DataToSearchConsultation @GetConsultations="schedules= $event" :daysToListen="daysToListen"/>
             </v-flex>
-            <v-flex sm6 lg6>
+            <v-flex sm6 lg6 class="white">
                 <SchedulesConsultations :Consultations="schedules" @refreshDate="daysToListen = $event"/>
             </v-flex>
             <v-flex sm3 lg3 class="primary">
