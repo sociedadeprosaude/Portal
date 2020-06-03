@@ -52,7 +52,8 @@ const actions = {
             await firebase.firestore().collection('users').doc(id).update({
                 name:payload.name,
                 telephones:payload.telephones,
-                address:payload.address
+                address:payload.address,
+                bankData: payload.bank,
             });
 
             commit('setUser',payload)
