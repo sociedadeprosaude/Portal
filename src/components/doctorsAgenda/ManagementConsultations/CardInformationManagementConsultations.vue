@@ -43,13 +43,12 @@
                             </v-layout>
                         </v-card>
                     </v-flex>
-                    <v-flex class="ml-4 mt-4 " v-if="consultation.status">
+                    <v-card-actions class="ml-4 mt-4 " v-if="consultation.status">
                         <v-btn
                                 color="white"
                                 rounded
                                 :disabled="consultation.status === 'Cancelado'"
                                 @click="deletedConsultation()"
-                                class="mx-2"
                                 :loading="cancelLoading"
                         > Cancelar
                         </v-btn>
@@ -65,7 +64,6 @@
                         <v-btn
                                 color="white"
                                 rounded
-                                class="mx-2 ma-2"
                                 :disabled="consultation.status !== 'Pago' && consultation.consultation_hour"
                                 @click="setConsultationHour(consultation)"
                         >
@@ -79,7 +77,7 @@
                         >
                             Recibo
                         </v-btn>
-                    </v-flex>
+                    </v-card-actions>
                     <v-flex xs12 class="mt-4 mb-2">
                         <v-divider color="white"/>
                     </v-flex>
