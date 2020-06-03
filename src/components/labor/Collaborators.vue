@@ -70,6 +70,31 @@
                                 <v-flex xs12>
                                     <span class="my-headline text-left mt-2">Grupos</span>
                                 </v-flex>
+
+                                <v-flex xs4>
+                                    <v-treeview
+                                            return-object
+                                            open-all
+                                            dense
+                                            selectable
+                                            v-model="selection"
+                                            :items="items"
+                                    ></v-treeview>
+                                </v-flex>
+
+                                <v-col class="pa-6" cols="6">
+                                    <template v-if="!selection.length">
+                                        No nodes selected.
+                                    </template>
+                                    <template v-else>
+                                        <div v-for="(node,i) in selection" :key="i">
+                                            {{ node.name }}
+                                        </div>
+                                    </template>
+                                </v-col>
+
+                                {{selection}}
+
                                 <v-flex xs3 class="my-2" v-for="group in groups" :key="group">
                                     <v-btn
                                             @click="setGroup(user, group)"
@@ -129,6 +154,59 @@
         props: ['collaborators'],
 
         data: () => ({
+            selection: [],
+            items: [
+                {
+                    id: 0,
+                    name: 'All :',
+                    children: [
+                        {
+                            id: 1,
+                            name: 'Operacional :',
+                            children: [
+                                {
+                                    id: 2,
+                                    name: 'Agenda',
+                                    children: [
+                                        {id: 21, name: 'Agendamento'},
+                                        {id: 22, name: 'GerenciamentoConsultas'},
+                                        {id: 23, name: 'ConsultasPacientes'},
+                                        {id: 24, name: 'ConsultasCanceladas'},
+                                        {id: 25, name: 'Cids'},
+                                        {id: 26, name: 'DeletarConsultas'},
+                                        {id: 27, name: 'Declaration'},
+                                    ],
+                                },
+                                {id: 3, name: 'Caixa'},
+                                {id: 4, name: 'Senhas'},
+                                {id: 5, name: 'Tabela Semanal'},
+                            ],
+                        },
+                        {
+                            id: 6,
+                            name: 'Cadastro e Registros :',
+                            children: [
+                                {
+                                    id: 7,
+                                    name: 'Agenda',
+                                    children: [
+                                        {id: 71, name: 'Agendamento'},
+                                        {id: 72, name: 'GerenciamentoConsultas'},
+                                        {id: 73, name: 'ConsultasPacientes'},
+                                        {id: 74, name: 'ConsultasCanceladas'},
+                                        {id: 75, name: 'Cids'},
+                                        {id: 76, name: 'DeletarConsultas'},
+                                        {id: 77, name: 'Declaration'},
+                                    ],
+                                },
+                                {id: 8, name: 'Caixa'},
+                                {id: 9, name: 'Senhas'},
+                                {id: 10, name: 'Tabela Semanal'},
+                            ],
+                        },
+                    ]
+                }
+            ],
             loading: true,
             registerSalary: false,
             registerAdvance: false,
