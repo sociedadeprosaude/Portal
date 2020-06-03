@@ -8,6 +8,8 @@ const { parse } = require('json2csv');
 admin.initializeApp();
 const defaultRoute = '/analise-exames'
 
+exports.listeners = require('./Listeners/listeners')
+
 const heavyFunctionsRuntimeOpts = {
     timeoutSeconds: 540,
     memory: '2GB'
@@ -17,9 +19,7 @@ exports.removeUnnappointedConsultations = functions.runWith(heavyFunctionsRuntim
     let db = admin.firestore()
     var startDate = moment(request.query.date, 'YYYY-MM-DD HH:mm')
     var finalDate = moment(startDate).add(5, 'days')
-    console.log(`Datas: ${startDate.format('DD/MM/YYYY HH:mm')} até ${finalDate.format('DD/MM/YYYY HH:mm')}`)
     let consCollection = await db.collection('consultations').where('date', '>', startDate.format('YYYY-MM-DD HH:mm')).where('date', '<', finalDate.format('YYYY-MM-DD HH:mm')).get()
-    console.log('size: ', consCollection.docs.length)
     while (consCollection.docs.length > 0) {
         console.log(`Deletando: ${startDate.format('DD/MM/YYYY HH:mm')} até ${finalDate.format('DD/MM/YYYY HH:mm')}`)
         consCollection.forEach((docRef) => {
@@ -72,22 +72,6 @@ exports.addMessage = functions.https.onRequest(async (req, res) => {
     });
 });
 
-
-exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate(async (change, context) => {
-    let db = admin.firestore()
-    let userRef = db.collection('users').doc(context.params.cpf)
-    let user = (await userRef.get()).data()
-    if (!user.association_number) {
-        let associatedOpRef = db.collection('operational').doc('associated')
-        let numAss = (await associatedOpRef.get()).data().quantity
-        userRef.update({
-            association_number: numAss
-        })
-        associatedOpRef.update({
-            quantity: admin.firestore.FieldValue.increment(1)
-        })
-    }
-})
 
 exports.listenChangeInSpecialtiesSubcollections = functions.firestore.document('specialties/{specialtyId}/{collectionId}/{docId}').onWrite(async (change, context) => {
     convertSpecialtySubcollectionInObject((await admin.firestore().collection('specialties').doc(context.params.specialtyId).get()))
@@ -646,13 +630,14 @@ exports.fixSchedulesPrices = functions.https.onRequest(async (req, res) => {
                     let specialtyData = specialty.data()
                     schedule.ref.update({
                         specialty:{name:specialtyData.name,id:specialtyData.id,price:specialtyData.price}
-                    })           
-                } 
+                    })
+                }
+                return
             })
             .catch(err => console.log(err));
         }
     })
-    res.status(200).send('Sucesso! Executando function para concertar especialidades de schedules sem preço'); 
+    res.status(200).send('Sucesso! Executando function para concertar especialidades de schedules sem preço');
 });
 
 exports.fixSpecialtiesPrices = functions.https.onRequest(async (req, res) => {
@@ -671,12 +656,13 @@ exports.fixSpecialtiesPrices = functions.https.onRequest(async (req, res) => {
                     })
 
                     specialty.ref.update({price:firstPrice})
-                } 
+                }
+                return
             })
             .catch(err => console.log(err));
         }
     })
-    res.status(200).send('Sucesso! Executando function para concertar especialidades sem preço'); 
+    res.status(200).send('Sucesso! Executando function para concertar especialidades sem preço');
 });
 
 exports.onUpdateSpecialty = functions.firestore.document('specialties/{name}').onUpdate((change, context) => {
@@ -728,7 +714,7 @@ exports.onUpdateSpecialty = functions.firestore.document('specialties/{name}').o
                     })
 
                     firestore.collection('specialties').doc(specialtyUpdated.name).update({price:firstPrice})
-                } 
+                }
                 return null
             })
             .catch(err => console.log(err));
