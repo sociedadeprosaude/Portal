@@ -8,7 +8,7 @@
         <v-icon v-if="success" class="white--text">done</v-icon>
         {{success ? '' : text}}
     </v-btn>
-    <v-progress-circular indeterminate color="primary" v-else></v-progress-circular>
+    <v-progress-circular indeterminate color="primary" v-else/>
 </template>
 
 <script>
@@ -25,7 +25,7 @@
             success: function (val) {
                 if (val) {
                     setTimeout(() => {
-                        this.$emit('reset')
+                        this.$emit('reset');
                         this.success = false
                     }, 1000)
                 }

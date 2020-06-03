@@ -43,7 +43,7 @@ const actions = {
             }
         }
         if (copyPayload.user) {
-            context.dispatch('addBudgetToUser', payload)
+            await firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('budgets').doc(copyPayload.id.toString()).set(copyPayload)
         }
     },
 

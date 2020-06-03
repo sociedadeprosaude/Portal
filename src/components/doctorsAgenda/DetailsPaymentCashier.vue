@@ -161,7 +161,8 @@
 </template>
 <script>
 
-    import SubmitButton from "../SubmitButton";
+    import SubmitButton from "../SubmitButton"
+    let moment = require('moment');
 
 
     export default {
@@ -251,7 +252,8 @@
                 let tamanho = this.payment.paymentForm.length;
                 let pagando = 0;
                 if (tamanho === 1 && this.payment.paymentForm[0] !== '') {
-                    this.payment.value[0] = parseFloat(this.total)
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                    this.payment.value[0] = parseFloat(this.total);
                     pagando = parseFloat(this.payment.value[0]);
                 } else {
                     for (let i = 0; i < tamanho; i++) {
@@ -367,7 +369,7 @@
                 })
             },
             generateBudget() {
-                let id = moment().valueOf()
+                let id = moment().valueOf();
                 let budget = {
                     id: id,
                     specialties: this.consultas.length > 0 ? this.consultas : undefined,
@@ -408,10 +410,11 @@
                 if (!user) {
                     return
                 }
-                await this.saveBudget(this.generateBudget())
+                await this.saveBudget(this.generateBudget());
                 let newBudget = this.generateBudget();
                 newBudget.id = this.selectedBudget.id;
-                this.$store.commit('setSelectedBudget', newBudget)
+                console.log(newBudget);
+                this.$store.commit('setSelectedBudget', newBudget);
                 if (!this.selectedBudget) {
                     await this.saveBudget(this.generateBudget())
                 } else {
@@ -423,11 +426,11 @@
                     this.$store.commit('setSelectedBudget', newBudget)
                 }
                 await this.$store.dispatch('addIntake', this.selectedBudget);
-                let porcentagem = (this.selectedBudget.discount / this.selectedBudget.subTotal)
+                let porcentagem = (this.selectedBudget.discount / this.selectedBudget.subTotal);
 
                 if (porcentagem >= 0.5 || parseFloat(this.searchBudget.subTotal) > this.selectedBudget.cost) {
 
-                    this.$store.dispatch('DiscountWarning', {
+                    await this.$store.dispatch('DiscountWarning', {
                         orcamento: this.selectedBudget.id,
                         date: this.selectedBudget.date,
                         discont: ((this.selectedBudget.discount / this.selectedBudget.subTotal) * 100),
@@ -444,7 +447,6 @@
                     user: this.patient,
                     budgetId: this.selectedBudget.id.toString(),
                 };
-
                 await this.$store.dispatch('deleteBudget', data);
                 await this.$store.commit('setSelectedBudget', undefined);
                 this.$store.commit('clearShoppingCartItens');
