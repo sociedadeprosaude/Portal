@@ -749,7 +749,8 @@
                     this.addresses = [];
                     this.dependents = [];
                     this.dependentName = undefined;
-                    this.$emit('removed')
+                    this.$emit('removed');
+                    this.clearCart();
                 }
                 this.$store.commit('setSelectedPatient', user);
                 this.$store.commit('clearSelectedDependent');
@@ -850,7 +851,11 @@
                 if (e.key === 'Enter') {
                     this.searchPatient()
                 }
-            }
+            },
+            clearCart() {
+                this.$store.commit('clearShoppingCartItens');
+                this.$store.commit('setSelectedBudget', undefined);
+            },
         },
         mounted() {
             window.addEventListener('keydown', this.handleEnter)
