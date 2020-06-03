@@ -23,6 +23,9 @@
                                         class="align-center pa-4"
                                         style="border: 2px solid #2196f3; border-radius: 16px"
                                 >
+                                    <v-flex xs12 class="justify-center py-6">
+                                        <p class="font-weight-bold">COMPROVANTE DE AGENDAMENTO</p>
+                                    </v-flex>
                                     <v-flex xs6 class="text-left">
                                         <v-layout column wrap>
                                             <strong>Hoje: {{ hoje }} - {{dia}}</strong>
@@ -96,48 +99,6 @@
                                             </v-flex>
                                         </v-layout>
                                     </v-flex>
-                                    <v-flex xs6 class="text-center">
-                                        <v-layout row wrap justify-end align-end>
-                                            <!--<v-layout column wrap>-->
-                                            <v-flex xs5>
-                                                <span class="my-sub-headline primary--text" style="font-size: 1.4em">Triagem</span>
-                                                <v-text-field prefix="Peso:" type="number" suffix="KG" hide-details
-                                                              v-model="p"></v-text-field>
-                                                <v-text-field
-                                                        prefix="Altura:"
-                                                        type="number"
-                                                        suffix="cm"
-                                                        hide-details
-                                                        v-model="alt"
-                                                ></v-text-field>
-                                                <v-text-field
-                                                        prefix="P.A:"
-                                                        suffix="PA"
-                                                        v-mask="'##x##'"
-                                                        v-model="pa"
-                                                        hide-details
-                                                ></v-text-field>
-                                            </v-flex>
-                                            <!--</v-layout>-->
-                                        </v-layout>
-                                    </v-flex>
-                                    <v-flex xs12 class="mt-2 py-1 px-4">
-                                        <v-layout row wrap class="align-center"></v-layout>
-                                    </v-flex>
-                                </v-layout>
-                            </v-card>
-                        </v-flex>
-                        <v-flex>
-                            <v-card flat class="pa-10 py-2">
-                                <v-flex xs12 class="white" style="color: white">.</v-flex>
-                                <v-layout
-                                        row
-                                        wrap
-                                        class="align-center pa-4"
-                                        style="border: 2px solid #2196f3; border-radius: 16px"
-                                >
-                                    <v-flex xs12 style="height: 550px" >
-                                    </v-flex>
                                     <v-flex xs12 class="mt-2 py-1 px-4">
                                         <v-layout row wrap class="align-center"></v-layout>
                                     </v-flex>
@@ -156,7 +117,7 @@
     import {mask} from 'vue-the-mask';
 
     export default {
-        name: "Receipt",
+        name: "ConsultationReceipt",
         props: ['consultation', 'openDocument'],
         computed: {
 
