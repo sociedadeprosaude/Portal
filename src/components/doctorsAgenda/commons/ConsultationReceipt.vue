@@ -117,7 +117,7 @@
     import {mask} from 'vue-the-mask';
 
     export default {
-        name: "Receipt",
+        name: "ConsultationReceipt",
         props: ['consultation', 'openDocument'],
         computed: {
 
