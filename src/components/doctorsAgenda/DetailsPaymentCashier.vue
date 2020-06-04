@@ -371,6 +371,7 @@
                     unit: this.selectedUnit
                 }
             },
+
             async updateBudgetsIntakes() {
                 let user = this.patient;
                 let intakes = await this.$store.dispatch('getUserIntakes', user);
@@ -417,11 +418,13 @@
                 this.paymentLoading = false;
                 this.paymentSuccess = true;
 
+                this.budgetToPrint = this.selectedBudget;
+                this.budgetToPrintDialog = true;
+
                 let data = {
                     user: this.patient,
                     budgetId: this.selectedBudget.id.toString(),
                 };
-
                 await this.$store.dispatch('deleteBudget', data);
                 await this.$store.commit('setSelectedBudget', undefined);
                 this.$store.commit('clearShoppingCartItens');
