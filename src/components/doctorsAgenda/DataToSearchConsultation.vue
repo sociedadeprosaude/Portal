@@ -173,7 +173,7 @@
                 let consultations = [];
                 schedules.forEach((schedule) => {
                     let keys = Object.keys(schedule.days);
-                    let dates = this.datesOfInterval({weekDays: keys});
+                    let dates = this.datesOfInterval({weekDays:keys,expiration_date:schedule.expiration_date});
 
                     dates.forEach((date) => {
                         let hourConsultation = schedule.days[moment(date).weekday()].hour;
@@ -206,7 +206,7 @@
                 });
                 let day = startDate;
                 for (let i = 0; i < this.daysToListen; i++) {
-                    if (weekDays.indexOf(day.weekday()) > -1) {
+                    if (weekDays.indexOf(day.weekday()) > -1 && day.isSameOrBefore(moment(payload.expiration_date,'YYYY-MM-DD'))) {
                         dates.push(day.format('YYYY-MM-DD'))
                     }
                     day = startDate.add(1, 'days');

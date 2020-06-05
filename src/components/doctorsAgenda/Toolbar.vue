@@ -12,8 +12,8 @@
                     <v-list-item-content>{{ item.title }}</v-list-item-content>
                 </v-list-item>
             </v-list>
-        </v-navigation-drawer>
-        <v-app-bar color="primary_dark hidden-xs-only" fixed dark class="hidden-print-only" v-if="selectedUnit">
+        </v-navigation-drawer> 
+        <v-app-bar color="primary_dark hidden-xs-only" fixed dark class="hidden-print-only" >
             <v-app-bar-nav-icon v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer"/>
 
              <v-toolbar-title>
@@ -95,7 +95,7 @@
 <script>
 import SelectPatientCard from "../Patient/SelectPatientCard";
 export default {
-  name: "AgendaToolbar",
+  name: "Toolbar",
   components: {
     SelectPatientCard
   },
