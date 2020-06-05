@@ -206,7 +206,7 @@
                 });
                 let day = startDate;
                 for (let i = 0; i < this.daysToListen; i++) {
-                    if (weekDays.indexOf(day.weekday()) > -1 && day.isSameOrBefore(moment(payload.expiration_date,'YYYY-MM-DD'))) {
+                    if (weekDays.indexOf(day.weekday()) > -1 && (payload.expiration_date && day.isSameOrBefore(moment(payload.expiration_date,'YYYY-MM-DD')))) {
                         dates.push(day.format('YYYY-MM-DD'))
                     }
                     day = startDate.add(1, 'days');
