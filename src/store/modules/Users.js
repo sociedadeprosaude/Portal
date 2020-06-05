@@ -203,10 +203,6 @@ const actions = {
         try {
 
             functions.removeUndefineds(patient);
-            if (patient.type) {
-                patient.type = patient.type.toUpperCase()
-            }
-            patient.created_at = moment().format('YYYY-MM-DD HH:mm:ss');
 
             let user;
             if (!patient.cpf) {
@@ -214,8 +210,19 @@ const actions = {
             }
             let foundUser = await firebase.firestore().collection('users').doc(patient.cpf).get();
             if (foundUser.exists) {
-                user = await firebase.firestore().collection('users').doc(patient.cpf).update(patient)
+                user = await firebase.firestore().collection('users').doc(patient.cpf).update(patient);
+                if (foundUser.data().type !== 'PATIENT'){
+                    let type = foundUser.data().type.toUpperCase();
+                    user = await firebase.firestore().collection('users').doc(patient.cpf).update({
+                        type: type
+                    })
+                }
+                
             } else {
+                if (patient.type) {
+                    patient.type = patient.type.toUpperCase()
+                }
+                patient.created_at = moment().format('YYYY-MM-DD HH:mm:ss');
                 user = await firebase.firestore().collection('users').doc(patient.cpf).set(patient)
             }
 
