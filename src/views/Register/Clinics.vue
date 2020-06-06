@@ -37,7 +37,7 @@
                     <template v-slot:item.action="{ item }">
                         <v-tooltip left color="warning">
                             <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" @click="selectClinic(item, searchIndex(item)), dataClinic=true" small dark fab
+                                <v-btn v-on="on" @click="makePropForEditing(item), editingClinic=true" small dark fab
                                        color="warning" class="mr-2">
                                     <v-icon>edit</v-icon>
                                 </v-btn>
@@ -115,6 +115,9 @@
         <v-dialog v-model="dataClinic" width="500px" text hide-overlay>
             <RegisterNewClinic @close-dialog="dataClinic = false"/>
         </v-dialog>
+        <v-dialog v-model="editingClinic" width="500px" text hide-overlay>
+            <EditClinic :clinic="clinic" @close-dialog="editingClinic = false"/>
+        </v-dialog>
         <v-dialog v-model="Product" width="850px" text hide-overlay>
             <Products @close-dialog="Product = false"/>
         </v-dialog>
@@ -156,13 +159,16 @@
     import RegisterNewClinic from "../../components/clinics/RegisterNewClinic";
     import RegisterClinicPassword from "../../components/clinics/RegisterClinicPassword";
     import SubmitButton from "../../components/SubmitButton";
+    import EditClinic from "../../components/clinics/EditClinic";
     export default {
-        components: {Configurations, Products, Consultations, Exams, SubmitButton, RegisterNewClinic, RegisterClinicPassword},
+        components: {EditClinic, Configurations, Products, Consultations, Exams, SubmitButton, RegisterNewClinic, RegisterClinicPassword},
         directives: {mask},
         data: () => ({
             Exam: false,
             Consultation: false,
             dataClinic: false,
+            clinic: undefined,
+            editingClinic: false,
             areyoushure: false,
             selectedClin: undefined,
             Product: false,
@@ -229,6 +235,10 @@
 
             searchIndex (item) {
                 return this.clinics.indexOf(item);
+            },
+
+            makePropForEditing(item){
+                this.clinic = this.clinics[this.clinics.indexOf(item)]
             },
 
             selectClinic(item, index) {

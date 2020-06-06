@@ -16,3 +16,14 @@ exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate
         })
     }
 })
+
+exports.ListenUpdateClinic = functions.firestore.document('clinics/{name}').onUpdate((change, context) => {
+    const firestore = admin.firestore();
+    const clinicUpdated = change.after.data();
+    if (clinicUpdated) {
+        console.log('clinica ?:', clinicUpdated)
+        //Updatando a clinica da subCollection clinics presente dentro da collection /exams
+/*        firestore.collection('exams').doc(/!*nome do exame*!/).
+        collection('clinics').doc(clinicUpdated.name).update(clinicUpdated);*/
+    }
+});
