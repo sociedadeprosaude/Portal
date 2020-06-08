@@ -1,14 +1,15 @@
 <template>
     <v-container class="ma-0 pa-0">
         <v-layout column>
-            <v-flex xs12>
+            <v-flex xs12 class="ma-0 pa-0   ">
                 <v-combobox
+                        class="pa-0 ma-0"
                         :items="specialties"
                         v-model="specialty"
                         item-text="name"
                         return-object
                         placeholder="Especialidade"
-                        rounded solo dense
+                        dense solo
                         color="blue"
                         clearable>
                     <template v-slot:selection="data">
@@ -20,13 +21,13 @@
                                 @click.stop="data.parent.selectedIndex = data.index"
                                 @input="data.parent.selectItem(data.item)"
                                 text-color="white"
-                                color="info"
+                                color="primary"
                         >{{ data.item.name }}
                         </v-chip>
                     </template>
                 </v-combobox>
             </v-flex>
-            <v-flex xs12 class="">
+            <v-flex xs12 class="mt-n4 pa-0">
                 <v-combobox class="pa-0 pa"
                             v-model="doctor"
                             :items="doctors"
@@ -34,7 +35,6 @@
                             item-text="name"
                             label="Médico"
                             outlined
-                            rounded
                             dense
                             chips
                             solo
@@ -50,19 +50,19 @@
                                 @click.stop="data.parent.selectedIndex = data.index"
                                 @input="data.parent.selectItem(data.item)"
                                 text-color="white"
-                                color="info"
+                                color="primary"
                         >{{ data.item.name }}
                         </v-chip>
                     </template>
                 </v-combobox>
             </v-flex>
-            <v-flex xs12>
+            <v-flex xs12 class="mt-n4 pa-0">
                 <v-select
                         v-model="clinic"
                         :items="clinics"
                         item-text="name"
                         label="Clínica"
-                        rounded solo dense
+                        solo dense
                         clearable
                 >
                     <template v-slot:selection="data">
@@ -74,7 +74,7 @@
                                 @click.stop="data.parent.selectedIndex = data.index"
                                 @input="data.parent.selectItem(data.item)"
                                 text-color="white"
-                                color="info"
+                                color="primary"
                         >{{ data.item.name }}
                         </v-chip>
                     </template>

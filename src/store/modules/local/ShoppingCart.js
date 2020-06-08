@@ -2,10 +2,14 @@ import Vue from 'vue'
 
 const state = {
     items: [],
-    budget: undefined
+    budget: undefined,
+    doctor: undefined
 };
 
 const mutations = {
+    setSelectedDoctor(state, doctor) {
+        state.doctor = doctor
+    },
     setSelectedBudget(state, payload) {
         state.budget = payload
     },
@@ -38,6 +42,9 @@ const actions = {
 const getters = {
     selectedBudget(state) {
         return state.budget
+    },
+    shoppingCartSelectedDoctor(state) {
+      return state.doctor
     },
     getShoppingCartItems(state) {
         return state.items
