@@ -1,33 +1,35 @@
 <template>
     <v-container fluid class="ma-0 pa-0">
         <v-layout row nowrap style="width: 100%">
-            <v-card v-for="(item, i) in Items" :key="i" class="my-2 grey_light" width="100%">
+            <v-card v-for="(item, i) in Items" :key="i" class="my-2" width="100%">
                 <v-layout row wrap v-if="categorySelect === 'package'"
                           class="align-center justify-center text-center my-1">
-                    <v-btn rounded dense x-small class="blue_grey" block width="100%" @click="selectBudget(item)"
+                    <v-btn rounded dense x-small block class="background font-weight-bold" @click="selectBudget(item)"
                            v-if="item.percentageDiscount">
                         {{item.name}}
                         <v-spacer/>
                         {{parseFloat((item.price * parseFloat(item.percentageDiscount)) / 100).toFixed(2)}}
                     </v-btn>
 
-                    <v-btn rounded dense x-small block class="blue_grey" @click="selectBudget(item)" v-else>
+                    <v-btn rounded dense x-small block class="background font-weight-bold" @click="selectBudget(item)" v-else>
                         {{item.name}}
                         <v-spacer/>
                         {{parseFloat(item.price).toFixed(2)}}
                     </v-btn>
                 </v-layout>
                 <h4 v-else class="text-left ml-2">{{item.name}}</h4>
-                <v-divider v-else/>
+                <v-divider/>
                 <v-card-text v-if="categorySelect === 'exam'" class="ma-0 pa-0 my-1">
-                    <v-layout row v-for="n in item.clinics" :key="n.name" class="my-2" style="width: 100%">
-                        <v-btn rounded dense x-small block class="blue_grey"
-                               @click="addProduct(item, n, 'exam')">
-                            {{n.name}}
-                            <v-spacer/>
-                            {{n.price}}
-                        </v-btn>
-                    </v-layout>
+                    <v-flex xs12>
+                        <v-layout row v-for="n in item.clinics" :key="n.name" class="my-2" style="width: 100%">
+                            <v-btn rounded dense x-small block class="background font-weight-bold"
+                                   @click="addProduct(item, n, 'exam')">
+                                {{n.name}}
+                                <v-spacer/>
+                                {{n.price}}
+                            </v-btn>
+                        </v-layout>
+                    </v-flex>
                 </v-card-text>
                 <v-card-text v-if="categorySelect === 'appointment'" class="ma-0 pa-0 my-1">
                     <v-layout row v-for="n in item.doctors" class="my-2">
@@ -37,15 +39,18 @@
                         <v-flex xs12>
                             <v-divider/>
                         </v-flex>
-                        <v-layout row no-wrap v-for="clinic in n.clinics"
-                                  class="align-center justify-center text-center my-1">
-                            <v-btn rounded dense x-small class="blue_grey" block width="100%"
-                                   @click="addProduct(item, n, 'appointment', clinic)">
-                                {{clinic.name}}
-                                <v-spacer/>
-                                {{n.price}}
-                            </v-btn>
-                        </v-layout>
+                        <v-flex xs12>
+                            <v-layout row no-wrap v-for="clinic in n.clinics"
+                                      :key="clinic.name + n.name"
+                                      class="align-center justify-center text-center my-1">
+                                <v-btn rounded dense x-small block class="background font-weight-bold"
+                                       @click="addProduct(item, n, 'appointment', clinic)">
+                                    {{clinic.name}}
+                                    <v-spacer/>
+                                    {{n.price}}
+                                </v-btn>
+                            </v-layout>
+                        </v-flex>
                     </v-layout>
                 </v-card-text>
                 <v-card-text v-if="categorySelect === 'package'">

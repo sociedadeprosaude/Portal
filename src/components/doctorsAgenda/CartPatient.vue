@@ -1,10 +1,10 @@
 <template>
     <v-container fluid class="ma-0 pa-0">
         <v-layout row nowrap style="width: 100%">
-            <v-card class="my-2 grey_light" width="100%" v-if="exams.length > 0">
+            <v-card class="my-2 white" width="100%" v-if="exams.length > 0">
                 <h4 class="text-left ml-2">Exames</h4>
                 <v-divider/>
-                <v-card-text v-for="(item) in exams" :key="item.name" class="ma-0 pa-0 my-1">
+                <v-card-text v-for="(item) in exams" :key="item.name" class="ma-0 pa-0 my-1 font-weight-bold">
                     <v-flex xs12 class="align-center justify-center text-center">
                         <span class="font-weight-bold">{{item.name}}</span>
                     </v-flex>
@@ -12,27 +12,27 @@
                         <v-divider/>
                     </v-flex>
                     <v-flex xs12>
-                        <v-layout row wrap class="mx-1">
+                        <v-layout row wrap class="mx-1 black--text">
                             <span>{{item.clinic.name}}</span>
                             <v-spacer/>
                             <span>R$ {{item.price}}</span>
                         </v-layout>
                     </v-flex>
-                    <v-btn rounded dense x-small class="error" block width="100%" @click="removeItem(item)">Remover Item</v-btn>
+                    <v-btn rounded dense x-small class="error px-6" @click="removeItem(item)">Remover Item</v-btn>
                 </v-card-text>
             </v-card>
             <v-card class="my-2 white" width="100%" v-if="consultations.length > 0">
                 <h4 class="text-left ml-2">Consultas</h4>
                 <v-divider/>
-                <v-card-text v-for="(item) in consultations" :key="item.doctor.name" class="ma-0 pa-0 my-1">
+                <v-card-text v-for="(item) in consultations" :key="item.doctor.name" class="ma-0 pa-0 my-1 font-weight-bold">
                     <v-flex xs12 class="align-center justify-center text-center">
-                        <span class="font-weight-bold">{{item.name}}</span>
+                        <span>{{item.name}}</span>
                     </v-flex>
                     <v-flex xs12>
                         <v-divider/>
                     </v-flex>
                     <v-flex xs12>
-                        <v-layout row wrap class="mx-1">
+                        <v-layout row wrap class="mx-1 black--text">
                             <v-flex xs12 class="text-left">
                                 <span>{{item.doctor.name}}</span>
                             </v-flex>
@@ -41,7 +41,7 @@
                             <span>R$ {{item.doctor.price}}</span>
                         </v-layout>
                     </v-flex>
-                    <v-btn rounded dense x-small class="error" block width="100%" @click="removeItem(item)">Remover Item</v-btn>
+                    <v-btn rounded dense x-small class="error px-6" @click="removeItem(item)">Remover Item</v-btn>
                 </v-card-text>
             </v-card>
 
