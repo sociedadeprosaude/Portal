@@ -19,7 +19,7 @@ exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate
     }
 })
 
-exports.ListenUpdateClinic = functions.firestore.document('clinics/{name}').onUpdate((change, context) => {
+exports.ListenUpdateClinic = functions.firestore.document('clinics/{name}').onUpdate( async (change, context) => {
     const firestore = admin.firestore();
     const clinicUpdated = change.after.data();
 
