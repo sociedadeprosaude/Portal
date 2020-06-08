@@ -628,7 +628,7 @@ exports.fixSchedulesPrices = functions.https.onRequest(async (req, res) => {
                 if (specialty.exists){
                     let specialtyData = specialty.data()
                     schedule.ref.update({
-                        specialty:{name:specialtyData.name,id:specialty.id,price:specialtyData.price}
+                        specialty:{name:specialtyData.name,id:specialtyData.id,price:specialtyData.price}
                     })
                 }
                 return
