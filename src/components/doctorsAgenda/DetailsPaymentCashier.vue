@@ -164,6 +164,19 @@
                             Pagar
                         </submit-button>
                     </v-flex>
+                    <v-flex xs12 class="mt-4">
+                        <v-fade-transition>
+                            <v-alert
+                                    v-model="alertMessage.model"
+                                    dense
+                                    border="right"
+                                    colored-border
+                                    type="error"
+                                    elevation="2"
+                            >{{alertMessage.text}}
+                            </v-alert>
+                        </v-fade-transition>
+                    </v-flex>
                 </v-layout>
             </v-flex>
         </v-layout>
@@ -216,8 +229,12 @@
                 budgetToPrint: undefined,
                 budgetToPrintDialog: false,
                 selectedIntake: undefined,
-                doctor: undefined,
                 receiptDialog: false,
+                noDoctorKeyWord: 'Nenhum',
+                alertMessage: {
+                    text: '',
+                    model: false
+                }
             }
         },
         computed: {
@@ -293,6 +310,9 @@
                     return true
                 }
             },
+            selectedDoctor() {
+                return this.$store.getters.shoppingCartSelectedDoctor
+            },
         },
         watch: {
             percentageDiscount: function () {
@@ -365,7 +385,7 @@
                     user: this.$store.getters.selectedPatient,
                     colaborator: this.$store.getters.user,
                     parcelar: this.parcelar,
-                    doctor: this.doctor ? this.doctor : undefined,
+                    doctor: this.selectedDoctor.name === this.noDoctorKeyWord ? undefined : this.selectedDoctor,
                     payments: this.payment.paymentForm,
                     valuesPayments: this.payment.value,
                     unit: this.selectedUnit
@@ -390,8 +410,18 @@
                 this.paymentLoading = true;
                 let user = this.patient;
                 if (!user) {
+                    this.paymentLoading = false
+                    this.alertMessage.model = true
+                    this.alertMessage.text = 'Escolha um paciente'
                     return
                 }
+                if (!this.selectedDoctor) {
+                    this.paymentLoading = false
+                    this.alertMessage.model = true
+                    this.alertMessage.text = 'Escolha um médico que requisitou este orçamento'
+                    return
+                }
+                this.alertMessage.model = false
                 await this.saveBudget(this.generateBudget());
                 let newBudget = this.generateBudget();
                 newBudget.id = this.selectedBudget.id;

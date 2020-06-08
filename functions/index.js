@@ -21,7 +21,6 @@ exports.removeUnnappointedConsultations = functions.runWith(heavyFunctionsRuntim
     var finalDate = moment(startDate).add(5, 'days')
     let consCollection = await db.collection('consultations').where('date', '>', startDate.format('YYYY-MM-DD HH:mm')).where('date', '<', finalDate.format('YYYY-MM-DD HH:mm')).get()
     while (consCollection.docs.length > 0) {
-        console.log(`Deletando: ${startDate.format('DD/MM/YYYY HH:mm')} até ${finalDate.format('DD/MM/YYYY HH:mm')}`)
         consCollection.forEach((docRef) => {
             if (!docRef.data().user) {
                 db.collection('consultations').doc(docRef.id).delete()
