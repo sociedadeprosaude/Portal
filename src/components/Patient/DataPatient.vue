@@ -505,9 +505,7 @@
             selectedPatient() {
                 let user = this.$store.getters.selectedPatient;
                 if (user) {
-                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.name = user.name;
-                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.cpf = user.cpf
                 }
                 return this.$store.getters.selectedPatient
@@ -565,8 +563,8 @@
                 let user = this.$store.getters.selectedPatient;
                 if (user) {
                     this.name = user.name;
-                    this.cpf = user.cpf
-                    //this.numAss = user.association_number
+                    this.cpf = user.cpf;
+                    // this.numAss = user.association_number
                 }
                 return this.$store.getters.selectedPatient
             },
@@ -663,7 +661,7 @@
                     cpf: this.cpf ? this.cpf.replace(/\./g, '').replace('-', '') : undefined,
                     email: this.email,
                     rg: this.rg ? this.rg.replace(/\./g, '').replace('-', '').replace('.', '') : undefined,
-                    association_number: this.numAss,
+                    association_number: this.numAss ? this.numAss.toString() : undefined,
                     birth_date: moment(this.birthDate,"DD/MM/YYYY").format("YYYY-MM-DD"),
                     sex: this.sex,
                     telephones: this.telephones,
@@ -745,7 +743,7 @@
                     this.name= undefined;
                     this.numAss= undefined;
                     this.rg = undefined;
-                    this.birth_date = undefined;
+                    this.birthDate = undefined;
                     this.email = undefined;
                     this.telephones = [''];
                     this.addresses = [];
@@ -755,12 +753,21 @@
                 }
                 this.$store.commit('setSelectedPatient', user);
                 this.$store.commit('clearSelectedDependent');
+                this.updateAccessedTo(user);
                 this.foundUsers = undefined;
                 this.addPatient = false
             },
 
+            async updateAccessedTo (user) {
+
+                await this.$store.dispatch('updateAccessedTo', {
+                    accessed_to: moment().format('YYYY-MM-DD HH:mm:ss'),
+                    id: user.cpf
+                })
+            },
 
             async searchPatient() {
+
                 this.loading = true;
                 let users = await this.$store.dispatch('searchUser', {
                     name: this.name,
@@ -771,24 +778,24 @@
                 this.loading = false
             },
 
-            fillFormUser(user) {
+            async fillFormUser(user) {
                 this.name = user.name;
                 this.cpf = user.cpf;
                 this.email = user.email;
                 this.rg = user.rg;
                 this.numAss = user.association_number;
-                this.birthDate = moment(user.birth_date).format('DD-MM-YYYY');
+                this.birthDate = await moment(user.birth_date).format('DD/MM/YYYY');
                 this.sex = user.sex;
                 this.dependents = user.dependents ? user.dependents : [];
                 this.telephones = user.telephones ? user.telephones : [''];
                 for (let add in user.addresses) {
                     delete user.addresses[add].loading
                 }
-                this.addresses = user.addresses;
+                this.addresses = user.addresses ? user.addresses: [];
                 if(user.dependents){
                     for(let index in user.dependents){
-                        var patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
-                        var date  = user.dependents[index].birthDate;
+                        let patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
+                        let date  = user.dependents[index].birthDate;
                         if(!patt.test(date))
                             date = moment(date,"YYYY-MM-DD").format("DD/MM/YYYY");
                         user.dependents[index].birthDate = date

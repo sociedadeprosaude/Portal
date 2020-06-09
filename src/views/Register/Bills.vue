@@ -106,8 +106,7 @@
                                                 </v-flex>
                                             </v-layout>
                                             <v-flex xs12 sm2 class="text-right" v-else>
-                                                <v-progress-circular indeterminate
-                                                                     class="primary--text"></v-progress-circular>
+                                                <v-progress-circular indeterminate class="primary--text"/>
                                             </v-flex>
                                         </v-layout>
                                     </v-layout>
@@ -168,7 +167,7 @@
             };
         },
         mounted() {
-            if(this.$vuetify.breakpoint.name === 'xs'){
+            if (this.$vuetify.breakpoint.name === 'xs') {
                 this.$router.push('/BillsMobile')
             }
             this.initiate();

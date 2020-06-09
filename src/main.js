@@ -75,9 +75,11 @@ const vuetifyOptions = {
         primary_light: '#63a4ff',
         primary_dark: '#003B8F',
         dark_grey: '#808080',
-        background: '#EFEFEF',
+        background: '#DFDFDF',
         blue_grey:'#90A4AE',
-        grey_light: '#BDBDBD'
+        grey_light: '#BDBDBD',
+        grey_light2: '#F5F5F5',
+        grey_cart: '#9E9E9E',
 
       },
     },

@@ -4,7 +4,8 @@
             <v-flex sm3 class="primary hidden-md-and-down">
                 <DataToSearchConsultation @GetConsultations="schedules= $event" :daysToListen="daysToListen"/>
             </v-flex>
-            <v-flex sm6 class="hidden-md-and-down">
+
+            <v-flex sm6 class="hidden-md-and-down white">
                 <SchedulesConsultations :Consultations="schedules" @refreshDate="daysToListen = $event"/>
             </v-flex>
             <v-flex sm3 class="primary hidden-md-and-down">
@@ -19,7 +20,7 @@
             </v-flex>
             <v-flex xs12 class="hidden-md-and-up">
                 <DataToSearchConsultation @GetConsultations="schedules= $event" :daysToListen="daysToListen" v-if="this.viewSeleted === 'data'"/>
-                <SchedulesConsultations :Consultations="schedules" @refreshDate="daysToListen = $event" v-if="this.viewSeleted === 'schedules'"/>
+                <SchedulesConsultations class="white" :Consultations="schedules" @refreshDate="daysToListen = $event" v-if="this.viewSeleted === 'schedules'"/>
                 <DataCashierConsultation v-if="this.viewSeleted === 'cashier'"/>
             </v-flex>
 

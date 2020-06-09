@@ -49,7 +49,6 @@
                                 rounded
                                 :disabled="consultation.status === 'Cancelado'"
                                 @click="deletedConsultation()"
-                                class="mx-2"
                                 :loading="cancelLoading"
                         > Cancelar
                         </v-btn>
@@ -65,11 +64,18 @@
                         <v-btn
                                 color="white"
                                 rounded
-                                class="mx-2"
                                 :disabled="consultation.status !== 'Pago' && consultation.consultation_hour"
                                 @click="setConsultationHour(consultation)"
                         >
                             Atender
+                        </v-btn>
+                        <v-btn
+                                color="white"
+                                rounded
+                                class="mx-2"
+                                @click="ConsultationRecept(consultation)"
+                        >
+                            Recibo
                         </v-btn>
                     </v-card-actions>
                     <v-flex xs12 class="mt-4 mb-2">
@@ -79,7 +85,10 @@
             </v-card>
         </v-flex>
         <v-dialog v-model="documentDialog">
-            <consultation-document :consultation="consultation" ></consultation-document>
+            <consultation-document @close="documentDialog=false" :consultation="consultation" ></consultation-document>
+        </v-dialog>
+        <v-dialog v-model="receptDialog">
+            <consultation-receipt @close="receptDialog=false" :consultation="consultation" ></consultation-receipt>
         </v-dialog>
     </v-layout>
 </template>
@@ -91,17 +100,19 @@
     import CardPatientManagementConsultations
         from '../../../components/doctorsAgenda/ManagementConsultations/CardPatientManagementConsultations'
     import ConsultationDocument from "../commons/ConsultationDocument"
+    import ConsultationReceipt from "../commons/ConsultationReceipt"
 
     let moment = require('moment');
 
     export default {
         name: "CardInformationManagementConsultations",
         props: ['patient', 'consultation'],
-        components: {CardConsultationManagementConsultations, CardPatientManagementConsultations, ConsultationDocument},
+        components: {CardConsultationManagementConsultations, CardPatientManagementConsultations, ConsultationDocument,ConsultationReceipt},
 
         data: () => ({
             item: 'NOVO',
             documentDialog:false,
+            receptDialog:false,
             cancelLoading:false
         }),
         computed: {
@@ -149,7 +160,11 @@
                 this.$store.dispatch('addConsultationHourInConsultation', data);
                 this.consultation.consultation_hour = consultation_hour;
                 this.documentDialog = true;
+            },
+            ConsultationRecept(consultation) {
+                this.receptDialog = true;
             }
+
 
         },
     }

@@ -119,17 +119,29 @@ const actions = {
         let usersRef = firestore().collection('users');
         for (let field in searchFields) {
             if (!searchFields[field] || searchFields[field].length === 0) continue;
-            if(field === 'cpf'){
+
+            if (field === 'name'){
+                usersRef = usersRef.where(field, field === 'name' ? '>=' : '==', searchFields[field].toUpperCase());
+                break
+            }
+            else if (field === 'cpf'){
                 searchFields[field] = searchFields[field].replaceAll('.','');
                 searchFields[field] = searchFields[field].replace('-','');
-                usersRef = usersRef.where(field, field === 'cpf' ? '>=' : '==', searchFields[field])
+                usersRef = usersRef.where(field, field === 'cpf' ? '>=' : '==', searchFields[field]);
+                break
             }
-            if (field === 'association_number'){
-                usersRef = usersRef.where('association_number' ,'>=', searchFields[field])
+            else if (field === 'association_number' ){
+                usersRef = usersRef.where('association_number' ,'>=', searchFields[field]);
+                break
+                }
+            else{
+                if(field === 'type'){
+                    usersRef = usersRef.where('type' ,'==', searchFields[field]);
+                    break
+                }
             }
-            if (field === 'name'){
-                usersRef = usersRef.where(field, field === 'name' ? '>=' : '==', searchFields[field].toUpperCase())
-            }
+
+
         }
         let querySnapshot = await usersRef.limit(30).get();
         let users = [];
@@ -191,10 +203,6 @@ const actions = {
         try {
 
             functions.removeUndefineds(patient);
-            if (patient.type) {
-                patient.type = patient.type.toUpperCase()
-            }
-            patient.created_at = moment().format('YYYY-MM-DD HH:mm:ss');
 
             let user;
             if (!patient.cpf) {
@@ -202,8 +210,19 @@ const actions = {
             }
             let foundUser = await firebase.firestore().collection('users').doc(patient.cpf).get();
             if (foundUser.exists) {
-                user = await firebase.firestore().collection('users').doc(patient.cpf).update(patient)
+                user = await firebase.firestore().collection('users').doc(patient.cpf).update(patient);
+                if (foundUser.data().type !== 'PATIENT'){
+                    let type = foundUser.data().type.toUpperCase();
+                    user = await firebase.firestore().collection('users').doc(patient.cpf).update({
+                        type: type
+                    })
+                }
+                
             } else {
+                if (patient.type) {
+                    patient.type = patient.type.toUpperCase()
+                }
+                patient.created_at = moment().format('YYYY-MM-DD HH:mm:ss');
                 user = await firebase.firestore().collection('users').doc(patient.cpf).set(patient)
             }
 

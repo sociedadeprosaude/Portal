@@ -6,7 +6,7 @@
                     <v-expansion-panel v-for="(doctor,i) in doctors" :key="i">
                         <v-expansion-panel-header>
                             <v-flex xs4>
-                                <span>{{doctor.name}}</span>
+                                <span>{{doctor.name.toUpperCase()}}</span>
                             </v-flex>
                             <v-flex xs4>
                                 <span>{{doctor.email}}</span>
@@ -57,7 +57,7 @@
 
             doctors() {
                 return this.$store.getters.colaboratorsDoctors.filter(a => {
-                    return a.status !== 'pending' && a.uid
+                    return a.status !== 'pending' && a.crm
                 })
             },
 

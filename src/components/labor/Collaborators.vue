@@ -6,7 +6,7 @@
                     <v-expansion-panel v-for="(user, i) in collaborators" :key="i">
                         <v-expansion-panel-header>
                             <v-flex xs4>
-                                <span>{{user.name}}</span>
+                                <span>{{user.name.toUpperCase()}}</span>
                             </v-flex>
                             <v-flex xs4>
                                 <span>{{user.email}}</span>
@@ -25,6 +25,12 @@
                                     <span class="mr-3">CPF: {{user.cpf}}</span>
                                     <span v-if="user.telephones">Telefone: {{user.telephones[0]}}</span>
                                 </v-flex>
+                                <v-flex xs12>
+                                    <span v-if="user.bankData" class="mr-3">Banco: {{user.bankData.bank.name}}</span>
+                                    <span v-if="user.bankData" class="mr-3">Agência: {{user.bankData.branchBank}}</span>
+                                    <span v-if="user.bankData">Conta Corrente: {{user.bankData.accountBank}}</span>
+                                </v-flex>
+
                                 <v-flex xs12><v-divider/></v-flex>
                                 <v-flex xs10 class="text-left mb-2 mt-3">
                                     <v-btn rounded text class="primary mx-1" @click="setSalary(user)">Salario</v-btn>
@@ -126,6 +132,7 @@
     export default {
 
         name: "Collaborators",
+        props: ['collaborators'],
 
         data: () => ({
             loading: true,
@@ -144,11 +151,6 @@
         },
 
         computed: {
-            collaborators () {
-                return this.$store.getters.colaborators.filter(a => {
-                    return a.status !== 'pending'
-                })
-            },
 
             units() {
                 return this.$store.getters.units

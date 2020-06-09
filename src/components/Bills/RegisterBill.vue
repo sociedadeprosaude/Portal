@@ -244,7 +244,7 @@
                 }
             },
             async bifurcation() {
-                if (this.parcels) {
+                if (this.parcel) {
                     this.value = this.value / this.parcels;
                     for (let i = 0; i < this.parcels; i++) {
                         this.addBill();
@@ -288,10 +288,11 @@
                         .format("YYYY-MM-DD 23:59:59")
                 });
                 this.loading = false;
+                this.resetData();
             },
 
             handleFileUpload() {
-                this.uploading = true
+                this.uploading = true;
                 let uploadedFiles = this.$refs.files.files;
                 for (let i = 0; i < uploadedFiles.length; i++) {
                     if (this.files.indexOf(uploadedFiles[i]) < 0) {
@@ -320,6 +321,18 @@
                     path: "/outtakes/orders"
                 });
             },
+            async resetData () {
+
+                this.category = null;
+                this.paymentMethod = undefined;
+                this.value =  0.0;
+                this.subCategory = null;
+                this.description = undefined;
+                this.parcel = false;
+                this.parcels =  null;
+                this.recurrent = false;
+                this.dateToPay = moment().format("YYYY-MM-DD")
+            }
 
         }
     }

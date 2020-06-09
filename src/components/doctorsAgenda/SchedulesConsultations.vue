@@ -13,14 +13,14 @@
             <v-container fluid grid-list-sm class="py-0 my-3 mx-2">
                 <v-layout row wrap>
                     <v-flex v-for="(schedule, j) in scheduleGroup" :key="j" sm12 xs12 class="px-2 py-2">
-                        <v-card class="pa-4" style="border-radius:20px; height: 100%">
+                        <v-card class="pa-4 background" style="border-radius:20px; height: 100%">
                             <v-layout>
                                 <v-layout row wrap>
                                     <v-flex xs12 class="text-left">
                                         <v-layout row wrap>
-                                            <span class="subheading font-weight-bold">{{schedule.doctor.name}}</span>
-                                            <span class="font-weight-bold mx-2">-</span>
-                                            <span class="font-weight-bold subheading">
+                                            <span class="subtitle-2 font-weight-bold">{{schedule.doctor.name}}</span>
+                                            <span class="subtitle-2 font-weight-bold mx-2">-</span>
+                                            <span class="subtitle-2 font-weight-bold subheading">
                                                     {{schedule.specialty.name}}
                                             </span>
                                             <v-spacer/>
@@ -30,7 +30,7 @@
                                         </v-layout>
                                     </v-flex>
                                     <v-flex xs12 class="mb-1">
-                                        <v-divider/>
+                                        <v-divider class="primary"/>
                                     </v-flex>
                                     <v-flex class="my-0" xs12>
                                         <v-layout row wrap class="text-left font-weight-bold">
