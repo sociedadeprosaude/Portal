@@ -1,4 +1,3 @@
-import firebase from "firebase";
 const functions = require('firebase-functions');
 var admin = require('firebase-admin');
 
@@ -22,7 +21,7 @@ exports.ListenUpdateClinic = functions.firestore.document('clinics/{name}').onUp
     const firestore = admin.firestore();
     const clinicUpdated = change.after.data();
 
-    let examSnap = await firebase.firestore().collection('clinics').doc(clinicUpdated.name).collection('exams').get()
+    let examSnap = await firestore.collection('clinics').doc(clinicUpdated.name).collection('exams').get()
     let exams = [];
     examSnap.forEach((doc) => {
         exams.push(doc.data().name)
