@@ -122,7 +122,26 @@
         },
 
         computed: {
+            specialties() {
+                let specialties = this.$store.getters.specialties;
+                for (let spec in specialties) {
+                    if ( specialties[spec].doctors) {
 
+                        specialties[spec].doctors = specialties[spec].doctors.filter((a) => {
+                            return a.cost
+                        })
+                    }
+                }
+                specialties = this.$store.getters.specialties.filter((a) => {
+                    if (a.doctors) {
+                        return a.doctors.length > 0 && a.name.includes(this.search.toUpperCase())
+                    } else {
+                        return false
+                    }
+                });
+                console.log('#spe', specialties)
+                return specialties
+            },
             specialtiesLoaded() {
                 return this.$store.getters.specialtiesLoaded
             },
