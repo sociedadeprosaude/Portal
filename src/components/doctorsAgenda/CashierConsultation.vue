@@ -37,7 +37,7 @@
                                       :disabled="!categorySelect"
                         />
                         <v-spacer/>
-                        <v-btn icon @click="cartPatient = !cartPatient">
+                        <v-btn :color="cartPatient ? 'accent' : ''" fab icon @click="cartPatient = !cartPatient">
                             <v-icon>local_grocery_store</v-icon>
                         </v-btn>
                     </v-card-title>
