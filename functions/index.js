@@ -4,6 +4,8 @@ const cors = require('cors')({ origin: true });
 
 var papa = require('papaparse');
 var moment = require('moment');
+var axios = require("axios");
+var xml2js = require('xml2js');
 const { parse } = require('json2csv');
 admin.initializeApp();
 const defaultRoute = '/analise-exames'
@@ -356,13 +358,13 @@ exports.deleteScheduleByDay = functions.runWith(heavyFunctionsRuntimeOpts).https
     schedule.forEach((doc) => {
         let data = doc.data()
         let cancelations_schedules = data.cancelations_schedules ? data.cancelations_schedules : []
-        let obj = {start_date: payload.start_date, final_date: payload.final_date}
+        let obj = { start_date: payload.start_date, final_date: payload.final_date }
         if (payload.hour)
             obj.hour = payload.hour
         if (payload.weekDays)
             obj.week_days = payload.weekDays
-        cancelations_schedules.push({...obj})
-        admin.firestore().collection('schedules').doc(doc.id).update({cancelations_schedules: cancelations_schedules})
+        cancelations_schedules.push({ ...obj })
+        admin.firestore().collection('schedules').doc(doc.id).update({ cancelations_schedules: cancelations_schedules })
     })
     removeConsultations(payload)
     return { Message: "Success" }
@@ -439,14 +441,14 @@ exports.thereIsPaymentNumber = functions.runWith(heavyFunctionsRuntimeOpts).http
         procedures.forEach((procedure) => {
             payment_found = procedure
         })
-        return {Found:{procedureId: payment_found.id, ...payment_found.data()}}
+        return { Found: { procedureId: payment_found.id, ...payment_found.data() } }
     } else {
-        let cost = await specialtyCost(payload.specialty.name,payload.doctor.cpf)
-        return {NotFound:cost};
+        let cost = await specialtyCost(payload.specialty.name, payload.doctor.cpf)
+        return { NotFound: cost };
     }
 });
 
-async function specialtyCost(specialtyName,doctorCPF){
+async function specialtyCost(specialtyName, doctorCPF) {
     let specialties = await admin.firestore().collection('specialties').get()
     specialties = convertCollectionIntoArray(specialties)
 
@@ -619,21 +621,21 @@ exports.onUpdateExam = functions.firestore.document('exams/{name}').onUpdate((ch
 exports.fixSchedulesPrices = functions.https.onRequest(async (req, res) => {
     const firestore = admin.firestore();
     let snapshot = await firestore.collection('schedules').get()
-    snapshot.forEach((schedule)=>{
+    snapshot.forEach((schedule) => {
         let data = schedule.data()
-        console.log('Specialty->',data)
-        if(!data.specialty.price){
+        console.log('Specialty->', data)
+        if (!data.specialty.price) {
             firestore.collection('specialties').doc(data.specialty.name).get()
-            .then((specialty) => {
-                if (specialty.exists){
-                    let specialtyData = specialty.data()
-                    schedule.ref.update({
-                        specialty:{name:specialtyData.name,id:specialtyData.id,price:specialtyData.price}
-                    })
-                }
-                return
-            })
-            .catch(err => console.log(err));
+                .then((specialty) => {
+                    if (specialty.exists) {
+                        let specialtyData = specialty.data()
+                        schedule.ref.update({
+                            specialty: { name: specialtyData.name, id: specialtyData.id, price: specialtyData.price }
+                        })
+                    }
+                    return
+                })
+                .catch(err => console.log(err));
         }
     })
     res.status(200).send('Sucesso! Executando function para concertar especialidades de schedules sem preço');
@@ -642,23 +644,23 @@ exports.fixSchedulesPrices = functions.https.onRequest(async (req, res) => {
 exports.fixSpecialtiesPrices = functions.https.onRequest(async (req, res) => {
     const firestore = admin.firestore();
     let snapshot = await firestore.collection('specialties').get()
-    snapshot.forEach((specialty)=>{
+    snapshot.forEach((specialty) => {
         let data = specialty.data()
-        if(!data.price){
+        if (!data.price) {
             firestore.collection('specialties').doc(data.name).collection('doctors').get()
-            .then((docs) => {
-                if (!docs.empty){
-                    let firstPrice = undefined
-                    docs.forEach((doc)=> {
-                        if(!firstPrice)
-                            firstPrice = doc.data().price
-                    })
+                .then((docs) => {
+                    if (!docs.empty) {
+                        let firstPrice = undefined
+                        docs.forEach((doc) => {
+                            if (!firstPrice)
+                                firstPrice = doc.data().price
+                        })
 
-                    specialty.ref.update({price:firstPrice})
-                }
-                return
-            })
-            .catch(err => console.log(err));
+                        specialty.ref.update({ price: firstPrice })
+                    }
+                    return
+                })
+                .catch(err => console.log(err));
         }
     })
     res.status(200).send('Sucesso! Executando function para concertar especialidades sem preço');
@@ -702,17 +704,17 @@ exports.onUpdateSpecialty = functions.firestore.document('specialties/{name}').o
         //                 .catch(err => console.log(err));
         //         }))
         //     .catch(err => console.log(err));
-    }else{
+    } else {
         firestore.collection('specialties').doc(specialtyUpdated.name).collection('doctors').get()
             .then((docs) => {
-                if (!docs.empty){
+                if (!docs.empty) {
                     let firstPrice = undefined
-                    docs.forEach((doc)=> {
-                        if(!firstPrice)
+                    docs.forEach((doc) => {
+                        if (!firstPrice)
                             firstPrice = doc.data().price
                     })
 
-                    firestore.collection('specialties').doc(specialtyUpdated.name).update({price:firstPrice})
+                    firestore.collection('specialties').doc(specialtyUpdated.name).update({ price: firstPrice })
                 }
                 return null
             })
@@ -773,7 +775,7 @@ exports.cancelAppointment = functions.runWith(heavyFunctionsRuntimeOpts).https.o
             return
         }).catch(() => {
 
-    })
+        })
 
 
     //Para consultas do tipo Consulta e possuem um retorno associado. É necessário remover o agendamento do retorno associado
@@ -798,7 +800,7 @@ exports.addUserToConsultation = functions.runWith(heavyFunctionsRuntimeOpts).htt
     payload.consultation.id = resp.id;
     await addConsultationAppointmentToUser({ ...payload })
 
-    return {Message:"Success new consultation "+resp.id}
+    return { Message: "Success new consultation " + resp.id }
 });
 
 async function addConsultationAppointmentToUser(payload) {
@@ -840,3 +842,132 @@ async function addConsultationAppointmentToUser(payload) {
         admin.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').add(obj)
     }
 }
+
+// ============================ PagSeguro ====================================
+
+exports.pagSeguroCreditCallback = functions.https.onRequest(async (request, response) => {
+    const firestore = admin.firestore();
+    var url = "https://ws.sandbox.pagseguro.uol.com.br/v3/transactions/notifications/" + request.body.notificationCode
+    var credentials = "?email=andrebluee96@gmail.com&token=A97F0051D0A3452C939DCE51C37B1872";
+    console.log(request.body);
+    return axios
+        .get(url + credentials)
+        .then(async res =>
+            xml2js.parseString(res.data, async function (err, result) {
+                console.log(err);
+                console.log(result);
+                if (!err) {
+                    const status = result.transaction.status[0];
+                    const transactionCode = result.transaction.code[0];
+                    console.log(result);
+                    if (status === "3") {
+                        console.log("pago");
+                        firestore.collection('budgets').where("pagSeguroCode", "==", transactionCode)
+                            .get()
+                            .then(async (querySnapshot) => querySnapshot.forEach(async (doc) => {
+                                var specialties = await firestore.collection('budgets').doc(doc.id).collection('specialties').get();
+                                var exams = await firestore.collection('budgets').doc(doc.id).collection('exams').get();
+
+                                firestore.collection('intakes').doc(doc.id).set(doc.data());
+
+                                if (!specialties.empty) {
+                                    specialties.docs.forEach((specialty) => firestore.collection('intakes').doc(doc.id)
+                                        .collection('specialties').doc(specialty.data().name).set(specialty.data()));
+                                }
+                                if (!exams.empty) {
+                                    exams.docs.forEach((exam) => firestore.collection('intakes').doc(doc.id)
+                                        .collection('exams').doc(exam.data().name).set(exam.data()));
+                                }
+                                // return null
+
+                                // Deletando o budget que ta em /users e em /budgets
+                                // const cpf = doc.data().user.cpf;
+                                // const budgetInUser = await firestore.collection('users').doc(cpf)
+                                //     .collection('budgets').where("pagSeguroCode", "==", transactionCode)
+                                //     .get()
+                                // budgetInUser.forEach((docBudget) => docBudget.ref.delete());
+                                // doc.ref.delete();
+                            }))
+                            .then(() => response.send("notificacao recebida com sucesso"))
+                            .catch((e) => response.send("erro na notificacao recebida"));
+                    } else {
+                        response.send("notificacao mas nao foi paga");
+                    }
+                } else {
+                    response.send("erro na notificacao");
+                }
+
+            })
+        )
+        .catch(e => response.send(e))
+});
+
+exports.pagSeguroBillCallback = functions.https.onRequest(async (request, response) => {
+    const firestore = admin.firestore();
+    var url = "https://ws.sandbox.pagseguro.uol.com.br/v3/transactions/notifications/" + request.body.notificationCode
+    var credentials = "?email=andrebluee96@gmail.com&token=A97F0051D0A3452C939DCE51C37B1872";
+    return axios
+        .get(url + credentials)
+        .then(res =>
+            xml2js.parseString(res.data, function (err, result) {
+                if (!err) {
+                    const status = result.transaction.status[0];
+                    const transactionCode = result.transaction.code[0];
+                    if (status === "3") {
+                        firestore.collection('budgets').where("pagSeguroCode", "==", transactionCode)
+                            .get()
+                            .then((querySnapshot) => querySnapshot.forEach(async (doc) => {
+                                var specialties = await firestore.collection('budgets').doc(doc.id).collection('specialties').get();
+                                var exams = await firestore.collection('budgets').doc(doc.id).collection('exams').get();
+
+                                firestore.collection('intakes').doc(doc.id).set(doc.data());
+
+                                if (!specialties.empty) {
+                                    specialties.docs.forEach((specialty) => firestore.collection('intakes').doc(doc.id)
+                                        .collection('specialties').doc(specialty.data().name).set(specialty.data()));
+                                }
+                                if (!exams.empty) {
+                                    exams.docs.forEach((exam) => firestore.collection('intakes').doc(doc.id)
+                                        .collection('exams').doc(exam.data().name).set(exam.data()));
+                                }
+                                return null
+
+                                // Deletando o budget que ta em /users e em /budgets
+                                // const cpf = doc.data().user.cpf;
+                                // const budgetInUser = await firestore.collection('users').doc(cpf)
+                                //     .collection('budgets').where("pagSeguroCode", "==", code)
+                                //     .get()
+                                // budgetInUser.forEach((docBudget) => docBudget.ref.delete());
+                                //doc.ref.delete();
+                            }))
+                            .catch((e) => e);
+                    }
+                }
+                response.send("Notificacao recebida");
+            })
+        )
+        .catch(e => response.send(e))
+});
+
+exports.registerUser = functions.https.onCall(async (data, context) => {
+    const firestore = admin.firestore();
+    return admin.auth()
+        .createUser({
+            email: data.email,
+            password: data.password,
+        })
+        .then(async (user) =>
+            firestore.collection('users').doc(data.email)
+                .set({
+                    email: data.email,
+                    uid: user.uid,
+                    name: data.name,
+                    created_at: moment().format('YYYY-MM-DD HH:mm:ss')
+                })
+                .then((result) => result)
+                .catch((e) => { throw new functions.https.HttpsError(e) })
+        )
+        .catch((error) => {
+            throw new functions.https.HttpsError(error);
+        });
+});
