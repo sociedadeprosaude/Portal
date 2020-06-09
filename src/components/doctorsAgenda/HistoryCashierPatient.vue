@@ -10,29 +10,25 @@
                                     <v-card flat>
                                         <v-layout row wrap>
                                             <v-flex xs10 class="text-left ripple">
-                                                <span class="my-sub-headline">{{intake.date | dateFilter}}</span>
-                                            </v-flex>
-                                            <v-flex xs2>
-                                                <v-progress-circular indeterminate v-if="loading" class="primary--text"/>
-                                            </v-flex>
-                                            <v-flex xs12 class="text-left">
                                                 <span class="my-sub-headline">{{intake.id}}</span>
                                             </v-flex>
-                                            <v-flex xs12 class="text-left">
-                                                <span>{{intake.payment_method}}</span>
+                                            <v-flex xs2>
+                                                <v-progress-circular indeterminate v-if="loading"
+                                                                     class="primary--text"/>
                                             </v-flex>
                                             <v-flex xs12 class="text-left">
-                                                <span class="my-sub-headline">R$ {{intake.total}}</span>
+                                                <p class="my-0">{{intake.date | dateFilter}}</p>
+                                                <!--
+                                                <p v-if="intake.payment_method">{{intake.payment_method}}</p>
+                                                -->
+                                                <p>R$ {{intake.total}}</p>
                                             </v-flex>
                                         </v-layout>
                                     </v-card>
                                 </v-flex>
                                 <v-flex xs2 v-if="!loading && intake.status !== intakeStatus.CANCELLED">
-                                    <v-btn
-                                            @click="cancelBuy(intake)"
-                                            text
-                                            style="min-width: 0; width: 32px; height: 100%"
-                                    >
+                                    <v-btn @click="cancelBuy(intake)" text
+                                           style="min-width: 0; width: 32px; height: 100%">
                                         <v-icon class="secondary--text">delete</v-icon>
                                     </v-btn>
                                 </v-flex>
@@ -49,20 +45,19 @@
                     <v-flex xs12 v-for="budget in budgets" :key="budget.id">
                         <v-card ripple class="my-2 pa-2" @click="selectBudget(budget)">
                             <v-layout row wrap>
-                                <v-flex xs10 class="text-left">
-                                    <span class="my-sub-headline">{{budget.date | dateFilter}}</span>
+                                <v-flex xs12>
+                                    <v-btn rounded dense small block class="background font-weight-bold">
+                                        {{budget.id}} <v-spacer/> R$ {{budget.total}}
+                                    </v-btn>
+                                </v-flex>
+                                <v-flex xs12 class="text-left">
+                                    <p class="ma-1">{{budget.date | dateFilter}}</p>
+                                    <!--
+                                    <span>{{budget.payment_method}}</span>
+                                    -->
                                 </v-flex>
                                 <v-flex xs2>
-                                    <v-progress-circular indeterminate v-if="loading" class="primary--text"/>
-                                </v-flex>
-                                <v-flex xs12 class="text-left">
-                                    <span class="my-sub-headline">{{budget.id}}</span>
-                                </v-flex>
-                                <v-flex xs12 class="text-left">
-                                    <span>{{budget.payment_method}}</span>
-                                </v-flex>
-                                <v-flex xs12 class="text-left">
-                                    <span class="my-sub-headline">R$ {{budget.total}}</span>
+                                    <v-progress-circular x-small indeterminate v-if="loading" class="primary--text"/>
                                 </v-flex>
                             </v-layout>
                         </v-card>
