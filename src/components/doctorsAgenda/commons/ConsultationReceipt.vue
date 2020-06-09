@@ -28,7 +28,7 @@
                                     </v-flex>
                                     <v-flex xs6 class="text-left">
                                         <v-layout column wrap>
-                                            <strong>Hoje: {{ hoje }} - {{dia}}</strong>
+                                            <strong>{{ hoje }} - {{dia}}</strong>
                                             <span
                                                     class="my-sub-headline primary--text"
                                                     style="font-size: 1.4em"
