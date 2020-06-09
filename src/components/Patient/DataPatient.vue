@@ -3,7 +3,7 @@
         <v-layout row wrap>
             <v-flex xs12 sm12>
                 <v-expand-transition mode="out-in">
-                    <v-card class="primary_light white--text pa-2" :max-width="maxWidth" v-if="!addPatient">
+                    <v-card class="primary_light white--text pa-2 ml-12" :max-width="maxWidth" v-if="!addPatient">
                         <v-layout row wrap>
                             <v-flex v-if="!selectedPatient" xs8>
                                 <v-flex sm6 xs8 class="text-left mb-3">

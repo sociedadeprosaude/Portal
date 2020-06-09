@@ -8,7 +8,7 @@
                 </v-btn>
                 <v-btn rounded small class="mx-1" @click="selectCategory('appointment')"
                        :color="categorySelect === 'appointment' ? 'background' : 'primary'" v-if="!historyPatient">
-                    Consultas
+                    <span>{{specialtiesLoaded ? 'Consultas' : 'Carregando consultas...'}}</span>
                 </v-btn>
                 <v-btn rounded small class="mx-1"  @click="selectCategory('package')"
                        :color="categorySelect === 'package' ? 'background' : 'primary'" v-if="!historyPatient">
@@ -122,25 +122,7 @@
         },
 
         computed: {
-            specialties() {
-                let specialties = this.$store.getters.specialties;
-                for (let spec in specialties) {
-                    if ( specialties[spec].doctors) {
 
-                        specialties[spec].doctors = specialties[spec].doctors.filter((a) => {
-                            return a.cost
-                        })
-                    }
-                }
-                specialties = this.$store.getters.specialties.filter((a) => {
-                    if (a.doctors) {
-                        return a.doctors.length > 0 && a.name.includes(this.search.toUpperCase())
-                    } else {
-                        return false
-                    }
-                });
-                return specialties
-            },
             specialtiesLoaded() {
                 return this.$store.getters.specialtiesLoaded
             },
@@ -162,12 +144,8 @@
                         return []
                 }
             },
-            patient () {
-                if (!this.$store.getters.selectedPatient) {
-                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-                    this.historyPatient = false ;
-                }
-                return this.$store.getters.selectedPatient
+            patient() {
+                return this.$store.getters.selectedPatient;
             }
         },
 

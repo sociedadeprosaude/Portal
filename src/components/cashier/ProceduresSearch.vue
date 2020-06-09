@@ -86,8 +86,7 @@
                                         <v-card-text v-if="categorySelect === 'package'">
                                             <v-slide-group show-arrows>
                                                 <v-slide-item
-                                                        v-slot:default="{ active, toggle }"
-                                                >
+                                                        v-slot:default="{ active, toggle }">
 
                                                     <v-btn class="mx-2"
                                                            :input-value="active"
@@ -146,6 +145,7 @@
                         return false
                     }
                 });
+                console.log('#spe', specialties)
                 return specialties
             },
             specialtiesLoaded() {

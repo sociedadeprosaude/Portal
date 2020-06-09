@@ -12,7 +12,7 @@
                         v-model="date"
                 />
             </v-flex>
-            <v-flex class="text-center mt-8 ml-2" sm12>
+            <v-flex class="justify-center mt-6 align-center align-content-center" sm12>
                 <CardPatient max-width="300px" ref="patientCard"/>
             </v-flex>
         </v-layout>
