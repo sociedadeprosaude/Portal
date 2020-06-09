@@ -4,12 +4,12 @@
             <v-flex>
                 <v-flex sm12 xs12>
                     <v-combobox label="Médico"
-                                v-model="doctor"
+                                v-model="selectedDoctor"
+                                :items="doctors"
+                                return-object
+                                item-text="name"
                                 outlined
                                 dense
-                                :items="doctors"
-                                item-text="name"
-                                return-object
                     />
                 </v-flex>
                 <v-flex sm12 xs12 v-if="payment.paymentForm.length > 1">
@@ -238,12 +238,31 @@
             }
         },
         computed: {
+
+            doctors: {
+                get: function () {
+                    let docArray = [];
+                    docArray.push({
+                        name: this.noDoctorKeyWord
+                    });
+                    docArray = docArray.concat(Object.values(this.$store.getters.doctors));
+                    return docArray;
+                }
+            },
+            selectedDoctor: {
+                get() {
+                    return this.$store.getters.shoppingCartSelectedDoctor
+                },
+                set(val) {
+                    this.$store.commit('setSelectedDoctor', val)
+                }
+            },
+
+
             loadingDoctors() {
                 return !this.$store.getters.doctorsLoaded
             },
-            doctors() {
-                return Object.values(this.$store.getters.doctors)
-            },
+
             selectedUnit() {
                 return this.$store.getters.selectedUnit
             },
@@ -309,9 +328,6 @@
                     }
                     return true
                 }
-            },
-            selectedDoctor() {
-                return this.$store.getters.shoppingCartSelectedDoctor
             },
         },
         watch: {
@@ -459,7 +475,7 @@
                 await this.$store.commit('setSelectedBudget', undefined);
                 this.$store.commit('clearShoppingCartItens');
                 this.card = false;
-                this.clearCart();   
+                this.clearCart();
             },
             async receipt(intake) {
                 this.selectedIntake = await this.$store.dispatch('getIntakeDetails', intake);

@@ -87,7 +87,6 @@
 
         methods: {
             async selectBudget(budget) {
-                console.log(budget);
                 this.$store.commit('setSelectedBudget', budget);
                 for (let exam in budget.exams) {
                     this.$store.commit('addShoppingCartItem', budget.exams[exam])
