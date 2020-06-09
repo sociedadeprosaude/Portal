@@ -1,10 +1,8 @@
 const functions = require('firebase-functions');
 var admin = require('firebase-admin');
 const cors = require('cors')({ origin: true });
-
-var papa = require('papaparse');
 var moment = require('moment');
-const { parse } = require('json2csv');
+const json2csv = require('json2csv');
 admin.initializeApp();
 const defaultRoute = '/analise-exames'
 
@@ -14,6 +12,26 @@ const heavyFunctionsRuntimeOpts = {
     timeoutSeconds: 540,
     memory: '2GB'
 }
+
+exports.hello = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest((req,res) => {
+    console.log(req.query.name);
+    var name= req.query.name || "Sem Nome"
+    res.send("hello ", name);
+})
+
+exports.getLastAccessedPatients = fuctions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async(req,res) => {
+    var quant= req.query.quantity
+    let users = await admin.firestore.document('users').limit(quant).orderBy("accessed_at", "desc").get()
+    let editadUsers = []
+    for (let doc of users.docs) {
+        editadUsers.push({
+            name: doc.name,
+            cpf: doc.cpf
+        })
+    }
+    const csv = json2csv(editadUsers)
+    res.status(200).send(csv);
+})
 
 exports.removeUnnappointedConsultations = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (request, response) => {
     let db = admin.firestore()
