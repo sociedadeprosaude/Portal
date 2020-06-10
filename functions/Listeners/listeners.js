@@ -16,3 +16,22 @@ exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate
         })
     }
 })
+
+exports.ListenUpdateClinic = functions.firestore.document('clinics/{name}').onUpdate( async (change, context) => {
+    const firestore = admin.firestore();
+    const clinicUpdated = change.after.data();
+
+    let examSnap = await firestore.collection('clinics').doc(clinicUpdated.name).collection('exams').get()
+    let exams = [];
+    examSnap.forEach((doc) => {
+        exams.push(doc.data().name)
+    });
+
+    console.log('clinica ?:', clinicUpdated)
+    console.log('exames da clinica ?:', exams)
+
+    for (let i in exams) {
+        //Updatando a clinica da subCollection clinics presente dentro da collection /exams
+        firestore.collection('exams').doc(exams[i]).collection('clinics').doc(clinicUpdated.name).update(clinicUpdated);
+    }
+});
