@@ -88,7 +88,6 @@ const actions = {
     },
 
     async addClinic({commit}, clinic) {
-
         try {
             for (let data in clinic) {
                 if (!clinic[data]) {
@@ -106,6 +105,22 @@ const actions = {
             throw e
         }
     },
+
+    async editClinic({commit}, clinic) {
+        try {
+            for (let data in clinic) {
+                if (!clinic[data]) {
+                    delete clinic[data]
+                }
+            }
+            let clinicRef;
+            clinicRef = await firebase.firestore().collection('clinics').doc(clinic.name).update(clinic)
+            return clinicRef
+        } catch (e) {
+            throw e
+        }
+    },
+
 
     async deleteClinic({}, clinic) {
         try {
