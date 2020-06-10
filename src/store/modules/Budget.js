@@ -12,6 +12,7 @@ const actions = {
 
     async addBudget(context, payload) {
         let copyPayload = Object.assign({}, payload);
+
         functions.removeUndefineds(copyPayload);
 
         let specialties = copyPayload.specialties ? Object.assign({}, copyPayload.specialties) : undefined;
@@ -19,10 +20,21 @@ const actions = {
         delete copyPayload.specialties;
         delete copyPayload.exams;
         delete copyPayload.user.telephones;
+        copyPayload.user.budget = [];
+        delete copyPayload.user.budgets;
+        copyPayload.user.intakes = [];
+        delete copyPayload.user.intakes;
+        delete copyPayload.user.consultations;
+        delete copyPayload.user.specialties;
+        if (copyPayload.doctor) {
+            delete copyPayload.doctor.clinics;
+            delete copyPayload.doctor.specialties;
+        }
 
         functions.removeUndefineds(specialties);
         functions.removeUndefineds(exams);
-        await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).set({ ...copyPayload });
+
+        await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).set({...copyPayload});
         if (specialties) {
             let spec = await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).collection('specialties').get();
             spec.forEach((s) => {
@@ -43,7 +55,7 @@ const actions = {
             }
         }
         if (copyPayload.user) {
-            context.dispatch('addBudgetToUser', payload)
+            await firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('budgets').doc(copyPayload.id.toString()).set({ ...copyPayload })
         }
     },
 
@@ -75,8 +87,29 @@ const actions = {
     async addIntake(context, payload) {
         let copyPayload = Object.assign({}, payload);
         functions.removeUndefineds(copyPayload);
-        let userRef = firebase.firestore().collection('users').doc(user.cpf);
-        await userRef.collection('budgets').doc(copyPayload.id.toString()).set(copyPayload);
+        functions.removeUndefineds(copyPayload);
+
+        let specialties = copyPayload.specialties ? Object.assign({}, copyPayload.specialties) : undefined;
+        let exams = copyPayload.exams ? Object.assign({}, copyPayload.exams) : undefined;
+        delete copyPayload.specialties;
+        delete copyPayload.exams;
+        delete copyPayload.user.telephones;
+        copyPayload.user.budget = [];
+        delete copyPayload.user.budgets;
+        copyPayload.user.intakes = [];
+        delete copyPayload.user.intakes;
+        delete copyPayload.user.consultations;
+        delete copyPayload.user.specialties;
+        if (copyPayload.doctor) {
+            delete copyPayload.doctor.clinics;
+            delete copyPayload.doctor.specialties;
+        }
+
+        functions.removeUndefineds(specialties);
+        functions.removeUndefineds(exams);
+
+        let userRef = firebase.firestore().collection('users').doc(copyPayload.user.cpf);
+        await userRef.collection('intakes').doc(copyPayload.id.toString()).set(copyPayload);
 
         if (specialties) {
             let spec = await userRef.collection('budgets').doc(copyPayload.id.toString()).collection('specialties').get();
@@ -94,7 +127,7 @@ const actions = {
             });
             for (let exam in exams) {
                 functions.removeUndefineds(exams[exam]);
-                await userRef.collection('budgets').doc(copyPayload.id.toString()).collection('specialties').add(exams[exam])
+                await userRef.collection('budgets').doc(copyPayload.id.toString()).collection('exams').add(exams[exam])
             }
         }
     },

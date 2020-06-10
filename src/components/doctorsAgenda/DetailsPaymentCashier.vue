@@ -2,6 +2,16 @@
     <v-container fluid class="ma-0 pa-0">
         <v-layout row wrap>
             <v-flex>
+                <v-flex sm12 xs12>
+                    <v-combobox label="Médico"
+                                v-model="doctor"
+                                outlined
+                                dense
+                                :items="doctors"
+                                item-text="name"
+                                return-object
+                    />
+                </v-flex>
                 <v-flex sm12 xs12 v-if="payment.paymentForm.length > 1">
                     <v-layout row wrap class="align-center" v-for="(x ,index) in payment.paymentForm" :key="index">
                         <v-flex xs12>
@@ -154,6 +164,19 @@
                             Pagar
                         </submit-button>
                     </v-flex>
+                    <v-flex xs12 class="mt-4">
+                        <v-fade-transition>
+                            <v-alert
+                                    v-model="alertMessage.model"
+                                    dense
+                                    border="right"
+                                    colored-border
+                                    type="error"
+                                    elevation="2"
+                            >{{alertMessage.text}}
+                            </v-alert>
+                        </v-fade-transition>
+                    </v-flex>
                 </v-layout>
             </v-flex>
         </v-layout>
@@ -164,8 +187,10 @@
 </template>
 <script>
 
+
     import SubmitButton from "../SubmitButton";
     import BudgetToPrint from "../../components/cashier/BudgetToPrint";
+
     let moment = require('moment');
 
 
@@ -204,8 +229,12 @@
                 budgetToPrint: undefined,
                 budgetToPrintDialog: false,
                 selectedIntake: undefined,
-                selectedDoctor: undefined,
                 receiptDialog: false,
+                noDoctorKeyWord: 'Nenhum',
+                alertMessage: {
+                    text: '',
+                    model: false
+                }
             }
         },
         computed: {
@@ -256,6 +285,7 @@
                 let tamanho = this.payment.paymentForm.length;
                 let pagando = 0;
                 if (tamanho === 1 && this.payment.paymentForm[0] !== '') {
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.payment.value[0] = parseFloat(this.total);
                     pagando = parseFloat(this.payment.value[0]);
                 } else {
@@ -279,6 +309,9 @@
                     }
                     return true
                 }
+            },
+            selectedDoctor() {
+                return this.$store.getters.shoppingCartSelectedDoctor
             },
         },
         watch: {
@@ -352,12 +385,13 @@
                     user: this.$store.getters.selectedPatient,
                     colaborator: this.$store.getters.user,
                     parcelar: this.parcelar,
-                    doctor: this.selectedDoctor,
+                    doctor: this.selectedDoctor.name === this.noDoctorKeyWord ? undefined : this.selectedDoctor,
                     payments: this.payment.paymentForm,
                     valuesPayments: this.payment.value,
                     unit: this.selectedUnit
                 }
             },
+
             async updateBudgetsIntakes() {
                 let user = this.patient;
                 let intakes = await this.$store.dispatch('getUserIntakes', user);
@@ -376,25 +410,28 @@
                 this.paymentLoading = true;
                 let user = this.patient;
                 if (!user) {
+                    this.paymentLoading = false
+                    this.alertMessage.model = true
+                    this.alertMessage.text = 'Escolha um paciente'
                     return
                 }
+                if (!this.selectedDoctor) {
+                    this.paymentLoading = false
+                    this.alertMessage.model = true
+                    this.alertMessage.text = 'Escolha um médico que requisitou este orçamento'
+                    return
+                }
+                this.alertMessage.model = false
                 await this.saveBudget(this.generateBudget());
                 let newBudget = this.generateBudget();
                 newBudget.id = this.selectedBudget.id;
+
                 this.$store.commit('setSelectedBudget', newBudget);
                 if (!this.selectedBudget) {
                     await this.saveBudget(this.generateBudget())
-                } else {
-                    let newBudget = this.generateBudget();
-                    if (!this.selectedBudget.id) {
-                        this.selectedBudget.id = this.now
-                    }
-                    newBudget.id = this.selectedBudget.id;
-                    this.$store.commit('setSelectedBudget', newBudget)
                 }
                 await this.$store.dispatch('addIntake', this.selectedBudget);
                 let porcentagem = (this.selectedBudget.discount / this.selectedBudget.subTotal);
-
                 if (porcentagem >= 0.5 || parseFloat(this.searchBudget.subTotal) > this.selectedBudget.cost) {
 
                     await this.$store.dispatch('DiscountWarning', {
@@ -405,20 +442,24 @@
                         cpf: this.selectedBudget.colaborator.cpf
                     })
                 }
+
                 this.updateBudgetsIntakes();
                 this.receipt(this.selectedBudget);
                 this.paymentLoading = false;
                 this.paymentSuccess = true;
 
+                this.budgetToPrint = this.selectedBudget;
+                this.budgetToPrintDialog = true;
+
                 let data = {
                     user: this.patient,
                     budgetId: this.selectedBudget.id.toString(),
                 };
-
                 await this.$store.dispatch('deleteBudget', data);
                 await this.$store.commit('setSelectedBudget', undefined);
                 this.$store.commit('clearShoppingCartItens');
-                this.card = false
+                this.card = false;
+                this.clearCart();   
             },
             async receipt(intake) {
                 this.selectedIntake = await this.$store.dispatch('getIntakeDetails', intake);
