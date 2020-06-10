@@ -2,11 +2,6 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 try { admin.initializeApp(functions.config().firebase); } catch (e) { }
 
-
-var axios = require("axios");
-var xml2js = require('xml2js');
-
-
 exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate(async (change, context) => {
     let db = admin.firestore()
     let userRef = db.collection('users').doc(context.params.cpf)
@@ -158,112 +153,6 @@ exports.onUpdateSpecialty = functions.firestore.document('specialties/{name}').o
             .catch(err => console.log(err));
     }
 });
-
-//ta como onRequest mas basicamente essa functio e uma callback que fica escutando o pagSeguro
-exports.pagSeguroCreditCallback = functions.https.onRequest(async (request, response) => {
-    const firestore = admin.firestore();
-    var url = "https://ws.sandbox.pagseguro.uol.com.br/v3/transactions/notifications/" + request.body.notificationCode
-    var credentials = "?email=andrebluee96@gmail.com&token=A97F0051D0A3452C939DCE51C37B1872";
-    console.log(request.body);
-    return axios
-        .get(url + credentials)
-        .then(async res =>
-            xml2js.parseString(res.data, async function (err, result) {
-                console.log(err);
-                console.log(result);
-                if (!err) {
-                    const status = result.transaction.status[0];
-                    const transactionCode = result.transaction.code[0];
-                    console.log(result);
-                    if (status === "3") {
-                        console.log("pago");
-                        firestore.collection('budgets').where("pagSeguroCode", "==", transactionCode)
-                            .get()
-                            .then(async (querySnapshot) => querySnapshot.forEach(async (doc) => {
-                                var specialties = await firestore.collection('budgets').doc(doc.id).collection('specialties').get();
-                                var exams = await firestore.collection('budgets').doc(doc.id).collection('exams').get();
-
-                                firestore.collection('intakes').doc(doc.id).set(doc.data());
-
-                                if (!specialties.empty) {
-                                    specialties.docs.forEach((specialty) => firestore.collection('intakes').doc(doc.id)
-                                        .collection('specialties').doc(specialty.data().name).set(specialty.data()));
-                                }
-                                if (!exams.empty) {
-                                    exams.docs.forEach((exam) => firestore.collection('intakes').doc(doc.id)
-                                        .collection('exams').doc(exam.data().name).set(exam.data()));
-                                }
-                                // return null
-
-                                // Deletando o budget que ta em /users e em /budgets
-                                // const cpf = doc.data().user.cpf;
-                                // const budgetInUser = await firestore.collection('users').doc(cpf)
-                                //     .collection('budgets').where("pagSeguroCode", "==", transactionCode)
-                                //     .get()
-                                // budgetInUser.forEach((docBudget) => docBudget.ref.delete());
-                                // doc.ref.delete();
-                            }))
-                            .then(() => response.send("notificacao recebida com sucesso"))
-                            .catch((e) => response.send("erro na notificacao recebida"));
-                    } else {
-                        response.send("notificacao mas nao foi paga");
-                    }
-                } else {
-                    response.send("erro na notificacao");
-                }
-
-            })
-        )
-        .catch(e => response.send(e))
-});
-//ta como onRequest mas basicamente essa functio e uma callback que fica escutando o pagSeguro
-exports.pagSeguroBillCallback = functions.https.onRequest(async (request, response) => {
-    const firestore = admin.firestore();
-    var url = "https://ws.sandbox.pagseguro.uol.com.br/v3/transactions/notifications/" + request.body.notificationCode
-    var credentials = "?email=andrebluee96@gmail.com&token=A97F0051D0A3452C939DCE51C37B1872";
-    return axios
-        .get(url + credentials)
-        .then(res =>
-            xml2js.parseString(res.data, function (err, result) {
-                if (!err) {
-                    const status = result.transaction.status[0];
-                    const transactionCode = result.transaction.code[0];
-                    if (status === "3") {
-                        firestore.collection('budgets').where("pagSeguroCode", "==", transactionCode)
-                            .get()
-                            .then((querySnapshot) => querySnapshot.forEach(async (doc) => {
-                                var specialties = await firestore.collection('budgets').doc(doc.id).collection('specialties').get();
-                                var exams = await firestore.collection('budgets').doc(doc.id).collection('exams').get();
-
-                                firestore.collection('intakes').doc(doc.id).set(doc.data());
-
-                                if (!specialties.empty) {
-                                    specialties.docs.forEach((specialty) => firestore.collection('intakes').doc(doc.id)
-                                        .collection('specialties').doc(specialty.data().name).set(specialty.data()));
-                                }
-                                if (!exams.empty) {
-                                    exams.docs.forEach((exam) => firestore.collection('intakes').doc(doc.id)
-                                        .collection('exams').doc(exam.data().name).set(exam.data()));
-                                }
-                                return null
-
-                                // Deletando o budget que ta em /users e em /budgets
-                                // const cpf = doc.data().user.cpf;
-                                // const budgetInUser = await firestore.collection('users').doc(cpf)
-                                //     .collection('budgets').where("pagSeguroCode", "==", code)
-                                //     .get()
-                                // budgetInUser.forEach((docBudget) => docBudget.ref.delete());
-                                //doc.ref.delete();
-                            }))
-                            .catch((e) => e);
-                    }
-                }
-                response.send("Notificacao recebida");
-            })
-        )
-        .catch(e => response.send(e))
-});
-
 
 // ==================================== funcs usadas por varios =======================================================
 async function convertSpecialtySubcollectionInObject(specialtyDoc) {
