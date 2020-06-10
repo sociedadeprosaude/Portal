@@ -1,7 +1,7 @@
 <template>
     <v-card width="500">
         <v-card-title class="headline grey lighten-2 mb-4" primary-title>
-            <span class="headline">Dados da Clínica</span>
+            <span class="headline">Edição da Clínica</span>
         </v-card-title>
         <v-card-text>
             <v-container class="grid-list-md">
@@ -81,7 +81,7 @@
                     </v-flex>
                     <v-flex xs8>
                         <v-text-field
-                                v-model="clinic.address.neighborhood"
+                                v-model="clinic.address.neighboor"
                                 label="Bairro"
                                 placeholder="Bairro"
                                 outlined
@@ -193,12 +193,12 @@
     import {mask} from 'vue-the-mask';
     import axios from 'axios';
     import SubmitButton from "../../components/SubmitButton";
-
     export default {
+        name: "EditClinic",
+        props: ['clinic'],
         components: {SubmitButton},
         directives: {mask},
         data: () => ({
-
             selectedClin: undefined,
             Product: false,
             loading: false,
@@ -260,22 +260,18 @@
             },
 
         }),
+        mounted() {
+            this.ceps = this.clinic.address.cep;
+            this.clinic.startWeek = this.clinic.agenda[0].split('-')[0];
+            this.clinic.endWeek = this.clinic.agenda[0].split('-')[1];
+            this.clinic.startSaturday = this.clinic.agenda[5].length > 0 ? this.clinic.agenda[5].split('-')[0] : '';
+            this.clinic.endSaturday = this.clinic.agenda[5].length > 0 ? this.clinic.agenda[5].split('-')[1] : '';
+        },
 
         computed: {
 
             formIsValid() {
                 return this.clinic.name && this.clinic.telephone[0]
-            },
-
-            clinic() {
-                return this.$store.getters.selectedClinic;
-            },
-
-            indexClinic () {
-                return this.$store.getters.indexClinic;
-            },
-            clinics() {
-                return this.$store.getters.clinics;
             },
 
         },
@@ -314,12 +310,6 @@
 
         },
 
-         async beforeUpdate () {
-             let clinic = await this.$store.getters.clinic;
-             let indexClinic  = await this.$store.getters.indexClinic;
-             this.addDataToClinicExist(clinic, indexClinic);
-        },
-
         methods: {
             closeDialog : function () {
                 this.$emit('close-dialog');
@@ -327,32 +317,11 @@
             },
 
             clearData() {
-                this.$store.dispatch('selectClinic', this.defaultItem);
-                this.$store.dispatch('putIndex', null);
-            },
-
-            addDataToClinicExist (clinic, indexClinic) {
-                if (indexClinic !== -1 && indexClinic !==null){
-                    this.cep = this.clinic.address.cep;
-                    this.clinic.address.neighborhood = this.clinic.address.neighboor;
-                    this.clinic.startWeek = this.clinic.agenda[0].split('-')[0];
-                    this.clinic.endWeek = this.clinic.agenda[0].split('-')[1];
-                    this.clinic.startSaturday = this.clinic.agenda[5].length > 0 ? this.clinic.agenda[5].split('-')[0] : '';
-                    this.clinic.endSaturday = this.clinic.agenda[5].length > 0 ? this.clinic.agenda[5].split('-')[1] : ''
-
-                } else {
-                    this.cep = '';
-                }
+                /**/
             },
 
             async save() {
                 this.loading = true;
-                if (this.indexClinic > -1) {
-                    Object.assign(this.clinics[this.indexClinic], this.clinic);
-                } else {
-                    this.clinics.push(this.clinic);
-                }
-
                 let clinicData = {
                     address: {
                         neighboor: this.clinic.address.neighborhood,
@@ -379,7 +348,7 @@
                 }
                 clinicData.agenda = agenda;
 
-                await this.$store.dispatch('addClinic', clinicData);
+                await this.$store.dispatch('editClinic', clinicData);
                 await this.$store.dispatch('getClinics');
                 this.success = true;
                 this.loading = false;
