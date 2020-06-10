@@ -34,6 +34,7 @@ import Storage from "./modules/Storage";
 import Discount from "./modules/Discount"
 import Tickets from "./modules/Tickets";
 import alertNotifications from "./modules/alertNotifications";
+import Schedule from "./modules/schedule"
 
 
 Vue.use(Vuex);
@@ -80,7 +81,7 @@ const store = new Vuex.Store({
         Tickets,
         Discount,
         alertNotifications,
-
+        Schedule
     },
 
     state: {
