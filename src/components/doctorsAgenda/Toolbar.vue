@@ -13,7 +13,7 @@
                 </v-list-item>
             </v-list>
         </v-navigation-drawer> 
-        <v-app-bar color="primary_dark hidden-xs-only" fixed dark class="hidden-print-only" >
+        <v-app-bar color="primary_dark hidden-xs-only" fixed dark class="hidden-print-only"  v-if="selectedUnit">
             <v-app-bar-nav-icon v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer"/>
 
              <v-toolbar-title>
@@ -131,6 +131,11 @@ export default {
           icon: "event_busy",
           title: "Gerenc. de Consultas Canceladas de Todas as Especilidades",
           link: "/agenda/ConsultasCanceladas"
+        },
+        {
+          icon:"event_busy",
+          title:"Gerenciamento de agendas médicas",
+          link:"/agenda/GerenciarAgendas"
         },
         { icon: "translate", title: "Pesquisa de CIDs", link: "/agenda/Cids" }
       ]

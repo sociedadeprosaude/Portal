@@ -91,7 +91,6 @@ const actions = {
     },
 
     async getAllSchedules({commit}) {
-        try {
             firebase.firestore().collection('schedules').onSnapshot(async function (AllSchedulesSnap) {
                 let AllSchedules = [];
                 AllSchedulesSnap.forEach(function (document) {
@@ -102,10 +101,6 @@ const actions = {
                 });
                 commit('setAllSchedules', AllSchedules);
             })
-            return
-        } catch (e) {
-            throw e
-        }
     },
 
     async getSchedules({commit, dispatch}, payload) {
