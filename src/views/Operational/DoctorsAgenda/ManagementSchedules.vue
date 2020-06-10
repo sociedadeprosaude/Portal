@@ -255,7 +255,9 @@ export default {
   computed: {
     schedules() {
       let resp = this.$store.getters.AllSchedules.filter(schedule => {
-        if (this.clinic) return schedule.clinic.cnpj === this.clinic.cnpj;
+        console.log(this.clinic)
+        console.log(schedule.clinic.cnpj)
+        if (this.clinic) return schedule.clinic.name === this.clinic.name;
         return true;
       });
       return resp;
