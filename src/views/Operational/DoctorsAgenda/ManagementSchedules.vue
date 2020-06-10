@@ -4,7 +4,7 @@
     :items="schedules"
     single-expand
     :expanded.sync="expanded"
-    item-key="doctor.cpf"
+    item-key="doctor.id"
     show-expand
     class="elevation-1 mx-10 mt-10"
     height="420"
@@ -198,9 +198,9 @@
       </td>
     </template>
 
-    <template v-slot:item.actions="{ item }">
+    <!-- <template v-slot:item.actions="{ item }">
       <v-icon small @click="deleteSchedule(item)">mdi-delete</v-icon>
-    </template>
+    </template> -->
   </v-data-table>
 </template>
 
@@ -255,8 +255,6 @@ export default {
   computed: {
     schedules() {
       let resp = this.$store.getters.AllSchedules.filter(schedule => {
-        console.log(this.clinic)
-        console.log(schedule.clinic.cnpj)
         if (this.clinic) return schedule.clinic.name === this.clinic.name;
         return true;
       });
