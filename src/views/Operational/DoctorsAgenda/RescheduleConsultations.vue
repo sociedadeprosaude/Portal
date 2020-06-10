@@ -598,7 +598,8 @@ export default {
   },
   methods: {
     datesOfInterval(payload) {
-      let weekDays = payload.weekDays;
+      let days = payload.days;
+      let weekDays = Object.keys(days);
       let startDate = moment();
       let dates = [];
       weekDays = weekDays.map(day => {
@@ -606,7 +607,14 @@ export default {
       });
       let day = startDate;
       for (let i = 0; i < this.daysToListen; i++) {
-        if (weekDays.indexOf(day.weekday()) > -1) {
+        let expiration_date = days[day.weekday().toString()]
+          ? days[day.weekday().toString()].expiration_date
+          : undefined;
+        if (
+          weekDays.indexOf(day.weekday()) > -1 &&
+          (!expiration_date ||
+            day.isSameOrBefore(moment(expiration_date, "YYYY-MM-DD")))
+        ) {
           dates.push(day.format("YYYY-MM-DD"));
         }
         day = startDate.add(1, "days");
@@ -641,9 +649,7 @@ export default {
       let consultations = [];
       schedules.forEach(schedule => {
         let keys = Object.keys(schedule.days);
-        let dates = this.datesOfInterval({
-          weekDays: keys
-        });
+        let dates = this.datesOfInterval({days: schedule.days});
 
         dates.forEach(date => {
           let hourConsultation = schedule.days[moment(date).weekday()].hour;

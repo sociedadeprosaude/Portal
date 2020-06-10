@@ -191,9 +191,15 @@
                                 to: '/relatorio',
                                 permission: 'Relatórios',
                                 icon: 'report'
-                            }, {
+                            }, /* {
                                 title: 'Consultas',
                                 to: '/agenda/CadastroConsultasPlantoes',
+                                permission: 'Agenda Médica',
+                                icon: 'event',
+                            }, */
+                            {
+                                title:"Consultas",
+                                to:"/agenda/GerenciarAgendas",
                                 permission: 'Agenda Médica',
                                 icon: 'event',
                             },
