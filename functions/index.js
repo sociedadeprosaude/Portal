@@ -1,6 +1,5 @@
 const functions = require('firebase-functions');
 var admin = require('firebase-admin');
-<<<<<<< HEAD
 const cors = require('cors')({ origin: true });
 var moment = require('moment');
 const json2csv = require('json2csv');
@@ -236,9 +235,6 @@ async function convertDoctorsSubcollectionsInObjects() {
     }
     return allDoctors
 }
-=======
-admin.initializeApp();
->>>>>>> master
 
 
 exports.cronjob = require('./Cronjob/Cronjob')
