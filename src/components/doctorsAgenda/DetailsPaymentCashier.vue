@@ -2,16 +2,6 @@
     <v-container fluid class="ma-0 pa-0">
         <v-layout row wrap>
             <v-flex>
-                <v-flex sm12 xs12>
-                    <v-combobox label="Médico"
-                                v-model="selectedDoctor"
-                                :items="doctors"
-                                return-object
-                                item-text="name"
-                                outlined
-                                dense
-                    />
-                </v-flex>
                 <v-flex sm12 xs12 v-if="payment.paymentForm.length > 1">
                     <v-layout row wrap class="align-center" v-for="(x ,index) in payment.paymentForm" :key="index">
                         <v-flex xs12>

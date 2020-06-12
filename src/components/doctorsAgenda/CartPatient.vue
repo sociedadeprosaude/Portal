@@ -43,6 +43,36 @@
                     </v-flex>
                     <v-btn rounded dense x-small class="error px-6" @click="removeItem(item)">Remover Item</v-btn>
                 </v-card-text>
+                <v-layout row wrap class="mt-3">
+                    <v-flex xs12>
+                        <v-combobox class="pa-0"
+                                    v-model="selectedDoctor"
+                                    :items="doctors"
+                                    return-object
+                                    item-text="name"
+                                    label="Médico"
+                                    outlined
+                                    dense
+                                    solo
+                                    color="blue"
+                                    clearable
+                        >
+                            <template v-slot:selection="data">
+                                <v-chip
+                                        :key="JSON.stringify(data.item)"
+                                        :input-value="data.selected"
+                                        :disabled="data.disabled"
+                                        class="v-chip--select-multi"
+                                        @click.stop="data.parent.selectedIndex = data.index"
+                                        @input="data.parent.selectItem(data.item)"
+                                        text-color="white" dense
+                                        color="primary"
+                                >{{ data.item.name }}
+                                </v-chip>
+                            </template>
+                        </v-combobox>
+                    </v-flex>
+                </v-layout>
             </v-card>
         </v-layout>
     </v-container>
@@ -54,6 +84,8 @@
         data() {
             return {
                 receiptDialog: false,
+                noDoctorKeyWord: 'Nenhum'
+
             }
         },
         computed: {
@@ -63,6 +95,24 @@
             consultations() {
                 return this.$store.getters.getShoppingCartItemsByCategory.consultations
             },
+            doctors: {
+                get: function () {
+                    let docArray = [];
+                    docArray.push({
+                        name: this.noDoctorKeyWord
+                    });
+                    docArray = docArray.concat(Object.values(this.$store.getters.doctors));
+                    return docArray;
+                }
+            },
+            selectedDoctor: {
+                get() {
+                    return this.$store.getters.shoppingCartSelectedDoctor
+                },
+                set(val) {
+                    this.$store.commit('setSelectedDoctor', val)
+                }
+            }
         },
         watch: {
             percentageDiscount: function () {
