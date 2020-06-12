@@ -1,5 +1,75 @@
 <template>
-  <v-card height="100%" class="pa-4" @click="$emit('close')" style="overflow: hidden !important;">
+  <v-card
+    v-if="test"
+    height="100%"
+    class="pa-4"
+    @click="$emit('close')"
+    style="overflow: hidden !important;"
+  >
+    <v-container fluid class="one white--text">
+      <v-row class="ml-2 indigo--text text--darken-4 font-weight-bold">
+        <p style="font-size: 2em;">Próxima senhas</p>
+      </v-row>
+
+      <v-row justify="center">
+        <v-col
+          class="py-2 px-0"
+          cols="12"
+          v-for="(ticket, index) in calledTicketsInOrder.slice(1,5)"
+          :key="index"
+        >
+          <v-card elevation="0" :color="index%2 != 0? 'grey lighten-2':'grey lighten-4'">
+            <v-row>
+              <v-col align-self="center" class="font-weight-bold">
+                <p style="font-size: 2em;">senha</p>
+              </v-col>
+              <v-col class="indigo--text text--darken-4 font-weight-bold">
+                <p style="font-size: 4em;">{{ticket.number}}</p>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
+      </v-row>
+      <v-row justify="center">
+        <v-card flat>
+          <img :src="constants.ASSETS.logo" height="124px" />
+        </v-card>
+      </v-row>
+    </v-container>
+    <v-container fluid class="two white--text">
+      <v-row class="pa-0 ma-0 half">
+        <v-col align-self="center">
+          <v-row justify="center" class="display-2">{{selectedRoom.name}}</v-row>
+
+          <v-row justify="center">
+            <v-col sm="6" md="4" lg="3" xl="2" class="ma-0 pa-0">
+              <p style="font-size: 6em;">{{selectedRoom.number}}</p>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-divider class="white"></v-divider>
+      <v-row class="pa-0 ma-0 half">
+        <v-col align-self="center">
+          <v-row justify="center" class="display-1">Senha</v-row>
+
+          <v-row justify="center">
+            <v-col sm="6" md="4" lg="3" xl="2" class="ma-0 pa-0">
+              <p v-if="currentTicket" style="font-size: 7em;">{{currentTicket.number}}</p>
+              <p v-else style="font-size: 5em;">*</p>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-card>
+  <v-card
+    v-else
+    height="100%"
+    class="pa-4"
+    @click="$emit('close')"
+    style="overflow: hidden !important;"
+  >
     <v-container fill-height>
       <v-row align="center" justify="center">
         <v-col sm="4" class="my-4">
@@ -53,6 +123,16 @@ import constants from "../../utils/constants";
 export default {
   name: "SingleVisualizer",
   props: ["selectedRoom", "sector"],
+  data() {
+    return {
+      test: true,
+      hour: moment().format("HH:mm"),
+      clockInterval: undefined,
+      constants: constants,
+      animation: "",
+      lastTicket: null
+    };
+  },
   mounted() {
     this.clockInterval = setInterval(() => {
       this.$nextTick(() => {
@@ -63,21 +143,13 @@ export default {
       clearInterval(this.clockInterval);
     });
   },
-  data() {
-    return {
-      hour: moment().format("HH:mm"),
-      clockInterval: undefined,
-      constants: constants,
-      animation: "",
-      lastTicket: null
-    };
-  },
+
   computed: {
     rooms() {
-      return this.sector ? this.sector.rooms : []
+      return this.sector ? this.sector.rooms : [];
     },
     room() {
-      return this.rooms[this.selectedRoom.name]
+      return this.rooms[this.selectedRoom.name];
     },
     doctorName() {
       if (this.room.doctor) {
@@ -135,6 +207,24 @@ export default {
   animation: fade-in 1s infinite;
 }
 
+.one,
+.two {
+  float: left;
+  width: 50%;
+  min-height: 100vh;
+}
+
+.half {
+  min-height: 50vh;
+}
+
+.strechAll {
+  min-height: 100vh;
+}
+
+.two {
+  background-color: rgb(21, 21, 99);
+}
 @keyframes fade-in {
   0% {
     opacity: 0.5;
