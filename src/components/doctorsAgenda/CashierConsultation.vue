@@ -139,7 +139,7 @@
                         return false
                     }
                 });
-                console.log('#spe', specialties)
+               // console.log('#spe', specialties)
                 return specialties
             },
             specialtiesLoaded() {
