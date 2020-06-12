@@ -12,15 +12,77 @@
                                 Médico - Especialidade - Unidade
                             </v-chip>
                             <v-spacer/>
-                            <v-text-field v-model="search" append-icon="search" label="Search" single-line
-                                          hide-details/>
+                            <!-- <v-text-field v-model="search" append-icon="search" label="Search" single-line
+                                          hide-details/> -->
+                            <v-layout class="mt-5" row wrap>
+                                <v-flex class="mr-5" xs12 sm5 md4>
+                                    <v-combobox
+                                    label="Especialidade"
+                                    prepend-icon="school"
+                                    v-model="specialty"
+                                    :items="specialties"
+                                    item-text="name"
+                                    return-object
+                                    outlined
+                                    rounded
+                                    filled
+                                    chips
+                                    color="pink"
+                                    clearable
+                                    dense
+                                    >
+                                    <template v-slot:selection="data">
+                                        <v-chip
+                                        :key="JSON.stringify(data.item)"
+                                        :input-value="data.selected"
+                                        :disabled="data.disabled"
+                                        class="v-chip--select-multi"
+                                        @click.stop="data.parent.selectedIndex = data.index"
+                                        @input="data.parent.selectItem(data.item)"
+                                        text-color="white"
+                                        color="info"
+                                        >{{ data.item.name }}</v-chip>
+                                    </template>
+                                    </v-combobox>
+                                </v-flex>
+                                <v-flex xs12 sm5 md4>
+                                    <v-combobox
+                                    prepend-icon="account_circle"
+                                    v-model="doctor"
+                                    :items="doctors"
+                                    item-text="name"
+                                    return-object
+                                    label="Médico"
+                                    no-data-text="Nenhum médico para esta especialidade"
+                                    outlined
+                                    rounded
+                                    filled
+                                    chips
+                                    color="purple"
+                                    clearable
+                                    dense
+                                    >
+                                    <template v-slot:selection="data">
+                                        <v-chip
+                                        :key="JSON.stringify(data.item)"
+                                        :input-value="data.selected"
+                                        :disabled="data.disabled"
+                                        class="v-chip--select-multi"
+                                        @click.stop="data.parent.selectedIndex = data.index"
+                                        @input="data.parent.selectItem(data.item)"
+                                        text-color="white"
+                                        color="info"
+                                        >{{ data.item.name }}</v-chip>
+                                    </template>
+                                    </v-combobox>
+                                </v-flex>
+                            </v-layout>
                         </v-card-title>
                         <v-data-table
                                 hide-default-header
                                 hide-default-footer
                                 :headers="headers"
                                 :items="doctorsMapping"
-                                :search="search"
                                 :items-per-page="-1"
                                 item-key="hour"
                                 class="elevation-1"
@@ -393,7 +455,7 @@
             today: moment().format("YYYY-MM-DD"),
             dialogUpdate:false,
             editDay:{},
-            search: '',
+            search: undefined,
             headers: [
                 {text: 'Hora', value: 'hour', align: 'center', sortable: true},
                 {text: 'Segunda', value: 'monday', align: 'center', sortable: false},
@@ -406,9 +468,44 @@
             dialogRemove:false,
             loading:false,
             scheduleSelected:undefined,
-            dayScheduleSelected:undefined
+            dayScheduleSelected:undefined,
+            specialty:undefined,
+            doctor:undefined
         }),
         computed: {
+            specialties() {
+                let espArray = Object.values(this.$store.getters.specialties);
+                /* espArray = espArray.filter(specialty => {
+                    if (!this.doctor) {
+                    return true;
+                    }
+                    var find = false;
+                    specialty.doctors.forEach(doctor => {
+                    if (doctor.cpf === this.doctor.cpf) {
+                        find = true;
+                        return true;
+                    }
+                    });
+
+                    return find;
+                }); */
+                return espArray;
+            },
+
+            doctors() {
+                let doctors = Object.values(this.$store.getters.doctors);
+                /* if (this.specialty) {
+                    doctors = doctors.filter(a => {
+                    for (let spe in a.specialties) {
+                        if (a.specialties[spe].name === this.specialty.name) {
+                        return true;
+                        }
+                    }
+                    return false;
+                    });
+                } */
+                return doctors;
+            },
             doctorsMapping() {
                 let weeklyTable = [
                     {
@@ -617,7 +714,15 @@
                         saturday: [],
                     },
                 ]
-                let schedules = this.$store.getters.AllSchedules
+
+                console.log('->>')
+                let schedules = this.$store.getters.AllSchedules.filter((schedule)=>{
+                    if(this.specialty && schedule.specialty.name != this.specialty.name)
+                        return false
+                    if(this.doctor && schedule.doctor.name != this.doctor.name)
+                        return false
+                    return true
+                })
 
                 for (let schedule in schedules) {
                     if(schedules[schedule].cancelations_schedules){
