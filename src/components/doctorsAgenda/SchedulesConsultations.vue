@@ -1,97 +1,101 @@
 <template>
     <v-container>
-        <v-layout row wrap style="width:100%"
-                  class="align-center justify-center py-0"
-                  v-for="(scheduleGroup, i) in Consultations"
-                  :key="i">
-            <v-flex xs12 class="align-start justify-start">
-                <div v-bind:id="'group-' + i" class="text-left">
-                    <span class="my-sub-headline primary--text">{{i | dateFilter}} - {{dayDate(i)}}</span>
-                    <v-divider class="primary"/>
-                </div>
-            </v-flex>
-            <v-container fluid grid-list-sm class="py-0 my-3 mx-2">
-                <v-layout row wrap>
-                    <v-flex v-for="(schedule, j) in scheduleGroup" :key="j" sm12 xs12 class="px-2 py-2">
-                        <v-card class="pa-4 background" style="border-radius:20px; height: 100%">
-                            <v-layout>
-                                <v-layout row wrap>
-                                    <v-flex xs12 class="text-left">
-                                        <v-layout row wrap>
-                                            <span class="subtitle-2 font-weight-bold">{{schedule.doctor.name}}</span>
-                                            <span class="subtitle-2 font-weight-bold mx-2">-</span>
-                                            <span class="subtitle-2 font-weight-bold subheading">
+        <div v-infinite-scroll="listenMoreConsultations" :infinite-scroll-disabled="consultationLoading"
+             infinite-scroll-distance="limit">
+            <v-layout row wrap style="width:100%"
+                      class="align-center justify-center py-0"
+                      v-for="(scheduleGroup, i) in Consultations"
+                      :key="i">
+                <v-flex xs12 class="align-start justify-start">
+                    <div v-bind:id="'group-' + i" class="text-left">
+                        <span class="my-sub-headline primary--text">{{i | dateFilter}} - {{dayDate(i)}}</span>
+                        <v-divider class="primary"/>
+                    </div>
+                </v-flex>
+                <v-container fluid grid-list-sm class="py-0 my-3 mx-2">
+                    <v-layout row wrap>
+                        <v-flex v-for="(schedule, j) in scheduleGroup" :key="j" sm12 xs12 class="px-2 py-2">
+                            <v-card class="pa-4 background" style="border-radius:20px; height: 100%">
+                                <v-layout>
+                                    <v-layout row wrap>
+                                        <v-flex xs12 class="text-left">
+                                            <v-layout row wrap>
+                                                <span class="subtitle-2 font-weight-bold">{{schedule.doctor.name}}</span>
+                                                <span class="subtitle-2 font-weight-bold mx-2">-</span>
+                                                <span class="subtitle-2 font-weight-bold subheading">
                                                     {{schedule.specialty.name}}
                                             </span>
-                                            <v-spacer/>
-                                            <v-chip color="primary_dark" class="mb-2" small text-color="white">
-                                                {{schedule.clinic.name}}
-                                            </v-chip>
-                                        </v-layout>
-                                    </v-flex>
-                                    <v-flex xs12 class="mb-1">
-                                        <v-divider class="primary"/>
-                                    </v-flex>
-                                    <v-flex class="my-0" xs12>
-                                        <v-layout row wrap class="text-left font-weight-bold">
-                                            <v-flex xs12>
-                                                <v-chip small class="mx-2" color="primary_dark" text-color="white">
-                                                    {{schedule.date.split(' ')[1]}}
+                                                <v-spacer/>
+                                                <v-chip color="primary_dark" class="mb-2" small text-color="white">
+                                                    {{schedule.clinic.name}}
                                                 </v-chip>
-                                                <v-chip small color="primary_dark" text-color="white">
-                                                    Vagas :
-                                                    {{schedule.vacancy}}
-                                                </v-chip>
-                                                <v-chip small class="mx-2" color="primary_dark" text-color="white">
-                                                    Consultas :
-                                                    {{schedule.qtd_consultations ? schedule.qtd_consultations : 0}}
-                                                </v-chip>
-                                                <v-chip class="mx-2" small color="primary_dark" text-color="white">
-                                                    Retornos :
-                                                    {{schedule.qtd_returns ? schedule.qtd_returns : 0}}
-                                                </v-chip>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-flex>
-                                    <v-flex xs12 class="text-right">
-                                        <v-fade-transition>
-                                            <v-btn v-if="isOnline"
-                                                   rounded
-                                                   small
-                                                   color="primary_dark white--text"
-                                                   class="mx-0"
-                                                   :disabled="schedule.vacancy === 0"
-                                                   @click="scheduleAppointment(schedule)"
-                                            >Agendar
-                                            </v-btn>
-                                            <v-btn v-else
-                                                   rounded
-                                                   small
-                                                   color="grey"
-                                                   class="mx-0"
-                                            >Sem conexão
-                                            </v-btn>
-                                        </v-fade-transition>
-                                    </v-flex>
+                                            </v-layout>
+                                        </v-flex>
+                                        <v-flex xs12 class="mb-1">
+                                            <v-divider class="primary"/>
+                                        </v-flex>
+                                        <v-flex class="my-0" xs12>
+                                            <v-layout row wrap class="text-left font-weight-bold">
+                                                <v-flex xs12>
+                                                    <v-chip small class="mx-2" color="primary_dark" text-color="white">
+                                                        {{schedule.date.split(' ')[1]}}
+                                                    </v-chip>
+                                                    <v-chip small color="primary_dark" text-color="white">
+                                                        Vagas :
+                                                        {{schedule.vacancy}}
+                                                    </v-chip>
+                                                    <v-chip small class="mx-2" color="primary_dark" text-color="white">
+                                                        Consultas :
+                                                        {{schedule.qtd_consultations ? schedule.qtd_consultations : 0}}
+                                                    </v-chip>
+                                                    <v-chip class="mx-2" small color="primary_dark" text-color="white">
+                                                        Retornos :
+                                                        {{schedule.qtd_returns ? schedule.qtd_returns : 0}}
+                                                    </v-chip>
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-flex>
+                                        <v-flex xs12 class="text-right">
+                                            <v-fade-transition>
+                                                <v-btn v-if="isOnline"
+                                                       rounded
+                                                       small
+                                                       color="primary_dark white--text"
+                                                       class="mx-0"
+                                                       :disabled="schedule.vacancy === 0"
+                                                       @click="scheduleAppointment(schedule)"
+                                                >Agendar
+                                                </v-btn>
+                                                <v-btn v-else
+                                                       rounded
+                                                       small
+                                                       color="grey"
+                                                       class="mx-0"
+                                                >Sem conexão
+                                                </v-btn>
+                                            </v-fade-transition>
+                                        </v-flex>
+                                    </v-layout>
                                 </v-layout>
-                            </v-layout>
-                        </v-card>
-                    </v-flex>
-                </v-layout>
-                <div class="text-xs-center">
-                    <v-dialog v-model="dialog" v-if="createConsultationForm" max-width="520">
-                        <SchedulingForm @close-dialog="dialog = false"
-                                        :createConsultationForm="createConsultationForm"
-                                        :loaderPaymentNumber="loaderPaymentNumber"
-                                        :exam="exam"
-                                        :numberReceipt="numberReceipt"
-                                        :status="status"
-                                        :payment_numberFound="payment_numberFound"
-                        />
-                    </v-dialog>
-                </div>
-            </v-container>
-        </v-layout>
+                            </v-card>
+                        </v-flex>
+                    </v-layout>
+                    <div class="text-xs-center">
+                        <v-dialog v-model="dialog" v-if="createConsultationForm" max-width="520">
+                            <SchedulingForm @close-dialog="dialog = false"
+                                            :createConsultationForm="createConsultationForm"
+                                            :loaderPaymentNumber="loaderPaymentNumber"
+                                            :exam="exam"
+                                            :numberReceipt="numberReceipt"
+                                            :status="status"
+                                            :payment_numberFound="payment_numberFound"
+                            />
+                        </v-dialog>
+                    </div>
+                </v-container>
+            </v-layout>
+        </div>
+
         <v-flex xs12 v-if="!consultationLoading">
             <v-btn class="primary" rounded @click="listenMoreConsultations">Carregar mais</v-btn>
         </v-flex>
@@ -103,12 +107,16 @@
 <script>
 
     import SchedulingForm from "../doctorsAgenda/SchedulingForm"
+    import {infiniteScroll} from "vue-infinite-scroll"
+    import axios from "axios"
+
 
     let moment = require("moment/moment");
 
     export default {
         props: ['Consultations'],
         components: {SchedulingForm},
+        directives: {infiniteScroll,},
         data: () => ({
             semanaOptions: [
                 "Domingo",
@@ -121,17 +129,22 @@
             ],
             dialog: false,
             numberReceipt: "",
-            payment_numberFound:undefined,
-            status:"",
+            payment_numberFound: undefined,
+            status: "",
             createConsultationForm: undefined,
             exam: undefined,
             loaderPaymentNumber: false,
             daysToListen: 3,
             exams: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
+
+            busy: false,
+            limit: 10,
         }),
 
-        mounted () {
+        mounted() {
             this.$emit('refreshDate', this.daysToListen);
+         // this.loadMore();
+            this.scroll()
         },
 
         computed: {
@@ -151,6 +164,27 @@
         },
 
         methods: {
+
+            scroll(person) {
+                window.onscroll = () => {
+                    let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
+
+                    if (bottomOfWindow) {
+                        axios.get(`https://randomuser.me/api/`)
+                            .then(response => {
+                                console.log('loading...');
+                                //this.persons.push(response.data.results[0]);
+                                this.listenMoreConsultations()
+                            });
+                    }
+                };
+            },
+
+            loadMore() {
+
+                this.busy = true;
+                this.busy = false;
+            },
 
             dayDate(date) {
                 let dateMoment = moment(date);
