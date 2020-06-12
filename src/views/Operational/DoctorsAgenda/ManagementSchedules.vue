@@ -4,7 +4,7 @@
     :items="schedules"
     single-expand
     :expanded.sync="expanded"
-    item-key="doctor.id"
+    item-key="id"
     show-expand
     class="elevation-1 mx-10 mt-10"
     height="420"
