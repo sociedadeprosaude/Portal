@@ -99,7 +99,7 @@
                                     </template>
                                 </v-col>
 
-                                {{selection}}
+                                {{lista}}
 
                                 <v-flex xs3 class="my-2" v-for="group in groups" :key="group">
                                     <v-btn
@@ -161,58 +161,6 @@
 
         data: () => ({
             selection: [],
-            items: [
-                {
-                    id: 0,
-                    name: 'All :',
-                    children: [
-                        {
-                            id: 1,
-                            name: 'Operacional :',
-                            children: [
-                                {
-                                    id: 2,
-                                    name: 'Agenda',
-                                    children: [
-                                        {id: 21, name: 'Agendamento'},
-                                        {id: 22, name: 'GerenciamentoConsultas'},
-                                        {id: 23, name: 'ConsultasPacientes'},
-                                        {id: 24, name: 'ConsultasCanceladas'},
-                                        {id: 25, name: 'Cids'},
-                                        {id: 26, name: 'DeletarConsultas'},
-                                        {id: 27, name: 'Declaration'},
-                                    ],
-                                },
-                                {id: 3, name: 'Caixa'},
-                                {id: 4, name: 'Senhas'},
-                                {id: 5, name: 'Tabela Semanal'},
-                            ],
-                        },
-                        {
-                            id: 6,
-                            name: 'Cadastro e Registros :',
-                            children: [
-                                {
-                                    id: 7,
-                                    name: 'Agenda',
-                                    children: [
-                                        {id: 71, name: 'Agendamento'},
-                                        {id: 72, name: 'GerenciamentoConsultas'},
-                                        {id: 73, name: 'ConsultasPacientes'},
-                                        {id: 74, name: 'ConsultasCanceladas'},
-                                        {id: 75, name: 'Cids'},
-                                        {id: 76, name: 'DeletarConsultas'},
-                                        {id: 77, name: 'Declaration'},
-                                    ],
-                                },
-                                {id: 8, name: 'Caixa'},
-                                {id: 9, name: 'Senhas'},
-                                {id: 10, name: 'Tabela Semanal'},
-                            ],
-                        },
-                    ]
-                }
-            ],
             loading: true,
             registerSalary: false,
             registerAdvance: false,
@@ -229,7 +177,9 @@
         },
 
         computed: {
-
+            items () {
+              return this.$store.getters.permissions
+            },
             units() {
                 return this.$store.getters.units
             },
