@@ -21,7 +21,9 @@
 
             <v-flex xs12 class="hidden-md-and-up">
                 <DataToSearchConsultation @GetConsultations="schedules= $event" :daysToListen="daysToListen" v-if="this.viewSeleted === 'data'"/>
+                <!--
                 <SchedulesConsultations class="white" :Consultations="schedules" @refreshDate="daysToListen = $event" v-if="this.viewSeleted === 'schedules'"/>
+               -->
                 <DataCashierConsultation v-if="this.viewSeleted === 'cashier'"/>
             </v-flex>
         </v-layout>
@@ -38,7 +40,7 @@
         data: () => ({
             schedules: {},
             daysToListen: null,
-            viewSeleted: 'data',
+            viewSeleted: 'schedules',
             items: [
                 {title: 'Dados', view: 'data'},
                 {title: 'Consultas', view: 'schedules'},
