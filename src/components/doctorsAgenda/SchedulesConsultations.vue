@@ -233,7 +233,6 @@
             },
 
             async listenMoreConsultations() {
-                console.log('# chama ');
                 this.loading = true;
                 this.daysToListen += 3;
                 await this.$store.dispatch('listenConsultations',

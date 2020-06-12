@@ -23,7 +23,6 @@
                 <SchedulesConsultations class="white" :Consultations="schedules" @refreshDate="daysToListen = $event" v-if="this.viewSeleted === 'schedules'"/>
                 <DataCashierConsultation v-if="this.viewSeleted === 'cashier'"/>
             </v-flex>
-
         </v-layout>
     </v-container>
 </template>

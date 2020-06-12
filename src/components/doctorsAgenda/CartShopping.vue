@@ -98,7 +98,7 @@
             const listElm = document.querySelector('#infinite-list');
             listElm.addEventListener('scroll', e => {
                 if (listElm.scrollTop + listElm.clientHeight >= listElm.scrollHeight) {
-                   // 
+                   //
                 }
             });
 

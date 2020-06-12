@@ -173,7 +173,17 @@
 
         methods: {
             selectCategory(category) {
-                this.categorySelect = category
+                let reply;
+                if (category === 'exam') {
+                    reply = 'exam'
+                }
+                if (category === 'appointment') {
+                    reply = 'appointment'
+                }
+                if (category === 'package'){
+                    reply = 'package'
+                }
+                return reply
             },
 
             async selectBudget(budget) {

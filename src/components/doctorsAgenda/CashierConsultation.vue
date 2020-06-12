@@ -78,7 +78,7 @@
         components: {CartShopping, CartPatient, DetailsPayment, HistoryCashierPatient},
         data (){
             return {
-                categorySelect: 'appointment',
+                categorySelect: 'exam',
                 search: '',
                 loading: undefined,
                 cartPatient: false,
@@ -139,7 +139,6 @@
                         return false
                     }
                 });
-               // console.log('#spe', specialties)
                 return specialties
             },
             specialtiesLoaded() {
