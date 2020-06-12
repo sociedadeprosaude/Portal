@@ -168,12 +168,14 @@ export default {
   props: ["guide"],
   computed: {
     items() {
+      console.log(' item: ', this.guide)
       return this.guide;
     },
     selectedUnit() {
       return this.$store.getters.selectedUnit;
     },
     patient() {
+      console.log('patient: ', this.$store.getters.selectedPatient)
       return this.$store.getters.selectedPatient;
     }
   },

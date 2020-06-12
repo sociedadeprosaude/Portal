@@ -7,11 +7,28 @@ var axios = require("axios");
 var xml2js = require('xml2js');
 const cors = require('cors')({ origin: true });
 var moment = require('moment');
+const { Parser } = require('json2csv');
+
 
 const heavyFunctionsRuntimeOpts = {
     timeoutSeconds: 540,
     memory: '2GB'
 }
+
+exports.getLastAccessedPatients = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async(req,res) => {
+    var quant= parseInt(req.query.quantity)
+    let users = await admin.firestore().collection('users').orderBy("accessed_to", "desc").limit(quant).get()
+    let editadUsers = []
+    users.forEach((docRef) => {
+        editadUsers.push({
+            "name": docRef.data().name,
+            "cpf": docRef.data().cpf,
+        })
+    })
+    const json2csvParser = new Parser();
+    const csv =  json2csvParser.parse(editadUsers)
+    res.status(200).send(csv);
+})
 exports.removeUnnappointedConsultations = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (request, response) => {
     let db = admin.firestore()
     var startDate = moment(request.query.date, 'YYYY-MM-DD HH:mm')

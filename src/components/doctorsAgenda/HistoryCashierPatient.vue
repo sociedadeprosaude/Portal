@@ -156,10 +156,11 @@
             },
             async receipt(intake) {
                 this.loading = true;
-                this.selectedIntake = await this.$store.dispatch(
+                let getIntake = await this.$store.dispatch(
                     "getIntakeDetails",
                     intake
                 );
+                this.selectedIntake = getIntake[0];
                 this.receiptDialog = true;
                 this.loading = false;
             },
@@ -192,10 +193,12 @@
                 return this.$store.getters.selectedPatient;
             },
             intakes() {
-                return this.patient.intakes;
+                let intakes= Object.assign({}, this.patient.intakes.reverse())
+                return intakes;
             },
             budgets() {
-                return this.patient.budgets;
+                let budgets= Object.assign({}, this.patient.budgets.reverse())
+                return budgets;
             }
         }
     };

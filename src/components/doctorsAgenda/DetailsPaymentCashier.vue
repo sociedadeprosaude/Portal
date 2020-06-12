@@ -183,6 +183,14 @@
         <v-dialog v-model="budgetToPrintDialog" v-if="budgetToPrint">
             <budget-to-print @close="budgetToPrintDialog = false" :budget="budgetToPrint"/>
         </v-dialog>
+        <v-dialog
+                transition="dialog-bottom-transition"
+                fullscreen
+                v-model="receiptDialog"
+                v-if="selectedIntake"
+        >
+            <receipt @close="CloseReceipt()"  :budget="selectedIntake"></receipt>
+        </v-dialog>
     </v-container>
 </template>
 <script>
@@ -190,6 +198,8 @@
 
     import SubmitButton from "../SubmitButton";
     import BudgetToPrint from "../../components/cashier/BudgetToPrint";
+    import Receipt from "../cashier/Receipt";
+    import functions from "../../utils/functions";
 
     let moment = require('moment');
 
@@ -199,7 +209,7 @@
         components: {
             BudgetToPrint,
             SubmitButton,
-
+            Receipt
         },
         data() {
             return {
@@ -320,6 +330,10 @@
             },
         },
         methods: {
+            CloseReceipt(){
+                this.clearCart()
+                this.receiptDialog=false
+            },
             async searchBudget() {
                 this.searchBudgetLoading = true;
                 let budget = await this.$store.dispatch('getBudget', this.searchBudgetNumber);
@@ -444,13 +458,9 @@
                 }
 
                 this.updateBudgetsIntakes();
-                this.receipt(this.selectedBudget);
+                await this.receipt(this.selectedBudget);
                 this.paymentLoading = false;
                 this.paymentSuccess = true;
-
-                this.budgetToPrint = this.selectedBudget;
-                this.budgetToPrintDialog = true;
-
                 let data = {
                     user: this.patient,
                     budgetId: this.selectedBudget.id.toString(),
@@ -458,11 +468,11 @@
                 await this.$store.dispatch('deleteBudget', data);
                 await this.$store.commit('setSelectedBudget', undefined);
                 this.$store.commit('clearShoppingCartItens');
-                this.card = false;
-                this.clearCart();   
             },
             async receipt(intake) {
-                this.selectedIntake = await this.$store.dispatch('getIntakeDetails', intake);
+                let intakes = await this.$store.dispatch('getIntakeDetails', intake);
+                this.selectedIntake = intakes[0]
+                console.log('selectedIntake: ', this.selectedIntake)
                 this.receiptDialog = true
             },
 
