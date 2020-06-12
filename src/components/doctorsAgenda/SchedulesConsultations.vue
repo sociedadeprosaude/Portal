@@ -1,11 +1,6 @@
 <template>
     <v-container>
         <div class="container" id="app">
-            <transition name="fade">
-                <div class="loading" v-show="loading">
-                    <span class="fa fa-spinner fa-spin">Loading</span>
-                </div>
-            </transition>
             <ul class="list-group" id="infinite-list">
                 <v-layout row wrap style="width:100%"
                           class="align-center justify-center py-0"
@@ -116,13 +111,12 @@
     import {infiniteScroll} from "vue-infinite-scroll"
     import axios from "axios"
 
-
     let moment = require("moment/moment");
 
     export default {
         props: ['Consultations'],
         components: {SchedulingForm},
-        directives: {infiniteScroll,},
+        directives: {infiniteScroll},
         data: () => ({
             semanaOptions: [
                 "Domingo",

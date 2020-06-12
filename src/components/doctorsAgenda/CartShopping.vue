@@ -1,6 +1,6 @@
 <template>
     <v-container fluid class="ma-0 pa-0">
-        <v-layout row nowrap style="width: 100%">
+        <v-layout row nowrap style="width: 100%" id="infinite-list" class="list-group" >
             <v-card v-for="(item, i) in Items" :key="i" class="my-2" width="100%">
                 <v-layout row wrap v-if="categorySelect === 'package'"
                           class="align-center justify-center text-center my-1">
@@ -87,8 +87,22 @@
 </template>
 
 <script>
+    import {infiniteScroll} from "vue-infinite-scroll"
+
     export default {
         props: ['Items', 'categorySelect'],
+        directives: {infiniteScroll},
+
+        async mounted() {
+
+            const listElm = document.querySelector('#infinite-list');
+            listElm.addEventListener('scroll', e => {
+                if (listElm.scrollTop + listElm.clientHeight >= listElm.scrollHeight) {
+                   // 
+                }
+            });
+
+        },
 
         methods: {
             async selectBudget(budget) {
@@ -126,3 +140,10 @@
         }
     }
 </script>
+<style scoped>
+
+    .list-group {
+        overflow: auto;
+        height: 100vh;
+    }
+</style>

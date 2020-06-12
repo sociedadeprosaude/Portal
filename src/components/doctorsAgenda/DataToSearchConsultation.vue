@@ -14,7 +14,7 @@
                         color="primary"
                 />
             </v-flex>
-            <v-flex class="mt-5 red" sm12>
+            <v-flex class="mt-5" sm12>
                 <CardPatient ref="patientCard"/>
             </v-flex>
         </v-layout>
