@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid class="ma-0 pa-0">
+    <v-container fluid class="ma-0 mt-n2 pa-0">
         <v-layout row wrap>
             <v-flex sm3 class="primary hidden-md-and-down">
                 <DataToSearchConsultation @GetConsultations="schedules= $event" :daysToListen="daysToListen"/>

@@ -3,10 +3,10 @@
         <v-layout row wrap>
             <v-flex xs12 sm12>
                 <v-expand-transition mode="out-in">
-                    <v-card class="primary_light white--text pa-2 ml-12" :max-width="maxWidth" v-if="!addPatient">
+                    <v-card class="primary_light white--text grey" :max-width="maxWidth" v-if="!addPatient">
                         <v-layout row wrap>
                             <v-flex v-if="!selectedPatient" xs8>
-                                <v-flex sm6 xs8 class="text-left mb-3">
+                                <v-flex class="text-left mt-1 ml-2">
                                     <span class="font-weight-bold white--text hidden-xs-only">Buscar Associado</span>
                                     <span class="white--text font-weight-bold hidden-sm-and-up">Buscar Associado</span>
                                 </v-flex>
@@ -121,6 +121,7 @@
                                 <v-text-field
                                         outlined
                                         rounded
+                                        dense
                                         filled
                                         prepend-icon="account_circle"
                                         v-model="name"
@@ -134,6 +135,7 @@
                                         outlined
                                         rounded
                                         filled
+                                        dense
                                         v-model="cpf"
                                         v-mask="mask.cpf"
                                         :disabled="selectedPatient !== undefined"
@@ -147,6 +149,7 @@
                                         outlined
                                         rounded
                                         filled
+                                        dense
                                         v-model="numAss"
                                         :disabled="selectedPatient !== undefined"
                                         label="Numero do Associado">
@@ -167,13 +170,13 @@
                                 <span v-if="searchError">
                                     {{searchError}}
                                 </span>
+                                <submit-button  @click="searchPatient()" :loading="loading" :success="success"
+                                                text="Buscar" class="mt-n3 mb-2 mx-2" >
+                                </submit-button>
+                                <submit-button  @click="searchPatientOldDatabase()" :loading="loading"
+                                               :success="success" text="Buscar antigo sistema" class="mx-2 mb-1">
+                                </submit-button>
 
-                                <submit-button class="mx-3 mb-3" @click="searchPatientOldDatabase()" :loading="loading"
-                                               :success="success" text="Buscar antigo sistema">
-                                </submit-button>
-                                <submit-button class="mx-3 mb-3" @click="searchPatient()" :loading="loading" :success="success"
-                                               text="Buscar">
-                                </submit-button>
                             </v-flex>
                             <v-divider/>
                             <v-flex xs12>
