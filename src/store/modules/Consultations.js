@@ -91,7 +91,6 @@ const actions = {
     },
 
     async getAllSchedules({commit}) {
-        try {
             firebase.firestore().collection('schedules').onSnapshot(async function (AllSchedulesSnap) {
                 let AllSchedules = [];
                 AllSchedulesSnap.forEach(function (document) {
@@ -102,10 +101,6 @@ const actions = {
                 });
                 commit('setAllSchedules', AllSchedules);
             })
-            return
-        } catch (e) {
-            throw e
-        }
     },
 
     async getSchedules({commit, dispatch}, payload) {
@@ -142,6 +137,7 @@ const actions = {
                         routine_id: data.routine_id,
                         specialty: data.specialty,
                         cancelations_schedules: cancelations_schedules,
+                        expiration_date:data.expiration_date,
                         id: schedule.id
                     })
                 });
@@ -303,12 +299,17 @@ const actions = {
 
     async deleteAllSchedule({commit}, payload) {
         functions.removeUndefineds(payload);
-        let schedule = await firebase.firestore().collection('schedules')
-            .where('specialty.name', '==', payload.specialty.name)
-            .where('doctor.cpf', '==', payload.doctor.cpf)
-            .where('clinic.cnpj', '==', payload.clinic.cnpj)
-            .get();
+        let snapshot = firebase.firestore().collection('schedules')
+                        .where('clinic.cnpj', '==', payload.clinic.cnpj)
 
+        if(payload.specialty){
+            snapshot = snapshot.where('specialty.name', '==', payload.specialty.name)
+        }
+        if(payload.doctor){
+            snapshot = snapshot.where('doctor.cpf', '==', payload.doctor.cpf)
+        }
+
+        let schedule = await snapshot.get()
         if (!schedule.empty) {
             schedule.forEach((snap) => {
                 firebase.firestore().collection('schedules').doc(snap.id).delete()
