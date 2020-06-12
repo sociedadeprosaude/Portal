@@ -34,7 +34,6 @@ import CashierRoutes from "./routes/CashierRoutes";
 import discount from "./views/Notifications/discount"
 import notifications from "./views/Notifications/notifications";
 
-import weeklyTable from "./views/Operational/WeeklyTable/weeklyTable";
 const Clinic = {
   props: ['id'],
   template: '<div>Clinic {{ id }}</div>'
@@ -202,15 +201,6 @@ let mainRoutes = [
     path: '/MedicalCare',
     name: 'MedicalCare',
     component : MedicalCare,
-    meta: {
-      requiresAuth: false,
-    }
-  },
-
-  {
-    path: '/weeklyTable',
-    name: 'weeklyTable',
-    component : weeklyTable,
     meta: {
       requiresAuth: false,
     }

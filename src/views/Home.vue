@@ -154,7 +154,7 @@
                             {
                                 title: 'Tabela Semanal',
                                 permission: 'Agenda Médica',
-                                to: '/weeklyTable',
+                                to: '/agenda/TabelaSemanal',
                                 icon: 'date_range'
                             },
                         ]
