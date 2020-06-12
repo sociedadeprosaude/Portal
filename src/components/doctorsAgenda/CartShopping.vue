@@ -144,6 +144,6 @@
 
     .list-group {
         overflow: auto;
-        height: 100vh;
+        height: 82vh;
     }
 </style>

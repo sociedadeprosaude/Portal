@@ -145,7 +145,6 @@
                         return false
                     }
                 });
-                console.log('#spe', specialties)
                 return specialties
             },
             specialtiesLoaded() {

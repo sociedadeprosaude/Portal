@@ -11,7 +11,7 @@
             <v-flex sm3 class="primary hidden-md-and-down">
                 <DataCashierConsultation/>
             </v-flex>
-            <v-flex xs12 class="hidden-md-and-up mt-n6" >
+            <v-flex xs12 class="hidden-md-and-up mt-n4" >
                 <v-layout row wrap class="justify-space-between primary">
                     <v-btn v-for="item in items" :key="item.title" class="primary" text large @click="chooseView(item.view)">
                         {{item.title}}
