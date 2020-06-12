@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container fluid>
         <div class="container" id="app">
             <ul class="list-group" id="infinite-list">
                 <v-layout row wrap style="width:100%"
@@ -154,11 +154,7 @@
         },
 
         computed: {
-            limit() {
-                if (this.Consultations) return this.Consultations.length;
-                else return 0
 
-            },
             isOnline() {
                 return this.$store.getters.isOnline
             },
