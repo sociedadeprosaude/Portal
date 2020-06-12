@@ -5,9 +5,9 @@
                 <p class="my-headline">Relatórios</p>
             </v-flex>
             <v-flex xs12>
-                <v-chip-group row mandatory v-model="selectedReport" active-class="primary--text">
+                <v-slide-group row mandatory v-model="selectedReport" active-class="primary--text">
                     <v-chip v-for="report in reportOptions" :key="report">{{ report }}</v-chip>
-                </v-chip-group>
+                </v-slide-group>
             </v-flex>
             <v-layout row wrap class="align-content-sm-space-between justify-center">
                 <v-flex xs3 class="mt-5 mr-3" v-if="selectedReport !== 3">
@@ -112,7 +112,6 @@
                 <p>DE {{dateFormatted}} ATÉ {{dateFormatted2}}</p>
             </v-flex>
         </v-layout>
-      </v-flex>
       <v-flex xs12 v-if="selectedReport === 0">
         <general-report :report="formattedReport" :loading="loading" :intakes="intakes"  :reportAllUnits="formattedReportAllUnits"/>
       </v-flex>
@@ -152,7 +151,6 @@
       <v-flex class="hidden-screen-only">
         <p>DE {{dateFormatted}} ATÉ {{dateFormatted2}}</p>
       </v-flex>
-    </v-layout>
   </v-container>
 </template>
 
