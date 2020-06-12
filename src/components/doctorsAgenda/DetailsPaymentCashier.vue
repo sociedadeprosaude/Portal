@@ -472,7 +472,6 @@
             async receipt(intake) {
                 let intakes = await this.$store.dispatch('getIntakeDetails', intake);
                 this.selectedIntake = intakes[0]
-                console.log('selectedIntake: ', this.selectedIntake)
                 this.receiptDialog = true
             },
 

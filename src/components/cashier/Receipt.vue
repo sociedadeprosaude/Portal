@@ -138,14 +138,12 @@
             },
             examsPerClinic() {
                 let examsPerClinic = {}
-                console.log('budget aqui: ', this.budget)
                 for (let exam in this.budget.exams) {
                     if (!examsPerClinic[this.budget.exams[exam].clinic.name]) {
                         examsPerClinic[this.budget.exams[exam].clinic.name] = []
                     }
                     examsPerClinic[this.budget.exams[exam].clinic.name].push(this.budget.exams[exam])
                 }
-                console.log('examsPerClinic: ', examsPerClinic)
                 return examsPerClinic
             }
         },
