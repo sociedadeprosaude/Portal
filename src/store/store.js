@@ -4,6 +4,8 @@ import axios from 'axios'
 import router from '../router'
 import constants from '@/utils/constants'
 import VuexPersistence from 'vuex-persist'
+import createPersistedState from 'vuex-persistedstate';
+import Cookies from "js-cookie"
 
 import Users from '@/store/modules/Users'
 import Exams from '@/store/modules/Exams'
@@ -36,28 +38,34 @@ import Tickets from "./modules/Tickets";
 import alertNotifications from "./modules/alertNotifications";
 import Schedule from "./modules/schedule"
 
-
 Vue.use(Vuex);
 
 if (process.env.NODE_ENV === 'development') {
     // var AUTH_URL = 'http://prosaude.auth/'
-    var AUTH_URL = 'http://caixa.instituicaoprosaude.com:83/'
+    let AUTH_URL = 'http://caixa.instituicaoprosaude.com:83/'
 } else {
-    var AUTH_URL = 'http://caixa.instituicaoprosaude.com:83/'
+    let AUTH_URL = 'http://caixa.instituicaoprosaude.com:83/'
 }
 
 const vuexLocal = new VuexPersistence({
     key: 'vuex',
     storage: window.localStorage,
-    modules: ['LocalUnit', 'Users'],
-    reducer: (state) => ({
+    modules: ['LocalUnit'],
+    reducer: state => ({
         selectedPatient: state.selectedPatient,
         items: state.items,
     })
 });
 
 const store = new Vuex.Store({
-    plugins: [vuexLocal.plugin],
+    //plugins: [vuexLocal.plugin],
+    plugins: [createPersistedState({
+        storage: {
+            getItem: key => Cookies.get(key),
+            setItem: (key, value) => Cookies.set(key, value, { expires: 3, secure: true }),
+            removeItem: key => Cookies.remove(key)
+        }
+    })],
     modules: {
         Auth,
         Users,

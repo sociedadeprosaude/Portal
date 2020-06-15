@@ -864,7 +864,7 @@
                         this.cities['AM'].push(city.nome)
                     });
                 })
-            console.log('####', this.localStorage)
+
         },
         beforeDestroy() {
             window.removeEventListener('keydown', this.handleEnter)
