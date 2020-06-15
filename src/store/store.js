@@ -47,12 +47,17 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const vuexLocal = new VuexPersistence({
+    key: 'vuex',
     storage: window.localStorage,
-    modules: ['LocalUnit']
+    modules: ['LocalUnit', 'Users'],
+    reducer: (state) => ({
+        selectedPatient: state.selectedPatient,
+        items: state.items,
+    })
 });
 
 const store = new Vuex.Store({
-    // plugins: [vuexLocal.plugin],
+    plugins: [vuexLocal.plugin],
     modules: {
         Auth,
         Users,

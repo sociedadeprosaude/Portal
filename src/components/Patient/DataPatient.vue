@@ -856,7 +856,7 @@
             }
         },
         mounted() {
-            window.addEventListener('keydown', this.handleEnter)
+            window.addEventListener('keydown', this.handleEnter);
             axios.get('http://servicodados.ibge.gov.br/api/v1/localidades/estados/13/municipios')
                 .then((response)=>{
 
@@ -864,6 +864,7 @@
                         this.cities['AM'].push(city.nome)
                     });
                 })
+            console.log('####', this.localStorage)
         },
         beforeDestroy() {
             window.removeEventListener('keydown', this.handleEnter)
