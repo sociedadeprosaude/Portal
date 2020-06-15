@@ -157,11 +157,10 @@
     import Products from "../../components/clinics/Products";
     import Configurations from "../../components/clinics/Configurations";
     import RegisterNewClinic from "../../components/clinics/RegisterNewClinic";
-    import RegisterClinicPassword from "../../components/clinics/RegisterClinicPassword";
     import SubmitButton from "../../components/SubmitButton";
     import EditClinic from "../../components/clinics/EditClinic";
     export default {
-        components: {EditClinic, Configurations, Products, Consultations, Exams, SubmitButton, RegisterNewClinic, RegisterClinicPassword},
+        components: {EditClinic, Configurations, Products, Consultations, Exams, SubmitButton, RegisterNewClinic},
         directives: {mask},
         data: () => ({
             Exam: false,
