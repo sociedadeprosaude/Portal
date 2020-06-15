@@ -76,6 +76,9 @@
                                 <v-flex xs12>
                                     <span class="my-headline text-left mt-2">Grupos</span>
                                 </v-flex>
+                                <v-flex xs12>
+                                    <span>{{user.id}}</span>
+                                </v-flex>
 
                                 <v-flex xs4>
                                     <v-treeview
@@ -194,6 +197,19 @@
 
             async getInitialInfo() {
                 await this.$store.dispatch('getColaborators');
+                this.loading = false
+            },
+
+            saveGroup(id){
+                this.loading = true;
+                if(id){
+                    this.$store.dispatch('addMedicalRecordsToConsultation',{
+                        MedicalRecords:this.prontuario,
+                        consultation: this.consultation.id,
+                        patient: this.consultation.user.id
+                    })
+                }
+                this.success = true;
                 this.loading = false
             },
 

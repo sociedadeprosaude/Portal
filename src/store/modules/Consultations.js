@@ -384,6 +384,7 @@ const actions = {
         firebase.firestore().collection('consultations').doc(payload.consultation).update({MedicalRecords: payload.MedicalRecords});
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({MedicalRecords: payload.MedicalRecords})
     },
+
     async addPrescriptionToConsultation({commit}, payload) {
         firebase.firestore().collection('consultations').doc(payload.consultation).update({Prescription: payload.Prescription});
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({Prescription: payload.Prescription})
