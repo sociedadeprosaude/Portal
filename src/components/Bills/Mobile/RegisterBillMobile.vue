@@ -48,6 +48,29 @@
                     <v-flex xs12>
                         <v-textarea clearable label="Descrição" v-model="description"/>
                     </v-flex>
+
+                    <v-flex xs12>
+                        <v-menu
+                                v-model="menu"
+                                :close-on-content-click="false"
+                                :nudge-right="40"
+                                transition="scale-transition"
+                                offset-y
+                                min-width="290px"
+                        >
+                            <template v-slot:activator="{ on }">
+                                <v-text-field
+                                        v-model="computedDateFormatted"
+                                        label="Data para Pagamento"
+                                        prepend-icon="event"
+                                        readonly
+                                        v-on="on"
+                                ></v-text-field>
+                            </template>
+                            <v-date-picker locale="pt-br" v-model="dateToPay" @input="menu = false"></v-date-picker>
+                        </v-menu>
+                    </v-flex>
+
                     <v-flex xs12>
                         <v-select label="Método de pagamento"
                                   v-model="paymentMethod"
@@ -82,28 +105,6 @@
                     </v-flex>
 
                     <v-flex xs12>
-                        <v-menu
-                                v-model="menu"
-                                :close-on-content-click="false"
-                                :nudge-right="40"
-                                transition="scale-transition"
-                                offset-y
-                                min-width="290px"
-                        >
-                            <template v-slot:activator="{ on }">
-                                <v-text-field
-                                        v-model="computedDateFormatted"
-                                        label="Data para Pagamento"
-                                        prepend-icon="event"
-                                        readonly
-                                        v-on="on"
-                                ></v-text-field>
-                            </template>
-                            <v-date-picker locale="pt-br" v-model="dateToPay" @input="menu = false"></v-date-picker>
-                        </v-menu>
-                    </v-flex>
-
-                    <v-flex xs12>
                         <v-layout column wrap>
                             <v-flex xs12>
                                 <span class="my-sub-headline">Anexos</span>
@@ -132,7 +133,11 @@
                             <v-flex xs12>
                                 <v-fade-transition>
                                     <v-flex xs12 class="text-center" v-if="!uploading">
-                                        <v-btn class="primary" rounded @click="$refs.files.click()">Adicionar Anexo</v-btn>
+                                        <v-btn class="primary" fab x-small @click="$refs.files.click()">
+                                            <v-icon>add</v-icon>
+                                        </v-btn>
+                                        <v-spacer></v-spacer>
+                                        <span>Adicionar Anexo</span>
                                     </v-flex>
                                     <v-flex xs12 class="text-center" v-else>
                                         <v-progress-circular indeterminate class="primary--text"/>
