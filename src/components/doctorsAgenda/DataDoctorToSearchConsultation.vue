@@ -136,7 +136,14 @@
                 }
             },
         },
-
+        mounted(){
+            if( this.$store.state.consultationReturn){
+                let consultation =  this.$store.state.consultationReturn
+                this.specialty = consultation.specialty
+                this.clinic= consultation.clinic.name
+                this.doctor= consultation.doctor
+            }
+        },
 
         created() {
             window.addEventListener("scroll", this.handleScroll);

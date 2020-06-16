@@ -184,7 +184,6 @@
                 this.numberReceipt = "";
                 this.status = "Aguardando pagamento";
                 this.loaderPaymentNumber = true;
-
                 this.$store.dispatch("thereIsIntakes", {
                     user: this.selectedForm.user,
                     doctor: this.selectedForm.consultation.doctor,
@@ -192,11 +191,20 @@
                     exam: this.exam
                 })
                     .then(obj => {
-                        this.payment_numberFound = obj;
-                        this.numberReceipt = obj.payment_number;
-                        this.exam = obj.exam ? {...obj.exam, notFindPayment: true} : undefined;
-                        this.status = "Pago";
-                        this.loaderPaymentNumber = false
+                        if(obj.payment_number){
+                            this.payment_numberFound = obj;
+                            this.numberReceipt = obj.payment_number;
+                            this.exam = obj.exam ? {...obj.exam, notFindPayment: true} : undefined;
+                            this.status = "Pago";
+                            this.loaderPaymentNumber = false
+                        }
+                        else{
+                            this.payment_numberFound = obj[0];
+                            this.numberReceipt = obj[0].payment_number;
+                            this.exam = obj[0].exam ? {...obj[0].exam, notFindPayment: true} : undefined;
+                            this.status = "Pago";
+                            this.loaderPaymentNumber = false
+                        }
                     })
                     .catch(response => {
                         let cost = response.cost
