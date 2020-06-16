@@ -1,28 +1,29 @@
 <template>
     <v-card color="grey">
-        <v-card-title class="primary" primary-title>
-            <span style="color: white">Registro de Lançamentos</span>
-            <v-spacer></v-spacer>
-            <v-btn icon dark @click="clear">
-                <v-icon>close</v-icon>
-            </v-btn>
+        <v-card-title class="primary text--white" primary-title>
+            <v-flex xs12>
+                <v-btn icon dark @click="clear">
+                    <v-icon>close</v-icon>
+                </v-btn>
+            </v-flex>
+            <v-flex xs5>
+                <v-select
+                        label="Unidade"
+                        v-model="unit"
+                        :items="units"
+                        item-text="name"
+                        return-object>
+                </v-select>
+            </v-flex>
+            <v-flex xs2 class="transparent"><span style="color: transparent">.</span></v-flex>
+            <v-flex xs5>
+                <v-currency-field label="Valor" prefix="R$" clearable v-model="value"/>
+            </v-flex>
         </v-card-title>
 
         <v-flex xs12 color="grey">
             <v-card color="grey">
                 <v-layout row wrap class="align-center justify-center pa-3">
-                    <v-flex xs12>
-                        <v-select
-                                label="Unidade"
-                                v-model="unit"
-                                :items="units"
-                                item-text="name"
-                                return-object>
-                        </v-select>
-                    </v-flex>
-                    <v-flex xs12>
-                        <v-currency-field label="Valor" prefix="R$" clearable v-model="value"/>
-                    </v-flex>
                     <v-flex xs12>
                         <!--@input.native="category={name:$event.srcElement.value,subCategories:[]}"-->
                         <v-combobox
