@@ -1,5 +1,5 @@
 <template>
-    <v-card>
+    <v-card color="grey">
         <v-card-title class="primary" primary-title>
             <span style="color: white">Registro de Lançamentos</span>
             <v-spacer></v-spacer>
@@ -8,13 +8,11 @@
             </v-btn>
         </v-card-title>
 
-        <v-flex xs12>
-            <v-card>
+        <v-flex xs12 color="grey">
+            <v-card color="grey">
                 <v-layout row wrap class="align-center justify-center pa-3">
                     <v-flex xs12>
                         <v-select
-                                outlined
-                                rounded
                                 label="Unidade"
                                 v-model="unit"
                                 :items="units"
@@ -23,13 +21,11 @@
                         </v-select>
                     </v-flex>
                     <v-flex xs12>
-                        <v-currency-field label="Valor" prefix="R$" clearable rounded outlined v-model="value"/>
+                        <v-currency-field label="Valor" prefix="R$" clearable v-model="value"/>
                     </v-flex>
                     <v-flex xs12>
                         <!--@input.native="category={name:$event.srcElement.value,subCategories:[]}"-->
                         <v-combobox
-                                rounded
-                                outlined
                                 v-model="category"
                                 :items="categories"
                                 item-text="name"
@@ -39,8 +35,6 @@
                         ></v-combobox>
                         <!--@input.native="subCategory=$event.srcElement.value"-->
                         <v-combobox
-                                rounded
-                                outlined
                                 v-if="category"
                                 label="Subcategoria"
                                 v-model="subCategory"
@@ -51,12 +45,10 @@
                         ></v-combobox>
                     </v-flex>
                     <v-flex xs12>
-                        <v-textarea clearable outlined rounded label="Descrição" v-model="description"/>
+                        <v-textarea clearable label="Descrição" v-model="description"/>
                     </v-flex>
                     <v-flex xs12>
-                        <v-select outlined
-                                  rounded
-                                  label="Método de pagamento"
+                        <v-select label="Método de pagamento"
                                   v-model="paymentMethod"
                                   :items="paymentMethods">
                         </v-select>
@@ -73,8 +65,6 @@
                         <v-text-field
                                 hint="Quantidade de parcelas"
                                 persistent-hint
-                                rounded
-                                outlined
                                 dense
                                 :disabled="!parcel"
                                 v-model="parcels"
@@ -105,8 +95,6 @@
                                         label="Data para Pagamento"
                                         prepend-icon="event"
                                         readonly
-                                        outlined
-                                        rounded
                                         v-on="on"
                                 ></v-text-field>
                             </template>
@@ -172,7 +160,7 @@
                     <v-flex class="transparent"><span style="color: transparent">.</span></v-flex>
                     <v-fade-transition>
                         <v-flex xs12 class="text-center mt-4" v-if="!loading">
-                            <v-btn @click="bifurcation()" rounded class="primary">Adicionar</v-btn>
+                            <v-btn @click="bifurcation()" fab class="success"><v-icon>add</v-icon></v-btn>
                         </v-flex>
                         <v-flex xs12 class="text-center" v-else>
                             <v-progress-circular indeterminate class="primary--text"/>
