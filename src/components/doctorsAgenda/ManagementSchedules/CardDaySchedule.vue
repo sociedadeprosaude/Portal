@@ -2,6 +2,7 @@
   <v-card class="py-5" elevation="2">
     <h1 class="title grey--text text--darken-2 font-weight-bold">{{days[day]}}</h1>
     <v-chip class="mt-2 primary subtitle-2 font-weight-bold">Horário:{{dayObj.hour}}</v-chip>
+    <br/>
     <v-chip class="mt-1 primary subtitle-2 font-weight-bold">Vagas:{{dayObj.vacancy}}</v-chip>
     <v-chip v-if="dayObj.expiration_date" class="mt-1 primary subtitle-2 font-weight-bold">Validade:{{formatDate(dayObj.expiration_date)}}</v-chip>
     <br />

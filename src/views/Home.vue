@@ -139,12 +139,12 @@
                                 to: '/agenda/agendamento',
                                 icon: 'calendar_today'
                             },
-                            {
+                            /* {
                                 title: 'Caixa',
                                 icon: 'monetization_on',
                                 permission: 'Caixa',
                                 to: '/caixa'
-                            },
+                            }, */
                             {
                                 title: 'Senhas',
                                 permission: 'Senhas',
