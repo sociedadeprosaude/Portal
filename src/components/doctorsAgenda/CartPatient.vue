@@ -91,12 +91,7 @@
 
         mounted(){
 
-            if (localStorage.getItem('shoppingCart')) {
-                console.log(localStorage.getItem('shoppingCart'))
-                let item = localStorage.getItem('shoppingCart');
-                console.log('item',item)
-
-            }
+            console.log('state', this.$store.getters.getShoppingCartItems)
         },
 
         computed: {

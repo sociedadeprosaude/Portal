@@ -1,7 +1,9 @@
 import Vue from 'vue'
+import store from "../../store";
 
 const state = {
     items: [],
+    test: {},
     budget: undefined,
     doctor: undefined
 };
@@ -25,16 +27,14 @@ const mutations = {
                 return
             }
         }
-        state.items.push(payload);
-        localStorage.setItem('shoppingCart', state.items);
+        state.items.push(payload);  
+        console.log('#items', state.items)
     },
     removeShoppingCartItem(state, payload) {
         state.items.splice(state.items.indexOf(payload), 1);
-        localStorage.setItem('shoppingCart', state.items);
     },
     clearShoppingCartItens(state) {
         state.items = [];
-        localStorage.removeItem('shoppingCart')
     }
 };
 

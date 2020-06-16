@@ -47,6 +47,16 @@ if (process.env.NODE_ENV === 'development') {
     let AUTH_URL = 'http://caixa.instituicaoprosaude.com:83/'
 }
 
+const vuexCookie = new VuexPersistence ({
+    restoreState: (key, storage) => Cookies.getJSON(key),
+    saveState: (key, state, storage) =>
+        Cookies.set(key, state, {
+            expires: 3
+        }),
+    modules: ['ShoppingCart'],
+   // filter: (mutation) => mutation.type == 'addShoppingCartItem' || mutation.type == 'removeShoppingCartItem'
+});
+
 const vuexLocal = new VuexPersistence({
     key: 'vuex',
     storage: window.localStorage,
@@ -58,7 +68,7 @@ const vuexLocal = new VuexPersistence({
 });
 
 const store = new Vuex.Store({
-    plugins: [vuexLocal.plugin],
+    plugins: [vuexLocal.plugin, vuexCookie.plugin],
 
     modules: {
         Auth,
