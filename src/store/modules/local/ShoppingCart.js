@@ -26,7 +26,7 @@ const mutations = {
             }
         }
         state.items.push(payload);
-        localStorage.setItem('shoppingCart', {...state.items});
+        localStorage.setItem('shoppingCart', state.items);
     },
     removeShoppingCartItem(state, payload) {
         state.items.splice(state.items.indexOf(payload), 1);
