@@ -51,21 +51,15 @@ const vuexLocal = new VuexPersistence({
     key: 'vuex',
     storage: window.localStorage,
     modules: ['LocalUnit'],
-    reducer: state => ({
+    reducer: (state) => ({
         selectedPatient: state.selectedPatient,
         items: state.items,
     })
 });
 
 const store = new Vuex.Store({
-    //plugins: [vuexLocal.plugin],
-    plugins: [createPersistedState({
-        storage: {
-            getItem: key => Cookies.get(key),
-            setItem: (key, value) => Cookies.set(key, value, { expires: 3, secure: true }),
-            removeItem: key => Cookies.remove(key)
-        }
-    })],
+    plugins: [vuexLocal.plugin],
+
     modules: {
         Auth,
         Users,

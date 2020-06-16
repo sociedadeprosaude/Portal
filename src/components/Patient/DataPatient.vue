@@ -45,7 +45,7 @@
                                     </v-flex>
                                     <v-flex xs1 class="text-right mx-3">
                                         <v-tooltip v-if="selectedPatient" top>
-                                            <template  v-slot:activator="{ on }">
+                                            <template v-slot:activator="{ on }">
                                                 <v-btn
                                                         v-on="on"
                                                         to="/agenda/agendamento"
@@ -170,17 +170,18 @@
                                 <span v-if="searchError">
                                     {{searchError}}
                                 </span>
-                                <submit-button  @click="searchPatient()" :loading="loading" :success="success"
-                                                text="Buscar" class="mt-n3 mb-2 mx-2" >
+                                <submit-button @click="searchPatient()" :loading="loading" :success="success"
+                                               text="Buscar" class="mt-n3 mb-2 mx-2">
                                 </submit-button>
-                                <submit-button  @click="searchPatientOldDatabase()" :loading="loading"
+                                <submit-button @click="searchPatientOldDatabase()" :loading="loading"
                                                :success="success" text="Buscar antigo sistema" class="mx-2 mb-1">
                                 </submit-button>
 
                             </v-flex>
                             <v-divider/>
                             <v-flex xs12>
-                                <v-card v-for="user in foundUsers" :key="user.cpf" class="my-2" @click="selectUser(user)">
+                                <v-card v-for="user in foundUsers" :key="user.cpf" class="my-2"
+                                        @click="selectUser(user)">
                                     <v-layout row wrap class="align-center">
                                         <v-flex xs4>
                                             <span>{{user.name}}</span>
@@ -201,7 +202,8 @@
                                 <span class="my-sub-headline">Nenhum associado encontrado</span>
                             </v-flex>
                             <v-flex xs12>
-                                <v-card v-for="(dependent,index) in foundDependents" :key="index" class="my-2" @click="selectDependent(dependent)">
+                                <v-card v-for="(dependent,index) in foundDependents" :key="index" class="my-2"
+                                        @click="selectDependent(dependent)">
                                     <v-layout row wrap class="align-center">
                                         <v-flex xs4>
                                             <span>{{dependent.name}}</span>
@@ -351,7 +353,7 @@
 
                                 </v-btn>
                                 <v-layout row wrap justify v-for="(dependent, index) in dependents" :key="index">
-                                    <v-flex xs12  class="text-right">
+                                    <v-flex xs12 class="text-right">
                                         <v-btn class="transparent" text @click="dependents.splice(index, 1)">
                                             <v-icon>remove_circle</v-icon>
                                         </v-btn>
@@ -509,7 +511,8 @@
                 let user = this.$store.getters.selectedPatient;
                 if (user) {
                     this.name = user.name;
-                    this.cpf = user.cpf
+                    this.cpf = user.cpf;
+                    // this.numAss = user.association_number
                 }
                 return this.$store.getters.selectedPatient
             },
@@ -527,7 +530,7 @@
                 patientTag: false,
                 addPatient: false,
                 name: undefined,
-                dependentName:undefined,
+                dependentName: undefined,
                 cpf: undefined,
                 rg: undefined,
                 numAss: undefined,
@@ -536,15 +539,15 @@
                 sex: undefined,
                 telephones: [''],
                 addresses: [],
-                dependents:[],
-                degress: ['Filho(a)', 'Neto(a)', ],
+                dependents: [],
+                degress: ['Filho(a)', 'Neto(a)',],
                 loading: false,
                 formError: undefined,
                 searchError: undefined,
                 mask: {
                     maskRG: '#######-#',
                     cpf: '###.###.###-##',
-                    date:  '##/##/####',
+                    date: '##/##/####',
                     telephone: '(##) #####-####',
                     cep: '##.###-###',
                 },
@@ -557,31 +560,13 @@
                 states: ['AM'],
                 cities: {'AC': [], 'AL': [], 'AM': []},
                 foundUsers: undefined,
-                foundDependents:undefined,
+                foundDependents: undefined,
                 success: false,
-            }
-        },
-        computed: {
-            selectedPatient() {
-                let user = this.$store.getters.selectedPatient;
-                if (user) {
-                    this.name = user.name;
-                    this.cpf = user.cpf;
-                    // this.numAss = user.association_number
-                }
-                return this.$store.getters.selectedPatient
-            },
-            selectedDependent(){
-                let dependent = this.$store.getters.selectedDependent;
-                if(dependent){
-                    this.dependentName = dependent.name
-                }
-                return dependent
             }
         },
         watch: {
             cpf(val) {
-                if(this.selectedPatient && val !== this.selectedPatient.cpf)
+                if (this.selectedPatient && val !== this.selectedPatient.cpf)
                     this.cpf = this.selectedPatient.cpf;
             },
             addPatient(val) {
@@ -593,9 +578,9 @@
             }
         },
         methods: {
-            dateValid(value){
-                if(value)
-                    return value.length < 10 || moment(value,'DD/MM/YYYY').isValid();
+            dateValid(value) {
+                if (value)
+                    return value.length < 10 || moment(value, 'DD/MM/YYYY').isValid();
                 return true
             },
             showSecondUserCard(user) {
@@ -653,10 +638,14 @@
                     delete this.addresses[add].loading
                 }
 
-                for(let dependent in this.dependents){
-                    let birthDate = moment( this.dependents[dependent].birthDate,"DD/MM/YYYY").format("YYYY-MM-DD");
+                for (let dependent in this.dependents) {
+                    let birthDate = moment(this.dependents[dependent].birthDate, "DD/MM/YYYY").format("YYYY-MM-DD");
 
-                    copyDependents.push(Object.assign({birthDate:birthDate}, {name:this.dependents[dependent].name,sex:this.dependents[dependent].sex,dependentDegree:this.dependents[dependent].dependentDegree}))
+                    copyDependents.push(Object.assign({birthDate: birthDate}, {
+                        name: this.dependents[dependent].name,
+                        sex: this.dependents[dependent].sex,
+                        dependentDegree: this.dependents[dependent].dependentDegree
+                    }))
 
                 }
                 let patient = {
@@ -665,11 +654,11 @@
                     email: this.email,
                     rg: this.rg ? this.rg.replace(/\./g, '').replace('-', '').replace('.', '') : undefined,
                     association_number: this.numAss ? this.numAss.toString() : undefined,
-                    birth_date: moment(this.birthDate,"DD/MM/YYYY").format("YYYY-MM-DD"),
+                    birth_date: moment(this.birthDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
                     sex: this.sex,
                     telephones: this.telephones,
                     addresses: this.addresses,
-                    dependents:copyDependents,
+                    dependents: copyDependents,
                     type: 'PATIENT'
                 };
                 let foundPatient;
@@ -711,21 +700,22 @@
                 }, 1000)
             },
 
-            async catchAssNumberNewPatient (patient) {
-                let users = await this.$store.dispatch('searchUser', {
+            async catchAssNumberNewPatient(patient) {
+                let users =
+                    await this.$store.dispatch('searchUser', {
                     name: patient.name,
                     cpf: patient.cpf,
                     type: 'patient'
                 });
-                if (!users[0].association_number){
+                if (!users[0].association_number) {
                     this.catchAssNumberNewPatient(patient)
                 } else {
                     await this.selectUser(users[0]);
                 }
             },
 
-            selectDependent(dependent){
-                this.$store.dispatch('setSelectedDependent',dependent);
+            selectDependent(dependent) {
+                this.$store.dispatch('setSelectedDependent', dependent);
                 this.dependentName = dependent.name;
                 this.foundDependents = undefined
             },
@@ -740,11 +730,10 @@
                         user.budgets = budgets
                     }
                     this.fillFormUser(user)
-                }
-                else {
-                    this.cpf= undefined;
-                    this.name= undefined;
-                    this.numAss= undefined;
+                } else {
+                    this.cpf = undefined;
+                    this.name = undefined;
+                    this.numAss = undefined;
                     this.rg = undefined;
                     this.birthDate = undefined;
                     this.email = undefined;
@@ -752,7 +741,8 @@
                     this.addresses = [];
                     this.dependents = [];
                     this.dependentName = undefined;
-                    this.$emit('removed')
+                    this.$emit('removed');
+                    localStorage.removeItem('patient');
                 }
                 this.$store.commit('setSelectedPatient', user);
                 this.$store.commit('clearSelectedDependent');
@@ -761,7 +751,7 @@
                 this.addPatient = false
             },
 
-            async updateAccessedTo (user) {
+            async updateAccessedTo(user) {
 
                 await this.$store.dispatch('updateAccessedTo', {
                     accessed_to: moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -794,17 +784,17 @@
                 for (let add in user.addresses) {
                     delete user.addresses[add].loading
                 }
-                this.addresses = user.addresses ? user.addresses: [];
-                if(user.dependents){
-                    for(let index in user.dependents){
+                this.addresses = user.addresses ? user.addresses : [];
+                if (user.dependents) {
+                    for (let index in user.dependents) {
                         let patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
-                        let date  = user.dependents[index].birthDate;
-                        if(!patt.test(date))
-                            date = moment(date,"YYYY-MM-DD").format("DD/MM/YYYY");
+                        let date = user.dependents[index].birthDate;
+                        if (!patt.test(date))
+                            date = moment(date, "YYYY-MM-DD").format("DD/MM/YYYY");
                         user.dependents[index].birthDate = date
                     }
                     this.dependents = user.dependents
-                }else{
+                } else {
                     this.dependents = []
                 }
 
@@ -842,7 +832,7 @@
             async searchPatientOldDatabase() {
                 this.loading = true;
                 let oldUser = await this.$store.dispatch('searchUserFromOldDatabase', this.numAss);
-                if(oldUser) {
+                if (oldUser) {
                     this.addPatient = true;
                     this.fillFormOldUser(oldUser)
                 }
@@ -855,15 +845,26 @@
                 }
             }
         },
-        mounted() {
+        async mounted() {
+
             window.addEventListener('keydown', this.handleEnter);
             axios.get('http://servicodados.ibge.gov.br/api/v1/localidades/estados/13/municipios')
-                .then((response)=>{
+                .then((response) => {
 
                     response.data.forEach(city => {
                         this.cities['AM'].push(city.nome)
                     });
-                })
+                });
+            if (localStorage.getItem('patient')){
+
+                // eslint-disable-next-line vue/no-async-in-computed-properties
+               let user = await this.$store.dispatch('searchUser', {
+                    name: '',
+                    cpf: localStorage.getItem('patient') ,
+                    association_number: this.numAss
+                });
+               this.selectUser(user[0])
+            }
 
         },
         beforeDestroy() {

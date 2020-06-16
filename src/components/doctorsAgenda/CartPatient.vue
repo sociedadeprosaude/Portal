@@ -88,6 +88,13 @@
 
             }
         },
+
+        mounted(){
+            if (localStorage.getItem('shoppingCart')) {
+                console.log(localStorage.getItem('shoppingCart'))
+            }
+        },
+
         computed: {
             exams() {
                 return this.$store.getters.getShoppingCartItemsByCategory.exams

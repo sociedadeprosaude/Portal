@@ -25,13 +25,16 @@ const mutations = {
                 return
             }
         }
-        state.items.push(payload)
+        state.items.push(payload);
+        localStorage.setItem('shoppingCart', {...state.items});
     },
     removeShoppingCartItem(state, payload) {
-        state.items.splice(state.items.indexOf(payload), 1)
+        state.items.splice(state.items.indexOf(payload), 1);
+        localStorage.setItem('shoppingCart', state.items);
     },
     clearShoppingCartItens(state) {
-        state.items = []
+        state.items = [];
+        localStorage.removeItem('shoppingCart')
     }
 };
 
