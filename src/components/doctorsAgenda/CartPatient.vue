@@ -89,11 +89,6 @@
             }
         },
 
-        mounted(){
-
-            console.log('state', this.$store.getters.getShoppingCartItems)
-        },
-
         computed: {
             exams() {
                 return this.$store.getters.getShoppingCartItemsByCategory.exams
