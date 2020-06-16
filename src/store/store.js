@@ -1,11 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
-import router from '../router'
-import constants from '@/utils/constants'
 import VuexPersistence from 'vuex-persist'
-import createPersistedState from 'vuex-persistedstate';
-import Cookies from "js-cookie"
+
 
 import Users from '@/store/modules/Users'
 import Exams from '@/store/modules/Exams'
@@ -40,35 +36,20 @@ import Schedule from "./modules/schedule"
 
 Vue.use(Vuex);
 
-if (process.env.NODE_ENV === 'development') {
-    // var AUTH_URL = 'http://prosaude.auth/'
-    let AUTH_URL = 'http://caixa.instituicaoprosaude.com:83/'
-} else {
-    let AUTH_URL = 'http://caixa.instituicaoprosaude.com:83/'
-}
-
-const vuexCookie = new VuexPersistence ({
-    restoreState: (key, storage) => Cookies.getJSON(key),
-    saveState: (key, state, storage) =>
-        Cookies.set(key, state, {
-            expires: 3
-        }),
-    modules: ['ShoppingCart'],
-   // filter: (mutation) => mutation.type == 'addShoppingCartItem' || mutation.type == 'removeShoppingCartItem'
-});
-
 const vuexLocal = new VuexPersistence({
     key: 'vuex',
     storage: window.localStorage,
-    modules: ['LocalUnit'],
-    reducer: (state) => ({
-        selectedPatient: state.selectedPatient,
-        items: state.items,
-    })
+    modules: ['LocalUnit', 'ShoppingCart'],
+    // reducer: (state) => ({
+    //     selectedPatient: state.selectedPatient,
+    //     items: state.items,
+    // })
 });
 
 const store = new Vuex.Store({
-    plugins: [vuexLocal.plugin, vuexCookie.plugin],
+    plugins: [vuexLocal.plugin,
+        // vuexCookie.plugin
+    ],
 
     modules: {
         Auth,

@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import store from "../../store";
 
 const state = {
     items: [],
@@ -27,8 +26,7 @@ const mutations = {
                 return
             }
         }
-        state.items.push(payload);  
-        console.log('#items', state.items)
+        state.items.push(payload);
     },
     removeShoppingCartItem(state, payload) {
         state.items.splice(state.items.indexOf(payload), 1);
