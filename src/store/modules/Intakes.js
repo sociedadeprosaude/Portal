@@ -152,6 +152,12 @@ const actions = {
             ...intake.data(),
             id: intake.id
         };
+        console.log('intake puxando: ', intake.user)
+        console.log('user.dependents tamanho: ', intake.user.dependents.length)
+        if(intake.user.dependents.length === 0){
+           delete intake.user.dependents
+        }
+        console.log('intake sem dependentes: ', intake.user)
         let examsSnap = await firebase.firestore().collection('intakes').doc(intake.id.toString()).collection('exams').get();
         let specialtiesSnap = await firebase.firestore().collection('intakes').doc(intake.id.toString()).collection('specialties').get();
         let exams = [];
@@ -159,11 +165,16 @@ const actions = {
         examsSnap.forEach((e) => {
             exams.push(e.data())
         });
+        console.log('exams: ', exams)
         specialtiesSnap.forEach((c) => {
             specialties.push(c.data())
         });
+        console.log('especialties: ',specialties)
         intake.exams = exams;
         intake.specialties = specialties;
+        functions.removeUndefineds(intake.user)
+        functions.removeUndefineds(intake)
+        console.log('intake final: ', intake)
         return intake
     },
 

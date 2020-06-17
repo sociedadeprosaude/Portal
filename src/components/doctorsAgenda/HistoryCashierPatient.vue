@@ -132,7 +132,16 @@
                 let date = moment(product.date, "YYYY-MM-DD HH:mm:ss");
                 return now.valueOf() - date.valueOf();
             },
-
+            async receipt(intake) {
+                this.loading = true;
+                let getIntake = await this.$store.dispatch(
+                    "getIntakeDetails",
+                    intake
+                );
+                this.selectedIntake = getIntake[0];
+                this.receiptDialog = true;
+                this.loading = false;
+            },
             async cancelBuy(intake) {
                 if (!this.cancelBuyDialog) {
                     this.selectedIntake = intake;
@@ -162,10 +171,12 @@
                 return this.$store.getters.selectedPatient;
             },
             intakes() {
-                return this.patient.intakes;
+                let intakes= Object.assign({}, this.patient.intakes.reverse())
+                return intakes;
             },
             budgets() {
-                return this.patient.budgets;
+                let budgets= Object.assign({}, this.patient.budgets.reverse())
+                return budgets;
             }
         }
     };
