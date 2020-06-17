@@ -8,7 +8,7 @@
                 </v-btn>
                 <v-btn rounded small class="mx-1" @click="selectCategory('appointment')"
                        :color="categorySelect === 'appointment' ? 'background' : 'primary'" v-if="!historyPatient">
-                    Consultas
+                    <span>{{specialtiesLoaded ? 'Consultas' : 'Carregando consultas...'}}</span>
                 </v-btn>
                 <v-btn rounded small class="mx-1"  @click="selectCategory('package')"
                        :color="categorySelect === 'package' ? 'background' : 'primary'" v-if="!historyPatient">
@@ -78,7 +78,7 @@
         components: {CartShopping, CartPatient, DetailsPayment, HistoryCashierPatient},
         data (){
             return {
-                categorySelect: 'appointment',
+                categorySelect: 'exam',
                 search: '',
                 loading: undefined,
                 cartPatient: false,
@@ -162,12 +162,8 @@
                         return []
                 }
             },
-            patient () {
-                if (!this.$store.getters.selectedPatient) {
-                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-                    this.historyPatient = false ;
-                }
-                return this.$store.getters.selectedPatient
+            patient() {
+                return this.$store.getters.selectedPatient;
             }
         },
 

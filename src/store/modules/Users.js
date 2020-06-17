@@ -5,6 +5,7 @@ import functions from "../../utils/functions";
 import constants from '@/utils/constants'
 
 
+
 function f(arg) {
     return 0
 }
@@ -21,6 +22,11 @@ const state = {
 
 const mutations = {
     async setSelectedPatient(state, payload) {
+
+        if (payload) {
+            localStorage.setItem('patient', payload.cpf);
+        }
+
         let consultations;
         if (payload) {
             await firebase.firestore().collection('users').doc(payload.cpf).collection('consultations')
@@ -271,7 +277,7 @@ const actions = {
         }
     },
     async setSelectedPatient({ commit }, payload) {
-        commit('setSelectedPatient', payload)
+        commit('setSelectedPatient', payload);
     },
     async searchUserFromOldDatabase(context, numAss) {
 
