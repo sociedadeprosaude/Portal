@@ -24,7 +24,14 @@
         data: () => ({
             schedules: {},
             daysToListen: null,
+            query: {}
         }),
+        mounted() {
+            this.query= this.$route.params.q
+        },
+        methods: {
+
+        }
 
     }
 </script>
