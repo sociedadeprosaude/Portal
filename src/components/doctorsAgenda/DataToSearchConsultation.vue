@@ -2,7 +2,7 @@
     <v-container>
         <v-layout column>
             <v-flex sm12>
-                <DataDoctorToSearchConsultation :query="query"/>
+                <DataDoctorToSearchConsultation />
             </v-flex>
             <v-flex class="mt-4" xs12>
                 <v-date-picker
@@ -26,7 +26,7 @@
 
     export default {
         components: {DataDoctorToSearchConsultation, CardPatient},
-        props: ['daysToListen','query'],
+        props: ['daysToListen'],
 
         data: () => ({
             date: moment().format("YYYY-MM-DD"),

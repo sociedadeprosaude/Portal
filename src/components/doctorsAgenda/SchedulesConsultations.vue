@@ -85,6 +85,8 @@
                                         :loaderPaymentNumber="loaderPaymentNumber"
                                         :exam="exam"
                                         :numberReceipt="numberReceipt"
+                                        :modalidade="modalidade"
+                                        :previousConsultation="previousConsultation"
                                         :status="status"
                                         :payment_numberFound="payment_numberFound"
                         />
@@ -123,6 +125,8 @@
             numberReceipt: "",
             payment_numberFound:undefined,
             status:"",
+            modalidade: "Consulta",
+            previousConsultation: undefined,
             createConsultationForm: undefined,
             exam: undefined,
             loaderPaymentNumber: false,
@@ -132,6 +136,11 @@
 
         mounted () {
             this.$emit('refreshDate', this.daysToListen);
+            this.query= this.$route.params.q
+            if(this.query){
+                this.modalidade= "Retorno"
+                this.previousConsultation = this.query.id
+            }
         },
 
         computed: {

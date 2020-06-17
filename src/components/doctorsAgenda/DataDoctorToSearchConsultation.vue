@@ -86,7 +86,6 @@
 <script>
 
     export default {
-        props: ['query'],
 
         data: () => ({
             specialty: undefined,
@@ -138,7 +137,7 @@
             },
         },
         mounted(){
-            console.log('query nos filtros: ', this.query)
+            this.query= this.$route.params.q
             if( this.query){
                 console.log('query: ', this.query)
                 this.specialty = this.query.specialty
