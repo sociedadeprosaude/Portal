@@ -55,7 +55,7 @@
                         <v-btn
                                 color="white"
                                 rounded
-                                @click="Return(consultation)"
+                                :to="{ name: 'AgendamentoConsultas', params: { q: consultation}}"
                                 :disabled="consultation.status !== 'Pago' || consultation.regress"
                                 v-if="consultation.type !== 'Retorno'"
                         >Retorno
@@ -127,11 +127,6 @@
         methods: {
 
             async initialConfig() {
-
-            },
-            Return(consultation){
-                this.$store.state.consultationReturn = consultation
-                this.$router.push('agendamento')
 
             },
             async deletedConsultation() {

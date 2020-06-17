@@ -86,6 +86,7 @@
 <script>
 
     export default {
+        props: ['query'],
 
         data: () => ({
             specialty: undefined,
@@ -137,11 +138,12 @@
             },
         },
         mounted(){
-            if( this.$store.state.consultationReturn){
-                let consultation =  this.$store.state.consultationReturn
-                this.specialty = consultation.specialty
-                this.clinic= consultation.clinic.name
-                this.doctor= consultation.doctor
+            console.log('query nos filtros: ', this.query)
+            if( this.query){
+                console.log('query: ', this.query)
+                this.specialty = this.query.specialty
+                this.clinic= this.query.clinic.name
+                this.doctor= this.query.doctor
             }
         },
 
