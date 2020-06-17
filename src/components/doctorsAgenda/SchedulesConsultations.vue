@@ -140,6 +140,9 @@
             if(this.query){
                 this.modalidade= "Retorno"
                 this.previousConsultation = this.query.id
+                this.status = this.query.status
+                this.numberReceipt = this.query.payment_number
+            
             }
         },
 
@@ -184,7 +187,11 @@
                     user: this.selectedPatient,
                     consultation: consultation
                 };
-                this.thereIsPaymentNumber();
+
+                if(!this.query){
+                   this.thereIsPaymentNumber();
+                }
+
                 this.createConsultationForm = this.selectedForm;
             },
 
