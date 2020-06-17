@@ -2,7 +2,7 @@
     <v-container>
         <v-layout column>
             <v-flex sm12>
-                <DataDoctorToSearchConsultation/>
+                <DataDoctorToSearchConsultation />
             </v-flex>
             <v-flex xs12 class="mt-n2">
                 <v-date-picker

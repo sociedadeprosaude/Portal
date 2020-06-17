@@ -101,6 +101,26 @@
             </ul>
         </div>
         <v-flex xs12 v-if="consultationLoading">
+                <div class="text-xs-center">
+                    <v-dialog v-model="dialog" v-if="createConsultationForm" max-width="520">
+                        <SchedulingForm @close-dialog="dialog = false"
+                                        :createConsultationForm="createConsultationForm"
+                                        :loaderPaymentNumber="loaderPaymentNumber"
+                                        :exam="exam"
+                                        :numberReceipt="numberReceipt"
+                                        :modalidade="modalidade"
+                                        :previousConsultation="previousConsultation"
+                                        :status="status"
+                                        :payment_numberFound="payment_numberFound"
+                        />
+                    </v-dialog>
+                </div>
+            </v-container>
+        </v-layout>
+        <v-flex xs12 v-if="!consultationLoading">
+            <v-btn class="primary" rounded @click="listenMoreConsultations">Carregar mais</v-btn>
+        </v-flex>
+        <v-flex xs12 v-else>
             <v-progress-circular class="primary--text" indeterminate/>
         </v-flex>
     </v-container>
@@ -131,6 +151,10 @@
             numberReceipt: "",
             payment_numberFound: undefined,
             status: "",
+            payment_numberFound:undefined,
+            status:"",
+            modalidade: "Consulta",
+            previousConsultation: undefined,
             createConsultationForm: undefined,
             exam: undefined,
             loaderPaymentNumber: false,
@@ -151,6 +175,11 @@
                 }
             });
 
+            this.query= this.$route.params.q
+            if(this.query){
+                this.modalidade= "Retorno"
+                this.previousConsultation = this.query.id
+            }
         },
 
         computed: {
@@ -204,7 +233,6 @@
                 this.numberReceipt = "";
                 this.status = "Aguardando pagamento";
                 this.loaderPaymentNumber = true;
-
                 this.$store.dispatch("thereIsIntakes", {
                     user: this.selectedForm.user,
                     doctor: this.selectedForm.consultation.doctor,
@@ -212,11 +240,20 @@
                     exam: this.exam
                 })
                     .then(obj => {
-                        this.payment_numberFound = obj;
-                        this.numberReceipt = obj.payment_number;
-                        this.exam = obj.exam ? {...obj.exam, notFindPayment: true} : undefined;
-                        this.status = "Pago";
-                        this.loaderPaymentNumber = false
+                        if(obj.payment_number){
+                            this.payment_numberFound = obj;
+                            this.numberReceipt = obj.payment_number;
+                            this.exam = obj.exam ? {...obj.exam, notFindPayment: true} : undefined;
+                            this.status = "Pago";
+                            this.loaderPaymentNumber = false
+                        }
+                        else{
+                            this.payment_numberFound = obj[0];
+                            this.numberReceipt = obj[0].payment_number;
+                            this.exam = obj[0].exam ? {...obj[0].exam, notFindPayment: true} : undefined;
+                            this.status = "Pago";
+                            this.loaderPaymentNumber = false
+                        }
                     })
                     .catch(response => {
                         let cost = response.cost;
