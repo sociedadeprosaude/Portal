@@ -4,16 +4,18 @@
             <v-flex sm12>
                 <DataDoctorToSearchConsultation />
             </v-flex>
-            <v-flex class="mt-4" xs12>
+            <v-flex xs12 class="mt-n2">
                 <v-date-picker
                         :allowed-dates="allowedDates"
                         class="mx-2"
                         locale="pt-br"
                         v-model="date"
+                        no-title
+                        color="primary"
                 />
             </v-flex>
-            <v-flex class="text-center mt-8 ml-2" sm12>
-                <CardPatient max-width="300px" ref="patientCard"/>
+            <v-flex class="mt-5" sm12>
+                <CardPatient ref="patientCard"/>
             </v-flex>
         </v-layout>
     </v-container>
@@ -173,26 +175,29 @@
                 let consultations = [];
                 schedules.forEach((schedule) => {
                     //let keys = Object.keys(schedule.days);
-                    let dates = this.datesOfInterval({days:schedule.days});
+                    if(schedule.days){
+                        let dates = this.datesOfInterval({days:schedule.days});
 
-                    dates.forEach((date) => {
-                        let hourConsultation = schedule.days[moment(date).weekday()].hour;
-                        if (schedule.cancelations_schedules.indexOf(date) === -1 && schedule.cancelations_schedules.indexOf(date + ' ' + hourConsultation) === -1) {
-                            let scheduleObj = {
-                                clinic: schedule.clinic,
-                                doctor: schedule.doctor,
-                                date: date + ' ' + hourConsultation,
-                                routine_id: schedule.routine_id,
-                                specialty: schedule.specialty,
-                                vacancy: schedule.days[moment(date).weekday()].vacancy,
-                                id_schedule: schedule.id,
+                        dates.forEach((date) => {
+                            let hourConsultation = schedule.days[moment(date).weekday()].hour;
+                            if (schedule.cancelations_schedules.indexOf(date) === -1 && schedule.cancelations_schedules.indexOf(date + ' ' + hourConsultation) === -1) {
+                                let scheduleObj = {
+                                    clinic: schedule.clinic,
+                                    doctor: schedule.doctor,
+                                    date: date + ' ' + hourConsultation,
+                                    routine_id: schedule.routine_id,
+                                    specialty: schedule.specialty,
+                                    vacancy: schedule.days[moment(date).weekday()].vacancy,
+                                    id_schedule: schedule.id,
 
-                            };
-                            let obj = {...scheduleObj, ...this.numberVacancyAndReturns(scheduleObj)};
-                            obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns;
-                            consultations.push(obj)
-                        }
-                    })
+                                };
+                                let obj = {...scheduleObj, ...this.numberVacancyAndReturns(scheduleObj)};
+                                obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns;
+                                consultations.push(obj)
+                            }
+                        })
+                    }
+                    
                 });
                 return consultations
             },

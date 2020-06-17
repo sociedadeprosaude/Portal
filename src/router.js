@@ -34,7 +34,6 @@ import CashierRoutes from "./routes/CashierRoutes";
 import discount from "./views/Notifications/discount"
 import notifications from "./views/Notifications/notifications";
 
-import weeklyTable from "./views/Operational/WeeklyTable/weeklyTable";
 const Clinic = {
   props: ['id'],
   template: '<div>Clinic {{ id }}</div>'
@@ -206,15 +205,6 @@ let mainRoutes = [
       requiresAuth: false,
     }
   },
-
-  {
-    path: '/weeklyTable',
-    name: 'weeklyTable',
-    component : weeklyTable,
-    meta: {
-      requiresAuth: false,
-    }
-  },
   {
     path: '/senhas',
     name: 'Tickets',
@@ -258,6 +248,22 @@ let router =  new Router({
 });
 
 router.afterEach((to, from, next) => {
+  let permissions = [
+    {
+      id: 0,
+      name: 'All:',
+      children: [],
+    }
+  ]
+  for(let i in routes) {
+    let holder = {
+      id: routes[i].name,
+      name: routes[i].name,
+      path: routes[i].path,
+    }
+    permissions[0].children.push(holder)
+  }
+  store.commit('Setpermissions', permissions);
   if (to.path.includes('agenda')) {
     store.commit('setDoctorsAgendaToolbar', true)
   } else {

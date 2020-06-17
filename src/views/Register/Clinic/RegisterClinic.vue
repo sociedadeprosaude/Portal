@@ -1,7 +1,7 @@
 <template>
     <v-container fill-height>
         <v-layout row wrap class="align-center justify-center">
-            <v-flex xs6 class="text-center align-center justify-center">
+            <v-flex xs11 class="text-center align-center justify-center">
                 <v-slide-x-transition>
                     <v-card class="px-5 py-3" v-if="!registered">
                         <v-layout row wrap>

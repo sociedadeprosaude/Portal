@@ -1,9 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
-import router from '../router'
-import constants from '@/utils/constants'
 import VuexPersistence from 'vuex-persist'
+
 
 import Users from '@/store/modules/Users'
 import Exams from '@/store/modules/Exams'
@@ -36,23 +34,23 @@ import Tickets from "./modules/Tickets";
 import alertNotifications from "./modules/alertNotifications";
 import Schedule from "./modules/schedule"
 
-
 Vue.use(Vuex);
 
-if (process.env.NODE_ENV === 'development') {
-    // var AUTH_URL = 'http://prosaude.auth/'
-    var AUTH_URL = 'http://caixa.instituicaoprosaude.com:83/'
-} else {
-    var AUTH_URL = 'http://caixa.instituicaoprosaude.com:83/'
-}
-
 const vuexLocal = new VuexPersistence({
+    key: 'vuex',
     storage: window.localStorage,
-    modules: ['LocalUnit']
+    modules: ['LocalUnit', 'ShoppingCart'],
+    // reducer: (state) => ({
+    //     selectedPatient: state.selectedPatient,
+    //     items: state.items,
+    // })
 });
 
 const store = new Vuex.Store({
-    // plugins: [vuexLocal.plugin],
+    plugins: [vuexLocal.plugin,
+        // vuexCookie.plugin
+    ],
+
     modules: {
         Auth,
         Users,

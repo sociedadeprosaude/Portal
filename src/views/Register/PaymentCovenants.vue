@@ -8,21 +8,29 @@
                 <v-expansion-panels inset>
                     <v-expansion-panel v-for="(clinic,i) in clinics" :key="i">
                         <v-expansion-panel-header>
-                            <v-flex xs3>
-                                <span>{{clinic.name}}</span>
-                            </v-flex>
-                            <v-flex xs2>
-                                <span>{{clinic.telephone[0]}}</span>
-                            </v-flex>
-                            <v-flex xs2>
-                                Próximo Pagamento:
-                            </v-flex>
-                            <v-flex xs2>
-                                {{clinic.paymentDayFormat}}
-                            </v-flex>
-                            <v-flex xs3>
-                                <v-btn @click="ChangeDateDialog(clinic)">Alterar Data</v-btn>
-                            </v-flex>
+                            <v-layout row wrap>
+                                <v-flex xs6 md3>
+                                    <span>{{clinic.name}}</span>
+                                </v-flex>
+                                <v-flex xs6 md2>
+                                    <span>{{clinic.telephone[0]}}</span>
+                                </v-flex>
+                                <v-flex xs12 class="hidden-md-and-up">
+                                    <p class="py-2"></p>
+                                </v-flex>
+                                <v-flex xs7 md3>
+                                    Próximo Pagamento:
+                                </v-flex>
+                                <v-flex xs5 md1>
+                                    <p>{{clinic.paymentDayFormat}}</p>
+                                </v-flex>
+                                <v-flex>
+                                    <v-spacer></v-spacer>
+                                </v-flex>
+                                <v-flex xs12 md2>
+                                    <v-btn @click="ChangeDateDialog(clinic)">Alterar Data</v-btn>
+                                </v-flex>
+                            </v-layout>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                             <v-layout row wrap>
@@ -41,26 +49,32 @@
                 <v-expansion-panels inset>
                     <v-expansion-panel v-for="(clinic,i) in clinics" :key="i">
                         <v-expansion-panel-header>
-                            <v-flex xs3>
-                                <span>{{clinic.name}}</span>
-                            </v-flex>
-                            <v-flex xs2>
-                                <span>Dia: {{clinic.paymentDayFormat}}</span>
-                            </v-flex>
-                            <v-flex xs3 v-if="cost !=='' && clinica === clinic">
-                                <span class="font-weight-bold">Custo :{{cost}} </span>
-                            </v-flex>
-                            <v-flex xs3 v-else>
-                                <v-btn @click="CalculateValue(clinic)">ver valor até o momento</v-btn>
-                            </v-flex>
-                            <v-divider></v-divider>
-                            <v-flex xs2>
-                                <v-btn @click="checkReceipts(clinic)">Verificar Recibos</v-btn>
-                            </v-flex>
-                            <v-divider></v-divider>
-                            <v-flex xs2>
-                                <v-btn @click="Pay(clinic)">Pagar</v-btn>
-                            </v-flex>
+                            <v-layout row wrap>
+                                <v-flex xs6 md3>
+                                    <span>{{clinic.name}}</span>
+                                </v-flex>
+                                <v-flex xs6 md2>
+                                    <span>Dia: {{clinic.paymentDayFormat}}</span>
+                                </v-flex>
+                                <v-flex xs12 class="hidden-md-and-up">
+                                    <v-divider class="py-2"></v-divider>
+                                </v-flex>
+                                <v-flex  md3 v-if="cost !=='' && clinica === clinic">
+                                    <span class="font-weight-bold">Custo :{{cost}} </span>
+                                </v-flex>
+                                <v-flex xs12 md3 v-else>
+                                    <v-btn @click="CalculateValue(clinic)">Valor até o momento</v-btn>
+                                </v-flex>
+                                <v-flex xs12 class="hidden-md-and-up">
+                                    <p class="py-2"></p>
+                                </v-flex>
+                                <v-flex  md2>
+                                    <v-btn @click="checkReceipts(clinic)">Recibos</v-btn>
+                                </v-flex>
+                                <v-flex  md2>
+                                    <v-btn @click="Pay(clinic)">Pagar</v-btn>
+                                </v-flex>
+                            </v-layout>
                         </v-expansion-panel-header>
                     </v-expansion-panel>
                 </v-expansion-panels>
