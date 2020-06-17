@@ -86,6 +86,17 @@ const actions = {
             console.log(e)
         }
     },
+
+    async userPermissions({commit}, payload) {
+        try {
+            let updateUserPermissions;
+            updateUserPermissions = await firebase.firestore().collection('users').doc(payload.user).update({permissions: payload.permissions})
+            return updateUserPermissions
+        } catch (e) {
+            throw e
+        }
+    },
+
     async getTodayUsers(context, payload) {
         try {
             let selectedUnit = context.getters.selectedUnit;
