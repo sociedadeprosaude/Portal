@@ -14,7 +14,6 @@
             rounded
             chips
             color="blue"
-            
           >
             <template v-slot:selection="data">
               <v-chip
@@ -33,28 +32,27 @@
         <v-spacer></v-spacer>
         <v-flex xs12 md6>
           <v-combobox
-                  prepend-icon="person"
-                  v-model="selectedDoctor"
-                  :items="doctors"
-                  item-text="name"
-                  return-object
-                  label="Médico"
-                  outlined
-                  rounded
-                  chips
-                  color="blue"
-
+            prepend-icon="person"
+            v-model="selectedDoctor"
+            :items="doctors"
+            item-text="name"
+            return-object
+            label="Médico"
+            outlined
+            rounded
+            chips
+            color="blue"
           >
             <template v-slot:selection="data">
               <v-chip
-                      :key="JSON.stringify(data.item)"
-                      :input-value="data.selected"
-                      :disabled="data.disabled"
-                      class="v-chip--select-multi"
-                      @click.stop="data.parent.selectedIndex = data.index"
-                      @input="data.parent.selectItem(data.item)"
-                      text-color="white"
-                      color="info"
+                :key="JSON.stringify(data.item)"
+                :input-value="data.selected"
+                :disabled="data.disabled"
+                class="v-chip--select-multi"
+                @click.stop="data.parent.selectedIndex = data.index"
+                @input="data.parent.selectItem(data.item)"
+                text-color="white"
+                color="info"
               >{{ data.item.name }}</v-chip>
             </template>
           </v-combobox>
@@ -62,31 +60,30 @@
 
         <v-flex xs12 md12>
           <v-select
-                  prepend-icon="location_city"
-                  v-model="clinic"
-                  :items="clinics"
-                  item-text="name"
-                  label="Clínica"
-                  outlined
-                  rounded
-                  return-object
-                  filled
-                  chips
-                  color="purple"
-                  clearable
+            prepend-icon="location_city"
+            v-model="clinic"
+            :items="clinics"
+            item-text="name"
+            label="Clínica"
+            outlined
+            rounded
+            return-object
+            filled
+            chips
+            color="purple"
+            clearable
           >
             <template v-slot:selection="data">
               <v-chip
-                      :key="JSON.stringify(data.item)"
-                      :input-value="data.selected"
-                      :disabled="data.disabled"
-                      class="v-chip--select-multi"
-                      @click.stop="data.parent.selectedIndex = data.index"
-                      @input="data.parent.selectItem(data.item)"
-                      text-color="white"
-                      color="info"
-              >{{ data.item.name }}
-              </v-chip>
+                :key="JSON.stringify(data.item)"
+                :input-value="data.selected"
+                :disabled="data.disabled"
+                class="v-chip--select-multi"
+                @click.stop="data.parent.selectedIndex = data.index"
+                @input="data.parent.selectItem(data.item)"
+                text-color="white"
+                color="info"
+              >{{ data.item.name }}</v-chip>
             </template>
           </v-select>
         </v-flex>
@@ -114,7 +111,6 @@
               <v-card class="pa-4" style="border-radius:20px; height: 100%">
                 <v-layout fill-height>
                   <v-layout row wrap>
-
                     <v-flex id="teste" xs12 class="pl-3 text-left">
                       <h4>
                         <span class="subheading font-weight-bold">{{schedule.doctor.name}}</span>
@@ -600,7 +596,7 @@ export default {
       return consultas;
     },
     doctors: {
-      get: function () {
+      get: function() {
         let docArray = Object.values(this.$store.getters.doctors);
         docArray = docArray.filter(doctor => {
           if (!this.especialidade) {
@@ -684,7 +680,8 @@ export default {
   },
   methods: {
     datesOfInterval(payload) {
-      let weekDays = payload.weekDays;
+      let days = payload.days;
+      let weekDays = Object.keys(days);
       let startDate = moment();
       let dates = [];
       weekDays = weekDays.map(day => {
@@ -692,7 +689,14 @@ export default {
       });
       let day = startDate;
       for (let i = 0; i < this.daysToListen; i++) {
-        if (weekDays.indexOf(day.weekday()) > -1) {
+        let expiration_date = days[day.weekday().toString()]
+          ? days[day.weekday().toString()].expiration_date
+          : undefined;
+        if (
+          weekDays.indexOf(day.weekday()) > -1 &&
+          (!expiration_date ||
+            day.isSameOrBefore(moment(expiration_date, "YYYY-MM-DD")))
+        ) {
           dates.push(day.format("YYYY-MM-DD"));
         }
         day = startDate.add(1, "days");
@@ -759,42 +763,6 @@ export default {
       });
       return consultations;
     },
-    consultationsOfSchedules(schedules) {
-      let consultations = [];
-      schedules.forEach(schedule => {
-        let keys = Object.keys(schedule.days);
-        let dates = this.datesOfInterval({
-          weekDays: keys
-        });
-
-        dates.forEach(date => {
-          let hourConsultation = schedule.days[moment(date).weekday()].hour;
-          if (
-            schedule.cancelations_schedules.indexOf(date) == -1 &&
-            schedule.cancelations_schedules.indexOf(
-              date + " " + hourConsultation
-            ) == -1
-          ) {
-            let scheduleObj = {
-              clinic: schedule.clinic,
-              doctor: schedule.doctor,
-              date: date + " " + hourConsultation,
-              routine_id: schedule.routine_id,
-              specialty: schedule.specialty,
-              vacancy: schedule.days[moment(date).weekday()].vacancy,
-              id_schedule: schedule.id
-            };
-            let obj = {
-              ...scheduleObj,
-              ...this.numberVacancyAndReturns(scheduleObj)
-            };
-            obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns;
-            consultations.push(obj);
-          }
-        });
-      });
-      return consultations;
-    },
     justifyReturn(date) {
       var dateConsultation = moment(this.query.data);
       var today = moment(date);
@@ -806,8 +774,10 @@ export default {
       this.dialog = true;
     },
     fillConsultationForm(consult) {
-      let patient = this.query.pacienteObj ? this.query.pacienteObj : this.selectedPatient;
-      let dependent = this.query.dependent ? this.query.dependent : undefined
+      let patient = this.query.pacienteObj
+        ? this.query.pacienteObj
+        : this.selectedPatient;
+      let dependent = this.query.dependent ? this.query.dependent : undefined;
       let consultation = consult;
 
       if (dependent) {
@@ -883,7 +853,7 @@ export default {
       this.query = this.$route.params.q;
       this.selectedDoctor = this.query.doctor;
       this.especialidade = this.query.specialty;
-      console.log(this.query)
+      console.log(this.query);
       this.clinic = this.query.clinic;
       await this.listenConsultations();
 
@@ -893,7 +863,9 @@ export default {
       /* this.selectedDoctor = this.query.doctor;
       this.especialidade = this.query.especialidade;
       this.clinic = this.query.consultation.clinic; */
-      this.pacienteSelecionado = this.query.user ? this.query.user : this.selectedPatient;
+      this.pacienteSelecionado = this.query.user
+        ? this.query.user
+        : this.selectedPatient;
       this.status = this.query.status;
       this.num_recibo = this.query.payment_number;
       this.loading = false;
@@ -995,7 +967,7 @@ export default {
       this.loading = true;
       let form = this.createConsultationForm;
       form.user = {
-        ...form.user,
+        ...form.user
         /* status: this.status,
         type: this.modalidade,
         payment_number: this.num_recibo */

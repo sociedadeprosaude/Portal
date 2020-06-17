@@ -726,6 +726,38 @@ exports.deleteSchedule = functions.firestore
         await removeConsultations(deletedSchedule)
     });
 
+exports.updateSchedule = functions.firestore
+    .document('schedules/{scheduleID}')
+    .onUpdate(async (change, context) => {
+        let newValue = change.after.data();
+        let previousValue = change.before.data();
+        if (Object.keys(newValue.days).length < Object.keys(previousValue.days).length) {
+            let keysOld = Object.keys(previousValue.days)
+            let keyNew = Object.keys(newValue.days)
+            let week_days = []
+            keysOld.forEach((day) => {
+                if (keyNew.indexOf(day) == -1)
+                    week_days.push(day)
+            })
+            console.log('Dias cancelados', week_days)
+            newValue.week_days = week_days
+        }
+
+        if (newValue.cancelations_schedules.length > previousValue.cancelations_schedules.length) {
+            let cancelationsOld = previousValue.cancelations_schedules
+            let cancelationsNew = newValue.cancelations_schedules
+            cancelationsNew.forEach((cancelationObj) => {
+                if (cancelationsOld.findIndex((value) => value.start_date === cancelationObj.start_date && value.final_date === cancelationObj.final_date) == -1) {
+                    newValue.start_date = cancelationObj.start_date
+                    newValue.final_date = cancelationObj.final_date
+                }
+            })
+            console.log('Periodos cancelados', newValue)
+        }
+
+        await removeConsultations(newValue)
+    });
+
 async function removeConsultations(payload) {
     let start = moment().format('YYYY-MM-DD 00:00');
     try {
@@ -735,7 +767,7 @@ async function removeConsultations(payload) {
             .where('date', ">=", start)
         if (payload.final_date) {
             let end = moment(payload.final_date, 'YYYY-MM-DD').format('YYYY-MM-DD 23:59');
-            query.where('date', "<=", end)
+            query = query.where('date', "<=", end)
         }
 
 

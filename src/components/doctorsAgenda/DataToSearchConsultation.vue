@@ -2,18 +2,20 @@
     <v-container>
         <v-layout column>
             <v-flex sm12>
-                <DataDoctorToSearchConsultation/>
+                <DataDoctorToSearchConsultation />
             </v-flex>
-            <v-flex class="mt-4" xs12>
+            <v-flex xs12 class="mt-n2">
                 <v-date-picker
                         :allowed-dates="allowedDates"
                         class="mx-2"
                         locale="pt-br"
                         v-model="date"
+                        no-title
+                        color="primary"
                 />
             </v-flex>
-            <v-flex class="text-center mt-8 ml-2" sm12>
-                <CardPatient max-width="300px" ref="patientCard"/>
+            <v-flex class="mt-5" sm12>
+                <CardPatient ref="patientCard"/>
             </v-flex>
         </v-layout>
     </v-container>
@@ -172,8 +174,8 @@
             consultationsOfSchedules(schedules) {
                 let consultations = [];
                 schedules.forEach((schedule) => {
-                    let keys = Object.keys(schedule.days);
-                    let dates = this.datesOfInterval({weekDays: keys});
+                    //let keys = Object.keys(schedule.days);
+                    let dates = this.datesOfInterval({days:schedule.days});
 
                     dates.forEach((date) => {
                         let hourConsultation = schedule.days[moment(date).weekday()].hour;
@@ -198,7 +200,8 @@
             },
 
             datesOfInterval(payload) {
-                let weekDays = payload.weekDays;
+                let days = payload.days
+                let weekDays = Object.keys(days);
                 let startDate = moment();
                 let dates = [];
                 weekDays = weekDays.map((day) => {
@@ -206,7 +209,8 @@
                 });
                 let day = startDate;
                 for (let i = 0; i < this.daysToListen; i++) {
-                    if (weekDays.indexOf(day.weekday()) > -1) {
+                    let expiration_date = days[day.weekday().toString()] ? days[day.weekday().toString()].expiration_date : undefined
+                    if (weekDays.indexOf(day.weekday()) > -1 && (!expiration_date || day.isSameOrBefore(moment(expiration_date,'YYYY-MM-DD')))) {
                         dates.push(day.format('YYYY-MM-DD'))
                     }
                     day = startDate.add(1, 'days');

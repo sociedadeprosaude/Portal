@@ -43,7 +43,7 @@
                             </v-layout>
                         </v-card>
                     </v-flex>
-                    <v-card-actions class="ml-4 mt-4 " v-if="consultation.status">
+                    <v-card-actions class="mt-4 " v-if="consultation.status">
                         <v-btn
                                 color="white"
                                 rounded
@@ -55,8 +55,7 @@
                         <v-btn
                                 color="white"
                                 rounded
-                                class="mx-2"
-                                :to="{ name: 'AgendarRetorno', params: { q: {...this.consultation}}}"
+                                :to="{ name: 'AgendamentoConsultas', params: { q: consultation}}"
                                 :disabled="consultation.status !== 'Pago' || consultation.regress"
                                 v-if="consultation.type !== 'Retorno'"
                         >Retorno
@@ -72,10 +71,9 @@
                         <v-btn
                                 color="white"
                                 rounded
-                                class="mx-2"
                                 @click="ConsultationRecept(consultation)"
                         >
-                            Recibo
+                            Comprovante
                         </v-btn>
                     </v-card-actions>
                     <v-flex xs12 class="mt-4 mb-2">

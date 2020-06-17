@@ -9,14 +9,15 @@ import RegistrationConsultationsShifts from "../views/Register/RegistrationConsu
 import RemarcarConsultas from "../views/Operational/DoctorsAgenda/RescheduleConsultations";
 import ScheduleReturn from "../views/Operational/DoctorsAgenda/ScheduleReturn";
 import DoctorScheduling from '../views/Operational/DoctorsAgenda/DoctorScheduling'
-
+import ManagementSchedules from '../views/Operational/DoctorsAgenda/ManagementSchedules'
 import Discount from "../views/Notifications/discount"
 
 export default [
     {
         path: '/agenda/agendamento',
         name: 'AgendamentoConsultas',
-        component: DoctorScheduling
+        component: DoctorScheduling,
+        props: (route) => ({ query: route.query.q }),
     },
     {
         path: 'discount',
@@ -70,5 +71,10 @@ export default [
         path: '/agenda/Declaration',
         name: 'Declaration',
         component: Declaration,
+    },
+    {
+        path: '/agenda/GerenciarAgendas',
+        name: 'managementSchedules',
+        component: ManagementSchedules,
     }
 ]
