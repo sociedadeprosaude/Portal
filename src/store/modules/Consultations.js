@@ -23,6 +23,7 @@ const state = {
     consultationsCreationInfo: {},
     consultationsDeletionInfo: {},
     loaded: false,
+    consultationReturn:{},
     loading: false
 };
 

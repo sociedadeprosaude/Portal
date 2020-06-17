@@ -85,6 +85,8 @@
                                         :loaderPaymentNumber="loaderPaymentNumber"
                                         :exam="exam"
                                         :numberReceipt="numberReceipt"
+                                        :modalidade="modalidade"
+                                        :previousConsultation="previousConsultation"
                                         :status="status"
                                         :payment_numberFound="payment_numberFound"
                         />
@@ -123,6 +125,8 @@
             numberReceipt: "",
             payment_numberFound:undefined,
             status:"",
+            modalidade: "Consulta",
+            previousConsultation: undefined,
             createConsultationForm: undefined,
             exam: undefined,
             loaderPaymentNumber: false,
@@ -132,6 +136,11 @@
 
         mounted () {
             this.$emit('refreshDate', this.daysToListen);
+            this.query= this.$route.params.q
+            if(this.query){
+                this.modalidade= "Retorno"
+                this.previousConsultation = this.query.id
+            }
         },
 
         computed: {
@@ -184,7 +193,6 @@
                 this.numberReceipt = "";
                 this.status = "Aguardando pagamento";
                 this.loaderPaymentNumber = true;
-
                 this.$store.dispatch("thereIsIntakes", {
                     user: this.selectedForm.user,
                     doctor: this.selectedForm.consultation.doctor,
@@ -192,11 +200,20 @@
                     exam: this.exam
                 })
                     .then(obj => {
-                        this.payment_numberFound = obj;
-                        this.numberReceipt = obj.payment_number;
-                        this.exam = obj.exam ? {...obj.exam, notFindPayment: true} : undefined;
-                        this.status = "Pago";
-                        this.loaderPaymentNumber = false
+                        if(obj.payment_number){
+                            this.payment_numberFound = obj;
+                            this.numberReceipt = obj.payment_number;
+                            this.exam = obj.exam ? {...obj.exam, notFindPayment: true} : undefined;
+                            this.status = "Pago";
+                            this.loaderPaymentNumber = false
+                        }
+                        else{
+                            this.payment_numberFound = obj[0];
+                            this.numberReceipt = obj[0].payment_number;
+                            this.exam = obj[0].exam ? {...obj[0].exam, notFindPayment: true} : undefined;
+                            this.status = "Pago";
+                            this.loaderPaymentNumber = false
+                        }
                     })
                     .catch(response => {
                         let cost = response.cost
