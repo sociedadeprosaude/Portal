@@ -16,7 +16,8 @@ export default [
     {
         path: '/agenda/agendamento',
         name: 'AgendamentoConsultas',
-        component: DoctorScheduling
+        component: DoctorScheduling,
+        props: (route) => ({ query: route.query.q }),
     },
     {
         path: 'discount',
