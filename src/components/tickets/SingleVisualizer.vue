@@ -1,14 +1,8 @@
 <template>
-  <v-card
-    v-if="test"
-    height="100%"
-    class="pa-4"
-    @click="$emit('close')"
-    style="overflow: hidden !important;"
-  >
+  <v-card height="100%" class="pa-4" @click="$emit('close')" style="overflow: hidden !important;">
     <v-container fluid class="one white--text">
       <v-row class="ml-2 indigo--text text--darken-4 font-weight-bold">
-        <p style="font-size: 2em;">Próxima senhas</p>
+        <p style="font-size: 2em;">Últimas senhas</p>
       </v-row>
 
       <v-row justify="center">
@@ -39,11 +33,11 @@
     <v-container fluid class="two white--text">
       <v-row class="pa-0 ma-0 half">
         <v-col align-self="center">
-          <v-row justify="center" class="display-2">{{selectedRoom.name}}</v-row>
+          <v-row justify="center" class="display-2">{{removeNumbers( selectedRoom.name)}}</v-row>
 
           <v-row justify="center">
             <v-col sm="6" md="4" lg="3" xl="2" class="ma-0 pa-0">
-              <p style="font-size: 6em;">{{selectedRoom.number}}</p>
+              <p style="font-size: 6em;">{{onlyNumbers(selectedRoom.name)}}</p>
             </v-col>
           </v-row>
         </v-col>
@@ -57,58 +51,6 @@
             <v-col sm="6" md="4" lg="3" xl="2" class="ma-0 pa-0">
               <p v-if="currentTicket" style="font-size: 7em;">{{currentTicket.number}}</p>
               <p v-else style="font-size: 5em;">*</p>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-card>
-  <v-card
-    v-else
-    height="100%"
-    class="pa-4"
-    @click="$emit('close')"
-    style="overflow: hidden !important;"
-  >
-    <v-container fill-height>
-      <v-row align="center" justify="center">
-        <v-col sm="4" class="my-4">
-          <v-card flat>
-            <img :src="constants.ASSETS.logo" height="124px" />
-            <p class="font-weight-bold" style="font-size: 6em;">{{selectedRoom.name}}</p>
-            <p class="font-weight-bold" style="font-size: 4em;">{{doctorName}}</p>
-            <p class="font-weight-bold" style="font-size: 2em;">{{hour}}</p>
-          </v-card>
-        </v-col>
-        <v-col sm="8">
-          <v-row>
-            <v-col>
-              <div class="display-4 text-center">Última senha</div>
-            </v-col>
-          </v-row>
-          <v-row justify="center" v-if="currentTicket">
-            <v-col sm="6" md="4" lg="3" xl="2">
-              <v-card :class="['primary  white--text',animation]">
-                <p style="font-size: 5em;">{{currentTicket.number}}</p>
-              </v-card>
-            </v-col>
-          </v-row>
-          <v-row justify="center" v-else>
-            <p style="font-size: 5em;">*</p>
-          </v-row>
-
-          <v-row justify="center">
-            <v-col
-              sm="6"
-              md="4"
-              lg="3"
-              xl="2"
-              v-for="(ticket, index) in calledTicketsInOrder.slice(1,5)"
-              :key="index"
-            >
-              <v-card class="primary white--text">
-                <p style="font-size: 5em;">{{ticket.number}}</p>
-              </v-card>
             </v-col>
           </v-row>
         </v-col>
@@ -197,6 +139,12 @@ export default {
   methods: {
     cardStyleByIndex(index) {
       return index === 0 ? "height: 160px; width: 100%" : "height: 100px";
+    },
+    removeNumbers(str) {
+      return str.replace(/[0-9]/g, "");
+    },
+    onlyNumbers(str) {
+      return str.replace(/\D/g, "");
     }
   }
 };

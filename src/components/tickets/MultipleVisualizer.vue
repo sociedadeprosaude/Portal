@@ -1,20 +1,35 @@
 <template>
   <v-card class="pa-4" @click="$emit('close')" style="overflow: hidden !important;">
-    <v-container fill-height fluid>
-      <v-row>
+    <v-container fill-height fluid class="one white--text">
+      <v-row class="ml-2 indigo--text text--darken-4 font-weight-bold">
+        <p style="font-size: 2em;">Últimas senhas</p>
+      </v-row>
+
+      <v-row justify="center">
         <v-col
-          sm="4"
-          class="fill-height align-start justify-center"
-          style="margin-top: calc(50vh - 124px)"
+          class="py-2 px-0"
+          cols="12"
+          v-for="(ticket, index) in lastTicketsCalled"
+          :key="index"
         >
-          <v-card flat>
-            <v-flex xs12>
-              <img :src="constants.ASSETS.logo" height="124px" />
-            </v-flex>
-            <v-flex xs12 class="font-weight-bold" style="font-size: 2em;">{{hour}}</v-flex>
+          <v-card elevation="0" :color="index%2 != 0? 'grey lighten-2':'grey lighten-4'">
+            <v-row>
+              <v-col align-self="center" class="font-weight-bold">
+                <p style="font-size: 2em;">senha {{ticket.number}}</p>
+              </v-col>
+              <v-col class="indigo--text text--darken-4 font-weight-bold">
+                <p style="font-size: 4em;">{{ticket.roomName}}</p>
+              </v-col>
+            </v-row>
           </v-card>
         </v-col>
-
+      </v-row>
+      <v-row justify="center">
+        <v-card flat>
+          <img :src="constants.ASSETS.logo" height="124px" />
+        </v-card>
+      </v-row>
+      <!-- <v-row>
         <v-col sm="8">
           <v-card
             v-if="lastTicketCalled"
@@ -42,6 +57,32 @@
             </v-row>
           </v-card>
         </v-col>
+      </v-row>-->
+    </v-container>
+    <v-container fluid class="two white--text">
+      <v-row class="pa-0 ma-0 half">
+        <v-col align-self="center">
+          <v-row justify="center" class="display-2">{{removeNumbers(lastTicketCalled.roomName)}}</v-row>
+
+          <v-row justify="center">
+            <v-col sm="6" md="4" lg="3" xl="2" class="ma-0 pa-0">
+              <p style="font-size: 6em;">{{onlyNumbers(lastTicketCalled.roomName)}}</p>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-divider class="white"></v-divider>
+      <v-row class="pa-0 ma-0 half">
+        <v-col align-self="center">
+          <v-row justify="center" class="display-1">Senha atual</v-row>
+
+          <v-row justify="center">
+            <v-col sm="6" md="4" lg="3" xl="2" class="ma-0 pa-0">
+              <p v-if="lastTicketCalled" style="font-size: 7em;">{{lastTicketCalled.number}}</p>
+              <p v-else style="font-size: 5em;">*</p>
+            </v-col>
+          </v-row>
+        </v-col>
       </v-row>
     </v-container>
   </v-card>
@@ -52,7 +93,7 @@ import constants from "../../utils/constants";
 
 export default {
   name: "SingleVisualizer",
-  props: ['sector'],
+  props: ["sector"],
   mounted() {
     this.clockInterval = setInterval(() => {
       this.$nextTick(() => {
@@ -77,7 +118,7 @@ export default {
     //   return this.$store.getters.rooms;
     // },
     rooms() {
-      return this.sector ? this.sector.rooms : []
+      return this.sector ? this.sector.rooms : [];
     },
     doctorName() {
       let names = this.room.doctor.name.split(" ");
@@ -100,7 +141,8 @@ export default {
         for (let ticket in filteredTickets) {
           let formattedTicket = {
             ...filteredTickets[ticket],
-            roomName: this.rooms[room].name
+            roomName: this.rooms[room].name,
+            roomNumber: this.rooms[room].number
           };
           tickets.push(formattedTicket);
         }
@@ -136,12 +178,36 @@ export default {
   methods: {
     cardStyleByIndex(index) {
       return index === 0 ? "height: 160px; width: 100%" : "height: 100px";
+    },
+    removeNumbers(str) {
+      return str.replace(/[0-9]/g, "");
+    },
+    onlyNumbers(str) {
+      return str.replace(/\D/g, "");
     }
   }
 };
 </script>
 
 <style scoped>
+.one,
+.two {
+  float: left;
+  width: 50%;
+  min-height: 100vh;
+}
+
+.half {
+  min-height: 50vh;
+}
+
+.strechAll {
+  min-height: 100vh;
+}
+
+.two {
+  background-color: rgb(21, 21, 99);
+}
 @keyframes fade-in {
   0% {
     opacity: 0.5;

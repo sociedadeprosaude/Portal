@@ -105,7 +105,6 @@ const actions = {
             ...payload.sector.rooms,
             [payload.room.name]: {
                 name: payload.room.name,
-                number: payload.room.number,
                 tickets: [],
                 doctor: null,
                 doc_clinic: selectedClinic.name

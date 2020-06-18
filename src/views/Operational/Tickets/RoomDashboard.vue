@@ -35,9 +35,7 @@
             <v-row cols="12">
               <v-text-field v-model="room.name" label="Nome da Sala"></v-text-field>
             </v-row>
-            <v-row cols="12">
-              <v-text-field v-model="room.number" label="Numero"></v-text-field>
-            </v-row>
+         
             <v-row>
               <v-col cols="12" class="text-right">
                 <submit-button
@@ -65,7 +63,7 @@
         <v-card class="pa-4">
           <v-row class="justify-center">
             <v-col cols="10" class="text-left">
-              <span class="my-sub-headline">{{room.name}} {{room.number}}</span>
+              <span class="my-sub-headline">{{room.name}}</span>
             </v-col>
             <v-col cols="2">
               <v-btn x-small fab class="red" @click="deleteRoom(room)">
