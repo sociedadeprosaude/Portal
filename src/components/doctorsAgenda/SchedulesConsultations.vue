@@ -116,7 +116,7 @@
                 </v-dialog>
             </div>
         </v-flex>
-        
+
         <v-flex xs12 v-if="consultationLoading">
             <v-progress-circular class="primary--text" indeterminate/>
         </v-flex>

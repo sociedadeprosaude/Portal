@@ -137,11 +137,11 @@
             },
         },
         mounted(){
-            this.query= this.$route.params.q
+            this.query= this.$route.params.q;
             if( this.query){
-                console.log('query: ', this.query)
-                this.specialty = this.query.specialty
-                this.clinic= this.query.clinic.name
+                console.log('query: ', this.query);
+                this.specialty = this.query.specialty;
+                this.clinic= this.query.clinic.name;
                 this.doctor= this.query.doctor
             }
         },

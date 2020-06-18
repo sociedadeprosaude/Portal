@@ -282,16 +282,16 @@
                 return this.$store.getters.user
             },
             userPermissions() {
-                let holder = this.$store.getters.user.permissions
-                let vectorOfPaths = []
+                let holder = this.$store.getters.user.permissions;
+                let vectorOfPaths = [];
                 for(let i in holder){
                     vectorOfPaths.push(holder[i].path)
                 }
                 return vectorOfPaths
             },
             permissions () {
-                let holder = this.$store.getters.permissions[0].children
-                let listOfPaths = []
+                let holder = this.$store.getters.permissions[0].children;
+                let listOfPaths = [];
                 for(let i in holder){
                     listOfPaths.push(holder[i].path)
                 }
@@ -303,11 +303,9 @@
 
             filteredPages() {
                 if(this.user){
-                    console.log(this.userPermissions)
-                    console.log(this.permissions)
                     if(this.userPermissions && this.permissions){
                         for(let rota in this.userPermissions){
-                            if(this.permissions.indexOf(this.userPermissions[rota]) != -1){
+                            if(this.permissions.indexOf(this.userPermissions[rota]) !== -1){
                                 console.log('tem permissão')
                             } else {
                                 console.log('não tem permissão')
