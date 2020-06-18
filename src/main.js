@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 // import vuetify from '@/plugins/vuetify'
+//import coreUI from './plugins/coreUI'
 import 'vuetify/dist/vuetify.min.css'
 import './css/main.css'
 import './css/animation.css'
@@ -17,6 +18,10 @@ import VCurrencyField from 'v-currency-field'
 import './registerServiceWorker'
 import * as firebase from "firebase";
 import VueHtmlToPaper from 'vue-html-to-paper';
+import 'bootstrap'
+
+import CoreuiVue from '@coreui/vue';
+import CoreuiVueCharts from '@coreui/vue-chartjs'
 
 const options = {
   name: '_blank',
@@ -27,13 +32,17 @@ const options = {
   ],
   styles: [
     'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',
-    'https://unpkg.com/kidlat-css/css/kidlat.css'
+    'https://unpkg.com/kidlat-css/css/kidlat.css',
+    
   ]
 };
 
 Vue.use(VueHtmlToPaper, options);
 
 Vue.use(Vuetify);
+//Vue.use(coreUI);
+Vue.use(CoreuiVue);
+Vue.use(CoreuiVueCharts)
 Vue.use(constants);
 
 Vue.use(VCurrencyField, {

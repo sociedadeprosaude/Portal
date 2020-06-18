@@ -99,7 +99,7 @@ export default {
       { title: "Relatorio financeiro geral", value: 0 },
       { title: "Relatorio de Saidas", value: 1 },
       { title: "Análise de preço de exames", value: 2 },
-      { title: "Overview Caixa", value: 3 }
+      { title: "Overview Caixa", value: 3 },
     ],
 
     date: moment().format("YYYY-MM-DD 00:00:00"),
