@@ -11,7 +11,7 @@
                         </v-flex>
                         <v-tab>Recibo</v-tab>
                         <v-tab v-for="(item, i) in examsPerClinic" :key=i>{{i}}</v-tab>
-                        <v-spacer></v-spacer>
+                        <v-spacer/>
                         <v-flex xs1 class="text-right white hidden-print-only mt-2">
                             <v-btn class="transparent" text @click="print('receipt')">
                                 <v-icon>print</v-icon>
@@ -111,7 +111,7 @@
                         </v-tab-item>
                         <v-tab-item v-for="(item, i) in examsPerClinic" :key=i>
                             <attendance-guide class="receipt-to-print" :guide=item :ref="'guide-' + i"
-                                              :id="'guide-' + i"></attendance-guide>
+                                              :id="'guide-' + i"/>
                         </v-tab-item>
                     </v-tabs>
                 </v-flex>
