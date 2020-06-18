@@ -101,26 +101,23 @@
             </ul>
         </div>
         <v-flex xs12 v-if="consultationLoading">
-                <div class="text-xs-center">
-                    <v-dialog v-model="dialog" v-if="createConsultationForm" max-width="520">
-                        <SchedulingForm @close-dialog="dialog = false"
-                                        :createConsultationForm="createConsultationForm"
-                                        :loaderPaymentNumber="loaderPaymentNumber"
-                                        :exam="exam"
-                                        :numberReceipt="numberReceipt"
-                                        :modalidade="modalidade"
-                                        :previousConsultation="previousConsultation"
-                                        :status="status"
-                                        :payment_numberFound="payment_numberFound"
-                        />
-                    </v-dialog>
-                </div>
-            </v-container>
-        </v-layout>
-        <v-flex xs12 v-if="!consultationLoading">
-            <v-btn class="primary" rounded @click="listenMoreConsultations">Carregar mais</v-btn>
+            <div class="text-xs-center">
+                <v-dialog v-model="dialog" v-if="createConsultationForm" max-width="520">
+                    <SchedulingForm @close-dialog="dialog = false"
+                                    :createConsultationForm="createConsultationForm"
+                                    :loaderPaymentNumber="loaderPaymentNumber"
+                                    :exam="exam"
+                                    :numberReceipt="numberReceipt"
+                                    :modalidade="modalidade"
+                                    :previousConsultation="previousConsultation"
+                                    :status="status"
+                                    :payment_numberFound="payment_numberFound"
+                    />
+                </v-dialog>
+            </div>
         </v-flex>
-        <v-flex xs12 v-else>
+        
+        <v-flex xs12 v-if="consultationLoading">
             <v-progress-circular class="primary--text" indeterminate/>
         </v-flex>
     </v-container>
@@ -151,8 +148,8 @@
             numberReceipt: "",
             payment_numberFound: undefined,
             status: "",
-            payment_numberFound:undefined,
-            status:"",
+            payment_numberFound: undefined,
+            status: "",
             modalidade: "Consulta",
             previousConsultation: undefined,
             createConsultationForm: undefined,
@@ -175,13 +172,13 @@
                 }
             });
 
-            this.query= this.$route.params.q
-            if(this.query){
-                this.modalidade= "Retorno"
+            this.query = this.$route.params.q
+            if (this.query) {
+                this.modalidade = "Retorno"
                 this.previousConsultation = this.query.id
                 this.status = this.query.status
                 this.numberReceipt = this.query.payment_number
-            
+
             }
         },
 
@@ -228,8 +225,8 @@
                     consultation: consultation
                 };
 
-                if(!this.query){
-                   this.thereIsPaymentNumber();
+                if (!this.query) {
+                    this.thereIsPaymentNumber();
                 }
 
                 this.createConsultationForm = this.selectedForm;
@@ -247,14 +244,13 @@
                     exam: this.exam
                 })
                     .then(obj => {
-                        if(obj.payment_number){
+                        if (obj.payment_number) {
                             this.payment_numberFound = obj;
                             this.numberReceipt = obj.payment_number;
                             this.exam = obj.exam ? {...obj.exam, notFindPayment: true} : undefined;
                             this.status = "Pago";
                             this.loaderPaymentNumber = false
-                        }
-                        else{
+                        } else {
                             this.payment_numberFound = obj[0];
                             this.numberReceipt = obj[0].payment_number;
                             this.exam = obj[0].exam ? {...obj[0].exam, notFindPayment: true} : undefined;
