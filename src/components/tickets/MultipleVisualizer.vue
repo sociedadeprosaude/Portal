@@ -171,14 +171,13 @@ export default {
       }
       return null;
     },
+    //Aumentar o splice pra aparecer mais se der numa tela grande
     lastTicketsCalled() {
-      return this.calledTicketsInOrder.splice(1, 8);
+      return this.calledTicketsInOrder.splice(1, 4);
     }
   },
   methods: {
-    cardStyleByIndex(index) {
-      return index === 0 ? "height: 160px; width: 100%" : "height: 100px";
-    },
+   
     removeNumbers(str) {
       return str.replace(/[0-9]/g, "");
     },
