@@ -21,6 +21,7 @@ import DischargeProcedures from "./views/Register/Clinic/DischargeProcedures"
 import Units from "./views/Units";
 import Bills from "./views/Register/Bills";
 import BillsMobile from "./views/Register/BillsMobile";
+import OuttakesCategories from "./views/Register/OuttakesCategories";
 
 import DoctorScheduling from './views/Operational/DoctorsAgenda/DoctorScheduling'
 
@@ -185,6 +186,14 @@ let mainRoutes = [
     path: '/BillsMobile',
     name: 'BillsMobile',
     component : BillsMobile,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/Categorias',
+    name: 'OuttakesCategories',
+    component : OuttakesCategories,
     meta: {
       requiresAuth: false,
     }
