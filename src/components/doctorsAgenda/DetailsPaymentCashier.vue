@@ -179,7 +179,7 @@
                 v-model="receiptDialog"
                 v-if="selectedIntake"
         >
-            <receipt @close="CloseReceipt()"  :budget="selectedIntake"></receipt>
+            <receipt @close="CloseReceipt()" :budget="selectedIntake"/>
         </v-dialog>
     </v-container>
 </template>

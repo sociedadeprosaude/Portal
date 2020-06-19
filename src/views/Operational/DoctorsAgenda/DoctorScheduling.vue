@@ -51,8 +51,7 @@
         mounted() {
             this.query= this.$route.params.q
         },
-       
-
+        
         methods: {
             chooseView(view) {
                 this.viewSeleted = view;
