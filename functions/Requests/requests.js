@@ -1,6 +1,6 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-try { admin.initializeApp(functions.config().firebase); } catch (e) { }
+try { admin.initializeApp(functions.config().firebase); } catch (e) { console.log(e)}
 
 
 var axios = require("axios");
@@ -821,7 +821,7 @@ exports.updateSchedule = functions.firestore
             let keyNew = Object.keys(newValue.days)
             let week_days = []
             keysOld.forEach((day) => {
-                if (keyNew.indexOf(day) == -1)
+                if (keyNew.indexOf(day) === -1)
                     week_days.push(day)
             })
             console.log('Dias cancelados', week_days)
@@ -832,7 +832,7 @@ exports.updateSchedule = functions.firestore
             let cancelationsOld = previousValue.cancelations_schedules
             let cancelationsNew = newValue.cancelations_schedules
             cancelationsNew.forEach((cancelationObj) => {
-                if (cancelationsOld.findIndex((value) => value.start_date === cancelationObj.start_date && value.final_date === cancelationObj.final_date) == -1) {
+                if (cancelationsOld.findIndex((value) => value.start_date === cancelationObj.start_date && value.final_date === cancelationObj.final_date) === -1) {
                     newValue.start_date = cancelationObj.start_date
                     newValue.final_date = cancelationObj.final_date
                 }
