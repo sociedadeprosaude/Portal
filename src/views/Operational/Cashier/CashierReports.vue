@@ -1,0 +1,196 @@
+<template>
+  <v-container fluid>
+    <v-navigation-drawer :right="false" permanent app dark clipped>
+      <v-list dense nav class="py-0" style="margin-top:100px">
+        <v-list-item v-for="item in items" :key="item.title" link @click="selected = item.value">
+          <v-list-item-content>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+
+    <v-container>
+      <v-row class="align-content-sm-space-between pa-0 ma-0 justify-center">
+        <v-col cols="3" class="mr-3">
+          <v-menu
+            ref="menu1"
+            v-model="menu1"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                v-model="dateFormatted"
+                label="Data Inicial"
+                dense
+                prepend-icon="event"
+            
+                v-on="on"
+              />
+            </template>
+            <v-date-picker v-model="date" no-title @input="menu1 = false" />
+          </v-menu>
+        </v-col>
+        <v-col cols="3" class="ml-3">
+          <v-menu
+            v-model="menu2"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                v-model="dateFormatted2"
+                label="Data Final"
+                prepend-icon="event"
+                readonly
+                dense
+                v-on="on"
+              />
+            </template>
+            <v-date-picker v-model="date2" no-title @input="menu2 = false" />
+          </v-menu>
+        </v-col>
+      </v-row>
+      <v-row class="align-center pa-0 ma-0">
+        <v-col class="pa-0 ma-0">
+          <v-btn @click="getIntakes()" color="blue" v-if="!loading">Pesquisar</v-btn>
+          <v-progress-circular indeterminate class="primary--text" v-else />
+        </v-col>
+      </v-row>
+    </v-container>
+
+    <general-report
+      v-if="selected == 0"
+      :report="formattedReport"
+      :loading="loading"
+      :intakes="intakes"
+      :reportAllUnits="formattedReportAllUnits"
+    />
+    <OuttakesReport v-if="selected == 1" :date="dateBegin" :date2="dateEnd" :cb="pesquisar" />
+    <procedures-prices-analises v-if="selected == 2"></procedures-prices-analises>
+  </v-container>
+</template>
+
+<script>
+import ProceduresPricesAnalises from "@/components/reports/ProceduresPricesAnalises";
+import GeneralReport from "@/components/reports/GeneralReport";
+import OuttakesReport from "@/components/reports/OuttakesReport";
+
+export default {
+  components: {
+    GeneralReport,
+    ProceduresPricesAnalises,
+    OuttakesReport
+  },
+  data: vm => ({
+    selected: 0,
+    items: [
+      { title: "Relatorio financeiro geral", value: 0 },
+      { title: "Relatorio de Saidas", value: 1 },
+      { title: "Análise de preço de exames", value: 2 }
+    ],
+
+    date: moment().format("YYYY-MM-DD 00:00:00"),
+    date2: moment().format("YYYY-MM-DD 23:59:59"),
+    dateFormatted: moment().format("DD/MM/YYYY"),
+    dateFormatted2: moment().format("DD/MM/YYYY"),
+    dateBegin: null,
+    colaborator: null,
+    dateEnd: null,
+    menu1: false,
+    menu2: false,
+    intakes: undefined,
+    formattedReport: undefined,
+    formattedReportAllUnits: undefined,
+    loading: false,
+    todayNewUsers: []
+  }),
+  methods: {
+    async getIntakes() {
+      this.loading = true;
+      this.intakes = await this.$store.dispatch("getIntakes", {
+        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
+        colaborator: this.colaborator
+      });
+
+      await this.pesquisar();
+      this.loading = false;
+    },
+    async pesquisar() {
+      this.loading = true;
+      this.$store.dispatch("getUsers", {
+        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
+        type: "PATIENT"
+      });
+      this.$store.dispatch("getOuttakes", {
+        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+      });
+      this.formattedReport = await this.$store.dispatch("searchReports", {
+        dataInicio: this.date,
+        dataFinal: this.date2,
+        colaborator: this.colaborator
+      });
+      this.formattedReportAllUnits = await this.$store.dispatch(
+        "searchReportsAllClinics",
+        {
+          dataInicio: this.date,
+          dataFinal: this.date2,
+          colaborator: this.colaborator
+        }
+      );
+      this.dateBegin = this.dateFormatted;
+      this.dateEnd = this.dateFormatted2;
+      this.loading = false;
+    },
+    formatDate(date) {
+      if (!date) return null;
+      const [year, month, day] = date.split("-");
+      return `${day}/${month}/${year}`;
+    }
+  },
+  async mounted() {
+    await this.$store.dispatch("getOuttakes", {
+      initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+      finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+    });
+    await this.$store.dispatch("getUsers", {
+      initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+      finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
+      type: "PATIENT"
+    });
+    this.todayNewUsers = await this.$store.dispatch("getTodayUsers", {
+      initialDate: moment().format("YYYY-MM-DD 00:00:00"),
+      finalDate: moment().format("YYYY-MM-DD 23:59:59"),
+      type: "PATIENT"
+    });
+    await this.$store.dispatch("getOuttakesCategories");
+    this.getIntakes();
+  },
+  computed: {
+    colaborators() {
+      return this.$store.getters.colaborators;
+    }
+  },
+  watch: {
+    date(val) {
+      this.dateFormatted = this.formatDate(this.date);
+    },
+    date2(val) {
+      this.dateFormatted2 = this.formatDate(this.date2);
+    }
+  }
+};
+</script>
+
+<style scoped>
+</style>
