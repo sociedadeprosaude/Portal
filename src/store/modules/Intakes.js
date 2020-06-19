@@ -152,6 +152,9 @@ const actions = {
             ...intake.data(),
             id: intake.id
         };
+        if(intake.user.dependents.length === 0){
+           delete intake.user.dependents
+        }
         let examsSnap = await firebase.firestore().collection('intakes').doc(intake.id.toString()).collection('exams').get();
         let specialtiesSnap = await firebase.firestore().collection('intakes').doc(intake.id.toString()).collection('specialties').get();
         let exams = [];
@@ -164,6 +167,8 @@ const actions = {
         });
         intake.exams = exams;
         intake.specialties = specialties;
+        functions.removeUndefineds(intake.user);
+        functions.removeUndefineds(intake);
         return intake
     },
 

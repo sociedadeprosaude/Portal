@@ -4,18 +4,20 @@
     :items="schedules"
     single-expand
     :expanded.sync="expanded"
-    item-key="doctor.id"
+    item-key="id"
     show-expand
-    class="elevation-1 mx-10 mt-10"
-    height="420"
+    class="elevation-1 mx-2 mt-10 pt-5"
+    height="400"
   >
     <template v-slot:top>
-      <v-toolbar flat>
-        <v-toolbar-title>Gerenciamento de agendas</v-toolbar-title>
-          <v-row>
-            <v-col cols="10">
-              <v-select
-            class="ml-5 mt-6"
+      <v-row>
+        <v-col :xs="12" :md="4">
+          <h1 class="headline">Gerenciamento de consultas</h1>
+        </v-col>
+
+        <v-col class="py-0 my-0" :xs="12" :md="4">
+          <v-select
+            class="mx-5"
             prepend-icon="location_city"
             v-model="clinic"
             :items="clinics"
@@ -25,7 +27,6 @@
             no-data-text="Nenhum médico para esta especialidade"
             outlined
             rounded
-            
             chips
             dense
             color="purple"
@@ -44,13 +45,13 @@
               >{{ data.item.name }}</v-chip>
             </template>
           </v-select>
-            </v-col>
-          </v-row>
+        </v-col>
 
-        <v-spacer></v-spacer>
-        <v-btn class="primary" @click="dialogNewSchedule=true">
-          <v-icon>add</v-icon>Criar nova agenda
-        </v-btn>
+        <v-col :xs="12" :md="4">
+          <v-btn class="primary" @click="dialogNewSchedule=true">
+            <v-icon>add</v-icon>Criar nova agenda
+          </v-btn>
+        </v-col>
         <v-dialog v-model="dialogNewSchedule">
           <v-card>
             <v-card-title>
@@ -71,18 +72,16 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-      </v-toolbar>
+      </v-row>
     </template>
     <template v-slot:expanded-item="{ headers, item }">
       <td :colspan="headers.length">
-        <v-row class="text-center">
-          <v-spacer></v-spacer>
-          <v-col class="mb-0 pb-0" cols="3"></v-col>
-          <v-col class="mb-0 pb-0" cols="12">
+        <v-layout class="text-center pt-5" row wrap>
+          <v-flex class="mb-0 pb-0 xs12">
             <h1 class="headline font-weight-bold">Dias da semana</h1>
-          </v-col>
+          </v-flex>
 
-          <v-col v-for="day in 6" :key="day" :cols="2">
+          <v-flex v-for="day in 6" :key="day" class="xs6 sm4 md2 lg2 pa-2">
             <CardDaySchedule
               v-if="item.days && item.days[day]"
               :schedule="item"
@@ -99,7 +98,7 @@
               <v-icon class="font-weight-bold" size="80">add</v-icon>
               <h2 class="title font-weight-bold">Criar dia</h2>
             </v-card>
-          </v-col>
+          </v-flex>
 
           <v-dialog v-model="dialog" persistent max-width="300px">
             <v-card>
@@ -137,26 +136,30 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-        </v-row>
-        <v-row class="text-center">
-          <v-col class="mb-0 pb-0" cols="12">
+        </v-layout>
+        <v-layout class="text-center pt-5" row wrap>
+          <v-flex class="mb-0 pb-0 xs12">
             <h1 class="headline font-weight-bold">Períodos cancelados</h1>
-          </v-col>
+          </v-flex>
 
-          <v-col v-for="(period,index) in item.cancelations_schedules" :key="index" :cols="2">
+          <v-flex
+            v-for="(period,index) in item.cancelations_schedules"
+            :key="index"
+            class="xs6 sm4 md2 lg2 pa-2"
+          >
             <CardPeriodCanceledSchedule :periodObj="period" :schedule="item" :index="index"></CardPeriodCanceledSchedule>
             <!-- <v-card class="py-10" elevation="2">
               <v-chip class="primary subtitle-2 font-weight-bold">{{formatDate(period.start_date)}}</v-chip>
               <h1 class="grey--text text-darken-2 subtitle-1 font-weight-bold">Até</h1>
               <v-chip class="primary subtitle-2 font-weight-bold">{{formatDate(period.final_date)}}</v-chip>
             </v-card>-->
-          </v-col>
-          <v-col :cols="2">
+          </v-flex>
+          <v-flex :cols="2" class="xs6 sm4 md2 lg2 pa-2">
             <v-card @click="openDialogNewPeriod(item)" class="py-5 grey--text" elevation="2">
               <v-icon class="font-weight-bold" size="80">add</v-icon>
               <h2 class="subtitle-1 font-weight-bold">Criar período de cancelamento</h2>
             </v-card>
-          </v-col>
+          </v-flex>
 
           <v-dialog v-model="dialogNewPeriod" persistent max-width="600px">
             <v-card>
@@ -194,13 +197,13 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-        </v-row>
+        </v-layout>
       </td>
     </template>
 
     <!-- <template v-slot:item.actions="{ item }">
       <v-icon small @click="deleteSchedule(item)">mdi-delete</v-icon>
-    </template> -->
+    </template>-->
   </v-data-table>
 </template>
 

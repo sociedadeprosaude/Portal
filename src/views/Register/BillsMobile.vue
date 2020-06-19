@@ -7,8 +7,10 @@
             </v-dialog>
 
             <v-dialog class="fill-height" hide-overlay transition="dialog-bottom-transition" persistent fullscreen v-model="dialogPaidBills">
-                <v-card>
+                <v-card color="grey">
                     <v-toolbar dark color="primary">
+                        <v-btn style="display: none" text color="transparent" class="transparent"/>
+                        <v-spacer></v-spacer>
                         <v-toolbar-title>Lançamentos</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-btn icon dark @click="dialogPaidBills = false">
@@ -17,17 +19,20 @@
                     </v-toolbar>
 
                     <v-flex xs12>
-                        <v-container>
-                            <v-row justify="space-around">
-                                <v-col cols="12" xs="12">
+                        <v-row justify="space-around">
+                            <v-col cols="12" xs="12">
+                                <v-card class="elevation-0">
                                     <v-chip-group class="mt-n6" active-class="primary--text">
                                         <v-chip color="grey lighten-2" v-for="(month,i) in months" :key="i" class="white" @click="mapMonths(month)">
                                             <span v-if="month.format('YYYY') === year" style="font-weight: bold; font-size: small"> {{ month.format('MMMM') }}</span>
                                             <span v-if="month.format('YYYY') !== year" style="font-weight: bold; font-size: small"> {{ month.format('MM/YYYY') }}</span>
                                         </v-chip>
                                     </v-chip-group>
-                                </v-col>
-                            </v-row>
+                                </v-card>
+                            </v-col>
+                        </v-row>
+                        <v-container>
+
 
                             <v-container v-if="loadingFilter">
                                 <v-row align="center" justify="center">
@@ -48,21 +53,23 @@
                             </v-container>
 
                             <v-flex xs12 class="mt-4" v-else>
-                                <v-card class="pa-4 my-4 elevation-0" v-for="bill in selectedPaidOuttakesList" :key="bill.id" @click="mapping(bill)">
+                                <v-card class="pa-4 my-4 elevation-0 transparent" v-for="bill in selectedPaidOuttakesList" :key="bill.id" @click="mapping(bill)">
                                     <v-layout class="align-center justify-center" row wrap>
-                                        <v-flex xs11>
+                                        <v-flex xs12>
                                             <div>
-                                                <span style="color: #003B8F; font-weight: bold;"> {{ bill.date_to_pay | dateFilter }} - {{ daydate(bill.date_to_pay) }}</span>
-                                                <v-flex xs12 class="primary" style="height: 2px;"></v-flex>
+                                                <span style="color: black; font-weight: bold;"> {{ bill.date_to_pay | dateFilter }} - {{ daydate(bill.date_to_pay) }}</span>
                                             </div>
                                         </v-flex>
                                         <v-flex xs6 class="text-start">
-                                            <span style="font-weight: bold;">Categoria: {{bill.category}}</span>
+                                            <span style="font-weight: bold;">{{bill.category}}</span>
                                             <br>
-                                            <span>SubCategoria: {{bill.subCategory}}</span>
+                                            <span>{{bill.subCategory}}</span>
                                         </v-flex>
                                         <v-flex xs5 class="text-right">
                                             <span class="font-weight-bold">R$ {{bill.value}}</span>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <v-divider color="black"></v-divider>
                                         </v-flex>
                                     </v-layout>
                                 </v-card>
@@ -71,17 +78,12 @@
                 </v-card>
             </v-dialog>
 
-            <v-dialog hide-overlay persistent transition="dialog-bottom-transition" v-model="dialogInfoPaidBill">
+            <v-dialog transition="dialog-bottom-transition" v-model="dialogInfoPaidBill">
                 <v-card outlined>
-                    <v-btn icon @click="dialogInfoPaidBill = false">
-                        <v-icon color="black">close</v-icon>
-                    </v-btn>
-                    <v-card-title class="headline font-weight-bold align-center justify-center">
-                        {{bill.category}}
-                    </v-card-title>
-                    <v-card-title class="headline font-weight-bold align-center justify-center">
-                        <span style="font-weight: bold; color: red">R$ {{ bill.value }}</span>
-                    </v-card-title>
+                    <v-flex xs12>
+                        <span style="font-weight: bold; color: black; font-size: small">{{ bill.category }}<br/></span>
+                        <span style="font-weight: bold; color: red; font-size: small">R$ {{ bill.value }}</span>
+                    </v-flex>
                     <v-divider></v-divider>
                     <v-card-text>
                         <v-layout row wrap>
@@ -142,7 +144,7 @@
                     <v-card class="elevation-0" tile color="primary" >
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn fab small>1</v-btn>
+                            <v-btn fab small><v-icon color="primary">playlist_add</v-icon></v-btn>
                             <v-spacer></v-spacer>
                             <v-btn @click="dialogPaidBills = true" fab small><v-icon color="primary">playlist_add_check</v-icon></v-btn>
                             <v-spacer></v-spacer>
@@ -323,3 +325,6 @@
         }
     };
 </script>
+
+<style scoped>
+</style>

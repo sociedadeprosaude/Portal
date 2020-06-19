@@ -32,17 +32,7 @@ export default {
     },
 
     IN_PRODUCTION: process.env.NODE_ENV === 'production',
-    FIREBASE_CONFIG: process.env.NODE_ENV === 'production' ?
-        {
-            apiKey: "AIzaSyCdvs5C8J_t9WPQlcZGuuLJ57hwM9_s9BQ",
-            authDomain: "prosaude-36f66.firebaseapp.com",
-            databaseURL: "https://prosaude-36f66.firebaseio.com",
-            projectId: "prosaude-36f66",
-            storageBucket: "prosaude-36f66.appspot.com",
-            messagingSenderId: "86942539576",
-            appId: "1:86942539576:web:9bf02a0a4d8e94b9"
-        }
-        :
+    FIREBASE_CONFIG: process.env.NODE_ENV === 'development' ?
         {
             apiKey: "AIzaSyBgrfEkJonYXxE4d3UD2NWMLDCWeWZEND4",
             authDomain: "prosaudedev.firebaseapp.com",
@@ -52,6 +42,17 @@ export default {
             messagingSenderId: "251864799857",
             appId: "1:251864799857:web:3ea992014ae2cdad2b19d0"
         }
+        :
+        {
+            apiKey: "AIzaSyCdvs5C8J_t9WPQlcZGuuLJ57hwM9_s9BQ",
+            authDomain: "prosaude-36f66.firebaseapp.com",
+            databaseURL: "https://prosaude-36f66.firebaseio.com",
+            projectId: "prosaude-36f66",
+            storageBucket: "prosaude-36f66.appspot.com",
+            messagingSenderId: "86942539576",
+            appId: "1:86942539576:web:9bf02a0a4d8e94b9"
+        }
+
 //matriz
 // {
 //     apiKey: "AIzaSyACymfaKNI2_ygz4ss2y_hGGFvDa6MZ1ms",

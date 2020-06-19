@@ -55,7 +55,7 @@
                         <v-btn
                                 color="white"
                                 rounded
-                                :to="{ name: 'AgendarRetorno', params: { q: {...this.consultation}}}"
+                                :to="{ name: 'AgendamentoConsultas', params: { q: consultation}}"
                                 :disabled="consultation.status !== 'Pago' || consultation.regress"
                                 v-if="consultation.type !== 'Retorno'"
                         >Retorno

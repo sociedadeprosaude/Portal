@@ -248,13 +248,12 @@
 
     export default {
 
-        props: ['createConsultationForm', 'loaderPaymentNumber', 'exam', 'numberReceipt','status','payment_numberFound'],
+        props: ['createConsultationForm', 'loaderPaymentNumber', 'exam', 'numberReceipt','status','payment_numberFound','modalidade','previousConsultation'],
         components: {SubmitButton},
 
         data: () => ({
             success: false,
             scheduleLoading: false,
-            modalidade: "Consulta",
             statusOptions: [{text: "Aguardando pagamento"}, {text: "Pago"}],
             exams: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
         }),
@@ -303,7 +302,8 @@
                     status: this.status,
                     type: this.modalidade,
                     payment_number: this.numberReceipt,
-                    exam: this.exam
+                    exam: this.exam,
+                    previousConsultation: this.previousConsultation ? this.previousConsultation : undefined
                 };
 
                 if (this.payment_numberFound)

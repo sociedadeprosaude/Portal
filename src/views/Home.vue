@@ -97,7 +97,7 @@
                 </v-layout>
             </v-flex>
             <v-flex xs12 class="text-right">
-                <span>2.1</span>
+                <span>2.3</span>
             </v-flex>
         </v-layout>
         <v-layout row wrap v-else class="align-center">
@@ -139,12 +139,12 @@
                                 to: '/agenda/agendamento',
                                 icon: 'calendar_today'
                             },
-                            {
+                            /* {
                                 title: 'Caixa',
                                 icon: 'monetization_on',
                                 permission: 'Caixa',
                                 to: '/caixa'
-                            },
+                            }, */
                             {
                                 title: 'Senhas',
                                 permission: 'Senhas',
@@ -154,7 +154,7 @@
                             {
                                 title: 'Tabela Semanal',
                                 permission: 'Agenda Médica',
-                                to: '/weeklyTable',
+                                to: '/agenda/TabelaSemanal',
                                 icon: 'date_range'
                             },
                         ]
@@ -281,13 +281,39 @@
             user() {
                 return this.$store.getters.user
             },
-
+            userPermissions() {
+                let holder = this.$store.getters.user.permissions
+                let vectorOfPaths = []
+                for(let i in holder){
+                    vectorOfPaths.push(holder[i].path)
+                }
+                return vectorOfPaths
+            },
+            permissions () {
+                let holder = this.$store.getters.permissions[0].children
+                let listOfPaths = []
+                for(let i in holder){
+                    listOfPaths.push(holder[i].path)
+                }
+                return listOfPaths
+            },
             notifications () {
                 return this.$store.getters.notification;
             },
 
             filteredPages() {
                 if(this.user){
+                    console.log(this.userPermissions)
+                    console.log(this.permissions)
+                    if(this.userPermissions && this.permissions){
+                        for(let rota in this.userPermissions){
+                            if(this.permissions.indexOf(this.userPermissions[rota]) != -1){
+                                console.log('tem permissão')
+                            } else {
+                                console.log('não tem permissão')
+                            }
+                        }
+                    }
                     return this.pages.filter(a => {
                         if (this.user.group === 'admin') {
                             return a === this.pages[0] || a === this.pages[1] || a === this.pages[2] || a === this.pages[3]
