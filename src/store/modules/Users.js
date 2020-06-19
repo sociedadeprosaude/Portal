@@ -217,6 +217,7 @@ const actions = {
     },
 
     async addUser({ getters }, patient) {
+        console.log('patient:', patient)
         try {
 
             functions.removeUndefineds(patient);
@@ -227,6 +228,7 @@ const actions = {
             }
             let foundUser = await firebase.firestore().collection('users').doc(patient.cpf).get();
             if (foundUser.exists) {
+                console.log('patient do banco:', patient)
                 user = await firebase.firestore().collection('users').doc(patient.cpf).update(patient);
                 if (foundUser.data().type !== 'PATIENT'){
                     let type = foundUser.data().type.toUpperCase();
@@ -239,8 +241,10 @@ const actions = {
                 if (patient.type) {
                     patient.type = patient.type.toUpperCase()
                 }
+                console.log('patient:', patient)
                 patient.created_at = moment().format('YYYY-MM-DD HH:mm:ss');
-                user = await firebase.firestore().collection('users').doc(patient.cpf).set(patient)
+                /*user = await firebase.firestore().collection('users').doc(patient.cpf).set(patient)*/
+                user = await firebase.firestore().collection('users').add(patient)
             }
 
             return user
