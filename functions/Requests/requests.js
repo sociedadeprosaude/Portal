@@ -582,17 +582,19 @@ async function verifyUnpaidConsultation(payload) {
 }
 
 async function updatePaymentNumberConsultation(payload) {
-    await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.id).update({
+    const firestore = admin.firestore();
+    await firestore.collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.id).update({
         status: 'Pago',
         payment_number: payload.payment_number.toString()
     });
-    await firebase.firestore().collection('consultations').doc(payload.consultation.id).update({
+    await firestore.collection('consultations').doc(payload.consultation.id).update({
         status: 'Pago',
         payment_number: payload.payment_number.toString()
     })
 }
 
 async function createOrUpdateProcedure(payload) {
+    const firestore = admin.firestore();
     let consultationFound = payload.consultationFound;
     let user = payload.user;
     let statusName = payload.isConsultation ? 'Consulta Paga' : 'Exame Pago';
@@ -600,20 +602,20 @@ async function createOrUpdateProcedure(payload) {
 
     if (consultationFound || (payload.precoVendaZero && payload.isConsultation)) {
         let consultation = payload.precoVendaZero && payload.isConsultation ? payload.consultation : consultationFound
-        let procedures = await firebase.firestore().collection('users').doc(user.cpf).collection('procedures').where('consultation', '==', consultation.id)
+        let procedures = await firestore.collection('users').doc(user.cpf).collection('procedures').where('consultation', '==', consultation.id)
             .get();
         if (!procedures.empty) {
             procedures.forEach((snap) => {
                 let data = snap.data();
                 let obj = {
-                    status: firebase.firestore.FieldValue.arrayUnion(statusName),
+                    status: admin.firestore.FieldValue.arrayUnion(statusName),
                     payment_number: payload.payment_number
                 };
 
                 if (!payload.isConsultation) {
                     Object.assign(obj, { exam: { ...payload.examObj } });
                 }
-                firebase.firestore().collection('users').doc(user.cpf).collection('procedures').doc(snap.id).update(
+                firestore.collection('users').doc(user.cpf).collection('procedures').doc(snap.id).update(
                     { ...obj }
                 )
             })
@@ -629,16 +631,17 @@ async function createOrUpdateProcedure(payload) {
         if (!payload.isConsultation) {
             Object.assign(obj, { exam: { ...payload.examObj } });
         }
-        firebase.firestore().collection('users').doc(user.cpf).collection('procedures').add(
+        firestore.collection('users').doc(user.cpf).collection('procedures').add(
             { ...obj }
         )
     }
 }
 
 async function createIntake(doc) {
-    const budgetRef = firebase.firestore().collection('budgets').doc(doc.id)
-    const intakeRef = firebase.firestore().collection('intakes').doc(doc.id)
-    const userRef = firebase.firestore().collection('users').doc(doc.data().user.cpf);
+    const firestore = admin.firestore();
+    const budgetRef = firestore.collection('budgets').doc(doc.id)
+    const intakeRef = firestore.collection('intakes').doc(doc.id)
+    const userRef = firestore.collection('users').doc(doc.data().user.cpf);
 
     var specialties = await budgetRef.collection('specialties').get();
     var exams = await budgetRef.collection('exams').get();
@@ -676,7 +679,7 @@ async function createIntake(doc) {
     }
     // Deletando o budget que ta em /users e em /budgets
     // const cpf = doc.data().user.cpf;
-    // const budgetInUser = await firebase.firestore().collection('users').doc(cpf)
+    // const budgetInUser = await firestore.collection('users').doc(cpf)
     //     .collection('budgets').where("pagSeguroCode", "==", code)
     //     .get()
     // budgetInUser.forEach((docBudget) => docBudget.ref.delete());
