@@ -52,6 +52,14 @@
             <v-icon>add</v-icon>Criar nova agenda
           </v-btn>
         </v-col>
+
+        <v-col cols="12">
+          <v-checkbox
+            class="ml-12 pl-3 py-0 my-0"
+            v-model="scheduledExamCheck"
+            label="Listar agendas de exames"
+          ></v-checkbox>
+        </v-col>
         <v-dialog v-model="dialogNewSchedule">
           <v-card>
             <v-card-title>
@@ -226,6 +234,7 @@ export default {
     dialogNewPeriod: false,
     dialogNewSchedule: false,
     editExpirationDate: false,
+    scheduledExamCheck: false,
     loading: false,
     newDay: {},
     newPeriod: {},
@@ -258,8 +267,15 @@ export default {
   computed: {
     schedules() {
       let resp = this.$store.getters.AllSchedules.filter(schedule => {
-        if (this.clinic) return schedule.clinic.name === this.clinic.name;
-        return true;
+        let filter = true;
+        if (this.clinic && schedule.clinic.name != this.clinic.name)
+          filter = false;
+        if (
+          (this.scheduledExamCheck && !schedule.exam_type) ||
+          (!this.scheduledExamCheck && schedule.exam_type)
+        )
+          filter = false;
+        return filter;
       });
       return resp;
     },
@@ -267,6 +283,35 @@ export default {
       return this.$store.getters.clinics.filter(a => {
         return a.property;
       });
+    }
+  },
+  watch: {
+    scheduledExamCheck(value) {
+      if (value) {
+        this.headers = [
+          {
+            text: "Médico",
+            align: "start",
+            sortable: true,
+            value: "doctor.name"
+          },
+          { text: "Tipo do Exame", value: "exam_type.name" },
+          { text: "Clínica", value: "clinic.name", sortable: true },
+          { text: "Ações", value: "actions", sortable: false }
+        ];
+      } else {
+        this.headers = [
+          {
+            text: "Médico",
+            align: "start",
+            sortable: true,
+            value: "doctor.name"
+          },
+          { text: "Especialidade", value: "specialty.name" },
+          { text: "Clínica", value: "clinic.name", sortable: true },
+          { text: "Ações", value: "actions", sortable: false }
+        ];
+      }
     }
   },
   methods: {

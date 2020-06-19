@@ -1,14 +1,52 @@
 <template>
     <v-container class="ma-0 pa-0">
         <v-layout column>
-            <v-flex xs12 class="ma-0 pa-0   ">
+            <v-flex xs12 class="mt-4 pa-0 ">
+                <v-checkbox
+                    class="pl-3 py-0 my-0"
+                    v-model="scheduledExamCheck"
+                    color="white"
+                >
+                    <template v-slot:label>
+                        <div class="white--text">Listar agendas de exames</div>
+                    </template>
+                </v-checkbox>
+            </v-flex>
+            <v-flex xs12 class="ma-0 pa-0">
                 <v-combobox
+                        v-if="!scheduledExamCheck"
                         class="pa-0 ma-0"
                         :items="specialties"
                         v-model="specialty"
                         item-text="name"
                         return-object
                         placeholder="Especialidade"
+                        dense solo
+                        color="blue"
+                        clearable>
+                    <template v-slot:selection="data">
+                        <v-chip
+                                :key="JSON.stringify(data.item)"
+                                :input-value="data.selected"
+                                :disabled="data.disabled"
+                                class="v-chip--select-multi"
+                                @click.stop="data.parent.selectedIndex = data.index"
+                                @input="data.parent.selectItem(data.item)"
+                                text-color="white"
+                                color="primary"
+                        >{{ data.item.name }}
+                        </v-chip>
+                    </template>
+                </v-combobox>
+
+                <v-combobox
+                        v-else
+                        class="pa-0 ma-0"
+                        :items="scheduledExams"
+                        v-model="scheduledExam"
+                        item-text="name"
+                        return-object
+                        placeholder="Exames agendáveis"
                         dense solo
                         color="blue"
                         clearable>
@@ -91,6 +129,8 @@
             specialty: undefined,
             clinic: undefined,
             doctor: undefined,
+            scheduledExamCheck:false,
+            scheduledExam:undefined
         }),
 
         computed: {
@@ -135,8 +175,13 @@
                     return docArray;
                 }
             },
+
+            scheduledExams() {
+                return this.$store.getters.scheduledExams;
+            }
         },
         mounted(){
+            this.$store.dispatch("getScheduledExams");
             this.query= this.$route.params.q
             if( this.query){
                 console.log('query: ', this.query)
@@ -159,6 +204,22 @@
             },
             specialty (specialty){
                 this.$store.dispatch('selectSpecialty', specialty)
+            },
+            scheduledExam(value){
+                this.$store.dispatch('selectScheduledExam',value)
+            },
+            scheduledExamCheck(value){
+                if(value){
+                    this.$store.dispatch('selectSpecialty', undefined)
+                    this.specialty = undefined
+                } 
+                else{
+                    this.$store.dispatch('selectScheduledExam',undefined) 
+                    this.scheduledExam = undefined
+                }
+
+                this.$store.dispatch('selectScheduledExamCheck',value)
+                  
             }
         },
 
