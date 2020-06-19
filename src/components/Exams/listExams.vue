@@ -20,12 +20,9 @@
                                     </v-flex>
                                     <v-flex sm2 class="text-right mt-2">
                                         <v-btn icon dark><v-icon small @click="selectExam(exam)">edit</v-icon></v-btn>
-                                        <v-btn icon dark><v-icon small>delete</v-icon></v-btn>
+                                        <v-btn icon dark><v-icon small @click="openAlertDelete(exam)">delete</v-icon></v-btn>
                                     </v-flex>
-
                                 </v-layout>
-
-
                             </v-card>
                         </v-flex>
                         <v-flex xs12 sm12 class="mt-4 mb-3">
@@ -47,11 +44,11 @@
             <v-dialog v-model="alertDelete" persistent max-width="350">
                 <v-card>
                     <v-card-title><strong>Deseja excluir este exame?</strong></v-card-title>
-                    <v-card-text>Este exame será excluído permanentemente.</v-card-text>
+                    <v-card-text class="ml-n2">Este exame será excluído permanentemente.</v-card-text>
                     <v-card-actions>
                         <v-spacer/>
                         <v-btn color="error" text
-                               @click="alertDelete = false, deleteExam()">EXCLUIR
+                               @click="alertDelete = false, deleteExam(exam)">EXCLUIR
                         </v-btn>
                         <v-btn color="primary" text @click="alertDelete = false">CANCELAR
                         </v-btn>
@@ -73,13 +70,23 @@
             editExam: false,
             registed: true,
             exam: null,
+            alertDelete: false,
         }),
 
         methods: {
             async selectExam (exam) {
                 this.exam = exam;
                 this.editExam = true;
-            }
+            },
+            openAlertDelete (exam) {
+                this.exam = exam;
+                this.alertDelete = true;
+            },
+
+            async deleteExam(exam) {
+                await this.$store.dispatch('deleteExam', exam.name);
+                this.$emit('clear-search')
+            },
         }
     }
 </script>

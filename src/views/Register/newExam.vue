@@ -22,7 +22,7 @@
 
                 <v-card>
                     <v-card-text v-if="exams.length !== 0">
-                        <listExams :exams="exams" :loading="loading"/>
+                        <listExams :exams="exams" :loading="loading" @clear-search="search = ''"/>
                     </v-card-text>
                 </v-card>
             </v-flex>
