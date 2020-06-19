@@ -45,15 +45,13 @@
                 {title: 'Dados', view: 'data'},
                 {title: 'Consultas', view: 'schedules'},
                 {title: 'Caixa', view: 'cashier'}
-            ]
+            ],
             query: {}
         }),
         mounted() {
             this.query= this.$route.params.q
         },
-        methods: {
-
-        }
+       
 
         methods: {
             chooseView(view) {
