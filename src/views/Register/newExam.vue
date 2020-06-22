@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <v-layout row wrap>
-            <v-flex sm12>
+            <v-flex sm8>
                 <v-card class="pt-3 mb-4">
                     <v-layout row wrap>
                         <v-flex sm8>
