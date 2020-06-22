@@ -112,7 +112,7 @@
                         if (!a.exam_type || this.scheduledExam.name !== a.exam_type.name) response = false;
                     }
 
-                    if(this.scheduledExamCheck && !a.exam_type) response = false
+                    if((this.scheduledExamCheck && !a.exam_type) || (!this.scheduledExamCheck && a.exam_type)) response = false
                         
                     return response;
                 });
