@@ -40,7 +40,7 @@
                     </v-card>
                 </v-flex>
             </div>
-            <v-dialog v-model="editExam"><createExam :registed="registed" :selectedExam="exam" /></v-dialog>
+            <v-dialog v-model="editExam"><createExam :registed="registed" :selectedExam="exam" @close-dialog="editExam = false" /></v-dialog>
             <v-dialog v-model="alertDelete" persistent max-width="350">
                 <v-card>
                     <v-card-title><strong>Deseja excluir este exame?</strong></v-card-title>
