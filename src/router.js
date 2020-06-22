@@ -5,7 +5,7 @@ import Home from '@/views/Home'
 import Account from '@/views/Auth/Account'
 import Login from '@/views/Auth/Login'
 import Register from '@/views/Auth/Register'
-import Exams from "./views/Register/newExam";
+import Exams from "./views/Register/Exams";
 import Specialties from "./views/Register/Specialties";
 import Labor from "./views/Personal/Labor";
 import Reports from "./views/Register/Reports";
@@ -15,7 +15,8 @@ import PaymentCovenants from "./views/Register/PaymentCovenants";
 import ContestValue from "./views/Notifications/contestValues"
 
 import Doctors from "./views/Register/Doctors";
-import Clinics from "./views/Register/Clinics";
+import oldClinics from "./views/Register/Clinics";
+import Clinics from "./views/Register/newClinics";
 import RegisterNewUserClinic from "./views/Register/Clinic/RegisterClinic"
 import DischargeProcedures from "./views/Register/Clinic/DischargeProcedures"
 import Units from "./views/Units";
@@ -125,6 +126,14 @@ let mainRoutes = [
   },
   {
     path: '/clinics',
+    name: 'clinics',
+    component: oldClinics,
+    meta: {
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/newclinics',
     name: 'clinics',
     component: Clinics,
     meta: {
