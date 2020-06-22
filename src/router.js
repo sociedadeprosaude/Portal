@@ -5,7 +5,7 @@ import Home from '@/views/Home'
 import Account from '@/views/Auth/Account'
 import Login from '@/views/Auth/Login'
 import Register from '@/views/Auth/Register'
-import Exams from "./views/Register/Exams";
+import Exams from "./views/Register/newExam";
 import Specialties from "./views/Register/Specialties";
 import Labor from "./views/Personal/Labor";
 import Reports from "./views/Register/Reports";
@@ -248,6 +248,22 @@ let router =  new Router({
 });
 
 router.afterEach((to, from, next) => {
+  let permissions = [
+    {
+      id: 0,
+      name: 'All:',
+      children: [],
+    }
+  ]
+  for(let i in routes) {
+    let holder = {
+      id: routes[i].name,
+      name: routes[i].name,
+      path: routes[i].path,
+    }
+    permissions[0].children.push(holder)
+  }
+  store.commit('Setpermissions', permissions);
   if (to.path.includes('agenda')) {
     store.commit('setDoctorsAgendaToolbar', true)
   } else {

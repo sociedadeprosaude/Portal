@@ -4,16 +4,18 @@
             <v-flex sm12>
                 <DataDoctorToSearchConsultation />
             </v-flex>
-            <v-flex class="mt-4" xs12>
+            <v-flex xs12 class="mt-n2">
                 <v-date-picker
                         :allowed-dates="allowedDates"
                         class="mx-2"
                         locale="pt-br"
                         v-model="date"
+                        no-title
+                        color="primary"
                 />
             </v-flex>
-            <v-flex class="text-center mt-8 ml-2" sm12>
-                <CardPatient max-width="300px" ref="patientCard"/>
+            <v-flex class="mt-5" sm12>
+                <CardPatient ref="patientCard"/>
             </v-flex>
         </v-layout>
     </v-container>

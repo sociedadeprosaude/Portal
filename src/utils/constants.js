@@ -52,6 +52,7 @@ export default {
             messagingSenderId: "251864799857",
             appId: "1:251864799857:web:3ea992014ae2cdad2b19d0"
         }
+
 //matriz
 // {
 //     apiKey: "AIzaSyACymfaKNI2_ygz4ss2y_hGGFvDa6MZ1ms",

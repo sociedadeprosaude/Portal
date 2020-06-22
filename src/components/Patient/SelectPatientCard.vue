@@ -750,6 +750,7 @@
                     this.dependents = [];
                     this.dependentName = undefined;
                     this.$emit('removed');
+                    localStorage.removeItem('patient');
                     this.clearCart();
                 }
                 this.$store.commit('setSelectedPatient', user);
@@ -857,7 +858,7 @@
                 this.$store.commit('setSelectedBudget', undefined);
             },
         },
-        mounted() {
+        async mounted() {
            window.addEventListener('keydown', this.handleEnter)
            axios.get('http://servicodados.ibge.gov.br/api/v1/localidades/estados/13/municipios')
            .then((response)=>{
@@ -865,7 +866,17 @@
                response.data.forEach(city => {
                    this.cities['AM'].push(city.nome)
                });
-           })
+           });
+            if (localStorage.getItem('patient')){
+
+                // eslint-disable-next-line vue/no-async-in-computed-properties
+                let user = await this.$store.dispatch('searchUser', {
+                    name: '',
+                    cpf: localStorage.getItem('patient') ,
+                    association_number: this.numAss
+                });
+                this.selectUser(user[0])
+            }
         },
         beforeDestroy() {
             window.removeEventListener('keydown', this.handleEnter)

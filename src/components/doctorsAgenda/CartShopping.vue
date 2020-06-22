@@ -1,6 +1,6 @@
 <template>
     <v-container fluid class="ma-0 pa-0">
-        <v-layout row nowrap style="width: 100%">
+        <v-layout row nowrap style="width: 100%" id="infinite-list" class="list-group" >
             <v-card v-for="(item, i) in Items" :key="i" class="my-2" width="100%">
                 <v-layout row wrap v-if="categorySelect === 'package'"
                           class="align-center justify-center text-center my-1">
@@ -11,7 +11,8 @@
                         {{parseFloat((item.price * parseFloat(item.percentageDiscount)) / 100).toFixed(2)}}
                     </v-btn>
 
-                    <v-btn rounded dense x-small block class="background font-weight-bold" @click="selectBudget(item)" v-else>
+                    <v-btn rounded dense x-small block class="background font-weight-bold" @click="selectBudget(item)"
+                           v-else>
                         {{item.name}}
                         <v-spacer/>
                         {{parseFloat(item.price).toFixed(2)}}
@@ -32,7 +33,7 @@
                     </v-flex>
                 </v-card-text>
                 <v-card-text v-if="categorySelect === 'appointment'" class="ma-0 pa-0 my-1">
-                    <v-layout row v-for="n in item.doctors" class="my-2">
+                    <v-layout row v-for="n in item.doctors" :key="n.cpf" class="my-2">
                         <v-flex xs12 class="align-center justify-center text-center">
                             <span class="font-weight-bold">{{n.name}}</span>
                         </v-flex>
@@ -58,36 +59,55 @@
                         <span class="font-weight-bold" v-if="item.exams.length !== 0">Exames</span>
                     </v-flex>
                     <v-divider/>
-                    <v-layout row v-for="n in item.exams" :key="n.name" class="my-2 justify-center"
-                              style="width: 100%" v-if="item.exams">
-                        <h5>{{n.name}}
-                            <v-spacer/>
-                        </h5>
-                    </v-layout>
+                    <div v-if="item.exams">
+                        <v-layout row v-for="n in item.exams" :key="n.name" class="my-2 justify-center"
+                                  style="width: 100%">
+                            <h5>{{n.name}}
+                                <v-spacer/>
+                            </h5>
+                        </v-layout>
+                    </div>
+
                     <v-flex xs12 class="align-center justify-center text-center">
                         <span class="font-weight-bold" v-if="item.consultations.length !== 0">Consultas</span>
                     </v-flex>
                     <v-divider/>
-                    <v-layout row v-for="n in item.consultations" :key="n.name" class="my-2 justify-center"
-                              style="width: 100%" v-if="item.consultations">
-                        <h5>{{n.name}}
-                            <v-spacer/>
-                        </h5>
-                    </v-layout>
-
+                    <div v-if="item.consultations">
+                        <v-layout row v-for="n in item.consultations" :key="n.name" class="my-2 justify-center"
+                                  style="width: 100%">
+                            <h5>{{n.name}}
+                                <v-spacer/>
+                            </h5>
+                        </v-layout>
+                    </div>
                 </v-card-text>
+
             </v-card>
         </v-layout>
     </v-container>
 </template>
 
 <script>
+    import {infiniteScroll} from "vue-infinite-scroll"
+
     export default {
         props: ['Items', 'categorySelect'],
+        directives: {infiniteScroll},
+
+        async mounted() {
+
+            const listElm = document.querySelector('#infinite-list');
+            listElm.addEventListener('scroll', e => {
+                if (listElm.scrollTop + listElm.clientHeight >= listElm.scrollHeight) {
+                   //
+                }
+            });
+
+
+        },
 
         methods: {
             async selectBudget(budget) {
-                console.log(budget);
                 this.$store.commit('setSelectedBudget', budget);
                 for (let exam in budget.exams) {
                     this.$store.commit('addShoppingCartItem', budget.exams[exam])
@@ -122,3 +142,10 @@
         }
     }
 </script>
+<style scoped>
+
+    .list-group {
+        overflow: auto;
+        height: 82vh;
+    }
+</style>

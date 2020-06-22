@@ -177,6 +177,9 @@
         <v-card-actions>
             <v-btn rounded color="error" @click="closeDialog">Cancelar</v-btn>
             <v-spacer/>
+            <v-btn rounded color="success"  :to="{ name: 'RegisterNewUserClinic', params: {id: clinic.cnpj } }">Gerar Link para Usuario
+            </v-btn>
+            <v-spacer/>
             <submit-button
                     color="success"
                     @click="save"

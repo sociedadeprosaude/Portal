@@ -6,7 +6,7 @@
                     <v-card-title class="ml-2 mr-3">
                         <p v-if="searchExam" class="titleExam font-italic font-weight-bold">EXAMES</p>
                         <p v-if="registerExam" class="titleExam font-italic font-weight-bold">CADASTRAR NOVO EXAME</p>
-                        <v-spacer></v-spacer>
+                        <v-spacer/>
                         <v-btn v-if="registerExam" color="primary" small dark fab
                                @click="registerExam= !registerExam, searchExam = !searchExam">
                             <v-icon>keyboard_arrow_up</v-icon>
