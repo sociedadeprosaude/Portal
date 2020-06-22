@@ -232,9 +232,6 @@
                 this.loading = false
             },
 
-            searchIndex (item) {
-                return this.clinics.indexOf(item);
-            },
 
             makePropForEditing(item){
                 this.clinic = this.clinics[this.clinics.indexOf(item)]
