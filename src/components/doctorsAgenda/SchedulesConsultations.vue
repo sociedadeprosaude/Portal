@@ -150,8 +150,6 @@
             numberReceipt: "",
             payment_numberFound: undefined,
             status: "",
-            payment_numberFound: undefined,
-            status: "",
             modalidade: "Consulta",
             previousConsultation: undefined,
             createConsultationForm: undefined,
@@ -182,6 +180,7 @@
                 this.numberReceipt = this.query.payment_number
 
             }
+
         },
 
         computed: {

@@ -303,8 +303,6 @@
 
             filteredPages() {
                 if(this.user){
-                    console.log(this.userPermissions)
-                    console.log(this.permissions)
                     if(this.userPermissions && this.permissions){
                         for(let rota in this.userPermissions){
                             if(this.permissions.indexOf(this.userPermissions[rota]) != -1){
