@@ -24,7 +24,8 @@ const actions = {
 
     async newShedule(context,payload){
         let copy = Object.assign({},payload)
-        delete copy.specialty.doctors
+        if(copy.specialty)
+            delete copy.specialty.doctors
         delete copy.doctor.specialties
         delete copy.doctor.clinics
         await firebase.firestore().collection('schedules').add(payload)

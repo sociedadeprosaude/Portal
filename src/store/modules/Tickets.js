@@ -1,4 +1,4 @@
-import firebase, {firestore} from "firebase";
+import firebase, { firestore } from "firebase";
 import moment from "moment";
 import functions from "../../utils/functions";
 
@@ -111,11 +111,7 @@ const actions = {
             }
         }
         await queryBuilder(selectedClinic.name, payload.sector.name)
-            .update(
-                {
-                    rooms: payload.sector.rooms,
-                }
-            )
+            .update({ rooms: payload.sector.rooms })
     },
     async listenRooms(context, payload) {
         let selectedClinic = context.getters.selectedUnit;
@@ -176,7 +172,7 @@ const actions = {
             }
         }
     },
-    async updateSectorRoom({getters}, payload) {
+    async updateSectorRoom({ getters }, payload) {
         let selectedClinic = getters.selectedUnit;
         payload.sector.rooms = {
             ...payload.sector.rooms,

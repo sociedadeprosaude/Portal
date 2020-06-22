@@ -32,7 +32,7 @@ export default {
     },
 
     IN_PRODUCTION: process.env.NODE_ENV === 'production',
-    FIREBASE_CONFIG: process.env.NODE_ENV === 'production' ?
+    FIREBASE_CONFIG: process.env.NODE_ENV === 'development' ?
         {
             apiKey: "AIzaSyCdvs5C8J_t9WPQlcZGuuLJ57hwM9_s9BQ",
             authDomain: "prosaude-36f66.firebaseapp.com",

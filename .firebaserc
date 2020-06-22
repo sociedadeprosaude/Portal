@@ -9,10 +9,6 @@
     }
   },
   "projects": {
-<<<<<<< HEAD
-    "prosaudedev": "prosaudedev",
-=======
->>>>>>> master
     "default": "prosaudedev"
   }
 }

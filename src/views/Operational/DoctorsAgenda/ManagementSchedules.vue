@@ -48,41 +48,47 @@
                     </v-select>
                 </v-col>
 
-                <v-col :xs="12" :md="4">
-                    <v-btn class="primary" @click="dialogNewSchedule=true">
-                        <v-icon>add</v-icon>
-                        Criar nova agenda
-                    </v-btn>
-                </v-col>
-                <v-dialog v-model="dialogNewSchedule">
-                    <v-card>
-                        <v-card-title>
-                            <span class="headline">Criar nova agenda</span>
-                        </v-card-title>
-                        <v-card-text>
-                            <CardAddSchedule ref="newSchedule"></CardAddSchedule>
-                        </v-card-text>
-                        <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn color="blue darken-1" text @click="dialogNewSchedule = false">Cancelar</v-btn>
-                            <v-btn
-                                    :loading="loading"
-                                    color="blue darken-1"
-                                    text
-                                    @click="callSaveNewSchedule"
-                            >Criar
-                            </v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
-            </v-row>
-        </template>
-        <template v-slot:expanded-item="{ headers, item }">
-            <td :colspan="headers.length">
-                <v-layout class="text-center pt-5" row wrap>
-                    <v-flex class="mb-0 pb-0 xs12">
-                        <h1 class="headline font-weight-bold">Dias da semana</h1>
-                    </v-flex>
+        <v-col :xs="12" :md="4">
+          <v-btn class="primary" @click="dialogNewSchedule=true">
+            <v-icon>add</v-icon>Criar nova agenda
+          </v-btn>
+        </v-col>
+
+        <v-col cols="12">
+          <v-checkbox
+            class="ml-12 pl-3 py-0 my-0"
+            v-model="scheduledExamCheck"
+            label="Listar agendas de exames"
+          ></v-checkbox>
+        </v-col>
+        <v-dialog v-model="dialogNewSchedule">
+          <v-card>
+            <v-card-title>
+              <span class="headline">Criar nova agenda</span>
+            </v-card-title>
+            <v-card-text>
+              <CardAddSchedule ref="newSchedule"></CardAddSchedule>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="dialogNewSchedule = false">Cancelar</v-btn>
+              <v-btn
+                :loading="loading"
+                color="blue darken-1"
+                text
+                @click="callSaveNewSchedule"
+              >Criar</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
+    </template>
+    <template v-slot:expanded-item="{ headers, item }">
+      <td :colspan="headers.length">
+        <v-layout class="text-center pt-5" row wrap>
+          <v-flex class="mb-0 pb-0 xs12">
+            <h1 class="headline font-weight-bold">Dias da semana</h1>
+          </v-flex>
 
                     <v-flex v-for="day in 6" :key="day" class="xs6 sm4 md2 lg2 pa-2">
                         <CardDaySchedule
@@ -213,140 +219,175 @@
 </template>
 
 <script>
-    var moment = require("moment");
-    import CardDaySchedule from "../../../components/doctorsAgenda/ManagementSchedules/CardDaySchedule";
-    import CardPeriodCanceledSchedule
-        from "../../../components/doctorsAgenda/ManagementSchedules/CardPeriodCanceledSchedule";
-    import CardAddSchedule from "../../../components/doctorsAgenda/ManagementSchedules/CardAddSchedule";
+var moment = require("moment");
+import CardDaySchedule from "../../../components/doctorsAgenda/ManagementSchedules/CardDaySchedule";
+import CardPeriodCanceledSchedule from "../../../components/doctorsAgenda/ManagementSchedules/CardPeriodCanceledSchedule";
+import CardAddSchedule from "../../../components/doctorsAgenda/ManagementSchedules/CardAddSchedule";
+export default {
+  components: {
+    CardDaySchedule,
+    CardPeriodCanceledSchedule,
+    CardAddSchedule
+  },
+  data: () => ({
+    expanded: [],
+    moment: moment,
+    clinic: undefined,
+    dialog: false,
+    dialogNewPeriod: false,
+    dialogNewSchedule: false,
+    editExpirationDate: false,
+    scheduledExamCheck: false,
+    loading: false,
+    newDay: {},
+    newPeriod: {},
+    headers: [
+      {
+        text: "Médico",
+        align: "start",
+        sortable: true,
+        value: "doctor.name"
+      },
+      { text: "Especialidade", value: "specialty.name" },
+      { text: "Clínica", value: "clinic.name", sortable: true },
+      { text: "Ações", value: "actions", sortable: false }
+    ],
+    days: [
+      "Domingo",
+      "Segunda-feira",
+      "Terça-feira",
+      "Quarta-feira",
+      "Quinta-feira",
+      "Sexta-feira",
+      "Sábado"
+    ]
+  }),
 
-    export default {
-        components: {
-            CardDaySchedule,
-            CardPeriodCanceledSchedule,
-            CardAddSchedule
-        },
-        data: () => ({
-            expanded: [],
-            moment: moment,
-            clinic: undefined,
-            dialog: false,
-            dialogNewPeriod: false,
-            dialogNewSchedule: false,
-            editExpirationDate: false,
-            loading: false,
-            newDay: {},
-            newPeriod: {},
-            headers: [
-                {
-                    text: "Médico",
-                    align: "start",
-                    sortable: true,
-                    value: "doctor.name"
-                },
-                {text: "Especialidade", value: "specialty.name"},
-                {text: "Clínica", value: "clinic.name", sortable: true},
-                {text: "Ações", value: "actions", sortable: false}
-            ],
-            days: [
-                "Domingo",
-                "Segunda-feira",
-                "Terça-feira",
-                "Quarta-feira",
-                "Quinta-feira",
-                "Sexta-feira",
-                "Sábado"
-            ]
-        }),
-
-        mounted() {
-            this.$store.dispatch("getAllSchedules");
-            this.$store.dispatch("getClinics");
-        },
-        computed: {
-            schedules() {
-                let resp = this.$store.getters.AllSchedules.filter(schedule => {
-                    if (this.clinic) return schedule.clinic.name === this.clinic.name;
-                    return true;
-                });
-                return resp;
-            },
-            clinics() {
-                return this.$store.getters.clinics.filter(a => {
-                    return a.property;
-                });
-            }
-        },
-        methods: {
-            async callSaveNewSchedule() {
-                this.loading = true;
-                await this.$refs.newSchedule.saveNewSchedule();
-                this.dialogNewSchedule = false;
-                this.loading = false;
-            },
-            formatDate(date) {
-                return moment(date, "YYYY-MM-DD").format("DD/MM/YYYY");
-            },
-            openDialogNewDay(schedule, day) {
-                this.dialog = true;
-                this.newDay = {
-                    schedule: schedule,
-                    day: day
-                };
-            },
-            openDialogNewPeriod(schedule) {
-                this.dialogNewPeriod = true;
-                this.newPeriod = {
-                    schedule: schedule
-                };
-            },
-            async createNewDay() {
-                this.loading = true;
-                let days = this.newDay.schedule.days ? this.newDay.schedule.days : {};
-                days[this.newDay.day] = {
-                    hour: this.newDay.hour,
-                    vacancy: this.newDay.vacancy
-                };
-                await this.$store.dispatch("newDaySchedule", {
-                    idSchedule: this.newDay.schedule.id,
-                    days: days
-                });
-                this.loading = false;
-                this.dialog = false;
-                this.newDay = {};
-            },
-            async createNewPeriod() {
-                this.loading = true;
-                let periods = this.newPeriod.schedule.cancelations_schedules
-                    ? this.newPeriod.schedule.cancelations_schedules
-                    : [];
-                periods.push({
-                    start_date: this.newPeriod.start_date,
-                    final_date: this.newPeriod.final_date
-                });
-                await this.$store.dispatch("updateSchedulePeriods", {
-                    idSchedule: this.newPeriod.schedule.id,
-                    cancelations_schedules: periods
-                });
-                this.loading = false;
-                this.dialogNewPeriod = false;
-                this.newPeriod = {};
-            },
-            async updateExpirationDate(schedule) {
-                this.loading = true;
-                await this.$store.dispatch("updateExpirationDate", {
-                    idSchedule: schedule.id,
-                    expiration_date: schedule.expiration_date
-                });
-                this.loading = false;
-            },
-            deleteSchedule(item) {
-                const index = this.schedules.indexOf(item);
-                if (confirm("Você tem certeza que dejesa remover a agenda?")) {
-                    this.$store.dispatch("deleteSchedule", item.id);
-                }
-            }
-        }
-    };
+  mounted() {
+    this.$store.dispatch("getAllSchedules");
+    this.$store.dispatch("getClinics");
+  },
+  computed: {
+    schedules() {
+      let resp = this.$store.getters.AllSchedules.filter(schedule => {
+        let filter = true;
+        if (this.clinic && schedule.clinic.name != this.clinic.name)
+          filter = false;
+        if (
+          (this.scheduledExamCheck && !schedule.exam_type) ||
+          (!this.scheduledExamCheck && schedule.exam_type)
+        )
+          filter = false;
+        return filter;
+      });
+      return resp;
+    },
+    clinics() {
+      return this.$store.getters.clinics.filter(a => {
+        return a.property;
+      });
+    }
+  },
+  watch: {
+    scheduledExamCheck(value) {
+      if (value) {
+        this.headers = [
+          {
+            text: "Médico",
+            align: "start",
+            sortable: true,
+            value: "doctor.name"
+          },
+          { text: "Tipo do Exame", value: "exam_type.name" },
+          { text: "Clínica", value: "clinic.name", sortable: true },
+          { text: "Ações", value: "actions", sortable: false }
+        ];
+      } else {
+        this.headers = [
+          {
+            text: "Médico",
+            align: "start",
+            sortable: true,
+            value: "doctor.name"
+          },
+          { text: "Especialidade", value: "specialty.name" },
+          { text: "Clínica", value: "clinic.name", sortable: true },
+          { text: "Ações", value: "actions", sortable: false }
+        ];
+      }
+    }
+  },
+  methods: {
+    async callSaveNewSchedule() {
+      this.loading = true;
+      await this.$refs.newSchedule.saveNewSchedule();
+      this.dialogNewSchedule = false;
+      this.loading = false;
+    },
+    formatDate(date) {
+      return moment(date, "YYYY-MM-DD").format("DD/MM/YYYY");
+    },
+    openDialogNewDay(schedule, day) {
+      this.dialog = true;
+      this.newDay = {
+        schedule: schedule,
+        day: day
+      };
+    },
+    openDialogNewPeriod(schedule) {
+      this.dialogNewPeriod = true;
+      this.newPeriod = {
+        schedule: schedule
+      };
+    },
+    async createNewDay() {
+      this.loading = true;
+      let days = this.newDay.schedule.days ? this.newDay.schedule.days : {};
+      days[this.newDay.day] = {
+        hour: this.newDay.hour,
+        vacancy: this.newDay.vacancy
+      };
+      await this.$store.dispatch("newDaySchedule", {
+        idSchedule: this.newDay.schedule.id,
+        days: days
+      });
+      this.loading = false;
+      this.dialog = false;
+      this.newDay = {};
+    },
+    async createNewPeriod() {
+      this.loading = true;
+      let periods = this.newPeriod.schedule.cancelations_schedules
+        ? this.newPeriod.schedule.cancelations_schedules
+        : [];
+      periods.push({
+        start_date: this.newPeriod.start_date,
+        final_date: this.newPeriod.final_date
+      });
+      await this.$store.dispatch("updateSchedulePeriods", {
+        idSchedule: this.newPeriod.schedule.id,
+        cancelations_schedules: periods
+      });
+      this.loading = false;
+      this.dialogNewPeriod = false;
+      this.newPeriod = {};
+    },
+    async updateExpirationDate(schedule) {
+      this.loading = true;
+      await this.$store.dispatch("updateExpirationDate", {
+        idSchedule: schedule.id,
+        expiration_date: schedule.expiration_date
+      });
+      this.loading = false;
+    },
+    deleteSchedule(item) {
+      const index = this.schedules.indexOf(item);
+      if (confirm("Você tem certeza que dejesa remover a agenda?")) {
+        this.$store.dispatch("deleteSchedule", item.id);
+      }
+    }
+  }
+};
 </script>
 
 <style>
