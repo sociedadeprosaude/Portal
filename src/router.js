@@ -126,7 +126,7 @@ let mainRoutes = [
   },
   {
     path: '/clinics',
-    name: 'clinics',
+    name: 'oldClinics',
     component: oldClinics,
     meta: {
       requiresAuth: false

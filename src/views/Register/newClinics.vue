@@ -21,13 +21,12 @@
 
                 <v-card>
                     <v-card-text >
-
-
+                        <ListClinics :clinics="clinics" :loading="loading"/>
                     </v-card-text>
                 </v-card>
             </v-flex>
             <v-dialog v-model="dataClinic" width="500px" text hide-overlay>
-                <RegisterNewClinic @close-dialog="dataClinic = false"/>
+                <RegisterNewClinic @close-dialog="finishRegister()"/>
             </v-dialog>
         </v-layout>
     </v-container>
@@ -35,13 +34,15 @@
 <script>
 
     import RegisterNewClinic from "../../components/clinics/RegisterNewClinic";
+    import ListClinics from "../../components/clinics/ListClinics"
 
     export default {
 
-        components: {RegisterNewClinic},
+        components: {RegisterNewClinic, ListClinics},
 
         data: () => ({
             search: '',
+            loading: false,
             dataClinic: false,
 
             defaultItem: {
@@ -66,26 +67,26 @@
         }),
 
         mounted() {
-
+            this.loadClinics();
         },
 
         computed: {
             loadingClinics() {
                 return !this.$store.getters.clinicsLoaded
             },
+
             clinics () {
-                let clinics = this.$store.getters.clinics.filter( a => {
-                    let response = true;
-                    if (this.search) {
-                        if (this.search !== a.name) response = false;
-                    }
-                    return response;
-                });
-                console.log(clinics);
+                return this.$store.getters.clinics.filter(a => a.name >= this.search.toUpperCase());
             },
         },
 
         methods: {
+
+            async loadClinics() {
+                this.loading = true;
+                await this.$store.dispatch('getClinics');
+                this.loading = false;
+            },
 
             selectClinic(item, index) {
                 if (!item) {
@@ -94,8 +95,12 @@
                 this.$store.dispatch('putIndex', index);
                 this.$store.dispatch('selectClinic', item);
                 this.dataClinic = true;
-
             },
+
+            finishRegister () {
+                this.dataClinic = false;
+                this.loadClinics();
+            }
         }
 
     }
