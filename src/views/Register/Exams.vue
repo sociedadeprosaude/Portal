@@ -79,7 +79,7 @@
 <script>
     import listExams from "../../components/Exams/listExams";
     import createExam from "../../components/Exams/CreateExam";
-    import createExamType from "../../components/Exams/CreateExamType";
+   // import createExamType from "../../components/Exams/CreateExamType";
 
     export default {
         components: {listExams, createExam},

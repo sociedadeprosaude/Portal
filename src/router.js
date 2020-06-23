@@ -125,7 +125,7 @@ let mainRoutes = [
     }
   },
   {
-    path: '/clinics',
+    path: '/oldclinics',
     name: 'oldClinics',
     component: oldClinics,
     meta: {
@@ -133,7 +133,7 @@ let mainRoutes = [
     }
   },
   {
-    path: '/newclinics',
+    path: '/clinics',
     name: 'clinics',
     component: Clinics,
     meta: {

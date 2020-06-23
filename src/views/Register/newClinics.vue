@@ -86,6 +86,7 @@
                 this.loading = true;
                 await this.$store.dispatch('getClinics');
                 this.loading = false;
+                console.log(this.$store.getters.clinics)
             },
 
             selectClinic(item, index) {
