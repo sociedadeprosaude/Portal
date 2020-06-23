@@ -68,7 +68,7 @@
                             </v-card-text>
                         </v-card>
                     </v-flex>
-                    <v-dialog v-model="newExam">
+                    <v-dialog v-model="newExam" max-width="500px">
                         <createExamType @close-dialog="newExamType = false"/>
                     </v-dialog>
                 </v-layout>
@@ -79,10 +79,10 @@
 <script>
     import listExams from "../../components/Exams/listExams";
     import createExam from "../../components/Exams/CreateExam";
-   // import createExamType from "../../components/Exams/CreateExamType";
+    import createExamType from "../../components/Exams/CreateExamType";
 
     export default {
-        components: {listExams, createExam},
+        components: {listExams, createExam, createExamType},
 
         data: () => ({
             search: "",

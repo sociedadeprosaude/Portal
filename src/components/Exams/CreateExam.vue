@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container fluid>
         <v-layout row wrap>
             <v-flex xs12>
                 <v-card grid-list-x1 fluid class="mt-4">
