@@ -240,8 +240,9 @@
             selectClinic(item, index) {
                 if (!item) {
                     item = this.defaultItem;
+                    this.$store.dispatch('putIndex', index);
                 }
-                this.$store.dispatch('putIndex', index);
+
                 this.$store.dispatch('selectClinic', item);
             },
 
