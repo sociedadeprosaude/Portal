@@ -68,9 +68,10 @@
                             </v-card-text>
                         </v-card>
                     </v-flex>
-                    <v-dialog v-model="newExam" max-width="500px">
+                    <v-dialog v-model="newExamType">
                         <createExamType @close-dialog="newExamType = false"/>
                     </v-dialog>
+
                 </v-layout>
             </v-tab-item>
         </v-tabs>
@@ -88,7 +89,8 @@
             search: "",
             loading: undefined,
             newExam: false,
-            registed: false
+            registed: false,
+            newExamType: false,
         }),
 
         mounted() {
