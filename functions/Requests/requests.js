@@ -1,16 +1,12 @@
-/*import firebase from "../../firebase.json";*/
-
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 try { admin.initializeApp(functions.config().firebase); } catch (e) { console.log(e) }
-
 
 var axios = require("axios");
 var xml2js = require('xml2js');
 const cors = require('cors')({ origin: true });
 var moment = require('moment');
 const { Parser } = require('json2csv');
-
 
 const heavyFunctionsRuntimeOpts = {
     timeoutSeconds: 540,

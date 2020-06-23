@@ -1,6 +1,3 @@
-/*import firebase from "../../firebase.json";
-import {ref} from "firebase-functions/lib/providers/database";*/
-
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 try { admin.initializeApp(functions.config().firebase); } catch (e) { console.log(e) }
@@ -19,15 +16,33 @@ exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate
             quantity: admin.firestore.FieldValue.increment(1)
         })
     }
-})
+});
+
+exports.ListenUpdateCpf = functions.firestore.document('users/{cpf}').onUpdate( async (change, context) => {
+    let firestore = admin.firestore();
+    let cpfNew = change.after.data().cpf;
+    let cpfOld = change.before.data().cpf;
+    if( cpfNew !== cpfOld ){
+        firestore.collectionGroup('users').doc(cpfOld).update({cpf: cpfNew});
+    }
+});
 
 exports.ListenCreatedUser = functions.firestore.document('users/{id}').onCreate((doc, context) => {
-    const firestore = admin.firestore();
+    let firestore = admin.firestore();
     console.log('doc:',doc)
-    console.log('id:', doc)
+    console.log('id:', doc.id)
     console.log('data:',doc.data())
     let id = doc.id;
     firestore.collection('users').doc(id).update({uid: id})
+});
+
+exports.ListenUpdateUid = functions.firestore.document('users/{uid}').onUpdate( async (change, context) => {
+    let firestore = admin.firestore();
+    let uidNew = change.after.data().uid;
+    let uidOld = change.before.data().uid;
+    if( uidNew !== uidOld ){
+        firestore.collectionGroup('users').doc(uidOld).update({uid: uidNew});
+    }
 });
 /*    .onCreate( async (change, context) => {
     const firestore = admin.firestore();
@@ -41,7 +56,6 @@ exports.ListenCreatedUser = functions.firestore.document('users/{id}').onCreate(
         doc.ref.update({uid: doc.id})
     });*/
 /*});*/
-
 exports.listenChangeInSpecialtiesSubcollections = functions.firestore.document('specialties/{specialtyId}/{collectionId}/{docId}').onWrite(async (change, context) => {
     convertSpecialtySubcollectionInObject((await admin.firestore().collection('specialties').doc(context.params.specialtyId).get()))
 })
