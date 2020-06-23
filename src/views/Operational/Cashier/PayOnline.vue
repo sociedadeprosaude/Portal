@@ -336,7 +336,7 @@ export default {
         currency: "BRL",
 
         notificationURL:
-          "https://us-central1-prosaudedev.cloudfunctions.net/pagSeguroCreditCallback", //url da cloud function
+          "https://us-central1-prosaudedev.cloudfunctions.net/requests-pagSeguroCreditCallback",
         reference: "REF1234",
         shippingAddressStreet: "Manaus",
         shippingAddressNumber: "123",
@@ -390,7 +390,7 @@ export default {
         itemAmount1: this.price, //Preco
         itemQuantity1: "1",
         notificationURL:
-          "https://us-central1-prosaudedev.cloudfunctions.net/pagSeguroBillCallback",
+          "https://us-central1-prosaudedev.cloudfunctions.net/requests-pagSeguroBillCallback",
 
         senderName: this.user.name, //nome do comprador
         senderCPF: "02446454267", //+this.form.user.cpf, //cpf do comprador, tem que ser valido

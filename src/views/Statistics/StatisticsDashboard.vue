@@ -10,7 +10,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-container>
+    <v-container v-if="!hide">
       <v-row class="align-content-sm-space-between pa-0 ma-0 justify-center">
         <v-col cols="3" class="mr-3">
           <v-menu
@@ -28,7 +28,6 @@
                 label="Data Inicial"
                 dense
                 prepend-icon="event"
-            
                 v-on="on"
               />
             </template>
@@ -76,6 +75,7 @@
     <OuttakesReport v-if="selected == 1" :date="dateBegin" :date2="dateEnd" :cb="pesquisar" />
     <procedures-prices-analises v-if="selected == 2"></procedures-prices-analises>
     <statsCaixa v-if="selected == 3"></statsCaixa>
+    <testes v-if="selected == 4"></testes>
   </v-container>
 </template>
 
@@ -83,6 +83,7 @@
 import ProceduresPricesAnalises from "@/components/reports/ProceduresPricesAnalises";
 import GeneralReport from "@/components/reports/GeneralReport";
 import OuttakesReport from "@/components/reports/OuttakesReport";
+import testes from "./cloudTestes";
 
 import statsCaixa from "./statsCaixa";
 
@@ -91,15 +92,17 @@ export default {
     GeneralReport,
     ProceduresPricesAnalises,
     OuttakesReport,
-    statsCaixa
+    statsCaixa,
+    testes
   },
   data: vm => ({
-    selected: 3,
+    selected: 4,
     items: [
       { title: "Relatorio financeiro geral", value: 0 },
       { title: "Relatorio de Saidas", value: 1 },
       { title: "Análise de preço de exames", value: 2 },
       { title: "Overview Caixa", value: 3 },
+      { title: "testes", value: 4 }
     ],
 
     date: moment().format("YYYY-MM-DD 00:00:00"),
@@ -184,6 +187,9 @@ export default {
   computed: {
     colaborators() {
       return this.$store.getters.colaborators;
+    },
+    hide() {
+      return this.selected == 4 || this.selected == 3;
     }
   },
   watch: {
@@ -197,5 +203,3 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>

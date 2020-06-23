@@ -1,17 +1,34 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-try { admin.initializeApp(functions.config().firebase); } catch (e) { }
+try { admin.initializeApp(functions.config().firebase); } catch (e) { console.log(e)}
 
 
 var axios = require("axios");
 var xml2js = require('xml2js');
 const cors = require('cors')({ origin: true });
 var moment = require('moment');
+const { Parser } = require('json2csv');
+
 
 const heavyFunctionsRuntimeOpts = {
     timeoutSeconds: 540,
     memory: '2GB'
 }
+
+exports.getLastAccessedPatients = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (req, res) => {
+    var quant = parseInt(req.query.quantity)
+    let users = await admin.firestore().collection('users').orderBy("accessed_to", "desc").limit(quant).get()
+    let editadUsers = []
+    users.forEach((docRef) => {
+        editadUsers.push({
+            "name": docRef.data().name,
+            "cpf": docRef.data().cpf,
+        })
+    })
+    const json2csvParser = new Parser();
+    const csv = json2csvParser.parse(editadUsers)
+    res.status(200).send(csv);
+})
 exports.removeUnnappointedConsultations = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (request, response) => {
     let db = admin.firestore()
     var startDate = moment(request.query.date, 'YYYY-MM-DD HH:mm')
@@ -541,6 +558,136 @@ exports.registerUser = functions.https.onCall(async (data, context) => {
         });
 });
 
+
+//================================== Funcs relacionadas ao pagamento pelo pagSeguro ============================================
+
+async function verifyUnpaidConsultation(payload) {
+    let consultationFound = undefined;
+    var consultationData = null;
+    let precoVendaZero = payload.isConsultation && payload.specialty.price === 0;
+    if (!precoVendaZero) {
+        let consultationRef = payload.userRef.collection('consultations').where('specialty.name', '==', payload.specialty.name).where('status', '==', 'Aguardando pagamento')
+        //.get()
+
+        if (!payload.isConsultation)
+            consultationRef.where('exam.name', '==', payload.examObj.name);
+        let consultations = await consultationRef.get();
+        consultations.forEach(async (c) => {
+            consultationFound = c;
+            //consultationData = c;
+            await updatePaymentNumberConsultation({ user: payload.user, consultation: c, payment_number: payload.payment_number })
+            createOrUpdateProcedure({ consultationFound: consultationFound, consultation: consultationData, precoVendaZero: precoVendaZero, userRef: payload.userRef, user: payload.user, isConsultation: payload.isConsultation, payment_number: payload.payment_number, specialty: payload.specialty, examObj: payload.examObj })
+        })
+    }
+}
+
+async function updatePaymentNumberConsultation(payload) {
+    const firestore = admin.firestore();
+    await firestore.collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.id).update({
+        status: 'Pago',
+        payment_number: payload.payment_number.toString()
+    });
+    await firestore.collection('consultations').doc(payload.consultation.id).update({
+        status: 'Pago',
+        payment_number: payload.payment_number.toString()
+    })
+}
+
+async function createOrUpdateProcedure(payload) {
+    const firestore = admin.firestore();
+    let consultationFound = payload.consultationFound;
+    let user = payload.user;
+    let statusName = payload.isConsultation ? 'Consulta Paga' : 'Exame Pago';
+    let type = payload.isConsultation ? 'Consultation' : 'Exam';
+
+    if (consultationFound || (payload.precoVendaZero && payload.isConsultation)) {
+        let consultation = payload.precoVendaZero && payload.isConsultation ? payload.consultation : consultationFound
+        let procedures = await firestore.collection('users').doc(user.cpf).collection('procedures').where('consultation', '==', consultation.id)
+            .get();
+        if (!procedures.empty) {
+            procedures.forEach((snap) => {
+                let data = snap.data();
+                let obj = {
+                    status: admin.firestore.FieldValue.arrayUnion(statusName),
+                    payment_number: payload.payment_number
+                };
+
+                if (!payload.isConsultation) {
+                    Object.assign(obj, { exam: { ...payload.examObj } });
+                }
+                firestore.collection('users').doc(user.cpf).collection('procedures').doc(snap.id).update(
+                    { ...obj }
+                )
+            })
+        }
+    } else {
+        let obj = {
+            status: [statusName],
+            payment_number: payload.payment_number,
+            startAt: moment().format('YYYY-MM-DD hh:ss'),
+            type: type,
+            specialty: payload.specialty.name
+        };
+        if (!payload.isConsultation) {
+            Object.assign(obj, { exam: { ...payload.examObj } });
+        }
+        firestore.collection('users').doc(user.cpf).collection('procedures').add(
+            { ...obj }
+        )
+    }
+}
+
+async function createIntake(doc) {
+    const firestore = admin.firestore();
+    const budgetRef = firestore.collection('budgets').doc(doc.id)
+    const intakeRef = firestore.collection('intakes').doc(doc.id)
+    const userRef = firestore.collection('users').doc(doc.data().user.cpf);
+
+    var specialties = await budgetRef.collection('specialties').get();
+    var exams = await budgetRef.collection('exams').get();
+
+    intakeRef.set(doc.data());
+    userRef.collection('intakes').doc(doc.id).set(doc.data());
+
+    if (!specialties.empty) {
+        specialties.docs.forEach((specialty) => {
+            intakeRef.collection('specialties').doc(specialty.data().name).set(specialty.data());
+            userRef.collection('intakes').doc(doc.id).collection('specialties').doc(specialty.data().name).set(specialty.data());
+            verifyUnpaidConsultation({
+                userRef: userRef,
+                user: doc.data().user,
+                isConsultation: true,
+                consultation: specialty.data(),
+                payment_number: doc.id,
+                specialty: specialty.data()
+            });
+        });
+    }
+    if (!exams.empty) {
+        exams.docs.forEach((exam) => {
+            intakeRef.collection('exams').doc(exam.data().name).set(exam.data());
+            userRef.collection('intakes').doc(doc.id).collection('exams').doc(exam.data().name).set(exam.data());
+            verifyUnpaidConsultation({
+                userRef: userRef,
+                user: doc.data().user,
+                isConsultation: false,
+                payment_number: doc.id,
+                specialty: { name: exam.type },
+                examObj: exam.data()
+            })
+        })
+    }
+    // Deletando o budget que ta em /users e em /budgets
+    // const cpf = doc.data().user.cpf;
+    // const budgetInUser = await firestore.collection('users').doc(cpf)
+    //     .collection('budgets').where("pagSeguroCode", "==", code)
+    //     .get()
+    // budgetInUser.forEach((docBudget) => docBudget.ref.delete());
+    //doc.ref.delete();
+    return null
+
+}
+
 //ta como onRequest mas basicamente essa functio e uma callback que fica escutando o pagSeguro
 exports.pagSeguroCreditCallback = functions.https.onRequest(async (request, response) => {
     const firestore = admin.firestore();
@@ -561,30 +708,7 @@ exports.pagSeguroCreditCallback = functions.https.onRequest(async (request, resp
                         console.log("pago");
                         firestore.collection('budgets').where("pagSeguroCode", "==", transactionCode)
                             .get()
-                            .then(async (querySnapshot) => querySnapshot.forEach(async (doc) => {
-                                var specialties = await firestore.collection('budgets').doc(doc.id).collection('specialties').get();
-                                var exams = await firestore.collection('budgets').doc(doc.id).collection('exams').get();
-
-                                firestore.collection('intakes').doc(doc.id).set(doc.data());
-
-                                if (!specialties.empty) {
-                                    specialties.docs.forEach((specialty) => firestore.collection('intakes').doc(doc.id)
-                                        .collection('specialties').doc(specialty.data().name).set(specialty.data()));
-                                }
-                                if (!exams.empty) {
-                                    exams.docs.forEach((exam) => firestore.collection('intakes').doc(doc.id)
-                                        .collection('exams').doc(exam.data().name).set(exam.data()));
-                                }
-                                // return null
-
-                                // Deletando o budget que ta em /users e em /budgets
-                                // const cpf = doc.data().user.cpf;
-                                // const budgetInUser = await firestore.collection('users').doc(cpf)
-                                //     .collection('budgets').where("pagSeguroCode", "==", transactionCode)
-                                //     .get()
-                                // budgetInUser.forEach((docBudget) => docBudget.ref.delete());
-                                // doc.ref.delete();
-                            }))
+                            .then(async (querySnapshot) => querySnapshot.forEach(async (doc) => createIntake(doc)))
                             .then(() => response.send("notificacao recebida com sucesso"))
                             .catch((e) => response.send("erro na notificacao recebida"));
                     } else {
@@ -613,30 +737,7 @@ exports.pagSeguroBillCallback = functions.https.onRequest(async (request, respon
                     if (status === "3") {
                         firestore.collection('budgets').where("pagSeguroCode", "==", transactionCode)
                             .get()
-                            .then((querySnapshot) => querySnapshot.forEach(async (doc) => {
-                                var specialties = await firestore.collection('budgets').doc(doc.id).collection('specialties').get();
-                                var exams = await firestore.collection('budgets').doc(doc.id).collection('exams').get();
-
-                                firestore.collection('intakes').doc(doc.id).set(doc.data());
-
-                                if (!specialties.empty) {
-                                    specialties.docs.forEach((specialty) => firestore.collection('intakes').doc(doc.id)
-                                        .collection('specialties').doc(specialty.data().name).set(specialty.data()));
-                                }
-                                if (!exams.empty) {
-                                    exams.docs.forEach((exam) => firestore.collection('intakes').doc(doc.id)
-                                        .collection('exams').doc(exam.data().name).set(exam.data()));
-                                }
-                                return null
-
-                                // Deletando o budget que ta em /users e em /budgets
-                                // const cpf = doc.data().user.cpf;
-                                // const budgetInUser = await firestore.collection('users').doc(cpf)
-                                //     .collection('budgets').where("pagSeguroCode", "==", code)
-                                //     .get()
-                                // budgetInUser.forEach((docBudget) => docBudget.ref.delete());
-                                //doc.ref.delete();
-                            }))
+                            .then((querySnapshot) => querySnapshot.forEach(async (doc) => createIntake(doc)))
                             .catch((e) => e);
                     }
                 }
@@ -646,6 +747,7 @@ exports.pagSeguroBillCallback = functions.https.onRequest(async (request, respon
         .catch(e => response.send(e))
 });
 
+//================================================================================================================
 exports.getSpecialtiesWithPrice = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (request, response) => {
     response.set('Access-Control-Allow-Origin', '*');
     response.set('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS');
@@ -719,7 +821,7 @@ exports.updateSchedule = functions.firestore
             let keyNew = Object.keys(newValue.days)
             let week_days = []
             keysOld.forEach((day) => {
-                if (keyNew.indexOf(day) == -1)
+                if (keyNew.indexOf(day) === -1)
                     week_days.push(day)
             })
             console.log('Dias cancelados', week_days)
@@ -730,7 +832,7 @@ exports.updateSchedule = functions.firestore
             let cancelationsOld = previousValue.cancelations_schedules
             let cancelationsNew = newValue.cancelations_schedules
             cancelationsNew.forEach((cancelationObj) => {
-                if (cancelationsOld.findIndex((value) => value.start_date === cancelationObj.start_date && value.final_date === cancelationObj.final_date) == -1) {
+                if (cancelationsOld.findIndex((value) => value.start_date === cancelationObj.start_date && value.final_date === cancelationObj.final_date) === -1) {
                     newValue.start_date = cancelationObj.start_date
                     newValue.final_date = cancelationObj.final_date
                 }

@@ -12,15 +12,77 @@
                                 Médico - Especialidade - Unidade
                             </v-chip>
                             <v-spacer/>
-                            <v-text-field v-model="search" append-icon="search" label="Search" single-line
-                                          hide-details/>
+                            <!-- <v-text-field v-model="search" append-icon="search" label="Search" single-line
+                                          hide-details/> -->
+                            <v-layout class="mt-5" row wrap>
+                                <v-flex class="mr-5" xs12 sm5 md4>
+                                    <v-combobox
+                                    label="Especialidade"
+                                    prepend-icon="school"
+                                    v-model="specialty"
+                                    :items="specialties"
+                                    item-text="name"
+                                    return-object
+                                    outlined
+                                    rounded
+                                    filled
+                                    chips
+                                    color="pink"
+                                    clearable
+                                    dense
+                                    >
+                                    <template v-slot:selection="data">
+                                        <v-chip
+                                        :key="JSON.stringify(data.item)"
+                                        :input-value="data.selected"
+                                        :disabled="data.disabled"
+                                        class="v-chip--select-multi"
+                                        @click.stop="data.parent.selectedIndex = data.index"
+                                        @input="data.parent.selectItem(data.item)"
+                                        text-color="white"
+                                        color="info"
+                                        >{{ data.item.name }}</v-chip>
+                                    </template>
+                                    </v-combobox>
+                                </v-flex>
+                                <v-flex xs12 sm5 md4>
+                                    <v-combobox
+                                    prepend-icon="account_circle"
+                                    v-model="doctor"
+                                    :items="doctors"
+                                    item-text="name"
+                                    return-object
+                                    label="Médico"
+                                    no-data-text="Nenhum médico para esta especialidade"
+                                    outlined
+                                    rounded
+                                    filled
+                                    chips
+                                    color="purple"
+                                    clearable
+                                    dense
+                                    >
+                                    <template v-slot:selection="data">
+                                        <v-chip
+                                        :key="JSON.stringify(data.item)"
+                                        :input-value="data.selected"
+                                        :disabled="data.disabled"
+                                        class="v-chip--select-multi"
+                                        @click.stop="data.parent.selectedIndex = data.index"
+                                        @input="data.parent.selectItem(data.item)"
+                                        text-color="white"
+                                        color="info"
+                                        >{{ data.item.name }}</v-chip>
+                                    </template>
+                                    </v-combobox>
+                                </v-flex>
+                            </v-layout>
                         </v-card-title>
                         <v-data-table
                                 hide-default-header
                                 hide-default-footer
                                 :headers="headers"
                                 :items="doctorsMapping"
-                                :search="search"
                                 :items-per-page="-1"
                                 item-key="hour"
                                 class="elevation-1"
@@ -57,6 +119,14 @@
                                                     color="grey"
                                             >
                                                 {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                                <br/>
+                                                <br/>
+                                                <v-btn @click="openDialoaUpdateDay(index,1)" x-small fab>
+                                                    <v-icon>edit</v-icon>
+                                                </v-btn>
+                                                <v-btn class="ml-2" x-small fab @click="openDialogDelete(index,1)">
+                                                    <v-icon>delete_outline</v-icon>
+                                                </v-btn>
                                             </v-card>
                                         </template>
                                         <span>
@@ -71,6 +141,14 @@
                                             :color="i === 0 ? 'blue' : i === 1 ? 'green' : i === 2 ? 'red' : i === 3 ? 'purple' : i === 4 ? 'orange' : 'pink'"
                                     >
                                         {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                         <br/>
+                                         <br/>
+                                         <v-btn @click="openDialoaUpdateDay(index,1)" x-small fab>
+                                            <v-icon>edit</v-icon>
+                                        </v-btn>
+                                        <v-btn class="ml-2" x-small fab @click="openDialogDelete(index,1)">
+                                            <v-icon>delete_outline</v-icon>
+                                        </v-btn>
                                     </v-card>
                                 </strong>
                                 <br/>
@@ -87,6 +165,14 @@
                                                     color="grey"
                                             >
                                                 {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                                <br/>
+                                                <br/>
+                                                <v-btn @click="openDialoaUpdateDay(index,2)" x-small fab>
+                                                    <v-icon>edit</v-icon>
+                                                </v-btn>
+                                                <v-btn class="ml-2" x-small fab @click="openDialogDelete(index,2)">
+                                                    <v-icon>delete_outline</v-icon>
+                                                </v-btn>
                                             </v-card>
                                         </template>
                                         <span>
@@ -101,6 +187,14 @@
                                             :color="i === 0 ? 'blue' : i === 1 ? 'green' : i === 2 ? 'red' : i === 3 ? 'purple' : i === 4 ? 'orange' : 'pink'"
                                     >
                                         {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                        <br/>
+                                         <br/>
+                                         <v-btn @click="openDialoaUpdateDay(index,2)" x-small fab>
+                                            <v-icon>edit</v-icon>
+                                        </v-btn>
+                                        <v-btn class="ml-2" x-small fab @click="openDialogDelete(index,2)">
+                                            <v-icon>delete_outline</v-icon>
+                                        </v-btn>
                                     </v-card>
                                 </strong>
                                 <br/>
@@ -117,6 +211,14 @@
                                                     color="grey"
                                             >
                                                 {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                                <br/>
+                                                <br/>
+                                                <v-btn @click="openDialoaUpdateDay(index,3)" x-small fab>
+                                                    <v-icon>edit</v-icon>
+                                                </v-btn>
+                                                <v-btn class="ml-2" x-small fab @click="openDialogDelete(index,3)">
+                                                    <v-icon>delete_outline</v-icon>
+                                                </v-btn>
                                             </v-card>
                                         </template>
                                         <span>
@@ -131,6 +233,14 @@
                                             :color="i === 0 ? 'blue' : i === 1 ? 'green' : i === 2 ? 'red' : i === 3 ? 'purple' : i === 4 ? 'orange' : 'pink'"
                                     >
                                         {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                        <br/>
+                                         <br/>
+                                         <v-btn @click="openDialoaUpdateDay(index,3)" x-small fab>
+                                            <v-icon>edit</v-icon>
+                                        </v-btn>
+                                        <v-btn class="ml-2" x-small fab @click="openDialogDelete(index,3)">
+                                            <v-icon>delete_outline</v-icon>
+                                        </v-btn>
                                     </v-card>
                                 </strong>
                                 <br/>
@@ -147,6 +257,14 @@
                                                     color="grey"
                                             >
                                                 {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                                <br/>
+                                                <br/>
+                                                <v-btn @click="openDialoaUpdateDay(index,4)" x-small fab>
+                                                    <v-icon>edit</v-icon>
+                                                </v-btn>
+                                                <v-btn class="ml-2" x-small fab @click="openDialogDelete(index,4)">
+                                                    <v-icon>delete_outline</v-icon>
+                                                </v-btn>
                                             </v-card>
                                         </template>
                                         <span>
@@ -161,6 +279,14 @@
                                             :color="i === 0 ? 'blue' : i === 1 ? 'green' : i === 2 ? 'red' : i === 3 ? 'purple' : i === 4 ? 'orange' : 'pink'"
                                     >
                                         {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                        <br/>
+                                        <br/>
+                                         <v-btn @click="openDialoaUpdateDay(index,4)" x-small fab>
+                                            <v-icon>edit</v-icon>
+                                        </v-btn>
+                                        <v-btn class="ml-2" x-small fab @click="openDialogDelete(index,4)">
+                                            <v-icon>delete_outline</v-icon>
+                                        </v-btn>
                                     </v-card>
                                 </strong>
                                 <br/>
@@ -177,6 +303,14 @@
                                                     color="grey"
                                             >
                                                 {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                                <br/>
+                                                <br/>
+                                                <v-btn @click="openDialoaUpdateDay(index,5)" x-small fab>
+                                                    <v-icon>edit</v-icon>
+                                                </v-btn>
+                                                <v-btn class="ml-2" x-small fab @click="openDialogDelete(index,5)">
+                                                    <v-icon>delete_outline</v-icon>
+                                                </v-btn>
                                             </v-card>
                                         </template>
                                         <span>
@@ -191,6 +325,14 @@
                                             :color="i === 0 ? 'blue' : i === 1 ? 'green' : i === 2 ? 'red' : i === 3 ? 'purple' : i === 4 ? 'orange' : 'pink'"
                                     >
                                         {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                        <br/>
+                                         <br/>
+                                         <v-btn @click="openDialoaUpdateDay(index,5)" x-small fab>
+                                            <v-icon>edit</v-icon>
+                                        </v-btn>
+                                        <v-btn class="ml-2" x-small fab @click="openDialogDelete(index,5)">
+                                            <v-icon>delete_outline</v-icon>
+                                        </v-btn>
                                     </v-card>
                                 </strong>
                                 <br/>
@@ -207,6 +349,14 @@
                                                     color="grey"
                                             >
                                                 {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                                <br/>
+                                                <br/>
+                                                <v-btn @click="openDialoaUpdateDay(index,6)" x-small fab>
+                                                    <v-icon>edit</v-icon>
+                                                </v-btn>
+                                                <v-btn class="ml-2" x-small fab @click="openDialogDelete(index,6)">
+                                                    <v-icon>delete_outline</v-icon>
+                                                </v-btn>
                                             </v-card>
                                         </template>
                                         <span>
@@ -221,12 +371,73 @@
                                             :color="i === 0 ? 'blue' : i === 1 ? 'green' : i === 2 ? 'red' : i === 3 ? 'purple' : i === 4 ? 'orange' : 'pink'"
                                     >
                                         {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                        <br/>
+                                         <br/>
+                                         <v-btn @click="openDialoaUpdateDay(index,6)" x-small fab>
+                                            <v-icon>edit</v-icon>
+                                        </v-btn>
+                                        <v-btn class="ml-2" x-small fab @click="openDialogDelete(index,6)">
+                                            <v-icon>delete_outline</v-icon>
+                                        </v-btn>
                                     </v-card>
                                 </strong>
                                 <br/>
                             </template>
 
                         </v-data-table>
+                        <v-dialog v-model="dialogRemove" max-width="400px">
+                            <v-card class="text-left">
+                                <v-card-title>
+                                <span class="headline">Remover dia da agenda</span>
+                                </v-card-title>
+                                <v-card-text>
+                                <p>Você deseja remover o dia da agenda médica?</p>
+                                </v-card-text>
+                                <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn color="blue darken-1" text @click="dialogRemove = false">Não</v-btn>
+                                <v-btn :loading="loading" color="blue darken-1" text @click="removeDay">Sim</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
+                        <v-dialog v-model="dialogUpdate" max-width="400px">
+                            <v-card class="text-left">
+                                <v-card-title>
+                                <span class="headline">Alterar dia da agenda</span>
+                                </v-card-title>
+                                <v-card-text>
+                                <v-container>
+                                    <v-row>
+                                    <v-col cols="12">
+                                        <v-text-field type="time" min="05:00" max="18:00" v-model="editDay.hour" label="Horário" required></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-text-field
+                                            v-model="editDay.vacancy"
+                                            type="number"
+                                            label="Vagas"
+                                            hint="Digite o número de vagas para o dia"
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <h1 class="title font-weight-bold">Data de validade</h1>
+                                        <v-text-field
+                                            v-model="editDay.expiration_date"
+                                            type="date"
+                                            hint="Selecione a data de validade da agenda"
+                                            required
+                                        ></v-text-field>
+                                    </v-col>
+                                    </v-row>
+                                </v-container>
+                                </v-card-text>
+                                <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn color="blue darken-1" text @click="dialogUpdate = false">Não</v-btn>
+                                <v-btn :loading="loading" color="blue darken-1" text @click="updateDay">Sim</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                            </v-dialog>
                     </v-card>
                 </v-flex>
             </v-layout>
@@ -242,7 +453,9 @@
             //today: '2020-05-16',
             //today: '2020-05-30',
             today: moment().format("YYYY-MM-DD"),
-            search: '',
+            dialogUpdate:false,
+            editDay:{},
+            search: undefined,
             headers: [
                 {text: 'Hora', value: 'hour', align: 'center', sortable: true},
                 {text: 'Segunda', value: 'monday', align: 'center', sortable: false},
@@ -252,8 +465,47 @@
                 {text: 'Sexta', value: 'friday', align: 'center', sortable: false},
                 {text: 'Sabado', value: 'saturday', align: 'center', sortable: false},
             ],
+            dialogRemove:false,
+            loading:false,
+            scheduleSelected:undefined,
+            dayScheduleSelected:undefined,
+            specialty:undefined,
+            doctor:undefined
         }),
         computed: {
+            specialties() {
+                let espArray = Object.values(this.$store.getters.specialties);
+                /* espArray = espArray.filter(specialty => {
+                    if (!this.doctor) {
+                    return true;
+                    }
+                    var find = false;
+                    specialty.doctors.forEach(doctor => {
+                    if (doctor.cpf === this.doctor.cpf) {
+                        find = true;
+                        return true;
+                    }
+                    });
+
+                    return find;
+                }); */
+                return espArray;
+            },
+
+            doctors() {
+                let doctors = Object.values(this.$store.getters.doctors);
+                /* if (this.specialty) {
+                    doctors = doctors.filter(a => {
+                    for (let spe in a.specialties) {
+                        if (a.specialties[spe].name === this.specialty.name) {
+                        return true;
+                        }
+                    }
+                    return false;
+                    });
+                } */
+                return doctors;
+            },
             doctorsMapping() {
                 let weeklyTable = [
                     {
@@ -462,7 +714,15 @@
                         saturday: [],
                     },
                 ]
-                let schedules = this.$store.getters.AllSchedules
+
+                console.log('->>')
+                let schedules = this.$store.getters.AllSchedules.filter((schedule)=>{
+                    if(this.specialty && schedule.specialty.name != this.specialty.name)
+                        return false
+                    if(this.doctor && schedule.doctor.name != this.doctor.name)
+                        return false
+                    return true
+                })
 
                 for (let schedule in schedules) {
                     if(schedules[schedule].cancelations_schedules){
@@ -511,6 +771,42 @@
         },
         mounted() {
             this.$store.dispatch('getAllSchedules');
+        },
+        methods:{
+            openDialoaUpdateDay(schedule,day){
+                this.scheduleSelected = schedule
+                this.dayScheduleSelected = day
+                this.editDay = schedule.days[day]
+                this.dialogUpdate = true
+            },
+            openDialogDelete(schedule,day){
+                this.dialogRemove = true
+                this.scheduleSelected = schedule
+                this.dayScheduleSelected = day
+            },
+            async removeDay() {
+                this.loading = true;
+                let copySchedule = Object.assign({}, this.scheduleSelected);
+                delete copySchedule.days[this.dayScheduleSelected];
+                await this.$store.dispatch("updateScheduleDays", {
+                    idSchedule: this.scheduleSelected.id,
+                    days: copySchedule.days
+                });
+                this.loading = false;
+                this.dialogRemove = false;
+            },
+            async updateDay(){
+                this.loading = true;
+                let copySchedule = Object.assign({}, this.scheduleSelected);
+                copySchedule.days[this.dayScheduleSelected] = this.editDay;
+                await this.$store.dispatch("updateScheduleDays", {
+                    idSchedule: this.scheduleSelected.id,
+                    days: copySchedule.days
+                });
+                this.editDay = {}
+                this.loading = false
+                this.dialogUpdate = false;
+            }
         }
     }
 </script>

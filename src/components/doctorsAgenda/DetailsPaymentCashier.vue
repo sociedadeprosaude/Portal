@@ -2,16 +2,6 @@
     <v-container fluid class="ma-0 pa-0">
         <v-layout row wrap>
             <v-flex>
-                <v-flex sm12 xs12>
-                    <v-combobox label="Médico"
-                                v-model="doctor"
-                                outlined
-                                dense
-                                :items="doctors"
-                                item-text="name"
-                                return-object
-                    />
-                </v-flex>
                 <v-flex sm12 xs12 v-if="payment.paymentForm.length > 1">
                     <v-layout row wrap class="align-center" v-for="(x ,index) in payment.paymentForm" :key="index">
                         <v-flex xs12>
@@ -183,6 +173,14 @@
         <v-dialog v-model="budgetToPrintDialog" v-if="budgetToPrint">
             <budget-to-print @close="budgetToPrintDialog = false" :budget="budgetToPrint"/>
         </v-dialog>
+        <v-dialog
+                transition="dialog-bottom-transition"
+                fullscreen
+                v-model="receiptDialog"
+                v-if="selectedIntake"
+        >
+            <receipt @close="CloseReceipt()" :budget="selectedIntake"/>
+        </v-dialog>
     </v-container>
 </template>
 <script>
@@ -190,6 +188,8 @@
 
     import SubmitButton from "../SubmitButton";
     import BudgetToPrint from "../../components/cashier/BudgetToPrint";
+    import Receipt from "../cashier/Receipt";
+    import functions from "../../utils/functions";
 
     let moment = require('moment');
 
@@ -199,7 +199,7 @@
         components: {
             BudgetToPrint,
             SubmitButton,
-
+            Receipt
         },
         data() {
             return {
@@ -238,12 +238,31 @@
             }
         },
         computed: {
+
+            doctors: {
+                get: function () {
+                    let docArray = [];
+                    docArray.push({
+                        name: this.noDoctorKeyWord
+                    });
+                    docArray = docArray.concat(Object.values(this.$store.getters.doctors));
+                    return docArray;
+                }
+            },
+            selectedDoctor: {
+                get() {
+                    return this.$store.getters.shoppingCartSelectedDoctor
+                },
+                set(val) {
+                    this.$store.commit('setSelectedDoctor', val)
+                }
+            },
+
+
             loadingDoctors() {
                 return !this.$store.getters.doctorsLoaded
             },
-            doctors() {
-                return Object.values(this.$store.getters.doctors)
-            },
+
             selectedUnit() {
                 return this.$store.getters.selectedUnit
             },
@@ -310,9 +329,6 @@
                     return true
                 }
             },
-            selectedDoctor() {
-                return this.$store.getters.shoppingCartSelectedDoctor
-            },
         },
         watch: {
             percentageDiscount: function () {
@@ -320,6 +336,10 @@
             },
         },
         methods: {
+            CloseReceipt(){
+                this.clearCart()
+                this.receiptDialog=false
+            },
             async searchBudget() {
                 this.searchBudgetLoading = true;
                 let budget = await this.$store.dispatch('getBudget', this.searchBudgetNumber);
@@ -444,13 +464,9 @@
                 }
 
                 this.updateBudgetsIntakes();
-                this.receipt(this.selectedBudget);
+                await this.receipt(this.selectedBudget);
                 this.paymentLoading = false;
                 this.paymentSuccess = true;
-
-                this.budgetToPrint = this.selectedBudget;
-                this.budgetToPrintDialog = true;
-
                 let data = {
                     user: this.patient,
                     budgetId: this.selectedBudget.id.toString(),
@@ -459,10 +475,11 @@
                 await this.$store.commit('setSelectedBudget', undefined);
                 this.$store.commit('clearShoppingCartItens');
                 this.card = false;
-                this.clearCart();   
+                this.clearCart();
             },
             async receipt(intake) {
-                this.selectedIntake = await this.$store.dispatch('getIntakeDetails', intake);
+                let intakes = await this.$store.dispatch('getIntakeDetails', intake);
+                this.selectedIntake = intakes[0]
                 this.receiptDialog = true
             },
 

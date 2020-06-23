@@ -1,8 +1,10 @@
 import firebase, {firestore} from "firebase";
 import router from "../../router";
+import {relativeTimeRounding} from "moment";
 
 const state = {
     user: undefined,
+    listOfPermissions: [],
     permissions: []
 };
 
@@ -13,6 +15,9 @@ const mutations = {
     setPermissionsList(state, payload) {
         state.permissions = payload
     },
+    Setpermissions(state, payload){
+        state.listOfPermissions = payload
+    }
 };
 
 const actions = {
@@ -67,6 +72,9 @@ const getters = {
 
     user (state) {
         return state.user
+    },
+    permissions(state){
+        return state.listOfPermissions
     }
 };
 

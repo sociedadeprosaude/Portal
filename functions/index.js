@@ -1,12 +1,12 @@
 const functions = require('firebase-functions');
-var admin = require('firebase-admin');
+
 const cors = require('cors')({ origin: true });
+var admin = require('firebase-admin');
 var moment = require('moment');
 const json2csv = require('json2csv');
+
 admin.initializeApp();
 const defaultRoute = '/analise-exames'
-
-exports.listeners = require('./Listeners/listeners')
 
 const heavyFunctionsRuntimeOpts = {
     timeoutSeconds: 540,
@@ -19,7 +19,7 @@ exports.hello = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest((re
     res.send("hello ", name);
 })
 
-exports.getLastAccessedPatients = fuctions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async(req,res) => {
+exports.getLastAccessedPatients = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async(req,res) => {
     var quant= req.query.quantity
     let users = await admin.firestore.document('users').limit(quant).orderBy("accessed_at", "desc").get()
     let editadUsers = []

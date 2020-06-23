@@ -11,12 +11,22 @@ import ScheduleReturn from "../views/Operational/DoctorsAgenda/ScheduleReturn";
 import DoctorScheduling from '../views/Operational/DoctorsAgenda/DoctorScheduling'
 import ManagementSchedules from '../views/Operational/DoctorsAgenda/ManagementSchedules'
 import Discount from "../views/Notifications/discount"
+import weeklyTable from "../views/Operational/DoctorsAgenda/weeklyTable";
 
 export default [
     {
+        path: '/agenda/TabelaSemanal',
+        name: 'weeklyTable',
+        component : weeklyTable,
+        meta: {
+          requiresAuth: false,
+        }
+    },
+    {
         path: '/agenda/agendamento',
         name: 'AgendamentoConsultas',
-        component: DoctorScheduling
+        component: DoctorScheduling,
+        props: (route) => ({ query: route.query.q }),
     },
     {
         path: 'discount',

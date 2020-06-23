@@ -14,6 +14,8 @@ import DateFilter from './filters/date'
 import MoneyFilter from './filters/money'
 import VCurrencyField from 'v-currency-field'
 
+import { iconsSet as icons } from './assets/icons/icons.js'
+
 
 import './registerServiceWorker'
 import * as firebase from "firebase";
@@ -33,7 +35,7 @@ const options = {
   styles: [
     'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',
     'https://unpkg.com/kidlat-css/css/kidlat.css',
-    
+
   ]
 };
 
@@ -85,7 +87,7 @@ const vuetifyOptions = {
         primary_dark: '#003B8F',
         dark_grey: '#808080',
         background: '#DFDFDF',
-        blue_grey:'#90A4AE',
+        blue_grey: '#90A4AE',
         grey_light: '#BDBDBD',
         grey_light2: '#F5F5F5',
         grey_cart: '#9E9E9E',
@@ -98,6 +100,7 @@ const vuetifyOptions = {
 new Vue({
   router,
   store,
+  icons,
   vuetify: new Vuetify(vuetifyOptions),
   render: h => h(App),
   created() {

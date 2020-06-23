@@ -76,6 +76,7 @@
                                 <v-flex xs12>
                                     <span class="my-headline text-left mt-2">Grupos</span>
                                 </v-flex>
+
                                 <v-flex xs3 class="my-2" v-for="group in groups" :key="group">
                                     <v-btn
                                             @click="setGroup(user, group)"
@@ -84,6 +85,73 @@
                                         {{group}}
                                     </v-btn>
                                 </v-flex>
+
+                                <v-dialog v-model="dialog" width="700">
+                                    <v-container fluid>
+                                        <v-card>
+                                            <v-card-title class="headline grey lighten-2 mb-4" primary-title>
+                                                <v-btn style="display: none" text color="transparent" class="transparent"/>
+                                                <v-spacer/>CRIAR e EDITAR PERMISSÕES<v-spacer/><v-btn class="transparent elevation-0" @click="dialog = false"><v-icon>close</v-icon></v-btn>
+                                            </v-card-title>
+                                            <v-card-text>
+                                                <v-layout row wrap>
+                                                    <v-flex xs6>
+                                                        <span style="color: #003B8F">Todas as Permissões do Portal:</span>
+                                                        <v-treeview
+                                                                return-object
+                                                                open-all
+                                                                dense
+                                                                selectable
+                                                                v-model="selectedPermissions"
+                                                                :items="permissions"
+                                                        ></v-treeview>
+                                                    </v-flex>
+
+                                                    <v-flex xs6>
+                                                        <template v-if="!selectedPermissions.length">
+                                                            <span style="color: red">Nenhuma permissão selecionada.</span>
+                                                        </template>
+                                                        <template v-else>
+                                                            <span style="color: #003B8F">Permissões Selecionadas:</span>
+                                                            <div v-for="(node,i) in selectedPermissions" :key="i">
+                                                                {{ node.name }}
+                                                            </div>
+                                                        </template>
+                                                    </v-flex>
+                                                </v-layout>
+                                            </v-card-text>
+                                            <v-divider></v-divider>
+                                            <v-card-actions>
+                                                <v-flex xs12 class="text-center mb-2 mt-3">
+                                                    <v-btn rounded text class="primary mx-1" @click="userGroups(user)">
+                                                        Salvar
+                                                    </v-btn>
+                                                </v-flex>
+                                            </v-card-actions>
+                                        </v-card>
+                                    </v-container>
+                                </v-dialog>
+
+                                <v-flex xs12><v-divider class="primary"/></v-flex>
+
+                                <v-layout row wrap>
+                                    <v-flex xs12>
+                                        <span class="my-headline text-left mt-2">Permissões</span>
+                                    </v-flex>
+
+                                    <v-flex xs12 class="text-center mb-2 mt-3">
+                                        <v-btn rounded text class="primary mx-1" @click="dialog = true">Criar e Editar Permissões</v-btn>
+                                    </v-flex>
+                                    <v-layout row wrap class="align-center justify-center">
+                                    <v-flex xs6 v-if="user.permissions" class="text-center">
+                                        <span style="color: #003B8F">Permissões Salvas do Usuário:</span>
+                                        <div v-for="(node,i) in user.permissions" :key="i">
+                                            {{ node.name }}
+                                        </div>
+                                    </v-flex>
+                                    </v-layout>
+                                </v-layout>
+
                             </v-layout>
                         </v-expansion-panel-content>
                     </v-expansion-panel>
@@ -135,6 +203,9 @@
         props: ['collaborators'],
 
         data: () => ({
+            selectedPermissions: [],
+            dialog: false,
+            havePermissions: false,
             loading: true,
             registerSalary: false,
             registerAdvance: false,
@@ -151,7 +222,9 @@
         },
 
         computed: {
-
+            permissions () {
+              return this.$store.getters.permissions
+            },
             units() {
                 return this.$store.getters.units
             },
@@ -167,6 +240,14 @@
             async getInitialInfo() {
                 await this.$store.dispatch('getColaborators');
                 this.loading = false
+            },
+
+            userGroups(user){
+                this.$store.dispatch('userPermissions',{
+                    user: user.id,
+                    permissions: this.selectedPermissions,
+                })
+                this.dialog = false
             },
 
             setGroup(user, group) {

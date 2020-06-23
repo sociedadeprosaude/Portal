@@ -2,6 +2,7 @@ import Vue from 'vue'
 
 const state = {
     items: [],
+    test: {},
     budget: undefined,
     doctor: undefined
 };
@@ -25,13 +26,13 @@ const mutations = {
                 return
             }
         }
-        state.items.push(payload)
+        state.items.push(payload);
     },
     removeShoppingCartItem(state, payload) {
-        state.items.splice(state.items.indexOf(payload), 1)
+        state.items.splice(state.items.indexOf(payload), 1);
     },
     clearShoppingCartItens(state) {
-        state.items = []
+        state.items = [];
     }
 };
 
