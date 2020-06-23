@@ -332,62 +332,22 @@ const actions = {
     },
 
     async PayClinic(context, payload){
-        let DataInit='';
-        if(!payload.payments){
-            DataInit = moment(payload.paymentDay).subtract(1, "months").format("YYYY-MM-DD 00:00:00")
+        if(!payload.period){
+            payload.period = 30
+        }
+        if(!payload.last_payment){
+            await firebase.firestore().collection('clinics').doc(payload.name).update({last_payment: moment().format('YYYY-MM-DD'), period: payload.period})
         }
         else{
-            DataInit = moment(payload.payments[parseInt(payload.payments.length) - 1].paymentDay).format("YYYY-MM-DD 00:00:00")
+            await firebase.firestore().collection('clinics').doc(payload.name).update({last_payment: moment().format('YYYY-MM-DD'), period: payload.period})
         }
-        payload.paymentDay = moment(payload.paymentDay).format("YYYY-MM-DD 23:59:59")
-        let cost = 0;
-        await firebase.firestore().collection('intakes').where('date', '>=', DataInit)
-            .where('date', '<=', payload.paymentDay).orderBy('date').get().then((querySnapshot) =>{
-                querySnapshot.forEach((doc) =>{
-                    if(!doc.data().cancelled_by && doc.data().exams){
-                        for(let exam in doc.data().exams){
-                            if(doc.data().exams[exam].clinic){
-                                if (doc.data().exams[exam].clinic.name === payload.name  && doc.data().exams[exam].realized === true ) {
-                                    cost += parseFloat(doc.data().exams[exam].cost)
-                                }
-                            }
-                        }
-                    }
-                })
-            });
-        await firebase.firestore().collection('clinics').get().then((querySnapsho) =>{
-            querySnapsho.forEach((doc) =>{
-                if(doc.data().name === payload.name) {
-                    let payment= {
-                        value: cost,
-                        paymentDay: moment().format("YYYY-MM-DD")
-                    };
-                    let paymentDay= moment(doc.data().paymentDay).add(1,"months").format('YYYY-MM-DD');
-                    let paymentDayFormat = moment(paymentDay).format('DD/MM/YYYY');
-                    if (!doc.data().payments) {
-                        firebase.firestore().collection('clinics').doc(doc.data().name).update({payments: [payment], paymentDay:paymentDay, paymentDayFormat: paymentDayFormat})
-                    }
-                    else {
-                        var payments = doc.data().payments;
-                        payments.push(payment);
-                        var clinic= firebase.firestore().collection('clinics').doc(doc.data().name);
-                        var setMerge= clinic.set({
-                            payments: payments,
-                            paymentDay: paymentDay,
-                            paymentDayFormat: paymentDayFormat
-                        },{merge:true})
-                    }
-
-                }
-            })
-        })
     },
 
     async AddPaymentDay(context,payload){
         let clinic= firebase.firestore().collection('clinics').doc(payload.clinic.name);
         let setMerge= clinic.set({
             paymentDay: payload.paymentDay,
-            paymentDayFormat: payload.paymentDayFormat
+            period: payload.period
         },{merge:true})
     },
 

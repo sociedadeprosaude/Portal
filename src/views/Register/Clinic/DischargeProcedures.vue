@@ -23,11 +23,11 @@
             <v-flex xs12>
                 <v-divider/>
             </v-flex>
-            <p :if="intakes" class="mt-3 font-italic font-weight-bold"> Paciente: {{intakes.patient}}</p>
+            <p :if="outtake" class="mt-3 font-italic font-weight-bold"> Paciente: {{outtake.patient}}</p>
             <v-flex xs12>
                 <v-divider/>
             </v-flex>
-            <v-flex xs12 v-for="intake in intakes.exams">
+            <v-flex xs12 v-for="intake in outtake.exams">
                 <v-card class="elevation-2 my-3">
                     <v-layout row wrap>
                         <v-flex xs6 md3 class="align-center justify-center">
@@ -131,7 +131,7 @@
         methods: {
             async SearchIntake(number){
                 this.loading= true;
-                await this.$store.dispatch('getSpecificIntake',{number:number, cnpj: this.user.cnpj})
+                await this.$store.dispatch('getSpecificOuttake',{number:number, cnpj: this.user.cnpj})
                 this.loading= false;
             },
             DividerContestValue(intake){
@@ -141,27 +141,27 @@
             async FunctionContestValue(){
                 let clinic= await this.$store.dispatch('getClinic', this.user.cnpj)
                 this.ContestExam.NewValue = this.NewValue
-                await this.$store.dispatch('addNewContestValue',{exams:this.ContestExam, value:this.NewValue, cnpj:this.user.cnpj, numberIntake:this.intakes.intakeNumber, clinic:clinic.docs[0].id})
+                await this.$store.dispatch('addNewContestValue',{exams:this.ContestExam, value:this.NewValue, cnpj:this.user.cnpj, numberIntake:this.outtake.intakeNumber, clinic:clinic.docs[0].id})
                 this.dialogContestValue = !this.dialogContestValue
                 this.NewValue=0
 
             },
             async SendCheckExams(){
                 this.loading= true;
-                await this.$store.dispatch('updatingSpecificIntake',{number:this.intakes.intakeNumber, exams: this.intakes.exams})
+                await this.$store.dispatch('updatingSpecificOuttake',{number:this.numberIntake, cnpj: this.user.cnpj, exams: this.outtake.exams})
                 this.loading= false;
                 this.successUpdateExams= true;
                 this.numberIntake = '';
-                this.intakes.exams = {};
-                this.intakes.patient ='';
+                this.outtake.exams = {};
+                this.outtake.user ='';
             }
         },
         computed: {
             user() {
                 return this.$store.getters.user
             },
-            intakes(){
-                return this.$store.getters.intakesClinic
+            outtake(){
+                return this.$store.getters.outtakeClinic
             },
             contestvalue(){
                 return this.$store.getters.contestValue;

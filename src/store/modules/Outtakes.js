@@ -11,6 +11,7 @@ const state = {
     outtakesPending: [],
     categories: [],
     alertOuttakes: [],
+    outtakeClinic: []
 };
 
 const mutations = {
@@ -22,6 +23,9 @@ const mutations = {
     setOuttakesCategories: (state, payload) => state.categories = payload,
     setOuttakesReport: (state, payload) => state.outtakesReport = payload,
     setAlertOuttakes: (state, payload) => state.alertOuttakes = payload,
+    setOuttakeClinic(state, payload) {
+        state.outtakeClinic = payload
+    },
 };
 
 const actions = {
@@ -229,9 +233,36 @@ const actions = {
 
     async addOuttakes(context, outtake) {
         outtake = functions.removeUndefineds(outtake);
+        console.log('aficionando outtake')
         await firebase.firestore().collection('outtakes/').add(outtake)
     },
+    async getSpecificOuttake({commit}, intake) {
+        let SpecificOuttake = await firebase.firestore().collection('outtakes').where('intake_id','==', parseInt(intake.number)).where('cnpj','==',intake.cnpj).get();
+        SpecificOuttake.forEach(doc => {
+            console.log('doc; ', doc.data())
+            commit('setOuttakeClinic',  doc.data())
+        })
+    },
+    async updatingSpecificOuttake({commit}, outtake) {
+        let SpecificOuttake = await firebase.firestore().collection('outtakes').where('intake_id','==', parseInt(outtake.number)).where('cnpj','==',outtake.cnpj).get();
+        SpecificOuttake.forEach(async doc => {
+            console.log('doc data: ', doc.data())
+            let Exams = doc.data().exams
+            for (let exam in Exams) {
+                for (let UpdateExam in outtake.exams) {
+                    if (Exams[exam].name === outtake.exams[UpdateExam].name) {
+                        Exams[exam].realized = outtake.exams[UpdateExam].realized
+                    }
+                }
+            }
+            let id = doc.id;
+            console.log('exams: ', Exams)
+            await firebase.firestore().collection('outtakes').doc(id).update({exams: Exams})
+        })
 
+
+
+    },
     async editOuttakes(context, outtake) {
         outtake = functions.removeUndefineds(outtake);
         await firebase.firestore().collection('outtakes/').doc(outtake.id).set(outtake);
@@ -297,6 +328,9 @@ const getters = {
     },
     alertOuttakes(state) {
         return state.alertOuttakes
+    },
+    outtakeClinic(state) {
+        return state.outtakeClinic
     }
 };
 

@@ -19,23 +19,21 @@
                                     <p class="py-2"></p>
                                 </v-flex>
                                 <v-flex xs7 md3>
-                                    Próximo Pagamento:
-                                </v-flex>
-                                <v-flex xs5 md1>
-                                    <p>{{clinic.paymentDayFormat}}</p>
+                                    Próximo Pagamento: {{date(clinic.last_payment,clinic.period)}}
                                 </v-flex>
                                 <v-flex>
                                     <v-spacer></v-spacer>
                                 </v-flex>
-                                <v-flex xs12 md2>
-                                    <v-btn @click="ChangeDateDialog(clinic)">Alterar Data</v-btn>
+                                <v-flex>
+                                    Período de Pagamento: {{clinic.period}}
                                 </v-flex>
+
                             </v-layout>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                             <v-layout row wrap>
-                                <v-flex xs12>
-                                    <span class="my-headline text-left">Pagamentos Anteriores</span>
+                                <v-flex xs12 md2>
+                                    <v-btn @click="ChangeDateDialog(clinic)">Alterar Periodo</v-btn>
                                 </v-flex>
                             </v-layout>
                         </v-expansion-panel-content>
@@ -82,28 +80,14 @@
         </v-layout>
         <v-dialog v-model="change" max-width="300px">
             <v-card>
-                <v-card-title>Alterar Data</v-card-title>
+                <v-card-title>Período de Pagamento</v-card-title>
                 <v-flex class="mt-5 ml-3">
-                    <v-menu
-                            v-model="menu2"
-                            :close-on-content-click="false"
-                            transition="scale-transition"
-                            offset-y
-                            max-width="290px"
-                            min-width="290px"
+                    <v-select
+                        v-model="period"
+                        :items="days"
+                        label="período"
                     >
-                        <template v-slot:activator="{ on }">
-                            <v-text-field
-                                    v-model="dateFormatted2"
-                                    label="Nova Data"
-                                    prepend-icon="event"
-                                    readonly
-                                    dense
-                                    v-on="on"
-                            />
-                        </template>
-                        <v-date-picker v-model="date2" no-title @input="menu2 = false"/>
-                    </v-menu>
+                    </v-select>
                 </v-flex>
                 <v-flex>
                     <v-btn @click="ChangeDate(clinica)">
@@ -137,11 +121,13 @@
                 clinicSelected:[],
                 cost:'',
                 intakes:[],
+                period:'',
                 intakesObserv:false,
                 menu2:false,
                 dateFormatted2: moment().format("DD/MM/YYYY"),
                 date2: moment().format("YYYY-MM-DD 23:59:59"),
                 datenow: moment().format('YYYY-MM-DD'),
+                days:['10','15','30']
             }
         },
         computed: {
@@ -166,7 +152,7 @@
                 await this.$store.dispatch('AddPaymentDay', {
                     clinic: clinic,
                     paymentDay: this.date2,
-                    paymentDayFormat: this.dateFormatted2
+                    period: this.period
                 });
                 this.getInitialInfo()
             },
@@ -189,6 +175,14 @@
             async Pay(clinic){
                 await this.$store.dispatch('PayClinic', clinic)
                 this.getInitialInfo()
+            },
+            date(day,period){
+                if(!period){
+                    return moment(day).add(30, 'days').format('DD/MM/YYYY')
+                }
+                else{
+                    return moment(day).add(period, 'days').format('DD/MM/YYYY')
+                }
             }
 
         },
@@ -196,9 +190,7 @@
             this.getInitialInfo()
         },
         watch: {
-            date2(val) {
-                this.dateFormatted2 = this.formatDate(this.date2);
-            }
+
         }
     }
 </script>
