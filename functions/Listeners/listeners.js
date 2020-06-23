@@ -46,7 +46,7 @@ exports.UpdateUidOfUser = functions.firestore.document('users/{uid}').onUpdate( 
     //subcolletions tbm
     if( uidNew !== uidOld ){
 
-        firestore.collection('users').
+        firestore.collection('users')
     }
 });
 

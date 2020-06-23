@@ -407,6 +407,7 @@ exports.setUidToUsers = functions.https.onRequest(async (request, response) => {
             firestore.collectionGroup('users').doc(users[i].id).update({uid: users[i].id})
         }
 
+        // eslint-disable-next-line no-await-in-loop
         usersSnap = await query.get();
     }
 });
