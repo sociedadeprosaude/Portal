@@ -261,12 +261,12 @@
                                         label="Data de Nascimento">
                                 </v-text-field>
                             </v-flex>
+                            <!--:disabled="selectedPatient !== undefined"-->
                             <v-flex sm4 xs12 class="px-3">
                                 <v-text-field
                                         outlined
                                         rounded
                                         filled
-                                        :disabled="selectedPatient !== undefined"
                                         placeholder="Campo obrigatório *"
                                         v-mask="mask.cpf"
                                         v-model="cpf"
@@ -526,6 +526,7 @@
                 name: undefined,
                 dependentName:undefined,
                 cpf: undefined,
+                id: undefined,
                 rg: undefined,
                 numAss: undefined,
                 birthDate: undefined,
@@ -564,6 +565,7 @@
                 if (user) {
                     this.name = user.name;
                     this.cpf = user.cpf;
+                    this.id = user.id;
                    // this.numAss = user.association_number
                 }
                 return this.$store.getters.selectedPatient
@@ -657,6 +659,7 @@
 
                 }
                 let patient = {
+                    id: this.id ? this.id : undefined,
                     name: this.name.toUpperCase(),
                     cpf: this.cpf ? this.cpf.replace(/\./g, '').replace('-', '') : undefined,
                     email: this.email,
@@ -698,6 +701,7 @@
                 this.addUserToFirestore(patient)
             },
             async addUserToFirestore(patient) {
+                console.log('paciente selecionado para edição:', patient)
                 await this.$store.dispatch('addUser', patient);
                 this.success = true;
                 this.loading = false;

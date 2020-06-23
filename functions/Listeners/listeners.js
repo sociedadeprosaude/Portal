@@ -18,32 +18,38 @@ exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate
     }
 });
 
-exports.ListenUpdateCpf = functions.firestore.document('users/{cpf}').onUpdate( async (change, context) => {
+exports.updatedUser = functions.firestore.document('users/{uid}').onUpdate( async (change, context) => {
     let firestore = admin.firestore();
-    let cpfNew = change.after.data().cpf;
-    let cpfOld = change.before.data().cpf;
-    if( cpfNew !== cpfOld ){
-        firestore.collectionGroup('users').doc(cpfOld).update({cpf: cpfNew});
-    }
+
+    let editedUser = change.after.data()
+    let uid = change.after.data().uid;
+
+    firestore.collectionGroup('users').doc(uid).update(editedUser);
 });
 
-exports.ListenCreatedUser = functions.firestore.document('users/{id}').onCreate((doc, context) => {
+exports.setUidToUserWhenCreated = functions.firestore.document('users/{id}').onCreate((doc, context) => {
     let firestore = admin.firestore();
-    console.log('doc:',doc)
+/*    console.log('doc:',doc)
     console.log('id:', doc.id)
-    console.log('data:',doc.data())
+    console.log('data:',doc.data())*/
     let id = doc.id;
     firestore.collection('users').doc(id).update({uid: id})
 });
 
-exports.ListenUpdateUid = functions.firestore.document('users/{uid}').onUpdate( async (change, context) => {
+exports.UpdateUidOfUser = functions.firestore.document('users/{uid}').onUpdate( async (change, context) => {
     let firestore = admin.firestore();
     let uidNew = change.after.data().uid;
     let uidOld = change.before.data().uid;
+    //fazer copia do user
+    //criar denovo com nova key uidNew
+    //com a copia do user
+    //subcolletions tbm
     if( uidNew !== uidOld ){
-        firestore.collectionGroup('users').doc(uidOld).update({uid: uidNew});
+
+        firestore.collection('users').
     }
 });
+
 /*    .onCreate( async (change, context) => {
     const firestore = admin.firestore();
     const userCreated = change.after.data();

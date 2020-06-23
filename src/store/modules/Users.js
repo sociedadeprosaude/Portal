@@ -218,10 +218,8 @@ const actions = {
 
     async addUser({ getters }, patient) {
         console.log('patient:', patient)
+        functions.removeUndefineds(patient);
         try {
-
-            functions.removeUndefineds(patient);
-
             let user;
             if (!patient.cpf) {
                 patient.cpf = 'RG' + patient.rg

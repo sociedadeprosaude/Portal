@@ -399,6 +399,7 @@ exports.setUidToUsers = functions.https.onRequest(async (request, response) => {
             id: doc.id
         })
     });
+
     for(let i in users) {
         firestore.collectionGroup('users').doc(users[i].id).update({uid: users[i].id})
     }
