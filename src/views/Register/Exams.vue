@@ -7,7 +7,7 @@
             <v-tab-item value="exams">
                 <v-layout row wrap>
                     <v-flex sm12>
-                        <v-card class="pt-3 mb-4">
+                        <v-card class="pt-3">
                             <v-layout row wrap>
                                 <v-flex sm8>
                                     <v-text-field
@@ -41,7 +41,7 @@
             <v-tab-item value="types">
                 <v-layout row wrap>
                     <v-flex sm12>
-                        <v-card class="pt-3 mb-4">
+                        <v-card class="pt-3">
                             <v-layout row wrap>
                                 <v-flex sm8>
                                     <v-text-field

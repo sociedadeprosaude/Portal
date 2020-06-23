@@ -2,10 +2,7 @@
     <v-container>
         <v-layout row wrap>
 
-            <v-flex xs12 class="my-4"
-                    v-if="!loadingDoctors"
-            >
-
+            <v-flex xs12 class="my-4" v-if="!loadingDoctors">
                 <v-data-table
                         :headers="headers"
                         :items="doctorsArray"
@@ -317,7 +314,7 @@
 </template>
 
 <script>
-    import CreateDoctorCard from "../../components/doctorsAgenda/CreateDoctorCard";
+    import CreateDoctorCard from "../../components/Doctors/CreateDoctorCard";
     import SubmitButton from "../../components/SubmitButton";
 
     export default {
@@ -489,6 +486,3 @@
         }
     }
 </script>
-
-<style scoped>
-</style>
