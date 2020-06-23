@@ -28,7 +28,7 @@
 
                         <v-card>
                             <v-card-text v-if="doctorsArray.length !== 0">
-                                <ListDoctors :doctors="doctorsArray" :loading="loading"/>
+                                <ListDoctors :doctorsArray="doctorsArray" :doctors=doctors :loading="loading"/>
                             </v-card-text>
                         </v-card>
                     </v-flex>
@@ -78,6 +78,7 @@
             search: "",
             loading: undefined,
             creatingDoctor: false,
+            selectedDoctor: undefined,
 
         }),
 

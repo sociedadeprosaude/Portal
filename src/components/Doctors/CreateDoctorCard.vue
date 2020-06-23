@@ -167,15 +167,15 @@
                 </v-layout>
             </v-container>
         </v-card-text>
-        <v-divider></v-divider>
+        <v-divider/>
         <v-card-actions>
-            <v-spacer></v-spacer>
+            <v-spacer/>
             <v-flex xs4 v-if="!doctor">
                 <submit-button
                         :disabled="!formIsValid"
                         text="Salvar"
                         :success="success"
-                        :loading="loading" @click="save"></submit-button>
+                        :loading="loading" @click="save"/>
             </v-flex>
             <v-flex xs12 v-else>
                 <submit-button
@@ -184,13 +184,13 @@
                         text="Apagar"
                         @reset="success = false"
                         :success="success"
-                        :loading="loading" @click="erase"></submit-button>
+                        :loading="loading" @click="erase"/>
                 <submit-button
                         :disabled="!formIsValid"
                         text="Editar"
                         @reset="success = false"
                         :success="success"
-                        :loading="loading" @click="save"></submit-button>
+                        :loading="loading" @click="save"/>
             </v-flex>
         </v-card-actions>
     </v-card>
@@ -271,7 +271,7 @@
         },
         methods: {
             close() {
-                this.$emit('close')
+                this.$emit('close');
             },
             clear() {
                 this.name = undefined;
