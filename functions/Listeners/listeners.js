@@ -1,9 +1,9 @@
-import firebase from "../../firebase.json";
-import {ref} from "firebase-functions/lib/providers/database";
+/*import firebase from "../../firebase.json";
+import {ref} from "firebase-functions/lib/providers/database";*/
 
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-try { admin.initializeApp(functions.config().firebase); } catch (e) { }
+try { admin.initializeApp(functions.config().firebase); } catch (e) { console.log(e) }
 
 exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate(async (change, context) => {
     let db = admin.firestore()
