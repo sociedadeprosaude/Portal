@@ -1,3 +1,6 @@
+import firebase from "../../firebase.json";
+import {ref} from "firebase-functions/lib/providers/database";
+
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 try { admin.initializeApp(functions.config().firebase); } catch (e) { }
@@ -17,6 +20,27 @@ exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate
         })
     }
 })
+
+exports.ListenCreatedUser = functions.firestore.document('users/{id}').onCreate((doc, context) => {
+    const firestore = admin.firestore();
+    console.log('doc:',doc)
+    console.log('id:', doc)
+    console.log('data:',doc.data())
+    let id = doc.id;
+    firestore.collection('users').doc(id).update({uid: id})
+});
+/*    .onCreate( async (change, context) => {
+    const firestore = admin.firestore();
+    const userCreated = change.after.data();
+    let query = firestore.collection('users');
+    let usersSnap = [];
+    query = query.where('name', '==', userCreated.name)
+    query = query.where('uid', '==', undefined)
+    usersSnap = await query.get();
+    usersSnap.forEach(doc => {
+        doc.ref.update({uid: doc.id})
+    });*/
+/*});*/
 
 exports.listenChangeInSpecialtiesSubcollections = functions.firestore.document('specialties/{specialtyId}/{collectionId}/{docId}').onWrite(async (change, context) => {
     convertSpecialtySubcollectionInObject((await admin.firestore().collection('specialties').doc(context.params.specialtyId).get()))
@@ -193,6 +217,7 @@ async function convertSpecialtySubcollectionInObject(specialtyDoc) {
         doctors: doctors,
     }
 }
+
 exports.ListenUpdateClinic = functions.firestore.document('clinics/{name}').onUpdate( async (change, context) => {
     const firestore = admin.firestore();
     const clinicUpdated = change.after.data();

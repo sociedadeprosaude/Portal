@@ -1,3 +1,5 @@
+import firebase from "../../firebase.json";
+
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 try { admin.initializeApp(functions.config().firebase); } catch (e) { }
@@ -388,6 +390,23 @@ exports.setPricesExams = functions.https.onRequest(async (request, response) => 
 });
 
 
+//Função pra ser chamada uma unica vez(100 users por vez) pra colocar o id dos users dentro do .doc() como uid.
+exports.setUidToUsers = functions.https.onRequest(async (request, response) => {
+    const firestore = admin.firestore();
+    let query = firestore.collection('users').limit(100);
+    let usersSnap = [];
+    query = query.where('uid', '==', undefined)
+    usersSnap = await query.get();
+    let users = [];
+    usersSnap.forEach(doc => {
+        users.push({
+            id: doc.id
+        })
+    });
+    for(let i in users) {
+        firestore.collectionGroup('users').doc(users[i].id).update({uid: users[i].id})
+    }
+});
 
 exports.fixSpecialtiesPrices = functions.https.onRequest(async (req, res) => {
     const firestore = admin.firestore();
