@@ -2,12 +2,12 @@
     <v-card>
         <v-card-title class="headline grey lighten-2" primary-title>
             <span>{{ formTitle }}</span>
-            <v-spacer></v-spacer>
+            <v-spacer/>
             <v-btn text rounded @click="close()">
                 <v-icon>clear</v-icon>
             </v-btn>
         </v-card-title>
-        <v-divider></v-divider>
+        <v-divider/>
         <v-card-text>
             <v-container grid-list-md>
                 <v-layout wrap>
@@ -20,7 +20,7 @@
                                 outlined
                                 rounded
                                 filled
-                        ></v-text-field>
+                        />
                     </v-flex>
                     <v-flex xs12>
                         <v-text-field
@@ -33,7 +33,7 @@
                                 outlined
                                 rounded
                                 filled
-                        ></v-text-field>
+                        />
                     </v-flex>
                     <v-flex xs12>
                         <v-text-field
@@ -45,7 +45,7 @@
                                 outlined
                                 rounded
                                 filled
-                        ></v-text-field>
+                        />
                     </v-flex>
                     <v-flex>
                         <v-select
@@ -122,17 +122,11 @@
                                 <v-radio-group v-model="spec.payment_method">
                                     <v-layout row wrap>
                                         <v-flex xs4>
-                                            <v-radio
-                                                    label="Consulta"
-                                                    value="unit"
-                                            ></v-radio>
+                                            <v-radio label="Consulta" value="unit"/>
                                         </v-flex>
-                                        <v-spacer></v-spacer>
+                                        <v-spacer/>
                                         <v-flex xs4>
-                                            <v-radio
-                                                    label="Dia"
-                                                    value="daily"
-                                            ></v-radio>
+                                            <v-radio label="Dia" value="daily"/>
                                         </v-flex>
                                     </v-layout>
                                 </v-radio-group>
@@ -147,9 +141,9 @@
                                         label="Custo"
                                         prefix="R$"
                                         v-model="spec.cost"
-                                ></v-currency-field>
+                                />
                             </v-flex>
-                            <v-spacer></v-spacer>
+                            <v-spacer/>
                             <v-flex xs6>
                                 <v-currency-field
                                         prepend-icon="monetization_on"
@@ -160,7 +154,7 @@
                                         prefix="R$"
                                         v-model="spec.price"
                                         label="Venda"
-                                ></v-currency-field>
+                                />
                             </v-flex>
                         </v-layout>
                     </v-flex>
@@ -210,13 +204,13 @@
             SubmitButton
         },
         mounted() {
-            this.$store.dispatch('getClinics')
-            this.$store.dispatch('getSpecialties')
+            this.$store.dispatch('getClinics');
+            this.$store.dispatch('getSpecialties');
             if (this.doctor) {
-                this.name = this.doctor.name
-                this.cpf = this.doctor.cpf
-                this.crm = this.doctor.crm
-                this.specialties = this.doctor.specialties
+                this.name = this.doctor.name;
+                this.cpf = this.doctor.cpf;
+                this.crm = this.doctor.crm;
+                this.specialties = this.doctor.specialties;
                 this.clinic = this.doctor.clinics
             }
         },
@@ -239,10 +233,9 @@
         },
         computed: {
             clinics() {
-                let val = this.$store.getters.clinics.filter(a => {
+                return this.$store.getters.clinics.filter(a => {
                     return a.property;
                 });
-                return val;
             },
             specialtyOptions() {
                 return JSON.parse(JSON.stringify(this.$store.getters.specialties))

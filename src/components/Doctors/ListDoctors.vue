@@ -106,7 +106,7 @@
             deletingDoctor: false,
             deactivatingDoctor: false,
         }),
-        
+
         methods: {
             async editDoctor(doctor) {
                 this.selectedDoctor = this.doctors[doctor.cpf];

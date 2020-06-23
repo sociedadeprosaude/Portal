@@ -45,23 +45,30 @@
                                 <v-flex sm8>
                                     <v-text-field
                                             outlined
-                                            placeholder="Tipos de Exames"
+                                            placeholder="Especialidades"
                                             class="mx-5"
                                             color="primary"
-                                            v-model="search"
+                                            v-model="searchSpecialty"
                                             :loading="loading"
                                             id="search"
                                     />
                                 </v-flex>
                                 <v-flex sm4 class="text-right pr-3 mt-2">
-                                    <v-btn outlined class="primary--text">cadastrar tipo de
-                                        exame
+                                    <v-btn outlined class="primary--text" @click="creatingSpecialty = true">
+                                        cadastrar especialidade
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
                         </v-card>
+                        <v-card>
+                            <v-card-text v-if="specialties.length !== 0">
+                                <ListSpecialties :specialties="specialties" :loading="loading"/>
+                            </v-card-text>
+                        </v-card>
                     </v-flex>
-
+                    <v-dialog v-model="creatingSpecialty" max-width="500px">
+                        <CreateSpecialty @close="creatingSpecialty = false"/>
+                    </v-dialog>
                 </v-layout>
             </v-tab-item>
         </v-tabs>
@@ -70,15 +77,19 @@
 <script>
     import CreateDoctorCard from "../../components/Doctors/CreateDoctorCard";
     import ListDoctors from "../../components/Doctors/ListDoctors";
+    import CreateSpecialty from "../../components/Doctors/CreateSpecialty";
+    import ListSpecialties from "../../components/Doctors/ListSpecialties";
 
     export default {
-        components: {CreateDoctorCard, ListDoctors},
+        components: {CreateDoctorCard, ListDoctors, CreateSpecialty, ListSpecialties},
 
         data: () => ({
             search: "",
+            searchSpecialty: "",
             loading: undefined,
             creatingDoctor: false,
             selectedDoctor: undefined,
+            creatingSpecialty: false,
 
         }),
 
@@ -91,7 +102,7 @@
                 return !this.$store.getters.doctorsLoaded
             },
             specialties() {
-                return this.$store.getters.specialties
+                return this.$store.getters.specialties.filter((a) => a.name >= this.searchSpecialty.toUpperCase())
             },
             doctors() {
                 return this.$store.getters.doctors
