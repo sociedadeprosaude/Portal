@@ -392,16 +392,22 @@ exports.setUidToUsers = functions.https.onRequest(async (request, response) => {
     let query = firestore.collection('users').limit(100);
     let usersSnap = [];
     query = query.where('uid', '==', undefined)
-    usersSnap = await query.get();
-    let users = [];
-    usersSnap.forEach(doc => {
-        users.push({
-            id: doc.id
-        })
-    });
 
-    for(let i in users) {
-        firestore.collectionGroup('users').doc(users[i].id).update({uid: users[i].id})
+    usersSnap = await query.get();
+
+    while(usersSnap.docs.length > 0){
+        let users = [];
+        usersSnap.forEach(doc => {
+            users.push({
+                id: doc.id
+            })
+        });
+
+        for(let i in users) {
+            firestore.collectionGroup('users').doc(users[i].id).update({uid: users[i].id})
+        }
+
+        usersSnap = await query.get();
     }
 });
 
