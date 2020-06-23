@@ -1,7 +1,10 @@
 <template>
     <v-container fluid>
         <v-layout row wrap>
-            <v-flex sm12>
+            <v-flex xs12 class="text-center" v-if="loadingClinics">
+                <v-progress-circular indeterminate class="primary--text"/>
+            </v-flex>
+            <v-flex sm12 v-else>
                 <v-card class="pt-3 mb-4">
                     <v-layout row wrap>
                         <v-flex sm8>
