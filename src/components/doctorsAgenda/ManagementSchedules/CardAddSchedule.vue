@@ -2,11 +2,11 @@
     <v-layout row wrap>
         <v-flex xs12>
           <v-checkbox
-            v-model="scheduledExamCheck"
+            v-model="examTypeCheck"
             label="Criar agenda para exame agendável?"
           ></v-checkbox>
         </v-flex>
-        <v-flex v-if="!scheduledExamCheck" xs12 sm6>
+        <v-flex v-if="!examTypeCheck" xs12 sm6>
           <v-combobox
               class="mx-1"
               label="Especialidade"
@@ -37,12 +37,12 @@
               </template>
           </v-combobox>
         </v-flex>
-        <v-flex v-if="scheduledExamCheck" xs6>
+        <v-flex v-if="examTypeCheck" xs6>
           <v-select
               class="mx-1"
               prepend-icon="location_city"
-              v-model="scheduledExam"
-              :items="scheduledExams"
+              v-model="examType"
+              :items="examTypes"
               item-text="name"
               return-object
               label="Exame agendável"
@@ -142,12 +142,12 @@ export default {
     medicos: "",
     especialidade: undefined,
     clinic: undefined,
-    scheduledExam:undefined,
-    scheduledExamCheck:false
+    examType:undefined,
+    examTypeCheck:false
   }),
   mounted() {
     this.$store.dispatch("getSpecialties");
-    this.$store.dispatch("getScheduledExams");
+    this.$store.dispatch("getExamsTypes");
     this.$store.dispatch("getDoctors");
     this.$store.dispatch("getClinics");
   },
@@ -190,17 +190,19 @@ export default {
         return a.property;
       });
     },
-    scheduledExams() {
-      return this.$store.getters.scheduledExams;
+    examTypes() {
+      return this.$store.getters.examsTypes.filter((examType)=>{
+        return examType.scheduleable
+      });
     }
   },
   methods:{
       async saveNewSchedule(){
           let newScheduleObj
-          if(this.scheduledExamCheck){
+          if(this.examTypeCheck){
             newScheduleObj = {
               clinic:this.clinic,
-              exam_type:this.scheduledExam,
+              exam_type:this.examType,
               doctor:this.medicos
             }
           }else{

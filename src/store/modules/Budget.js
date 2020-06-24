@@ -172,7 +172,9 @@ const actions = {
                         payment_number: payload.payment_number
                     };
                     if (!payload.isConsultation) {
-                        Object.assign(obj, { exam: { ...payload.examObj} });
+                        Object.assign(obj, { exam: { ...payload.examObj,exam_type:payload.examObj.type} });
+                    }else{
+                        obj.specialty = payload.specialty.name
                     }
 
                     firebase.firestore().collection('users').doc(user.cpf).collection('procedures').doc(snap.id).update(
@@ -186,12 +188,13 @@ const actions = {
                 payment_number: payload.payment_number,
                 startAt: moment().format('YYYY-MM-DD hh:ss'),
                 type: type,
-                specialty: payload.specialty.name
             };
 
             if (!payload.isConsultation) {
 
-                Object.assign(obj, { exam: { ...payload.examObj} });
+                Object.assign(obj, { exam: { ...payload.examObj,exam_type:payload.examObj.type} });
+            }else{
+                obj.specialty = payload.specialty.name
             }
             firebase.firestore().collection('users').doc(user.cpf).collection('procedures').add(
                 { ...obj }

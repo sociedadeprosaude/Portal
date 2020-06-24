@@ -5,9 +5,9 @@ const state = {
     exams: [],
     loaded: false,
     examesSelected: [],
-    scheduledExams:[],
-    selectScheduledExam:undefined,
-    selectScheduledExamCheck: false
+    examsTypes:[],
+    selectExamType:undefined,
+    selectExamTypeCheck: false
 };
 
 const mutations = {
@@ -26,14 +26,25 @@ const mutations = {
     setExamesLoaded(state, payload) {
         state.loaded = payload
     },
-    setScheduleExams(state,payload){
-        state.scheduledExams = payload
+    setExamsTypes(state,payload){
+        state.examsTypes = payload
     },
-    selectScheduledExam(state,payload){
-        state.selectScheduledExam = payload
+    selectExamType(state,payload){
+        state.selectExamType = payload
     },
-    selectScheduledExamCheck(state,payload){
-        state.selectScheduledExamCheck = payload
+    selectExamTypeCheck(state,payload){
+        state.selectExamTypeCheck = payload
+    },
+    deleteExamType(state,payload){
+        let index = state.examsTypes.findIndex((type)=>type.name == payload)
+        state.examsTypes.splice(index,1)
+    },
+    editExamType(state,payload){
+        let index = state.examsTypes.findIndex((type)=>type.name == payload)
+        state.examsTypes[index] = {...payload}
+    },
+    addExamType(state,payload){
+        state.examsTypes.push(payload)
     }
 };
 
@@ -161,6 +172,10 @@ const actions = {
         firebase.firestore().collection('exams').doc(examKey).delete()
         return
     },
+    async deleteExamType({commit}, examKey) {
+        await firebase.firestore().collection('exams_types').doc(examKey).delete()
+        commit('deleteExamType',examKey)
+    },
     async setClinicOnExams(context, payload) {
         for (let exam in payload.exams) {
             let holder = {
@@ -202,8 +217,8 @@ const actions = {
             }).catch((err) => response.send('erro ' + err));
     },
 
-    async getScheduledExams({commit},payload){
-        firebase.firestore().collection('scheduledExams').get()
+    async getExamsTypes({commit},payload){
+        firebase.firestore().collection('exams_types').get()
             .then((snapshot)=>{
                 let exams = []
                 snapshot.forEach((doc)=>{
@@ -215,14 +230,23 @@ const actions = {
                     exams.push(obj)
                 })
 
-                commit('setScheduleExams',exams)
+                commit('setExamsTypes',exams)
             })
     },
-    async selectScheduledExam({commit}, payload) {
-        commit('selectScheduledExam', payload)
+    async addExamType({ commit }, payload) {
+        functions.removeUndefineds(payload)
+        await firebase.firestore().collection('exams_types').add(payload);
+        commit('addExamType',payload)
     },
-    async selectScheduledExamCheck({commit}, payload) {
-        commit('selectScheduledExamCheck', payload)
+    async editExamType({ commit }, payload) {
+        await firebase.firestore().collection('exams_types').doc(payload.id).update(payload);
+        //commit('editExamType',{...payload})
+    },
+    async selectExamType({commit}, payload) {
+        commit('selectExamType', payload)
+    },
+    async selectExamTypeCheck({commit}, payload) {
+        commit('selectExamTypeCheck', payload)
     }
 };
 
@@ -236,14 +260,14 @@ const getters = {
     examsLoaded(state) {
         return state.loaded
     },
-    scheduledExams(state){
-        return state.scheduledExams
+    examsTypes(state){
+        return state.examsTypes
     },
     scheduleExamSelected(state) {
-        return state.selectScheduledExam
+        return state.selectExamType
     },
     scheduleExamSelectedCheck(state){
-        return state.selectScheduledExamCheck
+        return state.selectExamTypeCheck
     }
 };
 

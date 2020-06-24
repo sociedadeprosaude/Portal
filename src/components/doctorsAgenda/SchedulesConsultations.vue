@@ -85,14 +85,17 @@
                             </v-flex>
                         </v-layout>
                         <div class="text-xs-center">
-                            <v-dialog v-model="dialog" v-if="createConsultationForm" max-width="520">
-                                <SchedulingForm @close-dialog="dialog = false"
+                            <v-dialog v-model="dialog" persistent v-if="createConsultationForm" max-width="520">
+                                <SchedulingForm @close-dialog="closeDialog"
                                                 :createConsultationForm="createConsultationForm"
                                                 :loaderPaymentNumber="loaderPaymentNumber"
-                                                :exam="exam"
+                                                :exams="examsLoading"
                                                 :numberReceipt="numberReceipt"
+                                                :modalidade="modalidade"
+                                                :previousConsultation="previousConsultation"
                                                 :status="status"
                                                 :payment_numberFound="payment_numberFound"
+                                                @findPaymentNumberToExam="thereIsPaymentNumber($event)"
                                 />
                             </v-dialog>
                         </div>
@@ -100,13 +103,13 @@
                 </v-layout>
             </ul>
         </div>
-        <v-flex xs12 v-if="consultationLoading">
+<!--         <v-flex xs12 v-if="consultationLoading">
             <div class="text-xs-center">
                 <v-dialog v-model="dialog" v-if="createConsultationForm" max-width="520">
                     <SchedulingForm @close-dialog="dialog = false"
                                     :createConsultationForm="createConsultationForm"
                                     :loaderPaymentNumber="loaderPaymentNumber"
-                                    :exam="exam"
+                                    :exams="examsLoading"
                                     :numberReceipt="numberReceipt"
                                     :modalidade="modalidade"
                                     :previousConsultation="previousConsultation"
@@ -115,7 +118,7 @@
                     />
                 </v-dialog>
             </div>
-        </v-flex>
+        </v-flex> -->
 
         <v-flex xs12 v-if="consultationLoading">
             <v-progress-circular class="primary--text" indeterminate/>
@@ -153,10 +156,9 @@
             modalidade: "Consulta",
             previousConsultation: undefined,
             createConsultationForm: undefined,
-            exam: undefined,
             loaderPaymentNumber: false,
             daysToListen: 3,
-            exams: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
+            examsLoading:[],
             loading: false,
             nextItem: 1,
         }),
@@ -178,7 +180,8 @@
                 this.previousConsultation = this.query.id
                 this.status = this.query.status
                 this.numberReceipt = this.query.payment_number
-
+            }else{
+                this.modalidade = "Consulta"
             }
         },
 
@@ -196,7 +199,23 @@
             consultationLoading() {
                 return this.$store.getters.consultationsLoading;
             },
+        },
 
+        watch:{
+            createConsultationForm(value){
+                this.examsLoading = []
+                let exams = this.$store.getters.exams
+                if(value){
+                    exams = exams.filter((exam)=>{
+                        let response = false
+                        if(value.consultation.exam_type && value.consultation.exam_type.name == exam.type)
+                            response = true
+                        return response
+                    })
+
+                    this.examsLoading = exams
+                }
+            }
         },
 
         methods: {
@@ -225,24 +244,32 @@
                     consultation: consultation
                 };
 
-                if (!this.query) {
+                if (!this.query && !consultation.exam_type) {
                     this.thereIsPaymentNumber();
                 }
 
                 this.createConsultationForm = this.selectedForm;
             },
 
-            async thereIsPaymentNumber() {
+            async thereIsPaymentNumber(value) {
                 this.payment_numberFound = undefined;
                 this.numberReceipt = "";
                 this.status = "Aguardando pagamento";
                 this.loaderPaymentNumber = true;
-                this.$store.dispatch("thereIsIntakes", {
+
+                let obj = value ? {
+                    user: this.selectedForm.user,
+                    doctor: this.selectedForm.consultation.doctor,
+                    exam: {
+                        exam_type:this.selectedForm.consultation.exam_type.name,
+                        ...value
+                    }
+                }:{
                     user: this.selectedForm.user,
                     doctor: this.selectedForm.consultation.doctor,
                     specialty: this.selectedForm.consultation.specialty,
-                    exam: this.exam
-                })
+                }
+                this.$store.dispatch("thereIsIntakes", obj)
                     .then(obj => {
                         if (obj.payment_number) {
                             this.payment_numberFound = obj;
@@ -279,6 +306,13 @@
                 this.$emit('refreshDate', this.daysToListen);
                 this.loading = false;
             },
+            closeDialog(){
+                this.dialog = false
+                this.payment_numberFound = undefined
+                this.status = ""
+                this.numberReceipt = ""
+                this.selectedForm = undefined
+            }
         }
     }
 

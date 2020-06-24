@@ -152,9 +152,9 @@ const actions = {
             ...intake.data(),
             id: intake.id
         };
-        console.log('intake puxando: ', intake.user)
-        console.log('user.dependents tamanho: ', intake.user.dependents.length)
-        if(intake.user.dependents.length === 0){
+        //console.log('intake puxando: ', intake.user)
+        //console.log('user.dependents tamanho: ', intake.user.dependents.length)
+        if(intake.user.dependents && intake.user.dependents.length === 0){
            delete intake.user.dependents
         }
         console.log('intake sem dependentes: ', intake.user)
@@ -192,7 +192,7 @@ const actions = {
         return
     },
 
-    async thereIsIntakes(context, payload) {
+    /* async thereIsIntakes(context, payload) {
 
         return new Promise(async (resolve, reject) => {
             let examesSpecialties = ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'];
@@ -227,7 +227,7 @@ const actions = {
             }
 
         })
-    },
+    }, */
 
     async getIntakesCategories({commit}) {
         firebase.firestore().collection('operational/').doc('intakes').onSnapshot((outtakesDoc) => {

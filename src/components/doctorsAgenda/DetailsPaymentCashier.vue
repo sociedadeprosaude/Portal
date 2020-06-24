@@ -405,7 +405,7 @@
                     user: this.$store.getters.selectedPatient,
                     colaborator: this.$store.getters.user,
                     parcelar: this.parcelar,
-                    doctor: this.selectedDoctor.name === this.noDoctorKeyWord ? undefined : this.selectedDoctor,
+                    //doctor: this.selectedDoctor.name === this.noDoctorKeyWord ? undefined : this.selectedDoctor,
                     payments: this.payment.paymentForm,
                     valuesPayments: this.payment.value,
                     unit: this.selectedUnit
@@ -435,7 +435,7 @@
                     this.alertMessage.text = 'Escolha um paciente'
                     return
                 }
-                if (!this.selectedDoctor) {
+                if (!this.selectedDoctor && this.consultas.length > 0) {
                     this.paymentLoading = false
                     this.alertMessage.model = true
                     this.alertMessage.text = 'Escolha um médico que requisitou este orçamento'

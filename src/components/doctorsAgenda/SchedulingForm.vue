@@ -101,12 +101,23 @@
                             </v-flex>
                             <v-flex xs12 sm6>
                                 <v-text-field
+                                        v-if="createConsultationForm.consultation.specialty"
                                         readonly
                                         hide-details
                                         outlined
                                         prepend-icon="school"
                                         v-model="createConsultationForm.consultation.specialty.name"
                                         label="Especialidade">
+                                </v-text-field>
+
+                                <v-text-field
+                                        v-else
+                                        readonly
+                                        hide-details
+                                        outlined
+                                        prepend-icon="school"
+                                        v-model="createConsultationForm.consultation.exam_type.name"
+                                        label="Tipo de exame">
                                 </v-text-field>
                             </v-flex>
 
@@ -122,11 +133,11 @@
                             </v-flex>
 
                             <v-flex xs12
-                                    v-show="exams.indexOf(createConsultationForm.consultation.specialty.name) !== -1">
+                                    v-show="createConsultationForm.consultation.exam_type">
                                 <v-combobox
                                         prepend-icon="poll"
                                         v-model="exam"
-                                        :items="listExam"
+                                        :items="exams"
                                         item-text="name"
                                         return-object
                                         label="Exame"
@@ -230,7 +241,7 @@
                     <submit-button
                             color="success"
                             rounded
-                            :disabled="loaderPaymentNumber || (exams.indexOf(createConsultationForm.consultation.specialty.name) !== -1 && !exam)"
+                            :disabled="loaderPaymentNumber || (createConsultationForm.consultation.exam_type && !exam)"
                             @reset="resetSchedule"
                             :success="success"
                             :loading="scheduleLoading"
@@ -248,14 +259,15 @@
 
     export default {
 
-        props: ['createConsultationForm', 'loaderPaymentNumber', 'exam', 'numberReceipt','status','payment_numberFound','modalidade','previousConsultation'],
+        props: ['createConsultationForm', 'loaderPaymentNumber', 'exams', 'numberReceipt','status','payment_numberFound','modalidade','previousConsultation'],
         components: {SubmitButton},
 
         data: () => ({
             success: false,
             scheduleLoading: false,
             statusOptions: [{text: "Aguardando pagamento"}, {text: "Pago"}],
-            exams: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
+            exam:undefined
+            //exams: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
         }),
         computed: {
             selectedPatient() {
@@ -264,11 +276,11 @@
             foundDependents() {
                 return this.selectedPatient ? this.selectedPatient.dependents : undefined;
             },
-            listExam() {
+            /* listExam() {
                 return this.$store.getters.exams.filter(a => {
                     return a.type === this.createConsultationForm.consultation.specialty.name;
                 });
-            },
+            }, */
             computedDateFormatted() {
                 return this.formatDate(
                     this.createConsultationForm.consultation.date.split(" ")[0]
@@ -288,21 +300,24 @@
 
             async saveConsultation() {
                 this.scheduleLoading = true;
-
                 let form = this.createConsultationForm;
+                let examObj
+                if(this.exam){
+                    examObj = {...this.exam,exam_type:form.consultation.exam_type.name}
+                }
                 form.user = {
                     ...form.user,
                     status: this.status,
                     type: this.modalidade,
                     payment_number: this.numberReceipt,
-                    exam: this.exam
+                    exam: examObj
                 };
                 form.consultation = {
                     ...form.consultation,
                     status: this.status,
                     type: this.modalidade,
                     payment_number: this.numberReceipt,
-                    exam: this.exam,
+                    exam: examObj,
                     previousConsultation: this.previousConsultation ? this.previousConsultation : undefined
                 };
 
@@ -314,6 +329,7 @@
                         dependent: form.user.dependent
                     };
                 this.loading = true;
+                console.log('->>>>',form)
                 await this.$store.dispatch("addUserToConsultation", form);
                 this.scheduleLoading = false;
                 this.success = true;
@@ -321,7 +337,14 @@
             },
 
             close: function () {
+                this.exam = undefined
                 this.$emit('close-dialog')
+            }
+        },
+        watch:{
+            exam(value){
+                if(value)
+                    this.$emit('findPaymentNumberToExam',value)
             }
         }
     }

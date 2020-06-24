@@ -48,7 +48,7 @@
                     placeholder="Tipos de Exames"
                     class="mx-5"
                     color="primary"
-                    v-model="search"
+                    v-model="searchType"
                     :loading="loading"
                     id="search"
                   />
@@ -60,13 +60,13 @@
             </v-card>
 
             <v-card>
-              <v-card-text v-if="exams.length !== 0">
-                <listExams :exams="exams" :loading="loading" @clear-search="search = ''" />
+              <v-card-text>
+                <listExamsTypes :examsTypes="examsTypes" />
               </v-card-text>
             </v-card>
           </v-flex>
-          <v-dialog v-model="newExam">
-            <createExamType @close-dialog="newExamType = false" />
+          <v-dialog v-model="newExamType">
+            <createExamType @close-dialog="newExamType = false" :registed="registed" />
           </v-dialog>
         </v-layout>
       </v-tab-item>
@@ -75,16 +75,19 @@
 </template>
 <script>
 import listExams from "../../components/Exams/listExams";
+import listExamsTypes from "../../components/Exams/listExamsTypes";
 import createExam from "../../components/Exams/CreateExam";
 import createExamType from "../../components/Exams/CreateExamType";
 
 export default {
-  components: { listExams, createExam },
+  components: { listExams,listExamsTypes, createExam,  createExamType},
 
   data: () => ({
     search: "",
+    searchType:"",
     loading: undefined,
     newExam: false,
+    newExamType:false,
     registed: false
   }),
 
@@ -108,11 +111,19 @@ export default {
         clearTimeout(self.typingTimer);
       }
     });
+
+    self.$store.dispatch('getExamsTypes')
   },
 
   computed: {
     exams() {
       return this.$store.getters.examsSelected;
+    },
+    examsTypes(){
+      
+      let e = this.$store.getters.examsTypes
+      console.log('--',e)
+        return e
     }
   }
 };

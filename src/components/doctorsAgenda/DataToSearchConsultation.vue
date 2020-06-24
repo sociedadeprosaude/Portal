@@ -82,10 +82,10 @@
                 return this.$store.getters.selectedSpecialty
             },
 
-            scheduledExam(){
+            examType(){
                 return this.$store.getters.scheduleExamSelected
             },
-            scheduledExamCheck(){
+            examTypeCheck(){
                 return this.$store.getters.scheduleExamSelectedCheck
             },
 
@@ -109,12 +109,11 @@
                     if (this.clinic) {
                         if (this.clinic !== a.clinic.name) response = false;
                     }
-                    if(this.scheduledExam){
-                        console.log('->',this.scheduledExam)
-                        if (!a.exam_type || this.scheduledExam.name !== a.exam_type.name) response = false;
+                    if(this.examType){
+                        if (!a.exam_type || this.examType.name !== a.exam_type.name) response = false;
                     }
 
-                    if((this.scheduledExamCheck && !a.exam_type) || (!this.scheduledExamCheck && a.exam_type)) response = false
+                    if((this.examTypeCheck && !a.exam_type) || (!this.examTypeCheck && a.exam_type)) response = false
                         
                     return response;
                 });

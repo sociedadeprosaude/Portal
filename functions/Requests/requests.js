@@ -228,7 +228,6 @@ async function fixIntakesBrokenSpecialties() {
 
 exports.thereIsPaymentNumber = functions.runWith(heavyFunctionsRuntimeOpts).https.onCall(async (data, context) => {
     let payload = data.payload
-    let examesSpecialties = ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'];
     let procedures;
     let type = payload.exam ? 'Exam' : 'Consultation';
     let status = payload.exam ? 'Exame Pago' : 'Consulta Paga';
@@ -236,20 +235,16 @@ exports.thereIsPaymentNumber = functions.runWith(heavyFunctionsRuntimeOpts).http
     if (payload.status && payload.payment_number)
         procedureRef = admin.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', 'Consultation')
             .where('specialty', '==', payload.specialty.name).where('status', 'array-contains-any', payload.status).where('payment_number', '==', payload.payment_number.toString());
-    else {
-        procedureRef = payload.exam ? procedureRef = admin.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)
-            .where('specialty', '==', payload.specialty.name).where('status', '==', [status]).where('exam.name', '==', payload.exam.name)
-            : procedureRef = admin.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)
-                .where('specialty', '==', payload.specialty.name).where('status', '==', [status])
+    else if(payload.exam){
+            procedureRef = admin.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)
+                .where('exam.exam_type', '==', payload.exam.exam_type).where('status', '==', [status]).where('exam.name', '==', payload.exam.name)
+    }       
+    else{
+        procedureRef = admin.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)
+            .where('specialty', '==', payload.specialty.name).where('status', '==', [status])            
     }
 
-
-    let procedureRefOr = admin.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', 'Exam')
-        .where('specialty', '==', payload.specialty.name).where('status', '==', ['Exame Pago'])
-
     procedures = await procedureRef.get();
-    if (procedures.empty && type === 'Consultation' && examesSpecialties.indexOf(payload.specialty.name) !== -1)
-        procedures = await procedureRefOr.get();
 
     if (!procedures.empty) {
         let payment_found
@@ -258,7 +253,7 @@ exports.thereIsPaymentNumber = functions.runWith(heavyFunctionsRuntimeOpts).http
         })
         return { Found: { procedureId: payment_found.id, ...payment_found.data() } }
     } else {
-        let cost = await specialtyCost(payload.specialty.name, payload.doctor.cpf)
+        let cost = payload.specialty  ? await specialtyCost(payload.specialty.name, payload.doctor.cpf) : undefined
         return { NotFound: cost };
     }
 });
@@ -447,12 +442,13 @@ exports.cancelAppointment = functions.runWith(heavyFunctionsRuntimeOpts).https.o
                         status: [status],
                         payment_number: data.payment_number,
                         startAt: data.startAt,
-                        type: type,
-                        specialty: data.specialty
+                        type: type
                     };
 
                     if (thereIsExam)
                         obj = { ...obj, exam: thereIsExam };
+                    else
+                        obj.specialty = data.specialty
                     admin.firestore().collection('users').doc(payload.idPatient).collection('procedures').add(
                         { ...obj }
                     )
@@ -523,13 +519,15 @@ async function addConsultationAppointmentToUser(payload) {
             status: ['Agendado'],
             startAt: moment().format('YYYY-MM-DD hh:ss'),
             consultation: copyPayload.consultation.id,
-            specialty: copyPayload.consultation.specialty.name
         };
         if (copyPayload.consultation.exam) {
             obj.type = 'Exam';
             obj.exam = copyPayload.consultation.exam
-        } else
+        } else{
+            obj.specialty= copyPayload.consultation.specialty.name
             obj.type = 'Consultation';
+        }
+            
 
         admin.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').add(obj)
     }
