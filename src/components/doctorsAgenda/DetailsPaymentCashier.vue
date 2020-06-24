@@ -475,7 +475,6 @@
                 await this.$store.commit('setSelectedBudget', undefined);
                 this.$store.commit('clearShoppingCartItens');
                 this.card = false;
-                this.clearCart();
             },
             async receipt(intake) {
                 let intakes = await this.$store.dispatch('getIntakeDetails', intake);
