@@ -131,7 +131,9 @@
                         if (this.doctor.cpf !== a.doctor.cpf) response = false;
                     }
                     if (this.specialty) {
-                        if (this.specialty.name !== a.specialty.name) response = false;
+                        if(a.specialty){
+                            if (this.specialty.name !== a.specialty.name) response = false;
+                        }
                     }
                     if (this.clinic) {
                         if (this.clinic !== a.clinic.name) response = false;
