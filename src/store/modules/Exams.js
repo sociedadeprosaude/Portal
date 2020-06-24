@@ -4,7 +4,10 @@ import firebase from "firebase";
 const state = {
     exams: [],
     loaded: false,
-    examesSelected: []
+    examesSelected: [],
+    scheduledExams:[],
+    selectScheduledExam:undefined,
+    selectScheduledExamCheck: false
 };
 
 const mutations = {
@@ -22,6 +25,15 @@ const mutations = {
     },
     setExamesLoaded(state, payload) {
         state.loaded = payload
+    },
+    setScheduleExams(state,payload){
+        state.scheduledExams = payload
+    },
+    selectScheduledExam(state,payload){
+        state.selectScheduledExam = payload
+    },
+    selectScheduledExamCheck(state,payload){
+        state.selectScheduledExamCheck = payload
     }
 };
 
@@ -188,6 +200,29 @@ const actions = {
                 }));
                 console.log(num + ' preços de exames atualizados.');
             }).catch((err) => response.send('erro ' + err));
+    },
+
+    async getScheduledExams({commit},payload){
+        firebase.firestore().collection('scheduledExams').get()
+            .then((snapshot)=>{
+                let exams = []
+                snapshot.forEach((doc)=>{
+                    let obj = {
+                        id:doc.id,
+                        ...doc.data()
+                    }
+
+                    exams.push(obj)
+                })
+
+                commit('setScheduleExams',exams)
+            })
+    },
+    async selectScheduledExam({commit}, payload) {
+        commit('selectScheduledExam', payload)
+    },
+    async selectScheduledExamCheck({commit}, payload) {
+        commit('selectScheduledExamCheck', payload)
     }
 };
 
@@ -200,6 +235,15 @@ const getters = {
     },
     examsLoaded(state) {
         return state.loaded
+    },
+    scheduledExams(state){
+        return state.scheduledExams
+    },
+    scheduleExamSelected(state) {
+        return state.selectScheduledExam
+    },
+    scheduleExamSelectedCheck(state){
+        return state.selectScheduledExamCheck
     }
 };
 

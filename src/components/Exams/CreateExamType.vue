@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid>
+    <v-container>
         <v-layout row wrap>
             <v-flex xs12>
                 <v-card grid-list-x1 fluid class="mt-4">
@@ -18,48 +18,10 @@
                                     />
                                 </v-flex>
                                 <v-flex xs12 sm12>
-                                    <v-select
-                                            class="ml-3 mr-3"
-                                            label="Tipo"
-                                            prepend-icon="school"
-                                            v-model="editedExam.type"
-                                            :items="specialties"
-                                            item-text="name"
-                                            return-object
-                                            outlined
-                                            chips
-                                            color="pink"
-                                            clearable
-                                    >
-                                        <template v-slot:selection="data">
-                                            <v-chip
-                                                    :key="JSON.stringify(data.item)"
-                                                    :input-value="data.selected"
-                                                    :disabled="data.disabled"
-                                                    class="v-chip--select-multi"
-                                                    @click.stop="data.parent.selectedIndex = data.index"
-                                                    @input="data.parent.selectItem(data.item)"
-                                                    text-color="white"
-                                                    color="info"
-                                            >{{ data.item.name }}
-                                            </v-chip>
-                                        </template>
-                                    </v-select>
-                                </v-flex>
-                                <v-flex xs12 sm12>
-                                    <v-textarea
-                                            outlined
-                                            label="Regras"
-                                            v-model="editedExam.rules"
-                                            class="ml-3 mr-3"
-                                            prepend-icon="report_problem"
-                                    />
-                                </v-flex>
-                                <v-flex xs12 sm12>
-                                    <v-text-field
+                                    <v-checkbox
                                             outlined
                                             required
-                                            label="Preço"
+                                            label="Agendável"
                                             v-model="editedExam.price"
                                             prepend-icon="attach_money"
                                             :rules="rules.campoObrigatorio"
@@ -91,7 +53,7 @@
     export default {
 
         components: {SubmitButton},
-        props: ['registed', 'selectedExam'],
+        props: ['selectedExam'],
 
         data: () => ({
             validRegister: true,
@@ -99,7 +61,7 @@
             success: false,
 
             editedExam: {
-                id: '', name: '', rules: '', type: '',
+                id: '', name: '', scheduleable:false,
             },
 
             rules: {
