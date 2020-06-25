@@ -15,29 +15,35 @@
                                     </v-flex>
                                     <v-spacer/>
                                     <v-flex xs3>
-                                        <p class="white--text font-weight-bold text-left"> N° de Consultas: {{consultation.numConsultations}}</p>
+                                        <p class="white--text font-weight-bold text-left"> N° de Consultas:
+                                            {{consultation.numConsultations}}</p>
                                     </v-flex>
                                     <v-flex xs5>
-                                        <p class="white--text text-left font-weight-bold"> CRM: {{consultation.doctor.crm}}</p>
+                                        <p class="white--text text-left font-weight-bold"> CRM:
+                                            {{consultation.doctor.crm}}</p>
                                     </v-flex>
                                     <v-spacer/>
                                     <v-flex xs3>
-                                        <p class="white--text font-weight-bold text-left"> N° de Retorno: {{consultation.numRegress}}</p>
+                                        <p class="white--text font-weight-bold text-left"> N° de Retorno:
+                                            {{consultation.numRegress}}</p>
                                     </v-flex>
                                     <v-flex xs5>
-                                        <p class="white--text text-left font-weight-bold"> CPF: {{consultation.doctor.cpf}}</p>
+                                        <p class="white--text text-left font-weight-bold"> CPF:
+                                            {{consultation.doctor.cpf}}</p>
                                     </v-flex>
                                     <v-spacer/>
                                     <v-flex xs1>
                                         <v-btn icon class="grey my-1 mx-1" dark x-small text fab>
-                                            <v-icon @click="deactivateDoctor(consultation.doctor)">power_settings_new</v-icon>
+                                            <v-icon @click="deactivateDoctor(consultation.doctor)">power_settings_new
+                                            </v-icon>
                                         </v-btn>
                                     </v-flex>
                                 </v-layout>
                             </v-card>
                         </v-flex>
                         <v-flex xs12 class="mt-4 mb-3">
-                            <p class="text-left primary--text font-weight-bold ml-2" v-if="ConsultationsByDoctors(consultations).length !== 0">{{date |
+                            <p class="text-left primary--text font-weight-bold ml-2"
+                               v-if="ConsultationsByDoctors(consultations).length !== 0">{{date |
                                 dateFilter}} - {{daydate(date)}}</p>
                             <v-divider class="primary"/>
                         </v-flex>
@@ -69,10 +75,10 @@
             <v-flex xs12 v-if="consultations.length === 0 && loadingConsultations === false">
                 <p>Não a consultas marcadas para hoje :(</p>
             </v-flex>
-          <v-dialog v-if="selectedDoctor" v-model="confirmDeactivate" max-width="500px" persistent>
-              <v-flex xs12 v-if="loading">
-                  <v-progress-circular class="primary--text" indeterminate/>
-              </v-flex>
+            <v-dialog v-if="selectedDoctor" v-model="confirmDeactivate" max-width="500px" persistent>
+                <v-flex xs12 v-if="loading">
+                    <v-progress-circular class="primary--text" indeterminate/>
+                </v-flex>
                 <v-card v-else>
                     <v-card-title>
                         <v-spacer/>
@@ -112,9 +118,10 @@
 <script>
     import moment from 'moment/moment'
     import SubmitButton from '../../../components/SubmitButton'
+
     export default {
         name: "CardDoctorsManagementConsultations",
-        components:{SubmitButton},
+        components: {SubmitButton},
 
         props: ['especialtie', 'date'],
         data: () => ({
@@ -127,20 +134,20 @@
                 "Sexta-feira",
                 "Sábado"
             ],
-            clinics:[],
-            selectedDoctor:[],
-            specialtiesDoctor:'',
-            success:false,
-            loading:false,
-            loadingConsultations:false,
-            confirmDeactivate:false,
+            clinics: [],
+            selectedDoctor: [],
+            specialtiesDoctor: '',
+            success: false,
+            loading: false,
+                loadingConsultations: false,
+            confirmDeactivate: false,
             patientSelected: [],
-            specialtyToDeactivate:{},
-            clinicsToDeactivate:{}
+            specialtyToDeactivate: {},
+            clinicsToDeactivate: {}
         }),
         computed: {
             consultations() {
-                if(moment().format('YYYY-MM-DD') !== this.date){
+                if (moment().format('YYYY-MM-DD') !== this.date) {
                     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.loadingConsultations = !this.loadingConsultations
                 }
@@ -148,21 +155,20 @@
                     return this.especialtie && this.date ? this.especialtie.name === a.specialty.name && this.date === a.date.split(' ')[0] && a.user : false
                 });
             },
-            doctor(){
-                    return this.$store.getters.doctor
+            doctor() {
+                return this.$store.getters.doctor
             }
         },
         mounted() {
             this.initialConfig()
 
         },
-        watch: {
-        },
+        watch: {},
         methods: {
 
-            cleanSpecialtyToDeactivate(){
-                this.specialtyToDeactivate=[];
-                this.clinicsToDeactivate=[]
+            cleanSpecialtyToDeactivate() {
+                this.specialtyToDeactivate = [];
+                this.clinicsToDeactivate = []
             },
             ConsultationsByDoctors(consultations) {
                 let res = {};
@@ -183,8 +189,8 @@
                 return res
             },
             async deactivateDoctor(item) {
-                await this.$store.dispatch('getDoctor',item.cpf);
-                if(this.doctor.cpf === item.cpf){
+                await this.$store.dispatch('getDoctor', item.cpf);
+                if (this.doctor.cpf === item.cpf) {
                     this.selectedDoctor = this.doctor;
                     this.clinics = this.doctor.clinics;
                     this.specialtiesDoctor = this.doctor.specialties;
@@ -203,7 +209,7 @@
                 this.$emit('patientSelect', item.user);
                 this.$emit('consultationSelect', item)
             },
-            async deleteAllSchedule(doctor){
+            async deleteAllSchedule(doctor) {
                 this.loading = true;
                 let payload = {
                     doctor: doctor,
@@ -213,7 +219,7 @@
                 await this.$store.dispatch('deleteAllSchedule', payload);
                 this.success = true;
                 this.loading = false;
-                this.confirmDeactivate= false
+                this.confirmDeactivate = false
             },
             async selectUser(user) {
                 if (user) {

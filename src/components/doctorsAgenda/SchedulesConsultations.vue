@@ -23,7 +23,7 @@
                                                     <span class="subtitle-2 font-weight-bold">{{schedule.doctor.name}}</span>
                                                     <span class="subtitle-2 font-weight-bold mx-2">-</span>
                                                     <span class="subtitle-2 font-weight-bold subheading">
-                                                    {{schedule.specialty.name}}
+                                                    {{schedule.specialty ? schedule.specialty.name : schedule.exam_type.name}}
                                             </span>
                                                     <v-spacer/>
                                                     <v-chip color="primary_dark" class="mb-2" small text-color="white">
@@ -121,6 +121,7 @@
         <v-flex xs12 v-if="!consultationLoading">
             <v-btn class="primary" rounded text @click="listenMoreConsultations">Carregar mais</v-btn>
         </v-flex>
+
         <v-flex xs12 v-if="consultationLoading">
             <v-progress-circular class="primary--text" indeterminate/>
         </v-flex>
@@ -150,8 +151,6 @@
             ],
             dialog: false,
             numberReceipt: "",
-            payment_numberFound: undefined,
-            status: "",
             payment_numberFound: undefined,
             status: "",
             modalidade: "Consulta",
@@ -184,6 +183,7 @@
                 this.numberReceipt = this.query.payment_number
 
             }
+
         },
 
         computed: {

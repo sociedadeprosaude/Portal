@@ -82,6 +82,13 @@
                 return this.$store.getters.selectedSpecialty
             },
 
+            scheduledExam(){
+                return this.$store.getters.scheduleExamSelected
+            },
+            scheduledExamCheck(){
+                return this.$store.getters.scheduleExamSelectedCheck
+            },
+
             options() {
                 return {
                     duration: 500,
@@ -97,11 +104,18 @@
                         if (this.doctor.cpf !== a.doctor.cpf) response = false;
                     }
                     if (this.specialty) {
-                        if (this.specialty.name !== a.specialty.name) response = false;
+                        if (!a.specialty || this.specialty.name !== a.specialty.name) response = false;
                     }
                     if (this.clinic) {
                         if (this.clinic !== a.clinic.name) response = false;
                     }
+                    if(this.scheduledExam){
+                        console.log('->',this.scheduledExam)
+                        if (!a.exam_type || this.scheduledExam.name !== a.exam_type.name) response = false;
+                    }
+
+                    if((this.scheduledExamCheck && !a.exam_type) || (!this.scheduledExamCheck && a.exam_type)) response = false
+                        
                     return response;
                 });
                 return this.consultationsOfSchedules(schedules);
@@ -186,11 +200,14 @@
                                     doctor: schedule.doctor,
                                     date: date + ' ' + hourConsultation,
                                     routine_id: schedule.routine_id,
-                                    specialty: schedule.specialty,
                                     vacancy: schedule.days[moment(date).weekday()].vacancy,
                                     id_schedule: schedule.id,
 
                                 };
+                                if(schedule.specialty)
+                                    scheduleObj.specialty = schedule.specialty
+                                if(schedule.exam_type)
+                                    scheduleObj.exam_type = schedule.exam_type
                                 let obj = {...scheduleObj, ...this.numberVacancyAndReturns(scheduleObj)};
                                 obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns;
                                 consultations.push(obj)
@@ -225,8 +242,9 @@
 
                 let consultations = this.consultations;
                 return consultations.reduce((obj, item) => {
-
-                    if (schedule.clinic.name === item.clinic.name && ((schedule.specialty && item.specialty && schedule.specialty.name === item.specialty.name))
+                    let specialtyOrExamType = ((schedule.specialty && item.specialty && schedule.specialty.name === item.specialty.name) 
+                                                ||(schedule.exam_type && item.exam_type && schedule.exam_type.name === item.exam_type.name))
+                    if (schedule.clinic.name === item.clinic.name && specialtyOrExamType
                         && schedule.doctor.cpf === item.doctor.cpf && schedule.date === item.date && item.user) {
                         if (item.type === 'Consulta') {
                             obj.qtd_consultations = obj.qtd_consultations + 1
