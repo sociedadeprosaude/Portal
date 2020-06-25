@@ -226,7 +226,7 @@
                 let consultations = this.consultations;
                 return consultations.reduce((obj, item) => {
 
-                    if (schedule.clinic.name === item.clinic.name && schedule.specialty.name === item.specialty.name
+                    if (schedule.clinic.name === item.clinic.name && ((schedule.specialty && item.specialty && schedule.specialty.name === item.specialty.name))
                         && schedule.doctor.cpf === item.doctor.cpf && schedule.date === item.date && item.user) {
                         if (item.type === 'Consulta') {
                             obj.qtd_consultations = obj.qtd_consultations + 1

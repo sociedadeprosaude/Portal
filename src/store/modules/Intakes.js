@@ -135,6 +135,85 @@ const actions = {
         }
     },
 
+    async verifyUnpaidConsultation(context, payload) {
+        let consultationFound = undefined;
+        let precoVendaZero = payload.isConsultation && payload.specialty.price === 0;
+        if (!precoVendaZero) {
+            let consultationRef = payload.userRef.collection('consultations').where('specialty.name', '==', payload.specialty.name).where('status', '==', 'Aguardando pagamento')
+            //.get()
+
+            if (!payload.isConsultation)
+                consultationRef.where('exam.name', '==', payload.examObj.name);
+            let consultations = await consultationRef.get();
+            consultations.forEach(async (c) => {
+                consultationFound = c;
+                context.dispatch('updatePaymentNumberConsultation', { user: payload.user, consultation: c, payment_number: payload.payment_number })
+            })
+        }
+
+
+        context.dispatch('createOrUpdateProcedure', { consultationFound: consultationFound, consultation: payload.consultation, precoVendaZero: precoVendaZero, userRef: payload.userRef, user: payload.user, isConsultation: payload.isConsultation, payment_number: payload.payment_number, specialty: payload.specialty, examObj: payload.examObj })
+    },
+
+    async createOrUpdateProcedure({ }, payload) {
+        let consultationFound = payload.consultationFound;
+        let user = payload.user;
+        let statusName = payload.isConsultation ? 'Consulta Paga' : 'Exame Pago';
+        let type = payload.isConsultation ? 'Consultation' : 'Exam';
+
+        if (consultationFound || (payload.precoVendaZero && payload.isConsultation)) {
+            let consultation = payload.precoVendaZero && payload.isConsultation ? payload.consultation : consultationFound
+
+            let procedures = await firebase.firestore().collection('users').doc(user.cpf).collection('procedures').where('consultation', '==', consultation.id)
+                .get();
+
+            if (!procedures.empty) {
+                procedures.forEach((snap) => {
+                    let data = snap.data();
+                    let obj = {
+                        status: firebase.firestore.FieldValue.arrayUnion(statusName),
+                        payment_number: payload.payment_number
+                    };
+                    if (!payload.isConsultation) {
+                        Object.assign(obj, { exam: { ...payload.examObj } });
+                    }
+
+                    firebase.firestore().collection('users').doc(user.cpf).collection('procedures').doc(snap.id).update(
+                        { ...obj }
+                    )
+                })
+            }
+        } else {
+            let obj = {
+                status: [statusName],
+                payment_number: payload.payment_number,
+                startAt: moment().format('YYYY-MM-DD hh:ss'),
+                type: type,
+                specialty: payload.specialty.name
+            };
+
+            if (!payload.isConsultation) {
+
+                Object.assign(obj, { exam: { ...payload.examObj } });
+            }
+            firebase.firestore().collection('users').doc(user.cpf).collection('procedures').add(
+                { ...obj }
+            )
+        }
+
+    },
+
+    async updatePaymentNumberConsultation(context, payload) {
+        await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.id).update({
+            status: 'Pago',
+            payment_number: payload.payment_number.toString()
+        });
+        await firebase.firestore().collection('consultations').doc(payload.consultation.id).update({
+            status: 'Pago',
+            payment_number: payload.payment_number.toString()
+        })
+    },
+
     async getUserIntakes(context, user) {
         let userRef = firebase.firestore().collection('users').doc(user.cpf);
         let intakesSnap = (await userRef.collection('intakes').get()).docs;
@@ -184,43 +263,6 @@ const actions = {
                 cancelled_by: context.getters.user
             });
         return
-    },
-
-    async thereIsIntakes(context, payload) {
-
-        return new Promise(async (resolve, reject) => {
-            let examesSpecialties = ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'];
-            let procedures;
-            let type = payload.exam ? 'Exam' : 'Consultation';
-            let status = payload.exam ? 'Exame Pago' : 'Consulta Paga';
-            let procedureRef;
-            if(payload.status && payload.payment_number)
-                procedureRef = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', 'Consultation')
-                    .where('specialty', '==', payload.specialty.name).where('status', 'array-contains-any', payload.status).where('payment_number','==',payload.payment_number.toString());
-            else{
-                procedureRef = payload.exam ? procedureRef = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)
-                        .where('specialty', '==', payload.specialty.name).where('status', '==', [status]).where('exam.name', '==', payload.exam.name)
-                    : procedureRef = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)
-                        .where('specialty', '==', payload.specialty.name).where('status', '==', [status])
-            }
-
-
-            let procedureRefOr = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', 'Exam')
-                .where('specialty', '==', payload.specialty.name).where('status', '==', ['Exame Pago'])
-
-            procedures = await procedureRef.get();
-            if (procedures.empty && type === 'Consultation' && examesSpecialties.indexOf(payload.specialty.name) !== -1)
-                procedures = await procedureRefOr.get();
-
-            if (!procedures.empty) {
-                procedures.forEach((procedure) => {
-                    resolve({ procedureId: procedure.id, ...procedure.data() })
-                })
-            } else {
-                reject('Payment Number not found')
-            }
-
-        })
     },
 
     async getIntakesCategories({commit}) {
