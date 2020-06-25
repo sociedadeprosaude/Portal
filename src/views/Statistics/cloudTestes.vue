@@ -1,5 +1,5 @@
 <template>
-  <v-container v-if="statistics && months && years">
+  <v-container fluid v-if="statistics && months && years">
     <v-row>
       <v-col cols="2">
         <v-select :items="years" v-model="year"></v-select>
@@ -18,43 +18,90 @@
       <v-col cols="3">
         <MiniStatistic
           icon="mdi-currency-usd"
-          :title="total"
+          :title="`R$ ${total}`"
           sub-title="faturamento"
           color="orange"
         />
       </v-col>
       <v-col cols="3">
-        <MiniStatistic icon="mdi-currency-usd-off" :title="cost" sub-title="Custos" color="red" />
+        <MiniStatistic
+          icon="mdi-currency-usd-off"
+          :title="`R$ ${cost}`"
+          sub-title="Custos"
+          color="red"
+        />
       </v-col>
       <v-col cols="3">
-        <MiniStatistic icon="mdi-plus" :title="profit" sub-title="Lucro Líquido" color="green" />
+        <MiniStatistic
+          icon="mdi-plus"
+          :title="`R$ ${profit}`"
+          sub-title="Lucro Líquido"
+          color="green"
+        />
       </v-col>
       <v-col cols="3">
         <MiniStatistic icon="mdi-counter" :title="num" sub-title="Nº Vendas" color="blue" />
       </v-col>
     </v-row>
-    {{statistics[year][month]}}
     <v-row class="mt-2">
       <h1>Faturamento</h1>
     </v-row>
-    {{totalDataset}}
     <v-row>
       <v-col>
         <v-card elevation="0">
-          <CCardBody>
-            <CChartLine :datasets="totalDataset" :labels="days" />
-          </CCardBody>
+          <v-row v-if="faturamentoDataset">
+            <v-col>
+              <line-chart :chart-data="faturamentoDataset" :options="options"></line-chart>
+            </v-col>
+          </v-row>
         </v-card>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="6">
+        <h1>Mais lucrativos</h1>
+
+        <v-card>
+          <v-card-text>
+            <div class="progress-group" v-for="(item,i) in profitDataset" :key="i">
+              <div class="progress-group-header">
+                <span class="title">{{item.name}}</span>
+                <span class="ml-auto font-weight-bold">R$ {{item.profit}}</span>
+              </div>
+              <v-divider />
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col cols="6">
+        <h1>Mais vendidos</h1>
+        <v-card elevation="0">
+          <v-row>
+            <v-col>
+              <pie-chart :chart-data="maisVendidosDataset" :options="options"></pie-chart>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+    </v-row>
+    {{info}}
+    {{maisVendidos}}
+    {{profitDataset}}
   </v-container>
   <v-container v-else></v-container>
 </template>
 
 <script>
-import MiniStatistic from "@/components/MiniStatistic";
+import LineChart from "@/components/Charts/LineChart";
+import PieChart from "@/components/Charts/PieChart";
 
+import MiniStatistic from "@/components/MiniStatistic";
 export default {
+  components: {
+    MiniStatistic,
+    LineChart,
+    PieChart
+  },
   data: vm => ({
     years: null,
     year: null,
@@ -108,9 +155,7 @@ export default {
       31
     ]
   }),
-  components: {
-    MiniStatistic
-  },
+
   mounted() {
     this.$store.dispatch("getAllIntakes");
   },
@@ -154,32 +199,66 @@ export default {
     num() {
       return String(this.info.num);
     },
-    totalDataset() {
-      if (this.info)
-        return [
+    maisVendidos() {
+      return this.info.arrSelled;
+    },
+    labels() {
+      return Object.keys(this.info.arrSelled).map(key => key);
+    },
+    maisVendidosDataset() {
+      return {
+        labels: Object.keys(this.info.arrSelled),
+        backgroundColor: ["#41B883", "#E46651", "#00D8FF", "#DD1B16"],
+        datasets: [
           {
-            label: "R$",
-            backgroundColor: "rgb(228,102,81,0.9)",
+            data: Object.keys(this.info.arrSelled).map(
+              key => this.info.arrSelled[key]
+            )
+          }
+        ]
+      };
+    },
+    faturamentoDataset() {
+      return {
+        labels: this.days,
+        datasets: [
+          {
+            lineTension: 0,
+            fill: false,
+            borderColor: "rgb(75, 192, 192)",
             data: Object.keys(this.info.arrFaturamento).map(
               key => this.info.arrFaturamento[key]
             )
           }
-        ];
-      return [0];
+        ]
+      };
     },
-    defaultDatasets() {
-      return [
-        {
-          label: "R$",
-          backgroundColor: "rgb(228,102,81,0.9)",
-          data: [30, 39, 10, 5000, 30, 70, 3005]
+    options() {
+      return {
+        // elements: {
+        //   point: {
+        //     radius: 0
+        //   }
+        // },
+        legend: {
+          display: false
+        },
+        tooltips: {
+          enabled: true,
+          callbacks: {
+            title: (items, data) => "R$ " + items[0].value,
+            label: (items, data) => null
+          }
         }
-        // {
-        //   label: "Data Two",
-        //   backgroundColor: "rgb(0,216,255,0.9)",
-        //   data: [39, 80, 40, 35, 40, 20, 45]
-        // }
-      ];
+      };
+    },
+    profitDataset() {
+      return Object.keys(this.info.arrProfit)
+        .map(key => ({
+          name: key,
+          profit: this.round2(this.info.arrProfit[key])
+        }))
+        .sort((a, b) => b.profit - a.profit);
     }
   }
 };
@@ -188,4 +267,5 @@ export default {
 
 
 <style scoped lang="scss">
+@import "~@coreui/coreui/scss/coreui";
 </style> 

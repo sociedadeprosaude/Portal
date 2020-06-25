@@ -25,6 +25,7 @@ import 'bootstrap'
 import CoreuiVue from '@coreui/vue';
 import CoreuiVueCharts from '@coreui/vue-chartjs'
 
+
 const options = {
   name: '_blank',
   specs: [

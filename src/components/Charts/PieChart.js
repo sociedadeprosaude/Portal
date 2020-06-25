@@ -1,5 +1,6 @@
 
 import { Doughnut, mixins } from "vue-chartjs";
+import 'chartjs-plugin-colorschemes';
 const { reactiveProp } = mixins;
 
 export default {
@@ -8,9 +9,13 @@ export default {
   mounted() {
     this.renderChart(this.chartData, {
       legend: {
-        display: true,
-        text: 'Outtakes',
+
         position: "right"
+      },
+      plugins: {
+        colorschemes: {
+          scheme: 'brewer.SetOne9'
+        }
       },
       responsive: true, maintainAspectRatio: false
     });

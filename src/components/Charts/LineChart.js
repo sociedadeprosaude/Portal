@@ -1,30 +1,15 @@
-import { Line, mixins } from 'vue-chartjs';
-import globalOptionsMixin from "@/components/Charts/globalOptionsMixin";
+import { Line, mixins } from "vue-chartjs";
+const { reactiveProp } = mixins;
 
 export default {
-  name: 'line-chart',
   extends: Line,
-  mixins: [mixins.reactiveProp, globalOptionsMixin],
-  props: {
-    extraOptions: {
-      type: Object,
-      default: () => ({})
-    }
-  },
-  data() {
-    return {
-      ctx: null
-    };
-  },
+  mixins: [reactiveProp],
+  props: ['chartData', 'options'],
+
   mounted() {
-    this.$watch(
-      'chartData',
-      (newVal, oldVal) => {
-        if (!oldVal) {
-          this.renderChart(this.chartData, this.extraOptions);
-        }
-      },
-      { immediate: true }
-    );
+    this.renderChart(this.chartData, {
+      responsive: true,
+      maintainAspectRatio: false, ...this.options
+    })
   }
-};
+}

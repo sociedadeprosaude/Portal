@@ -44,15 +44,28 @@ function analyzeIntakes(intakes) {
                 var sameDate = groupDay(day, intakes[year][month])
                 arrDay[day] = sameDate.reduce((total, e) => total + Number(e.total), 0)
             }
-            var arrDict = {};
+            var arrSelled = {};
+            var arrProfit = {}
+            // console.log(year,month)
             intakes[year][month].forEach((intake) => {
-                if (intake.specialties)
-                    intake.specialties.forEach((specialty) => arrDict[specialty.name] = (arrDict[specialty.name] || 0) + 1)
+                if (intake.specialties) {
+                    intake.specialties.forEach((specialty) => {
+                        arrSelled[specialty.name] = (arrSelled[specialty.name] || 0) + 1;
+                        arrProfit[specialty.name] = (arrProfit[specialty.name] || 0) + Number(specialty.price) - Number(specialty.cost)
+                    })
+                }
 
-                if (intakes.exams)
-                    intake.exams.forEach((exam) => arrDict[exam.name] = (arrDict[exam.name] || 0) + 1)
+
+                if (intake.exams) {
+                    intake.exams.forEach((exam) => {
+                        arrSelled[exam.name] = (arrSelled[exam.name] || 0) + 1;
+                        arrProfit[exam.name] = (arrProfit[exam.name] || 0) + Number(exam.price) - Number(exam.cost);
+                    })
+                }
 
             })
+
+            //  console.log(arrProfit)
 
 
 
@@ -62,7 +75,8 @@ function analyzeIntakes(intakes) {
                 profit: total - cost,
                 num: intakes[year][month].length,
                 arrFaturamento: arrDay,
-                arrSelled: arrDict
+                arrSelled: arrSelled,
+                arrProfit: arrProfit
             }
         })
     })
@@ -72,9 +86,17 @@ function analyzeIntakes(intakes) {
 
 const actions = {
     async getAllIntakes({ commit }, payload) {
-        var intakes = await firebase.firestore().collection('intakes').limit(50).get();
-        intakes = intakes.docs.map((doc) => {
-            var intake = doc.data()
+
+
+        var intakes = await firebase.firestore().collection('intakes').limit(100).get();
+        intakes = await Promise.all(intakes.docs.map(async (doc) => {
+            var intake = doc.data();
+
+            var exams = await firebase.firestore().collection('intakes').doc(doc.id).collection('exams').get();
+            var specialties = await firebase.firestore().collection('intakes').doc(doc.id).collection('specialties').get();
+            if (!exams.empty) intake.exams = exams.docs.map((exam) => exam.data())
+            if (!specialties.empty) intake.specialties = specialties.docs.map((specialty) => specialty.data())
+
             return {
                 date: intake.date,
                 total: Number(intake.total),
@@ -84,11 +106,17 @@ const actions = {
                 exams: intake.exams,
                 masculino: intake.user ? intake.user.sex == "Masculino" : false
             }
-        })
+        }))
         intakes = groupIntakes(intakes);
+        console.log(intakes);
         intakes = analyzeIntakes(intakes);
+        console.log(intakes)
         commit('setStatistics', intakes)
     },
+    async getIntakesTeste({ commit }, payload) {
+
+    }
+
 
 };
 
