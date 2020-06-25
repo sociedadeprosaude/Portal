@@ -110,8 +110,23 @@ export default {
       clockInterval: undefined,
       constants: constants,
       lastRoomCalled: null,
-      animation: ""
+      animation: "",
+      playingAudio: false
     };
+  },
+  watch: {
+    lastTicketCalled() {
+      // let sound = new Audio('https://firebasestorage.googleapis.com/v0/b/prosaude-36f66.appspot.com/o/assets%2FCollected%20Coin%20A1.mp3?alt=media&token=57509b64-12aa-4946-9814-42995ac8ab41')
+      // sound.play()
+      // if (!this.playingAudio) {
+      //   let sound = new Audio('https://firebasestorage.googleapis.com/v0/b/prosaude-36f66.appspot.com/o/assets%2FCollected%20Coin%20A1.mp3?alt=media&token=57509b64-12aa-4946-9814-42995ac8ab41')
+      //   sound.play()
+      //   this.playingAudio = true
+      //   setTimeout(() => {
+      //     this.playingAudio = false
+      //   }, 1000)
+      // }
+    }
   },
   computed: {
     // rooms() {
@@ -166,7 +181,9 @@ export default {
             this.animation = "";
           }, 5000);
           this.lastRoomCalled = latest;
+          this.playTicketSound()
         }
+        console.log('latest', latest)
         return latest;
       }
       return null;
@@ -177,7 +194,10 @@ export default {
     }
   },
   methods: {
-   
+    playTicketSound() {
+      let sound = new Audio('https://firebasestorage.googleapis.com/v0/b/prosaude-36f66.appspot.com/o/assets%2FCollected%20Coin%20A1.mp3?alt=media&token=57509b64-12aa-4946-9814-42995ac8ab41')
+      sound.play()
+    },
     removeNumbers(str) {
       return str.replace(/[0-9]/g, "");
     },
