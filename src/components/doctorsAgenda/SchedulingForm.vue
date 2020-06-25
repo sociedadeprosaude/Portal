@@ -301,23 +301,19 @@
             async saveConsultation() {
                 this.scheduleLoading = true;
                 let form = this.createConsultationForm;
-                let examObj
-                if(this.exam){
-                    examObj = {...this.exam,exam_type:form.consultation.exam_type.name}
-                }
                 form.user = {
                     ...form.user,
                     status: this.status,
                     type: this.modalidade,
                     payment_number: this.numberReceipt,
-                    exam: examObj
+                    exam: this.exam
                 };
                 form.consultation = {
                     ...form.consultation,
                     status: this.status,
                     type: this.modalidade,
                     payment_number: this.numberReceipt,
-                    exam: examObj,
+                    exam: this.exam,
                     previousConsultation: this.previousConsultation ? this.previousConsultation : undefined
                 };
 
