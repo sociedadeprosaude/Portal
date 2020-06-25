@@ -183,7 +183,6 @@ export default {
           this.lastRoomCalled = latest;
           this.playTicketSound()
         }
-        console.log('latest', latest)
         return latest;
       }
       return null;
