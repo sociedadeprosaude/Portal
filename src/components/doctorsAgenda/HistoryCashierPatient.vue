@@ -4,10 +4,10 @@
             <v-card>
                 <div v-show="option === 'intakes'">
                     <v-flex xs12 v-for="intake in intakes" :key="intake.id">
-                        <v-card :class="['my-2 pl-2 py-2', diffByNow(intake) < 30000 ? 'green' : '']">
+                        <v-card :class="['my-2 pl-2 py-2', diffByNow(intake) < 30000 ? 'green' : '']" >
                             <v-layout row wrap>
                                 <v-flex xs10>
-                                    <v-card flat>
+                                    <v-card flat @click="receipt(intake)">
                                         <v-layout row wrap>
                                             <v-flex xs10 class="text-left ripple">
                                                 <span class="my-sub-headline">{{intake.id}}</span>
@@ -92,21 +92,32 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
+            <v-dialog
+                    transition="dialog-bottom-transition"
+                    fullscreen
+                    v-model="receiptDialog"
+                    v-if="selectedIntake"
+            >
+                <receipt @close="receiptDialog = false" :budget="selectedIntake"/>
+            </v-dialog>
         </v-layout>
     </v-container>
 </template>
 <script>
     import constants from "../../utils/constants";
+    import receipt from "../cashier/Receipt"
 
     let moment = require('moment');
 
     export default {
         props: ['option'],
+        components: {receipt},
 
         data() {
             return {
                 loading: false,
                 selectedIntake: undefined,
+                receiptDialog: false,
                 cancelBuyDialog: false,
                 managerPassword: "",
                 error: undefined,

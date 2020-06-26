@@ -78,34 +78,34 @@
               </v-layout>
             </v-flex>
             <v-flex v-if="patient.dependents && patient.dependents.length > 0" xs5 class="my-0 py-0  d-print-none">
-                  <v-select
-                    :items="patient.dependents"
-                    v-model="selectedDependent"
-                    class="my-0 py-0"
-                    prepend-icon="person"
-                    dense
-                    return-object
-                    item-text="name"
-                    label="Selecionar dependente?"
-                    outlined
-                    chips
-                    color="blue"
-                    hide-details
-                    clearable
-                  >
-                    <template v-slot:selection="data">
-                      <v-chip
-                        :key="JSON.stringify(data.item)"
-                        :input-value="data.selected"
-                        :disabled="data.disabled"
-                        class="v-chip--select-multi"
-                        @click.stop="data.parent.selectedIndex = data.index"
-                        @input="data.parent.selectItem(data.item)"
-                        text-color="white"
-                        color="info"
-                      >{{ data.item.name }}</v-chip>
-                    </template>
-                  </v-select>
+                <v-select
+                        :items="patient.dependents"
+                        v-model="selectedDependent"
+                        class="my-0 py-0"
+                        prepend-icon="person"
+                        dense
+                        return-object
+                        item-text="name"
+                        label="Selecionar dependente?"
+                        outlined
+                        chips
+                        color="blue"
+                        hide-details
+                        clearable
+                >
+                  <template v-slot:selection="data">
+                    <v-chip
+                            :key="JSON.stringify(data.item)"
+                            :input-value="data.selected"
+                            :disabled="data.disabled"
+                            class="v-chip--select-multi"
+                            @click.stop="data.parent.selectedIndex = data.index"
+                            @input="data.parent.selectItem(data.item)"
+                            text-color="white"
+                            color="info"
+                    >{{ data.item.name }}</v-chip>
+                  </template>
+                </v-select>
             </v-flex>
             <v-flex xs7></v-flex>
             <v-flex xs6 class="align-start pt-6">

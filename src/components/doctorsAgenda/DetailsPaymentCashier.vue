@@ -179,7 +179,7 @@
                 v-model="receiptDialog"
                 v-if="selectedIntake"
         >
-            <receipt @close="CloseReceipt()"  :budget="selectedIntake"></receipt>
+            <receipt @close="CloseReceipt()" :budget="selectedIntake"/>
         </v-dialog>
     </v-container>
 </template>
@@ -475,7 +475,6 @@
                 await this.$store.commit('setSelectedBudget', undefined);
                 this.$store.commit('clearShoppingCartItens');
                 this.card = false;
-                this.clearCart();
             },
             async receipt(intake) {
                 let intakes = await this.$store.dispatch('getIntakeDetails', intake);

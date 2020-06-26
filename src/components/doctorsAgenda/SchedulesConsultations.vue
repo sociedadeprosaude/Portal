@@ -125,6 +125,9 @@
                 </v-dialog>
             </div>
         </v-flex> -->
+        <v-flex xs12 v-if="!consultationLoading">
+            <v-btn class="primary" rounded text @click="listenMoreConsultations">Carregar mais</v-btn>
+        </v-flex>
 
         <v-flex xs12 v-if="consultationLoading">
             <v-progress-circular class="primary--text" indeterminate/>
@@ -157,8 +160,6 @@
             numberReceipt: "",
             payment_numberFound: undefined,
             status: "",
-            payment_numberFound: undefined,
-            status: "",
             modalidade: "Consulta",
             previousConsultation: undefined,
             createConsultationForm: undefined,
@@ -189,6 +190,7 @@
             }else{
                 this.modalidade = "Consulta"
             }
+
         },
 
         computed: {

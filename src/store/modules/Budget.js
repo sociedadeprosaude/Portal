@@ -10,6 +10,14 @@ const mutations = {};
 
 const actions = {
 
+    async addDataBudget({ getters }, payload) {
+        const cpf = payload.cpf;
+        delete payload.cpf;
+        firebase.firestore().collection('budgets').doc(`${payload.id}`).update(payload);
+        firebase.firestore().collection('users').doc(cpf)
+            .collection('budgets').doc(`${payload.id}`).update(payload);
+    },
+
     async addBudget(context, payload) {
         let copyPayload = Object.assign({}, payload);
 
@@ -34,7 +42,7 @@ const actions = {
         functions.removeUndefineds(specialties);
         functions.removeUndefineds(exams);
 
-        await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).set({...copyPayload});
+        await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).set({ ...copyPayload });
         if (specialties) {
             let spec = await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).collection('specialties').get();
             spec.forEach((s) => {
@@ -54,31 +62,36 @@ const actions = {
                 await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).collection('exams').add(exams[exam])
             }
         }
+        //Talvez aqui
         if (copyPayload.user) {
             await firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('budgets').doc(copyPayload.id.toString()).set({ ...copyPayload })
         }
     },
 
     async getBudget({ }, budgetId) {
-        let budget = (await firebase.firestore().collection('budgets').doc(budgetId).get()).data();
-        let specialtiesCol = await firebase.firestore().collection('budgets').doc(budgetId).collection('specialties').get()
-        let examsCol = await firebase.firestore().collection('budgets').doc(budgetId).collection('exams').get();
+        const budgetRef = firebase.firestore().collection('budgets').doc(budgetId)
+        let budget = (await budgetRef.get()).data();
+        let specialtiesCol = await budgetRef.collection('specialties').get()
+        let examsCol = await budgetRef.collection('exams').get();
         let specialties = [];
         let exams = [];
-        specialtiesCol.forEach((s) => {
-            specialties.push(s.data())
-        });
-        examsCol.forEach((e) => {
-            exams.push(e.data())
-        });
-        budget['specialties'] = specialties;
-        budget['exams'] = exams;
+        if (budget) {
+            specialtiesCol.forEach((s) => {
+                specialties.push(s.data())
+            });
+            examsCol.forEach((e) => {
+                exams.push(e.data())
+            });
+            budget['specialties'] = specialties;
+            budget['exams'] = exams;
+        }
+
 
         return budget
     },
 
-    async deleteBudget ({}, data) {
-        let  userId = data.user.cpf.toString();
+    async deleteBudget({ }, data) {
+        let userId = data.user.cpf.toString();
         let budgetId = data.budgetId.toString();
         await firebase.firestore().collection('budgets').doc(budgetId.toString()).delete();
         await firebase.firestore().collection('users').doc(userId.toString()).collection('budgets').doc(budgetId.toString()).delete();
@@ -132,12 +145,12 @@ const actions = {
     async thereIsIntakes(context, payload) {
         return new Promise(async (resolve, reject) => {
             let findPaymentNumber = firebase.functions().httpsCallable('thereIsPaymentNumber');
-            findPaymentNumber({payload: payload}).then((result)=> {
-                if(result.data.Found)
-                    resolve({ ...result.data.Found});
+            findPaymentNumber({ payload: payload }).then((result) => {
+                if (result.data.Found)
+                    resolve({ ...result.data.Found });
                 else
-                    reject({ cost: {...result.data.NotFound}})
-            }).catch(function(error) {
+                    reject({ cost: { ...result.data.NotFound } })
+            }).catch(function (error) {
                 reject('Error')
             });
         })

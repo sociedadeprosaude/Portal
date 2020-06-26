@@ -7,7 +7,7 @@
       <v-tab-item value="exams">
         <v-layout row wrap>
           <v-flex sm12>
-            <v-card class="pt-3 mb-4">
+            <v-card class="pt-3">
               <v-layout row wrap>
                 <v-flex sm8>
                   <v-text-field
@@ -54,7 +54,11 @@
                   />
                 </v-flex>
                 <v-flex sm4 class="text-right pr-3 mt-2">
-                  <v-btn outlined class="primary--text" @click="newExamType = true">cadastrar tipo de exame</v-btn>
+                  <v-btn
+                    outlined
+                    class="primary--text"
+                    @click="newExamType = true"
+                  >cadastrar tipo de exame</v-btn>
                 </v-flex>
               </v-layout>
             </v-card>
@@ -80,17 +84,16 @@ import createExam from "../../components/Exams/CreateExam";
 import createExamType from "../../components/Exams/CreateExamType";
 
 export default {
-  components: { listExams,listExamsTypes, createExam,  createExamType},
+  components: { listExams, listExamsTypes, createExam, createExamType },
 
   data: () => ({
     search: "",
-    searchType:"",
+    searchType: "",
     loading: undefined,
     newExam: false,
-    newExamType:false,
+    newExamType: false,
     registed: false
   }),
-
   mounted() {
     let self = this;
     window.addEventListener("keyup", function(e) {
@@ -112,18 +115,16 @@ export default {
       }
     });
 
-    self.$store.dispatch('getExamsTypes')
+    self.$store.dispatch("getExamsTypes");
   },
 
   computed: {
     exams() {
       return this.$store.getters.examsSelected;
     },
-    examsTypes(){
-      
-      let e = this.$store.getters.examsTypes
-      console.log('--',e)
-        return e
+    examsTypes() {
+      let e = this.$store.getters.examsTypes;
+      return e;
     }
   }
 };
