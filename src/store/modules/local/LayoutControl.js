@@ -14,7 +14,7 @@ const mutations = {
         state.showDoctorsAgendaToolbar = payload
     },
     setBillsToolbar(state, payload) {
-        state.showDoctorsAgendaToolbar = payload
+        state.showBillsToolbar = payload
     },
     setSystemDialog(state, payload) {
         state.dialog = payload
@@ -26,7 +26,7 @@ const getters = {
         return state.showDoctorsAgendaToolbar
     },
     showBillsToolbar(state) {
-        return state.showDoctorsAgendaToolbar
+        return state.showBillsToolbar
     },
     systemDialog(state) {
         return state.dialog
