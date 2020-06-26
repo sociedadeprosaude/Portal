@@ -387,7 +387,7 @@ exports.setPricesExams = functions.https.onRequest(async (request, response) => 
 
 
 //Função pra ser chamada uma unica vez(100 users por vez) pra colocar o id dos users dentro do .doc() como uid.
-exports.setUidToUsers = functions.https.onRequest(async (request, response) => {
+exports.setUidToUsers = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (request, response) => {
     const firestore = admin.firestore();
     let query = firestore.collection('users').limit(50);
     let usersSnap = [];
