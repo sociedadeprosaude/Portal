@@ -92,91 +92,95 @@
 
 
                     <v-layout v-if="formConsultation === true" class="align-center justify-center" row wrap>
-                        <v-flex xs12>
-                            <v-text-field
-                                    prepend-icon="assignment"
-                                    label="Consultas"
-                                    outlined
-                                    v-model="specialtie"
-                                    readonly
-                                    hide-details>
-                            </v-text-field>
-                        </v-flex>
-                        <v-flex xs12>
-                            <v-text-field
-                                    prepend-icon="assignment_ind"
-                                    label="Médicos"
-                                    outlined
-                                    v-model="doctor"
-                                    readonly
-                                    hide-details>
-                            </v-text-field>
-                        </v-flex>
-                        <v-flex xs12>
-                            <v-select
-                                    prepend-icon="payment"
-                                    :items="paymentOptions"
-                                    label="Forma de Pagamento"
-                                    outlined
-                                    v-model="payment"
-                                    clearable
-                                    chips
-                                    hide-details>
-                            </v-select>
-                        </v-flex>
-                        <v-flex xs6>
-                            <v-currency-field
-                                    prepend-icon="attach_money"
-                                    outlined
-                                    clearable
-                                    label="Preço de Custo"
-                                    prefix="R$"
-                                    v-model="cost"
-                                    hide-details>
-                            </v-currency-field>
-                        </v-flex>
-                        <v-flex xs6>
-                            <v-currency-field
-                                    prepend-icon="monetization_on"
-                                    outlined
-                                    clearable
-                                    label="Preço de Venda"
-                                    prefix="R$"
-                                    v-model="price"
-                                    hide-details>
-                            </v-currency-field>
-                        </v-flex>
-                        <v-flex xs12>
-                            <v-textarea
-                                    outlined
-                                    v-model="obs"
-                                    label="Observação:"
-                                    counter
-                                    clearable
-                                    maxlength="280"
-                                    full-width
-                                    single-line
-                                    hide-details>
-                            </v-textarea>
-                        </v-flex>
-                        <v-divider/>
-                        <v-card-actions>
-                            <v-layout class="align-center justify-center" >
-                                <v-btn color="error" @click="clear(), closeDialog()">CANCELAR</v-btn>
-                                <v-spacer/>
-                                <v-btn
-                                        :disabled="!formIsValidS"
-                                        @click="editConsultation(), closeDialog()"
-                                        color="success"
-                                >
-                                    SALVAR
-                                </v-btn>
-                            </v-layout>
-                        </v-card-actions>
+                        <v-dialog>
+                            <v-flex xs12>
+                                <v-text-field
+                                        prepend-icon="assignment"
+                                        label="Consultas"
+                                        outlined
+                                        v-model="specialtie"
+                                        readonly
+                                        hide-details>
+                                </v-text-field>
+                            </v-flex>
+                            <v-flex xs12>
+                                <v-text-field
+                                        prepend-icon="assignment_ind"
+                                        label="Médicos"
+                                        outlined
+                                        v-model="doctor"
+                                        readonly
+                                        hide-details>
+                                </v-text-field>
+                            </v-flex>
+                            <v-flex xs12>
+                                <v-select
+                                        prepend-icon="payment"
+                                        :items="paymentOptions"
+                                        label="Forma de Pagamento"
+                                        outlined
+                                        v-model="payment"
+                                        clearable
+                                        chips
+                                        hide-details>
+                                </v-select>
+                            </v-flex>
+                            <v-flex xs6>
+                                <v-currency-field
+                                        prepend-icon="attach_money"
+                                        outlined
+                                        clearable
+                                        label="Preço de Custo"
+                                        prefix="R$"
+                                        v-model="cost"
+                                        hide-details>
+                                </v-currency-field>
+                            </v-flex>
+                            <v-flex xs6>
+                                <v-currency-field
+                                        prepend-icon="monetization_on"
+                                        outlined
+                                        clearable
+                                        label="Preço de Venda"
+                                        prefix="R$"
+                                        v-model="price"
+                                        hide-details>
+                                </v-currency-field>
+                            </v-flex>
+                            <v-flex xs12>
+                                <v-textarea
+                                        outlined
+                                        v-model="obs"
+                                        label="Observação:"
+                                        counter
+                                        clearable
+                                        maxlength="280"
+                                        full-width
+                                        single-line
+                                        hide-details>
+                                </v-textarea>
+                            </v-flex>
+                            <v-divider/>
+                            <v-card-actions>
+                                <v-layout class="align-center justify-center" >
+                                    <v-btn color="error" @click="clear(), closeDialog()">CANCELAR</v-btn>
+                                    <v-spacer/>
+                                    <v-btn
+                                            :disabled="!formIsValidS"
+                                            @click="editConsultation(), closeDialog()"
+                                            color="success"
+                                    >
+                                        SALVAR
+                                    </v-btn>
+                                </v-layout>
+                            </v-card-actions>
+                        </v-dialog>
+
                     </v-layout>
 
+
                     <v-layout v-if="formExam === true" class="align-center justify-center " row wrap>
-                        <v-flex xs12></v-flex><v-flex xs12></v-flex><v-flex xs12></v-flex>
+
 
                         <v-flex xs12>
                             <v-text-field prepend-icon="poll" outlined v-model="exam.name" readonly></v-text-field>
@@ -218,7 +222,7 @@
                                     hide-details>
                             </v-textarea>
                         </v-flex>
-                        <v-divider></v-divider>
+                        <v-divider/>
                         <v-card-actions>
                             <v-layout align-center justify-center>
                                 <v-btn color="error" @click="clear(), closeDialog()">CANCELAR</v-btn>
@@ -242,19 +246,24 @@
             <v-dialog v-model="addSpecialtyToClinic" width="500px" text hide-overlay>
                 <Consultations @close-dialog="closeDialogs"/>
             </v-dialog>
+            <v-dialog v-model="editExamInClinic" width="500px" text hide-overlay>
+                <formEditExamInClinic @close-dialog="closeDialogs" :exam="this.exam"/>
+            </v-dialog>
         </v-card>
     </v-container>
 </template>
 
 <script>
+    import formEditExamInClinic from "../../components/clinics/formEditExamInClinic"
     import Exams from "../../components/clinics/Exams";
     import Consultations from "../../components/clinics/Consultations";
     export default {
         props:['clinic'],
-        components: {Exams, Consultations},
+        components: {Exams, Consultations, formEditExamInClinic},
         data: () => ({
             addExamToClinic: false,
             addSpecialtyToClinic: false,
+            editExamInClinic: false,
 
             panel: [0],
             formExam: undefined,
@@ -344,9 +353,10 @@
                 this.payment = this.allSpecialties[index].doctors[index2].payment_method;
                 this.formConsultation = true;
             },
-            ExamSelectedEdit(item){
-                this.formExam = true;
-                this.exam=item
+            async ExamSelectedEdit(item){
+                this.exam = item;
+                this.editExamInClinic = true;
+
             },
             editConsultation(){
                 let data = {
@@ -414,6 +424,7 @@
             closeDialogs() {
                 this.addExamToClinic = false;
                 this.addSpecialtyToClinic = false;
+                this.editExamInClinic = false;
             },
             selectClinic(clinic, index) {
                 this.$store.dispatch('selectClinic', clinic);
