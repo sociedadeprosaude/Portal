@@ -170,7 +170,6 @@
                                                                     </v-flex>
                                                                     <v-flex class="text-right mt-4 mr-4" v-if="budget.discount > 0"
                                                                             xs12>
-                                                                        >>>>>>> Stashed changes
                                                                         <span class="primary--text font-weight-bold pr-6"
                                                                               style="font-size: 1.2em">SubTotal </span>
                                                                         <span class="font-weight-bold">{{budget.subTotal.toLocaleString('en-us', {minimumFractionDigits: 2, maximumFractionDigits: 2})}}</span>
@@ -214,7 +213,7 @@
                                     <v-flex class="text-left mt-12" xs6>
                                         <v-layout class="primary--text" column wrap>
                                             <span class="font-weight-bold">Instituto Pró Saúde do Amazonas</span>
-                                            <span>Rua Major Gabriel 915, Centro</span>
+                                            <span>Rua Prof. Felix Valois 39, Cidade Nova</span>
                                             <span>Manaus - AM</span>
                                             <span>CNPJ: 09.066.632/0001-22</span>
                                         </v-layout>
