@@ -30,7 +30,8 @@
                                     <v-flex xs4>
                                         <v-icon large>person</v-icon>
                                         <br>
-                                        <v-icon small class="mt-1">donut_large</v-icon>
+                                        <v-icon v-if="item.type === 'Retorno'" small class="mt-1">restore</v-icon>
+                                        <v-icon v-else small class="mt-1">event</v-icon>
                                     </v-flex>
                                     <v-flex xs8 class="mb-3">
                                         <v-flex xs12>
