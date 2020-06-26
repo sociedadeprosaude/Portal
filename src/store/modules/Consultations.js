@@ -77,7 +77,9 @@ const actions = {
             return query.onSnapshot((querySnapshot) => {
                 consultations = [];
                 querySnapshot.forEach((document) => {
-
+                    let data = document.data()
+                    if(data.type === '')
+                        data.type = 'Consulta'
                     consultations.push({
                         ...document.data(),
                         id: document.id

@@ -78,7 +78,13 @@
                             date: this.patient.consultations[i].date.substring(0,10)
                         }
                     }
-                    consultations[this.patient.consultations[i].date].consultations.push(this.patient.consultations[i])
+                    let consultation = this.patient.consultations[i]
+                    
+                    if(!consultation.type){
+                        consultation.type = 'Consulta'
+                    }
+                        
+                    consultations[this.patient.consultations[i].date].consultations.push(consultation)
 
                 }
                 return consultations
