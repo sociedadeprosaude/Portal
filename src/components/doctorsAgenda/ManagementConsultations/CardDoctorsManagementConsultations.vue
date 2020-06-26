@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <v-layout row wrap v-if="especialtie">
-            <v-flex xs12 v-for="(consultation, i) in ConsultationsByDoctors(consultations)">
+            <v-flex xs12 v-for="(consultation, i) in ConsultationsByDoctors(consultations)" :key="i">
                 <v-card>
                     <v-layout row wrap>
                         <v-flex xs12>

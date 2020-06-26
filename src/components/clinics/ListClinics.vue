@@ -8,16 +8,38 @@
                 <p>Não há resultado para a pesquisa realizada</p>
             </v-flex>
             <div v-if="clinics.length !== 0" style="width: 100%">
-                <v-expansion-panels focusable>
+                <v-expansion-panels focusable accordion>
                     <v-expansion-panel v-for="(clinic, i) in clinics" :key="i" class="mt-3">
-                        <v-expansion-panel-header class="text-left font-weight-bold pt-4 pb-3 pl-4">
+                        <v-expansion-panel-header class="text-left font-weight-bold pt-4 pb-3 pl-4 primary white--text">
                             {{clinic.name}}
+                            <v-spacer/>
+                            <template v-slot:actions>
+                                <v-tooltip top color="primary">
+                                    <template v-slot:activator="{ on }">
+                                        <v-btn icon dark v-on="on" @click="editClinic(clinic)">
+                                            <v-icon color="white">edit</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>Editar Clínica</span>
+                                </v-tooltip>
+                                <v-tooltip top color="primary">
+                                    <template v-slot:activator="{ on }">
+                                        <v-btn icon dark v-on="on" @click="deleteClinic(clinic)" class="mr-3">
+                                            <v-icon color="white">delete</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>Deletar Clínica</span>
+                                </v-tooltip>
+
+                                <v-icon color="white">$expand</v-icon>
+                            </template>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
-                            <ListExamsSpecialties :clinic="clinic"/>
+                            <ListExamsSpecialties :clinic="clinic" style="width: 100%"/>
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>
+                <!--
                 <v-flex sm12 v-for="(clinic, i) in clinics" :key="i" class="mb-5">
                     <v-card>
                         <v-flex xs12 sm12>
@@ -29,14 +51,7 @@
                                         </p>
                                     </v-flex>
                                     <v-flex sm6 class="text-right mt-2">
-                                        <v-tooltip top color="primary">
-                                            <template v-slot:activator="{ on }">
-                                                <v-btn icon dark v-on="on" @click="editClinic(clinic)">
-                                                    <v-icon>edit</v-icon>
-                                                </v-btn>
-                                            </template>
-                                            <span>Editar Clínica</span>
-                                        </v-tooltip>
+
                                         <v-tooltip top color="primary">
                                             <template v-slot:activator="{ on }">
                                                 <v-btn icon dark v-on="on" @click="deleteClinic(clinic)">
@@ -45,22 +60,7 @@
                                             </template>
                                             <span>Deletar Clínica</span>
                                         </v-tooltip>
-                                        <v-tooltip top color="primary">
-                                            <template v-slot:activator="{ on }">
-                                                <v-btn icon dark v-on="on" @click="addExam(clinic)">
-                                                    <v-icon>note_add</v-icon>
-                                                </v-btn>
-                                            </template>
-                                            <span>Adicionar Exame</span>
-                                        </v-tooltip>
-                                        <v-tooltip top color="primary">
-                                            <template v-slot:activator="{ on }">
-                                                <v-btn icon dark v-on="on" @click="addSpecialty(clinic)">
-                                                    <v-icon>queue</v-icon>
-                                                </v-btn>
-                                            </template>
-                                            <span>Adionar Consulta</span>
-                                        </v-tooltip>
+
                                         <v-tooltip top color="primary">
                                             <template v-slot:activator="{ on }">
                                                 <v-btn icon dark v-on="on" @click="deleteExamSpecialty(clinic)">
@@ -83,6 +83,7 @@
                         </v-flex>
                     </v-card>
                 </v-flex>
+                -->
             </div>
         </v-layout>
         <v-dialog v-model="editingClinic" width="500px" text hide-overlay>
@@ -185,9 +186,6 @@
         },
 
         methods: {
-            verconsole(clinic){
-              console.log(clinic)
-            },
             editClinic(clinic) {
                 this.clinic = this.clinics[this.clinics.indexOf(clinic)];
                 this.editingClinic = true;

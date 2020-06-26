@@ -1,12 +1,55 @@
 <template>
-    <v-card width="100%">
-        <v-card-text>
-            <v-layout class="align-center justify-center" wrap>
+    <v-container fluid>
+        <v-card width="100%" >
+            <v-card-text>
+                <v-flex xs12 class="mt-4 mb-3">
+                    <v-card-title>
+                        <span class="text-left primary--text font-weight-bold ml-2">Exames</span>
+                        <v-spacer/>
+                        <v-btn icon small class="primary" @click="addExam(clinic)">
+                            <v-icon class="white--text">add</v-icon>
+                        </v-btn>
+                    </v-card-title>
+                    <v-divider class="primary"/>
+                </v-flex>
+                <v-layout v-if="allExams.length !== 0" class="align-start justify-start" wrap>
+                    <v-flex sm4 v-for="(item,index) in allExams" :key="index">
+                        <v-card outlined class="borderCard mx-2 mr-2 grey_light">
+                            <v-layout row wrap class="mt-2 mr-2 ml-2">
+                                <v-flex xs10>
+                                    <p class="text-left font-weight-black">{{ item.name }}</p>
+                                    <p class="text-left mt-n4">Custo: R$ {{ item.cost }}</p>
+                                    <p class="text-left mt-n4">Preço: R$ {{ item.price }}</p>
+                                </v-flex>
+                                <v-flex xs2>
+                                    <v-btn fab icon color="primary" x-small @click="ExamSelectedEdit(item)">
+                                        <v-icon>edit</v-icon>
+                                    </v-btn>
+                                    <v-btn fab icon color="error" class="mt-2" x-small>
+                                        <v-icon>delete</v-icon>
+                                    </v-btn>
+                                </v-flex>
+                            </v-layout>
+                        </v-card>
+                    </v-flex>
+                </v-layout>
+                <v-layout v-if="allExams.length === 0" class="align-center justify-center" wrap>
+                    <v-card-text class="justify-center text-center">
+                        <span class="font-italic">Não há <strong>exames</strong> cadastrados para esta clínica.</span>
+                    </v-card-text>
+                </v-layout>
+                <v-flex xs12 class="mt-4 mb-3">
+                    <v-card-title>
+                        <span class="text-left primary--text font-weight-bold ml-2">Especialidades</span>
+                        <v-spacer/>
+                        <v-btn icon small class="primary" @click="addSpecialty(clinic)">
+                            <v-icon class="white--text">add</v-icon>
+                        </v-btn>
+                    </v-card-title>
+                    <v-divider class="primary"/>
+                </v-flex>
+                <v-layout class="align-center justify-center" wrap>
                     <v-layout v-if="allSpecialties.length !== 0" class="align-center justify-center" wrap>
-                        <v-flex xs12 class="mt-4 mb-3">
-                            <p class="text-left primary--text font-weight-bold ml-2">Especialidades</p>
-                            <v-divider class="primary"/>
-                        </v-flex>
                         <v-expansion-panels  v-model="panel" accordion >
                             <v-expansion-panel v-for="(item,index) in allSpecialties" :key="index" >
                                 <v-expansion-panel-header class="primary white--text">
@@ -16,99 +59,39 @@
                                     </template>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
-                                    <v-simple-table>
-                                        <template v-slot:default>
-                                            <thead>
-                                            <tr>
-                                                <v-layout row wrap>
-                                                    <v-flex xs10>
-                                                        <v-layout row wrap>
-                                                            <v-flex xs6><th class="text-left">Name</th></v-flex>
-                                                            <v-flex xs3><th class="text-left">Custo R$</th></v-flex>
-                                                            <v-flex xs3><th class="text-left">Venda R$</th></v-flex>
-                                                        </v-layout>
-                                                    </v-flex>
-                                                    <v-flex xs1>
-                                                        <th></th>
-                                                    </v-flex>
-                                                </v-layout>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr v-for="(doctor,index2) in item.doctors" :key="index2">
-                                                <v-layout row wrap>
-                                                    <v-flex xs10>
-                                                        <v-layout row wrap>
-                                                            <v-flex xs6><td class="text-left">{{ doctor.name }}</td></v-flex>
-                                                            <v-flex xs3><td class="text-left">R$ {{ doctor.cost }}</td></v-flex>
-                                                            <v-flex xs3><td class="text-left">R$ {{ doctor.price }}</td></v-flex>
-                                                        </v-layout>
-                                                    </v-flex>
-                                                    <v-flex xs1>
-                                                        <td class="text-left">
-                                                            <v-btn fab color="warning" small @click="pre(index,index2)">
-                                                                <v-icon>edit</v-icon>
-                                                            </v-btn>
-                                                        </td>
-                                                    </v-flex>
-                                                </v-layout>
-                                            </tr>
-                                            </tbody>
-                                        </template>
-                                    </v-simple-table>
+                                    <v-layout class="align-start justify-start mt-3" wrap>
+                                    <v-flex sm4 v-for="(doctor,index2) in item.doctors" :key="index2">
+                                        <v-card outlined class="borderCard mx-2 mr-2 grey_light">
+                                            <v-layout row wrap class="mt-2 mr-2 ml-2">
+                                                <v-flex xs10>
+                                                    <p class="text-left font-weight-black">{{ doctor.name }}</p>
+                                                    <p class="text-left mt-n4">Custo: R$ {{ doctor.cost }}</p>
+                                                    <p class="text-left mt-n4">Preço: R$ {{ doctor.price }}</p>
+                                                </v-flex>
+                                                <v-flex xs2>
+                                                    <v-btn fab icon color="primary" x-small @click="pre(index, index2)">
+                                                        <v-icon>edit</v-icon>
+                                                    </v-btn>
+                                                    <v-btn fab icon color="error" class="mt-2" x-small>
+                                                        <v-icon>delete</v-icon>
+                                                    </v-btn>
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-card>
+                                    </v-flex>
+                                    </v-layout>
                                 </v-expansion-panel-content>
-
                             </v-expansion-panel>
                         </v-expansion-panels>
                     </v-layout>
-                    <v-layout v-if="allExams.length !== 0" class="align-center justify-center" wrap>
-                        <v-flex xs12 class="mt-4 mb-3">
-                            <p class="text-left primary--text font-weight-bold ml-2">Exames</p>
-                            <v-divider class="primary"/>
-                        </v-flex>
-                        <v-flex xs12>
-                            <v-card v-for="(item,index) in allExams" :key="index">
-                                <v-layout row wrap>
-                                    <v-flex xs4>
-                                        <td class="text-left">{{ item.name }}</td>
-                                    </v-flex>
-                                    <v-flex xs3>
-                                        <td class="text-left">R$ {{ item.cost }}</td>
-                                    </v-flex>
-                                    <v-flex xs3>
-                                        <td class="text-left">R$ {{ item.price }}</td>
-                                    </v-flex>
-                                    <v-flex xs2>
-                                        <v-btn fab color="warning" small @click="ExamSelectedEdit(item)">
-                                            <v-icon>edit</v-icon>
-                                        </v-btn>
-                                    </v-flex>
-                                </v-layout>
-                            </v-card>
-                        </v-flex>
-                    </v-layout>
-                    <v-layout v-if="allExams.length === 0" class="align-center justify-center" wrap>
-                        <v-flex xs12 class="mt-4 mb-3">
-                            <p class="text-left primary--text font-weight-bold ml-2">Exames</p>
-                            <v-divider class="primary"/>
-                        </v-flex>
-                        <v-card-text class="justify-center text-center">
-                            <span class="font-italic">Não há <strong>exames</strong> cadastrados para esta clínica.</span>
-                        </v-card-text>
-                    </v-layout>
-
                     <v-layout v-if="allSpecialties.length === 0" class="align-center justify-center" wrap>
-                        <v-flex xs12 class="mt-4 mb-3">
-                            <p class="text-left primary--text font-weight-bold ml-2">Especialidades</p>
-                            <v-divider class="primary"/>
-                        </v-flex>
                         <v-card-text class="justify-center text-center">
                             <span class="font-italic">Não há <strong>especialidades</strong> cadastrados para esta clínica.</span>
                         </v-card-text>
                     </v-layout>
 
+
                     <v-layout v-if="formConsultation === true" class="align-center justify-center" row wrap>
-                        <v-flex xs12></v-flex><v-flex xs12></v-flex><v-flex xs12></v-flex>
                         <v-flex xs12>
                             <v-text-field
                                     prepend-icon="assignment"
@@ -176,11 +159,11 @@
                                     hide-details>
                             </v-textarea>
                         </v-flex>
-                        <v-divider></v-divider>
+                        <v-divider/>
                         <v-card-actions>
                             <v-layout class="align-center justify-center" >
                                 <v-btn color="error" @click="clear(), closeDialog()">CANCELAR</v-btn>
-                                <v-spacer></v-spacer>
+                                <v-spacer/>
                                 <v-btn
                                         :disabled="!formIsValidS"
                                         @click="editConsultation(), closeDialog()"
@@ -252,14 +235,27 @@
                     </v-layout>
 
                 </v-layout>
-        </v-card-text>
-    </v-card>
+            </v-card-text>
+            <v-dialog v-model="addExamToClinic" width="500px" text hide-overlay>
+                <Exams @close-dialog="closeDialogs"/>
+            </v-dialog>
+            <v-dialog v-model="addSpecialtyToClinic" width="500px" text hide-overlay>
+                <Consultations @close-dialog="closeDialogs"/>
+            </v-dialog>
+        </v-card>
+    </v-container>
 </template>
 
 <script>
+    import Exams from "../../components/clinics/Exams";
+    import Consultations from "../../components/clinics/Consultations";
     export default {
         props:['clinic'],
+        components: {Exams, Consultations},
         data: () => ({
+            addExamToClinic: false,
+            addSpecialtyToClinic: false,
+
             panel: [0],
             formExam: undefined,
             formConsultation: undefined,
@@ -405,6 +401,22 @@
 
             closeDialog: function() {
                 this.$emit('close-dialog')
+            },
+
+            async addExam(clinic) {
+                await this.selectClinic(clinic);
+                this.addExamToClinic = true;
+            },
+            async addSpecialty(clinic) {
+                await this.selectClinic(clinic);
+                this.addSpecialtyToClinic = true;
+            },
+            closeDialogs() {
+                this.addExamToClinic = false;
+                this.addSpecialtyToClinic = false;
+            },
+            selectClinic(clinic, index) {
+                this.$store.dispatch('selectClinic', clinic);
             },
         }
     }
