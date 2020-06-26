@@ -1,5 +1,51 @@
 <template>
     <v-container fluid>
+        <!--jsadgjsb-->
+        <v-layout row wrap>
+            <v-flex xs8>
+                <v-card class="pa-4">
+                    <v-layout aling-center row wrap>
+                        <v-flex xs12 sm4>
+                            <v-combobox
+                                    v-model="especialtie"
+                                    :items="user.specialties"
+                                    item-text="name"
+                                    return-object
+                                    placeholder="Especialidade"
+                                    outlined
+                                    color="write"
+                                    class="mr-3"
+                            />
+                        </v-flex>
+                        <v-flex xs4>
+                            <v-menu
+                                    ref="menu1"
+                                    v-model="menu1"
+                                    :close-on-content-click="false"
+                                    transition="scale-transition"
+                                    offset-y
+                                    max-width="290px"
+                                    min-width="290px"
+                            >
+                                <template v-slot:activator="{ on }">
+                                    <v-text-field
+                                            outlined
+                                            v-model="computedDateFormatted"
+                                            placeholder="Data Inicial"
+                                            hint="Data Inicial"
+                                            v-on="on"
+                                            class="mx-3"
+                                    />
+                                </template>
+                                <v-date-picker v-model="date" no-title @input="menu1 = false"
+                                               @change="getConsultationsDorctors()"/>
+                            </v-menu>
+                        </v-flex>
+                    </v-layout>
+                </v-card>
+            </v-flex>
+        </v-layout>
+        <!--jsgdjsjdb-->
         <v-layout class="align-center " row wrap>
             <v-flex xs12>
                 <v-card class="pa-4">
@@ -254,6 +300,9 @@
     var moment = require('moment');
     export default {
         data: () => ({
+            //================
+            //
+            //=============
             panel: [true],
             date_choose: '',
             dateFormatted: '',
