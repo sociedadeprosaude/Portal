@@ -11,7 +11,7 @@ admin.initializeApp();
 
 exports.cronjob = require('./Cronjob/Cronjob')
 exports.listeners = require('./Listeners/listeners')
-// exports.requests = require('./Requests/requests')
+exports.requests = require('./Requests/requests')
 
 
 //Func nao usada em nenhum canto

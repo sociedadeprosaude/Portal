@@ -13,7 +13,7 @@ const heavyFunctionsRuntimeOpts = {
     memory: '2GB'
 }
 
-exports.getLastAccessedPatients = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async(req,res) => {
+/*exports.getLastAccessedPatients = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async(req,res) => {
     var quant= parseInt(req.query.quantity)
     let users = await admin.firestore().collection('users').orderBy("accessed_to", "desc").limit(quant).get()
     let editadUsers = []
@@ -383,7 +383,7 @@ exports.setPricesExams = functions.https.onRequest(async (request, response) => 
             response.send(num + ' preços de exames atualizados.');
             return null;
         }).catch((err) => response.send('erro ' + err));
-});
+});*/
 
 
 //Função pra ser chamada uma unica vez(100 users por vez) pra colocar o id dos users dentro do .doc() como uid.
@@ -412,6 +412,7 @@ exports.setUidToUsers = functions.https.onRequest(async (request, response) => {
     }
 });
 
+/*
 exports.fixSpecialtiesPrices = functions.https.onRequest(async (req, res) => {
     const firestore = admin.firestore();
     let snapshot = await firestore.collection('specialties').get()
@@ -838,6 +839,7 @@ exports.fixSchedulesPrices = functions.https.onRequest(async (req, res) => {
     })
     res.status(200).send('Sucesso! Executando function para concertar especialidades de schedules sem preço');
 });
+*/
 
 
 
@@ -845,7 +847,7 @@ exports.fixSchedulesPrices = functions.https.onRequest(async (req, res) => {
 
 //===================================== funcs ============================================
 
-async function convertDoctorSubcollectionInObject(doctorDoc) {
+/*async function convertDoctorSubcollectionInObject(doctorDoc) {
     let doctor = doctorDoc.data()
     if (doctor.clinics) {
         cleanExamsAndSpecialtiesFromClinics(doctor.clinics)
@@ -872,4 +874,4 @@ function cleanExamsAndSpecialtiesFromClinics(clinics) {
             delete clinics[clinic].specialties
         }
     }
-}
+}*/
