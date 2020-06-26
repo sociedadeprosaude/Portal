@@ -60,7 +60,7 @@
 </template>
 <script>
     export default {
-        props: ['exam'],
+        props: ['exam', 'clinic'],
         data: () => ({}),
         computed: {
             formIsValide() {
@@ -70,7 +70,7 @@
         methods: {
             editExam() {
                 this.$store.dispatch('addExamToClinic', {
-                    clinic: this.selectedClinic,
+                    clinic: this.clinic,
                     exam: this.exam.name,
                     cost: this.exam.cost,
                     sale: this.exam.price,
