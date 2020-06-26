@@ -14,6 +14,7 @@
                             {{clinic.name}}
                         </v-expansion-panel-header>
                         <v-expansion-panel-content class="white--text">
+                            <ListExamsSpecialties :clinic="clinic" ></ListExamsSpecialties>
                             <v-btn @click="verconsole(clinic)">console</v-btn>
                             <v-flex xs12 sm12 class="mt-4 mb-3">
                                 <v-divider/>
@@ -136,11 +137,12 @@
     import Exams from "../../components/clinics/Exams";
     import Consultations from "../../components/clinics/Consultations";
     import Products from "../../components/clinics/Products";
+    import ListExamsSpecialties from "../../components/clinics/ListExamsSpecialties";
     import Configurations from "../../components/clinics/Configurations";
 
     export default {
         props: ['clinics', 'loading'],
-        components: {EditClinic, Exams, Consultations, Configurations, Products},
+        components: {EditClinic, Exams, Consultations, Configurations, Products,ListExamsSpecialties},
 
         data: () => ({
             clinic: undefined,
