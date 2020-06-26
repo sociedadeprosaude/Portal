@@ -45,13 +45,19 @@
                                                             Vagas :
                                                             {{schedule.vacancy}}
                                                         </v-chip>
-                                                        <v-chip small class="mx-2" color="primary_dark"
+                                                        <v-chip v-if="schedule.specialty" small class="mx-2" color="primary_dark"
                                                                 text-color="white">
                                                             Consultas :
                                                             {{schedule.qtd_consultations ? schedule.qtd_consultations :
                                                             0}}
                                                         </v-chip>
-                                                        <v-chip class="mx-2" small color="primary_dark"
+                                                         <v-chip v-if="schedule.exam_type" small class="mx-2" color="primary_dark"
+                                                                text-color="white">
+                                                            Agendados :
+                                                            {{schedule.qtd_consultations ? schedule.qtd_consultations :
+                                                            0}}
+                                                        </v-chip>
+                                                        <v-chip v-if="schedule.specialty" class="mx-2" small color="primary_dark"
                                                                 text-color="white">
                                                             Retornos :
                                                             {{schedule.qtd_returns ? schedule.qtd_returns : 0}}

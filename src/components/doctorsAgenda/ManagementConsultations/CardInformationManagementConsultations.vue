@@ -57,7 +57,7 @@
                                 rounded
                                 :to="{ name: 'AgendamentoConsultas', params: { q: consultation}}"
                                 :disabled="consultation.status !== 'Pago' || consultation.regress"
-                                v-if="consultation.type !== 'Retorno'"
+                                v-if="consultation.type !== 'Retorno' && consultation.specialty"
                         >Retorno
                         </v-btn>
                         <v-btn

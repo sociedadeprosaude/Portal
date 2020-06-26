@@ -205,9 +205,11 @@
                 this.$store.dispatch('selectDoctor', doctor)
             },
             specialty (specialty){
+                console.log('specialty',specialty)
                 this.$store.dispatch('selectSpecialty', specialty)
             },
             examType(value){
+                console.log('exam',value)
                 this.$store.dispatch('selectExamType',value)
             },
             examTypeCheck(value){
@@ -219,7 +221,7 @@
                     this.$store.dispatch('selectExamType',undefined) 
                     this.examType = undefined
                 }
-
+                console.log('check',value)
                 this.$store.dispatch('selectExamTypeCheck',value)
                   
             }

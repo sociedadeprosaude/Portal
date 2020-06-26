@@ -3,13 +3,36 @@
         <v-flex xs8>
             <v-card class="pa-4">
                 <v-layout aling-center row wrap>
-                    <v-flex xs12 sm4>
+                    <v-flex xs12 class="mt-4 pa-0 ">
+                        <v-checkbox
+                            class="pl-3 py-0 my-0"
+                            v-model="examTypeCheck"
+                            color="primary"
+                        >
+                            <template v-slot:label>
+                                <div >Listar agendas de exames</div>
+                            </template>
+                        </v-checkbox>
+                    </v-flex>
+                    <v-flex v-if="!examTypeCheck" xs12 sm4>
                         <v-combobox
-                                v-model="especialtie"
+                                v-model="specialty"
                                 :items="specialties"
                                 item-text="name"
                                 return-object
                                 placeholder="Especialidade"
+                                outlined
+                                color="write"
+                                class="mr-3"
+                        />
+                    </v-flex>
+                    <v-flex v-else>
+                        <v-combobox
+                                v-model="examType"
+                                :items="examTypes"
+                                item-text="name"
+                                return-object
+                                placeholder="Exames"
                                 outlined
                                 color="write"
                                 class="mr-3"
@@ -43,8 +66,8 @@
                 <v-layout aling-center row wrap>
                     <v-flex xs12>
                         <CardDoctorsManagementConsultations @consultationSelect="consultatioSelect= $event"
-                                                            @patientSelect="patientSelected = $event"
-                                                            :especialtie="especialtie" :date="date"/>
+                                                            @patientSelect="patientSelected = $event" :filterByExam="examTypeCheck" :examType="examType"
+                                                            :specialty="specialty" :date="date"  />
                     </v-flex>
                 </v-layout>
             </v-card>
@@ -69,7 +92,9 @@
             dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
             menu1: false,
             loadingConsultations: false,
-            especialtie: '',
+            specialty: '',
+            examType:'',
+            examTypeCheck:false,
             patientSelected: {},
             consultatioSelect: {}
         }),
@@ -80,6 +105,11 @@
             computedDateFormatted() {
                 return this.formatDate(this.date)
             },
+            examTypes() {
+                return this.$store.getters.examsTypes.filter((examType)=>{
+                    return examType.scheduleable
+                });
+            }
         },
         mounted() {
             this.initialConfig();
@@ -89,7 +119,7 @@
         watch: {
             date(val) {
                 this.dateFormatted = this.formatDate(this.date)
-            },
+            }
         },
         methods: {
             async initialConfig() {

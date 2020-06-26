@@ -135,6 +135,91 @@ const actions = {
         }
     },
 
+    async verifyUnpaidConsultation(context, payload) {
+        let consultationFound = undefined;
+        let precoVendaZero = payload.isConsultation && payload.specialty.price === 0;
+        if (!precoVendaZero) {
+            let consultationRef =  payload.userRef.collection('consultations').where('status', '==', 'Aguardando pagamento')
+                //.get()
+
+            if(payload.isConsultation)
+                consultationRef = consultationRef.where('specialty.name', '==', payload.specialty.name)
+            else
+                consultationRef = consultationRef.where('exam.name','==',payload.examObj.name);
+
+            let consultations = await consultationRef.get();
+            consultations.forEach(async (c) => {
+                consultationFound = c;
+                context.dispatch('updatePaymentNumberConsultation', { user: payload.user, consultation: c, payment_number: payload.payment_number })
+            })
+        }
+
+
+        context.dispatch('createOrUpdateProcedure', { consultationFound: consultationFound, consultation:payload.consultation, precoVendaZero:precoVendaZero, userRef: payload.userRef, user: payload.user, isConsultation: payload.isConsultation, payment_number: payload.payment_number, specialty: payload.specialty, examObj: payload.examObj })
+    },
+
+    async createOrUpdateProcedure({ }, payload) {
+        let consultationFound = payload.consultationFound;
+        let user = payload.user;
+        let statusName = payload.isConsultation ? 'Consulta Paga' : 'Exame Pago';
+        let type = payload.isConsultation ? 'Consultation' : 'Exam';
+
+        if (consultationFound || (payload.precoVendaZero && payload.isConsultation) ) {
+            let consultation = payload.precoVendaZero && payload.isConsultation?  payload.consultation : consultationFound
+
+            let procedures = await firebase.firestore().collection('users').doc(user.cpf).collection('procedures').where('consultation', '==', consultation.id)
+                .get();
+
+            if (!procedures.empty){
+                procedures.forEach((snap) => {
+                    let data = snap.data();
+                    let obj = {
+                        status: firebase.firestore.FieldValue.arrayUnion(statusName),
+                        payment_number: payload.payment_number
+                    };
+                    if (!payload.isConsultation) {
+                        Object.assign(obj, { exam: { ...payload.examObj} });
+                    }else{
+                        obj.specialty = payload.specialty.name
+                    }
+
+                    firebase.firestore().collection('users').doc(user.cpf).collection('procedures').doc(snap.id).update(
+                        { ...obj }
+                    )
+                })
+            }
+        } else {
+            let obj = {
+                status: [statusName],
+                payment_number: payload.payment_number,
+                startAt: moment().format('YYYY-MM-DD hh:ss'),
+                type: type,
+            };
+
+            if (!payload.isConsultation) {
+
+                Object.assign(obj, { exam: { ...payload.examObj} });
+            }else{
+                obj.specialty = payload.specialty.name
+            }
+            firebase.firestore().collection('users').doc(user.cpf).collection('procedures').add(
+                { ...obj }
+            )
+        }
+
+    },
+
+    async updatePaymentNumberConsultation(context,payload){
+        await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.id).update({
+            status: 'Pago',
+            payment_number: payload.payment_number.toString()
+        });
+        await firebase.firestore().collection('consultations').doc(payload.consultation.id).update({
+            status: 'Pago',
+            payment_number: payload.payment_number.toString()
+        })
+    },
+
     async getUserIntakes(context, user) {
         let userRef = firebase.firestore().collection('users').doc(user.cpf);
         let intakesSnap = (await userRef.collection('intakes').get()).docs;
