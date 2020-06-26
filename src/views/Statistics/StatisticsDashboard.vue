@@ -83,7 +83,6 @@
 import ProceduresPricesAnalises from "@/components/reports/ProceduresPricesAnalises";
 import GeneralReport from "@/components/reports/GeneralReport";
 import OuttakesReport from "@/components/reports/OuttakesReport";
-import testes from "./cloudTestes";
 
 import statsCaixa from "./statsCaixa";
 
@@ -92,17 +91,16 @@ export default {
     GeneralReport,
     ProceduresPricesAnalises,
     OuttakesReport,
-    statsCaixa,
-    testes
+    statsCaixa
   },
   data: vm => ({
-    selected: 4,
+    selected: 3,
     items: [
       { title: "Relatorio financeiro geral", value: 0 },
       { title: "Relatorio de Saidas", value: 1 },
       { title: "Análise de preço de exames", value: 2 },
       { title: "Overview Caixa", value: 3 },
-      { title: "testes", value: 4 }
+   
     ],
 
     date: moment().format("YYYY-MM-DD 00:00:00"),

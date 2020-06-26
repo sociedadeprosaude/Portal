@@ -1,12 +1,16 @@
 
-import { Doughnut, mixins } from "vue-chartjs";
+import { Pie, mixins } from "vue-chartjs";
 import 'chartjs-plugin-colorschemes';
+
+// import ChartDataLabels from 'chartjs-plugin-datalabels';
+// Chart.plugins.unregister(ChartDataLabels);
 const { reactiveProp } = mixins;
 
 export default {
-  extends: Doughnut,
+  extends: Pie,
   mixins: [reactiveProp],
   mounted() {
+    //this.addPlugin(ChartDataLabels);
     this.renderChart(this.chartData, {
       legend: {
 

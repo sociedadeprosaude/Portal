@@ -8,87 +8,78 @@ const mutations = {
     setStatistics: (state, payload) => state.statistics = payload
 };
 
-
-function groupYearMonth(year, month, unsorted) {
-    return unsorted.filter(({ date: d }) => `${year}-${month}` === d.slice(0, 7));
-}
-
-function groupDay(day, array) {
-    const sameDay = array.filter(({ date }) => {
-        return `${day}` === date.slice(8, 10)
-    });
-    return sameDay
+function groupYearMonthDay(year, month, day, unsorted) {
+    return unsorted.filter(({ date: d }) => `${year}-${month}-${day}` === d.slice(0, 10));
 }
 
 function groupIntakes(intakes) {
     var grouped = {};
     for (let { date } of intakes) {
         let [year, month, day] = date.match(/\d+/g);
-        if (!grouped[year]) grouped[year] = {};
-        grouped[year][month] = groupYearMonth(year, month, intakes)
+        grouped[`${year}-${month}-${day}`] = groupYearMonthDay(year, month, day, intakes)
     }
     return grouped
 }
 
-const days = Array.from(Array(31).keys())
-
 function analyzeIntakes(intakes) {
     var analyzed = {};
-    Object.keys(intakes).forEach((year) => {
-        analyzed[year] = {};
-        Object.keys(intakes[year]).forEach((month) => {
-            var total = intakes[year][month].reduce((total, e) => total + Number(e.total), 0);
-            var cost = intakes[year][month].reduce((total, e) => total + Number(e.cost), 0);
-            var arrDay = {}
-            for (let day of days) {
-                var sameDate = groupDay(day, intakes[year][month])
-                arrDay[day] = sameDate.reduce((total, e) => total + Number(e.total), 0)
-            }
-            var arrSelled = {};
-            var arrProfit = {}
-            // console.log(year,month)
-            intakes[year][month].forEach((intake) => {
-                if (intake.specialties) {
-                    intake.specialties.forEach((specialty) => {
-                        arrSelled[specialty.name] = (arrSelled[specialty.name] || 0) + 1;
-                        arrProfit[specialty.name] = (arrProfit[specialty.name] || 0) + Number(specialty.price) - Number(specialty.cost)
-                    })
-                }
+    Object.keys(intakes).forEach((date) => {
+        var totalRaw = intakes[date].reduce((total, e) => total + Number(e.total), 0);
+        var totalCost = intakes[date].reduce((total, e) => total + Number(e.cost), 0);
+        var numOfSales = 0
+        var arrObjs = {}
+        intakes[date].forEach((intake) => {
+            if (intake.specialties)
+                intake.specialties.forEach((specialty) => {
+                    if (!arrObjs[specialty.name]) arrObjs[specialty.name] = {
+                        numOfSales: 0,
+                        totalRaw: 0,
+                        totalCost: 0,
+                        totalProfit: 0
+                    };
+                    numOfSales++;
+                    specialty.price = Number(specialty.price);
+                    specialty.cost = Number(specialty.cost);
+                    arrObjs[specialty.name].numOfSales += 1;
+                    arrObjs[specialty.name].totalRaw += specialty.price;
+                    arrObjs[specialty.name].totalCost += specialty.cost;
+                    arrObjs[specialty.name].totalProfit += specialty.price - specialty.cost;
 
-
-                if (intake.exams) {
-                    intake.exams.forEach((exam) => {
-                        arrSelled[exam.name] = (arrSelled[exam.name] || 0) + 1;
-                        arrProfit[exam.name] = (arrProfit[exam.name] || 0) + Number(exam.price) - Number(exam.cost);
-                    })
-                }
-
-            })
-
-            //  console.log(arrProfit)
-
-
-
-            analyzed[year][month] = {
-                total: total,
-                cost: cost,
-                profit: total - cost,
-                num: intakes[year][month].length,
-                arrFaturamento: arrDay,
-                arrSelled: arrSelled,
-                arrProfit: arrProfit
-            }
+                })
+            if (intake.exams)
+                intake.exams.forEach((exam) => {
+                    if (!arrObjs[exam.name]) arrObjs[exam.name] = {
+                        numOfSales: 0,
+                        totalRaw: 0,
+                        totalCost: 0,
+                        totalProfit: 0
+                    };
+                    numOfSales++;
+                    exam.price = Number(exam.price);
+                    exam.cost = Number(exam.cost);
+                    arrObjs[exam.name].numOfSales += 1;
+                    arrObjs[exam.name].totalRaw += exam.price;
+                    arrObjs[exam.name].totalCost += exam.cost;
+                    arrObjs[exam.name].totalProfit += exam.price - exam.cost;
+                })
         })
+        analyzed[date] = {
+            date: date,
+            totalRaw: totalRaw,
+            totalCost: totalCost,
+            totalProfit: totalRaw - totalCost,
+            numOfSales: numOfSales,
+            arrObjs: arrObjs
+        }
     })
     return analyzed
 }
 
 
 const actions = {
+   
     async getAllIntakes({ commit }, payload) {
-
-
-        var intakes = await firebase.firestore().collection('intakes').limit(100).get();
+        var intakes = await firebase.firestore().collection('intakes').get();
         intakes = await Promise.all(intakes.docs.map(async (doc) => {
             var intake = doc.data();
 
@@ -108,16 +99,53 @@ const actions = {
             }
         }))
         intakes = groupIntakes(intakes);
-        console.log(intakes);
         intakes = analyzeIntakes(intakes);
-        console.log(intakes)
-        commit('setStatistics', intakes)
+
+        //Salvando
+        // Object.keys(intakes).forEach((date) =>
+        //     firebase.firestore().collection('statistics').doc(date).set(intakes[date]))
     },
-    async getIntakesTeste({ commit }, payload) {
 
+    async getStatistics({ commit }, payload) {
+        var statistics = await firebase.firestore().collection('statistics').get();
+        var statsYearMonth = {}
+
+        statistics = statistics.docs.map((doc) => {
+            const statDay = doc.data();
+            let [year, month, day] = statDay.date.match(/\d+/g);
+            if (!statsYearMonth[year]) statsYearMonth[year] = {};
+            if (!statsYearMonth[year][month]) statsYearMonth[year][month] = {
+                numOfSales: 0,
+                totalRaw: 0,
+                totalCost: 0,
+                totalProfit: 0,
+                arrObjs: {},
+                arrTotalRaw: Array.from(Array(31).keys()).map(() => 0)
+            };
+            statsYearMonth[year][month].arrTotalRaw[Number(day) - 1] = statDay.totalRaw;
+            statsYearMonth[year][month].totalRaw += statDay.totalRaw;
+            statsYearMonth[year][month].totalCost += statDay.totalCost;
+            statsYearMonth[year][month].totalProfit += statDay.totalProfit;
+            statsYearMonth[year][month].numOfSales += statDay.numOfSales;
+            Object.keys(statDay.arrObjs).forEach((obj) => {
+                if (!statsYearMonth[year][month].arrObjs[obj]) statsYearMonth[year][month].arrObjs[obj] = {
+                    numOfSales: 0,
+                    totalRaw: 0,
+                    totalCost: 0,
+                    totalProfit: 0,
+                };
+                statsYearMonth[year][month].arrObjs[obj].totalRaw += statDay.arrObjs[obj].totalRaw;
+                statsYearMonth[year][month].arrObjs[obj].totalCost += statDay.arrObjs[obj].totalCost;
+                statsYearMonth[year][month].arrObjs[obj].totalProfit += statDay.arrObjs[obj].totalProfit;
+                statsYearMonth[year][month].arrObjs[obj].numOfSales += statDay.arrObjs[obj].numOfSales;
+
+            })
+            return statDay
+        })
+        console.log(statistics);
+        console.log(statsYearMonth);
+        commit('setStatistics', statsYearMonth)
     }
-
-
 };
 
 const getters = {

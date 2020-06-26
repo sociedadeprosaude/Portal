@@ -20,11 +20,6 @@ import { iconsSet as icons } from './assets/icons/icons.js'
 import './registerServiceWorker'
 import * as firebase from "firebase";
 import VueHtmlToPaper from 'vue-html-to-paper';
-import 'bootstrap'
-
-import CoreuiVue from '@coreui/vue';
-import CoreuiVueCharts from '@coreui/vue-chartjs'
-
 
 const options = {
   name: '_blank',
@@ -43,9 +38,6 @@ const options = {
 Vue.use(VueHtmlToPaper, options);
 
 Vue.use(Vuetify);
-//Vue.use(coreUI);
-Vue.use(CoreuiVue);
-Vue.use(CoreuiVueCharts)
 Vue.use(constants);
 
 Vue.use(VCurrencyField, {
