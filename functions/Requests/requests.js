@@ -18,7 +18,7 @@ exports.setUidToUsers = functions.runWith(heavyFunctionsRuntimeOpts).https.onReq
     let query = firestore.collection('users').limit(2);
     let usersSnap = [];
     //where não pode ser comparado a undefined
-    query = query.where('uid', '==', undefined)
+    query = query.where('uid', '>', '')
 
     usersSnap = await query.get();
 
@@ -33,8 +33,8 @@ exports.setUidToUsers = functions.runWith(heavyFunctionsRuntimeOpts).https.onReq
         for(let i in users) {
             firestore.collectionGroup('users').doc(users[i].id).update({uid: users[i].id})
         }
-
         // eslint-disable-next-line no-await-in-loop
+        //sem recursão
         //usersSnap = await query.get();
     }
 });
@@ -846,7 +846,7 @@ exports.fixSchedulesPrices = functions.https.onRequest(async (req, res) => {
 
 //===================================== funcs ============================================
 
-/*async function convertDoctorSubcollectionInObject(doctorDoc) {
+async function convertDoctorSubcollectionInObject(doctorDoc) {
     let doctor = doctorDoc.data()
     if (doctor.clinics) {
         cleanExamsAndSpecialtiesFromClinics(doctor.clinics)
@@ -873,4 +873,4 @@ function cleanExamsAndSpecialtiesFromClinics(clinics) {
             delete clinics[clinic].specialties
         }
     }
-}*/
+}
