@@ -18,25 +18,25 @@ exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate
     }
 });
 
-exports.updatedUser = functions.firestore.document('users/{uid}').onUpdate( async (change, context) => {
+/*exports.updatedUser = functions.firestore.document('users/{uid}').onUpdate( async (change, context) => {
     let firestore = admin.firestore();
 
     let editedUser = change.after.data()
     let uid = change.after.data().uid;
 
     firestore.collectionGroup('users').doc(uid).update(editedUser);
-});
+});*/
 
 exports.setUidToUserWhenCreated = functions.firestore.document('users/{id}').onCreate((doc, context) => {
     let firestore = admin.firestore();
-/*    console.log('doc:',doc)
+    console.log('doc:',doc)
     console.log('id:', doc.id)
-    console.log('data:',doc.data())*/
+    console.log('data:',doc.data())
     let id = doc.id;
     firestore.collection('users').doc(id).update({uid: id})
 });
 
-exports.UpdateUidOfUser = functions.firestore.document('users/{uid}').onUpdate( async (change, context) => {
+/*exports.UpdateUidOfUserWhenHeCreateLoginAndPassword = functions.firestore.document('users/{uid}').onUpdate( async (change, context) => {
     let firestore = admin.firestore();
     let uidNew = change.after.data().uid;
     let uidOld = change.before.data().uid;
@@ -48,7 +48,7 @@ exports.UpdateUidOfUser = functions.firestore.document('users/{uid}').onUpdate( 
 
         firestore.collection('users')
     }
-});
+});*/
 
 /*    .onCreate( async (change, context) => {
     const firestore = admin.firestore();
@@ -62,6 +62,7 @@ exports.UpdateUidOfUser = functions.firestore.document('users/{uid}').onUpdate( 
         doc.ref.update({uid: doc.id})
     });*/
 /*});*/
+
 exports.listenChangeInSpecialtiesSubcollections = functions.firestore.document('specialties/{specialtyId}/{collectionId}/{docId}').onWrite(async (change, context) => {
     convertSpecialtySubcollectionInObject((await admin.firestore().collection('specialties').doc(context.params.specialtyId).get()))
 })
