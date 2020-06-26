@@ -26,7 +26,7 @@
                                         <v-icon>edit</v-icon>
                                     </v-btn>
                                     <v-btn fab icon color="error" class="mt-2" x-small>
-                                        <v-icon>delete</v-icon>
+                                        <v-icon @click="examSelectedDelete(item, clinic)">delete</v-icon>
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
@@ -226,7 +226,7 @@
                         <v-card-actions>
                             <v-layout align-center justify-center>
                                 <v-btn color="error" @click="clear(), closeDialog()">CANCELAR</v-btn>
-                                <v-spacer></v-spacer>
+                                <v-spacer/>
                                 <v-btn
                                         :disabled="!formIsValidE"
                                         @click="editExam(), closeDialog()"
@@ -249,6 +249,12 @@
             <v-dialog v-model="editExamInClinic" width="500px" text hide-overlay>
                 <formEditExamInClinic @close-dialog="closeDialogs" :exam="this.exam"/>
             </v-dialog>
+            <v-dialog v-model="deleteItemInClinic" width="500px" text hide-overlay>
+                <deleteExamFromClinic @close-dialog="closeDialogs" :item="this.item" :clinic="this.clinic" />
+            </v-dialog>
+            <v-dialog>
+                <deleteSpecialtyFromClinic/>
+            </v-dialog>
         </v-card>
     </v-container>
 </template>
@@ -257,13 +263,18 @@
     import formEditExamInClinic from "../../components/clinics/formEditExamInClinic"
     import Exams from "../../components/clinics/Exams";
     import Consultations from "../../components/clinics/Consultations";
+    import deleteExamFromClinic from "./deleteExamFromClinic";
+    import deleteSpecialtyFromClinic from "./deleteSpecialtyFromClinic";
     export default {
         props:['clinic'],
-        components: {Exams, Consultations, formEditExamInClinic},
+        components: {Exams, Consultations, formEditExamInClinic, deleteExamFromClinic, deleteSpecialtyFromClinic},
         data: () => ({
             addExamToClinic: false,
             addSpecialtyToClinic: false,
             editExamInClinic: false,
+            deleteItemInClinic: false,
+
+            item: undefined,
 
             panel: [0],
             formExam: undefined,
@@ -421,10 +432,15 @@
                 await this.selectClinic(clinic);
                 this.addSpecialtyToClinic = true;
             },
+            examSelectedDelete (item) {
+                this.item= item;
+                this.deleteItemInClinic = true;
+            },
             closeDialogs() {
                 this.addExamToClinic = false;
                 this.addSpecialtyToClinic = false;
                 this.editExamInClinic = false;
+                this.deleteItemInClinic = false;
             },
             selectClinic(clinic, index) {
                 this.$store.dispatch('selectClinic', clinic);
