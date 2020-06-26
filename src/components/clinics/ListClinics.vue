@@ -13,7 +13,7 @@
                         <v-expansion-panel-header class="text-left font-weight-bold pt-4 pb-3 pl-4 primary white--text">
                             {{clinic.name}}
                             <v-spacer/>
-                            <template v-slot:actions>
+                            <v-flex xs1>
                                 <v-tooltip top color="primary">
                                     <template v-slot:activator="{ on }">
                                         <v-btn icon dark v-on="on" @click="editClinic(clinic)">
@@ -30,6 +30,11 @@
                                     </template>
                                     <span>Deletar Clínica</span>
                                 </v-tooltip>
+                            </v-flex>
+
+
+                            <template v-slot:actions>
+
 
                                 <v-icon color="white">$expand</v-icon>
                             </template>
