@@ -2,11 +2,11 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 try { admin.initializeApp(functions.config().firebase); } catch (e) { console.log(e) }
 
-var axios = require("axios");
+/*var axios = require("axios");
 var xml2js = require('xml2js');
 const cors = require('cors')({ origin: true });
 var moment = require('moment');
-const { Parser } = require('json2csv');
+const { Parser } = require('json2csv');*/
 
 const heavyFunctionsRuntimeOpts = {
     timeoutSeconds: 540,
@@ -389,9 +389,10 @@ exports.setPricesExams = functions.https.onRequest(async (request, response) => 
 //Função pra ser chamada uma unica vez(100 users por vez) pra colocar o id dos users dentro do .doc() como uid.
 exports.setUidToUsers = functions.https.onRequest(async (request, response) => {
     const firestore = admin.firestore();
-    let query = firestore.collection('users').limit(100);
+    let query = firestore.collection('users').limit(50);
     let usersSnap = [];
-    query = query.where('uid', '==', undefined)
+    //where não pode ser comparado a undefined
+    query = query.where('uid', '==', null)
 
     usersSnap = await query.get();
 
