@@ -8,6 +8,28 @@
                 <p>Não há resultado para a pesquisa realizada</p>
             </v-flex>
             <div v-if="clinics.length !== 0" style="width: 100%">
+                <v-expansion-panels focusable>
+                    <v-expansion-panel v-for="(clinic, i) in clinics" :key="i" class="mt-3 primary">
+                        <v-expansion-panel-header class="white--text text-left font-weight-bold pt-4 pb-3 pl-4">
+                            {{clinic.name}}
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content class="white--text">
+                            <v-btn @click="verconsole(clinic)">console</v-btn>
+                            <v-flex xs12 sm12 class="mt-4 mb-3">
+                                <v-divider/>
+                            </v-flex>
+                            <v-flex sm3 v-for="(item, i) in clinics.specialties" :key="i" class="mt-3 mb-2">
+                                <v-card outlined class="borderCard mx-2 mr-2 pb-3 grey_light">
+                                    <v-layout row wrap class="mt-2">
+                                        <v-flex xs12 class="ml-3">
+                                            <h4 class="text-left font-weight-bold"><v-icon left>info</v-icon>{{item.name}}</h4>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-card>
+                            </v-flex>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
                 <v-flex sm12 v-for="(clinic, i) in clinics" :key="i" class="mb-5">
                     <v-card>
                         <v-flex xs12 sm12>
@@ -148,8 +170,35 @@
                 endSaturday: ''
             },
         }),
+        mounted () {
+            for (let i in this.clinics) {
+                let clinic = i;
+                let exams = [];
+                let specialties = [];
+
+                for (let i in clinic.exams) {
+                    exams.push({
+                        ...clinic.exams[i]
+                    });
+                }
+                this.clinics[i].exams = exams;
+                for (let i in clinic.specialties) {
+                    specialties.push({
+                        ...clinic.specialties[i]
+                    });
+                }
+                this.clinics[i].specialties = specialties;
+
+            }
+        },
+        computed: {
+
+        },
 
         methods: {
+            verconsole(clinic){
+              console.log(clinic)
+            },
             editClinic(clinic) {
                 this.clinic = this.clinics[this.clinics.indexOf(clinic)];
                 this.editingClinic = true;
@@ -170,6 +219,7 @@
                     this.$store.dispatch('putIndex', index);
                 }
                 this.$store.dispatch('selectClinic', clinic);
+                this.listando(clinic);
             },
             async addExam(clinic) {
                 await this.selectClinic(clinic);
@@ -195,7 +245,38 @@
                 this.addSpecialtyToClinic = false;
                 this.deletingExamsSpecialtiesFromClinic = false;
                 this.editingExamsSpecialtiesFromClinic = false;
+            },
+
+            listando(clinic) {
+                let val = this.$store.getters.clinics.filter(a => {
+                    return a.name === clinic.name;
+                });
+                return val;
+            },
+
+            allExams() {
+                let clinic = this.listando[0];
+                let exams = [];
+
+                for (let i in clinic.exams) {
+                    exams.push({
+                        ...clinic.exams[i]
+                    });
+                }
+                return exams;
+            },
+
+            allSpecialties() {
+                let clinic = this.listando[0];
+                let specialties = [];
+
+                for (let i in clinic.specialties) {
+                    specialties.push({
+                        ...clinic.specialties[i]
+                    });
+                }
+                return specialties;
             }
-        }
+        },
     }
 </script>

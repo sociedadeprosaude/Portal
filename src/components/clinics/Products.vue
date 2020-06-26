@@ -16,11 +16,11 @@
               readonly
               v-model="selectedClinic.name"
               hide-details
-            ></v-text-field>
+            />
           </v-flex>
 
           <v-flex xs12>
-            <v-progress-circular indeterminate class="primary--text" v-if="loading"></v-progress-circular>
+            <v-progress-circular indeterminate class="primary--text" v-if="loading"/>
           </v-flex>
 
           <v-card-text v-if=" allExams.length !== 0">
@@ -40,7 +40,7 @@
               <v-card-title class="headline grey lighten-2" primary-title>
                 <span class="headline">Deletar o Item Selecionado ?</span>
               </v-card-title>
-              <v-divider></v-divider>
+              <v-divider/>
               <v-card-text>
                 <strong>
                   Exame: {{product}}
@@ -50,10 +50,10 @@
                   Preço-Venda: R$ {{price}}
                 </strong>
               </v-card-text>
-              <v-divider></v-divider>
+              <v-divider/>
               <v-card-actions>
                 <v-btn color="error" rounded @click="dialog = false">NÃO</v-btn>
-                <v-spacer></v-spacer>
+                <v-spacer/>
                 <v-btn color="success" rounded @click="removeFromE">SIM</v-btn>
               </v-card-actions>
             </v-card>
@@ -137,7 +137,7 @@
               <v-card-title class="headline grey lighten-2" primary-title>
                 <span class="headline">Deletar o Item Selecionado ?</span>
               </v-card-title>
-              <v-divider></v-divider>
+              <v-divider/>
               <v-card-text>
                 <strong>
                   Medico: {{doctor}}
@@ -149,18 +149,18 @@
                   Preço-Venda: R$ {{price}}
                 </strong>
               </v-card-text>
-              <v-divider></v-divider>
+              <v-divider/>
               <v-card-actions>
                 <v-btn color="error" rounded @click="dialog2 = false">NÃO</v-btn>
-                <v-spacer></v-spacer>
+                <v-spacer/>
                 <v-btn color="success" rounded @click="removeFromS">SIM</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
 
-          <v-divider></v-divider>
+          <v-divider/>
           <v-card-actions>
-            <v-layout align-center justify-center>
+            <v-layout  class="align-center justify-center">
               <v-btn color="error" @click="clear()">
                 <v-icon>close</v-icon>Fechar
               </v-btn>
@@ -235,6 +235,7 @@ export default {
 
     allSpecialties() {
       let clinic = this.listando[0];
+      console.log(clinic);
       let specialties = [];
 
       for (let i in clinic.specialties) {
