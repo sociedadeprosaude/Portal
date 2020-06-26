@@ -409,7 +409,7 @@ exports.setUidToUsers = functions.runWith(heavyFunctionsRuntimeOpts).https.onReq
         }
 
         // eslint-disable-next-line no-await-in-loop
-        usersSnap = await query.get();
+        //usersSnap = await query.get();
     }
 });
 
