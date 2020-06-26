@@ -9,25 +9,12 @@
             </v-flex>
             <div v-if="clinics.length !== 0" style="width: 100%">
                 <v-expansion-panels focusable>
-                    <v-expansion-panel v-for="(clinic, i) in clinics" :key="i" class="mt-3 primary">
-                        <v-expansion-panel-header class="white--text text-left font-weight-bold pt-4 pb-3 pl-4">
+                    <v-expansion-panel v-for="(clinic, i) in clinics" :key="i" class="mt-3">
+                        <v-expansion-panel-header class="text-left font-weight-bold pt-4 pb-3 pl-4">
                             {{clinic.name}}
                         </v-expansion-panel-header>
-                        <v-expansion-panel-content class="white--text">
-                            <ListExamsSpecialties :clinic="clinic" ></ListExamsSpecialties>
-                            <v-btn @click="verconsole(clinic)">console</v-btn>
-                            <v-flex xs12 sm12 class="mt-4 mb-3">
-                                <v-divider/>
-                            </v-flex>
-                            <v-flex sm3 v-for="(item, i) in clinics.specialties" :key="i" class="mt-3 mb-2">
-                                <v-card outlined class="borderCard mx-2 mr-2 pb-3 grey_light">
-                                    <v-layout row wrap class="mt-2">
-                                        <v-flex xs12 class="ml-3">
-                                            <h4 class="text-left font-weight-bold"><v-icon left>info</v-icon>{{item.name}}</h4>
-                                        </v-flex>
-                                    </v-layout>
-                                </v-card>
-                            </v-flex>
+                        <v-expansion-panel-content>
+                            <ListExamsSpecialties :clinic="clinic"/>
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>

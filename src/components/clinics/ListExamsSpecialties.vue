@@ -1,10 +1,12 @@
 <template>
-    <v-card width="800">
+    <v-card width="100%">
         <v-card-text>
-            <v-container grid-list-md>
-                <v-layout align-center justify-center wrap>
+            <v-layout class="align-center justify-center" wrap>
                     <v-layout v-if="allSpecialties.length !== 0" class="align-center justify-center" wrap>
-                        <strong>Consultas Cadastradas da Clinica para EDIÇÂO</strong>
+                        <v-flex xs12 class="mt-4 mb-3">
+                            <p class="text-left primary--text font-weight-bold ml-2">Especialidades</p>
+                            <v-divider class="primary"/>
+                        </v-flex>
                         <v-expansion-panels  v-model="panel" accordion >
                             <v-expansion-panel v-for="(item,index) in allSpecialties" :key="index" >
                                 <v-expansion-panel-header class="primary white--text">
@@ -60,8 +62,9 @@
                         </v-expansion-panels>
                     </v-layout>
                     <v-layout v-if="allExams.length !== 0" class="align-center justify-center" wrap>
-                        <v-flex xs12>
-                            <strong>Exames Cadastradas da Clinica para EDIÇÂO</strong>
+                        <v-flex xs12 class="mt-4 mb-3">
+                            <p class="text-left primary--text font-weight-bold ml-2">Exames</p>
+                            <v-divider class="primary"/>
                         </v-flex>
                         <v-flex xs12>
                             <v-card v-for="(item,index) in allExams" :key="index">
@@ -85,32 +88,22 @@
                         </v-flex>
                     </v-layout>
                     <v-layout v-if="allExams.length === 0" class="align-center justify-center" wrap>
-                        <strong>Exames Cadastrados da Clinica para EDIÇÂO</strong>
-                        <v-card-text>
-                            <v-container grid-list-md>
-                                <v-layout align-center justify-center wrap>
-                                    <v-flex>
-                                        <v-alert type="error" outlined text>
-                                            Não há <strong>Exames</strong> Cadastradas para esta Clinica.
-                                        </v-alert>
-                                    </v-flex>
-                                </v-layout>
-                            </v-container>
+                        <v-flex xs12 class="mt-4 mb-3">
+                            <p class="text-left primary--text font-weight-bold ml-2">Exames</p>
+                            <v-divider class="primary"/>
+                        </v-flex>
+                        <v-card-text class="justify-center text-center">
+                            <span class="font-italic">Não há <strong>exames</strong> cadastrados para esta clínica.</span>
                         </v-card-text>
                     </v-layout>
 
                     <v-layout v-if="allSpecialties.length === 0" class="align-center justify-center" wrap>
-                        <strong>Consultas Cadastradas da Clinica para EDIÇÂO</strong>
-                        <v-card-text>
-                            <v-container grid-list-md>
-                                <v-layout class="align-center justify-center" wrap>
-                                    <v-flex>
-                                        <v-alert type="error" outlined text>
-                                            Não há <strong>Consultas</strong> Cadastradas para esta Clinica.
-                                        </v-alert>
-                                    </v-flex>
-                                </v-layout>
-                            </v-container>
+                        <v-flex xs12 class="mt-4 mb-3">
+                            <p class="text-left primary--text font-weight-bold ml-2">Especialidades</p>
+                            <v-divider class="primary"/>
+                        </v-flex>
+                        <v-card-text class="justify-center text-center">
+                            <span class="font-italic">Não há <strong>especialidades</strong> cadastrados para esta clínica.</span>
                         </v-card-text>
                     </v-layout>
 
@@ -259,7 +252,6 @@
                     </v-layout>
 
                 </v-layout>
-            </v-container>
         </v-card-text>
     </v-card>
 </template>
