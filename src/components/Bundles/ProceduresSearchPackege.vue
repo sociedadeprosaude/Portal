@@ -4,7 +4,21 @@
             <v-flex class="hidden-print-only" xs12>
                 <v-card class="elevation-0 pl-2 pr-4">
                     <v-flex xs12>
-                        <v-card-title class="pa-0">
+                        <v-card-title class="mt-3">
+                            <v-flex xs12 class="text-center mb-4">
+                                <v-btn rounded small class="mx-2"
+                                       :color="categorySelect === 'exam' ? 'primary' : 'background'"
+                                       @click="selectCategory('exam')">
+                                    <span class="hidden-xs-only">Exames</span>
+                                    <img src="@/assets/icons/lab.svg" height="24px" class="hidden-sm-and-up">
+                                </v-btn>
+                                <v-btn rounded small class="mx-2"
+                                       :color="categorySelect === 'appointment' ? 'primary' : 'background'"
+                                       @click="selectCategory('appointment')">
+                                    <span class="hidden-xs-only">{{specialtiesLoaded ? 'Consultas' : 'Carregando consultas...'}}</span>
+                                    <img src="@/assets/icons/doctor.svg" height="24px" class="hidden-sm-and-up">
+                                </v-btn>
+                            </v-flex>
                             <v-flex xs12>
                                 <v-text-field
                                         label="Pesquisa"
@@ -12,23 +26,12 @@
                                         :loading="loading"
                                         id="search"
                                         single-line
+                                        outlined
+                                        dense
                                         :disabled="!categorySelect"
-                                        prepend-icon="search">
+                                        prepend-icon="search"
+                                >
                                 </v-text-field>
-                            </v-flex>
-                            <v-flex xs12 class="text-center">
-                                <v-btn outlined class="mx-2"
-                                       :color="categorySelect === 'exam' ? 'accent' : 'primary_light'" rounded
-                                       @click="selectCategory('exam')">
-                                    <span class="hidden-xs-only">Exames</span>
-                                    <img src="@/assets/icons/lab.svg" height="24px" class="hidden-sm-and-up">
-                                </v-btn>
-                                <v-btn outlined class="mx-2"
-                                       :color="categorySelect === 'appointment' ? 'accent' : 'primary_light'" rounded
-                                       @click="selectCategory('appointment')">
-                                    <span class="hidden-xs-only">{{specialtiesLoaded ? 'Consultas' : 'Carregando consultas...'}}</span>
-                                    <img src="@/assets/icons/doctor.svg" height="24px" class="hidden-sm-and-up">
-                                </v-btn>
                             </v-flex>
                         </v-card-title>
                     </v-flex>
@@ -39,7 +42,7 @@
                                     <v-card v-for="item in items" class="my-3" :key="item.id">
                                         <v-card-title class="pt-2 " v-text="item.name"/>
                                         <v-card-text v-if="categorySelect === 'exam'">
-                                            <v-slide-group >
+                                            <v-slide-group>
                                                 <v-slide-item v-for="n in item.clinics"
                                                               :key="n.name"
                                                               v-slot:default="{ active, toggle }">
@@ -126,7 +129,7 @@
             specialties() {
                 let specialties = this.$store.getters.specialties;
                 for (let spec in specialties) {
-                    if ( specialties[spec].doctors) {
+                    if (specialties[spec].doctors) {
 
                         specialties[spec].doctors = specialties[spec].doctors.filter((a) => {
                             return a.cost
