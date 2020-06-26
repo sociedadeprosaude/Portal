@@ -91,6 +91,8 @@
                                                 :loaderPaymentNumber="loaderPaymentNumber"
                                                 :exam="exam"
                                                 :numberReceipt="numberReceipt"
+                                                :modalidade="modalidade"
+                                                :previousConsultation="previousConsultation"
                                                 :status="status"
                                                 :payment_numberFound="payment_numberFound"
                                 />
@@ -100,22 +102,6 @@
                 </v-layout>
             </ul>
         </div>
-        <v-flex xs12 v-if="consultationLoading">
-            <div class="text-xs-center">
-                <v-dialog v-model="dialog" v-if="createConsultationForm" max-width="520">
-                    <SchedulingForm @close-dialog="dialog = false"
-                                    :createConsultationForm="createConsultationForm"
-                                    :loaderPaymentNumber="loaderPaymentNumber"
-                                    :exam="exam"
-                                    :numberReceipt="numberReceipt"
-                                    :modalidade="modalidade"
-                                    :previousConsultation="previousConsultation"
-                                    :status="status"
-                                    :payment_numberFound="payment_numberFound"
-                    />
-                </v-dialog>
-            </div>
-        </v-flex>
         <v-flex xs12 v-if="!consultationLoading">
             <v-btn class="primary" rounded text @click="listenMoreConsultations">Carregar mais</v-btn>
         </v-flex>

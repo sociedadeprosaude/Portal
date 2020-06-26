@@ -83,10 +83,10 @@
             </v-card>
         </v-flex>
         <v-dialog v-model="documentDialog">
-            <consultation-document @close="documentDialog=false" :consultation="consultation" ></consultation-document>
+            <consultation-document @close="documentDialog=false" :consultation="consultation" />
         </v-dialog>
         <v-dialog v-model="receptDialog">
-            <consultation-receipt @close="receptDialog=false" :consultation="consultation" ></consultation-receipt>
+            <consultation-receipt @close="receptDialog=false" :consultation="consultation" />
         </v-dialog>
     </v-layout>
 </template>
@@ -119,18 +119,15 @@
             },
         },
         mounted() {
-            this.initialConfig()
+
             console.log(this.consultation)
         },
         watch: {
         },
         methods: {
 
-            async initialConfig() {
-
-            },
             async deletedConsultation() {
-                this.cancelLoading = true
+                this.cancelLoading = true;
                 let obj = {
                     id: this.consultation.id,
                     idPatient: this.consultation.user ? this.consultation.user.cpf : this.selectedPatient.cpf,
@@ -141,7 +138,7 @@
                     previousConsultation: this.consultation.previousConsultation,
                     consultation: this.consultation,
                     exam:this.consultation.exam
-                }
+                };
 
                 console.log(obj)
                 await this.$store.dispatch('eraseAppointment', obj);
