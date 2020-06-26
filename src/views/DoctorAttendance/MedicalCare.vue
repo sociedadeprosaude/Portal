@@ -13,6 +13,7 @@
                                     return-object
                                     placeholder="Especialidade"
                                     outlined
+                                    clearable
                                     color="write"
                                     class="mr-3"
                             />
@@ -301,7 +302,7 @@
     export default {
         data: () => ({
             //================
-            //
+            especialtie: '',
             //=============
             panel: [true],
             date_choose: '',
