@@ -26,7 +26,7 @@
                     </v-layout>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
-                        <card v-for="exam in intake.exams">
+                        <v-card v-for="(exam,i) in intake.exams" v-bind:key="i" >
                             <v-layout row wrap>
                                 <v-flex xs5 class="align-center justify-center">
                                     <p class="font-weight-black mt-5">
@@ -40,7 +40,7 @@
                                     <p class="mt-5"> PREÇO: {{exam.price}}</p>
                                 </v-flex>
                             </v-layout>
-                        </card>
+                        </v-card>
                     </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>
