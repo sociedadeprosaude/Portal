@@ -259,23 +259,14 @@ const actions = {
     },
 
     async GetReceiptsClinic(context, payload) {
-        let DataInit='';
-        if(!payload.payments){
-            DataInit = moment(payload.paymentDay).subtract(1, "months").format("YYYY-MM-DD 00:00:00")
-        }
-        else{
-            DataInit = moment(payload.payments[parseInt(payload.payments.length) - 1].paymentDay).format("YYYY-MM-DD 00:00:00")
-        }
-        payload.paymentDay = moment(payload.paymentDay).format("YYYY-MM-DD 23:59:59");
-        let cost = 0;
-        await firebase.firestore().collection('intakes').where('date', '>=', DataInit)
-            .where('date', '<=', payload.paymentDay).orderBy('date').get().then((querySnapshot) =>{
+        await firebase.firestore().collection('outtakes').where('cnpj','==',payload.cnpj)
+            .where('paid','==',false).get().then((querySnapshot) =>{
                 let intakes= []
                 querySnapshot.forEach((doc) =>{
                     if(!doc.data().cancelled_by && doc.data().exams){
                         let exams= []
                         let patient= doc.data().user.name
-                        let intakeNumber= doc.data().id
+                        let intakeNumber= doc.data().intake_id
                         let intakeClinic = {}
                         for(let exam in doc.data().exams) {
                             if (doc.data().exams[exam].clinic.name === payload.name) {
@@ -304,31 +295,30 @@ const actions = {
     },
 
     async CalculedValuePaymentClinic(context, payload) {
-        let DataInit='';
-        if(!payload.payments){
-            DataInit = moment(payload.paymentDay).subtract(1, "months").format("YYYY-MM-DD 00:00:00")
-        }
-        else{
-            DataInit = moment(payload.payments[parseInt(payload.payments.length) - 1].paymentDay).format("YYYY-MM-DD 00:00:00")
-        }
-        payload.paymentDay = moment(payload.paymentDay).format("YYYY-MM-DD 23:59:59");
-        let cost = 0;
-        await firebase.firestore().collection('intakes').where('date', '>=', DataInit)
-            .where('date', '<=', payload.paymentDay).orderBy('date').get().then((querySnapshot) =>{
+        let cost=0
+        let NumberExams=0
+        await firebase.firestore().collection('outtakes').where('cnpj','==',payload.cnpj)
+            .where('paid','==',false).get().then((querySnapshot) =>{
                 querySnapshot.forEach((doc) =>{
+                    console.log('doc :', doc.data())
                     if(!doc.data().cancelled_by && doc.data().exams){
                         for(let exam in doc.data().exams){
                             if(doc.data().exams[exam].clinic){
                                 if ((doc.data().exams[exam].clinic.name === payload.name) && doc.data().exams[exam].realized === true ) {
+                                    NumberExams += 1;
                                     cost += parseFloat(doc.data().exams[exam].cost)
                                 }
                             }
                         }
                     }
                 })
-        });
+            });
+        let clinic = {
+            cost: cost,
+            NumberExams: NumberExams
+        }
         context.commit('setCovenants', cost);
-        return cost
+        return clinic
     },
 
     async PayClinic(context, payload){
@@ -346,7 +336,6 @@ const actions = {
     async AddPaymentDay(context,payload){
         let clinic= firebase.firestore().collection('clinics').doc(payload.clinic.name);
         let setMerge= clinic.set({
-            paymentDay: payload.paymentDay,
             period: payload.period
         },{merge:true})
     },

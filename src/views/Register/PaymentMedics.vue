@@ -1,39 +1,206 @@
 <template>
     <v-container>
-        <v-layout>
-            <p>oi</p>
+        <v-layout row wrap v-if="!loading">
+            <v-flex xs12>
+                <span class="my-headline">Médicos</span>
+            </v-flex>
+            <v-flex xs12 class="px-3 my-3">
+                <v-card v-for="(doctor,i) in doctors" :key="i" outlined>
+                    <v-layout row wrap>
+                        <v-flex xs6 md3>
+                            <span class="font-weight-bold">{{doctor.name.toUpperCase()}}</span>
+                        </v-flex>
+                        <v-spacer></v-spacer>
+                        <v-flex xs1>
+                            <v-menu open-on-hover top offset-y>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                            class="transparent elevation-0"
+                                            small
+                                            v-bind="attrs"
+                                            v-on="on"
+                                    >
+                                        <v-icon>more_vert</v-icon>
+                                    </v-btn>
+                                </template>
+
+                                <v-list>
+                                    <v-list-item
+                                            v-for="(item, index) in Menu"
+                                            :key="index"
+                                    >
+                                        <v-list-item-title>{{ item.title }}</v-list-item-title>
+                                    </v-list-item>
+                                </v-list>
+                            </v-menu>
+                        </v-flex>
+                    </v-layout>
+                    <v-flex xs12 sm12>
+                        <v-layout row wrap class="justify-center">
+                            <v-card sm3 class="mx-4 elevation-0">
+                                        <span v-if="cost !=='' && doctorSelected === doctor" class="font-weight-bold">
+                                            Custo : {{cost}}
+                                        </span>
+                                <v-btn v-else >
+                                            <span class="font-weight-black"
+                                                  @click="CalculateValue(doctor)">A pagar</span>
+                                </v-btn>
+                            </v-card>
+                            <v-card sm3 class="mx-4 elevation-0">
+                                <span v-if="NumberExams !=='' && doctorSelected === doctor" class="font-weight-bold">
+                                            Nº de exames : {{NumberExams}}
+                                        </span>
+                                <v-btn  @click="CalculateValue(doctor)" v-else>
+                                    <span class="font-weight-black">Nº de exames</span>
+                                </v-btn>
+                            </v-card>
+                            <v-card sm3 class="mx-4 elevation-0">
+                                <span class="font-weight-bold">
+                                             Próximo Pagamento: {{date(doctor.last_payment,doctor.period)}}
+                                </span>
+                            </v-card>
+                            <v-card sm3 class="mx-4 elevation-0">
+                                <v-btn @click="ChangeDateDialog(doctor)"><span class="font-weight-black">Alterar Periodo</span>
+                                </v-btn>
+                            </v-card>
+                        </v-layout>
+                    </v-flex>
+                    <v-flex xs12 sm12 class="mt-3">
+                        <v-layout row wrap class="justify-space-between">
+
+                            <v-btn @click="checkReceipts(doctor)" text>+ detalhes</v-btn>
+
+                            <v-card sm3 class="mx-4 elevation-0" outlined>
+                                <v-btn>
+                                    <span class="font-weight-black">Pagar</span>
+                                </v-btn>
+                            </v-card>
+                        </v-layout>
+                    </v-flex>
+                    <v-card v-if="intakesObserv && doctor === doctorSelected">
+                        <DoctorsOuttakePayment @close-dialog="intakesObserv = false" :doctor="doctorSelected"></DoctorsOuttakePayment>
+                    </v-card>
+                </v-card>
+            </v-flex>
         </v-layout>
+        <v-dialog v-model="change" max-width="300px">
+            <v-card>
+                <v-card-title>Período de Pagamento</v-card-title>
+                <v-flex class="mt-5 ml-3">
+                    <v-select
+                            v-model="period"
+                            :items="days"
+                            label="período"
+                    >
+                    </v-select>
+                </v-flex>
+                <v-flex>
+                    <v-btn @click="ChangeDate(doctor)">
+                        Confirmar
+                    </v-btn>
+                </v-flex>
+            </v-card>
+        </v-dialog>
+
     </v-container>
 </template>
 
 <script>
-    import {mask} from "vue-the-mask";
     import moment from "moment";
+    import DoctorsOuttakePayment from "../../components/DoctorsOuttakePayment"
+
 
     export default {
         name: "PaymentMedics",
-        directives: {
-            mask
-        },
         components: {
-
+            DoctorsOuttakePayment
         },
         data() {
             return {
-
-            };
-        },
-        mounted() {
-
+                loading: true,
+                value: undefined,
+                change: false,
+                doctorSelected:[],
+                cost:'',
+                intakes:[],
+                period:'',
+                NumberExams:'',
+                intakesObserv:false,
+                Menu: [
+                    { title: 'Gerar Boleto' },
+                    { title: 'Anexar Recibo' },
+                ],
+                menu2:false,
+                dateFormatted2: moment().format("DD/MM/YYYY"),
+                date2: moment().format("YYYY-MM-DD 23:59:59"),
+                datenow: moment().format('YYYY-MM-DD'),
+                days:['10','15','30']
+            }
         },
         computed: {
+            units() {
+                return this.$store.getters.units
+            },
+            doctors() {
+                return this.$store.getters.colaboratorsDoctors.filter(a => {
+                    return a.status !== 'pending' && a.crm
+                })
+            },
+        },
+        methods: {
+            async getInitialInfo() {
+                await this.$store.dispatch('getColaboratorsDoctors');
+                this.loading = false
+            },
+            ChangeDateDialog(clinic) {
+                this.doctorSelected = clinic;
+                this.change = !this.change;
+            },
+            async ChangeDate(clinic) {
+                this.change = !this.change;
+                await this.$store.dispatch('AddPaymentDay', {
+                    clinic: clinic,
+                    period: this.period
+                });
+                this.getInitialInfo()
+            },
+            formatDate(date) {
+                if (!date) return null;
+                const [year, month, day] = date.split("-");
+                return `${day}/${month}/${year}`;
+            },
+            async CalculateValue(doctor) {
+                this.cost = '';
+                this.doctorSelected = doctor;
+               // let ReturnValuesClinic= await this.$store.dispatch('CalculedValuePaymentClinic', clinic)
+               // this.cost = ReturnValuesClinic.cost
+                // this.NumberExams = ReturnValuesClinic.NumberExams
+            },
 
+            async checkReceipts(doctor){
+                this.doctorSelected = doctor
+                this.intakesObserv = !this.intakesObserv
+
+            },
+            async Pay(clinic){
+                await this.$store.dispatch('PayClinic', clinic)
+                this.getInitialInfo()
+            },
+            date(day,period){
+                if(!period){
+                    return moment(day).add(30, 'days').format('DD/MM/YYYY')
+                }
+                else{
+                    return moment(day).add(period, 'days').format('DD/MM/YYYY')
+                }
+            }
+
+        },
+        mounted() {
+            this.getInitialInfo()
         },
         watch: {
 
-        },
-        methods: {
-
         }
-    };
+    }
 </script>

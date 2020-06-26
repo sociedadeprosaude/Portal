@@ -39,7 +39,7 @@
                             <v-divider class="primary" vertical/>
                         </v-flex>
                         <v-flex xs5 md2 class="text-center align-center justify-center">
-                            <p class="mt-5"> PREÇO: {{intake.price}}</p>
+                            <p class="mt-5"> PREÇO: {{intake.cost}}</p>
                         </v-flex>
                         <v-flex class="hidden-sm-and-down" md1>
                             <v-divider class="primary" vertical/>
@@ -90,7 +90,7 @@
                         <p  class="mt-3 font-italic font-weight-bold">Exame: {{ContestExam.name}}</p>
                     </v-flex>
                     <v-flex xs12>
-                        <p>Valor Atual: {{ContestExam.price}}</p>
+                        <p>Valor Atual: {{ContestExam.cost}}</p>
                     </v-flex>
                     <v-flex xs2>
                     <v-spacer></v-spacer>

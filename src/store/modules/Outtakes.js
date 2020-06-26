@@ -233,7 +233,6 @@ const actions = {
 
     async addOuttakes(context, outtake) {
         outtake = functions.removeUndefineds(outtake);
-        console.log('aficionando outtake')
         await firebase.firestore().collection('outtakes/').add(outtake)
     },
     async getSpecificOuttake({commit}, intake) {

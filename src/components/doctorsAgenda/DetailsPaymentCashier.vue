@@ -460,7 +460,7 @@
                         clinic: clinics[i],
                         exams: this.selectedBudget.exams ? this.selectedBudget.exams.filter( exam => exam.clinic.name === clinics[i].name ) : [],
                         specialties: this.selectedBudget.specialties ? this.selectedBudget.specialties.filter( specialtie => specialtie.doctor.clinic.name === clinics[i].name ): [],
-                        payd: false,
+                        paid: false,
                         cnpj: clinics[i].cnpj
                     }
                     if( outtake.exams.length !== 0  || outtake.specialties.length !== 0 ){

@@ -61,8 +61,8 @@
     import {mask} from "vue-the-mask";
 
     export default {
-        props: ['clinic'],
-        name: "ClinicsIntakes",
+        props: ['doctor'],
+        name: "DoctorsOuttakePayment",
         directives: {
             mask
         },
@@ -90,12 +90,12 @@
             }
         },
         mounted(){
-            this.$store.dispatch('GetReceiptsClinic', this.clinic)
+            //this.$store.dispatch('GetReceiptsClinic', this.doctor)
 
         },
         computed: {
             intakes(){
-                return this.$store.getters.IntakesExamsClinics
+               // return this.$store.getters.IntakesExamsClinics
             }
         }
     };
