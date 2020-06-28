@@ -120,7 +120,6 @@
         },
         mounted() {
             this.initialConfig()
-            console.log(this.consultation)
         },
         watch: {
         },
@@ -150,6 +149,8 @@
             },
             setConsultationHour(consultation) {
                 let consultation_hour = moment().format('YYYY-MM-DD hh:mm:ss');
+                if(!consultation.user)
+                    consultation.user = this.selectedPatient
                 let data = {
                     consultation_hour: consultation_hour,
                     consultation: consultation,
