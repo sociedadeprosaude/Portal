@@ -1,19 +1,22 @@
 <template>
   <v-container fluid v-if="statistics && months && years">
-    <v-row>
-      <v-col cols="2">
-        <v-select :items="years" v-model="year"></v-select>
+    <v-row justify="start" align="center">
+      <v-col cols="3">
+        <p>
+          <span style="font-size: 2em;">Overview</span>
+        </p>
       </v-col>
       <v-col cols="2">
-        <v-select :items="months" v-model="month"></v-select>
+        <v-select :items="years" label="Ano" v-model="year"></v-select>
+      </v-col>
+      <v-col cols="2">
+        <v-select :items="months" label="Mês" v-model="month">
+          <template v-slot:selection>{{monthName(month)}}</template>
+          <template v-slot:item="data">{{monthName(data.item)}}</template>
+        </v-select>
       </v-col>
     </v-row>
-    <v-row justify="start" align="end">
-      <p>
-        <span style="font-size: 2em;">Overview</span>
-        &emsp; {{monsthsName[month-1]}}
-      </p>
-    </v-row>
+
     <v-row>
       <v-col cols="3">
         <MiniStatistic
@@ -44,7 +47,7 @@
       </v-col>
     </v-row>
     <v-row class="mt-2">
-      <h1>Faturamento</h1>
+      <h1>Faturamento (R$)</h1>
     </v-row>
     <v-row>
       <v-col>
@@ -87,6 +90,9 @@
           </v-row>
         </v-card>
       </v-col>
+    </v-row>
+    <v-row class="mt-2">
+      <h1>Número de vendas</h1>
     </v-row>
     <v-row>
       <v-col>
@@ -143,11 +149,12 @@ export default {
   }),
 
   mounted() {
-    //this.$store.dispatch("getAllIntakes");
-    //this.$store.dispatch("getAllIntakes2");
-    this.$store.dispatch("getStatistics");
+    this.$store.dispatch("getStatisticsByMonth");
   },
   methods: {
+    monthName(month) {
+      return this.monsthsName[Number(month) - 1];
+    },
     round2(num) {
       return num.toFixed(2);
     }
@@ -188,14 +195,16 @@ export default {
       return String(this.info.numOfSales);
     },
     maisVendidos() {
-      return this.info.arrObjs;
+      return this.info.itens;
     },
     labels() {
-      return Object.keys(this.info.arrObjs).map(key => key);
+      return Object.keys(this.info.itens).map(key => key);
     },
     faturamentoDataset() {
       return {
-        labels: Array.from(Array(31).keys()).map(num => ++num),
+        labels: Array.from(
+          Array(moment(`${this.year}-${this.month}`).daysInMonth()).keys()
+        ).map(num => ++num),
         datasets: [
           {
             lineTension: 0,
@@ -207,20 +216,20 @@ export default {
       };
     },
     profitDataset() {
-      return Object.keys(this.info.arrObjs)
+      return Object.keys(this.info.itens)
         .map(key => ({
           name: key,
-          profit: this.round2(this.info.arrObjs[key].totalProfit)
+          profit: this.round2(this.info.itens[key].totalProfit)
         }))
         .sort((a, b) => b.profit - a.profit);
     },
     bestSellersDataset() {
       return {
-        labels: Object.keys(this.info.arrObjs),
+        labels: Object.keys(this.info.itens),
         datasets: [
           {
-            data: Object.keys(this.info.arrObjs).map(
-              key => this.info.arrObjs[key].numOfSales
+            data: Object.keys(this.info.itens).map(
+              key => this.info.itens[key].numOfSales
             )
           }
         ]
