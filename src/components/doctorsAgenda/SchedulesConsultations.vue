@@ -252,7 +252,7 @@
                     consultation: consultation
                 };
 
-                if (!this.query && !consultation.exam_type) {
+                if (!this.query /* && !consultation.exam_type */) {
                     this.thereIsPaymentNumber();
                 }
 
@@ -269,14 +269,23 @@
                     user: this.selectedForm.user,
                     doctor: this.selectedForm.consultation.doctor,
                     exam: {
-                        exam_type:this.selectedForm.consultation.exam_type.name,
+                        //exam_type:this.selectedForm.consultation.exam_type.name,
                         ...value
                     }
-                }:{
+                }
+                :this.selectedForm.consultation.specialty ? {
                     user: this.selectedForm.user,
                     doctor: this.selectedForm.consultation.doctor,
                     specialty: this.selectedForm.consultation.specialty,
                 }
+                :{
+                    user: this.selectedForm.user,
+                    doctor: this.selectedForm.consultation.doctor,
+                    exam: {
+                        type:this.selectedForm.consultation.exam_type.name
+                    },
+                }
+
                 this.$store.dispatch("thereIsIntakes", obj)
                     .then(obj => {
                         if (obj.payment_number) {

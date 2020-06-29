@@ -232,12 +232,15 @@ exports.thereIsPaymentNumber = functions.runWith(heavyFunctionsRuntimeOpts).http
     let type = payload.exam ? 'Exam' : 'Consultation';
     let status = payload.exam ? 'Exame Pago' : 'Consulta Paga';
     let procedureRef;
+    let exam = undefined
     if (payload.status && payload.payment_number)
         procedureRef = admin.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', 'Consultation')
             .where('specialty', '==', payload.specialty.name).where('status', 'array-contains-any', payload.status).where('payment_number', '==', payload.payment_number.toString());
     else if (payload.exam) {
         procedureRef = admin.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)
-            .where('exam.type', '==', payload.exam.type).where('status', '==', [status]).where('exam.name', '==', payload.exam.name)
+            .where('exam.type', '==', payload.exam.type).where('status', '==', [status])
+        if(payload.exam.name)
+            procedureRef = procedureRef.where('exam.name', '==', payload.exam.name)
     }
     else {
         procedureRef = admin.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)

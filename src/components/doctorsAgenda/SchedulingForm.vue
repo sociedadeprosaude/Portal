@@ -266,7 +266,8 @@
             success: false,
             scheduleLoading: false,
             statusOptions: [{text: "Aguardando pagamento"}, {text: "Pago"}],
-            exam:undefined
+            exam:undefined,
+            findPaymentToExam:true,
             //exams: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
         }),
         computed: {
@@ -325,7 +326,6 @@
                         dependent: form.user.dependent
                     };
                 this.loading = true;
-                console.log('->>>>',form)
                 await this.$store.dispatch("addUserToConsultation", form);
                 this.scheduleLoading = false;
                 this.success = true;
@@ -339,8 +339,18 @@
         },
         watch:{
             exam(value){
-                if(value)
+                if(value && this.findPaymentToExam){
                     this.$emit('findPaymentNumberToExam',value)
+                }else{
+                    this.findPaymentToExam = true
+                }
+            },
+            payment_numberFound(value){
+                if(value.exam){
+                    this.exam = Object.assign({},value.exam)
+                    this.findPaymentToExam = false
+                }
+                    
             }
         }
     }
