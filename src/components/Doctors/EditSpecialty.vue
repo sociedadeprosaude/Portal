@@ -43,6 +43,19 @@
                         </template>
                     </v-select>
                 </v-flex>
+
+                <v-flex xs12>
+                    <v-currency-field
+                    outlined
+                    rounded
+                    filled
+                    clearable
+                    prefix="R$"
+                    v-model="specialty.price"
+                    label="Preço de Venda"
+                    />
+                </v-flex>
+
                 <v-flex xs12>
                     <v-select
                             label="É Necessário Agendar Exame(s) ?"
@@ -113,6 +126,7 @@
                 this.loading = true;
                 await this.$store.dispatch('editSpecialty', {
                     name: this.specialty.name.toUpperCase(),
+                    price:Number(this.specialty.price),
                     exam: this.exam
                 });
                 this.success = true;

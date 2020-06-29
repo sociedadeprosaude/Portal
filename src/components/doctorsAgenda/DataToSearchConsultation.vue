@@ -246,7 +246,7 @@
                                                 ||(schedule.exam_type && item.exam_type && schedule.exam_type.name === item.exam_type.name))
                     if (schedule.clinic.name === item.clinic.name && specialtyOrExamType
                         && schedule.doctor.cpf === item.doctor.cpf && schedule.date === item.date && item.user) {
-                        if (item.type === 'Consulta') {
+                        if (item.type === 'Consulta' || !item.type) {
                             obj.qtd_consultations = obj.qtd_consultations + 1
                         } else
                             obj.qtd_returns += 1

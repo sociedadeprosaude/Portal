@@ -91,6 +91,8 @@
                                                 :loaderPaymentNumber="loaderPaymentNumber"
                                                 :exam="exam"
                                                 :numberReceipt="numberReceipt"
+                                                :modalidade="modalidade"
+                                                :previousConsultation="previousConsultation"
                                                 :status="status"
                                                 :payment_numberFound="payment_numberFound"
                                 />

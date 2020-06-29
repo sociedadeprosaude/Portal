@@ -96,6 +96,7 @@
             this.$store.dispatch("loadExam");
 
             this.$store.dispatch("startConnectionListener")
+            //this.$store.dispatch('gabiarra')
         },
         mounted() {
             firebase.auth().onAuthStateChanged((user) => {
