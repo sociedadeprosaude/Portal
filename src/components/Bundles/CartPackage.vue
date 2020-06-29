@@ -43,55 +43,54 @@
                         <v-layout row wrap class="align-center">
                             <v-flex xs12 class="mt-1 v-card" style="overflow:auto; height:50vh; box-shadow: inset 0px 5px grey">
                                 <v-layout row wrap>
-                                    <v-flex xs12 v-if="exames.length > 0">
-                                        <p class="my-headline">Exames</p>
-                                        <v-card v-for="(item) in exames" class="ma-2" :key="item.name">
-                                            <v-card-title class="py-2">
-                                                <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
-                                                <v-spacer/>
-                                                <span class="subtitle-1 font-weight-light">
-                                                <v-btn small icon @click="removeItem(item, 'exams')">
-                                                    <v-icon>cancel</v-icon>
-                                                </v-btn>
-                                            </span>
-                                            </v-card-title>
-                                            <v-card-text class="pt-1 pb-0">
-                                                {{item.clinic.name}}
-                                                <p class="text-right">
-                                                    R$ {{(item.price).toFixed(2)}}
-                                                </p>
-                                            </v-card-text>
-                                        </v-card>
-                                    </v-flex>
-                                    <v-divider/>
-                                    <v-flex xs12 v-if="consultas.length > 0">
-                                        <p class="my-headline">Consultas</p>
-                                        <v-card v-for="(item) in consultas" class="ma-2" :key="item.doctor.name">
-                                            <v-card-title class="py-2">
-                                                <span class="subtitle-1 font-weight-medium">{{item.name}}</span>
-                                                <v-spacer/>
-                                                <span class="subtitle-1 font-weight-light">
-                                                <v-btn small icon @click="removeItem(item, 'consultations')">
-                                                    <v-icon>cancel</v-icon>
-                                                </v-btn>
-                                            </span>
-                                            </v-card-title>
-                                            <v-card-text class="pt-1 pb-0">
-                                                {{item.doctor.name}}
+                                    <v-card class="my-2 white" width="100%" v-if="exams.length > 0">
+                                        <h4 class="text-left ml-2">Exames</h4>
+                                        <v-card-text v-for="(item) in exams" :key="item.name" class="ma-0 pa-0 my-1 font-weight-bold">
+                                            <v-flex xs12 class="mt-2">
                                                 <v-divider/>
-                                                <v-layout row wrap class="mt-2">
-                                                    <span>
-                                                        {{item.doctor.clinic.name}}
-                                                    </span>
+                                            </v-flex>
+                                            <v-flex xs12 class="align-center justify-center text-center">
+                                                <span class="font-weight-bold">{{item.name}}</span>
+                                            </v-flex>
+                                            <v-flex xs12>
+                                                <v-divider/>
+                                            </v-flex>
+                                            <v-flex xs12>
+                                                <v-layout row wrap class="mx-1 black--text">
+                                                    <span>{{item.clinic.name}}</span>
                                                     <v-spacer/>
-                                                    <p class="text-right">
-                                                        R$ {{(item.doctor.price).toFixed(2)}}
-                                                    </p>
+                                                    <span>R$ {{item.price}}</span>
                                                 </v-layout>
-                                            </v-card-text>
-
-                                        </v-card>
-                                    </v-flex>
+                                            </v-flex>
+                                            <v-btn rounded dense x-small class="error px-6" @click="removeItem(item)">Remover Item</v-btn>
+                                        </v-card-text>
+                                    </v-card>
+                                    <v-divider/>
+                                    <v-card class="my-2 white" width="100%" v-if="consultations.length > 0">
+                                        <h4 class="text-left ml-2">Consultas</h4>
+                                        <v-card-text v-for="(item) in consultations" :key="item.doctor.name" class="ma-0 pa-0 my-1 font-weight-bold">
+                                            <v-flex xs12 class="mt-2">
+                                                <v-divider/>
+                                            </v-flex>
+                                            <v-flex xs12 class="align-center justify-center text-center">
+                                                <span>{{item.name}}</span>
+                                            </v-flex>
+                                            <v-flex xs12>
+                                                <v-divider/>
+                                            </v-flex>
+                                            <v-flex xs12>
+                                                <v-layout row wrap class="mx-1 black--text">
+                                                    <v-flex xs12 class="text-left">
+                                                        <span>{{item.doctor.name}}</span>
+                                                    </v-flex>
+                                                    <span>{{item.doctor.clinic.name}}</span>
+                                                    <v-spacer/>
+                                                    <span>R$ {{item.doctor.price}}</span>
+                                                </v-layout>
+                                            </v-flex>
+                                            <v-btn rounded dense x-small class="error px-6" @click="removeItem(item)">Remover Item</v-btn>
+                                        </v-card-text>
+                                    </v-card>
                                 </v-layout>
                             </v-flex>
                         </v-layout>
@@ -241,14 +240,14 @@
             cartItems() {
                 return this.$store.getters.getShoppingCartItems
             },
-            exames() {
+            exams() {
                 if (this.searchData.exams) {
                     return this.searchData.exams
                 } else {
                     return this.$store.getters.getShoppingCartItemsByCategory.exams
                 }
             },
-            consultas() {
+            consultations() {
                 if (this.searchData.consultations) {
                     return this.searchData.consultations
                 } else {
@@ -332,8 +331,8 @@
                 let id = moment().valueOf()
                 let budget = {
                     id: id,
-                    specialties: this.consultas.length > 0 ? this.consultas : undefined,
-                    exams: this.exames.length > 0 ? this.exames : undefined,
+                    specialties: this.consultations.length > 0 ? this.consultations : undefined,
+                    exams: this.exams.length > 0 ? this.exams : undefined,
                     subTotal: this.subTotal,
                     discount: this.moneyDiscount,
                     total: this.total,
@@ -385,8 +384,8 @@
             },
             async validateRegister() {
                 const packageData = {
-                    exams: this.exames,
-                    consultations: this.consultas,
+                    exams: this.exams,
+                    consultations: this.consultations,
                     moneyDiscount: this.moneyDiscount,
                     percentageDiscount: this.percentageDiscount,
                     cost: this.cost,

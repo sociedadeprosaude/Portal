@@ -39,67 +39,113 @@
                         <v-flex xs12>
                             <v-layout row wrap>
                                 <v-flex class="ml-2" sm12>
-                                    <v-card v-for="item in items" class="my-3" :key="item.id">
-                                        <v-card-title class="pt-2 " v-text="item.name"/>
-                                        <v-card-text v-if="categorySelect === 'exam'">
-                                            <v-slide-group>
-                                                <v-slide-item v-for="n in item.clinics"
-                                                              :key="n.name"
-                                                              v-slot:default="{ active, toggle }">
-                                                    <v-btn class="mx-2"
-                                                           :input-value="active"
-                                                           active-class="blue white--text"
-                                                           depressed
-                                                           rounded
-                                                           @click="addProduct(item, n, 'exam')"
-                                                    >
-                                                        {{n.name}} | {{n.price}}
-                                                    </v-btn>
-                                                </v-slide-item>
-                                            </v-slide-group>
-                                        </v-card-text>
-                                        <v-card-text v-if="categorySelect === 'appointment'">
-                                            <v-slide-group show-arrows>
-                                                <v-slide-item v-for="(n, index) in item.doctors"
-                                                              :key="n.crm + index"
-                                                              v-slot:default="{ active, toggle }">
-                                                    <div>
-                                                        <v-btn class="mx-2"
-                                                               :input-value="active"
-                                                               active-class="blue white--text"
-                                                               depressed
-                                                               rounded
-                                                               v-for="clinic in n.clinics"
-                                                               :key="clinic.name"
-                                                               @click="addProduct(item, n, 'appointment', clinic)"
-
-                                                        >
-                                                            {{n.name}} | {{clinic.name}} | {{n.price}}
-                                                        </v-btn>
+                                    <v-layout row wrap style="width:100%"
+                                              class="align-center justify-center py-0"
+                                              v-for="item in items"
+                                              :key="item.id">
+                                        <v-flex xs12 class="align-start justify-start">
+                                            <div class="text-left">
+                                                <span class="my-sub-headline primary--text">{{item.name}}</span>
+                                                <v-divider class="primary"/>
+                                            </div>
+                                        </v-flex>
+                                        <v-container fluid grid-list-sm class="py-0 my-3 mx-2">
+                                            <v-layout row wrap v-if="categorySelect === 'exam'">
+                                                <v-flex v-for="n in item.clinics" :key="n.name" sm12 xs12
+                                                        class="px-2 py-2">
+                                                    <v-card class="pa-4 background"
+                                                            style="border-radius:20px; height: 100%">
+                                                        <v-layout>
+                                                            <v-layout row wrap>
+                                                                <v-flex xs12 class="text-left">
+                                                                    <v-layout row wrap>
+                                                                        <span class="subtitle-2 font-weight-bold">{{n.name}}</span>
+                                                                        <v-spacer/>
+                                                                        <v-chip small color="primary_dark"
+                                                                                text-color="white" class="mb-2">
+                                                                            Preço :
+                                                                            {{n.price}}
+                                                                        </v-chip>
+                                                                    </v-layout>
+                                                                </v-flex>
+                                                                <v-flex xs12 class="mb-1">
+                                                                    <v-divider class="primary"/>
+                                                                </v-flex>
+                                                                <v-flex xs12 class="text-right">
+                                                                    <v-fade-transition>
+                                                                        <v-btn
+                                                                                rounded
+                                                                                small
+                                                                                color="primary_dark white--text"
+                                                                                class="mx-0"
+                                                                                @click="addProduct(item, n, 'exam')"
+                                                                        >Adicionar
+                                                                        </v-btn>
+                                                                        <v-btn
+                                                                                rounded
+                                                                                small
+                                                                                color="grey"
+                                                                                class="mx-0"
+                                                                        >Sem conexão
+                                                                        </v-btn>
+                                                                    </v-fade-transition>
+                                                                </v-flex>
+                                                            </v-layout>
+                                                        </v-layout>
+                                                    </v-card>
+                                                </v-flex>
+                                            </v-layout>
+                                            <v-layout row wrap v-if="categorySelect === 'appointment'">
+                                                <v-flex v-for="(n, index) in item.doctors"
+                                                        :key="n.crm + index" sm12 xs12 class="px-2 py-2">
+                                                    <div v-for="clinic in n.clinics" :key="clinic.name" class="mb-3">
+                                                        <v-card class="pa-4 background"
+                                                                style="border-radius:20px; height: 100%">
+                                                            <v-layout>
+                                                                <v-layout row wrap>
+                                                                    <v-flex xs12 class="text-left">
+                                                                        <v-layout row wrap>
+                                                                            <span class="subtitle-2 font-weight-bold">
+                                                                                {{n.name}} - {{clinic.name}}
+                                                                            </span>
+                                                                            <v-spacer/>
+                                                                            <v-chip small color="primary_dark"
+                                                                                    text-color="white" class="mb-2">
+                                                                                Preço :
+                                                                                {{n.price}}
+                                                                            </v-chip>
+                                                                        </v-layout>
+                                                                    </v-flex>
+                                                                    <v-flex xs12 class="mb-1">
+                                                                        <v-divider class="primary"/>
+                                                                    </v-flex>
+                                                                    <v-flex xs12 class="text-right">
+                                                                        <v-fade-transition>
+                                                                            <v-btn
+                                                                                    rounded
+                                                                                    small
+                                                                                    color="primary_dark white--text"
+                                                                                    class="mx-0"
+                                                                                    @click="addProduct(item, n, 'appointment', clinic)"
+                                                                            >Adicionar
+                                                                            </v-btn>
+                                                                            <v-btn
+                                                                                    rounded
+                                                                                    small
+                                                                                    color="grey"
+                                                                                    class="mx-0"
+                                                                            >Sem conexão
+                                                                            </v-btn>
+                                                                        </v-fade-transition>
+                                                                    </v-flex>
+                                                                </v-layout>
+                                                            </v-layout>
+                                                        </v-card>
                                                     </div>
-                                                </v-slide-item>
-                                            </v-slide-group>
-                                        </v-card-text>
-                                        <v-card-text v-if="categorySelect === 'package'">
-                                            <v-slide-group show-arrows>
-                                                <v-slide-item
-                                                        v-slot:default="{ active, toggle }"
-                                                >
-
-                                                    <v-btn class="mx-2"
-                                                           :input-value="active"
-                                                           active-class="blue white--text"
-                                                           depressed
-                                                           rounded
-
-                                                           @click="selectBudget(item)"
-                                                    >
-                                                        Selecionar
-                                                    </v-btn>
-                                                </v-slide-item>
-                                            </v-slide-group>
-                                        </v-card-text>
-                                    </v-card>
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-container>
+                                    </v-layout>
                                 </v-flex>
                             </v-layout>
                         </v-flex>
