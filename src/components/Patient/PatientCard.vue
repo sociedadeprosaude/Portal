@@ -89,10 +89,10 @@
                                 <v-layout column wrap>
                                     <span class="font-weight-bold white--text" style="font-size: 0.8em">
                                         <img src="../../assets/icons/icons8-whatsapp.svg" height="14px">
-                                        (92) 99146-0334</span>
+                                        (92)99146-0334</span>
                                     <span class="font-weight-bold white--text" style="font-size: 0.8em">
                                         <v-icon class="white--text" style="font-size: 1.2em">phone</v-icon>
-                                        (92) 4003-6049</span>
+                                        (92)4003-6049</span>
                                 </v-layout>
                             </v-flex>
                             <v-flex xs6 class="text-right">

@@ -24,19 +24,10 @@ const mutations = {
 const actions = {
 
     async updateSpecialty({ commit }, specialty) {
-
-        try {
-            for (let data in specialty) {
-                if (!specialty[data]) {
-                    delete specialty[data]
-                }
-            }
-            let specialtyRef;
-            specialtyRef = await firebase.firestore().collection('specialties').doc(specialty.name).update(specialty);
-            return specialtyRef
-        } catch (e) {
-            throw e
-        }
+        let copySpecialty = Object.assign({},specialty)
+        functions.removeUndefineds(copySpecialty)
+        let specialtyRef;
+        specialtyRef = await firebase.firestore().collection('specialties').doc(copySpecialty.name).update(copySpecialty);
     },
 
     async searchSpecialty(context, search) {

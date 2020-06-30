@@ -25,12 +25,15 @@
                             <v-divider class="primary"/>
                         </v-flex>
                         <v-flex sm4 v-for="(item,index) in consultation.consultations" :key="index" class="mt-3 mb-2">
-                            <v-card outlined class="borderCard mx-2 mr-2 grey_light" @click="ConsultationSelect(item)">
+                            <v-card outlined class="borderCard mx-2 mr-2 grey lighten-5 elevation-1" @click="ConsultationSelect(item)">
                                 <v-layout row wrap class="mt-2">
                                     <v-flex xs4>
                                         <v-icon large>person</v-icon>
                                         <br>
-                                        <v-icon small class="mt-1">donut_large</v-icon>
+                                        <v-icon v-if="item.type === 'Retorno'"  color="primary" small class="mt-1">restore</v-icon>
+                                        <v-icon v-else small class="mt-1"  color="primary">event</v-icon>
+                                        <v-icon v-if="item.status === 'Pago'" color="green" small class="mt-1">attach_money</v-icon>
+                                        <v-icon v-else small class="mt-1" color="red">money_off</v-icon>
                                     </v-flex>
                                     <v-flex xs8 class="mb-3">
                                         <v-flex xs12>
