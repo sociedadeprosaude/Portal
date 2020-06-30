@@ -12,6 +12,8 @@ import Reports from "./views/Register/Reports";
 import Bundles from "./views/Register/Bundles";
 import NewBundles from "./views/Register/Bundle/NewBundles";
 import PaymentCovenants from "./views/Register/PaymentCovenants";
+import PaymentMedics from "./views/Register/PaymentMedics";
+
 import ContestValue from "./views/Notifications/contestValues"
 
 import oldDoctors from "./views/Register/oldDoctors";
@@ -193,7 +195,7 @@ let mainRoutes = [
     }
   },
   {
-    path: '/bills',
+    path: '/pagamento/financeiro',
     name: 'bills',
     component : Bills,
     meta: {
@@ -217,9 +219,17 @@ let mainRoutes = [
     }
   },
   {
-    path: '/PaymentCovenants',
+    path: '/pagamento/convenio',
     name: 'PaymentCovenants',
     component : PaymentCovenants,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/pagamento/medicos',
+    name: 'PaymentMedics',
+    component : PaymentMedics,
     meta: {
       requiresAuth: false,
     }
@@ -295,6 +305,11 @@ router.afterEach((to, from, next) => {
     store.commit('setDoctorsAgendaToolbar', true)
   } else {
     store.commit('setDoctorsAgendaToolbar', false)
+  }
+  if (to.path.includes('pagamento')) {
+    store.commit('setBillsToolbar', true)
+  } else {
+    store.commit('setBillsToolbar', false)
   }
 });
 
