@@ -109,7 +109,6 @@
                 </v-layout>
             </ul>
         </div>
-<!--         <v-flex xs12 v-if="consultationLoading">
             <div class="text-xs-center">
                 <v-dialog v-model="dialog" v-if="createConsultationForm" max-width="520">
                     <SchedulingForm @close-dialog="dialog = false"
