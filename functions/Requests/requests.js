@@ -28,6 +28,7 @@ exports.setUidToUsersPatient = functions.runWith(heavyFunctionsRuntimeOpts).http
     } catch (e) {
         console.log(e)
     }
+    response.status(200).send('funcionu UID P')
     return
 });
 
@@ -46,6 +47,7 @@ exports.setUidToUsersDoctor = functions.runWith(heavyFunctionsRuntimeOpts).https
     } catch (e) {
         console.log(e)
     }
+    response.status(200).send('funcionu UID D')
     return
 });
 
