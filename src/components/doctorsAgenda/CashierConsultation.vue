@@ -49,14 +49,6 @@
 
                         </v-btn>
                         <span>{{itemsShopping}}</span>
-                        <v-badge
-                                :content="test"
-                                :value="test"
-                                color="primary"
-                                overlap
-                        >
-                            <v-icon>local_grocery_store</v-icon>
-                        </v-badge>
                     </v-card-title>
                     <v-card-text v-if="cartPatient">
                         <CartPatient/>
@@ -95,7 +87,6 @@
         components: {CartShopping, CartPatient, DetailsPayment, HistoryCashierPatient},
         data (){
             return {
-                test:1,
                 categorySelect: 'exam',
                 search: '',
                 loading: undefined,
