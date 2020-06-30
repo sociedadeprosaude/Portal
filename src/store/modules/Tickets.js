@@ -172,7 +172,12 @@ const actions = {
             }
         }
     },
-    async updateSectorRoom({ getters }, payload) {
+    async updateSector({getters}, sector) {
+        let selectedClinic = getters.selectedUnit;
+        await queryBuilder(selectedClinic.name, sector.name)
+            .update(sector);
+    },
+    async updateSectorRoom({getters}, payload) {
         let selectedClinic = getters.selectedUnit;
         payload.sector.rooms = {
             ...payload.sector.rooms,
