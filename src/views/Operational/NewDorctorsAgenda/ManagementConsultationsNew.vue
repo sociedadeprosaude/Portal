@@ -80,10 +80,8 @@
 
 <script>
     import moment from 'moment/moment'
-    import CardDoctorsManagementConsultations
-        from '../../../components/doctorsAgenda/ManagementConsultations/CardDoctorsManagementConsultations'
-    import CardInformationManagementConsultations
-        from '../../../components/doctorsAgenda/ManagementConsultations/CardInformationManagementConsultations'
+    import CardDoctorsManagementConsultations from '../../../components/doctorsAgenda/ManagementConsultations/CardDoctorsManagementConsultations'
+    import CardInformationManagementConsultations from '../../../components/doctorsAgenda/ManagementConsultations/CardInformationManagementConsultations'
 
     export default {
         components: {CardDoctorsManagementConsultations, CardInformationManagementConsultations},
