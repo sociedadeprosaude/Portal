@@ -164,12 +164,14 @@
                     docArray = docArray.filter(doctor => {
                         if (!this.specialty) return true;
                         let find = false;
-                        doctor.specialties.forEach(specialty => {
-                            if (specialty.name === this.specialty.name) {
-                                find = true;
-                                return true;
-                            }
-                        });
+                        if(doctor.specialties){
+                            doctor.specialties.forEach(specialty => {
+                                if (specialty.name === this.specialty.name) {
+                                    find = true;
+                                    return true;
+                                }
+                            });
+                        }
                         return find;
                     });
                     return docArray;
@@ -185,8 +187,12 @@
         mounted(){
             this.$store.dispatch("getExamsTypes");
             this.query= this.$route.params.q
-            if( this.query){
-                console.log('query: ', this.query);
+            if( this.query && this.$route.params.reschedule && this.query.exam){
+                this.examType = {name:this.query.exam.type};
+                this.examTypeCheck = true
+                this.clinic= this.query.clinic.name;
+                this.doctor= this.query.doctor
+            }else if(this.query ){
                 this.specialty = this.query.specialty;
                 this.clinic= this.query.clinic.name;
                 this.doctor= this.query.doctor
