@@ -35,14 +35,14 @@
                                                 <span class="font-weight-bold">{{consultation.doctor.crm}}</span>
                                             </v-flex>
 
-                                            <div v-if="exames.indexOf(consultation.specialty.name) != -1">
+                                            <div v-if="consultation.exam">
                                                 <v-flex>
                                                     <span class="primary--text font-weight-bold">Procedimento: </span>
                                                     <span class="font-weight-bold">Exame</span>
                                                 </v-flex>
                                                 <v-flex>
                                                     <span class="primary--text font-weight-bold">Exame: </span>
-                                                    <span class="font-weight-bold">{{ exames.indexOf(consultation.specialty.name) != -1 ? this.consultation.exam.name : undefined}}</span>
+                                                    <span class="font-weight-bold">{{this.consultation.exam.name}}</span>
                                                 </v-flex>
                                             </div>
 
@@ -187,6 +187,7 @@
             this.dependent = this.consultation.dependent
             this.formatDates()
             await this.$store.dispatch('loadSpecialties')
+            console.log('consultation document')
         },
         methods: {
 
