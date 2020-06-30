@@ -99,7 +99,6 @@
         from '../../../components/doctorsAgenda/ManagementConsultations/CardPatientManagementConsultations'
     import ConsultationDocument from "../commons/ConsultationDocument"
     import ConsultationReceipt from "../commons/ConsultationReceipt"
-
     let moment = require('moment');
 
     export default {
@@ -119,7 +118,7 @@
             },
         },
         mounted() {
-            this.initialConfig()
+            /*this.initialConfig()*/
         },
         watch: {
         },
