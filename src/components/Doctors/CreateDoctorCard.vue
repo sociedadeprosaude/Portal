@@ -131,7 +131,7 @@
                                     </v-layout>
                                 </v-radio-group>
                             </v-flex>
-                            <v-flex xs6>
+                            <v-flex xs12>
                                 <v-currency-field
                                         prepend-icon="attach_money"
                                         outlined
@@ -144,7 +144,7 @@
                                 />
                             </v-flex>
                             <v-spacer/>
-                            <v-flex xs6>
+                            <!-- <v-flex xs6>
                                 <v-currency-field
                                         prepend-icon="monetization_on"
                                         outlined
@@ -155,7 +155,7 @@
                                         v-model="spec.price"
                                         label="Venda"
                                 />
-                            </v-flex>
+                            </v-flex> -->
                         </v-layout>
                     </v-flex>
                 </v-layout>
