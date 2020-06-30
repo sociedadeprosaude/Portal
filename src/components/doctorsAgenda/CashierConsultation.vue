@@ -10,7 +10,7 @@
                        :color="categorySelect === 'appointment' ? 'background' : 'primary'" v-if="!historyPatient">
                     <span>{{specialtiesLoaded ? 'Consultas' : 'Carregando consultas...'}}</span>
                 </v-btn>
-                <v-btn rounded small class="mx-1"  @click="selectCategory('package')"
+                <v-btn rounded small class="mx-1" @click="selectCategory('package')"
                        :color="categorySelect === 'package' ? 'background' : 'primary'" v-if="!historyPatient">
                     Pacotes
                 </v-btn>
@@ -18,7 +18,7 @@
                        :color="optionPatient === 'budgets' ? 'background' : 'primary'">
                     Orçamentos
                 </v-btn>
-                <v-btn rounded small class="mx-1" v-if="historyPatient"  @click="selectOptionHistoryPatient('intakes')"
+                <v-btn rounded small class="mx-1" v-if="historyPatient" @click="selectOptionHistoryPatient('intakes')"
                        :color="optionPatient === 'intakes' ? 'background' : 'primary'">
                     Vendas
                 </v-btn>
@@ -29,6 +29,40 @@
             <v-flex xs12 class="mt-4 mx-3" v-if="!historyPatient">
                 <v-card>
                     <v-card-title>
+                        <v-flex xs12 class="text-center pt-n5">
+                            <v-btn @click="searchBudgetBtn = !searchBudgetBtn" dense text>
+                                <h5 class="primary--text" v-if="!searchBudgetBtn">pesquisar orçamento</h5>
+                                <h5 class="primary--text" v-if="searchBudgetBtn"> esconder pesquisa por orçamento</h5>
+                            </v-btn>
+                        </v-flex>
+                        <v-flex xs12 v-if="searchBudgetBtn">
+                            <v-layout row wrap class="align-center mt-2">
+                                <v-flex xs10>
+                                    <v-text-field
+                                            label="Num. do Orçamento"
+                                            v-model="searchBudgetNumber"
+                                            type="number"
+                                            outlined
+                                            dense
+                                    >
+                                    </v-text-field>
+                                </v-flex>
+                                <v-flex xs2 class="text-center mt-n6">
+                                    <v-btn v-if="!searchBudgetLoading"
+                                           fab
+                                           small
+                                           icon
+                                           style="min-width: 0; width: 64px"
+                                           @click="searchBudget">
+                                        <v-icon class="primary--text">search</v-icon>
+                                    </v-btn>
+                                    <v-progress-circular class="primary--text" indeterminate v-else/>
+                                </v-flex>
+                                <v-flex xs12 v-if="searchBudgetError">
+                                    <span class="error--text">{{searchBudgetError}}</span>
+                                </v-flex>
+                            </v-layout>
+                        </v-flex>
                         <v-text-field placeholder="Pesquisa"
                                       v-model="search"
                                       :loading="loading"
@@ -59,7 +93,7 @@
                     </v-card-text>
                 </v-card>
             </v-flex>
-            <v-flex xs12 v-if="historyPatient"  class="mt-4 mx-3">
+            <v-flex xs12 v-if="historyPatient" class="mt-4 mx-3">
                 <v-card>
                     <HistoryCashierPatient :option="optionPatient"/>
                 </v-card>
@@ -76,7 +110,7 @@
 
     export default {
         components: {CartShopping, CartPatient, DetailsPayment, HistoryCashierPatient},
-        data (){
+        data() {
             return {
                 categorySelect: 'exam',
                 search: '',
@@ -84,6 +118,10 @@
                 cartPatient: false,
                 historyPatient: false,
                 optionPatient: 'budgets',
+                searchBudgetError: undefined,
+                searchBudgetNumber: undefined,
+                searchBudgetLoading: false,
+                searchBudgetBtn: false,
             }
         },
 
@@ -116,7 +154,7 @@
             categorySelect: function () {
                 this.search = ''
             },
-            patient () {
+            patient() {
                 return this.$store.getters.selectedPatient;
             }
         },
@@ -125,7 +163,7 @@
             specialties() {
                 let specialties = this.$store.getters.specialties;
                 for (let spec in specialties) {
-                    if ( specialties[spec].doctors) {
+                    if (specialties[spec].doctors) {
 
                         specialties[spec].doctors = specialties[spec].doctors.filter((a) => {
                             return a.cost
@@ -172,7 +210,7 @@
                 this.categorySelect = category
             },
 
-            selectOptionHistoryPatient (option){
+            selectOptionHistoryPatient(option) {
                 this.optionPatient = option
             },
 
@@ -186,6 +224,32 @@
                     this.$store.commit('addShoppingCartItem', budget.specialties[spec])
                 }
                 this.loading = false
+            },
+            async searchBudget() {
+                this.searchBudgetLoading = true;
+                let budget = await this.$store.dispatch('getBudget', this.searchBudgetNumber);
+                if (budget) {
+                    this.$store.commit('setSelectedBudget', budget);
+                    for (let exam in budget.exams) {
+                        this.$store.commit('addShoppingCartItem', budget.exams[exam])
+                    }
+                    for (let spec in budget.specialties) {
+                        this.$store.commit('addShoppingCartItem', budget.specialties[spec])
+                    }
+                    let intakes = await this.$store.dispatch('getUserIntakes', budget.user);
+                    if (intakes) {
+                        budget.user.intakes = intakes
+                    }
+                    let budgets = await this.$store.dispatch('getUserBudgets', budget.user);
+                    if (budgets) {
+                        budget.user.budgets = budgets
+                    }
+                    this.$store.commit('setSelectedPatient', budget.user);
+                    this.searchBudgetBtn = false
+                } else {
+                    this.searchBudgetError = 'Orçamento não encontrado'
+                }
+                this.searchBudgetLoading = false
             },
 
         }

@@ -4,7 +4,7 @@
             <v-flex xs12 class="mt-4 pa-0 ">
                 <v-checkbox
                     class="pl-3 py-0 my-0"
-                    v-model="scheduledExamCheck"
+                    v-model="examTypeCheck"
                     color="white"
                 >
                     <template v-slot:label>
@@ -14,7 +14,7 @@
             </v-flex>
             <v-flex xs12 class="ma-0 pa-0">
                 <v-combobox
-                        v-if="!scheduledExamCheck"
+                        v-if="!examTypeCheck"
                         class="pa-0 ma-0"
                         :items="specialties"
                         v-model="specialty"
@@ -42,8 +42,8 @@
                 <v-combobox
                         v-else
                         class="pa-0 ma-0"
-                        :items="scheduledExams"
-                        v-model="scheduledExam"
+                        :items="examTypes"
+                        v-model="examType"
                         item-text="name"
                         return-object
                         placeholder="Exames agendáveis"
@@ -129,8 +129,8 @@
             specialty: undefined,
             clinic: undefined,
             doctor: undefined,
-            scheduledExamCheck:false,
-            scheduledExam:undefined
+            examTypeCheck:false,
+            examType:undefined
         }),
 
         computed: {
@@ -176,12 +176,14 @@
                 }
             },
 
-            scheduledExams() {
-                return this.$store.getters.scheduledExams;
+            examTypes() {
+                return this.$store.getters.examsTypes.filter((examType)=>{
+                    return examType.scheduleable
+                });
             }
         },
         mounted(){
-            this.$store.dispatch("getScheduledExams");
+            this.$store.dispatch("getExamsTypes");
             this.query= this.$route.params.q
             if( this.query){
                 console.log('query: ', this.query);
@@ -203,22 +205,24 @@
                 this.$store.dispatch('selectDoctor', doctor)
             },
             specialty (specialty){
+                console.log('specialty',specialty)
                 this.$store.dispatch('selectSpecialty', specialty)
             },
-            scheduledExam(value){
-                this.$store.dispatch('selectScheduledExam',value)
+            examType(value){
+                console.log('exam',value)
+                this.$store.dispatch('selectExamType',value)
             },
-            scheduledExamCheck(value){
+            examTypeCheck(value){
                 if(value){
                     this.$store.dispatch('selectSpecialty', undefined)
                     this.specialty = undefined
                 } 
                 else{
-                    this.$store.dispatch('selectScheduledExam',undefined) 
-                    this.scheduledExam = undefined
+                    this.$store.dispatch('selectExamType',undefined) 
+                    this.examType = undefined
                 }
-
-                this.$store.dispatch('selectScheduledExamCheck',value)
+                console.log('check',value)
+                this.$store.dispatch('selectExamTypeCheck',value)
                   
             }
         },

@@ -10,7 +10,7 @@ import Specialties from "./views/Register/Specialties";
 import Labor from "./views/Personal/Labor";
 import Reports from "./views/Register/Reports";
 import Bundles from "./views/Register/Bundles";
-import NewBundles from "./views/Register/Bundle/NewBudget";
+import NewBundles from "./views/Register/Bundle/NewBundles";
 import PaymentCovenants from "./views/Register/PaymentCovenants";
 import ContestValue from "./views/Notifications/contestValues"
 

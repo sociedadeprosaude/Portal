@@ -94,8 +94,9 @@
             this.$store.dispatch("getDoctors");
             this.$store.dispatch("getClinics");
             this.$store.dispatch("loadExam");
-
+            this.$store.dispatch("getExamsTypes");
             this.$store.dispatch("startConnectionListener")
+            //this.$store.dispatch('gabiarra')
         },
         mounted() {
             firebase.auth().onAuthStateChanged((user) => {

@@ -57,7 +57,7 @@
         <v-col cols="12">
           <v-checkbox
             class="ml-12 pl-3 py-0 my-0"
-            v-model="scheduledExamCheck"
+            v-model="examTypeCheck"
             label="Listar agendas de exames"
           ></v-checkbox>
         </v-col>
@@ -237,7 +237,7 @@ export default {
     dialogNewPeriod: false,
     dialogNewSchedule: false,
     editExpirationDate: false,
-    scheduledExamCheck: false,
+    examTypeCheck: false,
     loading: false,
     newDay: {},
     newPeriod: {},
@@ -274,8 +274,8 @@ export default {
         if (this.clinic && schedule.clinic.name != this.clinic.name)
           filter = false;
         if (
-          (this.scheduledExamCheck && !schedule.exam_type) ||
-          (!this.scheduledExamCheck && schedule.exam_type)
+          (this.examTypeCheck && !schedule.exam_type) ||
+          (!this.examTypeCheck && schedule.exam_type)
         )
           filter = false;
         return filter;
@@ -289,7 +289,7 @@ export default {
     }
   },
   watch: {
-    scheduledExamCheck(value) {
+    examTypeCheck(value) {
       if (value) {
         this.headers = [
           {
