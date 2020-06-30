@@ -227,24 +227,6 @@
         <v-dialog v-model="multipleViewDialog" fullscreen transition="dialog-bottom-transition">
             <multiple-visualizer :sector="sector" @close="multipleViewDialog = false"></multiple-visualizer>
         </v-dialog>
-        <v-dialog v-model="deletionRoom.deleteRoomDialog" max-width="500px">
-            <v-card>
-                <v-col cols="12">
-                    <span class="my-headline">Deletar {{deletionRoom.selectedRoom.name}}</span>
-                </v-col>
-                <v-col cols="12" align="end">
-                    <v-btn
-                            v-if="!deletionRoom.deleting"
-                            @click="deleteRoom(deletionRoom.selectedRoom)"
-                            rounded
-                            class="red"
-                    >
-                        <span class="white--text">Deletar</span>
-                    </v-btn>
-                    <v-progress-circular indeterminate color="primary" v-else></v-progress-circular>
-                </v-col>
-            </v-card>
-        </v-dialog>
     </v-container>
 </template>
 
@@ -429,20 +411,7 @@
                 this.$store.commit('setFavoriteRoomSection', this.sectorName);
                 console.log(this.sectorName)
             },
-            async deleteRoom(room) {
-                this.deletionRoom.selectedRoom = room
-                if (!this.deletionRoom.deleteRoomDialog) {
-                    this.deletionRoom.deleteRoomDialog = true
-                    return
-                }
-                this.deletionRoom.deleting = true
-                await this.$store.dispatch('deleteSectorRoom', {room: room, sector: this.sector})
-                this.deletionRoom.deleting = false
-                this.deletionRoom.deleteRoomDialog = false
-            },
-            alertActualTicket(room) {
 
-            },
             openSingleView(room) {
                 this.singleViewDialog.room = room;
                 this.singleViewDialog.active = true;
@@ -450,7 +419,4 @@
         }
     };
 </script>
-
-<style scoped>
-</style>
 
