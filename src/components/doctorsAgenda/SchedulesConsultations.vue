@@ -182,7 +182,7 @@
                 }
             });
 
-            this.query = Object.assign({},this.$route.params.q)
+            this.query = this.$route.params.q
             if (this.query && !this.$route.params.reschedule) {
                 this.modalidade = "Retorno"
                 this.previousConsultation = this.query.id
@@ -266,7 +266,6 @@
                 }
                 console.log(this.selectedForm)
                 if(this.$route.params.reschedule && this.query.exam){
-                    console.log('entrou aqui')
                     this.selectedForm.consultation.exam = this.query.exam
                 }
 
