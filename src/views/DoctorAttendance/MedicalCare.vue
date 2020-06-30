@@ -44,9 +44,9 @@
                 </v-layout>
                 <v-layout aling-center row wrap>
                     <v-flex xs12>
-                        <CardDoctorsManagementConsultations @consultationSelect="consultatioSelect= $event"
-                                                            @patientSelect="patientSelected = $event"
-                                                            :especialtie="especialtie" :date="date"/>
+                        <CardManagementConsultationsOfUserDoctor @consultationSelect="consultatioSelect= $event"
+                                                                 @patientSelect="patientSelected = $event"
+                                                                 :especialtie="especialtie" :date="date"/>
                     </v-flex>
                 </v-layout>
             </v-card>
@@ -60,9 +60,10 @@
 <script>
     import moment from 'moment/moment'
     import CardInformationManagementConsultations from "../../components/doctorsAgenda/ManagementConsultations/CardInformationManagementConsultations";
-    import CardDoctorsManagementConsultations from "../../components/doctorsAgenda/ManagementConsultations/CardDoctorsManagementConsultations";
+    import CardManagementConsultationsOfUserDoctor
+        from "../../components/Attendance/CardManagementConsultationsOfUserDoctor";
     export default {
-        components: {CardDoctorsManagementConsultations, CardInformationManagementConsultations},
+        components: {CardManagementConsultationsOfUserDoctor, CardInformationManagementConsultations},
         data: vm => ({
             date: new Date().toISOString().substr(0, 10),
             dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
@@ -92,22 +93,19 @@
         },
         methods: {
             async initialConfig() {
-                this.especialtie = this.user.specialties[0];
-                this.getConsultationsDorctors()
+                /*this.especialtie = this.user.specialties[0];*/
+                this.getConsultationsDorctors();
             },
-
             formatDate(date) {
                 if (!date) return null;
                 const [year, month, day] = date.split('-');
                 return `${day}/${month}/${year}`
             },
-
             parseDate(date) {
                 if (!date) return null;
                 const [month, day, year] = date.split('/');
                 return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
             },
-
             returnOutRule(item) {
                 let dateConsultation = moment(item.consultation.date);
                 let today = moment();
