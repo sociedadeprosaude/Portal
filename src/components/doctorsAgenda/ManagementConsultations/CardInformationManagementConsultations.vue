@@ -57,7 +57,7 @@
                                 rounded
                                 :to="{ name: 'AgendamentoConsultas', params: { q: consultation}}"
                                 :disabled="consultation.status !== 'Pago' || consultation.regress"
-                                v-if="consultation.type !== 'Retorno'"
+                                v-if="consultation.type !== 'Retorno' && consultation.specialty"
                         >Retorno
                         </v-btn>
                         <v-btn
@@ -119,8 +119,7 @@
             },
         },
         mounted() {
-
-            console.log(this.consultation)
+            this.initialConfig()
         },
         watch: {
         },
@@ -147,6 +146,8 @@
             },
             setConsultationHour(consultation) {
                 let consultation_hour = moment().format('YYYY-MM-DD hh:mm:ss');
+                if(!consultation.user)
+                    consultation.user = this.selectedPatient
                 let data = {
                     consultation_hour: consultation_hour,
                     consultation: consultation,
