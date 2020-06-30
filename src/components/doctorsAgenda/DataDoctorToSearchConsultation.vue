@@ -1,6 +1,6 @@
 <template>
     <v-container class="ma-0 pa-0">
-        <v-flex xs12 class="mt-4 justify-start text-left">
+        <v-flex xs12 class=" justify-start text-left">
             <v-btn icon fab small @click="showFilter = !showFilter" color="background" dark>
                 <v-icon v-if="showFilter">close</v-icon>
                 <v-icon v-else>filter_alt</v-icon>
