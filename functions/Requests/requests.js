@@ -12,31 +12,41 @@ const heavyFunctionsRuntimeOpts = {
     timeoutSeconds: 540,
     memory: '2GB'
 }
-//Função pra ser chamada uma unica vez(100 users por vez) pra colocar o id dos users dentro do .doc() como uid.
-exports.setUidToUsers = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (request, response) => {
+
+exports.setUidToUsersPatient = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (request, response) => {
     const firestore = admin.firestore();
-    let query = firestore.collection('users').limit(2);
-    let usersSnap = [];
-    //where não pode ser comparado a undefined
-    query = query.where('uid', '>', '')
-
-    usersSnap = await query.get();
-
-    while(usersSnap.docs.length > 0){
-        let users = [];
-        usersSnap.forEach(doc => {
-            users.push({
-                id: doc.id
-            })
+    try {
+        let query = firestore.collection('users');
+        let usersSnap = [];
+        query = query.where('type', '==', 'PATIENT')
+        usersSnap = await query.get();
+        usersSnap.docs.forEach(doc => {
+            if(!doc.data().uid) {
+                doc.ref.update({uid: doc.id})
+            }
         });
-
-        for(let i in users) {
-            firestore.collectionGroup('users').doc(users[i].id).update({uid: users[i].id})
-        }
-        // eslint-disable-next-line no-await-in-loop
-        //sem recursão
-        //usersSnap = await query.get();
+    } catch (e) {
+        console.log(e)
     }
+    return
+});
+
+exports.setUidToUsersDoctor = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (request, response) => {
+    const firestore = admin.firestore();
+    try {
+        let query = firestore.collection('users');
+        let usersSnap = [];
+        query = query.where('type', '==', 'DOCTOR')
+        usersSnap = await query.get();
+        usersSnap.docs.forEach(doc => {
+            if(!doc.data().uid) {
+                doc.ref.update({uid: doc.id})
+            }
+        });
+    } catch (e) {
+        console.log(e)
+    }
+    return
 });
 
 /*exports.getLastAccessedPatients = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async(req,res) => {

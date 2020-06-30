@@ -501,23 +501,6 @@
             PatientCard,
             PatientTag
         },
-        computed: {
-          selectedPatient() {
-              let user = this.$store.getters.selectedPatient;
-              if (user) {
-                  this.name = user.name;
-                  this.cpf = user.cpf
-              }
-              return this.$store.getters.selectedPatient
-          },
-          selectedDependent(){
-            let dependent = this.$store.getters.selectedDependent;
-            if(dependent){
-                this.dependentName = dependent.name
-            }
-            return dependent
-          }
-        },
         data() {
             return {
                 patientCard: false,
@@ -526,7 +509,7 @@
                 name: undefined,
                 dependentName:undefined,
                 cpf: undefined,
-                id: undefined,
+                uid: undefined,
                 rg: undefined,
                 numAss: undefined,
                 birthDate: undefined,
@@ -565,7 +548,8 @@
                 if (user) {
                     this.name = user.name;
                     this.cpf = user.cpf;
-                    this.id = user.id;
+                    this.uid = user.uid;
+                    console.log('selecionado:',user)
                    // this.numAss = user.association_number
                 }
                 return this.$store.getters.selectedPatient
@@ -659,7 +643,7 @@
 
                 }
                 let patient = {
-                    id: this.id ? this.id : undefined,
+                    uid: this.uid ? this.uid : undefined,
                     name: this.name.toUpperCase(),
                     cpf: this.cpf ? this.cpf.replace(/\./g, '').replace('-', '') : undefined,
                     email: this.email,
@@ -680,13 +664,13 @@
                         name: 'cpf',
                         value: patient.cpf
                     }
-                } else {
+                }/* else {
                     foundPatient = await this.$store.dispatch('getPatient', 'RG' + patient.rg);
                     identifier = {
                         name: 'rg',
                         value: patient.rg
                     }
-                }
+                }*/
                 if (foundPatient) {
                     let dialog = {
                         header: `Já existe um associado com o ${identifier.name} ${identifier.value}, substituir?`,
@@ -701,7 +685,6 @@
                 this.addUserToFirestore(patient)
             },
             async addUserToFirestore(patient) {
-                console.log('paciente selecionado para edição:', patient)
                 await this.$store.dispatch('addUser', patient);
                 this.success = true;
                 this.loading = false;
@@ -768,7 +751,7 @@
 
                 await this.$store.dispatch('updateAccessedTo', {
                     accessed_to: moment().format('YYYY-MM-DD HH:mm:ss'),
-                    id: user.cpf
+                    id: user.uid
                 })
             },
 

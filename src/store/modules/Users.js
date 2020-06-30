@@ -128,9 +128,15 @@ const actions = {
         }
     },
 
-    async getPatient({ }, id) {
-        let userDoc = await firestore().collection('users').doc(id.toString()).get();
-        return userDoc.data()
+    async getPatient({ }, cpf) {
+        let userDoc = await firestore().collection('users')
+            .where('cpf','==', cpf)
+            .get();
+        let user;
+        userDoc.forEach(doc => {
+            user = doc.data()
+        });
+        return user
     },
     async searchUser({ }, searchFields) {
         let usersRef = firestore().collection('users');
@@ -217,34 +223,29 @@ const actions = {
     },
 
     async addUser({ getters }, patient) {
-        console.log('patient:', patient)
+        //console.log('patient:', patient)
         functions.removeUndefineds(patient);
         try {
             let user;
-            if (!patient.cpf) {
-                patient.cpf = 'RG' + patient.rg
-            }
-            let foundUser = await firebase.firestore().collection('users').doc(patient.cpf).get();
-            if (foundUser.exists) {
-                console.log('patient do banco:', patient)
-                user = await firebase.firestore().collection('users').doc(patient.cpf).update(patient);
-                if (foundUser.data().type !== 'PATIENT'){
-                    let type = foundUser.data().type.toUpperCase();
-                    user = await firebase.firestore().collection('users').doc(patient.cpf).update({
-                        type: type
-                    })
+            let founded;
+            let foundUser = await firebase.firestore().collection('users').where('cpf','==', patient.cpf).get();
+            foundUser.docs.forEach(doc => {
+                founded = doc.id
+            });
+            //console.log('encontrado:', founded)
+            if(founded){
+                user = await firebase.firestore().collection('users').doc(founded).update(patient);
+            }else{
+                if(patient.uid){
+                    user = await firebase.firestore().collection('users').doc(patient.uid).update(patient)
+                } else {
+                    if (patient.type) {
+                        patient.type = patient.type.toUpperCase()
+                    }
+                    patient.created_at = moment().format('YYYY-MM-DD HH:mm:ss');
+                    user = await firebase.firestore().collection('users').add(patient)
                 }
-                
-            } else {
-                if (patient.type) {
-                    patient.type = patient.type.toUpperCase()
-                }
-                console.log('patient:', patient)
-                patient.created_at = moment().format('YYYY-MM-DD HH:mm:ss');
-                /*user = await firebase.firestore().collection('users').doc(patient.cpf).set(patient)*/
-                user = await firebase.firestore().collection('users').add(patient)
             }
-
             return user
         } catch (e) {
             throw e

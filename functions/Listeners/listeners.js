@@ -18,45 +18,33 @@ exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate
     }
 });
 
-/*exports.updateUserAfterEdition = functions.firestore.document('users/{id}').onUpdate( async (change, context) => {
-    let firestore = admin.firestore();
-    let editedUser = change.after.data()
-    let uid = change.after.data().uid;
-    firestore.collectionGroup('users').doc(uid).update(editedUser);
-});*/
-
 exports.setUidToUserWhenCreated = functions.firestore.document('users/{id}').onCreate((doc, context) => {
     let firestore = admin.firestore();
     let id = doc.id;
-    firestore.collection('users').doc(id).update({uid: id})
+    let type = doc.data().type
+    if(type === 'PATIENT'){
+        firestore.collection('users').doc(id).update({uid: id})
+    }
+    if(type === 'DOCTOR'){
+        firestore.collection('users').doc(id).update({uid: id})
+    }
 });
 
-/*exports.UpdateUidOfUserWhenHeCreateLoginAndPassword = functions.firestore.document('users/{uid}').onUpdate( async (change, context) => {
+/*exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore.document('users/{uid}').onUpdate( async (change, context) => {
     let firestore = admin.firestore();
-    let uidNew = change.after.data().uid;
-    let uidOld = change.before.data().uid;
-    //fazer copia do user
-    //criar denovo com nova key uidNew
-    //com a copia do user
+    let uidOld = change.before.data().uid;//antes
+    let uidNew = change.after.data().uid;//depois
+    let copy = change.after.data();
+    let type = change.after.data().type
     //subcolletions tbm
-    if( uidNew !== uidOld ){
+    //não fazer isso para medicos, so para medicos
+    //deletar paciente com id antigo e setar com id novo(auth*)
+    if( uidNew !== uidOld && type === 'PATIENT'){
+        firestore.collection('users').doc(uidNew).set(copy)
+        firestore.collection('users').doc(uidOld).delete()
 
-        firestore.collection('users')
     }
 });*/
-
-/*    .onCreate( async (change, context) => {
-    const firestore = admin.firestore();
-    const userCreated = change.after.data();
-    let query = firestore.collection('users');
-    let usersSnap = [];
-    query = query.where('name', '==', userCreated.name)
-    query = query.where('uid', '==', undefined)
-    usersSnap = await query.get();
-    usersSnap.forEach(doc => {
-        doc.ref.update({uid: doc.id})
-    });*/
-/*});*/
 
 exports.listenChangeInSpecialtiesSubcollections = functions.firestore.document('specialties/{specialtyId}/{collectionId}/{docId}').onWrite(async (change, context) => {
     convertSpecialtySubcollectionInObject((await admin.firestore().collection('specialties').doc(context.params.specialtyId).get()))
