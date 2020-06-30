@@ -140,10 +140,16 @@ const actions = {
         let precoVendaZero = payload.isConsultation && payload.specialty.price === 0;
         if (!precoVendaZero) {
             let consultationRef = payload.userRef.collection('consultations').where('specialty.name', '==', payload.specialty.name).where('status', '==', 'Aguardando pagamento')
-            //.get()
 
             if (!payload.isConsultation)
                 consultationRef.where('exam.name', '==', payload.examObj.name);
+            // let consultationRef =  payload.userRef.collection('consultations').where('status', '==', 'Aguardando pagamento')
+
+            // if(payload.isConsultation)
+                // consultationRef = consultationRef.where('specialty.name', '==', payload.specialty.name)
+            // else
+                // consultationRef = consultationRef.where('exam.name','==',payload.examObj.name);
+
             let consultations = await consultationRef.get();
             consultations.forEach(async (c) => {
                 consultationFound = c;
@@ -175,7 +181,12 @@ const actions = {
                         payment_number: payload.payment_number
                     };
                     if (!payload.isConsultation) {
-                        Object.assign(obj, { exam: { ...payload.examObj } });
+// <<<<<<< HEAD
+//                         Object.assign(obj, { exam: { ...payload.examObj } });
+// =======
+                        Object.assign(obj, { exam: { ...payload.examObj} });
+                    }else{
+                        obj.specialty = payload.specialty.name
                     }
 
                     firebase.firestore().collection('users').doc(user.cpf).collection('procedures').doc(snap.id).update(
@@ -195,6 +206,11 @@ const actions = {
             if (!payload.isConsultation) {
 
                 Object.assign(obj, { exam: { ...payload.examObj } });
+// =======
+//                 Object.assign(obj, { exam: { ...payload.examObj} });
+//             }else{
+//                 obj.specialty = payload.specialty.name
+// >>>>>>> master
             }
             firebase.firestore().collection('users').doc(user.cpf).collection('procedures').add(
                 { ...obj }
@@ -231,7 +247,9 @@ const actions = {
             ...intake.data(),
             id: intake.id
         };
-        if(intake.user.dependents.length === 0){
+        //console.log('intake puxando: ', intake.user)
+        //console.log('user.dependents tamanho: ', intake.user.dependents.length)
+        if(intake.user.dependents && intake.user.dependents.length === 0){
            delete intake.user.dependents
         }
         let examsSnap = await firebase.firestore().collection('intakes').doc(intake.id.toString()).collection('exams').get();
@@ -264,7 +282,6 @@ const actions = {
             });
         return
     },
-
     async getIntakesCategories({commit}) {
         firebase.firestore().collection('operational/').doc('intakes').onSnapshot((outtakesDoc) => {
             let categories = [];
