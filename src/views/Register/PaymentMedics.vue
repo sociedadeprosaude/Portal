@@ -15,10 +15,10 @@
                             <v-menu open-on-hover top offset-y>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-btn
-                                            class="transparent elevation-0"
-                                            small
                                             v-bind="attrs"
                                             v-on="on"
+                                            class="elevation-0"
+                                            small
                                     >
                                         <v-icon>more_vert</v-icon>
                                     </v-btn>
@@ -28,6 +28,7 @@
                                     <v-list-item
                                             v-for="(item, index) in Menu"
                                             :key="index"
+                                            @click="OpenReceipt(item,doctor)"
                                     >
                                         <v-list-item-title>{{ item.title }}</v-list-item-title>
                                     </v-list-item>
@@ -48,7 +49,7 @@
                             </v-card>
                             <v-card sm3 class="mx-4 elevation-0">
                                 <span v-if="NumberExams !=='' && doctorSelected === doctor" class="font-weight-bold">
-                                            Nº de exames : {{NumberExams}}
+                                            Nº de consultas : {{NumberExams}}
                                         </span>
                                 <v-btn  @click="CalculateValue(doctor)" v-else>
                                     <span class="font-weight-black">Nº de exames</span>
@@ -71,14 +72,14 @@
                             <v-btn @click="checkReceipts(doctor)" text>+ detalhes</v-btn>
 
                             <v-card sm3 class="mx-4 elevation-0" outlined>
-                                <v-btn>
+                                <v-btn @click="payDoctor(doctor)">
                                     <span class="font-weight-black">Pagar</span>
                                 </v-btn>
                             </v-card>
                         </v-layout>
                     </v-flex>
                     <v-card v-if="intakesObserv && doctor === doctorSelected">
-                        <DoctorsOuttakePayment @close-dialog="intakesObserv = false" :doctor="doctorSelected"></DoctorsOuttakePayment>
+                        <DoctorOuttakes @close-dialog="intakesObserv = false" :doctor="doctorSelected"></DoctorOuttakes>
                     </v-card>
                 </v-card>
             </v-flex>
@@ -95,31 +96,36 @@
                     </v-select>
                 </v-flex>
                 <v-flex>
-                    <v-btn @click="ChangeDate(doctor)">
+                    <v-btn @click="ChangeDate()">
                         Confirmar
                     </v-btn>
                 </v-flex>
             </v-card>
         </v-dialog>
-
+        <v-dialog v-model="dialogReceipt">
+            <ReceiptOuttakesDoctor @close="CloseReceipt()"  :doctorSelected="doctorSelected"></ReceiptOuttakesDoctor>
+        </v-dialog>
     </v-container>
 </template>
 
 <script>
     import moment from "moment";
-    import DoctorsOuttakePayment from "../../components/DoctorsOuttakePayment"
+    import DoctorOuttakes from "../../components/DoctorOuttakes"
+    import ReceiptOuttakesDoctor from "../../components/OuttakesDoctor/ReceiptOuttakesDoctor"
+
 
 
     export default {
         name: "PaymentMedics",
         components: {
-            DoctorsOuttakePayment
+            DoctorOuttakes,ReceiptOuttakesDoctor
         },
         data() {
             return {
                 loading: true,
                 value: undefined,
                 change: false,
+                dialogReceipt:false,
                 doctorSelected:[],
                 cost:'',
                 intakes:[],
@@ -148,18 +154,28 @@
             },
         },
         methods: {
+            OpenReceipt(item,doctor){
+                this.doctorSelected = doctor
+                if(item.title === 'Gerar Boleto'){
+                    this.dialogReceipt= !this.dialogReceipt
+                }
+            },
+            CloseReceipt(){
+                this.dialogReceipt= !this.dialogReceipt
+            },
             async getInitialInfo() {
                 await this.$store.dispatch('getColaboratorsDoctors');
                 this.loading = false
             },
-            ChangeDateDialog(clinic) {
-                this.doctorSelected = clinic;
+            ChangeDateDialog(doctor) {
+                this.doctorSelected = doctor;
                 this.change = !this.change;
             },
-            async ChangeDate(clinic) {
+            async ChangeDate() {
+                console.log('doctor: ', this.doctorSelected)
                 this.change = !this.change;
-                await this.$store.dispatch('AddPaymentDay', {
-                    clinic: clinic,
+                await this.$store.dispatch('AddPaymentDayDoctor', {
+                    doctor: this.doctorSelected,
                     period: this.period
                 });
                 this.getInitialInfo()
@@ -172,9 +188,9 @@
             async CalculateValue(doctor) {
                 this.cost = '';
                 this.doctorSelected = doctor;
-               // let ReturnValuesClinic= await this.$store.dispatch('CalculedValuePaymentClinic', clinic)
-               // this.cost = ReturnValuesClinic.cost
-                // this.NumberExams = ReturnValuesClinic.NumberExams
+               let ReturnValuesClinic= await this.$store.dispatch('CalculedValuePaymentDoctor', doctor)
+               this.cost = ReturnValuesClinic.cost
+                this.NumberExams = ReturnValuesClinic.NumberExams
             },
 
             async checkReceipts(doctor){
@@ -182,8 +198,8 @@
                 this.intakesObserv = !this.intakesObserv
 
             },
-            async Pay(clinic){
-                await this.$store.dispatch('PayClinic', clinic)
+            async payDoctor(doctor){
+                await this.$store.dispatch('PayDoctor', doctor)
                 this.getInitialInfo()
             },
             date(day,period){

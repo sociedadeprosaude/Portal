@@ -260,7 +260,7 @@ const actions = {
 
     async GetReceiptsClinic(context, payload) {
         await firebase.firestore().collection('outtakes').where('cnpj','==',payload.cnpj)
-            .where('paid','==',false).get().then((querySnapshot) =>{
+            .where('paid','==',false).where('root','==',false).get().then((querySnapshot) =>{
                 let intakes= []
                 querySnapshot.forEach((doc) =>{
                     if(!doc.data().cancelled_by && doc.data().exams){
@@ -293,12 +293,11 @@ const actions = {
                 context.commit('setIntakesExamsClinics',intakes)
             });
     },
-
     async CalculedValuePaymentClinic(context, payload) {
         let cost=0
         let NumberExams=0
         await firebase.firestore().collection('outtakes').where('cnpj','==',payload.cnpj)
-            .where('paid','==',false).get().then((querySnapshot) =>{
+            .where('paid','==',false).where('root','==',false).get().then((querySnapshot) =>{
                 querySnapshot.forEach((doc) =>{
                     console.log('doc :', doc.data())
                     if(!doc.data().cancelled_by && doc.data().exams){
@@ -331,6 +330,14 @@ const actions = {
         else{
             await firebase.firestore().collection('clinics').doc(payload.name).update({last_payment: moment().format('YYYY-MM-DD'), period: payload.period})
         }
+        await firebase.firestore().collection('outtakes').where('cnpj','==',payload.cnpj)
+            .where('paid','==',false).where('root','==',false).get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    let outtake= firebase.firestore().collection('outtakes').doc(doc.id);
+                    outtake.update({
+                        paid: moment().format('YYYY-MM-DD')})
+                })
+            })
     },
 
     async AddPaymentDay(context,payload){
@@ -349,7 +356,6 @@ const actions = {
 
                     let specialties = [];
                     let nameClinic = doc.data().name;
-
                     firebase.firestore().collection('clinics').doc(nameClinic).collection('specialties')
                         .onSnapshot((querySnapshot) => {
                             querySnapshot.forEach((doc) => {

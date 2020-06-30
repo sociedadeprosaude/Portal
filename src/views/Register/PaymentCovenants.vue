@@ -4,42 +4,6 @@
             <v-flex xs12>
                 <span class="my-headline">Convênios</span>
             </v-flex>
-         <!--   <v-flex xs12 class="px-3 my-3">
-                <v-expansion-panels inset>
-                    <v-expansion-panel v-for="(clinic,i) in clinics" :key="i">
-                        <v-expansion-panel-header>
-                            <v-layout row wrap>
-                                <v-flex xs6 md3>
-                                    <span>{{clinic.name}}</span>
-                                </v-flex>
-                                <v-flex xs6 md2>
-                                    <span>{{clinic.telephone[0]}}</span>
-                                </v-flex>
-                                <v-flex xs12 class="hidden-md-and-up">
-                                    <p class="py-2"></p>
-                                </v-flex>
-                                <v-flex xs7 md3>
-                                    Próximo Pagamento: {{date(clinic.last_payment,clinic.period)}}
-                                </v-flex>
-                                <v-flex>
-                                    <v-spacer></v-spacer>
-                                </v-flex>
-                                <v-flex>
-                                    Período de Pagamento: {{clinic.period}}
-                                </v-flex>
-
-                            </v-layout>
-                        </v-expansion-panel-header>
-                        <v-expansion-panel-content>
-                            <v-layout row wrap>
-                                <v-flex xs12 md2>
-                                    <v-btn @click="ChangeDateDialog(clinic)">Alterar Periodo</v-btn>
-                                </v-flex>
-                            </v-layout>
-                        </v-expansion-panel-content>
-                    </v-expansion-panel>
-                </v-expansion-panels>
-            </v-flex> -->
             <v-flex xs12 class="px-3 my-3">
                 <v-card v-for="(clinic,i) in clinics" :key="i" outlined>
                     <v-layout row wrap>
@@ -47,14 +11,14 @@
                             <span class="font-weight-bold">{{clinic.name}}</span>
                         </v-flex>
                         <v-spacer></v-spacer>
-                        <v-flex xs1>
+                        <v-flex xs3 md1>
                             <v-menu open-on-hover top offset-y>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-btn
-                                            class="transparent elevation-0"
-                                            small
                                             v-bind="attrs"
                                             v-on="on"
+                                            class="elevation-0"
+                                            small
                                     >
                                         <v-icon>more_vert</v-icon>
                                     </v-btn>
@@ -64,6 +28,7 @@
                                     <v-list-item
                                             v-for="(item, index) in Menu"
                                             :key="index"
+                                            @click="OpenReceipt(item,clinic)"
                                     >
                                         <v-list-item-title>{{ item.title }}</v-list-item-title>
                                     </v-list-item>
@@ -73,32 +38,40 @@
                     </v-layout>
                     <v-flex xs12 sm12>
                         <v-layout row wrap class="justify-center">
-                            <v-card sm3 class="mx-4 elevation-0">
+                            <v-flex xs6 md3>
+                                <v-card sm3 class="mx-4 elevation-0">
                                         <span v-if="cost !=='' && clinica === clinic" class="font-weight-bold">
                                             Custo : {{cost}}
                                         </span>
-                                <v-btn v-else >
+                                    <v-btn v-else >
                                             <span class="font-weight-black"
                                                   @click="CalculateValue(clinic)">A pagar</span>
-                                </v-btn>
-                            </v-card>
-                            <v-card sm3 class="mx-4 elevation-0">
+                                    </v-btn>
+                                </v-card>
+                            </v-flex>
+                            <v-flex xs6 md3>
+                                <v-card sm3 class="mx-4 elevation-0">
                                 <span v-if="NumberExams !=='' && clinica === clinic" class="font-weight-bold">
                                             Nº de exames : {{NumberExams}}
                                         </span>
-                                <v-btn  @click="CalculateValue(clinic)" v-else>
-                                    <span class="font-weight-black">Nº de exames</span>
-                                </v-btn>
-                            </v-card>
-                            <v-card sm3 class="mx-4 elevation-0">
+                                    <v-btn  @click="CalculateValue(clinic)" v-else>
+                                        <span class="font-weight-black">Nº de exames</span>
+                                    </v-btn>
+                                </v-card>
+                            </v-flex>
+                            <v-flex md3>
+                                <v-card sm3 class="mx-4 elevation-0">
                                 <span class="font-weight-bold">
                                              Próximo Pagamento: {{date(clinic.last_payment,clinic.period)}}
                                 </span>
-                            </v-card>
-                            <v-card sm3 class="mx-4 elevation-0">
-                                <v-btn @click="ChangeDateDialog(clinic)"><span class="font-weight-black">Alterar Periodo</span>
-                                </v-btn>
-                            </v-card>
+                                </v-card>
+                            </v-flex>
+                           <v-flex md3>
+                               <v-card sm3 class="mx-4 elevation-0">
+                                   <v-btn @click="ChangeDateDialog(clinic)"><span class="font-weight-black">Alterar Periodo</span>
+                                   </v-btn>
+                               </v-card>
+                           </v-flex>
                         </v-layout>
                     </v-flex>
                     <v-flex xs12 sm12 class="mt-3">
@@ -107,7 +80,7 @@
                             <v-btn @click="checkReceipts(clinic)" text>+ detalhes</v-btn>
 
                             <v-card sm3 class="mx-4 elevation-0" outlined>
-                                <v-btn>
+                                <v-btn @click="payClinic(clinic)">
                                     <span class="font-weight-black">Pagar</span>
                                 </v-btn>
                             </v-card>
@@ -137,6 +110,9 @@
                 </v-flex>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="dialogReceipt">
+                <ReceiptOuttakesConvenant @close="CloseReceipt()"  :clinicSelected="clinicSelected"></ReceiptOuttakesConvenant>
+        </v-dialog>
 
     </v-container>
 </template>
@@ -144,17 +120,19 @@
 <script>
     import moment from "moment";
     import clinicsIntakes from "../../components/PaymentCovenants/ClinicsIntakes"
+    import ReceiptOuttakesConvenant from "../../components/PaymentCovenants/ReceiptOuttakesConvenants"
 
     export default {
         name: "PaymentCovenants",
         components: {
-            clinicsIntakes
+            clinicsIntakes,ReceiptOuttakesConvenant
         },
         data() {
             return {
                 loading: true,
                 value: undefined,
                 change: false,
+                dialogReceipt:false,
                 clinica:[],
                 clinicSelected:[],
                 cost:'',
@@ -182,6 +160,17 @@
             }
         },
         methods: {
+            OpenReceipt(item,clinic){
+                this.clinicSelected = clinic
+                console.log('item:', item)
+                console.log('clinic : ', clinic)
+                if(item.title === 'Gerar Boleto'){
+                    this.dialogReceipt= !this.dialogReceipt
+                }
+            },
+            CloseReceipt(){
+                this.dialogReceipt= !this.dialogReceipt
+            },
             async getInitialInfo() {
                 await this.$store.dispatch('loadClinics');
                 this.loading = false
@@ -216,7 +205,7 @@
                 this.intakesObserv = !this.intakesObserv
 
             },
-            async Pay(clinic){
+            async payClinic(clinic){
                 await this.$store.dispatch('PayClinic', clinic)
                 this.getInitialInfo()
             },

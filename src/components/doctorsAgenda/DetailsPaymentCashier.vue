@@ -461,10 +461,10 @@
                         exams: this.selectedBudget.exams ? this.selectedBudget.exams.filter( exam => exam.clinic.name === clinics[i].name ) : [],
                         specialties: this.selectedBudget.specialties ? this.selectedBudget.specialties.filter( specialtie => specialtie.doctor.clinic.name === clinics[i].name ): [],
                         paid: false,
+                        root:true,
                         cnpj: clinics[i].cnpj
                     }
                     if( outtake.exams.length !== 0  || outtake.specialties.length !== 0 ){
-                        console.log('entrnado em adicionar outtake: ', outtake)
                         await this.$store.dispatch('addOuttakes', outtake)
                     }
                 }

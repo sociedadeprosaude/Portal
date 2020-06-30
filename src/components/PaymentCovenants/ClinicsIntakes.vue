@@ -20,7 +20,7 @@
                         <v-flex xs1>
                             <v-divider class="primary" vertical/>
                         </v-flex>
-                        <v-flex xs2>
+                        <v-flex xs3>
                             <p class="mt-5"> NUMERO DE EXAMES: {{intake.exams.length}}</p>
                         </v-flex>
                     </v-layout>
@@ -95,6 +95,7 @@
         },
         computed: {
             intakes(){
+                console.log('ouutakes clinic: ', this.$store.getters.IntakesExamsClinics)
                 return this.$store.getters.IntakesExamsClinics
             }
         }

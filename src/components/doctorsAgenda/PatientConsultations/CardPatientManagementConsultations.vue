@@ -24,7 +24,7 @@
                                 dateFilter}} - {{daydate(consultation.date)}}</p>
                             <v-divider class="primary"/>
                         </v-flex>
-                        <v-flex sm4 v-for="item in consultation.consultations" class="mt-3 mb-2">
+                        <v-flex sm4 v-for="item in consultation.consultations"  class="mt-3 mb-2">
                             <v-card outlined class="borderCard mx-2 mr-2 grey_light" @click="ConsultationSelect(item)">
                                 <v-layout row wrap class="mt-2">
                                     <v-flex xs4>

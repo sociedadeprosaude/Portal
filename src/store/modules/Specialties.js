@@ -1,5 +1,6 @@
-import firebase from "firebase";
 import functions from "../../utils/functions";
+import firebase, {firestore} from "firebase";
+import moment from 'moment'
 
 const state = {
     specialties: [],
@@ -37,6 +38,18 @@ const actions = {
         } catch (e) {
             throw e
         }
+    },
+
+    async getDoctorSpecialty(context, consultation){
+        let specialtieSelect = await firebase.firestore().collection('specialties').doc(consultation.specialty.name).get()
+        let specialtie={
+            name: consultation.specialty.name,
+            cost: specialtieSelect.data().doctors.filter(item =>  item.name === consultation.doctor.name)[0].cost,
+            realized: moment().format('YYYY-MM-DD'),
+            paid: false
+        }
+        console.log('specialtie: ', specialtie)
+        return specialtie
     },
 
     async searchSpecialty(context, search) {

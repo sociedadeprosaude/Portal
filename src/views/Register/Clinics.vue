@@ -219,14 +219,14 @@
         },
 
         mounted() {
-            this.loadClinics()
+            this.loadClinic()
         },
 
         watch: {},
 
         methods: {
 
-            async loadClinics() {
+            async loadClinic() {
                 this.loading = true;
                 await this.$store.dispatch('getClinics');
                 this.loading = false

@@ -23,12 +23,12 @@
             <v-flex xs12>
                 <v-divider/>
             </v-flex>
-            <p :if="outtake" class="mt-3 font-italic font-weight-bold"> Paciente: {{outtake.patient}}</p>
+            <p v-if="outtake.length > 0" class="mt-3 font-italic font-weight-bold"> Paciente: {{outtake[0].patient}}</p>
             <v-flex xs12>
                 <v-divider/>
             </v-flex>
-            <v-flex xs12 v-for="intake in outtake.exams">
-                <v-card class="elevation-2 my-3">
+            <v-flex xs12 v-for="outtak in outtake">
+                <v-card class="elevation-2 my-3" v-for="intake in outtak.exams">
                     <v-layout row wrap>
                         <v-flex xs6 md3 class="align-center justify-center">
                             <p class="font-weight-black mt-5">
@@ -148,12 +148,15 @@
             },
             async SendCheckExams(){
                 this.loading= true;
-                await this.$store.dispatch('updatingSpecificOuttake',{number:this.numberIntake, cnpj: this.user.cnpj, exams: this.outtake.exams})
+                await this.$store.dispatch('updatingSpecificOuttake',{outtake: this.outtake.filter( (outtak) => outtak.root === true)[0], exams: this.outtake.filter( (outtak) => outtak.root === true)[0].exams, cnpj: this.user.cnpj})
                 this.loading= false;
                 this.successUpdateExams= true;
                 this.numberIntake = '';
-                this.outtake.exams = {};
-                this.outtake.user ='';
+                for(let outtakes= 0; outtakes <  this.outtake.length; outtakes++ ){
+                    this.outtake[outtakes].exams = {}
+                }
+                this.outtake[0].user ='';
+
             }
         },
         computed: {

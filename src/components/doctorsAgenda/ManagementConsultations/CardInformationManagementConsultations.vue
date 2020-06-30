@@ -148,14 +148,26 @@
                 this.cancelLoading = false
 
             },
-            setConsultationHour(consultation) {
+            async setConsultationHour(consultation) {
                 let consultation_hour = moment().format('YYYY-MM-DD hh:mm:ss');
                 let data = {
                     consultation_hour: consultation_hour,
                     consultation: consultation,
                     id: consultation.id,
                 };
-                this.$store.dispatch('addConsultationHourInConsultation', data);
+                let specialty = await this.$store.dispatch('getDoctorSpecialty', consultation)
+                let outtake = {
+                    intake_id: consultation.payment_number,
+                    user: consultation.user,
+                    unit: consultation.clinic,
+                    doctor: consultation.doctor,
+                    specialties: specialty,
+                    paid: false,
+                    crm: consultation.doctor.crm
+                }
+                console.log('outtake: ', outtake)
+                await this.$store.dispatch('addSpecialtyOuttakes', outtake)
+                await this.$store.dispatch('addConsultationHourInConsultation', data);
                 this.consultation.consultation_hour = consultation_hour;
                 this.documentDialog = true;
             },
