@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <v-layout row wrap v-if="especialtie">
+        <v-layout row wrap v-if="specialty || examType">
             <v-flex xs12 v-for="(consultation, i) in ConsultationsByDoctors(consultations)">
                 <v-card>
                     <v-layout row wrap>
@@ -127,7 +127,7 @@
         name: "CardDoctorsManagementConsultations",
         components: {SubmitButton},
 
-        props: ['especialtie', 'date'],
+        props: ['specialty', 'date','examType','filterByExam'],
         data: () => ({
             semanaOptions: [
                 "Domingo",
@@ -157,7 +157,17 @@
                 }
                 return this.$store.getters.consultations.filter((a) => {
                     return this.especialtie && this.date ?  a.specialty && this.especialtie.name === a.specialty.name && this.date === a.date.split(' ')[0] && a.user  : false
+
+//              this.loadingConsultations = true
+//                let response =  this.$store.getters.consultations.filter((a) => {
+//                    let filtedBySpecialty = !this.filterByExam && this.specialty && a.specialty && this.specialty.name === a.specialty.name
+//                    let filtedByExamType = this.filterByExam && this.examType && a.exam && this.examType.name === a.exam.type
+                   
+//                    return this.date && this.date === a.date.split(' ')[0] && a.user && (filtedBySpecialty || filtedByExamType)
+
                 });
+                this.loadingConsultations = false
+                return response
             },
             doctor() {
                 return this.$store.getters.doctor
