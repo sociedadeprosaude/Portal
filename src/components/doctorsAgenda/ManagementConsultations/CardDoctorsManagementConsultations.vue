@@ -155,7 +155,7 @@
                     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.loadingConsultations = !this.loadingConsultations
                 }
-                return this.$store.getters.consultations.filter((a) => {
+                //return this.$store.getters.consultations.filter((a) => {
                    // return this.especialtie && this.date ?  a.specialty && this.especialtie.name === a.specialty.name && this.date === a.date.split(' ')[0] && a.user  : false
 
                 this.loadingConsultations = true
