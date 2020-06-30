@@ -3,39 +3,39 @@
         <v-layout row wrap>
             <v-flex xs12 sm12>
                 <v-expand-transition mode="out-in">
-                    <v-card class="primary_light white--text grey" :max-width="maxWidth" v-if="!addPatient">
+                    <v-card class="primary white--text grey" :max-width="maxWidth" v-if="!addPatient">
                         <v-layout row wrap>
-                            <v-flex v-if="!selectedPatient" xs8>
+                            <v-flex v-if="!selectedPatient" xs9>
                                 <v-flex class="text-left mt-1 ml-2">
                                     <span class="font-weight-bold white--text hidden-xs-only">Buscar Associado</span>
                                     <span class="white--text font-weight-bold hidden-sm-and-up">Buscar Associado</span>
                                 </v-flex>
                                 <v-spacer/>
                             </v-flex>
-                            <v-flex :class="!selectedPatient ? 'xs4' : 'xs12'">
-                                <v-layout row wrap class="text-right">
-                                    <v-spacer/>
-
-                                    <v-flex xs1 class="text-right mx-3">
+                            <v-flex :class="!selectedPatient ? 'xs2' : 'xs12'">
+                                <v-layout row wrap class="text-center justify-center">
+                                    <v-flex xs1 class="text-right mx-1">
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
-                                                <v-btn
-                                                        v-on="on"
-                                                        to="/agenda/Declaration"
-                                                        rounded text class="white--text transparent">
+                                                <v-btn fab
+                                                       icon
+                                                       v-on="on"
+                                                       to="/agenda/Declaration"
+                                                       rounded text class="white--text transparent">
                                                     <v-icon>print</v-icon>
                                                 </v-btn>
                                             </template>
                                             <span>Declaração de Comparecimento</span>
                                         </v-tooltip>
                                     </v-flex>
-                                    <v-flex xs1 class="text-right mx-3">
+                                    <v-flex xs1 class="text-right mx-1">
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
-                                                <v-btn
-                                                        v-on="on"
-                                                        to="/agenda/ConsultasPacientes"
-                                                        rounded text class="white--text transparent">
+                                                <v-btn icon
+                                                       fab
+                                                       v-on="on"
+                                                       to="/agenda/ConsultasPacientes"
+                                                       rounded text class="white--text transparent">
                                                     <v-icon>date_range</v-icon>
                                                 </v-btn>
                                             </template>
@@ -43,26 +43,27 @@
                                         </v-tooltip>
 
                                     </v-flex>
-                                    <v-flex xs1 class="text-right mx-3">
+                                    <v-flex xs1 class="text-right mx-1">
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
-                                                <v-btn
-                                                        v-on="on"
-                                                        to="/agenda/agendamento"
-                                                        rounded text class="white--text transparent">
+                                                <v-btn icon fab
+                                                       v-on="on"
+                                                       to="/agenda/agendamento"
+                                                       rounded text class="white--text transparent">
                                                     <v-icon>calendar_today</v-icon>
                                                 </v-btn>
                                             </template>
                                             <span>Agendamento de Consultas</span>
                                         </v-tooltip>
                                     </v-flex>
-                                    <v-flex xs1 class="text-right mx-3">
+                                    <v-flex xs1 class="text-right mx-1">
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
-                                                <v-btn
-                                                        v-on="on"
-                                                        @click="showUserCard(selectedPatient)"
-                                                        rounded text class="white--text transparent">
+                                                <v-btn icon
+                                                       fab
+                                                       v-on="on"
+                                                       @click="showUserCard(selectedPatient)"
+                                                       rounded text class="white--text transparent">
                                                     <v-icon>credit_card</v-icon>
                                                 </v-btn>
                                             </template>
@@ -70,13 +71,14 @@
                                         </v-tooltip>
 
                                     </v-flex>
-                                    <v-flex xs1 class="text-right mx-3">
+                                    <v-flex xs1 class="text-right mx-2">
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
-                                                <v-btn
-                                                        v-on="on"
-                                                        @click="patientTag = !patientTag"
-                                                        rounded text class="white--text transparent">
+                                                <v-btn fab
+                                                       icon
+                                                       v-on="on"
+                                                       @click="patientTag = !patientTag"
+                                                       rounded text class="white--text transparent">
                                                     <v-icon>credit_card</v-icon>
                                                     2
                                                 </v-btn>
@@ -85,13 +87,15 @@
                                         </v-tooltip>
 
                                     </v-flex>
-                                    <v-flex xs1 class="text-right mx-3">
+                                    <v-spacer/>
+                                    <v-flex xs1 class="text-right mx-1">
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
-                                                <v-btn
-                                                        v-on="on"
-                                                        @click="selectUser(undefined)"
-                                                        rounded text class="white--text transparent">
+                                                <v-btn fab
+                                                       icon
+                                                       v-on="on"
+                                                       @click="selectUser(undefined)"
+                                                       rounded text class="white--text transparent">
                                                     <v-icon>delete</v-icon>
                                                 </v-btn>
                                             </template>
@@ -99,14 +103,14 @@
                                         </v-tooltip>
 
                                     </v-flex>
-
-                                    <v-flex xs1 class="text-right mx-3">
+                                    <v-flex xs1 class="text-right mx-1">
                                         <v-tooltip top>
                                             <template v-slot:activator="{ on }">
-                                                <v-btn
-                                                        v-on="on"
-                                                        @click="addPatient = !addPatient"
-                                                        rounded text class="white--text transparent">
+                                                <v-btn fab
+                                                       icon
+                                                       v-on="on"
+                                                       @click="addPatient = !addPatient"
+                                                       rounded text class="white--text transparent">
                                                     <v-icon>group_add</v-icon>
                                                 </v-btn>
                                             </template>
@@ -116,46 +120,44 @@
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
-
-                            <v-flex class="mt-5" xs12>
+                            <v-flex class=" ml-2 mr-2" xs12>
                                 <v-text-field
                                         outlined
-                                        rounded
                                         dense
-                                        filled
+                                        solo-inverted
                                         prepend-icon="account_circle"
+                                        dark
                                         v-model="name"
                                         :disabled="selectedPatient !== undefined"
                                         label="Nome">
                                 </v-text-field>
                             </v-flex>
-                            <v-flex xs12>
+                            <v-flex xs12 class="ml-2 mr-2">
                                 <v-text-field
                                         prepend-icon="credit_card"
                                         outlined
-                                        rounded
-                                        filled
                                         dense
+                                        solo-inverted
+                                        dark
                                         v-model="cpf"
                                         v-mask="mask.cpf"
                                         :disabled="selectedPatient !== undefined"
                                         label="CPF">
                                 </v-text-field>
                             </v-flex>
-                            <v-spacer/>
-                            <v-flex xs12>
+                            <v-flex xs12 class="ml-2 mr-2">
                                 <v-text-field
                                         prepend-icon="credit_card"
                                         outlined
-                                        rounded
-                                        filled
+                                        dark
+                                        solo-inverted
                                         dense
                                         v-model="numAss"
                                         :disabled="selectedPatient !== undefined"
                                         label="Numero do Associado">
                                 </v-text-field>
                             </v-flex>
-                            <v-flex class="mt-5" xs12 v-if="selectedDependent">
+                            <v-flex class="ml-2 mr-2" xs12 v-if="selectedDependent">
                                 <v-text-field
                                         outlined
                                         rounded
@@ -170,12 +172,21 @@
                                 <span v-if="searchError">
                                     {{searchError}}
                                 </span>
-                                <submit-button @click="searchPatient()" :loading="loading" :success="success"
-                                               text="Buscar" class="mt-n3 mb-2 mx-2">
-                                </submit-button>
-                                <submit-button @click="searchPatientOldDatabase()" :loading="loading"
-                                               :success="success" text="Buscar antigo sistema" class="mx-2 mb-1">
-                                </submit-button>
+
+                                <v-layout row wrap class="mb-2 mr-2 ml-2">
+                                    <v-flex xs4>
+                                        <submit-button @click="searchPatient()" :loading="loading" :success="success"
+                                                       text="Buscar" color="background" dense>
+                                        </submit-button>
+                                    </v-flex>
+                                    <v-flex xs8>
+                                        <submit-button @click="searchPatientOldDatabase()" :loading="loading"
+                                                       color="background"
+                                                       :success="success" text="sistema antigo">
+                                        </submit-button>
+                                    </v-flex>
+                                </v-layout>
+
 
                             </v-flex>
                             <v-divider/>
@@ -220,19 +231,21 @@
 
                         </v-layout>
                     </v-card>
-                    <v-card class="primary_light white--text pa-2" v-else>
-                        <v-layout row wrap>
-                            <v-flex xs8 class="text-left mb-4" v-if="!formError">
-                                <span class="my-headline white--text hidden-xs-only">Adicionar Associado</span>
+                    <v-card class="primary white--text grey" v-else>
+                        <v-layout row wrap class="ml-2 mr-2">
+                            <v-flex xs9 v-if="!formError" class="text-left mt-1">
+                                <span class="font-weight-bold white--text hidden-xs-only">Adicionar Associado</span>
                                 <span class="white--text font-weight-bold hidden-sm-and-up">Adicionar Associado</span>
                             </v-flex>
-                            <v-flex xs8 class="text-left" v-else>
+                            <v-flex xs9 class="text-left mt-1" v-else>
                                 <span class="my-headline red--text">{{formError}}</span>
                             </v-flex>
-                            <v-flex xs4 class="text-right">
-                                <v-btn
-                                        @click="addPatient = !addPatient"
-                                        rounded text class="white--text transparent">
+                            <v-spacer/>
+                            <v-flex xs1 class="text-right mx-1 mr-2">
+                                <v-btn fab
+                                       icon
+                                       @click="addPatient = !addPatient"
+                                       rounded text class="white--text transparent">
                                     <v-icon>remove</v-icon>
                                 </v-btn>
                             </v-flex>
@@ -240,222 +253,254 @@
                                 <v-col cols="12">
                                     <v-text-field
                                             outlined
-                                            rounded
+                                            solo-inverted
+                                            dark
+                                            dense
                                             filled
-                                            placeholder="Campo obrigatório *"
+                                            placeholder="Nome"
+                                            persistent-hint
+                                            hint="Campo obrigatório*"
                                             prepend-icon="account_circle"
-                                            v-model="name"
-                                            label="Nome">
+                                            v-model="name">
                                     </v-text-field>
                                 </v-col>
 
                             </v-row>
-                            <v-flex sm12 xs12 class="px-3">
-
-                            </v-flex>
-                            <v-flex sm4 xs12 class="px-3">
+                            <v-flex sm12 xs12>
                                 <v-text-field
                                         outlined
-                                        rounded
                                         filled
-                                        placeholder="Campo obrigatório *"
+                                        solo-inverted
+                                        dark
+                                        dense
+                                        persistent-hint
+                                        hint="Campo obrigatório*"
                                         v-model="birthDate"
                                         :rules="rules"
                                         v-mask="mask.date"
                                         prepend-icon="date_range"
-                                        label="Data de Nascimento">
+                                        placeholder="Data de Nascimento">
                                 </v-text-field>
                             </v-flex>
-                            <v-flex sm4 xs12 class="px-3">
+                            <v-flex sm6 xs12>
                                 <v-text-field
                                         outlined
-                                        rounded
+                                        dense
+                                        solo-inverted
+                                        dark
                                         filled
                                         :disabled="selectedPatient !== undefined"
-                                        placeholder="Campo obrigatório *"
+                                        persistent-hint
+                                        hint="Campo obrigatório*"
                                         v-mask="mask.cpf"
                                         v-model="cpf"
-                                        label="CPF">
+                                        placeholder="CPF">
                                 </v-text-field>
                             </v-flex>
-                            <v-flex sm4 xs12 class="px-3">
+                            <v-spacer/>
+                            <v-flex sm6 xs12>
                                 <v-text-field
+                                        class="ml-2"
                                         outlined
-                                        rounded
+                                        dense
+                                        dark
+                                        solo-inverted
                                         filled
                                         :disabled="selectedPatient !== undefined"
-                                        placeholder="Campo obrigatório *"
+                                        persistent-hint
+                                        hint="Campo obrigatório*"
                                         type="number"
                                         v-model="rg"
-                                        label="RG">
+                                        placeholder="RG">
                                 </v-text-field>
                             </v-flex>
-                            <v-flex sm12 xs12 class="px-3">
+                            <v-flex sm12 xs12>
                                 <v-text-field
                                         outlined
-                                        rounded
+                                        solo-inverted
+                                        dark
+                                        dense
                                         filled
                                         v-model="email"
                                         prepend-icon="email"
-                                        label="Email">
+                                        placeholder="Email">
                                 </v-text-field>
                             </v-flex>
-                            <v-flex sm6 xs12 class="px-3">
-                                <v-select outlined rounded filled label="Sexo" :items="['Feminino' , 'Masculino']"
+                            <v-flex sm6 xs12>
+                                <v-select outlined dense solo-inverted dark filled label="Sexo"
+                                          :items="['Feminino' , 'Masculino']"
                                           v-model="sex">
                                 </v-select>
                             </v-flex>
                             <v-flex sm6 xs12>
                                 <v-text-field
+                                        class="ml-2"
                                         outlined
-                                        rounded
+                                        dense
+                                        solo-inverted
+                                        dark
                                         filled
                                         disabled
                                         v-model="numAss"
-                                        label="Nun. Associado">
+                                        placeholder="Num. Associado">
                                 </v-text-field>
                             </v-flex>
-                            <v-flex sm12 xs12 class="px-3">
+                            <v-flex sm12 xs12>
                                 <v-layout row wrap class="align-center" v-for="(tel, index) in telephones" :key="index">
                                     <v-flex xs10>
                                         <v-text-field
                                                 outlined
-                                                rounded
+                                                solo-inverted
+                                                dense
+                                                dark
                                                 filled
                                                 v-model="telephones[index]"
-                                                placeholder="Campo obrigatório *"
+                                                persistent-hint
+                                                hint="Campo obrigatório*"
                                                 v-mask="mask.telephone"
                                                 prepend-icon="phone"
-                                                label="Telefones">
+                                                placeholder="Telefones">
                                         </v-text-field>
                                     </v-flex>
                                     <v-flex xs2>
-                                        <v-btn
-                                                @click="index === 0 ? telephones.push('') : telephones.splice(index, 1)"
-                                                text class="transparent">
-                                            <v-icon v-if="index === 0">add_circle</v-icon>
-                                            <v-icon v-else>remove_circle</v-icon>
+                                        <v-btn fab icon small
+                                               @click="index === 0 ? telephones.push('') : telephones.splice(index, 1)"
+                                               text class="transparent pb-6">
+                                            <v-icon v-if="index === 0" class="background--text">add_circle</v-icon>
+                                            <v-icon v-else class="background--text">remove_circle</v-icon>
 
                                         </v-btn>
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
 
-                            <v-flex xs12 class="px-3 text-left">
-                                <span class="my-sub-headline">Dependentes</span>
-                                <v-btn
-                                        @click="dependents.push({
+                            <v-flex xs12 class="text-left">
+                                <v-divider class="background mb-2 mt-2"/>
+                                <v-layout row wrap>
+                                    <span class="my-sub-headline background--text">Dependentes</span>
+                                    <v-spacer/>
+                                    <v-btn fab icon small
+                                           @click="dependents.push({
                                             name: '',
                                             birthDate: ''
                                         })"
-                                        text class="transparent">
-                                    <v-icon>add_circle</v-icon>
-
-                                </v-btn>
+                                           text class="transparent pb-4">
+                                        <v-icon class="background--text">add_circle</v-icon>
+                                    </v-btn>
+                                </v-layout>
                                 <v-layout row wrap justify v-for="(dependent, index) in dependents" :key="index">
                                     <v-flex xs12 class="text-right">
-                                        <v-btn class="transparent" text @click="dependents.splice(index, 1)">
-                                            <v-icon>remove_circle</v-icon>
+                                        <v-btn fab icon small class="transparent" text
+                                               @click="dependents.splice(index, 1)">
+                                            <v-icon class="background--text">remove_circle</v-icon>
                                         </v-btn>
                                     </v-flex>
                                     <v-flex xs12>
                                         <v-text-field
                                                 outlined
-                                                rounded
+                                                dense
+                                                solo-inverted
+                                                dark
                                                 filled
                                                 prepend-icon="account_circle"
                                                 v-model="dependent.name"
-                                                label="Nome">
+                                                placeholder="Nome">
                                         </v-text-field>
                                     </v-flex>
-
-                                    <v-spacer/>
-                                    <v-flex sm4 xs12 class="px-3">
+                                    <v-flex sm12 xs12>
                                         <v-text-field
                                                 outlined
-                                                rounded
+                                                dense
+                                                solo-inverted
+                                                dark
                                                 filled
                                                 v-model="dependent.birthDate"
                                                 v-mask="mask.date "
                                                 :rules="rules"
                                                 prepend-icon="date_range"
-                                                label="Data de Nascimento">
+                                                placeholder="Data de Nascimento">
                                         </v-text-field>
                                     </v-flex>
-                                    <v-flex sm4 xs12 class="px-3">
-                                        <v-select outlined rounded filled label="Sexo"
+                                    <v-flex sm6 xs12>
+                                        <v-select outlined solo-inverted dark dense filled label="Sexo"
                                                   :items="['Feminino' , 'Masculino']"
-                                                  v-model="dependent.sex">
+                                                  v-model="dependent.sex"
+                                                  class="mr-2"
+                                        >
                                         </v-select>
                                     </v-flex>
-                                    <v-flex xs6 sm4 class="px-3">
-                                        <v-select label="Grau de Dependência" outlined rounded filled
+                                    <v-flex xs12 sm6>
+                                        <v-select label="Grau de Dependência" outlined solo-inverted dense dark filled
                                                   v-model="dependent.dependentDegree"
                                                   :items="degress" menu-props="auto">
                                         </v-select>
                                     </v-flex>
-
                                 </v-layout>
                             </v-flex>
-                            <v-flex xs12 class="px-3 text-left">
-                                <span class="my-sub-headline">Endereços</span>
-                                <v-btn
-                                        @click="addresses.push({
-                                        uf: 'Amazonas',
-                                        city: 'Manaus'
-                                        })"
-                                        text class="transparent">
-                                    <v-icon>add_circle</v-icon>
+                            <v-flex xs12 class="text-left">
+                                <v-divider class="background mb-2 mt-2"/>
+                                <v-layout row wrap>
+                                    <span class="my-sub-headline background--text">Endereços</span>
+                                    <v-spacer/>
+                                    <v-btn fab icon small
+                                           @click="addresses.push({
+                                                   uf: 'Amazonas',
+                                                   city: 'Manaus'
+                                           })"
+                                           text class="transparent pb-4">
+                                        <v-icon class="background--text">add_circle</v-icon>
+                                    </v-btn>
+                                </v-layout>
 
-                                </v-btn>
                                 <v-layout wrap justify v-for="(address, index) in addresses" :key="index">
                                     <v-flex xs12 class="text-right">
-                                        <v-btn class="transparent" text @click="addresses.splice(index, 1)">
-                                            <v-icon>remove_circle</v-icon>
+                                        <v-btn fab icon small class="transparent" text
+                                               @click="addresses.splice(index, 1)">
+                                            <v-icon class="background--text">remove_circle</v-icon>
                                         </v-btn>
                                     </v-flex>
-                                    <v-flex xs12 sm4>
+                                    <v-flex xs12 sm12 class="mt-1">
                                         <v-layout row wrap class="align-center">
                                             <v-text-field
                                                     :error="address.cepError"
-                                                    label="CEP" class="ml-3" v-model="address.cep"
-                                                    v-mask="mask.cep">
-                                            </v-text-field>
+                                                    label="CEP" v-model="address.cep"
+                                                    v-mask="mask.cep"
+                                                    dense
+                                                    solo-inverted
+                                                    dark
+                                            />
                                             <v-btn v-if="!address.loading" @click="getAddressByCep(address)"
-                                                   class="transparent" text>
-                                                <v-icon>search</v-icon>
+                                                   class="transparent pb-7" text fab icon small>
+                                                <v-icon class="background--text">search</v-icon>
                                             </v-btn>
-                                            <v-progress-circular indeterminate color="white"
-                                                                 v-else>
-                                            </v-progress-circular>
+                                            <v-progress-circular indeterminate color="white" v-else/>
                                         </v-layout>
                                     </v-flex>
                                     <v-spacer/>
-                                    <v-flex xs12 sm3>
+                                    <v-flex xs12 sm6>
                                         <v-select label="UF" hide-details single-line v-model="address.uf"
-                                                  :items="states" menu-props="auto">
+                                                  :items="states" menu-props="auto" dense dark solo-inverted>
                                         </v-select>
                                     </v-flex>
                                     <v-spacer/>
-                                    <v-flex xs12 sm3>
-                                        <v-select v-if="address.uf" label="Cidade" class="mr-2" single-line
+                                    <v-flex xs12 sm6>
+                                        <v-select v-if="address.uf" label="Cidade" class="ml-2" single-line
                                                   v-model="address.city" :items="cities[address.uf]" menu-props="auto"
-                                                  hide-details>
+                                                  solo-inverted dense dark>
                                         </v-select>
                                     </v-flex>
-
-                                    <v-flex xs12 sm10 class="px-3">
-                                        <v-text-field label="Logradouro" class="ml-2"
+                                    <v-flex xs12 sm12>
+                                        <v-text-field label="Logradouro" dense dark solo-inverted
                                                       v-model="address.street">
                                         </v-text-field>
                                     </v-flex>
-                                    <v-flex xs12 sm2>
-                                        <v-text-field label="Numero" class="mr-2"
+                                    <v-flex xs12 sm12>
+                                        <v-text-field label="Numero" dark dense solo-inverted
                                                       v-model="address.number">
                                         </v-text-field>
                                     </v-flex>
-                                    <v-flex xs12 sm10 class="px-3">
-                                        <v-text-field label="Complemento" class="ml-2"
+                                    <v-flex xs12 sm12>
+                                        <v-text-field label="Complemento" dense dark solo-inverted
                                                       v-model="address.complement">
                                         </v-text-field>
                                     </v-flex>
@@ -466,7 +511,7 @@
                                 <submit-button :disabled="!(this.name !== '' && this.name && ((this.cpf !== '' && this.cpf) || (this.rg !== '' && this.rg)) && this.birthDate !== '' && this.birthDate
                                 && this.dateValid(this.birthDate) && this.telephones !== [''])" :success="success"
                                                @click="registerPatient()" :loading="loading"
-                                               text="Salvar">
+                                               text="Salvar" class="mb-2 success" dark>
                                 </submit-button>
 
                             </v-flex>
@@ -516,9 +561,9 @@
                 }
                 return this.$store.getters.selectedPatient
             },
-            selectedDependent(){
+            selectedDependent() {
                 let dependent = this.$store.getters.selectedDependent;
-                if(dependent){
+                if (dependent) {
                     this.dependentName = dependent.name
                 }
                 return dependent
@@ -703,10 +748,10 @@
             async catchAssNumberNewPatient(patient) {
                 let users =
                     await this.$store.dispatch('searchUser', {
-                    name: patient.name,
-                    cpf: patient.cpf,
-                    type: 'patient'
-                });
+                        name: patient.name,
+                        cpf: patient.cpf,
+                        type: 'patient'
+                    });
                 if (!users[0].association_number) {
                     this.catchAssNumberNewPatient(patient)
                 } else {
@@ -855,15 +900,15 @@
                         this.cities['AM'].push(city.nome)
                     });
                 });
-            if (localStorage.getItem('patient')){
+            if (localStorage.getItem('patient')) {
 
                 // eslint-disable-next-line vue/no-async-in-computed-properties
-               let user = await this.$store.dispatch('searchUser', {
+                let user = await this.$store.dispatch('searchUser', {
                     name: '',
-                    cpf: localStorage.getItem('patient') ,
+                    cpf: localStorage.getItem('patient'),
                     association_number: this.numAss
                 });
-               this.selectUser(user[0])
+                this.selectUser(user[0])
             }
 
         },

@@ -4,7 +4,13 @@
             <v-flex sm12>
                 <DataDoctorToSearchConsultation />
             </v-flex>
-            <v-flex xs12 class="mt-n2">
+            <v-flex xs12 class="justify-start text-left">
+                <v-btn icon fab small @click="showCalendar = !showCalendar" color="background" dark>
+                    <v-icon v-if="showCalendar">close</v-icon>
+                    <v-icon v-else>date_range</v-icon>
+                </v-btn>
+            </v-flex>
+            <v-flex xs12 class="mt-3" v-show="showCalendar">
                 <v-date-picker
                         :allowed-dates="allowedDates"
                         class="mx-2"
@@ -31,12 +37,15 @@
         props: ['daysToListen'],
 
         data: () => ({
+            showCalendar: false,
             date: moment().format("YYYY-MM-DD"),
             consultationsListenerUnsubscriber: undefined,
         }),
 
         async mounted() {
+            this.showCalendar = true;
             await this.listenConsultations();
+            this.showCalendar = false;
         },
 
 
