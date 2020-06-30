@@ -228,28 +228,26 @@ async function fixIntakesBrokenSpecialties() {
 
 exports.thereIsPaymentNumber = functions.runWith(heavyFunctionsRuntimeOpts).https.onCall(async (data, context) => {
     let payload = data.payload
-    let examesSpecialties = ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'];
     let procedures;
     let type = payload.exam ? 'Exam' : 'Consultation';
     let status = payload.exam ? 'Exame Pago' : 'Consulta Paga';
     let procedureRef;
+    let exam = undefined
     if (payload.status && payload.payment_number)
         procedureRef = admin.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', 'Consultation')
             .where('specialty', '==', payload.specialty.name).where('status', 'array-contains-any', payload.status).where('payment_number', '==', payload.payment_number.toString());
+    else if (payload.exam) {
+        procedureRef = admin.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)
+            .where('exam.type', '==', payload.exam.type).where('status', '==', [status])
+        if(payload.exam.name)
+            procedureRef = procedureRef.where('exam.name', '==', payload.exam.name)
+    }
     else {
-        procedureRef = payload.exam ? procedureRef = admin.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)
-            .where('specialty', '==', payload.specialty.name).where('status', '==', [status]).where('exam.name', '==', payload.exam.name)
-            : procedureRef = admin.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)
-                .where('specialty', '==', payload.specialty.name).where('status', '==', [status])
+        procedureRef = admin.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)
+            .where('specialty', '==', payload.specialty.name).where('status', '==', [status])
     }
 
-
-    let procedureRefOr = admin.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', 'Exam')
-        .where('specialty', '==', payload.specialty.name).where('status', '==', ['Exame Pago'])
-
     procedures = await procedureRef.get();
-    if (procedures.empty && type === 'Consultation' && examesSpecialties.indexOf(payload.specialty.name) !== -1)
-        procedures = await procedureRefOr.get();
 
     if (!procedures.empty) {
         let payment_found
@@ -258,7 +256,7 @@ exports.thereIsPaymentNumber = functions.runWith(heavyFunctionsRuntimeOpts).http
         })
         return { Found: { procedureId: payment_found.id, ...payment_found.data() } }
     } else {
-        let cost = await specialtyCost(payload.specialty.name, payload.doctor.cpf)
+        let cost = payload.specialty ? await specialtyCost(payload.specialty.name, payload.doctor.cpf) : undefined
         return { NotFound: cost };
     }
 });
@@ -432,10 +430,13 @@ exports.cancelAppointment = functions.runWith(heavyFunctionsRuntimeOpts).https.o
         })
     }
 
+    console.log('Consulta que será cancelada->', payload)
+
     admin.firestore().collection('users').doc(payload.idPatient).collection('procedures')
         .where('consultation', '==', payload.id).get()
         .then((procedure) => {
             procedure.forEach((doc) => {
+                console.log('um procedure->', doc.data())
                 let data = doc.data();
 
                 if (payload.type === "Consulta" && payload.payment_number !== "") {
@@ -447,12 +448,13 @@ exports.cancelAppointment = functions.runWith(heavyFunctionsRuntimeOpts).https.o
                         status: [status],
                         payment_number: data.payment_number,
                         startAt: data.startAt,
-                        type: type,
-                        specialty: data.specialty
+                        type: type
                     };
 
                     if (thereIsExam)
                         obj = { ...obj, exam: thereIsExam };
+                    else
+                        obj.specialty = data.specialty
                     admin.firestore().collection('users').doc(payload.idPatient).collection('procedures').add(
                         { ...obj }
                     )
@@ -485,6 +487,7 @@ exports.addUserToConsultation = functions.runWith(heavyFunctionsRuntimeOpts).htt
         ...payload.consultation,
         user: payload.user
     };
+    console.log('Aqui no cloud', obj)
     let resp = await admin.firestore().collection('consultations').add(obj);
     if (payload.consultation.type === "Retorno") {
         await admin.firestore().collection('consultations').doc(payload.consultation.previousConsultation).update({ regress: resp.id })
@@ -497,9 +500,10 @@ exports.addUserToConsultation = functions.runWith(heavyFunctionsRuntimeOpts).htt
 
 async function addConsultationAppointmentToUser(payload) {
     let copyPayload = Object.assign({}, payload);
-    console.log('Aqui no adicionar consultation to appointment')
+    console.log('Aqui no adicionar consultation to appointment', copyPayload)
     await admin.firestore().collection('users').doc(copyPayload.user.cpf).collection('consultations').doc(copyPayload.consultation.id).set(copyPayload.consultation);
     if (copyPayload.consultation.type === "Retorno") {
+        console.log('Vai criar retorno')
         await admin.firestore().collection('users').doc(copyPayload.user.cpf).collection('consultations').doc(copyPayload.consultation.previousConsultation).update({ regress: copyPayload.consultation.id })
         let procedure = await admin.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').where('type', '==', 'Consultation')
             .where('consultation', '==', copyPayload.consultation.previousConsultation).get()
@@ -510,7 +514,6 @@ async function addConsultationAppointmentToUser(payload) {
                     status: admin.firestore.FieldValue.arrayUnion('Retorno agendado'),
                 })
         })
-
     } else if (copyPayload.payment_numberFound) {
         admin.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').doc(copyPayload.payment_numberFound.procedureId)
             .update({
@@ -518,19 +521,18 @@ async function addConsultationAppointmentToUser(payload) {
                 consultation: copyPayload.consultation.id,
             })
     } else {
-
         let obj = {
             status: ['Agendado'],
             startAt: moment().format('YYYY-MM-DD hh:ss'),
             consultation: copyPayload.consultation.id,
-            specialty: copyPayload.consultation.specialty.name
         };
         if (copyPayload.consultation.exam) {
             obj.type = 'Exam';
             obj.exam = copyPayload.consultation.exam
-        } else
+        } else {
+            obj.specialty = copyPayload.consultation.specialty.name
             obj.type = 'Consultation';
-
+        }
         admin.firestore().collection('users').doc(copyPayload.user.cpf).collection('procedures').add(obj)
     }
 }
@@ -814,67 +816,65 @@ exports.deleteSchedule = functions.firestore
 exports.updateSchedule = functions.firestore
     .document('schedules/{scheduleID}')
     .onUpdate(async (change, context) => {
+        console.log('UpdateSchedulessss')
         let newValue = change.after.data();
         let previousValue = change.before.data();
+        let cancelationsOld = previousValue.cancelations_schedules ? previousValue.cancelations_schedules : []
+        let cancelationsNew = newValue.cancelations_schedules ? newValue.cancelations_schedules : []
         if (Object.keys(newValue.days).length < Object.keys(previousValue.days).length) {
             let keysOld = Object.keys(previousValue.days)
             let keyNew = Object.keys(newValue.days)
-            let week_days = []
+            let weekDays = []
             keysOld.forEach((day) => {
                 if (keyNew.indexOf(day) == -1)
-                    week_days.push(day)
+                    weekDays.push(day)
             })
-            console.log('Dias cancelados', week_days)
-            newValue.week_days = week_days
+            newValue.weekDays = weekDays
+            await removeConsultations(newValue)
         }
 
-        if (newValue.cancelations_schedules.length > previousValue.cancelations_schedules.length) {
-            let cancelationsOld = previousValue.cancelations_schedules
-            let cancelationsNew = newValue.cancelations_schedules
+        if (cancelationsNew.length > cancelationsOld.length) {
             cancelationsNew.forEach((cancelationObj) => {
                 if (cancelationsOld.findIndex((value) => value.start_date === cancelationObj.start_date && value.final_date === cancelationObj.final_date) == -1) {
                     newValue.start_date = cancelationObj.start_date
                     newValue.final_date = cancelationObj.final_date
+                    await removeConsultations(newValue)
                 }
             })
-            console.log('Periodos cancelados', newValue)
         }
-
-        await removeConsultations(newValue)
     });
 
 async function removeConsultations(payload) {
     let start = moment().format('YYYY-MM-DD 00:00');
-    try {
-        let query = await admin.firestore().collection('consultations')
-            .where('specialty.name', "==", payload.specialty.name)
-            .where('doctor.cpf', "==", payload.doctor.cpf).where('clinic.cnpj', '==', payload.clinic.cnpj)
-            .where('date', ">=", start)
-        if (payload.final_date) {
-            let end = moment(payload.final_date, 'YYYY-MM-DD').format('YYYY-MM-DD 23:59');
-            query = query.where('date', "<=", end)
-        }
-
-
-        let snapshot = await query.get()
-        snapshot.forEach(async doc => {
-
-            let dateConsultation = moment(doc.data().date);
-            let filterHour = payload.hour ? doc.data().date.split(' ')[1] === payload.hour ? true : false : true
-            let filterDayWeek = payload.weekDays ? payload.weekDays.indexOf(dateConsultation.weekday()) > -1 ? true : false : true
-
-            if (filterHour && filterDayWeek) {
-                admin.firestore().collection('consultations').doc(doc.id).delete();
-            }
-            if (filterHour && filterDayWeek && doc.data().user) {
-                admin.firestore().collection('users').doc(doc.data().user.cpf).collection('consultations').doc(doc.id).delete();
-                admin.firestore().collection('canceled').doc(doc.id).set(doc.data())
-            }
-        })
-    } catch (e) {
-        throw e
+    let query = admin.firestore().collection('consultations')
+        .where('doctor.cpf', "==", payload.doctor.cpf).where('clinic.name', '==', payload.clinic.name)
+        .where('date', ">=", start)
+    if (payload.final_date) {
+        let end = moment(payload.final_date, 'YYYY-MM-DD').format('YYYY-MM-DD 23:59');
+        query = query.where('date', "<=", end)
     }
-    return
+
+    if (payload.specialty)
+        query = query.where('specialty.name', "==", payload.specialty.name)
+    else
+        query = query.where('exam.type', "==", payload.exam_type.name)
+
+
+    let snapshot = await query.get()
+    snapshot.forEach(async doc => {
+        let dateConsultation = moment(doc.data().date);
+        let filterHour = payload.hour ? doc.data().date.split(' ')[1] === payload.hour ? true : false : true
+        let filterDayWeek = payload.weekDays ? payload.weekDays.indexOf(dateConsultation.weekday().toString()) > -1 ? true : false : true
+
+        if (filterHour && filterDayWeek) {
+            admin.firestore().collection('consultations').doc(doc.id).delete();
+        }
+        if (filterHour && filterDayWeek && doc.data().user) {
+            admin.firestore().collection('users').doc(doc.data().user.cpf).collection('consultations').doc(doc.id).delete();
+            admin.firestore().collection('canceled').doc(doc.id).set(doc.data())
+        }
+    })
+    return { Message: "Success" }
 }
 
 

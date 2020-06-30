@@ -82,10 +82,10 @@
                 return this.$store.getters.selectedSpecialty
             },
 
-            scheduledExam(){
+            examType(){
                 return this.$store.getters.scheduleExamSelected
             },
-            scheduledExamCheck(){
+            examTypeCheck(){
                 return this.$store.getters.scheduleExamSelectedCheck
             },
 
@@ -109,12 +109,11 @@
                     if (this.clinic) {
                         if (this.clinic !== a.clinic.name) response = false;
                     }
-                    if(this.scheduledExam){
-                        console.log('->',this.scheduledExam)
-                        if (!a.exam_type || this.scheduledExam.name !== a.exam_type.name) response = false;
+                    if(this.examType){
+                        if (!a.exam_type || this.examType.name !== a.exam_type.name) response = false;
                     }
 
-                    if((this.scheduledExamCheck && !a.exam_type) || (!this.scheduledExamCheck && a.exam_type)) response = false
+                    if((this.examTypeCheck && !a.exam_type) || (!this.examTypeCheck && a.exam_type)) response = false
                         
                     return response;
                 });
@@ -130,9 +129,14 @@
                     if (this.doctor) {
                         if (this.doctor.cpf !== a.doctor.cpf) response = false;
                     }
-                    if (this.specialty) {
+                    if (this.specialty && a.specialty) {
                         if (this.specialty.name !== a.specialty.name) response = false;
                     }
+                    
+                    if (this.examType && a.exam) {
+                        if (this.examType.name !== a.exam.type) response = false;
+                    }
+
                     if (this.clinic) {
                         if (this.clinic !== a.clinic.name) response = false;
                     }
@@ -243,7 +247,7 @@
                 let consultations = this.consultations;
                 return consultations.reduce((obj, item) => {
                     let specialtyOrExamType = ((schedule.specialty && item.specialty && schedule.specialty.name === item.specialty.name) 
-                                                ||(schedule.exam_type && item.exam_type && schedule.exam_type.name === item.exam_type.name))
+                                                ||(schedule.exam_type && item.exam && schedule.exam_type.name === item.exam.type))
                     if (schedule.clinic.name === item.clinic.name && specialtyOrExamType
                         && schedule.doctor.cpf === item.doctor.cpf && schedule.date === item.date && item.user) {
                         if (item.type === 'Consulta') {

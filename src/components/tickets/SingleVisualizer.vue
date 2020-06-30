@@ -130,6 +130,7 @@ export default {
             this.animation = "";
           }, 5000);
           this.lastTicket = latest;
+          this.playTicketSound()
         }
         return latest;
       }
@@ -137,6 +138,10 @@ export default {
     }
   },
   methods: {
+    playTicketSound() {
+      let sound = new Audio('https://firebasestorage.googleapis.com/v0/b/prosaude-36f66.appspot.com/o/assets%2FCollected%20Coin%20A1.mp3?alt=media&token=57509b64-12aa-4946-9814-42995ac8ab41')
+      sound.play()
+    },
     cardStyleByIndex(index) {
       return index === 0 ? "height: 160px; width: 100%" : "height: 100px";
     },
