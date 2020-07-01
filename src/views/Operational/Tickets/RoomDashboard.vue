@@ -70,9 +70,11 @@
                             <v-btn x-small fab class="red" @click="deleteRoom(room)">
                                 <v-icon class="white--text">delete</v-icon>
                             </v-btn>
-                           <v-btn small fab icon @click="favoriteRoom(room)">
-                                <v-icon class="primary--text">grade</v-icon>
-                           </v-btn>
+                            <v-btn small fab icon @click="favoriteRoom(room)">
+                                <v-icon class="warning--text" v-if="room.name === favoritedRoom.name">grade</v-icon>
+                                <v-icon class="primary--text" v-else>grade</v-icon>
+                                
+                            </v-btn>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -291,6 +293,9 @@
             };
         },
         computed: {
+            favoritedRoom() {
+                return this.$store.getters.favoriteRoom;
+            },
             rooms() {
                 return this.sector ? this.sector.rooms : [];
             },
@@ -424,10 +429,9 @@
                 await this.$store.dispatch("updateSector", this.sector);
 
             },
-            favoriteRoom (room) {
-                console.log(room)
+            favoriteRoom(room) {
                 this.$store.commit('setFavoriteRoom', room);
-                this.$store.commit('setFavoriteRoomSection', this.sectorName)
+                this.$store.commit('setFavoriteRoomSection', this.sector);
                 console.log(this.sectorName)
             },
             async deleteRoom(room) {
