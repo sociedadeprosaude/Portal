@@ -1,18 +1,18 @@
 <template>
-    <v-container fluid class="ma-0 pa-0">
+    <v-container fluid class="ma-0 mt-n6 pa-0">
         <v-layout row wrap class="justify-center">
-            <v-flex xs12 sm8 class="hidden-print-only">
-                <procedures-search></procedures-search>
+            <v-flex xs12 sm9 class="hidden-print-only">
+                <procedures-search/>
             </v-flex>
-            <v-flex sm4 class="hidden-print-only hidden-xs-only">
-                <cart></cart>
+            <v-flex sm3 class="primary hidden-print-only hidden-xs-only">
+                <cart/>
             </v-flex>
             <v-flex class="hidden-screen-only">
-                <receipt></receipt>
+                <receipt/>
             </v-flex>
 
             <v-dialog transition="slide-x-reverse-transition" class="hidden-sm-and-up" v-model="cart">
-                <cart v-on:closeCart="cart = !cart"></cart>
+                <cart v-on:closeCart="cart = !cart"/>
             </v-dialog>
 
             <v-btn @click="cart = !cart"

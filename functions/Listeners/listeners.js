@@ -136,7 +136,7 @@ exports.onUpdateSpecialty = functions.firestore.document('specialties/{name}').o
         //                 .catch(err => console.log(err));
         //         }))
         //     .catch(err => console.log(err));
-    } else {
+    }/*  else {
         firestore.collection('specialties').doc(specialtyUpdated.name).collection('doctors').get()
             .then((docs) => {
                 if (!docs.empty) {
@@ -151,7 +151,7 @@ exports.onUpdateSpecialty = functions.firestore.document('specialties/{name}').o
                 return null
             })
             .catch(err => console.log(err));
-    }
+    } */
 });
 
 

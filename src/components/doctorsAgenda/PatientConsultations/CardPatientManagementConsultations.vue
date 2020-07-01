@@ -16,7 +16,7 @@
                     </v-layout>
                 </v-card>
             </v-flex>
-           <v-flex xs12 v-for="(consultation) in consultations">
+           <v-flex xs12 v-for="(consultation,index) in consultations" :key="index">
                 <v-card>
                     <v-layout row wrap>
                         <v-flex xs12 class="mt-4 mb-3">
@@ -24,17 +24,20 @@
                                 dateFilter}} - {{daydate(consultation.date)}}</p>
                             <v-divider class="primary"/>
                         </v-flex>
-                        <v-flex sm4 v-for="item in consultation.consultations" class="mt-3 mb-2">
-                            <v-card outlined class="borderCard mx-2 mr-2 grey_light" @click="ConsultationSelect(item)">
+                        <v-flex sm4 v-for="(item,index) in consultation.consultations" :key="index" class="mt-3 mb-2">
+                            <v-card outlined class="borderCard mx-2 mr-2 grey lighten-5 elevation-1" @click="ConsultationSelect(item)">
                                 <v-layout row wrap class="mt-2">
                                     <v-flex xs4>
                                         <v-icon large>person</v-icon>
                                         <br>
-                                        <v-icon small class="mt-1">donut_large</v-icon>
+                                        <v-icon v-if="item.type === 'Retorno'"  color="primary" small class="mt-1">restore</v-icon>
+                                        <v-icon v-else small class="mt-1"  color="primary">event</v-icon>
+                                        <v-icon v-if="item.status === 'Pago'" color="green" small class="mt-1">attach_money</v-icon>
+                                        <v-icon v-else small class="mt-1" color="red">money_off</v-icon>
                                     </v-flex>
                                     <v-flex xs8 class="mb-3">
                                         <v-flex xs12>
-                                            <h4 class="text-left font-weight-bold">{{item.specialty.name}}</h4>
+                                            <h4 class="text-left font-weight-bold">{{item.specialty ? item.specialty.name: item.exam.name}}</h4>
                                             <h5 class="text-left mt-1">{{item.date.substring(11,16)}}</h5>
                                             <h5 class="text-left">{{item.doctor.name}}</h5>
                                         </v-flex>
@@ -78,7 +81,13 @@
                             date: this.patient.consultations[i].date.substring(0,10)
                         }
                     }
-                    consultations[this.patient.consultations[i].date].consultations.push(this.patient.consultations[i])
+                    let consultation = this.patient.consultations[i]
+                    
+                    if(!consultation.type){
+                        consultation.type = 'Consulta'
+                    }
+                        
+                    consultations[this.patient.consultations[i].date].consultations.push(consultation)
 
                 }
                 return consultations

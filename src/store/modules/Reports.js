@@ -210,43 +210,38 @@ const actions = {
                         scheduled: 0
                     }
                 }
-            }
-            if (e.data().consultationHour) {
-                consultations[e.data().specialty.name].quantity += 1
-                consultations[e.data().specialty.name].scheduled += 1
-                consultations[e.data().specialty.name].executed += 1
+                if (e.data().consultationHour) {
+                    consultations[e.data().specialty.name].quantity += 1
+                    consultations[e.data().specialty.name].scheduled += 1
+                    consultations[e.data().specialty.name].executed += 1
 
-                if (!doctors[e.data().doctor.name]) {
-                    doctors[e.data().doctor.name] = {
-                        doctor: e.data().doctor,
-                        specialties: {},
-                        payment: 0,
-                        quantityTotal: 0
+                    if (!doctors[e.data().doctor.name]) {
+                        doctors[e.data().doctor.name] = {
+                            doctor: e.data().doctor,
+                            specialties: {},
+                            payment: 0,
+                            quantityTotal: 0
+                        }
                     }
-                }
-                if (!doctors[e.data().doctor.name].specialties[e.data().specialty.name]) {
-                    doctors[e.data().doctor.name].specialties[e.data().specialty.name] = {
-                        quantity: 0,
-                        cost: 0,
-                        costOne: 0
+                    if (!doctors[e.data().doctor.name].specialties[e.data().specialty.name]) {
+                        doctors[e.data().doctor.name].specialties[e.data().specialty.name] = {
+                            quantity: 0,
+                            cost: 0,
+                            costOne: 0
+                        }
                     }
-                }
-                doctors[e.data().doctor.name].quantityTotal++
-                doctors[e.data().doctor.name].specialties[e.data().specialty.name].quantity++
-                firebase.firestore().collection('specialties').doc(e.data().specialty.name).
-                    collection('doctors').doc(e.data().doctor.cpf).get().then((snap) => {
+                    doctors[e.data().doctor.name].quantityTotal++
+                    doctors[e.data().doctor.name].specialties[e.data().specialty.name].quantity++
+                    firebase.firestore().collection('specialties').doc(e.data().specialty.name).collection('doctors').doc(e.data().doctor.cpf).get().then((snap) => {
                         doctors[e.data().doctor.name].specialties[e.data().specialty.name].cost += parseFloat(snap.data().cost.toFixed(2))
                         doctors[e.data().doctor.name].specialties[e.data().specialty.name].costOne = parseFloat(snap.data().cost.toFixed(2))
                         doctors[e.data().doctor.name].payment += parseFloat(snap.data().cost.toFixed(2))
                     })
-            }
-            else {
-                if (e.data().specialty) {
-
+                }
+                else {
                     consultations[e.data().specialty.name].quantity += 1;
                     consultations[e.data().specialty.name].scheduled += 1
                 }
-
             }
         });
         relatorio = {
@@ -387,7 +382,7 @@ const actions = {
         let consultationsSnap = await firebase.firestore().collection('consultations').where('date', '>=', payload.dataInicio)
             .where('date', '<=', payload.dataFinal).orderBy('date').get();
         consultationsSnap.forEach((e) => {
-            if (e.data().specialty)
+            if (e.data().specialty) {
                 if (!consultations[e.data().specialty.name]) {
                     consultations[e.data().specialty.name] = {
                         name: e.data().specialty.name,
@@ -396,41 +391,39 @@ const actions = {
                         scheduled: 0
                     }
                 }
-            if (e.data().consultationHour) {
-                consultations[e.data().specialty.name].quantity += 1
-                consultations[e.data().specialty.name].scheduled += 1
-                consultations[e.data().specialty.name].executed += 1
+                if (e.data().consultationHour) {
+                    consultations[e.data().specialty.name].quantity += 1
+                    consultations[e.data().specialty.name].scheduled += 1
+                    consultations[e.data().specialty.name].executed += 1
 
-                if (!doctors[e.data().doctor.name]) {
-                    doctors[e.data().doctor.name] = {
-                        doctor: e.data().doctor,
-                        specialties: {},
-                        payment: 0,
-                        quantityTotal: 0
+                    if (!doctors[e.data().doctor.name]) {
+                        doctors[e.data().doctor.name] = {
+                            doctor: e.data().doctor,
+                            specialties: {},
+                            payment: 0,
+                            quantityTotal: 0
+                        }
                     }
-                }
-                if (!doctors[e.data().doctor.name].specialties[e.data().specialty.name]) {
-                    doctors[e.data().doctor.name].specialties[e.data().specialty.name] = {
-                        quantity: 0,
-                        cost: 0,
-                        costOne: 0
+                    if (!doctors[e.data().doctor.name].specialties[e.data().specialty.name]) {
+                        doctors[e.data().doctor.name].specialties[e.data().specialty.name] = {
+                            quantity: 0,
+                            cost: 0,
+                            costOne: 0
+                        }
                     }
-                }
-                doctors[e.data().doctor.name].quantityTotal++
-                doctors[e.data().doctor.name].specialties[e.data().specialty.name].quantity++
-                firebase.firestore().collection('specialties').doc(e.data().specialty.name).
-                    collection('doctors').doc(e.data().doctor.cpf).get().then((snap) => {
+                    doctors[e.data().doctor.name].quantityTotal++
+                    doctors[e.data().doctor.name].specialties[e.data().specialty.name].quantity++
+                    firebase.firestore().collection('specialties').doc(e.data().specialty.name).collection('doctors').doc(e.data().doctor.cpf).get().then((snap) => {
                         doctors[e.data().doctor.name].specialties[e.data().specialty.name].cost += parseFloat(snap.data().cost.toFixed(2))
                         doctors[e.data().doctor.name].specialties[e.data().specialty.name].costOne = parseFloat(snap.data().cost.toFixed(2))
                         doctors[e.data().doctor.name].payment += parseFloat(snap.data().cost.toFixed(2))
                     })
-            }
-            else {
-                if (e.data().specialty) {
+                }
+                else {
                     consultations[e.data().specialty.name].quantity += 1
                     consultations[e.data().specialty.name].scheduled += 1
-                }
 
+                }
             }
         });
         relatorio = {
