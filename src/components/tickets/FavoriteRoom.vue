@@ -11,7 +11,7 @@
                             <v-btn
                                     v-on="on"
                                     :disabled="loading"
-                                    @click="callNextTicket(room)"
+                                    @click="callNextTicket()"
                                     text
                                     fab
                                     small
@@ -38,13 +38,13 @@
                         </template>
                         <span>Selecionar médico</span>
                     </v-tooltip>
-                    <v-progress-circular indeterminate class="primary--text" v-else></v-progress-circular>
+                    <v-progress-circular indeterminate class="primary--text" v-else/>
                     <v-tooltip top v-if="doctorsLoaded">
                         <template v-slot:activator="{ on }">
                             <v-btn
                                     v-on="on"
                                     :disabled="loading"
-                                    @click="generateNextTicket(room)"
+                                    @click="generateNextTicket()"
                                     text
                                     fab
                                     x-small
@@ -55,28 +55,13 @@
                         </template>
                         <span>Gerar senha</span>
                     </v-tooltip>
+                    <!--
                     <v-tooltip top v-if="doctorsLoaded">
                         <template v-slot:activator="{ on }">
                             <v-btn
                                     v-on="on"
                                     :disabled="loading"
-                                    @click="alertActualTicket(room)"
-                                    text
-                                    fab
-                                    x-small
-                                    class="primary ml-2 my-2"
-                            >
-                                <v-icon>notification_important</v-icon>
-                            </v-btn>
-                        </template>
-                        <span>Alertar senha atual</span>
-                    </v-tooltip>
-                    <v-tooltip top v-if="doctorsLoaded">
-                        <template v-slot:activator="{ on }">
-                            <v-btn
-                                    v-on="on"
-                                    :disabled="loading"
-                                    @click="openSingleView(room)"
+                                    @click="openSingleView()"
                                     text
                                     fab
                                     x-small
@@ -87,11 +72,12 @@
                         </template>
                         <span>Visualizador único</span>
                     </v-tooltip>
+                    -->
                 </v-col>
             </v-row>
-            <v-flex xs12>
+            <v-flex xs12 v-if="room.doctor">
                 <v-divider/>
-                <v-col v-if="room.doctor" class="font-italic">{{room.doctor.name}}</v-col>
+                <v-col class="font-italic">{{room.doctor.name}}</v-col>
                 <v-divider/>
             </v-flex>
             <v-row>
@@ -106,7 +92,8 @@
                         <v-divider vertical/>
                         <v-col class="pa-2">
                             <div>
-                                <span v-if="room.tickets.length !== 0 && getActualTicket(room.tickets)" class="font-weight-black">{{getActualTicket(room.tickets).number}}</span>
+                                <span v-if="room.tickets.length !== 0 && getActualTicket(room.tickets)"
+                                      class="font-weight-black">{{getActualTicket(room.tickets).number}}</span>
                                 <span v-else>*</span>
                                 <br/>
                                 <span style="font-size: 0.8em">Senha atual</span>
@@ -129,16 +116,15 @@
                         <span class="my-headline">{{selectedRoom.name}}</span>
                     </v-flex>
                     <v-flex xs12>
-                        <v-text-field prepend-icon="search" label="Médico"
-                                      v-model="doctorsListDialog.search"></v-text-field>
+                        <v-text-field prepend-icon="search" label="Médico" v-model="doctorsListDialog.search"/>
                     </v-flex>
                     <v-flex xs12 class="mt-2" v-for="doctor in doctors" :key="doctor.crm">
                         <v-card flat @click="setDoctorToRoom(selectedRoom, doctor)">
-                            <v-divider class="mb-2"></v-divider>
+                            <v-divider class="mb-2"/>
                             <span>{{doctor.name}}</span>
                         </v-card>
                     </v-flex>
-                    <v-divider></v-divider>
+                    <v-divider/>
                 </v-layout>
             </v-card>
         </v-dialog>
@@ -162,33 +148,26 @@
                 active: false,
                 room: {}
             },
-            multipleViewDialog: false,
-            deletionRoom: {
-                deleteRoomDialog: false,
-                deleting: false,
-                selectedRoom: {}
-            }
-
         }),
         mounted() {
             // this.$store.dispatch("getTicketsGeneralInfo");
             this.initialInfo();
-
         },
         computed: {
             room() {
                 return this.$store.getters.favoriteRoom ? this.$store.getters.favoriteRoom : undefined
             },
 
-            sector() {
+            sectorName() {
                 return this.$store.getters.favoriteRoomSection ? this.$store.getters.favoriteRoomSection : undefined
             },
 
+            sector() {
+                return this.$store.getters.sectors ? this.$store.getters.sectors.find((sector) => sector.name == this.sectorName) : undefined
+            },
+
             ticketInfo() {
-                if (
-                    moment(this.$store.getters.ticketGeneralInfo.last_updated).dayOfYear !==
-                    moment().dayOfYear
-                ) {
+                if (moment(this.$store.getters.ticketGeneralInfo.last_updated).dayOfYear !== moment().dayOfYear) {
                     this.reset();
                 }
                 return this.$store.getters.ticketGeneralInfo;
@@ -202,9 +181,6 @@
             },
             doctorsLoaded() {
                 return this.$store.getters.doctorsLoaded;
-            },
-            sectorName() {
-                return this.$route.params['sector_name']
             },
 
         },
@@ -225,16 +201,6 @@
                 }
                 return calledTickets[calledTickets.length - 1];
             },
-            async createRoom(room) {
-                this.loading = true;
-                const sector = this.sector;
-                await this.$store.dispatch("createSectorRoom", {sector, room});
-                this.loading = false;
-                this.success = true;
-                setTimeout(() => {
-                    this.success = false;
-                }, 1000);
-            },
             async setDoctorToRoom(room, doctor) {
                 room.doctor = doctor;
                 this.loading = true;
@@ -242,7 +208,8 @@
                 await this.$store.dispatch("updateSectorRoom", {sector, room});
                 this.loading = false;
             },
-            async generateNextTicket(room) {
+            async generateNextTicket() {
+                let room = this.room;
                 if (!room.tickets) {
                     room.tickets = [];
                 }
@@ -251,21 +218,20 @@
                     created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
                     doctor: room.doctor
                 });
-                await this.upgradeTicketNumber()
+                await this.upgradeTicketNumber();
                 const sector = this.sector;
                 await this.$store.dispatch("updateSectorRoom", {sector, room});
             },
             async generateSectorTicket() {
-
-                let sector = this.sector
+                let sector = this.sector;
                 if (!sector.tickets) {
                     sector.tickets = []
                 }
                 sector.tickets.push({
                     number: this.ticketInfo.ticket_number,
                     created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
-                })
-                await this.upgradeTicketNumber()
+                });
+                await this.upgradeTicketNumber();
                 await this.$store.dispatch('updateSector', sector)
             },
             async upgradeTicketNumber() {
@@ -274,14 +240,15 @@
                 ticketInfo.last_updated = moment().format("YYYY-MM-DD HH:mm:ss");
                 await this.$store.dispatch("updateGeneralInfo", this.ticketInfo);
             },
-            async callNextTicket(room) {
-                this.loading = true
+            async callNextTicket() {
+                let room = this.room;
+                this.loading = true;
                 let ticketIndex = room.tickets.findIndex(ticket => {
                     return !ticket.called_at;
-                })
+                });
                 if (ticketIndex < 0) {
-                    await this.callSectorTicket(room)
-                    this.loading = false
+                    await this.callSectorTicket(room);
+                    this.loading = false;
                     return
                 }
 
@@ -290,40 +257,29 @@
                 );
                 const sector = this.sector;
                 await this.$store.dispatch("updateSectorRoom", {sector, room});
+                await this.upgradeTicketNumber();
+                await this.$store.dispatch('updateSector', sector)
                 this.loading = false
             },
             async callSectorTicket(room) {
                 let ticketIndex = this.sector.tickets.findIndex(ticket => {
                     return !ticket.called_at;
-                })
+                });
                 if (ticketIndex < 0) {
                     return
                 }
                 this.sector.tickets[ticketIndex].called_at = moment().format(
                     "YYYY-MM-DD HH:mm:ss"
                 );
-                room.tickets.push(this.sector.tickets[ticketIndex])
+                room.tickets.push(this.sector.tickets[ticketIndex]);
                 const sector = this.sector;
                 await this.$store.dispatch("updateSectorRoom", {sector, room});
-                this.sector.tickets.splice(ticketIndex, 1)
+                this.sector.tickets.splice(ticketIndex, 1);
                 await this.$store.dispatch("updateSector", this.sector);
+            },
 
-            },
-            async deleteRoom(room) {
-                this.deletionRoom.selectedRoom = room
-                if (!this.deletionRoom.deleteRoomDialog) {
-                    this.deletionRoom.deleteRoomDialog = true
-                    return
-                }
-                this.deletionRoom.deleting = true
-                await this.$store.dispatch('deleteSectorRoom', {room: room, sector: this.sector})
-                this.deletionRoom.deleting = false
-                this.deletionRoom.deleteRoomDialog = false
-            },
-            alertActualTicket(room) {
-
-            },
-            openSingleView(room) {
+            openSingleView() {
+                let room = this.room;
                 this.singleViewDialog.room = room;
                 this.singleViewDialog.active = true;
             }
