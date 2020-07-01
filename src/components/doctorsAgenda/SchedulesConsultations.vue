@@ -102,6 +102,7 @@
                                                 :status="status"
                                                 :payment_numberFound="payment_numberFound"
                                                 @findPaymentNumberToExam="thereIsPaymentNumber($event)"
+                                                :rescheduleConsultation="rescheduleConsultation"
                                 />
                             </v-dialog>
                         </div>
@@ -167,6 +168,7 @@
             examsLoading:[],
             loading: false,
             nextItem: 1,
+            rescheduleConsultation:undefined
         }),
 
         async mounted() {
@@ -181,12 +183,20 @@
             });
 
             this.query = this.$route.params.q
-            if (this.query) {
+            if (this.query && !this.$route.params.reschedule) {
                 this.modalidade = "Retorno"
                 this.previousConsultation = this.query.id
                 this.status = this.query.status
                 this.numberReceipt = this.query.payment_number
-            }else{
+            }else if(this.query && this.$route.params.reschedule){
+                this.modalidade = this.query.type
+                this.previousConsultation = this.query.previousConsultation
+                this.status = this.query.status
+                this.numberReceipt = this.query.payment_number
+                this.rescheduleConsultation = this.query.id
+                console.log('this. status', this.status)
+            }            
+            else{
                 this.modalidade = "Consulta"
             }
 
@@ -233,7 +243,7 @@
             },
 
             scheduleAppointment(consultation) {
-                if (!this.selectedPatient) {
+                if (!this.selectedPatient && !this.query) {
                     this.$refs.patientCard.$el.classList.add("shaking-ease-anim");
                     setTimeout(() => {
                         this.$refs.patientCard.$el.classList.remove("shaking-ease-anim");
@@ -247,12 +257,16 @@
 
             async fillConsultationForm(consultation) {
                 this.selectedForm = {
-                    user: this.selectedPatient,
+                    user: (this.query && this.query.user) ? this.query.user : this.selectedPatient,
                     consultation: consultation
                 };
 
                 if (!this.query /* && !consultation.exam_type */) {
                     this.thereIsPaymentNumber();
+                }
+                console.log(this.selectedForm)
+                if(this.$route.params.reschedule && this.query.exam){
+                    this.selectedForm.consultation.exam = this.query.exam
                 }
 
                 this.createConsultationForm = this.selectedForm;
@@ -325,7 +339,7 @@
             closeDialog(){
                 this.dialog = false
                 this.payment_numberFound = undefined
-                this.status = ""
+                /* this.status = "" */
                 this.numberReceipt = ""
                 this.selectedForm = undefined
             }

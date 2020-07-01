@@ -23,21 +23,17 @@
             <v-flex class="mt-4" sm12>
                 <CardPatient ref="patientCard"/>
             </v-flex>
-            <v-flex sm12 class="mt-4">
-                <FavoriteRoom/>
-            </v-flex>
         </v-layout>
     </v-container>
 </template>
 <script>
     import DataDoctorToSearchConsultation from "../doctorsAgenda/DataDoctorToSearchConsultation"
     import CardPatient from "../Patient/DataPatient"
-    import FavoriteRoom from "../tickets/FavoriteRoom"
 
     let moment = require("moment/moment");
 
     export default {
-        components: {DataDoctorToSearchConsultation, CardPatient, FavoriteRoom},
+        components: {DataDoctorToSearchConsultation, CardPatient},
         props: ['daysToListen'],
 
         data: () => ({
