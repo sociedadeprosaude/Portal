@@ -131,16 +131,13 @@ const actions = {
                 querySnapshot.forEach((schedule) => {
                     let data = schedule.data();
                     let cancelations_schedules = data.cancelations_schedules ? functions.datesOfInterval(data.cancelations_schedules) : []
-                    schedules.push({
-                        clinic: data.clinic,
-                        doctor: data.doctor,
-                        days: data.days,
-                        routine_id: data.routine_id,
-                        specialty: data.specialty,
-                        cancelations_schedules: cancelations_schedules,
-                        expiration_date:data.expiration_date,
+                    let obj = {
+                        ...schedule.data(),
                         id: schedule.id
-                    })
+                    }
+                    obj.cancelations_schedules = cancelations_schedules
+                    schedules.push({...obj})
+
                 });
                 commit('setSchedules', schedules);
                 commit('setConsultationLoading', false)

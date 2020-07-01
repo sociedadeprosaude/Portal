@@ -160,8 +160,8 @@ exports.onUpdateSpecialty = functions.firestore.document('specialties/{name}').o
 exports.updateStatistics = functions.firestore.document('intakes/{id}')
     .onCreate(async (snap, context) => {
         const intake = snap.data();
-        const total = intake.total;
-        const cost = intake.cost;
+        const total = Number(intake.total);
+        const cost = Number(intake.cost);
         const date = intake.date.slice(0, 10);
         const dateMonth = intake.date.slice(0, 7);
         const day = intake.date.slice(8, 10);
@@ -178,10 +178,12 @@ exports.updateStatistics = functions.firestore.document('intakes/{id}')
             totalProfit: addTotalProfit
         }, { merge: true });
 
+
         var statsMonth = await admin.firestore().collection('statistics').doc('caixa').collection('month').doc(dateMonth).get();
-        var arrTotalRaw = statsMonth.exists ?
+        var arrTotalRaw = statsMonth.exists && statsMonth.data().arrTotalRaw ?
             statsMonth.data().arrTotalRaw :
             Array.from(Array(moment(date).daysInMonth()).keys()).map(() => 0)
+
 
         arrTotalRaw[Number(day) - 1] += total;
 
@@ -210,31 +212,39 @@ exports.updateStatisticsItem = functions.firestore.document('intakes/{id}/{type}
         var stats = await admin.firestore().collection('statistics').doc('caixa').collection('days').doc(date).get();
         var statsMonth = await admin.firestore().collection('statistics').doc('caixa').collection('month').doc(dateMonth).get();
 
-        var itens = stats.exists && stats.data().itens ? stats.data().itens : {};
-        var itensMonth = statsMonth.exists && statsMonth.data().itens ? statsMonth.data().itens : {};
+        var itens = stats.exists ? stats.data().itens : {};
+        var itensMonth = statsMonth.exists ? statsMonth.data().itens : {};
+
+        var itemStat = !itens[item.name] ? emptyItem() : itens[item.name];
+        var itemStatMonth = !itensMonth[item.name] ? emptyItem() : itensMonth[item.name];
 
         if (!itens[item.name]) itens[item.name] = emptyItem();
         if (!itensMonth[item.name]) itensMonth[item.name] = emptyItem();
 
-        itens[item.name].numOfSales += 1;
-        itens[item.name].totalRaw += Number(item.price);
-        itens[item.name].totalCost += Number(item.cost)
-        itens[item.name].totalProfit += Number(item.price) - Number(item.cost);
-        itensMonth[item.name].numOfSales += 1;
-        itensMonth[item.name].totalRaw += Number(item.price);
-        itensMonth[item.name].totalCost += Number(item.cost)
-        itensMonth[item.name].totalProfit += Number(item.price) - Number(item.cost);
+        itemStat.numOfSales += 1;
+        itemStat.totalRaw += Number(item.price);
+        itemStat.totalCost += Number(item.cost)
+        itemStat.totalProfit += Number(item.price) - Number(item.cost);
+        itemStatMonth.numOfSales += 1;
+        itemStatMonth.totalRaw += Number(item.price);
+        itemStatMonth.totalCost += Number(item.cost)
+        itemStatMonth.totalProfit += Number(item.price) - Number(item.cost);
+
         stats.ref.set({
-            itens: itens,
+            itens: { [`${item.name}`]: itemStat },
             numOfSales: admin.firestore.FieldValue.increment(1)
         }, { merge: true });
         statsMonth.ref.set({
-            itens: itensMonth,
+            itens: { [`${item.name}`]: itemStatMonth },
             numOfSales: admin.firestore.FieldValue.increment(1)
         }, { merge: true });
     });
 
-// function mock(name) {
+// function sleep(ms) {
+//     return new Promise(resolve => setTimeout(resolve, ms));
+// }
+// async function mock(name) {
+//     await sleep(100);
 //     var id = moment();
 //     admin.firestore().collection('intakes').doc(String(id.valueOf())).set({
 //         total: 15,
@@ -251,7 +261,12 @@ exports.updateStatisticsItem = functions.firestore.document('intakes/{id}/{type}
 // }
 
 // exports.tstCreateIntake = functions.https.onRequest(async (req, res) => {
-//     mock("CARDIOLOGIA");
+//     await mock("CARDIOLOGIA");
+//     await mock("CARDIOLOGIA TELEATENDIMENTO");
+//     await mock("DERMATOLOGIA TELEATENDIMENTO");
+//     await mock("NEUROLOGIA");
+//     await mock("TESTANDO NOVA ESPECIALIDADE");
+//     await mock("TESTE 2");
 //     res.status(200).send("sdasd")
 // });
 

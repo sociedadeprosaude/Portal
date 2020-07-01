@@ -14,7 +14,9 @@ import NewBundles from "./views/Register/Bundle/NewBudget";
 import PaymentCovenants from "./views/Register/PaymentCovenants";
 import ContestValue from "./views/Notifications/contestValues"
 
+import oldDoctors from "./views/Register/oldDoctors";
 import Doctors from "./views/Register/Doctors";
+import oldClinics from "./views/Register/oldClinics";
 import Clinics from "./views/Register/Clinics";
 import RegisterNewUserClinic from "./views/Register/Clinic/RegisterClinic"
 import DischargeProcedures from "./views/Register/Clinic/DischargeProcedures"
@@ -117,10 +119,26 @@ let mainRoutes = [
   },
 
   {
+    path: '/olddoctors',
+    name: 'olddoctors',
+    component: oldDoctors,
+    meta : {
+      requiresAuth: false
+    }
+  },
+  {
     path: '/doctors',
     name: 'doctors',
     component: Doctors,
     meta : {
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/oldclinics',
+    name: 'oldClinics',
+    component: oldClinics,
+    meta: {
       requiresAuth: false
     }
   },

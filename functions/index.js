@@ -245,7 +245,8 @@ exports.cronjob = require('./Cronjob/Cronjob')
 exports.listeners = require('./Listeners/listeners')
 exports.requests = {
     ...require('./Requests/requests'),
-    ...require('./Requests/statistics.js')
+    ...require('./Requests/statistics.js'),
+    ...require('./Requests/pagSeguro.js'),
 }
 
 

@@ -156,7 +156,7 @@ export default {
       return this.monsthsName[Number(month) - 1];
     },
     round2(num) {
-      return num.toFixed(2);
+      return num ? num.toFixed(2) : 0;
     }
   },
   watch: {
@@ -237,12 +237,14 @@ export default {
     },
     numOfSalesMontlyDataset() {
       const arrNum = Array.from(Array(12).keys()).map(() => 0);
-      var arrMonths = Object.keys(this.statistics[this.year]).map(
+
+      var arrMonths = Object.keys(this.statistics[this.year]).forEach(
         month =>
           (arrNum[Number(month) - 1] = this.statistics[this.year][
             month
           ].numOfSales)
       );
+
       return {
         labels: this.monsthsName,
         datasets: [
@@ -250,7 +252,7 @@ export default {
             lineTension: 0,
             fill: false,
             borderColor: "rgb(75, 192, 192)",
-            data: arrMonths
+            data: arrNum
           }
         ]
       };

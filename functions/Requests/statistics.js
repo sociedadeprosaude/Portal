@@ -93,7 +93,7 @@ exports.analyzePastIntakesByDay = functions.https.onRequest(async (request, resp
             sex: intake.user ? intake.user.sex : "nem tem",
             specialties: intake.specialties,
             exams: intake.exams,
-            masculino: intake.user ? intake.user.sex == "Masculino" : false
+            masculino: intake.user ? intake.user.sex === "Masculino" : false
         }
     }))
     intakes = groupIntakes(intakes);
@@ -197,7 +197,7 @@ exports.analyzePastIntakesByMonth = functions.https.onRequest(async (request, re
             sex: intake.user ? intake.user.sex : "nem tem",
             specialties: intake.specialties,
             exams: intake.exams,
-            masculino: intake.user ? intake.user.sex == "Masculino" : false
+            masculino: intake.user ? intake.user.sex === "Masculino" : false
         }
     }))
     intakes = groupIntakesByMonth(intakes);
