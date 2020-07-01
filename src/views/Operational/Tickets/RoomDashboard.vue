@@ -224,24 +224,6 @@
         <v-dialog v-model="multipleViewDialog" fullscreen transition="dialog-bottom-transition">
             <multiple-visualizer :sector="sector" @close="multipleViewDialog = false"></multiple-visualizer>
         </v-dialog>
-        <v-dialog v-model="deletionRoom.deleteRoomDialog" max-width="500px">
-            <v-card>
-                <v-col cols="12">
-                    <span class="my-headline">Deletar {{deletionRoom.selectedRoom.name}}</span>
-                </v-col>
-                <v-col cols="12" align="end">
-                    <v-btn
-                            v-if="!deletionRoom.deleting"
-                            @click="deleteRoom(deletionRoom.selectedRoom)"
-                            rounded
-                            class="red"
-                    >
-                        <span class="white--text">Deletar</span>
-                    </v-btn>
-                    <v-progress-circular indeterminate color="primary" v-else></v-progress-circular>
-                </v-col>
-            </v-card>
-        </v-dialog>
     </v-container>
 </template>
 
@@ -419,6 +401,7 @@
                 await this.$store.dispatch("updateSector", this.sector);
 
             },
+
             async deleteRoom(room) {
                 this.deletionRoom.selectedRoom = room
                 if (!this.deletionRoom.deleteRoomDialog) {
@@ -440,7 +423,4 @@
         }
     };
 </script>
-
-<style scoped>
-</style>
 
