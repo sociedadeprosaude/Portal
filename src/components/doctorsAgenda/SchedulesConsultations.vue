@@ -124,7 +124,7 @@
                     />
                 </v-dialog>
             </div>
-        </v-flex> -->
+
         <v-flex xs12 v-if="!consultationLoading">
             <v-btn class="primary" rounded text @click="listenMoreConsultations">Carregar mais</v-btn>
         </v-flex>
