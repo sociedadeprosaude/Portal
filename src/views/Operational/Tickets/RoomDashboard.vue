@@ -401,14 +401,7 @@
                 await this.$store.dispatch("updateSector", this.sector);
 
             },
-<<<<<<< HEAD
-            favoriteRoom (room) {
-                console.log(room)
-                this.$store.commit('setFavoriteRoom', room);
-                this.$store.commit('setFavoriteRoomSection', this.sectorName);
-                console.log(this.sectorName)
-            },
-=======
+
             async deleteRoom(room) {
                 this.deletionRoom.selectedRoom = room
                 if (!this.deletionRoom.deleteRoomDialog) {
@@ -421,8 +414,8 @@
                 this.deletionRoom.deleteRoomDialog = false
             },
             alertActualTicket(room) {
->>>>>>> parent of 1b9bbb7... cartão de senhas
 
+            },
             openSingleView(room) {
                 this.singleViewDialog.room = room;
                 this.singleViewDialog.active = true;
