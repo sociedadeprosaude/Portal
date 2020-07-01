@@ -203,7 +203,6 @@ const actions = {
         let selectedClinic = context.getters.selectedUnit;
         await queryBuilder(selectedClinic.name, null, null).doc(room.name).set(room);
     },
-
     async getRooms(context) {
         let selectedClinic = context.getters.selectedUnit;
         queryBuilder(selectedClinic.name, null).collection('rooms').onSnapshot((docs) => {
