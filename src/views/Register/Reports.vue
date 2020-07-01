@@ -6,7 +6,7 @@
             </v-flex>
             <v-flex xs12>
                 <v-slide-group row mandatory v-model="selectedReport" active-class="primary--text">
-                    <v-chip v-for="report in reportOptions" :key="report">{{ report }}</v-chip>
+                    <v-chip v-for="(report,index) in reportOptions" :key="report" @click="mostrar(index)">{{ report }}</v-chip>
                 </v-slide-group>
             </v-flex>
             <v-layout row wrap class="align-content-sm-space-between justify-center">
@@ -82,75 +82,42 @@
                                 :reportAllUnits="formattedReportAllUnits"/>
             </v-flex>
             <v-flex xs12 v-if="selectedReport === 1">
-                <colaborators-production-report :loading="loading" :intakes="intakes"/>
+                <luiz-fernando-report :report="formattedReport" :loading="loading" :intakes="intakes"  :reportAllUnits="formattedReportAllUnits"/>
             </v-flex>
             <v-flex xs12 v-if="selectedReport === 2">
-                <intakes-report :report="formattedReport" :loading="loading" :intakes="intakes"/>
+                <colaborators-production-report :loading="loading" :intakes="intakes"></colaborators-production-report>
             </v-flex>
             <v-flex xs12 v-if="selectedReport === 3">
-                <procedures-prices-analises/>
+                <intakes-report :report="formattedReport" :loading="loading" :intakes="intakes"/>
             </v-flex>
             <v-flex xs12 v-if="selectedReport === 4">
-                <best-selling-exams-report :date="dateBegin" :date2="dateEnd"/>
+                <procedures-prices-analises/>
             </v-flex>
             <v-flex xs12 v-if="selectedReport === 5">
-                <BestSellingConsultationsReport :date="dateBegin" :date2="dateEnd"/>
+                <best-selling-exams-report :date="dateBegin" :date2="dateEnd"/>
             </v-flex>
             <v-flex xs12 v-if="selectedReport === 6">
-                <OuttakesReport :date="dateBegin" :date2="dateEnd" :cb="pesquisar"/>
+                <BestSellingConsultationsReport :date="dateBegin" :date2="dateEnd"/>
             </v-flex>
             <v-flex xs12 v-if="selectedReport === 7">
-                <NewUsersReport :date="dateBegin" :date2="dateEnd" :todayNewUsers="todayNewUsers"/>
+                <OuttakesReport :date="dateBegin" :date2="dateEnd" :cb="pesquisar"/>
             </v-flex>
             <v-flex xs12 v-if="selectedReport === 8">
-                <SpecialtiesMadeReport :report="formattedReport" :loading="loading" :intakes="intakes"/>
+                <NewUsersReport :date="dateBegin" :date2="dateEnd" :todayNewUsers="todayNewUsers"/>
             </v-flex>
             <v-flex xs12 v-if="selectedReport === 9">
+                <SpecialtiesMadeReport :report="formattedReport" :loading="loading" :intakes="intakes"/>
+            </v-flex>
+            <v-flex xs12 v-if="selectedReport === 10">
                 <ConsultationScheduledExecuted :report="formattedReport" :loading="loading" :intakes="intakes"/>
+            </v-flex>
+            <v-flex xs12 v-if="selectedReport === 11">
+                <CustomersPerProcedureReport :report="formattedReport" :loading="loading"/>
             </v-flex>
             <v-flex class="hidden-screen-only">
                 <p>DE {{dateFormatted}} ATÉ {{dateFormatted2}}</p>
             </v-flex>
         </v-layout>
-      <v-flex xs12 v-if="selectedReport === 0">
-        <general-report :report="formattedReport" :loading="loading" :intakes="intakes"  :reportAllUnits="formattedReportAllUnits"/>
-      </v-flex>
-      <v-flex xs12 v-if="selectedReport === 1">
-        <luiz-fernando-report :report="formattedReport" :loading="loading" :intakes="intakes"  :reportAllUnits="formattedReportAllUnits"/>
-      </v-flex>
-      <v-flex xs12 v-if="selectedReport === 2">
-        <colaborators-production-report :loading="loading" :intakes="intakes"></colaborators-production-report>
-      </v-flex>
-      <v-flex xs12 v-if="selectedReport === 3">
-        <intakes-report :report="formattedReport" :loading="loading" :intakes="intakes"></intakes-report>
-      </v-flex>
-      <v-flex xs12 v-if="selectedReport === 4">
-        <procedures-prices-analises></procedures-prices-analises>
-      </v-flex>
-      <v-flex xs12 v-if="selectedReport === 5">
-        <best-selling-exams-report :date="dateBegin" :date2="dateEnd"/>
-      </v-flex>
-      <v-flex xs12 v-if="selectedReport === 6">
-        <BestSellingConsultationsReport :date="dateBegin" :date2="dateEnd"/>
-      </v-flex>
-      <v-flex xs12 v-if="selectedReport === 7">
-        <OuttakesReport :date="dateBegin" :date2="dateEnd" :cb="pesquisar"/>
-      </v-flex>
-      <v-flex xs12 v-if="selectedReport === 8">
-        <NewUsersReport :date="dateBegin" :date2="dateEnd" :todayNewUsers="todayNewUsers"/>
-      </v-flex>
-      <v-flex xs12 v-if="selectedReport === 9">
-        <SpecialtiesMadeReport :report="formattedReport" :loading="loading" :intakes="intakes"/>
-      </v-flex>
-      <v-flex xs12 v-if="selectedReport === 10">
-        <ConsultationScheduledExecuted :report="formattedReport" :loading="loading" :intakes="intakes"/>
-      </v-flex>
-      <v-flex xs12 v-if="selectedReport === 11">
-        <CustomersPerProcedureReport :report="formattedReport" :loading="loading"/>
-      </v-flex>
-      <v-flex class="hidden-screen-only">
-        <p>DE {{dateFormatted}} ATÉ {{dateFormatted2}}</p>
-      </v-flex>
   </v-container>
 </template>
 
@@ -216,50 +183,54 @@ export default {
     loading: false,
     todayNewUsers: []
   }),
-  methods: {
-    async getIntakes() {
-      this.loading = true;
-      this.intakes = await this.$store.dispatch("getIntakes", {
-        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
-        colaborator: this.colaborator
-      });
+    methods: {
+        async getIntakes() {
+            this.loading = true;
+            this.intakes = await this.$store.dispatch("getIntakes", {
+                initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+                finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
+                colaborator: this.colaborator
+            });
 
-                await this.pesquisar();
-                this.loading = false;
-            },
-            async pesquisar() {
-                this.loading = true;
-                this.$store.dispatch("getUsers", {
-                    initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-                    finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
-                    type: "PATIENT"
-                });
-                this.$store.dispatch("getOuttakes", {
-                    initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-                    finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
-                });
-                this.formattedReport = await this.$store.dispatch("searchReports", {
-                    dataInicio: this.date,
-                    dataFinal: this.date2,
-                    colaborator: this.colaborator
-                });
-                this.formattedReportAllUnits = await this.$store.dispatch("searchReportsAllClinics", {
-                    dataInicio: this.date,
-                    dataFinal: this.date2,
-                    colaborator: this.colaborator
-                });
-                this.dateBegin = this.dateFormatted;
-                this.dateEnd = this.dateFormatted2;
-                this.loading = false;
-            },
-            formatDate(date) {
-                if (!date) return null;
-                const [year, month, day] = date.split("-");
-                return `${day}/${month}/${year}`;
-            },
-
+            await this.pesquisar();
+            this.loading = false;
         },
+        async pesquisar() {
+            this.loading = true;
+            this.$store.dispatch("getUsers", {
+                initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+                finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
+                type: "PATIENT"
+            });
+            this.$store.dispatch("getOuttakes", {
+                initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+                finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+            });
+            this.formattedReport = await this.$store.dispatch("searchReports", {
+                dataInicio: this.date,
+                dataFinal: this.date2,
+                colaborator: this.colaborator
+            });
+            this.formattedReportAllUnits = await this.$store.dispatch("searchReportsAllClinics", {
+                dataInicio: this.date,
+                dataFinal: this.date2,
+                colaborator: this.colaborator
+            });
+            this.dateBegin = this.dateFormatted;
+            this.dateEnd = this.dateFormatted2;
+            this.loading = false;
+        },
+        formatDate(date) {
+            if (!date) return null;
+            const [year, month, day] = date.split("-");
+            return `${day}/${month}/${year}`;
+        },
+        mostrar(item) {
+            console.log('item: ', item)
+            this.selectedReport = item
+        }
+
+    },
         async mounted() {
             await this.$store.dispatch("getOuttakes", {
                 initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),

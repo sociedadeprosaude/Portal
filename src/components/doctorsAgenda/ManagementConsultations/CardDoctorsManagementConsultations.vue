@@ -1,7 +1,7 @@
 <template>
     <v-container>
-        <v-layout row wrap v-if="especialtie">
-            <v-flex xs12 v-for="(consultation, i) in ConsultationsByDoctors(consultations)">
+        <v-layout row wrap v-if="specialty || examType">
+            <v-flex xs12 v-for="(consultation, i) in ConsultationsByDoctors(consultations)" :key="i">
                 <v-card>
                     <v-layout row wrap>
                         <v-flex xs12>
@@ -48,12 +48,16 @@
                             <v-divider class="primary"/>
                         </v-flex>
                         <v-flex sm4 v-for="item in consultation.consultations" class="mt-3 mb-2">
-                            <v-card outlined class="borderCard mx-2 mr-2 grey_light" @click="patientSelect(item)">
+                            <v-card outlined class="borderCard mx-2 mr-2 grey lighten-5 elevation-1" @click="patientSelect(item)">
                                 <v-layout row wrap class="mt-2">
                                     <v-flex xs4>
                                         <v-icon large>person</v-icon>
                                         <br>
-                                        <v-icon small class="mt-1">donut_large</v-icon>
+                                        <v-icon v-if="item.type === 'Retorno'"  color="primary" small class="mt-1">restore</v-icon>
+                                        <v-icon v-else small class="mt-1"  color="primary">event</v-icon>
+                                        <v-icon v-if="item.status === 'Pago'" color="green" small class="mt-1">attach_money</v-icon>
+                                        <v-icon v-else small class="mt-1" color="red">money_off</v-icon>
+
                                     </v-flex>
                                     <v-flex xs8 class="mb-3">
                                         <v-flex xs12>
@@ -123,7 +127,7 @@
         name: "CardDoctorsManagementConsultations",
         components: {SubmitButton},
 
-        props: ['especialtie', 'date'],
+        props: ['specialty', 'date','examType','filterByExam'],
         data: () => ({
             semanaOptions: [
                 "Domingo",
@@ -152,8 +156,18 @@
                     this.loadingConsultations = !this.loadingConsultations
                 }
                 return this.$store.getters.consultations.filter((a) => {
-                    return this.especialtie && this.date ? this.especialtie.name === a.specialty.name && this.date === a.date.split(' ')[0] && a.user : false
+                    return this.especialtie && this.date ?  a.specialty && this.especialtie.name === a.specialty.name && this.date === a.date.split(' ')[0] && a.user  : false
+
+//              this.loadingConsultations = true
+//                let response =  this.$store.getters.consultations.filter((a) => {
+//                    let filtedBySpecialty = !this.filterByExam && this.specialty && a.specialty && this.specialty.name === a.specialty.name
+//                    let filtedByExamType = this.filterByExam && this.examType && a.exam && this.examType.name === a.exam.type
+                   
+//                    return this.date && this.date === a.date.split(' ')[0] && a.user && (filtedBySpecialty || filtedByExamType)
+
                 });
+                this.loadingConsultations = false
+                return response
             },
             doctor() {
                 return this.$store.getters.doctor
