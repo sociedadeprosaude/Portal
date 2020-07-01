@@ -40,23 +40,16 @@
                         <v-layout row wrap class="justify-center">
                             <v-flex xs6 md3>
                                 <v-card sm3 class="mx-4 elevation-0">
-                                        <span v-if="cost !=='' && clinica === clinic" class="font-weight-bold">
-                                            Custo : {{cost}}
+                                        <span class="font-weight-bold">
+                                            Custo : {{CostExamsClinic(clinic)}}
                                         </span>
-                                    <v-btn v-else >
-                                            <span class="font-weight-black"
-                                                  @click="CalculateValue(clinic)">A pagar</span>
-                                    </v-btn>
                                 </v-card>
                             </v-flex>
                             <v-flex xs6 md3>
                                 <v-card sm3 class="mx-4 elevation-0">
-                                <span v-if="NumberExams !=='' && clinica === clinic" class="font-weight-bold">
-                                            Nº de exames : {{NumberExams}}
-                                        </span>
-                                    <v-btn  @click="CalculateValue(clinic)" v-else>
-                                        <span class="font-weight-black">Nº de exames</span>
-                                    </v-btn>
+                                <span  class="font-weight-bold">
+                                            Nº de exames : {{QuantExamsClinic(clinic)}}
+                                </span>
                                 </v-card>
                             </v-flex>
                             <v-flex md3>
@@ -157,22 +150,42 @@
             },
             clinics() {
                 return this.$store.getters.clinics
+            },
+            outtakes(){
+                return this.$store.getters.outtakeAllClinic
             }
         },
         methods: {
             OpenReceipt(item,clinic){
                 this.clinicSelected = clinic
-                console.log('item:', item)
-                console.log('clinic : ', clinic)
                 if(item.title === 'Gerar Boleto'){
                     this.dialogReceipt= !this.dialogReceipt
                 }
+            },
+            QuantExamsClinic(clinic){
+                let outtakes = this.outtakes.filter(outtake => outtake.clinic.cnpj === clinic.cnpj)
+                let cont =0;
+                outtakes.filter(function (element){
+                        cont += element.exams.length
+                })
+                return cont
+            },
+            CostExamsClinic(clinic){
+                let outtakes = this.outtakes.filter(outtake => outtake.clinic.cnpj === clinic.cnpj)
+                let cost =0;
+                outtakes.filter(function (element){
+                    element.exams.filter(function (element2) {
+                        cost += element2.price
+                    })
+                })
+                return cost
             },
             CloseReceipt(){
                 this.dialogReceipt= !this.dialogReceipt
             },
             async getInitialInfo() {
                 await this.$store.dispatch('loadClinics');
+                await this.$store.dispatch('GetReceiptsAllClinic');
                 this.loading = false
             },
             ChangeDateDialog(clinic) {

@@ -38,23 +38,20 @@
                     </v-layout>
                     <v-flex xs12 sm12>
                         <v-layout row wrap class="justify-center">
-                            <v-card sm3 class="mx-4 elevation-0">
-                                        <span v-if="cost !=='' && doctorSelected === doctor" class="font-weight-bold">
-                                            Custo : {{cost}}
+                            <v-flex xs6 md3>
+                                <v-card sm3 class="mx-4 elevation-0">
+                                        <span class="font-weight-bold">
+                                            Custo : {{CostExamsDoctor(doctor)}}
                                         </span>
-                                <v-btn v-else >
-                                            <span class="font-weight-black"
-                                                  @click="CalculateValue(doctor)">A pagar</span>
-                                </v-btn>
-                            </v-card>
-                            <v-card sm3 class="mx-4 elevation-0">
-                                <span v-if="NumberExams !=='' && doctorSelected === doctor" class="font-weight-bold">
-                                            Nº de consultas : {{NumberExams}}
-                                        </span>
-                                <v-btn  @click="CalculateValue(doctor)" v-else>
-                                    <span class="font-weight-black">Nº de exames</span>
-                                </v-btn>
-                            </v-card>
+                                </v-card>
+                            </v-flex>
+                            <v-flex xs6 md3>
+                                <v-card sm3 class="mx-4 elevation-0">
+                                <span  class="font-weight-bold">
+                                            Nº de exames : {{QuantExamsDoctor(doctor)}}
+                                </span>
+                                </v-card>
+                            </v-flex>
                             <v-card sm3 class="mx-4 elevation-0">
                                 <span class="font-weight-bold">
                                              Próximo Pagamento: {{date(doctor.last_payment,doctor.period)}}
@@ -152,6 +149,9 @@
                     return a.status !== 'pending' && a.crm
                 })
             },
+            outtakes(){
+                return this.$store.getters.outtakeAllDoctors
+            }
         },
         methods: {
             OpenReceipt(item,doctor){
@@ -160,11 +160,29 @@
                     this.dialogReceipt= !this.dialogReceipt
                 }
             },
+            QuantExamsDoctor(doctor){
+                let outtakes = this.outtakes.filter(outtake => outtake.doctor.crm === doctor.crm)
+                let cont =0;
+                outtakes.filter(function (element){
+                    cont += 1
+                })
+                return cont
+            },
+            CostExamsDoctor(doctor){
+                let outtakes = this.outtakes.filter(outtake => outtake.doctor.crm === doctor.crm)
+                let cost =0;
+                outtakes.filter(function (element){
+                    cost += element.consultations.price
+                })
+                return cost
+            },
             CloseReceipt(){
                 this.dialogReceipt= !this.dialogReceipt
             },
             async getInitialInfo() {
                 await this.$store.dispatch('getColaboratorsDoctors');
+                await this.$store.dispatch('GetReceiptsAllDoctors');
+
                 this.loading = false
             },
             ChangeDateDialog(doctor) {
