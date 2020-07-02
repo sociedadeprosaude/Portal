@@ -9,19 +9,37 @@ const { reactiveProp } = mixins;
 export default {
   extends: Pie,
   mixins: [reactiveProp],
+  props: ['chartData', 'options'],
+  watch: {
+    'options': {
+      handler(newOption, oldOption) {
+        this.$data._chart.destroy();
+        this.renderChart(this.chartData, {
+          plugins: {
+            colorschemes: {
+              scheme: 'brewer.SetOne9'
+            }
+          },
+          responsive: true,
+          maintainAspectRatio: false,
+          ...this.options
+        })
+      },
+      deep: true
+    }
+  },
   mounted() {
     //this.addPlugin(ChartDataLabels);
+    console.log({ ...this.options })
     this.renderChart(this.chartData, {
-      legend: {
-
-        position: "right"
-      },
       plugins: {
         colorschemes: {
           scheme: 'brewer.SetOne9'
         }
       },
-      responsive: true, maintainAspectRatio: false
+      responsive: true,
+      maintainAspectRatio: false,
+      ...this.options
     });
   },
 

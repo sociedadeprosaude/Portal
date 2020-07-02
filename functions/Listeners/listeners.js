@@ -212,8 +212,8 @@ exports.updateStatisticsItem = functions.firestore.document('intakes/{id}/{type}
         var stats = await admin.firestore().collection('statistics').doc('caixa').collection('days').doc(date).get();
         var statsMonth = await admin.firestore().collection('statistics').doc('caixa').collection('month').doc(dateMonth).get();
 
-        var itens = stats.exists ? stats.data().itens : {};
-        var itensMonth = statsMonth.exists ? statsMonth.data().itens : {};
+        var itens = stats.exists && stats.data().itens ? stats.data().itens : {};
+        var itensMonth = statsMonth.exists && statsMonth.data().itens ? statsMonth.data().itens : {};
 
         var itemStat = !itens[item.name] ? emptyItem() : itens[item.name];
         var itemStatMonth = !itensMonth[item.name] ? emptyItem() : itensMonth[item.name];

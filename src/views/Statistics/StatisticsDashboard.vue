@@ -1,8 +1,13 @@
 <template>
   <v-container fluid>
-    <v-navigation-drawer :right="false" permanent app dark clipped>
-      <v-list dense nav class="py-0" style="margin-top:100px">
-        <v-list-item v-for="item in items" :key="item.title" link @click="selected = item.value">
+    <v-navigation-drawer hide-overlay :right="false" v-model="overviewDrawer" disable-resize-watcher app dark clipped>
+      <v-list dense>
+        <v-list-item
+          v-for="item in items"
+          :key="item.title"
+          link
+          @click="selected = item.value; overviewDrawer=false"
+        >
           <v-list-item-content>
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
@@ -99,8 +104,7 @@ export default {
       { title: "Relatorio financeiro geral", value: 0 },
       { title: "Relatorio de Saidas", value: 1 },
       { title: "Análise de preço de exames", value: 2 },
-      { title: "Overview Caixa", value: 3 },
-   
+      { title: "Overview Caixa", value: 3 }
     ],
 
     date: moment().format("YYYY-MM-DD 00:00:00"),
@@ -188,6 +192,14 @@ export default {
     },
     hide() {
       return this.selected == 4 || this.selected == 3;
+    },
+    overviewDrawer: {
+      get() {
+        return this.$store.getters.overviewDrawer;
+      },
+      set(val) {
+        this.$store.dispatch("overviewToggle", val);
+      }
     }
   },
   watch: {

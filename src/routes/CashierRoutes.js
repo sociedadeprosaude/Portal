@@ -5,6 +5,9 @@ import CashierReports from "@/views/Statistics/StatisticsDashboard";
 import PayOnline from "../views/Operational/Cashier/PayOnline";
 import Outflows from "../views/Register/Outflows";
 
+
+import store from "../store/store"
+
 export default [
     {
         path: '/caixa',
@@ -14,7 +17,12 @@ export default [
     {
         path: '/caixa2',
         name: 'CashierReports',
-        component: CashierReports
+        component: CashierReports,
+        beforeEnter(to, from, next) {
+            store.commit('showOverviewToggle',true)
+            next()
+        },
+      
     },
     {
         path: '/pagamentoOnline/:id',
@@ -22,19 +30,19 @@ export default [
         component: PayOnline
     },
     {
-        path:'/caixa/Orçamento',
-        name:'orçamento',
+        path: '/caixa/Orçamento',
+        name: 'orçamento',
         component: Budget
     },
 
     {
-        path:'/caixa/Saidas',
-        name:'Saidas',
+        path: '/caixa/Saidas',
+        name: 'Saidas',
         component: Outflows
     },
     {
-        path:'/caixa/Bundles',
-        name:'Bundles',
+        path: '/caixa/Bundles',
+        name: 'Bundles',
         component: Bundles
     },
 ]

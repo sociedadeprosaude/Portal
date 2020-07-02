@@ -47,7 +47,7 @@ let mainRoutes = [
     path: '/',
     name: 'Home',
     component: Home,
-    meta : {
+    meta: {
       requiresAuth: true
     }
   },
@@ -60,7 +60,7 @@ let mainRoutes = [
     path: '/ContestValueAlert',
     name: 'ContestValue',
     component: ContestValue,
-    meta : {
+    meta: {
       requiresAuth: true
     }
   },
@@ -73,7 +73,7 @@ let mainRoutes = [
     path: '/conta',
     name: 'Conta',
     component: Account,
-    meta : {
+    meta: {
       requiresAuth: true
     }
   },
@@ -81,7 +81,7 @@ let mainRoutes = [
     path: '/relatorio',
     name: 'Relatorios',
     component: Reports,
-    meta : {
+    meta: {
       requiresAuth: true
     }
   },
@@ -89,7 +89,7 @@ let mainRoutes = [
     path: '/discount',
     name: 'discount',
     component: discount,
-    meta : {
+    meta: {
       requiresAuth: true
     }
   },
@@ -97,7 +97,7 @@ let mainRoutes = [
     path: '/exams',
     name: 'Exames',
     component: Exams,
-    meta : {
+    meta: {
       requiresAuth: false
     }
   },
@@ -105,7 +105,7 @@ let mainRoutes = [
     path: '/specialties',
     name: 'Specialties',
     component: Specialties,
-    meta : {
+    meta: {
       requiresAuth: false
     }
   },
@@ -113,7 +113,7 @@ let mainRoutes = [
     path: '/labor',
     name: 'labor',
     component: Labor,
-    meta : {
+    meta: {
       requiresAuth: false
     }
   },
@@ -122,7 +122,7 @@ let mainRoutes = [
     path: '/olddoctors',
     name: 'olddoctors',
     component: oldDoctors,
-    meta : {
+    meta: {
       requiresAuth: false
     }
   },
@@ -130,7 +130,7 @@ let mainRoutes = [
     path: '/doctors',
     name: 'doctors',
     component: Doctors,
-    meta : {
+    meta: {
       requiresAuth: false
     }
   },
@@ -187,7 +187,7 @@ let mainRoutes = [
   {
     path: '/units',
     name: 'units',
-    component : Units,
+    component: Units,
     meta: {
       requiresAuth: false,
     }
@@ -195,7 +195,7 @@ let mainRoutes = [
   {
     path: '/bills',
     name: 'bills',
-    component : Bills,
+    component: Bills,
     meta: {
       requiresAuth: false,
     }
@@ -203,7 +203,7 @@ let mainRoutes = [
   {
     path: '/BillsMobile',
     name: 'BillsMobile',
-    component : BillsMobile,
+    component: BillsMobile,
     meta: {
       requiresAuth: false,
     }
@@ -211,7 +211,7 @@ let mainRoutes = [
   {
     path: '/Categorias',
     name: 'OuttakesCategories',
-    component : OuttakesCategories,
+    component: OuttakesCategories,
     meta: {
       requiresAuth: false,
     }
@@ -219,7 +219,7 @@ let mainRoutes = [
   {
     path: '/PaymentCovenants',
     name: 'PaymentCovenants',
-    component : PaymentCovenants,
+    component: PaymentCovenants,
     meta: {
       requiresAuth: false,
     }
@@ -227,7 +227,7 @@ let mainRoutes = [
   {
     path: '/MedicalCare',
     name: 'MedicalCare',
-    component : MedicalCare,
+    component: MedicalCare,
     meta: {
       requiresAuth: false,
     }
@@ -235,7 +235,7 @@ let mainRoutes = [
   {
     path: '/senhas',
     name: 'Tickets',
-    component : TicketsDashboard,
+    component: TicketsDashboard,
     meta: {
       requiresAuth: false,
     }
@@ -243,7 +243,7 @@ let mainRoutes = [
   {
     path: '/senhas/:sector_name',
     name: 'Roons',
-    component : RoomDashboard,
+    component: RoomDashboard,
     meta: {
       requiresAuth: false,
     }
@@ -252,7 +252,7 @@ let mainRoutes = [
   {
     path: '/notifications',
     name: 'Notifications',
-    component : notifications,
+    component: notifications,
     meta: {
       requiresAuth: false,
     },
@@ -261,7 +261,7 @@ let mainRoutes = [
   {
     path: '/agendamento',
     name: 'doctorScheduling',
-    component : DoctorScheduling,
+    component: DoctorScheduling,
     meta: {
       requiresAuth: false,
     },
@@ -269,7 +269,7 @@ let mainRoutes = [
 ];
 
 let routes = mainRoutes.concat(DoctorsAgendaRoutes, CashierRoutes);
-let router =  new Router({
+let router = new Router({
   mode: 'history',
   routes: routes
 });
@@ -282,7 +282,7 @@ router.afterEach((to, from, next) => {
       children: [],
     }
   ]
-  for(let i in routes) {
+  for (let i in routes) {
     let holder = {
       id: routes[i].name,
       name: routes[i].name,
@@ -296,6 +296,7 @@ router.afterEach((to, from, next) => {
   } else {
     store.commit('setDoctorsAgendaToolbar', false)
   }
+  if (from.name == 'CashierReports') store.commit('showOverviewToggle', false)
 });
 
 export default router
