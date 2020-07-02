@@ -356,7 +356,6 @@
         },
         watch:{
             createConsultationForm(value){
-                console.log('mudou no consultation form')
                 this.setExamFromCreatedForm()
             },
             exam(value){
@@ -367,7 +366,7 @@
                 }
             },
             payment_numberFound(value){
-                if(value.exam){
+                if(value && value.exam){
                     this.exam = Object.assign({},value.exam)
                     this.findPaymentToExam = false
                 }

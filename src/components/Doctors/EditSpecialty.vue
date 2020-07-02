@@ -13,7 +13,7 @@
                 <v-flex xs12 class="my-4 mx-2">
                     <v-select
                             label="Especialidade Selecionda para Edição"
-                            v-model="specialty"
+                            v-model="name"
                             :items="specialties"
                             outlined
                             rounded
@@ -51,39 +51,9 @@
                     filled
                     clearable
                     prefix="R$"
-                    v-model="specialty.price"
+                    v-model="price"
                     label="Preço de Venda"
                     />
-                </v-flex>
-
-                <v-flex xs12>
-                    <v-select
-                            label="É Necessário Agendar Exame(s) ?"
-                            v-model="exam"
-                            :items="typeOptions"
-                            outlined
-                            rounded
-                            filled
-                            chips
-                            color="pink"
-                            clearable
-                            hide-details
-                    >
-                        <template v-slot:selection="data">
-                            <v-chip
-                                    :key="JSON.stringify(data.item)"
-                                    :input-value="data.selected"
-                                    :disabled="data.disabled"
-                                    class="v-chip--select-multi"
-                                    @click.stop="data.parent.selectedIndex = data.index"
-                                    @input="data.parent.selectItem(data.item)"
-                                    text-color="white"
-                                    color="primary"
-                            >
-                                {{ data.item.text }}
-                            </v-chip>
-                        </template>
-                    </v-select>
                 </v-flex>
             </v-layout>
         </v-card-text>
@@ -106,6 +76,8 @@
             loading: false,
             success: false,
             exam: undefined,
+            name:undefined,
+            price:0,
             typeOptions:[
                 { text:'sim', value: true },
                 { text:'não', value: false }
@@ -117,7 +89,9 @@
                 return this.$store.getters.specialties
             },
         },
-
+        mounted(){
+            this.initialize()
+        },
         methods: {
             close() {
                 this.$emit('close');
@@ -125,19 +99,27 @@
             async editSpecialty() {
                 this.loading = true;
                 await this.$store.dispatch('editSpecialty', {
-                    name: this.specialty.name.toUpperCase(),
-                    price:Number(this.specialty.price),
-                    exam: this.exam
+                    name: this.name.toUpperCase(),
+                    price:Number(this.price)
                 });
                 this.success = true;
                 this.loading = false;
                 setTimeout(() => {
-                    this.specialty = undefined;
-                    this.exam = undefined;
                     this.close();
                 }, 1000)
             },
-
+            initialize(){
+                if(this.specialty){
+                    this.name = this.specialty.name
+                    this.price = this.specialty.price
+                }
+            }
+        },
+        watch:{
+            specialty(value){
+                if(value)
+                    this.initialize()
+            }
         }
     }
 </script>
