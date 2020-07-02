@@ -1,7 +1,7 @@
 import Bundles from "../views/Register/Bundles"
 import Budget from "../views/Operational/Cashier/Budget";
 import Cashier from "../views/Operational/Cashier/Cashier";
-import CashierReports from "../views/Operational/Cashier/CashierReports";
+import CashierReports from "@/views/Statistics/StatisticsDashboard";
 import PayOnline from "../views/Operational/Cashier/PayOnline";
 import Outflows from "../views/Register/Outflows";
 

@@ -6,6 +6,14 @@
           <v-layout row wrap>
             <v-flex xs12 class="text-left">
               <span class="my-headline">Adicionar conta à pagar</span>
+              <v-dialog v-model="dialogCategory">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn color="primary" class="ml-2 py-0" dark v-bind="attrs" v-on="on">Categorias</v-btn>
+                </template>
+                <v-card>
+                  <crudCategory />
+                </v-card>
+              </v-dialog>
             </v-flex>
             <v-flex xs12 sm3>
               <!--@input.native="category={name:$event.srcElement.value,subCategories:[]}"-->
@@ -151,12 +159,16 @@
   </v-container>
 </template>
 <script>
+import crudCategory from "@/views/Register/OuttakesCategories";
 import { mask } from "vue-the-mask";
 import moment from "moment";
 
 export default {
   directives: {
     mask
+  },
+  components: {
+    crudCategory
   },
 
   data: () => ({
@@ -179,7 +191,8 @@ export default {
     filesPreviews: [],
     mask: {
       number: "###"
-    }
+    },
+    dialogCategory: false,
   }),
 
   mounted() {

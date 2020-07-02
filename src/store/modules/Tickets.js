@@ -182,7 +182,7 @@ const actions = {
         payload.sector.rooms = {
             ...payload.sector.rooms,
             [payload.room.name]: payload.room
-        }
+        };
         await queryBuilder(selectedClinic.name, payload.sector.name)
             .update({
                 rooms: payload.sector.rooms

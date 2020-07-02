@@ -1,26 +1,31 @@
 const functions = require('firebase-functions');
-var admin = require('firebase-admin');
+const serviceAccount = require('./serviceAccountKey.json')
+
 const cors = require('cors')({ origin: true });
+var admin = require('firebase-admin');
 var moment = require('moment');
 const json2csv = require('json2csv');
-admin.initializeApp();
-const defaultRoute = '/analise-exames'
 
-exports.listeners = require('./Listeners/listeners')
+//admin.initializeApp();
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://prosaudedev.firebaseio.com"
+});
+const defaultRoute = '/analise-exames'
 
 const heavyFunctionsRuntimeOpts = {
     timeoutSeconds: 540,
     memory: '2GB'
 }
 
-exports.hello = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest((req,res) => {
+exports.hello = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest((req, res) => {
     console.log(req.query.name);
-    var name= req.query.name || "Sem Nome"
+    var name = req.query.name || "Sem Nome"
     res.send("hello ", name);
 })
 
-exports.getLastAccessedPatients = fuctions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async(req,res) => {
-    var quant= req.query.quantity
+exports.getLastAccessedPatients = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (req, res) => {
+    var quant = req.query.quantity
     let users = await admin.firestore.document('users').limit(quant).orderBy("accessed_at", "desc").get()
     let editadUsers = []
     for (let doc of users.docs) {
@@ -88,7 +93,6 @@ exports.addMessage = functions.https.onRequest(async (req, res) => {
         response.status(200).send('success aí cara. Foco!')
     });
 });
-
 
 exports.listenChangeInSpecialtiesSubcollections = functions.firestore.document('specialties/{specialtyId}/{collectionId}/{docId}').onWrite(async (change, context) => {
     convertSpecialtySubcollectionInObject((await admin.firestore().collection('specialties').doc(context.params.specialtyId).get()))
@@ -239,7 +243,12 @@ async function convertDoctorsSubcollectionsInObjects() {
 
 exports.cronjob = require('./Cronjob/Cronjob')
 exports.listeners = require('./Listeners/listeners')
-exports.requests = require('./Requests/requests')
+exports.requests = {
+    ...require('./Requests/requests'),
+    ...require('./Requests/statistics.js'),
+    ...require('./Requests/pagSeguro.js'),
+}
+
 
 
 //Func nao usada em nenhum canto

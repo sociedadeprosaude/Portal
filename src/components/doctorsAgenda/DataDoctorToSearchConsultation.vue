@@ -1,124 +1,129 @@
 <template>
     <v-container class="ma-0 pa-0">
-        <v-layout column>
-            <v-flex xs12 class="mt-4 pa-0 ">
-                <v-checkbox
-                    class="pl-3 py-0 my-0"
-                    v-model="examTypeCheck"
-                    color="white"
-                >
-                    <template v-slot:label>
-                        <div class="white--text">Listar agendas de exames</div>
-                    </template>
-                </v-checkbox>
-            </v-flex>
-            <v-flex xs12 class="ma-0 pa-0">
-                <v-combobox
-                        v-if="!examTypeCheck"
-                        class="pa-0 ma-0"
-                        :items="specialties"
-                        v-model="specialty"
-                        item-text="name"
-                        return-object
-                        placeholder="Especialidade"
-                        dense solo
-                        color="blue"
-                        clearable>
-                    <template v-slot:selection="data">
-                        <v-chip
-                                :key="JSON.stringify(data.item)"
-                                :input-value="data.selected"
-                                :disabled="data.disabled"
-                                class="v-chip--select-multi"
-                                @click.stop="data.parent.selectedIndex = data.index"
-                                @input="data.parent.selectItem(data.item)"
-                                text-color="white"
-                                color="primary"
-                        >{{ data.item.name }}
-                        </v-chip>
-                    </template>
-                </v-combobox>
-
-                <v-combobox
-                        v-else
-                        class="pa-0 ma-0"
-                        :items="examTypes"
-                        v-model="examType"
-                        item-text="name"
-                        return-object
-                        placeholder="Exames agendáveis"
-                        dense solo
-                        color="blue"
-                        clearable>
-                    <template v-slot:selection="data">
-                        <v-chip
-                                :key="JSON.stringify(data.item)"
-                                :input-value="data.selected"
-                                :disabled="data.disabled"
-                                class="v-chip--select-multi"
-                                @click.stop="data.parent.selectedIndex = data.index"
-                                @input="data.parent.selectItem(data.item)"
-                                text-color="white"
-                                color="primary"
-                        >{{ data.item.name }}
-                        </v-chip>
-                    </template>
-                </v-combobox>
-            </v-flex>
-            <v-flex xs12 class="mt-n4 pa-0">
-                <v-combobox class="pa-0 pa"
-                            v-model="doctor"
-                            :items="doctors"
-                            return-object
-                            item-text="name"
-                            label="Médico"
-                            outlined
-                            dense
-                            chips
-                            solo
-                            color="blue"
-                            clearable
-                >
-                    <template v-slot:selection="data">
-                        <v-chip
-                                :key="JSON.stringify(data.item)"
-                                :input-value="data.selected"
-                                :disabled="data.disabled"
-                                class="v-chip--select-multi"
-                                @click.stop="data.parent.selectedIndex = data.index"
-                                @input="data.parent.selectItem(data.item)"
-                                text-color="white"
-                                color="primary"
-                        >{{ data.item.name }}
-                        </v-chip>
-                    </template>
-                </v-combobox>
-            </v-flex>
-            <v-flex xs12 class="mt-n4 pa-0">
-                <v-select
-                        v-model="clinic"
-                        :items="clinics"
-                        item-text="name"
-                        label="Clínica"
-                        solo dense
-                        clearable
-                >
-                    <template v-slot:selection="data">
-                        <v-chip
-                                :key="JSON.stringify(data.item)"
-                                :input-value="data.selected"
-                                :disabled="data.disabled"
-                                class="v-chip--select-multi"
-                                @click.stop="data.parent.selectedIndex = data.index"
-                                @input="data.parent.selectItem(data.item)"
-                                text-color="white"
-                                color="primary"
-                        >{{ data.item.name }}
-                        </v-chip>
-                    </template>
-                </v-select>
-            </v-flex>
-        </v-layout>
+        <v-flex xs12 class=" justify-start text-left">
+            <v-btn icon fab small @click="showFilter = !showFilter" color="background" dark>
+                <v-icon v-if="showFilter">close</v-icon>
+                <v-icon v-else>filter_alt</v-icon>
+            </v-btn>
+        </v-flex>
+        <v-layout column v-if="showFilter">
+                    <v-flex xs12 class="mt-2 pa-0 ">
+                        <v-checkbox
+                                class="pl-3 py-0 my-0"
+                                v-model="examTypeCheck"
+                                color="white"
+                        >
+                            <template v-slot:label>
+                                <div class="white--text">Listar agendas de exames</div>
+                            </template>
+                        </v-checkbox>
+                    </v-flex>
+                    <v-flex xs12 class="ma-0 pa-0">
+                        <v-combobox
+                                v-if="!examTypeCheck"
+                                class="pa-0 ma-0"
+                                :items="specialties"
+                                v-model="specialty"
+                                item-text="name"
+                                return-object
+                                placeholder="Especialidade"
+                                dense solo
+                                color="blue"
+                                clearable>
+                            <template v-slot:selection="data">
+                                <v-chip
+                                        :key="JSON.stringify(data.item)"
+                                        :input-value="data.selected"
+                                        :disabled="data.disabled"
+                                        class="v-chip--select-multi"
+                                        @click.stop="data.parent.selectedIndex = data.index"
+                                        @input="data.parent.selectItem(data.item)"
+                                        text-color="white"
+                                        color="primary"
+                                >{{ data.item.name }}
+                                </v-chip>
+                            </template>
+                        </v-combobox>
+                        <v-combobox
+                                v-else
+                                class="pa-0 ma-0"
+                                :items="examTypes"
+                                v-model="examType"
+                                item-text="name"
+                                return-object
+                                placeholder="Exames agendáveis"
+                                dense solo
+                                color="blue"
+                                clearable>
+                            <template v-slot:selection="data">
+                                <v-chip
+                                        :key="JSON.stringify(data.item)"
+                                        :input-value="data.selected"
+                                        :disabled="data.disabled"
+                                        class="v-chip--select-multi"
+                                        @click.stop="data.parent.selectedIndex = data.index"
+                                        @input="data.parent.selectItem(data.item)"
+                                        text-color="white"
+                                        color="primary"
+                                >{{ data.item.name }}
+                                </v-chip>
+                            </template>
+                        </v-combobox>
+                    </v-flex>
+                    <v-flex xs12 class="mt-n4 pa-0">
+                        <v-combobox class="pa-0 pa"
+                                    v-model="doctor"
+                                    :items="doctors"
+                                    return-object
+                                    item-text="name"
+                                    label="Médico"
+                                    outlined
+                                    dense
+                                    chips
+                                    solo
+                                    color="blue"
+                                    clearable
+                        >
+                            <template v-slot:selection="data">
+                                <v-chip
+                                        :key="JSON.stringify(data.item)"
+                                        :input-value="data.selected"
+                                        :disabled="data.disabled"
+                                        class="v-chip--select-multi"
+                                        @click.stop="data.parent.selectedIndex = data.index"
+                                        @input="data.parent.selectItem(data.item)"
+                                        text-color="white"
+                                        color="primary"
+                                >{{ data.item.name }}
+                                </v-chip>
+                            </template>
+                        </v-combobox>
+                    </v-flex>
+                    <v-flex xs12 class="mt-n4 pa-0">
+                        <v-select
+                                v-model="clinic"
+                                :items="clinics"
+                                item-text="name"
+                                label="Clínica"
+                                solo dense
+                                clearable
+                        >
+                            <template v-slot:selection="data">
+                                <v-chip
+                                        :key="JSON.stringify(data.item)"
+                                        :input-value="data.selected"
+                                        :disabled="data.disabled"
+                                        class="v-chip--select-multi"
+                                        @click.stop="data.parent.selectedIndex = data.index"
+                                        @input="data.parent.selectItem(data.item)"
+                                        text-color="white"
+                                        color="primary"
+                                >{{ data.item.name }}
+                                </v-chip>
+                            </template>
+                        </v-select>
+                    </v-flex>
+                </v-layout>
     </v-container>
 </template>
 <script>
@@ -126,17 +131,20 @@
     export default {
 
         data: () => ({
+            showFilter: false,
             specialty: undefined,
             clinic: undefined,
             doctor: undefined,
-            examTypeCheck:false,
-            examType:undefined
+            examTypeCheck: false,
+            examType: undefined
         }),
 
         computed: {
 
             clinics() {
-                return this.$store.getters.clinics.filter(a => {return a.property;});
+                return this.$store.getters.clinics.filter(a => {
+                    return a.property;
+                });
             },
 
             specialties() {
@@ -179,12 +187,12 @@
             },
 
             examTypes() {
-                return this.$store.getters.examsTypes.filter((examType)=>{
+                return this.$store.getters.examsTypes.filter((examType) => {
                     return examType.scheduleable
                 });
             }
         },
-        mounted(){
+        mounted() {
             this.$store.dispatch("getExamsTypes");
             this.query= this.$route.params.q
             if( this.query && this.$route.params.reschedule && this.query.exam){
@@ -194,8 +202,8 @@
                 this.doctor= this.query.doctor
             }else if(this.query ){
                 this.specialty = this.query.specialty;
-                this.clinic= this.query.clinic.name;
-                this.doctor= this.query.doctor
+                this.clinic = this.query.clinic.name;
+                this.doctor = this.query.doctor
             }
         },
 
@@ -204,32 +212,31 @@
         },
 
         watch: {
-            clinic (clinic) {
+            clinic(clinic) {
                 this.$store.dispatch('selectClinic', clinic)
             },
-            doctor (doctor) {
+            doctor(doctor) {
                 this.$store.dispatch('selectDoctor', doctor)
             },
-            specialty (specialty){
-                console.log('specialty',specialty)
+            specialty(specialty) {
+                console.log('specialty', specialty)
                 this.$store.dispatch('selectSpecialty', specialty)
             },
-            examType(value){
-                console.log('exam',value)
-                this.$store.dispatch('selectExamType',value)
+            examType(value) {
+                console.log('exam', value)
+                this.$store.dispatch('selectExamType', value)
             },
-            examTypeCheck(value){
-                if(value){
+            examTypeCheck(value) {
+                if (value) {
                     this.$store.dispatch('selectSpecialty', undefined)
                     this.specialty = undefined
-                } 
-                else{
-                    this.$store.dispatch('selectExamType',undefined) 
+                } else {
+                    this.$store.dispatch('selectExamType', undefined)
                     this.examType = undefined
                 }
-                console.log('check',value)
-                this.$store.dispatch('selectExamTypeCheck',value)
-                  
+                console.log('check', value)
+                this.$store.dispatch('selectExamTypeCheck', value)
+
             }
         },
 

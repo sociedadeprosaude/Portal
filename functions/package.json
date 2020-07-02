@@ -10,14 +10,16 @@
     "logs": "firebase functions:log"
   },
   "engines": {
-    "node": "8"
+    "node": "10"
   },
   "dependencies": {
-    "firebase-admin": "^8.10.0",
+    "axios": "^0.19.2",
+    "firebase-admin": "^8.12.1",
     "firebase-functions": "^3.6.1",
     "json2csv": "^4.5.2",
     "moment": "^2.24.0",
-    "papaparse": "^5.0.2"
+    "papaparse": "^5.0.2",
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "eslint": "^5.12.0",

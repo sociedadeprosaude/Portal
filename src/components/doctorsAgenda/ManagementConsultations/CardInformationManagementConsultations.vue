@@ -99,7 +99,6 @@
         from '../../../components/doctorsAgenda/ManagementConsultations/CardPatientManagementConsultations'
     import ConsultationDocument from "../commons/ConsultationDocument"
     import ConsultationReceipt from "../commons/ConsultationReceipt"
-
     let moment = require('moment');
 
     export default {
@@ -119,7 +118,6 @@
             },
         },
         mounted() {
-            this.initialConfig()
         },
         watch: {
         },
@@ -139,12 +137,11 @@
                     exam:this.consultation.exam
                 };
 
-                console.log(obj)
                 await this.$store.dispatch('eraseAppointment', obj);
                 this.cancelLoading = false
 
             },
-            setConsultationHour(consultation) {
+            async setConsultationHour(consultation) {
                 let consultation_hour = moment().format('YYYY-MM-DD hh:mm:ss');
                 if(!consultation.user)
                     consultation.user = this.selectedPatient
@@ -153,7 +150,19 @@
                     consultation: consultation,
                     id: consultation.id,
                 };
-                this.$store.dispatch('addConsultationHourInConsultation', data);
+                let specialty = await this.$store.dispatch('getDoctorSpecialty', consultation)
+                let outtake = {
+                    intake_id: consultation.payment_number,
+                    user: consultation.user,
+                    unit: consultation.clinic,
+                    doctor: consultation.doctor,
+                    specialties: specialty,
+                    paid: false,
+                    crm: consultation.doctor.crm
+                }
+                console.log('outtake: ', outtake)
+                await this.$store.dispatch('addSpecialtyOuttakes', outtake)
+                await this.$store.dispatch('addConsultationHourInConsultation', data);
                 this.consultation.consultation_hour = consultation_hour;
                 this.documentDialog = true;
             },
