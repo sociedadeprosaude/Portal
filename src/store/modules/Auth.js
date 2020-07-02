@@ -1,6 +1,6 @@
-import firebase, {firestore} from "firebase";
+import firebase, { firestore } from "firebase";
 import router from "../../router";
-import {relativeTimeRounding} from "moment";
+import { relativeTimeRounding } from "moment";
 
 const state = {
     user: undefined,
@@ -15,7 +15,7 @@ const mutations = {
     setPermissionsList(state, payload) {
         state.permissions = payload
     },
-    Setpermissions(state, payload){
+    Setpermissions(state, payload) {
         state.listOfPermissions = payload
     }
 };
@@ -29,9 +29,10 @@ const actions = {
         }, 500);
         return
     },
-    async getUser({commit}, user) {
+    async getUser({ commit }, user) {
+
         try {
-            let userDoc = await firebase.firestore().collection('users/').where('uid', '==', user.uid).get()
+            let userDoc = await firebase.firestore().collection('users/').where('email', '==', user.email).get()
             commit('setUser', userDoc.docs[0].data());
             if (userDoc.docs[0].data().clinic) {
                 this.commit('setSelectedUnit', userDoc.docs[0].data().clinic)
@@ -48,20 +49,20 @@ const actions = {
 
     },
 
-    async updateAccount({commit},payload){
+    async updateAccount({ commit }, payload) {
         try {
-            let id =  payload.cpf;
-            id = id.replace('.',"");
-            id = id.replace('.',"");
-            id =  id.replace('-',"");
+            let id = payload.cpf;
+            id = id.replace('.', "");
+            id = id.replace('.', "");
+            id = id.replace('-', "");
             await firebase.firestore().collection('users').doc(id).update({
-                name:payload.name,
-                telephones:payload.telephones,
-                address:payload.address,
+                name: payload.name,
+                telephones: payload.telephones,
+                address: payload.address,
                 bankData: payload.bank,
             });
 
-            commit('setUser',payload)
+            commit('setUser', payload)
         } catch (e) {
             console.log(e)
         }
@@ -70,10 +71,10 @@ const actions = {
 
 const getters = {
 
-    user (state) {
+    user(state) {
         return state.user
     },
-    permissions(state){
+    permissions(state) {
         return state.listOfPermissions
     }
 };

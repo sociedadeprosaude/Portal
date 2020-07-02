@@ -1,7 +1,7 @@
 import firebase from "firebase";
 import functions from "../../utils/functions";
 import constants from "../../utils/constants";
-import {Promise} from "core-js";
+import { Promise } from "core-js";
 
 const state = {
     intakes: [],
@@ -29,8 +29,8 @@ const actions = {
         delete copyPayload.user.consultations;
         delete copyPayload.user.intakes;
 
-        let specialties = copyPayload.specialties ? Object.assign( copyPayload.specialties) : undefined;
-        let exams = copyPayload.exams ? Object.assign( copyPayload.exams) : undefined;
+        let specialties = copyPayload.specialties ? Object.assign(copyPayload.specialties) : undefined;
+        let exams = copyPayload.exams ? Object.assign(copyPayload.exams) : undefined;
 
         if (copyPayload.specialties) {
             copyPayload.specialties = Object.values(copyPayload.specialties)
@@ -114,8 +114,14 @@ const actions = {
                 await userRef.collection('intakes').doc(copyPayload.id.toString()).collection('specialties').add({
                     ...specialties[spec]
                 });
-
-                context.dispatch('verifyUnpaidConsultation', { userRef: userRef, user: user, isConsultation: true,consultation:payload.consultation, payment_number: copyPayload.id.toString(), specialty: specialties[spec] })
+                context.dispatch('verifyUnpaidConsultation', {
+                    userRef: userRef,
+                    user: user,
+                    isConsultation: true,
+                    consultation: payload.consultation,
+                    payment_number: copyPayload.id.toString(),
+                    specialty: specialties[spec]
+                })
             }
         }
         if (exams) {
@@ -130,7 +136,14 @@ const actions = {
                     ...exams[exam]
                 });
 
-                context.dispatch('verifyUnpaidConsultation', { userRef: userRef, user: user, isConsultation: false, payment_number: copyPayload.id.toString(), specialty: {name:exams[exam].type}, examObj: exams[exam] })
+                context.dispatch('verifyUnpaidConsultation', {
+                    userRef: userRef,
+                    user: user,
+                    isConsultation: false,
+                    payment_number: copyPayload.id.toString(),
+                    specialty: { name: exams[exam].type },
+                    examObj: exams[exam]
+                })
             }
         }
     },
@@ -282,7 +295,8 @@ const actions = {
             });
         return
     },
-    async getIntakesCategories({commit}) {
+
+    async getIntakesCategories({ commit }) {
         firebase.firestore().collection('operational/').doc('intakes').onSnapshot((outtakesDoc) => {
             let categories = [];
             if (!outtakesDoc.exists) {
@@ -318,7 +332,7 @@ const actions = {
         await firebase.firestore().collection('intakes/').add(intake)
     },
 
-    async getSpecificIntake({commit}, intake) {
+    async getSpecificIntake({ commit }, intake) {
         let SpecificIntake = await firebase.firestore().collection('intakes').doc(intake.number).get();
         let exams = [];
         let patient = SpecificIntake.data().user.name;
@@ -351,7 +365,7 @@ const actions = {
         commit('setIntakesClinic', intakeClinic)
     },
 
-    async updatingSpecificIntake({commit}, intake) {
+    async updatingSpecificIntake({ commit }, intake) {
         let SpecificIntake = await firebase.firestore().collection('intakes').doc(intake.number).get();
         let Exams = SpecificIntake.data().exams;
         for (let exam in Exams) {
@@ -361,7 +375,7 @@ const actions = {
                 }
             }
         }
-        await firebase.firestore().collection('intakes').doc(intake.number).update({exams: Exams})
+        await firebase.firestore().collection('intakes').doc(intake.number).update({ exams: Exams })
     }
 };
 
