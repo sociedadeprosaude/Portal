@@ -34,6 +34,7 @@ import Tickets from "./modules/Tickets";
 import alertNotifications from "./modules/alertNotifications";
 import Schedule from "./modules/schedule"
 import PagSeguro from "./modules/PagSeguro"
+import Statistics from "./modules/Statistics"
 
 Vue.use(Vuex);
 
@@ -81,7 +82,8 @@ const store = new Vuex.Store({
         Discount,
         alertNotifications,
         Schedule,
-        PagSeguro
+        PagSeguro,
+        Statistics
     },
 
     state: {

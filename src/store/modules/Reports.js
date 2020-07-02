@@ -58,12 +58,12 @@ const actions = {
         let intakes = [];
         for (let doc of intakesSnap.docs) {
             if (doc.data().colaborator) {
-                if(payload.colaborator){
-                    if(payload.colaborator.name === doc.data().colaborator.name){
+                if (payload.colaborator) {
+                    if (payload.colaborator.name === doc.data().colaborator.name) {
                         intakes.push(doc.data())
                     }
                 }
-                else{
+                else {
                     intakes.push(doc.data())
                 }
             }
@@ -81,13 +81,13 @@ const actions = {
         let intakes = [];
         for (let doc of intakesSnap.docs) {
             if (doc.data().colaborator) {
-                if(payload.colaborator){
+                if (payload.colaborator) {
 
-                    if(payload.colaborator === doc.data().colaborator.name){
+                    if (payload.colaborator === doc.data().colaborator.name) {
                         intakes.push(doc.data())
                     }
                 }
-                else{
+                else {
                     intakes.push(doc.data())
                 }
             }
@@ -102,7 +102,7 @@ const actions = {
         let quantidadeOuttakes = 0;
         let relatorio = {};
         let doctors = {};
-        let consultations= {};
+        let consultations = {};
 
         for (let intake in intakes) {
             if (!intakes[intake].cancelled_by) {
@@ -135,10 +135,10 @@ const actions = {
                             property: false
                         }
                     }
-                    if(intakes[intake].exams[exam].clinic.property === true) {
+                    if (intakes[intake].exams[exam].clinic.property === true) {
                         clinics[intakes[intake].exams[exam].clinic.name].property = true
                     }
-                    else{
+                    else {
                         clinics[intakes[intake].exams[exam].clinic.name].property = false
                     }
                     if (!clinics[intakes[intake].exams[exam].clinic.name].exams[intakes[intake].exams[exam].name]) {
@@ -150,7 +150,7 @@ const actions = {
                             type: ''
                         }
                     }
-                    if(intakes[intake].exams[exam].type){
+                    if (intakes[intake].exams[exam].type) {
                         clinics[intakes[intake].exams[exam].clinic.name].exams[intakes[intake].exams[exam].name].type = intakes[intake].exams[exam].type
                     }
                     clinics[intakes[intake].exams[exam].clinic.name].quantidade++
@@ -198,10 +198,10 @@ const actions = {
                 })
             }
         });
-        let consultationsSnap= await firebase.firestore().collection('consultations').where('date', '>=', payload.dataInicio)
+        let consultationsSnap = await firebase.firestore().collection('consultations').where('date', '>=', payload.dataInicio)
             .where('date', '<=', payload.dataFinal).orderBy('date').get();
         consultationsSnap.forEach((e) => {
-            if(e.data().specialty) {
+            if (e.data().specialty) {
                 if (!consultations[e.data().specialty.name]) {
                     consultations[e.data().specialty.name] = {
                         name: e.data().specialty.name,
@@ -274,13 +274,13 @@ const actions = {
         let intakes = [];
         for (let doc of intakesSnap.docs) {
             if (doc.data().colaborator) {
-                if(payload.colaborator){
+                if (payload.colaborator) {
 
-                    if(payload.colaborator === doc.data().colaborator.name){
+                    if (payload.colaborator === doc.data().colaborator.name) {
                         intakes.push(doc.data())
                     }
                 }
-                else{
+                else {
                     intakes.push(doc.data())
                 }
             }
@@ -295,7 +295,7 @@ const actions = {
         let quantidadeOuttakes = 0;
         let relatorio = {};
         let doctors = {};
-        let consultations= {};
+        let consultations = {};
 
         for (let intake in intakes) {
             if (!intakes[intake].cancelled_by) {
@@ -379,10 +379,10 @@ const actions = {
                 })
             }
         });
-        let consultationsSnap= await firebase.firestore().collection('consultations').where('date', '>=', payload.dataInicio)
+        let consultationsSnap = await firebase.firestore().collection('consultations').where('date', '>=', payload.dataInicio)
             .where('date', '<=', payload.dataFinal).orderBy('date').get();
         consultationsSnap.forEach((e) => {
-            if(e.data().specialty) {
+            if (e.data().specialty) {
                 if (!consultations[e.data().specialty.name]) {
                     consultations[e.data().specialty.name] = {
                         name: e.data().specialty.name,
@@ -454,7 +454,7 @@ const getters = {
     relatorio(state) {
         return state.relatorio;
     },
-    reportAllClinics(state){
+    reportAllClinics(state) {
         return state.reportAllClinics
     },
     intakesReport: (state) => state.intakesReport,

@@ -63,18 +63,20 @@
                   <h3>
                     Pagamento
                     <div v-if="budget.specialties != null">
-                      {{budget.specialties[0].name}}
                       <span
                         class="blue--text text--darken-4 font-weight-bold"
-                        v-if="budget.specialties.length > 1"
-                      >e outros</span>
+                        v-for="(item,i) in budget.specialties.slice(0,-1)"
+                        :key="i"
+                      >{{budget.specialties[i].name}},</span>
+                      {{budget.specialties[budget.specialties.length-1].name}}
                     </div>
                     <div v-else>
-                      {{budget.exams[0].name}}
                       <span
                         class="blue--text text--darken-4 font-weight-bold"
-                        v-if="budget.exams.length > 1"
-                      >e outros</span>
+                        v-for="(item,i) in budget.exams.slice(0,-1)"
+                        :key="i"
+                      >{{budget.exams[i].name}},</span>
+                      {{budget.exams[budget.exams.length-1].name}}
                     </div>
                   </h3>
                 </v-row>
@@ -209,9 +211,9 @@
                   @click="pay()"
                 >Confirmar pagamento</v-btn>
               </v-col>
-              <v-col cols="12">
-                <v-btn rounded outlined width="250px" color="blue" @click="cb()">Voltar</v-btn>
-              </v-col>
+              <!-- <v-col cols="12">
+                <v-btn rounded outlined width="250px" color="blue" @click="tst()">Voltar</v-btn>
+              </v-col> -->
             </v-row>
           </v-col>
         </v-row>
@@ -230,10 +232,18 @@
         >Gerar boleto</v-btn>
       </v-row>
 
-      <v-row class="mt-4" align="center" justify="center">
-        <v-btn rounded outlined width="250px" color="blue" @click="cb()">Voltar {{parcelsPrice}}</v-btn>
-      </v-row>
+      <!-- <v-row class="mt-4" align="center" justify="center">
+        <v-btn rounded outlined width="250px" color="blue" @click="tst()">Voltar</v-btn>
+      </v-row> -->
     </v-container>
+    <!-- <v-dialog
+      v-model="receiptDialog"
+  
+      fullscreen
+      transition="dialog-bottom-transition"
+    >
+      <receipt @close="receiptDialog = false" :budget="budget"></receipt>
+    </v-dialog>-->
   </v-container>
   <v-container v-else>
     <v-overlay>
@@ -243,8 +253,12 @@
 </template>
 
 <script>
+import Receipt from "@/components/cashier/Receipt";
 import moment from "moment";
 export default {
+  components: {
+    Receipt
+  },
   name: "PayOnline",
 
   data() {
@@ -263,7 +277,10 @@ export default {
       parcel: 1,
       parcels: [1, 2, 3, 4, 5],
       parcelsPrice: null,
-      parcelLoaded: true
+      parcelLoaded: true,
+
+      selectedIntake: undefined,
+      receiptDialog: false
     };
   },
   async mounted() {
@@ -303,6 +320,38 @@ export default {
       });
       return cardToken.card.token;
     },
+    async tst() {
+      await this.$store.dispatch("addIntake", this.budget);
+      let porcentagem = this.budget.discount / this.budget.subTotal;
+
+      if (
+        porcentagem >= 0.5 ||
+        parseFloat(this.budget.subTotal) > this.budget.cost
+      ) {
+        this.$store.dispatch("DiscountWarning", {
+          orcamento: this.budget.id,
+          date: this.budget.date,
+          discont: (this.budget.discount / this.budget.subTotal) * 100,
+          name: this.budget.colaborator.name,
+          cpf: this.budget.colaborator.cpf
+        });
+      }
+      this.receipt(this.budget);
+      // this.paymentLoading = false;
+      // this.paymentSuccess = true;
+
+      // await this.$store.dispatch("deleteBudget", {
+      //   user: this.budget.user,
+      //   budgetId: this.budget.id.toString()
+      // });
+    },
+    async receipt(intake) {
+      this.selectedIntake = await this.$store.dispatch(
+        "getIntakeDetails",
+        intake
+      );
+      this.receiptDialog = true;
+    },
     async pay() {
       const cardToken = await this.createCardToken();
 
@@ -336,7 +385,7 @@ export default {
         currency: "BRL",
 
         notificationURL:
-          "https://us-central1-prosaudedev.cloudfunctions.net/pagSeguroCreditCallback", //url da cloud function
+          "https://us-central1-prosaudedev.cloudfunctions.net/requests-pagSeguroCreditCallback",
         reference: "REF1234",
         shippingAddressStreet: "Manaus",
         shippingAddressNumber: "123",
@@ -390,7 +439,7 @@ export default {
         itemAmount1: this.price, //Preco
         itemQuantity1: "1",
         notificationURL:
-          "https://us-central1-prosaudedev.cloudfunctions.net/pagSeguroBillCallback",
+          "https://us-central1-prosaudedev.cloudfunctions.net/requests-pagSeguroBillCallback",
 
         senderName: this.user.name, //nome do comprador
         senderCPF: "02446454267", //+this.form.user.cpf, //cpf do comprador, tem que ser valido

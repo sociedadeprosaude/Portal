@@ -1,6 +1,6 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-try { admin.initializeApp(functions.config().firebase); } catch (e) { }
+const moment = require('moment');
 
 exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate(async (change, context) => {
     let db = admin.firestore()
@@ -154,6 +154,122 @@ exports.onUpdateSpecialty = functions.firestore.document('specialties/{name}').o
     } */
 });
 
+
+// ================================== Resumo mensal ====================================================================
+
+exports.updateStatistics = functions.firestore.document('intakes/{id}')
+    .onCreate(async (snap, context) => {
+        const intake = snap.data();
+        const total = Number(intake.total);
+        const cost = Number(intake.cost);
+        const date = intake.date.slice(0, 10);
+        const dateMonth = intake.date.slice(0, 7);
+        const day = intake.date.slice(8, 10);
+
+        const addTotalRaw = admin.firestore.FieldValue.increment(total);
+        const addTotalCost = admin.firestore.FieldValue.increment(cost);
+        const addTotalProfit = admin.firestore.FieldValue.increment(total - cost);
+
+        var stats = await admin.firestore().collection('statistics').doc('caixa').collection('days').doc(date).get();
+        stats.ref.set({
+            date: date,
+            totalRaw: addTotalRaw,
+            totalCost: addTotalCost,
+            totalProfit: addTotalProfit
+        }, { merge: true });
+
+
+        var statsMonth = await admin.firestore().collection('statistics').doc('caixa').collection('month').doc(dateMonth).get();
+        var arrTotalRaw = statsMonth.exists && statsMonth.data().arrTotalRaw ?
+            statsMonth.data().arrTotalRaw :
+            Array.from(Array(moment(date).daysInMonth()).keys()).map(() => 0)
+
+
+        arrTotalRaw[Number(day) - 1] += total;
+
+        statsMonth.ref.set({
+            arrTotalRaw,
+            date: dateMonth,
+            totalRaw: addTotalRaw,
+            totalCost: addTotalCost,
+            totalProfit: addTotalProfit
+        }, { merge: true });
+    });
+
+var emptyItem = () => ({
+    numOfSales: 0,
+    totalRaw: 0,
+    totalCost: 0,
+    totalProfit: 0
+})
+//Sempre vai ser chamado, tanto para as specialties como exams
+exports.updateStatisticsItem = functions.firestore.document('intakes/{id}/{type}/{specId}')
+    .onCreate(async (snap, context) => {
+        const item = snap.data();
+        const date = moment(Number(context.params.id)).format("YYYY-MM-DD")
+        const dateMonth = moment(Number(context.params.id)).format("YYYY-MM")
+
+        var stats = await admin.firestore().collection('statistics').doc('caixa').collection('days').doc(date).get();
+        var statsMonth = await admin.firestore().collection('statistics').doc('caixa').collection('month').doc(dateMonth).get();
+
+        var itens = stats.exists ? stats.data().itens : {};
+        var itensMonth = statsMonth.exists ? statsMonth.data().itens : {};
+
+        var itemStat = !itens[item.name] ? emptyItem() : itens[item.name];
+        var itemStatMonth = !itensMonth[item.name] ? emptyItem() : itensMonth[item.name];
+
+        if (!itens[item.name]) itens[item.name] = emptyItem();
+        if (!itensMonth[item.name]) itensMonth[item.name] = emptyItem();
+
+        itemStat.numOfSales += 1;
+        itemStat.totalRaw += Number(item.price);
+        itemStat.totalCost += Number(item.cost)
+        itemStat.totalProfit += Number(item.price) - Number(item.cost);
+        itemStatMonth.numOfSales += 1;
+        itemStatMonth.totalRaw += Number(item.price);
+        itemStatMonth.totalCost += Number(item.cost)
+        itemStatMonth.totalProfit += Number(item.price) - Number(item.cost);
+
+        stats.ref.set({
+            itens: { [`${item.name}`]: itemStat },
+            numOfSales: admin.firestore.FieldValue.increment(1)
+        }, { merge: true });
+        statsMonth.ref.set({
+            itens: { [`${item.name}`]: itemStatMonth },
+            numOfSales: admin.firestore.FieldValue.increment(1)
+        }, { merge: true });
+    });
+
+// function sleep(ms) {
+//     return new Promise(resolve => setTimeout(resolve, ms));
+// }
+// async function mock(name) {
+//     await sleep(100);
+//     var id = moment();
+//     admin.firestore().collection('intakes').doc(String(id.valueOf())).set({
+//         total: 15,
+//         cost: 5,
+//         date: id.format("YYYY-MM-DD hh:mm:ss")
+//     })
+//     id = String(id.valueOf());
+//     admin.firestore().collection('intakes').doc(id).collection('specialties').doc(name).set({
+//         name: name,
+//         price: 15,
+//         cost: 5,
+//         date: moment(Number(id)).format("YYYY-MM-DD hh:mm:ss")
+//     })
+// }
+
+// exports.tstCreateIntake = functions.https.onRequest(async (req, res) => {
+//     await mock("CARDIOLOGIA");
+//     await mock("CARDIOLOGIA TELEATENDIMENTO");
+//     await mock("DERMATOLOGIA TELEATENDIMENTO");
+//     await mock("NEUROLOGIA");
+//     await mock("TESTANDO NOVA ESPECIALIDADE");
+//     await mock("TESTE 2");
+//     res.status(200).send("sdasd")
+// });
+
 // ==================================== funcs usadas por varios =======================================================
 async function convertSpecialtySubcollectionInObject(specialtyDoc) {
     let specialty = specialtyDoc.data();
@@ -193,7 +309,9 @@ async function convertSpecialtySubcollectionInObject(specialtyDoc) {
         doctors: doctors,
     }
 }
-exports.ListenUpdateClinic = functions.firestore.document('clinics/{name}').onUpdate( async (change, context) => {
+//==================================================================================================================
+
+exports.ListenUpdateClinic = functions.firestore.document('clinics/{name}').onUpdate(async (change, context) => {
     const firestore = admin.firestore();
     const clinicUpdated = change.after.data();
     let examSnap = await firestore.collection('clinics').doc(clinicUpdated.name).collection('exams').get()
