@@ -76,6 +76,10 @@
         </v-flex>
         <v-flex xs4>
             <CardManagementConsultationsInformation :patient="patientSelected" :consultation="consultatioSelect"/>
+
+        </v-flex>
+        <v-flex xs12>
+            <DoctorTicketRoom/>
         </v-flex>
     </v-layout>
 </template>
@@ -84,8 +88,9 @@
     import moment from 'moment/moment'
     import CardManagementConsultationsOfUserDoctor from "../../components/Attendance/CardManagementConsultationsOfUserDoctor";
     import CardManagementConsultationsInformation from "../../components/Attendance/CardManagementConsultationsInformation";
+    import DoctorTicketRoom from "../../components/Attendance/DoctorTicketRoom";
     export default {
-        components: {CardManagementConsultationsInformation,CardManagementConsultationsOfUserDoctor,},
+        components: {DoctorTicketRoom, CardManagementConsultationsInformation,CardManagementConsultationsOfUserDoctor,},
         data: vm => ({
             date: new Date().toISOString().substr(0, 10),
             dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
@@ -104,8 +109,6 @@
                 let specialtiesOfDoctorLogged = []
                 for(let i in userDoctorSpecialties){
                     for(let j in allDoctors){
-                        console.log('user:', userDoctorSpecialties[i].id)
-                        console.log('system:', allDoctors[j].id)
                         if ( userDoctorSpecialties[i].id === allDoctors[j].id){
                             specialtiesOfDoctorLogged.push(allDoctors[j])
                         }
