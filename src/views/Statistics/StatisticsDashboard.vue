@@ -135,14 +135,7 @@ export default {
     async pesquisar() {
       this.loading = true;
       if(this.selected == 5){
-        this.$store.dispatch("loadClientsServed", {
-          initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-          finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
-        });
-        this.$store.dispatch("loadNewClients", {
-          initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-          finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
-        });
+       this.loadDatasetClients()
       }else{
         this.$store.dispatch("getUsers", {
           initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
@@ -177,6 +170,16 @@ export default {
       if (!date) return null;
       const [year, month, day] = date.split("-");
       return `${day}/${month}/${year}`;
+    },
+    loadDatasetClients(){
+       this.$store.dispatch("loadClientsServed", {
+          initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+          finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+        });
+        this.$store.dispatch("loadNewClients", {
+          initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+          finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+        });
     }
   },
   async mounted() {
@@ -200,6 +203,7 @@ export default {
       finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
     });
     this.getIntakes();
+    this.loadDatasetClients();
   },
   computed: {
     colaborators() {

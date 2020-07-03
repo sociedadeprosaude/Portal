@@ -1,20 +1,21 @@
 import firebase from "firebase";
 import moment from "moment"
 import Users from "./Users";
-import { ADDRGETNETWORKPARAMS } from "dns";
 
 const state = {
     statistics: null,
     clientsServed:{},
     newClients:{},
-    ageClientsServed:{}
+    ageClientsServed:{},
+    genderClientsServed:{}
 };
 
 const mutations = {
     setStatistics: (state, payload) => state.statistics = payload,
     setClientsServed:(state,payload) => state.clientsServed = payload,
     setNewClients:(state,payload) => state.newClients = payload,
-    setAgeClientsServed:(state,payload) => state.ageClientsServed = payload
+    setAgeClientsServed:(state,payload) => state.ageClientsServed = payload,
+    setGenderClientsServed:(state,payload) => state.genderClientsServed = payload
 };
 
 var emptyItem = () => ({
@@ -95,7 +96,10 @@ const actions = {
     },
     loadClientsServed({commit},payload){
         let attended = {}
+        let ageTotalAttended = {}
         let ageAttended = {}
+        let genderTotalClients = {}
+        let genderClients = {}
         firebase.firestore().collection('users').where('accessed_to','>=',payload.initialDate)
         .where('accessed_to','<=',payload.finalDate)
         .get().then((users)=>{
@@ -106,14 +110,29 @@ const actions = {
                 if(!attended[date]) attended[date] = 0
                 attended[date] += 1
 
-                if(!ageAttended[age]) ageAttended[age] = 0
-                ageAttended[age] += 1
-                /* console.log('age->',age)
-                console.log('qtd->',ageAttended[age]) */
+                if(data.birth_date && age >= 0 && age < 120){
+                    if(!ageTotalAttended[age]) ageTotalAttended[age] = 0
+                    ageTotalAttended[age] += 1
+                    ageAttended[age] = (ageTotalAttended[age]/users.size)*100
+                    /* console.log('age->',age)
+                    console.log('qtd->',ageAttended[age]) */
+                }
+
+                if(data.sex){
+                    if(!genderTotalClients[data.sex]) genderTotalClients[data.sex] = 0
+                    genderTotalClients[data.sex] += 1
+                    genderClients[data.sex] =  (genderTotalClients[data.sex]/users.size)*100
+                }else{
+                    if(!genderTotalClients['others']) genderTotalClients['others'] = 0
+                    genderTotalClients['others'] += 1
+                    genderClients['others'] =  (genderTotalClients['others']/users.size)*100
+                }
+
             })
             console.log('ages lista->',ageAttended)
             commit('setClientsServed',attended)
             commit('setAgeClientsServed',ageAttended)
+            commit('setGenderClientsServed',genderClients)
         })
     },
     loadNewClients({commit},payload){
@@ -138,6 +157,7 @@ const getters = {
     getClientsServed:(state) => state.clientsServed,
     getNewClients:(state) => state.newClients,
     getAgeClientsServed:(state) => state.ageClientsServed,
+    getGenderClientsServed:(state) => state.genderClientsServed,
 };
 
 export default {
