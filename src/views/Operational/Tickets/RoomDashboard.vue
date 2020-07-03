@@ -63,18 +63,20 @@
             <v-col cols="12" sm="6" lg="4" xl="3" v-for="room in rooms" :key="room.name">
                 <v-card class="pa-4">
                     <v-row class="justify-center">
-                        <v-col cols="10" class="text-left">
+                        <v-col cols="8" class="text-left">
                             <span class="my-sub-headline">{{room.name}}</span>
                         </v-col>
-                        <v-col cols="2">
-                            <v-btn x-small fab class="red" @click="deleteRoom(room)">
-                                <v-icon class="white--text">delete</v-icon>
-                            </v-btn>
-                            <v-btn small fab icon @click="favoriteRoom(room)">
-                                <v-icon class="warning--text" v-if="room.name === favoritedRoom.name">grade</v-icon>
-                                <v-icon class="primary--text" v-else>grade</v-icon>
-                                
-                            </v-btn>
+                        <v-col cols="4">
+                            <v-layout row wrap class="justify-end align-center">
+                                <v-btn x-small fab class="red" @click="deleteRoom(room)">
+                                    <v-icon class="white--text">delete</v-icon>
+                                </v-btn>
+                                <v-btn small fab icon @click="favoriteRoom(room)">
+                                    <v-icon class="warning--text" v-if="room.name === favoritedRoom.name">grade</v-icon>
+                                    <v-icon class="primary--text" v-else>grade</v-icon>
+                                </v-btn>
+                            </v-layout>
+
                         </v-col>
                     </v-row>
                     <v-row>
@@ -293,7 +295,12 @@
         },
         computed: {
             favoritedRoom() {
-                return this.$store.getters.favoriteRoom;
+                if (this.$store.getters.favoriteRoom) return this.$store.getters.favoriteRoom;
+                else {
+                    return {
+                        name: '',
+                    }
+                }
             },
             rooms() {
                 return this.sector ? this.sector.rooms : [];
@@ -431,7 +438,7 @@
             favoriteRoom(room) {
                 this.$store.commit('setFavoriteRoom', room);
                 this.$store.commit('setFavoriteRoomSection', this.sector);
-                console.log(this.sectorName)
+
             },
             async deleteRoom(room) {
                 this.deletionRoom.selectedRoom = room
