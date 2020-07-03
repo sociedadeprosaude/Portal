@@ -272,7 +272,7 @@
                                             <v-spacer/>
                                             <v-btn color="error" rounded @click="deleteConsultation">Apagar<v-icon right>delete</v-icon></v-btn>
                                             <v-spacer/>
-                                            <v-btn color="success" rounded dark :to="{ name: 'RemarcarConsultas', params: { q: {...indexSelected}}}">Remarcar<v-icon right>assignment_turned_in</v-icon></v-btn>
+                                            <v-btn color="success" rounded dark :to="{ name: 'AgendamentoConsultas', params: { q: indexSelected.consultation,reschedule:true}}">Remarcar<v-icon right>assignment_turned_in</v-icon></v-btn>
                                         </v-card-actions>
                                     </v-card>
                                 </v-dialog>

@@ -92,7 +92,7 @@
 
 <script>
 import moment from "moment";
-import PieOuttake from "./PieOuttake.js";
+import PieOuttake from "@/components/Charts/PieChart.js";
 import DeleteOuttake from "./CRUD/DeleteOuttake";
 import ReadOuttake from "./CRUD/ReadOuttake";
 

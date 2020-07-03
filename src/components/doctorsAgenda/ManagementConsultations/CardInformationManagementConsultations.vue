@@ -117,11 +117,6 @@
                 return this.$store.getters.selectedPatient
             },
         },
-        mounted() {
-            /*this.initialConfig()*/
-        },
-        watch: {
-        },
         methods: {
 
             async deletedConsultation() {
@@ -138,7 +133,6 @@
                     exam:this.consultation.exam
                 };
 
-                console.log(obj)
                 await this.$store.dispatch('eraseAppointment', obj);
                 this.cancelLoading = false
 

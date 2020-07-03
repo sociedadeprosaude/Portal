@@ -1,76 +1,72 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col>
-        <v-data-table
-          :headers="headers"
-          :items="categories"
-          :search="search"
-          item-key="name"
-          show-expand
-          single-expand
-          class="elevation-1"
-          :items-per-page="-1"
-        >
-          <template v-slot:top>
-            <v-flex xs12 class="text-right pa-2">
-              <v-layout row wrap>
-                <v-text-field prepend-icon="search" v-model="search" label="Pesquisa" class="mx-2" />
-                <v-spacer />
+  <v-container fluid class="ma-0 pa-0">
+    <v-data-table
+      :headers="headers"
+      :items="categories"
+      :search="search"
+      item-key="name"
+      show-expand
+      single-expand
+      :items-per-page="-1"
+      
+    >
+      <template v-slot:top>
+        <v-flex xs12 class="text-right pa-2">
+          <v-layout row wrap>
+            <v-text-field prepend-icon="search" v-model="search" label="Pesquisa" class="mx-2" />
+            <v-spacer />
 
-                <v-btn
-                  rounded
-                  color="primary"
-                  dark
-                  class="mb-2 mx-2"
-                  @click="dialogCreateCategory = true"
-                >
-                  <v-icon>mdi-plus</v-icon>
-                </v-btn>
-              </v-layout>
-            </v-flex>
-          </template>
+            <v-btn
+              rounded
+              color="primary"
+              dark
+              class="mb-2 mx-2"
+              @click="dialogCreateCategory = true"
+            >
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
+          </v-layout>
+        </v-flex>
+      </template>
 
-          <template v-slot:expanded-item="{ item }">
-            <td :colspan="headers.length+1">
-              <v-data-table
-                dense
-                single-expand
-                :headers="subHeaders"
-                :items="item.subCategories.map((cat)=>({category:item.name,name:cat}))"
-                :footer-props="{
+      <template v-slot:expanded-item="{ item }">
+        <td :colspan="headers.length+1">
+          <v-data-table
+            dense
+            single-expand
+            :headers="subHeaders"
+            :items="item.subCategories.map((cat)=>({category:item.name,name:cat}))"
+            :footer-props="{
       itemsPerPageText:'Itens por página',
       pageText:'{0}-{1} de {2}'
     }"
-              >
-                <template v-slot:item.action="{ item }">
-                  <v-btn fab text class="error mx-1 my-1" x-small @click="confirmSubDeletion(item)">
-                    <v-icon color="white">delete</v-icon>
-                  </v-btn>
-                </template>
-              </v-data-table>
-            </td>
-          </template>
+          >
+            <template v-slot:item.action="{ item }">
+              <v-btn fab text class="error mx-1 my-1" x-small @click="confirmSubDeletion(item)">
+                <v-icon color="white">delete</v-icon>
+              </v-btn>
+            </template>
+          </v-data-table>
+        </td>
+      </template>
 
-          <template v-slot:item.action="{ item }">
-            <v-btn fab text class="success mx-1 my-1" x-small @click="showCreateSubcategory(item)">
-              <v-icon color="white">mdi-plus</v-icon>
-            </v-btn>
-            <v-btn fab text class="error mx-1 my-1" x-small @click="confirmDeletion(item)">
-              <v-icon color="white">delete</v-icon>
-            </v-btn>
-          </template>
+      <template v-slot:item.action="{ item }">
+        <v-btn fab text class="success mx-1 my-1" x-small @click="showCreateSubcategory(item)">
+          <v-icon color="white">mdi-plus</v-icon>
+        </v-btn>
+        <v-btn fab text class="error mx-1 my-1" x-small @click="confirmDeletion(item)">
+          <v-icon color="white">delete</v-icon>
+        </v-btn>
+      </template>
 
-          <template v-slot:no-results>
-            <v-alert
-              :value="true"
-              color="error"
-              icon="warning"
-            >Your search for "{{ search }}" found no results.</v-alert>
-          </template>
-        </v-data-table>
-      </v-col>
-    </v-row>
+      <template v-slot:no-results>
+        <v-alert
+          :value="true"
+          color="error"
+          icon="warning"
+        >Your search for "{{ search }}" found no results.</v-alert>
+      </template>
+    </v-data-table>
 
     <div class="text-center">
       <v-dialog v-model="dialogCreateCategory" width="500">
@@ -135,8 +131,6 @@
         </v-card>
       </v-dialog>
     </div>
-
-    
   </v-container>
 </template>
 
