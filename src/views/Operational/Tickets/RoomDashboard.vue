@@ -33,7 +33,7 @@
                             </v-col>
                         </v-row>
                         <v-row cols="12">
-                            <v-text-field v-model="room.name" label="Nome da Sala"></v-text-field>
+                            <v-text-field v-model="room.name" label="Nome da Sala"/>
                         </v-row>
 
                         <v-row>
@@ -43,7 +43,7 @@
                                         :loading="loading"
                                         :success="success"
                                         @click="createRoom(room)"
-                                ></submit-button>
+                                />
                             </v-col>
                         </v-row>
                     </v-card>
@@ -63,10 +63,10 @@
             <v-col cols="12" sm="6" lg="4" xl="3" v-for="room in rooms" :key="room.name">
                 <v-card class="pa-4">
                     <v-row class="justify-center">
-                        <v-col cols="10" class="text-left">
+                        <v-col cols="8" class="text-left">
                             <span class="my-sub-headline">{{room.name}}</span>
                         </v-col>
-                        <v-col cols="2">
+                        <v-col cols="4">
                             <v-btn x-small fab class="red" @click="deleteRoom(room)">
                                 <v-icon class="white--text">delete</v-icon>
                             </v-btn>
@@ -274,6 +274,7 @@
                     active: false,
                     search: ""
                 },
+
                 selectedRoom: {},
                 room: {},
                 createRoomController: false,
