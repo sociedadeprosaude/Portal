@@ -334,19 +334,17 @@
                 await this.$store.dispatch("updateGeneralInfo", this.ticketInfo);
             },
             async callNextTicket(room) {
-                this.loading = true
+                this.loading = true;
                 let ticketIndex = room.tickets.findIndex(ticket => {
                     return !ticket.called_at;
-                })
+                });
                 if (ticketIndex < 0) {
-                    await this.callSectorTicket(room)
-                    this.loading = false
+                    await this.callSectorTicket(room);
+                    this.loading = false;
                     return
                 }
 
-                room.tickets[ticketIndex].called_at = moment().format(
-                    "YYYY-MM-DD HH:mm:ss"
-                );
+                room.tickets[ticketIndex].called_at = moment().format("YYYY-MM-DD HH:mm:ss");
                 const sector = this.sector;
                 await this.$store.dispatch("updateSectorRoom", {sector, room});
                 this.loading = false

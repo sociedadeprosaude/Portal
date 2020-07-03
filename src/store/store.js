@@ -8,11 +8,10 @@ import Exams from '@/store/modules/Exams'
 import Auth from '@/store/modules/Auth'
 import Labor from '@/store/modules/Labor'
 import Reports from './modules/Reports'
-
+import FavoriteRoom from "./modules/local/FavoriteRoom";
 import AddInformationInConsultation from "./modules/AddInformationInConsultation";
 import Cids from "./modules/Cids";
 import Medicines from "./modules/Medicines";
-
 import Localization from "./modules/Localization"
 import Bundles from "./modules/Bundles";
 import Doctors from "./modules/Doctors"
@@ -41,7 +40,7 @@ Vue.use(Vuex);
 const vuexLocal = new VuexPersistence({
     key: 'vuex',
     storage: window.localStorage,
-    modules: ['LocalUnit', 'ShoppingCart'],
+    modules: ['LocalUnit', 'ShoppingCart', 'FavoriteRoom'],
     // reducer: (state) => ({
     //     selectedPatient: state.selectedPatient,
     //     items: state.items,
@@ -60,6 +59,7 @@ const store = new Vuex.Store({
         Labor,
         Cids,
         AddInformationInConsultation,
+        FavoriteRoom,
         Localization,
         Doctors,
         Clinics,
