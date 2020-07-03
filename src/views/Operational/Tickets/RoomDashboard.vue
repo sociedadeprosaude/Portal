@@ -71,9 +71,9 @@
                                 <v-icon class="white--text">delete</v-icon>
                             </v-btn>
                             <v-btn small fab icon @click="favoriteRoom(room)">
-                                <v-icon class="warning--text" v-if="room.name === favoritedRoom.name">grade</v-icon>
+                                <v-icon class="warning--text" v-if="favoritedRoom && room.name === favoritedRoom.name">grade</v-icon>
                                 <v-icon class="primary--text" v-else>grade</v-icon>
-                                
+
                             </v-btn>
                         </v-col>
                     </v-row>
@@ -254,15 +254,11 @@
     /* eslint-disable no-undef */
 
     import SubmitButton from "../../../components/SubmitButton";
-    import SingleVisualizer from "../../../components/tickets/SingleVisualizer";
-    import MultipleVisualizer from "../../../components/tickets/MultipleVisualizer";
 
     export default {
         name: "Tickets",
         components: {
             SubmitButton,
-            SingleVisualizer,
-            MultipleVisualizer
         },
         mounted() {
             // this.$store.dispatch("getTicketsGeneralInfo");
@@ -431,7 +427,6 @@
             favoriteRoom(room) {
                 this.$store.commit('setFavoriteRoom', room);
                 this.$store.commit('setFavoriteRoomSection', this.sector);
-                console.log(this.sectorName)
             },
             async deleteRoom(room) {
                 this.deletionRoom.selectedRoom = room
