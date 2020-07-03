@@ -33,7 +33,7 @@
                             </v-col>
                         </v-row>
                         <v-row cols="12">
-                            <v-text-field v-model="room.name" label="Nome da Sala"></v-text-field>
+                            <v-text-field v-model="room.name" label="Nome da Sala"/>
                         </v-row>
 
                         <v-row>
@@ -43,7 +43,7 @@
                                         :loading="loading"
                                         :success="success"
                                         @click="createRoom(room)"
-                                ></submit-button>
+                                />
                             </v-col>
                         </v-row>
                     </v-card>
@@ -76,7 +76,6 @@
                                     <v-icon class="primary--text" v-else>grade</v-icon>
                                 </v-btn>
                             </v-layout>
-
                         </v-col>
                     </v-row>
                     <v-row>
@@ -276,6 +275,7 @@
                     active: false,
                     search: ""
                 },
+
                 selectedRoom: {},
                 room: {},
                 createRoomController: false,
