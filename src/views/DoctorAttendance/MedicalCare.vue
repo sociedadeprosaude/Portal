@@ -76,9 +76,6 @@
         </v-flex>
         <v-flex xs4>
             <CardManagementConsultationsInformation :patient="patientSelected" :consultation="consultatioSelect"/>
-
-        </v-flex>
-        <v-flex xs12>
             <DoctorTicketRoom/>
         </v-flex>
     </v-layout>

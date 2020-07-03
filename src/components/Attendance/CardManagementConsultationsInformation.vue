@@ -11,6 +11,16 @@
                         <v-divider color="white"/>
                     </v-flex>
                     <v-flex xs12 class="mt-3 mx-7">
+                        <v-card>
+                            <v-layout row wrap>
+                                <v-flex xs4>
+                                    <p class="font-weight-black">Senhas</p>
+                                </v-flex>
+                                    <DoctorTicketRoom/>
+                            </v-layout>
+                        </v-card>
+                    </v-flex>
+                    <v-flex xs12 class="mt-3 mx-7">
                         <v-card class="cardw">
                             <v-layout row wrap>
                                 <v-flex xs4>
@@ -81,10 +91,12 @@
         from "../doctorsAgenda/ManagementConsultations/CardPatientManagementConsultations";
     import CardConsultationManagementConsultations
         from "../doctorsAgenda/ManagementConsultations/CardConsultationManagementConsultations";
+    import DoctorTicketRoom from "./DoctorTicketRoom";
     let moment = require('moment');
     export default {
         name: "CardManagementConsultationsInformation",
-        components: {CardConsultationManagementConsultations, CardPatientManagementConsultations},
+        components: {
+            DoctorTicketRoom, CardConsultationManagementConsultations, CardPatientManagementConsultations},
         props: ['patient', 'consultation'],
         data: () => ({
             item: 'NOVO',

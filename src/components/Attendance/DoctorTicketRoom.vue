@@ -250,7 +250,7 @@
     import SingleVisualizer from "../tickets/SingleVisualizer";
     import MultipleVisualizer from "../tickets/MultipleVisualizer";
     export default {
-        name: "Tickets",
+        name: "DoctorTicketRoom",
         components: {MultipleVisualizer, SingleVisualizer, SubmitButton},
         mounted() {
             // this.$store.dispatch("getTicketsGeneralInfo");
