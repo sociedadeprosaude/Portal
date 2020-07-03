@@ -92,7 +92,7 @@
 import constants from "../../utils/constants";
 
 export default {
-  name: "SingleVisualizer",
+  name: "MultipleVisualizer",
   props: ["sector"],
   mounted() {
     this.clockInterval = setInterval(() => {

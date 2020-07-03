@@ -20,13 +20,13 @@
                         <v-flex xs1>
                             <v-divider class="primary" vertical/>
                         </v-flex>
-                        <v-flex xs3>
+                        <v-flex xs2>
                             <p class="mt-5"> NUMERO DE EXAMES: {{intake.exams.length}}</p>
                         </v-flex>
                     </v-layout>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
-                        <v-card v-for="(exam,i) in intake.exams" v-bind:key="i" >
+                        <card v-for="exam in intake.exams">
                             <v-layout row wrap>
                                 <v-flex xs5 class="align-center justify-center">
                                     <p class="font-weight-black mt-5">
@@ -40,7 +40,7 @@
                                     <p class="mt-5"> PREÇO: {{exam.price}}</p>
                                 </v-flex>
                             </v-layout>
-                        </v-card>
+                        </card>
                     </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>
@@ -61,8 +61,8 @@
     import {mask} from "vue-the-mask";
 
     export default {
-        props: ['clinic'],
-        name: "ClinicsIntakes",
+        props: ['doctor'],
+        name: "DoctorsOuttakePayment",
         directives: {
             mask
         },
@@ -90,13 +90,12 @@
             }
         },
         mounted(){
-            this.$store.dispatch('GetReceiptsClinic', this.clinic)
+            //this.$store.dispatch('GetReceiptsClinic', this.doctor)
 
         },
         computed: {
             intakes(){
-                console.log('ouutakes clinic: ', this.$store.getters.IntakesExamsClinics)
-                return this.$store.getters.IntakesExamsClinics
+               // return this.$store.getters.IntakesExamsClinics
             }
         }
     };
