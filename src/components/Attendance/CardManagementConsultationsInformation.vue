@@ -68,9 +68,7 @@
                 <v-card-actions>
                     <v-btn outlined color="error" @click="dialog = false">NÃO</v-btn>
                     <v-spacer/>
-                    <v-btn outlined color="success"
-                           :to="{ name: 'Attendance', params: { q: consultation}}"
-                    >SIM</v-btn>
+                    <v-btn outlined color="success" :to="{ name: 'Attendance', params: { q: consultation}}">SIM</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
