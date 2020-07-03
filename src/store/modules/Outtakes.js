@@ -319,10 +319,8 @@ const actions = {
         let outtakes = []
         let SpecificOuttake = await firebase.firestore().collection('outtakes').where('intake_id','==', parseInt(intake.number)).where('cnpj','==',intake.cnpj).get();
         SpecificOuttake.forEach(doc => {
-            console.log('doc: ', doc.data())
             outtakes.push(doc.data())
         })
-        console.log('outtake: ', outtakes)
         commit('setOuttakeClinic',  outtakes)
 
     },
@@ -435,7 +433,9 @@ const actions = {
                                 consultations: consultations,
                                 patient: patient,
                                 intakeNumber: intakeNumber,
-                                doctor: doc.data().doctor
+                                doctor: doc.data().doctor,
+                                unit: doc.data().unit,
+                                realized: doc.data().realized
                             }
                             outtakes.push(outtakesDoctor)
                         }

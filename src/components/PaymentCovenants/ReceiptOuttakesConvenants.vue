@@ -13,7 +13,7 @@
                 </v-btn>
             </v-flex>
             </v-layout>
-            <v-layout row wrap>
+            <v-layout row wrap  style="border: 2px solid #2196f3; border-radius: 16px">
                 <v-flex xs6 class="text-left">
                     <v-layout column wrap>
                         <span class="my-sub-headline primary--text" style="font-size: 1.4em">{{this.clinicSelected.name}}</span>
@@ -42,14 +42,17 @@
                                     <p class="mt-5"> PREÇO: {{exam.price}}</p>
                                 </v-flex>
                                 <v-flex xs12>
-                                    <v-divider color="black"></v-divider>
+                                    <v-divider color="black" ></v-divider>
                                 </v-flex>
                             </v-layout>
                         </v-layout>
                     </v-card>
                     <v-layout row wrap>
-                        <v-flex xs6>
+                        <v-flex xs5>
                             <p class="font-weight-black">Valor Total</p>
+                        </v-flex>
+                        <v-flex xs1>
+                            <v-spacer></v-spacer>
                         </v-flex>
                         <v-flex xs6> Valor total: {{PriceTot}}</v-flex>
                     </v-layout>

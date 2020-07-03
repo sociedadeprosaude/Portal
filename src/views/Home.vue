@@ -253,6 +253,12 @@
                                 to: '/DischargeProcedures',
                                 icon: 'supervisor_account'
                             },
+                            {
+                                title: 'Verificação Encaminhamentos A Cobrar',
+                                permission: 'clinic',
+                                to: '/VerificacaoEncaminhamentos',
+                                icon: 'supervisor_account'
+                            },
                         ]
                     },
 

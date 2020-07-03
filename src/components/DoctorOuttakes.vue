@@ -28,6 +28,9 @@
                 <v-divider class="my-3"/>
             </v-flex>
             <v-spacer/>
+            <v-flex xs12>
+                <v-btn @click="mostrarOuttakes()"></v-btn>
+            </v-flex>
             <v-flex xs11/>
             <v-flex xs12 v-if="loading">
                 <v-progress-linear color="primary" indeterminate/>
@@ -58,6 +61,9 @@
         methods: {
             closeDialog: function() {
                 this.$emit('close-dialog')
+            },
+            mostrarOuttakes(){
+                console.log('outtakes: ', this.outtakes)
             }
         }
     };

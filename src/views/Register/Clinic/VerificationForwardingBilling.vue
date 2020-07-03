@@ -36,12 +36,25 @@
                         </v-flex>
                     </v-layout>
                 </v-card>
+                <v-card>
+                    <v-layout row wrap class="background">
+                        <v-flex xs4>
+                            <v-spacer></v-spacer>
+                        </v-flex>
+                        <v-flex xs3>
+                            <p class="font-weight-bold">Quantidade Final: {{QuantTot}} </p>
+                        </v-flex>
+                        <v-flex xs4>
+                            <p class="font-weight-bold">Preço final: {{PriceTot}} </p>
+                        </v-flex>
+                    </v-layout>
+                </v-card>
             </v-flex>
+
             <v-flex xs12>
                 <v-divider class="my-3"/>
             </v-flex>
             <v-spacer/>
-            <v-flex xs11/>
             <v-flex xs12 v-if="loading">
                 <v-progress-linear color="primary" indeterminate/>
             </v-flex>
@@ -49,12 +62,12 @@
     </v-container>
 </template>
 
+
 <script>
     import {mask} from "vue-the-mask";
 
     export default {
-        props: ['clinic','outtakes'],
-        name: "ClinicsIntakes",
+        name: "VerificationForwardingBilling",
         directives: {
             mask
         },
@@ -65,10 +78,19 @@
                 successUpdateExams: false,
                 dialogContestValue: false,
                 ContestExam:[],
-                NewValue: ''
+                NewValue: '',
+                clinic:[],
             };
         },
+        async mounted(){
+            await  this.InitialConfig()
+        },
         methods: {
+            async InitialConfig(){
+                this.clinic = await this.$store.dispatch('getClinic',this.user.cnpj)
+                console.log('clinic: ', this.clinic)
+                await this.$store.dispatch('GetReceiptsClinic',this.clinic)
+            },
             PriceIntake(intake){
                 let price= 0;
                 for(let exam of intake.exams){
@@ -79,6 +101,32 @@
 
             closeDialog: function() {
                 this.$emit('close-dialog')
+            }
+        },
+        computed:{
+            user() {
+                return this.$store.getters.user
+            },
+            outtakes(){
+                return this.$store.getters.IntakesExamsClinics
+            },
+            PriceTot(){
+                let cost =0;
+                this.outtakes.filter(function (element){
+                    element.exams.filter(function (element2) {
+                        cost += element2.price
+                    })
+                })
+                return cost
+            },
+            QuantTot(){
+                let quant =0;
+                this.outtakes.filter(function (element){
+                    element.exams.filter(function (element2) {
+                        quant += 1
+                    })
+                })
+                return quant
             }
         }
     };

@@ -21,6 +21,7 @@ import oldClinics from "./views/Register/Clinics";
 import Clinics from "./views/Register/newClinics";
 import RegisterNewUserClinic from "./views/Register/Clinic/RegisterClinic"
 import DischargeProcedures from "./views/Register/Clinic/DischargeProcedures"
+import VerificationForwardingBilling from"./views/Register/Clinic/VerificationForwardingBilling"
 import Units from "./views/Units";
 import Bills from "./views/Register/Bills";
 import BillsMobile from "./views/Register/BillsMobile";
@@ -156,6 +157,14 @@ let mainRoutes = [
     path: '/DischargeProcedures',
     name: 'DischargeProcedures',
     component: DischargeProcedures,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/VerificacaoEncaminhamentos',
+    name: 'VerificationForwardingBilling',
+    component: VerificationForwardingBilling,
     meta: {
       requiresAuth: false,
     }

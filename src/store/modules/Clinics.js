@@ -259,6 +259,7 @@ const actions = {
     },
 
     async GetReceiptsClinic(context, payload) {
+        console.log('payload: ', payload)
         await firebase.firestore().collection('outtakes').where('cnpj','==',payload.cnpj)
             .where('paid','==',false).where('root','==',false).get().then((querySnapshot) =>{
                 let intakes= []
@@ -466,7 +467,13 @@ const actions = {
         }
     },
     async getClinic({commit}, payload){
-        return await firebase.firestore().collection('clinics').where("cnpj" ,"==", payload).get()
+        let clinicSelected = []
+            let clinic = await firebase.firestore().collection('clinics').where("cnpj" ,"==", payload).get()
+        clinic.forEach((doc) => {
+            console.log('doc.data( ', doc.data())
+            clinicSelected=  doc.data()
+        })
+        return clinicSelected
     },
     async getContestValue ({commit}){
         await firebase.firestore().collection('contestValues').onSnapshot((querySnapshot) => {
