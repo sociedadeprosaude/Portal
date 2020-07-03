@@ -3,13 +3,36 @@
         <v-flex xs8>
             <v-card class="pa-4">
                 <v-layout aling-center row wrap>
-                    <v-flex xs12 sm4>
+<!--                    <v-flex xs12 class="mt-4 pa-0 ">
+                        <v-checkbox
+                                class="pl-3 py-0 my-0"
+                                v-model="examTypeCheck"
+                                color="primary"
+                        >
+                            <template v-slot:label>
+                                <div >Listar agendas de exames</div>
+                            </template>
+                        </v-checkbox>
+                    </v-flex>-->
+                    <v-flex v-if="!examTypeCheck" xs12 sm4>
                         <v-combobox
-                                v-model="especialtie"
-                                :items="user.specialties"
+                                v-model="specialty"
+                                :items="specialties"
                                 item-text="name"
                                 return-object
                                 placeholder="Especialidade"
+                                outlined
+                                color="write"
+                                class="mr-3"
+                        />
+                    </v-flex>
+                    <v-flex v-else>
+                        <v-combobox
+                                v-model="examType"
+                                :items="examTypes"
+                                item-text="name"
+                                return-object
+                                placeholder="Exames"
                                 outlined
                                 color="write"
                                 class="mr-3"
@@ -37,49 +60,69 @@
                                         disabled
                                 />
                             </template>
-                            <v-date-picker v-model="date" no-title @input="menu1 = false"
-                                           @change="getConsultationsDorctors()" disabled/>
+                            <v-date-picker disabled v-model="date" no-title @input="menu1 = false"
+                                           @change="getConsultationsDorctors()"/>
                         </v-menu>
                     </v-flex>
                 </v-layout>
                 <v-layout aling-center row wrap>
                     <v-flex xs12>
                         <CardManagementConsultationsOfUserDoctor @consultationSelect="consultatioSelect= $event"
-                                                                 @patientSelect="patientSelected = $event"
-                                                                 :especialtie="especialtie" :date="date"/>
+                                                                 @patientSelect="patientSelected = $event" :filterByExam="examTypeCheck" :examType="examType"
+                                                                 :specialty="specialty" :date="date"/>
                     </v-flex>
                 </v-layout>
             </v-card>
         </v-flex>
         <v-flex xs4>
-            <CardInformationManagementConsultations :patient="patientSelected" :consultation="consultatioSelect"/>
+            <CardManagementConsultationsInformation :patient="patientSelected" :consultation="consultatioSelect"/>
         </v-flex>
     </v-layout>
 </template>
 
 <script>
     import moment from 'moment/moment'
-    import CardInformationManagementConsultations from "../../components/doctorsAgenda/ManagementConsultations/CardInformationManagementConsultations";
-    import CardManagementConsultationsOfUserDoctor
-        from "../../components/Attendance/CardManagementConsultationsOfUserDoctor";
+    import CardManagementConsultationsOfUserDoctor from "../../components/Attendance/CardManagementConsultationsOfUserDoctor";
+    import CardManagementConsultationsInformation from "../../components/Attendance/CardManagementConsultationsInformation";
     export default {
-        components: {CardManagementConsultationsOfUserDoctor, CardInformationManagementConsultations},
+        components: {CardManagementConsultationsInformation,CardManagementConsultationsOfUserDoctor,},
         data: vm => ({
             date: new Date().toISOString().substr(0, 10),
             dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
             menu1: false,
             loadingConsultations: false,
-            especialtie: '',
+            specialty: '',
+            examType:'',
+            examTypeCheck:false,
             patientSelected: {},
             consultatioSelect: {}
         }),
         computed: {
-            user(){
-                return this.$store.getters.user
+            specialties() {
+                let userDoctorSpecialties =  this.$store.getters.user.specialties
+                let allDoctors = this.$store.getters.specialties;
+                let specialtiesOfDoctorLogged = []
+                for(let i in userDoctorSpecialties){
+                    for(let j in allDoctors){
+                        console.log('user:', userDoctorSpecialties[i].id)
+                        console.log('system:', allDoctors[j].id)
+                        if ( userDoctorSpecialties[i].id === allDoctors[j].id){
+                            specialtiesOfDoctorLogged.push(allDoctors[j])
+                        }
+                    }
+                }
+                //return this.$store.getters.user.specialties
+                //return this.$store.getters.specialties;
+                return specialtiesOfDoctorLogged
             },
             computedDateFormatted() {
                 return this.formatDate(this.date)
             },
+            examTypes() {
+                return this.$store.getters.examsTypes.filter((examType)=>{
+                    return examType.scheduleable
+                });
+            }
         },
         mounted() {
             this.initialConfig();
@@ -89,23 +132,28 @@
         watch: {
             date(val) {
                 this.dateFormatted = this.formatDate(this.date)
-            },
+            }
         },
         methods: {
             async initialConfig() {
-                /*this.especialtie = this.user.specialties[0];*/
-                this.getConsultationsDorctors();
+                await this.$store.dispatch("getSpecialties");
+                this.specialty = this.specialties[0];
+                this.getConsultationsDorctors()
+
             },
+
             formatDate(date) {
                 if (!date) return null;
                 const [year, month, day] = date.split('-');
                 return `${day}/${month}/${year}`
             },
+
             parseDate(date) {
                 if (!date) return null;
                 const [month, day, year] = date.split('/');
                 return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
             },
+
             returnOutRule(item) {
                 let dateConsultation = moment(item.consultation.date);
                 let today = moment();

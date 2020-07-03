@@ -127,7 +127,7 @@
         }),
         computed: {
             consultation() {
-                return this.query ? this.query.consultation : undefined
+                return this.query ? this.query : undefined
             },
             open() {
                 return !(this.Attestations === true || this.Orientations === true || this.Report === true || this.Solicitations === true || this.Prescriptions === true || this.MedicalRecords === true);
@@ -136,6 +136,7 @@
         mounted() {
             this.startConsultation = moment().format('HH:mm:ss');
             this.query = this.$route.params.q;
+            console.log('p:', this.query)
             if (!this.query) {
                 this.$router.push('MedicalCare')
             }

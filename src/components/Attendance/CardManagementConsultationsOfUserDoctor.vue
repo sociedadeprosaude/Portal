@@ -32,7 +32,7 @@
                                             {{consultation.doctor.cpf}}</p>
                                     </v-flex>
                                     <v-spacer/>
-                                    <v-flex xs1>
+                                    <v-flex xs1 v-if="user.type !== 'DOCTOR'">
                                         <v-btn icon class="grey my-1 mx-1" dark x-small text fab>
                                             <v-icon @click="deactivateDoctor(consultation.doctor)">power_settings_new
                                             </v-icon>
@@ -48,15 +48,15 @@
                             <v-divider class="primary"/>
                         </v-flex>
                         <v-flex sm4 v-for="item in consultation.consultations" class="mt-3 mb-2">
-                            <v-card outlined class="borderCard mx-2 mr-2 grey lighten-5 elevation-1" @click="patientSelect(item)">
+                            <v-card v-if="item.status === 'Pago'" outlined class="borderCard mx-2 mr-2 grey lighten-5 elevation-1" @click="patientSelect(item)">
                                 <v-layout row wrap class="mt-2">
                                     <v-flex xs4>
                                         <v-icon large>person</v-icon>
                                         <br>
                                         <v-icon v-if="item.type === 'Retorno'"  color="primary" small class="mt-1">restore</v-icon>
                                         <v-icon v-else small class="mt-1"  color="primary">event</v-icon>
-                                        <v-icon v-if="item.status === 'Pago'" color="green" small class="mt-1">attach_money</v-icon>
-                                        <v-icon v-else small class="mt-1" color="red">money_off</v-icon>
+<!--                                        <v-icon v-if="item.status === 'Pago'" color="green" small class="mt-1">attach_money</v-icon>
+                                        <v-icon v-else small class="mt-1" color="red">money_off</v-icon>-->
 
                                     </v-flex>
                                     <v-flex xs8 class="mb-3">
@@ -106,6 +106,7 @@
                         <v-spacer/>
                         <submit-button text="Confirmar" :loading="loading" :success="success" @reset="success = false"
                                        @click="deleteAllSchedule(doctor)">
+
                         </submit-button>
                     </v-card-actions>
                 </v-card>
@@ -153,15 +154,14 @@
                     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.loadingConsultations = !this.loadingConsultations
                 }
-                return this.$store.getters.consultations.filter((a) => {
-                    return this.especialtie && this.date ?  a.specialty && this.especialtie.name === a.specialty.name && this.date === a.date.split(' ')[0] && a.user  : false
+                //return this.$store.getters.consultations.filter((a) => {
+                // return this.especialtie && this.date ?  a.specialty && this.especialtie.name === a.specialty.name && this.date === a.date.split(' ')[0] && a.user  : false
 
-//              this.loadingConsultations = true
-//                let response =  this.$store.getters.consultations.filter((a) => {
-//                    let filtedBySpecialty = !this.filterByExam && this.specialty && a.specialty && this.specialty.name === a.specialty.name
-//                    let filtedByExamType = this.filterByExam && this.examType && a.exam && this.examType.name === a.exam.type
-
-//                    return this.date && this.date === a.date.split(' ')[0] && a.user && (filtedBySpecialty || filtedByExamType)
+                this.loadingConsultations = true
+                let response =  this.$store.getters.consultations.filter((a) => {
+                    let filtedBySpecialty = !this.filterByExam && this.specialty && a.specialty && this.specialty.name === a.specialty.name
+                    let filtedByExamType = this.filterByExam && this.examType && a.exam && this.examType.name === a.exam.type
+                    return this.date && this.date === a.date.split(' ')[0] && a.user && (filtedBySpecialty || filtedByExamType)
 
                 });
                 this.loadingConsultations = false
@@ -175,7 +175,7 @@
             }
         },
         mounted() {
-            //this.initialConfig()
+/*            this.initialConfig()*/
         },
         watch: {},
         methods: {
