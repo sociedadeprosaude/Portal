@@ -57,7 +57,7 @@
           <v-row v-if="genderClientsServed">
             <v-col>
               <h1 class="subtitle-1">Masculino</h1>
-              <v-progress-linear v-model="genderClientsServed.Masculino" color="amber" height="20">
+              <v-progress-linear rounded :value="genderClientsServed.Masculino" color="#FFAB00" height="15">
                 <template v-slot="{ value }">
                   <strong>{{ Math.ceil(value) }}%</strong>
                 </template>
@@ -66,7 +66,7 @@
               <br/>
 
               <h1 class="subtitle-1">Feeminino</h1>
-              <v-progress-linear v-model="genderClientsServed.Feminino" color="blue-grey" height="20">
+              <v-progress-linear rounded :value="genderClientsServed.Feminino" color="#D81B60" height="15">
                 <template v-slot="{ value }">
                   <strong>{{ Math.ceil(value) }}%</strong>
                 </template>
@@ -75,7 +75,7 @@
               <br />
 
               <h1 class="subtitle-1">Outros</h1>
-              <v-progress-linear v-model="genderClientsServed.others" height="20">
+              <v-progress-linear rounded :value="genderClientsServed.others" color="#00E5FF" height="15">
                 <template v-slot="{ value }">
                   <strong>{{ Math.ceil(value) }}%</strong>
                 </template>
