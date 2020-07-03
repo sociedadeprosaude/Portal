@@ -76,7 +76,7 @@
                         </v-layout>
                     </v-flex>
                     <v-card v-if="intakesObserv && doctor === doctorSelected">
-                        <DoctorOuttakes @close-dialog="intakesObserv = false" :doctor="doctorSelected"></DoctorOuttakes>
+                        <DoctorOuttakes @close-dialog="intakesObserv = false" :doctor="doctorSelected" :outtakes="outtakesSelected"></DoctorOuttakes>
                     </v-card>
                 </v-card>
             </v-flex>
@@ -100,7 +100,7 @@
             </v-card>
         </v-dialog>
         <v-dialog v-model="dialogReceipt">
-            <ReceiptOuttakesDoctor @close="CloseReceipt()"  :doctorSelected="doctorSelected"></ReceiptOuttakesDoctor>
+            <ReceiptOuttakesDoctor @close="CloseReceipt()"  :doctorSelected="doctorSelected" :outtakes="outtakesSelected"></ReceiptOuttakesDoctor>
         </v-dialog>
     </v-container>
 </template>
@@ -125,6 +125,7 @@
                 dialogReceipt:false,
                 doctorSelected:[],
                 cost:'',
+                outtakesSelected:[],
                 intakes:[],
                 period:'',
                 NumberExams:'',
@@ -155,6 +156,7 @@
         },
         methods: {
             OpenReceipt(item,doctor){
+                this.outtakesSelected= this.outtakes.filter(outtake => outtake.doctor.crm === doctor.crm)
                 this.doctorSelected = doctor
                 if(item.title === 'Gerar Boleto'){
                     this.dialogReceipt= !this.dialogReceipt
@@ -212,6 +214,7 @@
             },
 
             async checkReceipts(doctor){
+                this.outtakesSelected= this.outtakes.filter(outtake => outtake.doctor.crm === doctor.crm)
                 this.doctorSelected = doctor
                 this.intakesObserv = !this.intakesObserv
 

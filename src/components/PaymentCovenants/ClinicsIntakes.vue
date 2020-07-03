@@ -3,7 +3,7 @@
         <v-layout row wrap>
             <v-flex xs12>
                 <v-expansion-panels inset >
-                    <v-expansion-panel v-for="(intake,i) in intakes" :key="i">
+                    <v-expansion-panel v-for="(intake,i) in this.outtakes" :key="i">
                     <v-expansion-panel-header class="elevation-2 my-3">
                     <v-layout row wrap>
                         <v-flex xs3 class="align-center justify-center">
@@ -61,7 +61,7 @@
     import {mask} from "vue-the-mask";
 
     export default {
-        props: ['clinic'],
+        props: ['clinic','outtakes'],
         name: "ClinicsIntakes",
         directives: {
             mask
@@ -87,16 +87,6 @@
 
             closeDialog: function() {
                 this.$emit('close-dialog')
-            }
-        },
-        mounted(){
-            this.$store.dispatch('GetReceiptsClinic', this.clinic)
-
-        },
-        computed: {
-            intakes(){
-                console.log('ouutakes clinic: ', this.$store.getters.IntakesExamsClinics)
-                return this.$store.getters.IntakesExamsClinics
             }
         }
     };

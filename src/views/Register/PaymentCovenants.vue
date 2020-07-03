@@ -80,7 +80,7 @@
                         </v-layout>
                     </v-flex>
                     <v-card v-if="intakesObserv && clinic === clinicSelected">
-                        <clinicsIntakes @close-dialog="intakesObserv = false" :clinic="clinicSelected"></clinicsIntakes>
+                        <clinicsIntakes @close-dialog="intakesObserv = false" :clinic="clinicSelected" :outtakes="outtakesSelected"></clinicsIntakes>
                     </v-card>
                 </v-card>
             </v-flex>
@@ -104,7 +104,7 @@
             </v-card>
         </v-dialog>
         <v-dialog v-model="dialogReceipt">
-                <ReceiptOuttakesConvenant @close="CloseReceipt()"  :clinicSelected="clinicSelected"></ReceiptOuttakesConvenant>
+                <ReceiptOuttakesConvenant @close="CloseReceipt()"  :clinicSelected="clinicSelected" :outtakes="outtakesSelected"></ReceiptOuttakesConvenant>
         </v-dialog>
 
     </v-container>
@@ -129,6 +129,7 @@
                 clinica:[],
                 clinicSelected:[],
                 cost:'',
+                outtakesSelected:[],
                 intakes:[],
                 period:'',
                 NumberExams:'',
@@ -157,6 +158,7 @@
         },
         methods: {
             OpenReceipt(item,clinic){
+                this.outtakesSelected = this.outtakes.filter(outtake => outtake.clinic.cnpj === clinic.cnpj)
                 this.clinicSelected = clinic
                 if(item.title === 'Gerar Boleto'){
                     this.dialogReceipt= !this.dialogReceipt
@@ -214,6 +216,7 @@
             },
 
             async checkReceipts(clinic){
+                this.outtakesSelected = this.outtakes.filter(outtake => outtake.clinic.cnpj === clinic.cnpj)
                 this.clinicSelected = clinic
                 this.intakesObserv = !this.intakesObserv
 

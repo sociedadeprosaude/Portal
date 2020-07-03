@@ -27,7 +27,7 @@
                     <img :src="selectedUnit.logo" height="84px">
                 </v-flex>
                 <v-flex xs12>
-                    <v-card v-for="(intake,i) in intakes" v-bind:key="i" class="elevation-0">
+                    <v-card v-for="(intake,i) in this.outtakes" v-bind:key="i" class="elevation-0">
                         <v-layout v-for="(exam,i) in intake.exams" v-bind:key="i">
                             <v-layout row wrap>
                                 <v-flex xs5 class="align-center justify-center">
@@ -81,11 +81,7 @@
 
     export default {
         name: "ReceiptOuttakesConvenants",
-        props: ['clinicSelected'],
-        mounted() {
-            this.$store.dispatch('GetReceiptsClinic', this.clinicSelected)
-
-        },
+        props: ['clinicSelected', 'outtakes'],
         data() {
             return {
                 numberIntake: '',
@@ -101,18 +97,14 @@
             selectedUnit() {
                 return this.$store.getters.selectedUnit
             },
-            intakes(){
-                console.log('ouutakes clinic: ', this.$store.getters.IntakesExamsClinics)
-                return this.$store.getters.IntakesExamsClinics
-            },
             PriceTot(){
-                let price=0;
-                for(let i=0; i < this.intakes.length ; i++){
-                    for(let j=0; j< this.intakes[i].exams.length; j++){
-                        price +=  this.intakes[i].exams[j].price
-                    }
-                }
-                return price
+                let cost =0;
+                this.outtakes.filter(function (element){
+                    element.exams.filter(function (element2) {
+                        cost += element2.price
+                    })
+                })
+                return cost
             }
         },
         methods: {
