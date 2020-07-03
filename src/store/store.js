@@ -12,7 +12,6 @@ import FavoriteRoom from "./modules/local/FavoriteRoom";
 import AddInformationInConsultation from "./modules/AddInformationInConsultation";
 import Cids from "./modules/Cids";
 import Medicines from "./modules/Medicines";
-import FavoriteRoom from "./modules/FavoriteRoom";
 import Localization from "./modules/Localization"
 import Bundles from "./modules/Bundles";
 import Doctors from "./modules/Doctors"
@@ -70,7 +69,6 @@ const store = new Vuex.Store({
         Bundles,
         Specialties,
         Saidas,
-        FavoriteRoom,
         Medicines,
         Budget,
         ShoppingCart,
