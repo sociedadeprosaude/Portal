@@ -212,13 +212,8 @@
 </template>
 
 <script>
-    /* eslint-disable no-undef */
-    import SubmitButton from "../SubmitButton";
-    import SingleVisualizer from "../tickets/SingleVisualizer";
-    import MultipleVisualizer from "../tickets/MultipleVisualizer";
     export default {
         name: "DoctorTicketRoom",
-        components: {MultipleVisualizer, SingleVisualizer, SubmitButton},
         mounted() {
             // this.$store.dispatch("getTicketsGeneralInfo");
             this.initialInfo();
