@@ -85,7 +85,7 @@ export default {
     loading: false,
     success: false,
     specialty: undefined,
-    price:undefined,
+    price:0,
     exam: undefined,
     typeOptions: [
       { text: "sim", value: true },

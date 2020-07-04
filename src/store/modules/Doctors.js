@@ -122,22 +122,6 @@ const actions = {
             commit('setDoctors', doctors);
         })
     },
-    async editSpecialty({}, specialty) {
-        specialty = functions.removeUndefineds(specialty);
-        try {
-            return await firebase.firestore().collection('specialties').doc(specialty.name).update(specialty)
-        } catch (e) {
-            throw e
-        }
-    },
-    async addSpecialty({}, specialty) {
-        specialty = functions.removeUndefineds(specialty);
-        try {
-            return await firebase.firestore().collection('specialties').doc(specialty.name).set(specialty)
-        } catch (e) {
-            throw e
-        }
-    },
     async getSpecialties({commit}) {
         try {
             let specialtySnapt = await firebase.firestore().collection('specialties').get();
