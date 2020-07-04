@@ -156,7 +156,8 @@ export default {
   }),
 
   mounted() {
-    this.$store.dispatch("getStatisticsByMonth");
+    //this.$store.dispatch("getStatisticsOuttakesByMonth");
+    this.$store.dispatch("analyseStatisticsOuttakesByMonth");
   },
   methods: {
     monthName(month) {
@@ -168,12 +169,12 @@ export default {
   },
   watch: {
     statistics(val) {
-        if (val) {
-          this.years = Object.keys(val);
-          this.year = this.years[0];
-          this.months = Object.keys(val[this.years[0]]);
-          this.month = this.months[0];
-        }
+      if (val) {
+        this.years = Object.keys(val);
+        this.year = this.years[0];
+        this.months = Object.keys(val[this.years[0]]);
+        this.month = this.months[0];
+      }
     },
     year(val) {
       try {
@@ -188,7 +189,7 @@ export default {
   },
   computed: {
     statistics() {
-      return this.$store.getters.getStatistics;
+      return this.$store.getters.getStatisticsOuttakesByMonth;
     },
     info() {
       return this.statistics[this.year][this.month];

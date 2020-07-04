@@ -30,7 +30,7 @@ export default {
   },
   mounted() {
     //this.addPlugin(ChartDataLabels);
-    console.log({ ...this.options })
+ 
     this.renderChart(this.chartData, {
       plugins: {
         colorschemes: {

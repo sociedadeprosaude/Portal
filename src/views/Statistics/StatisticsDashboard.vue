@@ -1,6 +1,14 @@
 <template>
   <v-container fluid>
-    <v-navigation-drawer hide-overlay :right="false" v-model="overviewDrawer" disable-resize-watcher app dark clipped>
+    <v-navigation-drawer
+      hide-overlay
+      :right="false"
+      v-model="overviewDrawer"
+      disable-resize-watcher
+      app
+      dark
+      clipped
+    >
       <v-list dense>
         <v-list-item
           v-for="item in items"
@@ -79,8 +87,8 @@
     />
     <OuttakesReport v-if="selected == 1" :date="dateBegin" :date2="dateEnd" :cb="pesquisar" />
     <procedures-prices-analises v-if="selected == 2"></procedures-prices-analises>
-    <statsCaixa v-if="selected == 3"></statsCaixa>
-    <testes v-if="selected == 4"></testes>
+    <statsCaixaIntakes v-if="selected == 3"></statsCaixaIntakes>
+    <statsCaixaOuttakes v-if="selected == 4"></statsCaixaOuttakes>
   </v-container>
 </template>
 
@@ -89,22 +97,25 @@ import ProceduresPricesAnalises from "@/components/reports/ProceduresPricesAnali
 import GeneralReport from "@/components/reports/GeneralReport";
 import OuttakesReport from "@/components/reports/OuttakesReport";
 
-import statsCaixa from "./statsCaixa";
+import statsCaixaIntakes from "./statsCaixa";
+import statsCaixaOuttakes from "./statsCaixaOuttakes";
 
 export default {
   components: {
     GeneralReport,
     ProceduresPricesAnalises,
     OuttakesReport,
-    statsCaixa
+    statsCaixaIntakes,
+    statsCaixaOuttakes
   },
   data: vm => ({
-    selected: 3,
+    selected: 4,
     items: [
       { title: "Relatorio financeiro geral", value: 0 },
       { title: "Relatorio de Saidas", value: 1 },
       { title: "Análise de preço de exames", value: 2 },
-      { title: "Overview Caixa", value: 3 }
+      { title: "Intakes", value: 3 },
+      { title: "Outtakes", value: 4 }
     ],
 
     date: moment().format("YYYY-MM-DD 00:00:00"),
@@ -169,6 +180,7 @@ export default {
     }
   },
   async mounted() {
+    
     await this.$store.dispatch("getOuttakes", {
       initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
       finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")

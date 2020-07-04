@@ -106,12 +106,12 @@ exports.analyzePastIntakesByDay = functions.https.onRequest(async (request, resp
     response.status(200).send("Analisado, agora ta salvando");
 })
 
-function groupIntakesByMonth(intakes) {
+function groupByMonth(arr) {
     var grouped = {};
-    for (let { date } of intakes) {
+    for (let { date } of arr) {
         let [year, month, day] = date.match(/\d+/g);
         grouped[`${year}-${month}`] =
-            intakes.filter(({ date: d }) => `${year}-${month}` === d.slice(0, 7));
+            arr.filter(({ date: d }) => `${year}-${month}` === d.slice(0, 7));
     }
     return grouped
 }
@@ -120,9 +120,8 @@ function analyzeIntakesByMonth(intakes) {
     var analyzed = {};
     Object.keys(intakes).forEach((date) => {
         var totalRaw = intakes[date].reduce((total, e) => total + Number(e.total), 0);
-
-        console.log(date, totalRaw);
-        var totalCost = intakes[date].reduce((total, e) => total + !isNaN(e.cost) ? Number(e.cost) : 0, 0);
+        var totalCost = intakes[date].reduce((total, e) => total + (!isNaN(e.cost) ? e.cost : 0), 0);
+        console.log(date, totalCost);
         var numOfSales = 0
         var itens = {}
         var arrTotalRaw = Array.from(Array(moment(date).daysInMonth()).keys()).map(() => 0)
@@ -189,7 +188,6 @@ exports.analyzePastIntakesByMonth = functions.https.onRequest(async (request, re
         var specialties = await admin.firestore().collection('intakes').doc(doc.id).collection('specialties').get();
         if (!exams.empty) intake.exams = exams.docs.map((exam) => exam.data())
         if (!specialties.empty) intake.specialties = specialties.docs.map((specialty) => specialty.data())
-
         return {
             date: intake.date,
             total: Number(intake.total),
@@ -200,7 +198,7 @@ exports.analyzePastIntakesByMonth = functions.https.onRequest(async (request, re
             masculino: intake.user ? intake.user.sex === "Masculino" : false
         }
     }))
-    intakes = groupIntakesByMonth(intakes);
+    intakes = groupByMonth(intakes);
     intakes = analyzeIntakesByMonth(intakes);
 
 
@@ -209,5 +207,98 @@ exports.analyzePastIntakesByMonth = functions.https.onRequest(async (request, re
     Object.keys(intakes).forEach((date) =>
         admin.firestore().collection('statistics').doc('caixa').collection('month').doc(date).set(intakes[date]))
 
-    response.status(200).send("Analisado, agora ta salvando");
+    response.status(200).send(intakes);
+});
+
+// ==================================== Outtakes ===================================================
+function analyzeOuttakesByMonth(outtakes) {
+    var analyzed = {};
+    Object.keys(outtakes).forEach((date) => {
+        var totalRaw = outtakes[date].reduce((total, e) => total + Number(e.total), 0);
+        var totalCost = outtakes[date].reduce((total, e) => total + (!isNaN(e.cost) ? e.cost : 0), 0);
+        console.log(date, totalCost);
+        var numOfSales = 0
+        var itens = {}
+        var arrTotalRaw = Array.from(Array(moment(date).daysInMonth()).keys()).map(() => 0)
+
+        outtakes[date].forEach((outtake) => {
+            let [year, month, day] = outtake.date.match(/\d+/g);
+            arrTotalRaw[Number(day) - 1] += outtake.total;
+            if (outtake.specialties)
+                outtake.specialties.forEach((specialty) => {
+                    if (!itens[specialty.name]) itens[specialty.name] = {
+                        numOfSales: 0,
+                        totalRaw: 0,
+                        totalCost: 0,
+                        totalProfit: 0
+                    };
+                    numOfSales++;
+                    specialty.price = Number(specialty.price);
+                    specialty.cost = !isNaN(specialty.cost) ? Number(specialty.cost) : 0;
+                    itens[specialty.name].numOfSales += 1;
+                    itens[specialty.name].totalRaw += specialty.price;
+                    itens[specialty.name].totalCost += specialty.cost;
+                    itens[specialty.name].totalProfit += specialty.price - specialty.cost;
+
+                })
+            if (outtake.exams)
+                outtake.exams.forEach((exam) => {
+                    if (!itens[exam.name]) itens[exam.name] = {
+                        numOfSales: 0,
+                        totalRaw: 0,
+                        totalCost: 0,
+                        totalProfit: 0
+                    };
+                    numOfSales++;
+                    exam.price = Number(exam.price);
+                    exam.cost = !isNaN(exam.cost) ? Number(exam.cost) : 0;
+                    itens[exam.name].numOfSales += 1;
+                    itens[exam.name].totalRaw += exam.price;
+                    itens[exam.name].totalCost += exam.cost;
+                    itens[exam.name].totalProfit += exam.price - exam.cost;
+                })
+
+        })
+        analyzed[date] = {
+            date: date,
+            totalRaw: totalRaw,
+            totalCost: totalCost,
+            totalProfit: totalRaw - totalCost,
+            numOfSales: numOfSales,
+            itens: itens,
+            arrTotalRaw: arrTotalRaw
+        }
+    })
+    return analyzed
+}
+exports.analyzePastOuttakesByMonth = functions.https.onRequest(async (request, response) => {
+
+    var outtakes = await admin.firestore().collection('outtakes').get();
+    outtakes = await Promise.all(outtakes.docs.map(async (doc) => {
+        var intake = doc.data();
+
+        var exams = await admin.firestore().collection('outtakes').doc(doc.id).collection('exams').get();
+        var specialties = await admin.firestore().collection('outtakes').doc(doc.id).collection('specialties').get();
+        if (!exams.empty) intake.exams = exams.docs.map((exam) => exam.data())
+        if (!specialties.empty) intake.specialties = specialties.docs.map((specialty) => specialty.data())
+        return {
+            date: intake.date,
+            total: Number(intake.total),
+            cost: Number(intake.cost),
+            sex: intake.user ? intake.user.sex : "nem tem",
+            specialties: intake.specialties,
+            exams: intake.exams,
+            masculino: intake.user ? intake.user.sex === "Masculino" : false
+        }
+    }))
+    outtakes = groupByMonth(outtakes);
+    outtakes = analyzeOuttakesByMonth(outtakes);
+
+
+
+    //Salvando
+    Object.keys(outtakes).forEach((date) =>
+        admin.firestore().collection('statistics').doc('caixaOuttakes').collection('month').doc(date).set(outtakes[date]))
+
+    response.status(200).send(outtakes);
 });
