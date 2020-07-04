@@ -338,6 +338,9 @@
             }
         },
         watch:{
+            createConsultationForm(value){
+                this.setExamFromCreatedForm()
+            },
             exam(value){
                 if(value && this.findPaymentToExam){
                     this.$emit('findPaymentNumberToExam',value)
@@ -346,7 +349,7 @@
                 }
             },
             payment_numberFound(value){
-                if(value.exam){
+                if(value && value.exam){
                     this.exam = Object.assign({},value.exam)
                     this.findPaymentToExam = false
                 }

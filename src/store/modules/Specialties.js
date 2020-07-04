@@ -18,8 +18,14 @@ const mutations = {
     },
     setSelectedSpecialty (state, payload){
         state.selectedSpecialty = payload;
+    },
+    editSpecialty(state,payload){
+        let index = state.specialties.findIndex((specialty)=>specialty.name === payload.name)
+        state.specialties[index] = payload
+    },
+    addSpecialty(state,payload){
+        state.specialties.push(payload)
     }
-
 };
 
 const actions = {
@@ -41,6 +47,16 @@ const actions = {
         }
         console.log('specialtie: ', specialtie)
         return specialtie
+    },
+    async editSpecialty({commit}, specialty) {
+        specialty = functions.removeUndefineds(specialty);
+        await firebase.firestore().collection('specialties').doc(specialty.name).update(specialty)
+        commit('editSpecialty',specialty)
+    },
+    async addSpecialty({commit}, specialty) {
+        specialty = functions.removeUndefineds(specialty);
+        await firebase.firestore().collection('specialties').doc(specialty.name).set(specialty)
+        commit('addSpecialty',specialty)
     },
 
     async searchSpecialty(context, search) {
