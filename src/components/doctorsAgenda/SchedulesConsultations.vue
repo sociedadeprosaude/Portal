@@ -110,7 +110,8 @@
                 </v-layout>
             </ul>
         </div>
-            <div class="text-xs-center">
+           <!--  Não entendi por que está chamando duas vezes o dialog -->
+            <!-- <div class="text-xs-center">
                 <v-dialog v-model="dialog" v-if="createConsultationForm" max-width="520">
                     <SchedulingForm @close-dialog="dialog = false"
                                     :createConsultationForm="createConsultationForm"
@@ -123,8 +124,8 @@
                                     :payment_numberFound="payment_numberFound"
                     />
                 </v-dialog>
-            </div>
-
+            </div> -->
+        
         <v-flex xs12 v-if="!consultationLoading">
             <v-btn class="primary" rounded text @click="listenMoreConsultations">Carregar mais</v-btn>
         </v-flex>
@@ -194,7 +195,6 @@
                 this.status = this.query.status
                 this.numberReceipt = this.query.payment_number
                 this.rescheduleConsultation = this.query.id
-                console.log('this. status', this.status)
             }            
             else{
                 this.modalidade = "Consulta"
@@ -264,7 +264,6 @@
                 if (!this.query /* && !consultation.exam_type */) {
                     this.thereIsPaymentNumber();
                 }
-                console.log(this.selectedForm)
                 if(this.$route.params.reschedule && this.query.exam){
                     this.selectedForm.consultation.exam = this.query.exam
                 }
@@ -277,12 +276,13 @@
                 this.numberReceipt = "";
                 this.status = "Aguardando pagamento";
                 this.loaderPaymentNumber = true;
+                console.log('oioioi')
 
                 let obj = value ? {
                     user: this.selectedForm.user,
                     doctor: this.selectedForm.consultation.doctor,
                     exam: {
-                        //exam_type:this.selectedForm.consultation.exam_type.name,
+                        exam_type:this.selectedForm.consultation.exam_type.name,
                         ...value
                     }
                 }
@@ -299,9 +299,12 @@
                     },
                 }
 
+                console.log('no procurar recibo',obj)
+
                 this.$store.dispatch("thereIsIntakes", obj)
                     .then(obj => {
                         if (obj.payment_number) {
+                            console.log('revico' ,obj)
                             this.payment_numberFound = obj;
                             this.numberReceipt = obj.payment_number;
                             this.exam = obj.exam ? {...obj.exam, notFindPayment: true} : undefined;
