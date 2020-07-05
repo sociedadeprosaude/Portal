@@ -7,7 +7,7 @@
       <v-tab-item value="exams">
         <v-layout row wrap>
           <v-flex sm12>
-            <v-card class="pt-3 mb-4">
+            <v-card class="pt-3">
               <v-layout row wrap>
                 <v-flex sm8>
                   <v-text-field
@@ -48,25 +48,29 @@
                     placeholder="Tipos de Exames"
                     class="mx-5"
                     color="primary"
-                    v-model="search"
+                    v-model="searchType"
                     :loading="loading"
                     id="search"
                   />
                 </v-flex>
                 <v-flex sm4 class="text-right pr-3 mt-2">
-                  <v-btn outlined class="primary--text" @click="newExamType = true">cadastrar tipo de exame</v-btn>
+                  <v-btn
+                    outlined
+                    class="primary--text"
+                    @click="newExamType = true"
+                  >cadastrar tipo de exame</v-btn>
                 </v-flex>
               </v-layout>
             </v-card>
 
             <v-card>
-              <v-card-text v-if="exams.length !== 0">
-                <listExams :exams="exams" :loading="loading" @clear-search="search = ''" />
+              <v-card-text>
+                <listExamsTypes :examsTypes="examsTypes" />
               </v-card-text>
             </v-card>
           </v-flex>
-          <v-dialog v-model="newExam">
-            <createExamType @close-dialog="newExamType = false" />
+          <v-dialog v-model="newExamType">
+            <createExamType @close-dialog="newExamType = false" :registed="registed" />
           </v-dialog>
         </v-layout>
       </v-tab-item>
@@ -75,19 +79,21 @@
 </template>
 <script>
 import listExams from "../../components/Exams/listExams";
+import listExamsTypes from "../../components/Exams/listExamsTypes";
 import createExam from "../../components/Exams/CreateExam";
 import createExamType from "../../components/Exams/CreateExamType";
 
 export default {
-  components: { listExams, createExam },
+  components: { listExams, listExamsTypes, createExam, createExamType },
 
   data: () => ({
     search: "",
+    searchType: "",
     loading: undefined,
     newExam: false,
+    newExamType: false,
     registed: false
   }),
-
   mounted() {
     let self = this;
     window.addEventListener("keyup", function(e) {
@@ -108,11 +114,17 @@ export default {
         clearTimeout(self.typingTimer);
       }
     });
+
+    self.$store.dispatch("getExamsTypes");
   },
 
   computed: {
     exams() {
       return this.$store.getters.examsSelected;
+    },
+    examsTypes() {
+      let e = this.$store.getters.examsTypes;
+      return e;
     }
   }
 };

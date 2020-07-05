@@ -101,12 +101,23 @@
                             </v-flex>
                             <v-flex xs12 sm6>
                                 <v-text-field
+                                        v-if="createConsultationForm.consultation.specialty"
                                         readonly
                                         hide-details
                                         outlined
                                         prepend-icon="school"
                                         v-model="createConsultationForm.consultation.specialty.name"
                                         label="Especialidade">
+                                </v-text-field>
+
+                                <v-text-field
+                                        v-else
+                                        readonly
+                                        hide-details
+                                        outlined
+                                        prepend-icon="school"
+                                        v-model="createConsultationForm.consultation.exam_type.name"
+                                        label="Tipo de exame">
                                 </v-text-field>
                             </v-flex>
 
@@ -122,15 +133,16 @@
                             </v-flex>
 
                             <v-flex xs12
-                                    v-show="exams.indexOf(createConsultationForm.consultation.specialty.name) !== -1">
+                                    v-show="createConsultationForm.consultation.exam_type">
                                 <v-combobox
                                         prepend-icon="poll"
                                         v-model="exam"
-                                        :items="listExam"
+                                        :items="exams"
                                         item-text="name"
                                         return-object
                                         label="Exame"
                                         outlined
+                                        :disabled="this.$route.params.reschedule"
                                         chips
                                         color="blue"
                                         clearable
@@ -230,7 +242,7 @@
                     <submit-button
                             color="success"
                             rounded
-                            :disabled="loaderPaymentNumber || (exams.indexOf(createConsultationForm.consultation.specialty.name) !== -1 && !exam)"
+                            :disabled="loaderPaymentNumber || (createConsultationForm.consultation.exam_type && !exam)"
                             @reset="resetSchedule"
                             :success="success"
                             :loading="scheduleLoading"
@@ -248,15 +260,20 @@
 
     export default {
 
-        props: ['createConsultationForm', 'loaderPaymentNumber', 'exam', 'numberReceipt','status','payment_numberFound','modalidade','previousConsultation'],
+        props: ['createConsultationForm', 'loaderPaymentNumber', 'exams', 'numberReceipt','status','payment_numberFound','modalidade','previousConsultation','rescheduleConsultation'],
         components: {SubmitButton},
 
         data: () => ({
             success: false,
             scheduleLoading: false,
             statusOptions: [{text: "Aguardando pagamento"}, {text: "Pago"}],
-            exams: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
+            exam:undefined,
+            findPaymentToExam:true,
+            //exams: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
         }),
+        mounted(){
+            this.setExamFromCreatedForm()
+        },
         computed: {
             selectedPatient() {
                 return this.$store.getters.selectedPatient;
@@ -264,11 +281,11 @@
             foundDependents() {
                 return this.selectedPatient ? this.selectedPatient.dependents : undefined;
             },
-            listExam() {
+            /* listExam() {
                 return this.$store.getters.exams.filter(a => {
                     return a.type === this.createConsultationForm.consultation.specialty.name;
                 });
-            },
+            }, */
             computedDateFormatted() {
                 return this.formatDate(
                     this.createConsultationForm.consultation.date.split(" ")[0]
@@ -288,7 +305,6 @@
 
             async saveConsultation() {
                 this.scheduleLoading = true;
-
                 let form = this.createConsultationForm;
                 form.user = {
                     ...form.user,
@@ -314,14 +330,47 @@
                         dependent: form.user.dependent
                     };
                 this.loading = true;
-                await this.$store.dispatch("addUserToConsultation", form);
+                if(this.rescheduleConsultation){
+                    form.consultation.idConsultationCanceled = this.rescheduleConsultation
+                    await this.$store.dispatch("addUserToConsultationReschedule", form);
+                }else{
+                    await this.$store.dispatch("addUserToConsultation", form);
+                }
                 this.scheduleLoading = false;
                 this.success = true;
-
+                if(this.$route.params.q)
+                    this.$router.back()
             },
 
             close: function () {
+                this.exam = undefined
                 this.$emit('close-dialog')
+            },
+
+            setExamFromCreatedForm(){
+                if(this.createConsultationForm && this.createConsultationForm.consultation.exam){
+                    this.exam = this.createConsultationForm.consultation.exam
+                    this.findPaymentToExam = false
+                }
+            }
+        },
+        watch:{
+            createConsultationForm(value){
+                this.setExamFromCreatedForm()
+            },
+            exam(value){
+                if(value && this.findPaymentToExam){
+                    this.$emit('findPaymentNumberToExam',value)
+                }else{
+                    this.findPaymentToExam = true
+                }
+            },
+            payment_numberFound(value){
+                if(value && value.exam){
+                    this.exam = Object.assign({},value.exam)
+                    this.findPaymentToExam = false
+                }
+                    
             }
         }
     }

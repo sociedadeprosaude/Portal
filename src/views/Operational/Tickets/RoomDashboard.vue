@@ -4,7 +4,7 @@
             <v-col sm="12" md="4">
                 <v-tooltip top v-if="doctorsLoaded">
                     <template v-slot:activator="{ on }">
-                        <v-btn width="100%" v-on="on" class="primary" rounded @click="skipNextTicket">
+                        <v-btn width="100%" v-on="on" class="primary" rounded @click="generateSectorTicket">
                             Proxima senha:
                             {{ticketInfo.ticket_number}}
                         </v-btn>
@@ -35,6 +35,7 @@
                         <v-row cols="12">
                             <v-text-field v-model="room.name" label="Nome da Sala"></v-text-field>
                         </v-row>
+
                         <v-row>
                             <v-col cols="12" class="text-right">
                                 <submit-button
@@ -69,6 +70,11 @@
                             <v-btn x-small fab class="red" @click="deleteRoom(room)">
                                 <v-icon class="white--text">delete</v-icon>
                             </v-btn>
+                            <v-btn small fab icon @click="favoriteRoom(room)">
+                                <v-icon class="warning--text" v-if="room.name === favoritedRoom.name">grade</v-icon>
+                                <v-icon class="primary--text" v-else>grade</v-icon>
+                                
+                            </v-btn>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -77,11 +83,28 @@
                                 <template v-slot:activator="{ on }">
                                     <v-btn
                                             v-on="on"
+                                            :disabled="loading"
+                                            @click="callNextTicket(room)"
+                                            text
+                                            fab
+                                            small
+                                            class="primary my-2"
+                                    >
+                                        <v-icon>add_alert</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>Chamar próxima senha</span>
+                            </v-tooltip>
+                            <v-tooltip top v-if="doctorsLoaded">
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                            v-on="on"
+                                            :disabled="loading"
                                             @click="selectedRoom = room, doctorsListDialog.active = true"
                                             text
                                             fab
                                             x-small
-                                            class="primary my-2"
+                                            class="primary ml-2 my-2"
                                     >
                                         <v-icon>person</v-icon>
                                     </v-btn>
@@ -93,6 +116,7 @@
                                 <template v-slot:activator="{ on }">
                                     <v-btn
                                             v-on="on"
+                                            :disabled="loading"
                                             @click="generateNextTicket(room)"
                                             text
                                             fab
@@ -108,21 +132,7 @@
                                 <template v-slot:activator="{ on }">
                                     <v-btn
                                             v-on="on"
-                                            @click="callNextTicket(room)"
-                                            text
-                                            fab
-                                            x-small
-                                            class="primary ml-2 my-2"
-                                    >
-                                        <v-icon>add_alert</v-icon>
-                                    </v-btn>
-                                </template>
-                                <span>Chamar próxima senha</span>
-                            </v-tooltip>
-                            <v-tooltip top v-if="doctorsLoaded">
-                                <template v-slot:activator="{ on }">
-                                    <v-btn
-                                            v-on="on"
+                                            :disabled="loading"
                                             @click="alertActualTicket(room)"
                                             text
                                             fab
@@ -138,6 +148,7 @@
                                 <template v-slot:activator="{ on }">
                                     <v-btn
                                             v-on="on"
+                                            :disabled="loading"
                                             @click="openSingleView(room)"
                                             text
                                             fab
@@ -224,7 +235,12 @@
                     <span class="my-headline">Deletar {{deletionRoom.selectedRoom.name}}</span>
                 </v-col>
                 <v-col cols="12" align="end">
-                    <v-btn v-if="!deletionRoom.deleting" @click="deleteRoom(deletionRoom.selectedRoom)" rounded class="red">
+                    <v-btn
+                            v-if="!deletionRoom.deleting"
+                            @click="deleteRoom(deletionRoom.selectedRoom)"
+                            rounded
+                            class="red"
+                    >
                         <span class="white--text">Deletar</span>
                     </v-btn>
                     <v-progress-circular indeterminate color="primary" v-else></v-progress-circular>
@@ -235,6 +251,8 @@
 </template>
 
 <script>
+    /* eslint-disable no-undef */
+
     import SubmitButton from "../../../components/SubmitButton";
     import SingleVisualizer from "../../../components/tickets/SingleVisualizer";
     import MultipleVisualizer from "../../../components/tickets/MultipleVisualizer";
@@ -248,7 +266,7 @@
         },
         mounted() {
             // this.$store.dispatch("getTicketsGeneralInfo");
-            this.initialInfo()
+            this.initialInfo();
         },
         data() {
             return {
@@ -274,10 +292,12 @@
             };
         },
         computed: {
-            rooms() {
-                return this.sector ? this.sector.rooms : []
+            favoritedRoom() {
+                return this.$store.getters.favoriteRoom;
             },
-
+            rooms() {
+                return this.sector ? this.sector.rooms : [];
+            },
             roomsLoaded() {
                 return this.$store.getters.roomsLoaded;
             },
@@ -315,6 +335,7 @@
                 }
             },
             getActualTicket(tickets) {
+                console.log(tickets)
                 let calledTickets = tickets.filter(ticket => {
                     return ticket.called_at;
                 });
@@ -341,7 +362,6 @@
                 this.loading = false;
             },
             async generateNextTicket(room) {
-                let ticketInfo = this.ticketInfo;
                 if (!room.tickets) {
                     room.tickets = [];
                 }
@@ -350,23 +370,68 @@
                     created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
                     doctor: room.doctor
                 });
-                ticketInfo.ticket_number++;
-                ticketInfo.last_updated = moment().format("YYYY-MM-DD HH:mm:ss");
-                await this.$store.dispatch("updateGeneralInfo", this.ticketInfo);
+                await this.upgradeTicketNumber()
                 const sector = this.sector;
                 await this.$store.dispatch("updateSectorRoom", {sector, room});
             },
+            async generateSectorTicket() {
+                console.log(this.ticketInfo)
+                let sector = this.sector
+                if (!sector.tickets) {
+                    sector.tickets = []
+                }
+                sector.tickets.push({
+                    number: this.ticketInfo.ticket_number,
+                    created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+                })
+                await this.upgradeTicketNumber()
+                await this.$store.dispatch('updateSector', sector)
+            },
+            async upgradeTicketNumber() {
+                let ticketInfo = this.ticketInfo;
+                ticketInfo.ticket_number++;
+                ticketInfo.last_updated = moment().format("YYYY-MM-DD HH:mm:ss");
+                await this.$store.dispatch("updateGeneralInfo", this.ticketInfo);
+            },
             async callNextTicket(room) {
+                this.loading = true
                 let ticketIndex = room.tickets.findIndex(ticket => {
                     return !ticket.called_at;
-                });
-                if (ticketIndex < 0) return;
+                })
+                if (ticketIndex < 0) {
+                    await this.callSectorTicket(room)
+                    this.loading = false
+                    return
+                }
 
                 room.tickets[ticketIndex].called_at = moment().format(
                     "YYYY-MM-DD HH:mm:ss"
                 );
                 const sector = this.sector;
                 await this.$store.dispatch("updateSectorRoom", {sector, room});
+                this.loading = false
+            },
+            async callSectorTicket(room) {
+                let ticketIndex = this.sector.tickets.findIndex(ticket => {
+                    return !ticket.called_at;
+                })
+                if (ticketIndex < 0) {
+                    return
+                }
+                this.sector.tickets[ticketIndex].called_at = moment().format(
+                    "YYYY-MM-DD HH:mm:ss"
+                );
+                room.tickets.push(this.sector.tickets[ticketIndex])
+                const sector = this.sector;
+                await this.$store.dispatch("updateSectorRoom", {sector, room});
+                this.sector.tickets.splice(ticketIndex, 1)
+                await this.$store.dispatch("updateSector", this.sector);
+
+            },
+            favoriteRoom(room) {
+                this.$store.commit('setFavoriteRoom', room);
+                this.$store.commit('setFavoriteRoomSection', this.sector);
+                console.log(this.sectorName)
             },
             async deleteRoom(room) {
                 this.deletionRoom.selectedRoom = room
@@ -382,22 +447,10 @@
             alertActualTicket(room) {
 
             },
-            reset() {
-                let ticketInfo = this.ticketInfo;
-                ticketInfo.ticket_number = 1;
-                ticketInfo.last_updated = moment().format("YYYY-MM-DD HH:mm:ss");
-                this.$store.dispatch("updateGeneralInfo", ticketInfo);
-            },
-            skipNextTicket() {
-                let ticketInfo = this.ticketInfo;
-                ticketInfo.ticket_number++;
-                this.$store.dispatch("updateGeneralInfo", ticketInfo);
-            },
             openSingleView(room) {
                 this.singleViewDialog.room = room;
                 this.singleViewDialog.active = true;
-            },
-
+            }
         }
     };
 </script>

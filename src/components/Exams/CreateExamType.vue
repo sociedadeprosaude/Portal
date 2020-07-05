@@ -11,7 +11,7 @@
                                             outlined
                                             required
                                             label="Nome"
-                                            v-model="editedExam.name"
+                                            v-model="editedExamType.name"
                                             prepend-icon="description"
                                             :rules="rules.campoObrigatorio"
                                             class="ml-3 mr-3"
@@ -22,10 +22,9 @@
                                             outlined
                                             required
                                             label="Agendável"
-                                            v-model="editedExam.price"
-                                            prepend-icon="attach_money"
-                                            :rules="rules.campoObrigatorio"
+                                            v-model="editedExamType.scheduleable"
                                             class="ml-3 mr-3"
+                                            color="primary"
                                     />
                                 </v-flex>
                             </v-layout>
@@ -35,7 +34,7 @@
                             <submit-button
                                     :loading="loading"
                                     :success="success"
-                                    text="Cadastrar Exame"
+                                    :text="registed ? 'Editar tipo de exame':'Cadastrar tipo de exame'"
                                     :disabled="!formRegister"
                                     @click="validateRegister()"
                                     class="ma-3"
@@ -53,15 +52,15 @@
     export default {
 
         components: {SubmitButton},
-        props: ['selectedExam'],
+        props: ['registed','selectedExamType'],
 
         data: () => ({
             validRegister: true,
             loading: false,
             success: false,
 
-            editedExam: {
-                id: '', name: '', scheduleable:false,
+            editedExamType: {
+                name: '', scheduleable:false,
             },
 
             rules: {
@@ -72,34 +71,34 @@
         }),
 
         mounted() {
-            if(this.selectedExam){
-                this.editedExam.name = this.selectedExam.name;
-                this.editedExam.price = this.selectedExam.price;
-                this.editedExam.rules = this.selectedExam.rules;
-                this.editedExam.type = this.selectedExam.type;
+            if(this.selectedExamType){
+                this.editedExamType.id = this.selectedExamType.id
+                this.editedExamType.name = this.selectedExamType.name;
+                this.editedExamType.scheduleable = this.selectedExamType.scheduleable;
             }
         },
-
+        watch:{
+           selectedExamType(value){
+               if(value){
+                   this.editedExamType.id = this.selectedExamType.id;
+                   this.editedExamType.name = this.selectedExamType.name;
+                   this.editedExamType.scheduleable = this.selectedExamType.scheduleable;
+               }
+           } 
+        },
         computed: {
             formRegister() {
-                return this.editedExam.name;
-            },
-            specialties() {
-                let specialties = this.$store.getters.specialties.slice();
-                for (let spec in specialties) {
-                    delete specialties[spec].doctors
-                }
-                return specialties
+                return this.editedExamType.name;
             },
         },
 
         methods: {
             handleEnter(e) {
                 if (e.key === 'Enter') {
-                    if (this.registerExam) {
+                    if (this.registerExamType) {
                         this.validateRegister()
                     } else {
-                        this.searchExams(this.searchText)
+                        this.searchExamTypes(this.searchText)
                     }
                 }
             },
@@ -110,26 +109,31 @@
             },
 
             async registerProduct() {
-                const examData = {
-                    id: '',
-                    name: this.editedExam.name.toUpperCase().replace(/\//g, "-"),
-                    rules: this.editedExam.rules,
-                    type: this.editedExam.type ? this.editedExam.type.name : undefined,
+                const examTypeData = {
+                    id:this.editedExamType.id,
+                    name: this.editedExamType.name.toUpperCase().replace(/\//g, "-"),
+                    scheduleable:this.editedExamType.scheduleable
                 };
-                await this.$store.dispatch('addExam', examData);
+                if(this.registed){
+                    await this.$store.dispatch('editExamType', examTypeData);
+                }
+                    
+                else{
+                    await this.$store.dispatch('addExamType', examTypeData);
+                    this.clear()
+                }
+                   
                 this.success = true;
                 this.loading = false;
-                this.clear();
+                
                 this.close();
 
             },
 
             clear() {
-                this.editedExam.name = '';
-                this.editedExam.type = null;
-                this.editedExam.rules = '';
-                this.editedExam.price = '';
-                this.editedExam.id = '';
+                this.editedExamType.name = '';
+                this.editedExamType.scheduleable = false
+                this.editedExamType.id = '';
             },
 
             close () {

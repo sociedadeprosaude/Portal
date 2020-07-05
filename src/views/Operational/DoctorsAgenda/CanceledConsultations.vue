@@ -88,8 +88,8 @@
                                                                     hora: item.date.split(' ')[1],
                                                                     crm: item.doctor.crm,
                                                                     especialidade: item.specialty,
-                                                                    exame: exams.indexOf(item.specialty.name) != -1 ? item.exam : undefined,
-                                                                    esp:item.specialty.name,
+                                                                    exame: item.exam,
+                                                                    esp:item.specialty ? item.specialty.name : undefined,
                                                                     status: item.status,
                                                                     modalidade: item.type,
                                                                     calls: item.calls,
@@ -178,8 +178,8 @@
                                                         </v-text-field>
                                                     </v-flex>
 
-                                                    <v-flex xs12 sm6 v-if="exams.indexOf(indexSelected.esp) !== -1 && indexSelected.pacienteObj.exam">
-                                                        <v-text-field readonly hide-details outlined prepend-icon="poll" label="Exame" v-model="indexSelected.pacienteObj.exam.name"/>
+                                                    <v-flex xs12 sm6 v-if="indexSelected.exame">
+                                                        <v-text-field readonly hide-details outlined prepend-icon="poll" label="Exame" v-model="indexSelected.exame.name"/>
                                                     </v-flex>
                                                     <v-flex xs12 sm6 v-else>
                                                         <v-text-field readonly hide-details outlined prepend-icon="school" label="Especialidade" v-model="indexSelected.esp"/>
@@ -272,7 +272,7 @@
                                             <v-spacer/>
                                             <v-btn color="error" rounded @click="deleteConsultation">Apagar<v-icon right>delete</v-icon></v-btn>
                                             <v-spacer/>
-                                            <v-btn color="success" rounded dark :to="{ name: 'RemarcarConsultas', params: { q: {...indexSelected}}}">Remarcar<v-icon right>assignment_turned_in</v-icon></v-btn>
+                                            <v-btn color="success" rounded dark :to="{ name: 'AgendamentoConsultas', params: { q: indexSelected.consultation,reschedule:true}}">Remarcar<v-icon right>assignment_turned_in</v-icon></v-btn>
                                         </v-card-actions>
                                     </v-card>
                                 </v-dialog>

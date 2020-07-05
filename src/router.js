@@ -10,21 +10,23 @@ import Specialties from "./views/Register/Specialties";
 import Labor from "./views/Personal/Labor";
 import Reports from "./views/Register/Reports";
 import Bundles from "./views/Register/Bundles";
-import NewBundles from "./views/Register/Bundle/NewBudget";
+import NewBundles from "./views/Register/Bundle/NewBundles";
 import PaymentCovenants from "./views/Register/PaymentCovenants";
 import PaymentMedics from "./views/Register/PaymentMedics";
 
 import ContestValue from "./views/Notifications/contestValues"
 
+import oldDoctors from "./views/Register/oldDoctors";
 import Doctors from "./views/Register/Doctors";
-import oldClinics from "./views/Register/Clinics";
-import Clinics from "./views/Register/newClinics";
+import oldClinics from "./views/Register/oldClinics";
+import Clinics from "./views/Register/Clinics";
 import RegisterNewUserClinic from "./views/Register/Clinic/RegisterClinic"
 import DischargeProcedures from "./views/Register/Clinic/DischargeProcedures"
 import VerificationForwardingBilling from"./views/Register/Clinic/VerificationForwardingBilling"
 import Units from "./views/Units";
 import Bills from "./views/Register/Bills";
 import BillsMobile from "./views/Register/BillsMobile";
+import OuttakesCategories from "./views/Register/OuttakesCategories";
 
 import DoctorScheduling from './views/Operational/DoctorsAgenda/DoctorScheduling'
 
@@ -120,6 +122,14 @@ let mainRoutes = [
   },
 
   {
+    path: '/olddoctors',
+    name: 'olddoctors',
+    component: oldDoctors,
+    meta : {
+      requiresAuth: false
+    }
+  },
+  {
     path: '/doctors',
     name: 'doctors',
     component: Doctors,
@@ -128,15 +138,15 @@ let mainRoutes = [
     }
   },
   {
-    path: '/clinics',
-    name: 'clinics',
+    path: '/oldclinics',
+    name: 'oldClinics',
     component: oldClinics,
     meta: {
       requiresAuth: false
     }
   },
   {
-    path: '/newclinics',
+    path: '/clinics',
     name: 'clinics',
     component: Clinics,
     meta: {
@@ -205,6 +215,14 @@ let mainRoutes = [
     path: '/BillsMobile',
     name: 'BillsMobile',
     component : BillsMobile,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/Categorias',
+    name: 'OuttakesCategories',
+    component : OuttakesCategories,
     meta: {
       requiresAuth: false,
     }

@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container fluid>
         <v-layout row wrap>
             <v-flex xs12>
                 <v-card grid-list-x1 fluid class="mt-4">
@@ -23,7 +23,7 @@
                                             label="Tipo"
                                             prepend-icon="school"
                                             v-model="editedExam.type"
-                                            :items="specialties"
+                                            :items="examTypes"
                                             item-text="name"
                                             return-object
                                             outlined
@@ -122,13 +122,9 @@
             formRegister() {
                 return this.editedExam.name;
             },
-            specialties() {
-                let specialties = this.$store.getters.specialties.slice();
-                for (let spec in specialties) {
-                    delete specialties[spec].doctors
-                }
-                return specialties
-            },
+            examTypes() {
+                return this.$store.getters.examsTypes
+            }
         },
 
         methods: {

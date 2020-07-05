@@ -306,7 +306,16 @@ const actions = {
         firebase.firestore().collection('users').doc(payload.id).update({
             accessed_to: payload.accessed_to
         })
-    }
+    },
+    /* gabiarra({commit}){
+        firebase.firestore().collection('users').doc('04988051234').collection('procedures')
+        //.doc('SjJobhr1QATOY4bG5TXP').update({specialty:'CARDIOLOGIA'})
+        .get().then((snap)=>{
+            snap.forEach((doc)=>{
+                console.log('->',{id:doc.id,...doc.data()})
+            })
+        })
+    } */
 };
 
 const getters = {

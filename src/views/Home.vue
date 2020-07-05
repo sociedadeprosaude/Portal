@@ -4,9 +4,6 @@
             <v-flex xs12 sm8 class="text-center" v-if="notifications && user.group !== 'doctor' && user.group !== 'clinic'">
                 <alert/>
             </v-flex>
-            <v-flex v-if="user.group !== 'doctor' && user.group !== 'clinic'" xs12 class="text-center">
-                <select-patient-card class="hidden-xs-only"  />
-            </v-flex>
             <v-flex xs12 v-if="filteredPages.length === 0">
                 <v-card>
                     <v-card-title>Você ainda não tem permissões</v-card-title>
@@ -97,7 +94,7 @@
                 </v-layout>
             </v-flex>
             <v-flex xs12 class="text-right">
-                <span>2.1</span>
+                <span>2.3</span>
             </v-flex>
         </v-layout>
         <v-layout row wrap v-else class="align-center">
@@ -113,13 +110,12 @@
 </template>
 
 <script>
-    import SelectPatientCard from "../components/Patient/SelectPatientCard";
+
     import alert from "../components/alert.vue";
 
     export default {
 
         components: {
-            SelectPatientCard,
             alert,
         },
 

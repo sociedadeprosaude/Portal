@@ -58,12 +58,12 @@ const actions = {
         let intakes = [];
         for (let doc of intakesSnap.docs) {
             if (doc.data().colaborator) {
-                if(payload.colaborator){
-                    if(payload.colaborator.name === doc.data().colaborator.name){
+                if (payload.colaborator) {
+                    if (payload.colaborator.name === doc.data().colaborator.name) {
                         intakes.push(doc.data())
                     }
                 }
-                else{
+                else {
                     intakes.push(doc.data())
                 }
             }
@@ -81,13 +81,13 @@ const actions = {
         let intakes = [];
         for (let doc of intakesSnap.docs) {
             if (doc.data().colaborator) {
-                if(payload.colaborator){
+                if (payload.colaborator) {
 
-                    if(payload.colaborator === doc.data().colaborator.name){
+                    if (payload.colaborator === doc.data().colaborator.name) {
                         intakes.push(doc.data())
                     }
                 }
-                else{
+                else {
                     intakes.push(doc.data())
                 }
             }
@@ -102,7 +102,7 @@ const actions = {
         let quantidadeOuttakes = 0;
         let relatorio = {};
         let doctors = {};
-        let consultations= {};
+        let consultations = {};
 
         for (let intake in intakes) {
             if (!intakes[intake].cancelled_by) {
@@ -135,10 +135,10 @@ const actions = {
                             property: false
                         }
                     }
-                    if(intakes[intake].exams[exam].clinic.property === true) {
+                    if (intakes[intake].exams[exam].clinic.property === true) {
                         clinics[intakes[intake].exams[exam].clinic.name].property = true
                     }
-                    else{
+                    else {
                         clinics[intakes[intake].exams[exam].clinic.name].property = false
                     }
                     if (!clinics[intakes[intake].exams[exam].clinic.name].exams[intakes[intake].exams[exam].name]) {
@@ -150,7 +150,7 @@ const actions = {
                             type: ''
                         }
                     }
-                    if(intakes[intake].exams[exam].type){
+                    if (intakes[intake].exams[exam].type) {
                         clinics[intakes[intake].exams[exam].clinic.name].exams[intakes[intake].exams[exam].name].type = intakes[intake].exams[exam].type
                     }
                     clinics[intakes[intake].exams[exam].clinic.name].quantidade++
@@ -198,50 +198,50 @@ const actions = {
                 })
             }
         });
-        let consultationsSnap= await firebase.firestore().collection('consultations').where('date', '>=', payload.dataInicio)
+        let consultationsSnap = await firebase.firestore().collection('consultations').where('date', '>=', payload.dataInicio)
             .where('date', '<=', payload.dataFinal).orderBy('date').get();
         consultationsSnap.forEach((e) => {
-            if(!consultations[e.data().specialty.name]){
-                consultations[e.data().specialty.name]= {
-                    name: e.data().specialty.name,
-                    quantity:0,
-                    executed:0,
-                    scheduled:0
-                }
-            }
-            if(e.data().consultationHour){
-                consultations[e.data().specialty.name].quantity +=1
-                consultations[e.data().specialty.name].scheduled +=1
-                consultations[e.data().specialty.name].executed +=1
-
-                if (!doctors[e.data().doctor.name]) {
-                    doctors[e.data().doctor.name] = {
-                        doctor: e.data().doctor,
-                        specialties: {},
-                        payment: 0,
-                        quantityTotal: 0
-                    }
-                }
-                if (!doctors[e.data().doctor.name].specialties[e.data().specialty.name]) {
-                    doctors[e.data().doctor.name].specialties[e.data().specialty.name] = {
+            if (e.data().specialty) {
+                if (!consultations[e.data().specialty.name]) {
+                    consultations[e.data().specialty.name] = {
+                        name: e.data().specialty.name,
                         quantity: 0,
-                        cost: 0,
-                        costOne: 0
+                        executed: 0,
+                        scheduled: 0
                     }
                 }
-                doctors[e.data().doctor.name].quantityTotal++
-                doctors[e.data().doctor.name].specialties[e.data().specialty.name].quantity++
-                firebase.firestore().collection('specialties').doc(e.data().specialty.name).
-                collection('doctors').doc(e.data().doctor.cpf).get().then( (snap) => {
-                    doctors[e.data().doctor.name].specialties[e.data().specialty.name].cost += parseFloat(snap.data().cost.toFixed(2))
-                    doctors[e.data().doctor.name].specialties[e.data().specialty.name].costOne = parseFloat(snap.data().cost.toFixed(2))
-                    doctors[e.data().doctor.name].payment += parseFloat(snap.data().cost.toFixed(2))
-                })
-            }
-            else{
-                consultations[e.data().specialty.name].quantity +=1;
-                consultations[e.data().specialty.name].scheduled +=1
+                if (e.data().consultationHour) {
+                    consultations[e.data().specialty.name].quantity += 1
+                    consultations[e.data().specialty.name].scheduled += 1
+                    consultations[e.data().specialty.name].executed += 1
 
+                    if (!doctors[e.data().doctor.name]) {
+                        doctors[e.data().doctor.name] = {
+                            doctor: e.data().doctor,
+                            specialties: {},
+                            payment: 0,
+                            quantityTotal: 0
+                        }
+                    }
+                    if (!doctors[e.data().doctor.name].specialties[e.data().specialty.name]) {
+                        doctors[e.data().doctor.name].specialties[e.data().specialty.name] = {
+                            quantity: 0,
+                            cost: 0,
+                            costOne: 0
+                        }
+                    }
+                    doctors[e.data().doctor.name].quantityTotal++
+                    doctors[e.data().doctor.name].specialties[e.data().specialty.name].quantity++
+                    firebase.firestore().collection('specialties').doc(e.data().specialty.name).collection('doctors').doc(e.data().doctor.cpf).get().then((snap) => {
+                        doctors[e.data().doctor.name].specialties[e.data().specialty.name].cost += parseFloat(snap.data().cost.toFixed(2))
+                        doctors[e.data().doctor.name].specialties[e.data().specialty.name].costOne = parseFloat(snap.data().cost.toFixed(2))
+                        doctors[e.data().doctor.name].payment += parseFloat(snap.data().cost.toFixed(2))
+                    })
+                }
+                else {
+                    consultations[e.data().specialty.name].quantity += 1;
+                    consultations[e.data().specialty.name].scheduled += 1
+                }
             }
         });
         relatorio = {
@@ -274,13 +274,13 @@ const actions = {
         let intakes = [];
         for (let doc of intakesSnap.docs) {
             if (doc.data().colaborator) {
-                if(payload.colaborator){
+                if (payload.colaborator) {
 
-                    if(payload.colaborator === doc.data().colaborator.name){
+                    if (payload.colaborator === doc.data().colaborator.name) {
                         intakes.push(doc.data())
                     }
                 }
-                else{
+                else {
                     intakes.push(doc.data())
                 }
             }
@@ -295,7 +295,7 @@ const actions = {
         let quantidadeOuttakes = 0;
         let relatorio = {};
         let doctors = {};
-        let consultations= {};
+        let consultations = {};
 
         for (let intake in intakes) {
             if (!intakes[intake].cancelled_by) {
@@ -379,50 +379,51 @@ const actions = {
                 })
             }
         });
-        let consultationsSnap= await firebase.firestore().collection('consultations').where('date', '>=', payload.dataInicio)
+        let consultationsSnap = await firebase.firestore().collection('consultations').where('date', '>=', payload.dataInicio)
             .where('date', '<=', payload.dataFinal).orderBy('date').get();
         consultationsSnap.forEach((e) => {
-            if(!consultations[e.data().specialty.name]){
-                consultations[e.data().specialty.name]= {
-                    name: e.data().specialty.name,
-                    quantity:0,
-                    executed:0,
-                    scheduled:0
-                }
-            }
-            if(e.data().consultationHour){
-                consultations[e.data().specialty.name].quantity +=1
-                consultations[e.data().specialty.name].scheduled +=1
-                consultations[e.data().specialty.name].executed +=1
-
-                if (!doctors[e.data().doctor.name]) {
-                    doctors[e.data().doctor.name] = {
-                        doctor: e.data().doctor,
-                        specialties: {},
-                        payment: 0,
-                        quantityTotal: 0
-                    }
-                }
-                if (!doctors[e.data().doctor.name].specialties[e.data().specialty.name]) {
-                    doctors[e.data().doctor.name].specialties[e.data().specialty.name] = {
+            if (e.data().specialty) {
+                if (!consultations[e.data().specialty.name]) {
+                    consultations[e.data().specialty.name] = {
+                        name: e.data().specialty.name,
                         quantity: 0,
-                        cost: 0,
-                        costOne: 0
+                        executed: 0,
+                        scheduled: 0
                     }
                 }
-                doctors[e.data().doctor.name].quantityTotal++
-                doctors[e.data().doctor.name].specialties[e.data().specialty.name].quantity++
-                firebase.firestore().collection('specialties').doc(e.data().specialty.name).
-                collection('doctors').doc(e.data().doctor.cpf).get().then( (snap) => {
-                    doctors[e.data().doctor.name].specialties[e.data().specialty.name].cost += parseFloat(snap.data().cost.toFixed(2))
-                    doctors[e.data().doctor.name].specialties[e.data().specialty.name].costOne = parseFloat(snap.data().cost.toFixed(2))
-                    doctors[e.data().doctor.name].payment += parseFloat(snap.data().cost.toFixed(2))
-                })
-            }
-            else{
-                consultations[e.data().specialty.name].quantity +=1
-                consultations[e.data().specialty.name].scheduled +=1
+                if (e.data().consultationHour) {
+                    consultations[e.data().specialty.name].quantity += 1
+                    consultations[e.data().specialty.name].scheduled += 1
+                    consultations[e.data().specialty.name].executed += 1
 
+                    if (!doctors[e.data().doctor.name]) {
+                        doctors[e.data().doctor.name] = {
+                            doctor: e.data().doctor,
+                            specialties: {},
+                            payment: 0,
+                            quantityTotal: 0
+                        }
+                    }
+                    if (!doctors[e.data().doctor.name].specialties[e.data().specialty.name]) {
+                        doctors[e.data().doctor.name].specialties[e.data().specialty.name] = {
+                            quantity: 0,
+                            cost: 0,
+                            costOne: 0
+                        }
+                    }
+                    doctors[e.data().doctor.name].quantityTotal++
+                    doctors[e.data().doctor.name].specialties[e.data().specialty.name].quantity++
+                    firebase.firestore().collection('specialties').doc(e.data().specialty.name).collection('doctors').doc(e.data().doctor.cpf).get().then((snap) => {
+                        doctors[e.data().doctor.name].specialties[e.data().specialty.name].cost += parseFloat(snap.data().cost.toFixed(2))
+                        doctors[e.data().doctor.name].specialties[e.data().specialty.name].costOne = parseFloat(snap.data().cost.toFixed(2))
+                        doctors[e.data().doctor.name].payment += parseFloat(snap.data().cost.toFixed(2))
+                    })
+                }
+                else {
+                    consultations[e.data().specialty.name].quantity += 1
+                    consultations[e.data().specialty.name].scheduled += 1
+
+                }
             }
         });
         relatorio = {
@@ -453,7 +454,7 @@ const getters = {
     relatorio(state) {
         return state.relatorio;
     },
-    reportAllClinics(state){
+    reportAllClinics(state) {
         return state.reportAllClinics
     },
     intakesReport: (state) => state.intakesReport,

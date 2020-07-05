@@ -3,8 +3,10 @@
         <v-layout row nowrap style="width: 100%">
             <v-card class="my-2 white" width="100%" v-if="exams.length > 0">
                 <h4 class="text-left ml-2">Exames</h4>
-                <v-divider/>
                 <v-card-text v-for="(item) in exams" :key="item.name" class="ma-0 pa-0 my-1 font-weight-bold">
+                    <v-flex xs12 class="mt-2">
+                        <v-divider/>
+                    </v-flex>
                     <v-flex xs12 class="align-center justify-center text-center">
                         <span class="font-weight-bold">{{item.name}}</span>
                     </v-flex>
@@ -23,8 +25,10 @@
             </v-card>
             <v-card class="my-2 white" width="100%" v-if="consultations.length > 0">
                 <h4 class="text-left ml-2">Consultas</h4>
-                <v-divider/>
                 <v-card-text v-for="(item) in consultations" :key="item.doctor.name" class="ma-0 pa-0 my-1 font-weight-bold">
+                    <v-flex xs12 class="mt-2">
+                        <v-divider/>
+                    </v-flex>
                     <v-flex xs12 class="align-center justify-center text-center">
                         <span>{{item.name}}</span>
                     </v-flex>
@@ -43,37 +47,37 @@
                     </v-flex>
                     <v-btn rounded dense x-small class="error px-6" @click="removeItem(item)">Remover Item</v-btn>
                 </v-card-text>
-                <v-layout row wrap class="mt-3">
-                    <v-flex xs12>
-                        <v-combobox class="pa-0"
-                                    v-model="selectedDoctor"
-                                    :items="doctors"
-                                    return-object
-                                    item-text="name"
-                                    label="Médico"
-                                    outlined
-                                    dense
-                                    solo
-                                    color="blue"
-                                    clearable
-                        >
-                            <template v-slot:selection="data">
-                                <v-chip
-                                        :key="JSON.stringify(data.item)"
-                                        :input-value="data.selected"
-                                        :disabled="data.disabled"
-                                        class="v-chip--select-multi"
-                                        @click.stop="data.parent.selectedIndex = data.index"
-                                        @input="data.parent.selectItem(data.item)"
-                                        text-color="white" dense
-                                        color="primary"
-                                >{{ data.item.name }}
-                                </v-chip>
-                            </template>
-                        </v-combobox>
-                    </v-flex>
-                </v-layout>
             </v-card>
+            <v-layout row wrap class="mt-3">
+                <v-flex xs12>
+                    <v-combobox class="pa-0"
+                                v-model="selectedDoctor"
+                                :items="doctors"
+                                return-object
+                                item-text="name"
+                                label="Médico"
+                                outlined
+                                dense
+                                solo
+                                color="blue"
+                                clearable
+                    >
+                        <template v-slot:selection="data">
+                            <v-chip
+                                    :key="JSON.stringify(data.item)"
+                                    :input-value="data.selected"
+                                    :disabled="data.disabled"
+                                    class="v-chip--select-multi"
+                                    @click.stop="data.parent.selectedIndex = data.index"
+                                    @input="data.parent.selectItem(data.item)"
+                                    text-color="white" dense
+                                    color="primary"
+                            >{{ data.item.name }}
+                            </v-chip>
+                        </template>
+                    </v-combobox>
+                </v-flex>
+            </v-layout>
         </v-layout>
     </v-container>
 </template>
