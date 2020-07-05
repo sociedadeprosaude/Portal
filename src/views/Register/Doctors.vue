@@ -122,9 +122,9 @@
 
         methods: {
             async initialConfiguration (){
-                await this.$store.dispatch('getClinics');
+                /* await this.$store.dispatch('getClinics');
                 await this.$store.dispatch('getDoctors');
-                await this.$store.dispatch('getSpecialties');
+                await this.$store.dispatch('getSpecialties'); */
             },
             addDoctor() {
                 this.selectedDoctor = undefined;
