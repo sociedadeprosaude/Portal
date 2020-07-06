@@ -7,7 +7,7 @@ import gmapsInit from "../../utils/gmaps";
 
 export default {
   name: "Gmaps",
-  //props:['address'],
+  props:['addresses'],
   data: () => ({
     //google:undefined,
     geocoder: undefined,
@@ -37,28 +37,19 @@ export default {
           map: this.map,
           title: ""
         });
-       
-        /* let latlng = new google.maps.LatLng(-3.1190275, -60.02173140000002)
-        let mapOptions = {
-          zoom: 8,
-          center: latlng,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-        }
-        this.map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions) */
-        //this.positionAddress('Manaus')
 
-        this.markMap({lat:-3.0258876,lng:-59.9657626})
-        /*  var marker = new google.maps.Marker({
-          position: new google.maps.LatLng(-3.0258876, -59.9657626),
-          map: this.map,
-          title: "Hello World!"
-        }); */
+        //this.initMarkers()
       } catch (error) {
         console.error(error);
       }
     },
+    initMarkers(){
+      for(var address in this.addresses){
+        this.positionAddress(address)
+      }
+    },
+
     positionAddress(address) {
-      //console.log('GMaps',address)
 
       this.geocoder.geocode(
         { address: address + " Manaus Amazonas" },
@@ -66,16 +57,7 @@ export default {
           if (status !== "OK" || !results[0]) {
             throw new Error(status);
           }
-          console.log(results[0].formatted_address);
-          console.log("Latitude: ", results[0].geometry.location.lat());
-          console.log("Longitude: ", results[0].geometry.location.lng());
-          /* this.$emit("locationFound", {
-            address: results[0].formatted_address,
-            latitude: results[0].geometry.location.lat(),
-            longitude: results[0].geometry.location.lng()
-          }); */
-          /* this.map.setCenter(results[0].geometry.location);
-          this.map.fitBounds(results[0].geometry.viewport); */
+          this.markMap({lat:results[0].geometry.location.lat(),lng:results[0].geometry.location.lng()})
         }
       );
 
@@ -99,6 +81,13 @@ export default {
       let value = this.$store.getters.searchAddress;
       if (!value) value = "Manaus amazonas";
       return value;
+    }
+  },
+  watch:{
+    addresses(value){
+      if(value){
+        //this.initMarkers()
+      }
     }
   }
 };

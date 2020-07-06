@@ -7,10 +7,12 @@ const state = {
     clientsServed:{},
     newClients:{},
     ageClientsServed:{},
-    genderClientsServed:{}
+    genderClientsServed:{},
+    usersServed:[]
 };
 
 const mutations = {
+    setUsersServed: (state, payload) => state.usersServed = payload,
     setStatistics: (state, payload) => state.statistics = payload,
     setClientsServed:(state,payload) => state.clientsServed = payload,
     setNewClients:(state,payload) => state.newClients = payload,
@@ -98,6 +100,7 @@ const actions = {
         let ageAttended = {}
         let genderTotalClients = {}
         let genderClients = {}
+        let usersServed = []
         firebase.firestore().collection('users').where('accessed_to','>=',payload.initialDate)
         .where('accessed_to','<=',payload.finalDate)
         .get().then((users)=>{
@@ -124,10 +127,13 @@ const actions = {
                     genderClients['others'] =  (genderTotalClients['others']/users.size)*100
                 }
 
+                if(data.addresses && data.addresses[0])
+                    usersServed.push(data)
             })
             commit('setClientsServed',attended)
             commit('setAgeClientsServed',ageAttended)
             commit('setGenderClientsServed',genderClients)
+            commit('setUsersServed',usersServed)
         })
     },
     loadNewClients({commit},payload){
@@ -152,6 +158,7 @@ const getters = {
     getNewClients:(state) => state.newClients,
     getAgeClientsServed:(state) => state.ageClientsServed,
     getGenderClientsServed:(state) => state.genderClientsServed,
+    getUsersServed:(state) => state.usersServed,
 };
 
 export default {

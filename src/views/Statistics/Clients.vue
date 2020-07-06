@@ -91,7 +91,7 @@
     </v-row>
     <v-row>
       <v-col>
-        <Gmaps></Gmaps>
+        <Gmaps :addresses="usersServed"></Gmaps>
       </v-col>
     </v-row>
   </v-container>
@@ -125,6 +125,15 @@ export default {
     },
     genderClientsServed() {
       return this.$store.getters.getGenderClientsServed;
+    },
+    usersServed(){
+      let complements = this.$store.getters.getUsersServed.map((user)=>[user.addresses[0].street,user.addresses[0].complement].join(" "));
+      console.log(complements)
+      return complements.reduce((a,b)=>{
+        if(a.indexOf(b) == -1)
+          a.push(b)
+        return a
+      },[])
     }
   },
   methods: {
