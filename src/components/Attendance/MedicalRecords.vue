@@ -1,14 +1,30 @@
 <template>
     <v-container fluid>
         <v-card class="elevation-3">
-            <v-card-title class="headline grey lighten-2 justify-center align-center" primary-title>
+            <v-card-title class="headline primary justify-center align-center white--text" primary-title>
                 <v-btn style="display: none" text color="transparent" class="transparent"/>
-                <v-spacer/>PRONTUÁRIO<v-spacer/><v-btn color="error" @click="clear()">Fechar</v-btn>
+                <v-spacer/>PRONTUÁRIO<v-spacer/><v-icon @click="clear()" color="white">close</v-icon>
             </v-card-title>
             <v-card-text>
-                <vue-editor v-model="prontuario"/>
-                {{this.consultation.id}}
-                {{this.consultation.user.id}}
+                <editor v-model="prontuario"
+                        api-key="no-api-key"
+                        :init="{
+         height: 500,
+         menubar: false,
+         plugins: [
+           'advlist autolink lists link image charmap print preview anchor',
+           'searchreplace visualblocks code fullscreen',
+           'insertdatetime media table paste code help wordcount'
+         ],
+         toolbar:
+           'undo redo | formatselect | bold italic backcolor | \
+           alignleft aligncenter alignright alignjustify | \
+           bullist numlist outdent indent | removeformat | help'
+       }"/>
+                <!--<vue-editor v-model="prontuario"/>-->
+<!--                {{this.consultation.id}}
+                {{this.consultation.user.id}}-->
+                {{prontuario}}
             </v-card-text>
             <v-divider/>
             <v-card-actions>
@@ -27,10 +43,11 @@
 
 <script>
     import { VueEditor } from "vue2-editor";
+    import Editor from '@tinymce/tinymce-vue';
     import SubmitButton from "../SubmitButton";
     export default {
         props: ['consultation'],
-        components: {SubmitButton, VueEditor },
+        components: {SubmitButton, VueEditor, 'editor': Editor },
         data: () => ({
             prontuario: undefined,
             loading: false,

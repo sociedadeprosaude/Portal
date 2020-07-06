@@ -117,10 +117,6 @@
                 return this.$store.getters.selectedPatient
             },
         },
-        mounted() {
-        },
-        watch: {
-        },
         methods: {
 
             async deletedConsultation() {

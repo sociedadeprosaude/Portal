@@ -153,6 +153,37 @@ const actions = {
             return doctor
         })
     },
+    async AddPaymentDayDoctor(context,payload){
+        let doctor= firebase.firestore().collection('users').doc(payload.doctor.cpf);
+        let setMerge= doctor.set({
+            period: payload.period
+        },{merge:true})
+    },
+    async PayDoctor(context, payload) {
+        if (!payload.period) {
+            payload.period = 30
+        }
+        if (!payload.last_payment) {
+            await firebase.firestore().collection('users').doc(payload.cpf).update({
+                last_payment: moment().format('YYYY-MM-DD'),
+                period: payload.period
+            })
+        } else {
+            await firebase.firestore().collection('users').doc(payload.cpf).update({
+                last_payment: moment().format('YYYY-MM-DD'),
+                period: payload.period
+            })
+        }
+        await firebase.firestore().collection('outtakes').where('crm', '==', payload.crm)
+            .where('paid', '==', false).get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    let outtake= firebase.firestore().collection('outtakes').doc(doc.id);
+                    outtake.update({
+                        paid: moment().format('YYYY-MM-DD')})
+                })
+            })
+
+    },
     async selectDoctor({commit}, doctor) {
         commit('setDoctorSelected', doctor)
     }
