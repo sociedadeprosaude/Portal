@@ -195,6 +195,7 @@
                     case 'appointment':
                         return this.specialties;
                     case 'package':
+                        console.log(this.package)
                         return this.package;
                     default:
                         return []
@@ -220,8 +221,8 @@
                 for (let exam in budget.exams) {
                     this.$store.commit('addShoppingCartItem', budget.exams[exam])
                 }
-                for (let spec in budget.specialties) {
-                    this.$store.commit('addShoppingCartItem', budget.specialties[spec])
+                for (let spec in budget.consultations) {
+                    this.$store.commit('addShoppingCartItem', budget.consultations[spec])
                 }
                 this.loading = false
             },
