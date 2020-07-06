@@ -90,8 +90,6 @@ const actions = {
             statsYearMonth[year][month].itens = statDay.itens;
             return statDay
         })
-        console.log('1->',statistics);
-        console.log('2->',statsYearMonth);
         commit('setStatistics', statsYearMonth)
     },
     loadClientsServed({commit},payload){
@@ -114,8 +112,6 @@ const actions = {
                     if(!ageTotalAttended[age]) ageTotalAttended[age] = 0
                     ageTotalAttended[age] += 1
                     ageAttended[age] = (ageTotalAttended[age]/users.size)*100
-                    /* console.log('age->',age)
-                    console.log('qtd->',ageAttended[age]) */
                 }
 
                 if(data.sex){
@@ -129,7 +125,6 @@ const actions = {
                 }
 
             })
-            console.log('ages lista->',ageAttended)
             commit('setClientsServed',attended)
             commit('setAgeClientsServed',ageAttended)
             commit('setGenderClientsServed',genderClients)
@@ -146,7 +141,6 @@ const actions = {
                 if(!newClients[date]) newClients[date] = 0
                 newClients[date] += 1
             })
-            console.log('news->',newClients)
             commit('setNewClients',newClients)
         })
     }

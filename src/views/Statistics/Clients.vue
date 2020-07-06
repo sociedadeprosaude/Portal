@@ -85,12 +85,22 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <v-row class="mt-2">
+      <h1>Localidade dos visitantes</h1>
+    </v-row>
+    <v-row>
+      <v-col>
+        <Gmaps></Gmaps>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
 <script>
 import LineChart from "@/components/Charts/LineChart";
 import BarChart from "../../components/Charts/BarChart";
+import Gmaps from '../../components/Maps/Gmaps';
 import moment from "moment";
 export default {
   data: () => ({
@@ -98,7 +108,8 @@ export default {
   }),
   components: {
     LineChart,
-    BarChart
+    BarChart,
+    Gmaps
   },
   mounted() {},
   computed: {
