@@ -46,6 +46,7 @@ const actions = {
         specialty = functions.removeUndefineds(specialty);
         await firebase.firestore().collection('specialties').doc(specialty.name).set(specialty)
         commit('addSpecialty',specialty)
+    },
     async getDoctorSpecialty(context, consultation){
         let specialtieSelect = await firebase.firestore().collection('specialties').doc(consultation.specialty.name).get()
         let specialtie={
