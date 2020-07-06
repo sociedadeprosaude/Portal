@@ -318,7 +318,21 @@ const actions = {
         let outtakes = []
         let SpecificOuttake = await firebase.firestore().collection('outtakes').where('intake_id','==', parseInt(intake.number)).where('cnpj','==',intake.cnpj).get();
         SpecificOuttake.forEach(doc => {
-            outtakes.push(doc.data())
+            doc.data().id = doc.id;
+            let data = {
+                clinic: doc.data().clinic,
+                id: doc.id,
+                cnpj: doc.data().cnpj,
+                exams: doc.data().exams,
+                intake_id: doc.data().intake_id,
+                paid: doc.data().paid,
+                root: doc.data().root,
+                unit: doc.data().unit,
+                user: doc.data().user,
+                results: doc.data().results
+
+            }
+            outtakes.push(data)
         })
         commit('setOuttakeClinic',  outtakes)
 
@@ -452,13 +466,18 @@ const actions = {
         if (payload.value === 'delete') {
             payload.value = firebase.firestore.FieldValue.delete()
         }
-
-
         await firebase.firestore().collection('outtakes/').doc(payload.outtake.id).update({
             [payload.field]: payload.value
         })
 
-
+    },
+    async updateOuttakeExams(context, payload) {
+        if (payload.value === 'delete') {
+            payload.value = firebase.firestore.FieldValue.delete()
+        }
+        await firebase.firestore().collection('outtakes/').doc(payload.outtake.id).update({
+            exams: payload.exams
+        })
 
     },
     async deleteOuttake(context, outtake) {

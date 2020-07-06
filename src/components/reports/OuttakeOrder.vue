@@ -276,8 +276,9 @@ export default {
         imagePaths: outtake.receipts,
         path: "outtakes/receipts"
       });
+      console.log('outtake: ', outtake)
       let uploadedFiles = this.$refs[outtake.id][0].files;
-
+      console.log('files', uploadedFiles)
 
       for (let i = 0; i < uploadedFiles.length; i++) {
 
@@ -285,8 +286,9 @@ export default {
           this.files.push(uploadedFiles[i]);
         }
       }
-
+      console.log('files: ', this.files)
       let urls = await this.submitFiles(this.files);
+      console.log('url: ', urls)
       await this.$store.dispatch("updateOuttake", {
         outtake: outtake,
         field: "receipts",

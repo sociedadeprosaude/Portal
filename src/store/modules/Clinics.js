@@ -294,6 +294,41 @@ const actions = {
                 context.commit('setIntakesExamsClinics',intakes)
             });
     },
+    async GetLastReceiptsClinic(context, payload) {
+        await firebase.firestore().collection('outtakes').where('cnpj','==',payload.cnpj)
+            .where('paid','==',payload.last_payment).where('root','==',false).get().then((querySnapshot) =>{
+                let intakes= []
+                querySnapshot.forEach((doc) =>{
+                    if(!doc.data().cancelled_by && doc.data().exams){
+                        let exams= []
+                        let patient= doc.data().user.name
+                        let intakeNumber= doc.data().intake_id
+                        let intakeClinic = {}
+                        for(let exam in doc.data().exams) {
+                            if (doc.data().exams[exam].clinic.name === payload.name) {
+                                if (doc.data().exams[exam].realized === true) {
+                                    exams.push({
+                                        name: doc.data().exams[exam].name,
+                                        price: doc.data().exams[exam].cost,
+                                        rules: doc.data().exams[exam].rules,
+                                        realized: doc.data().exams[exam].realized,
+                                    });
+                                }
+                            }
+                        }
+                        if(exams.length !== 0){
+                            intakeClinic = {
+                                exams: exams,
+                                patient: patient,
+                                intakeNumber: intakeNumber
+                            }
+                            intakes.push(intakeClinic)
+                        }
+                    }
+                })
+                return intakes
+            });
+    },
     async CalculedValuePaymentClinic(context, payload) {
         let cost=0
         let NumberExams=0

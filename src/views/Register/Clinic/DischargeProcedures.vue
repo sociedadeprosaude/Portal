@@ -27,8 +27,8 @@
             <v-flex xs12>
                 <v-divider/>
             </v-flex>
-            <v-flex xs12 v-for="outtak in outtake">
-                <v-card class="elevation-2 my-3" v-for="intake in outtak.exams">
+            <v-flex xs12 v-for="(outtak,indeex) in outtake" v-bind:key="indeex">
+                <v-card class="elevation-2 my-3" v-for="(intake,index) in outtak.exams" v-bind:key="index">
                     <v-layout row wrap>
                         <v-flex xs6 md3 class="align-center justify-center">
                             <p class="font-weight-black mt-5">
@@ -38,7 +38,7 @@
                         <v-flex xs1 md1>
                             <v-divider class="primary" vertical/>
                         </v-flex>
-                        <v-flex xs5 md2 class="text-center align-center justify-center">
+                        <v-flex xs5 md1 class="text-center align-center justify-center">
                             <p class="mt-5"> PREÇO: {{intake.cost}}</p>
                         </v-flex>
                         <v-flex class="hidden-sm-and-down" md1>
@@ -47,7 +47,7 @@
                         <v-flex xs12  class="hidden-md-and-up">
                             <v-divider class="primary"></v-divider>
                         </v-flex>
-                        <v-flex xs6 md2 class="mt-4">
+                        <v-flex xs6 md1 class="mt-4">
                             <v-btn @click="DividerContestValue(intake)" rounded color="blue" text>Contestar Valor</v-btn>
                         </v-flex>
                         <v-flex xs1 md1>
@@ -55,6 +55,42 @@
                         </v-flex>
                         <v-flex xs5 md1>
                             <v-checkbox v-model="intake.realized" color="success" label="Exame Realizado"/>
+                        </v-flex>
+                        <v-flex xs1 md1 class="hidden-sm-and-down">
+                            <v-divider class="primary" vertical/>
+                        </v-flex>
+                        <v-flex xs12 class="hidden-md-and-up">
+                            <v-divider class="primary" ></v-divider>
+                        </v-flex>
+                        <v-flex xs12 md1 class="mt-4 ml-2 ">
+                            <v-file-input
+                                    v-model="file"
+                                    label="Anexar Resultado"
+                                    multiple
+                                    v-on:change="AddResultExam(intake,outtak,index)"
+                            ></v-file-input>
+                        </v-flex>
+                        <v-flex xs12>
+                            <v-divider class="primary" ></v-divider>
+                        </v-flex>
+                        <v-flex xs12>
+                            <v-layout row wrap>
+                                <v-card class="pa-2 ma-2" v-for="(preview, i) in intake.result" :key="i">
+                                    <v-btn
+                                            @click="removeFile(i,intake,outtak)"
+                                            class="grey"
+                                            small
+                                            fab
+                                            text
+                                            style="position: absolute; right: 0;"
+                                    >
+                                        <v-icon>close</v-icon>
+                                    </v-btn>
+                                    <v-layout column wrap>
+                                        <img style="max-height: 124px; max-width: 124px" :src="preview" />
+                                    </v-layout>
+                                </v-card>
+                            </v-layout>
                         </v-flex>
                     </v-layout>
                     </v-card>
@@ -125,10 +161,22 @@
                 successUpdateExams: false,
                 dialogContestValue: false,
                 ContestExam:[],
-                NewValue: ''
+                NewValue: '',
+                file:[],
+                files:[]
             };
         },
         methods: {
+            async removeFile(index,intake,outtak) {
+                intake.results.splice(index, 1);
+                let exams = outtak.exams
+
+                await this.$store.dispatch("updateOuttakeExams", {
+                    outtake: outtak,
+                    field: "results",
+                    exams: exams
+                });
+            },
             async SearchIntake(number){
                 this.loading= true;
                 await this.$store.dispatch('getSpecificOuttake',{number:number, cnpj: this.user.cnpj})
@@ -144,7 +192,39 @@
                 await this.$store.dispatch('addNewContestValue',{exams:this.ContestExam, value:this.NewValue, cnpj:this.user.cnpj, numberIntake:this.outtake.intakeNumber, clinic:clinic.docs[0].id})
                 this.dialogContestValue = !this.dialogContestValue
                 this.NewValue=0
+            },
+            async AddResultExam(intake,outtak,index){
+                console.log('outtak: ', outtak)
+                if(!intake.result){
+                    intake.result = []
+                }
+                await this.$store.dispatch("deleteFile", {
+                    imagePaths: intake.result,
+                    path: "outtakes/resultExams"
+                });
+                if(this.files.indexOf(this.file[0]) < 0 && this.file.length > 0){
+                    this.files.push(this.file[0])
+                    this.file= []
+                }
+                let urls = await this.submitFiles(this.files)
+                let exams = outtak.exams
+                exams[index].result = urls
+                console.log('exams: ',exams)
+                await this.$store.dispatch("updateOuttakeExams", {
+                    outtake: outtak,
+                    field: "results",
+                    value: urls,
+                    exams: exams
+                });
+                await this.$store.dispatch('getSpecificOuttake',{number:this.numberIntake, cnpj: this.user.cnpj})
 
+
+            },
+            async submitFiles(files) {
+                return await this.$store.dispatch("uploadFileToStorage", {
+                    files: files,
+                    path: "/outtakes/resultExams"
+                });
             },
             async SendCheckExams(){
                 this.loading= true;

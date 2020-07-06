@@ -4,84 +4,112 @@
             <v-flex xs12>
                 <span class="my-headline">Convênios</span>
             </v-flex>
-            <v-flex xs12 class="px-3 my-3">
-                <v-card v-for="(clinic,i) in clinics" :key="i" outlined>
+            <v-flex xs12>
+                <v-card>
                     <v-layout row wrap>
-                        <v-flex xs6 md3>
-                            <span class="font-weight-bold">{{clinic.name}}</span>
-                        </v-flex>
-                        <v-spacer></v-spacer>
-                        <v-flex xs3 md1>
-                            <v-menu open-on-hover top offset-y>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-btn
-                                            v-bind="attrs"
-                                            v-on="on"
-                                            class="elevation-0"
-                                            small
-                                    >
-                                        <v-icon>more_vert</v-icon>
-                                    </v-btn>
-                                </template>
+                        <v-flex xs12 class="px-3 my-3">
+                            <v-card v-for="(clinic,i) in clinics" :key="i" outlined class="mb-4 primary">
+                                <v-layout row wrap>
+                                    <v-flex xs10 md5 class="text-left">
+                                        <span class="font-weight-bold white--text ml-2">{{clinic.name}}</span>
+                                    </v-flex>
+                                    <v-spacer></v-spacer>
+                                    <v-flex xs2 md1>
+                                        <v-menu open-on-hover top offset-y>
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-btn
+                                                        v-bind="attrs"
+                                                        v-on="on"
+                                                        class="elevation-0 transparent"
+                                                        small
+                                                        dark
+                                                >
+                                                    <v-icon >more_vert</v-icon>
+                                                </v-btn>
+                                            </template>
 
-                                <v-list>
-                                    <v-list-item
-                                            v-for="(item, index) in Menu"
-                                            :key="index"
-                                            @click="OpenReceipt(item,clinic)"
-                                    >
-                                        <v-list-item-title>{{ item.title }}</v-list-item-title>
-                                    </v-list-item>
-                                </v-list>
-                            </v-menu>
+                                            <v-list>
+                                                <v-list-item
+                                                        v-for="(item, index) in Menu"
+                                                        :key="index"
+                                                        @click="OpenReceipt(item,clinic)"
+                                                >
+                                                    <v-list-item-title>{{ item.title }}</v-list-item-title>
+                                                </v-list-item>
+                                            </v-list>
+                                        </v-menu>
+                                    </v-flex>
+                                </v-layout>
+                                <v-flex xs12 sm12>
+                                    <v-layout row wrap class="justify-center">
+                                        <v-flex xs5 md2>
+                                            <v-card sm3 class="mx-4 elevation-0 transparent">
+                                                <span class="font-weight-bold white--text">
+                                                    Custo : {{CostExamsClinic(clinic)}}
+                                                </span>
+                                            </v-card>
+                                        </v-flex>
+                                        <v-flex xs7 md2>
+                                            <v-card sm3 class="mx-4 elevation-0 transparent">
+                                                <span class="font-weight-bold white--text">
+                                                            Nº de exames : {{QuantExamsClinic(clinic)}}
+                                                </span>
+                                            </v-card>
+                                        </v-flex>
+                                        <v-flex xs12 class="mb-4 hidden-md-and-up">
+                                            <v-spacer></v-spacer>
+                                        </v-flex>
+                                        <v-flex md3>
+                                            <v-card sm3 class="mx-4 elevation-0 transparent">
+                                                <span class="font-weight-bold white--text">
+                                                             Próximo Pagamento: {{date(clinic.last_payment,clinic.period)}}
+                                                </span>
+                                            </v-card>
+                                        </v-flex>
+                                        <v-flex xs12 class="mb-2 hidden-md-and-up">
+                                            <v-spacer></v-spacer>
+                                        </v-flex>
+                                        <v-flex md3>
+                                            <v-card sm3 class="mx-4 elevation-0 transparent">
+                                                <v-btn @click="ChangeDateDialog(clinic)" outlined dark class=" elevation-0">
+                                                    <span class="font-weight-bold white--text">
+                                                        Alterar Periodo
+                                                    </span>
+                                                </v-btn>
+                                            </v-card>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                                <v-flex xs12 class="mb-4 hidden-md-and-up">
+                                    <v-spacer></v-spacer>
+                                </v-flex>
+                                <v-flex xs12 sm12 class="mt-3">
+                                    <v-layout row wrap class="justify-space-between">
+                                        <v-flex xs6 class="text-left">
+                                            <v-btn @click="checkReceipts(clinic)" text dark>+ detalhes</v-btn>
+                                        </v-flex>
+
+                                        <v-flex xs6 class="text-right">
+                                            <v-card class="mx-4 elevation-0 transparent">
+                                                <v-btn @click="payClinic(clinic)" outlined dark class="elevation-0">
+                                                    <span class="font-weight-bold white--text">
+                                                        Pagar
+                                                    </span>
+                                                </v-btn>
+                                            </v-card>
+                                        </v-flex>
+                                        <v-flex xs12 class="mb-2">
+                                            <v-spacer></v-spacer>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                                <v-card v-if="intakesObserv && clinic === clinicSelected">
+                                    <clinicsIntakes @close-dialog="intakesObserv = false" :clinic="clinicSelected"
+                                                    :outtakes="outtakesSelected"></clinicsIntakes>
+                                </v-card>
+                            </v-card>
                         </v-flex>
                     </v-layout>
-                    <v-flex xs12 sm12>
-                        <v-layout row wrap class="justify-center">
-                            <v-flex xs6 md3>
-                                <v-card sm3 class="mx-4 elevation-0">
-                                        <span class="font-weight-bold">
-                                            Custo : {{CostExamsClinic(clinic)}}
-                                        </span>
-                                </v-card>
-                            </v-flex>
-                            <v-flex xs6 md3>
-                                <v-card sm3 class="mx-4 elevation-0">
-                                <span  class="font-weight-bold">
-                                            Nº de exames : {{QuantExamsClinic(clinic)}}
-                                </span>
-                                </v-card>
-                            </v-flex>
-                            <v-flex md3>
-                                <v-card sm3 class="mx-4 elevation-0">
-                                <span class="font-weight-bold">
-                                             Próximo Pagamento: {{date(clinic.last_payment,clinic.period)}}
-                                </span>
-                                </v-card>
-                            </v-flex>
-                           <v-flex md3>
-                               <v-card sm3 class="mx-4 elevation-0">
-                                   <v-btn @click="ChangeDateDialog(clinic)"><span class="font-weight-black">Alterar Periodo</span>
-                                   </v-btn>
-                               </v-card>
-                           </v-flex>
-                        </v-layout>
-                    </v-flex>
-                    <v-flex xs12 sm12 class="mt-3">
-                        <v-layout row wrap class="justify-space-between">
-
-                            <v-btn @click="checkReceipts(clinic)" text>+ detalhes</v-btn>
-
-                            <v-card sm3 class="mx-4 elevation-0" outlined>
-                                <v-btn @click="payClinic(clinic)">
-                                    <span class="font-weight-black">Pagar</span>
-                                </v-btn>
-                            </v-card>
-                        </v-layout>
-                    </v-flex>
-                    <v-card v-if="intakesObserv && clinic === clinicSelected">
-                        <clinicsIntakes @close-dialog="intakesObserv = false" :clinic="clinicSelected" :outtakes="outtakesSelected"></clinicsIntakes>
-                    </v-card>
                 </v-card>
             </v-flex>
         </v-layout>
