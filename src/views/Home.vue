@@ -213,17 +213,10 @@
                             },*/
                             {
                                 title: 'Financeiro',
-                                to: '/bills',
+                                to: '/pagamento/financeiro',
                                 permission: 'Caixa',
                                 icon: 'attach_money',
-                            },
-                            {
-                                title: 'Pagar Convênios',
-                                to: '/PaymentCovenants',
-                                permission: 'Caixa',
-                                icon: 'receipt',
-                            },
-
+                            }
                         ]
                     },
                     {

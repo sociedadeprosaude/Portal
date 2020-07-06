@@ -102,7 +102,6 @@
                                                 :status="status"
                                                 :payment_numberFound="payment_numberFound"
                                                 @findPaymentNumberToExam="thereIsPaymentNumber($event)"
-                                                :rescheduleConsultation="rescheduleConsultation"
                                 />
                             </v-dialog>
                         </div>
@@ -169,7 +168,6 @@
             examsLoading:[],
             loading: false,
             nextItem: 1,
-            rescheduleConsultation:undefined
         }),
 
         async mounted() {
@@ -184,7 +182,7 @@
             });
 
             this.query = this.$route.params.q
-            if (this.query && !this.$route.params.reschedule) {
+            if (this.query) {
                 this.modalidade = "Retorno"
                 this.previousConsultation = this.query.id
                 this.status = this.query.status
@@ -243,7 +241,7 @@
             },
 
             scheduleAppointment(consultation) {
-                if (!this.selectedPatient && !this.query) {
+                if (!this.selectedPatient) {
                     this.$refs.patientCard.$el.classList.add("shaking-ease-anim");
                     setTimeout(() => {
                         this.$refs.patientCard.$el.classList.remove("shaking-ease-anim");
@@ -257,7 +255,7 @@
 
             async fillConsultationForm(consultation) {
                 this.selectedForm = {
-                    user: (this.query && this.query.user) ? this.query.user : this.selectedPatient,
+                    user: this.selectedPatient,
                     consultation: consultation
                 };
 
@@ -342,7 +340,7 @@
             closeDialog(){
                 this.dialog = false
                 this.payment_numberFound = undefined
-                /* this.status = "" */
+                this.status = ""
                 this.numberReceipt = ""
                 this.selectedForm = undefined
             }

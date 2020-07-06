@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <v-row>
+<!--        <v-row>
             <v-col sm="12" md="4">
                 <v-tooltip top v-if="doctorsLoaded">
                     <template v-slot:activator="{ on }">
@@ -33,7 +33,7 @@
                             </v-col>
                         </v-row>
                         <v-row cols="12">
-                            <v-text-field v-model="room.name" label="Nome da Sala"/>
+                            <v-text-field v-model="room.name" label="Nome da Sala"></v-text-field>
                         </v-row>
 
                         <v-row>
@@ -43,7 +43,7 @@
                                         :loading="loading"
                                         :success="success"
                                         @click="createRoom(room)"
-                                />
+                                ></submit-button>
                             </v-col>
                         </v-row>
                     </v-card>
@@ -57,25 +57,13 @@
                     </v-btn>
                 </v-fade-transition>
             </v-col>
-        </v-row>
-
+        </v-row>-->
         <v-row class="mt-4">
-            <v-col cols="12" sm="6" lg="4" xl="3" v-for="room in rooms" :key="room.name">
-                <v-card class="pa-4">
-                    <v-row class="justify-center">
-                        <v-col cols="8" class="text-left">
+            <v-col cols="12" xs="4" v-for="room in rooms" :key="room.name">
+                <v-card class="pa-4" v-if="room.doctor">
+                    <v-row class="justify-center" v-if="room.doctor.name == user.name">
+                        <v-col cols="12" class="text-left">
                             <span class="my-sub-headline">{{room.name}}</span>
-                        </v-col>
-                        <v-col cols="4">
-                            <v-layout row wrap class="justify-end align-center">
-                                <v-btn x-small fab class="red" @click="deleteRoom(room)">
-                                    <v-icon class="white--text">delete</v-icon>
-                                </v-btn>
-                                <v-btn small fab icon @click="favoriteRoom(room)">
-                                    <v-icon class="warning--text" v-if="room.name === favoritedRoom.name">grade</v-icon>
-                                    <v-icon class="primary--text" v-else>grade</v-icon>
-                                </v-btn>
-                            </v-layout>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -96,7 +84,7 @@
                                 </template>
                                 <span>Chamar próxima senha</span>
                             </v-tooltip>
-                            <v-tooltip top v-if="doctorsLoaded">
+                            <!--<v-tooltip top v-if="doctorsLoaded">
                                 <template v-slot:activator="{ on }">
                                     <v-btn
                                             v-on="on"
@@ -112,7 +100,7 @@
                                 </template>
                                 <span>Selecionar médico</span>
                             </v-tooltip>
-                            <v-progress-circular indeterminate class="primary--text" v-else></v-progress-circular>
+                            <v-progress-circular indeterminate class="primary&#45;&#45;text" v-else></v-progress-circular>
                             <v-tooltip top v-if="doctorsLoaded">
                                 <template v-slot:activator="{ on }">
                                     <v-btn
@@ -160,7 +148,7 @@
                                     </v-btn>
                                 </template>
                                 <span>Visualizador único</span>
-                            </v-tooltip>
+                            </v-tooltip>-->
                         </v-col>
                     </v-row>
                     <v-row>
@@ -220,51 +208,17 @@
                 </v-layout>
             </v-card>
         </v-dialog>
-        <v-dialog v-model="singleViewDialog.active" fullscreen transition="dialog-bottom-transition">
-            <single-visualizer
-                    :sector="sector"
-                    @close="singleViewDialog.active = false"
-                    :selectedRoom="singleViewDialog.room"
-            ></single-visualizer>
-        </v-dialog>
-        <v-dialog v-model="multipleViewDialog" fullscreen transition="dialog-bottom-transition">
-            <multiple-visualizer :sector="sector" @close="multipleViewDialog = false"></multiple-visualizer>
-        </v-dialog>
-        <v-dialog v-model="deletionRoom.deleteRoomDialog" max-width="500px">
-            <v-card>
-                <v-col cols="12">
-                    <span class="my-headline">Deletar {{deletionRoom.selectedRoom.name}}</span>
-                </v-col>
-                <v-col cols="12" align="end">
-                    <v-btn
-                            v-if="!deletionRoom.deleting"
-                            @click="deleteRoom(deletionRoom.selectedRoom)"
-                            rounded
-                            class="red"
-                    >
-                        <span class="white--text">Deletar</span>
-                    </v-btn>
-                    <v-progress-circular indeterminate color="primary" v-else></v-progress-circular>
-                </v-col>
-            </v-card>
-        </v-dialog>
     </v-container>
 </template>
 
 <script>
     /* eslint-disable no-undef */
-
-    import SubmitButton from "../../../components/SubmitButton";
-    import SingleVisualizer from "../../../components/tickets/SingleVisualizer";
-    import MultipleVisualizer from "../../../components/tickets/MultipleVisualizer";
-
+    import SubmitButton from "../SubmitButton";
+    import SingleVisualizer from "../tickets/SingleVisualizer";
+    import MultipleVisualizer from "../tickets/MultipleVisualizer";
     export default {
-        name: "Tickets",
-        components: {
-            SubmitButton,
-            SingleVisualizer,
-            MultipleVisualizer
-        },
+        name: "DoctorTicketRoom",
+        components: {MultipleVisualizer, SingleVisualizer, SubmitButton},
         mounted() {
             // this.$store.dispatch("getTicketsGeneralInfo");
             this.initialInfo();
@@ -275,33 +229,14 @@
                     active: false,
                     search: ""
                 },
-
                 selectedRoom: {},
                 room: {},
                 createRoomController: false,
                 loading: false,
                 success: false,
-                singleViewDialog: {
-                    active: false,
-                    room: {}
-                },
-                multipleViewDialog: false,
-                deletionRoom: {
-                    deleteRoomDialog: false,
-                    deleting: false,
-                    selectedRoom: {}
-                }
             };
         },
         computed: {
-            favoritedRoom() {
-                if (this.$store.getters.favoriteRoom) return this.$store.getters.favoriteRoom;
-                else {
-                    return {
-                        name: '',
-                    }
-                }
-            },
             rooms() {
                 return this.sector ? this.sector.rooms : [];
             },
@@ -317,6 +252,9 @@
                 }
                 return this.$store.getters.ticketGeneralInfo;
             },
+            user(){
+                return this.$store.getters.user
+            },
             doctors() {
                 return Object.values(this.$store.getters.doctors).filter(doctor => {
                     return doctor.name.includes(
@@ -328,7 +266,8 @@
                 return this.$store.getters.doctorsLoaded;
             },
             sectorName() {
-                return this.$route.params['sector_name']
+                /*return this.$route.params['sector_name']*/
+                return 'Consultorios'
             },
             sector() {
                 return this.$store.getters.sectors ? this.$store.getters.sectors.find((sector) => sector.name == this.sectorName) : undefined
@@ -342,7 +281,6 @@
                 }
             },
             getActualTicket(tickets) {
-                console.log(tickets)
                 let calledTickets = tickets.filter(ticket => {
                     return ticket.called_at;
                 });
@@ -401,19 +339,17 @@
                 await this.$store.dispatch("updateGeneralInfo", this.ticketInfo);
             },
             async callNextTicket(room) {
-                this.loading = true
+                this.loading = true;
                 let ticketIndex = room.tickets.findIndex(ticket => {
                     return !ticket.called_at;
-                })
+                });
                 if (ticketIndex < 0) {
-                    await this.callSectorTicket(room)
-                    this.loading = false
+                    await this.callSectorTicket(room);
+                    this.loading = false;
                     return
                 }
 
-                room.tickets[ticketIndex].called_at = moment().format(
-                    "YYYY-MM-DD HH:mm:ss"
-                );
+                room.tickets[ticketIndex].called_at = moment().format("YYYY-MM-DD HH:mm:ss");
                 const sector = this.sector;
                 await this.$store.dispatch("updateSectorRoom", {sector, room});
                 this.loading = false
@@ -435,22 +371,6 @@
                 await this.$store.dispatch("updateSector", this.sector);
 
             },
-            favoriteRoom(room) {
-                this.$store.commit('setFavoriteRoom', room);
-                this.$store.commit('setFavoriteRoomSection', this.sector);
-
-            },
-            async deleteRoom(room) {
-                this.deletionRoom.selectedRoom = room
-                if (!this.deletionRoom.deleteRoomDialog) {
-                    this.deletionRoom.deleteRoomDialog = true
-                    return
-                }
-                this.deletionRoom.deleting = true
-                await this.$store.dispatch('deleteSectorRoom', {room: room, sector: this.sector})
-                this.deletionRoom.deleting = false
-                this.deletionRoom.deleteRoomDialog = false
-            },
             alertActualTicket(room) {
 
             },
@@ -464,4 +384,3 @@
 
 <style scoped>
 </style>
-
