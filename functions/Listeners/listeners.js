@@ -30,21 +30,20 @@ exports.setUidToUserWhenCreated = functions.firestore.document('users/{id}').onC
     }
 });
 
-/*exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore.document('users/{uid}').onUpdate( async (change, context) => {
+exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore.document('users/{uid}').onUpdate( async (change, context) => {
     let firestore = admin.firestore();
     let uidOld = change.before.data().uid;//antes
     let uidNew = change.after.data().uid;//depois
     let copy = change.after.data();
     let type = change.after.data().type
     //subcolletions tbm
-    //não fazer isso para medicos, so para medicos
     //deletar paciente com id antigo e setar com id novo(auth*)
     if( uidNew !== uidOld && type === 'PATIENT'){
         firestore.collection('users').doc(uidNew).set(copy)
         firestore.collection('users').doc(uidOld).delete()
 
     }
-});*/
+});
 
 exports.listenChangeInSpecialtiesSubcollections = functions.firestore.document('specialties/{specialtyId}/{collectionId}/{docId}').onWrite(async (change, context) => {
     convertSpecialtySubcollectionInObject((await admin.firestore().collection('specialties').doc(context.params.specialtyId).get()))
