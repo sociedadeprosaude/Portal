@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row class="mt-2">
-      <h1>Clientes</h1>
+      <h1>Clientes Atendidos</h1>
     </v-row>
     <v-row>
       <v-col>
@@ -111,7 +111,9 @@ export default {
     BarChart,
     Gmaps
   },
-  mounted() {},
+  mounted() {
+    //this.$store.dispatch('setGeopointsClients')
+  },
   computed: {
     clientsServed() {
       return this.$store.getters.getClientsServed;
@@ -142,7 +144,9 @@ export default {
         labels: Object.keys(dataset),
         datasets: [
           {
-            label: "Novos clientes",
+            //lineTension:0,
+            
+            label: "Clientes Atendidos",
             backgroundColor: "#81C784",
             borderColor: "#fff",
             data: Object.values(dataset)

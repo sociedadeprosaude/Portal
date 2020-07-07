@@ -38,7 +38,7 @@ export default {
           title: ""
         });
 
-        //this.initMarkers()
+        this.initMarkers()
       } catch (error) {
         console.error(error);
       }
@@ -55,7 +55,7 @@ export default {
         { address: address + " Manaus Amazonas" },
         (results, status) => {
           if (status !== "OK" || !results[0]) {
-            throw new Error(status);
+           throw new Error(status);
           }
           this.markMap({lat:results[0].geometry.location.lat(),lng:results[0].geometry.location.lng()})
         }
@@ -86,7 +86,7 @@ export default {
   watch:{
     addresses(value){
       if(value){
-        //this.initMarkers()
+        this.initMarkers()
       }
     }
   }

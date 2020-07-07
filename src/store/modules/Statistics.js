@@ -1,6 +1,6 @@
 import firebase from "firebase";
 import moment from "moment"
-import Users from "./Users";
+import gmapsInit from "../../utils/gmaps"
 
 const state = {
     statistics: null,
@@ -148,6 +148,37 @@ const actions = {
                 newClients[date] += 1
             })
             commit('setNewClients',newClients)
+        })
+    },
+
+    setGeopointsClients({commit},payload){
+        let google = gmapsInit()
+        let geocoder = new google.maps.Geocoder();
+        firebase.firestore().collection('users')
+        .get().then((users)=>{
+            users.forEach((user)=>{
+                let data = user.data()
+                if(data.addresses && data.addresses[0] && data.addresses[0].cep){
+                    firebase.firestore().collection('statistics').doc('geopoints').collection('users').doc(data.addresses[0].cep)
+                    .get().then((userGeopoint)=>{
+                        if(!userGeopoint.exists){
+                            geocoder.geocode(
+                                { address: address + " Manaus Amazonas" },
+                                (results, status) => {
+                                  if (status !== "OK" || !results[0]) {
+                                   //throw new Error(status);
+                                   console.log('aquele problema')
+                                  }
+                                  //this.markMap({lat:results[0].geometry.location.lat(),lng:results[0].geometry.location.lng()})
+                                  else{
+                                    firebase.firestore().collection('statistics').doc('geopoints').collection('users').doc(data.addresses[0].cep).set({geopoint:results[0].geometry.location})
+                                  }
+                                }
+                            )
+                        }
+                    })
+                }
+            })
         })
     }
 };
