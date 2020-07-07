@@ -27,7 +27,6 @@
                                                     <v-icon>more_vert</v-icon>
                                                 </v-btn>
                                             </template>
-
                                             <v-list>
                                                 <v-list-item
                                                         v-for="(item, index) in Menu"
@@ -105,6 +104,15 @@
                                 <v-card v-if="intakesObserv && doctor === doctorSelected">
                                     <DoctorOuttakes @close-dialog="intakesObserv = false" :doctor="doctorSelected" :outtakes="outtakesSelected"></DoctorOuttakes>
                                 </v-card>
+                            </v-card>
+                        </v-flex>
+                        <v-flex xs12>
+                            <v-card class="mx-4 elevation-0 transparent">
+                                <v-btn @click="payAllDoctor()"  outlined class="elevation-0">
+                                 <span class="font-weight-bold">
+                                     Pagar Todos
+                                 </span>
+                                </v-btn>
                             </v-card>
                         </v-flex>
                     </v-layout>
@@ -251,6 +259,10 @@
             },
             async payDoctor(doctor){
                 await this.$store.dispatch('PayDoctor', doctor)
+                this.getInitialInfo()
+            },
+            async payAllDoctor(){
+                await this.$store.dispatch('PayAllDoctor', this.doctors)
                 this.getInitialInfo()
             },
             date(day,period){

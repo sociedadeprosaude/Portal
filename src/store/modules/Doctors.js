@@ -184,6 +184,41 @@ const actions = {
             })
 
     },
+    async PayAllDoctor(context, payload) {
+        let doctor = []
+        await firebase.firestore().collection('outtakes').where('paid', '==', false).get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    if(doc.data().crm){
+                        let outtake= firebase.firestore().collection('outtakes').doc(doc.id);
+                        outtake.update({
+                            paid: moment().format('YYYY-MM-DD')
+                        })
+                        let docto = payload.filter( (doct) => doct.crm === doc.data().crm)
+                        if(doctor.indexOf(docto[0]) < 0 && docto.length > 0){
+                            doctor.push(docto[0])
+                        }
+                    }
+                })
+            })
+        for(let i=0; i < doctor.length; i++){
+            if (!doctor[i].period) {
+                doctor[i].period = 30
+            }
+            if (!doctor[i].last_payment) {
+                await firebase.firestore().collection('users').doc(doctor[i].cpf).update({
+                    last_payment: moment().format('YYYY-MM-DD'),
+                    period: doctor[i].period
+                })
+            } else {
+                await firebase.firestore().collection('users').doc(doctor[i].cpf).update({
+                    last_payment: moment().format('YYYY-MM-DD'),
+                    period: doctor[i].period
+                })
+            }
+        }
+
+    },
     async selectDoctor({commit}, doctor) {
         commit('setDoctorSelected', doctor)
     }
