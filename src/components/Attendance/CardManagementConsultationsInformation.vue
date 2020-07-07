@@ -2,7 +2,7 @@
     <v-layout row wrap>
         <v-spacer/>
         <v-flex xs12>
-            <v-card class="pa-4" color="indigo darken-4">
+            <v-card class="pa-3" color="indigo darken-4">
                 <v-layout row wrap aling-center>
                     <v-flex xs12>
                         <p class="white--text text-left title">Consultas</p>
@@ -53,18 +53,20 @@
                             </v-layout>
                         </v-card>
                     </v-flex>
+                    <v-layout row wrap class="align-center justify-center">
                     <v-card-actions class="mt-4 " v-if="consultation.status">
-                        <v-btn
+<!--                        <v-btn
                                 color="white"
                                 rounded
                                 :to="{ name: 'Attendance', params: { q: consultation}}"
-                        >Atender Sem Dialog</v-btn>
+                        >Atender Sem Dialog</v-btn>-->
                         <v-btn
                                 color="white"
                                 rounded
                                 @click="dialog = true"
-                        >Atender Com Dialog</v-btn>
+                        >Iniciar Atendimento do Paciente</v-btn>
                     </v-card-actions>
+                    </v-layout>
                     <v-flex xs12 class="mt-4 mb-2">
                         <v-divider color="white"/>
                     </v-flex>
@@ -118,7 +120,7 @@
 
     .cardConsultation {
         width: 100%;
-        height: 250px;
+        height: 310px;
     }
 
     .spacerH {
