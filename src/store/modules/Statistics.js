@@ -80,6 +80,10 @@ const actions = {
         var statistics = await firebase.firestore().collection('statistics').doc('outtakes').collection('month').get();
         var statsYearMonth = {}
 
+        var outtakes = await firebase.firestore().collection('outtakes').get();
+        outtakes = outtakes.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        console.log(outtakes)
+
         statistics = statistics.docs.map((doc) => {
             const statDay = doc.data();
             let [year, month] = doc.id.match(/\d+/g);
