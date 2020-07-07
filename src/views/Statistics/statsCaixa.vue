@@ -90,7 +90,7 @@
       </v-col>
       <v-col cols="12" md="6">
         <h1>Mais vendidos</h1>
-        {{bestSellersDataset.labels.length}}
+
         <v-card elevation="0">
           <pie-chart
             :chart-data="bestSellersDataset"
@@ -110,7 +110,13 @@
         <v-card elevation="0">
           <v-row v-if="numOfSalesMontlyDataset">
             <v-col>
-              <bar-chart :chart-data="numOfSalesMontlyDataset"></bar-chart>
+              <bar-chart
+                :chart-data="numOfSalesMontlyDataset"
+                :options="{
+                legend: {
+          display: false
+        },}"
+              ></bar-chart>
             </v-col>
           </v-row>
         </v-card>
@@ -168,12 +174,12 @@ export default {
   },
   watch: {
     statistics(val) {
-        if (val) {
-          this.years = Object.keys(val);
-          this.year = this.years[0];
-          this.months = Object.keys(val[this.years[0]]);
-          this.month = this.months[0];
-        }
+      if (val) {
+        this.years = Object.keys(val);
+        this.year = this.years[0];
+        this.months = Object.keys(val[this.years[0]]);
+        this.month = this.months[0];
+      }
     },
     year(val) {
       try {
