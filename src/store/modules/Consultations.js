@@ -16,6 +16,7 @@ let cloudFunctionInstance = axios.create({
 
 const state = {
     consultations: [],
+    medicalRecords: [],
     AllSchedules: [],
     schedules: [],
     consultationsCanceled: [],
@@ -39,7 +40,9 @@ const mutations = {
     setAllSchedules(state, payload) {
         state.AllSchedules = payload;
     },
-
+    setMedicalRecords(state, payload) {
+        state.medicalRecords = payload;
+    },
     setConsultationsCanceled(state, payload) {
         state.consultationsCanceled = payload
     },
@@ -91,6 +94,16 @@ const actions = {
         } catch (e) {
             throw e
         }
+    },
+
+    async getMedicalRecords({commit}, payload) {
+        let mr = await firebase.firestore().collection('users').doc(payload.patient).get();
+        let arrayMedicalRecords = mr.data().medicalRecords
+        if (arrayMedicalRecords){
+            commit('setMedicalRecords', arrayMedicalRecords);
+        }
+        //console.log('array:', arrayMedicalRecords[0])
+        //commit('setMedicalRecords', arrayMedicalRecords);
     },
 
     async getAllSchedules({commit}) {
@@ -381,8 +394,9 @@ const actions = {
     },
 
     async addMedicalRecordsToConsultation({commit}, payload) {
-        firebase.firestore().collection('consultations').doc(payload.consultation).update({MedicalRecords: payload.MedicalRecords});
-        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({MedicalRecords: payload.MedicalRecords})
+        firebase.firestore().collection('consultations').doc(payload.consultation).update({medicalRecord: payload.medicalRecord});
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({medicalRecord: payload.medicalRecord});
+        firebase.firestore().collection('users').doc(payload.patient).update({medicalRecords: payload.medicalRecords})
     },
 
     async addPrescriptionToConsultation({commit}, payload) {
@@ -413,7 +427,6 @@ const actions = {
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({start_at: payload.start});
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({end_at: payload.end});
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({duration: payload.durantion})
-
     }
 }
 
@@ -427,7 +440,9 @@ const getters = {
     AllSchedules(state) {
         return state.AllSchedules
     },
-
+    medicalRecords(state) {
+        return state.medicalRecords
+    },
     consultationsCanceled(state) {
         return state.consultationsCanceled
     },

@@ -39,6 +39,7 @@
                         />
                     </v-flex>
                     <v-flex xs4>
+                        <!--disabled-->
                         <v-menu
                                 ref="menu1"
                                 v-model="menu1"
@@ -47,9 +48,9 @@
                                 offset-y
                                 max-width="290px"
                                 min-width="290px"
-                                disabled
                         >
                             <template v-slot:activator="{ on }">
+                                <!--disabled-->
                                 <v-text-field
                                         outlined
                                         v-model="computedDateFormatted"
@@ -57,10 +58,10 @@
                                         hint="Data Inicial"
                                         v-on="on"
                                         class="mx-3"
-                                        disabled
                                 />
                             </template>
-                            <v-date-picker disabled v-model="date" no-title @input="menu1 = false"
+                            <!--disabled-->
+                            <v-date-picker v-model="date" no-title @input="menu1 = false"
                                            @change="getConsultationsDorctors()"/>
                         </v-menu>
                     </v-flex>
@@ -76,7 +77,6 @@
         </v-flex>
         <v-flex xs4>
             <CardManagementConsultationsInformation :patient="patientSelected" :consultation="consultatioSelect"/>
-            <DoctorTicketRoom/>
         </v-flex>
     </v-layout>
 </template>
@@ -85,9 +85,8 @@
     import moment from 'moment/moment'
     import CardManagementConsultationsOfUserDoctor from "../../components/Attendance/CardManagementConsultationsOfUserDoctor";
     import CardManagementConsultationsInformation from "../../components/Attendance/CardManagementConsultationsInformation";
-    import DoctorTicketRoom from "../../components/Attendance/DoctorTicketRoom";
     export default {
-        components: {DoctorTicketRoom, CardManagementConsultationsInformation,CardManagementConsultationsOfUserDoctor,},
+        components: {CardManagementConsultationsInformation,CardManagementConsultationsOfUserDoctor,},
         data: vm => ({
             date: new Date().toISOString().substr(0, 10),
             dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),

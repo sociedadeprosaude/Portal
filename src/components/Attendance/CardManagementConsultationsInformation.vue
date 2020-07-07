@@ -11,14 +11,14 @@
                         <v-divider color="white"/>
                     </v-flex>
                     <v-flex xs12 class="mt-3 mx-7">
-                        <v-card>
-                            <v-layout row wrap>
-                                <v-flex xs4>
-                                    <p class="font-weight-black">Senhas</p>
-                                </v-flex>
-                                    <DoctorTicketRoom/>
-                            </v-layout>
-                        </v-card>
+                        <v-layout row wrap>
+                            <v-flex xs12>
+                                <DoctorTicketRoom/>
+                            </v-flex>
+                        </v-layout>
+                    </v-flex>
+                    <v-flex xs12 class="mt-4 mb-2">
+                        <v-divider color="white"/>
                     </v-flex>
                     <v-flex xs12 class="mt-3 mx-7">
                         <v-card class="cardw">
@@ -39,7 +39,7 @@
                         <v-divider color="white"/>
                     </v-flex>
                     <v-flex xs12 class="mt-3 mx-7">
-                        <v-card class="cardConsultation ">
+                        <v-card>
                             <v-layout row wrap>
                                 <v-flex xs4>
                                     <p class="font-weight-black">Consulta</p>
@@ -71,7 +71,7 @@
                 </v-layout>
             </v-card>
         </v-flex>
-        <v-dialog v-model="dialog" persistent max-width="350" hide-overlay>
+        <v-dialog v-model="dialog" persistent max-width="600" hide-overlay>
             <v-card>
                 <v-card-title class="primary white--text">Deseja Iniciar o Atendimento do Paciente Selecionado ?</v-card-title>
                 <v-divider/>
@@ -84,7 +84,6 @@
         </v-dialog>
     </v-layout>
 </template>
-
 
 <script>
     import CardPatientManagementConsultations

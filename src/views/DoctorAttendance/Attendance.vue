@@ -2,8 +2,9 @@
     <v-content>
         <template>
             <v-row justify="center">
+                <v-spacer/>
                 <transition name="fade">
-                    <v-dialog v-model="dialog" persistent hide-overlay max-width="350">
+                    <v-dialog v-model="dialog" persistent hide-overlay max-width="600">
                         <template v-slot:activator="{ on }">
                             <v-btn
                                     dark
@@ -20,18 +21,29 @@
                             <v-card-actions>
                                 <v-btn outlined color="error" @click="dialog = false">NÃO</v-btn>
                                 <v-spacer/>
-                                <v-btn outlined color="success" @click="saveAttendance()">SIM</v-btn>
+                                <v-btn outlined color="success" @click="saveAttendance">SIM</v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
                 </transition>
+                <v-spacer/>
+                <v-btn v-show="show === false" dark color="primary" @click="show = true">
+                    Vizualizar Histórico de consultas do Paciente
+                    <v-icon right>visibility</v-icon>
+                </v-btn>
+                <v-btn v-show="show === true" dark color="primary" @click="show = false">
+                    Esconder Histórico de consultas do Paciente
+                    <v-icon right>visibility_off</v-icon>
+                </v-btn>
+                <v-spacer/>
             </v-row>
         </template>
 
         <v-container>
             <v-row justify="space-around">
+                <medical-record-history v-show="show" :id="consultation.user.id"/>
                 <transition name="fade">
-                    <MedicalRecords :consultation="consultation"/>
+                    <MedicalRecords :consultation="consultation" :id="consultation.user.id"/>
                 </transition>
             </v-row>
         </v-container>
@@ -40,13 +52,15 @@
 </template>
 
 <script>
+    import MedicalRecordHistory from "../../components/Attendance/MedicalRecordHistory";
     let moment = require('moment');
     import MedicalRecords from "../../components/Attendance/MedicalRecords";
     export default {
-        components: {MedicalRecords},
+        components: {MedicalRecordHistory, MedicalRecords},
         data: () => ({
             dialog: false,
             query: undefined,
+            show: false,
             startConsultation: undefined,
             endConsultation: undefined,
             timeConsultation: undefined,
@@ -60,7 +74,6 @@
         mounted() {
             this.startConsultation = moment().format('HH:mm:ss');
             this.query = this.$route.params.q;
-            console.log('p:', this.query)
             if (!this.query) {
                 this.$router.push('MedicalCare')
             }
@@ -75,9 +88,9 @@
                     durantion: this.timeConsultation,
                     consultation: this.consultation.id,
                     patient: this.consultation.user.id
-
                 });
-                this.$router.push("MedicalCare")
+                this.dialog = false;
+                this.$router.push("MedicalCare");
             }
         }
     }
