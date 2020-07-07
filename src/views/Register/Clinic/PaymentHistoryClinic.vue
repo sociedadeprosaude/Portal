@@ -10,7 +10,17 @@
                     </v-layout>
                     <v-flex xs12 sm12>
                         <v-layout row wrap class="justify-center">
-                            <v-spacer></v-spacer>
+                            <v-flex xs12 md4>
+                                <v-select
+                                    outlined
+                                    dark
+                                    v-model="filter"
+                                    :items="dats"
+                                    label="Escolha uma Data"
+                                    clearable
+                                >
+                                </v-select>
+                            </v-flex>
                             <v-flex xs7 md4>
                                 <v-card sm3 class="mx-4 elevation-0 transparent text-left">
                                     <span class="font-weight-bold white--text">
@@ -31,7 +41,7 @@
                         </v-layout>
                     </v-flex>
                     <v-flex xs12 class="mt-3">
-                        <v-card v-for="(outtakeDay,i) in outtakes" :key="i">
+                        <v-card v-for="(outtakeDay,i) in outtakesFilter" :key="i">
                             <v-layout row wrap class="indigo darken-3">
                                 <v-flex xs12>
                                     <v-divider class="primary"></v-divider>
@@ -103,6 +113,7 @@
                 ContestExam:[],
                 NewValue: '',
                 clinic:[],
+                filter:'',
                 last:false,
                 lastOuttakes:[]
             };
@@ -128,7 +139,6 @@
             async GetLastPayment(){
                 this.last= !this.last
                 this.lastOuttakes = await this.$store.dispatch('GetLastReceiptsClinic',this.clinic)
-                console.log('lastOuttakes: ', this.lastOuttakes)
             },
             closeDialog: function() {
                 this.$emit('close-dialog')
@@ -140,6 +150,30 @@
             },
             outtakes(){
                 return this.$store.getters.PaidOuttakesExamsClinics
+            },
+            outtakesFilter(){
+                let outakes={}
+                let cont =0
+                for( let outtake in this.outtakes){
+                    if(moment(outtake).format('DD/MM/YYYY') === this.filter) {
+                        cont += 1
+                        outakes[outtake] = {
+                            outtakes: []
+                        }
+                        outakes[outtake].outtakes = this.outtakes[outtake].outtakes
+                        return outakes
+                    }
+                }
+                if(cont === 0){
+                    return this.outtakes
+                }
+            },
+            dats(){
+                let datas = []
+                for( let outtake in this.outtakes){
+                    datas.push( moment(outtake).format('DD/MM/YYYY'))
+                }
+                return datas
             },
             PriceTot(){
                 let cost =0;

@@ -334,17 +334,13 @@ const actions = {
             });
     },
     async GetAllReceiptsPaidClinic(context, payload) {
-        console.log('payload: ', payload)
         let day = moment().format('YYYY-MM-DD')
-        console.log('day: ', day)
         day = moment(day).add(1, 'days').format('YYYY-MM-DD')
-        console.log('day: ', day)
         await firebase.firestore().collection('outtakes').where('cnpj','==',payload.cnpj)
             .where('paid','<=',day).where('root','==',false).get().then((querySnapshot) =>{
                 let intakes= {}
                 querySnapshot.forEach((doc) =>{
                     if(!doc.data().cancelled_by && doc.data().exams){
-                        console.log('doc.data(): ', doc.data())
                         let exams= []
                         let patient= doc.data().user.name
                         let intakeNumber= doc.data().intake_id
