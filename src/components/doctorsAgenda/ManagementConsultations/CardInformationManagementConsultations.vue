@@ -57,7 +57,7 @@
                                 rounded
                                 :to="{ name: 'AgendamentoConsultas', params: { q: consultation}}"
                                 :disabled="consultation.status !== 'Pago' || consultation.regress"
-                                v-if="consultation.type !== 'Retorno'"
+                                v-if="consultation.type !== 'Retorno' && consultation.specialty"
                         >Retorno
                         </v-btn>
                         <v-btn
@@ -83,10 +83,10 @@
             </v-card>
         </v-flex>
         <v-dialog v-model="documentDialog">
-            <consultation-document @close="documentDialog=false" :consultation="consultation" ></consultation-document>
+            <consultation-document @close="documentDialog=false" :consultation="consultation" />
         </v-dialog>
         <v-dialog v-model="receptDialog">
-            <consultation-receipt @close="receptDialog=false" :consultation="consultation" ></consultation-receipt>
+            <consultation-receipt @close="receptDialog=false" :consultation="consultation" />
         </v-dialog>
     </v-layout>
 </template>
@@ -99,7 +99,6 @@
         from '../../../components/doctorsAgenda/ManagementConsultations/CardPatientManagementConsultations'
     import ConsultationDocument from "../commons/ConsultationDocument"
     import ConsultationReceipt from "../commons/ConsultationReceipt"
-
     let moment = require('moment');
 
     export default {
@@ -118,19 +117,10 @@
                 return this.$store.getters.selectedPatient
             },
         },
-        mounted() {
-            this.initialConfig()
-            console.log(this.consultation)
-        },
-        watch: {
-        },
         methods: {
 
-            async initialConfig() {
-
-            },
             async deletedConsultation() {
-                this.cancelLoading = true
+                this.cancelLoading = true;
                 let obj = {
                     id: this.consultation.id,
                     idPatient: this.consultation.user ? this.consultation.user.cpf : this.selectedPatient.cpf,
@@ -141,21 +131,34 @@
                     previousConsultation: this.consultation.previousConsultation,
                     consultation: this.consultation,
                     exam:this.consultation.exam
-                }
+                };
 
-                console.log(obj)
                 await this.$store.dispatch('eraseAppointment', obj);
                 this.cancelLoading = false
 
             },
-            setConsultationHour(consultation) {
+            async setConsultationHour(consultation) {
                 let consultation_hour = moment().format('YYYY-MM-DD hh:mm:ss');
+                if(!consultation.user)
+                    consultation.user = this.selectedPatient
                 let data = {
                     consultation_hour: consultation_hour,
                     consultation: consultation,
                     id: consultation.id,
                 };
-                this.$store.dispatch('addConsultationHourInConsultation', data);
+                let specialty = await this.$store.dispatch('getDoctorSpecialty', consultation)
+                let outtake = {
+                    intake_id: consultation.payment_number,
+                    user: consultation.user,
+                    unit: consultation.clinic,
+                    doctor: consultation.doctor,
+                    specialties: specialty,
+                    paid: false,
+                    crm: consultation.doctor.crm
+                }
+                console.log('outtake: ', outtake)
+                await this.$store.dispatch('addSpecialtyOuttakes', outtake)
+                await this.$store.dispatch('addConsultationHourInConsultation', data);
                 this.consultation.consultation_hour = consultation_hour;
                 this.documentDialog = true;
             },

@@ -4,7 +4,13 @@
             <v-flex sm12>
                 <DataDoctorToSearchConsultation />
             </v-flex>
-            <v-flex xs12 class="mt-n2">
+            <v-flex xs12 class="justify-start text-left">
+                <v-btn icon fab small @click="showCalendar = !showCalendar" color="background" dark>
+                    <v-icon v-if="showCalendar">close</v-icon>
+                    <v-icon v-else>date_range</v-icon>
+                </v-btn>
+            </v-flex>
+            <v-flex xs12 class="mt-3" v-show="showCalendar">
                 <v-date-picker
                         :allowed-dates="allowedDates"
                         class="mx-2"
@@ -14,8 +20,11 @@
                         color="primary"
                 />
             </v-flex>
-            <v-flex class="mt-5" sm12>
+            <v-flex class="mt-4" sm12>
                 <CardPatient ref="patientCard"/>
+            </v-flex>
+            <v-flex sm12 class="mt-4">
+                <FavoriteRoom/>
             </v-flex>
         </v-layout>
     </v-container>
@@ -23,20 +32,24 @@
 <script>
     import DataDoctorToSearchConsultation from "../doctorsAgenda/DataDoctorToSearchConsultation"
     import CardPatient from "../Patient/DataPatient"
+    import FavoriteRoom from "../tickets/FavoriteRoom"
 
     let moment = require("moment/moment");
 
     export default {
-        components: {DataDoctorToSearchConsultation, CardPatient},
+        components: {DataDoctorToSearchConsultation, CardPatient, FavoriteRoom},
         props: ['daysToListen'],
 
         data: () => ({
+            showCalendar: false,
             date: moment().format("YYYY-MM-DD"),
             consultationsListenerUnsubscriber: undefined,
         }),
 
         async mounted() {
+            this.showCalendar = true;
             await this.listenConsultations();
+            this.showCalendar = false;
         },
 
 
@@ -82,6 +95,13 @@
                 return this.$store.getters.selectedSpecialty
             },
 
+            examType(){
+                return this.$store.getters.scheduleExamSelected
+            },
+            examTypeCheck(){
+                return this.$store.getters.scheduleExamSelectedCheck
+            },
+
             options() {
                 return {
                     duration: 500,
@@ -97,11 +117,17 @@
                         if (this.doctor.cpf !== a.doctor.cpf) response = false;
                     }
                     if (this.specialty) {
-                        if (this.specialty.name !== a.specialty.name) response = false;
+                        if (!a.specialty || this.specialty.name !== a.specialty.name) response = false;
                     }
                     if (this.clinic) {
                         if (this.clinic !== a.clinic.name) response = false;
                     }
+                    if(this.examType){
+                        if (!a.exam_type || this.examType.name !== a.exam_type.name) response = false;
+                    }
+
+                    if((this.examTypeCheck && !a.exam_type) || (!this.examTypeCheck && a.exam_type)) response = false
+                        
                     return response;
                 });
                 return this.consultationsOfSchedules(schedules);
@@ -116,9 +142,14 @@
                     if (this.doctor) {
                         if (this.doctor.cpf !== a.doctor.cpf) response = false;
                     }
-                    if (this.specialty) {
+                    if (this.specialty && a.specialty) {
                         if (this.specialty.name !== a.specialty.name) response = false;
                     }
+                    
+                    if (this.examType && a.exam) {
+                        if (this.examType.name !== a.exam.type) response = false;
+                    }
+
                     if (this.clinic) {
                         if (this.clinic !== a.clinic.name) response = false;
                     }
@@ -186,11 +217,14 @@
                                     doctor: schedule.doctor,
                                     date: date + ' ' + hourConsultation,
                                     routine_id: schedule.routine_id,
-                                    specialty: schedule.specialty,
                                     vacancy: schedule.days[moment(date).weekday()].vacancy,
                                     id_schedule: schedule.id,
 
                                 };
+                                if(schedule.specialty)
+                                    scheduleObj.specialty = schedule.specialty
+                                if(schedule.exam_type)
+                                    scheduleObj.exam_type = schedule.exam_type
                                 let obj = {...scheduleObj, ...this.numberVacancyAndReturns(scheduleObj)};
                                 obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns;
                                 consultations.push(obj)
@@ -225,10 +259,11 @@
 
                 let consultations = this.consultations;
                 return consultations.reduce((obj, item) => {
-
-                    if (schedule.clinic.name === item.clinic.name && schedule.specialty.name === item.specialty.name
+                    let specialtyOrExamType = ((schedule.specialty && item.specialty && schedule.specialty.name === item.specialty.name) 
+                                                ||(schedule.exam_type && item.exam && schedule.exam_type.name === item.exam.type))
+                    if (schedule.clinic.name === item.clinic.name && specialtyOrExamType
                         && schedule.doctor.cpf === item.doctor.cpf && schedule.date === item.date && item.user) {
-                        if (item.type === 'Consulta') {
+                        if (item.type === 'Consulta' || !item.type) {
                             obj.qtd_consultations = obj.qtd_consultations + 1
                         } else
                             obj.qtd_returns += 1

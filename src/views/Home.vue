@@ -4,9 +4,6 @@
             <v-flex xs12 sm8 class="text-center" v-if="notifications && user.group !== 'doctor' && user.group !== 'clinic'">
                 <alert/>
             </v-flex>
-            <v-flex v-if="user.group !== 'doctor' && user.group !== 'clinic'" xs12 class="text-center">
-                <select-patient-card class="hidden-xs-only"  />
-            </v-flex>
             <v-flex xs12 v-if="filteredPages.length === 0">
                 <v-card>
                     <v-card-title>Você ainda não tem permissões</v-card-title>
@@ -113,13 +110,12 @@
 </template>
 
 <script>
-    import SelectPatientCard from "../components/Patient/SelectPatientCard";
+
     import alert from "../components/alert.vue";
 
     export default {
 
         components: {
-            SelectPatientCard,
             alert,
         },
 
@@ -217,17 +213,10 @@
                             },*/
                             {
                                 title: 'Financeiro',
-                                to: '/bills',
+                                to: '/pagamento/financeiro',
                                 permission: 'Caixa',
                                 icon: 'attach_money',
-                            },
-                            {
-                                title: 'Pagar Convênios',
-                                to: '/PaymentCovenants',
-                                permission: 'Caixa',
-                                icon: 'receipt',
-                            },
-
+                            }
                         ]
                     },
                     {
@@ -282,16 +271,16 @@
                 return this.$store.getters.user
             },
             userPermissions() {
-                let holder = this.$store.getters.user.permissions
-                let vectorOfPaths = []
+                let holder = this.$store.getters.user.permissions;
+                let vectorOfPaths = [];
                 for(let i in holder){
                     vectorOfPaths.push(holder[i].path)
                 }
                 return vectorOfPaths
             },
             permissions () {
-                let holder = this.$store.getters.permissions[0].children
-                let listOfPaths = []
+                let holder = this.$store.getters.permissions[0].children;
+                let listOfPaths = [];
                 for(let i in holder){
                     listOfPaths.push(holder[i].path)
                 }
@@ -303,11 +292,9 @@
 
             filteredPages() {
                 if(this.user){
-                    console.log(this.userPermissions)
-                    console.log(this.permissions)
                     if(this.userPermissions && this.permissions){
                         for(let rota in this.userPermissions){
-                            if(this.permissions.indexOf(this.userPermissions[rota]) != -1){
+                            if(this.permissions.indexOf(this.userPermissions[rota]) !== -1){
                                 console.log('tem permissão')
                             } else {
                                 console.log('não tem permissão')

@@ -1,7 +1,7 @@
 import firebase from "firebase";
 import functions from "../../utils/functions";
 import constants from "../../utils/constants";
-import {Promise} from "core-js";
+import { Promise } from "core-js";
 
 const state = {
     intakes: [],
@@ -29,8 +29,8 @@ const actions = {
         delete copyPayload.user.consultations;
         delete copyPayload.user.intakes;
 
-        let specialties = copyPayload.specialties ? Object.assign( copyPayload.specialties) : undefined;
-        let exams = copyPayload.exams ? Object.assign( copyPayload.exams) : undefined;
+        let specialties = copyPayload.specialties ? Object.assign(copyPayload.specialties) : undefined;
+        let exams = copyPayload.exams ? Object.assign(copyPayload.exams) : undefined;
 
         if (copyPayload.specialties) {
             copyPayload.specialties = Object.values(copyPayload.specialties)
@@ -114,8 +114,14 @@ const actions = {
                 await userRef.collection('intakes').doc(copyPayload.id.toString()).collection('specialties').add({
                     ...specialties[spec]
                 });
-
-                context.dispatch('verifyUnpaidConsultation', { userRef: userRef, user: user, isConsultation: true,consultation:payload.consultation, payment_number: copyPayload.id.toString(), specialty: specialties[spec] })
+                context.dispatch('verifyUnpaidConsultation', {
+                    userRef: userRef,
+                    user: user,
+                    isConsultation: true,
+                    consultation: payload.consultation,
+                    payment_number: copyPayload.id.toString(),
+                    specialty: specialties[spec]
+                })
             }
         }
         if (exams) {
@@ -130,9 +136,101 @@ const actions = {
                     ...exams[exam]
                 });
 
-                context.dispatch('verifyUnpaidConsultation', { userRef: userRef, user: user, isConsultation: false, payment_number: copyPayload.id.toString(), specialty: {name:exams[exam].type}, examObj: exams[exam] })
+                context.dispatch('verifyUnpaidConsultation', {
+                    userRef: userRef,
+                    user: user,
+                    isConsultation: false,
+                    payment_number: copyPayload.id.toString(),
+                    specialty: { name: exams[exam].type },
+                    examObj: exams[exam]
+                })
             }
         }
+    },
+
+    async verifyUnpaidConsultation(context, payload) {
+        let consultationFound = undefined;
+        let precoVendaZero = payload.isConsultation && payload.specialty.price === 0;
+        if (!precoVendaZero) {
+            let consultationRef =  payload.userRef.collection('consultations').where('status', '==', 'Aguardando pagamento')
+                //.get()
+
+            if(payload.isConsultation)
+                consultationRef = consultationRef.where('specialty.name', '==', payload.specialty.name)
+            else
+                consultationRef = consultationRef.where('exam.name','==',payload.examObj.name);
+
+            let consultations = await consultationRef.get();
+            consultations.forEach(async (c) => {
+                consultationFound = c;
+                context.dispatch('updatePaymentNumberConsultation', { user: payload.user, consultation: c, payment_number: payload.payment_number })
+            })
+        }
+
+
+        context.dispatch('createOrUpdateProcedure', { consultationFound: consultationFound, consultation:payload.consultation, precoVendaZero:precoVendaZero, userRef: payload.userRef, user: payload.user, isConsultation: payload.isConsultation, payment_number: payload.payment_number, specialty: payload.specialty, examObj: payload.examObj })
+    },
+
+    async createOrUpdateProcedure({ }, payload) {
+        let consultationFound = payload.consultationFound;
+        let user = payload.user;
+        let statusName = payload.isConsultation ? 'Consulta Paga' : 'Exame Pago';
+        let type = payload.isConsultation ? 'Consultation' : 'Exam';
+
+        if (consultationFound || (payload.precoVendaZero && payload.isConsultation) ) {
+            let consultation = payload.precoVendaZero && payload.isConsultation?  payload.consultation : consultationFound
+
+            let procedures = await firebase.firestore().collection('users').doc(user.cpf).collection('procedures').where('consultation', '==', consultation.id)
+                .get();
+
+            if (!procedures.empty){
+                procedures.forEach((snap) => {
+                    let data = snap.data();
+                    let obj = {
+                        status: firebase.firestore.FieldValue.arrayUnion(statusName),
+                        payment_number: payload.payment_number
+                    };
+                    if (!payload.isConsultation) {
+                        Object.assign(obj, { exam: { ...payload.examObj} });
+                    }else{
+                        obj.specialty = payload.specialty.name
+                    }
+
+                    firebase.firestore().collection('users').doc(user.cpf).collection('procedures').doc(snap.id).update(
+                        { ...obj }
+                    )
+                })
+            }
+        } else {
+            let obj = {
+                status: [statusName],
+                payment_number: payload.payment_number,
+                startAt: moment().format('YYYY-MM-DD hh:ss'),
+                type: type,
+            };
+
+            if (!payload.isConsultation) {
+
+                Object.assign(obj, { exam: { ...payload.examObj} });
+            }else{
+                obj.specialty = payload.specialty.name
+            }
+            firebase.firestore().collection('users').doc(user.cpf).collection('procedures').add(
+                { ...obj }
+            )
+        }
+
+    },
+
+    async updatePaymentNumberConsultation(context,payload){
+        await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.id).update({
+            status: 'Pago',
+            payment_number: payload.payment_number.toString()
+        });
+        await firebase.firestore().collection('consultations').doc(payload.consultation.id).update({
+            status: 'Pago',
+            payment_number: payload.payment_number.toString()
+        })
     },
 
     async getUserIntakes(context, user) {
@@ -152,7 +250,9 @@ const actions = {
             ...intake.data(),
             id: intake.id
         };
-        if(intake.user.dependents.length === 0){
+        //console.log('intake puxando: ', intake.user)
+        //console.log('user.dependents tamanho: ', intake.user.dependents.length)
+        if(intake.user.dependents && intake.user.dependents.length === 0){
            delete intake.user.dependents
         }
         let examsSnap = await firebase.firestore().collection('intakes').doc(intake.id.toString()).collection('exams').get();
@@ -186,7 +286,7 @@ const actions = {
         return
     },
 
-    async thereIsIntakes(context, payload) {
+    /* async thereIsIntakes(context, payload) {
 
         return new Promise(async (resolve, reject) => {
             let examesSpecialties = ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'];
@@ -194,12 +294,12 @@ const actions = {
             let type = payload.exam ? 'Exam' : 'Consultation';
             let status = payload.exam ? 'Exame Pago' : 'Consulta Paga';
             let procedureRef;
-            if(payload.status && payload.payment_number)
+            if (payload.status && payload.payment_number)
                 procedureRef = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', 'Consultation')
-                    .where('specialty', '==', payload.specialty.name).where('status', 'array-contains-any', payload.status).where('payment_number','==',payload.payment_number.toString());
-            else{
+                    .where('specialty', '==', payload.specialty.name).where('status', 'array-contains-any', payload.status).where('payment_number', '==', payload.payment_number.toString());
+            else {
                 procedureRef = payload.exam ? procedureRef = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)
-                        .where('specialty', '==', payload.specialty.name).where('status', '==', [status]).where('exam.name', '==', payload.exam.name)
+                    .where('specialty', '==', payload.specialty.name).where('status', '==', [status]).where('exam.name', '==', payload.exam.name)
                     : procedureRef = firebase.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)
                         .where('specialty', '==', payload.specialty.name).where('status', '==', [status])
             }
@@ -221,9 +321,9 @@ const actions = {
             }
 
         })
-    },
+    }, */
 
-    async getIntakesCategories({commit}) {
+    async getIntakesCategories({ commit }) {
         firebase.firestore().collection('operational/').doc('intakes').onSnapshot((outtakesDoc) => {
             let categories = [];
             if (!outtakesDoc.exists) {
@@ -259,7 +359,7 @@ const actions = {
         await firebase.firestore().collection('intakes/').add(intake)
     },
 
-    async getSpecificIntake({commit}, intake) {
+    async getSpecificIntake({ commit }, intake) {
         let SpecificIntake = await firebase.firestore().collection('intakes').doc(intake.number).get();
         let exams = [];
         let patient = SpecificIntake.data().user.name;
@@ -292,7 +392,7 @@ const actions = {
         commit('setIntakesClinic', intakeClinic)
     },
 
-    async updatingSpecificIntake({commit}, intake) {
+    async updatingSpecificIntake({ commit }, intake) {
         let SpecificIntake = await firebase.firestore().collection('intakes').doc(intake.number).get();
         let Exams = SpecificIntake.data().exams;
         for (let exam in Exams) {
@@ -302,7 +402,7 @@ const actions = {
                 }
             }
         }
-        await firebase.firestore().collection('intakes').doc(intake.number).update({exams: Exams})
+        await firebase.firestore().collection('intakes').doc(intake.number).update({ exams: Exams })
     }
 };
 

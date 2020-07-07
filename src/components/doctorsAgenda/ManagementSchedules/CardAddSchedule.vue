@@ -1,99 +1,136 @@
 <template>
     <v-layout row wrap>
-        <v-flex xs12 sm6>
-        <v-combobox
-            class="mx-1"
-            label="Especialidade"
-            prepend-icon="school"
-            v-model="especialidade"
-            :items="specialties"
-            item-text="name"
-            return-object
-            outlined
-            rounded
-            filled
-            dense
-            chips
-            color="pink"
-            clearable
-        >
-            <template v-slot:selection="data">
-            <v-chip
-                :key="JSON.stringify(data.item)"
-                :input-value="data.selected"
-                :disabled="data.disabled"
-                class="v-chip--select-multi"
-                @click.stop="data.parent.selectedIndex = data.index"
-                @input="data.parent.selectItem(data.item)"
-                text-color="white"
-                color="info"
-            >{{ data.item.name }}</v-chip>
-            </template>
-        </v-combobox>
+        <v-flex xs12>
+          <v-checkbox
+            v-model="examTypeCheck"
+            label="Criar agenda para exame agendável?"
+          ></v-checkbox>
+        </v-flex>
+        <v-flex v-if="!examTypeCheck" xs12 sm6>
+          <v-combobox
+              class="mx-1"
+              label="Especialidade"
+              prepend-icon="school"
+              v-model="especialidade"
+              :items="specialties"
+              item-text="name"
+              return-object
+              outlined
+              rounded
+              filled
+              dense
+              chips
+              color="pink"
+              clearable
+          >
+              <template v-slot:selection="data">
+              <v-chip
+                  :key="JSON.stringify(data.item)"
+                  :input-value="data.selected"
+                  :disabled="data.disabled"
+                  class="v-chip--select-multi"
+                  @click.stop="data.parent.selectedIndex = data.index"
+                  @input="data.parent.selectItem(data.item)"
+                  text-color="white"
+                  color="info"
+              >{{ data.item.name }}</v-chip>
+              </template>
+          </v-combobox>
+        </v-flex>
+        <v-flex v-if="examTypeCheck" xs6>
+          <v-select
+              class="mx-1"
+              prepend-icon="location_city"
+              v-model="examType"
+              :items="examTypes"
+              item-text="name"
+              return-object
+              label="Exame agendável"
+              outlined
+              rounded
+              filled
+              chips
+              dense
+              color="purple"
+              clearable
+          >
+              <template v-slot:selection="data">
+              <v-chip
+                  :key="JSON.stringify(data.item)"
+                  :input-value="data.selected"
+                  :disabled="data.disabled"
+                  class="v-chip--select-multi"
+                  @click.stop="data.parent.selectedIndex = data.index"
+                  @input="data.parent.selectItem(data.item)"
+                  text-color="white"
+                  color="info"
+              >{{ data.item.name }}</v-chip>
+              </template>
+          </v-select>
         </v-flex>
         <v-flex xs12 sm6>
-        <v-combobox
-            class="mx-1"
-            prepend-icon="account_circle"
-            v-model="medicos"
-            :items="doctors"
-            item-text="name"
-            return-object
-            label="Médico"
-            no-data-text="Nenhum médico para esta especialidade"
-            outlined
-            rounded
-            filled
-            chips
-            dense
-            color="purple"
-            clearable
-        >
-            <template v-slot:selection="data">
-            <v-chip
-                :key="JSON.stringify(data.item)"
-                :input-value="data.selected"
-                :disabled="data.disabled"
-                class="v-chip--select-multi"
-                @click.stop="data.parent.selectedIndex = data.index"
-                @input="data.parent.selectItem(data.item)"
-                text-color="white"
-                color="info"
-            >{{ data.item.name }}</v-chip>
-            </template>
-        </v-combobox>
+          <v-combobox
+              class="mx-1"
+              prepend-icon="account_circle"
+              v-model="medicos"
+              :items="doctors"
+              item-text="name"
+              return-object
+              label="Médico"
+              no-data-text="Nenhum médico para esta especialidade"
+              outlined
+              rounded
+              filled
+              chips
+              dense
+              color="purple"
+              clearable
+          >
+              <template v-slot:selection="data">
+              <v-chip
+                  :key="JSON.stringify(data.item)"
+                  :input-value="data.selected"
+                  :disabled="data.disabled"
+                  class="v-chip--select-multi"
+                  @click.stop="data.parent.selectedIndex = data.index"
+                  @input="data.parent.selectItem(data.item)"
+                  text-color="white"
+                  color="info"
+              >{{ data.item.name }}</v-chip>
+              </template>
+          </v-combobox>
         </v-flex>
-        <v-flex xs12 sm12>
-        <v-select
-            class="mx-1"
-            prepend-icon="location_city"
-            v-model="clinic"
-            :items="clinics"
-            item-text="name"
-            return-object
-            label="Clínica"
-            no-data-text="Nenhum médico para esta especialidade"
-            outlined
-            rounded
-            filled
-            chips
-            dense
-            color="purple"
-            clearable
-        >
-            <template v-slot:selection="data">
-            <v-chip
-                :key="JSON.stringify(data.item)"
-                :input-value="data.selected"
-                :disabled="data.disabled"
-                class="v-chip--select-multi"
-                @click.stop="data.parent.selectedIndex = data.index"
-                @input="data.parent.selectItem(data.item)"
-                text-color="white"
-                color="info"
-            >{{ data.item.name }}</v-chip>
-            </template>
-        </v-select>
+        <v-flex xs12>
+          <v-select
+              class="mx-1"
+              prepend-icon="location_city"
+              v-model="clinic"
+              :items="clinics"
+              item-text="name"
+              return-object
+              label="Clínica"
+              no-data-text="Nenhum médico para esta especialidade"
+              outlined
+              rounded
+              filled
+              chips
+              dense
+              color="purple"
+              clearable
+          >
+              <template v-slot:selection="data">
+              <v-chip
+                  :key="JSON.stringify(data.item)"
+                  :input-value="data.selected"
+                  :disabled="data.disabled"
+                  class="v-chip--select-multi"
+                  @click.stop="data.parent.selectedIndex = data.index"
+                  @input="data.parent.selectItem(data.item)"
+                  text-color="white"
+                  color="info"
+              >{{ data.item.name }}</v-chip>
+              </template>
+          </v-select>
         </v-flex>
     </v-layout>
 </template>
@@ -104,10 +141,13 @@ export default {
   data: () => ({
     medicos: "",
     especialidade: undefined,
-    clinic: undefined
+    clinic: undefined,
+    examType:undefined,
+    examTypeCheck:false
   }),
   mounted() {
     this.$store.dispatch("getSpecialties");
+    this.$store.dispatch("getExamsTypes");
     this.$store.dispatch("getDoctors");
     this.$store.dispatch("getClinics");
   },
@@ -149,15 +189,30 @@ export default {
       return this.$store.getters.clinics.filter(a => {
         return a.property;
       });
+    },
+    examTypes() {
+      return this.$store.getters.examsTypes.filter((examType)=>{
+        return examType.scheduleable
+      });
     }
   },
   methods:{
       async saveNewSchedule(){
-          await this.$store.dispatch('newShedule',{
+          let newScheduleObj
+          if(this.examTypeCheck){
+            newScheduleObj = {
+              clinic:this.clinic,
+              exam_type:this.examType,
+              doctor:this.medicos
+            }
+          }else{
+            newScheduleObj = {
               clinic:this.clinic,
               specialty:this.especialidade,
               doctor:this.medicos
-          })
+          }
+          }
+          await this.$store.dispatch('newShedule',newScheduleObj)
       }
   }
 };

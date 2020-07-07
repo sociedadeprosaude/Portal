@@ -23,12 +23,12 @@
             <v-flex xs12>
                 <v-divider/>
             </v-flex>
-            <p :if="intakes" class="mt-3 font-italic font-weight-bold"> Paciente: {{intakes.patient}}</p>
+            <p v-if="outtake.length > 0" class="mt-3 font-italic font-weight-bold"> Paciente: {{outtake[0].patient}}</p>
             <v-flex xs12>
                 <v-divider/>
             </v-flex>
-            <v-flex xs12 v-for="intake in intakes.exams">
-                <v-card class="elevation-2 my-3">
+            <v-flex xs12 v-for="outtak in outtake">
+                <v-card class="elevation-2 my-3" v-for="intake in outtak.exams">
                     <v-layout row wrap>
                         <v-flex xs6 md3 class="align-center justify-center">
                             <p class="font-weight-black mt-5">
@@ -39,7 +39,7 @@
                             <v-divider class="primary" vertical/>
                         </v-flex>
                         <v-flex xs5 md2 class="text-center align-center justify-center">
-                            <p class="mt-5"> PREÇO: {{intake.price}}</p>
+                            <p class="mt-5"> PREÇO: {{intake.cost}}</p>
                         </v-flex>
                         <v-flex class="hidden-sm-and-down" md1>
                             <v-divider class="primary" vertical/>
@@ -90,7 +90,7 @@
                         <p  class="mt-3 font-italic font-weight-bold">Exame: {{ContestExam.name}}</p>
                     </v-flex>
                     <v-flex xs12>
-                        <p>Valor Atual: {{ContestExam.price}}</p>
+                        <p>Valor Atual: {{ContestExam.cost}}</p>
                     </v-flex>
                     <v-flex xs2>
                     <v-spacer></v-spacer>
@@ -131,7 +131,7 @@
         methods: {
             async SearchIntake(number){
                 this.loading= true;
-                await this.$store.dispatch('getSpecificIntake',{number:number, cnpj: this.user.cnpj})
+                await this.$store.dispatch('getSpecificOuttake',{number:number, cnpj: this.user.cnpj})
                 this.loading= false;
             },
             DividerContestValue(intake){
@@ -141,27 +141,30 @@
             async FunctionContestValue(){
                 let clinic= await this.$store.dispatch('getClinic', this.user.cnpj)
                 this.ContestExam.NewValue = this.NewValue
-                await this.$store.dispatch('addNewContestValue',{exams:this.ContestExam, value:this.NewValue, cnpj:this.user.cnpj, numberIntake:this.intakes.intakeNumber, clinic:clinic.docs[0].id})
+                await this.$store.dispatch('addNewContestValue',{exams:this.ContestExam, value:this.NewValue, cnpj:this.user.cnpj, numberIntake:this.outtake.intakeNumber, clinic:clinic.docs[0].id})
                 this.dialogContestValue = !this.dialogContestValue
                 this.NewValue=0
 
             },
             async SendCheckExams(){
                 this.loading= true;
-                await this.$store.dispatch('updatingSpecificIntake',{number:this.intakes.intakeNumber, exams: this.intakes.exams})
+                await this.$store.dispatch('updatingSpecificOuttake',{outtake: this.outtake.filter( (outtak) => outtak.root === true)[0], exams: this.outtake.filter( (outtak) => outtak.root === true)[0].exams, cnpj: this.user.cnpj})
                 this.loading= false;
                 this.successUpdateExams= true;
                 this.numberIntake = '';
-                this.intakes.exams = {};
-                this.intakes.patient ='';
+                for(let outtakes= 0; outtakes <  this.outtake.length; outtakes++ ){
+                    this.outtake[outtakes].exams = {}
+                }
+                this.outtake[0].user ='';
+
             }
         },
         computed: {
             user() {
                 return this.$store.getters.user
             },
-            intakes(){
-                return this.$store.getters.intakesClinic
+            outtake(){
+                return this.$store.getters.outtakeClinic
             },
             contestvalue(){
                 return this.$store.getters.contestValue;

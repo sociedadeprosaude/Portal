@@ -10,6 +10,14 @@ const mutations = {};
 
 const actions = {
 
+    async addDataBudget({ getters }, payload) {
+        const cpf = payload.cpf;
+        delete payload.cpf;
+        firebase.firestore().collection('budgets').doc(`${payload.id}`).update(payload);
+        firebase.firestore().collection('users').doc(cpf)
+            .collection('budgets').doc(`${payload.id}`).update(payload);
+    },
+
     async addBudget(context, payload) {
         let copyPayload = Object.assign({}, payload);
 
@@ -34,7 +42,7 @@ const actions = {
         functions.removeUndefineds(specialties);
         functions.removeUndefineds(exams);
 
-        await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).set({...copyPayload});
+        await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).set({ ...copyPayload });
         if (specialties) {
             let spec = await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).collection('specialties').get();
             spec.forEach((s) => {
@@ -54,161 +62,39 @@ const actions = {
                 await firebase.firestore().collection('budgets').doc(copyPayload.id.toString()).collection('exams').add(exams[exam])
             }
         }
+        //Talvez aqui
         if (copyPayload.user) {
             await firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('budgets').doc(copyPayload.id.toString()).set({ ...copyPayload })
         }
     },
 
     async getBudget({ }, budgetId) {
-        let budget = (await firebase.firestore().collection('budgets').doc(budgetId).get()).data();
-        let specialtiesCol = await firebase.firestore().collection('budgets').doc(budgetId).collection('specialties').get()
-        let examsCol = await firebase.firestore().collection('budgets').doc(budgetId).collection('exams').get();
+        const budgetRef = firebase.firestore().collection('budgets').doc(budgetId)
+        let budget = (await budgetRef.get()).data();
+        let specialtiesCol = await budgetRef.collection('specialties').get()
+        let examsCol = await budgetRef.collection('exams').get();
         let specialties = [];
         let exams = [];
-        specialtiesCol.forEach((s) => {
-            specialties.push(s.data())
-        });
-        examsCol.forEach((e) => {
-            exams.push(e.data())
-        });
-        budget['specialties'] = specialties;
-        budget['exams'] = exams;
+        if (budget) {
+            specialtiesCol.forEach((s) => {
+                specialties.push(s.data())
+            });
+            examsCol.forEach((e) => {
+                exams.push(e.data())
+            });
+            budget['specialties'] = specialties;
+            budget['exams'] = exams;
+        }
+
 
         return budget
     },
 
-    async deleteBudget ({}, data) {
-        let  userId = data.user.cpf.toString();
+    async deleteBudget({ }, data) {
+        let userId = data.user.cpf.toString();
         let budgetId = data.budgetId.toString();
         await firebase.firestore().collection('budgets').doc(budgetId.toString()).delete();
         await firebase.firestore().collection('users').doc(userId.toString()).collection('budgets').doc(budgetId.toString()).delete();
-    },
-
-    async addIntake(context, payload) {
-        let copyPayload = Object.assign({}, payload);
-        functions.removeUndefineds(copyPayload);
-        functions.removeUndefineds(copyPayload);
-
-        let specialties = copyPayload.specialties ? Object.assign({}, copyPayload.specialties) : undefined;
-        let exams = copyPayload.exams ? Object.assign({}, copyPayload.exams) : undefined;
-        delete copyPayload.specialties;
-        delete copyPayload.exams;
-        delete copyPayload.user.telephones;
-        copyPayload.user.budget = [];
-        delete copyPayload.user.budgets;
-        copyPayload.user.intakes = [];
-        delete copyPayload.user.intakes;
-        delete copyPayload.user.consultations;
-        delete copyPayload.user.specialties;
-        if (copyPayload.doctor) {
-            delete copyPayload.doctor.clinics;
-            delete copyPayload.doctor.specialties;
-        }
-
-        functions.removeUndefineds(specialties);
-        functions.removeUndefineds(exams);
-
-        let userRef = firebase.firestore().collection('users').doc(copyPayload.user.cpf);
-        await userRef.collection('intakes').doc(copyPayload.id.toString()).set(copyPayload);
-
-        if (specialties) {
-            let spec = await userRef.collection('budgets').doc(copyPayload.id.toString()).collection('specialties').get();
-            spec.forEach((s) => {
-                userRef.collection('budgets').doc(copyPayload.id.toString()).collection('specialties').doc(s.id).delete()
-            });
-            for (let spec in specialties) {
-                await userRef.collection('budgets').doc(copyPayload.id.toString()).collection('specialties').add(specialties[spec])
-            }
-        }
-        if (exams) {
-            let spec = await userRef.collection('budgets').doc(copyPayload.id.toString()).collection('exams').get();
-            spec.forEach((s) => {
-                userRef.collection('budgets').doc(copyPayload.id.toString()).collection('exams').doc(s.id).delete()
-            });
-            for (let exam in exams) {
-                functions.removeUndefineds(exams[exam]);
-                await userRef.collection('budgets').doc(copyPayload.id.toString()).collection('exams').add(exams[exam])
-            }
-        }
-    },
-
-    async verifyUnpaidConsultation(context, payload) {
-        let consultationFound = undefined;
-        let precoVendaZero = payload.isConsultation && payload.specialty.price === 0;
-        if (!precoVendaZero) {
-            let consultationRef =  payload.userRef.collection('consultations').where('specialty.name', '==', payload.specialty.name).where('status', '==', 'Aguardando pagamento')
-                //.get()
-
-            if(!payload.isConsultation)
-                consultationRef.where('exam.name','==',payload.examObj.name);
-            let consultations = await consultationRef.get();
-            consultations.forEach(async (c) => {
-                consultationFound = c;
-                context.dispatch('updatePaymentNumberConsultation', { user: payload.user, consultation: c, payment_number: payload.payment_number })
-            })
-        }
-
-
-        context.dispatch('createOrUpdateProcedure', { consultationFound: consultationFound, consultation:payload.consultation, precoVendaZero:precoVendaZero, userRef: payload.userRef, user: payload.user, isConsultation: payload.isConsultation, payment_number: payload.payment_number, specialty: payload.specialty, examObj: payload.examObj })
-    },
-
-    async createOrUpdateProcedure({ }, payload) {
-        let consultationFound = payload.consultationFound;
-        let user = payload.user;
-        let statusName = payload.isConsultation ? 'Consulta Paga' : 'Exame Pago';
-        let type = payload.isConsultation ? 'Consultation' : 'Exam';
-
-        if (consultationFound || (payload.precoVendaZero && payload.isConsultation) ) {
-            let consultation = payload.precoVendaZero && payload.isConsultation?  payload.consultation : consultationFound
-
-            let procedures = await firebase.firestore().collection('users').doc(user.cpf).collection('procedures').where('consultation', '==', consultation.id)
-                .get();
-
-            if (!procedures.empty){
-                procedures.forEach((snap) => {
-                    let data = snap.data();
-                    let obj = {
-                        status: firebase.firestore.FieldValue.arrayUnion(statusName),
-                        payment_number: payload.payment_number
-                    };
-                    if (!payload.isConsultation) {
-                        Object.assign(obj, { exam: { ...payload.examObj} });
-                    }
-
-                    firebase.firestore().collection('users').doc(user.cpf).collection('procedures').doc(snap.id).update(
-                        { ...obj }
-                    )
-                })
-            }
-        } else {
-            let obj = {
-                status: [statusName],
-                payment_number: payload.payment_number,
-                startAt: moment().format('YYYY-MM-DD hh:ss'),
-                type: type,
-                specialty: payload.specialty.name
-            };
-
-            if (!payload.isConsultation) {
-
-                Object.assign(obj, { exam: { ...payload.examObj} });
-            }
-            firebase.firestore().collection('users').doc(user.cpf).collection('procedures').add(
-                { ...obj }
-            )
-        }
-
-    },
-
-    async updatePaymentNumberConsultation(context,payload){
-        await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.id).update({
-            status: 'Pago',
-            payment_number: payload.payment_number.toString()
-        });
-        await firebase.firestore().collection('consultations').doc(payload.consultation.id).update({
-            status: 'Pago',
-            payment_number: payload.payment_number.toString()
-        })
     },
 
     async getUserBudgets(context, user) {
@@ -259,12 +145,12 @@ const actions = {
     async thereIsIntakes(context, payload) {
         return new Promise(async (resolve, reject) => {
             let findPaymentNumber = firebase.functions().httpsCallable('thereIsPaymentNumber');
-            findPaymentNumber({payload: payload}).then((result)=> {
-                if(result.data.Found)
-                    resolve({ ...result.data.Found});
+            findPaymentNumber({ payload: payload }).then((result) => {
+                if (result.data.Found)
+                    resolve({ ...result.data.Found });
                 else
-                    reject({ cost: {...result.data.NotFound}})
-            }).catch(function(error) {
+                    reject({ cost: { ...result.data.NotFound } })
+            }).catch(function (error) {
                 reject('Error')
             });
         })

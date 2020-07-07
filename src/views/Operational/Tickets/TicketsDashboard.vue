@@ -5,7 +5,12 @@
                 <v-btn fab @click="createSector">
                     <v-icon>mdi-plus</v-icon>
                 </v-btn>
-                <v-btn :color="creation.editing ? 'amber' : ''" fab @click="creation.editing = !creation.editing" class="ml-2">
+                <v-btn
+                        :color="creation.editing ? 'amber' : ''"
+                        fab
+                        @click="creation.editing = !creation.editing"
+                        class="ml-2"
+                >
                     <v-icon>edit</v-icon>
                 </v-btn>
             </v-col>
@@ -23,7 +28,10 @@
                         <v-container>
                             <v-row align="center" justify="center">
                                 <v-col cols="12">
-                                    <span style="font-size: 2.0em" class="mt-10 font-weight-bold">{{sector.name.substring(0, 1)}}</span>
+                  <span
+                          style="font-size: 2.0em"
+                          class="mt-10 font-weight-bold"
+                  >{{sector.name.substring(0, 1)}}</span>
                                 </v-col>
                                 <v-col cols="12">
                                     <span class="text-center my-headline">{{sector.name}}</span>
@@ -35,14 +43,7 @@
             </v-row>
             <v-progress-circular indeterminate color="primary" v-else></v-progress-circular>
 
-<!--            <v-row v-else align="center" justify="center">-->
-<!--                <div>-->
-<!--                    <span class="text-center my-headline">{{sector.title}}</span>-->
-<!--                    <transition name="slide-fade" mode="out-in" appear>-->
-<!--                        <tickets :sector="sector"/>-->
-<!--                    </transition>-->
-<!--                </div>-->
-<!--            </v-row>-->
+
         </v-row>
         <v-dialog v-model="creation.creationDialog" max-width="500px">
             <v-card>
@@ -50,15 +51,17 @@
                     <span class="my-headline">Criar setor</span>
                 </v-col>
                 <v-col cols="12">
-                    <v-text-field
-                            v-model="creation.sectorName"
-                            label="Nome do setor"></v-text-field>
+                    <v-text-field v-model="creation.sectorName" label="Nome do setor"/>
                 </v-col>
                 <v-col cols="12" align="end">
-                    <v-btn @click="createSector(creation.sectorName)" color="primary" rounded v-if="!creation.creating">
-                        Criar
+                    <v-btn
+                            @click="createSector(creation.sectorName)"
+                            color="primary"
+                            rounded
+                            v-if="!creation.creating"
+                    >Criar
                     </v-btn>
-                    <v-progress-circular indeterminate color="primary" v-else></v-progress-circular>
+                    <v-progress-circular indeterminate color="primary" v-else/>
                 </v-col>
             </v-card>
         </v-dialog>
@@ -68,10 +71,14 @@
                     <span class="my-headline">Deletar setor {{creation.choosed ? creation.choosed.name : ''}}?</span>
                 </v-col>
                 <v-col cols="12" align="end">
-                    <v-btn @click="deleteSector(creation.choosed)" color="primary" rounded v-if="!creation.deleting">
-                        Deletar
+                    <v-btn
+                            @click="deleteSector(creation.choosed)"
+                            color="primary"
+                            rounded
+                            v-if="!creation.deleting"
+                    >Deletar
                     </v-btn>
-                    <v-progress-circular indeterminate color="primary" v-else></v-progress-circular>
+                    <v-progress-circular indeterminate color="primary" v-else/>
                 </v-col>
             </v-card>
         </v-dialog>
@@ -79,14 +86,10 @@
 </template>
 
 <script>
-    import tickets from "@/components/tickets/Tickets";
-    import constants from "../../../utils/constants";
 
     export default {
         name: "TicketsDashboard",
-        components: {
-            tickets
-        },
+
 
         data() {
             return {
@@ -101,47 +104,45 @@
                 },
                 choosed: false,
                 sector: null,
-                production: null,
+                production: null
             };
         },
         mounted() {
             this.$store.dispatch("getTicketsGeneralInfo");
             this.$store.dispatch("listenTicketsSectors");
-
-            this.production = constants.IN_PRODUCTION;
         },
         computed: {
             sectors() {
-                return this.$store.getters.sectors
+                return this.$store.getters.sectors;
             },
             loading() {
-                return !this.sectors
+                return !this.sectors;
             }
         },
         methods: {
             async createSector(name) {
                 if (!this.creation.creationDialog) {
-                    this.creation.creationDialog = true
-                    return
+                    this.creation.creationDialog = true;
+                    return;
                 }
-                if (!name || name.lenght === 0) return
-                this.creation.creating = true
-                await this.$store.dispatch('createTicketsSector', name)
-                this.resetCreation()
+                if (!name || name.lenght === 0) return;
+                this.creation.creating = true;
+                await this.$store.dispatch("createTicketsSector", name);
+                this.resetCreation();
             },
             async deleteSector(sector) {
-                this.creation.choosed = sector
+                this.creation.choosed = sector;
                 if (!this.creation.deletingDialog) {
-                    this.creation.deletingDialog = true
-                    return
+                    this.creation.deletingDialog = true;
+                    return;
                 }
-                this.creation.deleting = true
-                await this.$store.dispatch('deleteSector', sector)
-                this.creation.deleting = false
-                this.creation.deletingDialog = false
+                this.creation.deleting = true;
+                await this.$store.dispatch("deleteSector", sector);
+                this.creation.deleting = false;
+                this.creation.deletingDialog = false;
             },
             async choose(sector) {
-                this.$router.push('/senhas/' + sector.name)
+                this.$router.push("/senhas/" + sector.name);
             },
             resetCreation() {
                 this.creation = {
@@ -152,7 +153,7 @@
                     editing: false,
                     choosed: undefined,
                     deleting: false
-                }
+                };
             }
         }
     };

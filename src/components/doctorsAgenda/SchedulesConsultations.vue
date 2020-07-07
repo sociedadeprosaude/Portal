@@ -23,7 +23,7 @@
                                                     <span class="subtitle-2 font-weight-bold">{{schedule.doctor.name}}</span>
                                                     <span class="subtitle-2 font-weight-bold mx-2">-</span>
                                                     <span class="subtitle-2 font-weight-bold subheading">
-                                                    {{schedule.specialty.name}}
+                                                    {{schedule.specialty ? schedule.specialty.name : schedule.exam_type.name}}
                                             </span>
                                                     <v-spacer/>
                                                     <v-chip color="primary_dark" class="mb-2" small text-color="white">
@@ -45,13 +45,19 @@
                                                             Vagas :
                                                             {{schedule.vacancy}}
                                                         </v-chip>
-                                                        <v-chip small class="mx-2" color="primary_dark"
+                                                        <v-chip v-if="schedule.specialty" small class="mx-2" color="primary_dark"
                                                                 text-color="white">
                                                             Consultas :
                                                             {{schedule.qtd_consultations ? schedule.qtd_consultations :
                                                             0}}
                                                         </v-chip>
-                                                        <v-chip class="mx-2" small color="primary_dark"
+                                                         <v-chip v-if="schedule.exam_type" small class="mx-2" color="primary_dark"
+                                                                text-color="white">
+                                                            Agendados :
+                                                            {{schedule.qtd_consultations ? schedule.qtd_consultations :
+                                                            0}}
+                                                        </v-chip>
+                                                        <v-chip v-if="schedule.specialty" class="mx-2" small color="primary_dark"
                                                                 text-color="white">
                                                             Retornos :
                                                             {{schedule.qtd_returns ? schedule.qtd_returns : 0}}
@@ -85,14 +91,17 @@
                             </v-flex>
                         </v-layout>
                         <div class="text-xs-center">
-                            <v-dialog v-model="dialog" v-if="createConsultationForm" max-width="520">
-                                <SchedulingForm @close-dialog="dialog = false"
+                            <v-dialog v-model="dialog" persistent v-if="createConsultationForm" max-width="520">
+                                <SchedulingForm @close-dialog="closeDialog"
                                                 :createConsultationForm="createConsultationForm"
                                                 :loaderPaymentNumber="loaderPaymentNumber"
-                                                :exam="exam"
+                                                :exams="examsLoading"
                                                 :numberReceipt="numberReceipt"
+                                                :modalidade="modalidade"
+                                                :previousConsultation="previousConsultation"
                                                 :status="status"
                                                 :payment_numberFound="payment_numberFound"
+                                                @findPaymentNumberToExam="thereIsPaymentNumber($event)"
                                 />
                             </v-dialog>
                         </div>
@@ -100,13 +109,13 @@
                 </v-layout>
             </ul>
         </div>
-        <v-flex xs12 v-if="consultationLoading">
-            <div class="text-xs-center">
+           <!--  Não entendi por que está chamando duas vezes o dialog -->
+            <!-- <div class="text-xs-center">
                 <v-dialog v-model="dialog" v-if="createConsultationForm" max-width="520">
                     <SchedulingForm @close-dialog="dialog = false"
                                     :createConsultationForm="createConsultationForm"
                                     :loaderPaymentNumber="loaderPaymentNumber"
-                                    :exam="exam"
+                                    :exams="examsLoading"
                                     :numberReceipt="numberReceipt"
                                     :modalidade="modalidade"
                                     :previousConsultation="previousConsultation"
@@ -114,11 +123,12 @@
                                     :payment_numberFound="payment_numberFound"
                     />
                 </v-dialog>
-            </div>
-        </v-flex>
+            </div> -->
+        
         <v-flex xs12 v-if="!consultationLoading">
             <v-btn class="primary" rounded text @click="listenMoreConsultations">Carregar mais</v-btn>
         </v-flex>
+
         <v-flex xs12 v-if="consultationLoading">
             <v-progress-circular class="primary--text" indeterminate/>
         </v-flex>
@@ -150,15 +160,12 @@
             numberReceipt: "",
             payment_numberFound: undefined,
             status: "",
-            payment_numberFound: undefined,
-            status: "",
             modalidade: "Consulta",
             previousConsultation: undefined,
             createConsultationForm: undefined,
-            exam: undefined,
             loaderPaymentNumber: false,
             daysToListen: 3,
-            exams: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
+            examsLoading:[],
             loading: false,
             nextItem: 1,
         }),
@@ -180,8 +187,17 @@
                 this.previousConsultation = this.query.id
                 this.status = this.query.status
                 this.numberReceipt = this.query.payment_number
-
+            }else if(this.query && this.$route.params.reschedule){
+                this.modalidade = this.query.type
+                this.previousConsultation = this.query.previousConsultation
+                this.status = this.query.status
+                this.numberReceipt = this.query.payment_number
+                this.rescheduleConsultation = this.query.id
+            }            
+            else{
+                this.modalidade = "Consulta"
             }
+
         },
 
         computed: {
@@ -198,7 +214,23 @@
             consultationLoading() {
                 return this.$store.getters.consultationsLoading;
             },
+        },
 
+        watch:{
+            createConsultationForm(value){
+                this.examsLoading = []
+                let exams = this.$store.getters.exams
+                if(value){
+                    exams = exams.filter((exam)=>{
+                        let response = false
+                        if(value.consultation.exam_type && value.consultation.exam_type.name == exam.type)
+                            response = true
+                        return response
+                    })
+
+                    this.examsLoading = exams
+                }
+            }
         },
 
         methods: {
@@ -227,26 +259,50 @@
                     consultation: consultation
                 };
 
-                if (!this.query) {
+                if (!this.query /* && !consultation.exam_type */) {
                     this.thereIsPaymentNumber();
+                }
+                if(this.$route.params.reschedule && this.query.exam){
+                    this.selectedForm.consultation.exam = this.query.exam
                 }
 
                 this.createConsultationForm = this.selectedForm;
             },
 
-            async thereIsPaymentNumber() {
+            async thereIsPaymentNumber(value) {
                 this.payment_numberFound = undefined;
                 this.numberReceipt = "";
                 this.status = "Aguardando pagamento";
                 this.loaderPaymentNumber = true;
-                this.$store.dispatch("thereIsIntakes", {
+                console.log('oioioi')
+
+                let obj = value ? {
+                    user: this.selectedForm.user,
+                    doctor: this.selectedForm.consultation.doctor,
+                    exam: {
+                        exam_type:this.selectedForm.consultation.exam_type.name,
+                        ...value
+                    }
+                }
+                :this.selectedForm.consultation.specialty ? {
                     user: this.selectedForm.user,
                     doctor: this.selectedForm.consultation.doctor,
                     specialty: this.selectedForm.consultation.specialty,
-                    exam: this.exam
-                })
+                }
+                :{
+                    user: this.selectedForm.user,
+                    doctor: this.selectedForm.consultation.doctor,
+                    exam: {
+                        type:this.selectedForm.consultation.exam_type.name
+                    },
+                }
+
+                console.log('no procurar recibo',obj)
+
+                this.$store.dispatch("thereIsIntakes", obj)
                     .then(obj => {
                         if (obj.payment_number) {
+                            console.log('revico' ,obj)
                             this.payment_numberFound = obj;
                             this.numberReceipt = obj.payment_number;
                             this.exam = obj.exam ? {...obj.exam, notFindPayment: true} : undefined;
@@ -281,6 +337,13 @@
                 this.$emit('refreshDate', this.daysToListen);
                 this.loading = false;
             },
+            closeDialog(){
+                this.dialog = false
+                this.payment_numberFound = undefined
+                this.status = ""
+                this.numberReceipt = ""
+                this.selectedForm = undefined
+            }
         }
     }
 

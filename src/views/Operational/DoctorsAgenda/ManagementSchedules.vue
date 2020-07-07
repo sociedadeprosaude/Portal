@@ -1,56 +1,65 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="schedules"
-    single-expand
-    :expanded.sync="expanded"
-    item-key="id"
-    show-expand
-    class="elevation-1 mx-2 mt-10 pt-5"
-    height="400"
-  >
-    <template v-slot:top>
-      <v-row>
-        <v-col :xs="12" :md="4">
-          <h1 class="headline">Gerenciamento de consultas</h1>
-        </v-col>
+    <v-data-table
+            :headers="headers"
+            :items="schedules"
+            single-expand
+            :expanded.sync="expanded"
+            item-key="id"
+            show-expand
+            class="elevation-1 mx-2 mt-10 pt-5"
+            height="400"
+    >
+        <template v-slot:top>
+            <v-row>
+                <v-col :xs="12" :md="4">
+                    <h1 class="headline">Gerenciamento de consultas</h1>
+                </v-col>
 
-        <v-col class="py-0 my-0" :xs="12" :md="4">
-          <v-select
-            class="mx-5"
-            prepend-icon="location_city"
-            v-model="clinic"
-            :items="clinics"
-            item-text="name"
-            return-object
-            label="Clínica"
-            no-data-text="Nenhum médico para esta especialidade"
-            outlined
-            rounded
-            chips
-            dense
-            color="purple"
-            clearable
-          >
-            <template v-slot:selection="data">
-              <v-chip
-                :key="JSON.stringify(data.item)"
-                :input-value="data.selected"
-                :disabled="data.disabled"
-                class="v-chip--select-multi"
-                @click.stop="data.parent.selectedIndex = data.index"
-                @input="data.parent.selectItem(data.item)"
-                text-color="white"
-                color="info"
-              >{{ data.item.name }}</v-chip>
-            </template>
-          </v-select>
-        </v-col>
+                <v-col class="py-0 my-0" :xs="12" :md="4">
+                    <v-select
+                            class="mx-5"
+                            prepend-icon="location_city"
+                            v-model="clinic"
+                            :items="clinics"
+                            item-text="name"
+                            return-object
+                            label="Clínica"
+                            no-data-text="Nenhum médico para esta especialidade"
+                            outlined
+                            rounded
+                            chips
+                            dense
+                            color="purple"
+                            clearable
+                    >
+                        <template v-slot:selection="data">
+                            <v-chip
+                                    :key="JSON.stringify(data.item)"
+                                    :input-value="data.selected"
+                                    :disabled="data.disabled"
+                                    class="v-chip--select-multi"
+                                    @click.stop="data.parent.selectedIndex = data.index"
+                                    @input="data.parent.selectItem(data.item)"
+                                    text-color="white"
+                                    color="info"
+                            >{{ data.item.name }}
+                            </v-chip>
+                        </template>
+                    </v-select>
+                </v-col>
 
         <v-col :xs="12" :md="4">
           <v-btn class="primary" @click="dialogNewSchedule=true">
             <v-icon>add</v-icon>Criar nova agenda
           </v-btn>
+        </v-col>
+
+        <v-col cols="12">
+          <v-checkbox
+            class="ml-12 pl-3 py-0 my-0"
+            v-model="examTypeCheck"
+            label="Listar agendas de exames"
+          ></v-checkbox>
         </v-col>
         <v-dialog v-model="dialogNewSchedule">
           <v-card>
@@ -81,130 +90,132 @@
             <h1 class="headline font-weight-bold">Dias da semana</h1>
           </v-flex>
 
-          <v-flex v-for="day in 6" :key="day" class="xs6 sm4 md2 lg2 pa-2">
-            <CardDaySchedule
-              v-if="item.days && item.days[day]"
-              :schedule="item"
-              :dayObj="item.days[day]"
-              :day="day"
-            ></CardDaySchedule>
-            <v-card
-              v-else
-              @click="openDialogNewDay(item,day)"
-              class="py-7 grey--text"
-              elevation="2"
-            >
-              <h1 class="title font-weight-bold">{{days[day]}}</h1>
-              <v-icon class="font-weight-bold" size="80">add</v-icon>
-              <h2 class="title font-weight-bold">Criar dia</h2>
-            </v-card>
-          </v-flex>
+                    <v-flex v-for="day in 6" :key="day" class="xs6 sm4 md2 lg2 pa-2">
+                        <CardDaySchedule
+                                v-if="item.days && item.days[day]"
+                                :schedule="item"
+                                :dayObj="item.days[day]"
+                                :day="day"
+                        ></CardDaySchedule>
+                        <v-card
+                                v-else
+                                @click="openDialogNewDay(item,day)"
+                                class="py-7 grey--text"
+                                elevation="2"
+                        >
+                            <h1 class="title font-weight-bold">{{days[day]}}</h1>
+                            <v-icon class="font-weight-bold" size="80">add</v-icon>
+                            <h2 class="title font-weight-bold">Criar dia</h2>
+                        </v-card>
+                    </v-flex>
 
-          <v-dialog v-model="dialog" persistent max-width="300px">
-            <v-card>
-              <v-card-title>
-                <span class="headline">Criar dia de consulta</span>
-              </v-card-title>
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12">
-                      <v-text-field
-                        type="time"
-                        min="05:00"
-                        max="18:00"
-                        v-model="newDay.hour"
-                        label="Horário"
-                        required
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-text-field
-                        v-model="newDay.vacancy"
-                        type="number"
-                        label="Vagas"
-                        hint="Digite o número de vagas para o dia"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="dialog = false">Cancelar</v-btn>
-                <v-btn :loading="loading" color="blue darken-1" text @click="createNewDay">Criar</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-layout>
-        <v-layout class="text-center pt-5" row wrap>
-          <v-flex class="mb-0 pb-0 xs12">
-            <h1 class="headline font-weight-bold">Períodos cancelados</h1>
-          </v-flex>
+                    <v-dialog v-model="dialog" persistent max-width="300px">
+                        <v-card>
+                            <v-card-title>
+                                <span class="headline">Criar dia de consulta</span>
+                            </v-card-title>
+                            <v-card-text>
+                                <v-container>
+                                    <v-row>
+                                        <v-col cols="12">
+                                            <v-text-field
+                                                    type="time"
+                                                    min="05:00"
+                                                    max="18:00"
+                                                    v-model="newDay.hour"
+                                                    label="Horário"
+                                                    required
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12">
+                                            <v-text-field
+                                                    v-model="newDay.vacancy"
+                                                    type="number"
+                                                    label="Vagas"
+                                                    hint="Digite o número de vagas para o dia"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                </v-container>
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn color="blue darken-1" text @click="dialog = false">Cancelar</v-btn>
+                                <v-btn :loading="loading" color="blue darken-1" text @click="createNewDay">Criar</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
+                </v-layout>
+                <v-layout class="text-center pt-5" row wrap>
+                    <v-flex class="mb-0 pb-0 xs12">
+                        <h1 class="headline font-weight-bold">Períodos cancelados</h1>
+                    </v-flex>
 
-          <v-flex
-            v-for="(period,index) in item.cancelations_schedules"
-            :key="index"
-            class="xs6 sm4 md2 lg2 pa-2"
-          >
-            <CardPeriodCanceledSchedule :periodObj="period" :schedule="item" :index="index"></CardPeriodCanceledSchedule>
-            <!-- <v-card class="py-10" elevation="2">
-              <v-chip class="primary subtitle-2 font-weight-bold">{{formatDate(period.start_date)}}</v-chip>
-              <h1 class="grey--text text-darken-2 subtitle-1 font-weight-bold">Até</h1>
-              <v-chip class="primary subtitle-2 font-weight-bold">{{formatDate(period.final_date)}}</v-chip>
-            </v-card>-->
-          </v-flex>
-          <v-flex :cols="2" class="xs6 sm4 md2 lg2 pa-2">
-            <v-card @click="openDialogNewPeriod(item)" class="py-5 grey--text" elevation="2">
-              <v-icon class="font-weight-bold" size="80">add</v-icon>
-              <h2 class="subtitle-1 font-weight-bold">Criar período de cancelamento</h2>
-            </v-card>
-          </v-flex>
+                    <v-flex
+                            v-for="(period,index) in item.cancelations_schedules"
+                            :key="index"
+                            class="xs6 sm4 md2 lg2 pa-2"
+                    >
+                        <CardPeriodCanceledSchedule :periodObj="period" :schedule="item"
+                                                    :index="index"></CardPeriodCanceledSchedule>
+                        <!-- <v-card class="py-10" elevation="2">
+                          <v-chip class="primary subtitle-2 font-weight-bold">{{formatDate(period.start_date)}}</v-chip>
+                          <h1 class="grey--text text-darken-2 subtitle-1 font-weight-bold">Até</h1>
+                          <v-chip class="primary subtitle-2 font-weight-bold">{{formatDate(period.final_date)}}</v-chip>
+                        </v-card>-->
+                    </v-flex>
+                    <v-flex :cols="2" class="xs6 sm4 md2 lg2 pa-2">
+                        <v-card @click="openDialogNewPeriod(item)" class="py-5 grey--text" elevation="2">
+                            <v-icon class="font-weight-bold" size="80">add</v-icon>
+                            <h2 class="subtitle-1 font-weight-bold">Criar período de cancelamento</h2>
+                        </v-card>
+                    </v-flex>
 
-          <v-dialog v-model="dialogNewPeriod" persistent max-width="600px">
-            <v-card>
-              <v-card-title>
-                <span class="headline">Cria novo período de cancelamento</span>
-              </v-card-title>
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12">
-                      <v-text-field
-                        v-model="newPeriod.start_date"
-                        type="date"
-                        label="Data inicial"
-                        hint="Selecione a data inicial do cancelamento"
-                        required
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-text-field
-                        v-model="newPeriod.final_date"
-                        type="date"
-                        label="Data final"
-                        hint="Selecione a data final do cancelamento"
-                        required
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="dialogNewPeriod = false">Cancelar</v-btn>
-                <v-btn :loading="loading" color="blue darken-1" text @click="createNewPeriod">Criar</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-layout>
-      </td>
-    </template>
+                    <v-dialog v-model="dialogNewPeriod" persistent max-width="600px">
+                        <v-card>
+                            <v-card-title>
+                                <span class="headline">Cria novo período de cancelamento</span>
+                            </v-card-title>
+                            <v-card-text>
+                                <v-container>
+                                    <v-row>
+                                        <v-col cols="12">
+                                            <v-text-field
+                                                    v-model="newPeriod.start_date"
+                                                    type="date"
+                                                    label="Data inicial"
+                                                    hint="Selecione a data inicial do cancelamento"
+                                                    required
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12">
+                                            <v-text-field
+                                                    v-model="newPeriod.final_date"
+                                                    type="date"
+                                                    label="Data final"
+                                                    hint="Selecione a data final do cancelamento"
+                                                    required
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                </v-container>
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn color="blue darken-1" text @click="dialogNewPeriod = false">Cancelar</v-btn>
+                                <v-btn :loading="loading" color="blue darken-1" text @click="createNewPeriod">Criar
+                                </v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
+                </v-layout>
+            </td>
+        </template>
 
-    <!-- <template v-slot:item.actions="{ item }">
-      <v-icon small @click="deleteSchedule(item)">mdi-delete</v-icon>
-    </template>-->
-  </v-data-table>
+        <!-- <template v-slot:item.actions="{ item }">
+          <v-icon small @click="deleteSchedule(item)">mdi-delete</v-icon>
+        </template>-->
+    </v-data-table>
 </template>
 
 <script>
@@ -226,6 +237,7 @@ export default {
     dialogNewPeriod: false,
     dialogNewSchedule: false,
     editExpirationDate: false,
+    examTypeCheck: false,
     loading: false,
     newDay: {},
     newPeriod: {},
@@ -258,8 +270,15 @@ export default {
   computed: {
     schedules() {
       let resp = this.$store.getters.AllSchedules.filter(schedule => {
-        if (this.clinic) return schedule.clinic.name === this.clinic.name;
-        return true;
+        let filter = true;
+        if (this.clinic && schedule.clinic.name != this.clinic.name)
+          filter = false;
+        if (
+          (this.examTypeCheck && !schedule.exam_type) ||
+          (!this.examTypeCheck && schedule.exam_type)
+        )
+          filter = false;
+        return filter;
       });
       return resp;
     },
@@ -267,6 +286,35 @@ export default {
       return this.$store.getters.clinics.filter(a => {
         return a.property;
       });
+    }
+  },
+  watch: {
+    examTypeCheck(value) {
+      if (value) {
+        this.headers = [
+          {
+            text: "Médico",
+            align: "start",
+            sortable: true,
+            value: "doctor.name"
+          },
+          { text: "Tipo do Exame", value: "exam_type.name" },
+          { text: "Clínica", value: "clinic.name", sortable: true },
+          { text: "Ações", value: "actions", sortable: false }
+        ];
+      } else {
+        this.headers = [
+          {
+            text: "Médico",
+            align: "start",
+            sortable: true,
+            value: "doctor.name"
+          },
+          { text: "Especialidade", value: "specialty.name" },
+          { text: "Clínica", value: "clinic.name", sortable: true },
+          { text: "Ações", value: "actions", sortable: false }
+        ];
+      }
     }
   },
   methods: {

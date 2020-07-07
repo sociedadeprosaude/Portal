@@ -1,7 +1,7 @@
 <template>
     <v-container>
-        <v-layout row wrap v-if="especialtie">
-            <v-flex xs12 v-for="(consultation, i) in ConsultationsByDoctors(consultations)">
+        <v-layout row wrap v-if="specialty || examType">
+            <v-flex xs12 v-for="(consultation, i) in ConsultationsByDoctors(consultations)" :key="i">
                 <v-card>
                     <v-layout row wrap>
                         <v-flex xs12>
@@ -15,39 +15,49 @@
                                     </v-flex>
                                     <v-spacer/>
                                     <v-flex xs3>
-                                        <p class="white--text font-weight-bold text-left"> N° de Consultas: {{consultation.numConsultations}}</p>
+                                        <p class="white--text font-weight-bold text-left"> N° de Consultas:
+                                            {{consultation.numConsultations}}</p>
                                     </v-flex>
                                     <v-flex xs5>
-                                        <p class="white--text text-left font-weight-bold"> CRM: {{consultation.doctor.crm}}</p>
+                                        <p class="white--text text-left font-weight-bold"> CRM:
+                                            {{consultation.doctor.crm}}</p>
                                     </v-flex>
                                     <v-spacer/>
                                     <v-flex xs3>
-                                        <p class="white--text font-weight-bold text-left"> N° de Retorno: {{consultation.numRegress}}</p>
+                                        <p class="white--text font-weight-bold text-left"> N° de Retorno:
+                                            {{consultation.numRegress}}</p>
                                     </v-flex>
                                     <v-flex xs5>
-                                        <p class="white--text text-left font-weight-bold"> CPF: {{consultation.doctor.cpf}}</p>
+                                        <p class="white--text text-left font-weight-bold"> CPF:
+                                            {{consultation.doctor.cpf}}</p>
                                     </v-flex>
                                     <v-spacer/>
                                     <v-flex xs1>
                                         <v-btn icon class="grey my-1 mx-1" dark x-small text fab>
-                                            <v-icon @click="deactivateDoctor(consultation.doctor)">power_settings_new</v-icon>
+                                            <v-icon @click="deactivateDoctor(consultation.doctor)">power_settings_new
+                                            </v-icon>
                                         </v-btn>
                                     </v-flex>
                                 </v-layout>
                             </v-card>
                         </v-flex>
                         <v-flex xs12 class="mt-4 mb-3">
-                            <p class="text-left primary--text font-weight-bold ml-2" v-if="ConsultationsByDoctors(consultations).length !== 0">{{date |
+                            <p class="text-left primary--text font-weight-bold ml-2"
+                               v-if="ConsultationsByDoctors(consultations).length !== 0">{{date |
                                 dateFilter}} - {{daydate(date)}}</p>
                             <v-divider class="primary"/>
                         </v-flex>
                         <v-flex sm4 v-for="item in consultation.consultations" class="mt-3 mb-2">
-                            <v-card outlined class="borderCard mx-2 mr-2 grey_light" @click="patientSelect(item)">
+                            <v-card outlined class="borderCard mx-2 mr-2 grey lighten-5 elevation-1" @click="patientSelect(item)">
                                 <v-layout row wrap class="mt-2">
                                     <v-flex xs4>
                                         <v-icon large>person</v-icon>
                                         <br>
-                                        <v-icon small class="mt-1">donut_large</v-icon>
+                                        <v-icon v-if="item.type === 'Retorno'"  color="primary" small class="mt-1">restore</v-icon>
+                                        <v-icon v-else small class="mt-1"  color="primary">event</v-icon>
+                                        <v-icon v-if="item.status === 'Pago'" color="green" small class="mt-1">attach_money</v-icon>
+                                        <v-icon v-else small class="mt-1" color="red">money_off</v-icon>
+
                                     </v-flex>
                                     <v-flex xs8 class="mb-3">
                                         <v-flex xs12>
@@ -69,10 +79,10 @@
             <v-flex xs12 v-if="consultations.length === 0 && loadingConsultations === false">
                 <p>Não a consultas marcadas para hoje :(</p>
             </v-flex>
-          <v-dialog v-if="selectedDoctor" v-model="confirmDeactivate" max-width="500px" persistent>
-              <v-flex xs12 v-if="loading">
-                  <v-progress-circular class="primary--text" indeterminate/>
-              </v-flex>
+            <v-dialog v-if="selectedDoctor" v-model="confirmDeactivate" max-width="500px" persistent>
+                <v-flex xs12 v-if="loading">
+                    <v-progress-circular class="primary--text" indeterminate/>
+                </v-flex>
                 <v-card v-else>
                     <v-card-title>
                         <v-spacer/>
@@ -112,11 +122,12 @@
 <script>
     import moment from 'moment/moment'
     import SubmitButton from '../../../components/SubmitButton'
+
     export default {
         name: "CardDoctorsManagementConsultations",
-        components:{SubmitButton},
+        components: {SubmitButton},
 
-        props: ['especialtie', 'date'],
+        props: ['specialty', 'date','examType','filterByExam'],
         data: () => ({
             semanaOptions: [
                 "Domingo",
@@ -127,42 +138,43 @@
                 "Sexta-feira",
                 "Sábado"
             ],
-            clinics:[],
-            selectedDoctor:[],
-            specialtiesDoctor:'',
-            success:false,
-            loading:false,
-            loadingConsultations:false,
-            confirmDeactivate:false,
+            clinics: [],
+            selectedDoctor: [],
+            specialtiesDoctor: '',
+            success: false,
+            loading: false,
+            loadingConsultations: false,
+            confirmDeactivate: false,
             patientSelected: [],
-            specialtyToDeactivate:{},
-            clinicsToDeactivate:{}
+            specialtyToDeactivate: {},
+            clinicsToDeactivate: {}
         }),
         computed: {
             consultations() {
-                if(moment().format('YYYY-MM-DD') !== this.date){
+                if (moment().format('YYYY-MM-DD') !== this.date) {
                     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.loadingConsultations = !this.loadingConsultations
                 }
-                return this.$store.getters.consultations.filter((a) => {
-                    return this.especialtie && this.date ? this.especialtie.name === a.specialty.name && this.date === a.date.split(' ')[0] && a.user : false
-                });
-            },
-            doctor(){
-                    return this.$store.getters.doctor
-            }
-        },
-        mounted() {
-            this.initialConfig()
 
-        },
-        watch: {
+                this.loadingConsultations = true
+                let response =  this.$store.getters.consultations.filter((a) => {
+                    let filtedBySpecialty = !this.filterByExam && this.specialty && a.specialty && this.specialty.name === a.specialty.name
+                    let filtedByExamType = this.filterByExam && this.examType && a.exam && this.examType.name === a.exam.type
+                    return this.date && this.date === a.date.split(' ')[0] && a.user && (filtedBySpecialty || filtedByExamType)
+
+                });
+                this.loadingConsultations = false
+                return response
+            },
+            doctor() {
+                return this.$store.getters.doctor
+            }
         },
         methods: {
 
-            cleanSpecialtyToDeactivate(){
-                this.specialtyToDeactivate=[];
-                this.clinicsToDeactivate=[]
+            cleanSpecialtyToDeactivate() {
+                this.specialtyToDeactivate = [];
+                this.clinicsToDeactivate = []
             },
             ConsultationsByDoctors(consultations) {
                 let res = {};
@@ -183,16 +195,13 @@
                 return res
             },
             async deactivateDoctor(item) {
-                await this.$store.dispatch('getDoctor',item.cpf);
-                if(this.doctor.cpf === item.cpf){
+                await this.$store.dispatch('getDoctor', item.cpf);
+                if (this.doctor.cpf === item.cpf) {
                     this.selectedDoctor = this.doctor;
                     this.clinics = this.doctor.clinics;
                     this.specialtiesDoctor = this.doctor.specialties;
                     this.confirmDeactivate = true;
                 }
-            },
-            async initialConfig() {
-
             },
             daydate(date) {
                 let dateMoment = moment(date);
@@ -203,7 +212,7 @@
                 this.$emit('patientSelect', item.user);
                 this.$emit('consultationSelect', item)
             },
-            async deleteAllSchedule(doctor){
+            async deleteAllSchedule(doctor) {
                 this.loading = true;
                 let payload = {
                     doctor: doctor,
@@ -213,7 +222,7 @@
                 await this.$store.dispatch('deleteAllSchedule', payload);
                 this.success = true;
                 this.loading = false;
-                this.confirmDeactivate= false
+                this.confirmDeactivate = false
             },
             async selectUser(user) {
                 if (user) {

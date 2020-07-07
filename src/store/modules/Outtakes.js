@@ -11,6 +11,8 @@ const state = {
     outtakesPending: [],
     categories: [],
     alertOuttakes: [],
+    outtakeClinic: [],
+    OuttakesConsultationDoctor:[]
 };
 
 const mutations = {
@@ -22,6 +24,12 @@ const mutations = {
     setOuttakesCategories: (state, payload) => state.categories = payload,
     setOuttakesReport: (state, payload) => state.outtakesReport = payload,
     setAlertOuttakes: (state, payload) => state.alertOuttakes = payload,
+    setOuttakeClinic(state, payload) {
+        state.outtakeClinic = payload
+    },
+    setOuttakesConsultationDoctor(state, payload){
+        state.OuttakesConsultationDoctor= payload
+    }
 };
 
 const actions = {
@@ -165,8 +173,29 @@ const actions = {
         }
     },
 
+    //=============================== Categorias Outtakes ======================================================
+
+    async addOuttakesCategory({ commit, getters }, payload) {
+        let categories = getters.outtakesCategories;
+        categories.push({ name: payload.category, subCategories: [] });
+        await firebase.firestore().collection('operational/').doc('outtakes').update({
+            categories: categories
+        });
+        commit('setOuttakesCategories', categories);
+    },
+    async addOuttakeSubcategory({ commit, getters }, payload) {
+     
+        let categories = getters.outtakesCategories;
+        let categoriesName = categories.map(e => e.name);
+        const index = categoriesName.indexOf(payload.category);
+        categories[index].subCategories.push(payload.subCategory);
+        await firebase.firestore().collection('operational/').doc('outtakes').update({
+            categories: categories
+        });
+        commit('setOuttakesCategories', categories);
+    },
+
     async getOuttakesCategories({ commit }) {
-        // let outtakesDoc = await
         return new Promise((resolve, reject) => {
             firebase.firestore().collection('operational/').doc('outtakes').onSnapshot((outtakesDoc) => {
                 let categories = [];
@@ -177,61 +206,170 @@ const actions = {
                 } else {
                     categories = outtakesDoc.data().categories;
                     if (!categories) categories = [];
-
-                    // outtakesCol.forEach((doc) => {
-                    //     categories.push(doc.data())
-                    // })
                 }
                 commit('setOuttakesCategories', categories);
                 resolve();
             })
         });
     },
-    async addOuttakesCategory(context, payload) {
-        await context.dispatch('getOuttakesCategories');
-        let categories = context.getters.outtakesCategories;
-        categories.push({ name: payload.category, subCategories: [] });
+
+    async removeOuttakeCategory({ dispatch, getters }, payload) {
+        var categories = getters.outtakesCategories;
+        var updatedCategories = categories.filter((category) => category.name != payload.category)
         await firebase.firestore().collection('operational/').doc('outtakes').update({
-            categories: categories
-        });
-        context.commit('setOuttakesCategories', categories);
-
-
+            categories: updatedCategories
+        })
+        //dispatch('getOuttakesCategories');
     },
-    async addOuttakeSubcategory(context, payload) {
-        await context.dispatch('getOuttakesCategories');
-        let categories = context.getters.outtakesCategories;
-        let categoriesName = categories.map(e => e.name);
-        const index = categoriesName.indexOf(payload.category.name);
-        if (!categories[index].subCategories) {
-            categories[index].subCategories = []
+    async CalculedValuePaymentDoctor(context, payload) {
+        let cost=0
+        let NumberConsultations=0
+        console.log('payload: ', payload)
+        await firebase.firestore().collection('outtakes').where('crm','==',payload.crm)
+            .where('paid','==',false).get().then((querySnapshot) =>{
+                querySnapshot.forEach((doc) => {
+                    console.log('doc :', doc.data())
+                    if (!doc.data().cancelled_by && doc.data().specialties) {
+                        if (doc.data().doctor.name === payload.name) {
+                            console.log('entrei')
+                            NumberConsultations += 1;
+                            cost += parseFloat(doc.data().specialties.cost)
+                        }
+                    }
+                })
+            });
+        let doctor = {
+            cost: cost,
+            NumberExams: NumberConsultations
         }
-        categories[index].subCategories.push(payload.newSubcategory);
-        await firebase.firestore().collection('operational/').doc('outtakes').update({
-            categories: categories
-        });
-        context.commit('setOuttakesCategories', categories);
+        return doctor
     },
 
-    async removeOuttakeSubcategory(context, payload) {
-        await context.dispatch('getOuttakesCategories');
-        let categories = context.getters.outtakesCategories;
-        let categoriesName = categories.map(e => e.name);
-        const index = categoriesName.indexOf(payload.category.name);
-        // categories[index].subCategories.push(payload.newSubcategory);
-        const aux = categories[index].subCategories.splice(payload.subIndex, 1);
+    async GetReceiptsDoctor(context, payload) {
 
+        await firebase.firestore().collection('outtakes').where('crm','==',payload.crm)
+            .where('paid','==',false).get().then((querySnapshot) =>{
+                let outtakes= []
+                querySnapshot.forEach((doc) =>{
+                    if(!doc.data().cancelled_by && doc.data().specialties){
+                        let consultations= {}
+                        let patient= doc.data().user.name
+                        let intakeNumber= doc.data().intake_id
+                        let outtakesDoctor = {}
+                        consultations = ({
+                            name: doc.data().specialties.name,
+                            price: doc.data().specialties.cost,
+                            realized: doc.data().specialties.realized,
+
+                        })
+                        if(consultations.name){
+                            outtakesDoctor = {
+                                consultations: consultations,
+                                patient: patient,
+                                intakeNumber: intakeNumber
+                            }
+                            outtakes.push(outtakesDoctor)
+                        }
+                    }
+                })
+                context.commit('setOuttakesConsultationDoctor',outtakes)
+            });
+    },
+
+
+    async removeOuttakeSubcategory({ getters, dispatch }, payload) {
+        let categories = getters.outtakesCategories;
+        let index = categories.map(c => c.name).indexOf(payload.category);
+        categories[index].subCategories = categories[index].subCategories.filter((sub) => sub != payload.subCategory)
+      
         await firebase.firestore().collection('operational/').doc('outtakes').update({
             categories: categories
         })
+        //dispatch('getOuttakesCategories');
     },
-
+    //==========================================================================================
 
     async addOuttakes(context, outtake) {
         outtake = functions.removeUndefineds(outtake);
         await firebase.firestore().collection('outtakes/').add(outtake)
     },
+    async addSpecialtyOuttakes(context, outtake) {
+        outtake = functions.removeUndefineds(outtake);
+        var item=0;
+        let SpecificOuttake = await firebase.firestore().collection('outtakes').where('intake_id','==', outtake.intake_id).where('crm','==',outtake.crm).get();
+        SpecificOuttake.forEach(doc => {
+            if(doc.data().specialties.name === outtake.specialties.name){
+                item +=1
+            }
+        });
+        if(item === 0){
+            await firebase.firestore().collection('outtakes/').add(outtake)
+        }
+    },
+    async getSpecificOuttake({commit}, intake) {
+        let outtakes = []
+        let SpecificOuttake = await firebase.firestore().collection('outtakes').where('intake_id','==', parseInt(intake.number)).where('cnpj','==',intake.cnpj).get();
+        SpecificOuttake.forEach(doc => {
+            console.log('doc: ', doc.data())
+            outtakes.push(doc.data())
+        })
+        console.log('outtake: ', outtakes)
+        commit('setOuttakeClinic',  outtakes)
 
+    },
+    async updatingSpecificOuttake({commit}, outtake) {
+        if(outtake.exams.filter( (exam) => exam.realized === true)){
+            let NewOuttake = {
+                    intake_id: outtake.outtake.intake_id,
+                    user: outtake.outtake.user,
+                    unit: outtake.outtake.unit,
+                    clinic: outtake.outtake.clinic,
+                    exams: outtake.outtake.exams.filter( (exam) => exam.realized === true),
+                    paid: false,
+                    root:false,
+                    cnpj: outtake.outtake.cnpj
+            }
+            NewOuttake = functions.removeUndefineds(NewOuttake);
+            await firebase.firestore().collection('outtakes/').add(NewOuttake)
+        }
+        if(outtake.outtake.exams.filter( (exam) => exam.realized !== true).length === 0 ){
+            let SpecificOuttake = await firebase.firestore().collection('outtakes')
+                .where('intake_id','==', parseInt(outtake.outtake.intake_id)).where('cnpj','==',outtake.outtake.cnpj)
+                .where('root', '==', true).get();
+            SpecificOuttake.forEach((doc) => {
+                firebase.firestore().collection('outtakes').doc(doc.id).delete()
+            })
+        }
+        else{
+            let SpecificOuttake = await firebase.firestore().collection('outtakes')
+                .where('intake_id','==', parseInt(outtake.outtake.intake_id)).where('cnpj','==',outtake.outtake.cnpj)
+                .where('root', '==', true).get();
+            SpecificOuttake.forEach((doc) => {
+                firebase.firestore().collection('outtakes').doc(doc.id).update({
+                    exams: outtake.outtake.exams.filter( (exam) => !exam.realized)
+                })
+            })
+        }
+
+
+        /*  let SpecificOuttake = await firebase.firestore().collection('outtakes').where('intake_id','==', parseInt(outtake.number)).where('cnpj','==',outtake.cnpj).get();
+        SpecificOuttake.forEach(async doc => {
+            console.log('doc data: ', doc.data())
+            let Exams = doc.data().exams
+            for (let exam in Exams) {
+                for (let UpdateExam in outtake.exams) {
+                    if (Exams[exam].name === outtake.exams[UpdateExam].name) {
+                        Exams[exam].realized = outtake.exams[UpdateExam].realized
+                    }
+                }
+            }
+            let id = doc.id;
+            console.log('exams: ', Exams)
+            await firebase.firestore().collection('outtakes').doc(id).update({exams: Exams})
+        }) */
+
+
+    },
     async editOuttakes(context, outtake) {
         outtake = functions.removeUndefineds(outtake);
         await firebase.firestore().collection('outtakes/').doc(outtake.id).set(outtake);
@@ -283,7 +421,7 @@ const getters = {
     outtakesPaid(state) {
         return state.outtakesPaid
     },
-    outtakesPaidMonth(state){
+    outtakesPaidMonth(state) {
         return state.outtakesPaidMonth
     },
     outtakesPaidToday(state) {
@@ -297,6 +435,12 @@ const getters = {
     },
     alertOuttakes(state) {
         return state.alertOuttakes
+    },
+    outtakeClinic(state) {
+        return state.outtakeClinic
+    },
+    OuttakesConsultationDoctor(state){
+        return state.OuttakesConsultationDoctor
     }
 };
 

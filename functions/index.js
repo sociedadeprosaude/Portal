@@ -11,7 +11,12 @@ admin.initializeApp();
 
 exports.cronjob = require('./Cronjob/Cronjob')
 exports.listeners = require('./Listeners/listeners')
-exports.requests = require('./Requests/requests')
+exports.requests = {
+    ...require('./Requests/requests'),
+    ...require('./Requests/statistics.js'),
+    ...require('./Requests/pagSeguro.js'),
+}
+
 
 
 //Func nao usada em nenhum canto
