@@ -31,37 +31,48 @@
                         </v-layout>
                     </v-flex>
                     <v-flex xs12 class="mt-3">
-                        <v-card v-for="(intake,i) in last ? lastOuttakes : outtakes" :key="i">
-                            <v-layout row wrap class="primary">
+                        <v-card v-for="(outtakeDay,i) in outtakes" :key="i">
+                            <v-layout row wrap class="indigo darken-3">
                                 <v-flex xs12>
                                     <v-divider class="primary"></v-divider>
                                 </v-flex>
-                                <v-flex xs12 md4 class="align-center font-weight-bold justify-center">
-                                    <p class="white--text mt-5">
-                                        {{intake.intakeNumber}}
-                                    </p>
-                                </v-flex>
-                                <v-flex xs6 md3>
-                                    <p class="mt-5  body-2  white--text" > Nº DE EXAMES: {{intake.exams.length}}</p>
-                                </v-flex>
-                                <v-flex xs6 md4 class="text-center align-center justify-center">
-                                    <p class="mt-5 white--text  body-2"> PREÇO TOTAL: {{PriceIntake(intake)}}</p>
-                                </v-flex>
                                 <v-flex xs12>
-                                    <v-divider class=primary></v-divider>
+                                    <p class="white--text font-weight-bold text-center mt-2">{{day(i)}}</p>
                                 </v-flex>
                             </v-layout>
-                            <v-layout row wrap v-for="(exam,i) in intake.exams" v-bind:key="i">
-                                <v-flex md4 class="hidden-sm-and-down">
-                                    <v-spacer></v-spacer>
+                            <v-layout row wrap v-for="(intake,index) in outtakeDay.outtakes" :key="index">
+                                <v-flex xs12>
+                                    <v-layout row wrap class="primary">
+                                        <v-flex xs12 md4 class="align-center font-weight-bold justify-center">
+                                            <p class="white--text mt-5">
+                                                {{intake.intakeNumber}}
+                                            </p>
+                                        </v-flex>
+                                        <v-flex xs6 md3>
+                                            <p class="mt-5  body-2  white--text" > Nº DE EXAMES: {{intake.exams.length}}</p>
+                                        </v-flex>
+                                        <v-flex xs6 md4 class="text-center align-center justify-center">
+                                            <p class="mt-5 white--text  body-2"> PREÇO TOTAL: {{PriceIntake(intake)}}</p>
+                                        </v-flex>
+                                        <v-flex xs12>
+                                            <v-divider class=primary></v-divider>
+                                        </v-flex>
+                                    </v-layout>
                                 </v-flex>
-                                <v-flex xs8 md3 class="align-center justify-center">
-                                    <p class="font-weight-black mt-5">
-                                        {{exam.name}}
-                                    </p>
-                                </v-flex>
-                                <v-flex xs4 md4 class="text-center align-center justify-center">
-                                    <p class="mt-5"> PREÇO: {{exam.price}}</p>
+                                <v-flex xs12>
+                                    <v-layout row wrap v-for="(exam,i) in intake.exams" v-bind:key="i">
+                                        <v-flex md4 class="hidden-sm-and-down">
+                                            <v-spacer></v-spacer>
+                                        </v-flex>
+                                        <v-flex xs8 md3 class="align-center justify-center">
+                                            <p class="font-weight-black mt-5">
+                                                {{exam.name}}
+                                            </p>
+                                        </v-flex>
+                                        <v-flex xs4 md4 class="text-center align-center justify-center">
+                                            <p class="mt-5"> PREÇO: {{exam.price}}</p>
+                                        </v-flex>
+                                    </v-layout>
                                 </v-flex>
                             </v-layout>
                         </v-card>
@@ -76,9 +87,10 @@
 
 <script>
     import {mask} from "vue-the-mask";
+    import moment from "moment";
 
     export default {
-        name: "PaymentHistory",
+        name: "PaymentHistoryClinic",
         directives: {
             mask
         },
@@ -99,9 +111,12 @@
             await  this.InitialConfig()
         },
         methods: {
+            day(i){
+               return  moment(i).format('DD/MM/YYYY')
+            },
             async InitialConfig(){
                 this.clinic = await this.$store.dispatch('getClinic',this.user.cnpj)
-                await this.$store.dispatch('GetReceiptsClinic',this.clinic)
+                await this.$store.dispatch('GetAllReceiptsPaidClinic',this.clinic)
             },
             PriceIntake(intake){
                 let price= 0;
@@ -124,24 +139,30 @@
                 return this.$store.getters.user
             },
             outtakes(){
-                return this.$store.getters.IntakesExamsClinics
+                return this.$store.getters.PaidOuttakesExamsClinics
             },
             PriceTot(){
                 let cost =0;
-                this.outtakes.filter(function (element){
-                    element.exams.filter(function (element2) {
-                        cost += element2.price
+                for(let day in this.outtakes){
+                    let outtakesDay = this.outtakes[day].outtakes
+                    outtakesDay.filter(function (element) {
+                        element.exams.filter(function (element2) {
+                            cost += element2.price
+                        })
                     })
-                })
+                }
                 return cost
             },
             QuantTot(){
                 let quant =0;
-                this.outtakes.filter(function (element){
-                    element.exams.filter(function (element2) {
-                        quant += 1
+                for(let day in this.outtakes){
+                    let outtakesDay = this.outtakes[day].outtakes
+                    outtakesDay.filter(function (element) {
+                        element.exams.filter(function (element2) {
+                            quant +=1
+                        })
                     })
-                })
+                }
                 return quant
             }
         }

@@ -13,7 +13,8 @@ const state = {
     covenants: [],
     accontClinics: [],
     contestValue:[],
-    IntakesExamsClinics: []
+    IntakesExamsClinics: [],
+    PaidOuttakesExamsClinics: []
 
 
 };
@@ -28,6 +29,9 @@ const mutations = {
     },
     setIntakesExamsClinics(state, payload){
         state.IntakesExamsClinics= payload
+    },
+    setPaidOuttakesExamsClinics(state, payload){
+        state.PaidOuttakesExamsClinics= payload
     },
     setAllClinics(state, payload) {
         state.allClinics = payload;
@@ -329,6 +333,54 @@ const actions = {
                 return intakes
             });
     },
+    async GetAllReceiptsPaidClinic(context, payload) {
+        console.log('payload: ', payload)
+        let day = moment().format('YYYY-MM-DD')
+        console.log('day: ', day)
+        day = moment(day).add(1, 'days').format('YYYY-MM-DD')
+        console.log('day: ', day)
+        await firebase.firestore().collection('outtakes').where('cnpj','==',payload.cnpj)
+            .where('paid','<=',day).where('root','==',false).get().then((querySnapshot) =>{
+                let intakes= {}
+                querySnapshot.forEach((doc) =>{
+                    if(!doc.data().cancelled_by && doc.data().exams){
+                        console.log('doc.data(): ', doc.data())
+                        let exams= []
+                        let patient= doc.data().user.name
+                        let intakeNumber= doc.data().intake_id
+                        let intakeClinic = {}
+                        for(let exam in doc.data().exams) {
+                            if (doc.data().exams[exam].clinic.name === payload.name) {
+                                if (doc.data().exams[exam].realized === true) {
+                                    exams.push({
+                                        name: doc.data().exams[exam].name,
+                                        price: doc.data().exams[exam].cost,
+                                        rules: doc.data().exams[exam].rules,
+                                        realized: doc.data().exams[exam].realized,
+                                    });
+                                }
+                            }
+                        }
+                        if(exams.length !== 0){
+                            intakeClinic = {
+                                exams: exams,
+                                patient: patient,
+                                intakeNumber: intakeNumber,
+                                paid: doc.data().paid
+                            }
+                            if(!intakes[intakeClinic.paid]){
+                                intakes[intakeClinic.paid] ={
+                                    outtakes: []
+                                }
+                            }
+                            intakes[intakeClinic.paid].outtakes.push(intakeClinic)
+
+                        }
+                    }
+                })
+                context.commit('setPaidOuttakesExamsClinics',intakes)
+            });
+    },
     async CalculedValuePaymentClinic(context, payload) {
         let cost=0
         let NumberExams=0
@@ -544,7 +596,9 @@ const getters = {
     allClinics(state) {
         return state.allClinics;
     },
-
+    PaidOuttakesExamsClinics(state) {
+        return state.PaidOuttakesExamsClinics;
+    },
     selectedClinic(state) {
         return state.selectedClinic;
     },
