@@ -99,11 +99,11 @@ const actions = {
     async getMedicalRecords({commit}, payload) {
         let mr = await firebase.firestore().collection('users').doc(payload.patient).get();
         let arrayMedicalRecords = mr.data().medicalRecords
-        if (arrayMedicalRecords){
+        if(arrayMedicalRecords){
             commit('setMedicalRecords', arrayMedicalRecords);
+        } else {
+            commit('setMedicalRecords', undefined);
         }
-        //console.log('array:', arrayMedicalRecords[0])
-        //commit('setMedicalRecords', arrayMedicalRecords);
     },
 
     async getAllSchedules({commit}) {

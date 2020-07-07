@@ -2,40 +2,42 @@
     <v-content>
         <template>
             <v-row justify="center">
-                <v-spacer/>
-                <transition name="fade">
-                    <v-dialog v-model="dialog" persistent hide-overlay max-width="600">
-                        <template v-slot:activator="{ on }">
-                            <v-btn
-                                    dark
-                                    color="red"
-                                    v-on="on"
-                            >
+                <v-spacer v-if='this.$vuetify.breakpoint.name !== "xs"' />
+                <v-dialog v-model="dialog" persistent hide-overlay max-width="600">
+                    <template v-slot:activator="{ on }">
+                        <v-layout row wrap class="align-center justify-center">
+                            <v-btn dark color="red" v-on="on">
                                 FINALIZAR ATENDIMENTO
                                 <v-icon right>exit_to_app</v-icon>
                             </v-btn>
-                        </template>
-                        <v-card>
-                            <v-card-title class="primary white--text">Deseja Finalizar o Atendimento do Paciente Selecionado ?</v-card-title>
-                            <v-divider/>
-                            <v-card-actions>
-                                <v-btn outlined color="error" @click="dialog = false">NÃO</v-btn>
-                                <v-spacer/>
-                                <v-btn outlined color="success" @click="saveAttendance">SIM</v-btn>
-                            </v-card-actions>
-                        </v-card>
-                    </v-dialog>
-                </transition>
-                <v-spacer/>
-                <v-btn v-show="show === false" dark color="primary" @click="show = true">
-                    Vizualizar Histórico de consultas do Paciente
-                    <v-icon right>visibility</v-icon>
-                </v-btn>
-                <v-btn v-show="show === true" dark color="primary" @click="show = false">
-                    Esconder Histórico de consultas do Paciente
-                    <v-icon right>visibility_off</v-icon>
-                </v-btn>
-                <v-spacer/>
+                        </v-layout>
+                    </template>
+                    <v-card>
+                        <v-card-title class="primary white--text">Deseja Finalizar o Atendimento do Paciente Selecionado ?</v-card-title>
+                        <v-divider/>
+                        <v-card-actions>
+                            <v-btn outlined color="error" @click="dialog = false">NÃO</v-btn>
+                            <v-spacer/>
+                            <v-btn outlined color="success" @click="saveAttendance">SIM</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+                <v-spacer v-if="this.$vuetify.breakpoint.name !== 'xs'" />
+                <v-flex v-if="this.$vuetify.breakpoint.name === 'xs'" xs12 class="transparent"><p style="color: transparent">.</p></v-flex>
+                <v-spacer v-if="this.$vuetify.breakpoint.name !== 'xs'" />
+                <v-layout row wrap class="align-center justify-center">
+                    <v-btn v-show="show === false" dark color="primary" @click="show = true">
+                        <v-icon left>assignment</v-icon>
+                        Prontuários do Paciente
+                        <v-icon right>visibility</v-icon>
+                    </v-btn>
+                    <v-btn v-show="show === true" dark color="primary" @click="show = false">
+                        <v-icon left>assignment</v-icon>
+                        Prontuários do Paciente
+                        <v-icon right>visibility_off</v-icon>
+                    </v-btn>
+                </v-layout>
+                <v-spacer v-if='this.$vuetify.breakpoint.name !== "xs"' />
             </v-row>
         </template>
 

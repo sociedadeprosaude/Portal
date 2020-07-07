@@ -7,17 +7,17 @@
                     <v-flex xs12>
                         <p class="white--text text-left title">Consultas</p>
                     </v-flex>
-                    <v-flex xs12 class="mb-2">
+                    <v-flex xs12 class="mb-0">
                         <v-divider color="white"/>
                     </v-flex>
-                    <v-flex xs12 class="mt-3 mx-7">
+                    <v-flex xs12 class="mt-3 mx-7 mb-0">
                         <v-layout row wrap>
-                            <v-flex xs12>
+                            <v-flex xs12 class="mb-0">
                                 <DoctorTicketRoom/>
                             </v-flex>
                         </v-layout>
                     </v-flex>
-                    <v-flex xs12 class="mt-4 mb-2">
+                    <v-flex xs12 class="mt-n3 mb-2">
                         <v-divider color="white"/>
                     </v-flex>
                     <v-flex xs12 class="mt-3 mx-7">
@@ -39,7 +39,7 @@
                         <v-divider color="white"/>
                     </v-flex>
                     <v-flex xs12 class="mt-3 mx-7">
-                        <v-card>
+                        <v-card class="cardConsultation">
                             <v-layout row wrap>
                                 <v-flex xs4>
                                     <p class="font-weight-black">Consulta</p>
@@ -112,13 +112,13 @@
 <style scoped>
     .cardw {
         width: 100%;
-        height: 150px;
+        height: 125px;
         align-self: center;
     }
 
     .cardConsultation {
         width: 100%;
-        height: 350px;
+        height: 250px;
     }
 
     .spacerH {

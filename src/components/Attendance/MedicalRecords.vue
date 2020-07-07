@@ -36,11 +36,6 @@
                                alignleft aligncenter alignright alignjustify | \
                                bullist numlist outdent indent | removeformat | help'
                            }"/>
-                {{medicalRecord}}
-                <br/>
-                {{medicalRecordsUser}}
-                <br/>
-                {{id}}
             </v-card-text>
             <v-divider/>
             <v-card-actions>

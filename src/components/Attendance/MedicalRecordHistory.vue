@@ -2,9 +2,9 @@
     <v-content>
         <v-container fluid>
             <v-layout row wrap>
-                <v-flex xs12 v-if="medicalRecordsUser.length !== 0">
+                <v-flex xs12 v-if="medicalRecordsUser">
                     <v-expansion-panels inset>
-                        <v-expansion-panel v-for="(item,i) in medicalRecordsUser" :key="i">
+                        <v-expansion-panel v-for="(item,i) in medicalRecordsUser" :key="i" class="mt-3">
                             <v-expansion-panel-header class="primary white--text">
                                 {{item.date | dateFilter }} - {{item.hour}} : {{item.type}} - {{item.doctor}} - {{item.specialty}}
                                 <template v-slot:actions>
@@ -62,6 +62,5 @@
         },
     };
 </script>
-
 <style scoped>
 </style>

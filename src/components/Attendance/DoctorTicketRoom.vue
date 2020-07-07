@@ -1,7 +1,7 @@
 <template>
-    <v-row class="mt-4">
+    <v-row class="mt-0 pa-0 mb-0">
         <v-col cols="12" xs="4" v-for="room in rooms" :key="room.name">
-            <v-card class="pa-4" v-if="room.doctor" v-show="room.doctor.name === user.name">
+            <v-card class="pa-1 mb-n12" v-if="room.doctor" v-show="room.doctor.name === user.name">
                 <v-row class="justify-center">
                     <v-col cols="12" class="text-left">
                         <span class="font-weight-black">{{room.name}}: Senhas</span>

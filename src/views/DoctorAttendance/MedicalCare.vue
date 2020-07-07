@@ -38,7 +38,7 @@
                                 class="mr-3"
                         />
                     </v-flex>
-                    <v-flex xs4>
+                    <v-flex xs12 sm4>
                         <!--disabled-->
                         <v-menu
                                 ref="menu1"
