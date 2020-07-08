@@ -81,11 +81,12 @@
             clinics () {
                 return this.$store.getters.clinics.filter(a => a.name >= this.search.toUpperCase());
             },
+
         },
 
         methods: {
 
-            async loadClinics() {
+            async loadClinic() {
                 this.loading = true;
                 await this.$store.dispatch('getClinics');
                 this.loading = false;
