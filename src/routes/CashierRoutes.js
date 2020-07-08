@@ -4,6 +4,7 @@ import Cashier from "../views/Operational/Cashier/Cashier";
 import CashierReports from "@/views/Statistics/StatisticsDashboard";
 import PayOnline from "../views/Operational/Cashier/PayOnline";
 import Outflows from "../views/Register/Outflows";
+import StatsCaixa from '../views/Statistics/statsCaixa'
 
 export default [
     {
@@ -15,6 +16,11 @@ export default [
         path: '/caixa2',
         name: 'CashierReports',
         component: CashierReports
+    },
+    {
+        path: '/charts',
+        name: 'Charts',
+        component: StatsCaixa
     },
     {
         path: '/pagamentoOnline/:id',
