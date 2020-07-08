@@ -130,7 +130,7 @@
 import LineChart from "@/components/Charts/LineChart";
 import BarChart from "@/components/Charts/BarChart";
 import PieChart from "@/components/Charts/PieChart";
-import moment from 'moment'
+import moment from "moment";
 import MiniStatistic from "@/components/MiniStatistic";
 export default {
   components: {
@@ -174,21 +174,17 @@ export default {
   },
   watch: {
     statistics(val) {
-      /* if (val) {
+      if (val) {
         this.years = Object.keys(val);
         this.year = this.years[0];
         this.months = Object.keys(val[this.years[0]]);
         this.month = this.months[0];
-      } */
+      }
     },
     year(val) {
-      try {
-        if (val) {
-          this.months = Object.keys(this.statistics[val]);
-          this.month = this.months[0];
-        }
-      } catch (e) {
-        console.log(e);
+      if (val) {
+        this.months = Object.keys(this.statistics[val]);
+        this.month = this.months[0];
       }
     }
   },

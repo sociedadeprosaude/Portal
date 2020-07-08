@@ -4,6 +4,8 @@
       hide-overlay
       :right="false"
       v-model="overviewDrawer"
+      absolute
+      temporary
       disable-resize-watcher
       app
       dark
@@ -89,8 +91,7 @@
     <procedures-prices-analises v-if="selected == 2"></procedures-prices-analises>
     <statsCaixaIntakes v-if="selected == 3"></statsCaixaIntakes>
     <statsCaixaOuttakes v-if="selected == 4"></statsCaixaOuttakes>
-    <testes v-if="selected == 5"></testes>
-    <Clients v-if="selected == 6"></Clients>
+    <Clients v-if="selected == 5"></Clients>
   </v-container>
 </template>
 
@@ -101,8 +102,7 @@ import OuttakesReport from "@/components/reports/OuttakesReport";
 
 import statsCaixaIntakes from "./statsCaixa";
 import statsCaixaOuttakes from "./statsCaixaOuttakes";
-import Clients from './Clients'
-import statsCaixa from "./statsCaixa";
+import Clients from "./Clients";
 
 export default {
   components: {
@@ -121,8 +121,7 @@ export default {
       { title: "Análise de preço de exames", value: 2 },
       { title: "Intakes", value: 3 },
       { title: "Outtakes", value: 4 },
-      { title: "Overview Caixa", value: 5 },
-      { title: "Clientes", value: 6 },
+      { title: "Clientes", value: 5 }
     ],
 
     date: moment().format("YYYY-MM-DD 00:00:00"),
@@ -154,9 +153,9 @@ export default {
     },
     async pesquisar() {
       this.loading = true;
-      if(this.selected == 5){
-       this.loadDatasetClients()
-      }else{
+      if (this.selected == 5) {
+        this.loadDatasetClients();
+      } else {
         this.$store.dispatch("getUsers", {
           initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
           finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
@@ -181,7 +180,6 @@ export default {
         );
       }
 
-      
       this.dateBegin = this.dateFormatted;
       this.dateEnd = this.dateFormatted2;
       this.loading = false;
@@ -191,19 +189,18 @@ export default {
       const [year, month, day] = date.split("-");
       return `${day}/${month}/${year}`;
     },
-    loadDatasetClients(){
-       this.$store.dispatch("loadClientsServed", {
-          initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-          finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
-        });
-        this.$store.dispatch("loadNewClients", {
-          initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-          finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
-        });
+    loadDatasetClients() {
+      this.$store.dispatch("loadClientsServed", {
+        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+      });
+      this.$store.dispatch("loadNewClients", {
+        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+      });
     }
   },
   async mounted() {
-    
     await this.$store.dispatch("getOuttakes", {
       initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
       finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
