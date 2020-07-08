@@ -81,11 +81,6 @@
             clinics () {
                 return this.$store.getters.clinics.filter(a => a.name >= this.search.toUpperCase());
             },
-
-        },
-
-        mounted() {
-            this.loadClinic()
         },
 
         methods: {
