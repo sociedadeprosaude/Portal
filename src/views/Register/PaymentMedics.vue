@@ -221,6 +221,7 @@
             },
             async getInitialInfo() {
                 await this.$store.dispatch('getColaboratorsDoctors');
+
                 await this.$store.dispatch('GetReceiptsAllDoctors');
 
                 this.loading = false

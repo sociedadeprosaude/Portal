@@ -104,6 +104,9 @@
             selectedUnit() {
                 return this.$store.getters.selectedUnit
             },
+            intakes(){
+                return this.$store.getters.IntakesExamsClinics
+            },
             PriceTot(){
                 let cost =0;
                 this.outtakes.filter(function (element){
