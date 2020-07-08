@@ -37,6 +37,17 @@ const actions = {
         specialtyRef = await firebase.firestore().collection('specialties').doc(copySpecialty.name).update(copySpecialty);
     },
 
+    async getDoctorSpecialty(context, consultation){
+        let specialtieSelect = await firebase.firestore().collection('specialties').doc(consultation.specialty.name).get()
+        let specialtie={
+            name: consultation.specialty.name,
+            cost: specialtieSelect.data().doctors.filter(item =>  item.name === consultation.doctor.name)[0].cost,
+            realized: moment().format('YYYY-MM-DD'),
+            paid: false
+        }
+        console.log('specialtie: ', specialtie)
+        return specialtie
+    },
     async editSpecialty({commit}, specialty) {
         specialty = functions.removeUndefineds(specialty);
         await firebase.firestore().collection('specialties').doc(specialty.name).update(specialty)

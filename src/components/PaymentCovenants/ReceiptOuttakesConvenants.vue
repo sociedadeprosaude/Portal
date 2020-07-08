@@ -27,7 +27,7 @@
                     <img :src="selectedUnit.logo" height="84px">
                 </v-flex>
                 <v-flex xs12>
-                    <v-card v-for="(intake,i) in this.outtakes" v-bind:key="i" class="elevation-0">
+                    <v-card v-for="(intake,i) in intakes" v-bind:key="i" class="elevation-0">
                         <v-layout v-for="(exam,i) in intake.exams" v-bind:key="i">
                             <v-layout row wrap>
                                 <v-flex xs5 class="align-center justify-center">
@@ -42,7 +42,7 @@
                                     <p class="mt-5"> PREÇO: {{exam.price}}</p>
                                 </v-flex>
                                 <v-flex xs12>
-                                    <v-divider color="black" ></v-divider>
+                                    <v-divider color="black"></v-divider>
                                 </v-flex>
                             </v-layout>
                         </v-layout>
@@ -85,6 +85,10 @@
     export default {
         name: "ReceiptOuttakesConvenants",
         props: ['clinicSelected', 'outtakes'],
+        mounted() {
+            this.$store.dispatch('GetReceiptsClinic', this.clinicSelected)
+
+        },
         data() {
             return {
                 numberIntake: '',

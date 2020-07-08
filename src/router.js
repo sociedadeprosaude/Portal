@@ -32,6 +32,7 @@ import OuttakesCategories from "./views/Register/OuttakesCategories";
 import DoctorScheduling from './views/Operational/DoctorsAgenda/DoctorScheduling'
 
 import MedicalCare from "./views/DoctorAttendance/MedicalCare";
+import Attendance from "./views/DoctorAttendance/Attendance";
 import TicketsDashboard from "./views/Operational/Tickets/TicketsDashboard";
 import RoomDashboard from "./views/Operational/Tickets/RoomDashboard";
 
@@ -256,6 +257,14 @@ let mainRoutes = [
     path: '/MedicalCare',
     name: 'MedicalCare',
     component : MedicalCare,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/Attendance',
+    name: 'Attendance',
+    component : Attendance,
     meta: {
       requiresAuth: false,
     }

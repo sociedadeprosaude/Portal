@@ -80,6 +80,16 @@
             closeDialog: function() {
                 this.$emit('close-dialog')
             }
+        },
+        mounted(){
+            this.$store.dispatch('GetReceiptsClinic', this.clinic)
+
+        },
+        computed: {
+            intakes(){
+                console.log('ouutakes clinic: ', this.$store.getters.IntakesExamsClinics)
+                return this.$store.getters.IntakesExamsClinics
+            }
         }
     };
 </script>

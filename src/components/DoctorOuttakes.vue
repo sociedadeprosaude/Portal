@@ -2,7 +2,7 @@
     <v-container>
         <v-layout row wrap>
             <v-flex xs12>
-                    <v-card v-for="(intake,i) in this.outtakes" :key="i">
+                    <v-card v-for="(intake,i) in intakes" :key="i">
                     <v-layout row wrap>
                         <v-flex xs3 class="align-center justify-center">
                             <p class="font-weight-black mt-5">
@@ -58,6 +58,15 @@
         methods: {
             closeDialog: function() {
                 this.$emit('close-dialog')
+            }
+        },
+        mounted(){
+            this.$store.dispatch('GetReceiptsDoctor', this.doctor)
+
+        },
+        computed: {
+            intakes(){
+                return this.$store.getters.OuttakesConsultationDoctor
             },
             mostrarOuttakes(){
                 console.log('outtakes: ', this.outtakes)

@@ -263,7 +263,6 @@ const actions = {
     },
 
     async GetReceiptsClinic(context, payload) {
-        console.log('payload: ', payload)
         await firebase.firestore().collection('outtakes').where('cnpj','==',payload.cnpj)
             .where('paid','==',false).where('root','==',false).get().then((querySnapshot) =>{
                 let intakes= []
@@ -303,6 +302,7 @@ const actions = {
             .where('paid','==',payload.last_payment).where('root','==',false).get().then((querySnapshot) =>{
                 let intakes= []
                 querySnapshot.forEach((doc) =>{
+                    console.log('doc :', doc.data())
                     if(!doc.data().cancelled_by && doc.data().exams){
                         let exams= []
                         let patient= doc.data().user.name
