@@ -23,7 +23,7 @@
             <v-flex xs12>
                 <v-divider/>
             </v-flex>
-            <p v-if="outtake.length > 0" class="mt-3 font-italic font-weight-bold"> Paciente: {{outtake[0].patient}}</p>
+            <p v-if="outtake.length > 0" class="mt-3 font-italic font-weight-bold"> Paciente: {{outtake[0].user.name}}</p>
             <v-flex xs12>
                 <v-divider/>
             </v-flex>
@@ -54,7 +54,7 @@
                             <v-divider class="primary" vertical/>
                         </v-flex>
                         <v-flex xs5 md1>
-                            <v-checkbox v-model="intake.realized" color="success" label="Exame Realizado"/>
+                            <v-checkbox v-model="intake.realized" color="success" label="Faturar" placeholder="Faturar" />
                         </v-flex>
                         <v-flex xs1 md1 class="hidden-sm-and-down">
                             <v-divider class="primary" vertical/>
