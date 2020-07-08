@@ -213,17 +213,10 @@
                             },*/
                             {
                                 title: 'Financeiro',
-                                to: '/bills',
+                                to: '/pagamento/financeiro',
                                 permission: 'Caixa',
                                 icon: 'attach_money',
-                            },
-                            {
-                                title: 'Pagar Convênios',
-                                to: '/PaymentCovenants',
-                                permission: 'Caixa',
-                                icon: 'receipt',
-                            },
-
+                            }
                         ]
                     },
                     {
@@ -254,6 +247,18 @@
                                 title: 'Check Exames',
                                 permission: 'clinic',
                                 to: '/DischargeProcedures',
+                                icon: 'supervisor_account'
+                            },
+                            {
+                                title: 'Verificação Encaminhamentos A Cobrar',
+                                permission: 'clinic',
+                                to: '/VerificacaoEncaminhamentos',
+                                icon: 'supervisor_account'
+                            },
+                            {
+                                title: 'Histórico de Pagamentos',
+                                permission: 'clinic',
+                                to: '/HistoricoDePagamentos',
                                 icon: 'supervisor_account'
                             },
                         ]

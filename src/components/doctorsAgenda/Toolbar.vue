@@ -17,14 +17,35 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
+    <v-navigation-drawer
+      v-if="billsToobar"
+      class="hidden-print-only"
+      dark
+      absolute
+      temporary
+      v-model="drawer"
+    >
+      <v-list>
+        <v-list-item
+          v-for="item in menuItemsBills"
+          :key="item.title"
+          @click.native="goRoute(item.link)"
+        >
+          <v-list-item-action>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>{{ item.title }}</v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
     <v-app-bar
       color="primary_dark hidden-xs-only"
+      fixed
       dark
-      app
       class="hidden-print-only"
       v-if="selectedUnit"
     >
-      <v-app-bar-nav-icon v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer" />
+      <v-app-bar-nav-icon v-if="doctorsAgendaToobar || billsToobar" @click.stop="drawer = !drawer" />
       <v-app-bar-nav-icon hidden v-if="showOverviewToggle" @click.stop="overviewToggle()" />
 
       <v-toolbar-title>
@@ -155,6 +176,26 @@ export default {
           link: "/agenda/GerenciarAgendas"
         },
         { icon: "translate", title: "Pesquisa de CIDs", link: "/agenda/Cids" }
+      ],
+      menuItemsBills: [
+        {
+          title: "Financeiro",
+          link: "/pagamento/financeiro",
+          permission: "Caixa",
+          icon: "attach_money"
+        },
+        {
+          title: "Pagar Convênios",
+          link: "/pagamento/convenio",
+          permission: "Caixa",
+          icon: "receipt"
+        },
+        {
+          icon: "mdi-clipboard-account",
+          title: "Pagar Médicos",
+          link: "/pagamento/medicos",
+          permission: "Caixa"
+        }
       ]
     };
   },
@@ -176,6 +217,9 @@ export default {
     },
     showOverviewToggle() {
       return this.$store.getters.showOverviewToggle;
+    },
+    billsToobar() {
+      return this.$store.getters.showBillsToolbar;
     }
   },
   methods: {

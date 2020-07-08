@@ -142,7 +142,6 @@
                                         return-object
                                         label="Exame"
                                         outlined
-                                        :disabled="this.$route.params.reschedule"
                                         chips
                                         color="blue"
                                         clearable
@@ -260,7 +259,7 @@
 
     export default {
 
-        props: ['createConsultationForm', 'loaderPaymentNumber', 'exams', 'numberReceipt','status','payment_numberFound','modalidade','previousConsultation','rescheduleConsultation'],
+        props: ['createConsultationForm', 'loaderPaymentNumber', 'exams', 'numberReceipt','status','payment_numberFound','modalidade','previousConsultation'],
         components: {SubmitButton},
 
         data: () => ({
@@ -271,9 +270,6 @@
             findPaymentToExam:true,
             //exams: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
         }),
-        mounted(){
-            this.setExamFromCreatedForm()
-        },
         computed: {
             selectedPatient() {
                 return this.$store.getters.selectedPatient;
@@ -330,33 +326,19 @@
                         dependent: form.user.dependent
                     };
                 this.loading = true;
-                if(this.rescheduleConsultation){
-                    form.consultation.idConsultationCanceled = this.rescheduleConsultation
-                    await this.$store.dispatch("addUserToConsultationReschedule", form);
-                }else{
-                    await this.$store.dispatch("addUserToConsultation", form);
-                }
+                await this.$store.dispatch("addUserToConsultation", form);
                 this.scheduleLoading = false;
                 this.success = true;
-                if(this.$route.params.q)
-                    this.$router.back()
+
             },
 
             close: function () {
                 this.exam = undefined
                 this.$emit('close-dialog')
-            },
-
-            setExamFromCreatedForm(){
-                if(this.createConsultationForm && this.createConsultationForm.consultation.exam){
-                    this.exam = this.createConsultationForm.consultation.exam
-                    this.findPaymentToExam = false
-                }
             }
         },
         watch:{
             createConsultationForm(value){
-                console.log('mudou no consultation form')
                 this.setExamFromCreatedForm()
             },
             exam(value){
@@ -367,7 +349,7 @@
                 }
             },
             payment_numberFound(value){
-                if(value.exam){
+                if(value && value.exam){
                     this.exam = Object.assign({},value.exam)
                     this.findPaymentToExam = false
                 }

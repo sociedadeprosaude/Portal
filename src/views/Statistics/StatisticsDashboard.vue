@@ -89,6 +89,8 @@
     <procedures-prices-analises v-if="selected == 2"></procedures-prices-analises>
     <statsCaixaIntakes v-if="selected == 3"></statsCaixaIntakes>
     <statsCaixaOuttakes v-if="selected == 4"></statsCaixaOuttakes>
+    <testes v-if="selected == 5"></testes>
+    <Clients v-if="selected == 6"></Clients>
   </v-container>
 </template>
 
@@ -99,6 +101,8 @@ import OuttakesReport from "@/components/reports/OuttakesReport";
 
 import statsCaixaIntakes from "./statsCaixa";
 import statsCaixaOuttakes from "./statsCaixaOuttakes";
+import Clients from './Clients'
+import statsCaixa from "./statsCaixa";
 
 export default {
   components: {
@@ -106,7 +110,8 @@ export default {
     ProceduresPricesAnalises,
     OuttakesReport,
     statsCaixaIntakes,
-    statsCaixaOuttakes
+    statsCaixaOuttakes,
+    Clients
   },
   data: vm => ({
     selected: 4,
@@ -115,7 +120,9 @@ export default {
       { title: "Relatorio de Saidas", value: 1 },
       { title: "Análise de preço de exames", value: 2 },
       { title: "Intakes", value: 3 },
-      { title: "Outtakes", value: 4 }
+      { title: "Outtakes", value: 4 },
+      { title: "Overview Caixa", value: 5 },
+      { title: "Clientes", value: 6 },
     ],
 
     date: moment().format("YYYY-MM-DD 00:00:00"),
@@ -147,28 +154,34 @@ export default {
     },
     async pesquisar() {
       this.loading = true;
-      this.$store.dispatch("getUsers", {
-        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
-        type: "PATIENT"
-      });
-      this.$store.dispatch("getOuttakes", {
-        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
-      });
-      this.formattedReport = await this.$store.dispatch("searchReports", {
-        dataInicio: this.date,
-        dataFinal: this.date2,
-        colaborator: this.colaborator
-      });
-      this.formattedReportAllUnits = await this.$store.dispatch(
-        "searchReportsAllClinics",
-        {
+      if(this.selected == 5){
+       this.loadDatasetClients()
+      }else{
+        this.$store.dispatch("getUsers", {
+          initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+          finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
+          type: "PATIENT"
+        });
+        this.$store.dispatch("getOuttakes", {
+          initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+          finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+        });
+        this.formattedReport = await this.$store.dispatch("searchReports", {
           dataInicio: this.date,
           dataFinal: this.date2,
           colaborator: this.colaborator
-        }
-      );
+        });
+        this.formattedReportAllUnits = await this.$store.dispatch(
+          "searchReportsAllClinics",
+          {
+            dataInicio: this.date,
+            dataFinal: this.date2,
+            colaborator: this.colaborator
+          }
+        );
+      }
+
+      
       this.dateBegin = this.dateFormatted;
       this.dateEnd = this.dateFormatted2;
       this.loading = false;
@@ -177,6 +190,16 @@ export default {
       if (!date) return null;
       const [year, month, day] = date.split("-");
       return `${day}/${month}/${year}`;
+    },
+    loadDatasetClients(){
+       this.$store.dispatch("loadClientsServed", {
+          initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+          finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+        });
+        this.$store.dispatch("loadNewClients", {
+          initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+          finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+        });
     }
   },
   async mounted() {
@@ -196,7 +219,12 @@ export default {
       type: "PATIENT"
     });
     await this.$store.dispatch("getOuttakesCategories");
+    await this.$store.dispatch("loadClientsServed", {
+      initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+      finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+    });
     this.getIntakes();
+    this.loadDatasetClients();
   },
   computed: {
     colaborators() {

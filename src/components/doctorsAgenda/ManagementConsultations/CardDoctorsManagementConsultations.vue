@@ -143,7 +143,7 @@
             specialtiesDoctor: '',
             success: false,
             loading: false,
-                loadingConsultations: false,
+            loadingConsultations: false,
             confirmDeactivate: false,
             patientSelected: [],
             specialtyToDeactivate: {},
@@ -155,16 +155,11 @@
                     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.loadingConsultations = !this.loadingConsultations
                 }
-                return this.$store.getters.consultations.filter((a) => {
-                    return this.especialtie && this.date ?  a.specialty && this.especialtie.name === a.specialty.name && this.date === a.date.split(' ')[0] && a.user  : false
-
-//              this.loadingConsultations = true
-//                let response =  this.$store.getters.consultations.filter((a) => {
-//                    let filtedBySpecialty = !this.filterByExam && this.specialty && a.specialty && this.specialty.name === a.specialty.name
-//                    let filtedByExamType = this.filterByExam && this.examType && a.exam && this.examType.name === a.exam.type
-                   
-//                    return this.date && this.date === a.date.split(' ')[0] && a.user && (filtedBySpecialty || filtedByExamType)
-
+                this.loadingConsultations = true
+                let response =  this.$store.getters.consultations.filter((a) => {
+                    let filtedBySpecialty = !this.filterByExam && this.specialty && a.specialty && this.specialty.name === a.specialty.name
+                    let filtedByExamType = this.filterByExam && this.examType && a.exam && this.examType.name === a.exam.type
+                    return this.date && this.date === a.date.split(' ')[0] && a.user && (filtedBySpecialty || filtedByExamType)
                 });
                 this.loadingConsultations = false
                 return response
@@ -173,11 +168,6 @@
                 return this.$store.getters.doctor
             }
         },
-        mounted() {
-            this.initialConfig()
-
-        },
-        watch: {},
         methods: {
 
             cleanSpecialtyToDeactivate() {
@@ -210,9 +200,6 @@
                     this.specialtiesDoctor = this.doctor.specialties;
                     this.confirmDeactivate = true;
                 }
-            },
-            async initialConfig() {
-
             },
             daydate(date) {
                 let dateMoment = moment(date);

@@ -102,7 +102,6 @@
                                                 :status="status"
                                                 :payment_numberFound="payment_numberFound"
                                                 @findPaymentNumberToExam="thereIsPaymentNumber($event)"
-                                                :rescheduleConsultation="rescheduleConsultation"
                                 />
                             </v-dialog>
                         </div>
@@ -110,7 +109,8 @@
                 </v-layout>
             </ul>
         </div>
-            <div class="text-xs-center">
+           <!--  Não entendi por que está chamando duas vezes o dialog -->
+            <!-- <div class="text-xs-center">
                 <v-dialog v-model="dialog" v-if="createConsultationForm" max-width="520">
                     <SchedulingForm @close-dialog="dialog = false"
                                     :createConsultationForm="createConsultationForm"
@@ -123,8 +123,8 @@
                                     :payment_numberFound="payment_numberFound"
                     />
                 </v-dialog>
-            </div>
-
+            </div> -->
+        
         <v-flex xs12 v-if="!consultationLoading">
             <v-btn class="primary" rounded text @click="listenMoreConsultations">Carregar mais</v-btn>
         </v-flex>
@@ -168,7 +168,6 @@
             examsLoading:[],
             loading: false,
             nextItem: 1,
-            rescheduleConsultation:undefined
         }),
 
         async mounted() {
@@ -183,7 +182,7 @@
             });
 
             this.query = this.$route.params.q
-            if (this.query && !this.$route.params.reschedule) {
+            if (this.query) {
                 this.modalidade = "Retorno"
                 this.previousConsultation = this.query.id
                 this.status = this.query.status
@@ -194,7 +193,6 @@
                 this.status = this.query.status
                 this.numberReceipt = this.query.payment_number
                 this.rescheduleConsultation = this.query.id
-                console.log('this. status', this.status)
             }            
             else{
                 this.modalidade = "Consulta"
@@ -243,7 +241,7 @@
             },
 
             scheduleAppointment(consultation) {
-                if (!this.selectedPatient && !this.query) {
+                if (!this.selectedPatient) {
                     this.$refs.patientCard.$el.classList.add("shaking-ease-anim");
                     setTimeout(() => {
                         this.$refs.patientCard.$el.classList.remove("shaking-ease-anim");
@@ -257,14 +255,13 @@
 
             async fillConsultationForm(consultation) {
                 this.selectedForm = {
-                    user: (this.query && this.query.user) ? this.query.user : this.selectedPatient,
+                    user: this.selectedPatient,
                     consultation: consultation
                 };
 
                 if (!this.query /* && !consultation.exam_type */) {
                     this.thereIsPaymentNumber();
                 }
-                console.log(this.selectedForm)
                 if(this.$route.params.reschedule && this.query.exam){
                     this.selectedForm.consultation.exam = this.query.exam
                 }
@@ -277,12 +274,13 @@
                 this.numberReceipt = "";
                 this.status = "Aguardando pagamento";
                 this.loaderPaymentNumber = true;
+                console.log('oioioi')
 
                 let obj = value ? {
                     user: this.selectedForm.user,
                     doctor: this.selectedForm.consultation.doctor,
                     exam: {
-                        //exam_type:this.selectedForm.consultation.exam_type.name,
+                        exam_type:this.selectedForm.consultation.exam_type.name,
                         ...value
                     }
                 }
@@ -299,9 +297,12 @@
                     },
                 }
 
+                console.log('no procurar recibo',obj)
+
                 this.$store.dispatch("thereIsIntakes", obj)
                     .then(obj => {
                         if (obj.payment_number) {
+                            console.log('revico' ,obj)
                             this.payment_numberFound = obj;
                             this.numberReceipt = obj.payment_number;
                             this.exam = obj.exam ? {...obj.exam, notFindPayment: true} : undefined;
@@ -339,7 +340,7 @@
             closeDialog(){
                 this.dialog = false
                 this.payment_numberFound = undefined
-                /* this.status = "" */
+                this.status = ""
                 this.numberReceipt = ""
                 this.selectedForm = undefined
             }

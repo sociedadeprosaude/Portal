@@ -182,7 +182,8 @@ const actions = {
         payload.sector.rooms = {
             ...payload.sector.rooms,
             [payload.room.name]: payload.room
-        }
+        };
+        console.log('selectedClinic', selectedClinic);
         await queryBuilder(selectedClinic.name, payload.sector.name)
             .update({
                 rooms: payload.sector.rooms
@@ -203,6 +204,7 @@ const actions = {
         let selectedClinic = context.getters.selectedUnit;
         await queryBuilder(selectedClinic.name, null, null).doc(room.name).set(room);
     },
+
     async getRooms(context) {
         let selectedClinic = context.getters.selectedUnit;
         queryBuilder(selectedClinic.name, null).collection('rooms').onSnapshot((docs) => {
