@@ -11,15 +11,15 @@
                     <v-flex xs12 sm12>
                         <v-layout row wrap class="justify-center">
                             <v-spacer></v-spacer>
-                            <v-flex xs7 md4>
-                                <v-card sm3 class="mx-4 elevation-0 transparent text-left">
+                            <v-flex xs7 md3>
+                                <v-card sm3 class="elevation-0 transparent text-left">
                                     <span class="font-weight-bold white--text">
                                         Nº de exames : {{QuantTot}}
                                     </span>
                                 </v-card>
                             </v-flex>
                             <v-flex xs5 md4>
-                                <v-card sm3 class="mx-4 elevation-0 transparent text-left">
+                                <v-card class="mx-10 elevation-0 transparent text-left">
                                     <span class="font-weight-bold white--text">
                                         Custo : {{PriceTot}}
                                     </span>

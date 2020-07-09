@@ -1,7 +1,5 @@
 <template>
-    <v-container>
         <template-verification-forwarding-billing :clinic="clinic" :quant-tot="QuantTot" :price-tot="PriceTot" :outtakes="outtakes"  ></template-verification-forwarding-billing>
-    </v-container>
 </template>
 
 
