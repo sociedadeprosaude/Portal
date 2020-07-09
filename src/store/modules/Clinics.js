@@ -295,6 +295,7 @@ const actions = {
                     }
                 })
                 context.commit('setIntakesExamsClinics',intakes)
+                return intakes
             });
     },
     async GetLastReceiptsClinic(context, payload) {
@@ -552,10 +553,9 @@ const actions = {
     async getClinic({commit}, payload){
         let clinicSelected = []
             let clinic = await firebase.firestore().collection('clinics').where("cnpj" ,"==", payload).get()
-        clinic.forEach((doc) => {
-            console.log('doc.data( ', doc.data())
-            clinicSelected=  doc.data()
-        })
+                clinic.forEach((doc) => {
+                    clinicSelected=  doc.data()
+            })
         return clinicSelected
     },
     async getContestValue ({commit}){
