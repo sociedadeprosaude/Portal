@@ -260,9 +260,9 @@ exports.analyseStatisticsOuttakesByMonth = functions.https.onRequest(async (requ
 
     var outtakesCategory = outtakes.filter((doc) => (doc.category))
 
-    var outtakesCategoryRecurrent = outtakesCategory.filter((doc) => doc.recurrent == "true")
+    var outtakesCategoryRecurrent = outtakesCategory.filter((doc) => doc.recurrent === "true")
     console.log('recurrent', outtakesCategoryRecurrent.reduce((total, e) => total + Number(e.value), 0))
-    var outtakesCategoryOnce = outtakesCategory.filter((doc) => doc.recurrent != "true")
+    var outtakesCategoryOnce = outtakesCategory.filter((doc) => doc.recurrent !== "true")
     console.log('notRecurrent', outtakesCategoryOnce.reduce((total, e) => total + Number(e.value), 0))
 
     var outtakesCategoryPaid = outtakesCategory.filter((doc) => (doc.paid))
@@ -271,7 +271,7 @@ exports.analyseStatisticsOuttakesByMonth = functions.https.onRequest(async (requ
             name: outtake.category,
             date: outtake.created_at,
             paid: true,
-            recurrent: outtake.recurrent == "true"
+            recurrent: outtake.recurrent === "true"
         }))
 
     var outtakesCategoryToPay = outtakesCategory.filter((doc) => (!doc.paid))
@@ -280,7 +280,7 @@ exports.analyseStatisticsOuttakesByMonth = functions.https.onRequest(async (requ
             name: outtake.category,
             date: outtake.created_at,
             paid: false,
-            recurrent: outtake.recurrent == "true"
+            recurrent: outtake.recurrent === "true"
         }))
 
     var groupedCategory = {}

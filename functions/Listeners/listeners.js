@@ -290,7 +290,7 @@ exports.onCreateStatisticsOuttakes = functions.firestore.document('outtakes/{id}
                 name: outtakeNew.category,
                 date: outtakeNew.created_at,
                 paid: outtakeNew.paid,
-                recurrent: outtakeNew.recurrent == "true"
+                recurrent: outtakeNew.recurrent === "true"
             };
             const date = outtake.date.slice(0, 10);
             const dateMonth = outtake.date.slice(0, 7);
@@ -338,7 +338,7 @@ exports.onUpdateStatisticsOuttakes = functions.firestore.document('outtakes/{id}
             name: outtakeUpdated.category,
             date: outtakeUpdated.created_at,
             paid: outtakeUpdated.paid,
-            recurrent: outtakeUpdated.recurrent == "true"
+            recurrent: outtakeUpdated.recurrent === "true"
         };
         if (outtake.paid) {
             const date = outtake.date.slice(0, 10);
