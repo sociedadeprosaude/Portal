@@ -30,6 +30,15 @@
     v-bind:singleViewDialog="singleViewDialog"
     v-bind:multipleViewDialog="multipleViewDialog"
     v-bind:deletionRoom="deletionRoom"
+    @open-multipleViewDialog="multipleViewDialog = true"
+    @open-selectedRoom="(room)=>{
+      selectedRoom = room;
+       doctorsListDialog.active = true
+    }"
+    @close-multipleViewDialog="multipleViewDialog = false"
+    @close-singleViewDialog="singleViewDialog.active = false"
+    @close-doctorsListDialog="doctorsListDialog = false"
+    @toggle-createRoomController="createRoomController = !createRoomController"
   />
 </template>
 
@@ -79,8 +88,7 @@ export default {
       }
     },
     rooms() {
-
-      return this.sector ? this.sector.rooms : {}
+      return this.sector ? this.sector.rooms : {};
     },
     roomsLoaded() {
       return this.$store.getters.roomsLoaded;

@@ -14,7 +14,7 @@
       </v-col>
 
       <v-col sm="6" md="4">
-        <v-btn width="100%" class="primary" rounded @click="multipleViewDialog = true">
+        <v-btn width="100%" class="primary" rounded @click="$emit('open-multipleViewDialog')">
           <span>Visualizador geral</span>
         </v-btn>
       </v-col>
@@ -27,7 +27,7 @@
                 <span class="my-headline">Adicionar sala</span>
               </v-col>
               <v-col sm="4" class="text-right">
-                <v-btn small class="primary" fab @click="createRoomController = false">
+                <v-btn small class="primary" fab @click="$emit('toggle-createRoomController')">
                   <v-icon>minimize</v-icon>
                 </v-btn>
               </v-col>
@@ -52,7 +52,7 @@
             rounded
             width="100%"
             class="primary"
-            @click="createRoomController = !createRoomController"
+            @click="$emit('toggle-createRoomController')"
           >Adicionar Sala</v-btn>
         </v-fade-transition>
       </v-col>
@@ -100,7 +100,7 @@
                   <v-btn
                     v-on="on"
                     :disabled="loading"
-                    @click="selectedRoom = room, doctorsListDialog.active = true"
+                    @click="$emit('open-selectedRoom',room)"
                     text
                     fab
                     x-small
@@ -221,12 +221,12 @@
     <v-dialog v-model="singleViewDialog.active" fullscreen transition="dialog-bottom-transition">
       <single-visualizer
         :sector="sector"
-        @close="singleViewDialog.active = false"
+        @close="$emit('close-singleViewDialog')"
         :selectedRoom="singleViewDialog.room"
       ></single-visualizer>
     </v-dialog>
     <v-dialog v-model="multipleViewDialog" fullscreen transition="dialog-bottom-transition">
-      <multiple-visualizer :sector="sector" @close="multipleViewDialog = false"></multiple-visualizer>
+      <multiple-visualizer :sector="sector" @close="$emit('close-multipleViewDialog')"></multiple-visualizer>
     </v-dialog>
     <v-dialog v-model="deletionRoom.deleteRoomDialog" max-width="500px">
       <v-card>
