@@ -91,7 +91,7 @@
     </v-row>
     <v-row>
       <v-col>
-        <Gmaps :addresses="usersServed"></Gmaps>
+        <Gmaps :geopoints="geopoints"></Gmaps>
       </v-col>
     </v-row>
   </v-container>
@@ -128,14 +128,16 @@ export default {
     genderClientsServed() {
       return this.$store.getters.getGenderClientsServed;
     },
-    usersServed(){
+    /* usersServed(){
       let complements = this.$store.getters.getUsersServed.map((user)=>[user.addresses[0].street,user.addresses[0].complement].join(" "));
-      console.log(complements)
       return complements.reduce((a,b)=>{
         if(a.indexOf(b) == -1)
           a.push(b)
         return a
       },[])
+    } */
+    geopoints(){
+      return this.$store.getters.getGeopoints
     }
   },
   methods: {
@@ -168,8 +170,6 @@ export default {
       };
     },
     generateDatasetClientsAge(dataset) {
-      console.log("labes->", Object.keys(dataset));
-      console.log("values->", Object.values(dataset));
       return {
         labels: Object.keys(dataset),
         datasets: [

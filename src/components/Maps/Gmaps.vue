@@ -7,9 +7,9 @@ import gmapsInit from "../../utils/gmaps";
 
 export default {
   name: "Gmaps",
-  props:['addresses'],
+  props:['addresses','geopoints'],
   data: () => ({
-    //google:undefined,
+    google:undefined,
     geocoder: undefined,
     map: undefined,
     marker:undefined
@@ -22,17 +22,17 @@ export default {
   methods: {
     async initConfig() {
       try {
-        const google = await gmapsInit();
+        this.google = await gmapsInit();
         this.geocoder = new google.maps.Geocoder();
-        let latlng = new google.maps.LatLng(-3.1190275, -60.0217314);
+        let latlng = new this.google.maps.LatLng(-3.1190275, -60.0217314);
         let mapOptions = {
           zoom: 11,
           center: latlng,
           mapTypeId: google.maps.MapTypeId.ROADMAP
         };
-        this.map = new google.maps.Map(this.$el, mapOptions);
+        this.map = new this.google.maps.Map(this.$el, mapOptions);
 
-        this.marker = new google.maps.Marker({
+        this.marker = new this.google.maps.Marker({
           position: latlng,
           map: this.map,
           title: ""
@@ -43,9 +43,11 @@ export default {
         console.error(error);
       }
     },
-    initMarkers(){
-      for(var address in this.addresses){
-        this.positionAddress(address)
+    async initMarkers(){
+      for(var key in this.geopoints){
+        //this.positionAddress(address)
+        //await this.sleep(5000);
+        this.markMap({lat:this.geopoints[key].latitude,lng:this.geopoints[key].longitude,count:this.geopoints[key].count})
       }
     },
 
@@ -66,15 +68,18 @@ export default {
 
     markMap(latLng){
 
-      var marker = new google.maps.Marker({
-        position: new google.maps.LatLng(latLng.lat, latLng.lng),
+      var marker = new this.google.maps.Marker({
+        position: new this.google.maps.LatLng(latLng.lat, latLng.lng),
         map: this.map,
+        title: "Pacientes atendidos: " + latLng.count
       });
+    },
+    sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
     }
   },
   computed: {
     teste() {
-      console.log(this.address);
       return this.address;
     },
     search() {
@@ -85,6 +90,11 @@ export default {
   },
   watch:{
     addresses(value){
+      if(value){
+        this.initMarkers()
+      }
+    },
+    geopoints(value){
       if(value){
         this.initMarkers()
       }

@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const moment = require('moment');
+const gmapsInit = require("../geocode")
 
 exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate(async (change, context) => {
     let db = admin.firestore()
@@ -15,6 +16,23 @@ exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate
         associatedOpRef.update({
             quantity: admin.firestore.FieldValue.increment(1)
         })
+    }
+    if (user.addresses && user.addresses[0] && user.addresses[0].cep) {
+        let newCEP = user.addresses[0].cep.replace(/[.,-]/g,"").substring(0,5)
+        admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP)
+            .get().then((userGeopoint) => {
+                if(!userGeopoint.exists){
+                    gmapsInit.geocode([user.addresses[0].street,user.addresses[0].complement].join(" ") + " Manaus Amazonas",
+                    (err, coordinates)=>{
+                        if(err) 
+                            console.log(err)
+                        else
+                            admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP).set({count:1,geopoint: new admin.firestore.GeoPoint(coordinates.lat, coordinates.lng)})
+                    })
+                }else{
+                    admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP).update({count: admin.firestore.FieldValue.increment(1)})
+                }
+            })
     }
 })
 
