@@ -238,7 +238,7 @@ exports.thereIsPaymentNumber = functions.runWith(heavyFunctionsRuntimeOpts).http
     else if (payload.exam) {
         procedureRef = admin.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)
             .where('exam.type', '==', payload.exam.type).where('status', '==', [status])
-        if(payload.exam.name)
+        if (payload.exam.name)
             procedureRef = procedureRef.where('exam.name', '==', payload.exam.name)
     }
     else {
@@ -622,7 +622,7 @@ exports.deleteSchedule = functions.firestore
     .document('schedules/{scheduleID}')
     .onDelete(async (snap, context) => {
         const deletedSchedule = snap.data();
-        await removeConsultations(deletedSchedule)
+        removeConsultations(deletedSchedule)
     });
 
 exports.updateSchedule = functions.firestore

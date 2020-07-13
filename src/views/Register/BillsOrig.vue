@@ -123,6 +123,7 @@
         </v-card>
       </v-flex>
     </v-layout>
+   
   </v-container>
 </template>
 
@@ -134,39 +135,130 @@ import { mask } from "vue-the-mask";
 import moment from "moment";
 export default {
   name: "Bills",
+  directives: {
+    mask
+  },
   components: {
     OuttakeOrder,
     RegisterBill,
     crudCategory
   },
-  props: {
-    other: String,
-    billsOptions: Array,
-    dialogSelectDate: Boolean,
-    dialogCategory: Boolean,
-    switchDate: Boolean,
-    switchCategory: Boolean,
-    selectedOption: Number,
-    selectedDate: String,
-    selectedCategory: String,
-    loading: Boolean,
-    loadingFilter: Boolean,
-    loadingDelete: Boolean,
-    outtakeSelect: Array,
-    files: Array,
-    filesPreviews: Array,
-
-    outtakesPaid: Array,
-    outtakesPaidToday: Array,
-    pendingOuttakes: Array,
-    selectedPaidOuttakesList: Array,
-    categories: Array,
-    categoriesName: Array,
-
-    initiate: Function,
-    getOuttakesPaid: Function,
-    unpayOuttake: Function,
-    openAppend: Function
+  data() {
+    return {
+      other: "Outro",
+      billsOptions: ["De hoje", "Filtrar"],
+      dialogSelectDate: false,
+      dialogCategory: false,
+      switchDate: true,
+      switchCategory: false,
+      selectedOption: 0,
+      selectedDate: moment().format("YYYY-MM-DD"),
+      selectedCategory: "",
+      loading: false,
+      loadingFilter: false,
+      loadingDelete: false,
+      outtakeSelect: [],
+      files: [],
+      filesPreviews: [],
+      mask: {
+        number: "###"
+      }
+    };
+  },
+  mounted() {
+    if (this.$vuetify.breakpoint.name === "xs") {
+      this.$router.push("/BillsMobile");
+    }
+    this.initiate();
+  },
+  computed: {
+    outtakesPaid() {
+      return this.$store.getters.outtakesPaid.sort((a, b) => {
+        return b.date_to_pay > a.date_to_pay ? 1 : -1;
+      });
+    },
+    outtakesPaidToday() {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      return this.$store.getters.outtakesPaidToday.sort((a, b) =>
+        b.date_to_pay > a.date_to_pay ? 1 : -1
+      );
+    },
+    selectedPaidOuttakesList() {
+      if (this.selectedOption === 0) return this.outtakesPaidToday;
+      else if (this.selectedOption === 1) return this.outtakesPaid;
+    },
+    pendingOuttakes() {
+      return this.$store.getters.outtakesPending.sort((a, b) => {
+        return b.date_to_pay < a.date_to_pay ? 1 : -1;
+      });
+    },
+    categories() {
+      return this.$store.getters.outtakesCategories;
+    },
+    categoriesName() {
+      return this.categories.map(e => e.name);
+    }
+  },
+  watch: {
+    selectedDate(val) {
+      this.getOuttakesPaid();
+    },
+    selectedCategory(val) {
+      this.getOuttakesPaid();
+    },
+    switchDate(val) {
+      this.getOuttakesPaid();
+    },
+    switchCategory(val) {
+      this.getOuttakesPaid();
+    }
+  },
+  methods: {
+    async initiate() {
+      this.loading = true;
+      await this.$store.dispatch("getOuttakesCategories");
+      await this.$store.dispatch("getOuttakesPending", {
+        finalDate: moment()
+          .add(5, "days")
+          .format("YYYY-MM-DD 23:59:59")
+      });
+      await this.$store.dispatch("getOuttakesPaidToday");
+      this.loading = false;
+      this.selectedCategory =
+        this.categoriesName[0] != null ? this.categoriesName[0] : "";
+    },
+    async getOuttakesPaid() {
+      this.loadingFilter = true;
+      await this.$store.dispatch("getOuttakesPaid", {
+        initialDate: this.switchDate
+          ? moment(this.selectedDate).format("YYYY-MM-DD 00:00:00")
+          : null,
+        finalDate: this.switchDate
+          ? moment(this.selectedDate).format("YYYY-MM-DD 23:59:59")
+          : null,
+        category: this.switchCategory ? this.selectedCategory : null
+      });
+      this.loadingFilter = false;
+    },
+    async unpayOuttake(outtake) {
+      this.loadingDelete = true;
+      this.outtakeSelect = outtake;
+      await this.$store.dispatch("updateOuttake", {
+        outtake: outtake,
+        field: "paid",
+        value: "delete"
+      });
+      await this.$store.dispatch("getOuttakes", {
+        finalDate: moment()
+          .add(5, "days")
+          .format("YYYY-MM-DD 23:59:59")
+      });
+      this.outtakeSelect = [];
+      this.loadingDelete = false;
+    },
+    openAppend(append) {
+      window.open(append);
+    }
   }
 };
 </script>

@@ -26,6 +26,7 @@ import VerificationForwardingBilling from "./views/Register/Clinic/VerificationF
 import PaymentHistory from "./views/Register/Clinic/PaymentHistoryClinic"
 import Units from "./views/Units";
 import Bills from "./views/Register/Bills";
+import BillsRoute from "./views/Register/BillsRoute";
 import BillsMobile from "./views/Register/BillsMobile";
 import OuttakesCategories from "./views/Register/OuttakesCategories";
 
@@ -218,7 +219,8 @@ let mainRoutes = [
   {
     path: '/pagamento/financeiro',
     name: 'bills',
-    component: Bills,
+    //component: Bills,
+    component: BillsRoute,
     meta: {
       requiresAuth: false,
     }
