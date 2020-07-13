@@ -135,12 +135,6 @@
                                 to: '/agenda/agendamento',
                                 icon: 'calendar_today'
                             },
-                            /* {
-                                title: 'Caixa',
-                                icon: 'monetization_on',
-                                permission: 'Caixa',
-                                to: '/caixa'
-                            }, */
                             {
                                 title: 'Senhas',
                                 permission: 'Senhas',
@@ -187,12 +181,7 @@
                                 to: '/relatorio',
                                 permission: 'Relatórios',
                                 icon: 'report'
-                            }, /* {
-                                title: 'Consultas',
-                                to: '/agenda/CadastroConsultasPlantoes',
-                                permission: 'Agenda Médica',
-                                icon: 'event',
-                            }, */
+                            },
                             {
                                 title:"Consultas",
                                 to:"/agenda/GerenciarAgendas",
@@ -205,12 +194,6 @@
                                 permission: 'Caixa',
                                 icon: 'queue',
                             },
-/*                            {
-                                title: 'Saídas',
-                                to: '/caixa/Saidas',
-                                permission: 'Caixa',
-                                icon: 'attach_money',
-                            },*/
                             {
                                 title: 'Financeiro',
                                 to: '/pagamento/financeiro',

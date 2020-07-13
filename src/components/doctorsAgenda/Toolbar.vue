@@ -120,11 +120,6 @@ export default {
       selectUnitDialog: false,
       patientDialog: false,
       menuItems: [
-        /* {
-          icon: "delete_forever",
-          title: "Apagar Consultas do dia",
-          link: "/agenda/DeletarConsultas"
-        }, */
         {
           icon: 'date_range',
           title:"Tabela Semanal dos Médicos",
