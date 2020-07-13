@@ -638,7 +638,7 @@ exports.updateSchedule = functions.firestore
             let keyNew = Object.keys(newValue.days)
             let weekDays = []
             keysOld.forEach((day) => {
-                if (keyNew.indexOf(day) == -1)
+                if (keyNew.indexOf(day) === -1)
                     weekDays.push(day)
             })
             newValue.weekDays = weekDays
@@ -646,7 +646,7 @@ exports.updateSchedule = functions.firestore
         }
 
         if (cancelationsNew.length > cancelationsOld.length) {
-            cancelationsNew.forEach((cancelationObj) => {
+            cancelationsNew.forEach(async (cancelationObj) => {
                 if (cancelationsOld.findIndex((value) => value.start_date === cancelationObj.start_date && value.final_date === cancelationObj.final_date) === -1) {
                     newValue.start_date = cancelationObj.start_date
                     newValue.final_date = cancelationObj.final_date
