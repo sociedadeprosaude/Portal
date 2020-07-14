@@ -40,7 +40,7 @@
     import {mask} from "vue-the-mask";
 
     export default {
-        props: ['doctor'],
+        props: ['doctor','outtakes'],
         name: "DoctorOuttakes",
         directives: {
             mask
@@ -67,6 +67,9 @@
         computed: {
             intakes(){
                 return this.$store.getters.OuttakesConsultationDoctor
+            },
+            mostrarOuttakes(){
+                console.log('outtakes: ', this.outtakes)
             }
         }
     };

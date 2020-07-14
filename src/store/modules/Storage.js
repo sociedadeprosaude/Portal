@@ -10,7 +10,7 @@ const mutations = {
 
 const actions = {
     async uploadFileToStorage({}, payload) {
-
+        console.log('payload: ',payload)
         let storageRef = firebase.storage().ref().child(payload.path);
         let filesUrl = [];
         let counter = 0;

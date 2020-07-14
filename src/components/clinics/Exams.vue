@@ -16,7 +16,7 @@
                                 readonly
                                 v-model="this.selectedClinic.name"
                                 hide-details
-                        ></v-text-field>
+                        />
                     </v-flex>
                     <v-flex xs12 v-if="!loadingExams">
                         <v-combobox

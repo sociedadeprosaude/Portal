@@ -900,17 +900,10 @@
                         this.cities['AM'].push(city.nome)
                     });
                 });
-            if (localStorage.getItem('patient')) {
 
-                // eslint-disable-next-line vue/no-async-in-computed-properties
-                let user = await this.$store.dispatch('searchUser', {
-                    name: '',
-                    cpf: localStorage.getItem('patient'),
-                    association_number: this.numAss
-                });
-                this.selectUser(user[0])
-            }
-
+        },
+        async beforeCreate () {
+           
         },
         beforeDestroy() {
             window.removeEventListener('keydown', this.handleEnter)

@@ -12,7 +12,9 @@ const state = {
     categories: [],
     alertOuttakes: [],
     outtakeClinic: [],
-    OuttakesConsultationDoctor:[]
+    outtakeAllClinic: [],
+    OuttakesConsultationDoctor:[],
+    OuttakeAllDoctors:[]
 };
 
 const mutations = {
@@ -26,6 +28,12 @@ const mutations = {
     setAlertOuttakes: (state, payload) => state.alertOuttakes = payload,
     setOuttakeClinic(state, payload) {
         state.outtakeClinic = payload
+    },
+    setOuttakeAllClinic(state, payload) {
+        state.outtakeAllClinic = payload
+    },
+    setOuttakeAllDoctors(state, payload) {
+        state.outtakeAllDoctors = payload
     },
     setOuttakesConsultationDoctor(state, payload){
         state.OuttakesConsultationDoctor= payload
@@ -310,10 +318,22 @@ const actions = {
         let outtakes = []
         let SpecificOuttake = await firebase.firestore().collection('outtakes').where('intake_id','==', parseInt(intake.number)).where('cnpj','==',intake.cnpj).get();
         SpecificOuttake.forEach(doc => {
-            console.log('doc: ', doc.data())
-            outtakes.push(doc.data())
+            doc.data().id = doc.id;
+            let data = {
+                clinic: doc.data().clinic,
+                id: doc.id,
+                cnpj: doc.data().cnpj,
+                exams: doc.data().exams,
+                intake_id: doc.data().intake_id,
+                paid: doc.data().paid,
+                root: doc.data().root,
+                unit: doc.data().unit,
+                user: doc.data().user,
+                results: doc.data().results
+
+            }
+            outtakes.push(data)
         })
-        console.log('outtake: ', outtakes)
         commit('setOuttakeClinic',  outtakes)
 
     },
@@ -370,6 +390,73 @@ const actions = {
 
 
     },
+    async GetReceiptsAllClinic({commit}) {
+        await firebase.firestore().collection('outtakes')
+            .where('paid', '==', false).where('root', '==', false).get().then((querySnapshot) => {
+                let intakes = []
+                querySnapshot.forEach((doc) => {
+                    if (!doc.data().cancelled_by && doc.data().exams && doc.data().cnpj) {
+                        let exams = []
+                        let patient = doc.data().user.name
+                        let intakeNumber = doc.data().intake_id
+                        let intakeClinic = {}
+                        for (let exam in doc.data().exams) {
+                            if (doc.data().exams[exam].realized === true) {
+                                exams.push({
+                                    name: doc.data().exams[exam].name,
+                                    price: doc.data().exams[exam].cost,
+                                    rules: doc.data().exams[exam].rules,
+                                    realized: doc.data().exams[exam].realized,
+                                });
+                            }
+                        }
+                        if (exams.length !== 0) {
+                            intakeClinic = {
+                                exams: exams,
+                                patient: patient,
+                                intakeNumber: intakeNumber,
+                                clinic: doc.data().clinic,
+
+                            }
+                            intakes.push(intakeClinic)
+                        }
+                    }
+                })
+                commit('setOuttakeAllClinic', intakes)
+            });
+    },
+    async GetReceiptsAllDoctors({commit}) {
+        await firebase.firestore().collection('outtakes')
+            .where('paid','==',false).get().then((querySnapshot) =>{
+                let outtakes= []
+                querySnapshot.forEach((doc) =>{
+                    if(!doc.data().cancelled_by && doc.data().specialties && doc.data().crm){
+                        let consultations= {}
+                        let patient= doc.data().user.name
+                        let intakeNumber= doc.data().intake_id
+                        let outtakesDoctor = {}
+                        consultations = ({
+                            name: doc.data().specialties.name,
+                            price: doc.data().specialties.cost,
+                            realized: doc.data().specialties.realized,
+
+                        })
+                        if(consultations.name){
+                            outtakesDoctor = {
+                                consultations: consultations,
+                                patient: patient,
+                                intakeNumber: intakeNumber,
+                                doctor: doc.data().doctor,
+                                unit: doc.data().unit,
+                                realized: doc.data().realized
+                            }
+                            outtakes.push(outtakesDoctor)
+                        }
+                    }
+                })
+                commit('setOuttakeAllDoctors',outtakes)
+            });
+    },
     async editOuttakes(context, outtake) {
         outtake = functions.removeUndefineds(outtake);
         await firebase.firestore().collection('outtakes/').doc(outtake.id).set(outtake);
@@ -379,13 +466,18 @@ const actions = {
         if (payload.value === 'delete') {
             payload.value = firebase.firestore.FieldValue.delete()
         }
-
-
         await firebase.firestore().collection('outtakes/').doc(payload.outtake.id).update({
             [payload.field]: payload.value
         })
 
-
+    },
+    async updateOuttakeExams(context, payload) {
+        if (payload.value === 'delete') {
+            payload.value = firebase.firestore.FieldValue.delete()
+        }
+        await firebase.firestore().collection('outtakes/').doc(payload.outtake.id).update({
+            exams: payload.exams
+        })
 
     },
     async deleteOuttake(context, outtake) {
@@ -438,6 +530,12 @@ const getters = {
     },
     outtakeClinic(state) {
         return state.outtakeClinic
+    },
+    outtakeAllClinic(state) {
+        return state.outtakeAllClinic
+    },
+    outtakeAllDoctors(state) {
+        return state.outtakeAllDoctors
     },
     OuttakesConsultationDoctor(state){
         return state.OuttakesConsultationDoctor

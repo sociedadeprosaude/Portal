@@ -239,10 +239,19 @@
                 this.doctor = doctor;
                 this.editSpecialtyInClinic = true;
             },
+            selectClinic(clinic, index) {
+                if (!clinic) {
+                    clinic = this.defaultItem;
+                    this.$store.dispatch('putIndex', index);
+                }
+                this.$store.dispatch('selectClinic', clinic);
+            },
             async addExam(clinic) {
+                await this.selectClinic(clinic);
                 this.addExamToClinic = true;
             },
             async addSpecialty(clinic) {
+                await this.selectClinic(clinic);
                 this.addSpecialtyToClinic = true;
             },
             deleteExam(item) {

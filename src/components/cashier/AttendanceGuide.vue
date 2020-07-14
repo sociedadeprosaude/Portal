@@ -9,8 +9,11 @@
             class="align-center pa-4"
             style="border: 2px solid #2196f3; border-radius: 16px"
           >
-            <v-flex xs12 class="text-center">
+            <v-flex xs6 class="text-left">
               <img :src="selectedUnit.logo" height="50px" class="ml-0 px-0 mr-0 pa-0" />
+            </v-flex>
+            <v-flex xs6 class="text-right">
+              <img :src="QrCode" class="ml-0 px-0 mr-0 pa-0" />
             </v-flex>
             <v-flex xs6 class="text-left">
               <v-layout column wrap v-for="(item, index) in [items[0]]" :key="index">
@@ -42,7 +45,7 @@
                 </v-flex>
               </v-layout>
             </v-flex>
-            <v-flex xs6 class="text-right">
+            <v-flex xs4 class="text-right">
               <v-layout
                 column
                 wrap
@@ -74,6 +77,16 @@
                 <span>
                   <v-icon>event</v-icon>
                   Sábado: {{item.clinic.agenda[5]}}
+                </span>
+              </v-layout>
+            </v-flex>
+            <v-flex xs2 class="align-text-top text-right">
+              <v-layout column wrap>
+                  <span class="primary--text font-weight-bold align-text-top">
+                  Recibo: {{this.id}}
+                </span>
+                <span v-for="(item,index) in 6" v-bind:key="index" class="white--text">
+                  .
                 </span>
               </v-layout>
             </v-flex>
@@ -165,13 +178,20 @@
 <script>
 export default {
   name: "attendanceGuide",
-  props: ["guide"],
+  props: ["guide","id"],
   computed: {
     items() {
       return this.guide;
     },
     selectedUnit() {
+      console.log('logo: ', this.$store.getters.selectedUnit.logo)
       return this.$store.getters.selectedUnit;
+    },
+    QrCode(){
+      let initApi = "https://api.qrserver.com/v1/create-qr-code/?data="
+      let finApi = "&size=100x100"
+      console.log('api: ', initApi + this.id + finApi)
+      return initApi + this.id + finApi
     },
     patient() {
       return this.$store.getters.selectedPatient;
