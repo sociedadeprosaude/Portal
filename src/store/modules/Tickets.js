@@ -50,47 +50,56 @@ function queryBuilder(clinicName, sectorName, roomName) {
 
 const actions = {
 
-    // usados
+
     async saveTicketsHistory() {
         const firestore = firebase.firestore();
-        // Buscando todas as salas (collectionGroup pega ate as rooms que estao em subcolecoes de colecoes,
-        // recomendo nao criar mais collections com esse nome se nao elas vao ser pegas aqui)
-        firestore.collectionGroup('rooms').get().then((rooms) => {
-            rooms.forEach((room) => {
-                // verificando se a sala teve fila de tickets
-                // Pode tirar esse room.data().doc_clinic do if se aprovado minhas mundanças no sprint
-                if (room.data().tickets.length != 0 && room.data().doc_clinic) {
-                    // Pegando a historia da sala (criei o campo clicnicDoc no metadata da room pra facilitar a query de salvar
-                    firestore.collection('tickets-history').doc(room.data().doc_clinic)
-                        .collection('rooms-history').doc(room.id).get()
-                        .then(async (roomHist) => {
-                            if (roomHist.exists) {
-                                const hist = roomHist.data().history;
-                                hist.push(...room.data().tickets);
-                                await roomHist.ref.update({
-                                    history: hist
-                                });
-                            } else {
-                                await roomHist.ref.set({
-                                    history: room.data().tickets
-                                })
-                            }
-                            // Esvaziando a fila de tickets depois de atualizado o history
-                            room.ref.update({
-                                tickets: []
-                            });
-                        });
+        const unidades = await firestore.collection('tickets').get();
+
+        unidades.docs.forEach(async (unity) => {
+            const sectors = await firestore.collection('tickets').doc(unity.id).collection('sectors').get();
+            sectors.docs.forEach((sector) => {
+                const rooms = sector.data().rooms;
+                const unCalledtickets = sector.data().tickets;
+                if (rooms) {
+
+                    Object.keys(rooms).forEach(async (key) => {
+                        const room = rooms[key];
+                        const roomHist = await firestore.collection('tickets-history').doc(unity.id)
+                            .collection('sectors-history').doc(sector.id).collection('rooms-history').doc(key).get();
+
+                        if (roomHist.exists) {
+                            room.tickets.forEach((ticket) => roomHist.ref.update({
+                                history: firebase.firestore.FieldValue.arrayUnion(ticket)
+                            }))
+                        } else {
+                            roomHist.ref.set({ history: room.tickets })
+                        }
+                        // Esvaziando a fila de tickets depois de atualizado o history
+                        sector.ref.set({
+                            rooms: {
+                                [`${key}`]: {
+                                    tickets: []
+                                }
+                            },
+                        }, { merge: true });
+
+                    })
                 }
-            });
+                if (unCalledtickets) {
+                    sector.ref.set({ tickets: [] }, { merge: true });
+                }
+            })
 
         });
+        return null;
     },
 
     async resetTickets() {
         const firestore = firebase.firestore();
         firestore.collectionGroup('tickets').get().then((docs) => {
             docs.forEach((doc) => doc.ref.update({
-                ticket_number: 1
+                ticket_number: 1,
+                last_updated: moment().format("YYYY-MM-DD HH:mm:ss")
             }));
         });
     },
@@ -141,7 +150,6 @@ const actions = {
         firebase.firestore().collection('tickets').doc(selectedClinic.name).collection('sectors')
             .onSnapshot((collection) => {
                 let sectors = functions.firebaseCollectionToArray(collection)
-                console.log('sectors', sectors)
                 context.commit('setSectors', sectors)
             })
     },
@@ -172,12 +180,12 @@ const actions = {
             }
         }
     },
-    async updateSector({getters}, sector) {
+    async updateSector({ getters }, sector) {
         let selectedClinic = getters.selectedUnit;
         await queryBuilder(selectedClinic.name, sector.name)
             .update(sector);
     },
-    async updateSectorRoom({getters}, payload) {
+    async updateSectorRoom({ getters }, payload) {
         let selectedClinic = getters.selectedUnit;
         payload.sector.rooms = {
             ...payload.sector.rooms,
