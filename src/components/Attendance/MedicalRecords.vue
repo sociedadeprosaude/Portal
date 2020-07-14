@@ -1,11 +1,11 @@
 <template>
     <v-container fluid>
         <v-row justify="center">
-            <div>
+            <transition name="fade">
                 <v-dialog v-model="dialog" width="500px" text hide-overlay>
                     <MedicalRecordsPDF :consultation="consultation" @close-dialog="dialog = false"/>
                 </v-dialog>
-            </div>
+            </transition>
         </v-row>
         <v-card class="elevation-3">
             <v-card-title class="headline primary justify-center align-center white--text" primary-title>

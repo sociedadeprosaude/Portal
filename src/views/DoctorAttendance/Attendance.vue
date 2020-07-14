@@ -79,8 +79,44 @@
             if (!this.query) {
                 this.$router.push('MedicalCare')
             }
+            //window.addEventListener('beforeunload', this.viewIn)
+            //window.addEventListener('load', this.viewOut)
+            //window.addEventListener('unload', this.viewOut)
         },
+/*        beforeDestroy() {
+            //
+        },*/
         methods: {
+            viewIn() {
+                console.log('entrou ???')
+                alert("entrou !!!")
+                //this.outtkake()
+            },
+            viewOut() {
+                console.log('saiu ???')
+                alert("saiu !!!")
+                //this.outtkake()
+            },
+           async outtkake() {
+                if (!this.consultation.end_at){
+                    //colocar função aqui dps de pronta
+                } else {
+                    console.log('já tem outtakke para essa consultation')
+                }
+               let specialty = await this.$store.dispatch('getDoctorSpecialty', this.consultation)
+               let outtake = {
+                   intake_id: this.consultation.payment_number,
+                   user: this.consultation.user,
+                   unit: this.consultation.clinic,
+                   doctor: this.consultation.doctor,
+                   specialties: specialty,
+                   paid: false,
+                   crm: this.consultation.doctor.crm
+               }
+               console.log('outtake: ', outtake)
+               //await this.$store.dispatch('addSpecialtyOuttakes', outtake)
+               //this.saveAttendance();
+            },
             saveAttendance() {
                 this.endConsultation = moment().format('HH:mm:ss');
                 this.timeConsultation = moment(this.endConsultation, 'HH:mm:ss').diff(moment(this.startConsultation, 'HH:mm:ss'), 'minutes');
@@ -92,6 +128,7 @@
                     patient: this.consultation.user.id
                 });
                 this.dialog = false;
+                this.outtkake();
                 this.$router.push("MedicalCare");
             }
         }
