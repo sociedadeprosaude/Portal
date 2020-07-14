@@ -56,7 +56,6 @@
         computed:{
             medicalRecordsUser(){
                 let mrOfUser = this.$store.getters.medicalRecords
-                console.log('oi:', mrOfUser)
                 return mrOfUser
             }
         },
