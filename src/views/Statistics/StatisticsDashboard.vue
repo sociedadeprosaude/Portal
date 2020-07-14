@@ -88,10 +88,11 @@
       :reportAllUnits="formattedReportAllUnits"
     />
     <OuttakesReport v-if="selected == 1" :date="dateBegin" :date2="dateEnd" :cb="pesquisar" />
-    <procedures-prices-analises v-if="selected == 2"></procedures-prices-analises>
-    <statsCaixaIntakes v-if="selected == 3"></statsCaixaIntakes>
-    <statsCaixaOuttakes v-if="selected == 4"></statsCaixaOuttakes>
-    <Clients v-if="selected == 5"></Clients>
+    <procedures-prices-analises v-else-if="selected == 2"></procedures-prices-analises>
+    <statsCaixaIntakes v-else-if="selected == 3"></statsCaixaIntakes>
+    <statsCaixaOuttakes v-else-if="selected == 4"></statsCaixaOuttakes>
+    <statsCaixaOuttakesClinics v-else-if="selected == 5"></statsCaixaOuttakesClinics>
+    <Clients v-else-if="selected == 6"></Clients>
   </v-container>
 </template>
 
@@ -102,6 +103,7 @@ import OuttakesReport from "@/components/reports/OuttakesReport";
 
 import statsCaixaIntakes from "./statsCaixa";
 import statsCaixaOuttakes from "./statsCaixaOuttakes";
+import statsCaixaOuttakesClinics from "./statsCaixaOuttakesClinics";
 import Clients from "./Clients";
 
 export default {
@@ -111,6 +113,7 @@ export default {
     OuttakesReport,
     statsCaixaIntakes,
     statsCaixaOuttakes,
+    statsCaixaOuttakesClinics,
     Clients
   },
   data: vm => ({
@@ -121,7 +124,8 @@ export default {
       { title: "Análise de preço de exames", value: 2 },
       { title: "Intakes", value: 3 },
       { title: "Outtakes", value: 4 },
-      { title: "Clientes", value: 5 }
+      { title: "Outtakes clinicas", value: 5 },
+      { title: "Clientes", value: 6 }
     ],
 
     date: moment().format("YYYY-MM-DD 00:00:00"),
@@ -228,7 +232,7 @@ export default {
       return this.$store.getters.colaborators;
     },
     hide() {
-      return this.selected == 4 || this.selected == 3;
+      return  this.selected == 5 || this.selected == 4 || this.selected == 3;
     },
     overviewDrawer: {
       get() {

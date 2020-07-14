@@ -5,6 +5,7 @@ import Users from "./Users";
 const state = {
     statistics: null,
     statisticsOuttakes: null,
+    statisticsOuttakesClinics: null,
     clientsServed: {},
     newClients: {},
     ageClientsServed: {},
@@ -14,6 +15,7 @@ const state = {
 const mutations = {
     setStatistics: (state, payload) => state.statistics = payload,
     setStatisticsOuttakes: (state, payload) => state.statisticsOuttakes = payload,
+    setStatisticsOuttakesClinics: (state, payload) => state.statisticsOuttakesClinics = payload,
     setClientsServed: (state, payload) => state.clientsServed = payload,
     setNewClients: (state, payload) => state.newClients = payload,
     setAgeClientsServed: (state, payload) => state.ageClientsServed = payload,
@@ -91,7 +93,43 @@ const actions = {
 
         var outtakes = await firebase.firestore().collection('outtakes').get();
         outtakes = outtakes.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+        var outtakesCategory = outtakes.filter((doc) => (doc.category))
+
+        var outtakesCategoryRecurrent = outtakesCategory.filter((doc) => doc.recurrent === "true")
+        var outtakesCategoryOnce = outtakesCategory.filter((doc) => doc.recurrent !== "true")
+
+
+        var outtakesCategoryPaid = outtakesCategory.filter((doc) => (doc.paid))
+        // .map((outtake) => ({
+        //     cost: Number(outtake.value),
+        //     name: outtake.category,
+        //     date: outtake.created_at,
+        //     paid: true,
+        //     recurrent: outtake.recurrent === "true"
+        // }))
+
+        var outtakesCategoryToPay = outtakesCategory.filter((doc) => (!doc.paid))
+        // .map((outtake) => ({
+        //     cost: Number(outtake.value),
+        //     name: outtake.category,
+        //     date: outtake.created_at,
+        //     paid: false,
+        //     recurrent: outtake.recurrent === "true"
+        // }))
+
+        var outtakesClinic = outtakes.filter((doc) => (doc.exams || doc.specialties) && doc.intake_id)
+
+
+
+
+
+
         console.log(outtakes)
+        console.log(outtakesCategoryToPay)
+        console.log(outtakesCategoryPaid)
+        console.log(outtakesClinic.filter((doc) => !doc.paid))
+        console.log(outtakesClinic.filter((doc) => doc.paid))
 
         statistics = statistics.docs.map((doc) => {
             const statDay = doc.data();
@@ -171,6 +209,7 @@ const actions = {
 const getters = {
     getStatistics: (state) => state.statistics,
     getStatisticsOuttakes: (state) => state.statisticsOuttakes,
+    getStatisticsOuttakesClinics: (state) => state.statisticsOuttakesClinics,
     getClientsServed: (state) => state.clientsServed,
     getNewClients: (state) => state.newClients,
     getAgeClientsServed: (state) => state.ageClientsServed,

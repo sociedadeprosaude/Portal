@@ -280,6 +280,58 @@ var emptyOuttake = () => ({
     numOfOuttakes: 0,
 })
 
+async function createStatisticOuttakeDoc(outtake, nameDoc) {
+
+    const date = outtake.date.slice(0, 10);
+    const dateMonth = outtake.date.slice(0, 7);
+    const day = outtake.date.slice(8, 10);
+
+    var statsMonth = await admin.firestore().collection('statistics').doc(nameDoc).collection('month').doc(dateMonth).get();
+
+    var arrTotalToPay = statsMonth.exists && statsMonth.data().arrTotalToPay ?
+        statsMonth.data().arrTotalToPay :
+        Array.from(Array(moment(date).daysInMonth()).keys()).map(() => 0)
+    arrTotalToPay[Number(day) - 1] += outtake.cost;
+
+    var itensMonth = statsMonth.exists && statsMonth.data().itens ? statsMonth.data().itens : {};
+    var itemStatMonth = itensMonth[outtake.name] ? itensMonth[outtake.name] : emptyOuttake();
+
+    itemStatMonth.totalToPay = admin.firestore.FieldValue.increment(outtake.cost);
+    itemStatMonth.totalLeftToPay = admin.firestore.FieldValue.increment(!outtake.paid ? outtake.cost : 0);
+    itemStatMonth.numOfOuttakesToPay = admin.firestore.FieldValue.increment(!outtake.paid ? 1 : 0);
+    itemStatMonth.numOfOuttakes = admin.firestore.FieldValue.increment(1);
+
+    statsMonth.ref.set({
+        date: dateMonth,
+        totalRecurrent: admin.firestore.FieldValue.increment(outtake.recurrent ? outtake.cost : 0),
+        totalToPay: admin.firestore.FieldValue.increment(outtake.cost),
+        totalLeftToPay: admin.firestore.FieldValue.increment(!outtake.paid ? outtake.cost : 0),
+        numOfOuttakesToPay: admin.firestore.FieldValue.increment(!outtake.paid ? 1 : 0),
+        numOfOuttakes: admin.firestore.FieldValue.increment(1),
+        itens: { [`${outtake.name}`]: itemStatMonth },
+        arrTotalToPay: arrTotalToPay
+    }, { merge: true });
+}
+
+async function updateStatisticOuttakeDoc(outtake, nameDoc) {
+    const dateMonth = outtake.date.slice(0, 7);
+
+    var statsMonth = await admin.firestore().collection('statistics').doc(nameDoc).collection('month').doc(dateMonth).get();
+
+    var itensMonth = statsMonth.exists && statsMonth.data().itens ? statsMonth.data().itens : {};
+    var itemStatMonth = itensMonth[outtake.name] ? itensMonth[outtake.name] : emptyOuttake();
+
+    itemStatMonth.totalLeftToPay = admin.firestore.FieldValue.increment(-outtake.cost);
+    itemStatMonth.numOfOuttakesToPay = admin.firestore.FieldValue.increment(-1);
+
+    statsMonth.ref.set({
+        date: dateMonth,
+        totalLeftToPay: admin.firestore.FieldValue.increment(-outtake.cost),
+        numOfOuttakesToPay: admin.firestore.FieldValue.increment(-1),
+        itens: { [`${outtake.name}`]: itemStatMonth }
+    }, { merge: true });
+}
+
 exports.onCreateStatisticsOuttakes = functions.firestore.document('outtakes/{id}')
     .onCreate(async (snap, context) => {
         const outtakeNew = snap.data();
@@ -292,77 +344,65 @@ exports.onCreateStatisticsOuttakes = functions.firestore.document('outtakes/{id}
                 paid: outtakeNew.paid,
                 recurrent: outtakeNew.recurrent === "true"
             };
-            const date = outtake.date.slice(0, 10);
-            const dateMonth = outtake.date.slice(0, 7);
-            const day = outtake.date.slice(8, 10);
-
-            var statsMonth = await admin.firestore().collection('statistics').doc('outtakes').collection('month').doc(dateMonth).get();
-
-            var arrTotalToPay = statsMonth.exists && statsMonth.data().arrTotalToPay ?
-                statsMonth.data().arrTotalToPay :
-                Array.from(Array(moment(date).daysInMonth()).keys()).map(() => 0)
-            arrTotalToPay[Number(day) - 1] += outtake.cost;
-
-            var itensMonth = statsMonth.exists && statsMonth.data().itens ? statsMonth.data().itens : {};
-            var itemStatMonth = itensMonth[outtake.name] ? itensMonth[outtake.name] : emptyOuttake();
-
-            itemStatMonth.totalToPay = admin.firestore.FieldValue.increment(outtake.cost);
-            itemStatMonth.totalLeftToPay = admin.firestore.FieldValue.increment(!outtake.paid ? outtake.cost : 0);
-            itemStatMonth.numOfOuttakesToPay = admin.firestore.FieldValue.increment(!outtake.paid ? 1 : 0);
-            itemStatMonth.numOfOuttakes = admin.firestore.FieldValue.increment(1);
-
-            statsMonth.ref.set({
-                date: dateMonth,
-                totalRecurrent: admin.firestore.FieldValue.increment(outtake.recurrent ? outtake.cost : 0),
-                totalToPay: admin.firestore.FieldValue.increment(outtake.cost),
-                totalLeftToPay: admin.firestore.FieldValue.increment(!outtake.paid ? outtake.cost : 0),
-                numOfOuttakesToPay: admin.firestore.FieldValue.increment(!outtake.paid ? 1 : 0),
-                numOfOuttakes: admin.firestore.FieldValue.increment(1),
-                itens: { [`${outtake.name}`]: itemStatMonth },
-                arrTotalToPay: arrTotalToPay
-            }, { merge: true });
+            createStatisticOuttakeDoc(outtake, 'outtakes-category')
         } else {
-            //TODO: quando outtake e de exame ou especialidade
+            if (outtakeNew.exams) outtakeNew.exams.forEach((outtakeObj) => {
+                var outtake = {
+                    cost: Number(outtakeObj.cost),
+                    name: outtakeObj.name,
+                    date: moment(Number(outtakeNew.intake_id)).format("YYYY-MM-DD"),
+                    paid: outtakeNew.paid,
+                    recurrent: false
+                };
+                createStatisticOuttakeDoc(outtake, 'outtakes-clinic')
+            })
+            if (outtakeNew.specialties) outtakeNew.specialties.forEach((outtakeObj) => {
+                var outtake = {
+                    cost: Number(outtakeObj.cost),
+                    name: outtakeObj.name,
+                    date: moment(Number(outtakeNew.intake_id)).format("YYYY-MM-DD"),
+                    paid: outtakeNew.paid,
+                    recurrent: false
+                };
+                createStatisticOuttakeDoc(outtake, 'outtakes-clinic')
+            })
         }
-
-
     });
 
 exports.onUpdateStatisticsOuttakes = functions.firestore.document('outtakes/{id}').onUpdate(async (change, context) => {
     const outtakeUpdated = change.after.data();
-    console.log(outtakeUpdated)
-    console.log("updatado")
-    if (outtakeUpdated.category) {
-        var outtake = {
-            cost: Number(outtakeUpdated.value),
-            name: outtakeUpdated.category,
-            date: outtakeUpdated.date_to_pay,
-            paid: outtakeUpdated.paid,
-            recurrent: outtakeUpdated.recurrent === "true"
-        };
-        if (outtake.paid) {
-            const date = outtake.date.slice(0, 10);
-            const dateMonth = outtake.date.slice(0, 7);
-            const day = outtake.date.slice(8, 10);
-
-            var statsMonth = await admin.firestore().collection('statistics').doc('outtakes').collection('month').doc(dateMonth).get();
-
-            var itensMonth = statsMonth.exists && statsMonth.data().itens ? statsMonth.data().itens : {};
-            var itemStatMonth = itensMonth[outtake.name] ? itensMonth[outtake.name] : emptyOuttake();
-
-            itemStatMonth.totalLeftToPay = admin.firestore.FieldValue.increment(-outtake.cost);
-            itemStatMonth.numOfOuttakesToPay = admin.firestore.FieldValue.increment(-1);
-
-            statsMonth.ref.set({
-                date: dateMonth,
-                totalLeftToPay: admin.firestore.FieldValue.increment(-outtake.cost),
-                numOfOuttakesToPay: admin.firestore.FieldValue.increment(-1),
-                itens: { [`${outtake.name}`]: itemStatMonth }
-            }, { merge: true });
+    if (outtakeUpdated.paid) {
+        if (outtakeUpdated.category) {
+            var outtake = {
+                cost: Number(outtakeUpdated.value),
+                name: outtakeUpdated.category,
+                date: outtakeUpdated.date_to_pay,
+                paid: true,
+                recurrent: outtakeUpdated.recurrent === "true"
+            }
+            updateStatisticOuttakeDoc(outtake, 'outtakes-category')
+        } else {
+            if (outtakeUpdated.exams) outtakeUpdated.exams.forEach((outtakeObj) => {
+                var outtake = {
+                    cost: Number(outtakeObj.cost),
+                    name: outtakeObj.name,
+                    date: moment(Number(outtakeUpdated.intake_id)).format("YYYY-MM-DD"),
+                    paid: true,
+                    recurrent: false
+                }
+                updateStatisticOuttakeDoc(outtake, 'outtakes-clinic')
+            })
+            if (outtakeUpdated.specialties) outtakeUpdated.specialties.forEach((outtakeObj) => {
+                var outtake = {
+                    cost: Number(outtakeObj.cost),
+                    name: outtakeObj.name,
+                    date: moment(Number(outtakeUpdated.intake_id)).format("YYYY-MM-DD"),
+                    paid: true,
+                    recurrent: false
+                }
+                updateStatisticOuttakeDoc(outtake, 'outtakes-clinic')
+            })
         }
-
-    } else {
-        //TODO: quando outtake e de exame ou especialidade
     }
 });
 
@@ -388,7 +428,31 @@ async function mockOut(name) {
 
 }
 
+async function mockOut2(name) {
+    await sleep(100);
+    var id = moment();
+    admin.firestore().collection('outtakes').doc(String(id.valueOf())).set({
+
+        created_at: "2020-07-06 23:59:43",
+        date_to_pay: "2020-07-06",
+        description: "tst",
+        intake_id: String(id.valueOf()),
+        specialties: [{ name: name, cost: 5 }, { name: name, cost: 5 }],
+        exams: [{ name: name, cost: 5 }],
+        id: "JoDcMg6z8dfqV5ikRBgp",
+        payment_method: "Dinheiro",
+        recurrent: "true",
+        subCategory: "Outro",
+        value: 5,
+        //    / paid: "2020-05-18 18:36:15"
+    })
+
+}
+
 exports.tstCreateOuttake = functions.https.onRequest(async (req, res) => {
+    await mockOut2("CARDIOLOGIA");
+    await mockOut2("CARDIOLOGIA");
+    await mockOut2("CARDIOLOGIA");
     await mockOut("CARDIOLOGIA");
     await mockOut("CARDIOLOGIA");
     await mockOut("CARDIOLOGIA");
@@ -400,7 +464,10 @@ exports.tstCreateOuttake = functions.https.onRequest(async (req, res) => {
 });
 
 exports.tstUpdateOuttake = functions.https.onRequest(async (req, res) => {
-    admin.firestore().collection('outtakes').doc('1594666287652').update({
+    admin.firestore().collection('outtakes').doc('1594695572336').update({
+        paid: "2020-05-18 18:36:15"
+    })
+    admin.firestore().collection('outtakes').doc('1594695572927').update({
         paid: "2020-05-18 18:36:15"
     })
     res.status(200).send("aaa")

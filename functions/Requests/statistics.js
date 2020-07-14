@@ -254,16 +254,11 @@ function analyzeOuttakesByMonth(outtakes) {
     return analyzed
 }
 
-exports.analyseStatisticsOuttakesByMonth = functions.https.onRequest(async (request, response) => {
+exports.analyseStatisticsOuttakesCategoryByMonth = functions.https.onRequest(async (request, response) => {
     var outtakes = await admin.firestore().collection('outtakes').get();
     outtakes = outtakes.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
 
     var outtakesCategory = outtakes.filter((doc) => (doc.category))
-
-    var outtakesCategoryRecurrent = outtakesCategory.filter((doc) => doc.recurrent === "true")
-    console.log('recurrent', outtakesCategoryRecurrent.reduce((total, e) => total + Number(e.value), 0))
-    var outtakesCategoryOnce = outtakesCategory.filter((doc) => doc.recurrent !== "true")
-    console.log('notRecurrent', outtakesCategoryOnce.reduce((total, e) => total + Number(e.value), 0))
 
     var outtakesCategoryPaid = outtakesCategory.filter((doc) => (doc.paid))
         .map((outtake) => ({
@@ -284,7 +279,7 @@ exports.analyseStatisticsOuttakesByMonth = functions.https.onRequest(async (requ
         }))
 
     var groupedCategory = {}
-    var outtakesToGroup = [...outtakesCategoryPaid, ...outtakesCategoryToPay]
+    var outtakesToGroup = [...outtakesCategoryPaid, ...outtakesCategoryToPay];
     outtakesToGroup.forEach(({ date }) => {
         let [year, month, day] = date.match(/\d+/g);
         groupedCategory[`${year}-${month}`] =
@@ -292,24 +287,73 @@ exports.analyseStatisticsOuttakesByMonth = functions.https.onRequest(async (requ
     })
     var outtakesCategoryAnalyzed = analyzeOuttakesByMonth(groupedCategory);
 
-    var outtakesClinic = outtakes.filter((doc) => (doc.exams || doc.specialties))
-    var outtakesClinicToPay = outtakesClinic.filter((doc) => !doc.paid)
-    var outtakesClinicPaid = outtakesClinic.filter((doc) => doc.paid)
 
-    // var grouped = {}
-    // outtakesCategory.forEach(({ created_at }) => {
-    //     let [year, month, day] = created_at.match(/\d+/g);
-    //     grouped[`${year}-${month}`] =
-    //         outtakesCategory.filter(({ created_at: d }) => `${year}-${month}` === d.slice(0, 7));
-    // })
-
-    //console.log(outtakesCategoryToPay)
-    //console.log(outtakesCategoryPaid)
-    //console.log(groupedCategory)
-    //console.log(outtakesClinicToPay)
-    //console.log(outtakesClinicPaid)
     Object.keys(outtakesCategoryAnalyzed).forEach((date) =>
-        admin.firestore().collection('statistics').doc('outtakes').collection('month').doc(date).set(outtakesCategoryAnalyzed[date]))
+        admin.firestore().collection('statistics').doc('outtakes-category').collection('month').doc(date).set(outtakesCategoryAnalyzed[date]))
+
+    response.status(200).send("Analisado, salvando");
+});
+
+exports.analyseStatisticsOuttakesClinicByMonth = functions.https.onRequest(async (request, response) => {
+    var outtakes = await admin.firestore().collection('outtakes').get();
+    outtakes = outtakes.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+
+    var outtakesClinic = outtakes.filter((doc) => (doc.exams || doc.specialties) && doc.intake_id)
+
+    var outtakesClinicToPay = []
+    outtakesClinic.filter((doc) => !doc.paid)
+        .forEach((outtake) => {
+            if (outtake.exams) outtake.exams.forEach((exam) =>
+                outtakesClinicToPay.push({
+
+                    cost: exam.cost,
+                    name: exam.name,
+                    date: moment(Number(outtake.intake_id)).format("YYYY-MM-DD"),
+                    paid: false,
+                    recurrent: false
+                }))
+            if (outtake.specialties) outtake.specialties.forEach((specialty) =>
+                outtakesClinicToPay.push({
+                    cost: specialty.cost,
+                    name: specialty.name,
+                    date: moment(Number(outtake.intake_id)).format("YYYY-MM-DD"),
+                    paid: false,
+                    recurrent: false
+                }))
+        })
+
+    var outtakesClinicPaid = []
+    outtakesClinic.filter((doc) => doc.paid)
+        .forEach((outtake) => {
+            if (outtake.exams) outtake.exams.forEach((exam) =>
+                outtakesClinicPaid.push({
+                    cost: exam.cost,
+                    name: exam.name,
+                    date: moment(Number(outtake.intake_id)).format("YYYY-MM-DD"),
+                    paid: true,
+                    recurrent: false
+                }))
+            if (outtake.specialties) outtake.specialties.forEach((specialty) =>
+                outtakesClinicPaid.push({
+                    cost: specialty.cost,
+                    name: specialty.name,
+                    date: moment(Number(outtake.intake_id)).format("YYYY-MM-DD"),
+                    paid: true,
+                    recurrent: false
+                }))
+        })
+
+    var groupedClinic = {}
+    var outtakesToGroup = [...outtakesClinicToPay, ...outtakesClinicPaid];
+    outtakesToGroup.forEach(({ date }) => {
+        let [year, month, day] = date.match(/\d+/g);
+        groupedClinic[`${year}-${month}`] =
+            outtakesToGroup.filter(({ date: d }) => `${year}-${month}` === d.slice(0, 7));
+    })
+    var outtakesClinicAnalyzed = analyzeOuttakesByMonth(groupedClinic);
+
+    Object.keys(outtakesClinicAnalyzed).forEach((date) =>
+        admin.firestore().collection('statistics').doc('outtakes-clinic').collection('month').doc(date).set(outtakesClinicAnalyzed[date]))
 
     response.status(200).send("Analisado, salvando");
 });
