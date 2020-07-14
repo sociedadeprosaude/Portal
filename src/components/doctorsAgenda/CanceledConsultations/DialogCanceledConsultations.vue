@@ -135,7 +135,7 @@
                                 <v-icon right>clear</v-icon>
                             </v-btn>
                             <v-spacer/>
-                            <v-btn color="primary" rounded @click="registerCall" :disabled="!this.idCall || !this.descriptionCall">
+                            <v-btn color="primary" rounded @click="registerCall()" :disabled="!this.idCall || !this.descriptionCall">
                                 Registrar
                                 <v-icon>phone_disabled</v-icon>
                             </v-btn>
@@ -177,7 +177,7 @@
         },
         methods: {
             deleteConsultation () {
-                this.$store.dispatch('removeAppointmentForever',{... this.indexSelected});
+                this.$emit('delete', {... this.indexSelected})
                 this.$emit('dialog', false)
             },
             CloseDialog(){
@@ -192,6 +192,11 @@
                 };
                 if (this.indexSelected.calls === undefined){
                     this.calls.push(val);
+                    let values ={
+                        calls: this.calls,
+                        idConsultation: this.indexSelected.idConsultation,
+                    }
+                    this.$emit('registerCall', values)
                     await this.$store.dispatch('addArrayCallsToConsultation', {
                         calls: this.calls,
                         idConsultation: this.indexSelected.idConsultation,
@@ -199,6 +204,11 @@
                     this.calls = []
                 } else {
                     this.indexSelected.calls.push(val);
+                    let values ={
+                        calls: this.indexSelected.calls,
+                        idConsultation: this.indexSelected.idConsultation,
+                    }
+                    this.$emit('registerCall', values)
                     await this.$store.dispatch('addArrayCallsToConsultation', {
                         calls: this.indexSelected.calls,
                         idConsultation: this.indexSelected.idConsultation,

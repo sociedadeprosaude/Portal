@@ -1,23 +1,22 @@
 <template>
     <v-container>
-        <v-layout v-if="animation === true"  class="align-center justify-center" row wrap>
-            <div class="text-center">
-                <v-progress-circular
-                        :size="350"
-                        :width="12"
-                        color="primary"
-                        indeterminate>
-                    <span class="headline">CARREGANGO...</span>
-                </v-progress-circular>
-            </div>
-        </v-layout>
-
+        <v-content v-if="animation === true" :class="['background', 'fade-in-anim']">
+            <v-layout ref="loader" class="primary fill-height align-center justify-center">
+                <img
+                        ref="logo"
+                        class="pulse-anim"
+                        :src="require('../../../assets/pro_saude_logo.png')"
+                        width="150px"
+                        height="150px"
+                >
+            </v-layout>
+        </v-content>
         <v-layout v-else-if="animation === false"  class="align-center justify-center" row wrap>
             <v-card>
                 <header-canceled-consultations></header-canceled-consultations>
                 <expansion-panel-canceled-consultations @indexSelected="indexSelected= $event" @dialog="dialog= $event" :consultations="consultations" ></expansion-panel-canceled-consultations>
                 <v-dialog v-model="dialog"  width="700">
-                    <dialog-canceled-consultations @dialog="dialog = $event" :indexSelected="indexSelected" ></dialog-canceled-consultations>
+                    <dialog-canceled-consultations @registerCall="registerCall($event)"  @delete="deleteConsultation($event)" @dialog="dialog = $event" :indexSelected="indexSelected" ></dialog-canceled-consultations>
                 </v-dialog>
             </v-card>
         </v-layout>
@@ -25,6 +24,7 @@
 </template>
 
 <script>
+    let moment = require('moment/moment');
     import HeaderCanceledConsultations from '../../../components/doctorsAgenda/CanceledConsultations/HeaderCanceledConsultations'
     import ExpansionPanelCanceledConsultations from '../../../components/doctorsAgenda/CanceledConsultations/ExpansionPanelCanceledConsultations'
     import DialogCanceledConsultations from '../../../components/doctorsAgenda/CanceledConsultations/DialogCanceledConsultations'
@@ -50,39 +50,16 @@
             setTimeout(() => (this.animation = false), 3000)
         },
         methods: {
-            deleteConsultation () {
-                this.$store.dispatch('removeAppointmentForever',{... this.indexSelected});
+            deleteConsultation (consultation) {
+                this.$store.dispatch('removeAppointmentForever',consultation);
                 this.dialog = false
             },
-            async registerCall(){
-                let val = {
-                    idCall: this.idCall,
-                    descriptionCall: this.descriptionCall,
-                    dateHourCall: moment().locale('pt-BR').format('DD/MM/YYYY HH:mm:ss'),
-                    dayOfTheWeekCall: moment().format('dddd'),
-                };
-                if (this.indexSelected.calls === undefined){
-                    this.calls.push(val);
-                    await this.$store.dispatch('addArrayCallsToConsultation', {
-                        calls: this.calls,
-                        idConsultation: this.indexSelected.idConsultation,
-                    });
-                    this.calls = []
-                } else {
-                    this.indexSelected.calls.push(val);
-                    await this.$store.dispatch('addArrayCallsToConsultation', {
-                        calls: this.indexSelected.calls,
-                        idConsultation: this.indexSelected.idConsultation,
-                    })
-                }
-                this.resetData();
+            async registerCall(values){
+                await this.$store.dispatch('addArrayCallsToConsultation', {
+                    calls: values.calls,
+                    idConsultation: values.idConsultation,
+                })
             },
-            resetData () {
-                this.call = undefined;
-                this.idCall = undefined;
-                this.descriptionCall = undefined;
-                this.dialog = false
-            }
         },
     };
 </script>

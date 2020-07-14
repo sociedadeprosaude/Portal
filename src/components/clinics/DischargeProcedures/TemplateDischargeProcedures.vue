@@ -89,58 +89,29 @@
             </v-flex>
         </v-layout>
         <v-dialog v-model="successUpdateExams" persistent max-width="400">
-            <v-card>
-                <v-layout row wrap>
-                    <v-flex xs12>
-                        <p  class="mt-3 font-italic font-weight-bold">Atualizado Com Sucesso</p>
-                    </v-flex>
-                    <v-flex xs12>
-                        <v-btn color="success" @click="successUpdateExams = !successUpdateExams">Fechar</v-btn>
-                    </v-flex>
-                </v-layout>
-            </v-card>
+            <success-update-discharge-procedures @closeDialog="DialogSucess()" ></success-update-discharge-procedures>
         </v-dialog>
         <v-dialog v-model="dialogContestValue" persistent max-width="400">
-            <v-card>
-                <v-layout row wrap>
-                    <v-flex xs12>
-                        <p  class="mt-3 font-italic font-weight-bold">Exame: {{ContestExam.name}}</p>
-                    </v-flex>
-                    <v-flex xs12>
-                        <p>Valor Atual: {{ContestExam.cost}}</p>
-                    </v-flex>
-                    <v-flex xs2>
-                    <v-spacer></v-spacer>
-                    </v-flex>
-                    <v-flex xs8>
-                        <v-text-field v-model="NewValue" label="Valor Correto"></v-text-field>
-                    </v-flex>
-                    <v-flex xs2>
-                        <v-spacer></v-spacer>
-                    </v-flex>
-                    <v-flex xs12>
-                        <v-btn color="success" @click="FunctionContestValue">Enviar</v-btn>
-                    </v-flex>
-                </v-layout>
-            </v-card>
+            <contest-value-discharge-procedures @dialogContestValue="DialogContestValueChange($event)" @ContestValue="FunctionContestValue($event)" :ContestExam="ContestExam" ></contest-value-discharge-procedures>
         </v-dialog>
     </v-container>
 </template>
 
 <script>
     import {mask} from "vue-the-mask";
+    import ContestValueDischargeProcedures from './ContestValueDischargeProcedures'
+    import SuccessUpdateDischargeProcedures from './SuccessUpdateDischargeProcedures'
+
 
     export default {
         name: "TemplateDischargeProcedures",
         directives: {
             mask
         },
-        props:['outtake','user'],
+        components:{SuccessUpdateDischargeProcedures, ContestValueDischargeProcedures},
+        props:['outtake','user','loading','dialogContestValue','successUpdateExams'],
         data() {
             return {
-                loading: false,
-                successUpdateExams: false,
-                dialogContestValue: false,
                 ContestExam:[],
                 NewValue: '',
                 file:[],
@@ -149,66 +120,46 @@
         },
 
         methods: {
-            async removeFile(index,intake,outtak) {
-                intake.results.splice(index, 1);
+            removeFile(index,intake,outtak) {
+                intake.result.splice(index, 1);
                 let exams = outtak.exams
-
-                await this.$store.dispatch("updateOuttakeExams", {
+                let values = {
                     outtake: outtak,
                     field: "results",
                     exams: exams
-                });
+                }
+                this.$emit('removeFiles', values)
+            },
+            DialogSucess(){
+              this.$emit('SuccessUpdate', false)
+            },
+            DialogContestValueChange(event){
+                this.$emit('dialogContestValue',event)
             },
             DividerContestValue(intake){
-                this.dialogContestValue= true;
+                this.$emit('dialogContestValue', true)
                 this.ContestExam= intake
             },
-            async FunctionContestValue(){
-                let clinic= await this.$store.dispatch('getClinic', this.user.cnpj)
-                this.ContestExam.NewValue = this.NewValue
-                await this.$store.dispatch('addNewContestValue',{exams:this.ContestExam, value:this.NewValue, cnpj:this.user.cnpj, numberIntake:this.outtake.intakeNumber, clinic:clinic.docs[0].id})
-                this.dialogContestValue = !this.dialogContestValue
-                this.NewValue=0
+            async FunctionContestValue(NewValue){
+                this.ContestExam.NewValue = NewValue
+                let values ={
+                    NewValue: NewValue,
+                    ContestExam: this.ContestExam
+                }
+                this.$emit('ContestValue', values);
             },
             async AddResultExam(intake,outtak,index){
-                if(!intake.result){
-                    intake.result = []
+                let values = {
+                    intake: intake,
+                    outtak: outtak,
+                    index: index,
+                    files: this.files,
+                    file: this.file
                 }
-                await this.$store.dispatch("deleteFile", {
-                    imagePaths: intake.result,
-                    path: "outtakes/resultExams"
-                });
-                if(this.files.indexOf(this.file[0]) < 0 && this.file.length > 0){
-                    this.files.push(this.file[0])
-                    this.file= []
-                }
-                let urls = await this.submitFiles(this.files)
-                let exams = outtak.exams
-                exams[index].result = urls
-                await this.$store.dispatch("updateOuttakeExams", {
-                    outtake: outtak,
-                    field: "results",
-                    value: urls,
-                    exams: exams
-                });
-                await this.$store.dispatch('getSpecificOuttake',{number:this.numberIntake, cnpj: this.user.cnpj})
-            },
-            async submitFiles(files) {
-                return await this.$store.dispatch("uploadFileToStorage", {
-                    files: files,
-                    path: "/outtakes/resultExams"
-                });
+                this.$emit('AddResultExam',values)
             },
             async SendCheckExams(){
-                this.loading= true;
-                await this.$store.dispatch('updatingSpecificOuttake',{outtake: this.outtake.filter( (outtak) => outtak.root === true)[0], exams: this.outtake.filter( (outtak) => outtak.root === true)[0].exams, cnpj: this.user.cnpj})
-                this.loading= false;
-                this.successUpdateExams= true;
-                this.numberIntake = '';
-                for(let outtakes= 0; outtakes <  this.outtake.length; outtakes++ ){
-                    this.outtake[outtakes].exams = {}
-                }
-                this.outtake[0].user ='';
+                this.$emit('CheckExams')
             }
         }
     };

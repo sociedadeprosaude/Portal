@@ -535,9 +535,11 @@ const actions = {
         firebase.firestore().collection('clinics').doc(clin.name).update({property: true})
     },
     async addNewContestValue ({commit}, payload){
+        console.log('payload: ', payload)
         let clinic = await firebase.firestore().collection('contestValues').doc(payload.numberIntake).get();
         let exams= [];
         if(clinic.data()){
+            console.log('clinic.data()', clinic.data())
             for(let exam in clinic.data().exams){
                 exams.push(clinic.data().exams[exam])
             }
@@ -556,6 +558,14 @@ const actions = {
                 clinic.forEach((doc) => {
                     clinicSelected=  doc.data()
             })
+        return clinicSelected
+    },
+    async getIdClinic({commit}, payload){
+        let clinicSelected = []
+        let clinic = await firebase.firestore().collection('clinics').where("cnpj" ,"==", payload).get()
+        clinic.forEach((doc) => {
+            clinicSelected= doc.id
+        })
         return clinicSelected
     },
     async getContestValue ({commit}){
