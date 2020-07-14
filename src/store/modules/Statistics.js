@@ -88,48 +88,11 @@ const actions = {
 
 
     async getStatisticsOuttakesByMonth({ commit }, payload) {
-        var statistics = await firebase.firestore().collection('statistics').doc('outtakes').collection('month').get();
+        var statistics = await firebase.firestore().collection('statistics').doc('outtakes-category').collection('month').get();
         var statsYearMonth = {}
 
-        var outtakes = await firebase.firestore().collection('outtakes').get();
-        outtakes = outtakes.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-
-        var outtakesCategory = outtakes.filter((doc) => (doc.category))
-
-        var outtakesCategoryRecurrent = outtakesCategory.filter((doc) => doc.recurrent === "true")
-        var outtakesCategoryOnce = outtakesCategory.filter((doc) => doc.recurrent !== "true")
-
-
-        var outtakesCategoryPaid = outtakesCategory.filter((doc) => (doc.paid))
-        // .map((outtake) => ({
-        //     cost: Number(outtake.value),
-        //     name: outtake.category,
-        //     date: outtake.created_at,
-        //     paid: true,
-        //     recurrent: outtake.recurrent === "true"
-        // }))
-
-        var outtakesCategoryToPay = outtakesCategory.filter((doc) => (!doc.paid))
-        // .map((outtake) => ({
-        //     cost: Number(outtake.value),
-        //     name: outtake.category,
-        //     date: outtake.created_at,
-        //     paid: false,
-        //     recurrent: outtake.recurrent === "true"
-        // }))
-
-        var outtakesClinic = outtakes.filter((doc) => (doc.exams || doc.specialties) && doc.intake_id)
-
-
-
-
-
-
-        console.log(outtakes)
-        console.log(outtakesCategoryToPay)
-        console.log(outtakesCategoryPaid)
-        console.log(outtakesClinic.filter((doc) => !doc.paid))
-        console.log(outtakesClinic.filter((doc) => doc.paid))
+        // var outtakes = await firebase.firestore().collection('outtakes').get();
+        // outtakes = outtakes.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
         statistics = statistics.docs.map((doc) => {
             const statDay = doc.data();
@@ -147,6 +110,31 @@ const actions = {
         // console.log(statistics);
         // console.log(statsYearMonth);
         commit('setStatisticsOuttakes', statsYearMonth)
+    },
+
+    async getStatisticsOuttakesClinicsByMonth({ commit }, payload) {
+        var statistics = await firebase.firestore().collection('statistics').doc('outtakes-clinic').collection('month').get();
+        var statsYearMonth = {}
+
+        // var outtakes = await firebase.firestore().collection('outtakes').get();
+        // outtakes = outtakes.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+        statistics = statistics.docs.map((doc) => {
+            const statDay = doc.data();
+            let [year, month] = doc.id.match(/\d+/g);
+            if (!statsYearMonth[year]) statsYearMonth[year] = {};
+            statsYearMonth[year][month] = {};
+            statsYearMonth[year][month].arrTotalToPay = statDay.arrTotalToPay;
+            statsYearMonth[year][month].numOfOuttakesToPay = statDay.numOfOuttakesToPay;
+            statsYearMonth[year][month].totalLeftToPay = statDay.totalLeftToPay;
+            statsYearMonth[year][month].totalToPay = statDay.totalToPay;
+            statsYearMonth[year][month].totalRecurrent = statDay.totalRecurrent;
+            statsYearMonth[year][month].itens = statDay.itens;
+            return statDay
+        })
+        // console.log(statistics);
+        // console.log(statsYearMonth);
+        commit('setStatisticsOuttakesClinics', statsYearMonth)
     },
 
     //============================================= Maps ====================================================================
