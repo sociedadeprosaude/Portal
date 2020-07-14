@@ -280,7 +280,7 @@ const actions = {
         try {
 
             functions.removeUndefineds(payload);
-            var cancelAppointment = firebase.functions().httpsCallable('cancelAppointment');
+            var cancelAppointment = firebase.functions().httpsCallable('requests-cancelAppointment');
             var response = await cancelAppointment({payload: payload})
 
         } catch (e) {
@@ -343,7 +343,7 @@ const actions = {
 
     async removeAppointmentByDay(context, payload) {
         try {
-            let deleteScheduleByDay = firebase.functions().httpsCallable('deleteScheduleByDay');
+            let deleteScheduleByDay = firebase.functions().httpsCallable('requests-deleteScheduleByDay');
             await deleteScheduleByDay({payload: payload})
         } catch (e) {
             throw e
