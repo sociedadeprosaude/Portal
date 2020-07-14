@@ -76,6 +76,7 @@
     <procedures-prices-analises v-if="selected == 2"></procedures-prices-analises>
     <statsCaixa v-if="selected == 3"></statsCaixa>
     <testes v-if="selected == 4"></testes>
+    <Clients v-if="selected == 5"></Clients>
   </v-container>
 </template>
 
@@ -83,7 +84,7 @@
 import ProceduresPricesAnalises from "@/components/reports/ProceduresPricesAnalises";
 import GeneralReport from "@/components/reports/GeneralReport";
 import OuttakesReport from "@/components/reports/OuttakesReport";
-
+import Clients from './Clients'
 import statsCaixa from "./statsCaixa";
 
 export default {
@@ -91,7 +92,8 @@ export default {
     GeneralReport,
     ProceduresPricesAnalises,
     OuttakesReport,
-    statsCaixa
+    statsCaixa,
+    Clients
   },
   data: vm => ({
     selected: 3,
@@ -100,7 +102,7 @@ export default {
       { title: "Relatorio de Saidas", value: 1 },
       { title: "Análise de preço de exames", value: 2 },
       { title: "Overview Caixa", value: 3 },
-   
+      { title: "Clientes", value: 5 },
     ],
 
     date: moment().format("YYYY-MM-DD 00:00:00"),
@@ -132,28 +134,34 @@ export default {
     },
     async pesquisar() {
       this.loading = true;
-      this.$store.dispatch("getUsers", {
-        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
-        type: "PATIENT"
-      });
-      this.$store.dispatch("getOuttakes", {
-        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
-      });
-      this.formattedReport = await this.$store.dispatch("searchReports", {
-        dataInicio: this.date,
-        dataFinal: this.date2,
-        colaborator: this.colaborator
-      });
-      this.formattedReportAllUnits = await this.$store.dispatch(
-        "searchReportsAllClinics",
-        {
+      if(this.selected == 5){
+       this.loadDatasetClients()
+      }else{
+        this.$store.dispatch("getUsers", {
+          initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+          finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
+          type: "PATIENT"
+        });
+        this.$store.dispatch("getOuttakes", {
+          initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+          finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+        });
+        this.formattedReport = await this.$store.dispatch("searchReports", {
           dataInicio: this.date,
           dataFinal: this.date2,
           colaborator: this.colaborator
-        }
-      );
+        });
+        this.formattedReportAllUnits = await this.$store.dispatch(
+          "searchReportsAllClinics",
+          {
+            dataInicio: this.date,
+            dataFinal: this.date2,
+            colaborator: this.colaborator
+          }
+        );
+      }
+
+      
       this.dateBegin = this.dateFormatted;
       this.dateEnd = this.dateFormatted2;
       this.loading = false;
@@ -162,6 +170,16 @@ export default {
       if (!date) return null;
       const [year, month, day] = date.split("-");
       return `${day}/${month}/${year}`;
+    },
+    loadDatasetClients(){
+       this.$store.dispatch("loadClientsServed", {
+          initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+          finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+        });
+        this.$store.dispatch("loadNewClients", {
+          initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+          finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+        });
     }
   },
   async mounted() {
@@ -180,7 +198,12 @@ export default {
       type: "PATIENT"
     });
     await this.$store.dispatch("getOuttakesCategories");
+    await this.$store.dispatch("loadClientsServed", {
+      initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+      finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+    });
     this.getIntakes();
+    this.loadDatasetClients();
   },
   computed: {
     colaborators() {

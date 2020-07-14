@@ -224,7 +224,7 @@
                             </v-card>
                         </v-tab-item>
                         <v-tab-item :key=i v-for="(item, i) in examsPerClinic">
-                            <attendance-guide :guide=item :id="'guide-' + i" :ref="'guide-' + i"
+                            <attendance-guide :guide=item :id="budget.id" :ref="'guide-' + i"
                                               class="receipt-to-print"/>
                         </v-tab-item>
                     </v-tabs>

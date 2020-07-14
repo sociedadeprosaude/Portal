@@ -111,14 +111,14 @@
                             <template v-slot:item.monday="{ item }">
                                 <strong v-for="(index,i) in item.monday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today && index.cancelations_schedules[0].start_date <= today" color="primary">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules.length > 0 && index.cancelations_schedules[0].final_date >= today && index.cancelations_schedules[0].start_date <= today" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
                                                     class="white--text pa-1 my-n2"
                                                     color="grey"
                                             >
-                                                {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                                {{index.doctor.name}} - {{index.specialty ? index.specialty.name : index.exam_type.name}} - {{index.clinic.name}}
                                                 <br/>
                                                 <br/>
                                                 <v-btn @click="openDialoaUpdateDay(index,1)" x-small fab>
@@ -140,7 +140,7 @@
                                             class="white--text pa-1 my-n2"
                                             :color="i === 0 ? 'blue' : i === 1 ? 'green' : i === 2 ? 'red' : i === 3 ? 'purple' : i === 4 ? 'orange' : 'pink'"
                                     >
-                                        {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                        {{index.doctor.name}} - {{index.specialty ? index.specialty.name : index.exam_type.name}} - {{index.clinic.name}}
                                          <br/>
                                          <br/>
                                          <v-btn @click="openDialoaUpdateDay(index,1)" x-small fab>
@@ -157,14 +157,14 @@
                             <template v-slot:item.tuesday="{ item }">
                                 <strong v-for="(index,i) in item.tuesday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today && index.cancelations_schedules[0].start_date <= today" color="primary">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules.length > 0 && index.cancelations_schedules[0].final_date >= today && index.cancelations_schedules[0].start_date <= today" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
                                                     class="white--text pa-1 my-n2"
                                                     color="grey"
                                             >
-                                                {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                                {{index.doctor.name}} - {{index.specialty ? index.specialty.name : index.exam_type.name}} - {{index.clinic.name}}
                                                 <br/>
                                                 <br/>
                                                 <v-btn @click="openDialoaUpdateDay(index,2)" x-small fab>
@@ -186,7 +186,7 @@
                                             class="white--text pa-1 my-n2"
                                             :color="i === 0 ? 'blue' : i === 1 ? 'green' : i === 2 ? 'red' : i === 3 ? 'purple' : i === 4 ? 'orange' : 'pink'"
                                     >
-                                        {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                        {{index.doctor.name}} - {{index.specialty ? index.specialty.name : index.exam_type.name}} - {{index.clinic.name}}
                                         <br/>
                                          <br/>
                                          <v-btn @click="openDialoaUpdateDay(index,2)" x-small fab>
@@ -203,14 +203,14 @@
                             <template v-slot:item.wednesday="{ item }">
                                 <strong v-for="(index,i) in item.wednesday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today && index.cancelations_schedules[0].start_date <= today" color="primary">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules.length > 0 && index.cancelations_schedules[0].final_date >= today && index.cancelations_schedules[0].start_date <= today" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
                                                     class="white--text pa-1 my-n2"
                                                     color="grey"
                                             >
-                                                {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                                {{index.doctor.name}} - {{index.specialty ? index.specialty.name : index.exam_type.name}} - {{index.clinic.name}}
                                                 <br/>
                                                 <br/>
                                                 <v-btn @click="openDialoaUpdateDay(index,3)" x-small fab>
@@ -232,7 +232,7 @@
                                             class="white--text pa-1 my-n2"
                                             :color="i === 0 ? 'blue' : i === 1 ? 'green' : i === 2 ? 'red' : i === 3 ? 'purple' : i === 4 ? 'orange' : 'pink'"
                                     >
-                                        {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                        {{index.doctor.name}} - {{index.specialty ? index.specialty.name : index.exam_type.name}} - {{index.clinic.name}}
                                         <br/>
                                          <br/>
                                          <v-btn @click="openDialoaUpdateDay(index,3)" x-small fab>
@@ -249,14 +249,14 @@
                             <template v-slot:item.thursday="{ item }">
                                 <strong v-for="(index,i) in item.thursday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today && index.cancelations_schedules[0].start_date <= today" color="primary">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules.length > 0 && index.cancelations_schedules[0].final_date >= today && index.cancelations_schedules[0].start_date <= today" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
                                                     class="white--text pa-1 my-n2"
                                                     color="grey"
                                             >
-                                                {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                                {{index.doctor.name}} - {{index.specialty ? index.specialty.name : index.exam_type.name}} - {{index.clinic.name}}
                                                 <br/>
                                                 <br/>
                                                 <v-btn @click="openDialoaUpdateDay(index,4)" x-small fab>
@@ -278,7 +278,7 @@
                                             class="white--text pa-1 my-n2"
                                             :color="i === 0 ? 'blue' : i === 1 ? 'green' : i === 2 ? 'red' : i === 3 ? 'purple' : i === 4 ? 'orange' : 'pink'"
                                     >
-                                        {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                        {{index.doctor.name}} - {{index.specialty ? index.specialty.name : index.exam_type.name}} - {{index.clinic.name}}
                                         <br/>
                                         <br/>
                                          <v-btn @click="openDialoaUpdateDay(index,4)" x-small fab>
@@ -295,14 +295,14 @@
                             <template v-slot:item.friday="{ item }">
                                 <strong v-for="(index,i) in item.friday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today && index.cancelations_schedules[0].start_date <= today" color="primary">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules.length > 0 && index.cancelations_schedules[0].final_date >= today && index.cancelations_schedules[0].start_date <= today" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
                                                     class="white--text pa-1 my-n2"
                                                     color="grey"
                                             >
-                                                {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                                {{index.doctor.name}} - {{index.specialty ? index.specialty.name : index.exam_type.name}} - {{index.clinic.name}}
                                                 <br/>
                                                 <br/>
                                                 <v-btn @click="openDialoaUpdateDay(index,5)" x-small fab>
@@ -324,7 +324,7 @@
                                             class="white--text pa-1 my-n2"
                                             :color="i === 0 ? 'blue' : i === 1 ? 'green' : i === 2 ? 'red' : i === 3 ? 'purple' : i === 4 ? 'orange' : 'pink'"
                                     >
-                                        {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                        {{index.doctor.name}} - {{index.specialty ? index.specialty.name : index.exam_type.name}} - {{index.clinic.name}}
                                         <br/>
                                          <br/>
                                          <v-btn @click="openDialoaUpdateDay(index,5)" x-small fab>
@@ -341,14 +341,14 @@
                             <template v-slot:item.saturday="{ item }">
                                 <strong v-for="(index,i) in item.saturday" :key="i">
                                     <br/>
-                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules[0].final_date >= today && index.cancelations_schedules[0].start_date <= today" color="primary">
+                                    <v-tooltip bottom v-if="index.cancelations_schedules && index.cancelations_schedules.length > 0 && index.cancelations_schedules[0].final_date >= today && index.cancelations_schedules[0].start_date <= today" color="primary">
                                         <template v-slot:activator="{ on }">
                                             <v-card
                                                     v-on="on"
                                                     class="white--text pa-1 my-n2"
                                                     color="grey"
                                             >
-                                                {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                                {{index.doctor.name}} - {{index.specialty ? index.specialty.name : index.exam_type.name}} - {{index.clinic.name}}
                                                 <br/>
                                                 <br/>
                                                 <v-btn @click="openDialoaUpdateDay(index,6)" x-small fab>
@@ -370,7 +370,7 @@
                                             class="white--text pa-1 my-n2"
                                             :color="i === 0 ? 'blue' : i === 1 ? 'green' : i === 2 ? 'red' : i === 3 ? 'purple' : i === 4 ? 'orange' : 'pink'"
                                     >
-                                        {{index.doctor.name}} - {{index.specialty.name}} - {{index.clinic.name}}
+                                        {{index.doctor.name}} - {{index.specialty ? index.specialty.name : index.exam_type.name}} - {{index.clinic.name}}
                                         <br/>
                                          <br/>
                                          <v-btn @click="openDialoaUpdateDay(index,6)" x-small fab>
@@ -715,9 +715,8 @@
                     },
                 ]
 
-                console.log('->>')
                 let schedules = this.$store.getters.AllSchedules.filter((schedule)=>{
-                    if(this.specialty && schedule.specialty.name != this.specialty.name)
+                    if(this.specialty && schedule.specialty && schedule.specialty.name != this.specialty.name)
                         return false
                     if(this.doctor && schedule.doctor.name != this.doctor.name)
                         return false

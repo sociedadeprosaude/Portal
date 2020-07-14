@@ -12,6 +12,8 @@ import Reports from "./views/Register/Reports";
 import Bundles from "./views/Register/Bundles";
 import NewBundles from "./views/Register/Bundle/NewBundles";
 import PaymentCovenants from "./views/Register/PaymentCovenants";
+import PaymentMedics from "./views/Register/PaymentMedics";
+
 import ContestValue from "./views/Notifications/contestValues"
 
 import oldDoctors from "./views/Register/oldDoctors";
@@ -20,6 +22,8 @@ import oldClinics from "./views/Register/oldClinics";
 import Clinics from "./views/Register/Clinics";
 import RegisterNewUserClinic from "./views/Register/Clinic/RegisterClinic"
 import DischargeProcedures from "./views/Register/Clinic/DischargeProcedures"
+import VerificationForwardingBilling from"./views/Register/Clinic/VerificationForwardingBilling"
+import PaymentHistory from "./views/Register/Clinic/PaymentHistoryClinic"
 import Units from "./views/Units";
 import Bills from "./views/Register/Bills";
 import BillsMobile from "./views/Register/BillsMobile";
@@ -28,6 +32,7 @@ import OuttakesCategories from "./views/Register/OuttakesCategories";
 import DoctorScheduling from './views/Operational/DoctorsAgenda/DoctorScheduling'
 
 import MedicalCare from "./views/DoctorAttendance/MedicalCare";
+import Attendance from "./views/DoctorAttendance/Attendance";
 import TicketsDashboard from "./views/Operational/Tickets/TicketsDashboard";
 import RoomDashboard from "./views/Operational/Tickets/RoomDashboard";
 
@@ -169,6 +174,22 @@ let mainRoutes = [
     }
   },
   {
+    path: '/VerificacaoEncaminhamentos',
+    name: 'VerificationForwardingBilling',
+    component: VerificationForwardingBilling,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/HistoricoDePagamentos',
+    name: 'PaymentHistory',
+    component: PaymentHistory,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
     path: '/bundlesNew',
     name: 'bundles',
     component: Bundles,
@@ -193,7 +214,7 @@ let mainRoutes = [
     }
   },
   {
-    path: '/bills',
+    path: '/pagamento/financeiro',
     name: 'bills',
     component : Bills,
     meta: {
@@ -217,9 +238,17 @@ let mainRoutes = [
     }
   },
   {
-    path: '/PaymentCovenants',
+    path: '/pagamento/convenio',
     name: 'PaymentCovenants',
     component : PaymentCovenants,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/pagamento/medicos',
+    name: 'PaymentMedics',
+    component : PaymentMedics,
     meta: {
       requiresAuth: false,
     }
@@ -228,6 +257,14 @@ let mainRoutes = [
     path: '/MedicalCare',
     name: 'MedicalCare',
     component : MedicalCare,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/Attendance',
+    name: 'Attendance',
+    component : Attendance,
     meta: {
       requiresAuth: false,
     }
@@ -295,6 +332,11 @@ router.afterEach((to, from, next) => {
     store.commit('setDoctorsAgendaToolbar', true)
   } else {
     store.commit('setDoctorsAgendaToolbar', false)
+  }
+  if (to.path.includes('pagamento')) {
+    store.commit('setBillsToolbar', true)
+  } else {
+    store.commit('setBillsToolbar', false)
   }
 });
 
