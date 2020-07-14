@@ -1,11 +1,9 @@
 <template>
     <v-container fluid>
         <v-row justify="center">
-            <transition name="fade">
-                <v-dialog v-model="dialog" width="500px" text hide-overlay>
-                    <MedicalRecordsPDF :consultation="consultation" @close-dialog="dialog = false"/>
-                </v-dialog>
-            </transition>
+            <v-dialog v-model="dialog" text hide-overlay>
+                <MedicalRecordsPDF :consultation="consultation" :medicalRecord="medicalRecord" @close-dialog="dialog = false"/>
+            </v-dialog>
         </v-row>
         <v-card class="elevation-3">
             <v-card-title class="headline primary justify-center align-center white--text" primary-title>
@@ -46,12 +44,7 @@
             </v-card-text>
             <v-divider/>
             <v-card-actions>
-                <v-btn color="primary" @click="dialog = true">
-                    imprimir
-                    <v-icon right>
-                        print
-                    </v-icon>
-                </v-btn>
+                <v-btn color="primary" @click="dialog = true">imprimir<v-icon right>print</v-icon></v-btn>
                 <v-spacer/>
                 <submit-button
                         @click="save()"
