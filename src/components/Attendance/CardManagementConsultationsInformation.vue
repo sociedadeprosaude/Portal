@@ -55,11 +55,6 @@
                     </v-flex>
                     <v-layout row wrap class="align-center justify-center">
                     <v-card-actions class="mt-4 " v-if="consultation.status">
-<!--                        <v-btn
-                                color="white"
-                                rounded
-                                :to="{ name: 'Attendance', params: { q: consultation}}"
-                        >Atender Sem Dialog</v-btn>-->
                         <v-btn
                                 color="white"
                                 rounded

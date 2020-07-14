@@ -31,6 +31,20 @@
                                     <v-flex xs1 class="text-right mx-1">
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
+                                                <v-btn fab
+                                                       icon
+                                                       v-on="on"
+                                                       to="/agenda/HistoricoDeProntuariosDoPaciente"
+                                                       rounded text class="white--text transparent">
+                                                    <v-icon>assignment</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <span>Historico de Prontuários</span>
+                                        </v-tooltip>
+                                    </v-flex>
+                                    <v-flex xs1 class="text-right mx-1">
+                                        <v-tooltip v-if="selectedPatient" top>
+                                            <template v-slot:activator="{ on }">
                                                 <v-btn icon
                                                        fab
                                                        v-on="on"
@@ -900,17 +914,10 @@
                         this.cities['AM'].push(city.nome)
                     });
                 });
-            if (localStorage.getItem('patient')) {
 
-                // eslint-disable-next-line vue/no-async-in-computed-properties
-                let user = await this.$store.dispatch('searchUser', {
-                    name: '',
-                    cpf: localStorage.getItem('patient'),
-                    association_number: this.numAss
-                });
-                this.selectUser(user[0])
-            }
-
+        },
+        async beforeCreate () {
+           
         },
         beforeDestroy() {
             window.removeEventListener('keydown', this.handleEnter)

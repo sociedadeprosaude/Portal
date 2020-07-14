@@ -1,8 +1,8 @@
 <template>
     <v-content>
         <v-container fluid>
-            <v-layout row wrap>
-                <v-flex xs12 v-if="medicalRecordsUser">
+            <v-layout row wrap class="align-center justify-center">
+                <v-flex xs12 sm10 v-if="medicalRecordsUser">
                     <v-expansion-panels inset>
                         <v-expansion-panel v-for="(item,i) in medicalRecordsUser" :key="i" class="mt-3">
                             <v-expansion-panel-header class="primary white--text">
@@ -25,7 +25,7 @@
                         </v-expansion-panel>
                     </v-expansion-panels>
                 </v-flex>
-                <v-flex xs12 v-else>
+                <v-flex xs12 sm10 v-else>
                     <v-card>
                         <v-alert type="error">
                             O Paciente Ainda Não Tem Nenhum Prontuário Salvo de Consultas e/ou Retornos Anteriores!
@@ -41,7 +41,6 @@
     import Editor from '@tinymce/tinymce-vue';
     export default {
         components: {'editor': Editor },
-        props: ['id'],
         data: () => ({
             //
         }),
@@ -50,10 +49,13 @@
         },
         methods: {
             async initialConfig() {
-                await this.$store.dispatch('getMedicalRecords',{ patient: this.id })
+                await this.$store.dispatch('getMedicalRecords',{ patient: this.selectedPatient.id })
             },
         },
         computed:{
+            selectedPatient() {
+                return this.$store.getters.selectedPatient
+            },
             medicalRecordsUser(){
                 let mrOfUser = this.$store.getters.medicalRecords
                 return mrOfUser
