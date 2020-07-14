@@ -79,23 +79,17 @@
             if (!this.query) {
                 this.$router.push('MedicalCare')
             }
-            //window.addEventListener('beforeunload', this.viewIn)
-            //window.addEventListener('load', this.viewOut)
-            //window.addEventListener('unload', this.viewOut)
+            window.addEventListener('beforeunload', this.viewOut())
+            //window.addEventListener('load', this.viewOut())
+            //window.addEventListener('unload', this.viewOut())
         },
-/*        beforeDestroy() {
-            //
-        },*/
+        beforeDestroy() {
+            window.removeEventListener('beforeunload', this.viewOut())
+        },
         methods: {
-            viewIn() {
-                console.log('entrou ???')
-                alert("entrou !!!")
-                //this.outtkake()
-            },
             viewOut() {
                 console.log('saiu ???')
-                alert("saiu !!!")
-                //this.outtkake()
+                this.outtkake()
             },
            async outtkake() {
                 if (!this.consultation.end_at){
