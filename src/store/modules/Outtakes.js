@@ -192,7 +192,7 @@ const actions = {
         commit('setOuttakesCategories', categories);
     },
     async addOuttakeSubcategory({ commit, getters }, payload) {
-     
+
         let categories = getters.outtakesCategories;
         let categoriesName = categories.map(e => e.name);
         const index = categoriesName.indexOf(payload.category);
@@ -289,7 +289,7 @@ const actions = {
         let categories = getters.outtakesCategories;
         let index = categories.map(c => c.name).indexOf(payload.category);
         categories[index].subCategories = categories[index].subCategories.filter((sub) => sub != payload.subCategory)
-      
+
         await firebase.firestore().collection('operational/').doc('outtakes').update({
             categories: categories
         })

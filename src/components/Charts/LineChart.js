@@ -7,10 +7,12 @@ export default {
   props: ['chartData', 'options'],
 
   mounted() {
+    
     this.renderChart(this.chartData, {
       
       responsive: true,
-      maintainAspectRatio: false, ...this.options
+      maintainAspectRatio: false,
+      ...this.options
     })
   }
 }

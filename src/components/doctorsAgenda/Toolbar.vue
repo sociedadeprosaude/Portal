@@ -1,47 +1,66 @@
 <template>
-    <v-container class="ma-0 pa-0">
-        <v-navigation-drawer v-if="doctorsAgendaToobar" class="hidden-print-only" dark absolute temporary v-model="drawer">
-            <v-list>
-                <v-list-item
-                        v-for="item in menuItems"
-                        :key="item.title"
-                        @click.native="goRoute(item.link)">
-                    <v-list-item-action>
-                        <v-icon>{{ item.icon }}</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>{{ item.title }}</v-list-item-content>
-                </v-list-item>
-            </v-list>
-        </v-navigation-drawer>
-        <v-navigation-drawer v-if="billsToobar" class="hidden-print-only" dark absolute temporary v-model="drawer">
-            <v-list>
-                <v-list-item
-                        v-for="item in menuItemsBills"
-                        :key="item.title"
-                        @click.native="goRoute(item.link)">
-                    <v-list-item-action>
-                        <v-icon>{{ item.icon }}</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>{{ item.title }}</v-list-item-content>
-                </v-list-item>
-            </v-list>
-        </v-navigation-drawer>
-        <v-app-bar color="primary_dark hidden-xs-only" fixed dark class="hidden-print-only"  v-if="selectedUnit">
-            <v-app-bar-nav-icon v-if="doctorsAgendaToobar || billsToobar" @click.stop="drawer = !drawer"/>
+  <v-container class="ma-0 pa-0">
+    <v-navigation-drawer
+      v-if="doctorsAgendaToobar"
+      class="hidden-print-only"
+      dark
+      absolute
+      temporary
+      v-model="drawer"
+    >
+      <v-list>
+        <v-list-item v-for="item in menuItems" :key="item.title" @click.native="goRoute(item.link)">
+          <v-list-item-action>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>{{ item.title }}</v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+    <v-navigation-drawer
+      v-if="billsToobar"
+      class="hidden-print-only"
+      dark
+      absolute
+      temporary
+      v-model="drawer"
+    >
+      <v-list>
+        <v-list-item
+          v-for="item in menuItemsBills"
+          :key="item.title"
+          @click.native="goRoute(item.link)"
+        >
+          <v-list-item-action>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>{{ item.title }}</v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+    <v-app-bar
+      color="primary_dark hidden-xs-only"
+      fixed
+      dark
+      class="hidden-print-only"
+      v-if="selectedUnit"
+    >
+      <v-app-bar-nav-icon v-if="doctorsAgendaToobar || billsToobar" @click.stop="drawer = !drawer" />
+      <v-app-bar-nav-icon hidden v-if="showOverviewToggle" @click.stop="overviewToggle()" />
 
-             <v-toolbar-title>
-                <router-link to="/" tag="span" style="cursor: pointer">
-                 <v-img v-if="selectedUnit" :src="selectedUnit.logo" aspect-radio="1" width="240"></v-img>
-                </router-link>
-             </v-toolbar-title>
-             <v-toolbar-items>
-                <v-layout row wrap class="justify-center align-center">
-               <v-btn rounded text @click="selectUnit()" v-if="!user.clinic">
-                    <v-icon>cached</v-icon>
-                </v-btn>
-                 </v-layout>
-             </v-toolbar-items>
-             <v-spacer />
+      <v-toolbar-title>
+        <router-link to="/" tag="span" style="cursor: pointer">
+          <v-img v-if="selectedUnit" :src="selectedUnit.logo" aspect-radio="1" width="240"></v-img>
+        </router-link>
+      </v-toolbar-title>
+      <v-toolbar-items>
+        <v-layout row wrap class="justify-center align-center">
+          <v-btn rounded text @click="selectUnit()" v-if="!user.clinic">
+            <v-icon>cached</v-icon>
+          </v-btn>
+        </v-layout>
+      </v-toolbar-items>
+      <v-spacer />
       <v-toolbar-items>
         <v-flex class="mt-n2">
           <v-card class="transparent" flat v-if="selectedPatient">
@@ -70,6 +89,7 @@
       v-if="selectedUnit"
     >
       <v-app-bar-nav-icon hidden v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer" />
+
       <v-toolbar-title class="ma-0 pa-0">
         <router-link to="/" tag="span" style="cursor: pointer">
           <v-img v-if="selectedUnit" :src="selectedUnit.logo" aspect-radio="1" width="100"></v-img>
@@ -78,7 +98,7 @@
       <v-spacer />
       <v-toolbar-items>
         <v-layout row wrap class="justify-center align-center">
-         <v-btn rounded text @click="selectUnit()">
+          <v-btn rounded text @click="selectUnit()">
             <v-icon class="black--text">cached</v-icon>
           </v-btn>
           <v-btn class="hidden-sm-and-up" text @click="patientDialog = !patientDialog">
@@ -95,7 +115,7 @@
       <v-card>
         <v-layout row wrap class="align-center justify-center">
           <v-flex xs12 sm4 v-for="unit in units" :key="unit.id" class="text-center">
-            <v-btn @click="selectUnit(unit)" height="124px"  v-if="!user.clinic">
+            <v-btn @click="selectUnit(unit)" height="124px" v-if="!user.clinic">
               <img :src="unit.logo" width="256px" />
             </v-btn>
           </v-flex>
@@ -112,7 +132,7 @@ export default {
   components: {
     SelectPatientCard
   },
-    props:['user'],
+  props: ["user"],
   data() {
     return {
       drawer: false,
@@ -121,9 +141,9 @@ export default {
       patientDialog: false,
       menuItems: [
         {
-          icon: 'date_range',
-          title:"Tabela Semanal dos Médicos",
-          link:"/agenda/TabelaSemanal"
+          icon: "date_range",
+          title: "Tabela Semanal dos Médicos",
+          link: "/agenda/TabelaSemanal"
         },
         {
           icon: "event_note",
@@ -146,32 +166,32 @@ export default {
           link: "/agenda/ConsultasCanceladas"
         },
         {
-          icon:"event_busy",
-          title:"Gerenciamento de agendas médicas",
-          link:"/agenda/GerenciarAgendas"
+          icon: "event_busy",
+          title: "Gerenciamento de agendas médicas",
+          link: "/agenda/GerenciarAgendas"
         },
         { icon: "translate", title: "Pesquisa de CIDs", link: "/agenda/Cids" }
       ],
-        menuItemsBills: [
-            {
-                title: 'Financeiro',
-                link: '/pagamento/financeiro',
-                permission: 'Caixa',
-                icon: 'attach_money',
-            },
-            {
-                title: 'Pagar Convênios',
-                link: '/pagamento/convenio',
-                permission: 'Caixa',
-                icon: 'receipt',
-            },
-            {
-                icon:"mdi-clipboard-account",
-                title:"Pagar Médicos",
-                link:"/pagamento/medicos",
-                permission: 'Caixa',
-            },
-        ]
+      menuItemsBills: [
+        {
+          title: "Financeiro",
+          link: "/pagamento/financeiro",
+          permission: "Caixa",
+          icon: "attach_money"
+        },
+        {
+          title: "Pagar Convênios",
+          link: "/pagamento/convenio",
+          permission: "Caixa",
+          icon: "receipt"
+        },
+        {
+          icon: "mdi-clipboard-account",
+          title: "Pagar Médicos",
+          link: "/pagamento/medicos",
+          permission: "Caixa"
+        }
+      ]
     };
   },
   computed: {
@@ -190,8 +210,11 @@ export default {
     doctorsAgendaToobar() {
       return this.$store.getters.showDoctorsAgendaToolbar;
     },
-    billsToobar(){
-        return this.$store.getters.showBillsToolbar;
+    showOverviewToggle() {
+      return this.$store.getters.showOverviewToggle;
+    },
+    billsToobar() {
+      return this.$store.getters.showBillsToolbar;
     }
   },
   methods: {
@@ -204,6 +227,9 @@ export default {
         return;
       }
       this.$store.commit("setSelectedUnit", unit);
+    },
+    overviewToggle() {
+      this.$store.commit("overviewToggle", true);
     }
   }
 };

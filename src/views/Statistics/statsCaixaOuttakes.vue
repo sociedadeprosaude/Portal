@@ -21,33 +21,38 @@
       <v-col cols="12" sm="6" md="3">
         <MiniStatistic
           icon="mdi-currency-usd"
-          :title="`R$ ${total}`"
-          sub-title="faturamento"
+          :title="`R$ ${totalLeftToPay}`"
+          sub-title="Restando pagar"
           color="orange"
         />
       </v-col>
       <v-col cols="12" sm="6" md="3">
         <MiniStatistic
           icon="mdi-currency-usd-off"
-          :title="`R$ ${cost}`"
-          sub-title="Custos"
+          :title="`R$ ${totalToPay}`"
+          sub-title="Contas total"
           color="red"
         />
       </v-col>
       <v-col cols="12" sm="6" md="3">
         <MiniStatistic
-          icon="mdi-plus"
-          :title="`R$ ${profit}`"
-          sub-title="Lucro Líquido"
-          color="green"
+          icon="mdi-update"
+          :title="`R$ ${totalRecurrent}`"
+          sub-title="Custos recorrentes"
+          color="blue-grey darken-2"
         />
       </v-col>
       <v-col cols="12" sm="6" md="3">
-        <MiniStatistic icon="mdi-counter" :title="numOfSales" sub-title="Nº Vendas" color="blue" />
+        <MiniStatistic
+          icon="mdi-counter"
+          :title="numOfOuttakesToPay"
+          sub-title="Nº de contas pendentes"
+          color="blue"
+        />
       </v-col>
     </v-row>
     <v-row class="mt-2">
-      <h1>Faturamento (R$)</h1>
+      <h1>Gastos (R$)</h1>
     </v-row>
     <v-row>
       <v-col>
@@ -55,7 +60,7 @@
           <v-row>
             <v-col>
               <line-chart
-                :chart-data="this.$vuetify.breakpoint.xs?faturamentoDatasetWeekly:faturamentoDatasetMonthly"
+                :chart-data="this.$vuetify.breakpoint.xs?spentDataset:spentDatasetMonthly"
                 :options="options"
               ></line-chart>
               <div v-if="this.$vuetify.breakpoint.xs">
@@ -70,17 +75,17 @@
     </v-row>
     <v-row>
       <v-col cols="12" md="6">
-        <h1>Mais lucrativos</h1>
+        <h1>Maiores gastos</h1>
 
         <v-card>
           <v-card-text>
-            <div v-for="(item,i) in profitDataset" :key="i">
+            <div v-for="(item,i) in higherCostDataset" :key="i">
               <v-row>
                 <v-col class="text-left">
                   <span class="title">{{i+1}}. {{item.name}}</span>
                 </v-col>
                 <v-col>
-                  <span class="ml-auto font-weight-bold">R$ {{item.profit}}</span>
+                  <span class="ml-auto font-weight-bold">R$ {{item.totalToPay}}</span>
                 </v-col>
               </v-row>
               <v-divider />
@@ -89,33 +94,41 @@
         </v-card>
       </v-col>
       <v-col cols="12" md="6">
-        <h1>Mais vendidos</h1>
+        <h1>Maiores gastos (Nº)</h1>
 
         <v-card elevation="0">
           <pie-chart
-            :chart-data="bestSellersDataset"
+            :chart-data="mostSpentDataset"
             :options="{
             legend: {
-     display:bestSellersDataset.labels.length > 15 ? false:true
+     display:mostSpentDataset.labels.length > 15 ? false:true
 }}"
           ></pie-chart>
         </v-card>
       </v-col>
     </v-row>
     <v-row class="mt-2">
-      <h1>Número de vendas</h1>
+      <h1>Número de gastos</h1>
     </v-row>
     <v-row>
       <v-col>
         <v-card elevation="0">
-          <v-row v-if="numOfSalesMontlyDataset">
+          <v-row v-if="mostSpentDatasetMontly">
             <v-col>
               <bar-chart
-                :chart-data="numOfSalesMontlyDataset"
+                :chart-data="mostSpentDatasetMontly"
                 :options="{
                 legend: {
           display: false
-        },}"
+        },
+        scales: {
+            xAxes: [{
+                stacked: true
+            }],
+          
+        }
+     
+              }"
               ></bar-chart>
             </v-col>
           </v-row>
@@ -130,7 +143,7 @@
 import LineChart from "@/components/Charts/LineChart";
 import BarChart from "@/components/Charts/BarChart";
 import PieChart from "@/components/Charts/PieChart";
-import moment from "moment";
+
 import MiniStatistic from "@/components/MiniStatistic";
 export default {
   components: {
@@ -162,7 +175,7 @@ export default {
   }),
 
   mounted() {
-    this.$store.dispatch("getStatisticsByMonth");
+    this.$store.dispatch("getStatisticsOuttakesByMonth");
   },
   methods: {
     monthName(month) {
@@ -182,30 +195,34 @@ export default {
       }
     },
     year(val) {
-      if (val) {
-        this.months = Object.keys(this.statistics[val]);
-        this.month = this.months[0];
+      try {
+        if (val) {
+          this.months = Object.keys(this.statistics[val]);
+          this.month = this.months[0];
+        }
+      } catch (e) {
+        console.log(e);
       }
     }
   },
   computed: {
     statistics() {
-      return this.$store.getters.getStatistics;
+      return this.$store.getters.getStatisticsOuttakes;
     },
     info() {
       return this.statistics[this.year][this.month];
     },
-    total() {
-      return String(this.round2(this.info.totalRaw));
+    totalLeftToPay() {
+      return String(this.round2(this.info.totalLeftToPay));
     },
-    cost() {
-      return String(this.round2(this.info.totalCost));
+    totalToPay() {
+      return String(this.round2(this.info.totalToPay));
     },
-    profit() {
-      return String(this.round2(this.info.totalProfit));
+    totalRecurrent() {
+      return String(this.round2(this.info.totalRecurrent));
     },
-    numOfSales() {
-      return String(this.info.numOfSales);
+    numOfOuttakesToPay() {
+      return String(this.info.numOfOuttakesToPay);
     },
     maisVendidos() {
       return this.info.itens;
@@ -213,7 +230,7 @@ export default {
     labels() {
       return Object.keys(this.info.itens).map(key => key);
     },
-    faturamentoDatasetMonthly() {
+    spentDatasetMonthly() {
       return {
         labels: Array.from(
           Array(moment(`${this.year}-${this.month}`).daysInMonth()).keys()
@@ -223,19 +240,19 @@ export default {
             lineTension: 0,
             fill: false,
             borderColor: "rgb(75, 192, 192)",
-            data: this.info.arrTotalRaw
+            data: this.info.arrTotalToPay
           }
         ]
       };
     },
-    faturamentoDatasetWeekly() {
+    spentDataset() {
       const days = Array.from(
         Array(moment(`${this.year}-${this.month}`).daysInMonth()).keys()
       )
         .map(num => ++num)
         .slice(8 * this.week, 8 * (1 + this.week));
 
-      const arrData = days.map(num => this.info.arrTotalRaw[num - 1]);
+      const arrData = days.map(num => this.info.arrTotalToPay[num - 1]);
 
       return {
         labels: days,
@@ -249,36 +266,40 @@ export default {
         ]
       };
     },
-    profitDataset() {
+    higherCostDataset() {
       return Object.keys(this.info.itens)
         .map(key => ({
           name: key,
-          profit: this.round2(this.info.itens[key].totalProfit)
+          totalToPay: this.round2(this.info.itens[key].totalToPay)
         }))
-        .sort((a, b) => b.profit - a.profit)
+        .sort((a, b) => b.totalToPay - a.totalToPay)
         .slice(0, 10);
     },
-    bestSellersDataset() {
+    mostSpentDataset() {
       return {
         labels: Object.keys(this.info.itens),
         datasets: [
           {
             data: Object.keys(this.info.itens).map(
-              key => this.info.itens[key].numOfSales
+              key => this.info.itens[key].numOfOuttakes
             )
           }
         ]
       };
     },
-    numOfSalesMontlyDataset() {
-      const arrNum = Array.from(Array(12).keys()).map(() => 0);
+    mostSpentDatasetMontly() {
+      const arrTotalToPayMonthly = Array.from(Array(12).keys()).map(() => 0);
+      const arrTotalLeftToPayMonthly = Array.from(Array(12).keys()).map(() => 0);
 
-      var arrMonths = Object.keys(this.statistics[this.year]).forEach(
-        month =>
-          (arrNum[Number(month) - 1] = this.statistics[this.year][
-            month
-          ].numOfSales)
-      );
+      var arrMonths = Object.keys(this.statistics[this.year]).forEach(month => {
+        arrTotalToPayMonthly[Number(month) - 1] = this.statistics[this.year][
+          month
+        ].totalToPay;
+
+        arrTotalLeftToPayMonthly[Number(month) - 1] = this.statistics[this.year][
+          month
+        ].totalLeftToPay;
+      });
 
       return {
         labels: this.monsthsName,
@@ -286,8 +307,14 @@ export default {
           {
             lineTension: 0,
             fill: false,
-            borderColor: "rgb(75, 192, 192)",
-            data: arrNum
+            backgroundColor: "rgba(75, 192, 192,0.4)",
+            data: arrTotalToPayMonthly
+          },
+          {
+            lineTension: 0,
+            fill: false,
+            backgroundColor: "rgba(255, 99, 132,1)",
+            data: arrTotalLeftToPayMonthly
           }
         ]
       };
