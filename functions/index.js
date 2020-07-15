@@ -9,7 +9,7 @@ const json2csv = require('json2csv');
 //admin.initializeApp();
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://prosaudedev.firebaseio.com"
+    databaseURL: "https://prosaude-36f66.firebaseio.com"
 });
 const defaultRoute = '/analise-exames'
 
@@ -246,7 +246,7 @@ exports.listeners = require('./Listeners/listeners')
 exports.requests = {
     ...require('./Requests/requests'),
     ...require('./Requests/statistics.js'),
-    ...require('./Requests/pagSeguro.js'),
+    // ...require('./Requests/pagSeguro.js'),
 }
 
 

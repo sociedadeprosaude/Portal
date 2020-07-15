@@ -83,7 +83,8 @@ const actions = {
             let clinics = [];
             clinicsSnap.forEach(function (document) {
                 clinics.push({
-                    ...document.data()
+                    ...document.data(),
+                    id: document.id
                 });
             });
             functions.removeUndefineds(clinics)
@@ -507,6 +508,7 @@ const actions = {
     },
 
     async getClinicExams(context, clinic) {
+        console.log('heya', clinic)
         let examSnap = await firebase.firestore().collection('clinics').doc(clinic.id).collection('exams').get()
         let exams = [];
         examSnap.forEach((doc) => {
