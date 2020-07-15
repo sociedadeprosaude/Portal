@@ -1,6 +1,5 @@
 <template>
-    <v-container>
-        <v-content v-if="animation === true" :class="['background', 'fade-in-anim']">
+    <v-container fluid   v-if="animation === true" class="primary fill-height align-center justify-center mt-n2">
             <v-layout ref="loader" class="primary fill-height align-center justify-center">
                 <img
                         ref="logo"
@@ -10,8 +9,9 @@
                         height="150px"
                 >
             </v-layout>
-        </v-content>
-        <v-layout v-else-if="animation === false"  class="align-center justify-center" row wrap>
+    </v-container>
+    <v-container v-else-if="animation === false">
+        <v-layout  class="align-center justify-center" row wrap>
             <v-card>
                 <header-canceled-consultations></header-canceled-consultations>
                 <expansion-panel-canceled-consultations @indexSelected="indexSelected= $event" @dialog="dialog= $event" :consultations="consultations" ></expansion-panel-canceled-consultations>
