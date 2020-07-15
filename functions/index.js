@@ -246,7 +246,7 @@ exports.listeners = require('./Listeners/listeners')
 exports.requests = {
     ...require('./Requests/requests'),
     ...require('./Requests/statistics.js'),
-    ...require('./Requests/pagSeguro.js'),
+    // ...require('./Requests/pagSeguro.js'),
 }
 
 
