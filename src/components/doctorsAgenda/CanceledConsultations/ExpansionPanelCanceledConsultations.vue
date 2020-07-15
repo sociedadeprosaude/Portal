@@ -123,7 +123,8 @@
                     return this.indexSelected;
                 },
                 set: function (index) {
-                    this.statusSelected = index.status;
+                   this.statusSelected = index.status;
+                    this.$emit('user', index.pacienteObj )
                     this.$emit('dialog', true)
                     this.$emit('indexSelected', {...index})
                 }

@@ -268,7 +268,6 @@
             statusOptions: [{text: "Aguardando pagamento"}, {text: "Pago"}],
             exam:undefined,
             findPaymentToExam:true,
-            //exams: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
         }),
         computed: {
             selectedPatient() {
@@ -277,11 +276,6 @@
             foundDependents() {
                 return this.selectedPatient ? this.selectedPatient.dependents : undefined;
             },
-            /* listExam() {
-                return this.$store.getters.exams.filter(a => {
-                    return a.type === this.createConsultationForm.consultation.specialty.name;
-                });
-            }, */
             computedDateFormatted() {
                 return this.formatDate(
                     this.createConsultationForm.consultation.date.split(" ")[0]
