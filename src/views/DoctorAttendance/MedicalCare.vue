@@ -225,7 +225,7 @@
             menu1: false,
             loadingConsultations: false,
             specialty: '',
-            tab:'',
+            tab:'consultations',
             examType:'',
             examTypeCheck:false,
             patientSelected: {},
