@@ -18,7 +18,7 @@
                         <v-card-actions>
                             <v-btn outlined color="error" @click="dialog = false">NÃO</v-btn>
                             <v-spacer/>
-                            <v-btn outlined color="success" @click="saveAttendance">SIM</v-btn>
+                            <v-btn outlined color="success" @click="backView">SIM</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -79,24 +79,24 @@
             if (!this.query) {
                 this.$router.push('MedicalCare')
             }
-            window.addEventListener('beforeunload', this.viewOut())
+            console.log('tem ?', this.query.end_at)
+            //window.addEventListener('beforeunload', this.viewOut())
             //window.addEventListener('load', this.viewOut())
             //window.addEventListener('unload', this.viewOut())
+            //window.removeEventListener('unload', this.viewOut())
         },
         beforeDestroy() {
-            window.removeEventListener('beforeunload', this.viewOut())
+            console.log('saiu ? sim!')
+            if (!this.consultation.end_at) {
+                console.log('gerar!')
+                this.outtkake()
+                this.saveAttendance()
+            } else {
+                console.log('já tem')
+            }
         },
         methods: {
-            viewOut() {
-                console.log('saiu ???')
-                this.outtkake()
-            },
            async outtkake() {
-                if (!this.consultation.end_at){
-                    //colocar função aqui dps de pronta
-                } else {
-                    console.log('já tem outtakke para essa consultation')
-                }
                let specialty = await this.$store.dispatch('getDoctorSpecialty', this.consultation)
                let outtake = {
                    intake_id: this.consultation.payment_number,
@@ -108,10 +108,10 @@
                    crm: this.consultation.doctor.crm
                }
                console.log('outtake: ', outtake)
-               //await this.$store.dispatch('addSpecialtyOuttakes', outtake)
-               //this.saveAttendance();
+               await this.$store.dispatch('addSpecialtyOuttakes', outtake)
             },
             saveAttendance() {
+                console.log('salvando tempos ?')
                 this.endConsultation = moment().format('HH:mm:ss');
                 this.timeConsultation = moment(this.endConsultation, 'HH:mm:ss').diff(moment(this.startConsultation, 'HH:mm:ss'), 'minutes');
                 this.$store.dispatch('addTimesToConsultation', {
@@ -121,8 +121,9 @@
                     consultation: this.consultation.id,
                     patient: this.consultation.user.id
                 });
+            },
+            backView(){
                 this.dialog = false;
-                this.outtkake();
                 this.$router.push("MedicalCare");
             }
         }
