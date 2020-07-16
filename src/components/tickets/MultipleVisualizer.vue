@@ -69,7 +69,7 @@
           >{{removeNumbers(lastTicketCalled.roomName)}}</v-row>
 
           <v-row justify="center">
-            <v-col sm="6" md="4" lg="3" xl="2" class="ma-0 pa-0">
+            <v-col class="ma-0 pa-0">
               <p
                 v-if="lastTicketCalled"
                 style="font-size: 6em;"
@@ -84,7 +84,7 @@
           <v-row justify="center" class="display-1">Senha atual</v-row>
 
           <v-row justify="center">
-            <v-col sm="6" md="4" lg="3" xl="2" class="ma-0 pa-0">
+            <v-col class="ma-0 pa-0">
               <p v-if="lastTicketCalled" style="font-size: 7em;">{{lastTicketCalled.number}}</p>
               <p v-else style="font-size: 5em;">*</p>
             </v-col>

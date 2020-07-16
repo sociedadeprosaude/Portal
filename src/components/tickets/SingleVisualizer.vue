@@ -36,7 +36,7 @@
           <v-row justify="center" class="display-2">{{removeNumbers( selectedRoom.name)}}</v-row>
 
           <v-row justify="center">
-            <v-col sm="6" md="4" lg="3" xl="2" class="ma-0 pa-0">
+            <v-col class="ma-0 pa-0">
               <p style="font-size: 6em;">{{onlyNumbers(selectedRoom.name)}}</p>
             </v-col>
           </v-row>
@@ -48,7 +48,7 @@
           <v-row justify="center" class="display-1">Senha</v-row>
 
           <v-row justify="center">
-            <v-col sm="6" md="4" lg="3" xl="2" class="ma-0 pa-0">
+            <v-col  class="ma-0 pa-0">
               <p v-if="currentTicket" style="font-size: 7em;">{{currentTicket.number}}</p>
               <p v-else style="font-size: 5em;">*</p>
             </v-col>

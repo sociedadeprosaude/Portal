@@ -217,9 +217,12 @@ export default {
       this.loading = false;
     },
     async callSectorTicket(room) {
-      let ticketIndex = this.sector.tickets.findIndex(ticket => {
-        return !ticket.called_at;
-      });
+     
+      let ticketIndex = this.sector.tickets
+        ? this.sector.tickets.findIndex(ticket => {
+            return !ticket.called_at;
+          })
+        : -1;
       if (ticketIndex < 0) {
         //criando e chamando uma nova senha na sala se nao tiver nenhuma pra ser chamada
         await this.generateSectorTicket();

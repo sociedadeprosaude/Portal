@@ -279,6 +279,7 @@ export default {
     doctorsLoaded: Boolean,
     sectorName: String,
     sector: Object,
+    favoriteRoom:Function,
     initialInfo: Function,
     saveAndReset: Function,
     getActualTicket: Function,
