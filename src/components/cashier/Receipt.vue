@@ -81,11 +81,15 @@
                                             </v-flex>
                                         </v-layout>
                                     </v-flex>
-                                    <v-row class=" align-end text-right mt-4 mr-4" xs12>
-                                            <v-col class="align-end text-right mt-4 mr-4" :key="index"
-                                                    v-for="(item, index) in budget.payments">
-                                                <span v-if="budget.payments[index] === 'Crédito'" class="font-weight-bold">{{budget.payments[index]}}: {{budget.parcel[index]}} x {{budget.valuesPayments[index].toLocaleString('en-us', {minimumFractionDigits: 2, maximumFractionDigits: 2})}} </span>
-                                                <span v-else class="font-weight-bold">{{budget.payments[index]}}: {{budget.valuesPayments[index].toLocaleString('en-us', {minimumFractionDigits: 2, maximumFractionDigits: 2})}} </span>
+                                    <v-row class=" mt-4 mr-4">
+                                            <v-col cols="12">
+                                                <v-row justify="end" class="mt-4 mr-4" :key="index"
+                                                       v-for="(item, index) in budget.payments">
+                                                    <span class="primary--text font-weight-bold pr-6"
+                                                          style="font-size: 1.2em">{{budget.payments[index]}} :</span>
+                                                    <span v-if="budget.payments[index] === 'Crédito'" class="font-weight-bold"> {{budget.parcel[index]}} x {{(parseFloat(budget.valuesPayments[index]) / parseFloat(budget.parcel[index])).toLocaleString('en-us', {minimumFractionDigits: 2, maximumFractionDigits: 2})}} </span>
+                                                    <span v-else class="font-weight-bold"> {{budget.valuesPayments[index].toLocaleString('en-us', {minimumFractionDigits: 2, maximumFractionDigits: 2})}} </span>
+                                                </v-row>
                                             </v-col>
                                     </v-row>
                                     <v-flex class="text-right mt-4 mr-4" xs12>
