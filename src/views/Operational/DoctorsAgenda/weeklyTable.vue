@@ -3,26 +3,8 @@
             <v-layout row wrap class="align-center justify-center">
                 <v-flex xs12>
                     <v-card>
-                        <v-card-title>
-                            Tabela Semanal dos Médicos - Especialidades - Unidades:
-                            <v-divider vertical class="mx-4" inset>
-                            </v-divider>
-                            <v-chip label dark color="primary">
-                                Médico - Especialidade - Unidade
-                            </v-chip>
-                            <v-spacer/>
-                            <v-layout class="mt-5" row wrap>
-                                <v-flex class="mr-5" xs12 sm5 md4>
-                                    <ComboboxSpecialty  :items="specialties" v-on:model="specialty=$event"></ComboboxSpecialty>
-                                </v-flex>
-                                <v-flex xs12 sm5 md4>
-                                    <ComboboxDoctor  :items="doctors" v-on:model="doctor=$event"></ComboboxDoctor>
-                                </v-flex>
-                            </v-layout>
-                        </v-card-title>
-
+                        <HeaderTable :specialties="specialties" :doctors="doctors"></HeaderTable>
                         <WeekTable :headers="headers" :items="doctorsMapping"></WeekTable>
-                        
                     </v-card>
                 </v-flex>
             </v-layout>
@@ -31,14 +13,11 @@
 
 <script>
     let moment = require('moment');
-    
-    import ComboboxSpecialty from '../../../components/Common/ComboboxSpecialty'
-    import ComboboxDoctor from '../../../components/Common/ComboboxDoctor'
     import WeekTable from '../../../components/WeeklyTable/WeekTable'
+    import HeaderTable from '../../../components/WeeklyTable/HeaderTable'
     export default {
         components:{
-            ComboboxSpecialty,
-            ComboboxDoctor,
+            HeaderTable,
             WeekTable
         },
         data: () => ({
