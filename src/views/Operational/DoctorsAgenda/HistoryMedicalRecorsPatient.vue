@@ -13,14 +13,7 @@
                             </v-expansion-panel-header>
                             <v-expansion-panel-content>
                                 <br/>
-                                <editor v-model="item.medicalRecord"
-                                        disabled
-                                        api-key="no-api-key"
-                                        :init="{
-                             menubar: false,
-                             plugins: [],
-                             toolbar:''
-                           }"/>
+                                <div v-html="item.medicalRecord" />
                             </v-expansion-panel-content>
                         </v-expansion-panel>
                     </v-expansion-panels>
@@ -38,11 +31,8 @@
 </template>
 
 <script>
-    import Editor from '@tinymce/tinymce-vue';
     export default {
-        components: {'editor': Editor },
         data: () => ({
-            //
         }),
         mounted() {
             this.initialConfig()

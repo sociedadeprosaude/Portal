@@ -239,8 +239,8 @@ exports.updateStatisticsItem = functions.firestore.document('intakes/{id}/{type}
         var stats = await admin.firestore().collection('statistics').doc('caixa').collection('days').doc(date).get();
         var statsMonth = await admin.firestore().collection('statistics').doc('caixa').collection('month').doc(dateMonth).get();
 
-        var itens = stats.exists ? stats.data().itens : {};
-        var itensMonth = statsMonth.exists ? statsMonth.data().itens : {};
+        var itens = stats.exists && stats.data().itens ? stats.data().itens : {};
+        var itensMonth = statsMonth.exists && statsMonth.data().itens ? statsMonth.data().itens : {};
 
         var itemStat = !itens[item.name] ? emptyItem() : itens[item.name];
         var itemStatMonth = !itensMonth[item.name] ? emptyItem() : itensMonth[item.name];
@@ -297,6 +297,142 @@ exports.updateStatisticsItem = functions.firestore.document('intakes/{id}/{type}
 //     res.status(200).send("sdasd")
 // });
 
+
+// ==================================== Resumo mensal outtakes =======================================================
+
+var emptyOuttake = () => ({
+    totalToPay: 0,
+    totalLeftToPay: 0,
+    numOfOuttakesToPay: 0,
+    numOfOuttakes: 0,
+})
+
+exports.onCreateStatisticsOuttakes = functions.firestore.document('outtakes/{id}')
+    .onCreate(async (snap, context) => {
+        const outtakeNew = snap.data();
+        console.log("criado")
+        if (outtakeNew.category) {
+            var outtake = {
+                cost: Number(outtakeNew.value),
+                name: outtakeNew.category,
+                date: outtakeNew.created_at,
+                paid: outtakeNew.paid,
+                recurrent: outtakeNew.recurrent === "true"
+            };
+            const date = outtake.date.slice(0, 10);
+            const dateMonth = outtake.date.slice(0, 7);
+            const day = outtake.date.slice(8, 10);
+
+            var statsMonth = await admin.firestore().collection('statistics').doc('outtakes').collection('month').doc(dateMonth).get();
+
+            var arrTotalToPay = statsMonth.exists && statsMonth.data().arrTotalToPay ?
+                statsMonth.data().arrTotalToPay :
+                Array.from(Array(moment(date).daysInMonth()).keys()).map(() => 0)
+            arrTotalToPay[Number(day) - 1] += outtake.cost;
+
+            var itensMonth = statsMonth.exists && statsMonth.data().itens ? statsMonth.data().itens : {};
+            var itemStatMonth = itensMonth[outtake.name] ? itensMonth[outtake.name] : emptyOuttake();
+
+            itemStatMonth.totalToPay += outtake.cost;
+            itemStatMonth.totalLeftToPay += !outtake.paid ? outtake.cost : 0;
+            itemStatMonth.numOfOuttakesToPay += !outtake.paid ? 1 : 0;
+            itemStatMonth.numOfOuttakes += 1;
+
+            statsMonth.ref.set({
+                date: dateMonth,
+                totalRecurrent: admin.firestore.FieldValue.increment(outtake.recurrent ? outtake.cost : 0),
+                totalToPay: admin.firestore.FieldValue.increment(outtake.cost),
+                totalLeftToPay: admin.firestore.FieldValue.increment(!outtake.paid ? outtake.cost : 0),
+                numOfOuttakesToPay: admin.firestore.FieldValue.increment(!outtake.paid ? 1 : 0),
+                numOfOuttakes: admin.firestore.FieldValue.increment(1),
+                itens: { [`${outtake.name}`]: itemStatMonth },
+                arrTotalToPay: arrTotalToPay
+            }, { merge: true });
+        } else {
+            //TODO: quando outtake e de exame ou especialidade
+        }
+
+
+    });
+
+exports.onUpdateStatisticsOuttakes = functions.firestore.document('outtakes/{id}').onUpdate(async (change, context) => {
+    const outtakeUpdated = change.after.data();
+    console.log(outtakeUpdated)
+    console.log("updatado")
+    if (outtakeUpdated.category) {
+        var outtake = {
+            cost: Number(outtakeUpdated.value),
+            name: outtakeUpdated.category,
+            date: outtakeUpdated.created_at,
+            paid: outtakeUpdated.paid,
+            recurrent: outtakeUpdated.recurrent === "true"
+        };
+        if (outtake.paid) {
+            const date = outtake.date.slice(0, 10);
+            const dateMonth = outtake.date.slice(0, 7);
+            const day = outtake.date.slice(8, 10);
+
+            var statsMonth = await admin.firestore().collection('statistics').doc('outtakes').collection('month').doc(dateMonth).get();
+
+            var itensMonth = statsMonth.exists && statsMonth.data().itens ? statsMonth.data().itens : {};
+            var itemStatMonth = itensMonth[outtake.name] ? itensMonth[outtake.name] : emptyOuttake();
+
+            itemStatMonth.totalLeftToPay -= outtake.cost;
+            itemStatMonth.numOfOuttakesToPay -= 1;
+
+            statsMonth.ref.set({
+                date: dateMonth,
+                totalLeftToPay: admin.firestore.FieldValue.increment(-outtake.cost),
+                numOfOuttakesToPay: admin.firestore.FieldValue.increment(-1),
+                numOfOuttakes: admin.firestore.FieldValue.increment(1),
+                itens: { [`${outtake.name}`]: itemStatMonth }
+            }, { merge: true });
+        }
+
+    } else {
+        //TODO: quando outtake e de exame ou especialidade
+    }
+});
+
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+async function mockOut(name) {
+    await sleep(50);
+    var id = moment();
+    admin.firestore().collection('outtakes').doc(String(id.valueOf())).set({
+        category: name,
+        created_at: "2020-07-06 23:59:43",
+        date_to_pay: "2020-07-06",
+        description: "tst",
+        id: "JoDcMg6z8dfqV5ikRBgp",
+        payment_method: "Dinheiro",
+        recurrent: "true",
+        subCategory: "Outro",
+        value: 5,
+        //    / paid: "2020-05-18 18:36:15"
+    })
+
+}
+
+exports.tstCreateOuttake = functions.https.onRequest(async (req, res) => {
+    await mockOut("CARDIOLOGIA");
+    await mockOut("CARDIOLOGIA");
+    await mockOut("CARDIOLOGIA TELEATENDIMENTO");
+    // await mockOut("DERMATOLOGIA TELEATENDIMENTO");
+    // await mockOut("NEUROLOGIA");
+    // await mockOut("TESTANDO NOVA ESPECIALIDADE");
+    // await mockOut("TESTE 2");
+    res.status(200).send("sdasd")
+});
+
+exports.tstUpdateOuttake = functions.https.onRequest(async (req, res) => {
+    admin.firestore().collection('outtakes').doc('1594096544354').update({
+        paid: "2020-05-18 18:36:15"
+    })
+    res.status(200).send("aaa")
+});
 // ==================================== funcs usadas por varios =======================================================
 async function convertSpecialtySubcollectionInObject(specialtyDoc) {
     let specialty = specialtyDoc.data();

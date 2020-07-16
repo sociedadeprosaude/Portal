@@ -137,15 +137,8 @@
                                         style="border: 2px solid #2196f3; border-radius: 16px"
                                 >
                                     <v-flex xs12>
-                                        <editor v-model="medicalRecord"
-                                                disabled
-                                                api-key="no-api-key"
-                                                :init="{
-                                            height: 500,
-                                            menubar: false,
-                                            plugins: [],
-                                            toolbar:''
-                                        }"/>
+                                        <br/>
+                                        <div style="height: 500px" v-html="medicalRecord" />
                                     </v-flex>
                                 </v-layout>
                             </v-card>
@@ -160,10 +153,8 @@
 <script>
     var moment = require("moment/moment");
     import {mask} from 'vue-the-mask';
-    import Editor from '@tinymce/tinymce-vue';
     export default {
         props: ['consultation', 'medicalRecord'],
-        components: {'editor': Editor },
         computed: {
             user() {
                 return this.$store.getters.selectedPatient

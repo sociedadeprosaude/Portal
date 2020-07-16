@@ -99,7 +99,12 @@
         <v-tabs grow
                 dark
                 background-color="primary"
+                v-model="tab"
         >
+            <v-btn color="white" v-if="patientSelected.name" @click="restoreSelectedPatient">
+                <v-icon color="primary">undo</v-icon>
+            </v-btn>
+
             <v-tab href="#consultations" v-if="!patientSelected.name" >Consultas</v-tab>
             <v-tab href="#attendance">Atendimentos</v-tab>
 
@@ -187,8 +192,11 @@
                             <v-layout aling-center row wrap>
                                 <v-flex xs12>
                                     <CardManagementConsultationsOfUserDoctor @consultationSelect="consultatioSelect= $event"
-                                                                             @patientSelect="patientSelected = $event" :filterByExam="examTypeCheck" :examType="examType"
-                                                                             :specialty="specialty" :date="date"/>
+                                                                             @patientSelect="patientSelected = $event"
+                                                                             :filterByExam="examTypeCheck"
+                                                                             :examType="examType"
+                                                                             :specialty="specialty"
+                                                                             :date="date"/>
                                 </v-flex>
                             </v-layout>
                         </v-card>
@@ -197,7 +205,8 @@
             </v-tab-item>
             <v-tab-item value="attendance">
                 <v-flex xs12>
-                    <CardManagementConsultationsInformation :patient="patientSelected" :consultation="consultatioSelect"/>
+                    <CardManagementConsultationsInformation :patient="patientSelected"
+                                                            :consultation="consultatioSelect"/>
                 </v-flex>
             </v-tab-item>
         </v-tabs>
@@ -216,6 +225,7 @@
             menu1: false,
             loadingConsultations: false,
             specialty: '',
+            tab:'consultations',
             examType:'',
             examTypeCheck:false,
             patientSelected: {},
@@ -262,6 +272,11 @@
                 this.specialty = this.specialties[0];
                 this.getConsultationsDorctors()
 
+            },
+            restoreSelectedPatient(){
+                this.patientSelected = {}
+                this.consultatioSelect = {}
+                this.tab = 'consultations'
             },
             formatDate(date) {
                 if (!date) return null;

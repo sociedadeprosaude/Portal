@@ -275,7 +275,7 @@ exports.thereIsPaymentNumber = functions.runWith(heavyFunctionsRuntimeOpts).http
     else if (payload.exam) {
         procedureRef = admin.firestore().collection('users').doc(payload.user.cpf).collection('procedures').where('type', '==', type)
             .where('exam.type', '==', payload.exam.type).where('status', '==', [status])
-        if(payload.exam.name)
+        if (payload.exam.name)
             procedureRef = procedureRef.where('exam.name', '==', payload.exam.name)
     }
     else {
@@ -675,14 +675,14 @@ exports.updateSchedule = functions.firestore
             let weekDays = []
             keysOld.forEach((day) => {
                 if (keyNew.indexOf(day) === -1)
-                    week_days.push(day)
+                    weekDays.push(day)
             })
             newValue.weekDays = weekDays
             await removeConsultations(newValue)
         }
 
         if (cancelationsNew.length > cancelationsOld.length) {
-            cancelationsNew.forEach((cancelationObj) => {
+            cancelationsNew.forEach(async (cancelationObj) => {
                 if (cancelationsOld.findIndex((value) => value.start_date === cancelationObj.start_date && value.final_date === cancelationObj.final_date) === -1) {
                     newValue.start_date = cancelationObj.start_date
                     newValue.final_date = cancelationObj.final_date

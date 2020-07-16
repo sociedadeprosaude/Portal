@@ -77,28 +77,12 @@
                             <v-divider class="primary"/>
                         </v-flex>
                         <v-flex sm4 v-for="item in consultation.consultations" class="mt-3 mb-2">
-                            <v-card v-if="item.status === 'Pago' && item.end_at" outlined class="borderCard mx-2 mr-2 green accent-2 elevation-1" @click="patientSelect(item)">
-                                <v-layout row wrap class="mt-2">
-                                    <v-flex xs4>
-                                        <v-icon large>person</v-icon>
-                                        <br>
-                                        <v-icon v-if="item.type === 'Retorno'"  color="primary" small class="mt-1">restore</v-icon>
-                                        <v-icon v-else small class="mt-1"  color="primary">event</v-icon>
-                                    </v-flex>
-                                    <v-flex xs8 class="mb-3">
-                                        <v-flex xs12>
-                                            <h4 class="text-left font-weight-bold">{{item.user.name}}</h4>
-                                            <h5 class="text-left mt-1">{{item.date.substring(11,16)}}</h5>
-                                            <h5 class="text-left">Agendado em: {{item.date.substring(0,10)}}</h5>
-                                        </v-flex>
-                                    </v-flex>
-                                </v-layout>
-                            </v-card>
 
-                            <v-card v-if="item.status === 'Pago' && !item.end_at" outlined class="borderCard mx-2 mr-2 grey lighten-5 elevation-1" @click="patientSelect(item)">
+                            <v-card v-if="item.status === 'Pago'" outlined class="borderCard mx-2 mr-2 grey lighten-3 elevation-1" @click="patientSelect(item)">
                                 <v-layout row wrap class="mt-2">
                                     <v-flex xs4>
-                                        <v-icon large>person</v-icon>
+                                        <v-icon large v-if="!item.end_at">assignment_ind</v-icon>
+                                        <v-icon large color="success" v-else>assignment_turned_in</v-icon>
                                         <br>
                                         <v-icon v-if="item.type === 'Retorno'"  color="primary" small class="mt-1">restore</v-icon>
                                         <v-icon v-else small class="mt-1"  color="primary">event</v-icon>

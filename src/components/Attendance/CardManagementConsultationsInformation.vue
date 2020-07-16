@@ -10,7 +10,7 @@
                     <v-flex xs12 class="mb-0">
                         <v-divider color="white"/>
                     </v-flex>
-                    <v-flex xs12 class="mt-3 mx-7 mb-0">
+<!--                    <v-flex xs12 class="mt-3 mx-7 mb-0">
                         <v-layout row wrap>
                             <v-flex xs12 class="mb-0">
                                 <DoctorTicketRoom/>
@@ -19,7 +19,7 @@
                     </v-flex>
                     <v-flex xs12 class="mt-n3 mb-2">
                         <v-divider color="white"/>
-                    </v-flex>
+                    </v-flex>-->
                     <v-flex xs12 class="mt-3 mx-7">
                         <v-card class="cardw">
                             <v-layout row wrap>
