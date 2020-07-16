@@ -12,10 +12,10 @@
             {{index.doctor.name}} - {{index.specialty ? index.specialty.name : index.exam_type.name}} - {{index.clinic.name}}
             <br />
             <br />
-            <v-btn @click="openDialoaUpdateDay(index,2)" x-small fab>
+            <v-btn @click="openDialoaUpdateDay(index)" x-small fab>
               <v-icon>edit</v-icon>
             </v-btn>
-            <v-btn class="ml-2" x-small fab @click="openDialogDelete(index,2)">
+            <v-btn class="ml-2" x-small fab @click="openDialogDelete(index)">
               <v-icon>delete_outline</v-icon>
             </v-btn>
           </v-card>
@@ -38,17 +38,17 @@
         {{index.doctor.name}} - {{index.specialty ? index.specialty.name : index.exam_type.name}} - {{index.clinic.name}}
         <br />
         <br />
-        <v-btn @click="openDialoaUpdateDay(index,2)" x-small fab>
+        <v-btn @click="openDialoaUpdateDay(index)" x-small fab>
           <v-icon>edit</v-icon>
         </v-btn>
-        <v-btn class="ml-2" x-small fab @click="openDialogDelete(index,2)">
+        <v-btn class="ml-2" x-small fab @click="openDialogDelete(index)">
           <v-icon>delete_outline</v-icon>
         </v-btn>
       </v-card>
     </strong>
     <br />
 
-    <!-- <v-dialog v-model="dialogRemove" max-width="400px">
+    <v-dialog v-model="dialogRemove" max-width="400px">
       <v-card class="text-left">
         <v-card-title>
           <span class="headline">Remover dia da agenda</span>
@@ -107,17 +107,54 @@
           <v-btn :loading="loading" color="blue darken-1" text @click="updateDay">Sim</v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog> -->
+    </v-dialog>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["schedules"],
-  data:()=>({
-      dialogUpdate:false,
-      dialogRemove:false,
-  })
+  props: ["schedules","day"],
+
+  data: () => ({
+    dialogUpdate: false,
+    dialogRemove: false,
+    loading:false,
+    scheduleSelected:undefined,
+    dayScheduleSelected:undefined,
+    editDay:{},
+  }),
+
+  methods: {
+    openDialoaUpdateDay(schedule) {
+      this.scheduleSelected = schedule;
+      this.editDay = schedule.days[this.day];
+      this.dialogUpdate = true;
+    },
+    openDialogDelete(schedule) {
+      this.dialogRemove = true;
+      this.scheduleSelected = schedule;
+    },
+    removeDay(){
+      this.loading = true
+      this.$emit('removeDay',{
+        scheduleSelected:this.scheduleSelected,
+        dayScheduleSelected:this.day
+      })
+      this.loading = false
+      this.dialogRemove = false
+    },
+    updateDay(){
+      this.loading = true
+      this.$emit("updateDay",{
+        scheduleSelected:this.scheduleSelected,
+        dayScheduleSelected:this.day,
+        editDay:this.editDay
+      })
+      this.editDay = {}
+      this.loading = false
+      this.dialogUpdate = false;
+    }
+  }
 };
 </script>
 

@@ -46,7 +46,6 @@ const actions = {
         await firebase.firestore().collection('specialties').doc(specialty.name).set(specialty)
         commit('addSpecialty',specialty)
     },
-
     async searchSpecialty(context, search) {
 
         let specialties = [];
