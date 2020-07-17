@@ -67,7 +67,6 @@ const actions = {
             realized: moment().format('YYYY-MM-DD'),
             paid: false
         }
-        console.log('specialtie: ', specialtie)
         return specialtie
     },
 
