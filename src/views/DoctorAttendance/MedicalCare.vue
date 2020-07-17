@@ -1,5 +1,5 @@
 <template>
-    <v-layout row wrap>
+    <v-layout row wrap v-if="this.$vuetify.breakpoint.name !== 'xs'">
         <v-flex xs8>
             <v-card class="pa-4">
                 <v-layout aling-center row wrap>
@@ -24,7 +24,21 @@
                                 outlined
                                 color="write"
                                 class="mr-3"
-                        />
+                        >
+                            <template v-slot:selection="data">
+                                <v-chip
+                                        :key="JSON.stringify(data.item)"
+                                        :input-value="data.selected"
+                                        :disabled="data.disabled"
+                                        class="v-chip--select-multi"
+                                        @click.stop="data.parent.selectedIndex = data.index"
+                                        @input="data.parent.selectItem(data.item)"
+                                        text-color="white"
+                                        color="primary"
+                                >{{ data.item.name }}
+                                </v-chip>
+                            </template>
+                        </v-combobox>
                     </v-flex>
                     <v-flex v-else>
                         <v-combobox
@@ -38,7 +52,8 @@
                                 class="mr-3"
                         />
                     </v-flex>
-                    <v-flex xs4>
+                    <v-flex xs12 sm4>
+                        <!--disabled-->
                         <v-menu
                                 ref="menu1"
                                 v-model="menu1"
@@ -47,9 +62,9 @@
                                 offset-y
                                 max-width="290px"
                                 min-width="290px"
-                                disabled
                         >
                             <template v-slot:activator="{ on }">
+                                <!--disabled-->
                                 <v-text-field
                                         outlined
                                         v-model="computedDateFormatted"
@@ -57,14 +72,15 @@
                                         hint="Data Inicial"
                                         v-on="on"
                                         class="mx-3"
-                                        disabled
                                 />
                             </template>
-                            <v-date-picker disabled v-model="date" no-title @input="menu1 = false"
+                            <!--disabled-->
+                            <v-date-picker v-model="date" no-title @input="menu1 = false"
                                            @change="getConsultationsDorctors()"/>
                         </v-menu>
                     </v-flex>
                 </v-layout>
+                <!--dividir em tabs aqui: 2-->
                 <v-layout aling-center row wrap>
                     <v-flex xs12>
                         <CardManagementConsultationsOfUserDoctor @consultationSelect="consultatioSelect= $event"
@@ -76,8 +92,124 @@
         </v-flex>
         <v-flex xs4>
             <CardManagementConsultationsInformation :patient="patientSelected" :consultation="consultatioSelect"/>
-            <DoctorTicketRoom/>
         </v-flex>
+    </v-layout>
+
+    <v-layout row wrap v-else>
+        <v-tabs grow
+                dark
+                background-color="primary"
+                v-model="tab"
+        >
+            <v-btn color="white" v-if="patientSelected.name" @click="restoreSelectedPatient">
+                <v-icon color="primary">undo</v-icon>
+            </v-btn>
+
+            <v-tab href="#consultations" v-if="!patientSelected.name" >Consultas</v-tab>
+            <v-tab href="#attendance">Atendimentos</v-tab>
+
+            <v-tab-item value="consultations">
+                <v-layout aling-center row wrap>
+                    <!--                    <v-flex xs12 class="mt-4 pa-0 ">
+                                            <v-checkbox
+                                                    class="pl-3 py-0 my-0"
+                                                    v-model="examTypeCheck"
+                                                    color="primary"
+                                            >
+                                                <template v-slot:label>
+                                                    <div >Listar agendas de exames</div>
+                                                </template>
+                                            </v-checkbox>
+                                        </v-flex>-->
+                    <v-flex xs12 class="transparent"><span style="color: transparent">.</span></v-flex>
+                    <v-flex v-if="!examTypeCheck" xs12 sm4>
+                        <v-combobox
+                                v-model="specialty"
+                                :items="specialties"
+                                item-text="name"
+                                return-object
+                                placeholder="Especialidade"
+                                outlined
+                                color="write"
+                                class="mx-1"
+                        >
+                            <template v-slot:selection="data">
+                                <v-chip
+                                        :key="JSON.stringify(data.item)"
+                                        :input-value="data.selected"
+                                        :disabled="data.disabled"
+                                        class="v-chip--select-multi"
+                                        @click.stop="data.parent.selectedIndex = data.index"
+                                        @input="data.parent.selectItem(data.item)"
+                                        text-color="white"
+                                        color="primary"
+                                >{{ data.item.name }}
+                                </v-chip>
+                            </template>
+                        </v-combobox>
+                    </v-flex>
+                    <v-flex v-else>
+                        <v-combobox
+                                v-model="examType"
+                                :items="examTypes"
+                                item-text="name"
+                                return-object
+                                placeholder="Exames"
+                                outlined
+                                color="write"
+                                class="mr-3"
+                        />
+                    </v-flex>
+                    <v-flex xs12 sm4>
+                        <!--disabled-->
+                        <v-menu
+                                ref="menu1"
+                                v-model="menu1"
+                                :close-on-content-click="false"
+                                transition="scale-transition"
+                                offset-y
+                                max-width="290px"
+                                min-width="290px"
+                        >
+                            <template v-slot:activator="{ on }">
+                                <!--disabled-->
+                                <v-text-field
+                                        outlined
+                                        v-model="computedDateFormatted"
+                                        placeholder="Data Inicial"
+                                        hint="Data Inicial"
+                                        v-on="on"
+                                        class="mx-1"
+                                />
+                            </template>
+                            <!--disabled-->
+                            <v-date-picker v-model="date" no-title @input="menu1 = false"
+                                           @change="getConsultationsDorctors()"/>
+                        </v-menu>
+                    </v-flex>
+                    <v-flex>
+                        <v-card>
+                            <v-layout aling-center row wrap>
+                                <v-flex xs12>
+                                    <CardManagementConsultationsOfUserDoctor @consultationSelect="consultatioSelect= $event"
+                                                                             @patientSelect="patientSelected = $event"
+                                                                             :filterByExam="examTypeCheck"
+                                                                             :examType="examType"
+                                                                             :specialty="specialty"
+                                                                             :date="date"/>
+                                </v-flex>
+                            </v-layout>
+                        </v-card>
+                    </v-flex>
+                </v-layout>
+            </v-tab-item>
+            <v-tab-item value="attendance">
+                <v-flex xs12>
+                    <CardManagementConsultationsInformation :patient="patientSelected"
+                                                            :consultation="consultatioSelect"/>
+                </v-flex>
+            </v-tab-item>
+        </v-tabs>
     </v-layout>
 </template>
 
@@ -85,15 +217,15 @@
     import moment from 'moment/moment'
     import CardManagementConsultationsOfUserDoctor from "../../components/Attendance/CardManagementConsultationsOfUserDoctor";
     import CardManagementConsultationsInformation from "../../components/Attendance/CardManagementConsultationsInformation";
-    import DoctorTicketRoom from "../../components/Attendance/DoctorTicketRoom";
     export default {
-        components: {DoctorTicketRoom, CardManagementConsultationsInformation,CardManagementConsultationsOfUserDoctor,},
+        components: {CardManagementConsultationsInformation,CardManagementConsultationsOfUserDoctor,},
         data: vm => ({
             date: new Date().toISOString().substr(0, 10),
             dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
             menu1: false,
             loadingConsultations: false,
             specialty: '',
+            tab:'consultations',
             examType:'',
             examTypeCheck:false,
             patientSelected: {},
@@ -141,7 +273,11 @@
                 this.getConsultationsDorctors()
 
             },
-
+            restoreSelectedPatient(){
+                this.patientSelected = {}
+                this.consultatioSelect = {}
+                this.tab = 'consultations'
+            },
             formatDate(date) {
                 if (!date) return null;
                 const [year, month, day] = date.split('-');

@@ -12,6 +12,7 @@ import DoctorScheduling from '../views/Operational/DoctorsAgenda/DoctorSchedulin
 import ManagementSchedules from '../views/Operational/DoctorsAgenda/ManagementSchedules'
 import Discount from "../views/Notifications/discount"
 import weeklyTable from "../views/Operational/DoctorsAgenda/weeklyTable";
+import HistoryMedicalRecorsPatient from "../views/Operational/DoctorsAgenda/HistoryMedicalRecorsPatient";
 
 export default [
     {
@@ -20,6 +21,14 @@ export default [
         component : weeklyTable,
         meta: {
           requiresAuth: false,
+        }
+    },
+    {
+        path: '/agenda/HistoricoDeProntuariosDoPaciente',
+        name: 'HistoryMedicalRecorsPatient',
+        component : HistoryMedicalRecorsPatient,
+        meta: {
+            requiresAuth: false,
         }
     },
     {

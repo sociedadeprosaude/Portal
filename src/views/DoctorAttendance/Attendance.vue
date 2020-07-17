@@ -2,36 +2,50 @@
     <v-content>
         <template>
             <v-row justify="center">
-                <transition name="fade">
-                    <v-dialog v-model="dialog" persistent hide-overlay max-width="350">
-                        <template v-slot:activator="{ on }">
-                            <v-btn
-                                    dark
-                                    color="red"
-                                    v-on="on"
-                            >
+                <v-spacer v-if='this.$vuetify.breakpoint.name !== "xs"' />
+                <v-dialog v-model="dialog" persistent hide-overlay max-width="600">
+                    <template v-slot:activator="{ on }">
+                        <v-layout row wrap class="align-center justify-center">
+                            <v-btn dark color="red" v-on="on">
                                 FINALIZAR ATENDIMENTO
                                 <v-icon right>exit_to_app</v-icon>
                             </v-btn>
-                        </template>
-                        <v-card>
-                            <v-card-title class="primary white--text">Deseja Finalizar o Atendimento do Paciente Selecionado ?</v-card-title>
-                            <v-divider/>
-                            <v-card-actions>
-                                <v-btn outlined color="error" @click="dialog = false">NÃO</v-btn>
-                                <v-spacer/>
-                                <v-btn outlined color="success" @click="saveAttendance()">SIM</v-btn>
-                            </v-card-actions>
-                        </v-card>
-                    </v-dialog>
-                </transition>
+                        </v-layout>
+                    </template>
+                    <v-card>
+                        <v-card-title class="primary white--text">Deseja Finalizar o Atendimento do Paciente Selecionado ?</v-card-title>
+                        <v-divider/>
+                        <v-card-actions>
+                            <v-btn outlined color="error" @click="dialog = false">NÃO</v-btn>
+                            <v-spacer/>
+                            <v-btn outlined color="success" @click="backView">SIM</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+                <v-spacer v-if="this.$vuetify.breakpoint.name !== 'xs'" />
+                <v-flex v-if="this.$vuetify.breakpoint.name === 'xs'" xs12 class="transparent"><p style="color: transparent">.</p></v-flex>
+                <v-spacer v-if="this.$vuetify.breakpoint.name !== 'xs'" />
+                <v-layout row wrap class="align-center justify-center">
+                    <v-btn v-show="show === false" dark color="primary" @click="show = true">
+                        <v-icon left>assignment</v-icon>
+                        Prontuários do Paciente
+                        <v-icon right>visibility</v-icon>
+                    </v-btn>
+                    <v-btn v-show="show === true" dark color="primary" @click="show = false">
+                        <v-icon left>assignment</v-icon>
+                        Prontuários do Paciente
+                        <v-icon right>visibility_off</v-icon>
+                    </v-btn>
+                </v-layout>
+                <v-spacer v-if='this.$vuetify.breakpoint.name !== "xs"' />
             </v-row>
         </template>
 
         <v-container>
             <v-row justify="space-around">
+                <medical-record-history v-show="show" :id="consultation.user.id"/>
                 <transition name="fade">
-                    <MedicalRecords :consultation="consultation"/>
+                    <MedicalRecords :consultation="consultation" :id="consultation.user.id"/>
                 </transition>
             </v-row>
         </v-container>
@@ -40,13 +54,15 @@
 </template>
 
 <script>
+    import MedicalRecordHistory from "../../components/Attendance/MedicalRecordHistory";
     let moment = require('moment');
     import MedicalRecords from "../../components/Attendance/MedicalRecords";
     export default {
-        components: {MedicalRecords},
+        components: {MedicalRecordHistory, MedicalRecords},
         data: () => ({
             dialog: false,
             query: undefined,
+            show: false,
             startConsultation: undefined,
             endConsultation: undefined,
             timeConsultation: undefined,
@@ -60,13 +76,42 @@
         mounted() {
             this.startConsultation = moment().format('HH:mm:ss');
             this.query = this.$route.params.q;
-            console.log('p:', this.query)
             if (!this.query) {
                 this.$router.push('MedicalCare')
             }
+            console.log('tem ?', this.query.end_at)
+            //window.addEventListener('beforeunload', this.viewOut())
+            //window.addEventListener('load', this.viewOut())
+            //window.addEventListener('unload', this.viewOut())
+            //window.removeEventListener('unload', this.viewOut())
+        },
+        beforeDestroy() {
+            console.log('saiu ? sim!')
+            if (!this.consultation.end_at) {
+                console.log('gerar!')
+                this.outtkake()
+                this.saveAttendance()
+            } else {
+                console.log('já tem')
+            }
         },
         methods: {
+           async outtkake() {
+               let specialty = await this.$store.dispatch('getDoctorSpecialty', this.consultation)
+               let outtake = {
+                   intake_id: this.consultation.payment_number,
+                   user: this.consultation.user,
+                   unit: this.consultation.clinic,
+                   doctor: this.consultation.doctor,
+                   specialties: specialty,
+                   paid: false,
+                   crm: this.consultation.doctor.crm
+               }
+               console.log('outtake: ', outtake)
+               await this.$store.dispatch('addSpecialtyOuttakes', outtake)
+            },
             saveAttendance() {
+                console.log('salvando tempos ?')
                 this.endConsultation = moment().format('HH:mm:ss');
                 this.timeConsultation = moment(this.endConsultation, 'HH:mm:ss').diff(moment(this.startConsultation, 'HH:mm:ss'), 'minutes');
                 this.$store.dispatch('addTimesToConsultation', {
@@ -75,9 +120,11 @@
                     durantion: this.timeConsultation,
                     consultation: this.consultation.id,
                     patient: this.consultation.user.id
-
                 });
-                this.$router.push("MedicalCare")
+            },
+            backView(){
+                this.dialog = false;
+                this.$router.push("MedicalCare");
             }
         }
     }

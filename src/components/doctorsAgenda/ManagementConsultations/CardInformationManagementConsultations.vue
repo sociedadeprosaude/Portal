@@ -166,8 +166,6 @@
             ConsultationRecept(consultation) {
                 this.receptDialog = true;
             }
-
-
         },
     }
 </script>
