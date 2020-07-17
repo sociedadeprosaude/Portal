@@ -1,6 +1,7 @@
 import firebase, { firestore } from "firebase";
 import functions from "../../utils/functions";
 import moment from "moment";
+//import { delete } from "vue/types/umd";
 
 const state = {
     outtakes: [],
@@ -302,6 +303,15 @@ const actions = {
         await firebase.firestore().collection('outtakes/').add(outtake)
     },
     async addSpecialtyOuttakes(context, outtake) {
+        if(outtake.user.consultations)
+            delete outtake.user.consultations
+        
+        if(outtake.user.intakes)
+            delete outtake.user.intakes
+
+        if(outtake.user.budgets)
+            delete outtake.user.budgets
+        
         outtake = functions.removeUndefineds(outtake);
         var item=0;
         let SpecificOuttake = await firebase.firestore().collection('outtakes').where('intake_id','==', outtake.intake_id).where('crm','==',outtake.crm).get();
