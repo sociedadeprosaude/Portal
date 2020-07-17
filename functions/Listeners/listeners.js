@@ -59,6 +59,12 @@ exports.listenChangeInDoctorsSubcollections = functions.firestore.document('user
     convertDoctorSubcollectionInObject((await admin.firestore().collection('users').doc(context.params.userId).get()))
 })
 
+exports.listenChangeInGeopointsSubcollections = functions.firestore.document('statistics/geopoints/users_by_neighborhood/{id}/monthly_report/{docId}').onWrite(async (change, context) => {
+convertGeopointCEPSubcollectionInObject((await admin.firestore().collection('statistics/geopoints/users_by_neighborhood').doc(context.params.id).get()))
+   console.log('Escutou dentro da monthly_reports->')
+   console.log(context.params.docId)
+})
+
 async function convertDoctorSubcollectionInObject(doctorDoc) {
     let doctor = doctorDoc.data()
     if (doctor.clinics) {
@@ -340,6 +346,30 @@ async function convertSpecialtySubcollectionInObject(specialtyDoc) {
     return {
         ...specialty,
         doctors: doctors,
+    }
+}
+
+async function convertGeopointCEPSubcollectionInObject(ref) {
+    let cepGeopoint = ref.data();
+    let monthlyReports = [];
+    // eslint-disable-next-line no-await-in-loop
+    let docsCollection = await admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(ref.id).collection('monthly_report').get()
+    for (let reportDoc in docsCollection.docs) {
+        let report = docsCollection.docs[reportDoc].data()
+        monthlyReports.push({
+            ...report,
+            id:docsCollection.docs[reportDoc].id
+        });
+    }
+    ref.ref.set(
+        {
+            ...cepGeopoint,
+            monthly_report: monthlyReports,
+        }
+    )
+    return  {
+        ...cepGeopoint,
+        monthly_report: monthlyReports,
     }
 }
 //==================================================================================================================

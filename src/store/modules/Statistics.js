@@ -148,7 +148,8 @@ const actions = {
                 geopoints.push({
                     latitude:data.geopoint.latitude,
                     longitude:data.geopoint.longitude,
-                    count: data.count
+                    count: data.count,
+                    monthly_report:data.monthly_report
                 })
             })
             commit('setGeopoints',geopoints)
