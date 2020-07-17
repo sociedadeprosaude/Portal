@@ -2,16 +2,16 @@
     <v-container>
         <v-layout row wrap v-if="!loading">
             <v-flex xs12>
-                <span class="my-headline">Convênios</span>
+                <span class="my-headline">Médicos</span>
             </v-flex>
             <v-flex xs12>
                 <v-card>
                     <v-layout row wrap>
                         <v-flex xs12 class="px-3 my-3">
-                            <v-card v-for="(clinic,i) in clinics" :key="i" outlined class="mb-4 primary">
+                            <v-card v-for="(doctor,i) in doctors" :key="i" outlined class="mb-4 primary">
                                 <v-layout row wrap>
-                                    <v-flex xs10 md5 class="text-left">
-                                        <span class="font-weight-bold white--text ml-2">{{clinic.name}}</span>
+                                    <v-flex s10 md3 class="text-left">
+                                        <span class="font-weight-bold white--text ml-2">{{doctor.name.toUpperCase()}}</span>
                                     </v-flex>
                                     <v-spacer></v-spacer>
                                     <v-flex xs2 md1>
@@ -24,15 +24,14 @@
                                                         small
                                                         dark
                                                 >
-                                                    <v-icon >more_vert</v-icon>
+                                                    <v-icon>more_vert</v-icon>
                                                 </v-btn>
                                             </template>
-
                                             <v-list>
                                                 <v-list-item
                                                         v-for="(item, index) in Menu"
                                                         :key="index"
-                                                        @click="OpenReceipt(item,clinic)"
+                                                        @click="OpenReceipt(item,doctor)"
                                                 >
                                                     <v-list-item-title>{{ item.title }}</v-list-item-title>
                                                 </v-list-item>
@@ -45,14 +44,14 @@
                                         <v-flex xs5 md2>
                                             <v-card sm3 class="mx-4 elevation-0 transparent">
                                                 <span class="font-weight-bold white--text">
-                                                    Custo : {{CostExamsClinic(clinic)}}
+                                                    Custo : {{CostExamsDoctor(doctor)}}
                                                 </span>
                                             </v-card>
                                         </v-flex>
                                         <v-flex xs7 md2>
                                             <v-card sm3 class="mx-4 elevation-0 transparent">
-                                                <span class="font-weight-bold white--text">
-                                                            Nº de exames : {{QuantExamsClinic(clinic)}}
+                                                <span  class="font-weight-bold white--text">
+                                                            Nº de exames : {{QuantExamsDoctor(doctor)}}
                                                 </span>
                                             </v-card>
                                         </v-flex>
@@ -61,9 +60,9 @@
                                         </v-flex>
                                         <v-flex md3>
                                             <v-card sm3 class="mx-4 elevation-0 transparent">
-                                                <span class="font-weight-bold white--text">
-                                                             Próximo Pagamento: {{date(clinic.last_payment,clinic.period)}}
-                                                </span>
+                                            <span class="font-weight-bold white--text">
+                                                         Próximo Pagamento: {{date(doctor.last_payment,doctor.period)}}
+                                            </span>
                                             </v-card>
                                         </v-flex>
                                         <v-flex xs12 class="mb-2 hidden-md-and-up">
@@ -71,7 +70,7 @@
                                         </v-flex>
                                         <v-flex md3>
                                             <v-card sm3 class="mx-4 elevation-0 transparent">
-                                                <v-btn @click="ChangeDateDialog(clinic)" outlined dark class=" elevation-0">
+                                                <v-btn @click="ChangeDateDialog(doctor)"  outlined dark class=" elevation-0">
                                                     <span class="font-weight-bold white--text">
                                                         Alterar Periodo
                                                     </span>
@@ -86,12 +85,11 @@
                                 <v-flex xs12 sm12 class="mt-3">
                                     <v-layout row wrap class="justify-space-between">
                                         <v-flex xs6 class="text-left">
-                                            <v-btn @click="checkReceipts(clinic)" text dark>+ detalhes</v-btn>
+                                            <v-btn @click="checkReceipts(doctor)" text dark>+ detalhes</v-btn>
                                         </v-flex>
-
                                         <v-flex xs6 class="text-right">
                                             <v-card class="mx-4 elevation-0 transparent">
-                                                <v-btn @click="payClinic(clinic)" outlined dark class="elevation-0">
+                                                <v-btn @click="payDoctor(doctor)" outlined dark class="elevation-0">
                                                     <span class="font-weight-bold white--text">
                                                         Pagar
                                                     </span>
@@ -103,10 +101,18 @@
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
-                                <v-card v-if="intakesObserv && clinic === clinicSelected">
-                                    <clinicsIntakes @close-dialog="intakesObserv = false" :clinic="clinicSelected"
-                                                    :outtakes="outtakesSelected"></clinicsIntakes>
+                                <v-card v-if="intakesObserv && doctor === doctorSelected">
+                                    <DoctorOuttakes @close-dialog="intakesObserv = false" :doctor="doctorSelected" :outtakes="outtakesSelected"></DoctorOuttakes>
                                 </v-card>
+                            </v-card>
+                        </v-flex>
+                        <v-flex xs12>
+                            <v-card class="mx-4 elevation-0 transparent">
+                                <v-btn @click="payAllDoctor()"  outlined class="elevation-0">
+                                 <span class="font-weight-bold">
+                                     Pagar Todos
+                                 </span>
+                                </v-btn>
                             </v-card>
                         </v-flex>
                     </v-layout>
@@ -118,35 +124,36 @@
                 <v-card-title>Período de Pagamento</v-card-title>
                 <v-flex class="mt-5 ml-3">
                     <v-select
-                        v-model="period"
-                        :items="days"
-                        label="período"
+                            v-model="period"
+                            :items="days"
+                            label="período"
                     >
                     </v-select>
                 </v-flex>
                 <v-flex>
-                    <v-btn @click="ChangeDate(clinica)">
+                    <v-btn @click="ChangeDate()">
                         Confirmar
                     </v-btn>
                 </v-flex>
             </v-card>
         </v-dialog>
         <v-dialog v-model="dialogReceipt">
-                <ReceiptOuttakesConvenant @close="CloseReceipt()"  :clinicSelected="clinicSelected" :outtakes="outtakesSelected"></ReceiptOuttakesConvenant>
+            <ReceiptOuttakesDoctor @close="CloseReceipt()"  :doctorSelected="doctorSelected" :outtakes="outtakesSelected"></ReceiptOuttakesDoctor>
         </v-dialog>
-
     </v-container>
 </template>
 
 <script>
     import moment from "moment";
-    import clinicsIntakes from "../../components/PaymentCovenants/ClinicsIntakes"
-    import ReceiptOuttakesConvenant from "../../components/PaymentCovenants/ReceiptOuttakesConvenants"
+    import DoctorOuttakes from "../../components/DoctorOuttakes"
+    import ReceiptOuttakesDoctor from "../../components/OuttakesDoctor/ReceiptOuttakesDoctor"
+
+
 
     export default {
-        name: "PaymentCovenants",
+        name: "PaymentMedics",
         components: {
-            clinicsIntakes,ReceiptOuttakesConvenant
+            DoctorOuttakes,ReceiptOuttakesDoctor
         },
         data() {
             return {
@@ -154,8 +161,7 @@
                 value: undefined,
                 change: false,
                 dialogReceipt:false,
-                clinica:[],
-                clinicSelected:[],
+                doctorSelected:[],
                 cost:'',
                 outtakesSelected:[],
                 intakes:[],
@@ -177,36 +183,36 @@
             units() {
                 return this.$store.getters.units
             },
-            clinics() {
-                return this.$store.getters.clinics
+            doctors() {
+                return this.$store.getters.colaboratorsDoctors.filter(a => {
+                    return a.status !== 'pending' && a.crm
+                })
             },
             outtakes(){
-                return this.$store.getters.outtakeAllClinic
+                return this.$store.getters.outtakeAllDoctors
             }
         },
         methods: {
-            OpenReceipt(item,clinic){
-                this.outtakesSelected = this.outtakes.filter(outtake => outtake.clinic.cnpj === clinic.cnpj)
-                this.clinicSelected = clinic
+            OpenReceipt(item,doctor){
+                this.outtakesSelected= this.outtakes.filter(outtake => outtake.doctor.crm === doctor.crm)
+                this.doctorSelected = doctor
                 if(item.title === 'Gerar Boleto'){
                     this.dialogReceipt= !this.dialogReceipt
                 }
             },
-            QuantExamsClinic(clinic){
-                let outtakes = this.outtakes.filter(outtake => outtake.clinic.cnpj === clinic.cnpj)
+            QuantExamsDoctor(doctor){
+                let outtakes = this.outtakes.filter(outtake => outtake.doctor.crm === doctor.crm)
                 let cont =0;
                 outtakes.filter(function (element){
-                        cont += element.exams.length
+                    cont += 1
                 })
                 return cont
             },
-            CostExamsClinic(clinic){
-                let outtakes = this.outtakes.filter(outtake => outtake.clinic.cnpj === clinic.cnpj)
+            CostExamsDoctor(doctor){
+                let outtakes = this.outtakes.filter(outtake => outtake.doctor.crm === doctor.crm)
                 let cost =0;
                 outtakes.filter(function (element){
-                    element.exams.filter(function (element2) {
-                        cost += element2.price
-                    })
+                    cost += element.consultations.price
                 })
                 return cost
             },
@@ -214,18 +220,21 @@
                 this.dialogReceipt= !this.dialogReceipt
             },
             async getInitialInfo() {
-                await this.$store.dispatch('loadClinics');
-                await this.$store.dispatch('GetReceiptsAllClinic');
+                await this.$store.dispatch('getColaboratorsDoctors');
+
+                await this.$store.dispatch('GetReceiptsAllDoctors');
+
                 this.loading = false
             },
-            ChangeDateDialog(clinic) {
-                this.clinica = clinic;
+            ChangeDateDialog(doctor) {
+                this.doctorSelected = doctor;
                 this.change = !this.change;
             },
-            async ChangeDate(clinic) {
+            async ChangeDate() {
+                console.log('doctor: ', this.doctorSelected)
                 this.change = !this.change;
-                await this.$store.dispatch('AddPaymentDay', {
-                    clinic: clinic,
+                await this.$store.dispatch('AddPaymentDayDoctor', {
+                    doctor: this.doctorSelected,
                     period: this.period
                 });
                 this.getInitialInfo()
@@ -235,22 +244,26 @@
                 const [year, month, day] = date.split("-");
                 return `${day}/${month}/${year}`;
             },
-            async CalculateValue(clinic) {
+            async CalculateValue(doctor) {
                 this.cost = '';
-                this.clinica = clinic;
-                let ReturnValuesClinic= await this.$store.dispatch('CalculedValuePaymentClinic', clinic)
-                this.cost = ReturnValuesClinic.cost
+                this.doctorSelected = doctor;
+               let ReturnValuesClinic= await this.$store.dispatch('CalculedValuePaymentDoctor', doctor)
+               this.cost = ReturnValuesClinic.cost
                 this.NumberExams = ReturnValuesClinic.NumberExams
             },
 
-            async checkReceipts(clinic){
-                this.outtakesSelected = this.outtakes.filter(outtake => outtake.clinic.cnpj === clinic.cnpj)
-                this.clinicSelected = clinic
+            async checkReceipts(doctor){
+                this.outtakesSelected= this.outtakes.filter(outtake => outtake.doctor.crm === doctor.crm)
+                this.doctorSelected = doctor
                 this.intakesObserv = !this.intakesObserv
 
             },
-            async payClinic(clinic){
-                await this.$store.dispatch('PayClinic', clinic)
+            async payDoctor(doctor){
+                await this.$store.dispatch('PayDoctor', doctor)
+                this.getInitialInfo()
+            },
+            async payAllDoctor(){
+                await this.$store.dispatch('PayAllDoctor', this.doctors)
                 this.getInitialInfo()
             },
             date(day,period){

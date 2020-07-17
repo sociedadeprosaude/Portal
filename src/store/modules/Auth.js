@@ -32,7 +32,7 @@ const actions = {
     async getUser({ commit }, user) {
 
         try {
-            let userDoc = await firebase.firestore().collection('users/').where('email', '==', user.email).get()
+            let userDoc = await firebase.firestore().collection('users/').where('uid', '==', user.uid).get()
             commit('setUser', userDoc.docs[0].data());
             if (userDoc.docs[0].data().clinic) {
                 this.commit('setSelectedUnit', userDoc.docs[0].data().clinic)

@@ -1,8 +1,23 @@
 <template>
   <v-container fluid>
-    <v-navigation-drawer :right="false" permanent app dark clipped>
-      <v-list dense nav class="py-0" style="margin-top:100px">
-        <v-list-item v-for="item in items" :key="item.title" link @click="selected = item.value">
+    <v-navigation-drawer
+      hide-overlay
+      :right="false"
+      v-model="overviewDrawer"
+      absolute
+      temporary
+      disable-resize-watcher
+      app
+      dark
+      clipped
+    >
+      <v-list dense>
+        <v-list-item
+          v-for="item in items"
+          :key="item.title"
+          link
+          @click="selected = item.value; overviewDrawer=false"
+        >
           <v-list-item-content>
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
@@ -74,8 +89,8 @@
     />
     <OuttakesReport v-if="selected == 1" :date="dateBegin" :date2="dateEnd" :cb="pesquisar" />
     <procedures-prices-analises v-if="selected == 2"></procedures-prices-analises>
-    <statsCaixa v-if="selected == 3"></statsCaixa>
-    <testes v-if="selected == 4"></testes>
+    <statsCaixaIntakes v-if="selected == 3"></statsCaixaIntakes>
+    <statsCaixaOuttakes v-if="selected == 4"></statsCaixaOuttakes>
     <Clients v-if="selected == 5"></Clients>
   </v-container>
 </template>
@@ -84,25 +99,29 @@
 import ProceduresPricesAnalises from "@/components/reports/ProceduresPricesAnalises";
 import GeneralReport from "@/components/reports/GeneralReport";
 import OuttakesReport from "@/components/reports/OuttakesReport";
-import Clients from './Clients'
-import statsCaixa from "./statsCaixa";
+
+import statsCaixaIntakes from "./statsCaixa";
+import statsCaixaOuttakes from "./statsCaixaOuttakes";
+import Clients from "./Clients";
 
 export default {
   components: {
     GeneralReport,
     ProceduresPricesAnalises,
     OuttakesReport,
-    statsCaixa,
+    statsCaixaIntakes,
+    statsCaixaOuttakes,
     Clients
   },
   data: vm => ({
-    selected: 3,
+    selected: 4,
     items: [
       { title: "Relatorio financeiro geral", value: 0 },
       { title: "Relatorio de Saidas", value: 1 },
       { title: "Análise de preço de exames", value: 2 },
-      { title: "Overview Caixa", value: 3 },
-      { title: "Clientes", value: 5 },
+      { title: "Intakes", value: 3 },
+      { title: "Outtakes", value: 4 },
+      { title: "Clientes", value: 5 }
     ],
 
     date: moment().format("YYYY-MM-DD 00:00:00"),
@@ -134,9 +153,9 @@ export default {
     },
     async pesquisar() {
       this.loading = true;
-      if(this.selected == 5){
-       this.loadDatasetClients()
-      }else{
+      if (this.selected == 5) {
+        this.loadDatasetClients();
+      } else {
         this.$store.dispatch("getUsers", {
           initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
           finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
@@ -161,7 +180,6 @@ export default {
         );
       }
 
-      
       this.dateBegin = this.dateFormatted;
       this.dateEnd = this.dateFormatted2;
       this.loading = false;
@@ -172,7 +190,7 @@ export default {
       return `${day}/${month}/${year}`;
     },
     loadDatasetClients(){
-       this.$store.dispatch("loadClientsServed", {
+       this.s$store.dispatch("loadClientsServed", {
           initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
           finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
         });
@@ -213,6 +231,14 @@ export default {
     },
     hide() {
       return this.selected == 4 || this.selected == 3;
+    },
+    overviewDrawer: {
+      get() {
+        return this.$store.getters.overviewDrawer;
+      },
+      set(val) {
+        this.$store.dispatch("overviewToggle", val);
+      }
     }
   },
   watch: {

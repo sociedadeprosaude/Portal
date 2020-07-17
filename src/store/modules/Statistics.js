@@ -9,26 +9,20 @@ const state = {
     newClients:{},
     ageClientsServed:{},
     genderClientsServed:{},
-    /* usersServed:[] */
-    geopoints:[]
+    geopoints:[],
+    statisticsOuttakes: null,
 };
 
 const mutations = {
     /* setUsersServed: (state, payload) => state.usersServed = payload, */
     setGeopoints: (state, payload) => state.geopoints = payload,
     setStatistics: (state, payload) => state.statistics = payload,
-    setClientsServed:(state,payload) => state.clientsServed = payload,
-    setNewClients:(state,payload) => state.newClients = payload,
-    setAgeClientsServed:(state,payload) => state.ageClientsServed = payload,
-    setGenderClientsServed:(state,payload) => state.genderClientsServed = payload
+    setStatisticsOuttakes: (state, payload) => state.statisticsOuttakes = payload,
+    setClientsServed: (state, payload) => state.clientsServed = payload,
+    setNewClients: (state, payload) => state.newClients = payload,
+    setAgeClientsServed: (state, payload) => state.ageClientsServed = payload,
+    setGenderClientsServed: (state, payload) => state.genderClientsServed = payload
 };
-
-var emptyItem = () => ({
-    numOfSales: 0,
-    totalRaw: 0,
-    totalCost: 0,
-    totalProfit: 0
-})
 
 const actions = {
     async getStatistics({ commit }, payload) {
@@ -67,8 +61,8 @@ const actions = {
             })
             return statDay
         })
-        console.log(statistics);
-        console.log(statsYearMonth);
+        // console.log(statistics);
+        // console.log(statsYearMonth);
         commit('setStatistics', statsYearMonth)
     },
     async getStatisticsByMonth({ commit }, payload) {
@@ -79,14 +73,7 @@ const actions = {
             const statDay = doc.data();
             let [year, month] = doc.id.match(/\d+/g);
             if (!statsYearMonth[year]) statsYearMonth[year] = {};
-            if (!statsYearMonth[year][month]) statsYearMonth[year][month] = {
-                numOfSales: 0,
-                totalRaw: 0,
-                totalCost: 0,
-                totalProfit: 0,
-                itens: {},
-                arrTotalRaw: Array.from(Array(moment(doc.id).daysInMonth()).keys()).map(() => 0)
-            };
+            statsYearMonth[year][month] = {};
             statsYearMonth[year][month].arrTotalRaw = statDay.arrTotalRaw;
             statsYearMonth[year][month].totalRaw = statDay.totalRaw;
             statsYearMonth[year][month].totalCost = statDay.totalCost;
@@ -95,9 +82,43 @@ const actions = {
             statsYearMonth[year][month].itens = statDay.itens;
             return statDay
         })
+        // console.log(statistics);
+        // console.log(statsYearMonth);
         commit('setStatistics', statsYearMonth)
     },
-    loadClientsServed({commit},payload){
+    //================================Outtakes======================================================
+
+
+    async getStatisticsOuttakesByMonth({ commit }, payload) {
+        var statistics = await firebase.firestore().collection('statistics').doc('outtakes').collection('month').get();
+        var statsYearMonth = {}
+
+        var outtakes = await firebase.firestore().collection('outtakes').get();
+        outtakes = outtakes.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        console.log(outtakes)
+
+        statistics = statistics.docs.map((doc) => {
+            const statDay = doc.data();
+            let [year, month] = doc.id.match(/\d+/g);
+            if (!statsYearMonth[year]) statsYearMonth[year] = {};
+            statsYearMonth[year][month] = {};
+            statsYearMonth[year][month].arrTotalToPay = statDay.arrTotalToPay;
+            statsYearMonth[year][month].numOfOuttakesToPay = statDay.numOfOuttakesToPay;
+            statsYearMonth[year][month].totalLeftToPay = statDay.totalLeftToPay;
+            statsYearMonth[year][month].totalToPay = statDay.totalToPay;
+            statsYearMonth[year][month].totalRecurrent = statDay.totalRecurrent;
+            statsYearMonth[year][month].itens = statDay.itens;
+            return statDay
+        })
+        // console.log(statistics);
+        // console.log(statsYearMonth);
+        commit('setStatisticsOuttakes', statsYearMonth)
+    },
+
+    //============================================= Maps ====================================================================
+
+
+    loadClientsServed({ commit }, payload) {
         let attended = {}
         let ageTotalAttended = {}
         let ageAttended = {}
@@ -133,9 +154,6 @@ const actions = {
                 /* if(data.addresses && data.addresses[0])
                     usersServed.push(data) */
             })
-            commit('setClientsServed',attended)
-            commit('setAgeClientsServed',ageAttended)
-            commit('setGenderClientsServed',genderClients)
         })
     },
 
@@ -157,16 +175,16 @@ const actions = {
 
     loadNewClients({commit},payload){
         let newClients = {}
-        firebase.firestore().collection('users').where('created_at','>=',payload.initialDate)
-        .where('created_at','<=',payload.finalDate)
-        .get().then((users)=>{
-            users.forEach((user)=>{
-                let data = user.data()
-                let date = moment(data.created_at,'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                if(!newClients[date]) newClients[date] = 0
-                newClients[date] += 1
-            })
-            commit('setNewClients',newClients)
+        firebase.firestore().collection('users').where('created_at', '>=', payload.initialDate)
+            .where('created_at', '<=', payload.finalDate)
+            .get().then((users) => {
+                users.forEach((user) => {
+                    let data = user.data()
+                    let date = moment(data.created_at, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
+                    if (!newClients[date]) newClients[date] = 0
+                    newClients[date] += 1
+                })
+                commit('setNewClients', newClients)
         })
     },
 
@@ -215,8 +233,8 @@ const getters = {
     getNewClients:(state) => state.newClients,
     getAgeClientsServed:(state) => state.ageClientsServed,
     getGenderClientsServed:(state) => state.genderClientsServed,
-    /* getUsersServed:(state) => state.usersServed, */
     getGeopoints:(state) => state.geopoints,
+    getStatisticsOuttakes: (state) => state.statisticsOuttakes,
 };
 
 export default {

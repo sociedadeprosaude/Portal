@@ -117,10 +117,6 @@
                 return this.$store.getters.selectedPatient
             },
         },
-        mounted() {
-        },
-        watch: {
-        },
         methods: {
 
             async deletedConsultation() {
@@ -158,6 +154,7 @@
                     doctor: consultation.doctor,
                     specialties: specialty,
                     paid: false,
+                    realized:moment().format('YYYY-MM-DD'),
                     crm: consultation.doctor.crm
                 }
                 console.log('outtake: ', outtake)
