@@ -20,21 +20,36 @@ exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate
     if (user.addresses && user.addresses[0] && user.addresses[0].cep) {
         let newCEP = user.addresses[0].cep.replace(/[.,-]/g,"").substring(0,5)
         admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP)
-            .get().then((userGeopoint) => {
+            .get().then(async (userGeopoint) => {
+                let ref = admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP)
                 if(!userGeopoint.exists){
                     gmapsInit.geocode([user.addresses[0].street,user.addresses[0].complement].join(" ") + " Manaus Amazonas",
-                    (err, coordinates)=>{
+                    async (err, coordinates)=>{
                         if(err) 
                             console.log(err)
-                        else
-                            admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP).set({count:1,geopoint: new admin.firestore.GeoPoint(coordinates.lat, coordinates.lng)})
+                        else{
+                            await ref.set({count:1,geopoint: new admin.firestore.GeoPoint(coordinates.lat, coordinates.lng)})
+                            updateGeopointMonthlyReport(ref)
+                        }
                     })
                 }else{
-                    admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP).update({count: admin.firestore.FieldValue.increment(1)})
+                   await ref.update({count: admin.firestore.FieldValue.increment(1)})
+                   updateGeopointMonthlyReport(ref)
                 }
             })
     }
 })
+
+async function updateGeopointMonthlyReport(ref){
+    ref.collection('monthly_report').doc(moment().format('YYYY-MM')).get()
+    .then(doc=>{
+        if(doc.exists){
+            doc.ref.update({created:admin.firestore.FieldValue.increment(1)})
+        }else{
+            doc.ref.set({created:1})
+        }
+    })
+}   
 
 exports.listenChangeInSpecialtiesSubcollections = functions.firestore.document('specialties/{specialtyId}/{collectionId}/{docId}').onWrite(async (change, context) => {
     convertSpecialtySubcollectionInObject((await admin.firestore().collection('specialties').doc(context.params.specialtyId).get()))
