@@ -6,19 +6,16 @@ import Account from '@/views/Auth/Account'
 import Login from '@/views/Auth/Login'
 import Register from '@/views/Auth/Register'
 import Exams from "./views/Register/Exams";
-import Specialties from "./views/Register/Specialties";
+import Specialties from "./views/Olds/Specialties";
 import Labor from "./views/Personal/Labor";
 import Reports from "./views/Register/Reports";
-import Bundles from "./views/Register/Bundles";
-import NewBundles from "./views/Register/Bundle/NewBundles";
+import NewBundles from "./views/Register/Bundles";
 import PaymentCovenants from "./views/Register/PaymentCovenants";
 import PaymentMedics from "./views/Register/PaymentMedics";
 
 import ContestValue from "./views/Notifications/contestValues"
 
-import oldDoctors from "./views/Register/oldDoctors";
 import Doctors from "./views/Register/Doctors";
-import oldClinics from "./views/Register/oldClinics";
 import Clinics from "./views/Register/Clinics";
 import RegisterNewUserClinic from "./views/Register/Clinic/RegisterClinic"
 import DischargeProcedures from "./views/Register/Clinic/DischargeProcedures"
@@ -99,7 +96,7 @@ let mainRoutes = [
     }
   },
   {
-    path: '/exams',
+    path: '/registros/exams',
     name: 'Exames',
     component: Exams,
     meta: {
@@ -122,17 +119,8 @@ let mainRoutes = [
       requiresAuth: false
     }
   },
-
   {
-    path: '/olddoctors',
-    name: 'olddoctors',
-    component: oldDoctors,
-    meta: {
-      requiresAuth: false
-    }
-  },
-  {
-    path: '/doctors',
+    path: '/registros/doctors',
     name: 'doctors',
     component: Doctors,
     meta: {
@@ -140,15 +128,7 @@ let mainRoutes = [
     }
   },
   {
-    path: '/oldclinics',
-    name: 'oldClinics',
-    component: oldClinics,
-    meta: {
-      requiresAuth: false
-    }
-  },
-  {
-    path: '/clinics',
+    path: '/registros/clinics',
     name: 'clinics',
     component: Clinics,
     meta: {
@@ -190,15 +170,7 @@ let mainRoutes = [
     }
   },
   {
-    path: '/bundlesNew',
-    name: 'bundles',
-    component: Bundles,
-    meta: {
-      requiresAuth: false,
-    }
-  },
-  {
-    path: '/bundles',
+    path: '/registros/bundles',
     name: 'Newbundles',
     component: NewBundles,
     meta: {
@@ -338,6 +310,11 @@ router.afterEach((to, from, next) => {
     store.commit('setBillsToolbar', true)
   } else {
     store.commit('setBillsToolbar', false)
+  }
+  if (to.path.includes('registros')) {
+    store.commit('setRegistersToolbar', true)
+  } else {
+    store.commit('setRegistersToolbar', false)
   }
 });
 

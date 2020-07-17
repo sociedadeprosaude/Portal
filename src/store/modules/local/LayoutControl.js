@@ -3,6 +3,7 @@ const state = {
     showOverviewToggle: false,
     overviewDrawer: false,
     showBillsToolbar: false,
+    showRegistersToolbar: false,
     dialog: {
         header: '',
         body: '',
@@ -17,6 +18,9 @@ const mutations = {
     },
     setBillsToolbar(state, payload) {
         state.showBillsToolbar = payload
+    },
+    setRegistersToolbar(state, payload) {
+        state.showRegistersToolbar = payload
     },
     setSystemDialog(state, payload) {
         state.dialog = payload
@@ -36,6 +40,9 @@ const getters = {
     },
     showBillsToolbar(state) {
         return state.showBillsToolbar
+    },
+    showRegistersToolbar(state) {
+        return state.showRegistersToolbar
     },
     systemDialog(state) {
         return state.dialog

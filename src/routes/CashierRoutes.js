@@ -1,4 +1,4 @@
-import Bundles from "../views/Register/Bundles"
+import Bundles from "../views/Olds/oldBundles"
 import Budget from "../views/Operational/Cashier/Budget";
 import Cashier from "../views/Operational/Cashier/Cashier";
 import CashierReports from "@/views/Statistics/StatisticsDashboard";

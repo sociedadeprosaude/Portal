@@ -153,28 +153,10 @@
                         title: 'Cadastro e Registros',
                         pages: [
                             {
-                                title: 'Médicos',
+                                title: 'Registros',
                                 icon: 'group',
                                 permission: 'Caixa',
-                                to: '/doctors'
-                            },
-                            {
-                                title: 'Clinicas',
-                                icon: 'location_city',
-                                permission: 'Caixa',
-                                to: '/clinics'
-                            },
-                            {
-                                title: 'Exames',
-                                icon: 'poll',
-                                permission: 'Caixa',
-                                to: '/exams'
-                            },
-                            {
-                                title: 'Especialidades',
-                                icon: 'poll',
-                                permission: 'Caixa',
-                                to: '/specialties'
+                                to: '/registros/doctors'
                             },
                             {
                                 title: 'Relatórios',
@@ -187,12 +169,6 @@
                                 to:"/agenda/GerenciarAgendas",
                                 permission: 'Agenda Médica',
                                 icon: 'event',
-                            },
-                            {
-                                title: 'Pacotes',
-                                to: '/bundles',
-                                permission: 'Caixa',
-                                icon: 'queue',
                             },
                             {
                                 title: 'Financeiro',
