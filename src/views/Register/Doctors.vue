@@ -50,7 +50,7 @@
                                             color="primary"
                                             v-model="searchSpecialty"
                                             :loading="loading"
-                                            id="search"
+                                            id="searchEspecialties"
                                     />
                                 </v-flex>
                                 <v-flex sm4 class="text-right pr-3 mt-2">
@@ -122,9 +122,7 @@
 
         methods: {
             async initialConfiguration (){
-                /* await this.$store.dispatch('getClinics');
-                await this.$store.dispatch('getDoctors');
-                await this.$store.dispatch('getSpecialties'); */
+
             },
             addDoctor() {
                 this.selectedDoctor = undefined;
