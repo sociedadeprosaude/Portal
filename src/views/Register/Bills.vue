@@ -13,22 +13,42 @@
       </v-flex>
       <v-container>
         <v-row>
-          <v-chip-group row mandatory v-model="selectedOption" active-class="primary--text">
+          <v-chip-group
+            row
+            mandatory
+            v-bind:value="selectedOption"
+            @change="(event)=>$emit('change-selectedOption',event)"
+            active-class="primary--text"
+          >
             <v-chip v-for="option in billsOptions" :key="option">{{ option }}</v-chip>
           </v-chip-group>
         </v-row>
         <div v-if="selectedOption === 1">
           <v-row dense no-gutters align="start" justify="start">
             <v-col>
-              <v-switch v-model="switchDate" label="Limitar por data" />
-              <v-date-picker v-if="switchDate" locale="pt-br" v-model="selectedDate" />
+              <v-switch
+                :value="switchDate"
+                @change="(event)=>$emit('change-switchDate',event)"
+                label="Limitar por data"
+              />
+              <v-date-picker
+                v-if="switchDate"
+                locale="pt-br"
+                v-bind:value="selectedDate"
+                @change="(event)=>$emit('change-selectedDate',event)"
+              />
             </v-col>
             <v-col>
-              <v-switch v-model="switchCategory" label="Limitar por categoria" />
+              <v-switch
+                v-bind:value="switchCategory"
+                @change="(event)=>$emit('change-switchCategory',event)"
+                label="Limitar por categoria"
+              />
               <v-combobox
                 v-if="switchCategory"
                 label="categoria"
-                v-model="selectedCategory"
+                v-bind:value="selectedCategory"
+                @change="(event)=>$emit('change-selectedCategory',event)"
                 :items="categoriesName"
                 outlined
                 clearable
@@ -46,14 +66,14 @@
           </v-col>
         </v-row>
       </v-container>
-      <v-container v-else-if="selectedPaidOuttakesList.length === 0 && this.selectedOption === 0">
+      <v-container v-else-if="selectedPaidOuttakesList.length === 0 && selectedOption === 0">
         <v-row align="center" justify="center">
           <v-col>
             <v-card elevation="10" class="pa-4">Não há contas pagas hoje</v-card>
           </v-col>
         </v-row>
       </v-container>
-      <v-container v-else-if="selectedPaidOuttakesList.length === 0 && this.selectedOption === 1">
+      <v-container v-else-if="selectedPaidOuttakesList.length === 0 && selectedOption === 1">
         <v-row align="center" justify="center">
           <v-col>
             <v-card elevation="10" class="pa-4">Não há contas pagas que se encaixam nestas condições</v-card>
@@ -129,15 +149,13 @@
 <script>
 import OuttakeOrder from "../../components/reports/OuttakeOrder";
 import RegisterBill from "../../components/Bills/RegisterBill";
-import crudCategory from "@/views/Register/OuttakesCategories";
 import { mask } from "vue-the-mask";
 import moment from "moment";
 export default {
-  name: "Bills",
+  name: "Bils",
   components: {
     OuttakeOrder,
-    RegisterBill,
-    crudCategory
+    RegisterBill
   },
   props: {
     other: String,
@@ -152,7 +170,7 @@ export default {
     loading: Boolean,
     loadingFilter: Boolean,
     loadingDelete: Boolean,
-    outtakeSelect: Array,
+    outtakeSelect: Object,
     files: Array,
     filesPreviews: Array,
 
@@ -163,7 +181,6 @@ export default {
     categories: Array,
     categoriesName: Array,
 
-    initiate: Function,
     getOuttakesPaid: Function,
     unpayOuttake: Function,
     openAppend: Function
