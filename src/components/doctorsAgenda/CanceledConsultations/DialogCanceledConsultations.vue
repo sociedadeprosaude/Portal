@@ -144,8 +144,12 @@
                                 <v-icon right>delete</v-icon>
                             </v-btn>
                             <v-spacer/>
-                            <v-btn color="success" rounded dark
-                                   :to="{ name: 'RemarcarConsultas', params: { q: {...indexSelected}}}">Remarcar
+                            <v-btn
+                                    color="success"
+                                    rounded
+                                    :to="{ name: 'AgendamentoConsultas', params: { q: indexSelected, type:'remarcar'}}"
+                                    :disabled="indexSelected.status !== 'Pago'"
+                            >Remarcar
                                 <v-icon right>assignment_turned_in</v-icon>
                             </v-btn>
                         </v-card-actions>

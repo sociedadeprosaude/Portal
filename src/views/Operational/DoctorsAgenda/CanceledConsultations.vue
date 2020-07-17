@@ -14,7 +14,7 @@
         <v-layout  class="align-center justify-center" row wrap>
             <v-card>
                 <header-canceled-consultations></header-canceled-consultations>
-                <expansion-panel-canceled-consultations @indexSelected="indexSelected= $event" @dialog="dialog= $event" :consultations="consultations" ></expansion-panel-canceled-consultations>
+                <expansion-panel-canceled-consultations @user="selectUser($event)" @indexSelected="indexSelected= $event" @dialog="dialog= $event" :consultations="consultations" ></expansion-panel-canceled-consultations>
                 <v-dialog v-model="dialog"  width="700">
                     <dialog-canceled-consultations @registerCall="registerCall($event)"  @delete="deleteConsultation($event)" @dialog="dialog = $event" :indexSelected="indexSelected" ></dialog-canceled-consultations>
                 </v-dialog>
@@ -59,6 +59,20 @@
                     calls: values.calls,
                     idConsultation: values.idConsultation,
                 })
+            },
+            async selectUser(user) {
+                if (user) {
+                    let intakes = await this.$store.dispatch('getUserIntakes', user);
+                    if (intakes) {
+                        user.intakes = intakes
+                    }
+                    let budgets = await this.$store.dispatch('getUserBudgets', user);
+                    if (budgets) {
+                        user.budgets = budgets
+                    }
+                }
+                this.$store.commit('setSelectedPatient', user);
+                this.$store.commit('clearSelectedDependent');
             },
         },
     };

@@ -109,22 +109,6 @@
                 </v-layout>
             </ul>
         </div>
-           <!--  Não entendi por que está chamando duas vezes o dialog -->
-            <!-- <div class="text-xs-center">
-                <v-dialog v-model="dialog" v-if="createConsultationForm" max-width="520">
-                    <SchedulingForm @close-dialog="dialog = false"
-                                    :createConsultationForm="createConsultationForm"
-                                    :loaderPaymentNumber="loaderPaymentNumber"
-                                    :exams="examsLoading"
-                                    :numberReceipt="numberReceipt"
-                                    :modalidade="modalidade"
-                                    :previousConsultation="previousConsultation"
-                                    :status="status"
-                                    :payment_numberFound="payment_numberFound"
-                    />
-                </v-dialog>
-            </div> -->
-        
         <v-flex xs12 v-if="!consultationLoading">
             <v-btn class="primary" rounded text @click="listenMoreConsultations">Carregar mais</v-btn>
         </v-flex>
@@ -160,6 +144,7 @@
             numberReceipt: "",
             payment_numberFound: undefined,
             status: "",
+            type:'',
             modalidade: "Consulta",
             previousConsultation: undefined,
             createConsultationForm: undefined,
@@ -182,11 +167,19 @@
             });
 
             this.query = this.$route.params.q
-            if (this.query) {
+            if (this.query  && this.$route.params.type === 'retorno') {
                 this.modalidade = "Retorno"
                 this.previousConsultation = this.query.id
                 this.status = this.query.status
                 this.numberReceipt = this.query.payment_number
+            }
+            else if(this.query  && this.$route.params.type === 'remarcar'){
+                this.modalidade = "Consulta";
+                this.status = this.query.status
+                console.log('status: ', this.status)
+                this.numberReceipt = this.query.num_recibo
+                console.log('numberReceipt: ', this.numberReceipt)
+
             }else if(this.query && this.$route.params.reschedule){
                 this.modalidade = this.query.type
                 this.previousConsultation = this.query.previousConsultation
@@ -197,9 +190,7 @@
             else{
                 this.modalidade = "Consulta"
             }
-
         },
-
         computed: {
 
             isOnline() {
