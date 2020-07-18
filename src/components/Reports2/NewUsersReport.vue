@@ -1,7 +1,13 @@
 <template>
   <v-container>
     <v-row cols="12">
-      <v-chip-group row mandatory v-model="optionSelected" active-class="primary--text">
+      <v-chip-group
+        row
+        mandatory
+        v-bind:value="optionSelected"
+        @change="(event)=>$emit('change-optionSelected',event)"
+        active-class="primary--text"
+      >
         <v-chip v-for="option in options" :key="option">{{ option }}</v-chip>
       </v-chip-group>
     </v-row>
@@ -48,50 +54,24 @@
 import moment from "moment";
 
 export default {
-  name: "NewUsersReport",
+  name: "BestSellingExamsReport",
 
-  props: ["date", "date2", "todayNewUsers"],
-  data() {
-    return {
-      search: "",
-      now: moment().format("YYYY-MM-DD HH:mm:ss"),
-      total: 0,
-      options: ["De hoje", "Outros dias"],
-      optionSelected: 0,
-      headers: [
-        {
-          text: "Cpf",
-          align: "start",
-          sortable: false,
-          value: "cpf"
-        },
-        { text: "Nome", value: "name", align: "center" },
-        { text: "Email", value: "email", align: "center" },
-        {
-          text: "Número de associado",
-          value: "association_number",
-          align: "center"
-        }
-      ],
-
-      dateBegin: null,
-      dateEnd: null
-    };
-  },
-  mounted() {},
-  methods: {},
-  computed: {
-    actualList() {
-      return this.optionSelected === 0 ? this.todayNewUsers : this.newUsers;
-    },
-    newUsers() {
-      return this.$store.getters.users;
-    },
-    numNewUsers() {
-      if (this.actualList) return this.actualList.length;
-      return 0;
-    }
-  }
+  props: [
+    "date",
+    "date2",
+    "todayNewUsers",
+    "search",
+    "now",
+    "total",
+    "options",
+    "optionSelected",
+    "headers",
+    "dateBegin",
+    "dateEnd",
+    "actualList",
+    "newUsers",
+    "numNewUsers"
+  ]
 };
 </script>
 

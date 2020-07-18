@@ -1,11 +1,11 @@
 <template>
   <v-container>
     <TicketsDashboard
-      v-bind:creation="creation"
-      v-bind:sector="sector"
-      v-bind:sectors="sectors"
-      v-bind:loading="loading"
-      v-bind:choosed="choosed"
+      :creation="creation"
+      :sector="sector"
+      :sectors="sectors"
+      :loading="loading"
+      :choosed="choosed"
       :initialInfo="initialInfo"
       :createSector="createSector"
       :deleteSector="deleteSector"

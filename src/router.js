@@ -45,6 +45,8 @@ import CashierRoutes from "./routes/CashierRoutes";
 import discount from "./views/Notifications/discount"
 import notifications from "./views/Notifications/notifications";
 
+import CashierReports from "@/views/Statistics/StatisticsDashboard";
+
 const Clinic = {
   props: ['id'],
   template: '<div>Clinic {{ id }}</div>'
@@ -84,6 +86,16 @@ let mainRoutes = [
     meta: {
       requiresAuth: true
     }
+  },
+  {
+    path: '/relatorios',
+    name: 'CashierReports',
+    component: CashierReports,
+    beforeEnter(to, from, next) {
+      store.commit('showOverviewToggle', true)
+      next()
+    },
+
   },
   {
     path: '/relatorio',

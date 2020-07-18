@@ -1,13 +1,10 @@
 import Bundles from "../views/Register/Bundles"
 import Budget from "../views/Operational/Cashier/Budget";
 import Cashier from "../views/Operational/Cashier/Cashier";
-import CashierReports from "@/views/Statistics/StatisticsDashboard";
 import PayOnline from "../views/Operational/Cashier/PayOnline";
 import Outflows from "../views/Register/Outflows";
 import StatsCaixa from '../views/Statistics/statsCaixa'
 
-
-import store from "../store/store"
 
 export default [
     {
@@ -15,16 +12,7 @@ export default [
         name: 'home',
         component: Cashier
     },
-    {
-        path: '/caixa2',
-        name: 'CashierReports',
-        component: CashierReports,
-        beforeEnter(to, from, next) {
-            store.commit('showOverviewToggle',true)
-            next()
-        },
-      
-    },
+    
     {
         path: '/charts',
         name: 'Charts',

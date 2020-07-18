@@ -13,13 +13,13 @@
     >
       <v-list dense>
         <v-list-item
-          v-for="item in items"
-          :key="item.title"
+          v-for="(item,index) in items"
+          :key="index"
           link
-          @click="selected = item.value; overviewDrawer=false"
+          @click="selected = index; overviewDrawer=false"
         >
           <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
+            <v-list-item-title>{{item}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -87,45 +87,118 @@
       :intakes="intakes"
       :reportAllUnits="formattedReportAllUnits"
     />
-    <OuttakesReport v-if="selected == 1" :date="dateBegin" :date2="dateEnd" :cb="pesquisar" />
-    <procedures-prices-analises v-else-if="selected == 2"></procedures-prices-analises>
-    <statsCaixaIntakes v-else-if="selected == 3"></statsCaixaIntakes>
-    <statsCaixaOuttakes v-else-if="selected == 4"></statsCaixaOuttakes>
-    <statsCaixaOuttakesClinics v-else-if="selected == 5"></statsCaixaOuttakesClinics>
-    <Clients v-else-if="selected == 6"></Clients>
+
+    <luiz-fernando-report
+      v-if="selected == 1"
+      :report="formattedReport"
+      :loading="loading"
+      :intakes="intakes"
+      :reportAllUnits="formattedReportAllUnits"
+    />
+
+    <colaborators-production-report v-if="selected == 2" :loading="loading" :intakes="intakes"></colaborators-production-report>
+
+    <intakes-report
+      v-if="selected == 3"
+      :report="formattedReport"
+      :loading="loading"
+      :intakes="intakes"
+    />
+
+    <procedures-prices-analises v-if="selected == 4" />
+    <best-selling-exams-report v-if="selected == 5" :date="dateBegin" :date2="dateEnd" />
+
+    <BestSellingConsultationsReport v-if="selected == 6" :date="dateBegin" :date2="dateEnd" />
+
+    <OuttakesReport v-if="selected == 7" :date="dateBegin" :date2="dateEnd" :cb="pesquisar" />
+    <NewUsersReport
+      v-if="selected == 8"
+      :date="dateBegin"
+      :date2="dateEnd"
+      :todayNewUsers="todayNewUsers"
+    />
+    <SpecialtiesMadeReport
+      v-if="selected == 9"
+      :report="formattedReport"
+      :loading="loading"
+      :intakes="intakes"
+    />
+    <ConsultationScheduledExecuted
+      v-if="selected == 10"
+      :report="formattedReport"
+      :loading="loading"
+      :intakes="intakes"
+    />
+    <CustomersPerProcedureReport
+      v-if="selected == 11"
+      :report="formattedReport"
+      :loading="loading"
+    />
+
+    <statsCaixaIntakes v-else-if="selected == 12"></statsCaixaIntakes>
+    <statsCaixaOuttakesCategory v-else-if="selected == 13"></statsCaixaOuttakesCategory>
+    <statsCaixaOuttakesClinics v-else-if="selected == 14"></statsCaixaOuttakesClinics>
+    <Clients v-else-if="selected == 15"></Clients>
   </v-container>
 </template>
 
 <script>
-import ProceduresPricesAnalises from "@/components/reports/ProceduresPricesAnalises";
-import GeneralReport from "@/components/reports/GeneralReport";
-import OuttakesReport from "@/components/reports/OuttakesReport";
-
-import statsCaixaIntakes from "./statsCaixa";
-import statsCaixaOuttakes from "./statsCaixaOuttakes";
-import statsCaixaOuttakesClinics from "./statsCaixaOuttakesClinics";
-import Clients from "./Clients";
+import GeneralReport from "@/views/relatorios/GeneralReport";
+import LuizFernandoReport from "@/views/relatorios/LuizFernandoReport";
+import ColaboratorsProductionReport from "@/views/relatorios/ColaboratorsProductionReport";
+import IntakesReport from "@/views/relatorios/IntakesReport";
+import ProceduresPricesAnalises from "@/views/relatorios/ProceduresPricesAnalises";
+import BestSellingExamsReport from "@/views/relatorios/BestSellingExamsReport";
+import BestSellingConsultationsReport from "@/views/relatorios/BestSellingConsultationsReport";
+import OuttakesReport from "@/views/relatorios/OuttakesReport";
+import NewUsersReport from "@/views/relatorios/NewUsersReport";
+import SpecialtiesMadeReport from "@/views/relatorios/SpecialtiesMadeReport";
+import ConsultationScheduledExecuted from "@/views/relatorios/ConsultationScheduledExecuted";
+import CustomersPerProcedureReport from "@/views/relatorios/CustomersPerProcedureReport";
+import statsCaixaIntakes from "@/views/relatorios/statsCaixaIntakes";
+import statsCaixaOuttakesCategory from "@/views/relatorios/statsCaixaOuttakesCategory";
+import statsCaixaOuttakesClinics from "@/views/relatorios/statsCaixaOuttakesClinics";
+import Clients from "@/views/relatorios/Clients";
 
 export default {
   components: {
+    ColaboratorsProductionReport,
     GeneralReport,
+    LuizFernandoReport,
+    IntakesReport,
     ProceduresPricesAnalises,
+    BestSellingExamsReport,
+    BestSellingConsultationsReport,
     OuttakesReport,
+    SpecialtiesMadeReport,
+    NewUsersReport,
+    ConsultationScheduledExecuted,
+    CustomersPerProcedureReport,
+
     statsCaixaIntakes,
-    statsCaixaOuttakes,
+    statsCaixaOuttakesCategory,
     statsCaixaOuttakesClinics,
     Clients
   },
   data: vm => ({
-    selected: 4,
+    selected: 0,
     items: [
-      { title: "Relatorio financeiro geral", value: 0 },
-      { title: "Relatorio de Saidas", value: 1 },
-      { title: "Análise de preço de exames", value: 2 },
-      { title: "Intakes", value: 3 },
-      { title: "Outtakes", value: 4 },
-      { title: "Outtakes clinicas", value: 5 },
-      { title: "Clientes", value: 6 }
+      "Relatório Financeiro Geral",
+      "Relatório Luiz Fernando",
+      "Produção do Colaborador",
+      "Relatório de Vendas",
+      "Analise de preço de exames",
+      "Exames mais vendidos",
+      "Consultas mais vendidas",
+      "Relatório de Saídas",
+      "Novos associados",
+      "Relatório Especialidades",
+      "Relatório Consulta Marcada x Realizada",
+      "Relatorio Paciente por Procedimento",
+      "Intakes",
+      "Outtakes",
+      "Outtakes clinicas",
+      "Clientes"
     ],
 
     date: moment().format("YYYY-MM-DD 00:00:00"),
@@ -232,7 +305,7 @@ export default {
       return this.$store.getters.colaborators;
     },
     hide() {
-      return  this.selected == 5 || this.selected == 4 || this.selected == 3;
+      return this.selected > 11;
     },
     overviewDrawer: {
       get() {
