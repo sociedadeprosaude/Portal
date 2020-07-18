@@ -22,18 +22,6 @@
                                 </v-layout>
                             </v-card>
                         </v-flex>
-                        <!-- <v-flex xs12 sm12 class="mt-4 mb-3">
-                            <v-divider class="primary"/>
-                        </v-flex>
-                        <v-flex sm3 v-for="(item, i) in exam.clinics" :key="i" class="mt-3 mb-2">
-                            <v-card outlined class="borderCard mx-2 mr-2 pb-3 grey_light">
-                                <v-layout row wrap class="mt-2">
-                                    <v-flex xs12 class="ml-3">
-                                        <h4 class="text-left font-weight-bold"><v-icon left>info</v-icon>{{item.name}}</h4>
-                                    </v-flex>
-                                </v-layout>
-                            </v-card>
-                        </v-flex> -->
                     </v-card>
                 </v-flex>
             </div>
