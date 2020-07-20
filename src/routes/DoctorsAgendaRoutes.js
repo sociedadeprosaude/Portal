@@ -35,7 +35,7 @@ export default [
         path: '/agenda/agendamento',
         name: 'AgendamentoConsultas',
         component: DoctorScheduling,
-        props: (route) => ({ query: route.query.q }),
+        props: (route) => ({ query: route.query }),
     },
     {
         path: 'discount',
@@ -78,7 +78,7 @@ export default [
         path: '/agenda/AgendarRetorno',
         name: 'AgendarRetorno',
         component: ScheduleReturn,
-        props: (route) => ({ query: route.query.q }),
+        props: (route) => ({ query: route.query.q  }),
     },
     {
         path: '/agenda/Cids',
