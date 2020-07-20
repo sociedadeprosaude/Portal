@@ -21,12 +21,24 @@ exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate
 exports.setUidToUserWhenCreated = functions.firestore.document('users/{id}').onCreate((doc, context) => {
     let firestore = admin.firestore();
     let id = doc.id;
+    let uid = doc.data().uid
     let type = doc.data().type
+
     if(type === 'PATIENT'){
-        firestore.collection('users').doc(id).update({uid: id})
+        if(!uid){
+            firestore.collection('users').doc(id).update({uid: id})
+        }
     }
     if(type === 'DOCTOR'){
-        firestore.collection('users').doc(id).update({uid: id})
+        if(!uid) {
+            firestore.collection('users').doc(id).update({uid: id})
+        }
+    }
+    if(type === 'COLABORATOR'){
+        if(id !== uid){
+            firestore.collection('users').doc(uid).set(doc.data())
+            firestore.collection('users').doc(id).delete()
+        }
     }
 });
 
@@ -34,14 +46,203 @@ exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore
     let firestore = admin.firestore();
     let uidOld = change.before.data().uid;//antes
     let uidNew = change.after.data().uid;//depois
-    let copy = change.after.data();
+    let user = change.after.data();
     let type = change.after.data().type
-    //subcolletions tbm
-    //deletar paciente com id antigo e setar com id novo(auth*)
-    if( uidNew !== uidOld && type === 'PATIENT'){
-        firestore.collection('users').doc(uidNew).set(copy)
-        firestore.collection('users').doc(uidOld).delete()
 
+    if( uidNew !== uidOld && type === 'PATIENT'){
+        //raiz: user NEW
+        await firestore.collection('users').doc(uidNew).set(user)
+        //SubCollections:
+        let consultations = '/consultations';
+        let consult = await firestore.collection('users/' + uidOld + consultations).get();
+        let arrayOfConsultations = [];
+        consult.forEach(doc => {
+            arrayOfConsultations.push(doc.data())
+        });
+        if(arrayOfConsultations){
+            for (let consultation in arrayOfConsultations){
+               firestore.collection('users/' + uidNew + consultations).doc(arrayOfConsultations[consultation].id).set(arrayOfConsultations[consultation]);
+            }
+        }
+
+        let procedures = '/procedures';
+        let proced = await firestore.collection('users/' + uidOld + procedures).get();
+        let arrayOfProcedures = [];
+        proced.forEach(doc => {
+            let obj = doc.data()
+            obj.id = doc.id
+            arrayOfProcedures.push(obj)
+        });
+        if(arrayOfProcedures){
+            for (let procedure in arrayOfProcedures){
+                firestore.collection('users/' + uidNew + procedures).doc(arrayOfProcedures[procedure].id).set(arrayOfProcedures[procedure]);
+            }
+        }
+
+        let proceduresFinished = '/proceduresFinished';
+        let procedF = await firestore.collection('users/' + uidOld + proceduresFinished).get();
+        let arrayOfProceduresFinished = [];
+        procedF.forEach(doc => {
+            let obj = doc.data()
+            obj.id = doc.id
+            arrayOfProceduresFinished.push(obj)
+        });
+        if(arrayOfProceduresFinished){
+            for (let procedureF in arrayOfProceduresFinished){
+                firestore.collection('users/' + uidNew + proceduresFinished).doc(arrayOfProceduresFinished[procedureF].id).set(arrayOfProceduresFinished[procedureF]);
+            }
+        }
+
+        let budgets = '/budgets/';
+        let budg = await firestore.collection('users/' + uidOld + budgets).get();
+        let arrayOfBudgets = [];
+        budg.forEach(doc => {
+            arrayOfBudgets.push(doc.data())
+        });
+        if(arrayOfBudgets){
+            console.log(arrayOfBudgets)
+            for (let budget in arrayOfBudgets){
+                firestore.collection('users/' + uidNew + budgets).doc(arrayOfBudgets[budget].id.toString()).set(arrayOfBudgets[budget]);
+                //esp
+                let specialtiesOfB = firestore.collection('users/' + uidOld + budgets + arrayOfBudgets[budget].id + '/specialties').get();
+                let arrayOfBudgetsSpecialties = [];
+                specialtiesOfB.forEach(doc => {
+                    let obj = doc.data()
+                    obj.id = doc.id
+                    arrayOfBudgetsSpecialties.push(obj)
+                });
+                if(arrayOfBudgetsSpecialties){
+                    console.log(arrayOfBudgetsSpecialties)
+                    for(let specialtie in arrayOfBudgetsSpecialties){
+                        firestore.collection('users/' + uidNew + budgets + arrayOfBudgets[budget].id + '/specialties').doc(arrayOfBudgetsSpecialties[specialtie].id).set(arrayOfBudgetsSpecialties[specialtie]);
+                    }
+                }
+                //exam
+                let examsOfB = firestore.collection('users/' + uidOld + budgets + arrayOfBudgets[budget].id + '/exams').get();
+                let arrayOfBudgetsExams = [];
+                examsOfB.forEach(doc => {
+                    let obj = doc.data()
+                    obj.id = doc.id
+                    arrayOfBudgetsExams.push(obj)
+                });
+                if(arrayOfBudgetsExams){
+                    console.log(arrayOfBudgetsExams)
+                    for(let exam in arrayOfBudgetsExams){
+                        firestore.collection('users/' + uidNew + budgets + arrayOfBudgets[budget].id + '/exams').doc(arrayOfBudgetsExams[exam].id).set(arrayOfBudgetsExams[exam]);
+                    }
+                }
+            }
+        }
+
+        let intakes = '/intakes/';
+        let intak = await firestore.collection('users/' + uidOld + intakes).get();
+        let arrayOfIntakes = [];
+        intak.forEach(doc => {
+            arrayOfIntakes.push(doc.data())
+        });
+        if(arrayOfIntakes){
+            for (let intake in arrayOfIntakes){
+                firestore.collection('users/' + uidNew + intakes).doc(arrayOfIntakes[intake].id.toString()).set(arrayOfIntakes[intake]);
+                //esp
+                let specialtiesOfI = firestore.collection('users/' + uidOld + intakes + arrayOfIntakes[intake].id + '/specialties').get();
+                let arrayOfIntakesSpecialties = [];
+                specialtiesOfI.forEach(doc => {
+                    let obj = doc.data()
+                    obj.id = doc.id
+                    arrayOfIntakesSpecialties.push(obj)
+                });
+                if(arrayOfIntakesSpecialties){
+                    for(let specialtie in arrayOfIntakesSpecialties){
+                        firestore.collection('users/' + uidNew + intakes + arrayOfIntakes[intake].id + '/specialties').doc(arrayOfIntakesSpecialties[specialtie].id).set(arrayOfIntakesSpecialties[specialtie]);
+                    }
+                }
+                //exam
+                let examsOfI = firestore.collection('users/' + uidOld + intakes + arrayOfIntakes[intake].id + '/exams').get();
+                let arrayOfIntakesExams = [];
+                examsOfI.forEach(doc => {
+                    let obj = doc.data()
+                    obj.id = doc.id
+                    arrayOfIntakesExams.push(obj)
+                });
+                if(arrayOfIntakesExams){
+                    for(let exam in arrayOfIntakesExams){
+                        firestore.collection('users/' + uidNew + intakes + arrayOfIntakes[intake].id + '/exams').doc(arrayOfIntakesExams[exam].id).set(arrayOfIntakesExams[exam]);
+                    }
+                }
+            }
+        }
+        //raiz: user OLD
+        await firestore.collection('users').doc(uidOld).delete()
+    }
+});
+
+exports.UpdateUidOfUserDoctorWhenHeCreateLoginAndPassword = functions.firestore.document('users/{uid}').onUpdate( async (change, context) => {
+    let firestore = admin.firestore();
+    let uidOld = change.before.data().uid;//antes
+    let uidNew = change.after.data().uid;//depois
+    let user = change.after.data();//tudo do user depois da atualização*
+    let type = change.after.data().type
+
+    if( uidOld !== uidNew && type === 'DOCTOR'){
+        //raiz: user
+        await firestore.collection('users').doc(uidNew).set(user)
+        await firestore.collection('users').doc(uidOld).delete()
+        //subcollections of doctor
+        for(let specialtie in user.specialties){
+            for(let clinic in user.clinics){
+                firestore.collection('users/' + uidNew + '/specialties').doc(user.specialties[specialtie].name).set(user.specialties[specialtie]);
+                firestore.collection('users/' + uidNew + '/specialties/' + user.specialties[specialtie].name + '/clinics').doc(user.clinics[clinic].name).set(user.clinics[clinic]);
+            }
+        }
+        //raiz: specialites
+        for(let specialtie in user.specialties){
+            let objEdited = {
+                name: user.name,
+                type: user.type,
+                cpf: user.cpf,
+                uid: user.uid,
+                crm: user.crm,
+                cost: user.specialties[specialtie].cost,
+                price: user.specialties[specialtie].price,
+                payment_method: user.specialties[specialtie].payment_method
+            }
+            firestore.collection('specialties/' + user.specialties[specialtie].name + '/doctors' ).doc(uidNew).set(objEdited);
+            firestore.collection('specialties/' + user.specialties[specialtie].name + '/doctors' ).doc(uidOld).delete();
+            for(let clinic in user.clinics){
+                firestore.collection('specialties/' + user.specialties[specialtie].name + '/doctors/' + uidNew + '/clinics').doc(user.clinics[clinic].name).set(user.clinics[clinic]);
+                firestore.collection('specialties/' + user.specialties[specialtie].name + '/doctors/' + uidOld + '/clinics').doc(user.clinics[clinic].name).delete();
+            }
+        }
+
+        //raiz: clinics
+        for(let clinic in user.clinics){
+            for(let specialtie in user.specialties) {
+                let objEdited = {
+                    name: user.name,
+                    cpf: user.cpf,
+                    crm: user.crm,
+                    uid: user.uid,
+                    cost: user.specialties[specialtie].cost,
+                    price: user.specialties[specialtie].price,
+                    payment_method: user.specialties[specialtie].payment_method,
+                    specialtie: user.specialties[specialtie].name
+                }
+                firestore.collection('clinics/' + user.clinics[clinic].name + '/specialties/' + user.specialties[specialtie].name + '/doctors').doc(uidNew).set(objEdited);
+                firestore.collection('clinics/' + user.clinics[clinic].name + '/specialties/' + user.specialties[specialtie].name + '/doctors').doc(uidOld).delete();
+            }
+        }
+
+        //schedules uid on doctor equlas === uid user.doc da raiz
+        let schedule = await firestore.collection('schedules').get();
+        schedule.forEach(doc => {
+            if(doc.data().doctor.cpf === user.cpf){
+                if (doc.data().doctor.uid === user.uid) {
+                    let modified = doc.data()
+                    modified.doctor.uid = user.uid
+                    firestore.collection('schedules').doc(doc.id).update(modified)
+                }
+            }
+        });
     }
 });
 

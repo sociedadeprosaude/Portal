@@ -22,14 +22,12 @@ const state = {
 
 const mutations = {
     async setSelectedPatient(state, payload) {
-
         if (payload) {
             localStorage.setItem('patient', payload.uid);
         }
-
         let consultations;
         if (payload) {
-            await firebase.firestore().collection('users').doc(payload.cpf).collection('consultations')
+            await firebase.firestore().collection('users').doc(payload.uid).collection('consultations')
                 .onSnapshot((querySnapshot) => {
                     consultations = [];
                     querySnapshot.forEach((consultation) => {
@@ -38,7 +36,6 @@ const mutations = {
                     payload = { ...payload, consultations: consultations };
                     state.selectedPatient = payload
                 })
-
         } else {
             state.selectedPatient = payload
         }
@@ -136,8 +133,10 @@ const actions = {
         userDoc.forEach(doc => {
             user = doc.data()
         });
+        console.log('user:', user)
         return user
     },
+
     async searchUser({ }, searchFields) {
         let usersRef = firestore().collection('users');
         for (let field in searchFields) {
@@ -180,13 +179,16 @@ const actions = {
     thereIsUserCPF({ commit }, payload) {
         return new Promise(async (resolve, reject) => {
             try {
-                let foundUser = await firebase.firestore().collection('users').doc(payload).get();
-                resolve(foundUser.data())
-            }catch(e){
+                let userDoc = await firestore().collection('users')
+                    .where('cpf', '==', payload)
+                    .get();
+                userDoc.forEach(doc => {
+                    resolve(doc.data())
+                });
+            } catch (e) {
                 reject(e)
             }
         })
-
     },
     thereIsUserUID({ commit }, payload) {
         return new Promise(async (resolve, reject) => {
@@ -223,7 +225,7 @@ const actions = {
     },
 
     async addUser({ getters }, patient) {
-        //console.log('patient:', patient)
+        console.log('patient:', patient)
         functions.removeUndefineds(patient);
         try {
             let user;
@@ -232,19 +234,17 @@ const actions = {
             foundUser.docs.forEach(doc => {
                 founded = doc.id
             });
-            //console.log('encontrado:', founded)
-            if(founded){
+            console.log('encontrado:', founded)
+            if (founded) {
+                //se já existir: collaborator / patient / doctor (passar a ter field uid !== de doc.id)
                 user = await firebase.firestore().collection('users').doc(founded).update(patient);
-            }else{
-                if(patient.uid){
-                    user = await firebase.firestore().collection('users').doc(patient.uid).update(patient)
-                } else {
-                    if (patient.type) {
-                        patient.type = patient.type.toUpperCase()
-                    }
-                    patient.created_at = moment().format('YYYY-MM-DD HH:mm:ss');
-                    user = await firebase.firestore().collection('users').add(patient)
+            } else {
+                //novo user : colaborator / patiente
+                if (patient.type) {
+                    patient.type = patient.type.toUpperCase()
                 }
+                patient.created_at = moment().format('YYYY-MM-DD HH:mm:ss');
+                user = await firebase.firestore().collection('users').add(patient)
             }
             return user
         } catch (e) {
@@ -263,11 +263,11 @@ const actions = {
                 }
             }
             upd = payload.user;
-            return await firebase.firestore().collection('users').doc(payload.user.cpf).set(upd)
+            return await firebase.firestore().collection('users').doc(payload.user.uid).set(upd)
 
         } else {
             upd[payload.field] = payload.value;
-            return await firebase.firestore().collection('users').doc(payload.user.cpf).update(upd)
+            return await firebase.firestore().collection('users').doc(payload.user.uid).update(upd)
         }
     },
     async deleteUser({ }, user) {
@@ -278,7 +278,7 @@ const actions = {
                     adv += user.user.advances[advance].valueParcel
                 }
             }
-            await firebase.firestore().collection('users').doc(user.user.cpf).delete();
+            await firebase.firestore().collection('users').doc(user.user.uid).delete();
             admin.auth().deleteUser(user.user.uid).then(function () {
             })
                 .catch(function (error) {

@@ -13,6 +13,26 @@ const heavyFunctionsRuntimeOpts = {
     memory: '2GB'
 }
 
+exports.ReMappingUidOfUsersColaborator = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (request, response) => {
+    const firestore = admin.firestore();
+    try {
+        let query = firestore.collection('users');
+        let usersSnap = [];
+        query = query.where('type', '==', 'COLABORATOR')
+        usersSnap = await query.get();
+        usersSnap.docs.forEach(doc => {
+            if(doc.id !== doc.data().uid) {
+                firestore.collection('users').doc(doc.data().uid).set(doc.data())
+                firestore.collection('users').doc(doc.id).delete()
+            }
+        });
+    } catch (e) {
+        console.log(e)
+    }
+    response.status(200).send('funcionu UID ReMapping Colaborators')
+    return
+});
+
 exports.setUidToUsersPatient = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (request, response) => {
     const firestore = admin.firestore();
     try {
@@ -28,7 +48,7 @@ exports.setUidToUsersPatient = functions.runWith(heavyFunctionsRuntimeOpts).http
     } catch (e) {
         console.log(e)
     }
-    response.status(200).send('funcionu UID P')
+    response.status(200).send('funcionu UID To Patients')
     return
 });
 
@@ -47,7 +67,7 @@ exports.setUidToUsersDoctor = functions.runWith(heavyFunctionsRuntimeOpts).https
     } catch (e) {
         console.log(e)
     }
-    response.status(200).send('funcionu UID D')
+    response.status(200).send('funcionu UID To Doctors')
     return
 });
 

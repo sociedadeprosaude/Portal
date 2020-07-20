@@ -51,17 +51,13 @@ const actions = {
 
     async updateAccount({ commit }, payload) {
         try {
-            let id = payload.cpf;
-            id = id.replace('.', "");
-            id = id.replace('.', "");
-            id = id.replace('-', "");
+            let id = payload.uid;
             await firebase.firestore().collection('users').doc(id).update({
                 name: payload.name,
                 telephones: payload.telephones,
                 address: payload.address,
                 bankData: payload.bank,
             });
-
             commit('setUser', payload)
         } catch (e) {
             console.log(e)
