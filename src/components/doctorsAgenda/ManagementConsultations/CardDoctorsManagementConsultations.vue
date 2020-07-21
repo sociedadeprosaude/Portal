@@ -155,13 +155,11 @@
                     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.loadingConsultations = !this.loadingConsultations
                 }
-
                 this.loadingConsultations = true
                 let response =  this.$store.getters.consultations.filter((a) => {
                     let filtedBySpecialty = !this.filterByExam && this.specialty && a.specialty && this.specialty.name === a.specialty.name
                     let filtedByExamType = this.filterByExam && this.examType && a.exam && this.examType.name === a.exam.type
                     return this.date && this.date === a.date.split(' ')[0] && a.user && (filtedBySpecialty || filtedByExamType)
-
                 });
                 this.loadingConsultations = false
                 return response
@@ -170,11 +168,6 @@
                 return this.$store.getters.doctor
             }
         },
-        mounted() {
-            this.initialConfig()
-
-        },
-        watch: {},
         methods: {
 
             cleanSpecialtyToDeactivate() {
@@ -208,9 +201,6 @@
                     this.confirmDeactivate = true;
                 }
             },
-            async initialConfig() {
-
-            },
             daydate(date) {
                 let dateMoment = moment(date);
                 return this.semanaOptions[dateMoment.day()];
@@ -233,6 +223,7 @@
                 this.confirmDeactivate = false
             },
             async selectUser(user) {
+                console.log('user: ', user)
                 if (user) {
                     let intakes = await this.$store.dispatch('getUserIntakes', user);
                     if (intakes) {

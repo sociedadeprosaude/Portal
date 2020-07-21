@@ -142,7 +142,6 @@
                                         return-object
                                         label="Exame"
                                         outlined
-                                        :disabled="this.$route.params.reschedule"
                                         chips
                                         color="blue"
                                         clearable
@@ -260,7 +259,7 @@
 
     export default {
 
-        props: ['createConsultationForm', 'loaderPaymentNumber', 'exams', 'numberReceipt','status','payment_numberFound','modalidade','previousConsultation','rescheduleConsultation'],
+        props: ['createConsultationForm', 'loaderPaymentNumber', 'exams', 'numberReceipt','status','payment_numberFound','modalidade','previousConsultation'],
         components: {SubmitButton},
 
         data: () => ({
@@ -269,11 +268,7 @@
             statusOptions: [{text: "Aguardando pagamento"}, {text: "Pago"}],
             exam:undefined,
             findPaymentToExam:true,
-            //exams: ['ULTRASSONOGRAFIA', 'ELETROCARDIOGRAMA', 'ELETROENCEFALOGRAMA', 'ECOCARDIOGRAMA', 'VIDEOLARIGONSCOPIA'],
         }),
-        mounted(){
-            this.setExamFromCreatedForm()
-        },
         computed: {
             selectedPatient() {
                 return this.$store.getters.selectedPatient;
@@ -281,11 +276,6 @@
             foundDependents() {
                 return this.selectedPatient ? this.selectedPatient.dependents : undefined;
             },
-            /* listExam() {
-                return this.$store.getters.exams.filter(a => {
-                    return a.type === this.createConsultationForm.consultation.specialty.name;
-                });
-            }, */
             computedDateFormatted() {
                 return this.formatDate(
                     this.createConsultationForm.consultation.date.split(" ")[0]
@@ -330,28 +320,15 @@
                         dependent: form.user.dependent
                     };
                 this.loading = true;
-                if(this.rescheduleConsultation){
-                    form.consultation.idConsultationCanceled = this.rescheduleConsultation
-                    await this.$store.dispatch("addUserToConsultationReschedule", form);
-                }else{
-                    await this.$store.dispatch("addUserToConsultation", form);
-                }
+                await this.$store.dispatch("addUserToConsultation", form);
                 this.scheduleLoading = false;
                 this.success = true;
-                if(this.$route.params.q)
-                    this.$router.back()
+
             },
 
             close: function () {
                 this.exam = undefined
                 this.$emit('close-dialog')
-            },
-
-            setExamFromCreatedForm(){
-                if(this.createConsultationForm && this.createConsultationForm.consultation.exam){
-                    this.exam = this.createConsultationForm.consultation.exam
-                    this.findPaymentToExam = false
-                }
             }
         },
         watch:{

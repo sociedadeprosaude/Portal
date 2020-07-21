@@ -62,11 +62,18 @@
     <v-container fluid class="two white--text">
       <v-row class="pa-0 ma-0 half">
         <v-col align-self="center">
-          <v-row justify="center" class="display-2">{{removeNumbers(lastTicketCalled.roomName)}}</v-row>
+          <v-row
+            v-if="lastTicketCalled"
+            justify="center"
+            class="display-2"
+          >{{removeNumbers(lastTicketCalled.roomName)}}</v-row>
 
           <v-row justify="center">
             <v-col sm="6" md="4" lg="3" xl="2" class="ma-0 pa-0">
-              <p style="font-size: 6em;">{{onlyNumbers(lastTicketCalled.roomName)}}</p>
+              <p
+                v-if="lastTicketCalled"
+                style="font-size: 6em;"
+              >{{onlyNumbers(lastTicketCalled.roomName)}}</p>
             </v-col>
           </v-row>
         </v-col>
@@ -92,7 +99,7 @@
 import constants from "../../utils/constants";
 
 export default {
-  name: "SingleVisualizer",
+  name: "MultipleVisualizer",
   props: ["sector"],
   mounted() {
     this.clockInterval = setInterval(() => {
@@ -181,7 +188,7 @@ export default {
             this.animation = "";
           }, 5000);
           this.lastRoomCalled = latest;
-          this.playTicketSound()
+          this.playTicketSound();
         }
         return latest;
       }
@@ -194,8 +201,10 @@ export default {
   },
   methods: {
     playTicketSound() {
-      let sound = new Audio('https://firebasestorage.googleapis.com/v0/b/prosaude-36f66.appspot.com/o/assets%2FCollected%20Coin%20A1.mp3?alt=media&token=57509b64-12aa-4946-9814-42995ac8ab41')
-      sound.play()
+      let sound = new Audio(
+        "https://firebasestorage.googleapis.com/v0/b/prosaude-36f66.appspot.com/o/assets%2FCollected%20Coin%20A1.mp3?alt=media&token=57509b64-12aa-4946-9814-42995ac8ab41"
+      );
+      sound.play();
     },
     removeNumbers(str) {
       return str.replace(/[0-9]/g, "");

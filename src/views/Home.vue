@@ -135,12 +135,6 @@
                                 to: '/agenda/agendamento',
                                 icon: 'calendar_today'
                             },
-                            /* {
-                                title: 'Caixa',
-                                icon: 'monetization_on',
-                                permission: 'Caixa',
-                                to: '/caixa'
-                            }, */
                             {
                                 title: 'Senhas',
                                 permission: 'Senhas',
@@ -187,12 +181,7 @@
                                 to: '/relatorio',
                                 permission: 'Relatórios',
                                 icon: 'report'
-                            }, /* {
-                                title: 'Consultas',
-                                to: '/agenda/CadastroConsultasPlantoes',
-                                permission: 'Agenda Médica',
-                                icon: 'event',
-                            }, */
+                            },
                             {
                                 title:"Consultas",
                                 to:"/agenda/GerenciarAgendas",
@@ -205,25 +194,12 @@
                                 permission: 'Caixa',
                                 icon: 'queue',
                             },
-/*                            {
-                                title: 'Saídas',
-                                to: '/caixa/Saidas',
-                                permission: 'Caixa',
-                                icon: 'attach_money',
-                            },*/
                             {
                                 title: 'Financeiro',
-                                to: '/bills',
+                                to: '/pagamento/financeiro',
                                 permission: 'Caixa',
                                 icon: 'attach_money',
-                            },
-                            {
-                                title: 'Pagar Convênios',
-                                to: '/PaymentCovenants',
-                                permission: 'Caixa',
-                                icon: 'receipt',
-                            },
-
+                            }
                         ]
                     },
                     {
@@ -254,6 +230,18 @@
                                 title: 'Check Exames',
                                 permission: 'clinic',
                                 to: '/DischargeProcedures',
+                                icon: 'supervisor_account'
+                            },
+                            {
+                                title: 'Verificação Encaminhamentos A Cobrar',
+                                permission: 'clinic',
+                                to: '/VerificacaoEncaminhamentos',
+                                icon: 'supervisor_account'
+                            },
+                            {
+                                title: 'Histórico de Pagamentos',
+                                permission: 'clinic',
+                                to: '/HistoricoDePagamentos',
                                 icon: 'supervisor_account'
                             },
                         ]

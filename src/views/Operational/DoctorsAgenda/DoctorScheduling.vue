@@ -19,11 +19,8 @@
                 <DataCashierConsultation/>
             </v-flex>
 
-            <v-flex xs12 class="hidden-md-and-up">
+            <v-flex xs12 class="primary hidden-md-and-up">
                 <DataToSearchConsultation @GetConsultations="schedules= $event" :daysToListen="daysToListen" v-if="this.viewSeleted === 'data'"/>
-                <!--
-                <SchedulesConsultations class="white" :Consultations="schedules" @refreshDate="daysToListen = $event" v-if="this.viewSeleted === 'schedules'"/>
-               -->
                 <DataCashierConsultation v-if="this.viewSeleted === 'cashier'"/>
             </v-flex>
         </v-layout>

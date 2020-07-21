@@ -1,107 +1,111 @@
 <template>
     <v-container fluid class="ma-0 pa-0">
-        <v-card class="background pr-2 pl-2 pt-2">
-            <v-flex class="justify-center">
-                <span class="my-sub-headline">{{room.name}}</span>
-            </v-flex>
-            <v-flex>
-                <v-col>
-                    <v-tooltip bottom v-if="doctorsLoaded">
-                        <template v-slot:activator="{ on }">
-                            <v-btn
-                                    @click="callNextTicket(room)"
-                                    v-on="on"
-                                    :disabled="loading"
-                                    text
-                                    fab
-                                    x-small
-                                    class="primary my-2"
-                            >
-                                <v-icon>add_alert</v-icon>
-                            </v-btn>
-                        </template>
-                        <span>Chamar próxima senha</span>
-                    </v-tooltip>
-                    <v-tooltip bottom v-if="doctorsLoaded">
-                        <template v-slot:activator="{ on }">
-                            <v-btn
-                                    v-on="on"
-                                    :disabled="loading"
-                                    @click="selectedRoom = room, doctorsListDialog.active = true"
-                                    text
-                                    fab
-                                    x-small
-                                    class="primary ml-2 my-2"
-                            >
-                                <v-icon>person</v-icon>
-                            </v-btn>
-                        </template>
-                        <span>Selecionar médico</span>
-                    </v-tooltip>
-                    <v-progress-circular indeterminate class="primary--text" v-else/>
-                    <v-tooltip bottom v-if="doctorsLoaded">
-                        <template v-slot:activator="{ on }">
-                            <v-btn
-                                    @click="generateNextTicket(room)"
-                                    v-on="on"
-                                    :disabled="loading"
-                                    text
-                                    fab
-                                    x-small
-                                    class="primary ml-2 my-2"
-                            >
-                                <v-icon>post_add</v-icon>
-                            </v-btn>
-                        </template>
-                        <span>Gerar senha</span>
-                    </v-tooltip>
-                    <v-tooltip bottom v-if="doctorsLoaded">
-                        <template v-slot:activator="{ on }">
-                            <v-btn
-                                    @click="openSingleView(room)"
-                                    v-on="on"
-                                    :disabled="loading"
-                                    text
-                                    fab
-                                    x-small
-                                    class="primary ml-2 my-2"
-                            >
-                                <v-icon>personal_video</v-icon>
-                            </v-btn>
-                        </template>
-                        <span>Visualizador único</span>
-                    </v-tooltip>
-                </v-col>
-            </v-flex>
-            <v-flex>
-                <v-divider/>
-                <v-col v-if="room.doctor" class="font-italic">{{room.doctor.name}}</v-col>
-                <v-divider/>
-            </v-flex>
-            <v-flex>
-                <v-container class="pt-2">
-                    <v-row>
-                        <v-col class="pa-0">
-                            <span v-if="room.tickets.length !== 0" class="font-weight-black">{{room.tickets[room.tickets.length - 1].number}}</span>
-                            <span v-else>*</span>
-                            <br/>
-                            <span style="font-size: 0.8em" class="font-italic">Última senha</span>
+        <v-row class="mt-4">
+            <v-col cols="12" xs="4" v-for="room in rooms" :key="room.name">
+                <v-card class="pa-4" v-if="room === favoritedRoom">
+                    <v-flex class="justify-center">
+                        <span class="my-sub-headline">{{room.name}}</span>
+                    </v-flex>
+                    <v-flex>
+                        <v-col>
+                            <v-tooltip bottom v-if="doctorsLoaded">
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                            @click="callNextTicket(room)"
+                                            v-on="on"
+                                            :disabled="loading"
+                                            text
+                                            fab
+                                            x-small
+                                            class="primary my-2"
+                                    >
+                                        <v-icon>add_alert</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>Chamar próxima senha</span>
+                            </v-tooltip>
+                            <v-tooltip bottom v-if="doctorsLoaded">
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                            v-on="on"
+                                            :disabled="loading"
+                                            @click="selectedRoom = room, doctorsListDialog.active = true"
+                                            text
+                                            fab
+                                            x-small
+                                            class="primary ml-2 my-2"
+                                    >
+                                        <v-icon>person</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>Selecionar médico</span>
+                            </v-tooltip>
+                            <v-progress-circular indeterminate class="primary--text" v-else/>
+                            <v-tooltip bottom v-if="doctorsLoaded">
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                            @click="generateNextTicket(room)"
+                                            v-on="on"
+                                            :disabled="loading"
+                                            text
+                                            fab
+                                            x-small
+                                            class="primary ml-2 my-2"
+                                    >
+                                        <v-icon>post_add</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>Gerar senha</span>
+                            </v-tooltip>
+                            <v-tooltip bottom v-if="doctorsLoaded">
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                            @click="openSingleView(room)"
+                                            v-on="on"
+                                            :disabled="loading"
+                                            text
+                                            fab
+                                            x-small
+                                            class="primary ml-2 my-2"
+                                    >
+                                        <v-icon>personal_video</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>Visualizador único</span>
+                            </v-tooltip>
                         </v-col>
-                        <v-divider vertical/>
-                        <v-col class="pa-0">
-                            <div>
+                    </v-flex>
+                    <v-flex>
+                        <v-divider/>
+                        <v-col v-if="room.doctor" class="font-italic">{{room.doctor.name}}</v-col>
+                        <v-divider/>
+                    </v-flex>
+                    <v-flex>
+                        <v-container class="pt-2">
+                            <v-row>
+                                <v-col class="pa-0">
+                                    <span v-if="room.tickets.length !== 0" class="font-weight-black">{{room.tickets[room.tickets.length - 1].number}}</span>
+                                    <span v-else>*</span>
+                                    <br/>
+                                    <span style="font-size: 0.8em" class="font-italic">Última senha</span>
+                                </v-col>
+                                <v-divider vertical/>
+                                <v-col class="pa-0">
+                                    <div>
                                 <span v-if="room.tickets.length !== 0 && getActualTicket(room.tickets)" class="font-weight-black">
                                     {{getActualTicket(room.tickets).number}}
                                 </span>
-                                <span v-else>*</span>
-                                <br/>
-                                <span style="font-size: 0.8em" class="font-italic">Senha atual</span>
-                            </div>
-                        </v-col>
-                    </v-row>
-                </v-container>
-            </v-flex>
-        </v-card>
+                                        <span v-else>*</span>
+                                        <br/>
+                                        <span style="font-size: 0.8em" class="font-italic">Senha atual</span>
+                                    </div>
+                                </v-col>
+                            </v-row>
+                        </v-container>
+                    </v-flex>
+                </v-card>
+            </v-col>
+        </v-row>
         <v-dialog max-width="720px" content-class="bottom-dialog" transition="dialog-bottom-transition"
                   v-model="doctorsListDialog.active">
             <v-card>
@@ -159,11 +163,14 @@
 
         },
         computed: {
-            room () {
+            favoritedRoom () {
                 return this.$store.getters.favoriteRoom
             },
+            rooms() {
+                return this.sector ? this.sector.rooms : [];
+            },
             sector(){
-                return this.$store.getters.favoriteRoomSection
+                return this.$store.getters.favoriteRoomSection ? this.$store.getters.favoriteRoomSection : undefined
             },
             doctorsLoaded() {
                 return this.$store.getters.doctorsLoaded;

@@ -35,7 +35,6 @@
 
                             <template v-slot:actions>
 
-
                                 <v-icon color="white">$expand</v-icon>
                             </template>
                         </v-expansion-panel-header>
@@ -44,51 +43,6 @@
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>
-                <!--
-                <v-flex sm12 v-for="(clinic, i) in clinics" :key="i" class="mb-5">
-                    <v-card>
-                        <v-flex xs12 sm12>
-                            <v-card color="primary">
-                                <v-layout row wrap>
-                                    <v-flex sm6>
-                                        <p class="white--text text-left font-weight-bold pt-4 pb-3 pl-4">
-                                            {{clinic.name}}
-                                        </p>
-                                    </v-flex>
-                                    <v-flex sm6 class="text-right mt-2">
-
-                                        <v-tooltip top color="primary">
-                                            <template v-slot:activator="{ on }">
-                                                <v-btn icon dark v-on="on" @click="deleteClinic(clinic)">
-                                                    <v-icon>delete</v-icon>
-                                                </v-btn>
-                                            </template>
-                                            <span>Deletar Clínica</span>
-                                        </v-tooltip>
-
-                                        <v-tooltip top color="primary">
-                                            <template v-slot:activator="{ on }">
-                                                <v-btn icon dark v-on="on" @click="deleteExamSpecialty(clinic)">
-                                                    <v-icon>delete_sweep</v-icon>
-                                                </v-btn>
-                                            </template>
-                                            <span>Apagar Exames e Consultas</span>
-                                        </v-tooltip>
-                                        <v-tooltip top color="primary">
-                                            <template v-slot:activator="{ on }">
-                                                <v-btn icon dark v-on="on" @click="editExamSpecialty(clinic)">
-                                                    <v-icon>rule</v-icon>
-                                                </v-btn>
-                                            </template>
-                                            <span>Editar Exames e Consultas</span>
-                                        </v-tooltip>
-                                    </v-flex>
-                                </v-layout>
-                            </v-card>
-                        </v-flex>
-                    </v-card>
-                </v-flex>
-                -->
             </div>
         </v-layout>
         <v-dialog v-model="editingClinic" width="500px" text hide-overlay>

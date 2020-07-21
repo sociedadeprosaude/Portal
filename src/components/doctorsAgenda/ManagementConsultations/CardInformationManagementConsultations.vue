@@ -55,7 +55,7 @@
                         <v-btn
                                 color="white"
                                 rounded
-                                :to="{ name: 'AgendamentoConsultas', params: { q: consultation}}"
+                                :to="{ name: 'AgendamentoConsultas', params: { q: consultation, type:'retorno'}}"
                                 :disabled="consultation.status !== 'Pago' || consultation.regress"
                                 v-if="consultation.type !== 'Retorno' && consultation.specialty"
                         >Retorno
@@ -117,10 +117,6 @@
                 return this.$store.getters.selectedPatient
             },
         },
-        mounted() {
-        },
-        watch: {
-        },
         methods: {
 
             async deletedConsultation() {
@@ -158,6 +154,7 @@
                     doctor: consultation.doctor,
                     specialties: specialty,
                     paid: false,
+                    realized:moment().format('YYYY-MM-DD'),
                     crm: consultation.doctor.crm
                 }
                 console.log('outtake: ', outtake)
@@ -169,8 +166,6 @@
             ConsultationRecept(consultation) {
                 this.receptDialog = true;
             }
-
-
         },
     }
 </script>

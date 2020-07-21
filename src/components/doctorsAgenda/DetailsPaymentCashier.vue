@@ -445,12 +445,29 @@
                 await this.saveBudget(this.generateBudget());
                 let newBudget = this.generateBudget();
                 newBudget.id = this.selectedBudget.id;
-
+                this.$store.dispatch('getClinics');
                 this.$store.commit('setSelectedBudget', newBudget);
                 if (!this.selectedBudget) {
                     await this.saveBudget(this.generateBudget())
                 }
                 await this.$store.dispatch('addIntake', this.selectedBudget);
+                let clinics = this.$store.getters.clinics
+                for(let i=0; i< clinics.length; i++){
+                    let outtake = {
+                        intake_id: this.selectedBudget.id,
+                        user: this.selectedBudget.user,
+                        unit: this.selectedBudget.unit,
+                        clinic: clinics[i],
+                        exams: this.selectedBudget.exams ? this.selectedBudget.exams.filter( exam => exam.clinic.name === clinics[i].name ) : [],
+                        specialties: this.selectedBudget.specialties ? this.selectedBudget.specialties.filter( specialtie => specialtie.doctor.clinic.name === clinics[i].name ): [],
+                        paid: false,
+                        root:true,
+                        cnpj: clinics[i].cnpj
+                    }
+                    if( outtake.exams.length !== 0  || outtake.specialties.length !== 0 ){
+                        await this.$store.dispatch('addOuttakes', outtake)
+                    }
+                }
                 let porcentagem = (this.selectedBudget.discount / this.selectedBudget.subTotal);
                 if (porcentagem >= 0.5 || parseFloat(this.searchBudget.subTotal) > this.selectedBudget.cost) {
 
@@ -467,13 +484,15 @@
                 await this.receipt(this.selectedBudget);
                 this.paymentLoading = false;
                 this.paymentSuccess = true;
-                let data = {
-                    user: this.patient,
-                    budgetId: this.selectedBudget.id.toString(),
-                };
+                    let data = {
+                       user: this.patient,
+                       budgetId: this.selectedBudget.id.toString(),
+                   };
+                console.log('selectedIntake: ',this.selectedIntake)
+
                 await this.$store.dispatch('deleteBudget', data);
-                await this.$store.commit('setSelectedBudget', undefined);
-                this.$store.commit('clearShoppingCartItens');
+                   await this.$store.commit('setSelectedBudget', undefined);
+                   this.$store.commit('clearShoppingCartItens');
                 this.card = false;
             },
             async receipt(intake) {
