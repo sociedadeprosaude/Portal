@@ -1,6 +1,15 @@
 <template>
   <v-container>
-    
+    {{loading}}
+    <DrawerRelatorio @change-selected="(value)=>selected=value" />
+
+    <DateSelector
+      :cb="()=>initialInfo()"
+      @change-date="(value)=>date=value"
+      @change-date2="(value)=>date2=value"
+      @change-dateFormatted="(value)=>dateFormatted=value"
+      @change-dateFormatted2="(value)=>dateFormatted2=value"
+    />
     <GeneralReport
       v-if="!loading && report"
       :report="report"
@@ -54,14 +63,24 @@
 
 <script>
 import GeneralReport from "@/components/Reports2/GeneralReport";
+
+import DrawerRelatorio from "@/components/Drawer/DrawerRelatorio";
+import DateSelector from "@/components/Common/DateSelector";
 import moment from "moment";
 export default {
-  components: { GeneralReport },
-  props: ["report", "loading", "reportAllUnits"],
+  components: { GeneralReport, DrawerRelatorio, DateSelector },
+  props: [],
   data() {
     return {
       now: moment().format("YYYY-MM-DD HH:mm:ss"),
+      date: moment().format("YYYY-MM-DD 00:00:00"),
+      date2: moment().format("YYYY-MM-DD 23:59:59"),
+      dateFormatted: moment().format("DD/MM/YYYY"),
+      dateFormatted2: moment().format("DD/MM/YYYY"),
       total: 0,
+      loading: false,
+      report: null,
+      reportAllUnits: null,
       reportOptions: [
         "Relatório Geral",
         "Relatório Geral Detalhado",
@@ -70,6 +89,33 @@ export default {
       ],
       reportSelected: 0
     };
+  },
+  mounted() {
+    this.initialInfo();
+  },
+  methods: {
+    async initialInfo() {
+      this.loading = true;
+      this.report = await this.$store.dispatch("searchReports", {
+        dataInicio: this.date,
+        dataFinal: this.date2,
+        colaborator: this.colaborator
+      });
+      this.reportAllUnits = await this.$store.dispatch(
+        "searchReportsAllClinics",
+        {
+          dataInicio: this.date,
+          dataFinal: this.date2,
+          colaborator: this.colaborator
+        }
+      );
+      this.intakes = await this.$store.dispatch("getIntakes", {
+        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
+        colaborator: this.colaborator
+      });
+      this.loading = false;
+    }
   },
   computed: {
     finalProfit() {

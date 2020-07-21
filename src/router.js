@@ -42,10 +42,12 @@ import RoomDashboardRoute from "./views/Operational/Tickets/RoomDashboardRoute";
 
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
 import CashierRoutes from "./routes/CashierRoutes";
+import ReportRoutes from "./routes/ReportRoutes";
+
+
 import discount from "./views/Notifications/discount"
 import notifications from "./views/Notifications/notifications";
 
-import RelatoriosDashboard from "@/views/relatorios/RelatoriosDashboard";
 
 const Clinic = {
   props: ['id'],
@@ -87,16 +89,7 @@ let mainRoutes = [
       requiresAuth: true
     }
   },
-  {
-    path: '/relatorios',
-    name: 'RelatoriosDashboard',
-    component: RelatoriosDashboard,
-    beforeEnter(to, from, next) {
-      store.commit('showOverviewToggle', true)
-      next()
-    },
-
-  },
+ 
   {
     path: '/relatorio',
     name: 'Relatorios',
@@ -323,7 +316,7 @@ let mainRoutes = [
   },
 ];
 
-let routes = mainRoutes.concat(DoctorsAgendaRoutes, CashierRoutes);
+let routes = mainRoutes.concat(DoctorsAgendaRoutes, CashierRoutes, ReportRoutes);
 let router = new Router({
   mode: 'history',
   routes: routes
