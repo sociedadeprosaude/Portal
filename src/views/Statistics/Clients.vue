@@ -88,10 +88,44 @@
 
     <v-row class="mt-2">
       <h1>Localidade dos visitantes</h1>
+      <v-spacer></v-spacer>
+      <v-menu
+        ref="menu"
+        v-model="menu"
+        :close-on-content-click="false"
+        :return-value.sync="date"
+        transition="scale-transition"
+        offset-y
+        
+        width="100px"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-text-field
+            label="Escolha o período dos usuários atendidos"
+            prepend-icon="event"
+            readonly
+            v-bind="attrs"
+            clearable
+            v-on="on"
+            :value="dateFormatted"
+          ></v-text-field>
+        </template>
+        <v-date-picker
+          v-model="date"
+          type="month"
+          no-title
+          scrollable
+          locale="pt-br"
+        >
+          <v-spacer></v-spacer>
+          <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
+          <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+        </v-date-picker>
+      </v-menu>
     </v-row>
     <v-row>
       <v-col>
-        <Gmaps :geopoints="geopoints"></Gmaps>
+        <Gmaps :geopoints="geopoints" :period_report="date"></Gmaps>
       </v-col>
     </v-row>
   </v-container>
@@ -104,7 +138,9 @@ import Gmaps from '../../components/Maps/Gmaps';
 import moment from "moment";
 export default {
   data: () => ({
-    dataset: null
+    dataset: null,
+    date: new Date().toISOString().substr(0, 7),
+    menu: false,
   }),
   components: {
     LineChart,
@@ -115,6 +151,9 @@ export default {
     //this.$store.dispatch('setGeopointsClients')
   },
   computed: {
+    dateFormatted() {
+        return this.date ? moment(this.date,'YYYY-MM').format("MMMM/YYYY") : ''
+      },
     clientsServed() {
       return this.$store.getters.getClientsServed;
     },

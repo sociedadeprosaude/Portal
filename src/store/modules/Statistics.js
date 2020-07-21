@@ -146,8 +146,8 @@ const actions = {
             snapshot.forEach((geopoint)=>{
                 let data = geopoint.data()
                 geopoints.push({
-                    latitude:data.geopoint.latitude,
-                    longitude:data.geopoint.longitude,
+                    latitude:data.geopoint ? data.geopoint.latitude:undefined,
+                    longitude:data.geopoint? data.geopoint.longitude:undefined,
                     count: data.count,
                     monthly_report:data.monthly_report
                 })

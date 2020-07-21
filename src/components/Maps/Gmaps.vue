@@ -7,7 +7,7 @@ import gmapsInit from "../../utils/gmaps";
 
 export default {
   name: "Gmaps",
-  props:['addresses','geopoints'],
+  props:['addresses','geopoints','period_report'],
   data: () => ({
     google:undefined,
     geocoder: undefined,
@@ -44,10 +44,12 @@ export default {
       }
     },
     async initMarkers(){
+      console.log(this.period_report)
       for(var key in this.geopoints){
         //this.positionAddress(address)
         //await this.sleep(5000);
-        this.markMap({lat:this.geopoints[key].latitude,lng:this.geopoints[key].longitude,count:this.geopoints[key].count})
+        if(this.geopoints[key].latitude && this.geopoints[key].longitude && this.geopoints[key].count)
+          this.markMap({lat:this.geopoints[key].latitude,lng:this.geopoints[key].longitude,count:this.geopoints[key].count,monthly_report:this.geopoints[key].monthly_report})
       }
     },
 
@@ -67,11 +69,23 @@ export default {
     },
 
     markMap(latLng){
+      var title = "Total de clientes: " + latLng.count
+
+      if(this.period_report && latLng.monthly_report){
+        var report = latLng.monthly_report.find((value)=>value.id === this.period_report)
+        if(report){
+          title = report.created ? title + `\nTotal de pacientes criados: ${report.created}` : ""
+          title = report.accessed ? title + `\nTotal de pacientes atendidos: ${report.accessed}` : ""
+        }else{
+          title = title + "\n\nNão há relatório definido para o período escolhido"
+        }
+    
+      }
 
       var marker = new this.google.maps.Marker({
         position: new this.google.maps.LatLng(latLng.lat, latLng.lng),
         map: this.map,
-        title: "Pacientes atendidos: " + latLng.count
+        title: title
       });
     },
     sleep(ms) {
@@ -98,6 +112,9 @@ export default {
       if(value){
         this.initMarkers()
       }
+    },
+    period_report(value){
+      this.initMarkers()
     }
   }
 };
