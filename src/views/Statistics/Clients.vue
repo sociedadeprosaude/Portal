@@ -105,7 +105,6 @@
             prepend-icon="event"
             readonly
             v-bind="attrs"
-            clearable
             v-on="on"
             :value="dateFormatted"
           ></v-text-field>
