@@ -223,6 +223,7 @@
                 this.confirmDeactivate = false
             },
             async selectUser(user) {
+                console.log('user: ', user)
                 if (user) {
                     let intakes = await this.$store.dispatch('getUserIntakes', user);
                     if (intakes) {

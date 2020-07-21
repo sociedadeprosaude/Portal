@@ -12,6 +12,7 @@ import DoctorScheduling from '../views/Operational/DoctorsAgenda/DoctorSchedulin
 import ManagementSchedules from '../views/Operational/DoctorsAgenda/ManagementSchedules'
 import Discount from "../views/Notifications/discount"
 import weeklyTable from "../views/Operational/DoctorsAgenda/weeklyTable";
+import HistoryMedicalRecorsPatient from "../views/Operational/DoctorsAgenda/HistoryMedicalRecorsPatient";
 
 export default [
     {
@@ -23,10 +24,18 @@ export default [
         }
     },
     {
+        path: '/agenda/HistoricoDeProntuariosDoPaciente',
+        name: 'HistoryMedicalRecorsPatient',
+        component : HistoryMedicalRecorsPatient,
+        meta: {
+            requiresAuth: false,
+        }
+    },
+    {
         path: '/agenda/agendamento',
         name: 'AgendamentoConsultas',
         component: DoctorScheduling,
-        props: (route) => ({ query: route.query.q }),
+        props: (route) => ({ query: route.query }),
     },
     {
         path: 'discount',
@@ -69,7 +78,7 @@ export default [
         path: '/agenda/AgendarRetorno',
         name: 'AgendarRetorno',
         component: ScheduleReturn,
-        props: (route) => ({ query: route.query.q }),
+        props: (route) => ({ query: route.query.q  }),
     },
     {
         path: '/agenda/Cids',

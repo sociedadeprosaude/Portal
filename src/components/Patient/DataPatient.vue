@@ -31,6 +31,20 @@
                                     <v-flex xs1 class="text-right mx-1">
                                         <v-tooltip v-if="selectedPatient" top>
                                             <template v-slot:activator="{ on }">
+                                                <v-btn fab
+                                                       icon
+                                                       v-on="on"
+                                                       to="/agenda/HistoricoDeProntuariosDoPaciente"
+                                                       rounded text class="white--text transparent">
+                                                    <v-icon>assignment</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <span>Historico de Prontuários</span>
+                                        </v-tooltip>
+                                    </v-flex>
+                                    <v-flex xs1 class="text-right mx-1">
+                                        <v-tooltip v-if="selectedPatient" top>
+                                            <template v-slot:activator="{ on }">
                                                 <v-btn icon
                                                        fab
                                                        v-on="on"

@@ -316,27 +316,14 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <!-- <ViewConsultationsExpanded 
-                    :consultationsByDoctors="consultasByDoctors(consultas)" 
-                    :start_date="start_date" 
-                    :final_date="final_date"
-                    :filterHour="filterHour"
-                    :filterDayWeek="filterDayWeek"
-        />-->
       </v-card>
     </v-layout>
   </v-container>
 </template>
 
 <script>
-import SubmitButton from "../../../components/SubmitButton";
-import ViewConsultationsExpanded from "../../../components/doctorsAgenda/ViewConsltationsExpanded";
 var moment = require("moment/moment");
 export default {
-  components: {
-    SubmitButton,
-    ViewConsultationsExpanded
-  },
   data: () => ({
     start_date: undefined,
     final_date: undefined,
