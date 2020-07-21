@@ -14,9 +14,9 @@
   </v-container>
 </template>
 <script>
+
 import RegisterExams from "../../components/Exams/RegisterExams";
 import RegisterTypesExams from "../../components/Exams/RegisterTypesExams";
-
 
 export default {
   components: { RegisterExams, RegisterTypesExams },

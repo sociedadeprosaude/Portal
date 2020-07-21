@@ -165,12 +165,6 @@
                                 icon: 'report'
                             },
                             {
-                                title:"Consultas",
-                                to:"/agenda/GerenciarAgendas",
-                                permission: 'Agenda Médica',
-                                icon: 'event',
-                            },
-                            {
                                 title: 'Financeiro',
                                 to: '/pagamento/financeiro',
                                 permission: 'Caixa',

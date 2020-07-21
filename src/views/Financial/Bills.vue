@@ -130,9 +130,8 @@
 <script>
 import OuttakeOrder from "../../components/reports/OuttakeOrder";
 import RegisterBill from "../../components/Bills/RegisterBill";
-import crudCategory from "@/views/Register/OuttakesCategories";
 import { mask } from "vue-the-mask";
-import moment from "moment";
+import moment from "moment/moment";
 
 export default {
   name: "Bills",
@@ -142,7 +141,7 @@ export default {
   components: {
     OuttakeOrder,
     RegisterBill,
-    crudCategory
+
   },
   data() {
     return {

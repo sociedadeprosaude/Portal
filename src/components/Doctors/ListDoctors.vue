@@ -118,11 +118,9 @@
             },
             async deleteDoctorFromDatabase(item) {
                 let doctor = this.doctors[item.cpf];
-                this.loading = true;
-                await this.$store.dispatch('deleteConsultations', doctor);
-                await this.$store.dispatch('deleteDoctor', doctor);
+                this.$emit('loading')
+                this.$emit('deleteDoctorFromDatabase',doctor);
                 this.success = true;
-                this.loading = false;
                 setTimeout(() => {
                     this.deletingDoctor = false
                 }, 800)

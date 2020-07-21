@@ -10,8 +10,8 @@ import Specialties from "./views/Olds/Specialties";
 import Labor from "./views/Personal/Labor";
 import Reports from "./views/Register/Reports";
 import NewBundles from "./views/Register/Bundles";
-import PaymentCovenants from "./views/Register/PaymentCovenants";
-import PaymentMedics from "./views/Register/PaymentMedics";
+import PaymentCovenants from "./views/Financial/PaymentCovenants";
+import PaymentMedics from "./views/Financial/PaymentMedics";
 
 import ContestValue from "./views/Notifications/contestValues"
 
@@ -22,9 +22,9 @@ import DischargeProcedures from "./views/Register/Clinic/DischargeProcedures"
 import VerificationForwardingBilling from "./views/Register/Clinic/VerificationForwardingBilling"
 import PaymentHistory from "./views/Register/Clinic/PaymentHistoryClinic"
 import Units from "./views/Units";
-import Bills from "./views/Register/Bills";
-import BillsMobile from "./views/Register/BillsMobile";
-import OuttakesCategories from "./views/Register/OuttakesCategories";
+import Bills from "./views/Financial/Bills";
+import BillsMobile from "./views/Financial/BillsMobile";
+import OuttakesCategories from "./views/Financial/OuttakesCategories";
 
 import DoctorScheduling from './views/Operational/DoctorsAgenda/DoctorScheduling'
 
