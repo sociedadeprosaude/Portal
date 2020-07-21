@@ -2,7 +2,13 @@
   <v-container>
     <v-layout row wrap v-if="report">
       <v-flex xs12>
-        <v-chip-group row mandatory v-model="reportSelected" active-class="primary--text">
+        <v-chip-group
+          row
+          mandatory
+          v-bind:value="reportSelected"
+          @change="(event)=>$emit('change-reportSelected',event)"
+          active-class="primary--text"
+        >
           <v-chip v-for="report in reportOptions" :key="report">{{ report }}</v-chip>
         </v-chip-group>
       </v-flex>

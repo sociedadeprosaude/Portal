@@ -7,10 +7,20 @@
         </p>
       </v-col>
       <v-col cols="6" md="2">
-        <v-select :items="years" label="Ano" v-model="year"></v-select>
+        <v-select
+          :items="years"
+          label="Ano"
+          v-bind:value="year"
+          @change="(event)=>$emit('change-year',event)"
+        ></v-select>
       </v-col>
       <v-col cols="6" md="2">
-        <v-select :items="months" label="Mês" v-model="month">
+        <v-select
+          :items="months"
+          label="Mês"
+          v-bind:value="month"
+          @change="(event)=>$emit('change-month',event)"
+        >
           <template v-slot:selection>{{monthName(month)}}</template>
           <template v-slot:item="data">{{monthName(data.item)}}</template>
         </v-select>

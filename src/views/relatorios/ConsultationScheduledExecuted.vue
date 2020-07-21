@@ -12,6 +12,9 @@
       :PercentageTotal="PercentageTotal"
       :QuantityTotalExecuted="QuantityTotalExecuted"
       :QuantityTotalScheduled="QuantityTotalScheduled"
+
+
+       @change-reportSelected="(value)=>reportSelected=value"
     />
   </v-container>
 </template>

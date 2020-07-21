@@ -4,7 +4,8 @@
       <v-chip-group
         row
         mandatory
-        v-model="optionSelected"
+        v-bind:value="optionSelected"
+        @change="(event)=>$emit('change-optionSelected',event)"
         active-class="primary--text"
         class="mb-3 ml-2"
       >
@@ -14,7 +15,8 @@
     <v-card id="card-to-print">
       <v-card-title>
         <v-text-field
-          v-model="search"
+          v-bind:value="search"
+          @input="(event)=>$emit('change-search',event)"
           prepend-inner-icon="mdi-magnify"
           label="Procurar"
           single-line
@@ -66,10 +68,16 @@
         </v-data-table>
       </div>
       <div v-if="optionSelected===1">
-        <TableConsultationClinics :intakesDividedBySpecialties="intakesDividedBySpecialties" />
+        <TableConsultationClinics
+          :intakesDividedBySpecialties="intakesDividedBySpecialties"
+          :search="search"
+        />
       </div>
       <div v-if="optionSelected===2">
-        <TableConsultationDoctor :intakesDividedBySpecialties="intakesDividedBySpecialties" />
+        <TableConsultationDoctor
+          :intakesDividedBySpecialties="intakesDividedBySpecialties"
+          :search="search"
+        />
       </div>
     </v-card>
 
@@ -107,8 +115,8 @@
 </template>
 <script>
 import moment from "moment";
-import TableConsultationClinics from "@/components/reports/TableConsultationClinics";
-import TableConsultationDoctor from "@/components/reports/TableConsultationDoctors";
+import TableConsultationClinics from "@/components/Reports2/TableConsultationClinics";
+import TableConsultationDoctor from "@/components/Reports2/TableConsultationDoctors";
 export default {
   components: { TableConsultationDoctor, TableConsultationClinics },
   props: [

@@ -3,7 +3,6 @@ import Budget from "../views/Operational/Cashier/Budget";
 import Cashier from "../views/Operational/Cashier/Cashier";
 import PayOnline from "../views/Operational/Cashier/PayOnline";
 import Outflows from "../views/Register/Outflows";
-import StatsCaixa from '../views/Statistics/statsCaixa'
 
 
 export default [
@@ -12,12 +11,7 @@ export default [
         name: 'home',
         component: Cashier
     },
-    
-    {
-        path: '/charts',
-        name: 'Charts',
-        component: StatsCaixa
-    },
+
     {
         path: '/pagamentoOnline/:id',
         name: 'PayOnline',

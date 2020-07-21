@@ -14,7 +14,8 @@
     <v-card id="card-to-print">
       <v-card-title>
         <v-text-field
-          v-model="search"
+           v-bind:value="search"
+          @input="(event)=>$emit('change-search',event)"
           append-icon="mdi-magnify"
           label="Procurar"
           single-line

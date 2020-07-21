@@ -18,6 +18,9 @@
       :totalPrice="totalPrice"
       :totalCost="totalCost"
       :totalProfit="totalProfit"
+
+      @change-search="(value)=>search=value"
+      @change-optionSelected="(value)=>optionSelected=value"
     />
   </v-container>
 </template>

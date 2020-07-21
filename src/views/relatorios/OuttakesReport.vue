@@ -32,6 +32,9 @@
       :actualList="actualList"
       :numOuttakes="numOuttakes"
       :totalCost="totalCost"
+
+      @change-search="(value)=>search=value"
+      @change-optionSelected="(value)=>optionSelected=value"
     />
   </v-container>
 </template>

@@ -45,7 +45,7 @@ import CashierRoutes from "./routes/CashierRoutes";
 import discount from "./views/Notifications/discount"
 import notifications from "./views/Notifications/notifications";
 
-import CashierReports from "@/views/Statistics/StatisticsDashboard";
+import RelatoriosDashboard from "@/views/relatorios/RelatoriosDashboard";
 
 const Clinic = {
   props: ['id'],
@@ -89,8 +89,8 @@ let mainRoutes = [
   },
   {
     path: '/relatorios',
-    name: 'CashierReports',
-    component: CashierReports,
+    name: 'RelatoriosDashboard',
+    component: RelatoriosDashboard,
     beforeEnter(to, from, next) {
       store.commit('showOverviewToggle', true)
       next()
@@ -351,7 +351,7 @@ router.afterEach((to, from, next) => {
   } else {
     store.commit('setDoctorsAgendaToolbar', false)
   }
-  if (from.name == 'CashierReports') store.commit('showOverviewToggle', false)
+  if (from.name == 'RelatoriosDashboard') store.commit('showOverviewToggle', false)
   if (to.path.includes('pagamento')) {
     store.commit('setBillsToolbar', true)
   } else {

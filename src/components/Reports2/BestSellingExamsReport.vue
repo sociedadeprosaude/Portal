@@ -1,14 +1,21 @@
 <template>
   <v-container>
     <v-row cols="12">
-      <v-chip-group row mandatory v-model="optionSelected" active-class="primary--text">
+      <v-chip-group
+        row
+        mandatory
+        v-bind:value="optionSelected"
+        @change="(event)=>$emit('change-optionSelected',event)"
+        active-class="primary--text"
+      >
         <v-chip v-for="option in options" :key="option">{{ option }}</v-chip>
       </v-chip-group>
     </v-row>
     <v-card id="card-to-print">
       <v-card-title>
         <v-text-field
-          v-model="search"
+          v-bind:value="search"
+          @input="(event)=>$emit('change-search',event)"
           append-icon="mdi-magnify"
           label="Procurar"
           single-line
@@ -59,7 +66,7 @@
         </v-data-table>
       </div>
       <div v-else>
-        <TableExamsAndClinics :intakesDividedByExam="intakesDividedByExam" />
+        <TableExamsAndClinics :intakesDividedByExam="intakesDividedByExam" :search="search" />
       </div>
     </v-card>
 
@@ -94,7 +101,7 @@
 
 <script>
 import moment from "moment";
-import TableExamsAndClinics from "@/components/reports/TableExamsAndClinics";
+import TableExamsAndClinics from "@/components/Reports2/TableExamsAndClinics";
 export default {
   components: { TableExamsAndClinics },
   props: [

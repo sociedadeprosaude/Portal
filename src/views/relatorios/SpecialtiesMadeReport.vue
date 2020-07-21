@@ -9,6 +9,8 @@
       :reportSelected="reportSelected"
       :QuantityTotal="QuantityTotal"
       :CostTotal="CostTotal"
+
+       @change-reportSelected="(value)=>reportSelected=value"
     />
   </v-container>
 </template>

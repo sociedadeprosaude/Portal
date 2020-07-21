@@ -23,6 +23,9 @@
       :mostSpentDataset="mostSpentDataset"
       :mostSpentDatasetMontly="mostSpentDatasetMontly"
       :options="options"
+
+      @change-month="(value)=>month=value"
+      @change-year="(value)=>year=value"
     />
   </v-container>
   <v-container v-else>loading</v-container>

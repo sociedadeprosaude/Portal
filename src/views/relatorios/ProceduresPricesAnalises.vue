@@ -18,6 +18,9 @@
       :getIdealCost="getIdealCost"
       :getIdealPrice="getIdealPrice"
       :getProfitPercentage="getProfitPercentage"
+      @change-selectedType="(value)=>selectedType=value"
+      @change-showOption="(value)=>showOption=value"
+      @change-idealProfitPercentage="(value)=>idealProfitPercentage=value"
     />
   </v-container>
 </template>

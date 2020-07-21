@@ -29,6 +29,7 @@
       :QuantityTotalFinish="QuantityTotalFinish"
       :CostTotalFinish="CostTotalFinish"
       :PriceTotalFinish="PriceTotalFinish"
+      @change-reportSelected="(value)=>reportSelected=value"
     />
   </v-container>
 </template>

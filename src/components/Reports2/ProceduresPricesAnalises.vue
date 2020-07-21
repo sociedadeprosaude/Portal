@@ -4,15 +4,31 @@
       <v-flex xs12 class="mb-4">
         <v-btn v-if="allLoaded" class="primary rounded" @click="beginAnalises">Iniciar Analise</v-btn>
         <v-progress-circular v-else class="primary--text" indeterminate></v-progress-circular>
-        <v-text-field v-model="idealProfitPercentage" label="Porcentagem Ideal de Lucro"></v-text-field>
+        <v-text-field
+          v-bind:value="idealProfitPercentage"
+          @change="(event)=>$emit('change-idealProfitPercentage',event)"
+          label="Porcentagem Ideal de Lucro"
+        ></v-text-field>
       </v-flex>
       <v-flex xs12>
         <v-layout row wrap>
-          <v-chip-group row mandatory v-model="selectedType" active-class="primary--text">
+          <v-chip-group
+            row
+            mandatory
+            v-bind:value="selectedType"
+            @change="(event)=>$emit('change-selectedType',event)"
+            active-class="primary--text"
+          >
             <v-chip v-for="type in types" :key="type">{{ type }}</v-chip>
           </v-chip-group>
           <v-divider vertical class="mr-2"></v-divider>
-          <v-chip-group row mandatory v-model="showOption" active-class="primary--text">
+          <v-chip-group
+            row
+            mandatory
+            v-bind:value="showOption"
+            @change="(event)=>$emit('change-showOption',event)"
+            active-class="primary--text"
+          >
             <v-chip v-for="type in showOptions" :key="type">{{ type }}</v-chip>
           </v-chip-group>
         </v-layout>

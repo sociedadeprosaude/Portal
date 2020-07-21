@@ -1,14 +1,21 @@
 <template>
   <v-container>
     <v-row cols="12">
-      <v-chip-group row mandatory v-model="optionSelected" active-class="primary--text">
+      <v-chip-group
+        row
+        mandatory
+        v-bind:value="optionSelected"
+        @change="(event)=>$emit('change-optionSelected',event)"
+        active-class="primary--text"
+      >
         <v-chip v-for="option in options" :key="option">{{ option }}</v-chip>
       </v-chip-group>
     </v-row>
     <v-card>
       <v-card-title>
         <v-text-field
-          v-model="search"
+          v-bind:value="search"
+          @input="(event)=>$emit('change-search',event)"
           append-icon="mdi-magnify"
           label="Procurar"
           single-line
@@ -93,8 +100,8 @@
 <script>
 import moment from "moment";
 import PieOuttake from "@/components/Charts/PieChart.js";
-import DeleteOuttake from "@/components/reports/CRUD/DeleteOuttake";
-import ReadOuttake from "@/components/reports/CRUD/ReadOuttake";
+import DeleteOuttake from "@/components/Reports2/CRUD/DeleteOuttake";
+import ReadOuttake from "@/components/Reports2/CRUD/ReadOuttake";
 
 export default {
   name: "OuttakesReport",

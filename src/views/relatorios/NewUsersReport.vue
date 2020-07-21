@@ -15,7 +15,9 @@
       :actualList="actualList"
       :newUsers="newUsers"
       :numNewUsers="numNewUsers"
+      
       @change-optionSelected="(value)=>optionSelected=value"
+      @change-search="(value)=>search=value"
     />
   </v-container>
 </template>
