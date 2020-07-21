@@ -50,14 +50,12 @@ const actions = {
 
     async getDoctorSpecialty(context, consultation){
         let specialtieSelect = await firebase.firestore().collection('specialties').doc(consultation.specialty.name).get()
-        console.log('specialtieSelected: ', specialtieSelect.data())
         let specialtie={
             name: consultation.specialty.name,
             cost: specialtieSelect.data().doctors.filter(item =>  item.name === consultation.doctor.name).cost,
             realized: moment().format('YYYY-MM-DD'),
             paid: false
         }
-        console.log('specialtie: ', specialtie)
         return specialtie
     },
 
