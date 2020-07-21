@@ -1,6 +1,8 @@
 <template>
-  <v-container v-if="!loading && report">
+  <v-container>
+    
     <GeneralReport
+      v-if="!loading && report"
       :report="report"
       :loading="loading"
       :reportAllUnits="reportAllUnits"
@@ -46,9 +48,7 @@
       :totalMoneyAllClinics="totalMoneyAllClinics"
       @change-reportSelected="(value)=>reportSelected=value"
     />
-  </v-container>
-  <v-container v-else>
-    <v-progress-circular indeterminate size="64"></v-progress-circular>
+    <v-progress-circular v-else indeterminate size="64"></v-progress-circular>
   </v-container>
 </template>
 

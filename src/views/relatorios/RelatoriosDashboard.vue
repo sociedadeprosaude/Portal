@@ -1,84 +1,14 @@
 <template>
   <v-container fluid>
-    <v-navigation-drawer
-      hide-overlay
-      :right="false"
-      v-model="overviewDrawer"
-      absolute
-      temporary
-      disable-resize-watcher
-      app
-      dark
-      clipped
-    >
-      <v-list dense>
-        <v-list-item
-          v-for="(item,index) in items"
-          :key="index"
-          link
-          @click="selected = index; overviewDrawer=false"
-        >
-          <v-list-item-content>
-            <v-list-item-title>{{item}}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
+    <DrawerRelatorio @change-selected="(value)=>selected=value" />
 
-    <v-container v-if="!hide">
-      <v-row class="align-content-sm-space-between pa-0 ma-0 justify-center">
-        <v-col cols="3" class="mr-3">
-          <v-menu
-            ref="menu1"
-            v-model="menu1"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="290px"
-          >
-            <template v-slot:activator="{ on }">
-              <v-text-field
-                v-model="dateFormatted"
-                label="Data Inicial"
-                dense
-                prepend-icon="event"
-                v-on="on"
-              />
-            </template>
-            <v-date-picker v-model="date" no-title @input="menu1 = false" />
-          </v-menu>
-        </v-col>
-        <v-col cols="3" class="ml-3">
-          <v-menu
-            v-model="menu2"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="290px"
-          >
-            <template v-slot:activator="{ on }">
-              <v-text-field
-                v-model="dateFormatted2"
-                label="Data Final"
-                prepend-icon="event"
-                readonly
-                dense
-                v-on="on"
-              />
-            </template>
-            <v-date-picker v-model="date2" no-title @input="menu2 = false" />
-          </v-menu>
-        </v-col>
-      </v-row>
-      <v-row class="align-center pa-0 ma-0">
-        <v-col class="pa-0 ma-0">
-          <v-btn @click="getIntakes()" color="blue" v-if="!loading">Pesquisar</v-btn>
-          <v-progress-circular indeterminate class="primary--text" v-else />
-        </v-col>
-      </v-row>
-    </v-container>
+    <DateSelector
+      :cb="()=>getIntakes()"
+      @change-date="(value)=>date=value"
+      @change-date2="(value)=>date2=value"
+      @change-dateFormatted="(value)=>dateFormatted=value"
+      @change-dateFormatted2="(value)=>dateFormatted2=value"
+    />
 
     <general-report
       v-if="selected == 0"
@@ -160,8 +90,13 @@ import statsCaixaOuttakesCategory from "@/views/relatorios/statsCaixaOuttakesCat
 import statsCaixaOuttakesClinics from "@/views/relatorios/statsCaixaOuttakesClinics";
 import Clients from "@/views/relatorios/Clients";
 
+import DrawerRelatorio from "@/components/Drawer/DrawerRelatorio";
+import DateSelector from "@/components/Common/DateSelector";
+
 export default {
   components: {
+    DrawerRelatorio,
+    DateSelector,
     ColaboratorsProductionReport,
     GeneralReport,
     LuizFernandoReport,
@@ -182,32 +117,14 @@ export default {
   },
   data: vm => ({
     selected: 0,
-    items: [
-      "Relatório Financeiro Geral",
-      "Relatório Luiz Fernando",
-      "Produção do Colaborador",
-      "Relatório de Vendas",
-      "Analise de preço de exames",
-      "Exames mais vendidos",
-      "Consultas mais vendidas",
-      "Relatório de Saídas",
-      "Novos associados",
-      "Relatório Especialidades",
-      "Relatório Consulta Marcada x Realizada",
-      "Relatorio Paciente por Procedimento",
-      "Intakes",
-      "Outtakes",
-      "Outtakes clinicas",
-      "Clientes"
-    ],
 
     date: moment().format("YYYY-MM-DD 00:00:00"),
     date2: moment().format("YYYY-MM-DD 23:59:59"),
     dateFormatted: moment().format("DD/MM/YYYY"),
     dateFormatted2: moment().format("DD/MM/YYYY"),
     dateBegin: null,
-    colaborator: null,
     dateEnd: null,
+    colaborator: null,
     menu1: false,
     menu2: false,
     intakes: undefined,
@@ -218,18 +135,20 @@ export default {
   }),
   methods: {
     async getIntakes() {
+      console.log("flag1");
       this.loading = true;
+      console.log("flag2");
       this.intakes = await this.$store.dispatch("getIntakes", {
         initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
         finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
         colaborator: this.colaborator
       });
-
+      console.log("flag3");
       await this.pesquisar();
+      console.log("flag4");
       this.loading = false;
     },
     async pesquisar() {
-      this.loading = true;
       if (this.selected == 5) {
         this.loadDatasetClients();
       } else {
@@ -259,13 +178,8 @@ export default {
 
       this.dateBegin = this.dateFormatted;
       this.dateEnd = this.dateFormatted2;
-      this.loading = false;
     },
-    formatDate(date) {
-      if (!date) return null;
-      const [year, month, day] = date.split("-");
-      return `${day}/${month}/${year}`;
-    },
+
     loadDatasetClients() {
       this.$store.dispatch("loadClientsServed", {
         initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
@@ -275,30 +189,34 @@ export default {
         initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
         finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
       });
+    },
+    async initialInfo() {
+      await this.$store.dispatch("getOuttakes", {
+        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+      });
+      await this.$store.dispatch("getUsers", {
+        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
+        type: "PATIENT"
+      });
+      this.todayNewUsers = await this.$store.dispatch("getTodayUsers", {
+        initialDate: moment().format("YYYY-MM-DD 00:00:00"),
+        finalDate: moment().format("YYYY-MM-DD 23:59:59"),
+        type: "PATIENT"
+      });
+      await this.$store.dispatch("getOuttakesCategories");
+      await this.$store.dispatch("loadClientsServed", {
+        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+      });
+
+      await this.getIntakes();
+      await this.loadDatasetClients();
     }
   },
-  async mounted() {
-    await this.$store.dispatch("getOuttakes", {
-      initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-      finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
-    });
-    await this.$store.dispatch("getUsers", {
-      initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-      finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
-      type: "PATIENT"
-    });
-    this.todayNewUsers = await this.$store.dispatch("getTodayUsers", {
-      initialDate: moment().format("YYYY-MM-DD 00:00:00"),
-      finalDate: moment().format("YYYY-MM-DD 23:59:59"),
-      type: "PATIENT"
-    });
-    await this.$store.dispatch("getOuttakesCategories");
-    await this.$store.dispatch("loadClientsServed", {
-      initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-      finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
-    });
-    this.getIntakes();
-    this.loadDatasetClients();
+  mounted() {
+    this.initialInfo();
   },
   computed: {
     colaborators() {
@@ -306,22 +224,6 @@ export default {
     },
     hide() {
       return this.selected > 11;
-    },
-    overviewDrawer: {
-      get() {
-        return this.$store.getters.overviewDrawer;
-      },
-      set(val) {
-        this.$store.dispatch("overviewToggle", val);
-      }
-    }
-  },
-  watch: {
-    date(val) {
-      this.dateFormatted = this.formatDate(this.date);
-    },
-    date2(val) {
-      this.dateFormatted2 = this.formatDate(this.date2);
     }
   }
 };
