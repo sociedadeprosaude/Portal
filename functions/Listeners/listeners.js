@@ -93,7 +93,7 @@ exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore
             }
         }
 
-        let budgets = '/budgets/';
+        let budgets = '/budgets';
         let budg = await firestore.collection('users/' + uidOld + budgets).get();
         let arrayOfBudgets = [];
         budg.forEach(doc => {
@@ -103,7 +103,7 @@ exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore
             console.log(arrayOfBudgets)
             for (let budget in arrayOfBudgets){
                 firestore.collection('users/' + uidNew + budgets).doc(arrayOfBudgets[budget].id.toString()).set(arrayOfBudgets[budget]);
-                //esp
+/*                //esp
                 let specialtiesOfB = firestore.collection('users/' + uidOld + budgets + arrayOfBudgets[budget].id + '/specialties').get();
                 let arrayOfBudgetsSpecialties = [];
                 specialtiesOfB.forEach(doc => {
@@ -130,11 +130,11 @@ exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore
                     for(let exam in arrayOfBudgetsExams){
                         firestore.collection('users/' + uidNew + budgets + arrayOfBudgets[budget].id + '/exams').doc(arrayOfBudgetsExams[exam].id).set(arrayOfBudgetsExams[exam]);
                     }
-                }
+                }*/
             }
         }
 
-        let intakes = '/intakes/';
+        let intakes = '/intakes';
         let intak = await firestore.collection('users/' + uidOld + intakes).get();
         let arrayOfIntakes = [];
         intak.forEach(doc => {
@@ -143,7 +143,7 @@ exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore
         if(arrayOfIntakes){
             for (let intake in arrayOfIntakes){
                 firestore.collection('users/' + uidNew + intakes).doc(arrayOfIntakes[intake].id.toString()).set(arrayOfIntakes[intake]);
-                //esp
+/*                //esp
                 let specialtiesOfI = firestore.collection('users/' + uidOld + intakes + arrayOfIntakes[intake].id + '/specialties').get();
                 let arrayOfIntakesSpecialties = [];
                 specialtiesOfI.forEach(doc => {
@@ -168,7 +168,7 @@ exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore
                     for(let exam in arrayOfIntakesExams){
                         firestore.collection('users/' + uidNew + intakes + arrayOfIntakes[intake].id + '/exams').doc(arrayOfIntakesExams[exam].id).set(arrayOfIntakesExams[exam]);
                     }
-                }
+                }*/
             }
         }
         //raiz: user OLD

@@ -109,7 +109,7 @@
 
         methods: {
             async editDoctor(doctor) {
-                this.selectedDoctor = this.doctors[doctor.cpf];
+                this.selectedDoctor = this.doctors[doctor.uid];
                 this.editingDoctor = true;
             },
             async deleteDoctor(doctor){
@@ -117,7 +117,7 @@
                 this.deletingDoctor = true;
             },
             async deleteDoctorFromDatabase(item) {
-                let doctor = this.doctors[item.cpf];
+                let doctor = this.doctors[item.uid];
                 this.loading = true;
                 await this.$store.dispatch('deleteConsultations', doctor);
                 await this.$store.dispatch('deleteDoctor', doctor);

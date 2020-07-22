@@ -568,6 +568,7 @@
         computed: {
             selectedPatient() {
                 let user = this.$store.getters.selectedPatient;
+                console.log('selected:', user)
                 if (user) {
                     this.name = user.name;
                     this.cpf = user.cpf;

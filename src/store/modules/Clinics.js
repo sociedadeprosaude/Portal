@@ -220,6 +220,7 @@ const actions = {
             price: payload.price,
             payment_method: payload.paymentMethod,
             crm: payload.crm,
+            uid: payload.uid,
             cpf: payload.cpf
         };
 
