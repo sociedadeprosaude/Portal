@@ -229,15 +229,20 @@ const actions = {
         functions.removeUndefineds(patient);
         try {
             let user;
-            let founded;
+            let id;
+            let type;
             let foundUser = await firebase.firestore().collection('users').where('cpf','==', patient.cpf).get();
             foundUser.docs.forEach(doc => {
-                founded = doc.id
+                id = doc.id,
+                type = doc.data().type
             });
-            console.log('encontrado:', founded)
-            if (founded) {
+            console.log('encontrado:', id)
+            if (id) {
                 //se já existir: collaborator / patient / doctor (passar a ter field uid !== de doc.id)
-                user = await firebase.firestore().collection('users').doc(founded).update(patient);
+                if(type === 'COLABORATOR'){
+                    patient.type = type
+                    user = await firebase.firestore().collection('users').doc(id).update(patient)
+                } else { user = await firebase.firestore().collection('users').doc(id).update(patient) }
             } else {
                 //novo user : colaborator / patiente
                 if (patient.type) {
