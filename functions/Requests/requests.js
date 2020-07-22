@@ -63,15 +63,19 @@ exports.setUidToUsersDoctor = functions.runWith(heavyFunctionsRuntimeOpts).https
         let usersSnap = [];
         query = query.where('type', '==', 'DOCTOR')
         usersSnap = await query.get();
+        let promises = [];
         usersSnap.docs.forEach(doc => {
             if(!doc.data().uid) {
-                doc.ref.update({uid: doc.id})
+                promises.push(doc.ref.update({uid: doc.id}))
+                //doc.ref.update({uid: doc.id})
             }
         });
+        await Promise.all(promises)
+        response.status(200).send('funcionu UID To DOCTORS')
     } catch (e) {
         console.log(e)
+        response.status(500).send(e)
     }
-    response.status(200).send('funcionu UID To Doctors')
     return
 });
 

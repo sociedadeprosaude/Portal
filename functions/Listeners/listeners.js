@@ -100,37 +100,8 @@ exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore
             arrayOfBudgets.push(doc.data())
         });
         if(arrayOfBudgets){
-            console.log(arrayOfBudgets)
             for (let budget in arrayOfBudgets){
                 firestore.collection('users/' + uidNew + budgets).doc(arrayOfBudgets[budget].id.toString()).set(arrayOfBudgets[budget]);
-/*                //esp
-                let specialtiesOfB = firestore.collection('users/' + uidOld + budgets + arrayOfBudgets[budget].id + '/specialties').get();
-                let arrayOfBudgetsSpecialties = [];
-                specialtiesOfB.forEach(doc => {
-                    let obj = doc.data()
-                    obj.id = doc.id
-                    arrayOfBudgetsSpecialties.push(obj)
-                });
-                if(arrayOfBudgetsSpecialties){
-                    console.log(arrayOfBudgetsSpecialties)
-                    for(let specialtie in arrayOfBudgetsSpecialties){
-                        firestore.collection('users/' + uidNew + budgets + arrayOfBudgets[budget].id + '/specialties').doc(arrayOfBudgetsSpecialties[specialtie].id).set(arrayOfBudgetsSpecialties[specialtie]);
-                    }
-                }
-                //exam
-                let examsOfB = firestore.collection('users/' + uidOld + budgets + arrayOfBudgets[budget].id + '/exams').get();
-                let arrayOfBudgetsExams = [];
-                examsOfB.forEach(doc => {
-                    let obj = doc.data()
-                    obj.id = doc.id
-                    arrayOfBudgetsExams.push(obj)
-                });
-                if(arrayOfBudgetsExams){
-                    console.log(arrayOfBudgetsExams)
-                    for(let exam in arrayOfBudgetsExams){
-                        firestore.collection('users/' + uidNew + budgets + arrayOfBudgets[budget].id + '/exams').doc(arrayOfBudgetsExams[exam].id).set(arrayOfBudgetsExams[exam]);
-                    }
-                }*/
             }
         }
 
@@ -143,32 +114,6 @@ exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore
         if(arrayOfIntakes){
             for (let intake in arrayOfIntakes){
                 firestore.collection('users/' + uidNew + intakes).doc(arrayOfIntakes[intake].id.toString()).set(arrayOfIntakes[intake]);
-/*                //esp
-                let specialtiesOfI = firestore.collection('users/' + uidOld + intakes + arrayOfIntakes[intake].id + '/specialties').get();
-                let arrayOfIntakesSpecialties = [];
-                specialtiesOfI.forEach(doc => {
-                    let obj = doc.data()
-                    obj.id = doc.id
-                    arrayOfIntakesSpecialties.push(obj)
-                });
-                if(arrayOfIntakesSpecialties){
-                    for(let specialtie in arrayOfIntakesSpecialties){
-                        firestore.collection('users/' + uidNew + intakes + arrayOfIntakes[intake].id + '/specialties').doc(arrayOfIntakesSpecialties[specialtie].id).set(arrayOfIntakesSpecialties[specialtie]);
-                    }
-                }
-                //exam
-                let examsOfI = firestore.collection('users/' + uidOld + intakes + arrayOfIntakes[intake].id + '/exams').get();
-                let arrayOfIntakesExams = [];
-                examsOfI.forEach(doc => {
-                    let obj = doc.data()
-                    obj.id = doc.id
-                    arrayOfIntakesExams.push(obj)
-                });
-                if(arrayOfIntakesExams){
-                    for(let exam in arrayOfIntakesExams){
-                        firestore.collection('users/' + uidNew + intakes + arrayOfIntakes[intake].id + '/exams').doc(arrayOfIntakesExams[exam].id).set(arrayOfIntakesExams[exam]);
-                    }
-                }*/
             }
         }
         //raiz: user OLD

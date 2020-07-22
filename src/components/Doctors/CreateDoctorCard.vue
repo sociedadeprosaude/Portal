@@ -293,7 +293,9 @@
                     clinics: this.clinic,
                     type: 'doctor'
                 };
+
                 await this.$store.dispatch('addDoctor', doctor);
+                //await this.$store.dispatch('addSpecialtiesToDoctor', doctor);
 
                 for (let i in this.clinic) {
                     for (let j in this.specialties) {

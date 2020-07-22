@@ -31,6 +31,45 @@ const mutations = {
 };
 
 const actions = {
+
+/*    async addSpecialtiesToDoctor({commit}, doctor) {
+        try {
+            doctor = functions.removeUndefineds(doctor);
+            doctor.type = "DOCTOR";
+            doctor.status = "DESACTIVATE";
+            let docCopy = JSON.parse(JSON.stringify(doctor));
+            delete docCopy.specialties;
+            for (let spec in doctor.specialties) {
+                let details = {
+                    cost: doctor.specialties[spec].cost,
+                    price: doctor.specialties[spec].price,
+                    payment_method: doctor.specialties[spec].payment_method
+                };
+                let holder = {
+                    ...docCopy,
+                    ...details
+                };
+                delete doctor.specialties[spec].doctors;
+                let id;
+                let searchDoctor = await firebase.firestore().collection('users').where('cpf','==', doctor.cpf).get();
+                searchDoctor.docs.forEach(doc => {
+                    id = doc.id
+                });
+                console.log('id:', uid)
+                await firebase.firestore().collection('users/' + id + '/specialties').doc(doctor.specialties[spec].name).set({
+                    ...details,
+                    ...doctor.specialties[spec]
+                });
+                doctor.specialties[spec] = functions.removeUndefineds(doctor.specialties[spec]);
+                delete holder.clinics;
+                await firebase.firestore().collection('specialties').doc(doctor.specialties[spec].name).collection('doctors').doc(id).set(holder)
+            }
+            return
+        } catch (e) {
+            throw e
+        }
+    },*/
+
     async addDoctor({commit}, doctor) {
         try {
             doctor = functions.removeUndefineds(doctor);
@@ -59,18 +98,19 @@ const actions = {
                     ...details
                 };
                 delete doctor.specialties[spec].doctors;
-                let id;
+                let uid;
                 let searchDoctor = await firebase.firestore().collection('users').where('cpf','==', doctor.cpf).get();
                 searchDoctor.docs.forEach(doc => {
-                    id = doc.id
+                    uid = doc.id
                 });
-                await firebase.firestore().collection('users/' + id + '/specialties').doc(doctor.specialties[spec].name).set({
+                console.log('uid 1:', uid)
+                await firebase.firestore().collection('users/' + uid + '/specialties').doc(doctor.specialties[spec].name).set({
                     ...details,
                     ...doctor.specialties[spec]
                 });
                 doctor.specialties[spec] = functions.removeUndefineds(doctor.specialties[spec]);
                 delete holder.clinics;
-                await firebase.firestore().collection('specialties').doc(doctor.specialties[spec].name).collection('doctors').doc(id).set(holder)
+                await firebase.firestore().collection('specialties').doc(doctor.specialties[spec].name).collection('doctors').doc(uid).set(holder)
             }
             return
         } catch (e) {
