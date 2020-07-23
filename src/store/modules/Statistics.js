@@ -1,17 +1,21 @@
 import firebase from "firebase";
 import moment from "moment"
-import Users from "./Users";
+import gmapsInit from "../../utils/gmaps"
+import functions from "../../utils/functions";
 
 const state = {
     statistics: null,
+    clientsServed:{},
+    newClients:{},
+    ageClientsServed:{},
+    genderClientsServed:{},
+    geopoints:[],
     statisticsOuttakes: null,
-    clientsServed: {},
-    newClients: {},
-    ageClientsServed: {},
-    genderClientsServed: {}
 };
 
 const mutations = {
+    /* setUsersServed: (state, payload) => state.usersServed = payload, */
+    setGeopoints: (state, payload) => state.geopoints = payload,
     setStatistics: (state, payload) => state.statistics = payload,
     setStatisticsOuttakes: (state, payload) => state.statisticsOuttakes = payload,
     setClientsServed: (state, payload) => state.clientsServed = payload,
@@ -152,7 +156,25 @@ const actions = {
                 commit('setGenderClientsServed', genderClients)
             })
     },
-    loadNewClients({ commit }, payload) {
+
+    loadUsersGeopoints({commit}){
+        let geopoints = []
+        firebase.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood')
+        .get().then((snapshot)=>{
+            snapshot.forEach((geopoint)=>{
+                let data = geopoint.data()
+                geopoints.push({
+                    latitude:data.geopoint ? data.geopoint.latitude:undefined,
+                    longitude:data.geopoint? data.geopoint.longitude:undefined,
+                    count: data.count,
+                    monthly_report:data.monthly_report
+                })
+            })
+            commit('setGeopoints',geopoints)
+        })
+    },
+
+    loadNewClients({commit},payload){
         let newClients = {}
         firebase.firestore().collection('users').where('created_at', '>=', payload.initialDate)
             .where('created_at', '<=', payload.finalDate)
@@ -165,16 +187,55 @@ const actions = {
                 })
                 commit('setNewClients', newClients)
             })
+    },
+
+    async setGeopointsClients({commit},payload){
+        const google = await gmapsInit();
+        let geocoder = new google.maps.Geocoder();
+        let count = 0
+        firebase.firestore().collection('users')
+        .get().then((users)=>{
+            users.forEach((user)=>{
+                let data = user.data()
+                if(count <= 2000 && data.addresses && data.addresses[0] && data.addresses[0].cep){
+                    let newCEP = functions.clearCEP(data.addresses[0].cep).substring(0,5)
+                    firebase.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP)
+                    .get().then(async(userGeopoint)=>{
+                        if(!userGeopoint.exists){
+                            count += 1
+                            geocoder.geocode(
+                                { address: [data.addresses[0].street,data.addresses[0].complement].join(" ") + " Manaus Amazonas" },
+                                (results, status) => {
+                                  if (status !== "OK" || !results[0]) {
+                                   throw new Error(status);
+                                   //console.log('aquele problema')
+                                  }
+                                  else{
+                                    console.log('New Geopoint',count)
+                                    firebase.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP).set({count:1,geopoint: new firebase.firestore.GeoPoint(results[0].geometry.location.lat(), results[0].geometry.location.lng())})
+                                  }
+                                }
+                            );
+
+                            await functions.sleep(3000)
+                        }else{
+                            firebase.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP).update({count:firebase.firestore.FieldValue.increment(1)})
+                        }
+                    })
+                }
+            })
+        })
     }
 };
 
 const getters = {
     getStatistics: (state) => state.statistics,
+    getClientsServed:(state) => state.clientsServed,
+    getNewClients:(state) => state.newClients,
+    getAgeClientsServed:(state) => state.ageClientsServed,
+    getGenderClientsServed:(state) => state.genderClientsServed,
+    getGeopoints:(state) => state.geopoints,
     getStatisticsOuttakes: (state) => state.statisticsOuttakes,
-    getClientsServed: (state) => state.clientsServed,
-    getNewClients: (state) => state.newClients,
-    getAgeClientsServed: (state) => state.ageClientsServed,
-    getGenderClientsServed: (state) => state.genderClientsServed,
 };
 
 export default {

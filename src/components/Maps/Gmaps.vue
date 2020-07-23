@@ -7,9 +7,9 @@ import gmapsInit from "../../utils/gmaps";
 
 export default {
   name: "Gmaps",
-  //props:['address'],
+  props:['addresses','geopoints','period_report'],
   data: () => ({
-    //google:undefined,
+    google:undefined,
     geocoder: undefined,
     map: undefined,
     marker:undefined
@@ -22,60 +22,46 @@ export default {
   methods: {
     async initConfig() {
       try {
-        const google = await gmapsInit();
+        this.google = await gmapsInit();
         this.geocoder = new google.maps.Geocoder();
-        let latlng = new google.maps.LatLng(-3.1190275, -60.0217314);
+        let latlng = new this.google.maps.LatLng(-3.1190275, -60.0217314);
         let mapOptions = {
           zoom: 11,
           center: latlng,
           mapTypeId: google.maps.MapTypeId.ROADMAP
         };
-        this.map = new google.maps.Map(this.$el, mapOptions);
+        this.map = new this.google.maps.Map(this.$el, mapOptions);
 
-        this.marker = new google.maps.Marker({
+        this.marker = new this.google.maps.Marker({
           position: latlng,
           map: this.map,
           title: ""
         });
-       
-        /* let latlng = new google.maps.LatLng(-3.1190275, -60.02173140000002)
-        let mapOptions = {
-          zoom: 8,
-          center: latlng,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-        }
-        this.map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions) */
-        //this.positionAddress('Manaus')
 
-        this.markMap({lat:-3.0258876,lng:-59.9657626})
-        /*  var marker = new google.maps.Marker({
-          position: new google.maps.LatLng(-3.0258876, -59.9657626),
-          map: this.map,
-          title: "Hello World!"
-        }); */
+        this.initMarkers()
       } catch (error) {
         console.error(error);
       }
     },
+    async initMarkers(){
+      console.log(this.period_report)
+      for(var key in this.geopoints){
+        //this.positionAddress(address)
+        //await this.sleep(5000);
+        if(this.geopoints[key].latitude && this.geopoints[key].longitude && this.geopoints[key].count)
+          this.markMap({lat:this.geopoints[key].latitude,lng:this.geopoints[key].longitude,count:this.geopoints[key].count,monthly_report:this.geopoints[key].monthly_report})
+      }
+    },
+
     positionAddress(address) {
-      //console.log('GMaps',address)
 
       this.geocoder.geocode(
         { address: address + " Manaus Amazonas" },
         (results, status) => {
           if (status !== "OK" || !results[0]) {
-            throw new Error(status);
+           throw new Error(status);
           }
-          console.log(results[0].formatted_address);
-          console.log("Latitude: ", results[0].geometry.location.lat());
-          console.log("Longitude: ", results[0].geometry.location.lng());
-          /* this.$emit("locationFound", {
-            address: results[0].formatted_address,
-            latitude: results[0].geometry.location.lat(),
-            longitude: results[0].geometry.location.lng()
-          }); */
-          /* this.map.setCenter(results[0].geometry.location);
-          this.map.fitBounds(results[0].geometry.viewport); */
+          this.markMap({lat:results[0].geometry.location.lat(),lng:results[0].geometry.location.lng()})
         }
       );
 
@@ -83,22 +69,52 @@ export default {
     },
 
     markMap(latLng){
+      var title = "Total de clientes: " + latLng.count
 
-      var marker = new google.maps.Marker({
-        position: new google.maps.LatLng(latLng.lat, latLng.lng),
+      if(this.period_report && latLng.monthly_report){
+        var report = latLng.monthly_report.find((value)=>value.id === this.period_report)
+        if(report){
+          title = report.created ? title + `\nTotal de pacientes criados: ${report.created}` : ""
+          title = report.accessed ? title + `\nTotal de pacientes atendidos: ${report.accessed}` : ""
+        }else{
+          title = title + "\n\nNão há relatório definido para o período escolhido"
+        }
+    
+      }
+
+      var marker = new this.google.maps.Marker({
+        position: new this.google.maps.LatLng(latLng.lat, latLng.lng),
         map: this.map,
+        title: title
       });
+    },
+    sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
     }
   },
   computed: {
     teste() {
-      console.log(this.address);
       return this.address;
     },
     search() {
       let value = this.$store.getters.searchAddress;
       if (!value) value = "Manaus amazonas";
       return value;
+    }
+  },
+  watch:{
+    addresses(value){
+      if(value){
+        this.initMarkers()
+      }
+    },
+    geopoints(value){
+      if(value){
+        this.initMarkers()
+      }
+    },
+    period_report(value){
+      this.initMarkers()
     }
   }
 };

@@ -51,7 +51,7 @@ const actions = {
         let specialtieSelect = await firebase.firestore().collection('specialties').doc(consultation.specialty.name).get()
         let specialtie={
             name: consultation.specialty.name,
-            cost: specialtieSelect.data().doctors.filter(item =>  item.name === consultation.doctor.name)[0].cost,
+            cost: specialtieSelect.data().doctors.filter(item =>  item.name === consultation.doctor.name).cost,
             realized: moment().format('YYYY-MM-DD'),
             paid: false
         }
