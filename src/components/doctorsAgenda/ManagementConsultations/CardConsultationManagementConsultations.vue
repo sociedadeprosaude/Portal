@@ -13,7 +13,7 @@
             <v-flex xs4>
                 <p class="text-left">Hora: {{consultation.date.substring(11,16)}}</p>
             </v-flex>
-            <v-flex xs12>
+            <v-flex xs12 v-if="user.type !== 'DOCTOR'">
                 <p class="text-left">Recibo: {{consultation.payment_number}}</p>
             </v-flex>
             <v-flex xs12>
@@ -24,7 +24,7 @@
                 <p class="text-left">Tipo: {{consultation.type}} </p>
             </v-flex>
             <v-flex xs12>
-                <p class="text-left">Status: {{consultation.status}}</p>
+                <p class="text-left" v-if="user.type !== 'DOCTOR'">Status: {{consultation.status}}</p>
             </v-flex>
         </v-layout>
     </v-container>
@@ -38,7 +38,9 @@
 
         }),
         computed: {
-
+            user(){
+                return this.$store.getters.user
+            },
         },
         mounted() {
             this.initialConfig()

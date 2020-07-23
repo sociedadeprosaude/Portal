@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const moment = require('moment');
+const gmapsInit = require("../geocode")
 
 exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate(async (change, context) => {
     let db = admin.firestore()
@@ -16,7 +17,39 @@ exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate
             quantity: admin.firestore.FieldValue.increment(1)
         })
     }
+    if (user.addresses && user.addresses[0] && user.addresses[0].cep) {
+        let newCEP = user.addresses[0].cep.replace(/[.,-]/g,"").substring(0,5)
+        admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP)
+            .get().then(async (userGeopoint) => {
+                let ref = admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP)
+                if(!userGeopoint.exists){
+                    gmapsInit.geocode([user.addresses[0].street,user.addresses[0].complement].join(" ") + " Manaus Amazonas",
+                    async (err, coordinates)=>{
+                        if(err) 
+                            console.log(err)
+                        else{
+                            await ref.set({count:1,geopoint: new admin.firestore.GeoPoint(coordinates.lat, coordinates.lng)})
+                            updateGeopointMonthlyReport(ref)
+                        }
+                    })
+                }else{
+                   await ref.update({count: admin.firestore.FieldValue.increment(1)})
+                   updateGeopointMonthlyReport(ref)
+                }
+            })
+    }
 })
+
+async function updateGeopointMonthlyReport(ref){
+    ref.collection('monthly_report').doc(moment().format('YYYY-MM')).get()
+    .then(doc=>{
+        if(doc.exists){
+            doc.ref.update({created:admin.firestore.FieldValue.increment(1)})
+        }else{
+            doc.ref.set({created:1})
+        }
+    })
+}   
 
 exports.listenChangeInSpecialtiesSubcollections = functions.firestore.document('specialties/{specialtyId}/{collectionId}/{docId}').onWrite(async (change, context) => {
     convertSpecialtySubcollectionInObject((await admin.firestore().collection('specialties').doc(context.params.specialtyId).get()))
@@ -24,6 +57,12 @@ exports.listenChangeInSpecialtiesSubcollections = functions.firestore.document('
 
 exports.listenChangeInDoctorsSubcollections = functions.firestore.document('users/{userId}/{collectionId}/{docId}').onWrite(async (change, context) => {
     convertDoctorSubcollectionInObject((await admin.firestore().collection('users').doc(context.params.userId).get()))
+})
+
+exports.listenChangeInGeopointsSubcollections = functions.firestore.document('statistics/geopoints/users_by_neighborhood/{id}/monthly_report/{docId}').onWrite(async (change, context) => {
+convertGeopointCEPSubcollectionInObject((await admin.firestore().collection('statistics/geopoints/users_by_neighborhood').doc(context.params.id).get()))
+   console.log('Escutou dentro da monthly_reports->')
+   console.log(context.params.docId)
 })
 
 async function convertDoctorSubcollectionInObject(doctorDoc) {
@@ -443,6 +482,30 @@ async function convertSpecialtySubcollectionInObject(specialtyDoc) {
     return {
         ...specialty,
         doctors: doctors,
+    }
+}
+
+async function convertGeopointCEPSubcollectionInObject(ref) {
+    let cepGeopoint = ref.data();
+    let monthlyReports = [];
+    // eslint-disable-next-line no-await-in-loop
+    let docsCollection = await admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(ref.id).collection('monthly_report').get()
+    for (let reportDoc in docsCollection.docs) {
+        let report = docsCollection.docs[reportDoc].data()
+        monthlyReports.push({
+            ...report,
+            id:docsCollection.docs[reportDoc].id
+        });
+    }
+    ref.ref.set(
+        {
+            ...cepGeopoint,
+            monthly_report: monthlyReports,
+        }
+    )
+    return  {
+        ...cepGeopoint,
+        monthly_report: monthlyReports,
     }
 }
 //==================================================================================================================

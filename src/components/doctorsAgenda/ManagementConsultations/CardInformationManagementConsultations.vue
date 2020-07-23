@@ -63,7 +63,7 @@
                         <v-btn
                                 color="white"
                                 rounded
-                                :disabled="consultation.status !== 'Pago' && consultation.consultation_hour"
+                                :disabled="consultation.status !== 'Pago' || consultation.consultation_hour"
                                 @click="setConsultationHour(consultation)"
                         >
                             Atender
@@ -166,8 +166,6 @@
             ConsultationRecept(consultation) {
                 this.receptDialog = true;
             }
-
-
         },
     }
 </script>

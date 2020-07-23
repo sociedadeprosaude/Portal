@@ -6,7 +6,37 @@
                     <v-layout row wrap>
                         <v-flex xs12>
                             <v-card color="primary">
-                                <v-layout row wrap class="py-2 px-3">
+                                <v-layout row wrap class="py-2 px-3 hidden-sm-and-up">
+                                    <v-flex xs12>
+                                        <p class="white--text text-left font-weight-bold" style="font-size: small">
+                                            <v-icon dark left large>account_circle</v-icon>
+                                            {{consultation.doctor.name}}
+                                        </p>
+                                    </v-flex>
+                                    <v-flex xs6>
+                                        <p class="white--text text-left font-weight-bold" style="font-size: small"> CRM:
+                                            {{consultation.doctor.crm}}</p>
+                                    </v-flex>
+                                    <v-flex xs6>
+                                        <p class="white--text text-left font-weight-bold" style="font-size: small"> CPF:
+                                            {{consultation.doctor.cpf}}</p>
+                                    </v-flex>
+                                    <v-flex xs6>
+                                        <p class="white--text font-weight-bold text-left" style="font-size: small"> N° de Consultas:
+                                            {{consultation.numConsultations}}</p>
+                                    </v-flex>
+                                    <v-flex xs6>
+                                        <p class="white--text font-weight-bold text-left" style="font-size: small"> N° de Retorno:
+                                            {{consultation.numRegress}}</p>
+                                    </v-flex>
+                                    <v-flex xs1 v-if="user.type !== 'DOCTOR'">
+                                        <v-btn icon class="grey my-1 mx-1" dark x-small text fab>
+                                            <v-icon @click="deactivateDoctor(consultation.doctor)">power_settings_new
+                                            </v-icon>
+                                        </v-btn>
+                                    </v-flex>
+                                </v-layout>
+                                <v-layout row wrap class="py-2 px-3 hidden-xs-only">
                                     <v-flex xs5>
                                         <p class="white--text text-left font-weight-bold">
                                             <v-icon dark left large>account_circle</v-icon>
@@ -31,7 +61,6 @@
                                         <p class="white--text text-left font-weight-bold"> CPF:
                                             {{consultation.doctor.cpf}}</p>
                                     </v-flex>
-                                    <v-spacer/>
                                     <v-flex xs1 v-if="user.type !== 'DOCTOR'">
                                         <v-btn icon class="grey my-1 mx-1" dark x-small text fab>
                                             <v-icon @click="deactivateDoctor(consultation.doctor)">power_settings_new
@@ -48,16 +77,15 @@
                             <v-divider class="primary"/>
                         </v-flex>
                         <v-flex sm4 v-for="item in consultation.consultations" class="mt-3 mb-2">
-                            <v-card v-if="item.status === 'Pago'" outlined class="borderCard mx-2 mr-2 grey lighten-5 elevation-1" @click="patientSelect(item)">
+
+                            <v-card v-if="item.status === 'Pago'" outlined class="borderCard mx-2 mr-2 grey lighten-3 elevation-1" @click="patientSelect(item)">
                                 <v-layout row wrap class="mt-2">
                                     <v-flex xs4>
-                                        <v-icon large>person</v-icon>
+                                        <v-icon large v-if="!item.end_at">assignment_ind</v-icon>
+                                        <v-icon large color="success" v-else>assignment_turned_in</v-icon>
                                         <br>
                                         <v-icon v-if="item.type === 'Retorno'"  color="primary" small class="mt-1">restore</v-icon>
                                         <v-icon v-else small class="mt-1"  color="primary">event</v-icon>
-<!--                                        <v-icon v-if="item.status === 'Pago'" color="green" small class="mt-1">attach_money</v-icon>
-                                        <v-icon v-else small class="mt-1" color="red">money_off</v-icon>-->
-
                                     </v-flex>
                                     <v-flex xs8 class="mb-3">
                                         <v-flex xs12>
@@ -67,7 +95,6 @@
                                         </v-flex>
                                     </v-flex>
                                 </v-layout>
-
                             </v-card>
                         </v-flex>
                     </v-layout>
@@ -179,7 +206,6 @@
         },
         watch: {},
         methods: {
-
             cleanSpecialtyToDeactivate() {
                 this.specialtyToDeactivate = [];
                 this.clinicsToDeactivate = []
@@ -221,7 +247,7 @@
             patientSelect: function (item) {
                 this.selectUser(item.user)
                 this.$emit('patientSelect', item.user);
-                this.$emit('consultationSelect', item)
+                this.$emit('consultationSelect', item);
             },
             async deleteAllSchedule(doctor) {
                 this.loading = true;

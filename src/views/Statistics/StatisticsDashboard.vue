@@ -189,15 +189,17 @@ export default {
       const [year, month, day] = date.split("-");
       return `${day}/${month}/${year}`;
     },
-    loadDatasetClients() {
-      this.$store.dispatch("loadClientsServed", {
-        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
-      });
-      this.$store.dispatch("loadNewClients", {
-        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
-      });
+    loadDatasetClients(){
+       this.$store.dispatch("loadClientsServed", {
+          initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+          finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+        });
+        this.$store.dispatch("loadNewClients", {
+          initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+          finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+        });
+
+        this.$store.dispatch("loadUsersGeopoints")
     }
   },
   async mounted() {
