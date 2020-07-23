@@ -161,7 +161,7 @@ exports.UpdateUidOfUserDoctorWhenHeCreateLoginAndPassword = functions.firestore.
     }
 });
 
-exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate(async (change, context) => {
+exports.listenToUserAdded = functions.firestore.document('users/{id}').onCreate(async (change, context) => {
     let db = admin.firestore()
     let userRef = db.collection('users').doc(context.params.cpf)
     let user = (await userRef.get()).data()
@@ -230,7 +230,7 @@ async function convertDoctorSubcollectionInObject(doctorDoc) {
     }
     let specialties = [];
     // eslint-disable-next-line no-await-in-loop
-    let specialtiesCollection = await admin.firestore().collection('users/' + doctor.cpf + '/specialties').get()
+    let specialtiesCollection = await admin.firestore().collection('users/' + doctor.uid + '/specialties').get()
     for (let specialtyDoc in specialtiesCollection.docs) {
         let specialty = specialtiesCollection.docs[specialtyDoc].data()
         specialties.push(specialty)

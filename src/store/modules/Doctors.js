@@ -25,14 +25,17 @@ const actions = {
             doctor = functions.removeUndefineds(doctor);
             doctor.type = "DOCTOR";
             doctor.status = "DESACTIVATE";
-            let docCopy = JSON.parse(JSON.stringify(doctor));
             console.log('payload:',doctor)
             let founded;
             let foundUser = await firebase.firestore().collection('users').where('cpf','==', doctor.cpf).get();
             foundUser.docs.forEach(doc => { founded = doc.id} );
-            if (founded) { await firebase.firestore().collection('users').doc(founded).update(doctor) }
-            else { await firebase.firestore().collection('users').add(doctor) }
+            if (founded) {
+                await firebase.firestore().collection('users').doc(founded).update(doctor)
+            } else {
+                await firebase.firestore().collection('users').add(doctor)
+            }
             //delete docCopy.specialties;
+            let docCopy = JSON.parse(JSON.stringify(doctor));
             let uid;
             let searchDoctor = await firebase.firestore().collection('users').where('cpf','==', doctor.cpf).get();
             searchDoctor.docs.forEach(doc => {
@@ -40,9 +43,6 @@ const actions = {
             });
             console.log('uid 1:', uid)
             for (let spec in doctor.specialties){
-                console.log('antes:', doctor.specialties[spec])
-                delete doctor.specialties[spec].doctors;
-                console.log('depois:', doctor.specialties[spec])
                 let details = {
                     cost: doctor.specialties[spec].cost,
                     price: doctor.specialties[spec].price,
