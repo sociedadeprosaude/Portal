@@ -207,6 +207,7 @@
             this.$store.dispatch('getClinics');
             this.$store.dispatch('getSpecialties');
             if (this.doctor) {
+                console.log(this.doctor)
                 this.name = this.doctor.name;
                 this.cpf = this.doctor.cpf;
                 this.crm = this.doctor.crm;
@@ -277,6 +278,7 @@
             async save() {
                 this.loading = true;
                 for (let spec in this.specialties) {
+                    delete this.specialties[spec].doctors
                     if (!this.specialties[spec].cost) {
                         this.specialties[spec].cost = 0.00
                     }
@@ -293,9 +295,7 @@
                     clinics: this.clinic,
                     type: 'doctor'
                 };
-
                 await this.$store.dispatch('addDoctor', doctor);
-/*
                 for (let i in this.clinic) {
                     for (let j in this.specialties) {
                         let data = {
@@ -311,7 +311,7 @@
                         };
                         await this.$store.dispatch('addAppointmentFromDoctors', data);
                     }
-                }*/
+                }
                 this.success = true;
                 this.loading = false;
                 this.clear();

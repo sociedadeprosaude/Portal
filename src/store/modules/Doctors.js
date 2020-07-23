@@ -23,7 +23,7 @@ const mutations = {
         state.specialties = payload
     },
     deleteDoctor(state, payload) {
-        Vue.delete(state.doctors, payload.cpf)
+        Vue.delete(state.doctors, payload.uid)
     },
     setDoctorSelected(state, payload) {
         state.doctorSelected = payload;
@@ -38,22 +38,18 @@ const actions = {
             doctor.status = "DESACTIVATE";
             let docCopy = JSON.parse(JSON.stringify(doctor));
             console.log('payload:',doctor)
-            console.log('Copy:',docCopy)
             let founded;
             let foundUser = await firebase.firestore().collection('users').where('cpf','==', doctor.cpf).get();
             foundUser.docs.forEach(doc => { founded = doc.id} );
-            if (founded) {
-                //await firebase.firestore().collection('users').doc(founded).update(docCopy)
-            }
-            else {
-                for (let spec in docCopy.specialties) {
-                    delete docCopy.specialties[spec].doctors;
-                }
-                console.log('copiaEditada:',docCopy)
-                //await firebase.firestore().collection('users').add(docCopy)
-            }
-            /*
-            delete docCopy.specialties;
+            if (founded) { await firebase.firestore().collection('users').doc(founded).update(doctor) }
+            else { await firebase.firestore().collection('users').add(doctor) }
+            //delete docCopy.specialties;
+            let uid;
+            let searchDoctor = await firebase.firestore().collection('users').where('cpf','==', doctor.cpf).get();
+            searchDoctor.docs.forEach(doc => {
+                uid = doc.id
+            });
+            console.log('uid 1:', uid)
             for (let spec in doctor.specialties){
                 console.log('antes:', doctor.specialties[spec])
                 delete doctor.specialties[spec].doctors;
@@ -67,12 +63,6 @@ const actions = {
                     ...docCopy,
                     ...details,
                 };
-                let uid;
-                let searchDoctor = await firebase.firestore().collection('users').where('cpf','==', doctor.cpf).get();
-                searchDoctor.docs.forEach(doc => {
-                    uid = doc.id
-                });
-                console.log('uid 1:', uid)
                 await firebase.firestore().collection('users/' + uid + '/specialties').doc(doctor.specialties[spec].name).set({
                     ...details,
                     ...doctor.specialties[spec],
@@ -81,7 +71,7 @@ const actions = {
                 doctor.specialties[spec] = functions.removeUndefineds(doctor.specialties[spec]);
                 delete holder.clinics;
                 await firebase.firestore().collection('specialties').doc(doctor.specialties[spec].name).collection('doctors').doc(uid).set(holder);
-            }*/
+            }
             return
         } catch (e) {
             throw e
@@ -98,7 +88,7 @@ const actions = {
             snapshot.forEach(doc => {
                 firebase.firestore().collection('consultations').doc(doc.id).delete();
                 if (doc.data().user) {
-                    firebase.firestore().collection('users').doc(doc.data().user.id).collection('consultations').doc(doc.id).delete()
+                    firebase.firestore().collection('users').doc(doc.data().user.cpf).collection('consultations').doc(doc.id).delete()
                     firebase.firestore().collection('canceled').doc(doc.id).set(doc.data())
                 }
             })
@@ -237,26 +227,14 @@ const actions = {
         }
 
     },
-    async selectDoctor({commit}, doctor) {
-        commit('setDoctorSelected', doctor)
-    }
+    async selectDoctor({commit}, doctor) { commit('setDoctorSelected', doctor) }
 };
-
 const getters = {
-    doctors(state) {
-        return state.doctors
-    },
-    doctor(state) {
-        return state.doctor
-    },
-    doctorsLoaded(state) {
-        return state.loaded
-    },
-    doctorSelected(state) {
-        return state.doctorSelected
-    }
+    doctors(state) {return state.doctors},
+    doctor(state) {return state.doctor},
+    doctorsLoaded(state) {return state.loaded},
+    doctorSelected(state) {return state.doctorSelected}
 };
-
 export default {
     state,
     mutations,

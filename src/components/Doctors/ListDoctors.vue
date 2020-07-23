@@ -109,7 +109,6 @@
 
         methods: {
             async editDoctor(doctor) {
-                console.log('edit:',doctor)
                 this.selectedDoctor = this.doctors[doctor.uid];
                 this.editingDoctor = true;
             },
@@ -119,10 +118,13 @@
                 this.deletingDoctor = true;
             },
             async deleteDoctorFromDatabase(item) {
-                let doctor = this.doctors[item.uid];
+                let uid = this.doctors[item.uid];
+                let cpf = this.doctors[item.cpf];
+                console.log('u:',uid)
+                console.log('c:',cpf)
                 this.loading = true;
-                await this.$store.dispatch('deleteConsultations', doctor);
-                await this.$store.dispatch('deleteDoctor', doctor);
+                await this.$store.dispatch('deleteConsultations', cpf);
+                await this.$store.dispatch('deleteDoctor', uid);
                 this.success = true;
                 this.loading = false;
                 setTimeout(() => {

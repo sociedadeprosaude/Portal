@@ -9,32 +9,18 @@ exports.setUidToUserWhenCreated = functions.firestore.document('users/{id}').onC
     let id = doc.id;
     let uid = doc.data().uid
     let type = doc.data().type
-
-    if(type === 'PATIENT'){
-        if(!uid){
-            firestore.collection('users').doc(id).update({uid: id})
-        }
-    }
-    if(type === 'DOCTOR'){
-        if(!uid) {
-            firestore.collection('users').doc(id).update({uid: id})
-        }
-    }
-    if(type === 'COLABORATOR'){
-        if(id !== uid){
-            firestore.collection('users').doc(uid).set(doc.data())
-            firestore.collection('users').doc(id).delete()
-        }
-    }
+    if(type === 'PATIENT' && !uid) { firestore.collection('users').doc(id).update({uid: id}) }
+    if(type === 'DOCTOR' && !uid) { firestore.collection('users').doc(id).update({uid: id}) }
+    if(type === 'COLABORATOR' && id !== uid) {
+        firestore.collection('users').doc(uid).set(doc.data())
+        firestore.collection('users').doc(id).delete() }
 });
-
 exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore.document('users/{uid}').onUpdate( async (change, context) => {
     let firestore = admin.firestore();
     let uidOld = change.before.data().uid;//antes
     let uidNew = change.after.data().uid;//depois
     let user = change.after.data();
     let type = change.after.data().type
-
     if( uidNew !== uidOld && type === 'PATIENT'){
         //raiz: user NEW
         await firestore.collection('users').doc(uidNew).set(user)
@@ -106,14 +92,12 @@ exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore
         await firestore.collection('users').doc(uidOld).delete()
     }
 });
-
 exports.UpdateUidOfUserDoctorWhenHeCreateLoginAndPassword = functions.firestore.document('users/{uid}').onUpdate( async (change, context) => {
     let firestore = admin.firestore();
     let uidOld = change.before.data().uid;//antes
     let uidNew = change.after.data().uid;//depois
     let user = change.after.data();//tudo do user depois da atualização*
     let type = change.after.data().type
-
     if( uidOld !== uidNew && type === 'DOCTOR'){
         //raiz: user
         await firestore.collection('users').doc(uidNew).set(user)
