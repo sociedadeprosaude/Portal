@@ -31,11 +31,8 @@
 </template>
 
 <script>
-
     import moment from "moment";
-
     export default {
-
         mounted() {
             this.$store.dispatch('WarningColaborators');
             this.$store.dispatch('getConsultationsCanceled');
@@ -47,22 +44,17 @@
             };
             this.$store.dispatch('dueDateToday', data);
             this.$store.dispatch('loadNotifications');
-
         },
-
         computed: {
             users() {
                 return this.$store.getters.colaboratorsWarning
             },
-
             consultation () {
                 return this.$store.getters.consultationsCanceled;
             },
-
             outtakes () {
                 return this.$store.getters.alertOuttakes;
             },
-
             notifications () {
                 return this.$store.getters.notification;
             },
@@ -70,7 +62,6 @@
                 return this.$store.getters.contestValue;
             }
         },
-
         watch: {
             async users(){
                 let userValid= false;
@@ -134,12 +125,7 @@
                 }
             }
         },
-
-        methods:{
-            goRoute(route) {
-                this.$router.push(route)
-            },
-        }
+        methods:{ goRoute(route) { this.$router.push(route) }, }
     }
 
 </script>

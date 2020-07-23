@@ -50,20 +50,15 @@
 
 <script>
     import {mask} from "vue-the-mask";
-
     export default {
         name: "contestValues",
-        directives: {
-            mask
-        },
+        directives: {mask},
         data() {
             return {
                 listUpdatedExams: []
-
             };
         },
         methods: {
-
             async deleteExamInContestValue(exam, intake) {
                 this.listUpdatedExams = intake.exams;
                 if (this.listUpdatedExams.length === 1) {
@@ -71,7 +66,6 @@
                 } else {
                     this.listUpdatedExams.splice(this.listUpdatedExams.indexOf(exam), 1);
                 }
-
                 let data = {
                     intake: intake,
                     exams: this.listUpdatedExams,
@@ -79,7 +73,6 @@
                 await this.$store.dispatch('updateContestValue', data);
                 await this.$store.dispatch('getContestValue');
             },
-
             async updateExamInContestValue (exam, intake){
                 let data = {
                     exam: exam,
@@ -91,13 +84,7 @@
                 this.deleteExamInContestValue(exam, intake);
             }
         },
-        computed: {
-            intakes(){
-                return this.$store.getters.contestValue
-            }
-        },
-        mounted() {
-            this.$store.dispatch('getContestValue');
-        }
+        computed: { intakes() { return this.$store.getters.contestValue } },
+        mounted() { this.$store.dispatch('getContestValue'); }
     };
 </script>

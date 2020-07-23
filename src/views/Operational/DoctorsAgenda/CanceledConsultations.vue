@@ -28,7 +28,6 @@
     import HeaderCanceledConsultations from '../../../components/doctorsAgenda/CanceledConsultations/HeaderCanceledConsultations'
     import ExpansionPanelCanceledConsultations from '../../../components/doctorsAgenda/CanceledConsultations/ExpansionPanelCanceledConsultations'
     import DialogCanceledConsultations from '../../../components/doctorsAgenda/CanceledConsultations/DialogCanceledConsultations'
-
     export default {
         components:{HeaderCanceledConsultations, ExpansionPanelCanceledConsultations,DialogCanceledConsultations},
         data: () => ({
@@ -38,13 +37,9 @@
             animation: false,
         }),
         computed: {
-            consultations () {
-                return this.$store.getters.consultationsCanceled;
-            }
+            consultations () { return this.$store.getters.consultationsCanceled; }
         },
-        created() {
-            this.animation = true
-        },
+        created() { this.animation = true },
         async mounted() {
             await this.$store.dispatch('getConsultationsCanceled');
             setTimeout(() => (this.animation = false), 3000)
