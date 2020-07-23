@@ -224,10 +224,14 @@ exports.setGeopoints = functions.https.onRequest(async (request, response) => {
                                 admin.firestore().collection('statistics').doc('geopoints').collection('users').doc(data.addresses[0].cep).set({geopoint: new admin.firestore.GeoPoint(coordinates.lat, coordinates.lng)})
                             })
                         }
+                        return ''
                     })
+                        .catch( error => error )
                 }
             })
+        return ''
         })
+        .catch( error => error )
     response.status(200).send("Salvando geopoint para os usuários");
 })
 
