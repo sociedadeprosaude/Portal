@@ -193,16 +193,11 @@
 <script>
     import {mask} from 'vue-the-mask'
     import SubmitButton from "../SubmitButton";
-
     export default {
         name: "CreateDoctorCard",
         props: ['doctor'],
-        directives: {
-            mask,
-        },
-        components: {
-            SubmitButton
-        },
+        directives: { mask },
+        components: { SubmitButton },
         mounted() {
             this.$store.dispatch('getClinics');
             this.$store.dispatch('getSpecialties');
@@ -264,9 +259,7 @@
             },
         },
         methods: {
-            close() {
-                this.$emit('close');
-            },
+            close() { this.$emit('close'); },
             clear() {
                 this.name = undefined;
                 this.crm = undefined;
