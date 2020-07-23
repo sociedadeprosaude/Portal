@@ -815,7 +815,8 @@
 
                 await this.$store.dispatch('updateAccessedTo', {
                     accessed_to: moment().format('YYYY-MM-DD HH:mm:ss'),
-                    id: user.cpf
+                    id: user.cpf,
+                    addresses:user.addresses
                 })
             },
 

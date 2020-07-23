@@ -314,6 +314,19 @@ const actions = {
         firebase.firestore().collection('users').doc(payload.id).update({
             accessed_to: payload.accessed_to
         })
+        if (payload.addresses && payload.addresses[0] && payload.addresses[0].cep) {
+            let newCEP = payload.addresses[0].cep.replace(/[.,-]/g,"").substring(0,5)
+            firebase.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood')
+            .doc(newCEP).collection('monthly_report').doc(moment().format('YYYY-MM'))
+            .get().then(doc=>{
+                if(doc.exists){
+                    doc.ref.update({accessed:firebase.firestore.FieldValue.increment(1)})
+                }else{
+                    doc.ref.set({accessed:1})
+                }
+            })
+        
+        }
     },
 };
 
