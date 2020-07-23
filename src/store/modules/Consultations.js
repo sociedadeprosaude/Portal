@@ -258,7 +258,7 @@ const actions = {
 
     async checkStatusDoctor ({commit}, doctor){
         let scheduleFound = await firebase.firestore().collection('schedules')
-            .where('doctor.cpf', '==', doctor.uid)
+            .where('doctor.cpf', '==', doctor.cpf)
             .get();
         if (scheduleFound.empty){
             await firebase.firestore().collection('users').doc(doctor.uid).update({
@@ -278,7 +278,7 @@ const actions = {
         }
     },
 
-    async SearchCosultation({commit}) { try { firebase.firestore().collection('consultations').doc()} catch (e) { throw e } },
+    async SearchCosultation( {commit}) { try { firebase.firestore().collection('consultations').doc() } catch (e) { throw e } },
 
     async eraseAppointment({commit}, payload) { // apagarConsulta
         try {
