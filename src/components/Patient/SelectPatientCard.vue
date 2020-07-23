@@ -681,7 +681,6 @@
                     this.$store.commit('setSystemDialog', dialog);
                     return
                 }
-
                 this.addUserToFirestore(patient)
             },
             async addUserToFirestore(patient) {
