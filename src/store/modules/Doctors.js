@@ -12,22 +12,11 @@ const state = {
 };
 
 const mutations = {
-    setDoctors(state, payload) {
-        state.doctors = payload;
-        state.loaded = true
-    },
-    setDoctor(state, payload) {
-        state.doctor = payload
-    },
-    setSpecialties(state, payload) {
-        state.specialties = payload
-    },
-    deleteDoctor(state, payload) {
-        Vue.delete(state.doctors, payload.uid)
-    },
-    setDoctorSelected(state, payload) {
-        state.doctorSelected = payload;
-    }
+    setDoctors(state, payload) { state.doctors = payload; state.loaded = true },
+    setDoctor(state, payload) { state.doctor = payload },
+    setSpecialties(state, payload) { state.specialties = payload },
+    deleteDoctor(state, payload) { Vue.delete(state.doctors, payload.uid) },
+    setDoctorSelected(state, payload) { state.doctorSelected = payload; }
 };
 
 const actions = {
@@ -73,9 +62,7 @@ const actions = {
                 await firebase.firestore().collection('specialties').doc(doctor.specialties[spec].name).collection('doctors').doc(uid).set(holder);
             }
             return
-        } catch (e) {
-            throw e
-        }
+        } catch (e) { throw e }
     },
 
     async deleteConsultations({}, doctor) {
@@ -92,9 +79,7 @@ const actions = {
                     firebase.firestore().collection('canceled').doc(doc.id).set(doc.data())
                 }
             })
-        } catch (e) {
-            throw e
-        }
+        } catch (e) { throw e }
         return
     },
 
@@ -117,16 +102,12 @@ const actions = {
             }
             commit('deleteDoctor', doctor);
             return
-        } catch (e) {
-            throw e
-        }
+        } catch (e) { throw e }
     },
     async getDoctors({commit}) {
         firebase.firestore().collection('users').where('type', '==', 'DOCTOR').onSnapshot(async (doctorsSnap) => {
             let doctors = {};
-            for (let document in doctorsSnap.docs) {
-                doctors[doctorsSnap.docs[document].id] = doctorsSnap.docs[document].data()
-            }
+            for (let document in doctorsSnap.docs) { doctors[doctorsSnap.docs[document].id] = doctorsSnap.docs[document].data() }
             commit('setDoctors', doctors);
         })
     },
@@ -150,9 +131,7 @@ const actions = {
             });
             commit('setSpecialties', specialties);
             return specialties
-        } catch (e) {
-            throw e
-        }
+        } catch (e) { throw e }
     },
     async getDoctor({commit}, payload) {
         firebase.firestore().collection('users').doc(payload).onSnapshot(async (doctorsSnap) => {

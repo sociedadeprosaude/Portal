@@ -118,10 +118,10 @@
                 this.deletingDoctor = true;
             },
             async deleteDoctorFromDatabase(item) {
-                let uid = this.doctors[item.uid];
-                let cpf = this.doctors[item.cpf];
-                console.log('u:',uid)
-                console.log('c:',cpf)
+                let uid = item.uid;
+                let cpf = item.cpf;
+                console.log('uid:',uid)
+                console.log('cpf:',cpf)
                 this.loading = true;
                 await this.$store.dispatch('deleteConsultations', cpf);
                 await this.$store.dispatch('deleteDoctor', uid);
