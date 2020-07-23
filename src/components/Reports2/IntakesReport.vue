@@ -157,7 +157,7 @@
               <v-flex
                 xs12
                 v-for="(specialtie, labels) in intake.specialties"
-                :key="labels"
+                :key="'specs'+labels"
                 class="my-1"
               >
                 <v-layout row wrap>

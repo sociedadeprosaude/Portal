@@ -506,7 +506,7 @@ const actions = {
     },
 
     async getClinicExams(context, clinic) {
-        let examSnap = await firebase.firestore().collection('clinics').doc(clinic.id).collection('exams').get()
+        let examSnap = await firebase.firestore().collection('clinics').doc(clinic.name).collection('exams').get()
         let exams = [];
         examSnap.forEach((doc) => {
             exams.push(doc.data())

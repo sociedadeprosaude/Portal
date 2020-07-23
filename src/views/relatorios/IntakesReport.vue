@@ -1,6 +1,7 @@
 <template>
   <v-container>
     <IntakesReport
+      v-if="report"
       :report="report"
       :loading="loading"
       :now="now"

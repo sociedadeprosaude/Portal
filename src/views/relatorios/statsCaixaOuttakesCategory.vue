@@ -28,7 +28,8 @@
       @change-year="(value)=>year=value"
     />
   </v-container>
-  <v-container v-else>loading</v-container>
+  <v-progress-circular v-else indeterminate size="64"></v-progress-circular>
+ 
 </template>
 
 <script>

@@ -157,7 +157,6 @@ export default {
       this.loading = true;
 
       const id = this.$route.params.idReport;
-      console.log(id);
       switch (id) {
         case "RelatorioGeral":
           this.selected = 0;
@@ -188,15 +187,18 @@ export default {
           this.selected = 5;
           break;
         case "RelatorioConsultasMaisVendidas":
+           await this.getIntakes();
           this.selected = 6;
           break;
         case "RelatorioSaidas":
+          await this.getOuttakes();
           this.selected = 7;
 
           break;
         case "RelatorioNovosUsuarios":
           this.selected = 8;
           await this.getTodayUsers();
+          await this.getUsers();
           break;
         case "RelatorioSpecialidadesFeitas":
           this.selected = 9;
@@ -257,7 +259,6 @@ export default {
       });
     },
     async getOuttakes() {
-      console.log({ date: this.date, date2: this.date2 });
       this.$store.dispatch("getOuttakes", {
         initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
         finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
@@ -306,15 +307,12 @@ export default {
       // await this.getOuttakes();
       // await this.getUsers();
       // await this.getTodayUsers();
-
       // await this.loadClientsServed();
       // await this.getIntakes();
       // await this.getUsers();
       // await this.loadDatasetClients();
-
       // await this.loadClientsServed();
       // await this.loadNewClients();
-
       this.dateBegin = this.dateFormatted;
       this.dateEnd = this.dateFormatted2;
       this.loading = false;

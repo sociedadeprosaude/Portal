@@ -1,6 +1,7 @@
  <template>
   <v-container>
     <SpecialtiesMadeReport
+      v-if="report"
       :report="report"
       :loading="loading"
       :now="now"
@@ -9,8 +10,7 @@
       :reportSelected="reportSelected"
       :QuantityTotal="QuantityTotal"
       :CostTotal="CostTotal"
-
-       @change-reportSelected="(value)=>reportSelected=value"
+      @change-reportSelected="(value)=>reportSelected=value"
     />
   </v-container>
 </template>

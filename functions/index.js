@@ -1,16 +1,16 @@
 const functions = require('firebase-functions');
-const serviceAccount = require('./serviceAccountKey.json')
+//const serviceAccount = require('./serviceAccountKey.json')
 
 const cors = require('cors')({ origin: true });
 var admin = require('firebase-admin');
 var moment = require('moment');
 const json2csv = require('json2csv');
 
-//admin.initializeApp();
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://prosaudedev.firebaseio.com"
-});
+admin.initializeApp();
+// admin.initializeApp({
+//     credential: admin.credential.cert(serviceAccount),
+//     databaseURL: "https://prosaudedev.firebaseio.com"
+// });
 const defaultRoute = '/analise-exames'
 
 const heavyFunctionsRuntimeOpts = {

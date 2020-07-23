@@ -56,21 +56,25 @@ export default {
       if (this.showOption === 0) {
         return exams;
       }
-      return exams.filter(exam => {
-        return (
-          this.getProfitPercentage(exam) < this.idealProfitPercentage / 100
-        );
-      });
+      return exams
+        ? exams.filter(exam => {
+            return (
+              this.getProfitPercentage(exam) < this.idealProfitPercentage / 100
+            );
+          })
+        : [];
     },
     filterClinics(clinics) {
       if (this.showOption === 0) {
         return clinics;
       }
-      return clinics.filter(exam => {
-        return (
-          this.getProfitPercentage(exam) < this.idealProfitPercentage / 100
-        );
-      });
+      return clinics
+        ? clinics.filter(exam => {
+            return (
+              this.getProfitPercentage(exam) < this.idealProfitPercentage / 100
+            );
+          })
+        : [];
     },
     async getClinicExams(clinic) {
       let exams = await this.$store.dispatch("getClinicExams", clinic);
@@ -114,9 +118,8 @@ export default {
       return (exam.price / (1 + this.idealProfitPercentage / 100)).toFixed(2);
     },
     getIdealPrice(exam) {
-      return (
-        exam.cost +
-        (this.idealProfitPercentage / 100) * exam.cost
+      return Number(
+        exam.cost + (this.idealProfitPercentage / 100) * exam.cost
       ).toFixed(2);
     },
     getProfitPercentage(exam) {
