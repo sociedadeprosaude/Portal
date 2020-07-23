@@ -109,10 +109,12 @@
 
         methods: {
             async editDoctor(doctor) {
+                console.log('edit:',doctor)
                 this.selectedDoctor = this.doctors[doctor.uid];
                 this.editingDoctor = true;
             },
             async deleteDoctor(doctor){
+                console.log('delete:', doctor)
                 this.selectedDoctor = doctor;
                 this.deletingDoctor = true;
             },

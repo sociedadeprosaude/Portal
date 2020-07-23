@@ -295,8 +295,7 @@
                 };
 
                 await this.$store.dispatch('addDoctor', doctor);
-                //await this.$store.dispatch('addSpecialtiesToDoctor', doctor);
-
+/*
                 for (let i in this.clinic) {
                     for (let j in this.specialties) {
                         let data = {
@@ -312,7 +311,7 @@
                         };
                         await this.$store.dispatch('addAppointmentFromDoctors', data);
                     }
-                }
+                }*/
                 this.success = true;
                 this.loading = false;
                 this.clear();

@@ -233,7 +233,7 @@ const actions = {
         await firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie + '/doctors').doc(uid).set(data);
         await firebase.firestore().collection('users/' + uid + '/specialties').doc(payload.specialtie).collection('clinics/').doc(payload.clinic.name).set(payload.clinic);
         await firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(uid).collection('clinics/').doc(payload.clinic.name).set(payload.clinic);
-        console.log('foi?')
+        console.log('foi?3')
     },
 
     deleteAppointment({commit}, payload) {
