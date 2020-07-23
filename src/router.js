@@ -6,7 +6,6 @@ import Account from '@/views/Auth/Account'
 import Login from '@/views/Auth/Login'
 import Register from '@/views/Auth/Register'
 import Exams from "./views/Register/Exams";
-import Specialties from "./views/Olds/Specialties";
 import Labor from "./views/Personal/Labor";
 import Reports from "./views/Register/Reports";
 import NewBundles from "./views/Register/Bundles";
