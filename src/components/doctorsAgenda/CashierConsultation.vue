@@ -72,8 +72,16 @@
                         />
                         <v-spacer/>
                         <v-btn :color="cartPatient ? 'accent' : ''" fab icon @click="cartPatient = !cartPatient">
-                            <v-icon>local_grocery_store</v-icon>
+                            <v-badge
+                                :content="this.itemsShopping"
+                                :value="this.itemsShopping"
+                                color="primary"
+                                overlap
+                            >
+                                <v-icon>local_grocery_store</v-icon>
+                            </v-badge>
                         </v-btn>
+                        <span>{{itemsShopping}}</span>
                     </v-card-title>
                     <v-card-text v-if="cartPatient">
                         <CartPatient/>
@@ -160,6 +168,10 @@
         },
 
         computed: {
+            itemsShopping () {
+                console.log( this.$store.getters.getShoppingCartItems.length);
+                return this.$store.getters.getShoppingCartItems.length;
+            },
             specialties() {
                 let specialties = this.$store.getters.specialties;
                 for (let spec in specialties) {
