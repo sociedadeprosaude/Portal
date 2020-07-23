@@ -163,7 +163,8 @@ exports.UpdateUidOfUserDoctorWhenHeCreateLoginAndPassword = functions.firestore.
 
 exports.listenToUserAdded = functions.firestore.document('users/{id}').onCreate(async (change, context) => {
     let db = admin.firestore()
-    let userRef = db.collection('users').doc(context.params.cpf)
+    let id = change.doc.id;
+    let userRef = db.collection('users').doc(id)
     let user = (await userRef.get()).data()
     if (!user.association_number) {
         let associatedOpRef = db.collection('operational').doc('associated')
