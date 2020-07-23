@@ -159,6 +159,15 @@ export default {
                 ...doc.data()
             }
         })
+    },
+
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    },
+    
+    clearCEP(cep){
+        let newCEP = cep.replace(/[.,-]/g,"")
+        return newCEP
     }
 }
 
