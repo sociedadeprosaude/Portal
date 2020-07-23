@@ -119,10 +119,6 @@ export default {
     }
   },
   methods: {
-    tst(asa) {
-      console.log("asd");
-      console.log(asa);
-    },
     async initiate() {
       this.loading = true;
       await this.$store.dispatch("getOuttakesCategories");

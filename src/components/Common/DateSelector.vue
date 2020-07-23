@@ -48,7 +48,7 @@
     </v-row>
     <v-row class="align-center pa-0 ma-0">
       <v-col class="pa-0 ma-0">
-        <v-btn @click="refresh()" color="blue" v-if="!loading">Pesquisar</v-btn>
+        <v-btn @click="refresh()" color="blue" v-if="!loading && !loadingFather">Pesquisar</v-btn>
         <v-progress-circular indeterminate class="primary--text" v-else />
       </v-col>
     </v-row>
@@ -57,7 +57,7 @@
 
 <script>
 export default {
-  props: ["cb"],
+  props: ["cb", "loadingFather"],
   data: vm => ({
     date: moment().format("YYYY-MM-DD 00:00:00"),
     date2: moment().format("YYYY-MM-DD 23:59:59"),
@@ -72,7 +72,7 @@ export default {
   methods: {
     async refresh() {
       this.$emit("change-dateFormatted", this.dateFormatted);
-      this.$emit("change-dateFormatted2", this.dateFormatted);
+      this.$emit("change-dateFormatted2", this.dateFormatted2);
       this.loading = true;
       await this.cb();
       this.loading = false;

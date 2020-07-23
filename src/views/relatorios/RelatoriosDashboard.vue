@@ -1,9 +1,11 @@
 <template>
   <v-container fluid>
-    <DrawerRelatorio @change-selected="(value)=>selected=value" />
+    <DrawerRelatorio @change-selected="(value)=>{selected=value;searchView()}" />
 
     <DateSelector
-      :cb="()=>getIntakes()"
+      v-if="!hide"
+      :cb="()=>searchView()"
+      :loadingFather="loading"
       @change-date="(value)=>date=value"
       @change-date2="(value)=>date2=value"
       @change-dateFormatted="(value)=>dateFormatted=value"
@@ -19,7 +21,7 @@
     />
 
     <luiz-fernando-report
-      v-if="selected == 1"
+      v-else-if="selected == 1"
       :report="formattedReport"
       :loading="loading"
       :intakes="intakes"
@@ -29,38 +31,55 @@
     <colaborators-production-report v-if="selected == 2" :loading="loading" :intakes="intakes"></colaborators-production-report>
 
     <intakes-report
-      v-if="selected == 3"
+      v-else-if="selected == 3"
       :report="formattedReport"
       :loading="loading"
       :intakes="intakes"
     />
 
-    <procedures-prices-analises v-if="selected == 4" />
-    <best-selling-exams-report v-if="selected == 5" :date="dateBegin" :date2="dateEnd" />
+    <procedures-prices-analises v-else-if="selected == 4" :loading="loading" />
+    <best-selling-exams-report
+      v-else-if="selected == 5"
+      :date="dateBegin"
+      :date2="dateEnd"
+      :loading="loading"
+    />
 
-    <BestSellingConsultationsReport v-if="selected == 6" :date="dateBegin" :date2="dateEnd" />
+    <BestSellingConsultationsReport
+      v-else-if="selected == 6"
+      :date="dateBegin"
+      :date2="dateEnd"
+      :loading="loading"
+    />
 
-    <OuttakesReport v-if="selected == 7" :date="dateBegin" :date2="dateEnd" :cb="pesquisar" />
+    <OuttakesReport
+      v-else-if="selected == 7"
+      :date="dateBegin"
+      :date2="dateEnd"
+      :cb="()=>searchView()"
+      :loading="loading"
+    />
     <NewUsersReport
-      v-if="selected == 8"
+      v-else-if="selected == 8"
       :date="dateBegin"
       :date2="dateEnd"
       :todayNewUsers="todayNewUsers"
+      :loading="loading"
     />
     <SpecialtiesMadeReport
-      v-if="selected == 9"
+      v-else-if="selected == 9"
       :report="formattedReport"
       :loading="loading"
       :intakes="intakes"
     />
     <ConsultationScheduledExecuted
-      v-if="selected == 10"
+      v-else-if="selected == 10"
       :report="formattedReport"
       :loading="loading"
       :intakes="intakes"
     />
     <CustomersPerProcedureReport
-      v-if="selected == 11"
+      v-else-if="selected == 11"
       :report="formattedReport"
       :loading="loading"
     />
@@ -134,87 +153,174 @@ export default {
     todayNewUsers: []
   }),
   methods: {
-    async getIntakes() {
-      console.log("flag1");
+    async searchView() {
       this.loading = true;
-      console.log("flag2");
+
+      const id = this.$route.params.idReport;
+      console.log(id);
+      switch (id) {
+        case "RelatorioGeral":
+          this.selected = 0;
+          await this.getIntakes();
+          await this.searchReports();
+          await this.searchReportsAllClinics();
+          break;
+        case "RelatorioLuizFernando":
+          this.selected = 1;
+          await this.getIntakes();
+          await this.searchReports();
+          await this.searchReportsAllClinics();
+          break;
+        case "RelatorioColaboradoresProducao":
+          this.selected = 2;
+          await this.getIntakes();
+          break;
+        case "RelatorioEntradas":
+          this.selected = 3;
+          await this.getIntakes();
+          await this.searchReports();
+          break;
+        case "RelatorioAnaliseProcedimentosAnalise":
+          this.selected = 4;
+          break;
+        case "RelatorioExamesMaisVendidos":
+          await this.getIntakes();
+          this.selected = 5;
+          break;
+        case "RelatorioConsultasMaisVendidas":
+          this.selected = 6;
+          break;
+        case "RelatorioSaidas":
+          this.selected = 7;
+
+          break;
+        case "RelatorioNovosUsuarios":
+          this.selected = 8;
+          await this.getTodayUsers();
+          break;
+        case "RelatorioSpecialidadesFeitas":
+          this.selected = 9;
+          await this.getIntakes();
+          await this.searchReports();
+          break;
+        case "RelatorioConsultasAgendadas":
+          this.selected = 10;
+          await this.getIntakes();
+          await this.searchReports();
+          break;
+        case "RelatorioClientesPorProcedimento":
+          this.selected = 11;
+          await this.searchReports();
+          break;
+        case "RelatorioEntradasEstatistica":
+          this.selected = 12;
+          break;
+        case "RelatorioSaidasCategoriaEstatistica":
+          this.selected = 13;
+          break;
+        case "RelatorioSaidasClinicasEstatisticas":
+          this.selected = 14;
+          break;
+        case "RelatorioClientesEstatisticas":
+          this.selected = 15;
+          break;
+        default:
+          this.selected = 0;
+          break;
+      }
+      this.dateBegin = this.dateFormatted;
+      this.dateEnd = this.dateFormatted2;
+      this.loading = false;
+    },
+    async searchReports() {
+      this.formattedReport = await this.$store.dispatch("searchReports", {
+        dataInicio: this.date,
+        dataFinal: this.date2,
+        colaborator: this.colaborator
+      });
+    },
+    async searchReportsAllClinics() {
+      this.formattedReportAllUnits = await this.$store.dispatch(
+        "searchReportsAllClinics",
+        {
+          dataInicio: this.date,
+          dataFinal: this.date2,
+          colaborator: this.colaborator
+        }
+      );
+    },
+    async getIntakes() {
       this.intakes = await this.$store.dispatch("getIntakes", {
         initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
         finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
         colaborator: this.colaborator
       });
-      console.log("flag3");
-      await this.pesquisar();
-      console.log("flag4");
-      this.loading = false;
     },
-    async pesquisar() {
-      if (this.selected == 5) {
-        this.loadDatasetClients();
-      } else {
-        this.$store.dispatch("getUsers", {
-          initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-          finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
-          type: "PATIENT"
-        });
-        this.$store.dispatch("getOuttakes", {
-          initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-          finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
-        });
-        this.formattedReport = await this.$store.dispatch("searchReports", {
-          dataInicio: this.date,
-          dataFinal: this.date2,
-          colaborator: this.colaborator
-        });
-        this.formattedReportAllUnits = await this.$store.dispatch(
-          "searchReportsAllClinics",
-          {
-            dataInicio: this.date,
-            dataFinal: this.date2,
-            colaborator: this.colaborator
-          }
-        );
-      }
-
-      this.dateBegin = this.dateFormatted;
-      this.dateEnd = this.dateFormatted2;
+    async getOuttakes() {
+      console.log({ date: this.date, date2: this.date2 });
+      this.$store.dispatch("getOuttakes", {
+        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+      });
     },
 
-    loadDatasetClients() {
-      this.$store.dispatch("loadClientsServed", {
-        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
-      });
-      this.$store.dispatch("loadNewClients", {
-        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
-      });
-    },
-    async initialInfo() {
-      await this.$store.dispatch("getOuttakes", {
-        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
-      });
-      await this.$store.dispatch("getUsers", {
+    async getUsers() {
+      this.$store.dispatch("getUsers", {
         initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
         finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
         type: "PATIENT"
       });
+    },
+    async getTodayUsers() {
       this.todayNewUsers = await this.$store.dispatch("getTodayUsers", {
         initialDate: moment().format("YYYY-MM-DD 00:00:00"),
         finalDate: moment().format("YYYY-MM-DD 23:59:59"),
         type: "PATIENT"
       });
-      await this.$store.dispatch("getOuttakesCategories");
-      await this.$store.dispatch("loadClientsServed", {
+    },
+
+    async loadClientsServed() {
+      this.$store.dispatch("loadClientsServed", {
         initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
         finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
       });
+    },
+    async loadNewClients() {
+      this.$store.dispatch("loadNewClients", {
+        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
+        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
+      });
+    },
 
-      await this.getIntakes();
-      await this.loadDatasetClients();
+    loadDatasetClients() {
+      this.loadClientsServed();
+      this.loadNewClients();
+    },
+    async initialInfo() {
+      this.loading = true;
+      this.$store.dispatch("showOverviewToggle", true);
+      await this.searchView();
+      await this.$store.dispatch("getOuttakesCategories");
+      // await this.searchReports();
+      // await this.searchReportsAllClinics();
+      // await this.getOuttakes();
+      // await this.getUsers();
+      // await this.getTodayUsers();
+
+      // await this.loadClientsServed();
+      // await this.getIntakes();
+      // await this.getUsers();
+      // await this.loadDatasetClients();
+
+      // await this.loadClientsServed();
+      // await this.loadNewClients();
+
+      this.dateBegin = this.dateFormatted;
+      this.dateEnd = this.dateFormatted2;
+      this.loading = false;
     }
   },
+
   mounted() {
     this.initialInfo();
   },

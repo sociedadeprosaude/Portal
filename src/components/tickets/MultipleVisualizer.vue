@@ -157,9 +157,11 @@ export default {
     calledTicketsInOrder() {
       let tickets = [];
       for (let room in this.rooms) {
-        let filteredTickets = this.rooms[room].tickets.filter(ticket => {
-          return ticket.called_at;
-        });
+        let filteredTickets = this.rooms[room].tickets
+          ? this.rooms[room].tickets.filter(ticket => {
+              return ticket.called_at;
+            })
+          : [];
         for (let ticket in filteredTickets) {
           let formattedTicket = {
             ...filteredTickets[ticket],

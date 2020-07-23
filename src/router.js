@@ -89,7 +89,7 @@ let mainRoutes = [
       requiresAuth: true
     }
   },
- 
+
   {
     path: '/relatorio',
     name: 'Relatorios',
@@ -344,7 +344,8 @@ router.afterEach((to, from, next) => {
   } else {
     store.commit('setDoctorsAgendaToolbar', false)
   }
-  if (from.name == 'RelatoriosDashboard') store.commit('showOverviewToggle', false)
+  if (from.name == 'RelatoriosDashboard' && to.name != 'RelatoriosDashboard')
+    store.commit('showOverviewToggle', false)
   if (to.path.includes('pagamento')) {
     store.commit('setBillsToolbar', true)
   } else {

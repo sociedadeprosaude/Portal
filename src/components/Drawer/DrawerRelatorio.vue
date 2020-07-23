@@ -3,7 +3,6 @@
     hide-overlay
     :right="false"
     v-model="overviewDrawer"
-    absolute
     temporary
     disable-resize-watcher
     app
@@ -15,10 +14,10 @@
         v-for="(item,index) in items"
         :key="index"
         link
-        @click="selected = index; $emit('change-selected',index); overviewDrawer=false"
+        @click="$router.push({name:'RelatoriosDashboard',params:{idReport:item.link}}),$emit('change-selected',index), overviewDrawer=false"
       >
         <v-list-item-content>
-          <v-list-item-title>{{item}}</v-list-item-title>
+          <v-list-item-title>{{item.txt}}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -32,22 +31,61 @@ export default {
     return {
       selected: 0,
       items: [
-        "Relatório Financeiro Geral",
-        "Relatório Luiz Fernando",
-        "Produção do Colaborador",
-        "Relatório de Vendas",
-        "Analise de preço de exames",
-        "Exames mais vendidos",
-        "Consultas mais vendidas",
-        "Relatório de Saídas",
-        "Novos associados",
-        "Relatório Especialidades",
-        "Relatório Consulta Marcada x Realizada",
-        "Relatorio Paciente por Procedimento",
-        "Intakes",
-        "Outtakes",
-        "Outtakes clinicas",
-        "Clientes"
+        {
+          txt: "Relatório Financeiro Geral",
+          link: "RelatorioGeral"
+        },
+        {
+          txt: "Relatório Luiz Fernando",
+          link: "RelatorioLuizFernando"
+        },
+        {
+          txt: "Produção do Colaborador",
+          link: "RelatorioColaboradoresProducao"
+        },
+        {
+          txt: "Relatório de Vendas",
+          link: "RelatorioEntradas"
+        },
+        {
+          txt: "Analise de preço de exames",
+          link: "RelatorioAnaliseProcedimentosAnalise"
+        },
+        {
+          txt: "Exames mais vendidos",
+          link: "RelatorioExamesMaisVendidos"
+        },
+        {
+          txt: "Consultas mais vendidas",
+          link: "RelatorioConsultasMaisVendidas"
+        },
+        {
+          txt: "Relatório de Saídas",
+          link: "RelatorioSaidas"
+        },
+        { txt: "Novos associados", link: "RelatorioNovosUsuarios" },
+        {
+          txt: "Relatório Especialidades",
+          link: "RelatorioSpecialidadesFeitas"
+        },
+        {
+          txt: "Relatório Consulta Marcada x Realizada",
+          link: "RelatorioConsultasAgendadas"
+        },
+        {
+          txt: "Relatorio Paciente por Procedimento",
+          link: "RelatorioClientesPorProcedimento"
+        },
+        { txt: "Intakes", link: "RelatorioEntradasEstatistica" },
+        {
+          txt: "Outtakes",
+          link: "RelatorioSaidasCategoriaEstatistica"
+        },
+        {
+          txt: "Outtakes clinicas",
+          link: "RelatorioSaidasClinicasEstatisticas"
+        },
+        { txt: "Clientes", link: "RelatorioClientesEstatisticas" }
       ]
     };
   },

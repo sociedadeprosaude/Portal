@@ -48,7 +48,7 @@
           <v-row justify="center" class="display-1">Senha</v-row>
 
           <v-row justify="center">
-            <v-col  class="ma-0 pa-0">
+            <v-col class="ma-0 pa-0">
               <p v-if="currentTicket" style="font-size: 7em;">{{currentTicket.number}}</p>
               <p v-else style="font-size: 5em;">*</p>
             </v-col>
@@ -109,16 +109,17 @@ export default {
       return "";
     },
     calledTicketsInOrder() {
-      return this.room.tickets
-        .filter(ticket => {
-          return ticket.called_at;
-        })
-        .sort((ticketA, ticketB) => {
-          return moment(ticketB.called_at).diff(
-            moment(ticketA.called_at),
-            "seconds"
-          );
-        });
+      return (this.room.tickets
+        ? this.room.tickets.filter(ticket => {
+            return ticket.called_at;
+          })
+        : []
+      ).sort((ticketA, ticketB) => {
+        return moment(ticketB.called_at).diff(
+          moment(ticketA.called_at),
+          "seconds"
+        );
+      });
     },
 
     currentTicket() {
@@ -130,7 +131,7 @@ export default {
             this.animation = "";
           }, 5000);
           this.lastTicket = latest;
-          this.playTicketSound()
+          this.playTicketSound();
         }
         return latest;
       }
@@ -139,8 +140,10 @@ export default {
   },
   methods: {
     playTicketSound() {
-      let sound = new Audio('https://firebasestorage.googleapis.com/v0/b/prosaude-36f66.appspot.com/o/assets%2FCollected%20Coin%20A1.mp3?alt=media&token=57509b64-12aa-4946-9814-42995ac8ab41')
-      sound.play()
+      let sound = new Audio(
+        "https://firebasestorage.googleapis.com/v0/b/prosaude-36f66.appspot.com/o/assets%2FCollected%20Coin%20A1.mp3?alt=media&token=57509b64-12aa-4946-9814-42995ac8ab41"
+      );
+      sound.play();
     },
     cardStyleByIndex(index) {
       return index === 0 ? "height: 160px; width: 100%" : "height: 100px";

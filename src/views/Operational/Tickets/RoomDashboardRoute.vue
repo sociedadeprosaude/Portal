@@ -200,9 +200,11 @@ export default {
     async callNextTicket(room) {
       this.loading = true;
 
-      let ticketIndex = room.tickets.findIndex(ticket => {
-        return !ticket.called_at;
-      });
+      let ticketIndex = room.tickets
+        ? room.tickets.findIndex(ticket => {
+            return !ticket.called_at;
+          })
+        : -1;
       if (ticketIndex < 0) {
         await this.callSectorTicket(room);
         this.loading = false;
@@ -217,7 +219,6 @@ export default {
       this.loading = false;
     },
     async callSectorTicket(room) {
-     
       let ticketIndex = this.sector.tickets
         ? this.sector.tickets.findIndex(ticket => {
             return !ticket.called_at;
@@ -232,7 +233,9 @@ export default {
       this.sector.tickets[ticketIndex].called_at = moment().format(
         "YYYY-MM-DD HH:mm:ss"
       );
-      room.tickets.push(this.sector.tickets[ticketIndex]);
+      room.tickets
+        ? room.tickets.push(this.sector.tickets[ticketIndex])
+        : (room.tickets = [this.sector.tickets[ticketIndex]]);
       const sector = this.sector;
       await this.$store.dispatch("updateSectorRoom", { sector, room });
       this.sector.tickets.splice(ticketIndex, 1);
