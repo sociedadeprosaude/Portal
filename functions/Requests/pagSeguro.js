@@ -155,7 +155,7 @@ exports.pagSeguroCreditCallback = functions.https.onRequest(async (request, resp
     var url = "https://ws.sandbox.pagseguro.uol.com.br/v3/transactions/notifications/" + request.body.notificationCode
     return axios
         .get(url + pagSeguroCredentials)
-        .then(async res =>
+        .then(asyncz =>
             xml2js.parseString(res.data, async function (err, result) {
 
                 if (!err) {

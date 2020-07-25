@@ -1,0 +1,199 @@
+[debug] [2020-07-25T14:26:01.387Z] ----------------------------------------------------------------------
+[debug] [2020-07-25T14:26:01.389Z] Command:       /usr/bin/node /usr/bin/firebase deploy --only functions
+[debug] [2020-07-25T14:26:01.389Z] CLI Version:   8.5.0
+[debug] [2020-07-25T14:26:01.389Z] Platform:      linux
+[debug] [2020-07-25T14:26:01.389Z] Node Version:  v12.18.1
+[debug] [2020-07-25T14:26:01.390Z] Time:          Sat Jul 25 2020 10:26:01 GMT-0400 (Amazon Standard Time)
+[debug] [2020-07-25T14:26:01.390Z] ----------------------------------------------------------------------
+[debug] [2020-07-25T14:26:01.390Z] 
+[debug] [2020-07-25T14:26:01.396Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-07-25T14:26:01.396Z] > authorizing via signed-in user
+[debug] [2020-07-25T14:26:01.397Z] [iam] checking project prosaudedev for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2020-07-25T14:26:01.399Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/prosaudedev:testIamPermissions  
+ {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2020-07-25T14:26:02.413Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sat, 25 Jul 2020 14:26:02 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=720","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-07-25T14:26:02.416Z] >>> HTTP REQUEST POST https://iam.googleapis.com/v1/projects/prosaudedev/serviceAccounts/prosaudedev@appspot.gserviceaccount.com:testIamPermissions  
+ {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2020-07-25T14:26:03.428Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sat, 25 Jul 2020 14:26:03 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions.
+Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[info] 
+[info] === Deploying to 'prosaudedev'...
+[info] 
+[info] i  deploying functions 
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint
+[info] ✔  functions: Finished running predeploy script. 
+[debug] [2020-07-25T14:26:07.586Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "lint": "eslint .",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "10"
+  },
+  "dependencies": {
+    "firebase-admin": "^8.12.1",
+    "firebase-functions": "^3.7.0",
+    "axios": "^0.19.2",
+    "gocoder": "^3.0.0",
+    "json2csv": "^4.5.2",
+    "moment": "^2.24.0",
+    "papaparse": "^5.0.2",
+    "xml2js": "^0.4.23"
+  },
+  "devDependencies": {
+    "eslint": "^5.12.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "firebase-functions-test": "^0.2.0"
+  },
+  "private": true
+}
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[debug] [2020-07-25T14:26:08.616Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/prosaudedev/services/cloudfunctions.googleapis.com  
+ 
+[debug] [2020-07-25T14:26:08.616Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/prosaudedev/services/runtimeconfig.googleapis.com  
+ 
+[debug] [2020-07-25T14:26:08.617Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/prosaudedev/services/cloudbuild.googleapis.com  
+ 
+[debug] [2020-07-25T14:26:09.943Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sat, 25 Jul 2020 14:26:09 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-07-25T14:26:09.997Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sat, 25 Jul 2020 14:26:09 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] ✔  functions: required API cloudbuild.googleapis.com is enabled 
+[debug] [2020-07-25T14:26:10.071Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sat, 25 Jul 2020 14:26:09 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] ✔  functions: required API cloudfunctions.googleapis.com is enabled 
+[debug] [2020-07-25T14:26:10.073Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/prosaudedev/adminSdkConfig  
+ 
+[debug] [2020-07-25T14:27:04.748Z] ----------------------------------------------------------------------
+[debug] [2020-07-25T14:27:04.750Z] Command:       /usr/bin/node /usr/bin/firebase deploy --only functions
+[debug] [2020-07-25T14:27:04.750Z] CLI Version:   8.5.0
+[debug] [2020-07-25T14:27:04.750Z] Platform:      linux
+[debug] [2020-07-25T14:27:04.750Z] Node Version:  v12.18.1
+[debug] [2020-07-25T14:27:04.751Z] Time:          Sat Jul 25 2020 10:27:04 GMT-0400 (Amazon Standard Time)
+[debug] [2020-07-25T14:27:04.751Z] ----------------------------------------------------------------------
+[debug] [2020-07-25T14:27:04.751Z] 
+[debug] [2020-07-25T14:27:04.757Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-07-25T14:27:04.758Z] > authorizing via signed-in user
+[debug] [2020-07-25T14:27:04.758Z] [iam] checking project prosaudedev for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2020-07-25T14:27:04.760Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/prosaudedev:testIamPermissions  
+ {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2020-07-25T14:27:05.824Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sat, 25 Jul 2020 14:27:05 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=775","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-07-25T14:27:05.827Z] >>> HTTP REQUEST POST https://iam.googleapis.com/v1/projects/prosaudedev/serviceAccounts/prosaudedev@appspot.gserviceaccount.com:testIamPermissions  
+ {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2020-07-25T14:27:06.810Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sat, 25 Jul 2020 14:27:06 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions.
+Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[info] 
+[info] === Deploying to 'prosaudedev'...
+[info] 
+[info] i  deploying functions 
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint
+[info] ✔  functions: Finished running predeploy script. 
+[debug] [2020-07-25T14:27:10.754Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "lint": "eslint .",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "10"
+  },
+  "dependencies": {
+    "firebase-admin": "^8.12.1",
+    "firebase-functions": "^3.7.0",
+    "axios": "^0.19.2",
+    "gocoder": "^3.0.0",
+    "json2csv": "^4.5.2",
+    "moment": "^2.24.0",
+    "papaparse": "^5.0.2",
+    "xml2js": "^0.4.23"
+  },
+  "devDependencies": {
+    "eslint": "^5.12.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "firebase-functions-test": "^0.2.0"
+  },
+  "private": true
+}
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[debug] [2020-07-25T14:27:11.974Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/prosaudedev/services/cloudfunctions.googleapis.com  
+ 
+[debug] [2020-07-25T14:27:11.974Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/prosaudedev/services/runtimeconfig.googleapis.com  
+ 
+[debug] [2020-07-25T14:27:11.975Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/prosaudedev/services/cloudbuild.googleapis.com  
+ 
+[debug] [2020-07-25T14:58:14.813Z] ----------------------------------------------------------------------
+[debug] [2020-07-25T14:58:14.815Z] Command:       /usr/bin/node /usr/bin/firebase deploy --only functions
+[debug] [2020-07-25T14:58:14.815Z] CLI Version:   8.5.0
+[debug] [2020-07-25T14:58:14.815Z] Platform:      linux
+[debug] [2020-07-25T14:58:14.815Z] Node Version:  v12.18.1
+[debug] [2020-07-25T14:58:14.815Z] Time:          Sat Jul 25 2020 10:58:14 GMT-0400 (Amazon Standard Time)
+[debug] [2020-07-25T14:58:14.816Z] ----------------------------------------------------------------------
+[debug] [2020-07-25T14:58:14.816Z] 
+[debug] [2020-07-25T14:58:14.822Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-07-25T14:58:14.822Z] > authorizing via signed-in user
+[debug] [2020-07-25T14:58:14.823Z] [iam] checking project prosaudedev for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2020-07-25T14:58:14.825Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/prosaudedev:testIamPermissions  
+ {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2020-07-25T14:58:15.950Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sat, 25 Jul 2020 14:58:15 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=712","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-07-25T14:58:15.953Z] >>> HTTP REQUEST POST https://iam.googleapis.com/v1/projects/prosaudedev/serviceAccounts/prosaudedev@appspot.gserviceaccount.com:testIamPermissions  
+ {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2020-07-25T14:58:17.073Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sat, 25 Jul 2020 14:58:16 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions.
+Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[info] 
+[info] === Deploying to 'prosaudedev'...
+[info] 
+[info] i  deploying functions 
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint
+[info] ✔  functions: Finished running predeploy script. 
+[debug] [2020-07-25T14:58:21.336Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "lint": "eslint .",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "10"
+  },
+  "dependencies": {
+    "firebase-admin": "^8.12.1",
+    "firebase-functions": "^3.7.0",
+    "axios": "^0.19.2",
+    "gocoder": "^3.0.0",
+    "json2csv": "^4.5.2",
+    "moment": "^2.24.0",
+    "papaparse": "^5.0.2",
+    "xml2js": "^0.4.23"
+  },
+  "devDependencies": {
+    "eslint": "^5.12.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "firebase-functions-test": "^0.2.0"
+  },
+  "private": true
+}
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[debug] [2020-07-25T14:58:22.347Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/prosaudedev/services/cloudfunctions.googleapis.com  
+ 
+[debug] [2020-07-25T14:58:22.347Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/prosaudedev/services/runtimeconfig.googleapis.com  
+ 
+[debug] [2020-07-25T14:58:22.348Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/prosaudedev/services/cloudbuild.googleapis.com  
+ 

@@ -9,19 +9,20 @@ exports.setUidToUserWhenCreated = functions.firestore.document('users/{id}').onC
     let id = doc.id;
     let uid = doc.data().uid
     let type = doc.data().type
-    if(type === 'PATIENT' && !uid) { firestore.collection('users').doc(id).update({uid: id}) }
-    if(type === 'DOCTOR' && !uid) { firestore.collection('users').doc(id).update({uid: id}) }
-    if(type === 'COLABORATOR' && id !== uid) {
+    if (type === 'PATIENT' && !uid) { firestore.collection('users').doc(id).update({ uid: id }) }
+    if (type === 'DOCTOR' && !uid) { firestore.collection('users').doc(id).update({ uid: id }) }
+    if (type === 'COLABORATOR' && id !== uid) {
         firestore.collection('users').doc(uid).set(doc.data())
-        firestore.collection('users').doc(id).delete() }
+        firestore.collection('users').doc(id).delete()
+    }
 });
-exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore.document('users/{uid}').onUpdate( async (change, context) => {
+exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore.document('users/{uid}').onUpdate(async (change, context) => {
     let firestore = admin.firestore();
     let uidOld = change.before.data().uid;//antes
     let uidNew = change.after.data().uid;//depois
     let user = change.after.data();
     let type = change.after.data().type
-    if( uidNew !== uidOld && type === 'PATIENT'){
+    if (uidNew !== uidOld && type === 'PATIENT') {
         //raiz: user NEW
         await firestore.collection('users').doc(uidNew).set(user)
         //SubCollections:
@@ -31,9 +32,9 @@ exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore
         consult.forEach(doc => {
             arrayOfConsultations.push(doc.data())
         });
-        if(arrayOfConsultations){
-            for (let consultation in arrayOfConsultations){
-               firestore.collection('users/' + uidNew + consultations).doc(arrayOfConsultations[consultation].id).set(arrayOfConsultations[consultation]);
+        if (arrayOfConsultations) {
+            for (let consultation in arrayOfConsultations) {
+                firestore.collection('users/' + uidNew + consultations).doc(arrayOfConsultations[consultation].id).set(arrayOfConsultations[consultation]);
             }
         }
 
@@ -45,8 +46,8 @@ exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore
             obj.id = doc.id
             arrayOfProcedures.push(obj)
         });
-        if(arrayOfProcedures){
-            for (let procedure in arrayOfProcedures){
+        if (arrayOfProcedures) {
+            for (let procedure in arrayOfProcedures) {
                 firestore.collection('users/' + uidNew + procedures).doc(arrayOfProcedures[procedure].id).set(arrayOfProcedures[procedure]);
             }
         }
@@ -59,8 +60,8 @@ exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore
             obj.id = doc.id
             arrayOfProceduresFinished.push(obj)
         });
-        if(arrayOfProceduresFinished){
-            for (let procedureF in arrayOfProceduresFinished){
+        if (arrayOfProceduresFinished) {
+            for (let procedureF in arrayOfProceduresFinished) {
                 firestore.collection('users/' + uidNew + proceduresFinished).doc(arrayOfProceduresFinished[procedureF].id).set(arrayOfProceduresFinished[procedureF]);
             }
         }
@@ -71,8 +72,8 @@ exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore
         budg.forEach(doc => {
             arrayOfBudgets.push(doc.data())
         });
-        if(arrayOfBudgets){
-            for (let budget in arrayOfBudgets){
+        if (arrayOfBudgets) {
+            for (let budget in arrayOfBudgets) {
                 firestore.collection('users/' + uidNew + budgets).doc(arrayOfBudgets[budget].id.toString()).set(arrayOfBudgets[budget]);
             }
         }
@@ -83,8 +84,8 @@ exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore
         intak.forEach(doc => {
             arrayOfIntakes.push(doc.data())
         });
-        if(arrayOfIntakes){
-            for (let intake in arrayOfIntakes){
+        if (arrayOfIntakes) {
+            for (let intake in arrayOfIntakes) {
                 firestore.collection('users/' + uidNew + intakes).doc(arrayOfIntakes[intake].id.toString()).set(arrayOfIntakes[intake]);
             }
         }
@@ -92,25 +93,25 @@ exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore
         await firestore.collection('users').doc(uidOld).delete()
     }
 });
-exports.UpdateUidOfUserDoctorWhenHeCreateLoginAndPassword = functions.firestore.document('users/{uid}').onUpdate( async (change, context) => {
+exports.UpdateUidOfUserDoctorWhenHeCreateLoginAndPassword = functions.firestore.document('users/{uid}').onUpdate(async (change, context) => {
     let firestore = admin.firestore();
     let uidOld = change.before.data().uid;//antes
     let uidNew = change.after.data().uid;//depois
     let user = change.after.data();//tudo do user depois da atualização*
     let type = change.after.data().type
-    if( uidOld !== uidNew && type === 'DOCTOR'){
+    if (uidOld !== uidNew && type === 'DOCTOR') {
         //raiz: user
         await firestore.collection('users').doc(uidNew).set(user)
         await firestore.collection('users').doc(uidOld).delete()
         //subcollections of doctor
-        for(let specialtie in user.specialties){
-            for(let clinic in user.clinics){
+        for (let specialtie in user.specialties) {
+            for (let clinic in user.clinics) {
                 firestore.collection('users/' + uidNew + '/specialties').doc(user.specialties[specialtie].name).set(user.specialties[specialtie]);
                 firestore.collection('users/' + uidNew + '/specialties/' + user.specialties[specialtie].name + '/clinics').doc(user.clinics[clinic].name).set(user.clinics[clinic]);
             }
         }
         //raiz: specialites
-        for(let specialtie in user.specialties){
+        for (let specialtie in user.specialties) {
             let objEdited = {
                 name: user.name,
                 type: user.type,
@@ -121,17 +122,17 @@ exports.UpdateUidOfUserDoctorWhenHeCreateLoginAndPassword = functions.firestore.
                 price: user.specialties[specialtie].price,
                 payment_method: user.specialties[specialtie].payment_method
             }
-            firestore.collection('specialties/' + user.specialties[specialtie].name + '/doctors' ).doc(uidNew).set(objEdited);
-            firestore.collection('specialties/' + user.specialties[specialtie].name + '/doctors' ).doc(uidOld).delete();
-            for(let clinic in user.clinics){
+            firestore.collection('specialties/' + user.specialties[specialtie].name + '/doctors').doc(uidNew).set(objEdited);
+            firestore.collection('specialties/' + user.specialties[specialtie].name + '/doctors').doc(uidOld).delete();
+            for (let clinic in user.clinics) {
                 firestore.collection('specialties/' + user.specialties[specialtie].name + '/doctors/' + uidNew + '/clinics').doc(user.clinics[clinic].name).set(user.clinics[clinic]);
                 firestore.collection('specialties/' + user.specialties[specialtie].name + '/doctors/' + uidOld + '/clinics').doc(user.clinics[clinic].name).delete();
             }
         }
 
         //raiz: clinics
-        for(let clinic in user.clinics){
-            for(let specialtie in user.specialties) {
+        for (let clinic in user.clinics) {
+            for (let specialtie in user.specialties) {
                 let objEdited = {
                     name: user.name,
                     cpf: user.cpf,
@@ -150,7 +151,7 @@ exports.UpdateUidOfUserDoctorWhenHeCreateLoginAndPassword = functions.firestore.
         //schedules uid on doctor equlas === uid user.doc da raiz
         let schedule = await firestore.collection('schedules').get();
         schedule.forEach(doc => {
-            if(doc.data().doctor.cpf === user.cpf){
+            if (doc.data().doctor.cpf === user.cpf) {
                 if (doc.data().doctor.uid === user.uid) {
                     let modified = doc.data()
                     modified.doctor.uid = user.uid
@@ -177,38 +178,41 @@ exports.listenToUserAdded = functions.firestore.document('users/{id}').onCreate(
         })
     }
     if (user.addresses && user.addresses[0] && user.addresses[0].cep) {
-        let newCEP = user.addresses[0].cep.replace(/[.,-]/g,"").substring(0,5)
+        let newCEP = user.addresses[0].cep.replace(/[.,-]/g, "").substring(0, 5)
         admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP)
             .get().then(async (userGeopoint) => {
                 let ref = admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP)
-                if(!userGeopoint.exists){
-                    gmapsInit.geocode([user.addresses[0].street,user.addresses[0].complement].join(" ") + " Manaus Amazonas",
-                    async (err, coordinates)=>{
-                        if(err) 
-                            console.log(err)
-                        else{
-                            await ref.set({count:1,geopoint: new admin.firestore.GeoPoint(coordinates.lat, coordinates.lng)})
-                            updateGeopointMonthlyReport(ref)
-                        }
-                    })
-                }else{
-                   await ref.update({count: admin.firestore.FieldValue.increment(1)})
-                   updateGeopointMonthlyReport(ref)
+                if (!userGeopoint.exists) {
+                    gmapsInit.geocode([user.addresses[0].street, user.addresses[0].complement].join(" ") + " Manaus Amazonas",
+                        async (err, coordinates) => {
+                            if (err)
+                                console.log(err)
+                            else {
+                                await ref.set({ count: 1, geopoint: new admin.firestore.GeoPoint(coordinates.lat, coordinates.lng) })
+                                updateGeopointMonthlyReport(ref)
+                            }
+                        })
+                } else {
+                    await ref.update({ count: admin.firestore.FieldValue.increment(1) })
+                    updateGeopointMonthlyReport(ref)
                 }
-            })
+                return;
+            }).catch((e) => e)
     }
+    return;
 });
 
-async function updateGeopointMonthlyReport(ref){
+async function updateGeopointMonthlyReport(ref) {
     ref.collection('monthly_report').doc(moment().format('YYYY-MM')).get()
-    .then(doc=>{
-        if(doc.exists){
-            doc.ref.update({created:admin.firestore.FieldValue.increment(1)})
-        }else{
-            doc.ref.set({created:1})
-        }
-    })
-}   
+        .then(doc => {
+            if (doc.exists) {
+                doc.ref.update({ created: admin.firestore.FieldValue.increment(1) })
+            } else {
+                doc.ref.set({ created: 1 })
+            }
+            return;
+        }).catch((e) => e);
+}
 
 exports.listenChangeInSpecialtiesSubcollections = functions.firestore.document('specialties/{specialtyId}/{collectionId}/{docId}').onWrite(async (change, context) => {
     convertSpecialtySubcollectionInObject((await admin.firestore().collection('specialties').doc(context.params.specialtyId).get()))
@@ -219,9 +223,9 @@ exports.listenChangeInDoctorsSubcollections = functions.firestore.document('user
 })
 
 exports.listenChangeInGeopointsSubcollections = functions.firestore.document('statistics/geopoints/users_by_neighborhood/{id}/monthly_report/{docId}').onWrite(async (change, context) => {
-convertGeopointCEPSubcollectionInObject((await admin.firestore().collection('statistics/geopoints/users_by_neighborhood').doc(context.params.id).get()))
-   console.log('Escutou dentro da monthly_reports->')
-   console.log(context.params.docId)
+    convertGeopointCEPSubcollectionInObject((await admin.firestore().collection('statistics/geopoints/users_by_neighborhood').doc(context.params.id).get()))
+    console.log('Escutou dentro da monthly_reports->')
+    console.log(context.params.docId)
 })
 
 async function convertDoctorSubcollectionInObject(doctorDoc) {
@@ -653,7 +657,7 @@ async function convertGeopointCEPSubcollectionInObject(ref) {
         let report = docsCollection.docs[reportDoc].data()
         monthlyReports.push({
             ...report,
-            id:docsCollection.docs[reportDoc].id
+            id: docsCollection.docs[reportDoc].id
         });
     }
     ref.ref.set(
@@ -662,7 +666,7 @@ async function convertGeopointCEPSubcollectionInObject(ref) {
             monthly_report: monthlyReports,
         }
     )
-    return  {
+    return {
         ...cepGeopoint,
         monthly_report: monthlyReports,
     }
