@@ -75,6 +75,7 @@ function analyzeIntakes(intakes) {
     return analyzed
 }
 
+
 exports.analyzePastIntakesByDay = functions.https.onRequest(async (request, response) => {
 
     var intakes = await admin.firestore().collection('intakes').get();
@@ -119,16 +120,15 @@ function groupByMonth(arr) {
 function analyzeIntakesByMonth(intakes) {
     var analyzed = {};
     Object.keys(intakes).forEach((date) => {
-        var totalRaw = intakes[date].reduce((total, e) => total + Number(e.total), 0);
+        var totalRaw = intakes[date].reduce((total, e) => total + (!isNaN(e.total) ? Number(e.total) : 0), 0);
         var totalCost = intakes[date].reduce((total, e) => total + (!isNaN(e.cost) ? e.cost : 0), 0);
-        console.log(date, totalCost);
         var numOfSales = 0
         var itens = {}
         var arrTotalRaw = Array.from(Array(moment(date).daysInMonth()).keys()).map(() => 0)
 
         intakes[date].forEach((intake) => {
             let [year, month, day] = intake.date.match(/\d+/g);
-            arrTotalRaw[Number(day) - 1] += intake.total;
+            arrTotalRaw[Number(day) - 1] += !isNaN(intake.total) ? Number(intake.total) : 0;
             if (intake.specialties)
                 intake.specialties.forEach((specialty) => {
                     if (!itens[specialty.name]) itens[specialty.name] = {
@@ -138,12 +138,14 @@ function analyzeIntakesByMonth(intakes) {
                         totalProfit: 0
                     };
                     numOfSales++;
-                    specialty.price = Number(specialty.price);
+                    specialty.price = !isNaN(specialty.price) ? Number(specialty.price) : 0;
                     specialty.cost = !isNaN(specialty.cost) ? Number(specialty.cost) : 0;
-                    itens[specialty.name].numOfSales += 1;
-                    itens[specialty.name].totalRaw += specialty.price;
-                    itens[specialty.name].totalCost += specialty.cost;
-                    itens[specialty.name].totalProfit += specialty.price - specialty.cost;
+                    itens[specialty.name].numOfSales = admin.firestore.FieldValue.increment(1);
+                    itens[specialty.name].totalRaw = admin.firestore.FieldValue.increment(specialty.price);
+                    itens[specialty.name].totalCost = admin.firestore.FieldValue.increment(specialty.cost);
+                    itens[specialty.name].totalProfit = admin.firestore.FieldValue.increment(specialty.price - specialty.cost);
+                    admin.firestore().collection('statistics').doc('caixa')
+                        .collection('month').doc(date).set({ itens: { [`${specialty.name}`]: itens[specialty.name] } }, { merge: true })
 
                 })
             if (intake.exams)
@@ -155,32 +157,41 @@ function analyzeIntakesByMonth(intakes) {
                         totalProfit: 0
                     };
                     numOfSales++;
-                    exam.price = Number(exam.price);
+                    exam.price = !isNaN(exam.price) ? Number(exam.price) : 0;
                     exam.cost = !isNaN(exam.cost) ? Number(exam.cost) : 0;
-                    itens[exam.name].numOfSales += 1;
-                    itens[exam.name].totalRaw += exam.price;
-                    itens[exam.name].totalCost += exam.cost;
-                    itens[exam.name].totalProfit += exam.price - exam.cost;
+                    itens[exam.name].numOfSales = admin.firestore.FieldValue.increment(1);
+                    itens[exam.name].totalRaw = admin.firestore.FieldValue.increment(exam.price);
+                    itens[exam.name].totalCost = admin.firestore.FieldValue.increment(exam.cost);
+                    itens[exam.name].totalProfit = admin.firestore.FieldValue.increment(exam.price - exam.cost);
+
+                    admin.firestore().collection('statistics').doc('caixa')
+                        .collection('month').doc(date).set({ itens: { [`${exam.name}`]: itens[exam.name] } }, { merge: true })
                 })
 
         })
+
+
         analyzed[date] = {
             date: date,
-            totalRaw: totalRaw,
-            totalCost: totalCost,
-            totalProfit: totalRaw - totalCost,
-            numOfSales: numOfSales,
-            itens: itens,
+            totalRaw: admin.firestore.FieldValue.increment(totalRaw),
+            totalCost: admin.firestore.FieldValue.increment(totalCost),
+            totalProfit: admin.firestore.FieldValue.increment(totalRaw - totalCost),
+            numOfSales: admin.firestore.FieldValue.increment(numOfSales),
+
             arrTotalRaw: arrTotalRaw
         }
+        admin.firestore().collection('statistics').doc('caixa')
+            .collection('month').doc(date).set(analyzed[date], { merge: true })
+
     })
     return analyzed
 }
 
-
-exports.analyzePastIntakesByMonth = functions.https.onRequest(async (request, response) => {
-
-    var intakes = await admin.firestore().collection('intakes').get();
+async function analyzePastIntakesByMonth(initialDate, finalDate) {
+    var intakes = await admin.firestore().collection('intakes')
+        .where("date", ">=", initialDate)
+        .where("date", "<=", finalDate).get();
+    console.log(intakes.docs.length);
     intakes = await Promise.all(intakes.docs.map(async (doc) => {
         var intake = doc.data();
 
@@ -199,15 +210,29 @@ exports.analyzePastIntakesByMonth = functions.https.onRequest(async (request, re
         }
     }))
     intakes = groupByMonth(intakes);
+    //No analyzeIntakesByMonth ja e salvo.
     intakes = analyzeIntakesByMonth(intakes);
 
 
+}
 
-    //Salvando
-    Object.keys(intakes).forEach((date) =>
-        admin.firestore().collection('statistics').doc('caixa').collection('month').doc(date).set(intakes[date]))
 
-    response.status(200).send(intakes);
+exports.analyzePastIntakesByMonth = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (request, response) => {
+    analyzePastIntakesByMonth("2020-01", "2020-02")
+    analyzePastIntakesByMonth("2020-02", "2020-03")
+    analyzePastIntakesByMonth("2020-03", "2020-04")
+    analyzePastIntakesByMonth("2020-04", "2020-05")
+    analyzePastIntakesByMonth("2020-05", "2020-06")
+    analyzePastIntakesByMonth("2020-06", "2020-07")
+    analyzePastIntakesByMonth("2020-07", "2020-08")
+    analyzePastIntakesByMonth("2020-08", "2020-09")
+    analyzePastIntakesByMonth("2020-09", "2020-10")
+    analyzePastIntakesByMonth("2020-10", "2020-11")
+    analyzePastIntakesByMonth("2020-11", "2020-12")
+    // analyzePastIntakesByMonth("2020-12","2021-01")
+    response.status(200).send("Aguarde");
+
+
 });
 
 // ==================================== Outtakes ===================================================
@@ -279,7 +304,7 @@ exports.analyseStatisticsOuttakesCategoryByMonth = functions.https.onRequest(asy
         }))
 
     var groupedCategory = {}
-    var outtakesToGroup = [...outtakesCategoryPaid, ...outtakesCategoryToPay];
+    var outtakesToGroup = [...outtakesCategoryPaid, ...outtakesCategoryToPay].filter((outtake) => outtake.date);
     outtakesToGroup.forEach(({ date }) => {
         let [year, month, day] = date.match(/\d+/g);
         groupedCategory[`${year}-${month}`] =
@@ -303,7 +328,7 @@ exports.analyseStatisticsOuttakesClinicByMonth = functions.https.onRequest(async
     var outtakesClinicToPay = []
     outtakesClinic.filter((doc) => !doc.paid)
         .forEach((outtake) => {
-            if (outtake.exams) outtake.exams.forEach((exam) =>
+            if (outtake.exams && typeof outtake.exams != 'object') outtake.exams.forEach((exam) =>
                 outtakesClinicToPay.push({
 
                     cost: exam.cost,
@@ -312,7 +337,7 @@ exports.analyseStatisticsOuttakesClinicByMonth = functions.https.onRequest(async
                     paid: false,
                     recurrent: false
                 }))
-            if (outtake.specialties) outtake.specialties.forEach((specialty) =>
+            if (outtake.specialties && typeof outtake.specialties != 'object') outtake.specialties.forEach((specialty) =>
                 outtakesClinicToPay.push({
                     cost: specialty.cost,
                     name: specialty.name,
@@ -344,7 +369,7 @@ exports.analyseStatisticsOuttakesClinicByMonth = functions.https.onRequest(async
         })
 
     var groupedClinic = {}
-    var outtakesToGroup = [...outtakesClinicToPay, ...outtakesClinicPaid];
+    var outtakesToGroup = [...outtakesClinicToPay, ...outtakesClinicPaid].filter((outtake) => outtake.date);
     outtakesToGroup.forEach(({ date }) => {
         let [year, month, day] = date.match(/\d+/g);
         groupedClinic[`${year}-${month}`] =
