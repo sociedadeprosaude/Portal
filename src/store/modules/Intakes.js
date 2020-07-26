@@ -244,7 +244,7 @@ const actions = {
     },
 
     async getUserIntakes(context, user) {
-        let userRef = firebase.firestore().collection('users').doc(user.cpf);
+        let userRef = firebase.firestore().collection('users').doc(user.uid);
         let intakesSnap = (await userRef.collection('intakes').get()).docs;
         let intakes = [];
         for (let snap in intakesSnap) {

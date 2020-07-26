@@ -756,7 +756,10 @@
                 await this.$store.dispatch('addUser', patient);
                 this.success = true;
                 this.loading = false;
-                this.selectUser(patient);
+                let user = await this.$store.dispatch('getPatient', patient.cpf)
+                console.log('user:', user)
+                this.selectUser(user);
+                //this.selectUser(patient);
                 setTimeout(() => {
                     this.success = false;
                     this.catchAssNumberNewPatient(patient);
