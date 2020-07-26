@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import ConsultationScheduledExecuted from "@/components/Reports2/ConsultationScheduledExecuted";
+import ConsultationScheduledExecuted from "@/components/Reports/ConsultationScheduledExecuted";
 import moment from "moment";
 
 export default {

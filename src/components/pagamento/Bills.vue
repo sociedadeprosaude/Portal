@@ -49,7 +49,7 @@
                 label="categoria"
                 v-bind:value="selectedCategory"
                 @change="(event)=>$emit('change-selectedCategory',event)"
-                :items="categoriesName"
+                :items="categories"
                 outlined
                 clearable
               ></v-combobox>
@@ -85,7 +85,7 @@
           <v-layout row wrap>
             <v-flex xs12>
               <v-layout row wrap>
-                <span>{{bill.category}}</span>
+                <span>{{ bill.category}}</span>
                 <br />
                 <span>{{bill.subCategory}}</span>
                 <v-divider vertical class="mx-4" />
@@ -147,7 +147,7 @@
 </template>
 
 <script>
-import OuttakeOrder from "../../components/reports/OuttakeOrder";
+import OuttakeOrder from "../../components/Reports/OuttakeOrder";
 import RegisterBill from "../../components/Bills/RegisterBill";
 import { mask } from "vue-the-mask";
 import moment from "moment";
@@ -179,7 +179,6 @@ export default {
     pendingOuttakes: Array,
     selectedPaidOuttakesList: Array,
     categories: Array,
-    categoriesName: Array,
 
     getOuttakesPaid: Function,
     unpayOuttake: Function,

@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import statsCaixaOuttakesClinics from "@/components/Reports2/statsCaixaOuttakesClinics";
+import statsCaixaOuttakesClinics from "@/components/Reports/statsCaixaOuttakesClinics";
 export default {
   components: {
     statsCaixaOuttakesClinics

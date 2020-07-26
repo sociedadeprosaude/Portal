@@ -41,7 +41,7 @@
 
 <script>
 import moment from "moment";
-import OuttakesReport from "@/components/Reports2/OuttakesReport";
+import OuttakesReport from "@/components/Reports/OuttakesReport";
 
 export default {
   // name: "OuttakesReport",
@@ -76,7 +76,6 @@ export default {
           value: "idOuttake"
         },
         { text: "Custo", value: "cost", align: "center" },
-        { text: "SubCategoria", value: "subCategory", align: "center" },
         { text: "Status", value: "status", align: "center" },
         { text: "Criado em", value: "created_at", align: "center" },
         { text: "Pago em", value: "paidIn", align: "center" },
@@ -145,7 +144,6 @@ export default {
       return this.outtakes.map(e => ({
         idOuttake: e.id,
         category: e.category,
-        subCategory: e.subCategory,
         cost: e.value,
         paidIn: e.paid
           ? this.formatDateHour(e.paid)

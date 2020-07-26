@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import ProceduresPricesAnalises from "@/components/Reports2/ProceduresPricesAnalises";
+import ProceduresPricesAnalises from "@/components/Reports/ProceduresPricesAnalises";
 export default {
   //   name: "ProceduresPricesAnalises",
   components: { ProceduresPricesAnalises },

@@ -24,7 +24,7 @@
 
 <script>
 import moment from "moment";
-import NewUsersReport from "@/components/Reports2/NewUsersReport";
+import NewUsersReport from "@/components/Reports/NewUsersReport";
 
 export default {
   // name: "NewUsersReport",

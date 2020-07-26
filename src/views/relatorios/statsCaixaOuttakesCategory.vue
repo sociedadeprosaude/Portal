@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import statsCaixaOuttakesCategory from "@/components/Reports2/statsCaixaOuttakesCategory";
+import statsCaixaOuttakesCategory from "@/components/Reports/statsCaixaOuttakesCategory";
 export default {
   components: { statsCaixaOuttakesCategory },
   data: vm => ({

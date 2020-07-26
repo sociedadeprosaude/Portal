@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import BestSellingExamsReport from "@/components/Reports2/BestSellingExamsReport";
+import BestSellingExamsReport from "@/components/Reports/BestSellingExamsReport";
 import moment from "moment";
 export default {
   // name: "BestSellingExamsReport",

@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import IntakesReport from "@/components/Reports2/IntakesReport";
+import IntakesReport from "@/components/Reports/IntakesReport";
 import moment from "moment";
 export default {
   //   name: "IntakesReport",

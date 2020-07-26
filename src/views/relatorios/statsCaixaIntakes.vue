@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import statsCaixaIntakes from "@/components/Reports2/statsCaixaIntakes";
+import statsCaixaIntakes from "@/components/Reports/statsCaixaIntakes";
 import moment from "moment";
 export default {
   components: { statsCaixaIntakes },

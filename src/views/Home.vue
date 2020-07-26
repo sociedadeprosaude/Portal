@@ -184,7 +184,7 @@
                             },
                             {
                                 title: 'Relatórios',
-                                to: '/relatorio',
+                                to: '/relatorios',
                                 permission: 'Relatórios',
                                 icon: 'report'
                             }, /* {

@@ -167,7 +167,7 @@
 <script>
     import {mask} from "vue-the-mask";
     import moment from "moment";
-    import OuttakeOrderMobile from "../../components/reports/Mobile/OuttakeOrderMobile";
+    import OuttakeOrderMobile from "../../components/Reports/Mobile/OuttakeOrderMobile";
     import RegisterBillMobile from "../../components/Bills/Mobile/RegisterBillMobile";
     export default {
         components: {RegisterBillMobile, OuttakeOrderMobile},
@@ -237,9 +237,7 @@
             categories() {
                 return this.$store.getters.outtakesCategories;
             },
-            categoriesName() {
-                return this.categories.map(e => e.name);
-            },
+           
         },
         watch: {
             selectedMonth(val) {
@@ -258,7 +256,6 @@
                     description: bill.description,
                     create_at: bill.created_at,
                     payment_method: bill.payment_method,
-                    subCategory: bill.subCategory,
                     unit: bill.unit,
                     appends: bill.appends,
                     receipts: bill.receipts,
@@ -284,7 +281,7 @@
                 });
                 this.loading = false;
                 this.selectedCategory =
-                    this.categoriesName[0] != null ? this.categoriesName[0] : "";
+                    this.categories[0] != null ? this.categories[0] : "";
             },
             async getOuttakesPaidMonth() {
                 this.loadingFilter = true;

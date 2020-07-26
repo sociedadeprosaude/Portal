@@ -21,7 +21,6 @@
       v-bind:pendingOuttakes="pendingOuttakes"
       v-bind:selectedPaidOuttakesList="selectedPaidOuttakesList"
       v-bind:categories="categories"
-      v-bind:categoriesName="categoriesName"
       :getOuttakesPaid="getOuttakesPaid"
       :unpayOuttake="unpayOuttake"
       :openAppend="openAppend"
@@ -35,7 +34,7 @@
 </template>
 
 <script>
-import Bills from "./Bills";
+import Bills from "@/components/pagamento/Bills";
 
 import moment from "moment";
 export default {
@@ -65,9 +64,9 @@ export default {
     };
   },
   mounted() {
-    // if (this.$vuetify.breakpoint.name === "xs") {
-    //   this.$router.push("/BillsMobile");
-    // }
+    if (this.$vuetify.breakpoint.name === "xs") {
+      this.$router.push("/BillsMobile");
+    }
     this.initiate();
   },
   computed: {
@@ -95,9 +94,7 @@ export default {
     categories() {
       return this.$store.getters.outtakesCategories;
     },
-    categoriesName() {
-      return this.categories.map(e => e.name);
-    }
+  
   },
   watch: {
     selectedDate(val) {
@@ -130,7 +127,7 @@ export default {
       await this.$store.dispatch("getOuttakesPaidToday");
       this.loading = false;
       this.selectedCategory =
-        this.categoriesName[0] != null ? this.categoriesName[0] : "";
+        this.categories.length != 0 ? this.categories[0] : "";
     },
     async getOuttakesPaid() {
       this.loadingFilter = true;

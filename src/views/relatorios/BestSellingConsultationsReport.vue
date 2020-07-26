@@ -26,7 +26,7 @@
 </template>
 <script>
 import moment from "moment";
-import BestSellingConsultationsReport from "@/components/Reports2/BestSellingConsultationsReport";
+import BestSellingConsultationsReport from "@/components/Reports/BestSellingConsultationsReport";
 export default {
   // name: "BestSellingConsultationsReports",
   components: { BestSellingConsultationsReport },

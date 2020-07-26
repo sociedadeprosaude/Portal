@@ -185,23 +185,13 @@ const actions = {
 
     async addOuttakesCategory({ commit, getters }, payload) {
         let categories = getters.outtakesCategories;
-        categories.push({ name: payload.category, subCategories: [] });
+        categories.push(payload.category);
         await firebase.firestore().collection('operational/').doc('outtakes').update({
-            categories: categories
+            categoriesList: categories
         });
         commit('setOuttakesCategories', categories);
     },
-    async addOuttakeSubcategory({ commit, getters }, payload) {
-
-        let categories = getters.outtakesCategories;
-        let categoriesName = categories.map(e => e.name);
-        const index = categoriesName.indexOf(payload.category);
-        categories[index].subCategories.push(payload.subCategory);
-        await firebase.firestore().collection('operational/').doc('outtakes').update({
-            categories: categories
-        });
-        commit('setOuttakesCategories', categories);
-    },
+   
 
     async getOuttakesCategories({ commit }) {
         return new Promise((resolve, reject) => {
@@ -212,7 +202,7 @@ const actions = {
                         categories: []
                     })
                 } else {
-                    categories = outtakesDoc.data().categories;
+                    categories = outtakesDoc.data().categoriesList;
                     if (!categories) categories = [];
                 }
                 commit('setOuttakesCategories', categories);
@@ -223,9 +213,9 @@ const actions = {
 
     async removeOuttakeCategory({ dispatch, getters }, payload) {
         var categories = getters.outtakesCategories;
-        var updatedCategories = categories.filter((category) => category.name != payload.category)
+        var updatedCategories = categories.filter((category) => category != payload.category)
         await firebase.firestore().collection('operational/').doc('outtakes').update({
-            categories: updatedCategories
+            categoriesList: updatedCategories
         })
         //dispatch('getOuttakesCategories');
     },

@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import SpecialtiesMadeReport from "@/components/Reports2/SpecialtiesMadeReport";
+import SpecialtiesMadeReport from "@/components/Reports/SpecialtiesMadeReport";
 import moment from "moment";
 
 export default {

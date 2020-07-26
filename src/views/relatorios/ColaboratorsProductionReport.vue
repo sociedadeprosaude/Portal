@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import ColaboratorsProductionReport from "@/components/Reports2/ColaboratorsProductionReport";
+import ColaboratorsProductionReport from "@/components/Reports/ColaboratorsProductionReport";
 export default {
   // name: "ColabboratorsProductionReport",
   props: ["intakes", "loading"],

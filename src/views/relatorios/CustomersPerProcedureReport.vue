@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import CustomersPerProcedureReport from "@/components/Reports2/CustomersPerProcedureReport";
+import CustomersPerProcedureReport from "@/components/Reports/CustomersPerProcedureReport";
 import moment from "moment";
 import axios from "axios";
 export default {

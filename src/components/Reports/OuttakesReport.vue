@@ -100,8 +100,8 @@
 <script>
 import moment from "moment";
 import PieOuttake from "@/components/Charts/PieChart.js";
-import DeleteOuttake from "@/components/Reports2/CRUD/DeleteOuttake";
-import ReadOuttake from "@/components/Reports2/CRUD/ReadOuttake";
+import DeleteOuttake from "@/components/Reports/CRUD/DeleteOuttake";
+import ReadOuttake from "@/components/Reports/CRUD/ReadOuttake";
 
 export default {
   name: "OuttakesReport",

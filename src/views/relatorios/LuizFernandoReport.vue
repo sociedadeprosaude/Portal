@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import LuizFernandoReport from "@/components/Reports2/LuizFernandoReport";
+import LuizFernandoReport from "@/components/Reports/LuizFernandoReport";
 import moment from "moment";
 export default {
   components: { LuizFernandoReport },

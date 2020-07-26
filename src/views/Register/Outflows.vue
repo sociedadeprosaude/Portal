@@ -4,7 +4,6 @@
       <v-flex xs12 sm12>
         <RegisterOutflows/>
       </v-flex>
-      <outtakesCategories />
     </v-layout>
 
   </v-container>
@@ -13,9 +12,8 @@
 <script>
 
 import RegisterOutflows from "../../components/cashier/RegisterOutflows";
-import outtakesCategories from "@/components/DialogOuttakeCategories";
 
 export default {
-  components: { RegisterOutflows, outtakesCategories },
+  components: { RegisterOutflows },
 };
 </script>

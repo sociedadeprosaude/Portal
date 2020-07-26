@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import Clients from "@/components/Reports2/Clients";
+import Clients from "@/components/Reports/Clients";
 import moment from "moment";
 export default {
   data: () => ({

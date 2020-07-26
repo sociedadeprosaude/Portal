@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import GeneralReport from "@/components/Reports2/GeneralReport";
+import GeneralReport from "@/components/Reports/GeneralReport";
 import moment from "moment";
 export default {
   components: { GeneralReport },

@@ -8,7 +8,6 @@ import Register from '@/views/Auth/Register'
 import Exams from "./views/Register/Exams";
 import Specialties from "./views/Register/Specialties";
 import Labor from "./views/Personal/Labor";
-import Reports from "./views/Register/Reports";
 import Bundles from "./views/Register/Bundles";
 import NewBundles from "./views/Register/Bundle/NewBundles";
 import PaymentCovenants from "./views/Register/PaymentCovenants";
@@ -25,7 +24,6 @@ import DischargeProcedures from "./views/Register/Clinic/DischargeProcedures"
 import VerificationForwardingBilling from "./views/Register/Clinic/VerificationForwardingBilling"
 import PaymentHistory from "./views/Register/Clinic/PaymentHistoryClinic"
 import Units from "./views/Units";
-import Bills from "./views/Register/Bills";
 import BillsRoute from "./views/Register/BillsRoute";
 import BillsMobile from "./views/Register/BillsMobile";
 import OuttakesCategories from "./views/Register/OuttakesCategories";
@@ -34,19 +32,19 @@ import DoctorScheduling from './views/Operational/DoctorsAgenda/DoctorScheduling
 
 import MedicalCare from "./views/DoctorAttendance/MedicalCare";
 import Attendance from "./views/DoctorAttendance/Attendance";
-import TicketsDashboard from "./views/Operational/Tickets/TicketsDashboard";
 import TicketsDashboardRoute from "./views/Operational/Tickets/TicketsDashboardRoute";
-import RoomDashboard from "./views/Operational/Tickets/RoomDashboard";
 import RoomDashboardRoute from "./views/Operational/Tickets/RoomDashboardRoute";
 
 
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
 import CashierRoutes from "./routes/CashierRoutes";
-import ReportRoutes from "./routes/ReportRoutes";
 
 
 import discount from "./views/Notifications/discount"
 import notifications from "./views/Notifications/notifications";
+
+
+import RelatoriosDashboard from "@/views/relatorios/RelatoriosDashboard";
 
 
 const Clinic = {
@@ -90,14 +88,7 @@ let mainRoutes = [
     }
   },
 
-  {
-    path: '/relatorio',
-    name: 'Relatorios',
-    component: Reports,
-    meta: {
-      requiresAuth: true
-    }
-  },
+
   {
     path: '/discount',
     name: 'discount',
@@ -314,9 +305,27 @@ let mainRoutes = [
       requiresAuth: false,
     },
   },
+
+  {
+    path: '/relatorios/:idReport',
+    name: 'RelatoriosDashboard',
+    component: RelatoriosDashboard,
+    beforeEnter(to, from, next) {
+        store.commit('showOverviewToggle', true)
+        next()
+    },
+},
+{
+    path: '/relatorios',
+    name: 'RelatoriosDashboard',
+    component: RelatoriosDashboard,
+    beforeEnter(to, from, next) {
+        next("relatorios/RelatorioGeral")
+    },
+},
 ];
 
-let routes = mainRoutes.concat(DoctorsAgendaRoutes, CashierRoutes, ReportRoutes);
+let routes = mainRoutes.concat(DoctorsAgendaRoutes, CashierRoutes);
 let router = new Router({
   mode: 'history',
   routes: routes

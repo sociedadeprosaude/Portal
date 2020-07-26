@@ -7,6 +7,7 @@
         v-bind:value="optionSelected"
         @change="(event)=>$emit('change-optionSelected',event)"
         active-class="primary--text"
+        class="mb-3 ml-2"
       >
         <v-chip v-for="option in options" :key="option">{{ option }}</v-chip>
       </v-chip-group>
@@ -16,27 +17,28 @@
         <v-text-field
           v-bind:value="search"
           @input="(event)=>$emit('change-search',event)"
-          append-icon="mdi-magnify"
+          prepend-inner-icon="mdi-magnify"
           label="Procurar"
           single-line
+          rounded
           hide-details
         ></v-text-field>
-        <v-spacer></v-spacer>
-        <span class="float-right">{{date }} 00:00:00 até {{date2}} 23:59:59</span>
+        <v-spacer />
+        <span class="float-right">{{date}} 00:00:00 até {{date2}} 23:59:59</span>
       </v-card-title>
       <div v-if="optionSelected === 0">
         <v-data-table
           :headers="headers"
           :search="search"
-          :items="intakesDividedByExam"
+          :items="intakesDividedBySpecialties"
           :sort-by="['quantity']"
           :sort-desc="[true]"
           item-key="name"
           show-expand
           single-expand
-          no-data-text="Sem exames no intervalo escolhido"
+          no-data-text="Sem consultas no intervalo escolhido"
           :footer-props="{
-      itemsPerPageText:'Exames por página',
+      itemsPerPageText:'Consultas por página',
       pageText:'{0}-{1} de {2}'
     }"
         >
@@ -65,8 +67,17 @@
           </template>
         </v-data-table>
       </div>
-      <div v-else>
-        <TableExamsAndClinics :intakesDividedByExam="intakesDividedByExam" :search="search" />
+      <div v-if="optionSelected===1">
+        <TableConsultationClinics
+          :intakesDividedBySpecialties="intakesDividedBySpecialties"
+          :search="search"
+        />
+      </div>
+      <div v-if="optionSelected===2">
+        <TableConsultationDoctor
+          :intakesDividedBySpecialties="intakesDividedBySpecialties"
+          :search="search"
+        />
       </div>
     </v-card>
 
@@ -75,22 +86,26 @@
         <v-row>
           <v-col>
             <span class="my-headline">{{numSales}}</span>
-            <br />total de exames vendidos
+            <br />
+            <span class="font-italic">Total de consultas vendidas</span>
           </v-col>
           <v-divider vertical />
           <v-col>
             <span class="my-headline">R$ {{totalCost.toFixed(2)}}</span>
-            <br />Custo total dos exames
+            <br />
+            <span class="font-italic">Custo total das consultas</span>
           </v-col>
           <v-divider vertical />
           <v-col>
             <span class="my-headline">R$ {{totalPrice.toFixed(2)}}</span>
-            <br />Preço de venda total dos exames
+            <br />
+            <span class="font-italic">Preço de venda total das consultas</span>
           </v-col>
           <v-divider vertical />
           <v-col>
             <span class="my-headline">R$ {{totalProfit.toFixed(2)}}</span>
-            <br />Lucro liquido total
+            <br />
+            <span class="font-italic">Lucro líquido total</span>
           </v-col>
           <v-divider vertical />
         </v-row>
@@ -98,12 +113,12 @@
     </v-card>
   </v-container>
 </template>
-
 <script>
 import moment from "moment";
-import TableExamsAndClinics from "@/components/Reports2/TableExamsAndClinics";
+import TableConsultationClinics from "@/components/Reports/TableConsultationClinics";
+import TableConsultationDoctor from "@/components/Reports/TableConsultationDoctors";
 export default {
-  components: { TableExamsAndClinics },
+  components: { TableConsultationDoctor, TableConsultationClinics },
   props: [
     "date",
     "date2",
@@ -114,12 +129,10 @@ export default {
     "optionSelected",
     "headers",
     "subHeaders",
-    "dateBegin",
-    "dateEnd",
-    "calcIntakeFromExam",
-    "intakesWithExam",
-    "exams",
-    "intakesDividedByExam",
+    "calcIntakeFromConsultation",
+    "intakesWithConsultation",
+    "specialties",
+    "intakesDividedBySpecialties",
     "numSales",
     "totalPrice",
     "totalCost",
