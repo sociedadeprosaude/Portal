@@ -177,6 +177,7 @@ async function convertSpecialtySubcollectionInObject(specialtyDoc) {
         doctor.clinics = []
         // eslint-disable-next-line no-await-in-loop
         let doctorId = doctor.uid ? doctor.uid : doctor.cpf
+        // eslint-disable-next-line no-await-in-loop
         let clinCollection = await admin.firestore().collection('specialties/' + specialty.name + '/doctors').doc(doctorId).collection('clinics').get()
         clinCollection.forEach((clinDoc) => {
             let clinic = clinDoc.data()
