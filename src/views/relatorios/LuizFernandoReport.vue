@@ -1,6 +1,7 @@
 <template>
   <v-container>
     <LuizFernandoReport
+      v-if="report"
       :report="report"
       :loading="loading"
       :reportAllUnits="reportAllUnits"

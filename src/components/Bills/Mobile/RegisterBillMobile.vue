@@ -240,9 +240,9 @@ export default {
     },
 
     async newCategory(category) {
-      if (this.categories.indexOf(category.name) < 0) {
+      if (this.categories.indexOf(category) < 0) {
         await this.$store.dispatch("addOuttakesCategory", {
-          category: category.name
+          category: category
         });
       }
     },

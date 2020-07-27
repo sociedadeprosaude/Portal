@@ -32,7 +32,6 @@
       :actualList="actualList"
       :numOuttakes="numOuttakes"
       :totalCost="totalCost"
-
       @change-search="(value)=>search=value"
       @change-optionSelected="(value)=>optionSelected=value"
     />
@@ -113,7 +112,7 @@ export default {
         ? this.calcPercentage(sumCost, totalCost)
         : 0;
       return {
-        name: category.name,
+        name: category,
         outtakes: listOuttakesCategory,
         quantity: listOuttakesCategory.length,
         percentage: percentage,
@@ -141,8 +140,9 @@ export default {
       return this.$store.getters.outtakes;
     },
     listOuttakesRemade() {
-      return this.outtakes.map(e => ({
+      return this.outtakes.map((e, index) => ({
         idOuttake: e.id,
+        key: index,
         category: e.category,
         cost: e.value,
         paidIn: e.paid
@@ -163,8 +163,9 @@ export default {
 
       const totalCost = this.calcCost(this.listOuttakesRemade);
       this.categories.forEach(category => {
+        
         let listOuttakesCategory = this.listOuttakesRemade.filter(
-          outtake => outtake.category == category.name
+          outtake => outtake.category == category
         );
         if (listOuttakesCategory.length != 0)
           listOuttakesGroupedByCategory.push(
@@ -177,14 +178,14 @@ export default {
     outtakesToPayList() {
       const subList = this.outtakesDividedByCategory.map(e => {
         const listAux = e.outtakes.filter(e2 => !e2.status);
-        return this.calcOuttakeInfo(e, listAux, null);
+        return this.calcOuttakeInfo(e.name, listAux, null);
       });
       return this.updatePercentage(subList);
     },
     outtakesPaidList() {
       const subList = this.outtakesDividedByCategory.map(e => {
         const listAux = e.outtakes.filter(e2 => e2.status);
-        return this.calcOuttakeInfo(e, listAux, null);
+        return this.calcOuttakeInfo(e.name, listAux, null);
       });
       return this.updatePercentage(subList);
     },

@@ -256,7 +256,7 @@
             <v-flex xs12>
               <span class="my-headline">Gastos</span>
             </v-flex>
-            <v-flex xs12 v-for="outtake in report.outtakes" :key="outtake.id" class="my-1">
+            <v-flex xs12 v-for="(outtake,i) in report.outtakes" :key="i" class="my-1">
               <v-layout row wrap>
                 <v-flex xs12>
                   <v-divider></v-divider>
@@ -877,7 +877,7 @@
             <v-flex xs12>
               <span class="my-headline">Gastos</span>
             </v-flex>
-            <v-flex xs12 v-for="outtake in reportAllUnits.outtakes" :key="outtake.id" class="my-1">
+            <v-flex xs12 v-for="(outtake,i) in reportAllUnits.outtakes" :key="i" class="my-1">
               <v-layout row wrap>
                 <v-flex xs12>
                   <v-divider></v-divider>

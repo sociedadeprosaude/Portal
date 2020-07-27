@@ -51,7 +51,7 @@
               single-expand
               :headers="subHeaders"
               :items="item.outtakes"
-              item-key="idOuttake"
+              item-key="key"
               :footer-props="{
       itemsPerPageText:'Saídas por página',
       pageText:'{0}-{1} de {2}'
