@@ -1,6 +1,8 @@
 <template>
   <v-container>
+    <BillsMobile v-if="!this.$vuetify.breakpoint.xs" />
     <Bills
+      v-else
       v-bind:other="other"
       v-bind:billsOptions="billsOptions"
       v-bind:dialogSelectDate="dialogSelectDate"
@@ -35,11 +37,13 @@
 
 <script>
 import Bills from "@/components/pagamento/Bills";
+import BillsMobile from "@/views/Register/BillsMobile";
 
 import moment from "moment";
 export default {
   components: {
-    Bills
+    Bills,
+    BillsMobile
   },
   data() {
     return {
@@ -64,9 +68,7 @@ export default {
     };
   },
   mounted() {
-    if (this.$vuetify.breakpoint.name === "xs") {
-      this.$router.push("/BillsMobile");
-    }
+    
     this.initiate();
   },
   computed: {
@@ -93,8 +95,7 @@ export default {
     },
     categories() {
       return this.$store.getters.outtakesCategories;
-    },
-  
+    }
   },
   watch: {
     selectedDate(val) {

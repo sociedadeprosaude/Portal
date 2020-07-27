@@ -239,12 +239,14 @@ export default {
       this.$emit("close-dialog");
     },
 
-    async newCategory(category) {
-      if (this.categories.indexOf(category) < 0) {
-        await this.$store.dispatch("addOuttakesCategory", {
-          category: category
-        });
-      }
+    async newCategory(categories) {
+      categories.forEach(async category => {
+        if (this.categories.indexOf(category) < 0) {
+          await this.$store.dispatch("addOuttakesCategory", {
+            category: category
+          });
+        }
+      });
     },
     async bifurcation() {
       if (this.parcels) {
