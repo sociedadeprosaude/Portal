@@ -172,7 +172,7 @@ export default {
           break;
         case "RelatorioColaboradoresProducao":
           this.selected = 2;
-          await this.getIntakes();
+          await this.getIntakes(true);
           break;
         case "RelatorioEntradas":
           this.selected = 3;
@@ -187,7 +187,7 @@ export default {
           this.selected = 5;
           break;
         case "RelatorioConsultasMaisVendidas":
-           await this.getIntakes();
+          await this.getIntakes();
           this.selected = 6;
           break;
         case "RelatorioSaidas":
@@ -251,11 +251,12 @@ export default {
         }
       );
     },
-    async getIntakes() {
+    async getIntakes(allUnits) {
       this.intakes = await this.$store.dispatch("getIntakes", {
         initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
         finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
-        colaborator: this.colaborator
+        colaborator: this.colaborator,
+        allUnits: allUnits
       });
     },
     async getOuttakes() {

@@ -62,10 +62,12 @@ const actions = {
     },
     async getIntakes(context, payload) {
         let selectedUnit = context.getters.selectedUnit;
-        let intakesSnap = await firebase.firestore().collection('intakes').where('date', '>=', payload.initialDate)
-            .where('date', '<=', payload.finalDate)
-            .where('unit.name', '==', selectedUnit.name)
-            .orderBy('date').get();
+        var query = firebase.firestore().collection('intakes');
+        if (payload.initialDate) query = query.where('date', '>=', payload.initialDate);
+        if (payload.finalDate) query = query.where('date', '<=', payload.finalDate);
+        if (!payload.allUnits) query = query.where('unit.name', '==', selectedUnit.name)
+
+        let intakesSnap = await query.orderBy('date').get();
         let intakes = [];
         for (let doc of intakesSnap.docs) {
             if (doc.data().colaborator) {
@@ -79,6 +81,7 @@ const actions = {
                 }
             }
         }
+        console.log(intakes)
         context.commit("setIntakesReport", intakes);
         return intakes
     },
@@ -201,7 +204,7 @@ const actions = {
                         if ((typeof (outtake.category)) === "object") {
                             const outtakesDivided = outtakeCategoryListDivider(outtake)
                             outtakesDivided.forEach((outtakeDivided) => outtakes.push(outtakeDivided))
-        
+
                         } else {
                             outtakes.push(outtake)
                         }
@@ -392,7 +395,7 @@ const actions = {
                         if ((typeof (outtake.category)) === "object") {
                             const outtakesDivided = outtakeCategoryListDivider(outtake)
                             outtakesDivided.forEach((outtakeDivided) => outtakes.push(outtakeDivided))
-        
+
                         } else {
                             outtakes.push(outtake)
                         }
