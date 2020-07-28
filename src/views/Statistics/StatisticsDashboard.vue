@@ -190,7 +190,7 @@ export default {
       return `${day}/${month}/${year}`;
     },
     loadDatasetClients(){
-       this.$store.dispatch("loadClientsServed", {
+       this.s$store.dispatch("loadClientsServed", {
           initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
           finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
         });

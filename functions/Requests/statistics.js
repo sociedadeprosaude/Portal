@@ -206,7 +206,7 @@ exports.analyzePastIntakesByMonth = functions.https.onRequest(async (request, re
     Object.keys(intakes).forEach((date) =>
         admin.firestore().collection('statistics').doc('caixa').collection('month').doc(date).set(intakes[date]))
 
-        response.status(200).send(intakes);
+    response.status(200).send(intakes);
 });
 exports.setGeopoints = functions.https.onRequest(async (request, response) => {
     admin.firestore().collection('users')
@@ -230,7 +230,6 @@ exports.setGeopoints = functions.https.onRequest(async (request, response) => {
         })
     response.status(200).send("Salvando geopoint para os usuários");
 })
-
 // ==================================== Outtakes ===================================================
 
 function analyzeOuttakesByMonth(outtakes) {

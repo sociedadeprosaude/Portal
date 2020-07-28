@@ -145,7 +145,11 @@ exports.onUpdateSpecialty = functions.firestore.document('specialties/{name}').o
         //Updatando o price dos doctors da subCollection clinics presente dentro da collection /specialties
         firestore.collection('specialties').doc(specialtyUpdated.name).collection('doctors').get()
             .then((docs) => {
-                if (!docs.empty) docs.forEach((doc) => doc.ref.update({ price: price }))
+                if (!docs.empty) {
+                    docs.forEach((doc)=>{
+                        doc.ref.update({ price: price })
+                    })
+                }
                 return null
             })
             .catch(err => console.log(err));
