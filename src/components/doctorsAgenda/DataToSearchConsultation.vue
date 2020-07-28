@@ -219,7 +219,6 @@ export default {
                 routine_id: schedule.routine_id,
                 vacancy: schedule.days[moment(date).weekday()].vacancy,
                 id_schedule: schedule.id,
-
               };
               if (schedule.specialty)
                 scheduleObj.specialty = schedule.specialty
@@ -267,6 +266,8 @@ export default {
             obj.qtd_consultations = obj.qtd_consultations + 1
           } else
             obj.qtd_returns += 1
+          if (!obj.scheduled_hours) obj.scheduled_hours = []
+          obj.scheduled_hours.push(item.date)
         }
         return obj
       }, {qtd_consultations: 0, qtd_returns: 0})
