@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <BillsMobile v-if="!this.$vuetify.breakpoint.xs" />
+    <BillsMobile v-if="this.$vuetify.breakpoint.xs" />
     <Bills
       v-else
       v-bind:other="other"

@@ -313,12 +313,12 @@
                   <v-layout row wrap class="justify-center">
                     <v-flex xs3 class="border">{{ this.PriceTotalFinish | moneyFilter}}</v-flex>
                     <v-flex xs3 class="border">
-                      {{totalCost | moneyFilter}} ({{(totalCost / this.totalProfit *
-                      100).toFixed(2)}}%)
+                      {{totalCost | moneyFilter}} ({{totalProfit != 0 ?(totalCost / this.totalProfit *
+                      100).toFixed(2):0}}%)
                     </v-flex>
                     <v-flex xs2 class="border">
-                      {{finalProfit | moneyFilter}} ({{(finalProfit / this.totalProfit *
-                      100).toFixed(2)}}%)
+                      {{finalProfit | moneyFilter}} ({{totalProfit != 0 ? (finalProfit / this.totalProfit *
+                      100).toFixed(2):0}}%)
                     </v-flex>
                   </v-layout>
                 </v-flex>

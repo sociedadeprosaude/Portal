@@ -104,12 +104,15 @@ export default {
       for (let specialty in this.report.specialties) {
         procQt += this.report.specialties[specialty].quantity;
       }
+
       return procQt;
     },
     examsQuantity() {
       let quantity = 0;
       for (let clinic in this.report.clinics) {
-        quantity += this.report.clinics[clinic].quantity;
+        quantity += this.report.clinics[clinic].quantity
+          ? this.report.clinics[clinic].quantity
+          : this.report.clinics[clinic].quantidade;
       }
       return quantity;
     },
@@ -307,14 +310,18 @@ export default {
     proceduresQuantityAllClinics() {
       let procQt = 0;
       for (let specialty in this.reportAllUnits.specialties) {
-        procQt += this.reportAllUnits.specialties[specialty].quantity;
+        procQt += this.reportAllUnits.specialties[specialty].quantity
+          ? this.reportAllUnits.specialties[specialty].quantity
+          : this.reportAllUnits.specialties[specialty].quantidade;
       }
       return procQt;
     },
     examsQuantityAllClinics() {
       let quantity = 0;
       for (let clinic in this.reportAllUnits.clinics) {
-        quantity += this.reportAllUnits.clinics[clinic].quantity;
+        quantity += this.reportAllUnits.clinics[clinic].quantity
+          ? this.reportAllUnits.clinics[clinic].quantity
+          : this.reportAllUnits.clinics[clinic].quantidade;
       }
       return quantity;
     },
@@ -397,7 +404,7 @@ export default {
       );
     },
     totalCreditAllClinics() {
-      return this.reportAllUnits.intakesArray.reduce((sum, intake) => {
+      const total = this.reportAllUnits.intakesArray.reduce((sum, intake) => {
         for (let payment in intake.payments) {
           if (intake.payments[payment] === "Crédito") {
             return sum + parseFloat(intake.valuesPayments[payment]);
@@ -405,6 +412,8 @@ export default {
         }
         return sum + 0;
       }, 0);
+      console.log("total", total);
+      return total;
     },
     totalTaxaCreditAllClinics() {
       return this.reportAllUnits.intakesArray.reduce((sum, intake) => {

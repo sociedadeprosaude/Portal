@@ -227,15 +227,15 @@
                     <v-flex xs1>
                       <v-divider vertical />
                     </v-flex>
-                    <v-flex xs3>{{report.credito | moneyFilter}}</v-flex>
+                    <v-flex xs3>{{report.credito ? report.credito : 'X' | moneyFilter}}</v-flex>
                     <v-flex xs1>
                       <v-divider vertical />
                     </v-flex>
-                    <v-flex xs3>{{report.debito | moneyFilter}}</v-flex>
+                    <v-flex xs3>{{report.debito ? report.debito : 'X' | moneyFilter}}</v-flex>
                     <v-flex xs1>
                       <v-divider vertical />
                     </v-flex>
-                    <v-flex xs2>{{report.dinheiro | moneyFilter}}</v-flex>
+                    <v-flex xs2>{{report.dinheiro ? report.dinheiro : 'X' | moneyFilter}}</v-flex>
                     <v-flex xs1>
                       <v-divider vertical />
                     </v-flex>
@@ -277,17 +277,22 @@
                     <v-flex xs1>
                       <v-divider vertical />
                     </v-flex>
-                    <v-flex xs3>{{parseFloat(report.totalTaxaCredito) | moneyFilter}}</v-flex>
-                    <v-flex xs1>
-                      <v-divider vertical />
-                    </v-flex>
-                    <v-flex xs3>{{parseFloat(report.totalTaxaDebito) | moneyFilter}}</v-flex>
+                    <v-flex
+                      xs3
+                    >{{report.totalTaxaCredito ? parseFloat(report.totalTaxaCredito):'X' | moneyFilter}}</v-flex>
                     <v-flex xs1>
                       <v-divider vertical />
                     </v-flex>
                     <v-flex
-                      xs2
-                    >{{(((report.totalBruto)- parseFloat(report.totalTaxaDebito)) - parseFloat(report.totalTaxaCredito) )| moneyFilter}}</v-flex>
+                      xs3
+                    >{{report.totalTaxaDebito ? parseFloat(report.totalTaxaDebito) :'X'| moneyFilter}}</v-flex>
+                    <v-flex xs1>
+                      <v-divider vertical />
+                    </v-flex>
+                    <v-flex xs2>
+                      {{ (report.totalBruto && report.totalTaxaDebito && report.totalTaxaCredito) ?
+                      (((report.totalBruto)- parseFloat(report.totalTaxaDebito)) - parseFloat(report.totalTaxaCredito) ):'X'| moneyFilter}}
+                    </v-flex>
                     <v-flex xs1>
                       <v-divider vertical />
                     </v-flex>
@@ -331,19 +336,21 @@
                     <v-flex xs1>
                       <v-divider vertical />
                     </v-flex>
-                    <v-flex xs3>{{ this.report.totalBruto | moneyFilter}}</v-flex>
+                    <v-flex xs3>{{report.totalBruto ? this.report.totalBruto:'X' | moneyFilter}}</v-flex>
                     <v-flex xs1>
                       <v-divider vertical />
                     </v-flex>
-                    <v-flex
-                      xs3
-                    >{{(this.report.totalBruto - this.report.totalCusto - parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito)).toFixed(2)}}</v-flex>
+                    <v-flex xs3>
+                      {{(report.totalBruto && report.totalCusto && report.totalTaxaDebito && report.totalTaxaCredito)? (this.report.totalBruto -
+                      this.report.totalCusto - parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito)).toFixed(2):'X'}}
+                    </v-flex>
                     <v-flex xs1>
                       <v-divider vertical />
                     </v-flex>
                     <v-flex
                       xs2
-                    >{{(this.report.totalBruto - this.report.totalCusto - parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito)).toFixed(2)}}</v-flex>
+                    >{{(report.totalBruto && report.totalCusto && report.totalTaxaDebito && report.totalTaxaCredito)?
+                    (this.report.totalBruto - this.report.totalCusto - parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito)).toFixed(2):'X'}}</v-flex>
                     <v-flex xs1>
                       <v-divider vertical />
                     </v-flex>
@@ -372,7 +379,7 @@ export default {
     "colaborator",
     "proceduresQuantity",
     "examsQuantity"
-  ], 
+  ]
 };
 </script>
 

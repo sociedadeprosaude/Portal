@@ -424,6 +424,71 @@ exports.onUpdateStatisticsOuttakes = functions.firestore.document('outtakes/{id}
 });
 
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+async function mockOut(name) {
+    await sleep(100);
+    var id = moment();
+    admin.firestore().collection('outtakes').doc(String(id.valueOf())).set({
+        category: name,
+        created_at: "2020-07-06 23:59:43",
+        date_to_pay: "2020-07-06",
+        description: "tst",
+        id: "JoDcMg6z8dfqV5ikRBgp",
+        payment_method: "Dinheiro",
+        recurrent: "true",
+        subCategory: "Outro",
+        value: 15,
+        //    / paid: "2020-05-18 18:36:15"
+    })
+
+}
+
+async function mockOut2(name) {
+    await sleep(100);
+    var id = moment();
+    admin.firestore().collection('outtakes').doc(String(id.valueOf())).set({
+
+        created_at: "2020-07-06 23:59:43",
+        date_to_pay: "2020-07-06",
+        description: "tst",
+        intake_id: String(id.valueOf()),
+        specialties: [{ name: name, cost: 5 }, { name: name, cost: 5 }],
+        exams: [{ name: name, cost: 5 }],
+        id: "JoDcMg6z8dfqV5ikRBgp",
+        payment_method: "Dinheiro",
+        recurrent: "true",
+        subCategory: "Outro",
+        value: 5,
+        //    / paid: "2020-05-18 18:36:15"
+    })
+
+}
+
+exports.tstCreateOuttake = functions.https.onRequest(async (req, res) => {
+    // await mockOut2("CARDIOLOGIA");
+    // await mockOut2("CARDIOLOGIA");
+    // await mockOut2("CARDIOLOGIA");
+    await mockOut(["CARDIOLOGIA1", "CARDIOLOGIA2", "CARDIOLOGIA3"]);
+    //  await mockOut("CARDIOLOGIA");
+    //  await mockOut("CARDIOLOGIA");
+    // await mockOut("DERMATOLOGIA TELEATENDIMENTO");
+    // await mockOut("NEUROLOGIA");
+    // await mockOut("TESTANDO NOVA ESPECIALIDADE");
+    // await mockOut("TESTE 2");
+    res.status(200).send("sdasd")
+});
+
+exports.tstUpdateOuttake = functions.https.onRequest(async (req, res) => {
+    admin.firestore().collection('outtakes').doc('1594695572336').update({
+        paid: "2020-05-18 18:36:15"
+    })
+    admin.firestore().collection('outtakes').doc('1594695572927').update({
+        paid: "2020-05-18 18:36:15"
+    })
+    res.status(200).send("aaa")
+});
 // ==================================== funcs usadas por varios =======================================================
 async function convertSpecialtySubcollectionInObject(specialtyDoc) {
     let specialty = specialtyDoc.data();

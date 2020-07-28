@@ -123,6 +123,7 @@ export default {
       ).toFixed(2);
     },
     getProfitPercentage(exam) {
+      if (exam.cost == 0) return 0;
       return (exam.price - exam.cost) / exam.cost;
     }
   }

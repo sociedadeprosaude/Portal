@@ -242,7 +242,7 @@
                 <v-flex xs1>
                   <span
                     v-if="totalExamsIntakes > 0"
-                  >{{((totalExamsIntakes - totalCostExamsIntakes) / totalExamsIntakes) * 100 | moneyFilter}}%</span>
+                  > {{((totalExamsIntakes - totalCostExamsIntakes) / totalExamsIntakes) * 100 | moneyFilter}}%</span>
                   <span v-else>0%</span>
                 </v-flex>
                 <v-flex xs1>
@@ -429,16 +429,16 @@
                             <v-flex xs2 class="border">Total</v-flex>
                             <v-flex xs3 class="border">
                               {{totalCredit | moneyFilter}}
-                              ({{(totalCredit/totalRawIntake * 100).toFixed(2)}}%)
+                              ({{(totalRawIntake != 0)? (totalCredit/totalRawIntake * 100).toFixed(2): 0}}%)
                             </v-flex>
                             <v-flex xs3 class="border">
                               {{totalDebit | moneyFilter}}
-                              ({{(totalDebit/totalRawIntake * 100).toFixed(2)}}%)
+                              ({{(totalRawIntake != 0)? (totalDebit/totalRawIntake * 100).toFixed(2):0}}%)
                             </v-flex>
                             <v-flex xs3 class="border">
                               {{totalMoney +
                               totalFinancialSupport | moneyFilter}}
-                              ({{(totalMoney/totalRawIntake * 100).toFixed(2)}}%)
+                              ({{(totalRawIntake != 0)? (totalMoney/totalRawIntake * 100).toFixed(2):0}}%)
                             </v-flex>
                             <v-flex xs1></v-flex>
                           </v-layout>
@@ -466,8 +466,8 @@
                               moneyFilter}}
                             </v-flex>
                             <v-flex xs1 class="border">
-                              {{(totalCostSpecialtiesIntakes/this.totalProfit *
-                              100).toFixed(2)}}%
+                              {{(totalProfit != 0 )?(totalCostSpecialtiesIntakes/this.totalProfit *
+                              100).toFixed(2):0}}%
                             </v-flex>
                           </v-layout>
                         </v-flex>
@@ -481,8 +481,8 @@
                               moneyFilter}}
                             </v-flex>
                             <v-flex xs1 class="border">
-                              {{(totalCostExamsIntakes/this.totalProfit *
-                              100).toFixed(2)}}%
+                              {{(totalProfit != 0) ? (totalCostExamsIntakes/this.totalProfit *
+                              100).toFixed(2):0}}%
                             </v-flex>
                           </v-layout>
                         </v-flex>
@@ -499,8 +499,8 @@
                               moneyFilter}}
                             </v-flex>
                             <v-flex xs1 class="border">
-                              {{((totalOuttakesInMoney + totalOuttakesNotMoney)/this.totalProfit *
-                              100).toFixed(2)}}%
+                              {{(totalProfit != 0) ?((totalOuttakesInMoney + totalOuttakesNotMoney)/this.totalProfit *
+                              100).toFixed(2):0}}%
                             </v-flex>
                           </v-layout>
                         </v-flex>
@@ -517,9 +517,9 @@
                             </v-flex>
                             <v-flex xs3 class="border">{{0 | moneyFilter}}</v-flex>
                             <v-flex xs1 class="border">
-                              {{((parseFloat(totalTaxaCredit) +
+                              {{(totalProfit != 0) ?((parseFloat(totalTaxaCredit) +
                               parseFloat(totalTaxaDebit))/this.totalProfit *
-                              100).toFixed(2)}}%
+                              100).toFixed(2):0}}%
                             </v-flex>
                           </v-layout>
                         </v-flex>
@@ -540,12 +540,12 @@
                               moneyFilter}}
                             </v-flex>
                             <v-flex xs1 class="border">
-                              {{((parseFloat(totalTaxaCredit) +
+                              {{(totalProfit != 0) ?((parseFloat(totalTaxaCredit) +
                               parseFloat(totalTaxaDebit) +
                               totalCostSpecialtiesIntakes +
                               totalCostExamsIntakes +
                               totalOuttakesInMoney + totalOuttakesNotMoney)/this.totalProfit *
-                              100).toFixed(2)}}%
+                              100).toFixed(2):0}}%
                             </v-flex>
                           </v-layout>
                         </v-flex>
@@ -585,13 +585,13 @@
                               moneyFilter}}
                             </v-flex>
                             <v-flex xs1 class="border">
-                              {{((totalCredit -
+                              {{(totalProfit != 0) ?((totalCredit -
                               parseFloat(totalTaxaCredit) + totalDebit -
                               parseFloat(totalTaxaDebit) + totalMoney +
                               totalFinancialSupport - totalCostSpecialtiesIntakes -
                               totalCostExamsIntakes -
                               totalOuttakesInMoney)/this.totalProfit *
-                              100).toFixed(2)}}%
+                              100).toFixed(2):0}}%
                             </v-flex>
                           </v-layout>
                         </v-flex>
@@ -612,12 +612,12 @@
                   <v-layout row wrap class="justify-center">
                     <v-flex xs3 class="border">{{ this.totalRawIntake | moneyFilter}}</v-flex>
                     <v-flex xs3 class="border">
-                      {{totalCost | moneyFilter}} ({{(totalCost / this.totalProfit *
-                      100).toFixed(2)}}%)
+                      {{totalCost | moneyFilter}} ({{(totalProfit != 0) ?(totalCost / this.totalProfit *
+                      100).toFixed(2):0}}%)
                     </v-flex>
                     <v-flex xs2 class="border">
-                      {{finalProfit | moneyFilter}} ({{(finalProfit / this.totalProfit *
-                      100).toFixed(2)}}%)
+                      {{finalProfit | moneyFilter}} ({{(totalProfit != 0) ?(finalProfit / this.totalProfit *
+                      100).toFixed(2):0}}%)
                     </v-flex>
                   </v-layout>
                 </v-flex>
@@ -1050,16 +1050,16 @@
                             <v-flex xs2 class="border">Total</v-flex>
                             <v-flex xs3 class="border">
                               {{totalCreditAllClinics | moneyFilter}}
-                              ({{(totalCreditAllClinics/totalRawIntakeAllClinics * 100).toFixed(2)}}%)
+                              ({{(totalRawIntakeAllClinics != 0) ?(totalCreditAllClinics/totalRawIntakeAllClinics * 100).toFixed(2):0}}%)
                             </v-flex>
                             <v-flex xs3 class="border">
                               {{totalDebitAllClinics | moneyFilter}}
-                              ({{(totalDebitAllClinics/totalRawIntakeAllClinics * 100).toFixed(2)}}%)
+                              ({{(totalRawIntakeAllClinics != 0) ?(totalDebitAllClinics/totalRawIntakeAllClinics * 100).toFixed(2):0}}%)
                             </v-flex>
                             <v-flex xs3 class="border">
                               {{totalMoneyAllClinics +
                               totalFinancialSupportAllClinics | moneyFilter}}
-                              ({{(totalMoneyAllClinics/totalRawIntakeAllClinics * 100).toFixed(2)}}%)
+                              ({{(totalRawIntakeAllClinics != 0) ?(totalMoneyAllClinics/totalRawIntakeAllClinics * 100).toFixed(2):0}}%)
                             </v-flex>
                             <v-flex xs1></v-flex>
                           </v-layout>
@@ -1087,8 +1087,8 @@
                               moneyFilter}}
                             </v-flex>
                             <v-flex xs1 class="border">
-                              {{(totalCostSpecialtiesIntakesAllClinics/this.totalProfitAllClinics *
-                              100).toFixed(2)}}%
+                              {{(totalProfitAllClinics != 0) ?(totalCostSpecialtiesIntakesAllClinics/this.totalProfitAllClinics *
+                              100).toFixed(2):0}}%
                             </v-flex>
                           </v-layout>
                         </v-flex>
@@ -1102,8 +1102,8 @@
                               moneyFilter}}
                             </v-flex>
                             <v-flex xs1 class="border">
-                              {{(totalCostExamsIntakesAllClinics/this.totalProfitAllClinics *
-                              100).toFixed(2)}}%
+                              {{(totalProfitAllClinics != 0) ?(totalCostExamsIntakesAllClinics/this.totalProfitAllClinics *
+                              100).toFixed(2):0}}%
                             </v-flex>
                           </v-layout>
                         </v-flex>
@@ -1120,8 +1120,8 @@
                               moneyFilter}}
                             </v-flex>
                             <v-flex xs1 class="border">
-                              {{((totalOuttakesInMoneyAllClinics + totalOuttakesNotMoneyAllClinics)/this.totalProfitAllClinics *
-                              100).toFixed(2)}}%
+                              {{(totalProfitAllClinics != 0) ?((totalOuttakesInMoneyAllClinics + totalOuttakesNotMoneyAllClinics)/this.totalProfitAllClinics *
+                              100).toFixed(2):0}}%
                             </v-flex>
                           </v-layout>
                         </v-flex>
@@ -1138,9 +1138,9 @@
                             </v-flex>
                             <v-flex xs3 class="border">{{0 | moneyFilter}}</v-flex>
                             <v-flex xs1 class="border">
-                              {{((parseFloat(totalTaxaCreditAllClinics) +
+                              {{(totalProfitAllClinics != 0) ?((parseFloat(totalTaxaCreditAllClinics) +
                               parseFloat(totalTaxaDebitAllClinics))/this.totalProfitAllClinics *
-                              100).toFixed(2)}}%
+                              100).toFixed(2):0}}%
                             </v-flex>
                           </v-layout>
                         </v-flex>
@@ -1161,12 +1161,12 @@
                               moneyFilter}}
                             </v-flex>
                             <v-flex xs1 class="border">
-                              {{((parseFloat(totalTaxaCreditAllClinics) +
+                              {{(totalProfitAllClinics != 0) ?((parseFloat(totalTaxaCreditAllClinics) +
                               parseFloat(totalTaxaDebitAllClinics) +
                               totalCostSpecialtiesIntakesAllClinics +
                               totalCostExamsIntakesAllClinics +
                               totalOuttakesInMoneyAllClinics + totalOuttakesNotMoneyAllClinics)/this.totalProfitAllClinics *
-                              100).toFixed(2)}}%
+                              100).toFixed(2):0}}%
                             </v-flex>
                           </v-layout>
                         </v-flex>
@@ -1206,13 +1206,13 @@
                               moneyFilter}}
                             </v-flex>
                             <v-flex xs1 class="border">
-                              {{((totalCreditAllClinics -
+                              {{(totalProfit != 0) ?((totalCreditAllClinics -
                               parseFloat(totalTaxaCreditAllClinics) + totalDebitAllClinics -
                               parseFloat(totalTaxaDebitAllClinics) + totalMoneyAllClinics +
                               totalFinancialSupportAllClinics - totalCostSpecialtiesIntakesAllClinics -
                               totalCostExamsIntakesAllClinics -
                               totalOuttakesInMoneyAllClinics)/this.totalProfit *
-                              100).toFixed(2)}}%
+                              100).toFixed(2):0}}%
                             </v-flex>
                           </v-layout>
                         </v-flex>
@@ -1233,12 +1233,12 @@
                   <v-layout row wrap class="justify-center">
                     <v-flex xs3 class="border">{{ this.totalRawIntakeAllClinics | moneyFilter}}</v-flex>
                     <v-flex xs3 class="border">
-                      {{totalCostAllClinics | moneyFilter}} ({{(totalCostAllClinics / this.totalProfit *
-                      100).toFixed(2)}}%)
+                      {{totalCostAllClinics | moneyFilter}} ({{(totalProfit != 0) ?(totalCostAllClinics / this.totalProfit *
+                      100).toFixed(2):0}}%)
                     </v-flex>
                     <v-flex xs2 class="border">
-                      {{finalProfitAllClinics | moneyFilter}} ({{(finalProfitAllClinics / this.totalProfit *
-                      100).toFixed(2)}}%)
+                      {{finalProfitAllClinics | moneyFilter}} ({{(totalProfit != 0) ?(finalProfitAllClinics / this.totalProfit *
+                      100).toFixed(2):0}}%)
                     </v-flex>
                   </v-layout>
                 </v-flex>
