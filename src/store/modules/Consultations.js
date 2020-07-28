@@ -152,7 +152,6 @@ const actions = {
                     }
                     obj.cancelations_schedules = cancelations_schedules
                     schedules.push({...obj})
-
                 });
                 commit('setSchedules', schedules);
                 commit('setConsultationLoading', false)

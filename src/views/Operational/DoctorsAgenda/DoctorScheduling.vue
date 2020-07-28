@@ -1,25 +1,25 @@
 <template>
     <v-container fluid class="ma-0 mt-n2 pa-0">
         <v-layout row wrap>
-            <v-flex xs12 class="hidden-md-and-up mt-n4" >
+            <v-flex xs12 class="hidden-sm-and-up mt-n4" >
                 <v-layout row wrap class="justify-space-between primary">
                     <v-btn v-for="item in items" :key="item.title" class="primary" text large @click="chooseView(item.view)">
                         {{item.title}}
                     </v-btn>
                 </v-layout>
             </v-flex>
-            <v-flex sm3 class="primary hidden-md-and-down">
+            <v-flex sm3 class="primary hidden-sm-and-down">
                 <DataToSearchConsultation @GetConsultations="schedules= $event" :daysToListen="daysToListen"/>
             </v-flex>
 
             <v-flex sm6 class="white">
                 <SchedulesConsultations :Consultations="schedules" @refreshDate="daysToListen = $event" v-if="this.viewSeleted === 'schedules'"/>
             </v-flex>
-            <v-flex sm3 class="primary hidden-md-and-down">
+            <v-flex sm3 class="primary hidden-sm-and-down">
                 <DataCashierConsultation/>
             </v-flex>
 
-            <v-flex xs12 class="primary hidden-md-and-up">
+            <v-flex xs12 class="primary hidden-sm-and-up">
                 <DataToSearchConsultation @GetConsultations="schedules= $event" :daysToListen="daysToListen" v-if="this.viewSeleted === 'data'"/>
                 <DataCashierConsultation v-if="this.viewSeleted === 'cashier'"/>
             </v-flex>
@@ -48,7 +48,7 @@
         mounted() {
             this.query= this.$route.params.q
         },
-        
+
         methods: {
             chooseView(view) {
                 this.viewSeleted = view;
