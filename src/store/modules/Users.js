@@ -138,17 +138,17 @@ const actions = {
             if (!searchFields[field] || searchFields[field].length === 0) continue;
 
             if (field === 'name'){
-                usersRef = usersRef.where(field, field === 'name' ? '>=' : '==', searchFields[field].toUpperCase());
+                usersRef = usersRef.where(field, '>=', searchFields[field].toUpperCase());
                 break
             }
             else if (field === 'cpf'){
                 searchFields[field] = searchFields[field].replaceAll('.','');
                 searchFields[field] = searchFields[field].replace('-','');
-                usersRef = usersRef.where(field, field === 'cpf' ? '>=' : '==', searchFields[field]);
+                usersRef = usersRef.where(field, '==', searchFields[field]);
                 break
             }
             else if (field === 'association_number' ){
-                usersRef = usersRef.where('association_number' ,'>=', searchFields[field]);
+                usersRef = usersRef.where('association_number' ,'==', searchFields[field]);
                 break
                 }
             else{
@@ -160,7 +160,8 @@ const actions = {
 
 
         }
-        let querySnapshot = await usersRef.limit(30).get();
+        console.log('hey', usersRef)
+        let querySnapshot = await usersRef.limit(5).get();
         let users = [];
         querySnapshot.forEach(function (doc) {
             users.push({
@@ -234,7 +235,7 @@ const actions = {
                         type: type
                     })
                 }
-                
+
             } else {
                 if (patient.type) {
                     patient.type = patient.type.toUpperCase()
@@ -317,7 +318,7 @@ const actions = {
                     doc.ref.set({accessed:1})
                 }
             })
-        
+
         }
     },
 };
