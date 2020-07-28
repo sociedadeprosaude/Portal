@@ -1,12 +1,12 @@
 <template>
   <v-container class="ma-0 pa-0">
     <v-navigation-drawer
-      v-if="doctorsAgendaToobar"
-      class="hidden-print-only"
-      dark
-      absolute
-      temporary
-      v-model="drawer"
+        v-if="doctorsAgendaToobar"
+        class="hidden-print-only"
+        dark
+        absolute
+        temporary
+        v-model="drawer"
     >
       <v-list>
         <v-list-item v-for="item in menuItems" :key="item.title" @click.native="goRoute(item.link)">
@@ -18,18 +18,18 @@
       </v-list>
     </v-navigation-drawer>
     <v-navigation-drawer
-      v-if="billsToobar"
-      class="hidden-print-only"
-      dark
-      absolute
-      temporary
-      v-model="drawer"
+        v-if="billsToobar"
+        class="hidden-print-only"
+        dark
+        absolute
+        temporary
+        v-model="drawer"
     >
       <v-list>
         <v-list-item
-          v-for="item in menuItemsBills"
-          :key="item.title"
-          @click.native="goRoute(item.link)"
+            v-for="item in menuItemsBills"
+            :key="item.title"
+            @click.native="goRoute(item.link)"
         >
           <v-list-item-action>
             <v-icon>{{ item.icon }}</v-icon>
@@ -39,14 +39,14 @@
       </v-list>
     </v-navigation-drawer>
     <v-app-bar
-      color="primary_dark hidden-xs-only"
-      fixed
-      dark
-      class="hidden-print-only"
-      v-if="selectedUnit"
+        color="primary_dark hidden-xs-only"
+        fixed
+        dark
+        class="hidden-print-only"
+        v-if="selectedUnit"
     >
-      <v-app-bar-nav-icon v-if="doctorsAgendaToobar || billsToobar" @click.stop="drawer = !drawer" />
-      <v-app-bar-nav-icon hidden v-if="showOverviewToggle" @click.stop="overviewToggle()" />
+      <v-app-bar-nav-icon v-if="doctorsAgendaToobar || billsToobar" @click.stop="drawer = !drawer"/>
+      <v-app-bar-nav-icon hidden v-if="showOverviewToggle" @click.stop="overviewToggle()"/>
 
       <v-toolbar-title>
         <router-link to="/" tag="span" style="cursor: pointer">
@@ -54,24 +54,29 @@
         </router-link>
       </v-toolbar-title>
       <v-toolbar-items>
-        <v-layout row wrap class="justify-center align-center">
-          <v-btn rounded text @click="selectUnit()" v-if="!user.clinic">
-            <v-icon>cached</v-icon>
-          </v-btn>
-        </v-layout>
+        <v-row align="end" justify="end">
+          <v-col cols="12">
+            <v-btn rounded text @click="selectUnit()" v-if="!user.clinic">
+              <v-icon>cached</v-icon>
+            </v-btn>
+          </v-col>
+          <v-col cols="12" class="pa-0" align="end" justify="end">
+            <strong>{{version}}</strong>
+          </v-col>
+        </v-row>
       </v-toolbar-items>
-      <v-spacer />
+      <v-spacer/>
       <v-toolbar-items>
         <v-flex class="mt-n2">
           <v-card class="transparent" flat v-if="selectedPatient">
             <v-list-item>
               <v-icon left>person</v-icon>
               <v-list-item-content>
-                <v-list-item-title>Nome: {{selectedPatient.name}}</v-list-item-title>
+                <v-list-item-title>Nome: {{ selectedPatient.name }}</v-list-item-title>
                 <v-list-item-subtitle v-if="selectedPatient.cpf !== ''">
-                  CPF: {{selectedPatient.cpf}}
-                  <br />
-                  TELEFONE: {{selectedPatient.telephones ? selectedPatient.telephones[0] : 'Número não informado'}}
+                  CPF: {{ selectedPatient.cpf }}
+                  <br/>
+                  TELEFONE: {{ selectedPatient.telephones ? selectedPatient.telephones[0] : 'Número não informado' }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -80,22 +85,22 @@
       </v-toolbar-items>
     </v-app-bar>
     <v-app-bar
-      dense
-      flat
-      color="white hidden-sm-and-up"
-      light
-      fixed
-      class="hidden-print-only"
-      v-if="selectedUnit"
+        dense
+        flat
+        color="white hidden-sm-and-up"
+        light
+        fixed
+        class="hidden-print-only"
+        v-if="selectedUnit"
     >
-      <v-app-bar-nav-icon hidden v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer" />
+      <v-app-bar-nav-icon hidden v-if="doctorsAgendaToobar" @click.stop="drawer = !drawer"/>
 
       <v-toolbar-title class="ma-0 pa-0">
         <router-link to="/" tag="span" style="cursor: pointer">
           <v-img v-if="selectedUnit" :src="selectedUnit.logo" aspect-radio="1" width="100"></v-img>
         </router-link>
       </v-toolbar-title>
-      <v-spacer />
+      <v-spacer/>
       <v-toolbar-items>
         <v-layout row wrap class="justify-center align-center">
           <v-btn rounded text @click="selectUnit()">
@@ -106,17 +111,17 @@
           </v-btn>
         </v-layout>
       </v-toolbar-items>
-      <v-spacer />
+      <v-spacer/>
     </v-app-bar>
     <v-dialog v-model="patientDialog" transition="dialog-bottom-transition">
-      <select-patient-card />
+      <select-patient-card/>
     </v-dialog>
     <v-dialog v-model="selectUnitDialog">
       <v-card>
         <v-layout row wrap class="align-center justify-center">
           <v-flex xs12 sm4 v-for="unit in units" :key="unit.id" class="text-center">
             <v-btn @click="selectUnit(unit)" height="124px" v-if="!user.clinic">
-              <img :src="unit.logo" width="256px" />
+              <img :src="unit.logo" width="256px"/>
             </v-btn>
           </v-flex>
         </v-layout>
@@ -127,6 +132,8 @@
 
 <script>
 import SelectPatientCard from "../Patient/SelectPatientCard";
+import {version} from '../../../package.json';
+
 export default {
   name: "Toolbar",
   components: {
@@ -135,6 +142,7 @@ export default {
   props: ["user"],
   data() {
     return {
+      version: version,
       drawer: false,
       dialog: false,
       selectUnitDialog: false,
@@ -170,7 +178,7 @@ export default {
           title: "Gerenciamento de agendas médicas",
           link: "/agenda/GerenciarAgendas"
         },
-        { icon: "translate", title: "Pesquisa de CIDs", link: "/agenda/Cids" }
+        {icon: "translate", title: "Pesquisa de CIDs", link: "/agenda/Cids"}
       ],
       menuItemsBills: [
         {
