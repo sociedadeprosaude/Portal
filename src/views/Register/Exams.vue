@@ -5,89 +5,23 @@
       <v-tab href="#types">Registro de tipos de exams</v-tab>
 
       <v-tab-item value="exams">
-        <v-layout row wrap>
-          <v-flex sm12>
-            <v-card class="pt-3">
-              <v-layout row wrap>
-                <v-flex sm8>
-                  <v-text-field
-                    outlined
-                    placeholder="Exames"
-                    class="mx-5"
-                    color="primary"
-                    v-model="search"
-                    :loading="loading"
-                    id="search"
-                  />
-                </v-flex>
-                <v-flex sm4 class="text-right pr-3 mt-2">
-                  <v-btn outlined class="primary--text" @click="newExam = true">cadastrar exame</v-btn>
-                </v-flex>
-              </v-layout>
-            </v-card>
-
-            <v-card>
-              <v-card-text v-if="exams.length !== 0">
-                <listExams :exams="exams" :loading="loading" @clear-search="search = ''" />
-              </v-card-text>
-            </v-card>
-          </v-flex>
-          <v-dialog v-model="newExam">
-            <createExam :registed="registed" @close-dialog="newExam = false" />
-          </v-dialog>
-        </v-layout>
+        <register-exams :exams="exams" ></register-exams>
       </v-tab-item>
       <v-tab-item value="types">
-        <v-layout row wrap>
-          <v-flex sm12>
-            <v-card class="pt-3 mb-4">
-              <v-layout row wrap>
-                <v-flex sm8>
-                  <v-text-field
-                    outlined
-                    placeholder="Tipos de Exames"
-                    class="mx-5"
-                    color="primary"
-                    v-model="searchType"
-                    :loading="loading"
-                    id="search"
-                  />
-                </v-flex>
-                <v-flex sm4 class="text-right pr-3 mt-2">
-                  <v-btn
-                    outlined
-                    class="primary--text"
-                    @click="newExamType = true"
-                  >cadastrar tipo de exame</v-btn>
-                </v-flex>
-              </v-layout>
-            </v-card>
-
-            <v-card>
-              <v-card-text>
-                <listExamsTypes :examsTypes="examsTypes" />
-              </v-card-text>
-            </v-card>
-          </v-flex>
-          <v-dialog v-model="newExamType">
-            <createExamType @close-dialog="newExamType = false" :registed="registed" />
-          </v-dialog>
-        </v-layout>
+        <register-types-exams :examsTypes="examsTypes"></register-types-exams>
       </v-tab-item>
     </v-tabs>
   </v-container>
 </template>
 <script>
-import listExams from "../../components/Exams/listExams";
-import listExamsTypes from "../../components/Exams/listExamsTypes";
-import createExam from "../../components/Exams/CreateExam";
-import createExamType from "../../components/Exams/CreateExamType";
+
+import RegisterExams from "../../components/Exams/RegisterExams";
+import RegisterTypesExams from "../../components/Exams/RegisterTypesExams";
 
 export default {
-  components: { listExams, listExamsTypes, createExam, createExamType },
+  components: { RegisterExams, RegisterTypesExams },
 
   data: () => ({
-    search: "",
     searchType: "",
     loading: undefined,
     newExam: false,

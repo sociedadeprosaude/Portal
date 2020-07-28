@@ -144,18 +144,7 @@
                                 />
                             </v-flex>
                             <v-spacer/>
-                            <!-- <v-flex xs6>
-                                <v-currency-field
-                                        prepend-icon="monetization_on"
-                                        outlined
-                                        rounded
-                                        filled
-                                        clearable
-                                        prefix="R$"
-                                        v-model="spec.price"
-                                        label="Venda"
-                                />
-                            </v-flex> -->
+
                         </v-layout>
                     </v-flex>
                 </v-layout>
