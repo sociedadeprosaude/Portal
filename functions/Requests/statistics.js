@@ -10,6 +10,23 @@ const heavyFunctionsRuntimeOpts = {
     memory: '2GB'
 }
 
+function outtakeCategoryListDivider(outtake) {
+
+    if ((typeof (outtake.category)) === "object") {
+        const valueDivided = outtake.value / outtake.category.length;
+        return outtake.category.map((category) => {
+            //Tem que ser {...outtake}
+            var outtakeDivided = { ...outtake };
+            outtakeDivided.value = valueDivided;
+            outtakeDivided.category = category;
+            return (outtakeDivided)
+        })
+    } else {
+        return [outtake]
+    }
+}
+
+
 function groupIntakes(intakes) {
     var grouped = {};
     for (let { date } of intakes) {
@@ -283,8 +300,10 @@ exports.analyseStatisticsOuttakesCategoryByMonth = functions.https.onRequest(asy
     var outtakes = await admin.firestore().collection('outtakes').get();
     outtakes = outtakes.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
 
-    var outtakesCategory = outtakes.filter((doc) => (doc.category))
-
+    var outtakesCategoryUndivided = outtakes.filter((doc) => (doc.category))
+    //flat() tranforma a lista de listas gerada em so uma lista
+    var outtakesCategory = outtakesCategoryUndivided.map((outtake) => outtakeCategoryListDivider(outtake)).flat();
+    
     var outtakesCategoryPaid = outtakesCategory.filter((doc) => (doc.paid))
         .map((outtake) => ({
             cost: Number(outtake.value),

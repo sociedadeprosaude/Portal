@@ -280,6 +280,21 @@ var emptyOuttake = () => ({
     numOfOuttakes: 0,
 })
 
+function outtakeCategoryListDivider(outtake) {
+    if ((typeof (outtake.category)) === "object") {
+        const valueDivided = outtake.value / outtake.category.length;
+        return outtake.category.map((category) => {
+            //Tem que ser {...outtake}
+            var outtakeDivided = { ...outtake };
+            outtakeDivided.value = valueDivided;
+            outtakeDivided.category = category;
+            return outtakeDivided
+        })
+    } else {
+        return [outtake]
+    }
+}
+
 async function createStatisticOuttakeDoc(outtake, nameDoc) {
 
     const date = outtake.date.slice(0, 10);
@@ -337,14 +352,15 @@ exports.onCreateStatisticsOuttakes = functions.firestore.document('outtakes/{id}
         const outtakeNew = snap.data();
         console.log("criado")
         if (outtakeNew.category) {
-            var outtake = {
-                cost: Number(outtakeNew.value),
-                name: outtakeNew.category,
-                date: outtakeNew.date_to_pay,
-                paid: outtakeNew.paid,
-                recurrent: outtakeNew.recurrent === "true"
-            };
-            createStatisticOuttakeDoc(outtake, 'outtakes-category')
+            outtakeCategoryListDivider(outtakeNew).map((outtake) => ({
+                cost: Number(outtake.value),
+                name: outtake.category,
+                date: outtake.date_to_pay,
+                paid: outtake.paid,
+                recurrent: outtake.recurrent === "true"
+            })).forEach((outtake) => createStatisticOuttakeDoc(outtake, 'outtakes-category'))
+
+
         } else {
             if (outtakeNew.exams) outtakeNew.exams.forEach((outtakeObj) => {
                 var outtake = {
@@ -370,17 +386,18 @@ exports.onCreateStatisticsOuttakes = functions.firestore.document('outtakes/{id}
     });
 
 exports.onUpdateStatisticsOuttakes = functions.firestore.document('outtakes/{id}').onUpdate(async (change, context) => {
-    const outtakeUpdated = change.after.data();
-    if (outtakeUpdated.paid) {
+    const outtakeOld = change.before.data();
+    const outtakeUpdated = change.after.data();    
+    if (outtakeUpdated.paid && outtakeOld.paid != outtakeUpdated.paid) {
         if (outtakeUpdated.category) {
-            var outtake = {
-                cost: Number(outtakeUpdated.value),
-                name: outtakeUpdated.category,
-                date: outtakeUpdated.date_to_pay,
+            outtakeCategoryListDivider(outtakeUpdated).map((outtake) => ({
+                cost: Number(outtake.value),
+                name: outtake.category,
+                date: outtake.date_to_pay,
                 paid: true,
-                recurrent: outtakeUpdated.recurrent === "true"
-            }
-            updateStatisticOuttakeDoc(outtake, 'outtakes-category')
+                recurrent: outtake.recurrent === "true"
+            })).forEach((outtake) => updateStatisticOuttakeDoc(outtake, 'outtakes-category'))
+
         } else {
             if (outtakeUpdated.exams) outtakeUpdated.exams.forEach((outtakeObj) => {
                 var outtake = {
@@ -407,71 +424,6 @@ exports.onUpdateStatisticsOuttakes = functions.firestore.document('outtakes/{id}
 });
 
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-async function mockOut(name) {
-    await sleep(100);
-    var id = moment();
-    admin.firestore().collection('outtakes').doc(String(id.valueOf())).set({
-        category: name,
-        created_at: "2020-07-06 23:59:43",
-        date_to_pay: "2020-07-06",
-        description: "tst",
-        id: "JoDcMg6z8dfqV5ikRBgp",
-        payment_method: "Dinheiro",
-        recurrent: "true",
-        subCategory: "Outro",
-        value: 5,
-        //    / paid: "2020-05-18 18:36:15"
-    })
-
-}
-
-async function mockOut2(name) {
-    await sleep(100);
-    var id = moment();
-    admin.firestore().collection('outtakes').doc(String(id.valueOf())).set({
-
-        created_at: "2020-07-06 23:59:43",
-        date_to_pay: "2020-07-06",
-        description: "tst",
-        intake_id: String(id.valueOf()),
-        specialties: [{ name: name, cost: 5 }, { name: name, cost: 5 }],
-        exams: [{ name: name, cost: 5 }],
-        id: "JoDcMg6z8dfqV5ikRBgp",
-        payment_method: "Dinheiro",
-        recurrent: "true",
-        subCategory: "Outro",
-        value: 5,
-        //    / paid: "2020-05-18 18:36:15"
-    })
-
-}
-
-exports.tstCreateOuttake = functions.https.onRequest(async (req, res) => {
-    await mockOut2("CARDIOLOGIA");
-    await mockOut2("CARDIOLOGIA");
-    await mockOut2("CARDIOLOGIA");
-    await mockOut("CARDIOLOGIA");
-    await mockOut("CARDIOLOGIA");
-    await mockOut("CARDIOLOGIA");
-    // await mockOut("DERMATOLOGIA TELEATENDIMENTO");
-    // await mockOut("NEUROLOGIA");
-    // await mockOut("TESTANDO NOVA ESPECIALIDADE");
-    // await mockOut("TESTE 2");
-    res.status(200).send("sdasd")
-});
-
-exports.tstUpdateOuttake = functions.https.onRequest(async (req, res) => {
-    admin.firestore().collection('outtakes').doc('1594695572336').update({
-        paid: "2020-05-18 18:36:15"
-    })
-    admin.firestore().collection('outtakes').doc('1594695572927').update({
-        paid: "2020-05-18 18:36:15"
-    })
-    res.status(200).send("aaa")
-});
 // ==================================== funcs usadas por varios =======================================================
 async function convertSpecialtySubcollectionInObject(specialtyDoc) {
     let specialty = specialtyDoc.data();

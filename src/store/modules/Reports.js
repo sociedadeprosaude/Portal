@@ -9,15 +9,20 @@ const instance = axios.create({
 instance.defaults.headers.common['Accept'] = 'application/json'
 
 function outtakeCategoryListDivider(outtake) {
-    const valueDivided = outtake.value / outtake.category.length;
-    return outtake.category.map((category) => {
-        //Tem que ser {...outtake}
-        var outtakeDivided = { ...outtake };
-        outtakeDivided.value = valueDivided;
-        outtakeDivided.category = category;
-        return (outtakeDivided)
-    })
+    if ((typeof (outtake.category)) === "object") {
+        const valueDivided = outtake.value / outtake.category.length;
+        return outtake.category.map((category) => {
+            //Tem que ser {...outtake}
+            var outtakeDivided = { ...outtake };
+            outtakeDivided.value = valueDivided;
+            outtakeDivided.category = category;
+            return outtakeDivided
+        })
+    } else {
+        return [outtake]
+    }
 }
+
 
 const state = {
     infos: [],
@@ -201,25 +206,13 @@ const actions = {
                 for (let i = 0; i < e.data().payments.length; i++) {
                     if (e.data().payments[i] === 'Dinheiro') {
                         quantidadeOuttakes++;
-                        if ((typeof (outtake.category)) === "object") {
-                            const outtakesDivided = outtakeCategoryListDivider(outtake)
-                            outtakesDivided.forEach((outtakeDivided) => outtakes.push(outtakeDivided))
-
-                        } else {
-                            outtakes.push(outtake)
-                        }
+                        outtakes.push(...outtakeCategoryListDivider(outtake))
                     }
                 }
             }
             else {
-                quantidadeOuttakes++;
-                if ((typeof (outtake.category)) === "object") {
-                    const outtakesDivided = outtakeCategoryListDivider(outtake)
-                    outtakesDivided.forEach((outtakeDivided) => outtakes.push(outtakeDivided))
-
-                } else {
-                    outtakes.push(outtake)
-                }
+                quantidadeOuttakes++; 
+                outtakes.push(...outtakeCategoryListDivider(outtake))
             }
         });
         let consultationsSnap = await firebase.firestore().collection('consultations').where('date', '>=', payload.dataInicio)
@@ -392,25 +385,13 @@ const actions = {
                 for (let i = 0; i < e.data().payments.length; i++) {
                     if (e.data().payments[i] === 'Dinheiro') {
                         quantidadeOuttakes++;
-                        if ((typeof (outtake.category)) === "object") {
-                            const outtakesDivided = outtakeCategoryListDivider(outtake)
-                            outtakesDivided.forEach((outtakeDivided) => outtakes.push(outtakeDivided))
-
-                        } else {
-                            outtakes.push(outtake)
-                        }
+                        outtakes.push(...outtakeCategoryListDivider(outtake))
                     }
                 }
             }
             else {
                 quantidadeOuttakes++;
-                if ((typeof (outtake.category)) === "object") {
-                    const outtakesDivided = outtakeCategoryListDivider(outtake)
-                    outtakesDivided.forEach((outtakeDivided) => outtakes.push(outtakeDivided))
-
-                } else {
-                    outtakes.push(outtake)
-                }
+                outtakes.push(...outtakeCategoryListDivider(outtake))
             }
         });
         let consultationsSnap = await firebase.firestore().collection('consultations').where('date', '>=', payload.dataInicio)
