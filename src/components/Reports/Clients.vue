@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row class="mt-2">
-      <h1>Clientes</h1>
+      <h1>Clientes Atendidos</h1>
     </v-row>
     <v-row>
       <v-col>
@@ -103,10 +103,36 @@
 
     <v-row class="mt-2">
       <h1>Localidade dos visitantes</h1>
+      <v-spacer></v-spacer>
+      <v-menu
+        ref="menu"
+        v-model="menu"
+        :close-on-content-click="false"
+        :return-value.sync="date"
+        transition="scale-transition"
+        offset-y
+        width="100px"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-text-field
+            label="Escolha o período dos usuários atendidos"
+            prepend-icon="event"
+            readonly
+            v-bind="attrs"
+            v-on="on"
+            :value="dateFormatted"
+          ></v-text-field>
+        </template>
+        <v-date-picker v-model="date" type="month" no-title scrollable locale="pt-br">
+          <v-spacer></v-spacer>
+          <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
+          <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+        </v-date-picker>
+      </v-menu>
     </v-row>
     <v-row>
       <v-col>
-        <Gmaps></Gmaps>
+        <Gmaps :geopoints="geopoints" :period_report="date"></Gmaps>
       </v-col>
     </v-row>
   </v-container>
@@ -114,25 +140,31 @@
 
 <script>
 import LineChart from "@/components/Charts/LineChart";
-import BarChart from "@/components/Charts/BarChart";
-import Gmaps from "@/components/Maps/Gmaps";
+import BarChart from "../../components/Charts/BarChart";
+import Gmaps from "../../components/Maps/Gmaps";
+import moment from "moment";
 export default {
+  props: [
+    'dataset',
+    'date',
+    'menu',
+    'dateFormatted',
+    'clientsServed',
+    'newClients',
+    'ageClientsServed',
+    'genderClientsServed',
+    'geopoints',
+    'generateDatasetServed',
+    'generateDatasetNewClients',
+    'generateDatasetClientsAge',
+    'options',
+  ],
+
   components: {
     LineChart,
     BarChart,
-    Gmaps
+    Gmaps,
   },
-  props: [
-    "dataset",
-    "clientsServed",
-    "newClients",
-    "ageClientsServed",
-    "genderClientsServed",
-    "generateDatasetServed",
-    "generateDatasetNewClients",
-    "generateDatasetClientsAge",
-    "options"
-  ]
 };
 </script>
 

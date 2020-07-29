@@ -1,9 +1,8 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
-
+const gmapsInit = require("../geocode")
 var moment = require('moment');
-
 
 const heavyFunctionsRuntimeOpts = {
     timeoutSeconds: 540,
@@ -251,7 +250,28 @@ exports.analyzePastIntakesByMonth = functions.runWith(heavyFunctionsRuntimeOpts)
 
 
 });
-
+exports.setGeopoints = functions.https.onRequest(async (request, response) => {
+    admin.firestore().collection('users')
+        .get().then((users) => {
+            users.forEach((user)=>{
+                let data = user.data()
+                if(data.addresses && data.addresses[0] && data.addresses[0].cep){
+                    console.log('->')
+                    admin.firestore().collection('statistics').doc('geopoints').collection('users').doc(data.addresses[0].cep)
+                    .get().then((userGeopoint)=>{
+                        if(!userGeopoint.exists){
+                            gmapsInit.geocode([data.addresses[0].street,data.addresses[0].complement].join(" ") + " Manaus Amazonas",
+                            (err, coordinates)=>{
+                                console.log('->',coordinates)
+                                admin.firestore().collection('statistics').doc('geopoints').collection('users').doc(data.addresses[0].cep).set({geopoint: new admin.firestore.GeoPoint(coordinates.lat, coordinates.lng)})
+                            })
+                        }
+                    })
+                }
+            })
+        })
+    response.status(200).send("Salvando geopoint para os usuários");
+})
 // ==================================== Outtakes ===================================================
 
 function analyzeOuttakesByMonth(outtakes) {

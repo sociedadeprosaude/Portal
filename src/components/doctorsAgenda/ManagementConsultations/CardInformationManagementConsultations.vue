@@ -55,7 +55,7 @@
                         <v-btn
                                 color="white"
                                 rounded
-                                :to="{ name: 'AgendamentoConsultas', params: { q: consultation}}"
+                                :to="{ name: 'AgendamentoConsultas', params: { q: consultation, type:'retorno'}}"
                                 :disabled="consultation.status !== 'Pago' || consultation.regress"
                                 v-if="consultation.type !== 'Retorno' && consultation.specialty"
                         >Retorno
@@ -63,7 +63,7 @@
                         <v-btn
                                 color="white"
                                 rounded
-                                :disabled="consultation.status !== 'Pago' && consultation.consultation_hour"
+                                :disabled="consultation.status !== 'Pago' || consultation.consultation_hour"
                                 @click="setConsultationHour(consultation)"
                         >
                             Atender
@@ -166,8 +166,6 @@
             ConsultationRecept(consultation) {
                 this.receptDialog = true;
             }
-
-
         },
     }
 </script>

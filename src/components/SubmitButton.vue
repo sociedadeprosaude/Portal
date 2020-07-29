@@ -8,7 +8,7 @@
         <v-icon v-if="success" class="white--text">done</v-icon>
         {{success ? '' : text}}
     </v-btn>
-    <v-progress-circular indeterminate color="primary" v-else/>
+    <v-progress-circular indeterminate v-else/>
 </template>
 
 <script>

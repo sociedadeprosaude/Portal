@@ -36,8 +36,8 @@
 </template>
 
 <script>
-import Bills from "@/components/pagamento/Bills";
-import BillsMobile from "@/views/Register/BillsMobile";
+import Bills from "@/components/Bills/Bills";
+import BillsMobile from "@/views/Financial/BillsMobile";
 
 import moment from "moment";
 export default {

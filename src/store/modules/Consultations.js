@@ -16,6 +16,7 @@ let cloudFunctionInstance = axios.create({
 
 const state = {
     consultations: [],
+    medicalRecords: [],
     AllSchedules: [],
     schedules: [],
     consultationsCanceled: [],
@@ -39,7 +40,9 @@ const mutations = {
     setAllSchedules(state, payload) {
         state.AllSchedules = payload;
     },
-
+    setMedicalRecords(state, payload) {
+        state.medicalRecords = payload;
+    },
     setConsultationsCanceled(state, payload) {
         state.consultationsCanceled = payload
     },
@@ -90,6 +93,16 @@ const actions = {
             })
         } catch (e) {
             throw e
+        }
+    },
+
+    async getMedicalRecords({commit}, payload) {
+        let mr = await firebase.firestore().collection('users').doc(payload.patient).get();
+        let arrayMedicalRecords = mr.data().medicalRecords
+        if(arrayMedicalRecords){
+            commit('setMedicalRecords', arrayMedicalRecords);
+        } else {
+            commit('setMedicalRecords', undefined);
         }
     },
 
@@ -280,7 +293,7 @@ const actions = {
         try {
 
             functions.removeUndefineds(payload);
-            var cancelAppointment = firebase.functions().httpsCallable('cancelAppointment');
+            var cancelAppointment = firebase.functions().httpsCallable('requests-cancelAppointment');
             var response = await cancelAppointment({payload: payload})
 
         } catch (e) {
@@ -343,7 +356,7 @@ const actions = {
 
     async removeAppointmentByDay(context, payload) {
         try {
-            let deleteScheduleByDay = firebase.functions().httpsCallable('deleteScheduleByDay');
+            let deleteScheduleByDay = firebase.functions().httpsCallable('requests-deleteScheduleByDay');
             await deleteScheduleByDay({payload: payload})
         } catch (e) {
             throw e
@@ -381,8 +394,9 @@ const actions = {
     },
 
     async addMedicalRecordsToConsultation({commit}, payload) {
-        firebase.firestore().collection('consultations').doc(payload.consultation).update({MedicalRecords: payload.MedicalRecords});
-        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({MedicalRecords: payload.MedicalRecords})
+        firebase.firestore().collection('consultations').doc(payload.consultation).update({medicalRecord: payload.medicalRecord});
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({medicalRecord: payload.medicalRecord});
+        firebase.firestore().collection('users').doc(payload.patient).update({medicalRecords: payload.medicalRecords})
     },
 
     async addPrescriptionToConsultation({commit}, payload) {
@@ -413,7 +427,6 @@ const actions = {
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({start_at: payload.start});
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({end_at: payload.end});
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({duration: payload.durantion})
-
     }
 }
 
@@ -427,7 +440,9 @@ const getters = {
     AllSchedules(state) {
         return state.AllSchedules
     },
-
+    medicalRecords(state) {
+        return state.medicalRecords
+    },
     consultationsCanceled(state) {
         return state.consultationsCanceled
     },

@@ -488,7 +488,9 @@
                        user: this.patient,
                        budgetId: this.selectedBudget.id.toString(),
                    };
-                  await this.$store.dispatch('deleteBudget', data);
+                console.log('selectedIntake: ',this.selectedIntake)
+
+                await this.$store.dispatch('deleteBudget', data);
                    await this.$store.commit('setSelectedBudget', undefined);
                    this.$store.commit('clearShoppingCartItens');
                 this.card = false;

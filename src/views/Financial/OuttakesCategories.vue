@@ -5,8 +5,6 @@
       :items="categories.map((category)=>({name:category}))"
       :search="search"
       item-key="name"
-      show-expand
-      single-expand
       :items-per-page="-1"
     >
       <template v-slot:top>

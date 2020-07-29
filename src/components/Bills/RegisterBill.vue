@@ -147,7 +147,7 @@
   </v-container>
 </template>
 <script>
-import crudCategory from "@/views/Register/OuttakesCategories";
+import crudCategory from "../../views/Financial/OuttakesCategories";
 import { mask } from "vue-the-mask";
 import moment from "moment";
 

@@ -38,6 +38,28 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
+    <v-navigation-drawer
+            v-if="RegistersToobar"
+            class="hidden-print-only"
+            dark
+            absolute
+            temporary
+            v-model="drawer"
+    >
+      <v-list>
+        <v-list-item
+                v-for="item in menuItemsRegisters"
+                :key="item.title"
+                @click.native="goRoute(item.link)"
+        >
+          <v-list-item-action>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>{{ item.title }}</v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+
     <v-app-bar
       color="primary_dark hidden-xs-only"
       fixed
@@ -45,7 +67,8 @@
       class="hidden-print-only"
       v-if="selectedUnit"
     >
-      <v-app-bar-nav-icon v-if="doctorsAgendaToobar || billsToobar" @click.stop="drawer = !drawer" />
+
+      <v-app-bar-nav-icon v-if="doctorsAgendaToobar || billsToobar || RegistersToobar" @click.stop="drawer = !drawer" />
       <v-app-bar-nav-icon hidden v-if="showOverviewToggle" @click.stop="overviewToggle()" />
 
       <v-toolbar-title>
@@ -140,11 +163,6 @@ export default {
       selectUnitDialog: false,
       patientDialog: false,
       menuItems: [
-        /* {
-          icon: "delete_forever",
-          title: "Apagar Consultas do dia",
-          link: "/agenda/DeletarConsultas"
-        }, */
         {
           icon: "date_range",
           title: "Tabela Semanal dos Médicos",
@@ -196,7 +214,33 @@ export default {
           link: "/pagamento/medicos",
           permission: "Caixa"
         }
-      ]
+      ],
+      menuItemsRegisters: [
+        {
+          title: 'Médicos',
+          icon: 'group',
+          permission: 'Caixa',
+          link: '/registros/doctors'
+        },
+        {
+          title: 'Clinicas',
+          icon: 'location_city',
+          permission: 'Caixa',
+          link: '/registros/clinics'
+        },
+        {
+          title: 'Exames',
+          icon: 'poll',
+          permission: 'Caixa',
+          link: '/registros/exams'
+        },
+        {
+          title: 'Pacotes',
+          link: '/registros/bundles',
+          permission: 'Caixa',
+          icon: 'queue',
+        }
+      ],
     };
   },
   computed: {
@@ -220,6 +264,9 @@ export default {
     },
     billsToobar() {
       return this.$store.getters.showBillsToolbar;
+    },
+    RegistersToobar() {
+      return this.$store.getters.showRegistersToolbar;
     }
   },
   methods: {

@@ -487,7 +487,6 @@ const actions = {
         await firebase.firestore().collection('outtakes/').doc(payload.outtake.id).update({
             exams: payload.exams
         })
-
     },
     async deleteOuttake(context, outtake) {
         await firebase.firestore().collection('outtakes/').doc(outtake.id).delete()

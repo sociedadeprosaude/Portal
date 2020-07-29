@@ -83,7 +83,8 @@ const actions = {
             let clinics = [];
             clinicsSnap.forEach(function (document) {
                 clinics.push({
-                    ...document.data()
+                    ...document.data(),
+                    id: document.id
                 });
             });
             functions.removeUndefineds(clinics)
@@ -295,6 +296,7 @@ const actions = {
                     }
                 })
                 context.commit('setIntakesExamsClinics',intakes)
+                return intakes
             });
     },
     async GetLastReceiptsClinic(context, payload) {
@@ -506,7 +508,8 @@ const actions = {
     },
 
     async getClinicExams(context, clinic) {
-        let examSnap = await firebase.firestore().collection('clinics').doc(clinic.name).collection('exams').get()
+        console.log('heya', clinic)
+        let examSnap = await firebase.firestore().collection('clinics').doc(clinic.id).collection('exams').get()
         let exams = [];
         examSnap.forEach((doc) => {
             exams.push(doc.data())
@@ -534,9 +537,11 @@ const actions = {
         firebase.firestore().collection('clinics').doc(clin.name).update({property: true})
     },
     async addNewContestValue ({commit}, payload){
+        console.log('payload: ', payload)
         let clinic = await firebase.firestore().collection('contestValues').doc(payload.numberIntake).get();
         let exams= [];
         if(clinic.data()){
+            console.log('clinic.data()', clinic.data())
             for(let exam in clinic.data().exams){
                 exams.push(clinic.data().exams[exam])
             }
@@ -552,9 +557,16 @@ const actions = {
     async getClinic({commit}, payload){
         let clinicSelected = []
             let clinic = await firebase.firestore().collection('clinics').where("cnpj" ,"==", payload).get()
+                clinic.forEach((doc) => {
+                    clinicSelected=  doc.data()
+            })
+        return clinicSelected
+    },
+    async getIdClinic({commit}, payload){
+        let clinicSelected = []
+        let clinic = await firebase.firestore().collection('clinics').where("cnpj" ,"==", payload).get()
         clinic.forEach((doc) => {
-            console.log('doc.data( ', doc.data())
-            clinicSelected=  doc.data()
+            clinicSelected= doc.id
         })
         return clinicSelected
     },

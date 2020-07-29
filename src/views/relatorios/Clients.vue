@@ -2,10 +2,14 @@
   <v-container>
     <Clients
       :dataset="dataset"
+      :date="date"
+      :menu="menu"
+      :dateFormatted="dateFormatted"
       :clientsServed="clientsServed"
       :newClients="newClients"
       :ageClientsServed="ageClientsServed"
       :genderClientsServed="genderClientsServed"
+      :geopoints="geopoints"
       :generateDatasetServed="generateDatasetServed"
       :generateDatasetNewClients="generateDatasetNewClients"
       :generateDatasetClientsAge="generateDatasetClientsAge"
@@ -19,13 +23,20 @@ import Clients from "@/components/Reports/Clients";
 import moment from "moment";
 export default {
   data: () => ({
-    dataset: null
+    dataset: null,
+    date: new Date().toISOString().substr(0, 7),
+    menu: false,
   }),
   components: {
-    Clients
+    Clients,
   },
-  mounted() {},
+  mounted() {
+    //this.$store.dispatch('setGeopointsClients')
+  },
   computed: {
+    dateFormatted() {
+      return this.date ? moment(this.date, "YYYY-MM").format("MMMM/YYYY") : "";
+    },
     clientsServed() {
       return this.$store.getters.getClientsServed;
     },
@@ -38,7 +49,18 @@ export default {
     },
     genderClientsServed() {
       return this.$store.getters.getGenderClientsServed;
-    }
+    },
+    /* usersServed(){
+      let complements = this.$store.getters.getUsersServed.map((user)=>[user.addresses[0].street,user.addresses[0].complement].join(" "));
+      return complements.reduce((a,b)=>{
+        if(a.indexOf(b) == -1)
+          a.push(b)
+        return a
+      },[])
+    } */
+    geopoints() {
+      return this.$store.getters.getGeopoints;
+    },
   },
   methods: {
     generateDatasetServed(dataset) {
@@ -46,12 +68,14 @@ export default {
         labels: Object.keys(dataset),
         datasets: [
           {
-            label: "Novos clientes",
+            //lineTension:0,
+
+            label: "Clientes Atendidos",
             backgroundColor: "#81C784",
             borderColor: "#fff",
-            data: Object.values(dataset)
-          }
-        ]
+            data: Object.values(dataset),
+          },
+        ],
       };
     },
     generateDatasetNewClients(dataset) {
@@ -62,14 +86,12 @@ export default {
             label: "Novos clientes",
             backgroundColor: "#81C784",
             borderColor: "#fff",
-            data: Object.values(dataset)
-          }
-        ]
+            data: Object.values(dataset),
+          },
+        ],
       };
     },
     generateDatasetClientsAge(dataset) {
-      console.log("labes->", Object.keys(dataset));
-      console.log("values->", Object.values(dataset));
       return {
         labels: Object.keys(dataset),
         datasets: [
@@ -77,42 +99,42 @@ export default {
             label: "Idade dos clientes",
             backgroundColor: "#0288D1",
             borderColor: "#fff",
-            data: Object.values(dataset)
-          }
-        ]
+            data: Object.values(dataset),
+          },
+        ],
       };
     },
     options() {
       return {
         legend: {
-          display: true
+          display: true,
         },
         scales: {
           xAxes: [
             {
               gridLines: {
-                display: false
-              }
-            }
+                display: false,
+              },
+            },
           ],
           yAxes: [
             {
               gridLines: {
-                display: false
-              }
-            }
-          ]
+                display: false,
+              },
+            },
+          ],
         },
         tooltips: {
           enabled: true,
           callbacks: {
             title: (items, data) => "R$ " + items[0],
-            label: (items, data) => data
-          }
-        }
+            label: (items, data) => data,
+          },
+        },
       };
-    }
-  }
+    },
+  },
 };
 </script>
 
