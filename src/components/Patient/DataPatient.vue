@@ -296,6 +296,7 @@
                                         placeholder="Data de Nascimento">
                                 </v-text-field>
                             </v-flex>
+                            <!--:disabled="selectedPatient !== undefined"-->
                             <v-flex sm6 xs12>
                                 <v-text-field
                                         outlined
@@ -303,7 +304,7 @@
                                         solo-inverted
                                         dark
                                         filled
-                                        :disabled="selectedPatient !== undefined"
+
                                         persistent-hint
                                         hint="Campo obrigatório*"
                                         v-mask="mask.cpf"
@@ -311,6 +312,7 @@
                                         placeholder="CPF">
                                 </v-text-field>
                             </v-flex>
+                            <span>{{cpf}}</span>
                             <v-spacer/>
                             <v-flex sm6 xs12>
                                 <v-text-field
@@ -568,6 +570,7 @@
         computed: {
             selectedPatient() {
                 let user = this.$store.getters.selectedPatient;
+                console.log('selected:', user)
                 if (user) {
                     this.name = user.name;
                     this.cpf = user.cpf;
@@ -591,6 +594,7 @@
                 name: undefined,
                 dependentName: undefined,
                 cpf: undefined,
+                uid: undefined,
                 rg: undefined,
                 numAss: undefined,
                 birthDate: undefined,
@@ -624,10 +628,10 @@
             }
         },
         watch: {
-            cpf(val) {
+/*            cpf(val) {
                 if (this.selectedPatient && val !== this.selectedPatient.cpf)
                     this.cpf = this.selectedPatient.cpf;
-            },
+            },*/
             addPatient(val) {
                 if (val) {
                     if (this.selectedPatient) {
@@ -708,6 +712,7 @@
 
                 }
                 let patient = {
+                    uid: this.uid ? this.uid : undefined,
                     name: this.name.toUpperCase(),
                     cpf: this.cpf ? this.cpf.replace(/\./g, '').replace('-', '') : undefined,
                     email: this.email,
@@ -728,13 +733,13 @@
                         name: 'cpf',
                         value: patient.cpf
                     }
-                } else {
+                }/* else {
                     foundPatient = await this.$store.dispatch('getPatient', 'RG' + patient.rg);
                     identifier = {
                         name: 'rg',
                         value: patient.rg
                     }
-                }
+                }*/
                 if (foundPatient) {
                     let dialog = {
                         header: `Já existe um associado com o ${identifier.name} ${identifier.value}, substituir?`,
@@ -745,14 +750,16 @@
                     this.$store.commit('setSystemDialog', dialog);
                     return
                 }
-
                 this.addUserToFirestore(patient)
             },
             async addUserToFirestore(patient) {
                 await this.$store.dispatch('addUser', patient);
                 this.success = true;
                 this.loading = false;
-                this.selectUser(patient);
+                let user = await this.$store.dispatch('getPatient', patient.cpf)
+                console.log('user:', user)
+                this.selectUser(user);
+                //this.selectUser(patient);
                 setTimeout(() => {
                     this.success = false;
                     this.catchAssNumberNewPatient(patient);

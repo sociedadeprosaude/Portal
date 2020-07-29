@@ -1,21 +1,11 @@
 import firebase, {firestore} from "firebase";
-
-const state = {
-    colaboratorsWarning: {},
-};
-
-const mutations = {
-    setcolaboratorsWarning(state, payload) {
-        state.colaboratorsWarning = payload
-    },
-
-};
+const state = { colaboratorsWarning: {}, };
+const mutations = { setcolaboratorsWarning(state, payload) { state.colaboratorsWarning = payload }, };
 const actions = {
     async DiscountWarning(context, payload){
-        await firebase.firestore().collection('discount').doc(payload.cpf).collection('intakes').
+        await firebase.firestore().collection('discount').doc(payload.uid).collection('intakes').
             doc(payload.orcamento.toString()).set(payload);
-        await firebase.firestore().collection('discount').doc(payload.cpf).set({exist: true})
-
+        await firebase.firestore().collection('discount').doc(payload.uid).set({exist: true})
     },
     async WarningColaborators({commit}) {
         firebase.firestore().collection('discount').get().then(async (Snap) => {
@@ -34,6 +24,7 @@ const actions = {
                         if(!WarningColaborators[Snap.docs[document].id.toString()].intakes[e.data().orcamento.toString()]){
                             WarningColaborators[Snap.docs[document].id.toString()].intakes[e.data().orcamento.toString()]= {
                                 cpf: e.data().cpf,
+                                uid: e.data().uid,
                                 date: e.data().date,
                                 discount: e.data().discont,
                                 name: e.data().name,
@@ -47,18 +38,12 @@ const actions = {
         })
     },
     async DiscountWarningDelete(context, payload){
-        await firebase.firestore().collection('discount').doc(payload.cpf).delete();
+        await firebase.firestore().collection('discount').doc(payload.uid).delete();
     },
-
-
 };
 const getters = {
-    colaboratorsWarning(state){
-        return state.colaboratorsWarning
-    }
+    colaboratorsWarning(state){ return state.colaboratorsWarning }
 };
-
-
 export default {
     state,
     mutations,

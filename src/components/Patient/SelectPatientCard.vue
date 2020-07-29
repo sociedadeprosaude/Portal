@@ -261,12 +261,12 @@
                                         label="Data de Nascimento">
                                 </v-text-field>
                             </v-flex>
+                            <!--:disabled="selectedPatient !== undefined"-->
                             <v-flex sm4 xs12 class="px-3">
                                 <v-text-field
                                         outlined
                                         rounded
                                         filled
-                                        :disabled="selectedPatient !== undefined"
                                         placeholder="Campo obrigatório *"
                                         v-mask="mask.cpf"
                                         v-model="cpf"
@@ -501,23 +501,6 @@
             PatientCard,
             PatientTag
         },
-        computed: {
-          selectedPatient() {
-              let user = this.$store.getters.selectedPatient;
-              if (user) {
-                  this.name = user.name;
-                  this.cpf = user.cpf
-              }
-              return this.$store.getters.selectedPatient
-          },
-          selectedDependent(){
-            let dependent = this.$store.getters.selectedDependent;
-            if(dependent){
-                this.dependentName = dependent.name
-            }
-            return dependent
-          }
-        },
         data() {
             return {
                 patientCard: false,
@@ -526,6 +509,7 @@
                 name: undefined,
                 dependentName:undefined,
                 cpf: undefined,
+                uid: undefined,
                 rg: undefined,
                 numAss: undefined,
                 birthDate: undefined,
@@ -564,6 +548,8 @@
                 if (user) {
                     this.name = user.name;
                     this.cpf = user.cpf;
+                    this.uid = user.uid;
+                    console.log('selecionado:',user)
                    // this.numAss = user.association_number
                 }
                 return this.$store.getters.selectedPatient
@@ -657,6 +643,7 @@
 
                 }
                 let patient = {
+                    uid: this.uid ? this.uid : undefined,
                     name: this.name.toUpperCase(),
                     cpf: this.cpf ? this.cpf.replace(/\./g, '').replace('-', '') : undefined,
                     email: this.email,
@@ -677,13 +664,13 @@
                         name: 'cpf',
                         value: patient.cpf
                     }
-                } else {
+                }/* else {
                     foundPatient = await this.$store.dispatch('getPatient', 'RG' + patient.rg);
                     identifier = {
                         name: 'rg',
                         value: patient.rg
                     }
-                }
+                }*/
                 if (foundPatient) {
                     let dialog = {
                         header: `Já existe um associado com o ${identifier.name} ${identifier.value}, substituir?`,
@@ -694,7 +681,6 @@
                     this.$store.commit('setSystemDialog', dialog);
                     return
                 }
-
                 this.addUserToFirestore(patient)
             },
             async addUserToFirestore(patient) {
@@ -764,7 +750,7 @@
 
                 await this.$store.dispatch('updateAccessedTo', {
                     accessed_to: moment().format('YYYY-MM-DD HH:mm:ss'),
-                    id: user.cpf,
+                    id: user.uid,
                     addresses:user.addresses
                 })
             },
