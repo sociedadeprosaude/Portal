@@ -160,7 +160,7 @@
                             },
                             {
                                 title: 'Relatórios',
-                                to: '/relatorios',
+                                to: '/Relatorios',
                                 permission: 'Relatórios',
                                 icon: 'report'
                             },

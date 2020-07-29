@@ -106,7 +106,8 @@
       <v-spacer></v-spacer>
       <v-menu
         ref="menu"
-        v-model="menu"
+        v-bind:value="menu"
+        @input="(event)=>$emit('change-menu',event)"
         :close-on-content-click="false"
         :return-value.sync="date"
         transition="scale-transition"
@@ -123,7 +124,14 @@
             :value="dateFormatted"
           ></v-text-field>
         </template>
-        <v-date-picker v-model="date" type="month" no-title scrollable locale="pt-br">
+        <v-date-picker
+          v-bind:value="date"
+          @input="(event)=>$emit('change-date',event)"
+          type="month"
+          no-title
+          scrollable
+          locale="pt-br"
+        >
           <v-spacer></v-spacer>
           <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
           <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
@@ -145,19 +153,19 @@ import Gmaps from "../../components/Maps/Gmaps";
 import moment from "moment";
 export default {
   props: [
-    'dataset',
-    'date',
-    'menu',
-    'dateFormatted',
-    'clientsServed',
-    'newClients',
-    'ageClientsServed',
-    'genderClientsServed',
-    'geopoints',
-    'generateDatasetServed',
-    'generateDatasetNewClients',
-    'generateDatasetClientsAge',
-    'options',
+    "dataset",
+    "date",
+    "menu",
+    "dateFormatted",
+    "clientsServed",
+    "newClients",
+    "ageClientsServed",
+    "genderClientsServed",
+    "geopoints",
+    "generateDatasetServed",
+    "generateDatasetNewClients",
+    "generateDatasetClientsAge",
+    "options",
   ],
 
   components: {

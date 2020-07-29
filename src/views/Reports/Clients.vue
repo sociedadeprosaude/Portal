@@ -14,6 +14,9 @@
       :generateDatasetNewClients="generateDatasetNewClients"
       :generateDatasetClientsAge="generateDatasetClientsAge"
       :options="options"
+
+       @change-date="(value)=>date=value"
+       @change-menu="(value)=>menu=value"
     />
   </v-container>
 </template>

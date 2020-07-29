@@ -92,22 +92,22 @@
 </template>
 
 <script>
-import GeneralReport from "@/views/relatorios/GeneralReport";
-import LuizFernandoReport from "@/views/relatorios/LuizFernandoReport";
-import ColaboratorsProductionReport from "@/views/relatorios/ColaboratorsProductionReport";
-import IntakesReport from "@/views/relatorios/IntakesReport";
-import ProceduresPricesAnalises from "@/views/relatorios/ProceduresPricesAnalises";
-import BestSellingExamsReport from "@/views/relatorios/BestSellingExamsReport";
-import BestSellingConsultationsReport from "@/views/relatorios/BestSellingConsultationsReport";
-import OuttakesReport from "@/views/relatorios/OuttakesReport";
-import NewUsersReport from "@/views/relatorios/NewUsersReport";
-import SpecialtiesMadeReport from "@/views/relatorios/SpecialtiesMadeReport";
-import ConsultationScheduledExecuted from "@/views/relatorios/ConsultationScheduledExecuted";
-import CustomersPerProcedureReport from "@/views/relatorios/CustomersPerProcedureReport";
-import statsCaixaIntakes from "@/views/relatorios/statsCaixaIntakes";
-import statsCaixaOuttakesCategory from "@/views/relatorios/statsCaixaOuttakesCategory";
-import statsCaixaOuttakesClinics from "@/views/relatorios/statsCaixaOuttakesClinics";
-import Clients from "@/views/relatorios/Clients";
+import GeneralReport from "@/views/Reports/GeneralReport";
+import LuizFernandoReport from "@/views/Reports/LuizFernandoReport";
+import ColaboratorsProductionReport from "@/views/Reports/ColaboratorsProductionReport";
+import IntakesReport from "@/views/Reports/IntakesReport";
+import ProceduresPricesAnalises from "@/views/Reports/ProceduresPricesAnalises";
+import BestSellingExamsReport from "@/views/Reports/BestSellingExamsReport";
+import BestSellingConsultationsReport from "@/views/Reports/BestSellingConsultationsReport";
+import OuttakesReport from "@/views/Reports/OuttakesReport";
+import NewUsersReport from "@/views/Reports/NewUsersReport";
+import SpecialtiesMadeReport from "@/views/Reports/SpecialtiesMadeReport";
+import ConsultationScheduledExecuted from "@/views/Reports/ConsultationScheduledExecuted";
+import CustomersPerProcedureReport from "@/views/Reports/CustomersPerProcedureReport";
+import statsCaixaIntakes from "@/views/Reports/statsCaixaIntakes";
+import statsCaixaOuttakesCategory from "@/views/Reports/statsCaixaOuttakesCategory";
+import statsCaixaOuttakesClinics from "@/views/Reports/statsCaixaOuttakesClinics";
+import Clients from "@/views/Reports/Clients";
 
 import DrawerRelatorio from "@/components/Drawer/DrawerRelatorio";
 import DateSelector from "@/components/Common/DateSelector";

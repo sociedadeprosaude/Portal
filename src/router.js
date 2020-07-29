@@ -40,7 +40,7 @@ import discount from "./views/Notifications/discount"
 import notifications from "./views/Notifications/notifications";
 
 
-import RelatoriosDashboard from "@/views/relatorios/RelatoriosDashboard";
+import RelatoriosDashboard from "@/views/Reports/ReportsDashboard";
 
 
 const Clinic = {
@@ -270,7 +270,7 @@ let mainRoutes = [
   },
 
   {
-    path: '/relatorios/:idReport',
+    path: '/Relatorios/:idReport',
     name: 'RelatoriosDashboard',
     component: RelatoriosDashboard,
     beforeEnter(to, from, next) {
@@ -279,11 +279,11 @@ let mainRoutes = [
     },
   },
   {
-    path: '/relatorios',
+    path: '/Relatorios',
     name: 'RelatoriosDashboard',
     component: RelatoriosDashboard,
     beforeEnter(to, from, next) {
-      next("relatorios/RelatorioGeral")
+      next("Relatorios/RelatorioGeral")
     },
   },
 ];
