@@ -18,38 +18,43 @@ exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate
         })
     }
     if (user.addresses && user.addresses[0] && user.addresses[0].cep) {
-        let newCEP = user.addresses[0].cep.replace(/[.,-]/g,"").substring(0,5)
+        let newCEP = user.addresses[0].cep.replace(/[.,-]/g, "").substring(0, 5)
         admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP)
             .get().then(async (userGeopoint) => {
-                let ref = admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP)
-                if(!userGeopoint.exists){
-                    gmapsInit.geocode([user.addresses[0].street,user.addresses[0].complement].join(" ") + " Manaus Amazonas",
-                    async (err, coordinates)=>{
-                        if(err) 
+            let ref = admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP)
+            if (!userGeopoint.exists) {
+                gmapsInit.geocode([user.addresses[0].street, user.addresses[0].complement].join(" ") + " Manaus Amazonas",
+                    async (err, coordinates) => {
+                        if (err)
                             console.log(err)
-                        else{
-                            await ref.set({count:1,geopoint: new admin.firestore.GeoPoint(coordinates.lat, coordinates.lng)})
+                        else {
+                            await ref.set({
+                                count: 1,
+                                geopoint: new admin.firestore.GeoPoint(coordinates.lat, coordinates.lng)
+                            })
                             updateGeopointMonthlyReport(ref)
                         }
                     })
-                }else{
-                   await ref.update({count: admin.firestore.FieldValue.increment(1)})
-                   updateGeopointMonthlyReport(ref)
-                }
-            })
+            } else {
+                await ref.update({count: admin.firestore.FieldValue.increment(1)})
+                updateGeopointMonthlyReport(ref)
+            }
+            return
+        }).catch(err => console.log(err));
     }
 })
 
-async function updateGeopointMonthlyReport(ref){
+async function updateGeopointMonthlyReport(ref) {
     ref.collection('monthly_report').doc(moment().format('YYYY-MM')).get()
-    .then(doc=>{
-        if(doc.exists){
-            doc.ref.update({created:admin.firestore.FieldValue.increment(1)})
-        }else{
-            doc.ref.set({created:1})
-        }
-    })
-}   
+        .then(doc => {
+            if (doc.exists) {
+                doc.ref.update({created: admin.firestore.FieldValue.increment(1)})
+            } else {
+                doc.ref.set({created: 1})
+            }
+            return
+        }).catch(err => console.log(err));
+}
 
 exports.listenChangeInSpecialtiesSubcollections = functions.firestore.document('specialties/{specialtyId}/{collectionId}/{docId}').onWrite(async (change, context) => {
     convertSpecialtySubcollectionInObject((await admin.firestore().collection('specialties').doc(context.params.specialtyId).get()))
@@ -60,9 +65,9 @@ exports.listenChangeInDoctorsSubcollections = functions.firestore.document('user
 })
 
 exports.listenChangeInGeopointsSubcollections = functions.firestore.document('statistics/geopoints/users_by_neighborhood/{id}/monthly_report/{docId}').onWrite(async (change, context) => {
-convertGeopointCEPSubcollectionInObject((await admin.firestore().collection('statistics/geopoints/users_by_neighborhood').doc(context.params.id).get()))
-   console.log('Escutou dentro da monthly_reports->')
-   console.log(context.params.docId)
+    convertGeopointCEPSubcollectionInObject((await admin.firestore().collection('statistics/geopoints/users_by_neighborhood').doc(context.params.id).get()))
+    console.log('Escutou dentro da monthly_reports->')
+    console.log(context.params.docId)
 })
 
 async function convertDoctorSubcollectionInObject(doctorDoc) {
@@ -95,7 +100,6 @@ function cleanExamsAndSpecialtiesFromClinics(clinics) {
 }
 
 
-
 exports.onUpdateExam = functions.firestore.document('exams/{name}').onUpdate((change, context) => {
     const firestore = admin.firestore();
     const examUpdated = change.after.data();
@@ -104,7 +108,7 @@ exports.onUpdateExam = functions.firestore.document('exams/{name}').onUpdate((ch
         //Updatando o price das clinicas da subCollection clinics presente dentro da collection /exams
         firestore.collection('exams').doc(examUpdated.name).collection('clinics').get()
             .then((docs) => {
-                if (!docs.empty) docs.forEach((doc) => doc.ref.update({ price: price }))
+                if (!docs.empty) docs.forEach((doc) => doc.ref.update({price: price}))
                 return null
             })
             .catch(err => console.log(err));
@@ -115,7 +119,7 @@ exports.onUpdateExam = functions.firestore.document('exams/{name}').onUpdate((ch
                 clinics.forEach((clinic) => {
                     firestore.collection('clinics').doc(clinic.id).collection('exams').doc(examUpdated.name).get()
                         .then((doc) => {
-                            if (doc.exists) doc.ref.update({ price: price })
+                            if (doc.exists) doc.ref.update({price: price})
                             return null
                         })
                         .catch(err => console.log(err));
@@ -128,7 +132,7 @@ exports.onUpdateExam = functions.firestore.document('exams/{name}').onUpdate((ch
                 packages.forEach((packageRef) => {
                     firestore.collection('packages').doc(packageRef.id).collection('exams').doc(examUpdated.name).get()
                         .then((doc) => {
-                            if (doc.exists) doc.ref.update({ price: price })
+                            if (doc.exists) doc.ref.update({price: price})
                             return null
                         })
                         .catch(err => console.log(err));
@@ -160,7 +164,7 @@ exports.onUpdateSpecialty = functions.firestore.document('specialties/{name}').o
                 clinics.forEach((clinic) => {
                     firestore.collection('clinics').doc(clinic.id).collection('specialties').doc(specialtyUpdated.name).get()
                         .then((doc) => {
-                            if (doc.exists) doc.ref.update({ price: price })
+                            if (doc.exists) doc.ref.update({price: price})
                             return null
                         })
                         .catch(err => console.log(err));
@@ -219,7 +223,7 @@ exports.updateStatistics = functions.firestore.document('intakes/{id}')
             totalRaw: addTotalRaw,
             totalCost: addTotalCost,
             totalProfit: addTotalProfit
-        }, { merge: true });
+        }, {merge: true});
 
 
         var statsMonth = await admin.firestore().collection('statistics').doc('caixa').collection('month').doc(dateMonth).get();
@@ -236,7 +240,7 @@ exports.updateStatistics = functions.firestore.document('intakes/{id}')
             totalRaw: addTotalRaw,
             totalCost: addTotalCost,
             totalProfit: addTotalProfit
-        }, { merge: true });
+        }, {merge: true});
     });
 
 var emptyItem = () => ({
@@ -274,13 +278,13 @@ exports.updateStatisticsItem = functions.firestore.document('intakes/{id}/{type}
         itemStatMonth.totalProfit += Number(item.price) - Number(item.cost);
 
         stats.ref.set({
-            itens: { [`${item.name}`]: itemStat },
+            itens: {[`${item.name}`]: itemStat},
             numOfSales: admin.firestore.FieldValue.increment(1)
-        }, { merge: true });
+        }, {merge: true});
         statsMonth.ref.set({
-            itens: { [`${item.name}`]: itemStatMonth },
+            itens: {[`${item.name}`]: itemStatMonth},
             numOfSales: admin.firestore.FieldValue.increment(1)
-        }, { merge: true });
+        }, {merge: true});
     });
 
 // function sleep(ms) {
@@ -354,16 +358,16 @@ exports.onCreateStatisticsOuttakes = functions.firestore.document('outtakes/{id}
             itemStatMonth.numOfOuttakesToPay += !outtake.paid ? 1 : 0;
             itemStatMonth.numOfOuttakes += 1;
 
-            statsMonth.ref.set({
+            await statsMonth.ref.set({
                 date: dateMonth,
                 totalRecurrent: admin.firestore.FieldValue.increment(outtake.recurrent ? outtake.cost : 0),
                 totalToPay: admin.firestore.FieldValue.increment(outtake.cost),
                 totalLeftToPay: admin.firestore.FieldValue.increment(!outtake.paid ? outtake.cost : 0),
                 numOfOuttakesToPay: admin.firestore.FieldValue.increment(!outtake.paid ? 1 : 0),
                 numOfOuttakes: admin.firestore.FieldValue.increment(1),
-                itens: { [`${outtake.name}`]: itemStatMonth },
+                itens: {[`${outtake.name}`]: itemStatMonth},
                 arrTotalToPay: arrTotalToPay
-            }, { merge: true });
+            }, {merge: true});
         } else {
             //TODO: quando outtake e de exame ou especialidade
         }
@@ -401,8 +405,8 @@ exports.onUpdateStatisticsOuttakes = functions.firestore.document('outtakes/{id}
                 totalLeftToPay: admin.firestore.FieldValue.increment(-outtake.cost),
                 numOfOuttakesToPay: admin.firestore.FieldValue.increment(-1),
                 numOfOuttakes: admin.firestore.FieldValue.increment(1),
-                itens: { [`${outtake.name}`]: itemStatMonth }
-            }, { merge: true });
+                itens: {[`${outtake.name}`]: itemStatMonth}
+            }, {merge: true});
         }
 
     } else {
@@ -414,6 +418,7 @@ exports.onUpdateStatisticsOuttakes = functions.firestore.document('outtakes/{id}
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+
 async function mockOut(name) {
     await sleep(50);
     var id = moment();
@@ -449,6 +454,7 @@ exports.tstUpdateOuttake = functions.https.onRequest(async (req, res) => {
     })
     res.status(200).send("aaa")
 });
+
 // ==================================== funcs usadas por varios =======================================================
 async function convertSpecialtySubcollectionInObject(specialtyDoc) {
     let specialty = specialtyDoc.data();
@@ -498,7 +504,7 @@ async function convertGeopointCEPSubcollectionInObject(ref) {
         let report = docsCollection.docs[reportDoc].data()
         monthlyReports.push({
             ...report,
-            id:docsCollection.docs[reportDoc].id
+            id: docsCollection.docs[reportDoc].id
         });
     }
     ref.ref.set(
@@ -507,11 +513,12 @@ async function convertGeopointCEPSubcollectionInObject(ref) {
             monthly_report: monthlyReports,
         }
     )
-    return  {
+    return {
         ...cepGeopoint,
         monthly_report: monthlyReports,
     }
 }
+
 //==================================================================================================================
 
 exports.ListenUpdateClinic = functions.firestore.document('clinics/{name}').onUpdate(async (change, context) => {
