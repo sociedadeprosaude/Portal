@@ -56,6 +56,10 @@
     "firestore": {
       "host": "LOCALHOST",
       "port": "8085"
+    },
+    "functions": {
+      "host": "LOCALHOST",
+      "port": "8086"
     }
   }
 

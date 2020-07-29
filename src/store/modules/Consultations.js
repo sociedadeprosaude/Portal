@@ -120,6 +120,12 @@ const actions = {
     },
 
     async getSchedules({commit, dispatch}, payload) {
+        // let schedCol = await firebase.firestore().collection('schedules').get()
+        // schedCol.forEach(doc => {
+        //     firebase.firestore().collection('schedules').doc(doc.id).update({
+        //         interval: 5
+        //     })
+        // })
         try {
             commit('setConsultationsLoaded', false);
             let schedules = [];
@@ -152,7 +158,6 @@ const actions = {
                     }
                     obj.cancelations_schedules = cancelations_schedules
                     schedules.push({...obj})
-
                 });
                 commit('setSchedules', schedules);
                 commit('setConsultationLoading', false)

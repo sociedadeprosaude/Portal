@@ -21,23 +21,26 @@ exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate
         let newCEP = user.addresses[0].cep.replace(/[.,-]/g, "").substring(0, 5)
         admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP)
             .get().then(async (userGeopoint) => {
-                let ref = admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP)
-                if (!userGeopoint.exists) {
-                    gmapsInit.geocode([user.addresses[0].street, user.addresses[0].complement].join(" ") + " Manaus Amazonas",
-                        async (err, coordinates) => {
-                            if (err)
-                                console.log(err)
-                            else {
-                                await ref.set({ count: 1, geopoint: new admin.firestore.GeoPoint(coordinates.lat, coordinates.lng) })
-                                updateGeopointMonthlyReport(ref)
-                            }
-                        })
-                } else {
-                    await ref.update({ count: admin.firestore.FieldValue.increment(1) })
-                    updateGeopointMonthlyReport(ref)
-                }
-                return;
-            }).catch(e => e)
+            let ref = admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP)
+            if (!userGeopoint.exists) {
+                gmapsInit.geocode([user.addresses[0].street, user.addresses[0].complement].join(" ") + " Manaus Amazonas",
+                    async (err, coordinates) => {
+                        if (err)
+                            console.log(err)
+                        else {
+                            await ref.set({
+                                count: 1,
+                                geopoint: new admin.firestore.GeoPoint(coordinates.lat, coordinates.lng)
+                            })
+                            updateGeopointMonthlyReport(ref)
+                        }
+                    })
+            } else {
+                await ref.update({count: admin.firestore.FieldValue.increment(1)})
+                updateGeopointMonthlyReport(ref)
+            }
+            return
+        }).catch(err => console.log(err));
     }
 })
 
@@ -45,12 +48,12 @@ async function updateGeopointMonthlyReport(ref) {
     ref.collection('monthly_report').doc(moment().format('YYYY-MM')).get()
         .then(doc => {
             if (doc.exists) {
-                doc.ref.update({ created: admin.firestore.FieldValue.increment(1) })
+                doc.ref.update({created: admin.firestore.FieldValue.increment(1)})
             } else {
-                doc.ref.set({ created: 1 })
+                doc.ref.set({created: 1})
             }
-            return;
-        }).catch(e => e)
+            return
+        }).catch(err => console.log(err));
 }
 
 exports.listenChangeInSpecialtiesSubcollections = functions.firestore.document('specialties/{specialtyId}/{collectionId}/{docId}').onWrite(async (change, context) => {
@@ -97,7 +100,6 @@ function cleanExamsAndSpecialtiesFromClinics(clinics) {
 }
 
 
-
 exports.onUpdateExam = functions.firestore.document('exams/{name}').onUpdate((change, context) => {
     const firestore = admin.firestore();
     const examUpdated = change.after.data();
@@ -106,7 +108,7 @@ exports.onUpdateExam = functions.firestore.document('exams/{name}').onUpdate((ch
         //Updatando o price das clinicas da subCollection clinics presente dentro da collection /exams
         firestore.collection('exams').doc(examUpdated.name).collection('clinics').get()
             .then((docs) => {
-                if (!docs.empty) docs.forEach((doc) => doc.ref.update({ price: price }))
+                if (!docs.empty) docs.forEach((doc) => doc.ref.update({price: price}))
                 return null
             })
             .catch(err => console.log(err));
@@ -117,7 +119,7 @@ exports.onUpdateExam = functions.firestore.document('exams/{name}').onUpdate((ch
                 clinics.forEach((clinic) => {
                     firestore.collection('clinics').doc(clinic.id).collection('exams').doc(examUpdated.name).get()
                         .then((doc) => {
-                            if (doc.exists) doc.ref.update({ price: price })
+                            if (doc.exists) doc.ref.update({price: price})
                             return null
                         })
                         .catch(err => console.log(err));
@@ -130,7 +132,7 @@ exports.onUpdateExam = functions.firestore.document('exams/{name}').onUpdate((ch
                 packages.forEach((packageRef) => {
                     firestore.collection('packages').doc(packageRef.id).collection('exams').doc(examUpdated.name).get()
                         .then((doc) => {
-                            if (doc.exists) doc.ref.update({ price: price })
+                            if (doc.exists) doc.ref.update({price: price})
                             return null
                         })
                         .catch(err => console.log(err));
@@ -162,7 +164,7 @@ exports.onUpdateSpecialty = functions.firestore.document('specialties/{name}').o
                 clinics.forEach((clinic) => {
                     firestore.collection('clinics').doc(clinic.id).collection('specialties').doc(specialtyUpdated.name).get()
                         .then((doc) => {
-                            if (doc.exists) doc.ref.update({ price: price })
+                            if (doc.exists) doc.ref.update({price: price})
                             return null
                         })
                         .catch(err => console.log(err));
@@ -221,7 +223,7 @@ exports.updateStatistics = functions.firestore.document('intakes/{id}')
             totalRaw: addTotalRaw,
             totalCost: addTotalCost,
             totalProfit: addTotalProfit
-        }, { merge: true });
+        }, {merge: true});
 
 
         var statsMonth = await admin.firestore().collection('statistics').doc('caixa').collection('month').doc(dateMonth).get();
@@ -238,7 +240,7 @@ exports.updateStatistics = functions.firestore.document('intakes/{id}')
             totalRaw: addTotalRaw,
             totalCost: addTotalCost,
             totalProfit: addTotalProfit
-        }, { merge: true });
+        }, {merge: true});
     });
 
 var emptyItem = () => ({
@@ -276,13 +278,13 @@ exports.updateStatisticsItem = functions.firestore.document('intakes/{id}/{type}
         itemStatMonth.totalProfit += Number(item.price) - Number(item.cost);
 
         stats.ref.set({
-            itens: { [`${item.name}`]: itemStat },
+            itens: {[`${item.name}`]: itemStat},
             numOfSales: admin.firestore.FieldValue.increment(1)
-        }, { merge: true });
+        }, {merge: true});
         statsMonth.ref.set({
-            itens: { [`${item.name}`]: itemStatMonth },
+            itens: {[`${item.name}`]: itemStatMonth},
             numOfSales: admin.firestore.FieldValue.increment(1)
-        }, { merge: true });
+        }, {merge: true});
     });
 
 // function sleep(ms) {
@@ -597,6 +599,7 @@ async function convertGeopointCEPSubcollectionInObject(ref) {
         monthly_report: monthlyReports,
     }
 }
+
 //==================================================================================================================
 
 exports.ListenUpdateClinic = functions.firestore.document('clinics/{name}').onUpdate(async (change, context) => {

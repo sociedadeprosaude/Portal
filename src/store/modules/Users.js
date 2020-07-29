@@ -133,42 +133,42 @@ const actions = {
         return userDoc.data()
     },
     async searchUser({ }, searchFields) {
-        let usersRef = firestore().collection('users');
-        for (let field in searchFields) {
-            if (!searchFields[field] || searchFields[field].length === 0) continue;
 
-            if (field === 'name'){
-                usersRef = usersRef.where(field, field === 'name' ? '>=' : '==', searchFields[field].toUpperCase());
-                break
-            }
-            else if (field === 'cpf'){
-                searchFields[field] = searchFields[field].replaceAll('.','');
-                searchFields[field] = searchFields[field].replace('-','');
-                usersRef = usersRef.where(field, field === 'cpf' ? '>=' : '==', searchFields[field]);
-                break
-            }
-            else if (field === 'association_number' ){
-                usersRef = usersRef.where('association_number' ,'>=', searchFields[field]);
-                break
-                }
-            else{
-                if(field === 'type'){
-                    usersRef = usersRef.where('type' ,'==', searchFields[field]);
-                    break
-                }
-            }
-
-
+        // let usersRef = firestore().collection('users');
+        // for (let field in searchFields) {
+        //     if (!searchFields[field] || searchFields[field].length === 0) continue;
+        //
+        //     if (field === 'name'){
+        //         usersRef = usersRef.where('name', '>=', searchFields[field].toUpperCase())
+        //             // .where('name', '<=', searchFields['name'].toUpperCase()+ '\uf8ff')
+        //         break
+        //     }
+        //     else if (field === 'cpf'){
+        //         searchFields[field] = searchFields[field].replaceAll('.','');
+        //         searchFields[field] = searchFields[field].replace('-','');
+        //         usersRef = usersRef.where(field, '==', searchFields[field]);
+        //         break
+        //     }
+        //     else if (field === 'association_number' ){
+        //         usersRef = usersRef.where('association_number' ,'==', searchFields[field]);
+        //         break
+        //         }
+        //     else{
+        //         if(field === 'type'){
+        //             usersRef = usersRef.where('type' ,'==', searchFields[field]);
+        //             break
+        //         }
+        //     }
+        // }
+        // let querySnapshot = await usersRef.limit(5).get();
+        try {
+            let users = (await axios.get('https://us-central1-prosaude-36f66.cloudfunctions.net/requests-searchUser', {
+                params: searchFields
+            })).data
+            return users
+        } catch (e) {
+            throw e
         }
-        let querySnapshot = await usersRef.limit(30).get();
-        let users = [];
-        querySnapshot.forEach(function (doc) {
-            users.push({
-                ...doc.data(),
-                id: doc.id
-            })
-        });
-        return users
     },
 
     thereIsUserCPF({ commit }, payload) {
@@ -234,7 +234,7 @@ const actions = {
                         type: type
                     })
                 }
-                
+
             } else {
                 if (patient.type) {
                     patient.type = patient.type.toUpperCase()
@@ -317,7 +317,7 @@ const actions = {
                     doc.ref.set({accessed:1})
                 }
             })
-        
+
         }
     },
 };

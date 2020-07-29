@@ -251,30 +251,38 @@ exports.analyzePastIntakesByMonth = functions.runWith(heavyFunctionsRuntimeOpts)
 
 });
 exports.setGeopoints = functions.https.onRequest(async (request, response) => {
-    admin.firestore().collection('users')
-        .get().then((users) => {
+    try {
+        admin.firestore().collection('users')
+            .get().then((users) => {
             users.forEach((user) => {
                 let data = user.data()
                 if (data.addresses && data.addresses[0] && data.addresses[0].cep) {
                     console.log('->')
                     admin.firestore().collection('statistics').doc('geopoints').collection('users').doc(data.addresses[0].cep)
-                        .get()
-                        .then((userGeopoint) => {
-                            if (!userGeopoint.exists) {
-                                gmapsInit.geocode([data.addresses[0].street, data.addresses[0].complement].join(" ") + " Manaus Amazonas",
-                                    (err, coordinates) => {
-                                        if (err) console.log(err)
-
-                                        admin.firestore().collection('statistics').doc('geopoints').collection('users').doc(data.addresses[0].cep).set({ geopoint: new admin.firestore.GeoPoint(coordinates.lat, coordinates.lng) })
-                                    })
-                            }
-                            return;
-                        }).catch(e => e)
+                        .get().then((userGeopoint) => {
+                        if (!userGeopoint.exists) {
+                            gmapsInit.geocode([data.addresses[0].street, data.addresses[0].complement].join(" ") + " Manaus Amazonas",
+                                // eslint-disable-next-line handle-callback-err
+                                (err, coordinates) => {
+                                    console.log('->', coordinates)
+                                    admin.firestore().collection('statistics').doc('geopoints').collection('users').doc(data.addresses[0].cep).set({geopoint: new admin.firestore.GeoPoint(coordinates.lat, coordinates.lng)})
+                                }).catch((e) => console.log(e))
+                        }
+                        return
+                    }).catch((e) => {
+                        console.error(e)
+                    })
                 }
+                return
             })
-            return;
-        }).catch(e => e)
-    response.status(200).send("Salvando geopoint para os usuários");
+            return
+        }).catch((err) => {
+            console.error(err)
+        })
+        response.status(200).send("Salvando geopoint para os usuários");
+    } catch (e) {
+        response.status(200).send("Erro salvando geopoint para os usuários", e);
+    }
 })
 // ==================================== Outtakes ===================================================
 
