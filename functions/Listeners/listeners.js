@@ -18,38 +18,40 @@ exports.listenToUserAdded = functions.firestore.document('users/{cpf}').onCreate
         })
     }
     if (user.addresses && user.addresses[0] && user.addresses[0].cep) {
-        let newCEP = user.addresses[0].cep.replace(/[.,-]/g,"").substring(0,5)
+        let newCEP = user.addresses[0].cep.replace(/[.,-]/g, "").substring(0, 5)
         admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP)
             .get().then(async (userGeopoint) => {
                 let ref = admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP)
-                if(!userGeopoint.exists){
-                    gmapsInit.geocode([user.addresses[0].street,user.addresses[0].complement].join(" ") + " Manaus Amazonas",
-                    async (err, coordinates)=>{
-                        if(err) 
-                            console.log(err)
-                        else{
-                            await ref.set({count:1,geopoint: new admin.firestore.GeoPoint(coordinates.lat, coordinates.lng)})
-                            updateGeopointMonthlyReport(ref)
-                        }
-                    })
-                }else{
-                   await ref.update({count: admin.firestore.FieldValue.increment(1)})
-                   updateGeopointMonthlyReport(ref)
+                if (!userGeopoint.exists) {
+                    gmapsInit.geocode([user.addresses[0].street, user.addresses[0].complement].join(" ") + " Manaus Amazonas",
+                        async (err, coordinates) => {
+                            if (err)
+                                console.log(err)
+                            else {
+                                await ref.set({ count: 1, geopoint: new admin.firestore.GeoPoint(coordinates.lat, coordinates.lng) })
+                                updateGeopointMonthlyReport(ref)
+                            }
+                        })
+                } else {
+                    await ref.update({ count: admin.firestore.FieldValue.increment(1) })
+                    updateGeopointMonthlyReport(ref)
                 }
-            })
+                return;
+            }).catch(e => e)
     }
 })
 
-async function updateGeopointMonthlyReport(ref){
+async function updateGeopointMonthlyReport(ref) {
     ref.collection('monthly_report').doc(moment().format('YYYY-MM')).get()
-    .then(doc=>{
-        if(doc.exists){
-            doc.ref.update({created:admin.firestore.FieldValue.increment(1)})
-        }else{
-            doc.ref.set({created:1})
-        }
-    })
-}   
+        .then(doc => {
+            if (doc.exists) {
+                doc.ref.update({ created: admin.firestore.FieldValue.increment(1) })
+            } else {
+                doc.ref.set({ created: 1 })
+            }
+            return;
+        }).catch(e => e)
+}
 
 exports.listenChangeInSpecialtiesSubcollections = functions.firestore.document('specialties/{specialtyId}/{collectionId}/{docId}').onWrite(async (change, context) => {
     convertSpecialtySubcollectionInObject((await admin.firestore().collection('specialties').doc(context.params.specialtyId).get()))
@@ -60,9 +62,9 @@ exports.listenChangeInDoctorsSubcollections = functions.firestore.document('user
 })
 
 exports.listenChangeInGeopointsSubcollections = functions.firestore.document('statistics/geopoints/users_by_neighborhood/{id}/monthly_report/{docId}').onWrite(async (change, context) => {
-convertGeopointCEPSubcollectionInObject((await admin.firestore().collection('statistics/geopoints/users_by_neighborhood').doc(context.params.id).get()))
-   console.log('Escutou dentro da monthly_reports->')
-   console.log(context.params.docId)
+    convertGeopointCEPSubcollectionInObject((await admin.firestore().collection('statistics/geopoints/users_by_neighborhood').doc(context.params.id).get()))
+    console.log('Escutou dentro da monthly_reports->')
+    console.log(context.params.docId)
 })
 
 async function convertDoctorSubcollectionInObject(doctorDoc) {
@@ -100,7 +102,7 @@ exports.onUpdateExam = functions.firestore.document('exams/{name}').onUpdate((ch
     const firestore = admin.firestore();
     const examUpdated = change.after.data();
     const price = examUpdated.price;
-    if (price) {
+    if (price !== null && price !== undefined) {
         //Updatando o price das clinicas da subCollection clinics presente dentro da collection /exams
         firestore.collection('exams').doc(examUpdated.name).collection('clinics').get()
             .then((docs) => {
@@ -141,12 +143,12 @@ exports.onUpdateSpecialty = functions.firestore.document('specialties/{name}').o
     const firestore = admin.firestore();
     const specialtyUpdated = change.after.data();
     const price = specialtyUpdated.price;
-    if (price) {
+    if (price !== null && price !== undefined) {
         //Updatando o price dos doctors da subCollection clinics presente dentro da collection /specialties
         firestore.collection('specialties').doc(specialtyUpdated.name).collection('doctors').get()
             .then((docs) => {
                 if (!docs.empty) {
-                    docs.forEach((doc)=>{
+                    docs.forEach((doc) => {
                         doc.ref.update({ price: price })
                     })
                 }
@@ -430,8 +432,8 @@ exports.onCreateStatisticsOuttakes = functions.firestore.document('outtakes/{id}
 
 exports.onUpdateStatisticsOuttakes = functions.firestore.document('outtakes/{id}').onUpdate(async (change, context) => {
     const outtakeOld = change.before.data();
-    const outtakeUpdated = change.after.data();    
-    if (outtakeUpdated.paid && outtakeOld.paid != outtakeUpdated.paid) {
+    const outtakeUpdated = change.after.data();
+    if (outtakeUpdated.paid && outtakeOld.paid !== outtakeUpdated.paid) {
         if (outtakeUpdated.category) {
             outtakeCategoryListDivider(outtakeUpdated).map((outtake) => ({
                 cost: Number(outtake.value),
@@ -467,71 +469,71 @@ exports.onUpdateStatisticsOuttakes = functions.firestore.document('outtakes/{id}
 });
 
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-async function mockOut(name) {
-    await sleep(100);
-    var id = moment();
-    admin.firestore().collection('outtakes').doc(String(id.valueOf())).set({
-        category: name,
-        created_at: "2020-07-06 23:59:43",
-        date_to_pay: "2020-07-06",
-        description: "tst",
-        id: "JoDcMg6z8dfqV5ikRBgp",
-        payment_method: "Dinheiro",
-        recurrent: "true",
-        subCategory: "Outro",
-        value: 15,
-        //    / paid: "2020-05-18 18:36:15"
-    })
+// function sleep(ms) {
+//     return new Promise(resolve => setTimeout(resolve, ms));
+// }
+// async function mockOut(name) {
+//     await sleep(100);
+//     var id = moment();
+//     admin.firestore().collection('outtakes').doc(String(id.valueOf())).set({
+//         category: name,
+//         created_at: "2020-07-06 23:59:43",
+//         date_to_pay: "2020-07-06",
+//         description: "tst",
+//         id: "JoDcMg6z8dfqV5ikRBgp",
+//         payment_method: "Dinheiro",
+//         recurrent: "true",
+//         subCategory: "Outro",
+//         value: 15,
+//         //    / paid: "2020-05-18 18:36:15"
+//     })
 
-}
+// }
 
-async function mockOut2(name) {
-    await sleep(100);
-    var id = moment();
-    admin.firestore().collection('outtakes').doc(String(id.valueOf())).set({
+// async function mockOut2(name) {
+//     await sleep(100);
+//     var id = moment();
+//     admin.firestore().collection('outtakes').doc(String(id.valueOf())).set({
 
-        created_at: "2020-07-06 23:59:43",
-        date_to_pay: "2020-07-06",
-        description: "tst",
-        intake_id: String(id.valueOf()),
-        specialties: [{ name: name, cost: 5 }, { name: name, cost: 5 }],
-        exams: [{ name: name, cost: 5 }],
-        id: "JoDcMg6z8dfqV5ikRBgp",
-        payment_method: "Dinheiro",
-        recurrent: "true",
-        subCategory: "Outro",
-        value: 5,
-        //    / paid: "2020-05-18 18:36:15"
-    })
+//         created_at: "2020-07-06 23:59:43",
+//         date_to_pay: "2020-07-06",
+//         description: "tst",
+//         intake_id: String(id.valueOf()),
+//         specialties: [{ name: name, cost: 5 }, { name: name, cost: 5 }],
+//         exams: [{ name: name, cost: 5 }],
+//         id: "JoDcMg6z8dfqV5ikRBgp",
+//         payment_method: "Dinheiro",
+//         recurrent: "true",
+//         subCategory: "Outro",
+//         value: 5,
+//         //    / paid: "2020-05-18 18:36:15"
+//     })
 
-}
+// }
 
-exports.tstCreateOuttake = functions.https.onRequest(async (req, res) => {
-    // await mockOut2("CARDIOLOGIA");
-    // await mockOut2("CARDIOLOGIA");
-    // await mockOut2("CARDIOLOGIA");
-    await mockOut(["CARDIOLOGIA1", "CARDIOLOGIA2", "CARDIOLOGIA3"]);
-    //  await mockOut("CARDIOLOGIA");
-    //  await mockOut("CARDIOLOGIA");
-    // await mockOut("DERMATOLOGIA TELEATENDIMENTO");
-    // await mockOut("NEUROLOGIA");
-    // await mockOut("TESTANDO NOVA ESPECIALIDADE");
-    // await mockOut("TESTE 2");
-    res.status(200).send("sdasd")
-});
+// exports.tstCreateOuttake = functions.https.onRequest(async (req, res) => {
+//     // await mockOut2("CARDIOLOGIA");
+//     // await mockOut2("CARDIOLOGIA");
+//     // await mockOut2("CARDIOLOGIA");
+//     await mockOut(["CARDIOLOGIA1", "CARDIOLOGIA2", "CARDIOLOGIA3"]);
+//     //  await mockOut("CARDIOLOGIA");
+//     //  await mockOut("CARDIOLOGIA");
+//     // await mockOut("DERMATOLOGIA TELEATENDIMENTO");
+//     // await mockOut("NEUROLOGIA");
+//     // await mockOut("TESTANDO NOVA ESPECIALIDADE");
+//     // await mockOut("TESTE 2");
+//     res.status(200).send("sdasd")
+// });
 
-exports.tstUpdateOuttake = functions.https.onRequest(async (req, res) => {
-    admin.firestore().collection('outtakes').doc('1594695572336').update({
-        paid: "2020-05-18 18:36:15"
-    })
-    admin.firestore().collection('outtakes').doc('1594695572927').update({
-        paid: "2020-05-18 18:36:15"
-    })
-    res.status(200).send("aaa")
-});
+// exports.tstUpdateOuttake = functions.https.onRequest(async (req, res) => {
+//     admin.firestore().collection('outtakes').doc('1594695572336').update({
+//         paid: "2020-05-18 18:36:15"
+//     })
+//     admin.firestore().collection('outtakes').doc('1594695572927').update({
+//         paid: "2020-05-18 18:36:15"
+//     })
+//     res.status(200).send("aaa")
+// });
 // ==================================== funcs usadas por varios =======================================================
 async function convertSpecialtySubcollectionInObject(specialtyDoc) {
     let specialty = specialtyDoc.data();
@@ -581,7 +583,7 @@ async function convertGeopointCEPSubcollectionInObject(ref) {
         let report = docsCollection.docs[reportDoc].data()
         monthlyReports.push({
             ...report,
-            id:docsCollection.docs[reportDoc].id
+            id: docsCollection.docs[reportDoc].id
         });
     }
     ref.ref.set(
@@ -590,7 +592,7 @@ async function convertGeopointCEPSubcollectionInObject(ref) {
             monthly_report: monthlyReports,
         }
     )
-    return  {
+    return {
         ...cepGeopoint,
         monthly_report: monthlyReports,
     }

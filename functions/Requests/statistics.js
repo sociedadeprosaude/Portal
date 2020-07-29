@@ -253,23 +253,27 @@ exports.analyzePastIntakesByMonth = functions.runWith(heavyFunctionsRuntimeOpts)
 exports.setGeopoints = functions.https.onRequest(async (request, response) => {
     admin.firestore().collection('users')
         .get().then((users) => {
-            users.forEach((user)=>{
+            users.forEach((user) => {
                 let data = user.data()
-                if(data.addresses && data.addresses[0] && data.addresses[0].cep){
+                if (data.addresses && data.addresses[0] && data.addresses[0].cep) {
                     console.log('->')
                     admin.firestore().collection('statistics').doc('geopoints').collection('users').doc(data.addresses[0].cep)
-                    .get().then((userGeopoint)=>{
-                        if(!userGeopoint.exists){
-                            gmapsInit.geocode([data.addresses[0].street,data.addresses[0].complement].join(" ") + " Manaus Amazonas",
-                            (err, coordinates)=>{
-                                console.log('->',coordinates)
-                                admin.firestore().collection('statistics').doc('geopoints').collection('users').doc(data.addresses[0].cep).set({geopoint: new admin.firestore.GeoPoint(coordinates.lat, coordinates.lng)})
-                            })
-                        }
-                    })
+                        .get()
+                        .then((userGeopoint) => {
+                            if (!userGeopoint.exists) {
+                                gmapsInit.geocode([data.addresses[0].street, data.addresses[0].complement].join(" ") + " Manaus Amazonas",
+                                    (err, coordinates) => {
+                                        if (err) console.log(err)
+
+                                        admin.firestore().collection('statistics').doc('geopoints').collection('users').doc(data.addresses[0].cep).set({ geopoint: new admin.firestore.GeoPoint(coordinates.lat, coordinates.lng) })
+                                    })
+                            }
+                            return;
+                        }).catch(e => e)
                 }
             })
-        })
+            return;
+        }).catch(e => e)
     response.status(200).send("Salvando geopoint para os usuários");
 })
 // ==================================== Outtakes ===================================================
@@ -323,7 +327,7 @@ exports.analyseStatisticsOuttakesCategoryByMonth = functions.https.onRequest(asy
     var outtakesCategoryUndivided = outtakes.filter((doc) => (doc.category))
     //flat() tranforma a lista de listas gerada em so uma lista
     var outtakesCategory = outtakesCategoryUndivided.map((outtake) => outtakeCategoryListDivider(outtake)).flat();
-    
+
     var outtakesCategoryPaid = outtakesCategory.filter((doc) => (doc.paid))
         .map((outtake) => ({
             cost: Number(outtake.value),
@@ -367,7 +371,7 @@ exports.analyseStatisticsOuttakesClinicByMonth = functions.https.onRequest(async
     var outtakesClinicToPay = []
     outtakesClinic.filter((doc) => !doc.paid)
         .forEach((outtake) => {
-            if (outtake.exams && typeof outtake.exams != 'object') outtake.exams.forEach((exam) =>
+            if (outtake.exams && typeof outtake.exams !== 'object') outtake.exams.forEach((exam) =>
                 outtakesClinicToPay.push({
 
                     cost: exam.cost,
@@ -376,7 +380,7 @@ exports.analyseStatisticsOuttakesClinicByMonth = functions.https.onRequest(async
                     paid: false,
                     recurrent: false
                 }))
-            if (outtake.specialties && typeof outtake.specialties != 'object') outtake.specialties.forEach((specialty) =>
+            if (outtake.specialties && typeof outtake.specialties !== 'object') outtake.specialties.forEach((specialty) =>
                 outtakesClinicToPay.push({
                     cost: specialty.cost,
                     name: specialty.name,
