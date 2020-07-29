@@ -822,12 +822,16 @@
             async searchPatient() {
 
                 this.loading = true;
-                let users = await this.$store.dispatch('searchUser', {
+                try {
+                  let users = await this.$store.dispatch('searchUser', {
                     name: this.name,
                     cpf: this.cpf,
                     association_number: this.numAss
-                });
-                this.foundUsers = users;
+                  });
+                  this.foundUsers = users;
+                } catch (e) {
+                  window.alert(`Erro buscando usuarios, verifique sua conexão: ${e.message}`);
+                }
                 this.loading = false
             },
 
@@ -918,7 +922,7 @@
 
         },
         async beforeCreate () {
-           
+
         },
         beforeDestroy() {
             window.removeEventListener('keydown', this.handleEnter)

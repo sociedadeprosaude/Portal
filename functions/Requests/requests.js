@@ -40,9 +40,9 @@ exports.searchUser = functions.https.onRequest(async (req, res) => {
             id: doc.id
         })
     });
-    res.status(200).send({
-        users: users,
-        // perf: p2 - p1
+    cors(req, res, () => {
+        res.set('Access-Control-Allow-Origin', '*');
+        res.status(200).send(users);
     });
 })
 
