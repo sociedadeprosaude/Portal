@@ -38,9 +38,5 @@ export default [
         name: 'orçamento',
         component: Budget
     },
-    {
-        path: '/caixa/Bundles',
-        name: 'Bundles',
-        component: Bundles
-    },
+
 ]

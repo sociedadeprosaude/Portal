@@ -102,14 +102,7 @@ let mainRoutes = [
       requiresAuth: false
     }
   },
-  {
-    path: '/specialties',
-    name: 'Specialties',
-    component: Specialties,
-    meta: {
-      requiresAuth: false
-    }
-  },
+
   {
     path: '/labor',
     name: 'labor',
