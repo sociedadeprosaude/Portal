@@ -16,7 +16,6 @@
                         <v-card-title class="primary white--text">Deseja Finalizar o Atendimento do Paciente Selecionado ?</v-card-title>
                         <v-divider/>
                         <v-card-actions>
-                          {{this.consultation.consultation_hour.split(' ')[1]}}
                             <v-btn outlined color="error" @click="dialog = false">NÃO</v-btn>
                             <v-spacer/>
                             <v-btn outlined color="success" @click="backView">SIM</v-btn>
