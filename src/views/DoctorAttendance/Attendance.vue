@@ -89,7 +89,7 @@
             console.log('saiu ? sim!')
             if (!this.consultation.end_at) {
                 console.log('gerar!')
-                this.outtkake()
+                //this.outtkake()
                 this.saveAttendance()
             } else {
                 console.log('já tem')
