@@ -18,8 +18,8 @@ exports.searchUser = functions.https.onRequest(async (req, res) => {
     let usersRef = admin.firestore().collection('users')
 
     if (req.query.cpf) {
-        req.query.cpf = req.query.cpf.replaceAll('.', '');
-        req.query.cpf = req.query.cpf.replace('-', '');
+        // req.query.cpf = `${req.query.cpf}`.replaceAll('.', '');
+        // req.query.cpf = `${req.query.cpf}`.toString().replace('-', '');
         usersRef = usersRef.where('cpf', '==', req.query.cpf);
     } else if (req.query.association_number) {
         usersRef = usersRef.where('association_number', '==', req.query.association_number)
