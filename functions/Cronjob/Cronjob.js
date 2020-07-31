@@ -42,26 +42,26 @@ const admin = require('firebase-admin');
 //     return null;
 // });
 
-exports.resetTicketsCount = functions.pubsub.schedule('0 0 * * *').onRun(async (context) => {
-    try {
-        const firestore = admin.firestore();
-        let sectorsUpdatesPromises = []
-        // eslint-disable-next-line promise/catch-or-return
-        firestore.collectionGroup('tickets').get().then((docs) => {
-            docs.forEach((doc) => {
-                doc.ref.update({
-                    ticket_number: 1
-                })
-                sectorsUpdatesPromises.push(updateTicketSector(doc.ref.collection('sectors')))
-            });
-            return
-        });
-        await Promise.all(sectorsUpdatesPromises)
-        return null;
-    } catch (e) {
-        console.error(e)
-    }
-});
+// exports.resetTicketsCount = functions.pubsub.schedule('0 0 * * *').onRun(async (context) => {
+//     try {
+//         const firestore = admin.firestore();
+//         let sectorsUpdatesPromises = []
+//         // eslint-disable-next-line promise/catch-or-return
+//         firestore.collectionGroup('tickets').get().then((docs) => {
+//             docs.forEach((doc) => {
+//                 doc.ref.update({
+//                     ticket_number: 1
+//                 })
+//                 sectorsUpdatesPromises.push(updateTicketSector(doc.ref.collection('sectors')))
+//             });
+//             return
+//         });
+//         await Promise.all(sectorsUpdatesPromises)
+//         return null;
+//     } catch (e) {
+//         console.error(e)
+//     }
+// });
 
 async function updateTicketSector(sectorsCollectionRef) {
     const firestore = admin.firestore();

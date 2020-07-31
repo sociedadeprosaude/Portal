@@ -332,27 +332,28 @@ export default {
   },
   methods: {
     async initialInfo() {
-      if (
-        moment(this.$store.getters.ticketGeneralInfo.last_updated).dayOfYear !==
-        moment().dayOfYear
-      ) {
-        await this.saveAndReset();
-      }
+      //Comentando a parte de resetar senhas.
+      // if (
+      //   moment(this.$store.getters.ticketGeneralInfo.last_updated).dayOfYear !==
+      //   moment().dayOfYear
+      // ) {
+      //   await this.saveAndReset();
+      // }
 
       if (!this.sector) {
         this.$store.dispatch("getTicketsGeneralInfo");
         this.$store.dispatch("listenTicketsSectors");
       }
     },
-    async saveAndReset() {
-      // this.$store.dispatch("updateGeneralInfo", {
-      //   ticket_number: 1,
-      //   last_updated: moment().format("YYYY-MM-DD HH:mm:ss")
-      // });
-      //resetTickets faz isso aqui em cima
-      await this.$store.dispatch("resetTickets");
-      await this.$store.dispatch("saveTicketsHistory");
-    },
+    // async saveAndReset() {
+    //   // this.$store.dispatch("updateGeneralInfo", {
+    //   //   ticket_number: 1,
+    //   //   last_updated: moment().format("YYYY-MM-DD HH:mm:ss")
+    //   // });
+    //   //resetTickets faz isso aqui em cima
+    //   await this.$store.dispatch("resetTickets");
+    //   await this.$store.dispatch("saveTicketsHistory");
+    // },
     getActualTicket(tickets) {
       let calledTickets = tickets.filter(ticket => {
         return ticket.called_at;
