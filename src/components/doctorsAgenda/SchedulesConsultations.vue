@@ -166,11 +166,11 @@
                 }
             });
 
-            this.query = this.$route.params.q
+            this.query = this.$route.params.q;
             if (this.query  && this.$route.params.type === 'retorno') {
-                this.modalidade = "Retorno"
-                this.previousConsultation = this.query.id
-                this.status = this.query.status
+                this.modalidade = "Retorno";
+                this.previousConsultation = this.query.id;
+                this.status = this.query.status;
                 this.numberReceipt = this.query.payment_number
             }
             else if(this.query  && this.$route.params.type === 'remarcar'){
@@ -181,10 +181,10 @@
                 console.log('numberReceipt: ', this.numberReceipt)
 
             }else if(this.query && this.$route.params.reschedule){
-                this.modalidade = this.query.type
-                this.previousConsultation = this.query.previousConsultation
-                this.status = this.query.status
-                this.numberReceipt = this.query.payment_number
+                this.modalidade = this.query.type;
+                this.previousConsultation = this.query.previousConsultation;
+                this.status = this.query.status;
+                this.numberReceipt = this.query.payment_number;
                 this.rescheduleConsultation = this.query.id
             }            
             else{
@@ -265,7 +265,6 @@
                 this.numberReceipt = "";
                 this.status = "Aguardando pagamento";
                 this.loaderPaymentNumber = true;
-                console.log('oioioi')
 
                 let obj = value ? {
                     user: this.selectedForm.user,
@@ -286,14 +285,11 @@
                     exam: {
                         type:this.selectedForm.consultation.exam_type.name
                     },
-                }
-
-                console.log('no procurar recibo',obj)
+                };
 
                 this.$store.dispatch("thereIsIntakes", obj)
                     .then(obj => {
                         if (obj.payment_number) {
-                            console.log('revico' ,obj)
                             this.payment_numberFound = obj;
                             this.numberReceipt = obj.payment_number;
                             this.exam = obj.exam ? {...obj.exam, notFindPayment: true} : undefined;
@@ -329,10 +325,10 @@
                 this.loading = false;
             },
             closeDialog(){
-                this.dialog = false
-                this.payment_numberFound = undefined
-                this.status = ""
-                this.numberReceipt = ""
+                this.dialog = false;
+                this.payment_numberFound = undefined;
+                this.status = "";
+                this.numberReceipt = "";
                 this.selectedForm = undefined
             }
         }

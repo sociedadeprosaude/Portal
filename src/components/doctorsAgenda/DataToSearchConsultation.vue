@@ -222,9 +222,9 @@
 
                                 };
                                 if(schedule.specialty)
-                                    scheduleObj.specialty = schedule.specialty
+                                    scheduleObj.specialty = schedule.specialty;
                                 if(schedule.exam_type)
-                                    scheduleObj.exam_type = schedule.exam_type
+                                    scheduleObj.exam_type = schedule.exam_type;
                                 let obj = {...scheduleObj, ...this.numberVacancyAndReturns(scheduleObj)};
                                 obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns;
                                 consultations.push(obj)
@@ -237,7 +237,7 @@
             },
 
             datesOfInterval(payload) {
-                let days = payload.days
+                let days = payload.days;
                 let weekDays = Object.keys(days);
                 let startDate = moment();
                 let dates = [];
@@ -246,7 +246,7 @@
                 });
                 let day = startDate;
                 for (let i = 0; i < this.daysToListen; i++) {
-                    let expiration_date = days[day.weekday().toString()] ? days[day.weekday().toString()].expiration_date : undefined
+                    let expiration_date = days[day.weekday().toString()] ? days[day.weekday().toString()].expiration_date : undefined;
                     if (weekDays.indexOf(day.weekday()) > -1 && (!expiration_date || day.isSameOrBefore(moment(expiration_date,'YYYY-MM-DD')))) {
                         dates.push(day.format('YYYY-MM-DD'))
                     }
@@ -260,9 +260,11 @@
                 let consultations = this.consultations;
                 return consultations.reduce((obj, item) => {
                     let specialtyOrExamType = ((schedule.specialty && item.specialty && schedule.specialty.name === item.specialty.name) 
-                                                ||(schedule.exam_type && item.exam && schedule.exam_type.name === item.exam.type))
+                                                ||(schedule.exam_type && item.exam && schedule.exam_type.name === item.exam.type));
                     if (schedule.clinic.name === item.clinic.name && specialtyOrExamType
                         && schedule.doctor.cpf === item.doctor.cpf && schedule.date === item.date && item.user) {
+
+                        console.log('######');
                         if (item.type === 'Consulta' || !item.type) {
                             obj.qtd_consultations = obj.qtd_consultations + 1
                         } else
