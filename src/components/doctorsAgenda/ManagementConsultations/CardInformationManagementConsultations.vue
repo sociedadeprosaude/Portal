@@ -138,7 +138,7 @@
 
             },
             async setConsultationHour(consultation) {
-                let consultation_hour = moment().format('YYYY-MM-DD hh:mm:ss');
+                let consultation_hour = moment().format('YYYY-MM-DD HH:mm:ss');
                 if(!consultation.user)
                     consultation.user = this.selectedPatient
                 let data = {

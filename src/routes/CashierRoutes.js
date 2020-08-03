@@ -3,7 +3,7 @@ import Cashier from "../views/Operational/Cashier/Cashier";
 import CashierReports from "@/views/Statistics/StatisticsDashboard";
 import PayOnline from "../views/Operational/Cashier/PayOnline";
 import StatsCaixa from '../views/Statistics/statsCaixa'
-
+import Bundles from "@/views/Register/Bundles";
 
 import store from "../store/store"
 

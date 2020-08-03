@@ -37,7 +37,7 @@ import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
 import CashierRoutes from "./routes/CashierRoutes";
 import discount from "./views/Notifications/discount"
 import notifications from "./views/Notifications/notifications";
-
+import Specialties from "@/store/modules/Specialties";
 const Clinic = {
   props: ['id'],
   template: '<div>Clinic {{ id }}</div>'

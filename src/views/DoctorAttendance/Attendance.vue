@@ -89,7 +89,7 @@
             console.log('saiu ? sim!')
             if (!this.consultation.end_at) {
                 console.log('gerar!')
-                this.outtkake()
+                //this.outtkake()
                 this.saveAttendance()
             } else {
                 console.log('já tem')
@@ -112,12 +112,15 @@
             },
             saveAttendance() {
                 console.log('salvando tempos ?')
+                let wait = this.consultation.consultation_hour.split(' ')[1];
+                let waiting = moment(this.startConsultation, 'HH:mm:ss').diff(moment(wait, 'HH:mm:ss'), 'minutes');
                 this.endConsultation = moment().format('HH:mm:ss');
                 this.timeConsultation = moment(this.endConsultation, 'HH:mm:ss').diff(moment(this.startConsultation, 'HH:mm:ss'), 'minutes');
                 this.$store.dispatch('addTimesToConsultation', {
                     start: this.startConsultation,
                     end: this.endConsultation,
                     durantion: this.timeConsultation,
+                    waiting: waiting,
                     consultation: this.consultation.id,
                     patient: this.consultation.user.id
                 });
