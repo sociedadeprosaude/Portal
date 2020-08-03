@@ -109,17 +109,25 @@
 
         methods: {
             async editDoctor(doctor) {
-                this.selectedDoctor = this.doctors[doctor.cpf];
+                console.log('edit ?', doctor)
+                this.selectedDoctor = this.doctors[doctor.uid];
                 this.editingDoctor = true;
             },
             async deleteDoctor(doctor){
+                console.log('delete ?',doctor)
+
                 this.selectedDoctor = doctor;
                 this.deletingDoctor = true;
+
             },
             async deleteDoctorFromDatabase(item) {
-                let doctor = this.doctors[item.cpf];
-                this.$emit('loading')
-                this.$emit('deleteDoctorFromDatabase',doctor);
+                let uid = item.uid;
+                let cpf = item.cpf;
+                console.log('uid:',uid)
+                console.log('cpf:',cpf)
+                this.loading = true;
+                await this.$store.dispatch('deleteConsultations', cpf);
+                await this.$store.dispatch('deleteDoctor', uid);
                 this.success = true;
                 setTimeout(() => {
                     this.deletingDoctor = false

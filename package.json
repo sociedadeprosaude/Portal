@@ -22,7 +22,7 @@
     "dns": "^0.2.2",
     "firebase": "^6.3.5",
     "firebase-admin": "^8.12.1",
-    "firebase-functions": "^3.6.2",
+    "firebase-functions": "^3.7.0",
     "http2": "^3.3.7",
     "jquery": "^3.5.1",
     "js-cookie": "^2.2.1",

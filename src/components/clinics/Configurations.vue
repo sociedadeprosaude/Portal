@@ -334,6 +334,7 @@
             cpf: undefined,
             crm: undefined,
             doctor: undefined,
+            uid: undefined,
             cost: 0,
             price: 0,
             rules: null,
@@ -400,6 +401,7 @@
             pre(index, index2) {
                 this.specialtie = this.allSpecialties[index].doctors[index2].specialtie;
                 this.cpf = this.allSpecialties[index].doctors[index2].cpf;
+                this.uid = this.allSpecialties[index].doctors[index2].uid;
                 this.crm = this.allSpecialties[index].doctors[index2].crm;
                 this.doctor = this.allSpecialties[index].doctors[index2].name;
                 this.cost = this.allSpecialties[index].doctors[index2].cost;
@@ -415,6 +417,7 @@
                     doctor: this.doctor,
                     crm: this.crm,
                     cpf: this.cpf,
+                    uid: this.uid,
                     cost: this.cost,
                     price: this.price,
                     obs: this.obs,

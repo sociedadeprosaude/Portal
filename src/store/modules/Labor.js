@@ -1,19 +1,12 @@
 import firebase, {firestore} from "firebase";
-
 const state = {
     colabortors: [],
     colaboratorDoctors: [],
 };
-
 const mutations = {
-    setColaborators(state, payload) {
-        state.colabortors = payload
-    },
-    setColaboratorDoctor(state, payload) {
-        state.colaboratorDoctors = payload
-    },
+    setColaborators(state, payload) { state.colabortors = payload },
+    setColaboratorDoctor(state, payload) { state.colaboratorDoctors = payload },
 };
-
 const actions = {
     async getColaborators(context) {
         try {
@@ -40,10 +33,7 @@ const actions = {
                 return -1
             }));
             return
-        } catch (e) {
-            console.log(e);
-            return e
-        }
+        } catch (e) { console.log(e); return e }
     },
     async setColaboratorGroup(context) {
         try {
@@ -55,22 +45,13 @@ const actions = {
                 return -1
             }));
             return
-        } catch (e) {
-            console.log(e);
-            return e
-        }
+        } catch (e) { console.log(e); return e }
     },
 };
-
 const getters = {
-    colaborators(state) {
-        return state.colabortors
-    },
-    colaboratorsDoctors(state) {
-        return state.colaboratorDoctors
-    },
+    colaborators(state) { return state.colabortors },
+    colaboratorsDoctors(state) { return state.colaboratorDoctors },
 };
-
 export default {
     state,
     mutations,

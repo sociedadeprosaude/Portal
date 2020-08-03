@@ -3,7 +3,7 @@
             <v-flex xs8>
                 <v-card class="pa-4">
                     <v-layout aling-center row wrap>
-                        <patient/>
+                        <data-patient />
                     </v-layout>
                     <v-layout aling-center row wrap>
                         <v-flex xs12>
@@ -22,12 +22,11 @@
 </template>
 
 <script>
-    import moment from 'moment/moment'
-    import Patient from '../../../components/Patient/SelectPatientCard'
     import CardPatientManagementConsultations from '../../../components/doctorsAgenda/PatientConsultations/CardPatientManagementConsultations'
     import CardInformationManagementConsultations from '../../../components/doctorsAgenda/ManagementConsultations/CardInformationManagementConsultations'
+    import DataPatient from "../../../components/Patient/DataPatient";
     export default {
-        components:{CardPatientManagementConsultations, CardInformationManagementConsultations, Patient},
+        components:{DataPatient, CardPatientManagementConsultations, CardInformationManagementConsultations,},
         data: vm  => ({
             QtdConsultations:'',
             QtdReturn:'',
