@@ -61,7 +61,7 @@
             label="Listar agendas de exames"
           ></v-checkbox>
         </v-col>
-        <v-dialog v-model="dialogNewSchedule">
+        <v-dialog v-model="dialogNewSchedule" max-width="600">
           <v-card>
             <v-card-title>
               <span class="headline">Criar nova agenda</span>
