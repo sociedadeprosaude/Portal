@@ -209,8 +209,9 @@ exports.analyzePastIntakesByMonth = functions.https.onRequest(async (request, re
     response.status(200).send(intakes);
 });
 exports.setGeopoints = functions.https.onRequest(async (request, response) => {
-    admin.firestore().collection('users')
-        .get().then((users) => {
+    try {
+        admin.firestore().collection('users')
+            .get().then((users) => {
             users.forEach((user) => {
                 let data = user.data()
                 if (data.addresses && data.addresses[0] && data.addresses[0].cep) {
@@ -230,13 +231,17 @@ exports.setGeopoints = functions.https.onRequest(async (request, response) => {
                         })
                         .catch(error => error)
                 }
+                return
             })
-            return ''
+            return
+        }).catch((err) => {
+            console.error(err)
         })
-        .catch(error => error)
-    response.status(200).send("Salvando geopoint para os usuários");
+        response.status(200).send("Salvando geopoint para os usuários");
+    } catch (e) {
+        response.status(200).send("Erro salvando geopoint para os usuários", e);
+    }
 })
-
 // ==================================== Outtakes ===================================================
 
 function analyzeOuttakesByMonth(outtakes) {

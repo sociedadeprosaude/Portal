@@ -1,4 +1,6 @@
 const functions = require('firebase-functions');
+const serviceAccount = require('./serviceAccountKey.json')
+
 var admin = require('firebase-admin');
 const cors = require('cors')({ origin: true });
 var moment = require('moment');
@@ -18,12 +20,6 @@ const heavyFunctionsRuntimeOpts = {
     timeoutSeconds: 540,
     memory: '2GB'
 }
-
-exports.hello = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest((req, res) => {
-    console.log(req.query.name);
-    var name = req.query.name || "Sem Nome"
-    res.send("hello ", name);
-})
 
 exports.getLastAccessedPatients = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (req, res) => {
     var quant = req.query.quantity
@@ -249,7 +245,6 @@ exports.requests = {
     ...require('./Requests/statistics.js'),
     // ...require('./Requests/pagSeguro.js'),
 }
-
 
 
 //Func nao usada em nenhum canto

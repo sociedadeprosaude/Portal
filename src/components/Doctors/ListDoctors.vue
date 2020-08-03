@@ -129,7 +129,6 @@
                 await this.$store.dispatch('deleteConsultations', cpf);
                 await this.$store.dispatch('deleteDoctor', uid);
                 this.success = true;
-                this.loading = false;
                 setTimeout(() => {
                     this.deletingDoctor = false
                 }, 800)

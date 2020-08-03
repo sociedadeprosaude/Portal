@@ -139,12 +139,8 @@ const actions = {
     },
 
     async loadSelectedExams({ commit, getters }, payload) {
-        payload = payload.toUpperCase();
         try {
-            // let exams = getters.exams
-            // exams = exams.filter((exam) => {
-            //     return exam.name.includes(payload)
-            // })
+
             let exams = functions.search(payload, getters.exams).slice(0, 8)
 
             let results = []

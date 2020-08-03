@@ -258,7 +258,6 @@ function cleanExamsAndSpecialtiesFromClinics(clinics) {
 }
 
 
-
 exports.onUpdateExam = functions.firestore.document('exams/{name}').onUpdate((change, context) => {
     const firestore = admin.firestore();
     const examUpdated = change.after.data();
@@ -267,7 +266,7 @@ exports.onUpdateExam = functions.firestore.document('exams/{name}').onUpdate((ch
         //Updatando o price das clinicas da subCollection clinics presente dentro da collection /exams
         firestore.collection('exams').doc(examUpdated.name).collection('clinics').get()
             .then((docs) => {
-                if (!docs.empty) docs.forEach((doc) => doc.ref.update({ price: price }))
+                if (!docs.empty) docs.forEach((doc) => doc.ref.update({price: price}))
                 return null
             })
             .catch(err => console.log(err));
@@ -278,7 +277,7 @@ exports.onUpdateExam = functions.firestore.document('exams/{name}').onUpdate((ch
                 clinics.forEach((clinic) => {
                     firestore.collection('clinics').doc(clinic.id).collection('exams').doc(examUpdated.name).get()
                         .then((doc) => {
-                            if (doc.exists) doc.ref.update({ price: price })
+                            if (doc.exists) doc.ref.update({price: price})
                             return null
                         })
                         .catch(err => console.log(err));
@@ -291,7 +290,7 @@ exports.onUpdateExam = functions.firestore.document('exams/{name}').onUpdate((ch
                 packages.forEach((packageRef) => {
                     firestore.collection('packages').doc(packageRef.id).collection('exams').doc(examUpdated.name).get()
                         .then((doc) => {
-                            if (doc.exists) doc.ref.update({ price: price })
+                            if (doc.exists) doc.ref.update({price: price})
                             return null
                         })
                         .catch(err => console.log(err));
@@ -308,7 +307,11 @@ exports.onUpdateSpecialty = functions.firestore.document('specialties/{name}').o
         //Updatando o price dos doctors da subCollection clinics presente dentro da collection /specialties
         firestore.collection('specialties').doc(specialtyUpdated.name).collection('doctors').get()
             .then((docs) => {
-                if (!docs.empty) docs.forEach((doc) => doc.ref.update({ price: price }))
+                if (!docs.empty) {
+                    docs.forEach((doc)=>{
+                        doc.ref.update({ price: price })
+                    })
+                }
                 return null
             })
             .catch(err => console.log(err));
@@ -319,7 +322,7 @@ exports.onUpdateSpecialty = functions.firestore.document('specialties/{name}').o
                 clinics.forEach((clinic) => {
                     firestore.collection('clinics').doc(clinic.id).collection('specialties').doc(specialtyUpdated.name).get()
                         .then((doc) => {
-                            if (doc.exists) doc.ref.update({ price: price })
+                            if (doc.exists) doc.ref.update({price: price})
                             return null
                         })
                         .catch(err => console.log(err));
@@ -378,7 +381,7 @@ exports.updateStatistics = functions.firestore.document('intakes/{id}')
             totalRaw: addTotalRaw,
             totalCost: addTotalCost,
             totalProfit: addTotalProfit
-        }, { merge: true });
+        }, {merge: true});
 
 
         var statsMonth = await admin.firestore().collection('statistics').doc('caixa').collection('month').doc(dateMonth).get();
@@ -395,7 +398,7 @@ exports.updateStatistics = functions.firestore.document('intakes/{id}')
             totalRaw: addTotalRaw,
             totalCost: addTotalCost,
             totalProfit: addTotalProfit
-        }, { merge: true });
+        }, {merge: true});
     });
 
 var emptyItem = () => ({
@@ -433,13 +436,13 @@ exports.updateStatisticsItem = functions.firestore.document('intakes/{id}/{type}
         itemStatMonth.totalProfit += Number(item.price) - Number(item.cost);
 
         stats.ref.set({
-            itens: { [`${item.name}`]: itemStat },
+            itens: {[`${item.name}`]: itemStat},
             numOfSales: admin.firestore.FieldValue.increment(1)
-        }, { merge: true });
+        }, {merge: true});
         statsMonth.ref.set({
-            itens: { [`${item.name}`]: itemStatMonth },
+            itens: {[`${item.name}`]: itemStatMonth},
             numOfSales: admin.firestore.FieldValue.increment(1)
-        }, { merge: true });
+        }, {merge: true});
     });
 
 // function sleep(ms) {
@@ -513,16 +516,16 @@ exports.onCreateStatisticsOuttakes = functions.firestore.document('outtakes/{id}
             itemStatMonth.numOfOuttakesToPay += !outtake.paid ? 1 : 0;
             itemStatMonth.numOfOuttakes += 1;
 
-            statsMonth.ref.set({
+            await statsMonth.ref.set({
                 date: dateMonth,
                 totalRecurrent: admin.firestore.FieldValue.increment(outtake.recurrent ? outtake.cost : 0),
                 totalToPay: admin.firestore.FieldValue.increment(outtake.cost),
                 totalLeftToPay: admin.firestore.FieldValue.increment(!outtake.paid ? outtake.cost : 0),
                 numOfOuttakesToPay: admin.firestore.FieldValue.increment(!outtake.paid ? 1 : 0),
                 numOfOuttakes: admin.firestore.FieldValue.increment(1),
-                itens: { [`${outtake.name}`]: itemStatMonth },
+                itens: {[`${outtake.name}`]: itemStatMonth},
                 arrTotalToPay: arrTotalToPay
-            }, { merge: true });
+            }, {merge: true});
         } else {
             //TODO: quando outtake e de exame ou especialidade
         }
@@ -560,8 +563,8 @@ exports.onUpdateStatisticsOuttakes = functions.firestore.document('outtakes/{id}
                 totalLeftToPay: admin.firestore.FieldValue.increment(-outtake.cost),
                 numOfOuttakesToPay: admin.firestore.FieldValue.increment(-1),
                 numOfOuttakes: admin.firestore.FieldValue.increment(1),
-                itens: { [`${outtake.name}`]: itemStatMonth }
-            }, { merge: true });
+                itens: {[`${outtake.name}`]: itemStatMonth}
+            }, {merge: true});
         }
 
     } else {
@@ -573,6 +576,7 @@ exports.onUpdateStatisticsOuttakes = functions.firestore.document('outtakes/{id}
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+
 async function mockOut(name) {
     await sleep(50);
     var id = moment();
@@ -608,6 +612,7 @@ exports.tstUpdateOuttake = functions.https.onRequest(async (req, res) => {
     })
     res.status(200).send("aaa")
 });
+
 // ==================================== funcs usadas por varios =======================================================
 async function convertSpecialtySubcollectionInObject(specialtyDoc) {
     let specialty = specialtyDoc.data();
@@ -671,6 +676,7 @@ async function convertGeopointCEPSubcollectionInObject(ref) {
         monthly_report: monthlyReports,
     }
 }
+
 //==================================================================================================================
 
 exports.ListenUpdateClinic = functions.firestore.document('clinics/{name}').onUpdate(async (change, context) => {

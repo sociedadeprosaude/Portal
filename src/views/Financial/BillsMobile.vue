@@ -166,7 +166,7 @@
 
 <script>
     import {mask} from "vue-the-mask";
-    import moment from "moment";
+    import moment from "moment/moment";
     import OuttakeOrderMobile from "../../components/reports/Mobile/OuttakeOrderMobile";
     import RegisterBillMobile from "../../components/Bills/Mobile/RegisterBillMobile";
     export default {
