@@ -1,12 +1,12 @@
-
+const functions = require('firebase-functions');
+//const serviceAccount = require('./serviceAccountKey.json')
 
 var admin = require('firebase-admin');
 var moment = require('moment');
 const json2csv = require('json2csv');
 const gmapsInit = require("./geocode")
 const cors = require('cors')({ origin: true });
-const functions = require('firebase-functions');
-//const serviceAccount = require('./serviceAccountKey.json')
+
 
 admin.initializeApp();
 // admin.initializeApp({

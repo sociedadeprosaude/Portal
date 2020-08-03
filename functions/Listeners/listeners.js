@@ -181,26 +181,23 @@ exports.listenToUserAdded = functions.firestore.document('users/{id}').onCreate(
         let newCEP = user.addresses[0].cep.replace(/[.,-]/g, "").substring(0, 5)
         admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP)
             .get().then(async (userGeopoint) => {
-            let ref = admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP)
-            if (!userGeopoint.exists) {
-                gmapsInit.geocode([user.addresses[0].street, user.addresses[0].complement].join(" ") + " Manaus Amazonas",
-                    async (err, coordinates) => {
-                        if (err)
-                            console.log(err)
-                        else {
-                            await ref.set({
-                                count: 1,
-                                geopoint: new admin.firestore.GeoPoint(coordinates.lat, coordinates.lng)
-                            })
-                            updateGeopointMonthlyReport(ref)
-                        }
-                    })
-            } else {
-                await ref.update({count: admin.firestore.FieldValue.increment(1)})
-                updateGeopointMonthlyReport(ref)
-            }
-            return
-        }).catch(err => console.log(err));
+                let ref = admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP)
+                if (!userGeopoint.exists) {
+                    gmapsInit.geocode([user.addresses[0].street, user.addresses[0].complement].join(" ") + " Manaus Amazonas",
+                        async (err, coordinates) => {
+                            if (err)
+                                console.log(err)
+                            else {
+                                await ref.set({ count: 1, geopoint: new admin.firestore.GeoPoint(coordinates.lat, coordinates.lng) })
+                                updateGeopointMonthlyReport(ref)
+                            }
+                        })
+                } else {
+                    await ref.update({ count: admin.firestore.FieldValue.increment(1) })
+                    updateGeopointMonthlyReport(ref)
+                }
+                return;
+            }).catch((e) => e)
     }
     return;
 });
@@ -209,12 +206,12 @@ async function updateGeopointMonthlyReport(ref) {
     ref.collection('monthly_report').doc(moment().format('YYYY-MM')).get()
         .then(doc => {
             if (doc.exists) {
-                doc.ref.update({created: admin.firestore.FieldValue.increment(1)})
+                doc.ref.update({ created: admin.firestore.FieldValue.increment(1) })
             } else {
-                doc.ref.set({created: 1})
+                doc.ref.set({ created: 1 })
             }
-            return
-        }).catch(err => console.log(err));
+            return;
+        }).catch((e) => e);
 }
 
 exports.listenChangeInSpecialtiesSubcollections = functions.firestore.document('specialties/{specialtyId}/{collectionId}/{docId}').onWrite(async (change, context) => {

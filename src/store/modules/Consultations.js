@@ -411,9 +411,11 @@ const actions = {
         firebase.firestore().collection('consultations').doc(payload.consultation).update({start_at: payload.start});
         firebase.firestore().collection('consultations').doc(payload.consultation).update({end_at: payload.end});
         firebase.firestore().collection('consultations').doc(payload.consultation).update({duration: payload.durantion});
+        firebase.firestore().collection('consultations').doc(payload.consultation).update({waiting_time: payload.waiting});
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({start_at: payload.start});
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({end_at: payload.end});
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({duration: payload.durantion})
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({waiting_time: payload.waiting})
     }
 }
 

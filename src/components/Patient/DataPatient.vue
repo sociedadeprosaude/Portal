@@ -312,7 +312,7 @@
                                         placeholder="CPF">
                                 </v-text-field>
                             </v-flex>
-                            <span>{{cpf}}</span>
+                            <!--<span>{{cpf}}</span>-->
                             <v-spacer/>
                             <v-flex sm6 xs12>
                                 <v-text-field
