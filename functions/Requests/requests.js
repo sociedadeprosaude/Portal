@@ -488,7 +488,7 @@ exports.setPricesExams = functions.https.onRequest(async (request, response) => 
         }).catch((err) => response.send('erro ' + err));
 });
 
-/*
+
 exports.fixSpecialtiesPrices = functions.https.onRequest(async (req, res) => {
     const firestore = admin.firestore();
     let snapshot = await firestore.collection('specialties').get()
@@ -581,7 +581,7 @@ exports.cancelAppointment = functions.runWith(heavyFunctionsRuntimeOpts).https.o
     }
 
     return 'Appointment Cancelled'
-});*/
+});
 
 exports.addUserToConsultation = functions.runWith(heavyFunctionsRuntimeOpts).https.onCall(async (data, context) => {
     let payload = data.payload

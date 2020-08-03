@@ -810,6 +810,7 @@
                     this.$emit('removed');
                     localStorage.removeItem('patient');
                 }
+                console.log('User selecionado',user)
                 this.$store.commit('setSelectedPatient', user);
                 this.$store.commit('clearSelectedDependent');
                 this.updateAccessedTo(user);
