@@ -101,7 +101,7 @@ const actions = {
         functions.removeUndefineds(specialties);
         functions.removeUndefineds(exams);
 
-        let userRef = firebase.firestore().collection('users').doc(user.cpf);
+        let userRef = firebase.firestore().collection('users').doc(user.uid);
         await userRef.collection('intakes').doc(copyPayload.id.toString()).set(copyPayload);
         if (specialties) {
             let spec = await userRef.collection('intakes').doc(copyPayload.id.toString()).collection('specialties').get();
@@ -244,7 +244,7 @@ const actions = {
     },
 
     async getUserIntakes(context, user) {
-        let userRef = firebase.firestore().collection('users').doc(user.cpf);
+        let userRef = firebase.firestore().collection('users').doc(user.uid);
         let intakesSnap = (await userRef.collection('intakes').get()).docs;
         let intakes = [];
         for (let snap in intakesSnap) {

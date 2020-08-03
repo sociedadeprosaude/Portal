@@ -144,18 +144,7 @@
                                 />
                             </v-flex>
                             <v-spacer/>
-                            <!-- <v-flex xs6>
-                                <v-currency-field
-                                        prepend-icon="monetization_on"
-                                        outlined
-                                        rounded
-                                        filled
-                                        clearable
-                                        prefix="R$"
-                                        v-model="spec.price"
-                                        label="Venda"
-                                />
-                            </v-flex> -->
+
                         </v-layout>
                     </v-flex>
                 </v-layout>
@@ -193,20 +182,16 @@
 <script>
     import {mask} from 'vue-the-mask'
     import SubmitButton from "../SubmitButton";
-
     export default {
         name: "CreateDoctorCard",
         props: ['doctor'],
-        directives: {
-            mask,
-        },
-        components: {
-            SubmitButton
-        },
+        directives: { mask },
+        components: { SubmitButton },
         mounted() {
             this.$store.dispatch('getClinics');
             this.$store.dispatch('getSpecialties');
             if (this.doctor) {
+                console.log(this.doctor)
                 this.name = this.doctor.name;
                 this.cpf = this.doctor.cpf;
                 this.crm = this.doctor.crm;
@@ -263,9 +248,7 @@
             },
         },
         methods: {
-            close() {
-                this.$emit('close');
-            },
+            close() { this.$emit('close'); },
             clear() {
                 this.name = undefined;
                 this.crm = undefined;
@@ -277,6 +260,7 @@
             async save() {
                 this.loading = true;
                 for (let spec in this.specialties) {
+                    delete this.specialties[spec].doctors
                     if (!this.specialties[spec].cost) {
                         this.specialties[spec].cost = 0.00
                     }
@@ -294,7 +278,6 @@
                     type: 'doctor'
                 };
                 await this.$store.dispatch('addDoctor', doctor);
-
                 for (let i in this.clinic) {
                     for (let j in this.specialties) {
                         let data = {

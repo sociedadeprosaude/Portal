@@ -126,7 +126,6 @@ export default {
   },
   data() {
     return {
-      version: version,
       loading: false,
       pages: [
         {
@@ -152,6 +151,74 @@ export default {
             },
           ]
         },
+        {
+          title: 'Cadastro e Registros',
+          pages: [
+            {
+              title: 'Registros',
+              icon: 'group',
+              permission: 'Caixa',
+              to: '/registros/doctors'
+            },
+            {
+              title: 'Relatórios',
+              to: '/relatorio',
+              permission: 'Relatórios',
+              icon: 'report'
+            },
+            {
+              title: 'Financeiro',
+              to: '/pagamento/financeiro',
+              permission: 'Caixa',
+              icon: 'attach_money',
+            }
+          ]
+        },
+        {
+          title: 'Atendimento Médico',
+          pages: [
+            {
+              title: 'Atendimentos de Consultas e Retornos',
+              to: '/MedicalCare',
+              icon: 'assignment_ind',
+            },
+          ]
+        },
+        {
+          title: 'Pessoal',
+          pages: [
+            {
+              title: 'Colaboradores',
+              permission: 'Colaboradores',
+              to: '/labor',
+              icon: 'supervisor_account'
+            },
+          ]
+        },
+        {
+          title: 'Clinicas Associadas',
+          pages: [
+            {
+              title: 'Check Exames',
+              permission: 'clinic',
+              to: '/DischargeProcedures',
+              icon: 'supervisor_account'
+            },
+            {
+              title: 'Verificação Encaminhamentos A Cobrar',
+              permission: 'clinic',
+              to: '/VerificacaoEncaminhamentos',
+              icon: 'supervisor_account'
+            },
+            {
+              title: 'Histórico de Pagamentos',
+              permission: 'clinic',
+              to: '/HistoricoDePagamentos',
+              icon: 'supervisor_account'
+            },
+          ]
+        },
+
         {
           title: 'Cadastro e Registros',
           pages: [

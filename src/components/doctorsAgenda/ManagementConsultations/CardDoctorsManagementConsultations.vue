@@ -177,7 +177,7 @@
             ConsultationsByDoctors(consultations) {
                 let res = {};
                 for (let cons in consultations) {
-                    let targetDate = consultations[cons].doctor.cpf;
+                    let targetDate = consultations[cons].doctor.uid ? consultations[cons].doctor.uid : consultations[cons].doctor.cpf;
                     if (!res[targetDate]) {
                         res[targetDate] = {
                             doctor: consultations[cons].doctor,

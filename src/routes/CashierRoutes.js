@@ -1,11 +1,9 @@
-import Bundles from "../views/Register/Bundles"
 import Budget from "../views/Operational/Cashier/Budget";
 import Cashier from "../views/Operational/Cashier/Cashier";
 import CashierReports from "@/views/Statistics/StatisticsDashboard";
 import PayOnline from "../views/Operational/Cashier/PayOnline";
-import Outflows from "../views/Register/Outflows";
 import StatsCaixa from '../views/Statistics/statsCaixa'
-
+import Bundles from "@/views/Register/Bundles";
 
 import store from "../store/store"
 
@@ -39,16 +37,5 @@ export default [
         path: '/caixa/Orçamento',
         name: 'orçamento',
         component: Budget
-    },
-
-    {
-        path: '/caixa/Saidas',
-        name: 'Saidas',
-        component: Outflows
-    },
-    {
-        path: '/caixa/Bundles',
-        name: 'Bundles',
-        component: Bundles
     },
 ]
