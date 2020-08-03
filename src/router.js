@@ -103,14 +103,6 @@ let mainRoutes = [
     }
   },
   {
-    path: '/specialties',
-    name: 'Specialties',
-    component: Specialties,
-    meta: {
-      requiresAuth: false
-    }
-  },
-  {
     path: '/labor',
     name: 'labor',
     component: Labor,
