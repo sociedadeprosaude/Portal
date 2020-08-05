@@ -250,6 +250,7 @@ export default {
       },
       { text: "Especialidade", value: "specialty.name" },
       { text: "Clínica", value: "clinic.name", sortable: true },
+      { text: "Intervalo (Minutos)", value: "interval", sortable: true ,  align: "center",},
       { text: "Ações", value: "actions", sortable: false }
     ],
     days: [
