@@ -121,9 +121,10 @@
 
             async deletedConsultation() {
                 this.cancelLoading = true;
+                let patientId = this.consultation.user ? this.consultation.user.uid ? this.consultation.user.uid : this.consultation.user.cpf : this.selectedPatient.uid
                 let obj = {
                     id: this.consultation.id,
-                    idPatient: this.consultation.user ? this.consultation.user.cpf : this.selectedPatient.cpf,
+                    idPatient: patientId,
                     type: this.consultation.type,
                     status: 'Cancelado',
                     payment_number: this.consultation.payment_number,

@@ -82,8 +82,8 @@ exports.searchUser = functions.https.onRequest(async (req, res) => {
     let usersRef = admin.firestore().collection('users')
 
     if (req.query.cpf) {
-        req.query.cpf = req.query.cpf.replaceAll('.', '');
-        req.query.cpf = req.query.cpf.replace('-', '');
+        // req.query.cpf = `${req.query.cpf}`.replaceAll('.', '');
+        // req.query.cpf = `${req.query.cpf}`.toString().replace('-', '');
         usersRef = usersRef.where('cpf', '==', req.query.cpf);
     } else if (req.query.association_number) {
         usersRef = usersRef.where('association_number', '==', req.query.association_number)
@@ -488,7 +488,7 @@ exports.setPricesExams = functions.https.onRequest(async (request, response) => 
         }).catch((err) => response.send('erro ' + err));
 });
 
-/*
+
 exports.fixSpecialtiesPrices = functions.https.onRequest(async (req, res) => {
     const firestore = admin.firestore();
     let snapshot = await firestore.collection('specialties').get()
@@ -567,7 +567,7 @@ exports.cancelAppointment = functions.runWith(heavyFunctionsRuntimeOpts).https.o
         await admin.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.regress).update({status: 'Cancelado'})
     }
     return 'Appointment Cancelled'
-});*/
+});
 
 exports.addUserToConsultation = functions.runWith(heavyFunctionsRuntimeOpts).https.onCall(async (data, context) => {
     let payload = data.payload
