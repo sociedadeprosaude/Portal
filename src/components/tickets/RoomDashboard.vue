@@ -14,7 +14,7 @@
       </v-col>
 
       <v-col sm="6" md="4">
-        <v-btn width="100%" class="primary" rounded @click="$emit('open-multipleViewDialog')">
+        <v-btn width="100%" class="primary" rounded @click="$emit('open-multiple-view-dialog')">
           <span>Visualizador geral</span>
         </v-btn>
       </v-col>
@@ -27,7 +27,7 @@
                 <span class="my-headline">Adicionar sala</span>
               </v-col>
               <v-col sm="4" class="text-right">
-                <v-btn small class="primary" fab @click="$emit('toggle-createRoomController')">
+                <v-btn small class="primary" fab @click="$emit('toggle-create-coom-controller')">
                   <v-icon>minimize</v-icon>
                 </v-btn>
               </v-col>
@@ -52,7 +52,7 @@
             rounded
             width="100%"
             class="primary"
-            @click="$emit('toggle-createRoomController')"
+            @click="$emit('toggle-create-room-controller')"
           >Adicionar Sala</v-btn>
         </v-fade-transition>
       </v-col>
@@ -100,7 +100,7 @@
                   <v-btn
                     v-on="on"
                     :disabled="loading"
-                    @click="$emit('open-selectedRoom',room)"
+                    @click="$emit('open-selected-room',room)"
                     text
                     fab
                     x-small
@@ -128,6 +128,22 @@
                 </template>
                 <span>Gerar senha</span>
               </v-tooltip>
+              <!-- <v-tooltip top v-if="doctorsLoaded">
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    v-on="on"
+                    :disabled="loading"
+                    @click="generateNextTicket(room)"
+                    text
+                    fab
+                    x-small
+                    class="primary ml-2 my-2"
+                  >
+                    <v-icon>elderly</v-icon>
+                  </v-btn>
+                </template>
+                <span>Gerar senha preferencial</span>
+              </v-tooltip> -->
               <v-tooltip top v-if="doctorsLoaded">
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -221,12 +237,12 @@
     <v-dialog v-model="singleViewDialog.active" fullscreen transition="dialog-bottom-transition">
       <single-visualizer
         :sector="sector"
-        @close="$emit('close-singleViewDialog')"
+        @close="$emit('close-single-view-dialog')"
         :selectedRoom="singleViewDialog.room"
       ></single-visualizer>
     </v-dialog>
     <v-dialog v-model="multipleViewDialog" fullscreen transition="dialog-bottom-transition">
-      <multiple-visualizer :sector="sector" @close="$emit('close-multipleViewDialog')"></multiple-visualizer>
+      <multiple-visualizer :sector="sector" @close="$emit('close-multiple-view-dialog')"></multiple-visualizer>
     </v-dialog>
     <v-dialog v-model="deletionRoom.deleteRoomDialog" max-width="500px">
       <v-card>
