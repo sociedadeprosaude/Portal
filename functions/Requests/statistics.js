@@ -374,7 +374,7 @@ exports.analyseStatisticsOuttakesClinicByMonth = functions.https.onRequest(async
     var outtakes = await admin.firestore().collection('outtakes').get();
     outtakes = outtakes.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
 
-    var outtakesClinic = outtakes.filter((doc) => (doc.exams || doc.specialties) && doc.intake_id)
+    var outtakesClinic = outtakes.filter((doc) => (doc.exams || doc.specialties) && doc.intake_id && !doc.root)
 
     var outtakesClinicToPay = []
     outtakesClinic.filter((doc) => !doc.paid)

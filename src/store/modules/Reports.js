@@ -188,8 +188,15 @@ const actions = {
                             price: 0,
                         }
                     }
+                    //Add esse if pra atualizar os intakes de clinico geral que tem preco de venda diferente de 0
+                    if (intakes[intake].specialties[specialtie].name == 'CLINICO GERAL' &&
+                        intakes[intake].specialties[specialtie].price != 0) {
+                        intakes[intake].specialties[specialtie].price = 0;
+                        firebase.firestore().collection('intakes').doc((intakes[intake].id).toString()).set(intakes[intake])
+                    }
                     specialties[intakes[intake].specialties[specialtie].name].quantity++
-                    specialties[intakes[intake].specialties[specialtie].name].cost += parseFloat(intakes[intake].specialties[specialtie].cost), specialties[intakes[intake].specialties[specialtie].name].price += parseFloat(intakes[intake].specialties[specialtie].price)
+                    specialties[intakes[intake].specialties[specialtie].name].cost += parseFloat(intakes[intake].specialties[specialtie].cost);
+                    specialties[intakes[intake].specialties[specialtie].name].price += parseFloat(intakes[intake].specialties[specialtie].price)
                 }
             }
         }
@@ -211,7 +218,7 @@ const actions = {
                 }
             }
             else {
-                quantidadeOuttakes++; 
+                quantidadeOuttakes++;
                 outtakes.push(...outtakeCategoryListDivider(outtake))
             }
         });
@@ -250,9 +257,11 @@ const actions = {
                     doctors[e.data().doctor.name].quantityTotal++
                     doctors[e.data().doctor.name].specialties[e.data().specialty.name].quantity++
                     firebase.firestore().collection('specialties').doc(e.data().specialty.name).collection('doctors').doc(e.data().doctor.cpf).get().then((snap) => {
-                        doctors[e.data().doctor.name].specialties[e.data().specialty.name].cost += parseFloat(snap.data().cost.toFixed(2))
-                        doctors[e.data().doctor.name].specialties[e.data().specialty.name].costOne = parseFloat(snap.data().cost.toFixed(2))
-                        doctors[e.data().doctor.name].payment += parseFloat(snap.data().cost.toFixed(2))
+                        if (snap.data()) {
+                            doctors[e.data().doctor.name].specialties[e.data().specialty.name].cost += parseFloat(snap.data().cost.toFixed(2))
+                            doctors[e.data().doctor.name].specialties[e.data().specialty.name].costOne = parseFloat(snap.data().cost.toFixed(2))
+                            doctors[e.data().doctor.name].payment += parseFloat(snap.data().cost.toFixed(2))
+                        }
                     })
                 }
                 else {
@@ -429,9 +438,11 @@ const actions = {
                     doctors[e.data().doctor.name].quantityTotal++
                     doctors[e.data().doctor.name].specialties[e.data().specialty.name].quantity++
                     firebase.firestore().collection('specialties').doc(e.data().specialty.name).collection('doctors').doc(e.data().doctor.cpf).get().then((snap) => {
-                        doctors[e.data().doctor.name].specialties[e.data().specialty.name].cost += parseFloat(snap.data().cost.toFixed(2))
-                        doctors[e.data().doctor.name].specialties[e.data().specialty.name].costOne = parseFloat(snap.data().cost.toFixed(2))
-                        doctors[e.data().doctor.name].payment += parseFloat(snap.data().cost.toFixed(2))
+                        if (snap.data()) {
+                            doctors[e.data().doctor.name].specialties[e.data().specialty.name].cost += parseFloat(snap.data().cost.toFixed(2))
+                            doctors[e.data().doctor.name].specialties[e.data().specialty.name].costOne = parseFloat(snap.data().cost.toFixed(2))
+                            doctors[e.data().doctor.name].payment += parseFloat(snap.data().cost.toFixed(2))
+                        }
                     })
                 }
                 else {

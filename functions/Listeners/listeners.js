@@ -266,7 +266,7 @@ exports.onUpdateExam = functions.firestore.document('exams/{name}').onUpdate((ch
         //Updatando o price das clinicas da subCollection clinics presente dentro da collection /exams
         firestore.collection('exams').doc(examUpdated.name).collection('clinics').get()
             .then((docs) => {
-                if (!docs.empty) docs.forEach((doc) => doc.ref.update({price: price}))
+                if (!docs.empty) docs.forEach((doc) => doc.ref.update({ price: price }))
                 return null
             })
             .catch(err => console.log(err));
@@ -277,7 +277,7 @@ exports.onUpdateExam = functions.firestore.document('exams/{name}').onUpdate((ch
                 clinics.forEach((clinic) => {
                     firestore.collection('clinics').doc(clinic.id).collection('exams').doc(examUpdated.name).get()
                         .then((doc) => {
-                            if (doc.exists) doc.ref.update({price: price})
+                            if (doc.exists) doc.ref.update({ price: price })
                             return null
                         })
                         .catch(err => console.log(err));
@@ -290,7 +290,7 @@ exports.onUpdateExam = functions.firestore.document('exams/{name}').onUpdate((ch
                 packages.forEach((packageRef) => {
                     firestore.collection('packages').doc(packageRef.id).collection('exams').doc(examUpdated.name).get()
                         .then((doc) => {
-                            if (doc.exists) doc.ref.update({price: price})
+                            if (doc.exists) doc.ref.update({ price: price })
                             return null
                         })
                         .catch(err => console.log(err));
@@ -322,7 +322,7 @@ exports.onUpdateSpecialty = functions.firestore.document('specialties/{name}').o
                 clinics.forEach((clinic) => {
                     firestore.collection('clinics').doc(clinic.id).collection('specialties').doc(specialtyUpdated.name).get()
                         .then((doc) => {
-                            if (doc.exists) doc.ref.update({price: price})
+                            if (doc.exists) doc.ref.update({ price: price })
                             return null
                         })
                         .catch(err => console.log(err));
@@ -381,7 +381,7 @@ exports.updateStatistics = functions.firestore.document('intakes/{id}')
             totalRaw: addTotalRaw,
             totalCost: addTotalCost,
             totalProfit: addTotalProfit
-        }, {merge: true});
+        }, { merge: true });
 
 
         var statsMonth = await admin.firestore().collection('statistics').doc('caixa').collection('month').doc(dateMonth).get();
@@ -398,7 +398,7 @@ exports.updateStatistics = functions.firestore.document('intakes/{id}')
             totalRaw: addTotalRaw,
             totalCost: addTotalCost,
             totalProfit: addTotalProfit
-        }, {merge: true});
+        }, { merge: true });
     });
 
 var emptyItem = () => ({
@@ -436,44 +436,14 @@ exports.updateStatisticsItem = functions.firestore.document('intakes/{id}/{type}
         itemStatMonth.totalProfit += Number(item.price) - Number(item.cost);
 
         stats.ref.set({
-            itens: {[`${item.name}`]: itemStat},
+            itens: { [`${item.name}`]: itemStat },
             numOfSales: admin.firestore.FieldValue.increment(1)
-        }, {merge: true});
+        }, { merge: true });
         statsMonth.ref.set({
-            itens: {[`${item.name}`]: itemStatMonth},
+            itens: { [`${item.name}`]: itemStatMonth },
             numOfSales: admin.firestore.FieldValue.increment(1)
-        }, {merge: true});
+        }, { merge: true });
     });
-
-// function sleep(ms) {
-//     return new Promise(resolve => setTimeout(resolve, ms));
-// }
-// async function mock(name) {
-//     await sleep(100);
-//     var id = moment();
-//     admin.firestore().collection('intakes').doc(String(id.valueOf())).set({
-//         total: 15,
-//         cost: 5,
-//         date: id.format("YYYY-MM-DD hh:mm:ss")
-//     })
-//     id = String(id.valueOf());
-//     admin.firestore().collection('intakes').doc(id).collection('specialties').doc(name).set({
-//         name: name,
-//         price: 15,
-//         cost: 5,
-//         date: moment(Number(id)).format("YYYY-MM-DD hh:mm:ss")
-//     })
-// }
-
-// exports.tstCreateIntake = functions.https.onRequest(async (req, res) => {
-//     await mock("CARDIOLOGIA");
-//     await mock("CARDIOLOGIA TELEATENDIMENTO");
-//     await mock("DERMATOLOGIA TELEATENDIMENTO");
-//     await mock("NEUROLOGIA");
-//     await mock("TESTANDO NOVA ESPECIALIDADE");
-//     await mock("TESTE 2");
-//     res.status(200).send("sdasd")
-// });
 
 
 // ==================================== Resumo mensal outtakes =======================================================
@@ -567,26 +537,28 @@ exports.onCreateStatisticsOuttakes = functions.firestore.document('outtakes/{id}
 
 
         } else {
-            if (outtakeNew.exams) outtakeNew.exams.forEach((outtakeObj) => {
-                var outtake = {
-                    cost: Number(outtakeObj.cost),
-                    name: outtakeObj.name,
-                    date: moment(Number(outtakeNew.intake_id)).format("YYYY-MM-DD"),
-                    paid: outtakeNew.paid,
-                    recurrent: false
-                };
-                createStatisticOuttakeDoc(outtake, 'outtakes-clinic')
-            })
-            if (outtakeNew.specialties) outtakeNew.specialties.forEach((outtakeObj) => {
-                var outtake = {
-                    cost: Number(outtakeObj.cost),
-                    name: outtakeObj.name,
-                    date: moment(Number(outtakeNew.intake_id)).format("YYYY-MM-DD"),
-                    paid: outtakeNew.paid,
-                    recurrent: false
-                };
-                createStatisticOuttakeDoc(outtake, 'outtakes-clinic')
-            })
+            if (!outtakeNew.root) {
+                if (outtakeNew.exams) outtakeNew.exams.forEach((outtakeObj) => {
+                    var outtake = {
+                        cost: Number(outtakeObj.cost),
+                        name: outtakeObj.name,
+                        date: moment(Number(outtakeNew.intake_id)).format("YYYY-MM-DD"),
+                        paid: outtakeNew.paid,
+                        recurrent: false
+                    };
+                    createStatisticOuttakeDoc(outtake, 'outtakes-clinic')
+                })
+                if (outtakeNew.specialties) outtakeNew.specialties.forEach((outtakeObj) => {
+                    var outtake = {
+                        cost: Number(outtakeObj.cost),
+                        name: outtakeObj.name,
+                        date: moment(Number(outtakeNew.intake_id)).format("YYYY-MM-DD"),
+                        paid: outtakeNew.paid,
+                        recurrent: false
+                    };
+                    createStatisticOuttakeDoc(outtake, 'outtakes-clinic')
+                })
+            }
         }
     });
 
@@ -604,96 +576,33 @@ exports.onUpdateStatisticsOuttakes = functions.firestore.document('outtakes/{id}
             })).forEach((outtake) => updateStatisticOuttakeDoc(outtake, 'outtakes-category'))
 
         } else {
-            if (outtakeUpdated.exams) outtakeUpdated.exams.forEach((outtakeObj) => {
-                var outtake = {
-                    cost: Number(outtakeObj.cost),
-                    name: outtakeObj.name,
-                    date: moment(Number(outtakeUpdated.intake_id)).format("YYYY-MM-DD"),
-                    paid: true,
-                    recurrent: false
-                }
-                updateStatisticOuttakeDoc(outtake, 'outtakes-clinic')
-            })
-            if (outtakeUpdated.specialties) outtakeUpdated.specialties.forEach((outtakeObj) => {
-                var outtake = {
-                    cost: Number(outtakeObj.cost),
-                    name: outtakeObj.name,
-                    date: moment(Number(outtakeUpdated.intake_id)).format("YYYY-MM-DD"),
-                    paid: true,
-                    recurrent: false
-                }
-                updateStatisticOuttakeDoc(outtake, 'outtakes-clinic')
-            })
+            if (!outtakeUpdated.root) {
+                if (outtakeUpdated.exams) outtakeUpdated.exams.forEach((outtakeObj) => {
+                    var outtake = {
+                        cost: Number(outtakeObj.cost),
+                        name: outtakeObj.name,
+                        date: moment(Number(outtakeUpdated.intake_id)).format("YYYY-MM-DD"),
+                        paid: true,
+                        recurrent: false
+                    }
+                    updateStatisticOuttakeDoc(outtake, 'outtakes-clinic')
+                })
+                if (outtakeUpdated.specialties) outtakeUpdated.specialties.forEach((outtakeObj) => {
+                    var outtake = {
+                        cost: Number(outtakeObj.cost),
+                        name: outtakeObj.name,
+                        date: moment(Number(outtakeUpdated.intake_id)).format("YYYY-MM-DD"),
+                        paid: true,
+                        recurrent: false
+                    }
+                    updateStatisticOuttakeDoc(outtake, 'outtakes-clinic')
+                })
+            }
         }
     }
 });
 
 
-// function sleep(ms) {
-//     return new Promise(resolve => setTimeout(resolve, ms));
-// }
-// async function mockOut(name) {
-//     await sleep(100);
-//     var id = moment();
-//     admin.firestore().collection('outtakes').doc(String(id.valueOf())).set({
-//         category: name,
-//         created_at: "2020-07-06 23:59:43",
-//         date_to_pay: "2020-07-06",
-//         description: "tst",
-//         id: "JoDcMg6z8dfqV5ikRBgp",
-//         payment_method: "Dinheiro",
-//         recurrent: "true",
-//         subCategory: "Outro",
-//         value: 15,
-//         //    / paid: "2020-05-18 18:36:15"
-//     })
-
-// }
-
-// async function mockOut2(name) {
-//     await sleep(100);
-//     var id = moment();
-//     admin.firestore().collection('outtakes').doc(String(id.valueOf())).set({
-
-//         created_at: "2020-07-06 23:59:43",
-//         date_to_pay: "2020-07-06",
-//         description: "tst",
-//         intake_id: String(id.valueOf()),
-//         specialties: [{ name: name, cost: 5 }, { name: name, cost: 5 }],
-//         exams: [{ name: name, cost: 5 }],
-//         id: "JoDcMg6z8dfqV5ikRBgp",
-//         payment_method: "Dinheiro",
-//         recurrent: "true",
-//         subCategory: "Outro",
-//         value: 5,
-//         //    / paid: "2020-05-18 18:36:15"
-//     })
-
-// }
-
-// exports.tstCreateOuttake = functions.https.onRequest(async (req, res) => {
-//     // await mockOut2("CARDIOLOGIA");
-//     // await mockOut2("CARDIOLOGIA");
-//     // await mockOut2("CARDIOLOGIA");
-//     await mockOut(["CARDIOLOGIA1", "CARDIOLOGIA2", "CARDIOLOGIA3"]);
-//     //  await mockOut("CARDIOLOGIA");
-//     //  await mockOut("CARDIOLOGIA");
-//     // await mockOut("DERMATOLOGIA TELEATENDIMENTO");
-//     // await mockOut("NEUROLOGIA");
-//     // await mockOut("TESTANDO NOVA ESPECIALIDADE");
-//     // await mockOut("TESTE 2");
-//     res.status(200).send("sdasd")
-// });
-
-// exports.tstUpdateOuttake = functions.https.onRequest(async (req, res) => {
-//     admin.firestore().collection('outtakes').doc('1594695572336').update({
-//         paid: "2020-05-18 18:36:15"
-//     })
-//     admin.firestore().collection('outtakes').doc('1594695572927').update({
-//         paid: "2020-05-18 18:36:15"
-//     })
-//     res.status(200).send("aaa")
-// });
 // ==================================== funcs usadas por varios =======================================================
 async function convertSpecialtySubcollectionInObject(specialtyDoc) {
     let specialty = specialtyDoc.data();
