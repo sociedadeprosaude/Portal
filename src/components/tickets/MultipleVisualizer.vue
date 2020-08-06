@@ -15,9 +15,14 @@
           <v-card elevation="0" :color="index%2 != 0? 'grey lighten-2':'grey lighten-4'">
             <v-row>
               <v-col align-self="center" class="font-weight-bold">
-                <p style="font-size: 2em;">senha {{ticket.number}}</p>
+                <p
+                  style="font-size: 2em;"
+                >senha {{ticket.preferential?'preferencial':''}} {{ticket.number}}</p>
               </v-col>
-              <v-col class="indigo--text text--darken-4 font-weight-bold">
+              <v-col
+                class="font-weight-bold"
+                :style="[ticket.preferential ?'color: rgb(35, 151, 118);':'color:#1A237E']"
+              >
                 <p style="font-size: 4em;">{{ticket.roomName}}</p>
               </v-col>
             </v-row>
@@ -29,37 +34,8 @@
           <img :src="constants.ASSETS.logo" height="124px" />
         </v-card>
       </v-row>
-      <!-- <v-row>
-        <v-col sm="8">
-          <v-card
-            v-if="lastTicketCalled"
-            :class="['primary  white--text ml-n3',animation]"
-            style="height: 160px; width: 100%"
-          >
-            <v-row justify="center" align="center" style="height: 160px; width: 100%">
-              <v-col class="font-weight-bold" style="font-size: 3em">{{lastTicketCalled.roomName}}</v-col>
-              <v-col
-                class="font-weight-bold"
-                style="font-size: 4em"
-              >Senha {{lastTicketCalled.number}}</v-col>
-            </v-row>
-          </v-card>
-
-          <v-card
-            v-for="(ticket, index) in lastTicketsCalled"
-            style="height: 100px"
-            class="my-4 mx-12 primary white--text"
-            :key="index"
-          >
-            <v-row justify="center" align="center" style="height: 100px">
-              <v-col class="font-weight-bold" style="font-size: 2em">{{ticket.roomName}}</v-col>
-              <v-col class="font-weight-bold" style="font-size: 3em">Senha {{ticket.number}}</v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-      </v-row>-->
     </v-container>
-    <v-container fluid class="two white--text">
+    <v-container fluid :class="[lastTicketCalled.preferential?'three':'two', 'white--text']">
       <v-row class="pa-0 ma-0 half">
         <v-col align-self="center">
           <v-row
@@ -81,7 +57,10 @@
       <v-divider class="white"></v-divider>
       <v-row class="pa-0 ma-0 half">
         <v-col align-self="center">
-          <v-row justify="center" class="display-1">Senha atual</v-row>
+          <v-row
+            justify="center"
+            class="display-1"
+          >Senha {{lastTicketCalled.preferential?'preferencial':''}} atual</v-row>
 
           <v-row justify="center">
             <v-col class="ma-0 pa-0">
@@ -118,7 +97,7 @@ export default {
       constants: constants,
       lastRoomCalled: null,
       animation: "",
-      playingAudio: false
+      playingAudio: false,
     };
   },
   watch: {
@@ -133,7 +112,7 @@ export default {
       //     this.playingAudio = false
       //   }, 1000)
       // }
-    }
+    },
   },
   computed: {
     // rooms() {
@@ -158,7 +137,7 @@ export default {
       let tickets = [];
       for (let room in this.rooms) {
         let filteredTickets = this.rooms[room].tickets
-          ? this.rooms[room].tickets.filter(ticket => {
+          ? this.rooms[room].tickets.filter((ticket) => {
               return ticket.called_at;
             })
           : [];
@@ -166,7 +145,7 @@ export default {
           let formattedTicket = {
             ...filteredTickets[ticket],
             roomName: this.rooms[room].name,
-            roomNumber: this.rooms[room].number
+            roomNumber: this.rooms[room].number,
           };
           tickets.push(formattedTicket);
         }
@@ -199,7 +178,7 @@ export default {
     //Aumentar o splice pra aparecer mais se der numa tela grande
     lastTicketsCalled() {
       return this.calledTicketsInOrder.splice(1, 4);
-    }
+    },
   },
   methods: {
     playTicketSound() {
@@ -213,14 +192,15 @@ export default {
     },
     onlyNumbers(str) {
       return str.replace(/\D/g, "");
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
 .one,
-.two {
+.two,
+.three {
   float: left;
   width: 50%;
   min-height: 100vh;
@@ -236,6 +216,9 @@ export default {
 
 .two {
   background-color: rgb(21, 21, 99);
+}
+.three {
+  background-color: rgb(35, 151, 118);
 }
 @keyframes fade-in {
   0% {

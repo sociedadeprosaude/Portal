@@ -13,6 +13,9 @@
         >
           <v-icon>edit</v-icon>
         </v-btn>
+        <v-btn fab @click="$emit('change-dialog-change-ticket',true)" class="ml-2">
+          <v-icon>mdi-ticket-confirmation</v-icon>
+        </v-btn>
       </v-col>
 
       <v-row v-if="!loading" justify="center" align="center" align-content="center">
@@ -78,6 +81,34 @@
         </v-col>
       </v-card>
     </v-dialog>
+
+    <v-dialog
+      v-bind:value="dialogChangeTicket"
+      @click:outside="$emit('change-dialog-change-ticket',false)"
+      width="500"
+    >
+      <v-card>
+        <v-card-title class="headline grey lighten-2" primary-title>Trocar último ticket chamado?</v-card-title>
+        <v-card-text>
+          <v-text-field
+            type="number"
+            label="Último ticket"
+            v-bind:value="lastTicket"
+            @change="(event)=>$emit('change-last-ticket',Number(event))"
+          ></v-text-field>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text @click="$emit('change-dialog-change-ticket',false)">Cancelar</v-btn>
+          <v-btn
+            :loading="loadingChange"
+            text
+            @click="updateLastTicket(lastTicket)"
+          >Trocar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -92,8 +123,12 @@ export default {
     deleteSector: Function,
     choose: Function,
     resetCreation: Function,
+    dialogChangeTicket: Boolean,
+    loadingChange: Boolean,
+    lastTicket: Number,
+    updateLastTicket: Function,
     sectors: Array,
-    loading: Boolean
-  }
+    loading: Boolean,
+  },
 };
 </script>

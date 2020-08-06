@@ -28,8 +28,8 @@ import DoctorScheduling from './views/Operational/DoctorsAgenda/DoctorScheduling
 
 import MedicalCare from "./views/DoctorAttendance/MedicalCare";
 import Attendance from "./views/DoctorAttendance/Attendance";
-import TicketsDashboardRoute from "./views/Operational/Tickets/TicketsDashboardRoute";
-import RoomDashboardRoute from "./views/Operational/Tickets/RoomDashboardRoute";
+import TicketsDashboard from "./views/Operational/Tickets/TicketsDashboard";
+import RoomDashboard from "./views/Operational/Tickets/RoomDashboard";
 
 
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
@@ -236,7 +236,7 @@ let mainRoutes = [
     path: '/senhas',
     name: 'Tickets',
     //component : TicketsDashboard,
-    component: TicketsDashboardRoute,
+    component: TicketsDashboard,
     meta: {
       requiresAuth: false,
     }
@@ -245,7 +245,7 @@ let mainRoutes = [
     path: '/senhas/:sector_name',
     name: 'Roons',
     //component: RoomDashboard,
-    component: RoomDashboardRoute,
+    component: RoomDashboard,
     meta: {
       requiresAuth: false,
     }
