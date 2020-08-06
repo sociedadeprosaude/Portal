@@ -112,7 +112,7 @@
                 try {
                     this.$store.dispatch('thereIsUserCPF', this.cpf.replace(/\./g, "").replace("-", ""))
                         .then(async (exits) => {
-                            if (!exits || (exits.type && exits.type === 'DOCTOR')) {
+                            if (!exits || (exits.crm)){
                                 this.loading = true;
                                 let resp = await firebase
                                     .auth()
@@ -123,8 +123,8 @@
                                     uid: resp.user.uid,
                                     cpf: this.cpf.replace(/\./g, "").replace("-", ""),
                                     telephones: [this.telephone],
-                                    type: exits ? "DOCTOR" : "COLABORATOR",
-                                    group: exits ? 'doctor' : '',
+                                    type: exits.crm ? "DOCTOR" : "COLABORATOR",
+                                    group: exits.crm ? 'doctor' : '',
                                 });
                                 this.registered = true;
                             } else {
