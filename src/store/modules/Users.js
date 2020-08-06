@@ -22,12 +22,13 @@ const state = {
 
 const mutations = {
     async setSelectedPatient(state, payload) {
+        let patientId = payload.uid ? payload.uid : payload.id
         if (payload) {
-            localStorage.setItem('patient', payload.uid);
+            localStorage.setItem('patient', patientId);
         }
         let consultations;
         if (payload) {
-            await firebase.firestore().collection('users').doc(payload.uid).collection('consultations')
+            await firebase.firestore().collection('users').doc(patientId).collection('consultations')
                 .onSnapshot((querySnapshot) => {
                     consultations = [];
                     querySnapshot.forEach((consultation) => {
