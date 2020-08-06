@@ -167,8 +167,8 @@ const actions = {
         // }
         // let querySnapshot = await usersRef.limit(5).get();
         try {
-            //let users = (await axios.get('https://us-central1-prosaude-36f66.cloudfunctions.net/requests-searchUser', {
-            let users = (await axios.get('https://us-central1-prosaudedev.cloudfunctions.net/requests-searchUser', {
+            let users = (await axios.get('https://us-central1-prosaude-36f66.cloudfunctions.net/requests-searchUser', {
+                //  let users = (await axios.get('https://us-central1-prosaudedev.cloudfunctions.net/requests-searchUser', {
                 params: searchFields
             })).data
             return users

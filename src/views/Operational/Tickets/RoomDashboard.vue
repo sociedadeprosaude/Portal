@@ -30,6 +30,7 @@
     :singleViewDialog="singleViewDialog"
     :multipleViewDialog="multipleViewDialog"
     :deletionRoom="deletionRoom"
+    :snackbar="snackbar"
     @open-multiple-view-dialog="multipleViewDialog = true"
     @open-selected-room="(room)=>{
       selectedRoom = room;
@@ -39,6 +40,7 @@
     @close-single-view-dialog="singleViewDialog.active = false"
     @close-doctors-list-dialog="doctorsListDialog = false"
     @toggle-create-room-controller="createRoomController = !createRoomController"
+    @change-snackbar="(event)=>snackbar=event"
   />
 </template>
 
@@ -59,7 +61,7 @@ export default {
         active: false,
         search: "",
       },
-
+      snackbar: false,
       selectedRoom: {},
       room: {},
       createRoomController: false,
@@ -130,7 +132,6 @@ export default {
         this.$store.dispatch("listenTicketsSectors");
       }
       this.$store.dispatch("listenLastTicket");
-      
     },
     async saveAndReset() {
       // this.$store.dispatch("updateGeneralInfo", {
@@ -142,12 +143,11 @@ export default {
       await this.$store.dispatch("saveTicketsHistory");
     },
     getActualTicket(tickets) {
-      let calledTickets = tickets.filter((ticket) => {
-        return ticket.called_at;
-      });
-      if (calledTickets.length === 0) {
-        return undefined;
-      }
+      let calledTickets = tickets
+        .filter((ticket) => ticket.called_at)
+        .sort((a, b) => new Date(a.called_at) - new Date(b.called_at));
+      if (calledTickets.length === 0) return undefined;
+
       return calledTickets[calledTickets.length - 1];
     },
     async createRoom(room) {
@@ -167,7 +167,7 @@ export default {
       await this.$store.dispatch("updateSectorRoom", { sector, room });
       this.loading = false;
     },
-    async generateNextTicket(room) {
+    async generateNextTicket(room, preferential) {
       if (!room.tickets) {
         room.tickets = [];
       }
@@ -175,12 +175,13 @@ export default {
         number: this.ticketInfo.ticket_number,
         created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
         doctor: room.doctor,
+        preferential: preferential,
       });
       await this.upgradeTicketNumber();
       const sector = this.sector;
       await this.$store.dispatch("updateSectorRoom", { sector, room });
     },
-    async generateSectorTicket() {
+    async generateSectorTicket(preferential) {
       let sector = this.sector;
       if (!sector.tickets) {
         sector.tickets = [];
@@ -188,6 +189,7 @@ export default {
       sector.tickets.push({
         number: this.ticketInfo.ticket_number,
         created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+        preferential: preferential,
       });
       await this.upgradeTicketNumber();
       await this.$store.dispatch("updateSector", sector);
@@ -198,16 +200,23 @@ export default {
       ticketInfo.last_updated = moment().format("YYYY-MM-DD HH:mm:ss");
       await this.$store.dispatch("updateGeneralInfo", this.ticketInfo);
     },
-    async callNextTicket(room) {
+    async callNextTicket(room, preferential) {
+      // console.log(room.tickets);
+      // console.log(preferential);
       this.loading = true;
 
       let ticketIndex = room.tickets
-        ? room.tickets.findIndex((ticket) => {
-            return !ticket.called_at;
-          })
+        ? room.tickets.findIndex(
+            (ticket) =>
+              !ticket.called_at &&
+              (preferential ? ticket.preferential : !ticket.preferential)
+          )
         : -1;
       if (ticketIndex < 0) {
-        await this.callSectorTicket(room);
+        this.snackbar = true;
+        // if (!preferential) {
+        //   await this.callSectorTicket(room, preferential);
+        // }
         this.loading = false;
         return;
       }
@@ -219,7 +228,7 @@ export default {
       await this.$store.dispatch("updateSectorRoom", { sector, room });
       this.loading = false;
     },
-    async callSectorTicket(room) {
+    async callSectorTicket(room, preferential) {
       let ticketIndex = this.sector.tickets
         ? this.sector.tickets.findIndex((ticket) => {
             return !ticket.called_at;
@@ -227,8 +236,8 @@ export default {
         : -1;
       if (ticketIndex < 0) {
         //criando e chamando uma nova senha na sala se nao tiver nenhuma pra ser chamada
-        await this.generateSectorTicket();
-        await this.callNextTicket(room);
+        await this.generateSectorTicket(preferential);
+        await this.callNextTicket(room, preferential);
         return;
       }
       this.sector.tickets[ticketIndex].called_at = moment().format(

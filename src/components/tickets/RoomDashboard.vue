@@ -84,7 +84,7 @@
                   <v-btn
                     v-on="on"
                     :disabled="loading"
-                    @click="callNextTicket(room)"
+                    @click="callNextTicket(room,false)"
                     text
                     fab
                     small
@@ -94,6 +94,22 @@
                   </v-btn>
                 </template>
                 <span>Chamar próxima senha</span>
+              </v-tooltip>
+              <v-tooltip top v-if="doctorsLoaded">
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    v-on="on"
+                    :disabled="loading"
+                    @click="callNextTicket(room,true)"
+                    text
+                    fab
+                    small
+                    class="primary ml-2 my-2"
+                  >
+                    <v-icon>notification_important</v-icon>
+                  </v-btn>
+                </template>
+                <span>Chamar próxima senha preferencial</span>
               </v-tooltip>
               <v-tooltip top v-if="doctorsLoaded">
                 <template v-slot:activator="{ on }">
@@ -117,7 +133,7 @@
                   <v-btn
                     v-on="on"
                     :disabled="loading"
-                    @click="generateNextTicket(room)"
+                    @click="generateNextTicket(room,false)"
                     text
                     fab
                     x-small
@@ -128,12 +144,12 @@
                 </template>
                 <span>Gerar senha</span>
               </v-tooltip>
-              <!-- <v-tooltip top v-if="doctorsLoaded">
+              <v-tooltip top v-if="doctorsLoaded">
                 <template v-slot:activator="{ on }">
                   <v-btn
                     v-on="on"
                     :disabled="loading"
-                    @click="generateNextTicket(room)"
+                    @click="generateNextTicket(room,true)"
                     text
                     fab
                     x-small
@@ -143,7 +159,7 @@
                   </v-btn>
                 </template>
                 <span>Gerar senha preferencial</span>
-              </v-tooltip> -->
+              </v-tooltip>
               <v-tooltip top v-if="doctorsLoaded">
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -224,7 +240,7 @@
           <v-flex xs12>
             <v-text-field prepend-icon="search" label="Médico" v-model="doctorsListDialog.search"></v-text-field>
           </v-flex>
-          <v-flex xs12 class="mt-2" v-for="doctor in doctors" :key="doctor.crm">
+          <v-flex xs12 class="mt-2" v-for="(doctor,i) in doctors" :key="i">
             <v-card flat @click="setDoctorToRoom(selectedRoom, doctor)">
               <v-divider class="mb-2"></v-divider>
               <span>{{doctor.name}}</span>
@@ -262,6 +278,24 @@
         </v-col>
       </v-card>
     </v-dialog>
+
+    <v-snackbar
+      v-bind:value="snackbar"
+      @input="(event)=>$emit('change-snackbar',event)"
+      top
+      vertical
+      color="cyan darken-2"
+      :timeout="3000"
+    >
+      Sem tickets para serem chamados, crie um novo antes de chamar
+      <template
+        v-slot:action="{ attrs }"
+      >
+        <v-btn v-bind="attrs" @click="$emit('change-snackbar',false)" fab>
+          <v-icon>mdi-ticket-confirmation</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -275,9 +309,10 @@ export default {
   components: {
     SubmitButton,
     SingleVisualizer,
-    MultipleVisualizer
+    MultipleVisualizer,
   },
   props: {
+    snackbar: Boolean,
     doctorsListDialog: Object,
     selectedRoom: Object,
     room: Object,
@@ -295,7 +330,7 @@ export default {
     doctorsLoaded: Boolean,
     sectorName: String,
     sector: Object,
-    favoriteRoom:Function,
+    favoriteRoom: Function,
     initialInfo: Function,
     saveAndReset: Function,
     getActualTicket: Function,
@@ -309,8 +344,8 @@ export default {
     favoritedRoom: Object,
     deleteRoom: Function,
     alertActualTicket: Function,
-    openSingleView: Function
-  }
+    openSingleView: Function,
+  },
 };
 </script>
 
