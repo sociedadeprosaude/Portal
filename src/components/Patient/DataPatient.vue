@@ -810,7 +810,6 @@
                     this.$emit('removed');
                     localStorage.removeItem('patient');
                 }
-                console.log('User selecionado',user)
                 this.$store.commit('setSelectedPatient', user);
                 this.$store.commit('clearSelectedDependent');
                 this.updateAccessedTo(user);
@@ -819,12 +818,13 @@
             },
 
             async updateAccessedTo(user) {
-
-                await this.$store.dispatch('updateAccessedTo', {
-                    accessed_to: moment().format('YYYY-MM-DD HH:mm:ss'),
-                    id: user.cpf,
-                    addresses:user.addresses
-                })
+                if(user){
+                    await this.$store.dispatch('updateAccessedTo', {
+                        accessed_to: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        id: user.uid? user.uid : user.id,
+                        addresses:user.addresses
+                    })
+                }
             },
 
             async searchPatient() {

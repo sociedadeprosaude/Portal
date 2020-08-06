@@ -122,18 +122,18 @@
 </template>
 
 <script>
-import ColaboratorsProductionReport from "../../components/reports/ColaboratorsProductionReport";
-import GeneralReport from "../../components/reports/GeneralReport";
-import LuizFernandoReport from "../../components/reports/LuizFernandoReport";
-import IntakesReport from "../../components/reports/IntakesReport";
-import ProceduresPricesAnalises from "../../components/reports/ProceduresPricesAnalises";
-import BestSellingExamsReport from "@/components/reports/BestSellingExamsReport";
-import BestSellingConsultationsReport from "@/components/reports/BestSellingConsultationsReport";
-import OuttakesReport from "@/components/reports/OuttakesReport";
-import SpecialtiesMadeReport from "../../components/reports/SpecialtiesMadeReport"
-import NewUsersReport from "@/components/reports/NewUsersReport";
-import ConsultationScheduledExecuted from "../../components/reports/ConsultationScheduledExecuted"
-import CustomersPerProcedureReport from "../../components/reports/CustomersPerProcedureReport"
+import ColaboratorsProductionReport from "../../components/Reports/ColaboratorsProductionReport";
+import GeneralReport from "../../components/Reports/GeneralReport";
+import LuizFernandoReport from "../../components/Reports/LuizFernandoReport";
+import IntakesReport from "../../components/Reports/IntakesReport";
+import ProceduresPricesAnalises from "../../components/Reports/ProceduresPricesAnalises";
+import BestSellingExamsReport from "@/components/Reports/BestSellingExamsReport";
+import BestSellingConsultationsReport from "@/components/Reports/BestSellingConsultationsReport";
+import OuttakesReport from "@/components/Reports/OuttakesReport";
+import SpecialtiesMadeReport from "../../components/Reports/SpecialtiesMadeReport"
+import NewUsersReport from "@/components/Reports/NewUsersReport";
+import ConsultationScheduledExecuted from "../../components/Reports/ConsultationScheduledExecuted"
+import CustomersPerProcedureReport from "../../components/Reports/CustomersPerProcedureReport"
 
 var moment = require("moment");
 export default {

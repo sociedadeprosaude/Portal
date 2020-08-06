@@ -96,9 +96,9 @@
 </template>
 
 <script>
-import ProceduresPricesAnalises from "@/components/reports/ProceduresPricesAnalises";
-import GeneralReport from "@/components/reports/GeneralReport";
-import OuttakesReport from "@/components/reports/OuttakesReport";
+import ProceduresPricesAnalises from "@/components/Reports/ProceduresPricesAnalises";
+import GeneralReport from "@/components/Reports/GeneralReport";
+import OuttakesReport from "@/components/Reports/OuttakesReport";
 
 import statsCaixaIntakes from "./statsCaixa";
 import statsCaixaOuttakes from "./statsCaixaOuttakes";
