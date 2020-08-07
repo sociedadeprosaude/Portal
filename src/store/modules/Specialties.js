@@ -30,11 +30,10 @@ const mutations = {
 
 const actions = {
 
-    async updateSpecialty({ commit }, specialty) {
+    async updateSpecialty({}, specialty) {
         let copySpecialty = Object.assign({},specialty)
         functions.removeUndefineds(copySpecialty)
-        let specialtyRef;
-        specialtyRef = await firebase.firestore().collection('specialties').doc(copySpecialty.name).update(copySpecialty);
+        let specialtyRef = await firebase.firestore().collection('specialties').doc(copySpecialty.name).update(copySpecialty);
     },
 
     async editSpecialty({commit}, specialty) {
@@ -47,7 +46,6 @@ const actions = {
         await firebase.firestore().collection('specialties').doc(specialty.name).set(specialty)
         commit('addSpecialty',specialty)
     },
-
     async getDoctorSpecialty(context, consultation){
         let specialtieSelect = await firebase.firestore().collection('specialties').doc(consultation.specialty.name).get()
         let specialtie={

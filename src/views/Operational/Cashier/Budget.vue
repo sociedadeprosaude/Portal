@@ -45,54 +45,27 @@
 </template>
 
 <script>
-
     import ProceduresSearch from "../../../components/cashier/ProceduresSearch";
     import Cart from "../../../components/cashier/Cart";
     import IntakesHistory from "../../../components/cashier/IntakesHistory";
     import Receipt from "../../../components/cashier/Receipt";
-
     export default {
-        data: () => ({
-            intakes: false,
-            cart: false,
-        }),
-        components: {
-            Receipt,
-            ProceduresSearch,
-            Cart,
-            IntakesHistory
-        },
+        data: () => ({ intakes: false, cart: false, }),
+        components: { Receipt, ProceduresSearch, Cart, IntakesHistory },
         methods: {
-            getTouches(evt) {
-                return evt.touches ||
-                    evt.originalEvent.touches;
-            },
+            getTouches(evt) { return evt.touches || evt.originalEvent.touches; },
             handleTouchStart(evt) {
                 const firstTouch = this.getTouches(evt)[0];
                 this.xDown = firstTouch.clientX;
                 this.yDown = firstTouch.clientY;
             },
             handleTouchMove(evt) {
-                if ( ! this.xDown || ! this.yDown ) {
-                    return;
-                }
-
+                if ( ! this.xDown || ! this.yDown ) { return; }
                 let xUp = evt.touches[0].clientX;
                 let yUp = evt.touches[0].clientY;
-
                 let xDiff = this.xDown - xUp;
                 let yDiff = this.yDown - yUp;
-
-                if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {
-                    if ( xDiff > 0 ) {
-                        this.intakes = false
-
-                    } else {
-                        this.cart = false
-
-                    }
-                }
-
+                if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) { if ( xDiff > 0 ) { this.intakes = false } else { this.cart = false } }
                 this.xDown = null;
                 this.yDown = null;
             }
@@ -108,18 +81,11 @@
             }
         },
         computed: {
-
-            isMobile() {
-              return this.$store.getters.isMobile
-            },
-
-            selectedPatient() {
-                return this.$store.getters.selectedPatient
-            },
+            isMobile() { return this.$store.getters.isMobile },
+            selectedPatient() { return this.$store.getters.selectedPatient },
         },
     }
 </script>
-
 <style scoped>
     @page {
         size: auto;

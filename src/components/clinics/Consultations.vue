@@ -173,11 +173,13 @@
                         doctor: this.doctor[i].name,
                         crm: this.doctor[i].crm,
                         cpf: this.doctor[i].cpf,
+                        uid: this.doctor[i].uid,
                         cost: this.cost,
                         price: this.sale,
                         obs: this.obs,
                         payment: this.payment,
                     };
+                    console.log('data:', data)
                     this.$store.dispatch('addAppointment', data);
                 }
                 this.clear()

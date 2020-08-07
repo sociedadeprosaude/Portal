@@ -7,7 +7,6 @@ import Login from '@/views/Auth/Login'
 import Register from '@/views/Auth/Register'
 import Exams from "./views/Register/Exams";
 import Labor from "./views/Personal/Labor";
-import Reports from "./views/Register/Reports";
 import NewBundles from "./views/Register/Bundles";
 import PaymentCovenants from "./views/Financial/PaymentCovenants";
 import PaymentMedics from "./views/Financial/PaymentMedics";
@@ -35,8 +34,14 @@ import RoomDashboard from "./views/Operational/Tickets/RoomDashboard";
 
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
 import CashierRoutes from "./routes/CashierRoutes";
+
+
 import discount from "./views/Notifications/discount"
 import notifications from "./views/Notifications/notifications";
+
+
+import RelatoriosDashboard from "@/views/Reports/ReportsDashboard";
+
 
 const Clinic = {
   props: ['id'],
@@ -78,14 +83,8 @@ let mainRoutes = [
       requiresAuth: true
     }
   },
-  {
-    path: '/relatorio',
-    name: 'Relatorios',
-    component: Reports,
-    meta: {
-      requiresAuth: true
-    }
-  },
+
+
   {
     path: '/discount',
     name: 'discount',
@@ -102,6 +101,7 @@ let mainRoutes = [
       requiresAuth: false
     }
   },
+ 
   {
     path: '/labor',
     name: 'labor',
@@ -235,6 +235,7 @@ let mainRoutes = [
   {
     path: '/senhas',
     name: 'Tickets',
+    //component : TicketsDashboard,
     component: TicketsDashboard,
     meta: {
       requiresAuth: false,
@@ -243,6 +244,7 @@ let mainRoutes = [
   {
     path: '/senhas/:sector_name',
     name: 'Roons',
+    //component: RoomDashboard,
     component: RoomDashboard,
     meta: {
       requiresAuth: false,
@@ -264,6 +266,24 @@ let mainRoutes = [
     component: DoctorScheduling,
     meta: {
       requiresAuth: false,
+    },
+  },
+
+  {
+    path: '/Relatorios/:idReport',
+    name: 'RelatoriosDashboard',
+    component: RelatoriosDashboard,
+    beforeEnter(to, from, next) {
+      store.commit('showOverviewToggle', true)
+      next()
+    },
+  },
+  {
+    path: '/Relatorios',
+    name: 'RelatoriosDashboard',
+    component: RelatoriosDashboard,
+    beforeEnter(to, from, next) {
+      next("Relatorios/RelatorioGeral")
     },
   },
 ];
@@ -296,7 +316,8 @@ router.afterEach((to, from, next) => {
   } else {
     store.commit('setDoctorsAgendaToolbar', false)
   }
-  if (from.name == 'CashierReports') store.commit('showOverviewToggle', false)
+  if (from.name == 'RelatoriosDashboard' && to.name != 'RelatoriosDashboard')
+    store.commit('showOverviewToggle', false)
   if (to.path.includes('pagamento')) {
     store.commit('setBillsToolbar', true)
   } else {

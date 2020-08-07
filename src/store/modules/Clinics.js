@@ -166,8 +166,8 @@ const actions = {
             price: payload.price,
             payment_method: payload.payment,
             crm: payload.crm,
-            cpf: payload.cpf
-
+            cpf: payload.cpf,
+            uid: payload.uid
         };
 
         let info = {
@@ -179,14 +179,15 @@ const actions = {
             name: payload.specialtie,
             cost: payload.cost,
             price: payload.price,
+            uid: payload.uid,
             payment_method: payload.payment,
         };
         delete payload.clinic.id;
         let consultation = await firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie
-            + '/doctors').doc(payload.cpf).get();
+            + '/doctors').doc(payload.uid).get();
 
         context.dispatch('updateOrSet',{
-            documentReference:firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie + '/doctors').doc(payload.cpf),
+            documentReference:firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie + '/doctors').doc(payload.uid),
             data: data });
 
         context.dispatch('updateOrSet',{
@@ -194,24 +195,29 @@ const actions = {
                 data: info });
 
         context.dispatch('updateOrSet',{
-                    documentReference:firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie),
+                    documentReference:firebase.firestore().collection('users/' + payload.uid + '/specialties').doc(payload.specialtie),
                     data: details });
 
         context.dispatch('updateOrSet',{
-                        documentReference: firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).collection('clinics/').doc(payload.clinic.name),
+                        documentReference: firebase.firestore().collection('users/' + payload.uid + '/specialties').doc(payload.specialtie).collection('clinics/').doc(payload.clinic.name),
                         data: payload.clinic });
 
         context.dispatch('updateOrSet',{
-                    documentReference: firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf),
+                    documentReference: firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.uid),
                     data: data});
 
         context.dispatch('updateOrSet',{
-                        documentReference: firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf).collection('clinics/').doc(payload.clinic.name),
+                        documentReference: firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.uid).collection('clinics/').doc(payload.clinic.name),
                         data: payload.clinic})
     },
 
-    addAppointmentFromDoctors({commit}, payload) {
-
+    async addAppointmentFromDoctors({commit}, payload) {
+        let uid;
+        let searchDoctor = await firebase.firestore().collection('users').where('cpf','==', payload.cpf).get();
+        searchDoctor.docs.forEach(doc => {
+            uid = doc.id
+        });
+        console.log('uid 2:', uid)
         let data = {
             name: payload.doctor,
             specialtie: payload.specialtie,
@@ -220,36 +226,26 @@ const actions = {
             price: payload.price,
             payment_method: payload.paymentMethod,
             crm: payload.crm,
+            uid: uid,
             cpf: payload.cpf
         };
-
-        let info = {
-            name: payload.specialtie,
-        };
-
-        firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties').doc(payload.specialtie)
-            .set(info);
-
-        firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie + '/doctors')
-            .doc(payload.cpf).set(data);
-
-        firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).collection('clinics/')
-            .doc(payload.clinic.name).set(payload.clinic);
-
-
-        firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf).collection('clinics/')
-            .doc(payload.clinic.name).set(payload.clinic);
+        let info = { name: payload.specialtie };
+        await firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties').doc(payload.specialtie).set(info);
+        await firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie + '/doctors').doc(uid).set(data);
+        await firebase.firestore().collection('users/' + uid + '/specialties').doc(payload.specialtie).collection('clinics/').doc(payload.clinic.name).set(payload.clinic);
+        await firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(uid).collection('clinics/').doc(payload.clinic.name).set(payload.clinic);
+        console.log('foi?3')
     },
 
     deleteAppointment({commit}, payload) {
         delete payload.clinic.id;
-        firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie + '/doctors').doc(payload.cpf)
+        firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie + '/doctors').doc(payload.uid)
             .delete();
 
-        firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.cpf).collection('clinics/').doc(payload.clinic.name)
+        firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(payload.uid).collection('clinics/').doc(payload.clinic.name)
             .delete();
 
-        firebase.firestore().collection('users/' + payload.cpf + '/specialties').doc(payload.specialtie).collection('clinics/').doc(payload.clinic.name)
+        firebase.firestore().collection('users/' + payload.uid + '/specialties').doc(payload.specialtie).collection('clinics/').doc(payload.clinic.name)
             .delete();
     },
 

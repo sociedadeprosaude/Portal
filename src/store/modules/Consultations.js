@@ -120,6 +120,12 @@ const actions = {
     },
 
     async getSchedules({commit, dispatch}, payload) {
+        // let schedCol = await firebase.firestore().collection('schedules').get()
+        // schedCol.forEach(doc => {
+        //     firebase.firestore().collection('schedules').doc(doc.id).update({
+        //         interval: 5
+        //     })
+        // })
         try {
             commit('setConsultationsLoaded', false);
             let schedules = [];
@@ -152,7 +158,6 @@ const actions = {
                     }
                     obj.cancelations_schedules = cancelations_schedules
                     schedules.push({...obj})
-
                 });
                 commit('setSchedules', schedules);
                 commit('setConsultationLoading', false)
@@ -244,27 +249,24 @@ const actions = {
                 .where('doctor.cpf', '==', payload.doctor.cpf)
                 .where('specialty.name', '==', payload.specialties[i])
                 .get();
-
             scheduleFound.forEach(async (doc) => {
                 await firebase.firestore().collection('schedules').doc(doc.id).delete();
-                await firebase.firestore().collection('users').doc(payload.doctor.cpf)
+                await firebase.firestore().collection('users').doc(payload.doctor.uid)
                     .collection('specialties').doc(payload.specialties[i])
                     .collection('clinics').doc(payload.clinic.name)
                     .collection('schedules').doc(doc.id).delete();
             });
-
             await this.dispatch('checkStatusSpecialty', payload.specialties[i]);
         }
         await this.dispatch('checkStatusDoctor', payload.doctor);
     },
 
     async checkStatusDoctor ({commit}, doctor){
-
         let scheduleFound = await firebase.firestore().collection('schedules')
             .where('doctor.cpf', '==', doctor.cpf)
             .get();
         if (scheduleFound.empty){
-            await firebase.firestore().collection('users').doc(doctor.cpf).update({
+            await firebase.firestore().collection('users').doc(doctor.uid).update({
                 "status": "DESACTIVATE"
             });
         }
@@ -281,33 +283,18 @@ const actions = {
         }
     },
 
-    async SearchCosultation({commit}) {
-        try {
-            firebase.firestore().collection('consultations').doc()
-        } catch (e) {
-            throw e
-        }
-    },
+    async SearchCosultation( {commit}) { try { firebase.firestore().collection('consultations').doc() } catch (e) { throw e } },
 
     async eraseAppointment({commit}, payload) { // apagarConsulta
         try {
-
             functions.removeUndefineds(payload);
             var cancelAppointment = firebase.functions().httpsCallable('requests-cancelAppointment');
             var response = await cancelAppointment({payload: payload})
-
-        } catch (e) {
-            throw e
-        }
+        } catch (e) { throw e }
     },
 
     async removeAppointmentForever({commit}, payload) {
-
-        try {
-            firebase.firestore().collection('canceled').doc(payload.idConsultation).delete()
-        } catch (e) {
-            throw e
-        }
+        try {firebase.firestore().collection('canceled').doc(payload.idConsultation).delete()} catch (e) { throw e }
     },
 
     async deleteAllSchedule({commit}, payload) {
@@ -424,9 +411,11 @@ const actions = {
         firebase.firestore().collection('consultations').doc(payload.consultation).update({start_at: payload.start});
         firebase.firestore().collection('consultations').doc(payload.consultation).update({end_at: payload.end});
         firebase.firestore().collection('consultations').doc(payload.consultation).update({duration: payload.durantion});
+        firebase.firestore().collection('consultations').doc(payload.consultation).update({waiting_time: payload.waiting});
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({start_at: payload.start});
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({end_at: payload.end});
         firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({duration: payload.durantion})
+        firebase.firestore().collection('users').doc(payload.patient).collection('consultations').doc(payload.consultation).update({waiting_time: payload.waiting})
     }
 }
 

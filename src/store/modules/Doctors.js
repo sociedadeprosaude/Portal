@@ -12,22 +12,11 @@ const state = {
 };
 
 const mutations = {
-    setDoctors(state, payload) {
-        state.doctors = payload;
-        state.loaded = true
-    },
-    setDoctor(state, payload) {
-        state.doctor = payload
-    },
-    setSpecialties(state, payload) {
-        state.specialties = payload
-    },
-    deleteDoctor(state, payload) {
-        Vue.delete(state.doctors, payload.cpf)
-    },
-    setDoctorSelected(state, payload) {
-        state.doctorSelected = payload;
-    }
+    setDoctors(state, payload) { state.doctors = payload; state.loaded = true },
+    setDoctor(state, payload) { state.doctor = payload },
+    setSpecialties(state, payload) { state.specialties = payload },
+    deleteDoctor(state, payload) { Vue.delete(state.doctors, payload.uid) },
+    setDoctorSelected(state, payload) { state.doctorSelected = payload; }
 };
 
 const actions = {
@@ -36,15 +25,24 @@ const actions = {
             doctor = functions.removeUndefineds(doctor);
             doctor.type = "DOCTOR";
             doctor.status = "DESACTIVATE";
-            let docCopy = JSON.parse(JSON.stringify(doctor));
-            delete docCopy.specialties;
-            let foundUser = await firebase.firestore().collection('users').doc(doctor.cpf).get();
-            if (foundUser.exists) {
-                firebase.firestore().collection('users').doc(doctor.cpf).update(docCopy)
+            console.log('payload:',doctor)
+            let founded;
+            let foundUser = await firebase.firestore().collection('users').where('cpf','==', doctor.cpf).get();
+            foundUser.docs.forEach(doc => { founded = doc.id} );
+            if (founded) {
+                await firebase.firestore().collection('users').doc(founded).update(doctor)
             } else {
-                await firebase.firestore().collection('users').doc(doctor.cpf).set(docCopy)
+                await firebase.firestore().collection('users').add(doctor)
             }
-            for (let spec in doctor.specialties) {
+            //delete docCopy.specialties;
+            let docCopy = JSON.parse(JSON.stringify(doctor));
+            let uid;
+            let searchDoctor = await firebase.firestore().collection('users').where('cpf','==', doctor.cpf).get();
+            searchDoctor.docs.forEach(doc => {
+                uid = doc.id
+            });
+            console.log('uid 1:', uid)
+            for (let spec in doctor.specialties){
                 let details = {
                     cost: doctor.specialties[spec].cost,
                     price: doctor.specialties[spec].price,
@@ -52,22 +50,19 @@ const actions = {
                 };
                 let holder = {
                     ...docCopy,
-                    ...details
+                    ...details,
                 };
-                delete doctor.specialties[spec].doctors;
-                firebase.firestore().collection('users/' + doctor.cpf + '/specialties').doc(doctor.specialties[spec].name)
-                    .set({
-                        ...details,
-                        ...doctor.specialties[spec]
-                    });
+                await firebase.firestore().collection('users/' + uid + '/specialties').doc(doctor.specialties[spec].name).set({
+                    ...details,
+                    ...doctor.specialties[spec],
+                    uid: uid
+                });
                 doctor.specialties[spec] = functions.removeUndefineds(doctor.specialties[spec]);
                 delete holder.clinics;
-                await firebase.firestore().collection('specialties').doc(doctor.specialties[spec].name).collection('doctors').doc(doctor.cpf).set(holder)
+                await firebase.firestore().collection('specialties').doc(doctor.specialties[spec].name).collection('doctors').doc(uid).set(holder);
             }
             return
-        } catch (e) {
-            throw e
-        }
+        } catch (e) { throw e }
     },
 
     async deleteConsultations({}, doctor) {
@@ -84,41 +79,35 @@ const actions = {
                     firebase.firestore().collection('canceled').doc(doc.id).set(doc.data())
                 }
             })
-        } catch (e) {
-            throw e
-        }
+        } catch (e) { throw e }
         return
     },
 
     async deleteDoctor({commit}, doctor) {
         try {
-            (await firebase.firestore().collection('users').doc(doctor.cpf).collection('specialties').get()).forEach((doc) => {
-                firebase.firestore().collection('users').doc(doctor.cpf).collection('specialties').doc(doc.id).delete()
+            (await firebase.firestore().collection('users').doc(doctor.uid).collection('specialties').get()).forEach((doc) => {
+                firebase.firestore().collection('users').doc(doctor.uid).collection('specialties').doc(doc.id).delete()
             });
 
-            (await firebase.firestore().collection('users').doc(doctor.cpf).collection('clinics').get()).forEach((doc) => {
-                firebase.firestore().collection('users').doc(doctor.cpf).collection('clinics').doc(doc.id).delete()
+            (await firebase.firestore().collection('users').doc(doctor.uid).collection('clinics').get()).forEach((doc) => {
+                firebase.firestore().collection('users').doc(doctor.uid).collection('clinics').doc(doc.id).delete()
             });
 
-            await firebase.firestore().collection('users').doc(doctor.cpf).delete();
+            await firebase.firestore().collection('users').doc(doctor.uid).delete();
             for (let spec in doctor.specialties) {
-                await firebase.firestore().collection('specialties').doc(doctor.specialties[spec].name).collection('doctors').doc(doctor.cpf).delete()
+                await firebase.firestore().collection('specialties').doc(doctor.specialties[spec].name).collection('doctors').doc(doctor.uid).delete()
             }
             for (let clinic in doctor.clinics) {
-                await firebase.firestore().collection('clinics').doc(doctor.clinics[clinic].name).collection('doctors').doc(doctor.cpf).delete()
+                await firebase.firestore().collection('clinics').doc(doctor.clinics[clinic].name).collection('doctors').doc(doctor.uid).delete()
             }
             commit('deleteDoctor', doctor);
             return
-        } catch (e) {
-            throw e
-        }
+        } catch (e) { throw e }
     },
     async getDoctors({commit}) {
         firebase.firestore().collection('users').where('type', '==', 'DOCTOR').onSnapshot(async (doctorsSnap) => {
             let doctors = {};
-            for (let document in doctorsSnap.docs) {
-                doctors[doctorsSnap.docs[document].id] = doctorsSnap.docs[document].data()
-            }
+            for (let document in doctorsSnap.docs) { doctors[doctorsSnap.docs[document].id] = doctorsSnap.docs[document].data() }
             commit('setDoctors', doctors);
         })
     },
@@ -142,9 +131,7 @@ const actions = {
             });
             commit('setSpecialties', specialties);
             return specialties
-        } catch (e) {
-            throw e
-        }
+        } catch (e) { throw e }
     },
     async getDoctor({commit}, payload) {
         firebase.firestore().collection('users').doc(payload).onSnapshot(async (doctorsSnap) => {
@@ -219,26 +206,14 @@ const actions = {
         }
 
     },
-    async selectDoctor({commit}, doctor) {
-        commit('setDoctorSelected', doctor)
-    }
+    async selectDoctor({commit}, doctor) { commit('setDoctorSelected', doctor) }
 };
-
 const getters = {
-    doctors(state) {
-        return state.doctors
-    },
-    doctor(state) {
-        return state.doctor
-    },
-    doctorsLoaded(state) {
-        return state.loaded
-    },
-    doctorSelected(state) {
-        return state.doctorSelected
-    }
+    doctors(state) {return state.doctors},
+    doctor(state) {return state.doctor},
+    doctorsLoaded(state) {return state.loaded},
+    doctorSelected(state) {return state.doctorSelected}
 };
-
 export default {
     state,
     mutations,

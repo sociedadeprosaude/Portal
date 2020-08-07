@@ -11,8 +11,8 @@ const mutations = {};
 const actions = {
 
     async addDataBudget({ getters }, payload) {
-        const cpf = payload.cpf;
-        delete payload.cpf;
+        const cpf = payload.uid;
+        delete payload.uid;
         firebase.firestore().collection('budgets').doc(`${payload.id}`).update(payload);
         firebase.firestore().collection('users').doc(cpf)
             .collection('budgets').doc(`${payload.id}`).update(payload);
@@ -64,7 +64,7 @@ const actions = {
         }
         //Talvez aqui
         if (copyPayload.user) {
-            await firebase.firestore().collection('users').doc(copyPayload.user.cpf).collection('budgets').doc(copyPayload.id.toString()).set({ ...copyPayload })
+            await firebase.firestore().collection('users').doc(copyPayload.user.uid).collection('budgets').doc(copyPayload.id.toString()).set({ ...copyPayload })
         }
     },
 
@@ -91,14 +91,15 @@ const actions = {
     },
 
     async deleteBudget({ }, data) {
-        let userId = data.user.cpf.toString();
+        //let userId = data.user.cpf.toString();
+        let userId = data.user.uid;
         let budgetId = data.budgetId.toString();
         await firebase.firestore().collection('budgets').doc(budgetId.toString()).delete();
         await firebase.firestore().collection('users').doc(userId.toString()).collection('budgets').doc(budgetId.toString()).delete();
     },
 
     async getUserBudgets(context, user) {
-        let userRef = firebase.firestore().collection('users').doc(user.cpf);
+        let userRef = firebase.firestore().collection('users').doc(user.id);
         let budgetsSnap = await userRef.collection('budgets').get();
         let budgets = [];
         budgetsSnap.forEach((doc) => {
@@ -134,7 +135,7 @@ const actions = {
                 status: constants.INTAKE_STATUS.CANCELLED,
                 cancelled_by: context.getters.user
             });
-        await firebase.firestore().collection('users').doc(intake.user.cpf).collection('intakes').doc(intake.id.toString()).update(
+        await firebase.firestore().collection('users').doc(intake.user.uid).collection('intakes').doc(intake.id.toString()).update(
             {
                 status: constants.INTAKE_STATUS.CANCELLED,
                 cancelled_by: context.getters.user

@@ -9,7 +9,7 @@ import constants from '@/utils/constants'
 function f(arg) {
     return 0
 }
-String.prototype.replaceAll = String.prototype.replaceAll || function(needle, replacement) {
+String.prototype.replaceAll = String.prototype.replaceAll || function (needle, replacement) {
     return this.split(needle).join(replacement);
 };
 
@@ -22,14 +22,13 @@ const state = {
 
 const mutations = {
     async setSelectedPatient(state, payload) {
-
+        let patientId = payload.uid ? payload.uid : payload.id
         if (payload) {
-            localStorage.setItem('patient', payload.cpf);
+            localStorage.setItem('patient', patientId);
         }
-
         let consultations;
         if (payload) {
-            await firebase.firestore().collection('users').doc(payload.cpf).collection('consultations')
+            await firebase.firestore().collection('users').doc(patientId).collection('consultations')
                 .onSnapshot((querySnapshot) => {
                     consultations = [];
                     querySnapshot.forEach((consultation) => {
@@ -38,7 +37,6 @@ const mutations = {
                     payload = { ...payload, consultations: consultations };
                     state.selectedPatient = payload
                 })
-
         } else {
             state.selectedPatient = payload
         }
@@ -87,10 +85,10 @@ const actions = {
         }
     },
 
-    async userPermissions({commit}, payload) {
+    async userPermissions({ commit }, payload) {
         try {
             let updateUserPermissions;
-            updateUserPermissions = await firebase.firestore().collection('users').doc(payload.user).update({permissions: payload.permissions})
+            updateUserPermissions = await firebase.firestore().collection('users').doc(payload.user).update({ permissions: payload.permissions })
             return updateUserPermissions
         } catch (e) {
             throw e
@@ -128,66 +126,78 @@ const actions = {
         }
     },
 
-    async getPatient({ }, id) {
-        let userDoc = await firestore().collection('users').doc(id.toString()).get();
-        return userDoc.data()
-    },
-    async searchUser({ }, searchFields) {
-        let usersRef = firestore().collection('users');
-        for (let field in searchFields) {
-            if (!searchFields[field] || searchFields[field].length === 0) continue;
-
-            if (field === 'name'){
-                usersRef = usersRef.where(field, field === 'name' ? '>=' : '==', searchFields[field].toUpperCase());
-                break
-            }
-            else if (field === 'cpf'){
-                searchFields[field] = searchFields[field].replaceAll('.','');
-                searchFields[field] = searchFields[field].replace('-','');
-                usersRef = usersRef.where(field, field === 'cpf' ? '>=' : '==', searchFields[field]);
-                break
-            }
-            else if (field === 'association_number' ){
-                usersRef = usersRef.where('association_number' ,'>=', searchFields[field]);
-                break
-                }
-            else{
-                if(field === 'type'){
-                    usersRef = usersRef.where('type' ,'==', searchFields[field]);
-                    break
-                }
-            }
-
-
-        }
-        let querySnapshot = await usersRef.limit(30).get();
-        let users = [];
-        querySnapshot.forEach(function (doc) {
-            users.push({
-                ...doc.data(),
-                id: doc.id
-            })
+    async getPatient({ }, cpf) {
+        let userDoc = await firestore().collection('users')
+            .where('cpf', '==', cpf)
+            .get();
+        let user;
+        userDoc.forEach(doc => {
+            user = doc.data()
         });
-        return users
+        console.log('user:', user)
+        return user
+    },
+
+    async searchUser({ }, searchFields) {
+
+        // let usersRef = firestore().collection('users');
+        // for (let field in searchFields) {
+        //     if (!searchFields[field] || searchFields[field].length === 0) continue;
+        //
+        //     if (field === 'name'){
+        //         usersRef = usersRef.where('name', '>=', searchFields[field].toUpperCase())
+        //             // .where('name', '<=', searchFields['name'].toUpperCase()+ '\uf8ff')
+        //         break
+        //     }
+        //     else if (field === 'cpf'){
+        //         searchFields[field] = searchFields[field].replaceAll('.','');
+        //         searchFields[field] = searchFields[field].replace('-','');
+        //         usersRef = usersRef.where(field, '==', searchFields[field]);
+        //         break
+        //     }
+        //     else if (field === 'association_number' ){
+        //         usersRef = usersRef.where('association_number' ,'==', searchFields[field]);
+        //         break
+        //         }
+        //     else{
+        //         if(field === 'type'){
+        //             usersRef = usersRef.where('type' ,'==', searchFields[field]);
+        //             break
+        //         }
+        //     }
+        // }
+        // let querySnapshot = await usersRef.limit(5).get();
+        try {
+            let users = (await axios.get('https://us-central1-prosaude-36f66.cloudfunctions.net/requests-searchUser', {
+                //  let users = (await axios.get('https://us-central1-prosaudedev.cloudfunctions.net/requests-searchUser', {
+                params: searchFields
+            })).data
+            return users
+        } catch (e) {
+            throw e
+        }
     },
 
     thereIsUserCPF({ commit }, payload) {
         return new Promise(async (resolve, reject) => {
             try {
-                let foundUser = await firebase.firestore().collection('users').doc(payload).get();
-                resolve(foundUser.data())
-            }catch(e){
+                let userDoc = await firestore().collection('users')
+                    .where('cpf', '==', payload)
+                    .get();
+                userDoc.forEach(doc => {
+                    resolve(doc.data())
+                });
+            } catch (e) {
                 reject(e)
             }
         })
-
     },
     thereIsUserUID({ commit }, payload) {
         return new Promise(async (resolve, reject) => {
             try {
                 let foundUser = await firebase.firestore().collection('users').doc(payload).get();
                 resolve(foundUser.data())
-            }catch(e){
+            } catch (e) {
                 reject(e)
             }
         })
@@ -217,32 +227,32 @@ const actions = {
     },
 
     async addUser({ getters }, patient) {
+        console.log('patient:', patient)
+        functions.removeUndefineds(patient);
         try {
-
-            functions.removeUndefineds(patient);
-
             let user;
-            if (!patient.cpf) {
-                patient.cpf = 'RG' + patient.rg
-            }
-            let foundUser = await firebase.firestore().collection('users').doc(patient.cpf).get();
-            if (foundUser.exists) {
-                user = await firebase.firestore().collection('users').doc(patient.cpf).update(patient);
-                if (foundUser.data().type !== 'PATIENT'){
-                    let type = foundUser.data().type.toUpperCase();
-                    user = await firebase.firestore().collection('users').doc(patient.cpf).update({
-                        type: type
-                    })
-                }
-                
+            let id;
+            let type;
+            let foundUser = await firebase.firestore().collection('users').where('cpf', '==', patient.cpf).get();
+            foundUser.docs.forEach(doc => {
+                id = doc.id,
+                    type = doc.data().type
+            });
+            console.log('encontrado:', id)
+            if (id) {
+                //se já existir: collaborator / patient / doctor (passar a ter field uid !== de doc.id)
+                if (type === 'COLABORATOR') {
+                    patient.type = type
+                    user = await firebase.firestore().collection('users').doc(id).update(patient)
+                } else { user = await firebase.firestore().collection('users').doc(id).update(patient) }
             } else {
+                //novo user : colaborator / patiente
                 if (patient.type) {
                     patient.type = patient.type.toUpperCase()
                 }
                 patient.created_at = moment().format('YYYY-MM-DD HH:mm:ss');
-                user = await firebase.firestore().collection('users').doc(patient.cpf).set(patient)
+                user = await firebase.firestore().collection('users').add(patient)
             }
-
             return user
         } catch (e) {
             throw e
@@ -260,11 +270,11 @@ const actions = {
                 }
             }
             upd = payload.user;
-            return await firebase.firestore().collection('users').doc(payload.user.cpf).set(upd)
+            return await firebase.firestore().collection('users').doc(payload.user.uid).set(upd)
 
         } else {
             upd[payload.field] = payload.value;
-            return await firebase.firestore().collection('users').doc(payload.user.cpf).update(upd)
+            return await firebase.firestore().collection('users').doc(payload.user.uid).update(upd)
         }
     },
     async deleteUser({ }, user) {
@@ -275,7 +285,7 @@ const actions = {
                     adv += user.user.advances[advance].valueParcel
                 }
             }
-            await firebase.firestore().collection('users').doc(user.user.cpf).delete();
+            await firebase.firestore().collection('users').doc(user.user.uid).delete();
             admin.auth().deleteUser(user.user.uid).then(function () {
             })
                 .catch(function (error) {
@@ -302,22 +312,22 @@ const actions = {
         commit('setSelectedDependent', payload)
     },
 
-    updateAccessedTo ({}, payload){
+    updateAccessedTo({ }, payload) {
         firebase.firestore().collection('users').doc(payload.id).update({
             accessed_to: payload.accessed_to
         })
         if (payload.addresses && payload.addresses[0] && payload.addresses[0].cep) {
-            let newCEP = payload.addresses[0].cep.replace(/[.,-]/g,"").substring(0,5)
+            let newCEP = payload.addresses[0].cep.replace(/[.,-]/g, "").substring(0, 5)
             firebase.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood')
-            .doc(newCEP).collection('monthly_report').doc(moment().format('YYYY-MM'))
-            .get().then(doc=>{
-                if(doc.exists){
-                    doc.ref.update({accessed:firebase.firestore.FieldValue.increment(1)})
-                }else{
-                    doc.ref.set({accessed:1})
-                }
-            })
-        
+                .doc(newCEP).collection('monthly_report').doc(moment().format('YYYY-MM'))
+                .get().then(doc => {
+                    if (doc.exists) {
+                        doc.ref.update({ accessed: firebase.firestore.FieldValue.increment(1) })
+                    } else {
+                        doc.ref.set({ accessed: 1 })
+                    }
+                })
+
         }
     },
 };

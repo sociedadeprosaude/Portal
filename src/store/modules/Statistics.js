@@ -11,6 +11,8 @@ const state = {
     genderClientsServed:{},
     geopoints:[],
     statisticsOuttakes: null,
+    statisticsOuttakesClinics: null,
+  
 };
 
 const mutations = {
@@ -18,6 +20,7 @@ const mutations = {
     setGeopoints: (state, payload) => state.geopoints = payload,
     setStatistics: (state, payload) => state.statistics = payload,
     setStatisticsOuttakes: (state, payload) => state.statisticsOuttakes = payload,
+    setStatisticsOuttakesClinics: (state, payload) => state.statisticsOuttakesClinics = payload,
     setClientsServed: (state, payload) => state.clientsServed = payload,
     setNewClients: (state, payload) => state.newClients = payload,
     setAgeClientsServed: (state, payload) => state.ageClientsServed = payload,
@@ -90,12 +93,11 @@ const actions = {
 
 
     async getStatisticsOuttakesByMonth({ commit }, payload) {
-        var statistics = await firebase.firestore().collection('statistics').doc('outtakes').collection('month').get();
+        var statistics = await firebase.firestore().collection('statistics').doc('outtakes-category').collection('month').get();
         var statsYearMonth = {}
 
-        var outtakes = await firebase.firestore().collection('outtakes').get();
-        outtakes = outtakes.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        console.log(outtakes)
+        // var outtakes = await firebase.firestore().collection('outtakes').get();
+        // outtakes = outtakes.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
         statistics = statistics.docs.map((doc) => {
             const statDay = doc.data();
@@ -113,6 +115,31 @@ const actions = {
         // console.log(statistics);
         // console.log(statsYearMonth);
         commit('setStatisticsOuttakes', statsYearMonth)
+    },
+
+    async getStatisticsOuttakesClinicsByMonth({ commit }, payload) {
+        var statistics = await firebase.firestore().collection('statistics').doc('outtakes-clinic').collection('month').get();
+        var statsYearMonth = {}
+
+        // var outtakes = await firebase.firestore().collection('outtakes').get();
+        // outtakes = outtakes.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+        statistics = statistics.docs.map((doc) => {
+            const statDay = doc.data();
+            let [year, month] = doc.id.match(/\d+/g);
+            if (!statsYearMonth[year]) statsYearMonth[year] = {};
+            statsYearMonth[year][month] = {};
+            statsYearMonth[year][month].arrTotalToPay = statDay.arrTotalToPay;
+            statsYearMonth[year][month].numOfOuttakesToPay = statDay.numOfOuttakesToPay;
+            statsYearMonth[year][month].totalLeftToPay = statDay.totalLeftToPay;
+            statsYearMonth[year][month].totalToPay = statDay.totalToPay;
+            statsYearMonth[year][month].totalRecurrent = statDay.totalRecurrent;
+            statsYearMonth[year][month].itens = statDay.itens;
+            return statDay
+        })
+        // console.log(statistics);
+        // console.log(statsYearMonth);
+        commit('setStatisticsOuttakesClinics', statsYearMonth)
     },
 
     //============================================= Maps ====================================================================
@@ -236,6 +263,8 @@ const getters = {
     getGenderClientsServed:(state) => state.genderClientsServed,
     getGeopoints:(state) => state.geopoints,
     getStatisticsOuttakes: (state) => state.statisticsOuttakes,
+    getStatisticsOuttakesClinics: (state) => state.statisticsOuttakesClinics,
+  
 };
 
 export default {

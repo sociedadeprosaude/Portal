@@ -1,7 +1,6 @@
 <template>
     <v-container>
         <v-layout row wrap>
-
                 <v-container class="py-0 my-0 hidden-print-only white">
                     <v-layout align-center justify-center row wrap>
                         <v-flex xs12 class="justify-end align-end">
@@ -222,7 +221,6 @@
         }
     }
 </script>
-
 <style scoped>
 @page{size:auto; margin:0mm;}
 </style>
