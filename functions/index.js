@@ -1,29 +1,24 @@
 const functions = require('firebase-functions');
-const serviceAccount = require('./serviceAccountKey.json')
+//const serviceAccount = require('./serviceAccountKey.json')
 
-const cors = require('cors')({ origin: true });
 var admin = require('firebase-admin');
 var moment = require('moment');
 const json2csv = require('json2csv');
 const gmapsInit = require("./geocode")
+const cors = require('cors')({ origin: true });
 
-//admin.initializeApp();
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://prosaude-36f66.firebaseio.com"
-});
+
+admin.initializeApp();
+// admin.initializeApp({
+//     credential: admin.credential.cert(serviceAccount),
+//     databaseURL: "https://prosaude-36f66.firebaseio.com"
+// });
 const defaultRoute = '/analise-exames'
 
 const heavyFunctionsRuntimeOpts = {
     timeoutSeconds: 540,
     memory: '2GB'
 }
-
-exports.hello = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest((req, res) => {
-    console.log(req.query.name);
-    var name = req.query.name || "Sem Nome"
-    res.send("hello ", name);
-})
 
 exports.getLastAccessedPatients = functions.runWith(heavyFunctionsRuntimeOpts).https.onRequest(async (req, res) => {
     var quant = req.query.quantity
@@ -249,7 +244,6 @@ exports.requests = {
     ...require('./Requests/statistics.js'),
     // ...require('./Requests/pagSeguro.js'),
 }
-
 
 
 //Func nao usada em nenhum canto

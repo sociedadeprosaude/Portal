@@ -30,6 +30,7 @@ const mutations = {
 };
 
 const actions = {
+    showOverviewToggle: ({ commit }, payload) => commit('showOverviewToggle', payload),
     overviewToggle: ({ commit }, payload) => commit('overviewToggle', payload)
 
 }

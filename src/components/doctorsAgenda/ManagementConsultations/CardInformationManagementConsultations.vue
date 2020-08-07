@@ -121,9 +121,10 @@
 
             async deletedConsultation() {
                 this.cancelLoading = true;
+                let patientId = this.consultation.user ? this.consultation.user.uid ? this.consultation.user.uid : this.consultation.user.cpf : this.selectedPatient.uid
                 let obj = {
                     id: this.consultation.id,
-                    idPatient: this.consultation.user ? this.consultation.user.cpf : this.selectedPatient.cpf,
+                    idPatient: patientId,
                     type: this.consultation.type,
                     status: 'Cancelado',
                     payment_number: this.consultation.payment_number,
@@ -138,7 +139,7 @@
 
             },
             async setConsultationHour(consultation) {
-                let consultation_hour = moment().format('YYYY-MM-DD hh:mm:ss');
+                let consultation_hour = moment().format('YYYY-MM-DD HH:mm:ss');
                 if(!consultation.user)
                     consultation.user = this.selectedPatient
                 let data = {

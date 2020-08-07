@@ -1,147 +1,49 @@
 <template>
   <v-container>
-    <v-layout row wrap>
-      <RegisterBill />
-      <v-flex xs12 class="text-left mt-6">
-        <span class="my-headline">{{pendingOuttakes.length}} Contas à pagar</span>
-      </v-flex>
-      <v-flex xs12>
-        <outtake-order :outtakes="pendingOuttakes" />
-      </v-flex>
-      <v-flex xs12 class="text-left mt-6">
-        <span class="my-headline">{{selectedPaidOuttakesList.length}} Contas pagas</span>
-      </v-flex>
-      <v-container>
-        <v-row>
-          <v-chip-group row mandatory v-model="selectedOption" active-class="primary--text">
-            <v-chip v-for="option in billsOptions" :key="option">{{ option }}</v-chip>
-          </v-chip-group>
-        </v-row>
-        <div v-if="selectedOption === 1">
-          <v-row dense no-gutters align="start" justify="start">
-            <v-col>
-              <v-switch v-model="switchDate" label="Limitar por data" />
-              <v-date-picker v-if="switchDate" locale="pt-br" v-model="selectedDate" />
-            </v-col>
-            <v-col>
-              <v-switch v-model="switchCategory" label="Limitar por categoria" />
-              <v-combobox
-                v-if="switchCategory"
-                label="categoria"
-                v-model="selectedCategory"
-                :items="categoriesName"
-                outlined
-                clearable
-              ></v-combobox>
-            </v-col>
-          </v-row>
-        </div>
-      </v-container>
-      <v-container v-if="loadingFilter">
-        <v-row align="center" justify="center">
-          <v-col>
-            <v-card elevation="10" class="pa-4">
-              <v-progress-circular indeterminate color="primary" />
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
-      <v-container v-else-if="selectedPaidOuttakesList.length === 0 && this.selectedOption === 0">
-        <v-row align="center" justify="center">
-          <v-col>
-            <v-card elevation="10" class="pa-4">Não há contas pagas hoje</v-card>
-          </v-col>
-        </v-row>
-      </v-container>
-      <v-container v-else-if="selectedPaidOuttakesList.length === 0 && this.selectedOption === 1">
-        <v-row align="center" justify="center">
-          <v-col>
-            <v-card elevation="10" class="pa-4">Não há contas pagas que se encaixam nestas condições</v-card>
-          </v-col>
-        </v-row>
-      </v-container>
-      <v-flex xs12 class="mt-4" v-else>
-        <v-card class="pa-4 my-4" v-for="bill in selectedPaidOuttakesList" :key="bill.id">
-          <v-layout row wrap>
-            <v-flex xs12>
-              <v-layout row wrap>
-                <span>{{bill.category}}</span>
-                <br />
-                <span>{{bill.subCategory}}</span>
-                <v-divider vertical class="mx-4" />
-                <span>{{bill.payment_method}}</span>
-                <v-divider vertical class="mx-4" />
-                <span class="font-weight-bold">{{bill.date_to_pay | dateFilter}}</span>
-                <v-divider vertical class="mx-4" />
-                <span class="font-weight-bold">{{bill.paid | dateFilter}}</span>
-                <v-divider vertical class="mx-4" />
-                <v-spacer />
-                <span class="font-weight-bold">{{bill.value}}</span>
-
-                <v-flex xs12>
-                  <span>{{bill.description}}</span>
-                </v-flex>
-                <v-flex xs12 sm10 class="mt-4">
-                  <v-layout row wrap>
-                    <v-layout column wrap>
-                      <span class="my-sub-headline mb-4">Anexos</span>
-                      <v-layout row wrap>
-                        <v-flex v-for="(append, i) in bill.appends" :key="i">
-                          <v-card @click="openAppend(append)" flat>
-                            <img :src="append" style="max-width: 124px; max-width: 124px" />
-                          </v-card>
-                        </v-flex>
-                      </v-layout>
-                    </v-layout>
-                    <v-divider vertical />
-                    <v-layout column wrap>
-                      <span class="my-sub-headline mb-4">Comprovante</span>
-                      <v-layout row wrap v-if="!loading">
-                        <v-flex v-for="(append, i) in bill.receipts" :key="i">
-                          <v-card @click="openAppend(append)" flat>
-                            <img :src="append" style="max-width: 124px; max-width: 124px" />
-                          </v-card>
-                        </v-flex>
-                      </v-layout>
-                      <v-flex xs12 sm2 class="text-right" v-else>
-                        <v-progress-circular indeterminate class="primary--text" />
-                      </v-flex>
-                    </v-layout>
-                  </v-layout>
-                </v-flex>
-                <v-flex xs12 class="text-right" v-if="loadingDelete && outtakeSelect === bill">
-                  <v-progress-circular indeterminate class="primary--text" />
-                </v-flex>
-                <v-flex xs12 class="text-right" v-else>
-                  <v-btn @click="unpayOuttake(bill)" class="error mx-2" fab small>
-                    <v-icon>money_off</v-icon>
-                  </v-btn>
-                </v-flex>
-              </v-layout>
-            </v-flex>
-          </v-layout>
-        </v-card>
-      </v-flex>
-    </v-layout>
-   
+    <BillsMobile v-if="this.$vuetify.breakpoint.xs" />
+    <Bills
+      v-else
+      v-bind:other="other"
+      v-bind:billsOptions="billsOptions"
+      v-bind:dialogSelectDate="dialogSelectDate"
+      v-bind:dialogCategory="dialogCategory"
+      :switchDate.sync="switchDate"
+      v-bind:switchCategory="switchCategory"
+      v-bind:selectedOption="selectedOption"
+      v-bind:selectedDate="selectedDate"
+      v-bind:selectedCategory="selectedCategory"
+      v-bind:loading="loading"
+      v-bind:loadingFilter="loadingFilter"
+      v-bind:loadingDelete="loadingDelete"
+      v-bind:outtakeSelect="outtakeSelect"
+      v-bind:files="files"
+      v-bind:filesPreviews="filesPreviews"
+      v-bind:outtakesPaid="outtakesPaid"
+      v-bind:outtakesPaidToday="outtakesPaidToday"
+      v-bind:pendingOuttakes="pendingOuttakes"
+      v-bind:selectedPaidOuttakesList="selectedPaidOuttakesList"
+      v-bind:categories="categories"
+      :getOuttakesPaid="getOuttakesPaid"
+      :unpayOuttake="unpayOuttake"
+      :openAppend="openAppend"
+      @change-selectedOption="(value)=>selectedOption=value"
+      @change-switchDate="(value)=>switchDate=value"
+      @change-switchCategory="(value)=>switchCategory=value"
+      @change-selectedDate="(value)=>selectedDate=value"
+      @change-selectedCategory="(value)=>selectedCategory=value"
+    ></Bills>
   </v-container>
 </template>
 
 <script>
-import OuttakeOrder from "../../components/reports/OuttakeOrder";
-import RegisterBill from "../../components/Bills/RegisterBill";
-import { mask } from "vue-the-mask";
-import moment from "moment/moment";
+import Bills from "@/components/Bills/Bills";
+import BillsMobile from "@/views/Financial/BillsMobile";
 
+import moment from "moment";
 export default {
-  name: "Bills",
-  directives: {
-    mask
-  },
   components: {
-    OuttakeOrder,
-    RegisterBill,
-
+    Bills,
+    BillsMobile
   },
   data() {
     return {
@@ -157,7 +59,7 @@ export default {
       loading: false,
       loadingFilter: false,
       loadingDelete: false,
-      outtakeSelect: [],
+      outtakeSelect: null,
       files: [],
       filesPreviews: [],
       mask: {
@@ -166,9 +68,7 @@ export default {
     };
   },
   mounted() {
-    if (this.$vuetify.breakpoint.name === "xs") {
-      this.$router.push("/BillsMobile");
-    }
+    
     this.initiate();
   },
   computed: {
@@ -183,10 +83,10 @@ export default {
         b.date_to_pay > a.date_to_pay ? 1 : -1
       );
     },
-
     selectedPaidOuttakesList() {
-      if (this.selectedOption === 0) return this.outtakesPaidToday;
-      else if (this.selectedOption === 1) return this.outtakesPaid;
+      return this.selectedOption == 0
+        ? this.outtakesPaidToday
+        : this.outtakesPaid;
     },
     pendingOuttakes() {
       return this.$store.getters.outtakesPending.sort((a, b) => {
@@ -195,9 +95,6 @@ export default {
     },
     categories() {
       return this.$store.getters.outtakesCategories;
-    },
-    categoriesName() {
-      return this.categories.map(e => e.name);
     }
   },
   watch: {
@@ -212,6 +109,11 @@ export default {
     },
     switchCategory(val) {
       this.getOuttakesPaid();
+    },
+    selectedOption(val) {
+      if (val == 1) {
+        this.switchDate = true;
+      }
     }
   },
   methods: {
@@ -226,9 +128,8 @@ export default {
       await this.$store.dispatch("getOuttakesPaidToday");
       this.loading = false;
       this.selectedCategory =
-        this.categoriesName[0] != null ? this.categoriesName[0] : "";
+        this.categories.length != 0 ? this.categories[0] : "";
     },
-
     async getOuttakesPaid() {
       this.loadingFilter = true;
       await this.$store.dispatch("getOuttakesPaid", {
@@ -242,7 +143,6 @@ export default {
       });
       this.loadingFilter = false;
     },
-
     async unpayOuttake(outtake) {
       this.loadingDelete = true;
       this.outtakeSelect = outtake;
@@ -256,10 +156,9 @@ export default {
           .add(5, "days")
           .format("YYYY-MM-DD 23:59:59")
       });
-      this.outtakeSelect = [];
+      this.outtakeSelect = {};
       this.loadingDelete = false;
     },
-
     openAppend(append) {
       window.open(append);
     }

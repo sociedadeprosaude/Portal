@@ -56,7 +56,6 @@
 <script>
     import SubmitButton from "../../../components/SubmitButton";
     import moment from 'moment/moment';
-
     export default {
         data() {
             return {
@@ -66,29 +65,15 @@
                 success: false
             }
         },
-        components: {
-            SubmitButton
-        },
+        components: { SubmitButton },
         computed: {
-            intakeCategories() {
-                return this.$store.getters.intakesCategories
-            },
-            user () {
-                return this.$store.getters.user
-            },
-            unit() {
-                return this.$store.getters.selectedUnit
-            }
+            intakeCategories() { return this.$store.getters.intakesCategories },
+            user () { return this.$store.getters.user },
+            unit() { return this.$store.getters.selectedUnit }
         },
-        mounted() {
-            this.$store.dispatch('getIntakesCategories')
-        },
+        mounted() { this.$store.dispatch('getIntakesCategories') },
         methods: {
-
-            budget() {
-                this.$router.push('/caixa/Orçamento')
-            },
-
+            budget() { this.$router.push('/caixa/Orçamento') },
             async addIntake(intake) {
                 this.loading = true;
                 intake.colaborator = this.user;
@@ -105,15 +90,12 @@
         }
     };
 </script>
-
 <style scoped>
-
     .button {
         margin-top: 10%;
         width: 120px;
         height: 120px;
     }
-
     .word {
         font-size: 32px;
         margin-top: 5%;

@@ -379,9 +379,6 @@
               </v-card>
             </v-dialog>
           </div>
-          <v-dialog v-model="dialogPaciente" width="1000">
-            <pacientes></pacientes>
-          </v-dialog>
         </v-layout>
       </v-container>
     </template>
@@ -402,13 +399,12 @@
 </template>
 
 <script>
-import Pacientes from "./Patient";
 import SelectPatientCard from "../../../components/Patient/SelectPatientCard";
 import SubmitButton from "../../../components/SubmitButton";
 
 var moment = require("moment/moment");
 export default {
-  components: { Pacientes, SelectPatientCard, SubmitButton },
+  components: {SelectPatientCard, SubmitButton },
 
   data: () => ({
     y: "top",
@@ -418,7 +414,6 @@ export default {
     menu: false,
     dialog: false,
     dialog2: false,
-    dialogPaciente: false,
     selectedDoctor: "",
     num_recibo: "",
     justify: "",

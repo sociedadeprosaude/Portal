@@ -15,9 +15,12 @@
           <v-card elevation="0" :color="index%2 != 0? 'grey lighten-2':'grey lighten-4'">
             <v-row>
               <v-col align-self="center" class="font-weight-bold">
-                <p style="font-size: 2em;">senha</p>
+                <p style="font-size: 2em;">senha {{ticket.preferential?'preferencial':''}}</p>
               </v-col>
-              <v-col class="indigo--text text--darken-4 font-weight-bold">
+              <v-col
+                class="'font-weight-bold'"
+                :style="[ticket.preferential ?'color: rgb(35, 151, 118);':'color:#1A237E']"
+              >
                 <p style="font-size: 4em;">{{ticket.number}}</p>
               </v-col>
             </v-row>
@@ -30,7 +33,7 @@
         </v-card>
       </v-row>
     </v-container>
-    <v-container fluid class="two white--text">
+    <v-container fluid :class="[currentTicket.preferential?'three':'two', 'white--text']">
       <v-row class="pa-0 ma-0 half">
         <v-col align-self="center">
           <v-row justify="center" class="display-2">{{removeNumbers( selectedRoom.name)}}</v-row>
@@ -45,7 +48,10 @@
       <v-divider class="white"></v-divider>
       <v-row class="pa-0 ma-0 half">
         <v-col align-self="center">
-          <v-row justify="center" class="display-1">Senha</v-row>
+          <v-row
+            justify="center"
+            class="display-1"
+          >Senha {{currentTicket.preferential?'preferencial':''}}</v-row>
 
           <v-row justify="center">
             <v-col class="ma-0 pa-0">
@@ -72,7 +78,7 @@ export default {
       clockInterval: undefined,
       constants: constants,
       animation: "",
-      lastTicket: null
+      lastTicket: null,
     };
   },
   mounted() {
@@ -110,7 +116,7 @@ export default {
     },
     calledTicketsInOrder() {
       return (this.room.tickets
-        ? this.room.tickets.filter(ticket => {
+        ? this.room.tickets.filter((ticket) => {
             return ticket.called_at;
           })
         : []
@@ -136,7 +142,7 @@ export default {
         return latest;
       }
       return null;
-    }
+    },
   },
   methods: {
     playTicketSound() {
@@ -153,8 +159,8 @@ export default {
     },
     onlyNumbers(str) {
       return str.replace(/\D/g, "");
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -164,7 +170,8 @@ export default {
 }
 
 .one,
-.two {
+.two,
+.three {
   float: left;
   width: 50%;
   min-height: 100vh;
@@ -180,6 +187,9 @@ export default {
 
 .two {
   background-color: rgb(21, 21, 99);
+}
+.three {
+  background-color: rgb(35, 151, 118);
 }
 @keyframes fade-in {
   0% {

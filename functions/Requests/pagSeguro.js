@@ -8,6 +8,7 @@ var xml2js = require('xml2js');
 const cors = require('cors')({ origin: true });
 var moment = require('moment');
 const { Parser } = require('json2csv');
+const { use } = require('vue/types/umd');
 
 
 const heavyFunctionsRuntimeOpts = {
@@ -51,7 +52,8 @@ async function verifyUnpaidConsultation(payload) {
 async function updatePaymentNumberConsultation(payload) {
     const firestore = admin.firestore();
     console.log("updatando", payload.consultation.id)
-    await firestore.collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.id).update({
+    const userId = payload.user.uid ? payload.user.uid : payload.user.cpf;
+    await firestore.collection('users').doc(userId).collection('consultations').doc(payload.consultation.id).update({
         status: 'Pago',
         payment_number: payload.payment_number.toString()
     });
@@ -65,13 +67,13 @@ async function updatePaymentNumberConsultation(payload) {
 async function createOrUpdateProcedure(payload) {
     const firestore = admin.firestore();
     let consultationFound = payload.consultationFound;
-    let user = payload.user;
+    const userId = payload.user.uid ? payload.user.uid : payload.user.cpf;
     let statusName = payload.isConsultation ? 'Consulta Paga' : 'Exame Pago';
     let type = payload.isConsultation ? 'Consultation' : 'Exam';
 
     if (consultationFound || (payload.precoVendaZero && payload.isConsultation)) {
         let consultation = payload.precoVendaZero && payload.isConsultation ? payload.consultation : consultationFound
-        let procedures = await firestore.collection('users').doc(user.cpf).collection('procedures')
+        let procedures = await firestore.collection('users').doc(userId).collection('procedures')
             .where('consultation', '==', consultation.id).get();
         if (!procedures.empty) {
             procedures.forEach((snap) => {
@@ -80,7 +82,7 @@ async function createOrUpdateProcedure(payload) {
                     payment_number: payload.payment_number
                 };
                 if (!payload.isConsultation) Object.assign(obj, { exam: { ...payload.examObj } });
-                firestore.collection('users').doc(user.cpf).collection('procedures').doc(snap.id).update(obj)
+                firestore.collection('users').doc(userId).collection('procedures').doc(snap.id).update(obj)
             })
         }
     } else {
@@ -92,7 +94,7 @@ async function createOrUpdateProcedure(payload) {
             specialty: payload.specialty.name
         };
         if (!payload.isConsultation) Object.assign(obj, { exam: { ...payload.examObj } });
-        firestore.collection('users').doc(user.cpf).collection('procedures').add(obj)
+        firestore.collection('users').doc(userId).collection('procedures').add(obj)
     }
 }
 // exports.tstCreateIntake = functions.https.onRequest(async (request, response) => {
@@ -103,7 +105,8 @@ async function createIntake(doc) {
     const firestore = admin.firestore();
     const budgetRef = firestore.collection('budgets').doc(doc.id)
     const intakeRef = firestore.collection('intakes').doc(doc.id)
-    const userRef = firestore.collection('users').doc(doc.data().user.cpf);
+    const userId = doc.data().user.uid ? doc.data().user.uid : doc.data().user.cpf;
+    const userRef = firestore.collection('users').doc(userId);
 
     var specialties = await budgetRef.collection('specialties').get();
     var exams = await budgetRef.collection('exams').get();
@@ -155,7 +158,7 @@ exports.pagSeguroCreditCallback = functions.https.onRequest(async (request, resp
     var url = "https://ws.sandbox.pagseguro.uol.com.br/v3/transactions/notifications/" + request.body.notificationCode
     return axios
         .get(url + pagSeguroCredentials)
-        .then(async res =>
+        .then(asyncz =>
             xml2js.parseString(res.data, async function (err, result) {
 
                 if (!err) {
