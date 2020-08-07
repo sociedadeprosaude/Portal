@@ -38,6 +38,9 @@
 <script>
 import Bills from "@/components/Bills/Bills";
 import BillsMobile from "@/views/Financial/BillsMobile";
+import OuttakeOrder from "../../components/Reports/OuttakeOrder";
+import RegisterBill from "../../components/Bills/RegisterBill";
+import { mask } from "vue-the-mask";
 
 import moment from "moment";
 export default {

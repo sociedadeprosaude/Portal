@@ -40,11 +40,9 @@
                         <v-layout row wrap class="text-left font-weight-bold">
                           <v-flex xs12>
                             <v-chip small class="mx-2" color="primary_dark"
-                                    @click="scheduleAppointment(schedule, date)"
-                                    v-for="(date, index) in getScheduleAvailableDates(schedule)"
-                                    :key="date.format('YYYY-MM-DD HH:mm:ss') + schedule.doctor.name + index"
+                                    @click="scheduleAppointment(schedule, moment(schedule.date))"
                                     text-color="white">
-                              {{ date.format('HH:mm') }}
+                              {{ moment(schedule.date).format('HH:mm') }}
                             </v-chip>
                             <v-chip small color="primary_dark" text-color="white">
                               Vagas :
@@ -140,6 +138,7 @@ export default {
   components: {SchedulingForm},
   directives: {infiniteScroll},
   data: () => ({
+    moment: (data) => moment(data),
     semanaOptions: [
       "Domingo",
       "Segunda-feira",
@@ -167,6 +166,7 @@ export default {
   async mounted() {
     this.$emit('refreshDate', this.daysToListen);
     await this.listenMoreConsultations();
+    console.log('cons', this.Consultations)
 
     const listElm = document.querySelector('#infinite-list');
     listElm.addEventListener('scroll', e => {

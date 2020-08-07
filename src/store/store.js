@@ -40,7 +40,7 @@ Vue.use(Vuex);
 const vuexLocal = new VuexPersistence({
     key: 'vuex',
     storage: window.localStorage,
-    modules: ['LocalUnit', 'ShoppingCart', 'FavoriteRoom', 'Users'],
+    modules: ['LocalUnit', 'ShoppingCart', 'FavoriteRoom'],
 
     // reducer: (state) => ({
     //     selectedPatient: state.selectedPatient,

@@ -818,12 +818,13 @@
             },
 
             async updateAccessedTo(user) {
-
-                await this.$store.dispatch('updateAccessedTo', {
-                    accessed_to: moment().format('YYYY-MM-DD HH:mm:ss'),
-                    id: user.cpf,
-                    addresses:user.addresses
-                })
+                if(user){
+                    await this.$store.dispatch('updateAccessedTo', {
+                        accessed_to: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        id: user.uid? user.uid : user.id,
+                        addresses:user.addresses
+                    })
+                }
             },
 
             async searchPatient() {
