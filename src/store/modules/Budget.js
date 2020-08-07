@@ -99,7 +99,7 @@ const actions = {
     },
 
     async getUserBudgets(context, user) {
-        let userRef = firebase.firestore().collection('users').doc(user.uid);
+        let userRef = firebase.firestore().collection('users').doc(user.id);
         let budgetsSnap = await userRef.collection('budgets').get();
         let budgets = [];
         budgetsSnap.forEach((doc) => {
