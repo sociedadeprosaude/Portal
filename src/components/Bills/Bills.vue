@@ -147,7 +147,7 @@
 </template>
 
 <script>
-import OuttakeOrder from "../../components/Reports/OuttakeOrder";
+import OuttakeOrder from "../Reports/OuttakeOrder";
 import RegisterBill from "../../components/Bills/RegisterBill";
 import { mask } from "vue-the-mask";
 import moment from "moment";

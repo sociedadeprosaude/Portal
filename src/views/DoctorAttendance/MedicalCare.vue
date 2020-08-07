@@ -55,6 +55,7 @@
                     <v-flex xs12 sm4>
                         <!--disabled-->
                         <v-menu
+                                disabled
                                 ref="menu1"
                                 v-model="menu1"
                                 :close-on-content-click="false"
@@ -66,6 +67,7 @@
                             <template v-slot:activator="{ on }">
                                 <!--disabled-->
                                 <v-text-field
+                                        disabled
                                         outlined
                                         v-model="computedDateFormatted"
                                         placeholder="Data Inicial"
@@ -75,7 +77,7 @@
                                 />
                             </template>
                             <!--disabled-->
-                            <v-date-picker v-model="date" no-title @input="menu1 = false"
+                            <v-date-picker disabled v-model="date" no-title @input="menu1 = false"
                                            @change="getConsultationsDorctors()"/>
                         </v-menu>
                     </v-flex>
