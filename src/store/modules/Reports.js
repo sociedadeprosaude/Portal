@@ -18,7 +18,26 @@ function outtakeCategoryListDivider(outtake) {
             outtakeDivided.category = category;
             return outtakeDivided
         })
-    } else {
+    } else if (outtake.specialties || outtake.exams) {
+        const exams = Array.isArray(outtake.exams) ? outtake.exams.map((exam) => {
+            //Tem que ser {...outtake}
+            var outtakeDivided = { ...outtake };
+            outtakeDivided.value = exam.cost;
+            outtakeDivided.category = exam.name;
+            return outtakeDivided
+        }) : []
+        const specialties = Array.isArray(outtake.specialties) ? outtake.specialties.map((specialty) => {
+            //Tem que ser {...outtake}
+            var outtakeDivided = { ...outtake };
+            outtakeDivided.value = specialty.cost;
+            outtakeDivided.category = specialty.name;
+            return outtakeDivided
+        }) : []
+        return [...exams, ...specialties]
+    }
+
+
+    else {
         return [outtake]
     }
 }
@@ -86,7 +105,6 @@ const actions = {
                 }
             }
         }
-        console.log(intakes)
         context.commit("setIntakesReport", intakes);
         return intakes
     },

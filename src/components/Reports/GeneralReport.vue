@@ -88,7 +88,7 @@
                 <v-flex xs1>
                   <span
                     v-if="spec.price > 0"
-                  >{{((spec.price - spec.cost) / spec.price) * 100 | moneyFilter}}%</span>
+                  >{{(((spec.price - spec.cost) / spec.price) * 100).toFixed(2)}} %</span>
                   <span v-else>0%</span>
                 </v-flex>
                 <v-flex xs1>
@@ -126,7 +126,7 @@
                 <v-flex xs1>
                   <span
                     v-if="totalSpecialtiesIntakes > 0"
-                  >{{((totalSpecialtiesIntakes - totalCostSpecialtiesIntakes) / totalSpecialtiesIntakes) * 100 | moneyFilter}}%</span>
+                  >{{(((totalSpecialtiesIntakes - totalCostSpecialtiesIntakes) / totalSpecialtiesIntakes) * 100).toFixed(2)}} %</span>
                   <span v-else>0%</span>
                 </v-flex>
                 <v-flex xs1>
@@ -169,7 +169,7 @@
                 <v-flex xs1>
                   <span
                     v-if="clinics.price > 0"
-                  >{{((clinics.price - clinics.cost) / clinics.price) * 100 | moneyFilter}}%</span>
+                  >{{(((clinics.price - clinics.cost) / clinics.price) * 100).toFixed(2)}} %</span>
                   <span v-else>0%</span>
                 </v-flex>
                 <v-flex xs1>
@@ -199,7 +199,7 @@
                     <v-flex xs1>
                       <span
                         v-if="exam.price  > 0"
-                      >{{((exam.price - exam.cost) / exam.price ) * 100 | moneyFilter}}%</span>
+                      >{{(((exam.price - exam.cost) / exam.price ) * 100).toFixed(2)}} %</span>
                       <span v-else>0%</span>
                     </v-flex>
                     <v-flex xs1>
@@ -242,7 +242,7 @@
                 <v-flex xs1>
                   <span
                     v-if="totalExamsIntakes > 0"
-                  > {{((totalExamsIntakes - totalCostExamsIntakes) / totalExamsIntakes) * 100 | moneyFilter}}%</span>
+                  >{{(((totalExamsIntakes - totalCostExamsIntakes) / totalExamsIntakes) * 100 ).toFixed(2)}} %</span>
                   <span v-else>0%</span>
                 </v-flex>
                 <v-flex xs1>
@@ -704,7 +704,7 @@
                 <v-flex xs1>
                   <span
                     v-if="spec.price > 0"
-                  >{{((spec.price - spec.cost) / spec.price) * 100 | moneyFilter}}%</span>
+                  >{{(((spec.price - spec.cost) / spec.price) * 100).toFixed(2)}} %</span>
                   <span v-else>0%</span>
                 </v-flex>
                 <v-flex xs1>
@@ -742,7 +742,7 @@
                 <v-flex xs1>
                   <span
                     v-if="totalSpecialtiesIntakesAllClinics > 0"
-                  >{{((totalSpecialtiesIntakesAllClinics - totalCostSpecialtiesIntakesAllClinics) / totalSpecialtiesIntakesAllClinics) * 100 | moneyFilter}}%</span>
+                  >{{(((totalSpecialtiesIntakesAllClinics - totalCostSpecialtiesIntakesAllClinics) / totalSpecialtiesIntakesAllClinics) * 100).toFixed(2)}} %</span>
                   <span v-else>0%</span>
                 </v-flex>
                 <v-flex xs1>
@@ -790,7 +790,7 @@
                 <v-flex xs1>
                   <span
                     v-if="clinics.price > 0"
-                  >{{((clinics.price - clinics.cost) / clinics.price) * 100 | moneyFilter}}%</span>
+                  >{{(((clinics.price - clinics.cost) / clinics.price) * 100).toFixed(2)}} %</span>
                   <span v-else>0%</span>
                 </v-flex>
                 <v-flex xs1>
@@ -820,7 +820,7 @@
                     <v-flex xs1>
                       <span
                         v-if="exam.price  > 0"
-                      >{{((exam.price - exam.cost) / exam.price ) * 100 | moneyFilter}}%</span>
+                      >{{(((exam.price - exam.cost) / exam.price ) * 100).toFixed(2)}} %</span>
                       <span v-else>0%</span>
                     </v-flex>
                     <v-flex xs1>
@@ -863,7 +863,7 @@
                 <v-flex xs1>
                   <span
                     v-if="totalExamsIntakesAllClinics > 0"
-                  >{{((totalExamsIntakesAllClinics- totalCostExamsIntakesAllClinics) / totalExamsIntakesAllClinics) * 100 | moneyFilter}}%</span>
+                  >{{(((totalExamsIntakesAllClinics- totalCostExamsIntakesAllClinics) / totalExamsIntakesAllClinics) * 100).toFixed(2)}} %</span>
                   <span v-else>0%</span>
                 </v-flex>
                 <v-flex xs1>
@@ -1298,8 +1298,11 @@ export default {
     "totalTaxaCreditAllClinics",
     "totalDebitAllClinics",
     "totalTaxaDebitAllClinics",
-    "totalMoneyAllClinics"
-  ]
+    "totalMoneyAllClinics",
+  ],
+  mounted() {
+    console.log(this.report.outtakes);
+  },
 };
 </script>
 

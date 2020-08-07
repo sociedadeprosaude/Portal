@@ -85,7 +85,7 @@ export default {
       try {
         if (val) {
           this.months = Object.keys(this.statistics[val]);
-          this.month = this.months[0];
+          this.month = this.months[this.months.length-1];
         }
       } catch (e) {
         console.log(e);

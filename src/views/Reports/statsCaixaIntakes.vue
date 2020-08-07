@@ -85,7 +85,7 @@ export default {
     year(val) {
       if (val) {
         this.months = Object.keys(this.statistics[val]);
-        this.month = this.months[0];
+        this.month = this.months[this.months.length-1];
       }
     }
   },
