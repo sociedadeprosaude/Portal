@@ -1,10 +1,16 @@
 <template>
   <v-container>
     <v-row>
-      <v-col sm="12" md="4">
+      <v-col sm="12" md="6">
         <v-tooltip top v-if="doctorsLoaded">
           <template v-slot:activator="{ on }">
-            <v-btn width="100%" v-on="on" class="primary" rounded @click="generateSectorTicket">
+            <v-btn
+              width="100%"
+              v-on="on"
+              class="primary"
+              rounded
+              @click="()=>generateSectorTicket(false)"
+            >
               Proxima senha:
               {{ticketInfo.ticket_number}}
             </v-btn>
@@ -13,13 +19,31 @@
         </v-tooltip>
       </v-col>
 
-      <v-col sm="6" md="4">
+      <v-col sm="12" md="6">
+        <v-tooltip top v-if="doctorsLoaded">
+          <template v-slot:activator="{ on }">
+            <v-btn
+              width="100%"
+              v-on="on"
+              class="primary"
+              rounded
+              @click="()=>generateSectorTicket(true)"
+            >
+              Proxima senha preferencial:
+              {{ticketInfo.ticket_number}}
+            </v-btn>
+          </template>
+          <span>Pular próxima senha</span>
+        </v-tooltip>
+      </v-col>
+
+      <v-col sm="12" md="6">
         <v-btn width="100%" class="primary" rounded @click="$emit('open-multiple-view-dialog')">
           <span>Visualizador geral</span>
         </v-btn>
       </v-col>
 
-      <v-col sm="6" md="4">
+      <v-col sm="12" md="6">
         <v-fade-transition mode="out-in">
           <v-card class="pa-4" v-if="createRoomController">
             <v-row>
@@ -27,7 +51,7 @@
                 <span class="my-headline">Adicionar sala</span>
               </v-col>
               <v-col sm="4" class="text-right">
-                <v-btn small class="primary" fab @click="$emit('toggle-create-coom-controller')">
+                <v-btn small class="primary" fab @click="$emit('toggle-create-room-controller')">
                   <v-icon>minimize</v-icon>
                 </v-btn>
               </v-col>

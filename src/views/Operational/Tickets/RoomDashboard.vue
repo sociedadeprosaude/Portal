@@ -213,10 +213,7 @@ export default {
           )
         : -1;
       if (ticketIndex < 0) {
-        this.snackbar = true;
-        // if (!preferential) {
-        //   await this.callSectorTicket(room, preferential);
-        // }
+        await this.callSectorTicket(room, preferential);
         this.loading = false;
         return;
       }
@@ -231,13 +228,18 @@ export default {
     async callSectorTicket(room, preferential) {
       let ticketIndex = this.sector.tickets
         ? this.sector.tickets.findIndex((ticket) => {
-            return !ticket.called_at;
+            return (
+              !ticket.called_at &&
+              (preferential ? ticket.preferential : !ticket.preferential)
+            );
           })
         : -1;
       if (ticketIndex < 0) {
+        this.snackbar = true;
+
         //criando e chamando uma nova senha na sala se nao tiver nenhuma pra ser chamada
-        await this.generateSectorTicket(preferential);
-        await this.callNextTicket(room, preferential);
+        //await this.generateSectorTicket(preferential);
+        //await this.callNextTicket(room, preferential);
         return;
       }
       this.sector.tickets[ticketIndex].called_at = moment().format(
