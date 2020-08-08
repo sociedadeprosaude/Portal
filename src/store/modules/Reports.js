@@ -8,6 +8,41 @@ const instance = axios.create({
 
 instance.defaults.headers.common['Accept'] = 'application/json'
 
+function outtakeCategoryListDivider(outtake) {
+    if ((typeof (outtake.category)) === "object") {
+        const valueDivided = outtake.value / outtake.category.length;
+        return outtake.category.map((category) => {
+            //Tem que ser {...outtake}
+            var outtakeDivided = { ...outtake };
+            outtakeDivided.value = valueDivided;
+            outtakeDivided.category = category;
+            return outtakeDivided
+        })
+    } else if (outtake.specialties || outtake.exams) {
+        const exams = Array.isArray(outtake.exams) ? outtake.exams.map((exam) => {
+            //Tem que ser {...outtake}
+            var outtakeDivided = { ...outtake };
+            outtakeDivided.value = exam.cost;
+            outtakeDivided.category = exam.name;
+            return outtakeDivided
+        }) : []
+        const specialties = Array.isArray(outtake.specialties) ? outtake.specialties.map((specialty) => {
+            //Tem que ser {...outtake}
+            var outtakeDivided = { ...outtake };
+            outtakeDivided.value = specialty.cost;
+            outtakeDivided.category = specialty.name;
+            return outtakeDivided
+        }) : []
+        return [...exams, ...specialties]
+    }
+
+
+    else {
+        return [outtake]
+    }
+}
+
+
 const state = {
     infos: [],
     relatorio: [],
@@ -51,10 +86,12 @@ const actions = {
     },
     async getIntakes(context, payload) {
         let selectedUnit = context.getters.selectedUnit;
-        let intakesSnap = await firebase.firestore().collection('intakes').where('date', '>=', payload.initialDate)
-            .where('date', '<=', payload.finalDate)
-            .where('unit.name', '==', selectedUnit.name)
-            .orderBy('date').get();
+        var query = firebase.firestore().collection('intakes');
+        if (payload.initialDate) query = query.where('date', '>=', payload.initialDate);
+        if (payload.finalDate) query = query.where('date', '<=', payload.finalDate);
+        if (!payload.allUnits) query = query.where('unit.name', '==', selectedUnit.name)
+
+        let intakesSnap = await query.orderBy('date').get();
         let intakes = [];
         for (let doc of intakesSnap.docs) {
             if (doc.data().colaborator) {
@@ -169,8 +206,15 @@ const actions = {
                             price: 0,
                         }
                     }
+                    //Add esse if pra atualizar os intakes de clinico geral que tem preco de venda diferente de 0
+                    if (intakes[intake].specialties[specialtie].name == 'CLINICO GERAL' &&
+                        intakes[intake].specialties[specialtie].price != 0) {
+                        intakes[intake].specialties[specialtie].price = 0;
+                        firebase.firestore().collection('intakes').doc((intakes[intake].id).toString()).set(intakes[intake])
+                    }
                     specialties[intakes[intake].specialties[specialtie].name].quantity++
-                    specialties[intakes[intake].specialties[specialtie].name].cost += parseFloat(intakes[intake].specialties[specialtie].cost), specialties[intakes[intake].specialties[specialtie].name].price += parseFloat(intakes[intake].specialties[specialtie].price)
+                    specialties[intakes[intake].specialties[specialtie].name].cost += parseFloat(intakes[intake].specialties[specialtie].cost);
+                    specialties[intakes[intake].specialties[specialtie].name].price += parseFloat(intakes[intake].specialties[specialtie].price)
                 }
             }
         }
@@ -179,23 +223,21 @@ const actions = {
             .where('unit.name', '==', selectedUnit.name)
             .orderBy('paid').get();
         outtakesSnap.forEach((e) => {
+            const outtake = {
+                ...e.data(),
+                id: e.id
+            }
             if (e.data().payments) {
                 for (let i = 0; i < e.data().payments.length; i++) {
                     if (e.data().payments[i] === 'Dinheiro') {
                         quantidadeOuttakes++;
-                        outtakes.push({
-                            ...e.data(),
-                            id: e.id
-                        })
+                        outtakes.push(...outtakeCategoryListDivider(outtake))
                     }
                 }
             }
             else {
                 quantidadeOuttakes++;
-                outtakes.push({
-                    ...e.data(),
-                    id: e.id
-                })
+                outtakes.push(...outtakeCategoryListDivider(outtake))
             }
         });
         let consultationsSnap = await firebase.firestore().collection('consultations').where('date', '>=', payload.dataInicio)
@@ -233,9 +275,11 @@ const actions = {
                     doctors[e.data().doctor.name].quantityTotal++
                     doctors[e.data().doctor.name].specialties[e.data().specialty.name].quantity++
                     firebase.firestore().collection('specialties').doc(e.data().specialty.name).collection('doctors').doc(e.data().doctor.cpf).get().then((snap) => {
-                        doctors[e.data().doctor.name].specialties[e.data().specialty.name].cost += parseFloat(snap.data().cost.toFixed(2))
-                        doctors[e.data().doctor.name].specialties[e.data().specialty.name].costOne = parseFloat(snap.data().cost.toFixed(2))
-                        doctors[e.data().doctor.name].payment += parseFloat(snap.data().cost.toFixed(2))
+                        if (snap.data()) {
+                            doctors[e.data().doctor.name].specialties[e.data().specialty.name].cost += parseFloat(snap.data().cost.toFixed(2))
+                            doctors[e.data().doctor.name].specialties[e.data().specialty.name].costOne = parseFloat(snap.data().cost.toFixed(2))
+                            doctors[e.data().doctor.name].payment += parseFloat(snap.data().cost.toFixed(2))
+                        }
                     })
                 }
                 else {
@@ -360,23 +404,21 @@ const actions = {
             .where('paid', '<=', payload.dataFinal)
             .orderBy('paid').get();
         outtakesSnap.forEach((e) => {
+            const outtake = {
+                ...e.data(),
+                id: e.id
+            };
             if (e.data().payments) {
                 for (let i = 0; i < e.data().payments.length; i++) {
                     if (e.data().payments[i] === 'Dinheiro') {
                         quantidadeOuttakes++;
-                        outtakes.push({
-                            ...e.data(),
-                            id: e.id
-                        })
+                        outtakes.push(...outtakeCategoryListDivider(outtake))
                     }
                 }
             }
             else {
                 quantidadeOuttakes++;
-                outtakes.push({
-                    ...e.data(),
-                    id: e.id
-                })
+                outtakes.push(...outtakeCategoryListDivider(outtake))
             }
         });
         let consultationsSnap = await firebase.firestore().collection('consultations').where('date', '>=', payload.dataInicio)
@@ -414,9 +456,11 @@ const actions = {
                     doctors[e.data().doctor.name].quantityTotal++
                     doctors[e.data().doctor.name].specialties[e.data().specialty.name].quantity++
                     firebase.firestore().collection('specialties').doc(e.data().specialty.name).collection('doctors').doc(e.data().doctor.cpf).get().then((snap) => {
-                        doctors[e.data().doctor.name].specialties[e.data().specialty.name].cost += parseFloat(snap.data().cost.toFixed(2))
-                        doctors[e.data().doctor.name].specialties[e.data().specialty.name].costOne = parseFloat(snap.data().cost.toFixed(2))
-                        doctors[e.data().doctor.name].payment += parseFloat(snap.data().cost.toFixed(2))
+                        if (snap.data()) {
+                            doctors[e.data().doctor.name].specialties[e.data().specialty.name].cost += parseFloat(snap.data().cost.toFixed(2))
+                            doctors[e.data().doctor.name].specialties[e.data().specialty.name].costOne = parseFloat(snap.data().cost.toFixed(2))
+                            doctors[e.data().doctor.name].payment += parseFloat(snap.data().cost.toFixed(2))
+                        }
                     })
                 }
                 else {

@@ -6,7 +6,7 @@
             label="Criar agenda para exame agendável?"
           ></v-checkbox>
         </v-flex>
-        <v-flex v-if="!examTypeCheck" xs12 sm6>
+        <v-flex v-if="!examTypeCheck" xs12>
           <v-combobox
               class="mx-1"
               label="Especialidade"
@@ -37,7 +37,7 @@
               </template>
           </v-combobox>
         </v-flex>
-        <v-flex v-if="examTypeCheck" xs6>
+        <v-flex v-if="examTypeCheck" xs12>
           <v-select
               class="mx-1"
               prepend-icon="location_city"
@@ -68,7 +68,7 @@
               </template>
           </v-select>
         </v-flex>
-        <v-flex xs12 sm6>
+        <v-flex xs12>
           <v-combobox
               class="mx-1"
               prepend-icon="account_circle"
@@ -132,6 +132,9 @@
               </template>
           </v-select>
         </v-flex>
+        <v-flex xs6>
+            <v-text-field v-model="interval" label="Intervalo entre consulta" type="number" rounded dense outlined prepend-icon ="watch_later"></v-text-field>
+        </v-flex>
     </v-layout>
 </template>
 
@@ -142,6 +145,7 @@ export default {
     medicos: "",
     especialidade: undefined,
     clinic: undefined,
+    interval:undefined,
     examType:undefined,
     examTypeCheck:false
   }),
@@ -203,13 +207,15 @@ export default {
             newScheduleObj = {
               clinic:this.clinic,
               exam_type:this.examType,
-              doctor:this.medicos
+              doctor:this.medicos,
+              interval:Number(this.interval)
             }
           }else{
             newScheduleObj = {
               clinic:this.clinic,
               specialty:this.especialidade,
-              doctor:this.medicos
+              doctor:this.medicos,
+              interval:Number(this.interval)
           }
           }
           await this.$store.dispatch('newShedule',newScheduleObj)

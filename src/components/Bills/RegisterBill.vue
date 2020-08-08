@@ -16,7 +16,6 @@
               </v-dialog>
             </v-flex>
             <v-flex xs12 sm3>
-              <!--@input.native="category={name:$event.srcElement.value,subCategories:[]}"-->
               <v-select
                 outlined
                 v-model="category"
@@ -24,18 +23,7 @@
                 item-text="name"
                 return-object
                 label="Categoria"
-                clearable
-              ></v-select>
-              <!--@input.native="subCategory=$event.srcElement.value"-->
-              <v-select
-                outlined
-                v-if="category"
-                label="Subcategoria"
-                v-model="subCategory"
-                :items="category.subCategories? [...category.subCategories,other]:[other]"
-                item-text="name"
-                return-object
-                clearable
+                multiple
               ></v-select>
             </v-flex>
             <v-flex xs12 sm3 class="ml-3">
@@ -179,7 +167,7 @@ export default {
     other: "Outro",
     selectedCategory: "",
     category: null,
-    subCategory: null,
+    categoryArray: [null],
     paymentMethod: undefined,
     description: undefined,
     value: 0.0,
@@ -189,23 +177,22 @@ export default {
     uploading: false,
     files: [],
     filesPreviews: [],
+
     mask: {
       number: "###"
     },
-    dialogCategory: false,
+    dialogCategory: false
   }),
 
   mounted() {
     this.initiate();
   },
-
+  //testeNovoCategorias
   computed: {
     categories() {
       return this.$store.getters.outtakesCategories;
     },
-    categoriesName() {
-      return this.categories.map(e => e.name);
-    },
+
     user() {
       return this.$store.getters.user;
     },
@@ -224,7 +211,7 @@ export default {
       await this.$store.dispatch("getOuttakesCategories");
       this.loading = false;
       this.selectedCategory =
-        this.categoriesName[0] != null ? this.categoriesName[0] : "";
+        this.categories.length != 0 ? this.categories[0] : "";
     },
 
     async bifurcation() {
@@ -246,8 +233,7 @@ export default {
       delete this.unit.specialties;
 
       let bill = {
-        category: this.category.name,
-        subCategory: this.subCategory,
+        category: this.category,
         payment_method: this.paymentMethod,
         description: this.description,
         value: this.value,
@@ -275,14 +261,14 @@ export default {
     handleFileUpload() {
       this.uploading = true;
       let uploadedFiles = this.$refs.files.files;
-      console.log(' files: ', this.$refs.files.files)
+      console.log(" files: ", this.$refs.files.files);
       for (let i = 0; i < uploadedFiles.length; i++) {
         if (this.files.indexOf(uploadedFiles[i]) < 0) {
           let index = this.files.push(uploadedFiles[i]);
           this.readFileUrl(uploadedFiles[i], index - 1);
         }
       }
-      console.log('files final: ', this.files)
+      console.log("files final: ", this.files);
       setTimeout(() => (this.uploading = false), 2000);
     },
     readFileUrl(file, index) {
@@ -308,7 +294,6 @@ export default {
       this.category = null;
       this.paymentMethod = undefined;
       this.value = 0.0;
-      this.subCategory = null;
       this.description = undefined;
       this.parcel = false;
       this.parcels = null;

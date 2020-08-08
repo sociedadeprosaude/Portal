@@ -187,7 +187,6 @@ export default {
       console.log('status: ', this.status)
       this.numberReceipt = this.query.num_recibo
       console.log('numberReceipt: ', this.numberReceipt)
-
     } else if (this.query && this.$route.params.reschedule) {
       this.modalidade = this.query.type
       this.previousConsultation = this.query.previousConsultation
@@ -277,7 +276,6 @@ export default {
       if (this.$route.params.reschedule && this.query.exam) {
         this.selectedForm.consultation.exam = this.query.exam
       }
-
       this.createConsultationForm = this.selectedForm;
     },
 

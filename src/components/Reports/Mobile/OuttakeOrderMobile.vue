@@ -198,7 +198,7 @@
                 let holder = this.outtakesByDate(this.outtakes)
                 let total = 0.00
                 for(let item in holder){
-                    total = total + holder[item][0].value
+                    total = total + Number(holder[item][0].value)
                 }
                 //total = Math.round(total)
                 total = total.toFixed(2)

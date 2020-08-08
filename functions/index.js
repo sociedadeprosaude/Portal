@@ -1,15 +1,14 @@
 const functions = require('firebase-functions');
-const serviceAccount = require('./serviceAccountKey.json')
+//const serviceAccount = require('./serviceAccountKey.json')
 
 var admin = require('firebase-admin');
-const cors = require('cors')({ origin: true });
 var moment = require('moment');
-//const serviceAccount = require('./serviceAccountKey')
 const json2csv = require('json2csv');
 const gmapsInit = require("./geocode")
+const cors = require('cors')({ origin: true });
+
 
 admin.initializeApp();
-
 // admin.initializeApp({
 //     credential: admin.credential.cert(serviceAccount),
 //     databaseURL: "https://prosaude-36f66.firebaseio.com"

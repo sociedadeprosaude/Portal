@@ -1,107 +1,51 @@
 <template>
   <v-container>
-    <v-row cols="12">
-      <v-chip-group row mandatory v-model="optionSelected" active-class="primary--text">
-        <v-chip v-for="option in options" :key="option">{{ option }}</v-chip>
-      </v-chip-group>
-    </v-row>
-    <v-card>
-      <v-card-title>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Procurar"
-          single-line
-          hide-details
-        ></v-text-field>
-        <v-spacer></v-spacer>
-        <span class="float-right">{{date }} 00:00:00 até {{date2}} 23:59:59</span>
-      </v-card-title>
-
-      <v-data-table
-        :search="search"
-        :headers="headers"
-        :items=" actualList"
-        :sort-by="['quantity']"
-        :sort-desc="[true]"
-        item-key="name"
-        show-expand
-        single-expand
-        no-data-text="Sem saídas no intervalo escolhido"
-        :footer-props="{
-      itemsPerPageText:'Categorias por página',
-      pageText:'{0}-{1} de {2}'
-    }"
-      >
-        <template v-slot:item.totalCost="{ item }">R$ {{item.totalCost}}</template>
-        <template v-slot:item.percentage="{ item }">{{item.percentage}} %</template>
-
-        <template v-slot:expanded-item="{ item }">
-          <td :colspan="headers.length+1">
-            <v-data-table
-              class="subTable"
-              dense
-              single-expand
-              :headers="subHeaders"
-              :items="item.outtakes"
-              item-key="idOuttake"
-              :footer-props="{
-      itemsPerPageText:'Saídas por página',
-      pageText:'{0}-{1} de {2}'
-    }"
-            >
-              <template v-slot:item.cost="{ item }">R$ {{item.cost}}</template>
-              <template v-slot:item.CRUD="{ item }">
-                <v-row>
-                  <ReadOuttake :item="item" />
-                  <DeleteOuttake :item="item" :cb="cb" />
-                </v-row>
-              </template>
-              <template v-slot:item.status="{ item }">
-                <div v-if="item.status" class="green">Pago</div>
-                <div v-else class="red white--text">Pendente</div>
-              </template>
-            </v-data-table>
-          </td>
-        </template>
-      </v-data-table>
-    </v-card>
-    <v-card>
-      <div class="Chart">
-        <PieOuttake :chart-data="dataCollection" :options="options" />
-      </div>
-    </v-card>
-
-    <v-card class="mt-4">
-      <v-container>
-        <v-row>
-          <v-col>
-            <span class="my-headline">{{numOuttakes}}</span>
-            <br />total de saídas
-          </v-col>
-          <v-divider vertical />
-          <v-col>
-            <span class="my-headline">R$ {{totalCost}}</span>
-            <br />Custo total das saídas
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-card>
+    <OuttakesReport
+      :date="date"
+      :date2="date2"
+      :cb="cb"
+      :search="search"
+      :paid="paid"
+      :now="now"
+      :total="total"
+      :options="options"
+      :optionSelected="optionSelected"
+      :headers="headers"
+      :subHeaders="subHeaders"
+      :dateBegin="dateBegin"
+      :dateEnd="dateEnd"
+      :colors="colors"
+      :formatDate="formatDate"
+      :formatDateHour="formatDateHour"
+      :calcPercentage="calcPercentage"
+      :calcOuttakeInfo="calcOuttakeInfo"
+      :calcTotalCost="calcTotalCost"
+      :calcCost="calcCost"
+      :updatePercentage="updatePercentage"
+      :outtakes="outtakes"
+      :listOuttakesRemade="listOuttakesRemade"
+      :categories="categories"
+      :outtakesDividedByCategory="outtakesDividedByCategory"
+      :outtakesToPayList="outtakesToPayList"
+      :outtakesPaidList="outtakesPaidList"
+      :dataCollection="dataCollection"
+      :actualList="actualList"
+      :numOuttakes="numOuttakes"
+      :totalCost="totalCost"
+      @change-search="(value)=>search=value"
+      @change-optionSelected="(value)=>optionSelected=value"
+    />
   </v-container>
 </template>
 
 <script>
 import moment from "moment";
-import PieOuttake from "@/components/Charts/PieChart.js";
-import DeleteOuttake from "./CRUD/DeleteOuttake";
-import ReadOuttake from "./CRUD/ReadOuttake";
+import OuttakesReport from "@/components/Reports/OuttakesReport";
 
 export default {
-  name: "OuttakesReport",
+  // name: "OuttakesReport",
   components: {
-    PieOuttake,
-    DeleteOuttake,
-    ReadOuttake
+    OuttakesReport
   },
   props: ["date", "date2", "cb"],
   data() {
@@ -131,7 +75,6 @@ export default {
           value: "idOuttake"
         },
         { text: "Custo", value: "cost", align: "center" },
-        { text: "SubCategoria", value: "subCategory", align: "center" },
         { text: "Status", value: "status", align: "center" },
         { text: "Criado em", value: "created_at", align: "center" },
         { text: "Pago em", value: "paidIn", align: "center" },
@@ -169,7 +112,7 @@ export default {
         ? this.calcPercentage(sumCost, totalCost)
         : 0;
       return {
-        name: category.name,
+        name: category,
         outtakes: listOuttakesCategory,
         quantity: listOuttakesCategory.length,
         percentage: percentage,
@@ -197,10 +140,10 @@ export default {
       return this.$store.getters.outtakes;
     },
     listOuttakesRemade() {
-      return this.outtakes.map(e => ({
+      return this.outtakes.map((e, index) => ({
         idOuttake: e.id,
+        key: index,
         category: e.category,
-        subCategory: e.subCategory,
         cost: e.value,
         paidIn: e.paid
           ? this.formatDateHour(e.paid)
@@ -220,8 +163,9 @@ export default {
 
       const totalCost = this.calcCost(this.listOuttakesRemade);
       this.categories.forEach(category => {
+        
         let listOuttakesCategory = this.listOuttakesRemade.filter(
-          outtake => outtake.category == category.name
+          outtake => outtake.category == category
         );
         if (listOuttakesCategory.length != 0)
           listOuttakesGroupedByCategory.push(
@@ -234,14 +178,14 @@ export default {
     outtakesToPayList() {
       const subList = this.outtakesDividedByCategory.map(e => {
         const listAux = e.outtakes.filter(e2 => !e2.status);
-        return this.calcOuttakeInfo(e, listAux, null);
+        return this.calcOuttakeInfo(e.name, listAux, null);
       });
       return this.updatePercentage(subList);
     },
     outtakesPaidList() {
       const subList = this.outtakesDividedByCategory.map(e => {
         const listAux = e.outtakes.filter(e2 => e2.status);
-        return this.calcOuttakeInfo(e, listAux, null);
+        return this.calcOuttakeInfo(e.name, listAux, null);
       });
       return this.updatePercentage(subList);
     },

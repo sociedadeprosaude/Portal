@@ -162,7 +162,7 @@ export default {
             },
             {
               title: 'Relatórios',
-              to: '/relatorio',
+              to: '/Relatorios',
               permission: 'Relatórios',
               icon: 'report'
             },

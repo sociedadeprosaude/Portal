@@ -9,7 +9,7 @@ import constants from '@/utils/constants'
 function f(arg) {
     return 0
 }
-String.prototype.replaceAll = String.prototype.replaceAll || function(needle, replacement) {
+String.prototype.replaceAll = String.prototype.replaceAll || function (needle, replacement) {
     return this.split(needle).join(replacement);
 };
 
@@ -85,10 +85,10 @@ const actions = {
         }
     },
 
-    async userPermissions({commit}, payload) {
+    async userPermissions({ commit }, payload) {
         try {
             let updateUserPermissions;
-            updateUserPermissions = await firebase.firestore().collection('users').doc(payload.user).update({permissions: payload.permissions})
+            updateUserPermissions = await firebase.firestore().collection('users').doc(payload.user).update({ permissions: payload.permissions })
             return updateUserPermissions
         } catch (e) {
             throw e
@@ -128,7 +128,7 @@ const actions = {
 
     async getPatient({ }, cpf) {
         let userDoc = await firestore().collection('users')
-            .where('cpf','==', cpf)
+            .where('cpf', '==', cpf)
             .get();
         let user;
         userDoc.forEach(doc => {
@@ -169,6 +169,7 @@ const actions = {
         // let querySnapshot = await usersRef.limit(5).get();
         try {
             let users = (await axios.get('https://us-central1-prosaude-36f66.cloudfunctions.net/requests-searchUser', {
+                //  let users = (await axios.get('https://us-central1-prosaudedev.cloudfunctions.net/requests-searchUser', {
                 params: searchFields
             })).data
             return users
@@ -196,7 +197,7 @@ const actions = {
             try {
                 let foundUser = await firebase.firestore().collection('users').doc(payload).get();
                 resolve(foundUser.data())
-            }catch(e){
+            } catch (e) {
                 reject(e)
             }
         })
@@ -232,15 +233,15 @@ const actions = {
             let user;
             let id;
             let type;
-            let foundUser = await firebase.firestore().collection('users').where('cpf','==', patient.cpf).get();
+            let foundUser = await firebase.firestore().collection('users').where('cpf', '==', patient.cpf).get();
             foundUser.docs.forEach(doc => {
                 id = doc.id,
-                type = doc.data().type
+                    type = doc.data().type
             });
             console.log('encontrado:', id)
             if (id) {
                 //se já existir: collaborator / patient / doctor (passar a ter field uid !== de doc.id)
-                if(type === 'COLABORATOR'){
+                if (type === 'COLABORATOR') {
                     patient.type = type
                     user = await firebase.firestore().collection('users').doc(id).update(patient)
                 } else { user = await firebase.firestore().collection('users').doc(id).update(patient) }
@@ -311,21 +312,21 @@ const actions = {
         commit('setSelectedDependent', payload)
     },
 
-    updateAccessedTo ({}, payload){
+    updateAccessedTo({ }, payload) {
         firebase.firestore().collection('users').doc(payload.id).update({
             accessed_to: payload.accessed_to
         })
         if (payload.addresses && payload.addresses[0] && payload.addresses[0].cep) {
-            let newCEP = payload.addresses[0].cep.replace(/[.,-]/g,"").substring(0,5)
+            let newCEP = payload.addresses[0].cep.replace(/[.,-]/g, "").substring(0, 5)
             firebase.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood')
-            .doc(newCEP).collection('monthly_report').doc(moment().format('YYYY-MM'))
-            .get().then(doc=>{
-                if(doc.exists){
-                    doc.ref.update({accessed:firebase.firestore.FieldValue.increment(1)})
-                }else{
-                    doc.ref.set({accessed:1})
-                }
-            })
+                .doc(newCEP).collection('monthly_report').doc(moment().format('YYYY-MM'))
+                .get().then(doc => {
+                    if (doc.exists) {
+                        doc.ref.update({ accessed: firebase.firestore.FieldValue.increment(1) })
+                    } else {
+                        doc.ref.set({ accessed: 1 })
+                    }
+                })
 
         }
     },

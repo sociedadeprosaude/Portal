@@ -85,9 +85,9 @@ const actions = {
 
                     })
                 }
-                if (unCalledtickets) {
-                    sector.ref.set({ tickets: [] }, { merge: true });
-                }
+
+                sector.ref.set({ tickets: [] }, { merge: true });
+
             })
 
         });
@@ -143,6 +143,16 @@ const actions = {
                 ticket_number: 1,
                 last_updated: moment().format('YYYY-MM-DD HH:mm:ss')
             });
+        return info;
+    },
+
+    listenLastTicket(context) {
+        let selectedClinic = context.getters.selectedUnit;
+        firebase.firestore().collection('tickets').doc(selectedClinic.name)
+            .onSnapshot((doc) => {
+                context.commit('setGeneralInfo', doc.data());
+
+            })
     },
 
     listenTicketsSectors(context) {
@@ -191,7 +201,6 @@ const actions = {
             ...payload.sector.rooms,
             [payload.room.name]: payload.room
         };
-        console.log('selectedClinic', selectedClinic);
         await queryBuilder(selectedClinic.name, payload.sector.name)
             .update({
                 rooms: payload.sector.rooms

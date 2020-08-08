@@ -503,7 +503,6 @@ exports.fixSpecialtiesPrices = functions.https.onRequest(async (req, res) => {
                             if (!firstPrice)
                                 firstPrice = doc.data().price
                         })
-
                         specialty.ref.update({price: firstPrice})
                     }
                     return
@@ -513,17 +512,13 @@ exports.fixSpecialtiesPrices = functions.https.onRequest(async (req, res) => {
     })
     res.status(200).send('Sucesso! Executando function para concertar especialidades sem preço');
 });
-
 exports.cancelAppointment = functions.runWith(heavyFunctionsRuntimeOpts).https.onCall(async (data, context) => {
     let payload = data.payload
-
     let FieldValue = admin.firestore.FieldValue;
     await admin.firestore().collection('consultations').doc(payload.id).delete()
     await admin.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.id).update({status: 'Cancelado'})
-
     //Para consultas que são do tipo Retorno
     if (payload.type === 'Retorno') {
-
         await admin.firestore().collection('consultations').doc(payload.previousConsultation).update({
             regress: FieldValue.delete()
         });
@@ -531,16 +526,13 @@ exports.cancelAppointment = functions.runWith(heavyFunctionsRuntimeOpts).https.o
             regress: FieldValue.delete()
         })
     }
-
     console.log('Consulta que será cancelada->', payload)
-
     admin.firestore().collection('users').doc(payload.idPatient).collection('procedures')
         .where('consultation', '==', payload.id).get()
         .then((procedure) => {
             procedure.forEach((doc) => {
                 console.log('um procedure->', doc.data())
                 let data = doc.data();
-
                 if (payload.type === "Consulta" && payload.payment_number !== "") {
                     //let thereIsExam = payload.consultation.exam ? payload.consultation.exam : payload.consultation.user && payload.consultation.user.exam ? payload.consultation.user.exam : undefined
                     let thereIsExam = payload.exam ? payload.exam : undefined
@@ -552,7 +544,6 @@ exports.cancelAppointment = functions.runWith(heavyFunctionsRuntimeOpts).https.o
                         startAt: data.startAt,
                         type: type
                     };
-
                     if (thereIsExam)
                         obj = {...obj, exam: thereIsExam};
                     else
@@ -561,7 +552,6 @@ exports.cancelAppointment = functions.runWith(heavyFunctionsRuntimeOpts).https.o
                         {...obj}
                     )
                 }
-
                 admin.firestore().collection('users').doc(payload.idPatient).collection('procedures').doc(doc.id).delete()
                 data.status.push('Cancelado');
                 admin.firestore().collection('users').doc(payload.idPatient).collection('proceduresFinished').doc(doc.id)
@@ -570,16 +560,12 @@ exports.cancelAppointment = functions.runWith(heavyFunctionsRuntimeOpts).https.o
             })
             return
         }).catch(() => {
-
     })
-
-
     //Para consultas do tipo Consulta e possuem um retorno associado. É necessário remover o agendamento do retorno associado
     if (payload.regress !== undefined) {
         await admin.firestore().collection('consultations').doc(payload.regress).delete()
         await admin.firestore().collection('users').doc(payload.idPatient).collection('consultations').doc(payload.regress).update({status: 'Cancelado'})
     }
-
     return 'Appointment Cancelled'
 });
 
