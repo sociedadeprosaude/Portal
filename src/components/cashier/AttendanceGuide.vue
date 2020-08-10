@@ -162,7 +162,7 @@
             <v-flex xs6 class="text-left mt-12">
               <v-layout column wrap class="primary--text">
                 <span class="font-weight-bold">Instituto Pró Saúde do Amazonas</span>
-                <span>Rua Prof. Felix Valois 39, Cidade Nova</span>
+                <span> {{selectedUnit.address.street + ' ' + selectedUnit.address.number +  ',' +  selectedUnit.address.neighboor}}</span>
                 <span>Manaus - AM</span>
                 <span>CNPJ: 09.066.632/0001-22</span>
               </v-layout>
@@ -184,7 +184,7 @@ export default {
       return this.guide;
     },
     selectedUnit() {
-      console.log('logo: ', this.$store.getters.selectedUnit.logo)
+      console.log('unit: ', this.$store.getters.selectedUnit)
       return this.$store.getters.selectedUnit;
     },
     QrCode(){
