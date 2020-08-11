@@ -253,6 +253,7 @@ const actions = {
                 patient.created_at = moment().format('YYYY-MM-DD HH:mm:ss');
                 user = await firebase.firestore().collection('users').add(patient)
             }
+            console.log('chave:', user)
             return user
         } catch (e) {
             throw e
