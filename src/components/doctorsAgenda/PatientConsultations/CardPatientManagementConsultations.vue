@@ -25,26 +25,41 @@
                             <v-divider class="primary"/>
                         </v-flex>
                         <v-flex sm4 v-for="(item,index) in consultation.consultations" :key="index" class="mt-3 mb-2">
-                            <v-card outlined class="borderCard mx-2 mr-2 grey lighten-5 elevation-1" @click="ConsultationSelect(item)">
-                                <v-layout row wrap class="mt-2">
-                                    <v-flex xs4>
-                                        <v-icon large>person</v-icon>
-                                        <br>
-                                        <v-icon v-if="item.type === 'Retorno'"  color="primary" small class="mt-1">restore</v-icon>
-                                        <v-icon v-else small class="mt-1"  color="primary">event</v-icon>
-                                        <v-icon v-if="item.status === 'Pago'" color="green" small class="mt-1">attach_money</v-icon>
-                                        <v-icon v-else small class="mt-1" color="red">money_off</v-icon>
-                                    </v-flex>
-                                    <v-flex xs8 class="mb-3">
-                                        <v-flex xs12>
-                                            <h4 class="text-left font-weight-bold">{{item.specialty ? item.specialty.name: item.exam.name}}</h4>
-                                            <h5 class="text-left mt-1">{{item.date.substring(11,16)}}</h5>
-                                            <h5 class="text-left">{{item.doctor.name}}</h5>
-                                        </v-flex>
-                                    </v-flex>
-                                </v-layout>
 
-                            </v-card>
+                          <v-tooltip top color="white">
+                            <template v-slot:activator="{ on, attrs }">
+                              <div v-bind="attrs" v-on="on" >
+                                <v-card outlined class="borderCard mx-2 mr-2 grey lighten-5 elevation-1" @click="ConsultationSelect(item)">
+                                      <v-layout row wrap class="mt-2">
+                                          <v-flex xs4>
+                                              <v-icon large>person</v-icon>
+                                              <br>
+                                              <v-icon v-if="item.type === 'Retorno'"  color="primary" small class="mt-1">restore</v-icon>
+                                              <v-icon v-else small class="mt-1"  color="primary">event</v-icon>
+                                              <v-icon v-if="item.status === 'Pago'" color="green" small class="mt-1">attach_money</v-icon>
+                                              <v-icon v-else small class="mt-1" color="red">money_off</v-icon>
+                                          </v-flex>
+                                          <v-flex xs8 class="mb-3">
+                                              <v-flex xs12>
+                                                  <h4 class="text-left font-weight-bold">{{item.specialty ? item.specialty.name: item.exam.name}}</h4>
+                                                  <h5 class="text-left mt-1">{{item.date.substring(11,16)}}</h5>
+                                                  <h5 class="text-left">{{item.doctor.name}}</h5>
+                                              </v-flex>
+                                          </v-flex>
+                                      </v-layout>
+                                  </v-card>
+                              </div>
+                            </template>
+                            <v-layout class="align-center justify-center">
+                              <v-flex xs6>
+                                <v-img v-if="item.clinic"
+                                       :src="item.clinic.logo"
+                                       width="400"
+                                ></v-img>
+                              </v-flex>
+                            </v-layout>
+                            <!--<span>{{item.clinic.name}}</span>-->
+                          </v-tooltip>
                         </v-flex>
                     </v-layout>
                 </v-card>
