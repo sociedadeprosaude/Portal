@@ -50,15 +50,15 @@
                                   </v-card>
                               </div>
                             </template>
-                            <v-layout class="align-center justify-center">
+                            <v-layout v-if="item.clinic.logo" class="align-center justify-center">
                               <v-flex xs6>
-                                <v-img v-if="item.clinic"
+                                <v-img
                                        :src="item.clinic.logo"
                                        width="400"
                                 ></v-img>
                               </v-flex>
                             </v-layout>
-                            <!--<span>{{item.clinic.name}}</span>-->
+                            <span v-if="!item.clinic.logo" style="color: #003B8F; font-weight: bold">{{item.clinic.name}}</span>
                           </v-tooltip>
                         </v-flex>
                     </v-layout>
