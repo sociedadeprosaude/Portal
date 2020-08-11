@@ -139,7 +139,7 @@
             <v-flex xs12 class="mt-3">
                 <v-layout row wrap class="align-end fill-height">
                     <v-flex xs4 class="text-center mt-4">
-                        <v-btn outlined color="primary" @click="clearCart()">Novo</v-btn>
+                        <v-btn outlined color="primary" @click="SelectNewPatient()">Novo</v-btn>
                     </v-flex>
                     <v-flex xs4 class="text-center">
                         <v-btn :disabled="cartItems.length === 0" outlined
@@ -502,6 +502,10 @@
             },
 
             clearCart() {
+                this.$store.commit('clearShoppingCartItens');
+                this.$store.commit('setSelectedBudget', undefined);
+            },
+            SelectNewPatient() {
                 this.$store.commit('clearShoppingCartItens');
                 this.$store.commit('setSelectedBudget', undefined);
                 let user = undefined;
