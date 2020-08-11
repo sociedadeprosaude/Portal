@@ -38,7 +38,7 @@
                                 class="mr-3"
                         />
                     </v-flex>
-                    <v-flex xs4>
+                    <v-flex xs12 sm3>
                         <v-menu
                                 ref="menu1"
                                 v-model="menu1"
@@ -62,12 +62,38 @@
                                            @change="getConsultationsDorctors()"/>
                         </v-menu>
                     </v-flex>
+                  <v-flex xs12 sm5>
+                    <v-select
+                        v-model="clinic"
+                        :items="clinics"
+                        item-text="name"
+                        label="Clínica"
+                        outlined
+                        clearable
+                    >
+                      <template v-slot:selection="data">
+                        <v-chip
+                            :key="JSON.stringify(data.item)"
+                            :input-value="data.selected"
+                            :disabled="data.disabled"
+                            class="v-chip--select-multi"
+                            @click.stop="data.parent.selectedIndex = data.index"
+                            @input="data.parent.selectItem(data.item)"
+                            text-color="white"
+                            color="primary"
+                        >{{ data.item.name }}
+                        </v-chip>
+                      </template>
+                    </v-select>
+                  </v-flex>
                 </v-layout>
                 <v-layout aling-center row wrap>
                     <v-flex xs12>
                         <CardDoctorsManagementConsultations @consultationSelect="consultatioSelect= $event"
                                                             @patientSelect="patientSelected = $event" :filterByExam="examTypeCheck" :examType="examType"
-                                                            :specialty="specialty" :date="date"  />
+                                                            :specialty="specialty" :date="date"
+                                                            :clinic="clinic"
+                        />
                     </v-flex>
                 </v-layout>
             </v-card>
@@ -89,6 +115,7 @@
             date: new Date().toISOString().substr(0, 10),
             dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
             menu1: false,
+          clinic: undefined,
             loadingConsultations: false,
             specialty: '',
             examType:'',
@@ -107,7 +134,12 @@
                 return this.$store.getters.examsTypes.filter((examType)=>{
                     return examType.scheduleable
                 });
-            }
+            },
+          clinics() {
+            return this.$store.getters.clinics.filter(a => {
+              return a.property;
+            });
+          },
         },
         mounted() {
             this.initialConfig();

@@ -791,14 +791,13 @@ exports.fixSchedulesPrices = functions.https.onRequest(async (req, res) => {
     let snapshot = await firestore.collection('schedules').get()
     snapshot.forEach((schedule) => {
         let data = schedule.data()
-        console.log('Specialty->', data)
-        if (!data.specialty.price) {
+        if (data.specialty) {
             firestore.collection('specialties').doc(data.specialty.name).get()
                 .then((specialty) => {
                     if (specialty.exists) {
                         let specialtyData = specialty.data()
                         schedule.ref.update({
-                            specialty: {name: specialtyData.name, id: specialtyData.id, price: specialtyData.price}
+                            specialty: {name: specialtyData.name, id: specialtyData.name, price: specialtyData.price}
                         })
                     }
                     return
