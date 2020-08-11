@@ -368,16 +368,20 @@ async function specialtyCost(specialtyName, doctorId) {
     let cost = undefined;
     specialties.forEach(specialty => {
         if (specialty.name === specialtyName && specialty.doctors) {
-            specialty.doctors.forEach(doctor => {
+            /* specialty.doctors.forEach(doctor => {
                 let id = doctor.uid ? doctor.uid : doctor.cpf
                 if (id === doctorId) {
                     cost = {
                         cost: doctor.cost,
-                        price: doctor.price,
+                        price: specialty.price,
                         doctorConsultation: doctor
                     };
                 }
-            });
+            }); */
+            cost = {
+                cost: specialty.cost,
+                price: specialty.price
+            };
         }
     });
     return cost

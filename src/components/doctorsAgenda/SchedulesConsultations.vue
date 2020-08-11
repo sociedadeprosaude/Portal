@@ -284,7 +284,6 @@ export default {
       this.numberReceipt = "";
       this.status = "Aguardando pagamento";
       this.loaderPaymentNumber = true;
-      console.log('oioioi')
 
       let obj = value ? {
             user: this.selectedForm.user,
@@ -307,12 +306,10 @@ export default {
                 },
               }
 
-      console.log('no procurar recibo', obj)
 
       this.$store.dispatch("thereIsIntakes", obj)
           .then(obj => {
             if (obj.payment_number) {
-              console.log('revico', obj)
               this.payment_numberFound = obj;
               this.numberReceipt = obj.payment_number;
               this.exam = obj.exam ? {...obj.exam, notFindPayment: true} : undefined;
@@ -328,6 +325,7 @@ export default {
           })
           .catch(response => {
             let cost = response.cost;
+            console.log('Custo',cost)
             if (cost && cost.price === 0) {
               this.status = "Pago";
               this.loaderPaymentNumber = false
