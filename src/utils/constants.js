@@ -53,16 +53,5 @@ export default {
             appId: "1:86942539576:web:9bf02a0a4d8e94b9"
         }
 
-//matriz
-// {
-//     apiKey: "AIzaSyACymfaKNI2_ygz4ss2y_hGGFvDa6MZ1ms",
-//         authDomain: "prosaudematriz-87ff4.firebaseapp.com",
-//     databaseURL: "https://prosaudematriz-87ff4.firebaseio.com",
-//     projectId: "prosaudematriz-87ff4",
-//     storageBucket: "prosaudematriz-87ff4.appspot.com",
-//     messagingSenderId: "543764593483",
-//     appId: "1:543764593483:web:f6dcb3d40005de61f286ce",
-//     measurementId: "G-QESKRX308C"
-// }
 
 }
