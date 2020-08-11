@@ -230,7 +230,6 @@ export default {
             }
           })
         }
-
       });
       return consultations
     },

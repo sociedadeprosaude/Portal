@@ -12,18 +12,11 @@
                                     item-text="name"
                                     return-object
                                     outlined
+                                    multiple
                                     append-outer-icon="add"
                                     @click:append-outer="addCategory = true"
                             />
-                            <v-select
-                                    v-if="category.subCategories"
-                                    label="SubCategoria"
-                                    v-model="subCategory"
-                                    :items="[...category.subCategories,this.other]"
-                                    item-text="name"
-                                    return-object
-                                    outlined
-                            />
+                          
                         </v-flex>
                         <v-spacer/>
                         <v-flex xs12 sm6>
@@ -87,7 +80,6 @@
 
         data: () => ({
             category: "",
-            subCategory: "",
             addCategory: false,
             newCategory: "",
             value: 0,
@@ -109,9 +101,7 @@
             categories() {
                 return this.$store.getters.outtakesCategories;
             },
-            nameCategories () {
-                return this.categories.map(e => e.name);
-            },
+       
             user() {
                 return this.$store.getters.user;
             },
@@ -132,7 +122,7 @@
 
         methods: {
             async saveNewCategory() {
-                if (this.nameCategories.indexOf(this.newCategory) < 0 && this.newCategory !== this.other){
+                if (this.categories.indexOf(this.newCategory) < 0 && this.newCategory !== this.other){
                     await this.$store.dispatch("addOuttakesCategory", {
                         category: this.newCategory
                     });
@@ -159,8 +149,7 @@
                 delete this.unit.specialties;
                 this.$store.dispatch("AddSaida", {
                     description: this.description,
-                    category: this.category.name,
-                    subCategory: this.subCategory,
+                    category: this.category,
                     value: parseFloat(this.value),
                     date_to_pay: this.dateToPay,
                     created_at: this.date,

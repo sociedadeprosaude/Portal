@@ -28,7 +28,8 @@ const actions = {
             delete copy.specialty.doctors
         delete copy.doctor.specialties
         delete copy.doctor.clinics
-        await firebase.firestore().collection('schedules').add(payload)
+        let newDoc = await firebase.firestore().collection('schedules').add(payload)
+        console.log(newDoc.id)
     },
 
     async updateExpirationDate(context,payload){

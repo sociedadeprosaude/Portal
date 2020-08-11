@@ -183,7 +183,7 @@ const actions = {
         if (consultationFound || (payload.precoVendaZero && payload.isConsultation)) {
             let consultation = payload.precoVendaZero && payload.isConsultation ? payload.consultation : consultationFound
 
-            let procedures = await firebase.firestore().collection('users').doc(user.cpf).collection('procedures').where('consultation', '==', consultation.id)
+            let procedures = await firebase.firestore().collection('users').doc(user.uid).collection('procedures').where('consultation', '==', consultation.id)
                 .get();
 
             if (!procedures.empty) {
@@ -202,7 +202,7 @@ const actions = {
                         obj.specialty = payload.specialty.name
                     }
 
-                    firebase.firestore().collection('users').doc(user.cpf).collection('procedures').doc(snap.id).update(
+                    firebase.firestore().collection('users').doc(user.uid).collection('procedures').doc(snap.id).update(
                         { ...obj }
                     )
                 })
@@ -225,7 +225,7 @@ const actions = {
 //                 obj.specialty = payload.specialty.name
 // >>>>>>> master
             }
-            firebase.firestore().collection('users').doc(user.cpf).collection('procedures').add(
+            firebase.firestore().collection('users').doc(user.uid).collection('procedures').add(
                 { ...obj }
             )
         }
@@ -233,7 +233,7 @@ const actions = {
     },
 
     async updatePaymentNumberConsultation(context, payload) {
-        await firebase.firestore().collection('users').doc(payload.user.cpf).collection('consultations').doc(payload.consultation.id).update({
+        await firebase.firestore().collection('users').doc(payload.user.uid).collection('consultations').doc(payload.consultation.id).update({
             status: 'Pago',
             payment_number: payload.payment_number.toString()
         });
@@ -288,7 +288,7 @@ const actions = {
                 status: constants.INTAKE_STATUS.CANCELLED,
                 cancelled_by: context.getters.user
             });
-        await firebase.firestore().collection('users').doc(intake.user.cpf).collection('intakes').doc(intake.id.toString()).update(
+        await firebase.firestore().collection('users').doc(intake.user.uid).collection('intakes').doc(intake.id.toString()).update(
             {
                 status: constants.INTAKE_STATUS.CANCELLED,
                 cancelled_by: context.getters.user
