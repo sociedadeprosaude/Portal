@@ -63,7 +63,7 @@
                         <v-btn
                                 color="white"
                                 rounded
-                                :disabled="consultation.status !== 'Pago' || consultation.consultation_hour"
+                                :disabled="consultation.status !== 'Pago'"
                                 @click="setConsultationHour(consultation)"
                         >
                             Atender
@@ -160,7 +160,8 @@
                 }
                 console.log('outtake: ', outtake)
                 await this.$store.dispatch('addSpecialtyOuttakes', outtake)
-                await this.$store.dispatch('addConsultationHourInConsultation', data);
+                if(!consultation.consultation_hour)
+                    await this.$store.dispatch('addConsultationHourInConsultation', data);
                 this.consultation.consultation_hour = consultation_hour;
                 this.documentDialog = true;
             },
