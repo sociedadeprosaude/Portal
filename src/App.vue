@@ -3,7 +3,7 @@
         <v-content v-if="ready" :class="['background', 'fade-in-anim']">
 
             <Toolbar class="mb-12 pb-6" v-if="user" :user="user"  />
-            
+
             <transition name="slide-fade" mode="out-in" appear>
             <router-view/>
             </transition>
