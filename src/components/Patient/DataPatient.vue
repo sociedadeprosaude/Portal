@@ -570,13 +570,12 @@
         computed: {
             selectedPatient() {
                 let user = this.$store.getters.selectedPatient;
-                console.log('selected:', user)
                 if (user) {
                     this.name = user.name;
                     this.cpf = user.cpf;
-                    // this.numAss = user.association_number
+                    this.numAss = user.association_number
                 }
-                return this.$store.getters.selectedPatient
+                return user
             },
             selectedDependent() {
                 let dependent = this.$store.getters.selectedDependent;
@@ -918,7 +917,6 @@
             }
         },
         async mounted() {
-
             window.addEventListener('keydown', this.handleEnter);
             axios.get('http://servicodados.ibge.gov.br/api/v1/localidades/estados/13/municipios')
                 .then((response) => {

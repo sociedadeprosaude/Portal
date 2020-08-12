@@ -132,7 +132,11 @@ const actions = {
             .get();
         let user;
         userDoc.forEach(doc => {
-            user = doc.data()
+            user = {
+                ... doc.data(),
+                id:doc.id
+            }
+
         });
         console.log('user:', user)
         return user
@@ -167,9 +171,10 @@ const actions = {
         //     }
         // }
         // let querySnapshot = await usersRef.limit(5).get();
+        console.log('Searching->',searchFields)
         try {
             let users = (await axios.get('https://us-central1-prosaude-36f66.cloudfunctions.net/requests-searchUser', {
-                //  let users = (await axios.get('https://us-central1-prosaudedev.cloudfunctions.net/requests-searchUser', {
+            //let users = (await axios.get('https://us-central1-prosaudedev.cloudfunctions.net/requests-searchUser', {
                 params: searchFields
             })).data
             return users

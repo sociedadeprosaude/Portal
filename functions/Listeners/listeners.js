@@ -4,7 +4,7 @@ try { admin.initializeApp(functions.config().firebase); } catch (e) { console.lo
 const moment = require('moment');
 const gmapsInit = require("../geocode")
 
-exports.setUidToUserWhenCreated = functions.firestore.document('users/{id}').onCreate((doc, context) => {
+/* exports.setUidToUserWhenCreated = functions.firestore.document('users/{id}').onCreate((doc, context) => {
     let firestore = admin.firestore();
     let id = doc.id;
     let uid = doc.data().uid
@@ -15,8 +15,9 @@ exports.setUidToUserWhenCreated = functions.firestore.document('users/{id}').onC
         firestore.collection('users').doc(uid).set(doc.data())
         firestore.collection('users').doc(id).delete()
     }
-});
-exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore.document('users/{uid}').onUpdate(async (change, context) => {
+}); */
+
+async function UpdateUidOfUserPatientWhenHeCreateLoginAndPassword(change){
     let firestore = admin.firestore();
     let uidOld = change.before.data().uid;//antes
     let uidNew = change.after.data().uid;//depois
@@ -92,8 +93,9 @@ exports.UpdateUidOfUserPatientWhenHeCreateLoginAndPassword = functions.firestore
         //raiz: user OLD
         await firestore.collection('users').doc(uidOld).delete()
     }
-});
-exports.UpdateUidOfUserDoctorWhenHeCreateLoginAndPassword = functions.firestore.document('users/{uid}').onUpdate(async (change, context) => {
+}
+
+async function UpdateUidOfUserDoctorWhenHeCreateLoginAndPassword(change){
     let firestore = admin.firestore();
     let uidOld = change.before.data().uid;//antes
     let uidNew = change.after.data().uid;//depois
@@ -160,6 +162,14 @@ exports.UpdateUidOfUserDoctorWhenHeCreateLoginAndPassword = functions.firestore.
             }
         });
     }
+}
+exports.UpdateUidOfUserWhenHeCreateLoginAndPassword = functions.firestore.document('users/{uid}').onUpdate(async (change, context) => {
+    if (change.after.data().type === 'PATIENT') {
+        UpdateUidOfUserPatientWhenHeCreateLoginAndPassword(change)
+    }
+    else if(change.after.data().type === 'DOCTOR'){
+        UpdateUidOfUserDoctorWhenHeCreateLoginAndPassword(change)
+    }
 });
 
 exports.listenToUserAdded = functions.firestore.document('users/{id}').onCreate(async (change, context) => {
@@ -198,6 +208,15 @@ exports.listenToUserAdded = functions.firestore.document('users/{id}').onCreate(
                 }
                 return;
             }).catch((e) => e)
+    }
+
+    let uid = change.data().uid
+    let type = change.data().type
+    if (type === 'PATIENT' && !uid) { db.collection('users').doc(id).update({ uid: id }) }
+    if (type === 'DOCTOR' && !uid) { db.collection('users').doc(id).update({ uid: id }) }
+    if (type === 'COLABORATOR' && id !== uid) {
+        db.collection('users').doc(uid).set(doc.data())
+        db.collection('users').doc(id).delete()
     }
     return;
 });
