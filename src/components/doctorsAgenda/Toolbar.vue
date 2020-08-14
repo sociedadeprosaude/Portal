@@ -72,13 +72,13 @@
 
       <v-toolbar-title>
         <router-link to="/" tag="span" style="cursor: pointer">
-          <v-img v-if="selectedUnit && user.group === 'admin'" :src="selectedUnit.logo" aspect-radio="1" width="240"></v-img>
+          <v-img v-if="selectedUnit" :src="selectedUnit.logo" aspect-radio="1" width="240"></v-img>
         </router-link>
       </v-toolbar-title>
       <v-toolbar-items>
         <v-row align="end" justify="end">
           <v-col cols="12">
-            <v-btn rounded text @click="selectUnit()" v-if="!user.clinic">
+            <v-btn rounded text @click="selectUnit()" v-if="!user.clinic && user.group === 'admin'">
               <v-icon>cached</v-icon>
             </v-btn>
           </v-col>
@@ -119,13 +119,13 @@
 
       <v-toolbar-title class="ma-0 pa-0">
         <router-link to="/" tag="span" style="cursor: pointer">
-          <v-img v-if="selectedUnit && user.group === 'admin'" :src="selectedUnit.logo" aspect-radio="1" width="100"></v-img>
+          <v-img v-if="selectedUnit" :src="selectedUnit.logo" aspect-radio="1" width="100"></v-img>
         </router-link>
       </v-toolbar-title>
       <v-spacer/>
       <v-toolbar-items>
         <v-layout row wrap class="justify-center align-center">
-          <v-btn rounded text @click="selectUnit()">
+          <v-btn rounded text @click="selectUnit()" v-if="!user.clinic && user.group === 'admin'">
             <v-icon class="black--text">cached</v-icon>
           </v-btn>
           <v-btn class="hidden-sm-and-up" text @click="patientDialog = !patientDialog">
