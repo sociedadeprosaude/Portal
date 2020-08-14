@@ -373,7 +373,7 @@ const actions = {
         firebase.firestore().collection('consultations').doc(data.id).update({
             consultation_hour: data.consultation_hour,
         });
-        firebase.firestore().collection('users').doc(data.consultation.user.cpf)
+        firebase.firestore().collection('users').doc(data.consultation.user.uid)
             .collection('consultations').doc(data.id).update({
             consultation_hour: data.consultation_hour,
         })

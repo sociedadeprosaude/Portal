@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <v-layout row wrap v-if="patient.name">
+        <v-layout row wrap v-if="patient">
             <v-flex xs12>
                 <p class="text-left">{{patient.name}}</p>
             </v-flex>
