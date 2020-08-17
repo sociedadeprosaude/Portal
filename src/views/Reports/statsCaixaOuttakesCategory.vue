@@ -1,6 +1,6 @@
 <template>
-  <v-container fluid v-if="statistics && months && years">
-    <statsCaixaOuttakesCategory
+  <v-container fluid v-if="statistics && months && years || not">
+    <statsCaixaOuttakesCategory v-if="statistics && months && years"
       :years="years"
       :year="year"
       :months="months"
@@ -27,13 +27,16 @@
       @change-month="(value)=>month=value"
       @change-year="(value)=>year=value"
     />
+    <v-flex v-else>
+      <p>SEM STATISTICAS</p>
+    </v-flex>
   </v-container>
   <v-progress-circular v-else indeterminate size="64"></v-progress-circular>
  
 </template>
 
 <script>
-import statsCaixaOuttakesCategory from "@/components/Reports/statsCaixaOuttakesCategory";
+import statsCaixaOuttakesCategory from "../../components/Reports/statsCaixaOuttakesCategory";
 export default {
   components: { statsCaixaOuttakesCategory },
   data: vm => ({
@@ -41,6 +44,7 @@ export default {
     year: null,
     months: null,
     month: null,
+    not:null,
     week: 0,
     monsthsName: [
       "Janeiro",
@@ -74,11 +78,14 @@ export default {
   },
   watch: {
     statistics(val) {
-      if (val) {
+      if (Object.keys(val).length) {
         this.years = Object.keys(val);
         this.year = this.years[0];
         this.months = Object.keys(val[this.years[0]]);
         this.month = this.months[0];
+      }
+      else{
+        this.not = true
       }
     },
     year(val) {

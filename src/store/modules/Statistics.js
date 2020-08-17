@@ -112,8 +112,8 @@ const actions = {
             statsYearMonth[year][month].itens = statDay.itens;
             return statDay
         })
-        // console.log(statistics);
-        // console.log(statsYearMonth);
+         //console.log('statistics function: ',statistics);
+         //console.log('statsYearMonth function: ',statsYearMonth);
         commit('setStatisticsOuttakes', statsYearMonth)
     },
 
