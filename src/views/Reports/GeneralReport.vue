@@ -104,7 +104,6 @@ export default {
       for (let specialty in this.report.specialties) {
         procQt += this.report.specialties[specialty].quantity;
       }
-
       return procQt;
     },
     examsQuantity() {

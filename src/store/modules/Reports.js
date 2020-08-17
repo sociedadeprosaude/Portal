@@ -94,7 +94,7 @@ const actions = {
         let intakesSnap = await query.orderBy('date').get();
         let intakes = [];
         for (let doc of intakesSnap.docs) {
-            if (doc.data().colaborator) {
+            if (doc.data().colaborator && !doc.data().cancelled_by) {
                 if (payload.colaborator) {
                     if (payload.colaborator.name === doc.data().colaborator.name) {
                         intakes.push(doc.data())

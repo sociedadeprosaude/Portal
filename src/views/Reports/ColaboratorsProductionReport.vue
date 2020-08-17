@@ -38,7 +38,6 @@ export default {
           const intakes = this.intakes.filter(
             intake => intake.unit.name === unit.name
           );
-
           for (let intake of intakes) {
             if (!resumes[intake.colaborator.name]) {
               resumes[intake.colaborator.name] = {
@@ -46,7 +45,7 @@ export default {
                 Credito: 0.0,
                 Debito: 0.0,
                 Exames: 0,
-                Consultas: 0
+                Consultas: 0,
               };
             }
             if (intake.payments) {
@@ -109,7 +108,7 @@ export default {
             Credito: 0.0,
             Debito: 0.0,
             Exames: 0,
-            Consultas: 0
+            Consultas: 0,
           };
         }
         if (intake.payments) {

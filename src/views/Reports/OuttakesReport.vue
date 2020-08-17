@@ -40,7 +40,7 @@
 
 <script>
 import moment from "moment";
-import OuttakesReport from "@/components/Reports/OuttakesReport";
+import OuttakesReport from "../../components/Reports/OuttakesReport";
 
 export default {
   // name: "OuttakesReport",
@@ -95,7 +95,9 @@ export default {
       ]
     };
   },
-
+  mounted() {
+    this.$store.dispatch('getOuttakesCategories')
+  },
   methods: {
     formatDate(date) {
       const [year, month, day] = date.split("-");
@@ -163,7 +165,6 @@ export default {
 
       const totalCost = this.calcCost(this.listOuttakesRemade);
       this.categories.forEach(category => {
-        
         let listOuttakesCategory = this.listOuttakesRemade.filter(
           outtake => outtake.category == category
         );

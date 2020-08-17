@@ -4,14 +4,23 @@ import moment from "moment";
 //import { delete } from "vue/types/umd";
 
 function outtakeCategoryListDivider(outtake) {
-    const valueDivided = outtake.value / outtake.category.length;
-    return outtake.category.map((category) => {
-        //Tem que ser {...outtake}
-        var outtakeDivided = { ...outtake };
-        outtakeDivided.value = valueDivided;
-        outtakeDivided.category = category;
-        return (outtakeDivided)
-    })
+    var valueDivided=0;
+    if(!outtake.category){
+        valueDivided = outtake.value / 1;
+        outtake.category = 'Sem Categoria'
+        return outtake
+    }
+    else{
+        valueDivided = outtake.value / outtake.category.length;
+        return outtake.category.map((category) => {
+            //Tem que ser {...outtake}
+            var outtakeDivided = { ...outtake };
+            outtakeDivided.value = valueDivided;
+            outtakeDivided.category = category;
+            return (outtakeDivided)
+        })
+
+    }
 }
 
 const state = {
@@ -77,7 +86,12 @@ const actions = {
                 //tratamento para outtake que tem uma lista de categorias
                 if ((typeof (outtake.category)) === "object") {
                     const outtakesDivided = outtakeCategoryListDivider(outtake)
-                    outtakesDivided.forEach((outtakeDivided) => outtakes.push(outtakeDivided))
+                    if(outtakesDivided.category === 'Sem Categoria'){
+                        outtakes.push(outtakesDivided)
+                    }
+                else{
+                        outtakesDivided.forEach((outtakeDivided) => outtakes.push(outtakeDivided))
+                    }
 
                 } else {
                     outtakes.push(outtake)
@@ -225,6 +239,7 @@ const actions = {
                     categories = outtakesDoc.data().categoriesList;
                     if (!categories) categories = [];
                 }
+                categories.push('Sem Categoria')
                 commit('setOuttakesCategories', categories);
                 resolve();
             })
