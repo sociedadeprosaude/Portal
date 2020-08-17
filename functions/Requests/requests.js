@@ -325,6 +325,7 @@ async function fixIntakesBrokenSpecialties() {
 
 
 exports.thereIsPaymentNumber = functions.runWith(heavyFunctionsRuntimeOpts).https.onCall(async (data, context) => {
+    
     let payload = data.payload
     let procedures;
     let type = payload.exam ? 'Exam' : 'Consultation';
@@ -357,14 +358,15 @@ exports.thereIsPaymentNumber = functions.runWith(heavyFunctionsRuntimeOpts).http
     } else {
         let doctoId = payload.doctor.uid ? payload.doctor.uid : payload.doctor.cpf
         let cost = payload.specialty ? await specialtyCost(payload.specialty.name, doctoId) : undefined
-        return { NotFound: cost };
+        console.log('aqui no there is payment',cost)
+        return { NotFound: {...cost,...payload} };
     }
 });
 
 async function specialtyCost(specialtyName, doctorId) {
     let specialties = await admin.firestore().collection('specialties').get()
     specialties = convertCollectionIntoArray(specialties)
-
+    console.log(specialtyName)
     let cost = undefined;
     specialties.forEach(specialty => {
         if (specialty.name === specialtyName && specialty.doctors) {
@@ -384,6 +386,7 @@ async function specialtyCost(specialtyName, doctorId) {
             };
         }
     });
+    console.log('->>',cost)
     return cost
 }
 
