@@ -146,40 +146,48 @@ const actions = {
 
 
     loadClientsServed({ commit }, payload) {
-        let attended = {}
-        let ageTotalAttended = {}
-        let ageAttended = {}
-        let genderTotalClients = {}
-        let genderClients = {}
-        /* let usersServed = [] */
-        firebase.firestore().collection('users').where('accessed_to','>=',payload.initialDate)
-        .where('accessed_to','<=',payload.finalDate)
-        .get().then((users)=>{
-            users.forEach((user)=>{
-                let data = user.data()
-                let date = moment(data.accessed_to,'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                let age = moment().diff(moment(data.birth_date),'years')
-                if(!attended[date]) attended[date] = 0
-                attended[date] += 1
+        return new Promise((resolve,reject)=>{
+            let attended = {}
+            let ageTotalAttended = {}
+            let ageAttended = {}
+            let genderTotalClients = {}
+            let genderClients = {}
+            console.log(payload)
+            /* let usersServed = [] */
+            firebase.firestore().collection('users').where('accessed_to','>=',payload.initialDate)
+            .where('accessed_to','<=',payload.finalDate)
+            .get().then((users)=>{
+                users.forEach((user)=>{
+                    let data = user.data()
+                    let date = moment(data.accessed_to,'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
+                    let age = moment().diff(moment(data.birth_date),'years')
+                    if(!attended[date]) attended[date] = 0
+                    attended[date] += 1
 
-                if(data.birth_date && age >= 0 && age < 120){
-                    if(!ageTotalAttended[age]) ageTotalAttended[age] = 0
-                    ageTotalAttended[age] += 1
-                    ageAttended[age] = (ageTotalAttended[age]/users.size)*100
-                }
+                    if(data.birth_date && age >= 0 && age < 120){
+                        if(!ageTotalAttended[age]) ageTotalAttended[age] = 0
+                        ageTotalAttended[age] += 1
+                        ageAttended[age] = (ageTotalAttended[age]/users.size)*100
+                    }
 
-                if(data.sex){
-                    if(!genderTotalClients[data.sex]) genderTotalClients[data.sex] = 0
-                    genderTotalClients[data.sex] += 1
-                    genderClients[data.sex] =  (genderTotalClients[data.sex]/users.size)*100
-                }else{
-                    if(!genderTotalClients['others']) genderTotalClients['others'] = 0
-                    genderTotalClients['others'] += 1
-                    genderClients['others'] =  (genderTotalClients['others']/users.size)*100
-                }
+                    if(data.sex){
+                        if(!genderTotalClients[data.sex]) genderTotalClients[data.sex] = 0
+                        genderTotalClients[data.sex] += 1
+                        genderClients[data.sex] =  (genderTotalClients[data.sex]/users.size)*100
+                    }else{
+                        if(!genderTotalClients['others']) genderTotalClients['others'] = 0
+                        genderTotalClients['others'] += 1
+                        genderClients['others'] =  (genderTotalClients['others']/users.size)*100
+                    }
 
-                /* if(data.addresses && data.addresses[0])
-                    usersServed.push(data) */
+                    /* if(data.addresses && data.addresses[0])
+                        usersServed.push(data) */
+                })
+                commit('setClientsServed',attended)
+                commit('setAgeClientsServed',ageAttended)
+                commit('setGenderClientsServed',genderClients)
+
+                resolve()
             })
         })
     },
@@ -202,17 +210,20 @@ const actions = {
     },
 
     loadNewClients({commit},payload){
-        let newClients = {}
-        firebase.firestore().collection('users').where('created_at', '>=', payload.initialDate)
-            .where('created_at', '<=', payload.finalDate)
-            .get().then((users) => {
-                users.forEach((user) => {
-                    let data = user.data()
-                    let date = moment(data.created_at, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                    if (!newClients[date]) newClients[date] = 0
-                    newClients[date] += 1
-                })
-                commit('setNewClients', newClients)
+        return new Promise((resolve,reject)=>{
+            let newClients = {}
+            firebase.firestore().collection('users').where('created_at', '>=', payload.initialDate)
+                .where('created_at', '<=', payload.finalDate)
+                .get().then((users) => {
+                    users.forEach((user) => {
+                        let data = user.data()
+                        let date = moment(data.created_at, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
+                        if (!newClients[date]) newClients[date] = 0
+                        newClients[date] += 1
+                    })
+                    commit('setNewClients', newClients)
+                    resolve()
+            })
         })
     },
 

@@ -163,30 +163,8 @@ async function UpdateUidOfUserDoctorWhenHeCreateLoginAndPassword(change){
         });
     }
 }
-exports.UpdateUidOfUserWhenHeCreateLoginAndPassword = functions.firestore.document('users/{uid}').onUpdate(async (change, context) => {
-    if (change.after.data().type === 'PATIENT') {
-        UpdateUidOfUserPatientWhenHeCreateLoginAndPassword(change)
-    }
-    else if(change.after.data().type === 'DOCTOR'){
-        UpdateUidOfUserDoctorWhenHeCreateLoginAndPassword(change)
-    }
-});
 
-exports.listenToUserAdded = functions.firestore.document('users/{id}').onCreate(async (change, context) => {
-    let db = admin.firestore()
-    let id = change.id;
-    let userRef = db.collection('users').doc(id)
-    let user = (await userRef.get()).data()
-    if (!user.association_number) {
-        let associatedOpRef = db.collection('operational').doc('associated')
-        let numAss = (await associatedOpRef.get()).data().quantity
-        userRef.update({
-            association_number: numAss
-        })
-        associatedOpRef.update({
-            quantity: admin.firestore.FieldValue.increment(1)
-        })
-    }
+function setGeopointsFromUserAddress(user){
     if (user.addresses && user.addresses[0] && user.addresses[0].cep) {
         let newCEP = user.addresses[0].cep.replace(/[.,-]/g, "").substring(0, 5)
         admin.firestore().collection('statistics').doc('geopoints').collection('users_by_neighborhood').doc(newCEP)
@@ -203,12 +181,64 @@ exports.listenToUserAdded = functions.firestore.document('users/{id}').onCreate(
                             }
                         })
                 } else {
-                    await ref.update({ count: admin.firestore.FieldValue.increment(1) })
-                    updateGeopointMonthlyReport(ref)
+                    let data = userGeopoint.data()
+                    if(!data.geopoint){
+                        gmapsInit.geocode([user.addresses[0].street, user.addresses[0].complement].join(" ") + " Manaus Amazonas",
+                            async (err, coordinates) => {
+                                if (err){
+                                    console.log(err)
+                                    await ref.update({ count: admin.firestore.FieldValue.increment(1) })
+                                }  
+                                else {
+                                    await ref.update({ count: admin.firestore.FieldValue.increment(1), geopoint: new admin.firestore.GeoPoint(coordinates.lat, coordinates.lng) })
+                                }
+
+                                updateGeopointMonthlyReport(ref)
+                            })
+                    }else{
+                        await ref.update({ count: admin.firestore.FieldValue.increment(1) })
+                        updateGeopointMonthlyReport(ref)
+                    }
                 }
                 return;
             }).catch((e) => e)
     }
+}
+
+async function setAssociationNumberUser(change){
+    let userRef = change.ref
+    let user = change.data()
+    console.log('setAssociationNumber')
+    if (!user.association_number) {
+        console.log('Não tem')
+        let associatedOpRef = admin.firestore().collection('operational').doc('associated')
+        let numAss = (await associatedOpRef.get()).data().quantity
+        userRef.update({
+            association_number: numAss
+        })
+        associatedOpRef.update({
+            quantity: admin.firestore.FieldValue.increment(1)
+        })
+    }
+}
+
+exports.UpdateUidOfUserWhenHeCreateLoginAndPassword = functions.firestore.document('users/{uid}').onUpdate(async (change, context) => {
+    if (change.after.data().type === 'PATIENT') {
+        UpdateUidOfUserPatientWhenHeCreateLoginAndPassword(change)
+        setGeopointsFromUserAddress(change.after.data())
+        setAssociationNumberUser(change.after)
+    }
+    else if(change.after.data().type === 'DOCTOR'){
+        UpdateUidOfUserDoctorWhenHeCreateLoginAndPassword(change)
+    }
+});
+
+exports.listenToUserAdded = functions.firestore.document('users/{id}').onCreate(async (change, context) => {
+    let db = admin.firestore()
+    let id = change.id;
+    
+    setAssociationNumberUser(change)
+    setGeopointsFromUserAddress(change.data())
 
     let uid = change.data().uid
     let type = change.data().type
