@@ -112,7 +112,7 @@
                 try {
                     this.$store.dispatch('thereIsUserCPF', this.cpf.replace(/\./g, "").replace("-", ""))
                         .then(async (exits) => {
-                            if (!exits || (exits)){
+                            if (!exits || (exits.type)){
                                 this.loading = true;
                                 let resp = await firebase
                                     .auth()
