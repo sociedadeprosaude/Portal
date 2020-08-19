@@ -112,11 +112,9 @@
                 try {
                     this.$store.dispatch('thereIsUserCPF', this.cpf.replace(/\./g, "").replace("-", ""))
                         .then(async (exits) => {
-                            if (!exits || (exits.type)){
+                            /*if (!exits || (exits.type)){*/
                                 this.loading = true;
-                                let resp = await firebase
-                                    .auth()
-                                    .createUserWithEmailAndPassword(this.email, this.password);
+                                let resp = await firebase.auth().createUserWithEmailAndPassword(this.email, this.password);
                                 await this.$store.dispatch("addUser", {
                                     email: resp.user.email,
                                     name: this.name,
@@ -127,9 +125,9 @@
                                     group: exits.crm ? 'doctor' : '',
                                 });
                                 this.registered = true;
-                            } else {
+/*                            } else {
                                 this.alert = true
-                            }
+                            }*/
                         })
                 } catch (e) {
                     this.errorMessage = e.code;

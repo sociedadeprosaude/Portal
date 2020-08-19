@@ -683,9 +683,8 @@
                     address.loading = false;
                     return
                 }
-
                 address.street = resp.logradouro;
-                address.complement = resp.complemento;
+                address.complement = resp.bairro;
                 address.city = resp.localidade;
                 address.uf = resp.uf;
                 address.loading = false

@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row class="mt-2">
-      <h1>Clientes Atendidos</h1>
+      <h1 class="headline">Clientes Atendidos</h1>
     </v-row>
     <v-row>
       <v-col>
@@ -16,7 +16,7 @@
     </v-row>
 
     <v-row class="mt-2">
-      <h1>Novos Clientes</h1>
+      <h1 class="headline">Novos Clientes</h1>
     </v-row>
     <v-row>
       <v-col>
@@ -31,7 +31,7 @@
     </v-row>
 
     <v-row class="mt-2">
-      <h1>Idade dos visitantes</h1>
+      <h1 class="headline">Idade dos visitantes</h1>
     </v-row>
     <v-row>
       <v-col>
@@ -49,7 +49,7 @@
     </v-row>
 
     <v-row class="mt-2">
-      <h1>Gênero dos visitantes</h1>
+      <h1 class="headline">Gênero dos visitantes</h1>
     </v-row>
     <v-row>
       <v-col>
@@ -102,7 +102,7 @@
     </v-row>
 
     <v-row class="mt-2">
-      <h1>Localidade dos visitantes</h1>
+      <h1 class="headline">Localidade dos visitantes</h1>
       <v-spacer></v-spacer>
       <v-menu
         ref="menu"
