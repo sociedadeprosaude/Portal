@@ -32,7 +32,7 @@
                                     <v-flex class="text-right" xs6>
                                         <img :src="selectedUnit.logo" height="84px">
                                     </v-flex>
-                                    <v-flex class="text-left" xs6>
+                                    <v-flex class="text-left" xs6 v-if="budget.user.addresses">
                                         <v-layout column v-if="budget.user.addresses[0]" wrap>
                                             <span class="primary--text font-weight-bold mt-2">{{this.budget.user.addresses[0].street}} {{this.budget.user.addresses[0].number}}</span>
                                             <span class="primary--text font-weight-bold mt-2"
