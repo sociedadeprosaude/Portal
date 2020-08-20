@@ -109,30 +109,34 @@
                     this.errorMessage = "Confirmação de senha não confere";
                     return;
                 }
+
                 try {
                     this.$store.dispatch('thereIsUserCPF', this.cpf.replace(/\./g, "").replace("-", ""))
-                        .then(async (exits) => {
-                            if (!exits || (exits.type)){
+                        .then(async (exist) => {
+                            if (!exist || (exist.type)){
                                 this.loading = true;
-                                let resp = await firebase
-                                    .auth()
-                                    .createUserWithEmailAndPassword(this.email, this.password);
+                                let resp = await firebase.auth()
+                                    .createUserWithEmailAndPassword(this.email, this.password)
                                 await this.$store.dispatch("addUser", {
                                     email: resp.user.email,
                                     name: this.name,
                                     uid: resp.user.uid,
                                     cpf: this.cpf.replace(/\./g, "").replace("-", ""),
                                     telephones: [this.telephone],
-                                    type: exits.crm ? "DOCTOR" : "COLABORATOR",
-                                    group: exits.crm ? 'doctor' : '',
+                                    type: (exist && exist.crm) ? "DOCTOR" : "COLABORATOR",
+                                    group: (exist && exist.crm) ? 'doctor' : '',
                                 });
                                 this.registered = true;
                             } else {
                                 this.alert = true
                             }
+                        }).catch(error=>{
+                            this.errorMessage = error.message
+                            this.loading = false
                         })
                 } catch (e) {
                     this.errorMessage = e.code;
+                    this.loading = false
                 }
                 this.loading = false;
             }

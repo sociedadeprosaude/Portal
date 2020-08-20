@@ -188,9 +188,13 @@ const actions = {
                 let userDoc = await firestore().collection('users')
                     .where('cpf', '==', payload)
                     .get();
-                userDoc.forEach(doc => {
-                    resolve(doc.data())
-                });
+                if(!userDoc.empty){
+                    userDoc.forEach(doc => {
+                        resolve(doc.data())
+                    });
+                }else{
+                    resolve(undefined)
+                }
             } catch (e) {
                 reject(e)
             }
@@ -257,7 +261,7 @@ const actions = {
                 patient.created_at = moment().format('YYYY-MM-DD HH:mm:ss');
                 user = await firebase.firestore().collection('users').add(patient)
             }
-            console.log('chave:', user)
+            console.log('chave:', user.id)
             return user
         } catch (e) {
             throw e
