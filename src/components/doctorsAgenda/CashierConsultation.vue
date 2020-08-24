@@ -1,5 +1,5 @@
 <template>
-    <v-container class="ma-0 pa-0" fluid>
+    <v-container class="ma-0 pa-0 hidden-print-only" fluid>
         <v-layout row wrap>
             <v-flex xs12>
                 <v-btn rounded small class="mx-1" @click="selectCategory('exam')"

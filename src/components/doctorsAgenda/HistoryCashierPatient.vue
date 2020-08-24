@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid class="ma-0 pa-0">
+    <v-container fluid class="ma-0 pa-0 hidden-print-only">
         <v-layout row wrap>
             <v-card>
                 <div v-show="option === 'intakes'">
