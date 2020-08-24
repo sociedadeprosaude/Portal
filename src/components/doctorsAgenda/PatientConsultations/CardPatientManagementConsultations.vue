@@ -34,10 +34,12 @@
                                           <v-flex xs4>
                                               <v-icon large>person</v-icon>
                                               <br>
+
                                               <v-icon v-if="item.type === 'Retorno'"  color="primary" small class="mt-1">restore</v-icon>
                                               <v-icon v-else small class="mt-1"  color="primary">event</v-icon>
                                               <v-icon v-if="item.status === 'Pago'" color="green" small class="mt-1">attach_money</v-icon>
-                                              <v-icon v-else small class="mt-1" color="red">money_off</v-icon>
+                                              <v-icon v-if="item.status === 'Aguardando pagamento'" small class="mt-1" color="red">money_off</v-icon>
+                                              <v-icon v-if="item.status === 'Cancelado'" small class="mt-1" color="red">cancel</v-icon>
                                           </v-flex>
                                           <v-flex xs8 class="mb-3">
                                               <v-flex xs12>
