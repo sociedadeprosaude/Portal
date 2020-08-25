@@ -428,7 +428,7 @@
             },
             async pay() {
                 this.paymentLoading = true;
-                let user = this.patient;
+                let user = this.patient
                 if (!user) {
                     this.paymentLoading = false
                     this.alertMessage.model = true
@@ -488,12 +488,12 @@
                        user: this.patient,
                        budgetId: this.selectedBudget.id.toString(),
                    };
-                console.log('selectedIntake: ',this.selectedIntake)
-
                 await this.$store.dispatch('deleteBudget', data);
                    await this.$store.commit('setSelectedBudget', undefined);
                    this.$store.commit('clearShoppingCartItens');
+
                 this.card = false;
+
             },
             async receipt(intake) {
                 let intakes = await this.$store.dispatch('getIntakeDetails', intake);

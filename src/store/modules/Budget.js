@@ -27,7 +27,6 @@ const actions = {
         let exams = copyPayload.exams ? Object.assign({}, copyPayload.exams) : undefined;
         delete copyPayload.specialties;
         delete copyPayload.exams;
-        delete copyPayload.user.telephones;
         copyPayload.user.budget = [];
         delete copyPayload.user.budgets;
         copyPayload.user.intakes = [];
