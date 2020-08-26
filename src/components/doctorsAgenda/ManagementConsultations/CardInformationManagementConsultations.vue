@@ -43,7 +43,7 @@
                             </v-layout>
                         </v-card>
                     </v-flex>
-                    <v-card-actions class="mt-4 " v-if="consultation.status">
+                    <v-card-actions class="mt-4 ">
                         <v-btn
                                 color="white"
                                 rounded
