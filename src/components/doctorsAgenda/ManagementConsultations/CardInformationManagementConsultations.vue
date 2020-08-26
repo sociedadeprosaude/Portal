@@ -133,7 +133,9 @@
                     consultation: this.consultation,
                     exam:this.consultation.exam
                 };
-
+                if(obj.previousConsultation){
+                    await this.$store.dispatch('updateConsultationErase', {consultation: this.consultation, user: this.selectedPatient});
+                }
                 await this.$store.dispatch('eraseAppointment', obj);
                 this.cancelLoading = false
 

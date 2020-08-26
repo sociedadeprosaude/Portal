@@ -293,6 +293,14 @@ const actions = {
         } catch (e) { throw e }
     },
 
+    async updateConsultationErase({commit}, payload) {
+        functions.removeUndefineds(payload)
+          //  firebase.firestore().collection('consultation').doc(payload.consultation.id).update({regress: })
+                firebase.firestore().collection('users').doc(payload.consultation.previousConsultation).update({regress: firebase.firestore.FieldValue.delete()
+                })
+         firebase.firestore().collection('users').doc(payload.user.uid).collection('consultations').doc(payload.consultation.previousConsultation).update({regress: firebase.firestore.FieldValue.delete()
+         })
+    },
     async removeAppointmentForever({commit}, payload) {
         try {firebase.firestore().collection('canceled').doc(payload.idConsultation).delete()} catch (e) { throw e }
     },
