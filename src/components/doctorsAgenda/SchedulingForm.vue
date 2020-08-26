@@ -259,7 +259,7 @@ import SubmitButton from "../SubmitButton";
 
 export default {
 
-  props: ['createConsultationForm', 'loaderPaymentNumber', 'exams', 'numberReceipt', 'status', 'payment_numberFound', 'modalidade', 'previousConsultation'],
+  props: ['createConsultationForm','prolonged' ,'loaderPaymentNumber', 'exams', 'numberReceipt', 'status', 'payment_numberFound', 'modalidade', 'previousConsultation'],
   components: {SubmitButton},
 
   data: () => ({
@@ -309,6 +309,7 @@ export default {
         type: this.modalidade,
         payment_number: this.numberReceipt,
         exam: this.exam,
+        prolonged: this.prolonged ? this.prolonged : undefined,
         previousConsultation: this.previousConsultation ? this.previousConsultation : undefined
       };
 
