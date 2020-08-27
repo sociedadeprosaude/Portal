@@ -43,7 +43,7 @@
                             </v-layout>
                         </v-card>
                     </v-flex>
-                    <v-card-actions class="mt-4 " v-if="consultation.status">
+                    <v-card-actions class="mt-4 ">
                         <v-btn
                                 color="white"
                                 rounded
@@ -124,7 +124,7 @@
                 let patientId = this.consultation.user ? this.consultation.user.uid ? this.consultation.user.uid : this.consultation.user.cpf : this.selectedPatient.uid
                 let obj = {
                     id: this.consultation.id,
-                    idPatient: patientId,
+                    idPatient: this.selectedPatient.uid ? this.selectedPatient.uid : this.selectedPatient.cpf,
                     type: this.consultation.type,
                     status: 'Cancelado',
                     payment_number: this.consultation.payment_number,
@@ -133,7 +133,6 @@
                     consultation: this.consultation,
                     exam:this.consultation.exam
                 };
-
                 await this.$store.dispatch('eraseAppointment', obj);
                 this.cancelLoading = false
 

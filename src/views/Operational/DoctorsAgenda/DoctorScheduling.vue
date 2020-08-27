@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid class="ma-0 mt-n2 pa-0">
+    <v-container fluid class="ma-0 mt-n2 pa-0 hidden-print-only">
         <v-layout row wrap>
             <v-flex xs12 class="hidden-sm-and-up mt-n4" >
                 <v-layout row wrap class="justify-space-between primary">

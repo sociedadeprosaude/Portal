@@ -108,6 +108,7 @@
                                 :previousConsultation="previousConsultation"
                                 :status="status"
                                 :payment_numberFound="payment_numberFound"
+                                :prolonged="prolonged"
                                 @findPaymentNumberToExam="thereIsPaymentNumber($event)"
                 />
               </v-dialog>
@@ -123,6 +124,27 @@
     <v-flex xs12 v-if="consultationLoading">
       <v-progress-circular class="primary--text" indeterminate/>
     </v-flex>
+    <v-dialog v-model="prolongedDialog"   max-width="500px">
+        <v-card>
+          <v-card-title>
+           Retorno Prolongado
+          </v-card-title>
+          <v-card-text>
+            <v-text-field
+                    v-model="prolonged"
+                    label="Motivo do retorno prolongado"
+            ></v-text-field>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+                    color="primary"
+                    @click="prolongedDialog= 0"
+            >
+              salvar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+    </v-dialog>
   </v-container>
 </template>
 <script>
@@ -153,6 +175,8 @@ export default {
     payment_numberFound: undefined,
     status: "",
     type: '',
+    prolongedDialog:false,
+    prolonged:'',
     modalidade: "Consulta",
     previousConsultation: undefined,
     createConsultationForm: undefined,
@@ -177,6 +201,9 @@ export default {
 
     this.query = this.$route.params.q
     if (this.query && this.$route.params.type === 'retorno') {
+      if(moment().diff(moment(this.query.date, 'YYYY-MM-DD'), 'days') > 21){
+        this.prolongedDialog= true
+      }
       this.modalidade = "Retorno"
       this.previousConsultation = this.query.id
       this.status = this.query.status

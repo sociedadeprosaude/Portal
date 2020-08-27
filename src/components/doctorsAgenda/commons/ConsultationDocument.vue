@@ -74,28 +74,49 @@
                                     <v-flex xs12>
                                         <v-divider class="primary my-2"></v-divider>
                                     </v-flex>
-                                    <v-flex xs6 class="text-left">
+                                    <v-flex xs6 class="text-left"
+                                            v-if="this.consultation.dependent">
                                         <v-layout column wrap align-start justify-start>
                 <span
                         class="my-sub-headline primary--text"
                         style="font-size: 1.4em"
-                >{{dependent ? dependent.name : user.name}}</span>
-                                            <v-flex v-if="!dependent">
+                >{{ this.consultation.dependent.name}}</span>
+                                            <v-flex>
+                                                <span class="primary--text font-weight-bold">Data de Nascimento:</span>
+                                                <span class="font-weight-bold">{{formatbirthDate(this.consultation.dependent.birthDate)}}</span>
+                                                <br/>
+                                            </v-flex>
+                                            <v-flex>
+                                                <span class="primary--text font-weight-bold">Idade:</span>
+                                                <span class="font-weight-bold">{{formatIdade()}}</span>
+                                                <br/>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-flex>
+                                    <v-flex xs6 class="text-left"
+                                            v-else>
+                                        <v-layout column wrap align-start justify-start>
+                <span
+                        class="my-sub-headline primary--text"
+                        style="font-size: 1.4em"
+                >{{user.name}}</span>
+                                            <v-flex v-if="!this.consultation.dependent">
                                                 <span class="primary--text font-weight-bold">CPF:</span>
                                                 <span class="font-weight-bold">{{user.cpf}}</span>
                                             </v-flex>
                                             <v-flex>
                                                 <span class="primary--text font-weight-bold">Data de Nascimento:</span>
-                                                <span class="font-weight-bold">{{this.birthDate}}</span>
+                                                <span class="font-weight-bold">{{formatbirthDate(this.user.birth_date)}}</span>
                                                 <br/>
                                             </v-flex>
                                             <v-flex>
                                                 <span class="primary--text font-weight-bold">Idade:</span>
-                                                <span class="font-weight-bold">{{idade}}</span>
+                                                <span class="font-weight-bold">{{formatUserIdade()}}</span>
                                                 <br/>
                                             </v-flex>
                                         </v-layout>
                                     </v-flex>
+
                                     <v-flex xs6 class="text-center">
                                         <v-layout row wrap justify-end align-end>
                                             <!--<v-layout column wrap>-->
@@ -184,13 +205,14 @@
         }),
         async mounted() {
             this.saveConsultationHour()
-            this.dependent = this.consultation.dependent
-            this.formatDates()
             await this.$store.dispatch('loadSpecialties')
             console.log('consultation document')
         },
         methods: {
-
+            formatbirthDate(birthDate){
+                let formatbirthDateFormat = moment(birthDate).format('DD/MM/YYYY')
+                return formatbirthDateFormat
+            },
             specialtyCost() {
                 let espArray = Object.values(this.$store.getters.specialties);
                 let cost = undefined
@@ -212,13 +234,22 @@
                 return cost
             },
 
-             formatDates(){
-                
-                let date = this.dependent ? this.dependent.birthDate : this.user.birth_date;
+
+            formatIdade(){
+                let idade;
+                let date = this.consultation.dependent ? this.consultation.dependent.birthDate : this.user.birth_date;
                 let patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
                 if(patt.test(date)) date = moment(date,"DD/MM/YYYY").format("YYYY-MM-DD");
-                this.idade = moment().diff(moment(date, 'YYYY-MM-DD'), 'years');
-                this.birthDate = moment(date).format('DD/MM/YYYY');
+                idade = moment().diff(moment(date, 'YYYY-MM-DD'), 'years');
+                return idade
+            },
+            formatUserIdade(){
+                let idade;
+                let date = this.user.birth_date;
+                let patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
+                if(patt.test(date)) date = moment(date,"DD/MM/YYYY").format("YYYY-MM-DD");
+                idade = moment().diff(moment(date, 'YYYY-MM-DD'), 'years');
+                return idade
             },
             async print() {
                 this.loader = true;

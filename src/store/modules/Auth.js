@@ -37,6 +37,7 @@ const actions = {
             if (userDoc.docs[0].data().clinic) {
                 this.commit('setSelectedUnit', userDoc.docs[0].data().clinic)
             }
+            console.log('user: ', userDoc.docs[0].data())
             return userDoc.docs[0].data()
         }
         catch (e) {
