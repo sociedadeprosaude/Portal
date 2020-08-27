@@ -1,47 +1,47 @@
 <template>
     <v-container>
         <v-layout row wrap>
-            <v-flex>
-                <v-card>
-                    <v-layout row wrap class="justify-center">
-                        <v-flex sm3 class="mt-4 mb-4">
-                            <v-menu
-                                    ref="menu"
-                                    v-model="menu"
-                                    :close-on-content-click="false"
-                                    :return-value.sync="date"
-                                    transition="scale-transition"
-                                    offset-y
-                                    max-width="290px"
-                                    min-width="290px"
-                            >
-                                <template v-slot:activator="{ on }">
-                                    <v-text-field
-                                            v-model="date"
-                                            prepend-inner-icon="event"
-                                            hint="Escolher data"
-                                            persistent-hint
-                                            readonly
-                                            outlined
-                                            dense
-                                            v-on="on"
-                                    />
-                                </template>
-                                <v-date-picker
-                                        v-model="date"
-                                        type="month"
-                                        no-title
-                                        scrollable
-                                >
-                                    <v-spacer/>
-                                    <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
-                                    <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
-                                </v-date-picker>
-                            </v-menu>
-                        </v-flex>
-                    </v-layout>
-                </v-card>
-            </v-flex>
+<!--            <v-flex>-->
+<!--                <v-card>-->
+<!--                    <v-layout row wrap class="justify-center">-->
+<!--                        <v-flex sm3 class="mt-4 mb-4">-->
+<!--                            <v-menu-->
+<!--                                    ref="menu"-->
+<!--                                    v-model="menu"-->
+<!--                                    :close-on-content-click="false"-->
+<!--                                    :return-value.sync="date"-->
+<!--                                    transition="scale-transition"-->
+<!--                                    offset-y-->
+<!--                                    max-width="290px"-->
+<!--                                    min-width="290px"-->
+<!--                            >-->
+<!--                                <template v-slot:activator="{ on }">-->
+<!--                                    <v-text-field-->
+<!--                                            v-model="date"-->
+<!--                                            prepend-inner-icon="event"-->
+<!--                                            hint="Escolher data"-->
+<!--                                            persistent-hint-->
+<!--                                            readonly-->
+<!--                                            outlined-->
+<!--                                            dense-->
+<!--                                            v-on="on"-->
+<!--                                    />-->
+<!--                                </template>-->
+<!--                                <v-date-picker-->
+<!--                                        v-model="date"-->
+<!--                                        type="month"-->
+<!--                                        no-title-->
+<!--                                        scrollable-->
+<!--                                >-->
+<!--                                    <v-spacer/>-->
+<!--                                    <v-btn text color="primary" @click="menu = false">Cancel</v-btn>-->
+<!--                                    <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>-->
+<!--                                </v-date-picker>-->
+<!--                            </v-menu>-->
+<!--                        </v-flex>-->
+<!--                    </v-layout>-->
+<!--                </v-card>-->
+<!--            </v-flex>-->
 
             <v-flex>
                 <v-card>
@@ -112,11 +112,11 @@
                     </v-layout>
                 </v-card>
             </v-flex>
-            <v-flex xs12 class="text-center mt-5">
-                <v-btn block @click="makePayments" rounded class="primary">
-                    Pagar
-                </v-btn>
-            </v-flex>
+<!--            <v-flex xs12 class="text-center mt-5">-->
+<!--                <v-btn block @click="makePayments" rounded class="primary">-->
+<!--                    Pagar-->
+<!--                </v-btn>-->
+<!--            </v-flex>-->
         </v-layout>
     </v-container>
 </template>

@@ -80,6 +80,7 @@ exports.setUidToUsersDoctor = functions.runWith(heavyFunctionsRuntimeOpts).https
 });
 exports.searchUser = functions.https.onRequest(async (req, res) => {
     let usersRef = admin.firestore().collection('users')
+    let limit = req.query.limit
 
     if (req.query.cpf) {
         // req.query.cpf = `${req.query.cpf}`.replaceAll('.', '');
@@ -95,7 +96,7 @@ exports.searchUser = functions.https.onRequest(async (req, res) => {
 
 
     // let p1 = new Date()
-    let querySnapshot = await usersRef.limit(15).get()
+    let querySnapshot = await usersRef.limit(limit ? parseInt(limit) : 15).get()
     // let p2 = new Date()
     let users = []
     querySnapshot.forEach(function (doc) {
@@ -325,7 +326,7 @@ async function fixIntakesBrokenSpecialties() {
 
 
 exports.thereIsPaymentNumber = functions.runWith(heavyFunctionsRuntimeOpts).https.onCall(async (data, context) => {
-    
+
     let payload = data.payload
     let procedures;
     let type = payload.exam ? 'Exam' : 'Consultation';

@@ -1,59 +1,66 @@
 <template>
-    <v-container>
-        <v-layout row wrap v-if="!loading">
-            <v-flex xs12>
-                <span class="my-headline">Colaboradores</span>
-            </v-flex>
-            <Collaborators :collaborators="collaborators"/>
+  <v-container>
+    <v-layout row wrap v-if="!loading">
+      <v-flex xs12>
+        <span class="my-headline">Colaboradores</span>
+      </v-flex>
+      <Collaborators :collaborators="collaborators"/>
 
-            <v-flex xs12>
-                <span class="my-headline">Médicos</span>
-            </v-flex>
-            <Doctors/>
+      <v-flex xs12>
+        <span v-if="user.group === 'admin'" class="my-headline">Médicos</span>
+      </v-flex>
+      <Doctors v-if="user.group === 'admin'"/>
 
-            <v-flex xs12>
-                <span class="my-headline">Pagamentos</span>
-            </v-flex>
-            <paymeny-report :colaborators="collaborators"/>
-        </v-layout>
+      <v-flex xs12>
+        <span class="my-headline">Pagamentos</span>
+      </v-flex>
+      <paymeny-report :colaborators="collaborators"/>
+    </v-layout>
 
-        <v-layout row wrap v-else>
-            <v-flex xs12 class="text-center">
-                <v-progress-circular size="64" indeterminate color="primary"/>
-            </v-flex>
-        </v-layout>
+    <v-layout row wrap v-else>
+      <v-flex xs12 class="text-center">
+        <v-progress-circular size="64" indeterminate color="primary"/>
+      </v-flex>
+    </v-layout>
 
-    </v-container>
+  </v-container>
 </template>
 
 <script>
-    import PaymenyReport from "../../components/labor/PaymenyReport";
-    import Collaborators from "../../components/labor/Collaborators";
-    import Doctors from "../../components/labor/Doctors";
+import PaymenyReport from "../../components/labor/PaymenyReport";
+import Collaborators from "../../components/labor/Collaborators";
+import Doctors from "../../components/labor/Doctors";
 
 
-    export default {
-        name: "Home",
-        components: {
-            PaymenyReport,
-            Collaborators,
-            Doctors
-        },
-        data: () => ({
-            loading: true,
-        }),
-        async mounted(){
-            await this.$store.dispatch('getColaborators');
-            this.loading = false
-        },
-        computed: {
-            collaborators () {
-                return this.$store.getters.colaborators.filter(a => {
-                    return a.status !== 'pending'
-                })
-            },
-        }
+export default {
+  name: "Home",
+  components: {
+    PaymenyReport,
+    Collaborators,
+    Doctors
+  },
+  data: () => ({
+    loading: true,
+  }),
+  async mounted() {
+    await this.$store.dispatch('getColaborators');
+    this.loading = false
+  },
+  computed: {
+    user() {
+      return this.$store.getters.user
+    },
+    unit() {
+      return this.$store.getters.user.clinic
+    },
+    collaborators() {
+      if (this.user.group === 'admin') return this.$store.getters.colaborators
+      return this.$store.getters.colaborators.filter(c => {
+        return !c.clinic || c.clinic.name === this.unit.name
+      })
+    },
+  }
 
 
-    }
+}
 </script>

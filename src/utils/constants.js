@@ -32,7 +32,7 @@ export default {
     },
 
     IN_PRODUCTION: process.env.NODE_ENV === 'production',
-    FIREBASE_CONFIG: process.env.NODE_ENV === 'development' ?
+    FIREBASE_CONFIG: process.env.NODE_ENV === 'production' ?
         {
             apiKey: "AIzaSyBgrfEkJonYXxE4d3UD2NWMLDCWeWZEND4",
             authDomain: "prosaudedev.firebaseapp.com",
@@ -40,7 +40,7 @@ export default {
             projectId: "prosaudedev",
             storageBucket: "prosaudedev.appspot.com",
             messagingSenderId: "251864799857",
-            appId: "1:251864799857:web:3ea992014ae2cdad2b19d0" 
+            appId: "1:251864799857:web:3ea992014ae2cdad2b19d0"
         }
         :
         {

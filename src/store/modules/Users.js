@@ -24,7 +24,7 @@ const mutations = {
     async setSelectedPatient(state, payload) {
         let patientId
         let consultations;
-        
+
         if (payload) {
             patientId = payload.uid ? payload.uid : payload.id
             localStorage.setItem('patient', patientId);
@@ -294,11 +294,11 @@ const actions = {
                 }
             }
             await firebase.firestore().collection('users').doc(user.user.uid).delete();
-            admin.auth().deleteUser(user.user.uid).then(function () {
-            })
-                .catch(function (error) {
-                    console.log('Error deleting user:', error);
-                });
+            // admin.auth().deleteUser(user.user.uid).then(function () {
+            // })
+            //     .catch(function (error) {
+            //         console.log('Error deleting user:', error);
+            //     });
 
             return
         } catch (e) {

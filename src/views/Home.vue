@@ -372,7 +372,7 @@ export default {
           } else if (this.user.group === 'colaborador') {
             return a === this.pages[0]
           } else if (this.user.group === 'gerente') {
-            return a === this.pages[0] || a === this.pages[1]
+            return a === this.pages[0] || a === this.pages[1] || a === this.pages[3]
           } else if (this.user.group === 'doctor') {
             return a === this.pages[2]
           } else if (this.user.group === 'clinic') {

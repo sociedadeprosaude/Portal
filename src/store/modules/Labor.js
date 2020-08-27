@@ -11,7 +11,8 @@ const actions = {
     async getColaborators(context) {
         try {
             let colabList = await context.dispatch('searchUser', {
-                type: 'COLABORATOR'
+                type: 'COLABORATOR',
+                limit: 1000
             });
             context.commit('setColaborators', colabList.sort((a, b) => {
                 if (a.name > b.name) return 1;
