@@ -83,7 +83,7 @@
                 >{{ this.consultation.dependent.name}}</span>
                                             <v-flex>
                                                 <span class="primary--text font-weight-bold">Data de Nascimento:</span>
-                                                <span class="font-weight-bold">{{this.consultation.dependent.birthDate}}</span>
+                                                <span class="font-weight-bold">{{formatbirthDate(this.consultation.dependent.birthDate)}}</span>
                                                 <br/>
                                             </v-flex>
                                             <v-flex>
@@ -106,7 +106,7 @@
                                             </v-flex>
                                             <v-flex>
                                                 <span class="primary--text font-weight-bold">Data de Nascimento:</span>
-                                                <span class="font-weight-bold">{{this.user.birth_date}}</span>
+                                                <span class="font-weight-bold">{{formatbirthDate(this.user.birth_date)}}</span>
                                                 <br/>
                                             </v-flex>
                                             <v-flex>
@@ -209,7 +209,10 @@
             console.log('consultation document')
         },
         methods: {
-
+            formatbirthDate(birthDate){
+                let formatbirthDateFormat = moment(birthDate).format('DD/MM/YYYY')
+                return formatbirthDateFormat
+            },
             specialtyCost() {
                 let espArray = Object.values(this.$store.getters.specialties);
                 let cost = undefined
