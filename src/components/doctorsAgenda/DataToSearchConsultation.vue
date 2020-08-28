@@ -5,10 +5,15 @@
         <DataDoctorToSearchConsultation/>
       </v-flex>
       <v-flex xs12 class="justify-start text-left">
-        <v-btn icon fab small @click="showCalendar = !showCalendar" color="background" dark>
-          <v-icon v-if="showCalendar">close</v-icon>
-          <v-icon v-else>date_range</v-icon>
-        </v-btn>
+        <v-tooltip right color="white">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn v-bind="attrs" v-on="on" icon fab small @click="showCalendar = !showCalendar" color="background" dark>
+              <v-icon v-if="showCalendar">close</v-icon>
+              <v-icon v-else>date_range</v-icon>
+            </v-btn>
+          </template>
+          <span style="color: #003B8F; font-weight: bold">Calendário</span>
+        </v-tooltip>
       </v-flex>
       <v-flex xs12 class="mt-3" v-show="showCalendar">
         <v-date-picker

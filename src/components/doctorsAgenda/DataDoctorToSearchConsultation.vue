@@ -1,15 +1,25 @@
 <template>
     <v-container class="ma-0 pa-0">
         <v-flex xs12 class=" justify-start text-left">
-            <v-btn icon fab small color="background" dark @click="$router.push('/agenda/TabelaSemanal')">
+          <v-tooltip right color="white">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn v-bind="attrs" v-on="on" icon fab small color="background" dark @click="$router.push('/agenda/TabelaSemanal')">
                 <v-icon>fad fa-calendar</v-icon>
-            </v-btn>
+              </v-btn>
+            </template>
+            <span style="color: #003B8F; font-weight: bold">Tabela Semanal</span>
+          </v-tooltip>
         </v-flex>
         <v-flex xs12 class=" justify-start text-left">
-            <v-btn icon fab small @click="showFilter = !showFilter" color="background" dark>
-                <v-icon v-if="showFilter">close</v-icon>
-                <v-icon v-else>filter_alt</v-icon>
-            </v-btn>
+          <v-tooltip right color="white">
+            <template v-slot:activator="{ on, attrs }">
+                <v-btn v-bind="attrs" v-on="on" icon fab small @click="showFilter = !showFilter" color="background" dark>
+                    <v-icon v-if="showFilter">close</v-icon>
+                    <v-icon v-else>filter_alt</v-icon>
+                </v-btn>
+            </template>
+            <span style="color: #003B8F; font-weight: bold">Filtros</span>
+          </v-tooltip>
         </v-flex>
         <v-layout column v-if="showFilter">
                     <v-flex xs12 class="mt-2 pa-0 ">
