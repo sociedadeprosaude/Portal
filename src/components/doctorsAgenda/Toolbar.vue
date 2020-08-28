@@ -78,7 +78,7 @@
       <v-toolbar-items>
         <v-row align="end" justify="end">
           <v-col cols="12">
-            <v-btn rounded text @click="selectUnit()" v-if="!user.clinic && user.group === 'admin'">
+            <v-btn rounded text @click="selectUnit()" v-if="user.type !== 'clinic' && user.group === 'admin'">
               <v-icon>cached</v-icon>
             </v-btn>
           </v-col>
@@ -125,7 +125,7 @@
       <v-spacer/>
       <v-toolbar-items>
         <v-layout row wrap class="justify-center align-center">
-          <v-btn rounded text @click="selectUnit()" v-if="!user.clinic && user.group === 'admin'">
+          <v-btn rounded text @click="selectUnit()" v-if="user.type !== 'clinic' && user.group === 'admin'">
             <v-icon class="black--text">cached</v-icon>
           </v-btn>
           <v-btn class="hidden-sm-and-up" text @click="patientDialog = !patientDialog">
@@ -142,7 +142,7 @@
       <v-card>
         <v-layout row wrap class="align-center justify-center">
           <v-flex xs12 sm4 v-for="unit in units" :key="unit.id" class="text-center">
-            <v-btn @click="selectUnit(unit)" height="124px" v-if="!user.clinic">
+            <v-btn @click="selectUnit(unit)" height="124px" v-if="user.type !== 'clinic' && user.group === 'admin'">
               <img :src="unit.logo" width="256px"/>
             </v-btn>
           </v-flex>
