@@ -831,7 +831,7 @@
                 try {
                   let users = await this.$store.dispatch('searchUser', {
                     name: this.name,
-                    cpf: this.cpf,
+                    cpf: this.cpf.replace(/\./g, '').replace('-', ''),
                     association_number: this.numAss
                   });
                   this.foundUsers = users;
