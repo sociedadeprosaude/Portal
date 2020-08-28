@@ -143,7 +143,7 @@ const actions = {
     },
 
     async searchUser({ }, searchFields) {
-
+        console.log("ta sem ou com mascara ?", searchFields)
         // let usersRef = firestore().collection('users');
         // for (let field in searchFields) {
         //     if (!searchFields[field] || searchFields[field].length === 0) continue;
