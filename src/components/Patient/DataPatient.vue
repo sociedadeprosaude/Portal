@@ -826,8 +826,9 @@
             },
 
             async searchPatient() {
-
-                this.loading = true;
+              this.loading = true;
+              if(this.cpf){
+                console.log('if')
                 try {
                   let users = await this.$store.dispatch('searchUser', {
                     name: this.name,
@@ -838,7 +839,20 @@
                 } catch (e) {
                   window.alert(`Erro buscando usuarios, verifique sua conexão: ${e.message}`);
                 }
-                this.loading = false
+              } else {
+                console.log('else')
+                try {
+                  let users = await this.$store.dispatch('searchUser', {
+                    name: this.name,
+                    cpf: this.cpf,
+                    association_number: this.numAss
+                  });
+                  this.foundUsers = users;
+                } catch (e) {
+                  window.alert(`Erro buscando usuarios, verifique sua conexão: ${e.message}`);
+                }
+              }
+              this.loading = false
             },
 
             async fillFormUser(user) {
