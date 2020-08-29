@@ -828,7 +828,6 @@
             async searchPatient() {
               this.loading = true;
               if(this.cpf){
-                console.log('if')
                 try {
                   let users = await this.$store.dispatch('searchUser', {
                     name: this.name,
@@ -840,7 +839,6 @@
                   window.alert(`Erro buscando usuarios, verifique sua conexão: ${e.message}`);
                 }
               } else {
-                console.log('else')
                 try {
                   let users = await this.$store.dispatch('searchUser', {
                     name: this.name,
