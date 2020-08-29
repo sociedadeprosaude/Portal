@@ -2,7 +2,7 @@
     <v-container>
         <v-layout row wrap v-if="specialty || examType">
             <v-flex xs12 v-for="(consultation, i) in ConsultationsByDoctors(consultations)" :key="i">
-                <v-card v-if="consultation.doctor.name === user.name">
+                <v-card v-if="consultation.doctor.crm === user.crm">
                     <v-layout row wrap>
                         <v-flex xs12>
                             <v-card color="primary">
@@ -77,7 +77,6 @@
                             <v-divider class="primary"/>
                         </v-flex>
                         <v-flex sm4 v-for="item in consultation.consultations" class="mt-3 mb-2" v-if="item.status === 'Pago'">
-
                             <v-card v-if="item.status === 'Pago' && item.consultation_hour" outlined class="borderCard mx-2 mr-2 grey lighten-3 elevation-1" @click="patientSelect(item)">
                                 <v-layout row wrap class="mt-2">
                                     <v-flex xs4>
