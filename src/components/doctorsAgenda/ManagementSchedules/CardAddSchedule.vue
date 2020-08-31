@@ -202,20 +202,21 @@ export default {
   },
   methods:{
       async saveNewSchedule(){
+        const interval = this.interval ? this.interval : 5
           let newScheduleObj
           if(this.examTypeCheck){
             newScheduleObj = {
               clinic:this.clinic,
               exam_type:this.examType,
               doctor:this.medicos,
-              interval:Number(this.interval)
+              interval:Number(interval)
             }
           }else{
             newScheduleObj = {
               clinic:this.clinic,
               specialty:this.especialidade,
               doctor:this.medicos,
-              interval:Number(this.interval)
+              interval:Number(interval)
           }
           }
           await this.$store.dispatch('newShedule',newScheduleObj)

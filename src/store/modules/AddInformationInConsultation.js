@@ -69,11 +69,13 @@ const actions = {
             let id_schedule = copyPayload.consultation.id_schedule
             delete copyPayload.consultation.id
             delete copyPayload.consultation.vacancy
+            delete copyPayload.consultation.interval
             delete copyPayload.consultation.qtd_consultations
             delete copyPayload.consultation.qtd_returns
             delete copyPayload.user.budgets
             delete copyPayload.user.intakes
             copyPayload.consultation.id_schedule = id_schedule
+            console.log(copyPayload)
             var appointmentFunction = firebase.functions().httpsCallable('requests-addUserToConsultation');
             var response = await appointmentFunction({payload: {...copyPayload}})
             

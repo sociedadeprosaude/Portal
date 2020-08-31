@@ -321,6 +321,7 @@ export default {
           dependent: form.user.dependent
         };
       this.loading = true;
+      console.log(form)
       await this.$store.dispatch("addUserToConsultation", form);
       this.scheduleLoading = false;
       this.success = true;
