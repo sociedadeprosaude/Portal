@@ -7,35 +7,58 @@
           ></v-checkbox>
         </v-flex>
         <v-flex v-if="!examTypeCheck" xs12>
-          <v-combobox
-              class="mx-1"
-              label="Especialidade"
-              prepend-icon="school"
-              v-model="especialidade"
-              :items="specialties"
-              item-text="name"
-              return-object
-              outlined
-              rounded
-              filled
-              dense
-              chips
-              color="pink"
-              clearable
-          >
-              <template v-slot:selection="data">
-              <v-chip
-                  :key="JSON.stringify(data.item)"
-                  :input-value="data.selected"
-                  :disabled="data.disabled"
-                  class="v-chip--select-multi"
-                  @click.stop="data.parent.selectedIndex = data.index"
-                  @input="data.parent.selectItem(data.item)"
-                  text-color="white"
-                  color="info"
-              >{{ data.item.name }}</v-chip>
+
+          <template>
+            <!-- Apollo Query -->
+            <ApolloQuery 
+                :query="gql => gql`
+                  query ($type: String!) {
+                    Product (type: $type){
+                      name,id
+                    }
+                  }
+                `"
+                :variables="{ type:'SPECIALTY' }"
+            
+            >
+              <!-- The result will automatically updated -->
+              <template slot-scope="{ result: { data, loading } }">
+                <!-- Some content -->
+                <div v-if="loading">Loading...</div>
+                <v-combobox
+                  v-else
+                  class="mx-1"
+                  label="Especialidade"
+                  prepend-icon="school"
+                  v-model="especialidade"
+                  :items="data.Product"
+                  item-text="name"
+                  return-object
+                  outlined
+                  rounded
+                  filled
+                  dense
+                  chips
+                  color="pink"
+                  clearable
+              >
+                  <template v-slot:selection="data">
+                  <v-chip
+                      :key="JSON.stringify(data.item)"
+                      :input-value="data.selected"
+                      :disabled="data.disabled"
+                      class="v-chip--select-multi"
+                      @click.stop="data.parent.selectedIndex = data.index"
+                      @input="data.parent.selectItem(data.item)"
+                      text-color="white"
+                      color="info"
+                  >{{ data.item.name }}</v-chip>
+                  </template>
+              </v-combobox>
               </template>
-          </v-combobox>
+            </ApolloQuery>
+          </template>
+
         </v-flex>
         <v-flex v-if="examTypeCheck" xs12>
           <v-select
