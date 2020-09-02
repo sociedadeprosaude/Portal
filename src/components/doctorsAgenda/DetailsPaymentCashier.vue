@@ -154,22 +154,6 @@
                             Pagar
                         </submit-button>
                     </v-flex>
-                        <ApolloMutation
-                                :mutation="require('@/graphql/transaction/PayBudget.gql')"
-                                :variables="{this.generateBudget.discount
-                    this.generateBudget.total,
-                    this.generateBudget.parcel,
-                    this.generateBudget.date,
-                    this.generateBudget.payments,
-                    this.generateBudget.valuesPayments,}">
-                            <template v-slot="{ mutate, loading, error }">
-                                <v-btn
-                                        color="primary"
-                                        :disabled="loading"
-                                >Pagar</v-btn>
-                                <p v-if="error">Ocorreu um erro: {{ error }}</p>
-                            </template>
-                        </ApolloMutation>
                     <v-flex xs12 class="mt-4">
                         <v-fade-transition>
                             <v-alert
