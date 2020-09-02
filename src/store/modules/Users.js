@@ -138,7 +138,6 @@ const actions = {
             }
 
         });
-        console.log('user:', user)
         return user
     },
 

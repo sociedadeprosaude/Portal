@@ -102,9 +102,9 @@
                                       </v-flex>
                                       <v-flex xs8 class="mb-3">
                                         <v-flex xs12>
-                                          <h4 class="text-left font-weight-bold">{{item.user.name}}</h4>
+                                          <h4 class="text-left font-weight-bold">{{returnNamePatient(item)}}</h4>
                                           <h5 class="text-left mt-1">{{item.date.substring(11,16)}}</h5>
-                                          <h5 class="text-left">Agendado em: {{item.date.substring(0,10)}}</h5>
+                                          <h5 class="text-left">Agendado em: {{datescheduled(item.date.substring(0,10))}}</h5>
                                         </v-flex>
                                       </v-flex>
                                     </v-layout>
@@ -123,10 +123,6 @@
                             </v-tooltip>
                           </div>
                         </v-flex>
-
-                      <!--<v-flex sm4 v-for="item in consultation.consultations" class="mt-3 mb-2" v-if="!clinic">
-
-                      </v-flex>-->
                     </v-layout>
                 </v-card>
             </v-flex>
@@ -230,6 +226,17 @@
             cleanSpecialtyToDeactivate() {
                 this.specialtyToDeactivate = [];
                 this.clinicsToDeactivate = []
+            },
+            datescheduled(date){
+                return moment(date).format('DD/MM/YYYY')
+            },
+            returnNamePatient(item){
+                if(item.dependent){
+                    return item.dependent.name
+                }
+                else{
+                    return item.user.name
+                }
             },
             ConsultationsByDoctors(consultations) {
                 let res = {};
