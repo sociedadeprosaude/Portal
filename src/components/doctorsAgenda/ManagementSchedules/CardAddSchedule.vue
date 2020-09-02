@@ -14,24 +14,28 @@
                 :query="gql => gql`
                   query ($type: String!) {
                     Product (type: $type){
-                      name,id
+                      name,id,
+                      doctors{
+                        id,
+                        name
+                      },
+                      clinics{
+                        id,
+                        name
+                      }
                     }
                   }
                 `"
                 :variables="{ type:'SPECIALTY' }"
             
             >
-              <!-- The result will automatically updated -->
-              <template slot-scope="{ result: { data, loading } }">
-                <!-- Some content -->
-                <div v-if="loading">Loading...</div>
+              <template slot-scope="{ result: { data } }">
                 <v-combobox
-                  v-else
                   class="mx-1"
                   label="Especialidade"
                   prepend-icon="school"
-                  v-model="especialidade"
-                  :items="data.Product"
+                  v-model="specialty"
+                  :items="data ? data.Product:[]"
                   item-text="name"
                   return-object
                   outlined
@@ -61,41 +65,67 @@
 
         </v-flex>
         <v-flex v-if="examTypeCheck" xs12>
-          <v-select
-              class="mx-1"
-              prepend-icon="location_city"
-              v-model="examType"
-              :items="examTypes"
-              item-text="name"
-              return-object
-              label="Exame agendável"
-              outlined
-              rounded
-              filled
-              chips
-              dense
-              color="purple"
-              clearable
-          >
-              <template v-slot:selection="data">
-              <v-chip
-                  :key="JSON.stringify(data.item)"
-                  :input-value="data.selected"
-                  :disabled="data.disabled"
-                  class="v-chip--select-multi"
-                  @click.stop="data.parent.selectedIndex = data.index"
-                  @input="data.parent.selectItem(data.item)"
-                  text-color="white"
-                  color="info"
-              >{{ data.item.name }}</v-chip>
+          <template>
+            <!-- Apollo Query -->
+            <ApolloQuery 
+                :query="gql => gql`
+                  query ($type: String!, $schedulable: Boolean) {
+                    Product(type:$type,schedulable:$schedulable){
+                      name,
+                      id,
+                      doctors{
+                        name,
+                        id
+                      },
+                      clinics{
+                        name,
+                        id
+                      }
+                    }
+                  }
+                `"
+                :variables="{ type:'EXAM', schedulable:true}"
+            
+            >
+              <template slot-scope="{ result: { data } }">
+                <v-select
+                    class="mx-1"
+                    prepend-icon="location_city"
+                    v-model="examType"
+                    :items="data ? data.Product : []"
+                    item-text="name"
+                    return-object
+                    label="Exame agendável"
+                    outlined
+                    rounded
+                    filled
+                    chips
+                    dense
+                    color="purple"
+                    clearable
+                >
+                    <template v-slot:selection="data">
+                    <v-chip
+                        :key="JSON.stringify(data.item)"
+                        :input-value="data.selected"
+                        :disabled="data.disabled"
+                        class="v-chip--select-multi"
+                        @click.stop="data.parent.selectedIndex = data.index"
+                        @input="data.parent.selectItem(data.item)"
+                        text-color="white"
+                        color="info"
+                    >{{ data.item.name }}</v-chip>
+                    </template>
+                </v-select>
               </template>
-          </v-select>
+            </ApolloQuery>
+          </template>
         </v-flex>
         <v-flex xs12>
           <v-combobox
               class="mx-1"
               prepend-icon="account_circle"
-              v-model="medicos"
+              v-model="doctor"
               :items="doctors"
               item-text="name"
               return-object
@@ -162,88 +192,124 @@
 </template>
 
 <script>
+import gql from 'graphql-tag'
+
 export default {
   name:'CardAddSchedule',
   data: () => ({
-    medicos: "",
-    especialidade: undefined,
+    doctor: "",
+    specialty: undefined,
     clinic: undefined,
     interval:undefined,
     examType:undefined,
-    examTypeCheck:false
+    examTypeCheck:false,
+    clinics:[],
+    doctors:[]
   }),
-  mounted() {
-    this.$store.dispatch("getSpecialties");
-    this.$store.dispatch("getExamsTypes");
-    this.$store.dispatch("getDoctors");
-    this.$store.dispatch("getClinics");
-  },
-  computed: {
-    specialties() {
-      let espArray = Object.values(this.$store.getters.specialties);
-      espArray = espArray.filter(specialty => {
-        if (!this.medicos) {
-          return true;
-        }
-        let find = false;
-        specialty.doctors.forEach(doctor => {
-          if (doctor.cpf === this.medicos.cpf) {
-            find = true;
-            return true;
-          }
-        });
-
-        return find;
-      });
-      return espArray;
-    },
-
-    doctors() {
-      let doctors = Object.values(this.$store.getters.doctors);
-      if (this.especialidade) {
-        doctors = doctors.filter(a => {
-          for (let spe in a.specialties) {
-            if (a.specialties[spe].name === this.especialidade.name) {
-              return true;
-            }
-          }
-          return false;
-        });
+  watch:{
+    specialty(value){
+      this.clear()
+      if(value){
+        this.clinics = this.specialty.clinics
+        this.doctors = this.specialty.doctors
       }
-      return doctors;
     },
-    clinics() {
-      return this.$store.getters.clinics.filter(a => {
-        return a.property;
-      });
-    },
-    examTypes() {
-      return this.$store.getters.examsTypes.filter((examType)=>{
-        return examType.scheduleable
-      });
+    examTypeCheck(value){
+      this.clear()
+      if(value){
+        this.$apollo.queries.loadClinics.refresh()
+        this.$apollo.queries.loadDoctors.refresh()
+      }
     }
   },
   methods:{
+      clear(){
+        this.clinic = undefined
+        this.doctor = undefined 
+        this.specialty = undefined
+        this.examType = undefined
+      },
       async saveNewSchedule(){
         const interval = this.interval ? this.interval : 5
-          let newScheduleObj
-          if(this.examTypeCheck){
-            newScheduleObj = {
-              clinic:this.clinic,
-              exam_type:this.examType,
-              doctor:this.medicos,
-              interval:Number(interval)
+        let newScheduleObj = {
+          clinic:this.clinic,
+          doctor:this.doctor,
+          interval:Number(interval)
+        }
+        if(this.examTypeCheck){
+          newScheduleObj.product = this.examType      
+        }else{
+          newScheduleObj.product = this.specialty
+        }
+
+
+        this.$apollo.mutate({
+          mutation: gql`mutation ($label: String!) {
+            addTag(label: $label) {
+              id
+              label
             }
-          }else{
-            newScheduleObj = {
-              clinic:this.clinic,
-              specialty:this.especialidade,
-              doctor:this.medicos,
-              interval:Number(interval)
-          }
-          }
-          await this.$store.dispatch('newShedule',newScheduleObj)
+          }`,
+          // Parameters
+          variables: {
+            label: newTag,
+          },
+          // Update the cache with the result
+          // The query will be updated with the optimistic response
+          // and then with the real result of the mutation
+          update: (store, { data: { addTag } }) => {
+            // Read the data from our cache for this query.
+            const data = store.readQuery({ query: TAGS_QUERY })
+            // Add our tag from the mutation to the end
+            data.tags.push(addTag)
+            // Write our data back to the cache.
+            store.writeQuery({ query: TAGS_QUERY, data })
+          },
+          // Optimistic UI
+          // Will be treated as a 'fake' result as soon as the request is made
+          // so that the UI can react quickly and the user be happy
+          optimisticResponse: {
+            __typename: 'Mutation',
+            addTag: {
+              __typename: 'Tag',
+              id: -1,
+              label: newTag,
+            },
+          },
+        }).then((data) => {
+          // Result
+          console.log(data)
+        }).catch((error) => {
+          // Error
+          console.error(error)
+          // We restore the initial user input
+          this.newTag = newTag
+        })
+        //await this.$store.dispatch('newShedule',newScheduleObj)
       }
+  },
+  apollo: {
+    loadClinics: {
+      query: gql`query {
+        Clinic(orderBy:[name_desc]){
+          id,name
+        }
+      }`,
+      update(data) {
+        console.log('No update',data.Clinic)
+        this.clinics = data.Clinic
+      },
+    },
+    loadDoctors: {
+      query: gql`query {
+        Doctor(orderBy:[name_desc]){
+          id,name
+        }
+      }`,
+      update(data) {
+        this.doctors = data.Doctor
+      },
+    }
   }
 };
 </script>
