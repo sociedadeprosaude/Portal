@@ -208,14 +208,18 @@ export default {
   }),
   watch:{
     specialty(value){
-      this.clear()
+      this.clinic = undefined
+      this.doctor = undefined
+      this.examType = undefined
       if(value){
-        this.clinics = this.specialty.clinics
-        this.doctors = this.specialty.doctors
+        this.clinics = value.clinics
+        this.doctors = value.doctors
       }
     },
     examTypeCheck(value){
-      this.clear()
+      this.clinic = undefined
+      this.doctor = undefined 
+      this.specialty = undefined
       if(value){
         this.$apollo.queries.loadClinics.refresh()
         this.$apollo.queries.loadDoctors.refresh()
@@ -237,56 +241,45 @@ export default {
           interval:Number(interval)
         }
         if(this.examTypeCheck){
+          console.log('Exam',this.examType)
           newScheduleObj.product = this.examType      
         }else{
+          console.log('Specialty',this.specialty)
           newScheduleObj.product = this.specialty
         }
 
-
         this.$apollo.mutate({
-          mutation: gql`mutation ($label: String!) {
-            addTag(label: $label) {
-              id
-              label
-            }
-          }`,
+          mutation: require('@/graphql/schedules/new_schedule.gql'),
           // Parameters
           variables: {
-            label: newTag,
+            interval: newScheduleObj.interval,
           },
-          // Update the cache with the result
-          // The query will be updated with the optimistic response
-          // and then with the real result of the mutation
-          update: (store, { data: { addTag } }) => {
-            // Read the data from our cache for this query.
-            const data = store.readQuery({ query: TAGS_QUERY })
-            // Add our tag from the mutation to the end
-            data.tags.push(addTag)
-            // Write our data back to the cache.
-            store.writeQuery({ query: TAGS_QUERY, data })
-          },
-          // Optimistic UI
-          // Will be treated as a 'fake' result as soon as the request is made
-          // so that the UI can react quickly and the user be happy
-          optimisticResponse: {
-            __typename: 'Mutation',
-            addTag: {
-              __typename: 'Tag',
-              id: -1,
-              label: newTag,
-            },
-          },
+          
         }).then((data) => {
-          // Result
-          console.log(data)
+          this.saveRelationSchedule(data.data.CreateSchedule.id, newScheduleObj)
         }).catch((error) => {
-          // Error
           console.error(error)
-          // We restore the initial user input
-          this.newTag = newTag
         })
-        //await this.$store.dispatch('newShedule',newScheduleObj)
-      }
+      },
+
+    saveRelationSchedule(idSchedule, scheduleObj){
+        console.log(scheduleObj)
+        this.$apollo.mutate({
+          mutation: require('@/graphql/schedules/add_relations.gql'),
+          // Parameters
+          variables: {
+            idSchedule: idSchedule,
+            idProduct: scheduleObj.product.id,
+            idClinic: scheduleObj.clinic.id,
+            idDoctor: scheduleObj.doctor.id
+          },
+          
+        }).then((data) => {
+          this.clear()
+        }).catch((error) => {
+          console.error(error)
+        })
+    }
   },
   apollo: {
     loadClinics: {
@@ -296,7 +289,6 @@ export default {
         }
       }`,
       update(data) {
-        console.log('No update',data.Clinic)
         this.clinics = data.Clinic
       },
     },

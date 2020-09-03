@@ -1,0 +1,35 @@
+mutation($idSchedule:ID!,$idProduct:ID!, $idClinic: ID!, $idDoctor: ID!){
+    AddScheduleWith_product(
+        from:{
+            id:$idSchedule
+        },
+        to:{
+            id:$idProduct
+        }
+    ){
+        from{id},
+        to{id}
+    },
+    AddScheduleBelongs_to(
+        from:{
+            id:$idSchedule
+        },
+        to:{
+            id:$idClinic
+        }
+    ){
+        from{id},
+        to{id}
+    },
+    AddScheduleExclusive_for(
+        from:{
+            id:$idSchedule
+        },
+        to:{
+            id:$idDoctor
+        }
+    ){
+        from{id},
+        to{id}
+    }
+}
