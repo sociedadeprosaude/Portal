@@ -11,23 +11,8 @@
           <template>
             <!-- Apollo Query -->
             <ApolloQuery 
-                :query="gql => gql`
-                  query ($type: String!) {
-                    Product (type: $type){
-                      name,id,
-                      doctors{
-                        id,
-                        name
-                      },
-                      clinics{
-                        id,
-                        name
-                      }
-                    }
-                  }
-                `"
-                :variables="{ type:'SPECIALTY' }"
-            
+                :query="require('@/graphql/products/LoadProducts.gql')"
+                :variables="{ type:'SPECIALTY', schedulable:false}"
             >
               <template slot-scope="{ result: { data } }">
                 <v-combobox
@@ -68,22 +53,7 @@
           <template>
             <!-- Apollo Query -->
             <ApolloQuery 
-                :query="gql => gql`
-                  query ($type: String!, $schedulable: Boolean) {
-                    Product(type:$type,schedulable:$schedulable){
-                      name,
-                      id,
-                      doctors{
-                        name,
-                        id
-                      },
-                      clinics{
-                        name,
-                        id
-                      }
-                    }
-                  }
-                `"
+                :query="require('@/graphql/products/LoadProducts.gql')"
                 :variables="{ type:'EXAM', schedulable:true}"
             
             >
@@ -249,7 +219,7 @@ export default {
         }
 
         this.$apollo.mutate({
-          mutation: require('@/graphql/schedules/new_schedule.gql'),
+          mutation: require('@/graphql/schedules/NewSchedule.gql'),
           // Parameters
           variables: {
             interval: newScheduleObj.interval,
@@ -265,7 +235,7 @@ export default {
     saveRelationSchedule(idSchedule, scheduleObj){
         console.log(scheduleObj)
         this.$apollo.mutate({
-          mutation: require('@/graphql/schedules/add_relations.gql'),
+          mutation: require('@/graphql/schedules/AddRelations.gql'),
           // Parameters
           variables: {
             idSchedule: idSchedule,

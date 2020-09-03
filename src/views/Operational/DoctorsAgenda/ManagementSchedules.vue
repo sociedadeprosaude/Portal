@@ -1,28 +1,36 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="schedules"
-    single-expand
-    :expanded.sync="expanded"
-    item-key="id"
-    show-expand
-    class="elevation-1 mx-2 mt-10 pt-5"
-    height="400"
+  <!-- <ApolloQuery 
+    :query="require('@/graphql/schedules/LoadSchedules.gql')"
+    :variables="{ type:'SPECIALTY' }"
   >
+    <template slot-scope="{ result: { data, loading} }">
+      <v-progress-circular v-if="loading" indeterminate></v-progress-circular> -->
+      <v-data-table
+        :headers="headers"
+        :items="schedules"
+        single-expand
+        :expanded.sync="expanded"
+        item-key="id"
+        show-expand
+        class="elevation-1 mx-2 mt-10 pt-5"
+        height="400"
+      >
 
-    <template v-slot:top>
-      <HeaderTable :clinics="clinics" @filterClinic="clinic=$event" @examTypeCheck="examTypeCheck=$event"/>
-    </template>
+        <template v-slot:top>
+          <HeaderTable :clinics="clinics" @filterClinic="clinic=$event" @examTypeCheck="examTypeCheck=$event"/>
+        </template>
 
-    <template v-slot:expanded-item="{ headers, item }">
-      <BodyTable :headers="headers" :item="item" @createNewDay="createNewDay($event)" @createNewPeriod="createNewPeriod($event)" />
-    </template>
+        <template v-slot:expanded-item="{ headers, item }">
+          <BodyTable :headers="headers" :item="item" @createNewDay="createNewDay($event)" @createNewPeriod="createNewPeriod($event)" />
+        </template>
 
-    <!-- <template v-slot:item.actions="{ item }">
-          <v-icon small @click="deleteSchedule(item)">mdi-delete</v-icon>
-    </template>-->
-    
-  </v-data-table>
+        <!-- <template v-slot:item.actions="{ item }">
+              <v-icon small @click="deleteSchedule(item)">mdi-delete</v-icon>
+        </template>-->
+        
+      </v-data-table>
+    <!-- </template>
+  </ApolloQuery> -->
 </template>
 
 <script>
@@ -35,6 +43,7 @@ export default {
   },
   data: () => ({
     expanded: [],
+    schedules:[],
     moment: moment,
     clinic: undefined,
     dialog: false,
@@ -51,7 +60,7 @@ export default {
         sortable: true,
         value: "doctor.name"
       },
-      { text: "Especialidade", value: "specialty.name" },
+      { text: "Especialidade", value: "product.name" },
       { text: "Clínica", value: "clinic.name", sortable: true },
       { text: "Intervalo (Minutos)", value: "interval", sortable: true ,  align: "center",},
       { text: "Ações", value: "actions", sortable: false }
@@ -59,11 +68,11 @@ export default {
   }),
 
   mounted() {
-    this.$store.dispatch("getAllSchedules");
-    this.$store.dispatch("getClinics");
+    //this.$store.dispatch("getAllSchedules");
+    //this.$store.dispatch("getClinics");
   },
   computed: {
-    schedules() {
+    /* schedules() {
       let resp = this.$store.getters.AllSchedules.filter(schedule => {
         let filter = true;
         if (this.clinic && schedule.clinic.name != this.clinic.name)
@@ -81,7 +90,7 @@ export default {
       return this.$store.getters.clinics.filter(a => {
         return a.property;
       });
-    }
+    } */
   },
   watch: {
     examTypeCheck(value) {
@@ -160,6 +169,18 @@ export default {
         this.$store.dispatch("deleteSchedule", item.id);
       }
     }
+  },
+  apollo: {
+    loadSchedules: {
+      query: require("@/graphql/schedules/LoadSchedules.gql"),
+      update(data) {
+        console.log(data)
+        if(this.examTypeCheck)
+          this.schedules = data.Schedule.filter(schedule => schedule.product.type === "SPECIALTY")
+        else
+          this.schedules = data.Schedule.filter(schedule => schedule.product.type === "EXAM")
+      },
+    },
   }
 };
 </script>
