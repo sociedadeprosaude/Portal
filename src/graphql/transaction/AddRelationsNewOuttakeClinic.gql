@@ -1,0 +1,35 @@
+mutation($idBudget:ID!,$idColaborator:ID!, $idClinic: ID!, $idProduct: ID!){
+    AddTransactionColaboratorPayload(
+        from:{
+            id:$idBudget
+        },
+        to:{
+            id:$idColaborator
+        }
+    ){
+        from{id},
+        to{id}
+    },
+    AddTransactionClinic(
+        from:{
+            id:$idBudget
+        },
+        to:{
+            id:$idClinic
+        }
+    ){
+        from{id},
+        to{id}
+    }
+    AddTransactionProduct(
+            from:{
+                id:$idBudget
+            },
+            to:{
+                id:$idProduct
+            }
+        ){
+            from{id},
+            to{id}
+        }
+}

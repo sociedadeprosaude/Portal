@@ -1,0 +1,18 @@
+mutation (
+    $value: Float,
+    $payment_methods: [String],
+    $payments: [String],
+    $parcels: [String],
+    $discount: Float,
+    $date: String ) {
+    CreateTransaction(
+     value:$value,
+     payment_methods:$payment_methods,
+     payments:$payments,
+     parcels:$parcels,
+     discount:$discount,
+     date:$date
+     ){
+        id
+    }
+}

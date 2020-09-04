@@ -441,6 +441,7 @@
                     this.alertMessage.text = 'Escolha um médico que requisitou este orçamento'
                     return
                 }
+
                 this.alertMessage.model = false
                 await this.saveBudget(this.generateBudget());
                 let newBudget = this.generateBudget();
@@ -450,7 +451,76 @@
                 if (!this.selectedBudget) {
                     await this.saveBudget(this.generateBudget())
                 }
-                await this.$store.dispatch('addIntake', this.selectedBudget);
+                console.log('selectedBudget: ', this.selectedBudget)
+                this.$apollo.mutate({
+                    mutation: require('@/graphql/transaction/NewPayIntake.gql'),
+                    // Parameters
+                    variables: {
+                        variables: {
+                            value: this.selectedBudget.total,
+                            payment_methods: this.selectedBudget.payment_methods ? this.selectedBudget.payment_methods :  this.selectedBudget.payment_method,
+                            payments: this.selectedBudget.valuesPayments ? this.selectedBudget.valuesPayments : this.selectedBudget.total,
+                            parcels: this.selectedBudget.parcel,
+                            discount: this.selectedBudget.discount ? this.selectedBudget.discount : " ",
+                            date: this.selectedBudget.date,
+
+                        }
+                    },
+
+                }).then((data) => {
+                   console.log('data: ', data)
+                    console.log('selectedBudget: ', this.selectedBudget)
+                    this.$apollo.mutate({
+                        mutation: require('@/graphql/transaction/AddRelationsNewIntake.gql'),
+                        // Parameters
+                        variables: {
+                            idBudget: data.id,
+                            idColaborator: this.selectedBudget.colaborator.id,
+                            idPatient: this.selectedBudget.user.id,
+                            idDoctor: this.selectedBudget.doctor.id
+                        },
+
+                    }).then((dataa) => {
+                        console.log('FOI, data: ', dataa)
+                        let clinics = this.$store.getters.clinics
+                        for(let i=0; i< clinics.length; i++){
+                            let outtake = {
+                                intake_id: this.selectedBudget.id,
+                                user: this.selectedBudget.user,
+                                unit: this.selectedBudget.unit,
+                                clinic: clinics[i],
+                                exams: this.selectedBudget.exams ? this.selectedBudget.exams.filter( exam => exam.clinic.name === clinics[i].name ) : [],
+                                specialties: this.selectedBudget.specialties ? this.selectedBudget.specialties.filter( specialtie => specialtie.doctor.clinic.name === clinics[i].name ): [],
+                                paid: false,
+                                root:true,
+                                cnpj: clinics[i].cnpj
+                            }
+                            if( outtake.exams.length !== 0  || outtake.specialties.length !== 0 ){
+                                //await this.$store.dispatch('addOuttakes', outtake)
+                                this.$apollo.mutate({
+                                    mutation: require('@/graphql/transaction/NewPayIntake.gql'),
+                                    // Parameters
+                                    variables: {
+                                        variables: {
+                                            date: this.selectedBudget.date,
+                                        }
+                                    },
+
+                                }).then((dataaa) => {
+                                    console.log('dataaa', dataaa)
+
+                                }).catch((error) => {
+                                    console.error(error)
+                                })
+                            }
+                        }
+                    }).catch((error) => {
+                        console.error(error)
+                    })
+                }).catch((error) => {
+                    console.error(error)
+                })
+              /*  await this.$store.dispatch('addIntake', this.selectedBudget);
                 let clinics = this.$store.getters.clinics
                 for(let i=0; i< clinics.length; i++){
                     let outtake = {
@@ -490,7 +560,7 @@
                    };
                 await this.$store.dispatch('deleteBudget', data);
                    await this.$store.commit('setSelectedBudget', undefined);
-                   this.$store.commit('clearShoppingCartItens');
+                   this.$store.commit('clearShoppingCartItens'); */
 
                 this.card = false;
 
