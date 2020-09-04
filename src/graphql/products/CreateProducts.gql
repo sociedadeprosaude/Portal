@@ -2,13 +2,15 @@ mutation CreateProduct(
     $specialty: String!,
     $type: String!,
     $price: Float!,
+    $schedulable: Boolean!,
     ){
   CreateProduct(
     name: $specialty,
     type: $type,
     price: $price,
+    schedulable: $schedulable,
   )
   {
-    id,name,price
+    name,type,price
   }
 }

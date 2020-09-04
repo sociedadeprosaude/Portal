@@ -67,8 +67,8 @@
     <v-card-actions>
       <ApolloMutation
           :mutation="require('@/graphql/products/CreateProducts.gql')"
-          :variables="{specialty,type,price,}"
-          @done="close()"
+          :variables="{specialty,type,price,schedulable,}"
+          @done="close"
       >
         <template v-slot="{ mutate, loading, error }">
           <v-btn
@@ -101,6 +101,7 @@ export default {
     specialty: undefined,
     price:0,
     type:"SPECIALTY",
+    schedulable: false,
     exam: undefined,
     typeOptions: [
       { text: "sim", value: true },
@@ -119,12 +120,14 @@ export default {
       this.$emit("close");
     },
     createProduct(mutate) {
+      this.specialty = this.specialty.toUpperCase()
       console.log(this.specialty)
       console.log(this.price)
       console.log(this.type)
+      console.log(this.schedulable)
       setTimeout(() => {
         mutate();
-      }, 0);
+      }, 100);
     },
     async registerSpecialty() {
       this.loading = true;
