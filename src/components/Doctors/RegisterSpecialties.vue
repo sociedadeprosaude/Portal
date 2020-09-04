@@ -15,48 +15,6 @@
                                     id="searchEspecialties"
                             />
                         </v-flex>
-                      <v-flex xs12>
-
-                      </v-flex>
-                      <v-flex xs12>
-                        <!-- Apollo Query -->
-                        <ApolloQuery
-                            :query="require('@/graphql/products/ReadProcucts.gql')"
-                            :variables="{ type:'SPECIALTY', schedulable:false}"
-                        >
-                          <template slot-scope="{ result: { data } }">
-                            <v-combobox
-                                class="mx-1"
-                                label="Especialidade"
-                                prepend-icon="school"
-                                v-model="specialty"
-                                :items="data ? data.Product:[]"
-                                item-text="name"
-                                return-object
-                                outlined
-                                rounded
-                                filled
-                                dense
-                                chips
-                                color="pink"
-                                clearable
-                            >
-                              <template v-slot:selection="data">
-                                <v-chip
-                                    :key="JSON.stringify(data.item)"
-                                    :input-value="data.selected"
-                                    :disabled="data.disabled"
-                                    class="v-chip--select-multi"
-                                    @click.stop="data.parent.selectedIndex = data.index"
-                                    @input="data.parent.selectItem(data.item)"
-                                    text-color="white"
-                                    color="info"
-                                >{{ data.item.name }}</v-chip>
-                              </template>
-                            </v-combobox>
-                          </template>
-                        </ApolloQuery>
-                      </v-flex>
                         <v-flex sm4 class="text-right pr-3 mt-2">
                             <v-btn outlined class="primary--text" @click="creatingSpecialty = true">
                                 cadastrar especialidade
@@ -89,8 +47,6 @@
             searchSpecialty: "",
             loading: undefined,
             creatingSpecialty: false,
-            specialty: undefined,
-
         }),
         methods: {
             getSpecialties(item) {
