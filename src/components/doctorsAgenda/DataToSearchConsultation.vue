@@ -15,7 +15,7 @@
           <span style="color: #003B8F; font-weight: bold">Calendário</span>
         </v-tooltip>
       </v-flex>
-      <v-flex xs12 class="mt-3" v-show="showCalendar">
+      <!-- <v-flex xs12 class="mt-3" v-show="showCalendar">
         <v-date-picker
             :allowed-dates="allowedDates"
             class="mx-2"
@@ -24,7 +24,7 @@
             no-title
             color="primary"
         />
-      </v-flex>
+      </v-flex> -->
       <v-flex class="mt-4" sm12>
         <CardPatient ref="patientCard"/>
       </v-flex>
@@ -49,6 +49,7 @@ export default {
     showCalendar: false,
     date: moment().format("YYYY-MM-DD"),
     consultationsListenerUnsubscriber: undefined,
+    schedules:[]
   }),
 
   async mounted() {
@@ -77,9 +78,9 @@ export default {
       return this.$store.getters.selectedSpecialty
     },
 
-    schedules() {
+    /* schedules() {
       return this.$store.getters.schedules
-    },
+    }, */
     consultations() {
       return this.$store.getters.consultations
     }
@@ -115,7 +116,7 @@ export default {
       };
     },
 
-    schedules() {
+    /* schedules() {
       let schedules = this.$store.getters.schedules.filter(a => {
         let response = true;
         if (this.doctor) {
@@ -135,7 +136,7 @@ export default {
         return response;
       });
       return this.consultationsOfSchedules(schedules);
-    },
+    }, */
 
     selectedPatient() {
       return this.$store.getters.selectedPatient;
@@ -203,6 +204,7 @@ export default {
         res[targetDate].push(consultations[cons]);
       }
       this.$emit('GetConsultations', res);
+      console.log('consultationsByDate',res)
       return res;
     },
 
@@ -210,29 +212,31 @@ export default {
       let consultations = [];
       schedules.forEach((schedule) => {
         //let keys = Object.keys(schedule.days);
-        if (schedule.days) {
+        if (schedule.days && schedule.product && schedule.doctor) {
           let dates = this.datesOfInterval({days: schedule.days});
-
+          console.log(dates)
           dates.forEach((date, index) => {
-            let hourConsultation = schedule.days[moment(date).weekday()].hour;
-            if (schedule.cancelations_schedules.indexOf(date) === -1 && schedule.cancelations_schedules.indexOf(date + ' ' + hourConsultation) === -1) {
+            let findDay = schedule.days.find(day => Number(day.day) == moment(date).weekday())
+            let hourConsultation = findDay.hour;
+            //if (schedule.cancelations_schedules.indexOf(date) === -1 && schedule.cancelations_schedules.indexOf(date + ' ' + hourConsultation) === -1) {
               let scheduleObj = {
                 clinic: schedule.clinic,
                 doctor: schedule.doctor,
                 date: date + ' ' + hourConsultation,
                 interval: schedule.interval,
                 routine_id: schedule.routine_id,
-                vacancy: schedule.days[moment(date).weekday()].vacancy,
+                vacancy: findDay.vacancy,
                 id_schedule: schedule.id,
               };
-              if (schedule.specialty)
-                scheduleObj.specialty = schedule.specialty
-              if (schedule.exam_type)
-                scheduleObj.exam_type = schedule.exam_type
-              let obj = {...scheduleObj, ...this.numberVacancyAndReturns(scheduleObj)};
+              console.log(schedule)
+              if (schedule.product.type == "SPECIALTY")
+                scheduleObj.specialty = schedule.product
+              else if (schedule.product.type == "EXAM")
+                scheduleObj.exam_type = schedule.product
+              let obj = {...scheduleObj,qtd_consultations: schedule.consultations.length, qtd_returns:schedule.returns_consultations.length};
               obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns;
               consultations.push(obj)
-            }
+            //}
           })
         }
       });
@@ -241,11 +245,11 @@ export default {
 
     datesOfInterval(payload) {
       let days = payload.days
-      let weekDays = Object.keys(days);
+      let weekDays //= Object.keys(days);
       let startDate = moment();
       let dates = [];
-      weekDays = weekDays.map((day) => {
-        return Number(day)
+      weekDays = days.map((day) => {
+        return Number(day.day)
       });
       let day = startDate;
       for (let i = 0; i < this.daysToListen; i++) {
@@ -258,7 +262,7 @@ export default {
       return dates
     },
 
-    numberVacancyAndReturns(schedule) {
+    /* numberVacancyAndReturns(schedule) {
 
       let consultations = this.consultations;
       return consultations.reduce((obj, item) => {
@@ -275,6 +279,20 @@ export default {
         }
         return obj
       }, {qtd_consultations: 0, qtd_returns: 0})
+    }, */
+  },
+  apollo: {
+    loadSchedules: {
+      query: require("@/graphql/schedules/LoadSchedules.gql"),
+      update(data) {
+        
+        this.schedules = this.consultationsOfSchedules(data.Schedule)
+        console.log('-',this.schedules)
+        this.consultationsByDate(this.schedules)
+      },
+      result(data){
+        //console.log('->',data)
+      }
     },
   }
 }

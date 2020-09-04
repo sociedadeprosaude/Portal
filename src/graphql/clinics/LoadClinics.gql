@@ -1,0 +1,5 @@
+query {
+    Clinic(orderBy:[name_desc]){
+        id,name
+    }
+}

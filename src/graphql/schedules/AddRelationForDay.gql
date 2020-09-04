@@ -1,0 +1,13 @@
+mutation($idSchedule:ID!,$idDay:ID!){
+    AddScheduleFor_day(
+        from:{
+            id:$idSchedule
+        },
+        to:{
+            id:$idDay
+        }
+    ){
+        from{id},
+        to{id}
+    }
+}

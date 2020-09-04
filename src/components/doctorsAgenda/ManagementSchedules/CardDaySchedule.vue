@@ -4,7 +4,7 @@
     <v-chip class="mt-2 primary subtitle-2 font-weight-bold">Horário:{{dayObj.hour}}</v-chip>
     <br/>
     <v-chip class="mt-1 primary subtitle-2 font-weight-bold">Vagas:{{dayObj.vacancy}}</v-chip>
-    <v-chip v-if="dayObj.expiration_date" class="mt-1 primary subtitle-2 font-weight-bold">Validade:{{formatDate(dayObj.expiration_date)}}</v-chip>
+    <v-chip v-if="dayObj.expiration_date.formatted" class="mt-1 primary subtitle-2 font-weight-bold">Validade:{{formatDate(dayObj.expiration_date.formatted)}}</v-chip>
     <br />
     <br />
     <v-spacer></v-spacer>
@@ -99,11 +99,28 @@ export default {
     async removeDay() {
       this.loading = true;
       let copySchedule = Object.assign({}, this.schedule);
-      delete copySchedule.days[this.day];
-      await this.$store.dispatch("updateScheduleDays", {
+      console.log(this.dayObj.id)
+      console.log(this.schedule.id)
+      this.$apollo.mutate({
+          mutation: require('@/graphql/schedules/RemoveRelationForDay.gql'),
+          variables: {
+            idSchedule:this.schedule.id,
+            idDay: this.dayObj.id
+          },
+          
+      }).then((data) => {
+          console.log('Removeu',data)
+          const findIndex = this.schedule.days.findIndex((day)=>day.day === this.day)
+          this.schedule.days.splice(findIndex,1)
+      }).catch((error) => {
+          console.error(error)
+      })
+
+      //delete copySchedule.days[this.day];
+      /* await this.$store.dispatch("updateScheduleDays", {
         idSchedule: this.schedule.id,
         days: copySchedule.days
-      });
+      }); */
       this.loading = false;
       this.dialogRemove = false;
     },

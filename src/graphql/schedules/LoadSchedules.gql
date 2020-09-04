@@ -1,5 +1,6 @@
 query{
 	Schedule(orderBy:[id_desc]){
+    id,
     interval,
     clinic:belongs_to{
       id,
@@ -22,6 +23,12 @@ query{
       },
       hour,
       vacancy
+    },
+    consultations{
+      id
+    },
+    returns_consultations{
+      id
     }
   }
 }

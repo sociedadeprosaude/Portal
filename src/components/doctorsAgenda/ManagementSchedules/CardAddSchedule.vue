@@ -233,7 +233,6 @@ export default {
       },
 
     saveRelationSchedule(idSchedule, scheduleObj){
-        console.log(scheduleObj)
         this.$apollo.mutate({
           mutation: require('@/graphql/schedules/AddRelations.gql'),
           // Parameters
@@ -253,21 +252,13 @@ export default {
   },
   apollo: {
     loadClinics: {
-      query: gql`query {
-        Clinic(orderBy:[name_desc]){
-          id,name
-        }
-      }`,
+      query: require("@/graphql/clinics/LoadClinics.gql"),
       update(data) {
         this.clinics = data.Clinic
       },
     },
     loadDoctors: {
-      query: gql`query {
-        Doctor(orderBy:[name_desc]){
-          id,name
-        }
-      }`,
+      query: require("@/graphql/doctors/LoadDoctors.gql"),
       update(data) {
         this.doctors = data.Doctor
       },

@@ -1,0 +1,5 @@
+mutation ($day: String!, $hour:String!, $vacancy:Int!) {
+    CreateDay(day: $day,hour: $hour,vacancy: $vacancy){
+        id
+    },
+}
