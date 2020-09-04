@@ -145,14 +145,8 @@ const actions = {
     async thereIsIntakes(context, payload) {
         return new Promise(async (resolve, reject) => {
             let findPaymentNumber = firebase.functions().httpsCallable('requests-thereIsPaymentNumber');
-             
-            findPaymentNumber({ payload: {
-                doctor:payload.doctor,
-                specialty:payload.specialty,
-                user:{
-                    uid:payload.user.uid ? payload.user.uid : payload.user.cpf
-                }
-            } }).then((result) => {
+            payload.user.uid = payload.user.uid ? payload.user.uid : payload.user.cpf
+            findPaymentNumber({ payload: payload }).then((result) => {
                 if (result.data.Found)
                     resolve({ ...result.data.Found });
                 else

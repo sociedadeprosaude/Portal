@@ -334,9 +334,9 @@ export default {
     }
   },
   watch: {
-    createConsultationForm(value) {
+    /* createConsultationForm(value) {
       this.setExamFromCreatedForm()
-    },
+    }, */
     exam(value) {
       if (value && this.findPaymentToExam) {
         this.$emit('findPaymentNumberToExam', value)

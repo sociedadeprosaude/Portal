@@ -332,8 +332,6 @@ export default {
                   type: this.selectedForm.consultation.exam_type.name
                 },
               }
-
-
       this.$store.dispatch("thereIsIntakes", obj)
           .then(obj => {
             if (obj.payment_number) {
