@@ -120,6 +120,9 @@ export default {
       this.$emit("close");
     },
     createProduct(mutate) {
+      console.log(name)
+      console.log(price)
+      console.log(type)
       setTimeout(() => {
         mutate();
       }, 1000);
