@@ -67,8 +67,7 @@
     <v-card-actions>
       <ApolloMutation
           :mutation="require('@/graphql/products/CreateProducts.gql')"
-          :variables="{name,
-            price,}"
+          :variables="{specialty,type,price,}"
           @done="close()"
       >
         <template v-slot="{ mutate, loading, error }">
@@ -120,13 +119,12 @@ export default {
       this.$emit("close");
     },
     createProduct(mutate) {
-      console.log(name)
-      console.log(price)
-      console.log(type)
+      console.log(this.specialty)
+      console.log(this.price)
+      console.log(this.type)
       setTimeout(() => {
         mutate();
-      }, 1000);
-      console.log('mutate', mutate)
+      }, 0);
     },
     async registerSpecialty() {
       this.loading = true;

@@ -1,10 +1,10 @@
 mutation CreateProduct(
-    $name: String!,
+    $specialty: String!,
     $type: String!,
     $price: Float!,
     ){
   CreateProduct(
-    name: $name,
+    name: $specialty,
     type: $type,
     price: $price,
   )
