@@ -47,7 +47,6 @@
             searchSpecialty: "",
             loading: undefined,
             creatingSpecialty: false,
-
         }),
         methods: {
             getSpecialties(item) {
@@ -59,7 +58,7 @@
                 specialties = specialties.slice(0, specialties.length - 2);
                 return specialties
             },
-        }
+        },
     };
 
 </script>

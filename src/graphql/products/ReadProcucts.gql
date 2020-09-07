@@ -1,0 +1,5 @@
+query ($type: String!,$schedulable: Boolean!) {
+    Product (type: $type, schedulable: $schedulable){
+        id,name,type,price, schedulable,rules,
+    }
+}

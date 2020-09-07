@@ -127,6 +127,7 @@ export default {
   data() {
     return {
       loading: false,
+      version: undefined,
       pages: [
         {
           title: 'Operacional',
