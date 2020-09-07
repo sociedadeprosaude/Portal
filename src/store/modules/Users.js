@@ -25,10 +25,11 @@ const mutations = {
         let patientId
         let consultations;
 
-        if (payload) {
+        //if (payload) {
             patientId = payload.uid ? payload.uid : payload.id
             localStorage.setItem('patient', patientId);
-            await firebase.firestore().collection('users').doc(patientId).collection('consultations')
+            console.log('SetSelectedPAtient')
+            /* await firebase.firestore().collection('users').doc(patientId).collection('consultations')
                 .onSnapshot((querySnapshot) => {
                     consultations = [];
                     querySnapshot.forEach((consultation) => {
@@ -36,10 +37,10 @@ const mutations = {
                     });
                     payload = { ...payload, consultations: consultations };
                     state.selectedPatient = payload
-                })
-        } else {
+                }) */
+       /*  } else { */
             state.selectedPatient = payload
-        }
+        //}
     },
     setSelectedDependent(state, payload) {
         state.selectedDependent = payload
