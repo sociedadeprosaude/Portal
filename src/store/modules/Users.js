@@ -25,12 +25,14 @@ const mutations = {
         let patientId
         let consultations;
 
-        if (payload) {
+        //if (payload) {
             patientId = payload.uid ? payload.uid : payload.id
             localStorage.setItem('patient', patientId);
             let neo4j_id = await firebase.firestore().collection('users').doc(patientId).get()
             payload.neo4j_id = neo4j_id.data().neo4j_id
             await firebase.firestore().collection('users').doc(patientId).collection('consultations')
+            console.log('SetSelectedPAtient')
+            /* await firebase.firestore().collection('users').doc(patientId).collection('consultations')
                 .onSnapshot((querySnapshot) => {
                     consultations = [];
                     querySnapshot.forEach((consultation) => {
@@ -39,10 +41,10 @@ const mutations = {
                     payload = { ...payload, consultations: consultations };
                     console.log('paciente escolhido: ', payload)
                     state.selectedPatient = payload
-                })
-        } else {
+                }) */
+       /*  } else { */
             state.selectedPatient = payload
-        }
+        //}
     },
     setSelectedDependent(state, payload) {
         state.selectedDependent = payload

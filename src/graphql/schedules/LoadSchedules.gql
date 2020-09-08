@@ -9,7 +9,11 @@ query{
     product:with_product{
       id,
       name,
-      type
+      type,
+      others:with_other{
+        id,
+        name
+      }
     },
     doctor:exclusive_for{
       id,

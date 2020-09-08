@@ -55,7 +55,6 @@
             <ApolloQuery 
                 :query="require('@/graphql/products/LoadProducts.gql')"
                 :variables="{ type:'EXAM', schedulable:true}"
-            
             >
               <template slot-scope="{ result: { data } }">
                 <v-select

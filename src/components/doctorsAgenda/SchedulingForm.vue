@@ -101,16 +101,15 @@
               </v-flex>
               <v-flex xs12 sm6>
                 <v-text-field
-                    v-if="createConsultationForm.consultation.specialty"
                     readonly
                     hide-details
                     outlined
                     prepend-icon="school"
-                    v-model="createConsultationForm.consultation.specialty.name"
-                    label="Especialidade">
+                    v-model="createConsultationForm.consultation.product.name"
+                    :label="createConsultationForm.consultation.product.type === 'SPECIALTY' ? 'Especialidade' : 'Tipo de exame'">
                 </v-text-field>
 
-                <v-text-field
+               <!--  <v-text-field
                     v-else
                     readonly
                     hide-details
@@ -118,7 +117,7 @@
                     prepend-icon="school"
                     v-model="createConsultationForm.consultation.exam_type.name"
                     label="Tipo de exame">
-                </v-text-field>
+                </v-text-field> -->
               </v-flex>
 
               <v-flex xs12 sm6>
@@ -133,11 +132,11 @@
               </v-flex>
 
               <v-flex xs12
-                      v-show="createConsultationForm.consultation.exam_type">
+                      v-show="createConsultationForm.consultation.product.type === 'EXAM'">
                 <v-combobox
                     prepend-icon="poll"
                     v-model="exam"
-                    :items="exams"
+                    :items="createConsultationForm.consultation.product.others"
                     item-text="name"
                     return-object
                     label="Exame"
@@ -241,7 +240,7 @@
           <submit-button
               color="success"
               rounded
-              :disabled="loaderPaymentNumber || (createConsultationForm.consultation.exam_type && !exam)"
+              :disabled="loaderPaymentNumber || (createConsultationForm.consultation.product.type === 'EXAM' && !exam)"
               @reset="resetSchedule"
               :success="success"
               :loading="scheduleLoading"
@@ -269,6 +268,9 @@ export default {
     exam: undefined,
     findPaymentToExam: true,
   }),
+  mounted(){
+    //console.log(this.createConsultationForm)
+  },
   computed: {
     selectedPatient() {
       return this.$store.getters.selectedPatient;
@@ -296,36 +298,75 @@ export default {
     async saveConsultation() {
       this.scheduleLoading = true;
       let form = this.createConsultationForm;
-      form.user = {
+      /* form.user = {
         ...form.user,
         status: this.status,
         type: this.modalidade,
         payment_number: this.numberReceipt,
         exam: this.exam
-      };
+      }; */
       form.consultation = {
         ...form.consultation,
         status: this.status,
         type: this.modalidade,
         payment_number: this.numberReceipt,
-        exam: this.exam,
-        prolonged: this.prolonged ? this.prolonged : undefined,
-        previousConsultation: this.previousConsultation ? this.previousConsultation : undefined
+        //exam: this.exam,
+        //prolonged: this.prolonged ? this.prolonged : undefined,
+        //previousConsultation: this.previousConsultation ? this.previousConsultation : undefined
       };
 
-      if (this.payment_numberFound)
-        form = {...form, payment_numberFound: this.payment_numberFound};
-      if (form.user.dependent)
+     /*  if (this.payment_numberFound)
+        form = {...form, payment_numberFound: this.payment_numberFound}; */
+      /* if (form.user.dependent)
         form.consultation = {
           ...form.consultation,
           dependent: form.user.dependent
-        };
+        }; */
       this.loading = true;
       console.log(form)
-      await this.$store.dispatch("addUserToConsultation", form);
-      this.scheduleLoading = false;
-      this.success = true;
+      this.$apollo.mutate({
+          mutation: require('@/graphql/consultations/NewConsultation.gql'),
+          // Parameters
+          variables: {
+            type: form.consultation.type,
+            date: form.consultation.date,
+            payment_number: form.consultation.payment_number,
+            status: form.consultation.status
+          },
+          
+        }).then((data) => {
+          this.saveRelationConsultation(data.data.CreateConsultation.id, form)
+        }).catch((error) => {
+          console.error(error)
+        })
+      //await this.$store.dispatch("addUserToConsultation", form);
+      //this.scheduleLoading = false;
+      //this.success = true;
 
+    },
+
+    saveRelationConsultation(idConsultation, form){
+        this.$apollo.mutate({
+          mutation: require('@/graphql/consultations/AddRelations.gql'),
+          // Parameters
+          variables:{
+            //return {
+              idConsultation: idConsultation,
+              idPatient: form.user.id,
+              idSchedule: form.consultation.id_schedule,
+              idProduct: this.exam ? this.exam.id : form.consultation.product.id,
+              idClinic: form.consultation.clinic.id,
+              idDoctor: form.consultation.doctor.id
+            //}
+          },
+          
+        }).then((data) => {
+          this.scheduleLoading = false;
+          this.success = true;
+          console.log('idConsultation',idConsultation)
+        }).catch((error) => {
+          console.error(error)
+        })
     },
 
     close: function () {
@@ -335,7 +376,7 @@ export default {
   },
   watch: {
     createConsultationForm(value) {
-      this.setExamFromCreatedForm()
+      //this.setExamFromCreatedForm()
     },
     exam(value) {
       if (value && this.findPaymentToExam) {
