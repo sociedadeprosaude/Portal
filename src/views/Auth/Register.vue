@@ -113,7 +113,7 @@
                 try {
                     this.$store.dispatch('thereIsUserCPF', this.cpf.replace(/\./g, "").replace("-", ""))
                         .then(async (exist) => {
-/*                            if (!exist || (exist.type)){*/
+                            if (exist){
                                 this.loading = true;
                                 let resp = await firebase.auth()
                                     .createUserWithEmailAndPassword(this.email, this.password)
@@ -127,9 +127,22 @@
                                     group: exist.crm ? 'doctor' : '',
                                 });
                                 this.registered = true;
-/*                            } else {
-                                this.alert = true
-                            }*/
+                            } else {
+                                //this.alert = true
+                              this.loading = true;
+                              let resp = await firebase.auth()
+                                  .createUserWithEmailAndPassword(this.email, this.password)
+                              await this.$store.dispatch("addUser", {
+                                email: resp.user.email,
+                                name: this.name,
+                                uid: resp.user.uid,
+                                cpf: this.cpf.replace(/\./g, "").replace("-", ""),
+                                telephones: [this.telephone],
+                                type: "COLABORATOR",
+                                group: '',
+                              });
+                              this.registered = true;
+                            }
                         }).catch(error=>{
                             this.errorMessage = error.message
                             this.loading = false
