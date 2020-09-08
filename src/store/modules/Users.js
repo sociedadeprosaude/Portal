@@ -25,21 +25,26 @@ const mutations = {
         let patientId
         let consultations;
 
-        if (payload) {
+        //if (payload) {
             patientId = payload.uid ? payload.uid : payload.id
             localStorage.setItem('patient', patientId);
+            let neo4j_id = await firebase.firestore().collection('users').doc(patientId).get()
+            payload.neo4j_id = neo4j_id.data().neo4j_id
             await firebase.firestore().collection('users').doc(patientId).collection('consultations')
+            console.log('SetSelectedPAtient')
+            /* await firebase.firestore().collection('users').doc(patientId).collection('consultations')
                 .onSnapshot((querySnapshot) => {
                     consultations = [];
                     querySnapshot.forEach((consultation) => {
                         consultations.push({ ...consultation.data() })
                     });
                     payload = { ...payload, consultations: consultations };
+                    console.log('paciente escolhido: ', payload)
                     state.selectedPatient = payload
-                })
-        } else {
+                }) */
+       /*  } else { */
             state.selectedPatient = payload
-        }
+        //}
     },
     setSelectedDependent(state, payload) {
         state.selectedDependent = payload
@@ -138,7 +143,7 @@ const actions = {
             }
 
         });
-        console.log('user:', user)
+        console.log('user selecionado:', user)
         return user
     },
 
@@ -175,6 +180,7 @@ const actions = {
             //let users = (await axios.get('https://us-central1-prosaudedev.cloudfunctions.net/requests-searchUser', {
                 params: searchFields
             })).data
+            console.log('users:', users)
             return users
         } catch (e) {
             throw e

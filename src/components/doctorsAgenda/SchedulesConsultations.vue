@@ -23,10 +23,8 @@
                           <span class="subtitle-2 font-weight-bold">{{ schedule.doctor.name }}</span>
                           <span class="subtitle-2 font-weight-bold mx-2">-</span>
                           <span class="subtitle-2 font-weight-bold subheading">
-                                                    {{
-                              schedule.specialty ? schedule.specialty.name : schedule.exam_type.name
-                            }}
-                                            </span>
+                              {{ schedule.product.name  /*schedule.specialty ? schedule.specialty.name : schedule.exam_type.name*/}}
+                          </span>
                           <v-spacer/>
                           <v-chip color="primary_dark" class="mb-2" small text-color="white">
                             {{ schedule.clinic.name }}
@@ -48,7 +46,7 @@
                               Vagas :
                               {{ schedule.vacancy }}
                             </v-chip>
-                            <v-chip v-if="schedule.specialty" small class="mx-2" color="primary_dark"
+                            <v-chip v-if="schedule.product.type === 'SPECIALTY'" small class="mx-2" color="primary_dark"
                                     text-color="white">
                               Consultas :
                               {{
@@ -56,7 +54,7 @@
                                     0
                               }}
                             </v-chip>
-                            <v-chip v-if="schedule.exam_type" small class="mx-2" color="primary_dark"
+                            <v-chip v-if="schedule.product.type === 'EXAM'" small class="mx-2" color="primary_dark"
                                     text-color="white">
                               Agendados :
                               {{
@@ -64,7 +62,7 @@
                                     0
                               }}
                             </v-chip>
-                            <v-chip v-if="schedule.specialty" class="mx-2" small color="primary_dark"
+                            <v-chip v-if="schedule.product.type === 'SPECIALTY'" class="mx-2" small color="primary_dark"
                                     text-color="white">
                               Retornos :
                               {{ schedule.qtd_returns ? schedule.qtd_returns : 0 }}
@@ -241,7 +239,7 @@ export default {
   },
 
   watch: {
-    createConsultationForm(value) {
+    /* createConsultationForm(value) {
       this.examsLoading = []
       let exams = this.$store.getters.exams
       if (value) {
@@ -254,7 +252,7 @@ export default {
 
         this.examsLoading = exams
       }
-    }
+    } */
   },
 
   methods: {
@@ -310,9 +308,9 @@ export default {
       this.payment_numberFound = undefined;
       this.numberReceipt = "";
       this.status = "Aguardando pagamento";
-      this.loaderPaymentNumber = true;
+      //this.loaderPaymentNumber = true;
 
-      let obj = value ? {
+      /* let obj = value ? {
             user: this.selectedForm.user,
             doctor: this.selectedForm.consultation.doctor,
             exam: {
@@ -332,9 +330,9 @@ export default {
                   type: this.selectedForm.consultation.exam_type.name
                 },
               }
+ */
 
-
-      this.$store.dispatch("thereIsIntakes", obj)
+      /* this.$store.dispatch("thereIsIntakes", obj)
           .then(obj => {
             if (obj.payment_number) {
               this.payment_numberFound = obj;
@@ -358,17 +356,17 @@ export default {
               this.loaderPaymentNumber = false
             }
             this.loaderPaymentNumber = false
-          });
+          });*/
     },
 
     async listenMoreConsultations() {
       this.loading = true;
       this.daysToListen += 3;
-      await this.$store.dispatch('listenConsultations',
+      /* await this.$store.dispatch('listenConsultations',
           {
             start_date: new Date().toISOString().substr(0, 10),
             final_date: moment().add(this.daysToListen, 'days').format('YYYY-MM-DD 23:59:59')
-          });
+          }); */
       this.$emit('refreshDate', this.daysToListen);
       this.loading = false;
     },

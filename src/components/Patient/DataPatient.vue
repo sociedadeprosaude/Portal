@@ -189,12 +189,12 @@
 
                                 <v-layout row wrap class="mb-2 mr-2 ml-2">
                                     <v-flex xs4>
-                                        <submit-button @click="searchPatient()" :loading="loading" :success="success"
+                                        <submit-button @click="searchPatient()" :loading="$apollo.queries.loadPatient.loading" :success="success"
                                                        text="Buscar" color="background" dense>
                                         </submit-button>
                                     </v-flex>
                                     <v-flex xs8>
-                                        <submit-button @click="searchPatientOldDatabase()" :loading="loading"
+                                        <submit-button @click="searchPatientOldDatabase()" :loading="$apollo.queries.loadPatient.loading"
                                                        color="background"
                                                        :success="success" text="sistema antigo">
                                         </submit-button>
@@ -567,26 +567,7 @@
             PatientCard,
             PatientTag
         },
-        computed: {
-            selectedPatient() {
-                let user = this.$store.getters.selectedPatient;
-                if (user) {
-                    this.name = user.name;
-                    this.cpf = user.cpf;
-                    this.numAss = user.association_number
-                }
-                return user
-            },
-            selectedDependent() {
-                let dependent = this.$store.getters.selectedDependent;
-                if (dependent) {
-                    this.dependentName = dependent.name
-                }
-                return dependent
-            }
-        },
-        data() {
-            return {
+        data:() => ({
                 patientCard: false,
                 patientTag: false,
                 addPatient: false,
@@ -624,6 +605,25 @@
                 foundUsers: undefined,
                 foundDependents: undefined,
                 success: false,
+                skipPatients:true
+            
+        }),
+        computed: {
+            selectedPatient() {
+                let user = this.$store.getters.selectedPatient;
+                if (user) {
+                    this.name = user.name;
+                    this.cpf = user.cpf;
+                    this.numAss = user.association_number
+                }
+                return user
+            },
+            selectedDependent() {
+                let dependent = this.$store.getters.selectedDependent;
+                if (dependent) {
+                    this.dependentName = dependent.name
+                }
+                return dependent
             }
         },
         watch: {
@@ -785,14 +785,14 @@
             },
             async selectUser(user) {
                 if (user) {
-                    let intakes = await this.$store.dispatch('getUserIntakes', user);
+                    /*let intakes = await this.$store.dispatch('getUserIntakes', user);
                     if (intakes) {
                         user.intakes = intakes
                     }
                     let budgets = await this.$store.dispatch('getUserBudgets', user);
                     if (budgets) {
                         user.budgets = budgets
-                    }
+                    } */
                     this.fillFormUser(user)
                 } else {
                     this.cpf = undefined;
@@ -810,7 +810,7 @@
                 }
                 this.$store.commit('setSelectedPatient', user);
                 this.$store.commit('clearSelectedDependent');
-                this.updateAccessedTo(user);
+                //this.updateAccessedTo(user);
                 this.foundUsers = undefined;
                 this.addPatient = false
             },
@@ -826,8 +826,8 @@
             },
 
             async searchPatient() {
-              this.loading = true;
-              if(this.cpf){
+              //this.loading = true;
+              /* if(this.cpf){
                 try {
                   let users = await this.$store.dispatch('searchUser', {
                     name: this.name,
@@ -838,19 +838,21 @@
                 } catch (e) {
                   window.alert(`Erro buscando usuarios, verifique sua conexão: ${e.message}`);
                 }
-              } else {
+              } else { */
                 try {
-                  let users = await this.$store.dispatch('searchUser', {
+                  /* let users = await this.$store.dispatch('searchUser', {
                     name: this.name,
                     cpf: this.cpf,
                     association_number: this.numAss
-                  });
-                  this.foundUsers = users;
+                  }); */
+                  //this.foundUsers = users;
+                  this.$apollo.queries.loadPatient.refresh()
+                  this.skipPatients = false
                 } catch (e) {
                   window.alert(`Erro buscando usuarios, verifique sua conexão: ${e.message}`);
                 }
-              }
-              this.loading = false
+             /*  }
+              this.loading = false */
             },
 
             async fillFormUser(user) {
@@ -943,6 +945,24 @@
         },
         beforeDestroy() {
             window.removeEventListener('keydown', this.handleEnter)
+        },
+
+        apollo: {
+            loadPatient: {
+                query: require("@/graphql/patients/searchPatients.gql"),
+                variables(){
+                    return {
+                        name: this.name.toUpperCase()
+                    }
+                },
+                update(data) {
+                    this.foundUsers = data.Patient
+                    this.skipPatients = true
+                },
+                skip (){
+                    return this.skipPatients
+                }
+            }
         }
     }
 </script>

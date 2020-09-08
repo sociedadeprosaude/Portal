@@ -1,29 +1,18 @@
 mutation($idBudget:ID!,$idColaborator:ID!, $idPatient: ID!, $idDoctor: ID!){
-    AddTransactionUserPayload(
+    AddColaboratorWith_transaction(
         from:{
-            id:$idBudget
-        },
-        to:{
-            id:$idPatient
-        }
-    ){
-        from{id},
-        to{id}
-    },
-    AddTransactionColaboratorPayload(
-        from:{
-            id:$idBudget
-        },
-        to:{
             id:$idColaborator
+        },
+        to:{
+            id:$idBudget
         }
     ){
         from{id},
         to{id}
     },
-    AddScheduleDoctors(
+    AddTransactionWith_doctor(
         from:{
-            id:$idSchedule
+            id:$idBudget
         },
         to:{
             id:$idDoctor
@@ -31,5 +20,16 @@ mutation($idBudget:ID!,$idColaborator:ID!, $idPatient: ID!, $idDoctor: ID!){
     ){
         from{id},
         to{id}
-    }
+    },
+    AddTransactionWith_user(
+        from:{
+            id:$idBudget
+        },
+        to:{
+            id:$idPatient
+        }
+        ){
+        from{id},
+        to{id}
+        }
 }

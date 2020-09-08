@@ -1,0 +1,9 @@
+mutation($type:String!, $date:String!,$payment_number: String!,$status:String!){
+  CreateConsultation(type:$type, date:$date,payment_number:$payment_number,status:$status){
+    id,
+    date,
+    type,
+    payment_number,
+    status
+  }
+}

@@ -1,0 +1,23 @@
+query($name:String){
+  Patient(first:15, filter:{name_starts_with:$name}){
+    id,
+    name,
+    cpf,
+    with_consultation{
+      id,
+      type,
+      status,
+      date,
+      payment_number
+      of_clinic{
+        id,name
+      },
+      has_product{
+        id,name
+      },
+      attended_by{
+        id,name
+      },
+    }
+  }
+}

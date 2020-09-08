@@ -34,56 +34,77 @@
                         </v-checkbox>
                     </v-flex>
                     <v-flex xs12 class="ma-0 pa-0">
-                        <v-combobox
-                                v-if="!examTypeCheck"
-                                class="pa-0 ma-0"
-                                :items="specialties"
-                                v-model="specialty"
-                                item-text="name"
-                                return-object
-                                placeholder="Especialidade"
-                                dense solo
-                                color="blue"
-                                clearable>
-                            <template v-slot:selection="data">
-                                <v-chip
-                                        :key="JSON.stringify(data.item)"
-                                        :input-value="data.selected"
-                                        :disabled="data.disabled"
-                                        class="v-chip--select-multi"
-                                        @click.stop="data.parent.selectedIndex = data.index"
-                                        @input="data.parent.selectItem(data.item)"
-                                        text-color="white"
-                                        color="primary"
-                                >{{ data.item.name }}
-                                </v-chip>
-                            </template>
-                        </v-combobox>
-                        <v-combobox
-                                v-else
-                                class="pa-0 ma-0"
-                                :items="examTypes"
-                                v-model="examType"
-                                item-text="name"
-                                return-object
-                                placeholder="Exames agendáveis"
-                                dense solo
-                                color="blue"
-                                clearable>
-                            <template v-slot:selection="data">
-                                <v-chip
-                                        :key="JSON.stringify(data.item)"
-                                        :input-value="data.selected"
-                                        :disabled="data.disabled"
-                                        class="v-chip--select-multi"
-                                        @click.stop="data.parent.selectedIndex = data.index"
-                                        @input="data.parent.selectItem(data.item)"
-                                        text-color="white"
-                                        color="primary"
-                                >{{ data.item.name }}
-                                </v-chip>
-                            </template>
-                        </v-combobox>
+                        <template v-if="!examTypeCheck">
+                            <ApolloQuery 
+                                :query="require('@/graphql/products/LoadProducts.gql')"
+                                :variables="{ type:'SPECIALTY', schedulable:false}"
+                            >
+                                <template slot-scope="{ result: { data,loading } }">
+                                    <v-progress-circular v-if="loading" indeterminate></v-progress-circular>
+                                    <v-combobox
+                                        v-else
+                                        class="pa-0 ma-0"
+                                        :items="data.Product"
+                                        v-model="specialty"
+                                        item-text="name"
+                                        return-object
+                                        placeholder="Especialidades"
+                                        dense solo
+                                        color="blue"
+                                        clearable>
+                                        <template v-slot:selection="data">
+                                            <v-chip
+                                                    :key="JSON.stringify(data.item)"
+                                                    :input-value="data.selected"
+                                                    :disabled="data.disabled"
+                                                    class="v-chip--select-multi"
+                                                    @click.stop="data.parent.selectedIndex = data.index"
+                                                    @input="data.parent.selectItem(data.item)"
+                                                    text-color="white"
+                                                    color="primary"
+                                            >{{ data.item.name }}
+                                            </v-chip>
+                                        </template>
+                                    </v-combobox>
+                                </template>
+                            </ApolloQuery>
+                        </template>
+
+                        <template v-else>
+                            <ApolloQuery 
+                                :query="require('@/graphql/products/LoadProducts.gql')"
+                                :variables="{ type:'EXAM', schedulable:true}"
+                            >
+                                <template slot-scope="{ result: { data,loading } }">
+                                    <v-progress-circular v-if="loading" indeterminate></v-progress-circular>
+                                    <v-combobox
+                                            v-else
+                                            class="pa-0 ma-0"
+                                            :items="data.Product"
+                                            v-model="examType"
+                                            item-text="name"
+                                            return-object
+                                            placeholder="Exames agendáveis"
+                                            dense solo
+                                            color="blue"
+                                            clearable>
+                                        <template v-slot:selection="data">
+                                            <v-chip
+                                                    :key="JSON.stringify(data.item)"
+                                                    :input-value="data.selected"
+                                                    :disabled="data.disabled"
+                                                    class="v-chip--select-multi"
+                                                    @click.stop="data.parent.selectedIndex = data.index"
+                                                    @input="data.parent.selectItem(data.item)"
+                                                    text-color="white"
+                                                    color="primary"
+                                            >{{ data.item.name }}
+                                            </v-chip>
+                                        </template>
+                                    </v-combobox>
+                                </template>
+                            </ApolloQuery>
+                        </template>
                     </v-flex>
                     <v-flex xs12 class="mt-n4 pa-0">
                         <v-combobox class="pa-0 pa"
@@ -151,12 +172,14 @@
             clinic: undefined,
             doctor: undefined,
             examTypeCheck: false,
-            examType: undefined
+            examType: undefined,
+            clinics:[],
+            doctors:[]
         }),
 
         computed: {
 
-            clinics() {
+            /* clinics() {
                 return this.$store.getters.clinics.filter(a => {
                     return a.property;
                 });
@@ -179,9 +202,9 @@
                     return find;
                 });
                 return espArray;
-            },
+            }, */
 
-            doctors: {
+            /* doctors: {
                 get: function () {
                     let docArray = Object.values(this.$store.getters.doctors);
                     docArray = docArray.filter(doctor => {
@@ -197,19 +220,18 @@
                     });
                     return docArray;
                 }
-            },
+            }, */
 
-            examTypes() {
+            /* examTypes() {
                 return this.$store.getters.examsTypes.filter((examType) => {
                     return examType.scheduleable
                 });
-            }
+            } */
         },
         mounted() {
-            this.$store.dispatch("getExamsTypes");
+            //this.$store.dispatch("getExamsTypes");
             this.query = this.$route.params.q
             if (this.query) {
-                console.log('query: ', this.query);
                 this.specialty = this.query.specialty;
                 this.clinic = this.query.clinic.name;
                 this.doctor = this.query.doctor
@@ -222,30 +244,39 @@
 
         watch: {
             clinic(clinic) {
-                this.$store.dispatch('selectClinic', clinic)
+                //this.$store.dispatch('selectClinic', clinic)
+                this.$emit('selectClinic',clinic)
             },
             doctor(doctor) {
-                this.$store.dispatch('selectDoctor', doctor)
-            },
-            specialty(specialty) {
-                console.log('specialty', specialty)
-                this.$store.dispatch('selectSpecialty', specialty)
+                //this.$store.dispatch('selectDoctor', doctor)
+                this.$emit('selectDoctor',doctor)
             },
             examType(value) {
-                console.log('exam', value)
-                this.$store.dispatch('selectExamType', value)
+                //this.$store.dispatch('selectExamType', value)
+                this.$emit('selectExamType',value)
             },
-            examTypeCheck(value) {
-                if (value) {
-                    this.$store.dispatch('selectSpecialty', undefined)
-                    this.specialty = undefined
-                } else {
-                    this.$store.dispatch('selectExamType', undefined)
-                    this.examType = undefined
-                }
-                console.log('check', value)
-                this.$store.dispatch('selectExamTypeCheck', value)
 
+            specialty(value){
+                this.clinic = undefined
+                this.doctor = undefined
+                this.examType = undefined
+                if(value){
+                    this.clinics = value.clinics
+                    this.doctors = value.doctors
+                }
+                this.$emit('selectSpecialty',value)
+                //this.$store.dispatch('selectSpecialty', value)
+            },
+            examTypeCheck(value){
+                this.clinic = undefined
+                this.doctor = undefined 
+                this.specialty = undefined
+                if(value){
+                    this.$apollo.queries.loadClinics.refresh()
+                    this.$apollo.queries.loadDoctors.refresh()
+                }
+                this.$emit('selectExamTypeCheck',value)
+                //this.$store.dispatch('selectExamTypeCheck', value)
             }
         },
 
@@ -256,6 +287,20 @@
                 let docHeight = document.documentElement.scrollHeight;
                 this.offsetTop = (100 * this.scrollPos) / (docHeight - winHeight);
             },
+        },
+        apollo: {
+            loadClinics: {
+                query: require("@/graphql/clinics/LoadClinics.gql"),
+                update(data) {
+                    this.clinics = data.Clinic
+                },
+            },
+            loadDoctors: {
+                query: require("@/graphql/doctors/LoadDoctors.gql"),
+                update(data) {
+                    this.doctors = data.Doctor
+                },
+            }
         }
     }
 </script>
