@@ -127,7 +127,7 @@ export default {
       console.log(this.schedulable)
       setTimeout(() => {
         mutate();
-      }, 100);
+      }, 1);
     },
     async registerSpecialty() {
       this.loading = true;

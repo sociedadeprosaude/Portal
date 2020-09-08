@@ -1,16 +1,10 @@
-mutation CreateProduct(
-    $specialty: String!,
-    $type: String!,
-    $price: Float!,
-    $schedulable: Boolean!,
-    ){
-  CreateProduct(
-    name: $specialty,
-    type: $type,
+mutation EditProduct(
+    $id: ID!,
+    $price: Float!){
+  EditProduct(
+    id: $id,
     price: $price,
-    schedulable: $schedulable,
-  )
-  {
-    name,type,price
+  ){
+    id,price
   }
 }

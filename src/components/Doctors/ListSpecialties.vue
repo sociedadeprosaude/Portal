@@ -28,7 +28,17 @@
                               </v-flex>
                               <v-flex sm2 class="text-right mt-2">
                                 <v-btn icon dark><v-icon small @click="editSpecialty(specialty)">edit</v-icon></v-btn>
-                                <v-btn icon dark><v-icon small>delete</v-icon></v-btn>
+                                <ApolloMutation
+                                    :mutation="require('@/graphql/products/DeleteProducts.gql')"
+                                    :variables="{ id: specialty.id }"
+                                    @done="close($event)"
+                                >
+                                  <template v-slot="{ mutate, loading, error }">
+                                    <v-progress-circular indeterminate color="primary" v-if="loading"></v-progress-circular>
+                                    <v-btn icon dark><v-icon small @click="mutate()">delete</v-icon></v-btn>
+                                    <p v-if="error">Ocorreu um erro: {{ error }}</p>
+                                  </template>
+                                </ApolloMutation>
                               </v-flex>
                             </v-layout>
                           </v-card>
@@ -63,9 +73,12 @@
                 this.editingSpecialty = true;
             },
             closeDialogs () {
-                this.specialty = undefined;
-                this.editingSpecialty = false;
-            }
+              this.specialty = undefined;
+              this.editingSpecialty = false;
+            },
+          close(val){
+              console.log(val)
+          }
         }
     }
 </script>
