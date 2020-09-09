@@ -1,10 +1,11 @@
 mutation (
     $value: Float,
     $payment_methods: [String],
-    $payments: [String],
+    $payments: [Float],
     $parcels: [String],
     $discount: Float,
-    $date: String ) {
+    $date: String )
+    {
     CreateTransaction(
      value:$value,
      payment_methods:$payment_methods,
@@ -13,6 +14,6 @@ mutation (
      discount:$discount,
      date:$date
      ){
-        id
+        id, value, payment_methods, payments, parcels, discount, date
     }
 }

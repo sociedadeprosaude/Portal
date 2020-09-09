@@ -28,9 +28,9 @@ const mutations = {
         //if (payload) {
             patientId = payload.uid ? payload.uid : payload.id
             localStorage.setItem('patient', patientId);
-            let neo4j_id = await firebase.firestore().collection('users').doc(patientId).get()
-            payload.neo4j_id = neo4j_id.data().neo4j_id
-            await firebase.firestore().collection('users').doc(patientId).collection('consultations')
+            //let neo4j_id = await firebase.firestore().collection('users').doc(patientId).get()
+            //payload.neo4j_id = neo4j_id.data().neo4j_id
+            //await firebase.firestore().collection('users').doc(patientId).collection('consultations')
             console.log('SetSelectedPAtient')
             /* await firebase.firestore().collection('users').doc(patientId).collection('consultations')
                 .onSnapshot((querySnapshot) => {
