@@ -1,9 +1,11 @@
 query ($type: String!,$schedulable: Boolean!) {
     Product (type: $type, schedulable: $schedulable){
-        name,id,
+        id,
+        name,
         doctors{
             id,
-            name
+            name,
+            crm
         },
         clinics{
             id,

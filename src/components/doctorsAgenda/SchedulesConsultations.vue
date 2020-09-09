@@ -198,7 +198,7 @@ export default {
     });
 
     this.query = this.$route.params.q
-    if (this.query && this.$route.params.type === 'retorno') {
+    if (this.query && this.$route.params.type === 'Retorno') {
       if(moment().diff(moment(this.query.date, 'YYYY-MM-DD'), 'days') > 21){
         this.prolongedDialog= true
       }

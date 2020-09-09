@@ -220,7 +220,6 @@ export default {
 
         if(this.selectedClinic)
           this.schedules = this.schedules.filter(schedule=> schedule.clinic && schedule.clinic.id === this.selectedClinic.id)
-        
         this.consultationsByDate(this.schedules)
       }
     },
