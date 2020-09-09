@@ -55,9 +55,9 @@
                         <v-btn
                                 color="white"
                                 rounded
-                                :to="{ name: 'AgendamentoConsultas', params: { q: consultation, type:'retorno'}}"
-                                :disabled="consultation.status !== 'Pago' || consultation.regress"
-                                v-if="consultation.type !== 'Retorno' && consultation.specialty"
+                                :to="{ name: 'AgendamentoConsultas', params: { q: consultation, type:'Retorno'}}"
+                                :disabled="/*consultation.status !== 'Pago' ||*/ consultation.regress"
+                                v-if="consultation.type !== 'Retorno' && consultation.product"
                         >Retorno
                         </v-btn>
                         <v-btn
@@ -121,7 +121,7 @@
 
             async deletedConsultation() {
                 this.cancelLoading = true;
-                let patientId = this.consultation.user ? this.consultation.user.uid ? this.consultation.user.uid : this.consultation.user.cpf : this.selectedPatient.uid
+                /* let patientId = this.consultation.user ? this.consultation.user.uid ? this.consultation.user.uid : this.consultation.user.cpf : this.selectedPatient.uid
                 let obj = {
                     id: this.consultation.id,
                     idPatient: this.selectedPatient.uid ? this.selectedPatient.uid : this.selectedPatient.cpf,
@@ -133,10 +133,37 @@
                     consultation: this.consultation,
                     exam:this.consultation.exam
                 };
-                await this.$store.dispatch('eraseAppointment', obj);
-                this.cancelLoading = false
+                await this.$store.dispatch('eraseAppointment', obj); */
 
+                this.$apollo.mutate({
+                    mutation: require('@/graphql/consultations/CancelConsultation.gql'),
+                    variables: {
+                        idConsultation: this.consultation.id
+                    },
+                    
+                }).then((data) => {
+                    this.cancelLoading = false
+
+                    if(this.consultation.type === "Retorno" && this.consultation.previous_consultation)
+                        this.removeRelationAsRegress(this.consultation.id, this.consultation.previous_consultation.id)
+
+                }).catch((error) => {
+                    console.error(error)
+                    this.cancelLoading = false
+                })
             },
+
+            removeRelationAsRegress(idConsultation, idPreviousConsultation){
+                this.$apollo.mutate({
+                    mutation: require('@/graphql/consultations/RemoveRelationsAsRegress.gql'),
+                    variables:{
+                        idConsultation: idConsultation,
+                        idPreviousConsultation: idPreviousConsultation
+                    },
+                
+                });
+            },
+
             async setConsultationHour(consultation) {
                 let consultation_hour = moment().format('YYYY-MM-DD HH:mm:ss');
                 if(!consultation.user)

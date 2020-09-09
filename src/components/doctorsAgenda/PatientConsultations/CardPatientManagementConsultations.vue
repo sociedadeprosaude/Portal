@@ -43,7 +43,7 @@
                                           </v-flex>
                                           <v-flex xs8 class="mb-3">
                                               <v-flex xs12>
-                                                  <h4 class="text-left font-weight-bold">{{item.specialty ? item.specialty.name: item.exam.name}}</h4>
+                                                  <h4 class="text-left font-weight-bold">{{item.product.name}}</h4>
                                                   <h5 class="text-left mt-1">{{item.date.substring(11,16)}}</h5>
                                                   <h5 class="text-left">{{item.doctor.name}}</h5>
                                               </v-flex>

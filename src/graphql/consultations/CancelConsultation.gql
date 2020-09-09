@@ -1,0 +1,7 @@
+mutation($idConsultation: ID!){
+  UpdateConsultation(id:$idConsultation,status:"Cancelado"){
+    id,
+    type,
+    status
+  }
+}

@@ -140,6 +140,7 @@
                                 v-model="clinic"
                                 :items="clinics"
                                 item-text="name"
+                                return-object
                                 label="Clínica"
                                 solo dense
                                 clearable
@@ -232,8 +233,8 @@
             //this.$store.dispatch("getExamsTypes");
             this.query = this.$route.params.q
             if (this.query) {
-                this.specialty = this.query.specialty;
-                this.clinic = this.query.clinic.name;
+                this.specialty = this.query.product;
+                this.clinic = this.query.clinic;
                 this.doctor = this.query.doctor
             }
         },

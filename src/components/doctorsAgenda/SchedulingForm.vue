@@ -336,6 +336,10 @@ export default {
           
         }).then((data) => {
           this.saveRelationConsultation(data.data.CreateConsultation.id, form)
+
+          if(form.consultation.type === "Retorno" && this.previousConsultation)
+            this.saveRelationAsRegress(data.data.CreateConsultation.id, this.previousConsultation)
+
         }).catch((error) => {
           console.error(error)
         })
@@ -364,6 +368,21 @@ export default {
           this.scheduleLoading = false;
           this.success = true;
           console.log('idConsultation',idConsultation)
+        }).catch((error) => {
+          console.error(error)
+        })
+    },
+
+    saveRelationAsRegress(idConsultation, idPreviousConsultation){
+        this.$apollo.mutate({
+          mutation: require('@/graphql/consultations/AddRelationsAsRegress.gql'),
+          variables:{
+              idConsultation: idConsultation,
+              idPreviousConsultation: idPreviousConsultation
+          },
+          
+        }).then((data) => {
+          console.log('idPreviousConsultation',this.previousConsultation)
         }).catch((error) => {
           console.error(error)
         })
