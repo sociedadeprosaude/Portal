@@ -125,7 +125,7 @@ const actions = {
             }
 
         });
-        console.log('user:', user)
+        console.log('user selecionado:', user)
         return user
     },
 
@@ -162,6 +162,7 @@ const actions = {
             //let users = (await axios.get('https://us-central1-prosaudedev.cloudfunctions.net/requests-searchUser', {
                 params: searchFields
             })).data
+            console.log('users:', users)
             return users
         } catch (e) {
             throw e

@@ -11,39 +11,8 @@
         <v-card-text>
             <v-layout row wrap class="align-center justify-center">
                 <v-flex xs12 class="my-4 mx-2">
-                    <v-select
-                            label="Especialidade Selecionda para Edição"
-                            v-model="name"
-                            :items="specialties"
-                            outlined
-                            rounded
-                            filled
-                            return-object
-                            item-text="name"
-                            chips
-                            readonly
-                            color="primary"
-                            hide-details
-                            dense
-                    >
-                        <template v-slot:selection="data">
-                            <v-chip
-                                    :key="JSON.stringify(data.item)"
-                                    :input-value="data.selected"
-                                    :disabled="data.disabled"
-                                    class="v-chip--select-multi"
-                                    @click.stop="data.parent.selectedIndex = data.index"
-                                    @input="data.parent.selectItem(data.item)"
-                                    text-color="white"
-                                    color="primary"
-                                    dense
-                            >
-                                {{ data.item.name }}
-                            </v-chip>
-                        </template>
-                    </v-select>
+                  <v-chip large color="primary">{{name}}</v-chip>
                 </v-flex>
-
                 <v-flex xs12>
                     <v-currency-field
                     outlined
@@ -58,10 +27,17 @@
             </v-layout>
         </v-card-text>
         <v-card-actions>
-            <v-spacer/>
-            <submit-button text="Editar" :loading="loading" :success="success" @reset="success = false"
-                           @click="editSpecialty">
-            </submit-button>
+          <v-spacer/>
+          <ApolloMutation
+              :mutation="require('@/graphql/products/EditProducts.gql')"
+              :variables="{ id: specialty.id, price: specialty.price}"
+              @done="close"
+          >
+            <template v-slot="{ mutate, loading, error }">
+              <v-btn color="primary" @click.native="editProduct(mutate)">Editar</v-btn>
+              <p v-if="error">Ocorreu um erro: {{ error }}</p>
+            </template>
+          </ApolloMutation>
         </v-card-actions>
     </v-card>
 </template>
@@ -96,6 +72,11 @@
             close() {
                 this.$emit('close');
             },
+          editProduct(mutate) {
+            setTimeout(() => {
+              mutate();
+            }, 1);
+          },
             async editSpecialty() {
                 this.loading = true;
                 await this.$store.dispatch('editSpecialty', {

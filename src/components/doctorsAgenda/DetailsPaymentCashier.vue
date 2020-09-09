@@ -474,14 +474,16 @@
                         mutation: require('@/graphql/transaction/AddRelationsNewIntake.gql'),
                         // Parameters
                         variables: {
-                            idBudget: data.id,
-                            idColaborator: this.selectedBudget.colaborator.id,
-                            idPatient: this.selectedBudget.user.id,
-                            idDoctor: this.selectedBudget.doctor.id
+                            idBudget: data.data.CreateTransaction.id,
+                            idColaborator: this.selectedBudget.colaborator.neo4j_id,
+                            idPatient: this.selectedBudget.user.neo4j_id,
+                            idDoctor: this.selectedBudget.doctor.neo4j_id
                         },
 
-                    }).then((dataa) => {
+                    })
+                        .then((dataa) => {
                         console.log('FOI, data: ', dataa)
+                        /*
                         let clinics = this.$store.getters.clinics
                         for(let i=0; i< clinics.length; i++){
                             let outtake = {
@@ -513,7 +515,7 @@
                                     console.error(error)
                                 })
                             }
-                        }
+                        } */
                     }).catch((error) => {
                         console.error(error)
                     })
