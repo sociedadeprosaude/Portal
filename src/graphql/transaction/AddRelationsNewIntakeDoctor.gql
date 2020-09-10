@@ -1,10 +1,21 @@
-mutation($idBudget:ID!,$idColaborator:ID!, $idPatient: ID!){
+mutation($idBudget:ID!,$idColaborator:ID!, $idPatient: ID!, $idDoctor: ID!){
     AddColaboratorWith_transaction(
         from:{
             id:$idColaborator
         },
         to:{
             id:$idBudget
+        }
+    ){
+        from{id},
+        to{id}
+    },
+    AddTransactionWith_doctor(
+        from:{
+            id:$idBudget
+        },
+        to:{
+            id:$idDoctor
         }
     ){
         from{id},

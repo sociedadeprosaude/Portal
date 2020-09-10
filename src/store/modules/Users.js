@@ -22,7 +22,6 @@ const state = {
 
 const mutations = {
     async setSelectedPatient(state, payload) {
-
         if (payload)
             localStorage.setItem('patient', payload.id)
         console.log(payload)
