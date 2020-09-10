@@ -1,0 +1,37 @@
+query($idClinic:ID, $idProduct:ID, $date:String){
+  Consultation(filter:{has_product:{id:$idProduct}, of_clinic:{id:$idClinic}, date_starts_with:$date}){
+    id,
+      type,
+      status,
+      date,
+      payment_number,
+      clinic:of_clinic{
+        id,name,logo
+      },
+      product:has_product{
+        id,name, type
+      },
+      doctor:attended_by{
+        id,name,crm
+      },
+      regress{
+        id,
+        type,
+        status,
+        date,
+        payment_number
+      },
+      previous_consultation{
+        id,
+        type,
+        status,
+        date,
+        payment_number
+      },
+    	patient{
+        id,
+        name,
+        cpf
+      }
+  }
+}

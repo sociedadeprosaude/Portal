@@ -1,5 +1,5 @@
-query {
-    Clinic(orderBy:[name_desc]){
+query($property:Boolean){
+    Clinic(orderBy:[name_desc],property:$property){
         id,name
     }
 }

@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <v-layout row wrap v-if="specialty || examType">
-            <v-flex xs12 v-for="(consultation, i) in ConsultationsByDoctors(consultations)" :key="i">
+            <v-flex xs12 v-for="(consultation, i) in ConsultationsByDoctors" :key="i">
                 <v-card>
                     <v-layout row wrap>
                         <v-flex xs12>
@@ -43,12 +43,12 @@
                         </v-flex>
                         <v-flex xs12 class="mt-4 mb-3">
                             <p class="text-left primary--text font-weight-bold ml-2"
-                               v-if="ConsultationsByDoctors(consultations).length !== 0">{{date |
+                               v-if="ConsultationsByDoctors.length !== 0">{{date |
                                 dateFilter}} - {{daydate(date)}}</p>
                             <v-divider class="primary"/>
                         </v-flex>
-                        <v-flex sm4 v-for="item in consultation.consultations" class="mt-3 mb-2">
-                          <div v-if="clinic && clinic === item.clinic.name">
+                        <v-flex sm4 v-for="(item,index) in consultation.consultations " :key="index" class="mt-3 mb-2">
+                          <div >
                             <v-tooltip top color="white">
                             <template v-slot:activator="{ on, attrs }">
                               <div v-bind="attrs" v-on="on">
@@ -60,12 +60,13 @@
                                             <v-icon v-if="item.type === 'Retorno'"  color="primary" small class="mt-1">restore</v-icon>
                                             <v-icon v-else small class="mt-1"  color="primary">event</v-icon>
                                             <v-icon v-if="item.status === 'Pago'" color="green" small class="mt-1">attach_money</v-icon>
-                                            <v-icon v-else small class="mt-1" color="red">money_off</v-icon>
+                                            <v-icon v-if="item.status === 'Aguardando pagamento'" small class="mt-1" color="red">money_off</v-icon>
+                                            <v-icon v-if="item.status === 'Cancelado'" small class="mt-1" color="red">cancel</v-icon>
 
                                         </v-flex>
                                         <v-flex xs8 class="mb-3">
                                             <v-flex xs12>
-                                                <h4 class="text-left font-weight-bold">{{item.user.name}}</h4>
+                                                <h4 class="text-left font-weight-bold">{{item.patient.name}}</h4>
                                                 <h5 class="text-left mt-1">{{item.date.substring(11,16)}}</h5>
                                                 <h5 class="text-left">Agendado em: {{item.date.substring(0,10)}}</h5>
                                             </v-flex>
@@ -97,12 +98,13 @@
                                         <v-icon v-if="item.type === 'Retorno'"  color="primary" small class="mt-1">restore</v-icon>
                                         <v-icon v-else small class="mt-1"  color="primary">event</v-icon>
                                         <v-icon v-if="item.status === 'Pago'" color="green" small class="mt-1">attach_money</v-icon>
-                                        <v-icon v-else small class="mt-1" color="red">money_off</v-icon>
+                                        <v-icon v-if="item.status === 'Aguardando pagamento'" small class="mt-1" color="red">money_off</v-icon>
+                                        <v-icon v-if="item.status === 'Cancelado'" small class="mt-1" color="red">cancel</v-icon>
 
                                       </v-flex>
                                       <v-flex xs8 class="mb-3">
                                         <v-flex xs12>
-                                          <h4 class="text-left font-weight-bold">{{item.user.name}}</h4>
+                                          <h4 class="text-left font-weight-bold">{{item.patient.name}}</h4>
                                           <h5 class="text-left mt-1">{{item.date.substring(11,16)}}</h5>
                                           <h5 class="text-left">Agendado em: {{item.date.substring(0,10)}}</h5>
                                         </v-flex>
@@ -204,10 +206,29 @@
             confirmDeactivate: false,
             patientSelected: [],
             specialtyToDeactivate: {},
-            clinicsToDeactivate: {}
+            clinicsToDeactivate: {},
+            consultations:[],
+            product:undefined,
+            skipConsultations:true
         }),
+        watch:{
+            changeData: {
+                handler: function(val) {
+                    this.loadingConsultations = true
+                    this.product = this.filterByExam ? this.examType : this.specialty
+                    console.log(this.product)
+                    console.log(this.clinic)
+                    if(this.product && this.clinic && this.date){
+                        this.consultations = []
+                        this.skipConsultations = false
+                        this.$apollo.queries.loadConsultations.refresh()
+                    }
+                },
+                deep: true
+            },
+        },
         computed: {
-            consultations() {
+            /* consultations() {
                 if (moment().format('YYYY-MM-DD') !== this.date) {
                     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.loadingConsultations = !this.loadingConsultations
@@ -220,34 +241,46 @@
                 });
                 this.loadingConsultations = false
                 return response
-            },
+            }, */
+
+            ConsultationsByDoctors() {
+                let res = {};
+                for (let cons in this.consultations) {
+                    let targetDate = this.consultations[cons].doctor.uid ? this.consultations[cons].doctor.uid : this.consultations[cons].doctor.cpf;
+                    if (!res[targetDate]) {
+                        res[targetDate] = {
+                            doctor: this.consultations[cons].doctor,
+                            numConsultations: 0,
+                            numRegress: 0,
+                            consultations: []
+                        }
+                    }
+                    if (this.consultations[cons].type === 'Consulta') res[targetDate].numConsultations += 1;
+                    else res[targetDate].numRegress += 1;
+                    res[targetDate].consultations.push(this.consultations[cons])
+                }
+                return res
+            },  
             doctor() {
                 return this.$store.getters.doctor
-            }
+            },
+            changeData() {
+                const { specialty, examType, clinic, date, filterByExam} = this
+                
+                return {
+                    specialty,
+                    examType, 
+                    clinic,
+                    date,
+                    filterByExam
+                }
+            }, 
         },
         methods: {
 
             cleanSpecialtyToDeactivate() {
                 this.specialtyToDeactivate = [];
                 this.clinicsToDeactivate = []
-            },
-            ConsultationsByDoctors(consultations) {
-                let res = {};
-                for (let cons in consultations) {
-                    let targetDate = consultations[cons].doctor.uid ? consultations[cons].doctor.uid : consultations[cons].doctor.cpf;
-                    if (!res[targetDate]) {
-                        res[targetDate] = {
-                            doctor: consultations[cons].doctor,
-                            numConsultations: 0,
-                            numRegress: 0,
-                            consultations: []
-                        }
-                    }
-                    if (consultations[cons].type === 'Consulta') res[targetDate].numConsultations += 1;
-                    else res[targetDate].numRegress += 1;
-                    res[targetDate].consultations.push(consultations[cons])
-                }
-                return res
             },
             async deactivateDoctor(item) {
                 await this.$store.dispatch('getDoctor', item.cpf);
@@ -264,7 +297,7 @@
             },
             patientSelect: function (item) {
                 this.selectUser(item.user)
-                this.$emit('patientSelect', item.user);
+                this.$emit('patientSelect', item.patient);
                 this.$emit('consultationSelect', item)
             },
             async deleteAllSchedule(doctor) {
@@ -293,6 +326,27 @@
                 }
                 this.$store.commit('setSelectedPatient', user);
                 this.$store.commit('clearSelectedDependent');
+            },
+        },
+        apollo: {
+            loadConsultations: {
+                query: require("@/graphql/consultations/LoadConsultations.gql"),
+                variables(){
+                    return{
+                        idClinic:this.clinic.id,
+                        idProduct:this.product.id,
+                        date:this.date
+                    }
+                },
+                update(data) {
+                    this.consultations = data.Consultation
+                    this.loadingConsultations = false
+                    this.skipConsultations = true
+                    console.log('->',this.consultations)
+                },
+                skip (){
+                    return this.skipConsultations
+                }
             },
         }
     }

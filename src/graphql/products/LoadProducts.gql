@@ -1,4 +1,4 @@
-query ($type: String!,$schedulable: Boolean!) {
+query ($type: String!,$schedulable: Boolean) {
     Product (type: $type, schedulable: $schedulable){
         id,
         name,

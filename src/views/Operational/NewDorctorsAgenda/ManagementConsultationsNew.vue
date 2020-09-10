@@ -15,28 +15,42 @@
                         </v-checkbox>
                     </v-flex>
                     <v-flex v-if="!examTypeCheck" xs12 sm4>
-                        <v-combobox
-                                v-model="specialty"
-                                :items="specialties"
-                                item-text="name"
-                                return-object
-                                placeholder="Especialidade"
-                                outlined
-                                color="write"
-                                class="mr-3"
-                        />
+                        <ApolloQuery 
+                                :query="require('@/graphql/products/LoadProducts.gql')"
+                                :variables="{ type:'SPECIALTY'}"
+                            >
+                                <template slot-scope="{ result: { data } }">
+                                    <v-combobox
+                                            v-model="specialty"
+                                            :items="data ? data.Product : []"
+                                            item-text="name"
+                                            return-object
+                                            placeholder="Especialidade"
+                                            outlined
+                                            color="write"
+                                            class="mr-3"
+                                    />
+                                </template>
+                        </ApolloQuery>
                     </v-flex>
                     <v-flex v-else>
-                        <v-combobox
-                                v-model="examType"
-                                :items="examTypes"
-                                item-text="name"
-                                return-object
-                                placeholder="Exames"
-                                outlined
-                                color="write"
-                                class="mr-3"
-                        />
+                        <ApolloQuery 
+                                :query="require('@/graphql/products/LoadProducts.gql')"
+                                :variables="{ type:'EXAM', schedulable:true}"
+                            >
+                                <template slot-scope="{ result: { data } }">
+                                    <v-combobox
+                                            v-model="examType"
+                                            :items="data ? data.Product : []"
+                                            item-text="name"
+                                            return-object
+                                            placeholder="Exames"
+                                            outlined
+                                            color="write"
+                                            class="mr-3"
+                                    />
+                                </template>
+                        </ApolloQuery>
                     </v-flex>
                     <v-flex xs12 sm3>
                         <v-menu
@@ -67,6 +81,7 @@
                         v-model="clinic"
                         :items="clinics"
                         item-text="name"
+                        return-object
                         label="Clínica"
                         outlined
                         clearable
@@ -115,31 +130,32 @@
             date: new Date().toISOString().substr(0, 10),
             dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
             menu1: false,
-          clinic: undefined,
+            clinic: undefined,
             loadingConsultations: false,
             specialty: '',
             examType:'',
             examTypeCheck:false,
             patientSelected: {},
-            consultatioSelect: {}
+            consultatioSelect: {},
+            clinics:[]
         }),
         computed: {
-            specialties() {
+            /* specialties() {
                 return this.$store.getters.specialties;
-            },
+            }, */
             computedDateFormatted() {
                 return this.formatDate(this.date)
             },
-            examTypes() {
+            /* examTypes() {
                 return this.$store.getters.examsTypes.filter((examType)=>{
                     return examType.scheduleable
                 });
-            },
-          clinics() {
+            }, */
+          /* clinics() {
             return this.$store.getters.clinics.filter(a => {
               return a.property;
             });
-          },
+          }, */
         },
         mounted() {
             this.initialConfig();
@@ -149,13 +165,22 @@
         watch: {
             date(val) {
                 this.dateFormatted = this.formatDate(this.date)
+            },
+
+            specialty(value){
+                if(value)
+                    this.clinics = value.clinics
+            },
+            examTypeCheck(value){
+                if(value)
+                    this.$apollo.queries.loadClinics.refresh()
             }
         },
         methods: {
             async initialConfig() {
-                await this.$store.dispatch("getSpecialties");
-                this.especialidade = this.specialties[0];
-                this.getConsultationsDorctors()
+                //await this.$store.dispatch("getSpecialties");
+                //this.especialidade = this.specialties[0];
+                //this.getConsultationsDorctors()
 
             },
 
@@ -187,6 +212,17 @@
                 this.loadingConsultations = false
             }
         },
+        apollo: {
+            loadClinics: {
+                query: require("@/graphql/clinics/LoadClinics.gql"),
+                variables:{
+                    property:true
+                },
+                update(data) {
+                    this.clinics = data.Clinic
+                },
+            }
+        }
     }
 </script>
 <style scoped>

@@ -252,6 +252,9 @@ export default {
   apollo: {
     loadClinics: {
       query: require("@/graphql/clinics/LoadClinics.gql"),
+      variables:{
+        property:true
+      },
       update(data) {
         this.clinics = data.Clinic
       },
