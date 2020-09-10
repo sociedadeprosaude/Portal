@@ -5,6 +5,6 @@ mutation UpdateProduct(
     id: $id,
     price: $price,
   ){
-    id,price
+    id
   }
 }

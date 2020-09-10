@@ -30,7 +30,7 @@
           <v-spacer/>
           <ApolloMutation
               :mutation="require('@/graphql/products/UpdateProducts.gql')"
-              :variables="{ id: specialty.id, price: specialty.price}"
+              :variables="{ id: specialty.id, price}"
               @done="close"
           >
             <template v-slot="{ mutate, loading, error }">
@@ -53,6 +53,7 @@
             success: false,
             exam: undefined,
             name:undefined,
+            id: undefined,
             price:0,
             typeOptions:[
                 { text:'sim', value: true },
@@ -75,7 +76,7 @@
           updateProduct(mutate) {
             setTimeout(() => {
               mutate();
-            }, 1);
+            }, 10);
           },
             async editSpecialty() {
                 this.loading = true;
@@ -91,8 +92,11 @@
             },
             initialize(){
                 if(this.specialty){
-                    this.name = this.specialty.name
-                    this.price = this.specialty.price
+                  console.log('comp',this.specialty)
+                  this.id = this.specialty.id
+                  console.log('id:',this.id)
+                  this.name = this.specialty.name
+                  this.price = this.specialty.price
                 }
             }
         },
