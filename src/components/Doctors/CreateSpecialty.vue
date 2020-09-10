@@ -121,6 +121,10 @@ export default {
     },
     createProduct(mutate) {
       this.specialty = this.specialty.toUpperCase()
+      console.log(this.specialty)
+      console.log(this.price)
+      console.log(this.type)
+      console.log(this.schedulable)
       setTimeout(() => {
         mutate();
       }, 10);

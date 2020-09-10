@@ -11,6 +11,6 @@ mutation CreateProduct(
     schedulable: $schedulable,
   )
   {
-    name,type,price
+    id,name,type,price
   }
 }
