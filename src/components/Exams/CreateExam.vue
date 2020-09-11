@@ -56,7 +56,16 @@
                                     />
                                 </v-flex>
                                 <v-flex xs12 sm12>
-                                    <v-text-field
+                                  <v-currency-field
+                                      outlined
+                                      clearable
+                                      prefix="R$"
+                                      prepend-icon="attach_money"
+                                      v-model="editedExam.price"
+                                      label="Preço"
+                                      :rules="rules.campoObrigatorio"
+                                  />
+<!--                                    <v-text-field
                                             outlined
                                             required
                                             label="Preço"
@@ -64,20 +73,30 @@
                                             prepend-icon="attach_money"
                                             :rules="rules.campoObrigatorio"
                                             class="ml-3 mr-3"
-                                    />
+                                    />-->
                                 </v-flex>
                             </v-layout>
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer/>
-                            <submit-button
-                                    :loading="loading"
-                                    :success="success"
-                                    text="Cadastrar Exame"
-                                    :disabled="!formRegister"
-                                    @click="validateRegister()"
-                                    class="ma-3"
-                            />
+                          <ApolloMutation
+                              :mutation="require('@/graphql/products/CreateProducts.gql')"
+                              :variables="{price: editedExam.price,
+                               rules: editedExam.rules,
+                               type: editedExam.type,
+                               name: editedExam.name,
+                               schedulable: editedExam.schedulable }"
+                              @done="close"
+                          >
+                            <template v-slot="{ mutate, loading, error }">
+                              <v-btn
+                                  color="primary"
+                                  :disabled="loading"
+                                  @click.native="createProduct(mutate)"
+                              >Adicionar</v-btn>
+                              <p v-if="error">Ocorreu um erro: {{ error }}</p>
+                            </template>
+                          </ApolloMutation>
                         </v-card-actions>
                     </v-form>
                 </v-card>
@@ -87,9 +106,7 @@
 </template>
 <script>
     import SubmitButton from "../SubmitButton";
-
     export default {
-
         components: {SubmitButton},
         props: ['registed', 'selectedExam'],
 
@@ -99,7 +116,7 @@
             success: false,
 
             editedExam: {
-                id: '', name: '', rules: '', type: '',
+                id: '', name: '', rules: '', type: 'EXAM', price: 0, schedulable: false,
             },
 
             rules: {
@@ -157,16 +174,32 @@
                 this.close();
 
             },
+            createProduct(mutate) {
+              this.editedExam.name = this.editedExam.name.toUpperCase().replace(/\//g, "-")
+              if(this.editedExam.type !== "EXAM"){
+                this.editedExam.type = this.editedExam.type.name
+                this.editedExam.schedulable = true
+              }
+              console.log(this.editedExam.name)
+              console.log(this.editedExam.type)
+              console.log(this.editedExam.rules)
+              console.log(this.editedExam.schedulable)
+              console.log(this.editedExam.price)
+              setTimeout(() => {
+                mutate();
+              }, 0);
+            },
 
             clear() {
                 this.editedExam.name = '';
-                this.editedExam.type = null;
+                this.editedExam.type = "EXAM";
                 this.editedExam.rules = '';
-                this.editedExam.price = '';
+                this.editedExam.price = 0;
                 this.editedExam.id = '';
             },
 
             close () {
+                this.clear()
                 this.$emit('close-dialog')
             }
 

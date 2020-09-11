@@ -1,0 +1,9 @@
+mutation (
+    $price: Float )
+    {
+    CreateProductTransaction(
+     price:$price,
+     ){
+        id
+    }
+}

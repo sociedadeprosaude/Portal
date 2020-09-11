@@ -1,10 +1,10 @@
-mutation EditProduct(
+mutation UpdateProduct(
     $id: ID!,
     $price: Float!){
-  EditProduct(
+  UpdateProduct(
     id: $id,
     price: $price,
   ){
-    id,price
+    id
   }
 }

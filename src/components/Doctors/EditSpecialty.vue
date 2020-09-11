@@ -29,12 +29,12 @@
         <v-card-actions>
           <v-spacer/>
           <ApolloMutation
-              :mutation="require('@/graphql/products/EditProducts.gql')"
-              :variables="{ id: specialty.id, price: specialty.price}"
+              :mutation="require('@/graphql/products/UpdateProducts.gql')"
+              :variables="{ id, price}"
               @done="close"
           >
             <template v-slot="{ mutate, loading, error }">
-              <v-btn color="primary" @click.native="editProduct(mutate)">Editar</v-btn>
+              <v-btn color="primary" @click.native="updateProduct(mutate)">Editar</v-btn>
               <p v-if="error">Ocorreu um erro: {{ error }}</p>
             </template>
           </ApolloMutation>
@@ -53,6 +53,7 @@
             success: false,
             exam: undefined,
             name:undefined,
+            id: undefined,
             price:0,
             typeOptions:[
                 { text:'sim', value: true },
@@ -72,10 +73,10 @@
             close() {
                 this.$emit('close');
             },
-          editProduct(mutate) {
+          updateProduct(mutate) {
             setTimeout(() => {
               mutate();
-            }, 1);
+            }, 0);
           },
             async editSpecialty() {
                 this.loading = true;
@@ -91,8 +92,9 @@
             },
             initialize(){
                 if(this.specialty){
-                    this.name = this.specialty.name
-                    this.price = this.specialty.price
+                  this.id = this.specialty.id
+                  this.name = this.specialty.name
+                  this.price = this.specialty.price
                 }
             }
         },

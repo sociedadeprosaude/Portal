@@ -1,18 +1,18 @@
-mutation($idBudget:ID!,$idColaborator:ID!, $idClinic: ID!, $idProduct: ID!){
-    AddTransactionColaboratorPayload(
+mutation($idOuttake:ID!, $idProductTransaction: ID!, $idClinic: ID!){
+    AddTransactionWith_productTransaction(
         from:{
-            id:$idBudget
+            id:$idOuttake
         },
         to:{
-            id:$idColaborator
+            id:$idProductTransaction
         }
     ){
         from{id},
         to{id}
     },
-    AddTransactionClinic(
+    AddTransactionWith_clinic(
         from:{
-            id:$idBudget
+            id:$idOuttake
         },
         to:{
             id:$idClinic
@@ -21,15 +21,5 @@ mutation($idBudget:ID!,$idColaborator:ID!, $idClinic: ID!, $idProduct: ID!){
         from{id},
         to{id}
     }
-    AddTransactionProduct(
-            from:{
-                id:$idBudget
-            },
-            to:{
-                id:$idProduct
-            }
-        ){
-            from{id},
-            to{id}
-        }
+
 }

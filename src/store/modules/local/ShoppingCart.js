@@ -52,12 +52,13 @@ const getters = {
     },
     getShoppingCartItemsByCategory(state) {
         let consultations = state.items.filter((a) => {
-            if(a.doctor){
-                return a.doctor
+            if(a.type === 'appointment'){
+                console.log('a: ', a)
+                return a
             }
         });
         let exams = state.items.filter((a) => {
-            if(a.clinic){
+            if(a.type === 'exam'){
                 if(a.priceDiscount){
                     let trocarNumero= a.price;
                     a.price= a.priceDiscount;
@@ -70,7 +71,7 @@ const getters = {
                 }
             }
         });
-
+        console.log('carrinho: ', state.items)
         return {
             consultations: consultations,
             exams: exams,

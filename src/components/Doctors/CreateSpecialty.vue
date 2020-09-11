@@ -65,9 +65,10 @@
       </v-container>
     </v-card-text>
     <v-card-actions>
+      <v-spacer />
       <ApolloMutation
           :mutation="require('@/graphql/products/CreateProducts.gql')"
-          :variables="{specialty,type,price,schedulable,}"
+          :variables="{name: specialty,type,price,schedulable,rules}"
           @done="close"
       >
         <template v-slot="{ mutate, loading, error }">
@@ -75,18 +76,10 @@
               color="primary"
               :disabled="loading"
               @click.native="createProduct(mutate)"
-          >Apollo</v-btn>
+          >Adicionar</v-btn>
           <p v-if="error">Ocorreu um erro: {{ error }}</p>
         </template>
       </ApolloMutation>
-      <v-spacer />
-      <submit-button
-        text="Adicionar"
-        :loading="loading"
-        :success="success"
-        @reset="success = false"
-        @click="registerSpecialty"
-      ></submit-button>
     </v-card-actions>
   </v-card>
 </template>
@@ -100,6 +93,7 @@ export default {
     success: false,
     specialty: undefined,
     price:0,
+    rules: null,
     type:"SPECIALTY",
     schedulable: false,
     exam: undefined,
@@ -118,16 +112,14 @@ export default {
   methods: {
     close() {
       this.$emit("close");
+      this.specialty = undefined
+      this.price = 0
     },
     createProduct(mutate) {
       this.specialty = this.specialty.toUpperCase()
-      console.log(this.specialty)
-      console.log(this.price)
-      console.log(this.type)
-      console.log(this.schedulable)
       setTimeout(() => {
         mutate();
-      }, 1);
+      }, 0);
     },
     async registerSpecialty() {
       this.loading = true;

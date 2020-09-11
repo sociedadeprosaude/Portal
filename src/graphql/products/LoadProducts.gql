@@ -7,6 +7,8 @@ query ($type: String!,$schedulable: Boolean) {
             name,
             crm
         },
+        price,
+        final_price,
         clinics{
             id,
             name

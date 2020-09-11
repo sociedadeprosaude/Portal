@@ -130,6 +130,8 @@
                 searchBudgetNumber: undefined,
                 searchBudgetLoading: false,
                 searchBudgetBtn: false,
+                type:'EXAM',
+                Products:[]
             }
         },
 
@@ -173,7 +175,8 @@
                 return this.$store.getters.getShoppingCartItems.length;
             },
             specialties() {
-                let specialties = this.$store.getters.specialties;
+                console.log('entrei specialties')
+              /*   let specialties = this.$store.getters.specialties;
                 for (let spec in specialties) {
                     if (specialties[spec].doctors) {
 
@@ -189,13 +192,15 @@
                         return false
                     }
                 });
-                return specialties
+                return specialties */
             },
             specialtiesLoaded() {
+                console.log('specialtes loaded')
                 return this.$store.getters.specialtiesLoaded
             },
             exams() {
-                return this.$store.getters.examsSelected;
+                console.log('entrando nos exames')
+                //return this.$store.getters.examsSelected;
             },
             package() {
                 return this.$store.getters.bundles;
@@ -203,9 +208,13 @@
             items() {
                 switch (this.categorySelect) {
                     case 'exam':
-                        return this.exams;
+                        this.type = 'EXAM'
+                        this.$apollo.queries.loadSpecialties.refresh();
+                        return this.Products;
                     case 'appointment':
-                        return this.specialties;
+                        this.type = 'SPECIALTY'
+                        this.$apollo.queries.loadSpecialties.refresh();
+                        return this.Products;
                     case 'package':
                         console.log(this.package)
                         return this.package;
@@ -265,6 +274,20 @@
                 this.searchBudgetLoading = false
             },
 
+        },
+        apollo: {
+            loadSpecialties: {
+                query: require("@/graphql/products/LoadProducts.gql"),
+                variables(){
+                    return {
+                        type: this.type
+                    }
+                },
+                update(data){
+                    console.log('data: ', data.Product)
+                    this.Products = data.Product
+                }
+            }
         }
     }
 

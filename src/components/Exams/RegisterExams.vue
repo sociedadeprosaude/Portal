@@ -5,26 +5,42 @@
         <v-card class="pt-3">
           <v-layout row wrap>
             <v-flex sm8>
-              <v-text-field
-                      outlined
-                      placeholder="Exames"
-                      class="mx-5"
-                      color="primary"
-                      v-model="search"
-                      :loading="loading"
-                      id="search"
-              />
+              <ApolloQuery
+                  :query="require('@/graphql/products/ReadProcucts.gql')"
+                  :variables="{ type:'EXAM', schedulable:false}"
+              >
+                <template slot-scope="{ result: { data } }">
+                  <v-flex xs12 sm12 class="mb-5">
+                    <v-text-field
+                        outlined
+                        placeholder="Exames"
+                        class="mx-5"
+                        color="primary"
+                        v-model="search"
+                        :loading="loading"
+                        id="search"
+                    />
+                    <div v-if="search">
+                      <div v-for="(exam,i) in data.Product" :key="i">
+                        <div v-if="search.toUpperCase() === exam.name">
+                          {{ exam }}
+                          <listExams :exams="new Array(exam)" :loading="loading" @clear-search="search = ''"/>
+                        </div>
+                      </div>
+                    </div>
+                  </v-flex>
+                </template>
+              </ApolloQuery>
             </v-flex>
             <v-flex sm4 class="text-right pr-3 mt-2">
               <v-btn outlined class="primary--text" @click="newExam = true">cadastrar exame</v-btn>
             </v-flex>
           </v-layout>
         </v-card>
-
         <v-card>
-          <v-card-text v-if="exams.length !== 0">
+<!--          <v-card-text v-if="exams.length !== 0">
             <listExams :exams="exams" :loading="loading" @clear-search="search = ''"/>
-          </v-card-text>
+          </v-card-text>-->
         </v-card>
       </v-flex>
       <v-dialog v-model="newExam">
@@ -39,13 +55,18 @@
 
 export default {
   components: { listExams, createExam },
-props:['exams'],
+  props:['exams'],
   data: () => ({
     search: "",
     loading: undefined,
     newExam: false,
     registed: false
   }),
+/*  watch:{
+    search() {
+      this.search = this.search.toUpperCase()
+    },
+  },*/
   mounted() {
     let self = this;
     window.addEventListener("keyup", function(e) {
