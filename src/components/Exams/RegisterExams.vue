@@ -5,7 +5,6 @@
         <v-card class="pt-3">
           <v-layout row wrap>
             <v-flex sm8>
-              <!-- Apollo Query -->
               <ApolloQuery
                   :query="require('@/graphql/products/ReadProcucts.gql')"
                   :variables="{ type:'EXAM', schedulable:false}"
@@ -32,22 +31,12 @@
                   </v-flex>
                 </template>
               </ApolloQuery>
-<!--              <v-text-field
-                      outlined
-                      placeholder="Exames"
-                      class="mx-5"
-                      color="primary"
-                      v-model="search"
-                      :loading="loading"
-                      id="search"
-              />-->
             </v-flex>
             <v-flex sm4 class="text-right pr-3 mt-2">
               <v-btn outlined class="primary--text" @click="newExam = true">cadastrar exame</v-btn>
             </v-flex>
           </v-layout>
         </v-card>
-
         <v-card>
 <!--          <v-card-text v-if="exams.length !== 0">
             <listExams :exams="exams" :loading="loading" @clear-search="search = ''"/>

@@ -68,7 +68,7 @@
       <v-spacer />
       <ApolloMutation
           :mutation="require('@/graphql/products/CreateProducts.gql')"
-          :variables="{specialty,type,price,schedulable,}"
+          :variables="{name: specialty,type,price,schedulable,rules}"
           @done="close"
       >
         <template v-slot="{ mutate, loading, error }">
@@ -93,6 +93,7 @@ export default {
     success: false,
     specialty: undefined,
     price:0,
+    rules: null,
     type:"SPECIALTY",
     schedulable: false,
     exam: undefined,

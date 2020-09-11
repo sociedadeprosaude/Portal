@@ -80,11 +80,11 @@
                         <v-card-actions>
                             <v-spacer/>
                           <ApolloMutation
-                              :mutation="require('@/graphql/products/CreateExams.gql')"
+                              :mutation="require('@/graphql/products/CreateProducts.gql')"
                               :variables="{price: editedExam.price,
                                rules: editedExam.rules,
                                type: editedExam.type,
-                               name:editedExam.name,
+                               name: editedExam.name,
                                schedulable: editedExam.schedulable }"
                               @done="close"
                           >
@@ -97,14 +97,6 @@
                               <p v-if="error">Ocorreu um erro: {{ error }}</p>
                             </template>
                           </ApolloMutation>
-                           <!-- <submit-button
-                                    :loading="loading"
-                                    :success="success"
-                                    text="Cadastrar Exame"
-                                    :disabled="!formRegister"
-                                    @click="validateRegister()"
-                                    class="ma-3"
-                            />-->
                         </v-card-actions>
                     </v-form>
                 </v-card>
