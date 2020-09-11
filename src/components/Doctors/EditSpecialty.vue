@@ -30,7 +30,7 @@
           <v-spacer/>
           <ApolloMutation
               :mutation="require('@/graphql/products/UpdateProducts.gql')"
-              :variables="{ id: specialty.id, price}"
+              :variables="{ id, price}"
               @done="close"
           >
             <template v-slot="{ mutate, loading, error }">
@@ -92,9 +92,7 @@
             },
             initialize(){
                 if(this.specialty){
-                  console.log('comp',this.specialty)
                   this.id = this.specialty.id
-                  console.log('id:',this.id)
                   this.name = this.specialty.name
                   this.price = this.specialty.price
                 }

@@ -112,7 +112,7 @@ export default {
     close() {
       this.$emit("close");
       this.specialty = undefined
-      this.price = undefined
+      this.price = 0
     },
     createProduct(mutate) {
       this.specialty = this.specialty.toUpperCase()
