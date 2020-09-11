@@ -76,7 +76,7 @@
           updateProduct(mutate) {
             setTimeout(() => {
               mutate();
-            }, 10);
+            }, 0);
           },
             async editSpecialty() {
                 this.loading = true;
