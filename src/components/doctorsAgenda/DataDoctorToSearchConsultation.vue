@@ -40,7 +40,7 @@
                                 :variables="{ type:'SPECIALTY', schedulable:false}"
                             >
                                 <template slot-scope="{ result: { data,loading } }">
-                                    <v-progress-circular v-if="loading" indeterminate></v-progress-circular>
+                                    <h1 v-if="loading" class="white--text" >kkjlkjlkj</h1>
                                     <v-combobox
                                         v-else
                                         class="pa-0 ma-0"
