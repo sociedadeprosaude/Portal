@@ -24,7 +24,7 @@
                     <v-flex xs12>
                         <v-layout row v-for="n in item.clinics" :key="n.name" class="my-2" style="width: 100%">
                             <v-btn rounded dense x-small block class="background font-weight-bold"
-                                   @click="addProduct(item, n, 'exam')">
+                                   @click="addProduct(item, 'exam', n)">
                                 {{n.name}}
                                 <v-spacer/>
                                 {{n.price}}
@@ -33,22 +33,16 @@
                     </v-flex>
                 </v-card-text>
                 <v-card-text v-if="categorySelect === 'appointment'" class="ma-0 pa-0 my-1">
-                    <v-layout row v-for="n in item.doctors" :key="n.cpf" class="my-2">
-                        <v-flex xs12 class="align-center justify-center text-center">
-                            <span class="font-weight-bold">{{n.name}}</span>
-                        </v-flex>
+                    <v-layout row class="my-2">
                         <v-flex xs12>
-                            <v-divider/>
-                        </v-flex>
-                        <v-flex xs12>
-                            <v-layout row no-wrap v-for="clinic in n.clinics"
-                                      :key="clinic.name + n.name"
+                            <v-layout row no-wrap v-for="clinic in item.clinics"
+                                      :key="clinic.name + item.name"
                                       class="align-center justify-center text-center my-1">
                                 <v-btn rounded dense x-small block class="background font-weight-bold"
-                                       @click="addProduct(item, n, 'appointment', clinic)">
+                                       @click="addProduct(item, 'appointment', clinic)">
                                     {{clinic.name}}
                                     <v-spacer/>
-                                    {{n.price}}
+                                    {{item.price ? item.price : item.final_price}}
                                 </v-btn>
                             </v-layout>
                         </v-flex>
@@ -94,7 +88,6 @@
         directives: {infiniteScroll},
 
         async mounted() {
-
             const listElm = document.querySelector('#infinite-list');
             listElm.addEventListener('scroll', e => {
                 if (listElm.scrollTop + listElm.clientHeight >= listElm.scrollHeight) {
@@ -115,26 +108,25 @@
                     this.$store.commit('addShoppingCartItem', budget.consultations[spec])
                 }
             },
-
-            addProduct(product, selection, type, clinic) {
+            addProduct(product, type, clinic) {
                 let holder = Object.assign({}, product);
-
+                console.log('type: ', type)
                 switch (type) {
                     case 'appointment':
                         delete holder.doctors;
-                        holder.doctor = selection;
-                        holder.doctor.clinic = clinic;
-                        holder.cost = selection.cost;
-                        holder.price = selection.price;
+                        delete holder.clinics
+                        holder.type ='appointment'
+                        holder.clinic = clinic
                         break;
                     case 'exam':
                         delete holder.clinics;
-                        holder.clinic = selection;
-                        holder.cost = selection.cost;
-                        holder.price = selection.price;
+                        delete holder.doctors;
+                        holder.type ='exam'
+                        holder.clinic = clinic;
                         break;
                     default:
                 }
+                console.log('holder: ', holder)
                 this.$store.commit('addShoppingCartItem', holder)
             },
 

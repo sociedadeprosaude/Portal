@@ -25,7 +25,7 @@
             </v-card>
             <v-card class="my-2 white" width="100%" v-if="consultations.length > 0">
                 <h4 class="text-left ml-2">Consultas</h4>
-                <v-card-text v-for="(item) in consultations" :key="item.doctor.name" class="ma-0 pa-0 my-1 font-weight-bold">
+                <v-card-text v-for="(item,key) in consultations" :key="key" class="ma-0 pa-0 my-1 font-weight-bold">
                     <v-flex xs12 class="mt-2">
                         <v-divider/>
                     </v-flex>
@@ -37,12 +37,9 @@
                     </v-flex>
                     <v-flex xs12>
                         <v-layout row wrap class="mx-1 black--text">
-                            <v-flex xs12 class="text-left">
-                                <span>{{item.doctor.name}}</span>
-                            </v-flex>
-                            <span>{{item.doctor.clinic.name}}</span>
+                            <span>{{item.clinic.name}}</span>
                             <v-spacer/>
-                            <span>R$ {{item.doctor.price}}</span>
+                            <span>R$ {{item.price}}</span>
                         </v-layout>
                     </v-flex>
                     <v-btn rounded dense x-small class="error px-6" @click="removeItem(item)">Remover Item</v-btn>
