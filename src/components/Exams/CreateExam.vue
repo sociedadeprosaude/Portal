@@ -18,33 +18,40 @@
                                     />
                                 </v-flex>
                                 <v-flex xs12 sm12>
-                                    <v-select
-                                            class="ml-3 mr-3"
-                                            label="Tipo"
-                                            prepend-icon="school"
-                                            v-model="editedExam.type"
-                                            :items="examTypes"
-                                            item-text="name"
-                                            return-object
-                                            outlined
-                                            chips
-                                            color="pink"
-                                            clearable
-                                    >
+                                  <ApolloQuery
+                                      :query="require('@/graphql/products/ReadProcucts.gql')"
+                                      :variables="{ type:'EXAM', schedulable: true}"
+                                  >
+                                    <template slot-scope="{ result: { data } }">
+                                      <v-select
+                                          class="ml-3 mr-3"
+                                          label="Tipo"
+                                          prepend-icon="school"
+                                          v-model="editedExam.type"
+                                          :items="data.Product"
+                                          item-text="name"
+                                          return-object
+                                          outlined
+                                          chips
+                                          color="pink"
+                                          clearable
+                                      >
                                         <template v-slot:selection="data">
-                                            <v-chip
-                                                    :key="JSON.stringify(data.item)"
-                                                    :input-value="data.selected"
-                                                    :disabled="data.disabled"
-                                                    class="v-chip--select-multi"
-                                                    @click.stop="data.parent.selectedIndex = data.index"
-                                                    @input="data.parent.selectItem(data.item)"
-                                                    text-color="white"
-                                                    color="info"
-                                            >{{ data.item.name }}
-                                            </v-chip>
+                                          <v-chip
+                                              :key="JSON.stringify(data.item)"
+                                              :input-value="data.selected"
+                                              :disabled="data.disabled"
+                                              class="v-chip--select-multi"
+                                              @click.stop="data.parent.selectedIndex = data.index"
+                                              @input="data.parent.selectItem(data.item)"
+                                              text-color="white"
+                                              color="info"
+                                          >{{ data.item.name }}
+                                          </v-chip>
                                         </template>
-                                    </v-select>
+                                      </v-select>
+                                    </template>
+                                  </ApolloQuery>
                                 </v-flex>
                                 <v-flex xs12 sm12>
                                     <v-textarea
@@ -65,15 +72,6 @@
                                       label="Preço"
                                       :rules="rules.campoObrigatorio"
                                   />
-<!--                                    <v-text-field
-                                            outlined
-                                            required
-                                            label="Preço"
-                                            v-model="editedExam.price"
-                                            prepend-icon="attach_money"
-                                            :rules="rules.campoObrigatorio"
-                                            class="ml-3 mr-3"
-                                    />-->
                                 </v-flex>
                             </v-layout>
                         </v-card-text>
@@ -105,9 +103,7 @@
     </v-container>
 </template>
 <script>
-    import SubmitButton from "../SubmitButton";
     export default {
-        components: {SubmitButton},
         props: ['registed', 'selectedExam'],
 
         data: () => ({
@@ -172,8 +168,8 @@
                 this.loading = false;
                 this.clear();
                 this.close();
-
             },
+
             createProduct(mutate) {
               this.editedExam.name = this.editedExam.name.toUpperCase().replace(/\//g, "-")
               if(this.editedExam.type !== "EXAM"){

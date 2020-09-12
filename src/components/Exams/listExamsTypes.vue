@@ -1,29 +1,33 @@
 <template>
     <v-container fluid>
-        <v-layout v-if="examsTypes" row nowrap>
-            <v-flex xs12 v-if="examsTypes.length === 0">
-                <p>Não há resultado para a pesquisa realizada</p>
-            </v-flex>
-            <div v-if="examsTypes.length !== 0" style="width: 100%">
-                <v-flex sm12 v-for="(examType, i) in examsTypes" :key="i" class="mb-5">
+        <v-layout row nowrap>
+            <div style="width: 100%">
+              <ApolloQuery
+                  :query="require('@/graphql/products/ReadProcucts.gql')"
+                  :variables="{ type:'EXAM', schedulable:true}"
+              >
+                <template slot-scope="{ result: { data } }">
+                  <v-flex sm12 v-for="(examType, i) in data.Product" :key="i" class="mb-5">
                     <v-card>
-                        <v-flex xs12 sm12>
-                            <v-card color="primary">
-                                <v-layout row wrap>
-                                    <v-flex sm10>
-                                        <p class="white--text text-left font-weight-bold pt-4 pb-3 pl-4">
-                                            {{examType.name}}
-                                        </p>
-                                    </v-flex>
-                                    <v-flex sm2 class="text-right mt-2">
-                                        <v-btn icon dark><v-icon small @click="selectExamType(examType)">edit</v-icon></v-btn>
-                                        <v-btn icon dark><v-icon small @click="openAlertDelete(examType)">delete</v-icon></v-btn>
-                                    </v-flex>
-                                </v-layout>
-                            </v-card>
-                        </v-flex>
+                      <v-flex xs12 sm12>
+                        <v-card color="primary">
+                          <v-layout row wrap>
+                            <v-flex sm10>
+                              <p class="white--text text-left font-weight-bold pt-4 pb-3 pl-4">
+                                {{examType.name}}
+                              </p>
+                            </v-flex>
+                            <v-flex sm2 class="text-right mt-2">
+                              <v-btn icon dark><v-icon small @click="selectExamType(examType)">edit</v-icon></v-btn>
+                              <v-btn icon dark><v-icon small @click="openAlertDelete(examType)">delete</v-icon></v-btn>
+                            </v-flex>
+                          </v-layout>
+                        </v-card>
+                      </v-flex>
                     </v-card>
-                </v-flex>
+                  </v-flex>
+                </template>
+              </ApolloQuery>
             </div>
             <v-dialog v-model="editExamType"><createExamType :registed="registed" :selectedExamType="examType" @close-dialog="editExamType = false" /></v-dialog>
             <v-dialog v-model="alertDelete" persistent max-width="400">
@@ -45,12 +49,8 @@
 </template>
 <script>
     import createExamType from "./CreateExamType"
-
     export default {
-        props: ['examsTypes'],
-
         components: {createExamType},
-
         data: () => ({
             editExamType: false,
             registed: true,

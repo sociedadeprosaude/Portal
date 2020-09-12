@@ -22,7 +22,7 @@
                     />
                     <div v-if="search">
                       <div v-for="(exam,i) in data.Product" :key="i">
-                        <div v-if="search.toUpperCase() === exam.name">
+                        <div v-if="exam.name.includes(search.toUpperCase()) ">
                           {{ exam }}
                           <listExams :exams="new Array(exam)" :loading="loading" @clear-search="search = ''"/>
                         </div>
@@ -88,5 +88,13 @@ export default {
       }
     });
   },
+
+/*  Apollo:{
+    loadProducts:{
+      query,
+      variables,
+
+    }
+  }*/
 };
 </script>

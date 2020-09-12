@@ -1,9 +1,9 @@
 mutation CreateProduct(
     $name: String!,
     $type: String!,
-    $price: Float!,
+    $schedulable: Boolean!
+    $price: Float,
     $rules: String,
-    $schedulable: Boolean!,
     ){
   CreateProduct(
     name: $name,
@@ -13,6 +13,6 @@ mutation CreateProduct(
     schedulable: $schedulable,
   )
   {
-    id,name,type,price
+    id,name,type,price,rules,schedulable
   }
 }
