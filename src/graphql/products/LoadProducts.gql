@@ -11,7 +11,13 @@ query ($type: String!,$schedulable: Boolean) {
         final_price,
         clinics{
             id,
-            name
+            name,
+            cnpj,
+            telephone,
+             opening_hours,
+             has_adrress{
+                           cep, state, street, city, complement, neighboor, number
+                         }
         }
     }
 }

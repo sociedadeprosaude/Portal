@@ -1,5 +1,8 @@
 query{
     Clinic{
-        id,name
+        id,name, cnpj, telephone,opening_hours
+         has_adrress{
+               cep, state, street, city, complement, neighboor, number
+             }
     }
 }

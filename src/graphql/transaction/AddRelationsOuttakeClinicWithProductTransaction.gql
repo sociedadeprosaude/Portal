@@ -1,0 +1,14 @@
+mutation($idOuttake:ID!, $idProductTransaction: ID!){
+    AddTransactionWith_productTransaction(
+        from:{
+            id:$idOuttake
+        },
+        to:{
+            id:$idProductTransaction
+        }
+    ){
+        from{id},
+        to{id}
+    },
+
+}

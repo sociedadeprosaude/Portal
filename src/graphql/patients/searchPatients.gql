@@ -3,6 +3,7 @@ query($name:String){
     id,
     name,
     cpf,
+    birth_date,
     consultations:with_consultation{
       id,
       type,
