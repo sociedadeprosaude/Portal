@@ -150,7 +150,7 @@
             items() {
                 return this.budget.specialties.concat(this.budget.exams)
             },
-            examsPerClinic() {
+            examsPerClinic(){
                 let examsPerClinic = {};
                 for (let exam in this.budget.exams) {
                     if (!examsPerClinic[this.budget.exams[exam].clinic.name]) {

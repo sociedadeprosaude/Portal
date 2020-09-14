@@ -338,6 +338,10 @@
         },
         methods: {
             CloseReceipt(){
+                this.$store.commit('setSelectedBudget', undefined);
+                this.$store.commit('clearShoppingCartItens');
+                this.card = false;
+                this.paymentSuccess= true
                 this.clearCart()
                 this.receiptDialog=false
             },
@@ -430,7 +434,6 @@
                     this.alertMessage.text = 'Escolha um médico que requisitou este orçamento'
                     return
                 }
-                var QuantFinal= 0
                 this.alertMessage.model = false
                 await this.saveBudget(this.generateBudget());
                 this.selectedBudget.valuesPayments.forEach(value => {value = parseFloat(value)})
@@ -450,8 +453,8 @@
                 })
                     .then((data) => {
                    console.log('Intake Criado: ', data)
+                        this.selectedBudget.id= data.data.CreateTransaction.id
                     console.log('selectedBudget no primeiro then: ', this.selectedBudget)
-                    let ProductsKeys = []
                     for(let exam in this.selectedBudget.exams){
                         console.log('exam: ', this.selectedBudget.exams[exam])
                         this.$apollo.mutate({
@@ -555,10 +558,6 @@
                 })
                 console.log('selectedBudget', this.selectedBudget)
                 await this.receipt(this.selectedBudget)
-                this.$store.commit('setSelectedBudget', undefined);
-                this.$store.commit('clearShoppingCartItens');
-                this.card = false;
-                this.paymentSuccess= true
             },
             async CreateRelationsOuttakeClinic(outtake, idOuttake){
                 await this.$apollo.mutate({
