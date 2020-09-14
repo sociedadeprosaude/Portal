@@ -131,7 +131,11 @@
                 searchBudgetLoading: false,
                 searchBudgetBtn: false,
                 type:'EXAM',
-                Products:[]
+                Products:[],
+                Exams:[],
+                ExamsSkip: false,
+                Specialties:[],
+                SpecialtieSkip: false
             }
         },
 
@@ -174,33 +178,9 @@
                 console.log( this.$store.getters.getShoppingCartItems.length);
                 return this.$store.getters.getShoppingCartItems.length;
             },
-            specialties() {
-                console.log('entrei specialties')
-              /*   let specialties = this.$store.getters.specialties;
-                for (let spec in specialties) {
-                    if (specialties[spec].doctors) {
-
-                        specialties[spec].doctors = specialties[spec].doctors.filter((a) => {
-                            return a.cost
-                        })
-                    }
-                }
-                specialties = this.$store.getters.specialties.filter((a) => {
-                    if (a.doctors) {
-                        return a.doctors.length > 0 && a.name.includes(this.search.toUpperCase())
-                    } else {
-                        return false
-                    }
-                });
-                return specialties */
-            },
             specialtiesLoaded() {
                 console.log('specialtes loaded')
                 return this.$store.getters.specialtiesLoaded
-            },
-            exams() {
-                console.log('entrando nos exames')
-                //return this.$store.getters.examsSelected;
             },
             package() {
                 return this.$store.getters.bundles;
@@ -208,13 +188,9 @@
             items() {
                 switch (this.categorySelect) {
                     case 'exam':
-                        this.type = 'EXAM'
-                        this.$apollo.queries.loadSpecialties.refresh();
-                        return this.Products;
+                        return this.Exams;
                     case 'appointment':
-                        this.type = 'SPECIALTY'
-                        this.$apollo.queries.loadSpecialties.refresh();
-                        return this.Products;
+                        return this.Specialties;
                     case 'package':
                         console.log(this.package)
                         return this.package;
@@ -280,12 +256,32 @@
                 query: require("@/graphql/products/LoadProducts.gql"),
                 variables(){
                     return {
-                        type: this.type
+                        type: 'SPECIALTY'
                     }
                 },
                 update(data){
                     console.log('data: ', data.Product)
-                    this.Products = data.Product
+                    this.Specialties = data.Product
+                    this.SpecialtieSkip = true
+                },
+                skip(){
+                    return this.SpecialtieSkip
+                }
+            },
+            loadExams: {
+                query: require("@/graphql/products/LoadProducts.gql"),
+                variables(){
+                    return {
+                        type: 'EXAM'
+                    }
+                },
+                update(data){
+                    console.log('data: ', data.Product)
+                    this.Exams = data.Product
+                    this.ExamsSkip = true
+                },
+                skip(){
+                    return this.ExamsSkip
                 }
             }
         }
