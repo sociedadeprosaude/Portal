@@ -342,7 +342,6 @@
                     this.consultations = data.Consultation
                     this.loadingConsultations = false
                     this.skipConsultations = true
-                    console.log('->',this.consultations)
                 },
                 skip (){
                     return this.skipConsultations

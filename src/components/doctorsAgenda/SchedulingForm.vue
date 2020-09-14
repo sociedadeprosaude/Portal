@@ -267,6 +267,7 @@ export default {
     statusOptions: [{text: "Aguardando pagamento"}, {text: "Pago"}],
     exam: undefined,
     findPaymentToExam: true,
+    skipPatients:true
   }),
   mounted(){
     //console.log(this.createConsultationForm)
@@ -340,6 +341,11 @@ export default {
           if(form.consultation.type === "Retorno" && this.previousConsultation)
             this.saveRelationAsRegress(data.data.CreateConsultation.id, this.previousConsultation)
 
+          if(form.productTransaction)
+            this.saveRelationProductTransaction(data.data.CreateConsultation.id,form.productTransaction.id)
+
+          this.skipPatients = false
+          this.$apollo.queries.loadPatient.refresh()
         }).catch((error) => {
           console.error(error)
         })
@@ -388,6 +394,21 @@ export default {
         })
     },
 
+    saveRelationProductTransaction(idConsultation, idProductTransaction){
+        this.$apollo.mutate({
+          mutation: require('@/graphql/transaction/AddRelationProductTransactionConsultation.gql'),
+          variables:{
+              idConsultation: idConsultation,
+              idProductTransaction: idProductTransaction
+          },
+          
+        }).then((data) => {
+          console.log('idProductTransaction',idProductTransaction)
+        }).catch((error) => {
+          console.error(error)
+        })
+    },
+
     close: function () {
       this.exam = undefined
       this.$emit('close-dialog')
@@ -410,6 +431,25 @@ export default {
         this.findPaymentToExam = false
       }
 
+    }
+  },
+
+  apollo: {
+    loadPatient: {
+      query: require("@/graphql/reactivity/ReloadConsultationsPatient.gql"),
+      variables(){
+        return {
+          idPatient: this.selectedPatient.id
+        }
+      },
+      update(data) {
+        console.log(data)
+        this.$store.commit('setSelectedPatient', data.Patient[0]);
+        this.skipPatients = true
+      },
+      skip (){
+        return this.skipPatients
+      }
     }
   }
 }

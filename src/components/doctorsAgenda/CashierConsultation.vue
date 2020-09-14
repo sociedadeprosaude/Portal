@@ -131,7 +131,9 @@
                 searchBudgetLoading: false,
                 searchBudgetBtn: false,
                 type:'EXAM',
-                Products:[]
+                Products:[],
+                skip: false,
+                items:[]
             }
         },
 
@@ -161,7 +163,25 @@
         },
 
         watch: {
-            categorySelect: function () {
+            categorySelect(value) {
+                switch (this.categorySelect) {
+                    case 'exam':
+                        this.type = 'EXAM'
+                        this.skip = false
+                        this.$apollo.queries.loadSpecialties.refresh();
+                        break;
+                    case 'appointment':
+                        this.type = 'SPECIALTY'
+                        this.skip = false
+                        console.log('Specialty')
+                        this.$apollo.queries.loadSpecialties.refresh();
+                        break;
+                    case 'package':
+                        console.log(this.package)
+                        break;
+                    default:
+                        return []
+                }
                 this.search = ''
             },
             patient() {
@@ -205,14 +225,17 @@
             package() {
                 return this.$store.getters.bundles;
             },
-            items() {
+            /* items() {
                 switch (this.categorySelect) {
                     case 'exam':
                         this.type = 'EXAM'
+                        this.skip = false
                         this.$apollo.queries.loadSpecialties.refresh();
                         return this.Products;
                     case 'appointment':
                         this.type = 'SPECIALTY'
+                        this.skip = false
+                        console.log('Specialty')
                         this.$apollo.queries.loadSpecialties.refresh();
                         return this.Products;
                     case 'package':
@@ -221,7 +244,7 @@
                     default:
                         return []
                 }
-            },
+            }, */
             patient() {
                 return this.$store.getters.selectedPatient;
             }
@@ -285,7 +308,11 @@
                 },
                 update(data){
                     console.log('data: ', data.Product)
-                    this.Products = data.Product
+                    this.items = data.Product
+                    this.skip = true
+                },
+                skip(){
+                    return this.skip;
                 }
             }
         }

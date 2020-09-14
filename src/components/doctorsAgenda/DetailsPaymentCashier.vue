@@ -428,6 +428,7 @@
             async pay() {
                 this.paymentLoading = true;
                 console.log('patient: ', this.patient)
+                let ProductsKeys = []
                 let user = this.patient
                 if (!user) {
                     this.paymentLoading = false
@@ -465,11 +466,9 @@
                         date: this.selectedBudget.date,
                     },
 
-                })
-                    .then((data) => {
+                }).then((data) => {
                    console.log('Intake Criado: ', data)
                     console.log('selectedBudget no primeiro then: ', this.selectedBudget)
-                    let ProductsKeys = []
                     for(let exam in this.selectedBudget.exams){
                         console.log('exam: ', this.selectedBudget.exams[exam])
                         this.$apollo.mutate({
@@ -486,14 +485,13 @@
                                     idProductTransaction: dataProduct.data.CreateProductTransaction.id
                                 }
                             }).then(dataaa => {
-                                this.selectedBudget.exams[exam].id = dataProduct.data.CreateProductTransaction.id
+                                //this.selectedBudget.exams[exam].id = dataProduct.data.CreateProductTransaction.id
 
                             }).catch(error => (error))
-                            ProductsKeys.push(dataProduct.data.CreateProductTransaction.id)
+                            this.verifyUnpaidConsultations({id:dataProduct.data.CreateProductTransaction.id, product:this.selectedBudget.exams[exam]})
                         }).catch(error => (error))
                     }
                     for(let specialtie in this.selectedBudget.specialties){
-                        console.log('specialtie: ', specialtie)
                         this.$apollo.mutate({
                             mutation: require('@/graphql/transaction/CreateProductTransaction.gql'),
                             variables: {
@@ -508,13 +506,12 @@
                                     idProductTransaction: dataProduct.data.CreateProductTransaction.id
                                 }
                             }).then(dataaa => {
-                                this.selectedBudget.specialties[specialtie].id = dataProduct.data.CreateProductTransaction.id
+                                //this.selectedBudget.specialties[specialtie].id = dataProduct.data.CreateProductTransaction.id
                             }).catch(error => (error))
-                            ProductsKeys.push(dataProduct.data.CreateProductTransaction.id)
+                            this.verifyUnpaidConsultations({id:dataProduct.data.CreateProductTransaction.id, product:this.selectedBudget.specialties[specialtie]})
 
                         }).catch(error => (error))
                     }
-                    console.log('selectedBudget: ', this.selectedBudget)
                     if(this.selectedBudget.doctor) {
                         this.$apollo.mutate({
                             mutation: require('@/graphql/transaction/AddRelationsNewIntake.gql'),
@@ -528,8 +525,6 @@
 
                         })
                             .then((dataa) => {
-                                console.log('FOI, relação intake: ', dataa)
-                                console.log('selectedBudget perto do final: ', this.selectedBudget)
                         this.$apollo.queries.LoadAllClinics.refresh()
                         for(let i=0; i< this.clinics.length; i++){
                             let outtake = {
@@ -539,7 +534,6 @@
                                 specialties: this.selectedBudget.specialties ? this.selectedBudget.specialties.filter( specialtie => specialtie.clinic.name === this.clinics[i].name ): [],
                                 root:true,
                             }
-                            console.log('clinic: ', outtake.clinic)
                             if( outtake.exams.length !== 0  || outtake.specialties.length !== 0 ){
                                 //await this.$store.dispatch('addOuttakes', outtake)
                                 this.$apollo.mutate({
@@ -552,7 +546,6 @@
                                     },
 
                                 }).then((Createouttake) => {
-                                    console.log('Createouttake', Createouttake)
                                     for(let specialtie in outtake.specialties){
                                         this.$apollo.mutate({
                                             mutation: require('@/graphql/transaction/AddRelationsNewOuttakeClinic.gql'),
@@ -725,6 +718,24 @@
 
             },
 
+            verifyUnpaidConsultations(productTransaction){
+               
+                let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product.id === productTransaction.product.id && consultation.status === "Aguardando pagamento")
+                    
+                if(unpaidConsultation){
+                    his.saveRelationProductTransaction(unpaidConsultation.id, productTransaction.id)
+                }
+            },
+
+            saveRelationProductTransaction(idConsultation, idProductTransaction){
+                this.$apollo.mutate({
+                    mutation: require('@/graphql/transaction/AddRelationProductTransactionConsultation.gql'),
+                    variables:{
+                        idConsultation: idConsultation,
+                        idProductTransaction: idProductTransaction
+                    },
+                })
+            },
 
         },
         apollo: {
