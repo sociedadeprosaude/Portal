@@ -22,12 +22,13 @@
                 <v-divider/>
                 <v-card-text v-if="categorySelect === 'exam'" class="ma-0 pa-0 my-1">
                     <v-flex xs12>
+                        <p v-if="!item.clinics"> {{item.price}}</p>
                         <v-layout row v-for="n in item.clinics" :key="n.name" class="my-2" style="width: 100%">
                             <v-btn rounded dense x-small block class="background font-weight-bold"
                                    @click="addProduct(item, 'exam', n)">
                                 {{n.name}}
                                 <v-spacer/>
-                                {{n.price}}
+                                {{item.price ? item.price : item.final_price}}
                             </v-btn>
                         </v-layout>
                     </v-flex>
