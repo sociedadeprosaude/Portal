@@ -421,6 +421,7 @@
             async pay() {
                 this.paymentLoading = true;
                 console.log('patient: ', this.patient)
+                let ProductsKeys = []
                 let user = this.patient
                 if (!user) {
                     this.paymentLoading = false
@@ -449,8 +450,7 @@
                         date: this.selectedBudget.date,
                     },
 
-                })
-                    .then((data) => {
+                }).then((data) => {
                    console.log('Intake Criado: ', data)
                         this.selectedBudget.id= data.data.CreateTransaction.id
                     console.log('selectedBudget no primeiro then: ', this.selectedBudget)
@@ -471,13 +471,13 @@
                                     idProductTransaction: dataProduct.data.CreateProductTransaction.id
                                 }
                             }).then(dataaa => {
-                                this.selectedBudget.exams[exam].id = dataProduct.data.CreateProductTransaction.id
+                                //this.selectedBudget.exams[exam].id = dataProduct.data.CreateProductTransaction.id
 
                             }).catch(error => (error))
+                            this.verifyUnpaidConsultations({id:dataProduct.data.CreateProductTransaction.id, product:this.selectedBudget.exams[exam]})
                         }).catch(error => (error))
                     }
                     for(let specialtie in this.selectedBudget.specialties){
-                        console.log('specialtie: ', specialtie)
                         this.$apollo.mutate({
                             mutation: require('@/graphql/transaction/CreateProductTransaction.gql'),
                             variables: {
@@ -492,12 +492,12 @@
                                     idProductTransaction: dataProduct.data.CreateProductTransaction.id
                                 }
                             }).then(dataaa => {
-                                this.selectedBudget.specialties[specialtie].id = dataProduct.data.CreateProductTransaction.id
+                                //this.selectedBudget.specialties[specialtie].id = dataProduct.data.CreateProductTransaction.id
                             }).catch(error => (error))
+                            this.verifyUnpaidConsultations({id:dataProduct.data.CreateProductTransaction.id, product:this.selectedBudget.specialties[specialtie]})
 
                         }).catch(error => (error))
                     }
-                    console.log('selectedBudget: ', this.selectedBudget)
                     if(this.selectedBudget.doctor) {
                         this.AddRelationsIntakeDoctor(data)
                     }
@@ -621,6 +621,24 @@
 
             },
 
+            verifyUnpaidConsultations(productTransaction){
+               
+                let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product.id === productTransaction.product.id && consultation.status === "Aguardando pagamento")
+                    
+                if(unpaidConsultation){
+                    his.saveRelationProductTransaction(unpaidConsultation.id, productTransaction.id)
+                }
+            },
+
+            saveRelationProductTransaction(idConsultation, idProductTransaction){
+                this.$apollo.mutate({
+                    mutation: require('@/graphql/transaction/AddRelationProductTransactionConsultation.gql'),
+                    variables:{
+                        idConsultation: idConsultation,
+                        idProductTransaction: idProductTransaction
+                    },
+                })
+            },
 
         },
         apollo: {

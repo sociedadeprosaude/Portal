@@ -183,6 +183,8 @@ export default {
     examsLoading: [],
     loading: false,
     nextItem: 1,
+    skip:true,
+    withExam:undefined
   }),
 
   async mounted() {
@@ -238,23 +240,6 @@ export default {
     },
   },
 
-  watch: {
-    /* createConsultationForm(value) {
-      this.examsLoading = []
-      let exams = this.$store.getters.exams
-      if (value) {
-        exams = exams.filter((exam) => {
-          let response = false
-          if (value.consultation.exam_type && value.consultation.exam_type.name == exam.type)
-            response = true
-          return response
-        })
-
-        this.examsLoading = exams
-      }
-    } */
-  },
-
   methods: {
     getScheduleAvailableDates(schedule) {
       let dates = []
@@ -308,65 +293,22 @@ export default {
       this.payment_numberFound = undefined;
       this.numberReceipt = "";
       this.status = "Aguardando pagamento";
-      //this.loaderPaymentNumber = true;
 
-      /* let obj = value ? {
-            user: this.selectedForm.user,
-            doctor: this.selectedForm.consultation.doctor,
-            exam: {
-              exam_type: this.selectedForm.consultation.exam_type.name,
-              ...value
-            }
-          }
-          : this.selectedForm.consultation.specialty ? {
-                user: this.selectedForm.user,
-                doctor: this.selectedForm.consultation.doctor,
-                specialty: this.selectedForm.consultation.specialty,
-              }
-              : {
-                user: this.selectedForm.user,
-                doctor: this.selectedForm.consultation.doctor,
-                exam: {
-                  type: this.selectedForm.consultation.exam_type.name
-                },
-              }
- */
+      if(this.selectedForm.consultation.product.type === "SPECIALTY" && this.selectedForm.consultation.product.price == 0){
+        this.status = "Pago";
+        //payment_number
+      }else{
+        this.skip = false;
+        this.withExam = value
+        this.loaderPaymentNumber = true;
+        this.$apollo.queries.findProductTransaction.refresh()
+      }
 
-      /* this.$store.dispatch("thereIsIntakes", obj)
-          .then(obj => {
-            if (obj.payment_number) {
-              this.payment_numberFound = obj;
-              this.numberReceipt = obj.payment_number;
-              this.exam = obj.exam ? {...obj.exam, notFindPayment: true} : undefined;
-              this.status = "Pago";
-              this.loaderPaymentNumber = false
-            } else {
-              this.payment_numberFound = obj[0];
-              this.numberReceipt = obj[0].payment_number;
-              this.exam = obj[0].exam ? {...obj[0].exam, notFindPayment: true} : undefined;
-              this.status = "Pago";
-              this.loaderPaymentNumber = false
-            }
-          })
-          .catch(response => {
-            let cost = response.cost;
-            console.log('Custo',cost)
-            if (cost && cost.price === 0) {
-              this.status = "Pago";
-              this.loaderPaymentNumber = false
-            }
-            this.loaderPaymentNumber = false
-          });*/
     },
 
     async listenMoreConsultations() {
       this.loading = true;
       this.daysToListen += 3;
-      /* await this.$store.dispatch('listenConsultations',
-          {
-            start_date: new Date().toISOString().substr(0, 10),
-            final_date: moment().add(this.daysToListen, 'days').format('YYYY-MM-DD 23:59:59')
-          }); */
       this.$emit('refreshDate', this.daysToListen);
       this.loading = false;
     },
@@ -376,6 +318,29 @@ export default {
       this.status = ""
       this.numberReceipt = ""
       this.selectedForm = undefined
+    }
+  },
+  apollo:{
+    findProductTransaction:{
+        query: require("@/graphql/transaction/FindProductTransaction.gql"),
+        variables(){
+          return {
+            idProduct:this.withExam ? this.withExam.id : this.selectedForm.consultation.product.id,
+            idPatient: this.selectedForm.user.id
+          }
+        },
+        update(data){
+          console.log(data)
+          this.skip = true;
+          if(data.ProductTransaction.length > 0){
+            this.status = "Pago"
+            this.selectedForm.productTransaction = data.ProductTransaction[0]
+          }
+          this.loaderPaymentNumber = false;
+        },
+        skip(){
+          return this.skip;
+        }
     }
   }
 }

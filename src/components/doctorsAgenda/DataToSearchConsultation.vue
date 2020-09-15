@@ -144,7 +144,6 @@ export default {
         res[targetDate].push(consultations[cons]);
       }
       this.$emit('GetConsultations', res);
-      console.log('consultationsByDate',res)
       return res;
     },
 
@@ -154,7 +153,6 @@ export default {
         //let keys = Object.keys(schedule.days);
         if (schedule.days && schedule.product && schedule.doctor) {
           let dates = this.datesOfInterval({days: schedule.days});
-          console.log(dates)
           dates.forEach((date, index) => {
             let findDay = schedule.days.find(day => Number(day.day) == moment(date).weekday())
             let hourConsultation = findDay.hour;
@@ -169,7 +167,6 @@ export default {
                 id_schedule: schedule.id,
                 product:schedule.product
               };
-              console.log(schedule)
               /* if (schedule.product.type == "SPECIALTY")
                 scheduleObj.specialty = schedule.product
               else if (schedule.product.type == "EXAM")

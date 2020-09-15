@@ -10,6 +10,7 @@ query{
       id,
       name,
       type,
+      price,
       others:with_other{
         id,
         name

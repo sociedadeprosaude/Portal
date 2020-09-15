@@ -180,54 +180,7 @@
 
         computed: {
 
-            /* clinics() {
-                return this.$store.getters.clinics.filter(a => {
-                    return a.property;
-                });
-            },
-
-            specialties() {
-                let espArray = Object.values(this.$store.getters.specialties);
-                espArray = espArray.filter(specialty => {
-
-                    if (!this.doctor) return true;
-                    let find = false;
-                    if (specialty.doctors) {
-                        specialty.doctors.forEach(doctor => {
-                            if (doctor.cpf === this.doctor.cpf) {
-                                find = true;
-                                return true;
-                            }
-                        });
-                    }
-                    return find;
-                });
-                return espArray;
-            }, */
-
-            /* doctors: {
-                get: function () {
-                    let docArray = Object.values(this.$store.getters.doctors);
-                    docArray = docArray.filter(doctor => {
-                        if (!this.specialty) return true;
-                        let find = false;
-                        doctor.specialties.forEach(specialty => {
-                            if (specialty.name === this.specialty.name) {
-                                find = true;
-                                return true;
-                            }
-                        });
-                        return find;
-                    });
-                    return docArray;
-                }
-            }, */
-
-            /* examTypes() {
-                return this.$store.getters.examsTypes.filter((examType) => {
-                    return examType.scheduleable
-                });
-            } */
+            
         },
         mounted() {
             //this.$store.dispatch("getExamsTypes");

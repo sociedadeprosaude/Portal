@@ -165,7 +165,25 @@
         },
 
         watch: {
-            categorySelect: function () {
+            categorySelect(value) {
+                switch (this.categorySelect) {
+                    case 'exam':
+                        this.type = 'EXAM'
+                        this.skip = false
+                        this.$apollo.queries.loadSpecialties.refresh();
+                        break;
+                    case 'appointment':
+                        this.type = 'SPECIALTY'
+                        this.skip = false
+                        console.log('Specialty')
+                        this.$apollo.queries.loadSpecialties.refresh();
+                        break;
+                    case 'package':
+                        console.log(this.package)
+                        break;
+                    default:
+                        return []
+                }
                 this.search = ''
             },
             patient() {
@@ -185,7 +203,7 @@
             package() {
                 return this.$store.getters.bundles;
             },
-            items() {
+            /* items() {
                 switch (this.categorySelect) {
                     case 'exam':
                         return this.Exams;
@@ -197,7 +215,7 @@
                     default:
                         return []
                 }
-            },
+            }, */
             patient() {
                 return this.$store.getters.selectedPatient;
             }
