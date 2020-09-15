@@ -148,6 +148,12 @@
                 return this.$store.getters.selectedUnit
             },
             items() {
+                if(this.budget.exams === undefined){
+                    return this.budget.specialties
+                }
+                if(this.budget.specialties === undefined){
+                    return this.budget.exams
+                }
                 return this.budget.specialties.concat(this.budget.exams)
             },
             examsPerClinic(){
