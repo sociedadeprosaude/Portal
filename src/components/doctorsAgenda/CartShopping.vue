@@ -111,7 +111,6 @@
             },
             addProduct(product, type, clinic) {
                 let holder = Object.assign({}, product);
-                console.log('type: ', type)
                 switch (type) {
                     case 'appointment':
                         delete holder.doctors;
@@ -127,7 +126,6 @@
                         break;
                     default:
                 }
-                console.log('holder: ', holder)
                 this.$store.commit('addShoppingCartItem', holder)
             },
 

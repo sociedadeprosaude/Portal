@@ -150,13 +150,9 @@
                     self.typingTimer = setTimeout(() => {
                         if (self.categorySelect === 'exam') {
                             self.LocaleExams = self.Exams.filter((el) =>  el.name.toUpperCase().includes(self.search.toUpperCase()))
-                            console.log('Exams:', self.Exams)
-                            console.log('search: ', self.Exams.filter((el) =>  el.name.toUpperCase().includes(self.search.toUpperCase())))
                         }
                         if (self.categorySelect === 'appointment') {
                             self.LocaleSpecialties = self.Specialties.filter((el) =>  el.name.toUpperCase().includes(self.search.toUpperCase()))
-                            console.log('specialties:', self.Specialties)
-                            console.log('search: ', self.Specialties.filter((el) =>  el.name.toUpperCase().includes(self.search.toUpperCase())))
                         }
                         if (self.categorySelect === 'package') {
                             self.$store.dispatch("loadBundle");
@@ -176,11 +172,9 @@
                 switch (this.categorySelect) {
                     case 'exam':
                         this.type = 'EXAM'
-                        console.log(this.categorySelect, ': ' , this.Exams)
                         break;
                     case 'appointment':
                         this.type = 'SPECIALTY'
-                        console.log(this.categorySelect, ': ' , this.Specialties)
                         break;
                     case 'package':
                         console.log(this.package)
@@ -197,7 +191,6 @@
 
         computed: {
             itemsShopping () {
-                console.log( this.$store.getters.getShoppingCartItems.length);
                 return this.$store.getters.getShoppingCartItems.length;
             },
             package() {
@@ -210,7 +203,6 @@
                     case 'appointment':
                         return this.LocaleSpecialties.slice(0,20);
                     case 'package':
-                        console.log(this.package)
                         return this.package;
                     default:
                         return []
@@ -279,7 +271,6 @@
                     }
                 },
                 update(data){
-                    console.log('data: ', data.Product)
                     this.Specialties = Object.assign(data.Product)
                     this.LocaleSpecialties= data.Product
                     this.SpecialtieSkip = true
@@ -296,7 +287,6 @@
                     }
                 },
                 update(data){
-                    console.log('data: ', data.Product)
                     this.Exams = Object.assign(data.Product)
                     this.LocaleExams= data.Product
                     this.ExamsSkip = true

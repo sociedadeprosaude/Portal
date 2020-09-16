@@ -24,7 +24,6 @@ const mutations = {
     async setSelectedPatient(state, payload) {
         if (payload)
             localStorage.setItem('patient', payload.id)
-        console.log(payload)
         state.selectedPatient = payload
     },
     setSelectedDependent(state, payload) {
@@ -124,7 +123,6 @@ const actions = {
             }
 
         });
-        console.log('user selecionado:', user)
         return user
     },
 
@@ -161,7 +159,6 @@ const actions = {
             //let users = (await axios.get('https://us-central1-prosaudedev.cloudfunctions.net/requests-searchUser', {
                 params: searchFields
             })).data
-            console.log('users:', users)
             return users
         } catch (e) {
             throw e
@@ -221,7 +218,6 @@ const actions = {
     },
 
     async addUser({ getters }, patient) {
-        console.log('patient:', patient)
         functions.removeUndefineds(patient);
         try {
             let user;
@@ -232,7 +228,6 @@ const actions = {
                 id = doc.id,
                     type = doc.data().type
             });
-            console.log('encontrado:', id)
             if (id) {
                 //se já existir: collaborator / patient / doctor (passar a ter field uid !== de doc.id)
                 if (type === 'COLABORATOR') {
