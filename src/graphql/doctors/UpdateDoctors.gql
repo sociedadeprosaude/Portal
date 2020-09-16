@@ -1,11 +1,11 @@
-mutation UpdateProduct(
+mutation UpdateDoctor(
     $id: ID!,
-    $price: Float!
+    $crm: String!,
     $name: String!){
-  UpdateProduct(
+  UpdateDoctor(
     id: $id,
     name: $name,
-    price: $price,
+    crm: $crm,
   ){
     id
   }

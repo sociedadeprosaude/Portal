@@ -36,7 +36,6 @@
 <script>
     import CreateDoctorCard from "../../components/Doctors/CreateDoctorCard";
     import ListDoctors from "../../components/Doctors/ListDoctors";
-
     export default {
         components: {CreateDoctorCard, ListDoctors},
         props:['doctors'],

@@ -1,7 +1,7 @@
 mutation CreateProduct(
     $name: String!,
     $type: String!,
-    $schedulable: Boolean!
+    $schedulable: Boolean!,
     $price: Float,
     $rules: String,
     ){

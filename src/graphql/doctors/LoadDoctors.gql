@@ -1,5 +1,5 @@
 query {
-    Doctor(orderBy:[name_desc]){
-        id,name
+    Doctor(orderBy:[name_asc]){
+        id,name,crm,cpf
     }
 }

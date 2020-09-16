@@ -7,7 +7,12 @@
             <v-flex sm12 v-else>
                 <v-card class="pt-3 mb-4">
                     <v-layout row wrap>
-                        <v-flex sm8>
+                      <v-flex sm8>
+                      <ApolloQuery
+                          :query="require('@/graphql/clinics/LoadAllClinics.gql')"
+                      >
+                        <template slot-scope="{ result: { data } }">
+                        <v-flex sm12>
                                 <v-text-field outlined
                                               v-model="search"
                                               placeholder="Clinicas"
@@ -16,6 +21,23 @@
                                               id="search"
                                 />
                         </v-flex>
+                          <div v-if="search">
+                            <div v-for="(clinic,i) in data.Clinic" :key="i">
+                              <div v-if="clinic.name === (search.toUpperCase()) ">
+                                <v-flex x12>
+                                  {{clinic.name}}
+                                    <ListClinics :clinics="new Array(clinic)" :loading="loading"/>
+                                </v-flex>
+                              </div>
+                            </div>
+                          </div>
+<!--                          <div v-else>
+                            <ListClinics :clinics="data.Clinic" :loading="loading"/>
+                          </div>-->
+                        </template>
+                      </ApolloQuery>
+                      </v-flex>
+
                         <v-flex sm4 class="text-right pr-3 mt-2">
                             <v-btn outlined class="primary--text" @click="selectClinic(null, -1)">cadastrar clínica</v-btn>
                         </v-flex>
@@ -23,7 +45,17 @@
                 </v-card>
 
                 <v-card>
-                    <v-card-text >
+                    <v-card-text>
+                      <h1>APOLLO</h1>
+                      <ApolloQuery
+                          :query="require('@/graphql/clinics/LoadAllClinics.gql')"
+                      >
+                        <template slot-scope="{ result: { data } }">
+                          <ListClinics :clinics="data.Clinic" :loading="loading"/>
+                        </template>
+                      </ApolloQuery>
+
+                      <h1>FIREBASE</h1>
                         <ListClinics :clinics="clinics" :loading="loading"/>
                     </v-card-text>
                 </v-card>

@@ -8,32 +8,39 @@
                 <p>Não há resultado para a pesquisa realizada</p>
             </v-flex>
             <div v-if="doctors.length !== 0" style="width: 100%">
-                <v-flex sm12 v-for="(doctor, i) in doctorsArray" :key="i" class="mb-5">
+              <!-- Apollo Query -->
+              <ApolloQuery
+                  :query="require('@/graphql/doctors/LoadDoctors.gql')"
+              >
+                <template slot-scope="{ result: { data } }">
+                  <v-flex sm12 v-for="(doctor, i) in data.Doctor" :key="i" class="mb-5">
                     <v-card>
-                        <v-flex xs12 sm12>
-                            <v-card color="primary">
-                                <v-layout row wrap>
-                                    <v-flex sm10>
-                                        <p class="white--text text-left font-weight-bold pt-4 pb-3 pl-4">
-                                            {{doctor.name}}
-                                        </p>
-                                    </v-flex>
-                                    <v-flex sm2 class="text-right mt-2">
-                                        <v-btn icon dark @click="editDoctor(doctor)">
-                                            <v-icon>edit</v-icon>
-                                        </v-btn>
-                                        <v-btn icon dark @click="deleteDoctor(doctor)">
-                                            <v-icon>delete</v-icon>
-                                        </v-btn>
-                                        <v-btn icon dark @click="deactiveDoctor(doctor)">
-                                            <v-icon>work_off</v-icon>
-                                        </v-btn>
-                                    </v-flex>
-                                </v-layout>
-                            </v-card>
-                        </v-flex>
+                      <v-flex xs12 sm12>
+                        <v-card color="primary">
+                          <v-layout row wrap>
+                            <v-flex sm10>
+                              <p class="white--text text-left font-weight-bold pt-4 pb-3 pl-4">
+                                {{doctor.name}}
+                              </p>
+                            </v-flex>
+                            <v-flex sm2 class="text-right mt-2">
+                              <v-btn icon dark @click="editDoctor(doctor)">
+                                <v-icon>edit</v-icon>
+                              </v-btn>
+                              <v-btn icon dark @click="deleteDoctor(doctor)">
+                                <v-icon>delete</v-icon>
+                              </v-btn>
+                              <v-btn icon dark @click="deactiveDoctor(doctor)">
+                                <v-icon>work_off</v-icon>
+                              </v-btn>
+                            </v-flex>
+                          </v-layout>
+                        </v-card>
+                      </v-flex>
                     </v-card>
-                </v-flex>
+                  </v-flex>
+                </template>
+              </ApolloQuery>
             </div>
         </v-layout>
         <v-dialog v-model="editingDoctor" max-width="500px" v-if="editingDoctor">
@@ -53,10 +60,19 @@
                     <v-divider class="primary"/>
                 </v-card-text>
                 <v-card-actions class="mx-3">
-                    <v-spacer/>
-                    <submit-button text="Apagar" color="red" class="white--text" :loading="loading" :success="success"
-                                   @reset="success = false" @click="deleteDoctorFromDatabase(selectedDoctor)">
-                    </submit-button>
+                  <v-spacer/>
+                    <ApolloMutation
+                        :mutation="require('@/graphql/doctors/DeleteDoctors.gql')"
+                        :variables="{ id: selectedDoctor.id }"
+                        @done="deletingDoctor = false"
+                    >
+                      <template v-slot="{ mutate, loading, error }">
+                        <v-progress-circular indeterminate color="primary" v-if="loading"></v-progress-circular>
+                        <v-btn color="red" class="white--text" @click="mutate()">Apagar</v-btn>
+                        <p v-if="error">Ocorreu um erro: {{ error }}</p>
+                      </template>
+                    </ApolloMutation>
+
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -110,12 +126,11 @@
         methods: {
             async editDoctor(doctor) {
                 console.log('edit ?', doctor)
-                this.selectedDoctor = this.doctors[doctor.uid];
+                this.selectedDoctor = doctor;
                 this.editingDoctor = true;
             },
             async deleteDoctor(doctor){
                 console.log('delete ?',doctor)
-
                 this.selectedDoctor = doctor;
                 this.deletingDoctor = true;
 

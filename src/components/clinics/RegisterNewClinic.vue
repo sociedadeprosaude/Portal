@@ -170,6 +170,20 @@
                                 hide-details
                         />
                     </v-flex>
+                  <v-flex xs12>
+                    <v-textarea
+                        filled
+                        v-model="logo"
+                        label="Link da logo da unidade pro-saúde (se for unidade pro-sáude)"
+                    ></v-textarea>
+                  </v-flex>
+                  <v-flex>
+                    <v-checkbox
+                        v-model="property"
+                        color="green"
+                        :label="`Unidade pro-saúde ? : ${property.toString()}`"
+                    ></v-checkbox>
+                  </v-flex>
                 </v-layout>
             </v-container>
         </v-card-text>
@@ -177,14 +191,28 @@
         <v-card-actions>
             <v-btn rounded color="error" @click="closeDialog">Cancelar</v-btn>
             <v-spacer/>
-            <submit-button
-                    color="success"
-                    @click="save"
-                    :disabled="!formIsValid"
-                    text="Salvar"
-                    :loading="loading"
-                    :success="success"
-            />
+          <ApolloMutation
+              :mutation="require('@/graphql/clinics/CreateClinics.gql')"
+              :variables="{
+                name: clinic.name,
+                cnpj: clinic.cnpj,
+                telephone: clinic.telephone[0],
+                logo: logo,
+                property: property,
+                opening_hours: opening_hours,
+              }"
+              @done="closeDialog"
+          >
+            <template v-slot="{ mutate, loading, error }">
+              <v-btn
+                  color="primary"
+                  :disabled="loading"
+                  @click.native="createClinic(mutate)"
+              >Adicionar</v-btn>
+              <p v-if="error">Ocorreu um erro: {{ error }}</p>
+            </template>
+          </ApolloMutation>
+
         </v-card-actions>
     </v-card>
 </template>
@@ -239,6 +267,10 @@
                 'Tocantins (TO)'
             ],
             ceps: '',
+            logo: null,
+            checkbox: true,
+            property: false,
+            opening_hours: null,
             alertCEP: false,
             defaultItem: {
                 name: '',
@@ -321,6 +353,22 @@
         },
 
         methods: {
+            createClinic(mutate) {
+              this.clinic.name = this.clinic.name.toUpperCase()
+              let agenda = [];
+              for (let i = 0; i < 7; i++) {
+                if (i < 5) {
+                  agenda.push(this.clinic.startWeek + '-' + this.clinic.endWeek)
+                } else if (i === 5) {
+                  agenda.push(this.clinic.startSaturday + '-' + this.clinic.endSaturday)
+                }
+              }
+              this.opening_hours = agenda
+              console.log(typeof (this.clinic.cnpj))
+              setTimeout(() => {
+                mutate();
+              }, 0);
+            },
             closeDialog : function () {
                 this.$emit('close-dialog');
                 this.clearData();

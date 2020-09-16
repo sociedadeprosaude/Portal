@@ -1,0 +1,10 @@
+mutation UpdateClinic(
+    $id: ID!,
+    $telephone: [String]){
+  UpdateClinic(
+    id: $id,
+    telephone: $telephone,
+  ){
+    id
+  }
+}

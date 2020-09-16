@@ -69,9 +69,7 @@
 
         methods: {
             editSpecialty (specialty) {
-              console.log('editing:', specialty)
               this.specialty = specialty;
-              console.log(typeof (specialty.id))
               this.editingSpecialty = true;
             },
             closeDialogs () {
