@@ -18,8 +18,10 @@
                                 slot="activator"
                                 v-model="password"
                                 label="Senha"
-                                type="password"
                                 persistent-hint
+                                :append-icon="show_password ? 'visibility' : 'visibility_off'"
+                                :type="show_password ? 'text' : 'password'"
+                                @click:append="show_password = !show_password"
                                 :error="passwordError"
                                 prepend-icon="fingerprint">
                         </v-text-field>
@@ -65,6 +67,7 @@
         data() {
             return {
                 email: '',
+                show_password: false,
                 credentialError: false,
                 password: '',
                 passwordError: false,
@@ -73,6 +76,11 @@
             }
         },
         methods: {
+          handleEnter(e) {
+            if (e.key === 'Enter') {
+              this.signIn()
+            }
+          },
             async signIn() {
                 try {
                     this.loading = true;
@@ -100,6 +108,10 @@
             if (firebase.auth().currentUser) {
                 this.$router.push('/')
             }
-        }
+          window.addEventListener('keydown', this.handleEnter)
+        },
+        beforeDestroy() {
+          window.removeEventListener('keydown', this.handleEnter)
+        },
     }
 </script>
