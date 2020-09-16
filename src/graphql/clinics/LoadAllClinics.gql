@@ -1,6 +1,6 @@
 query{
-    Clinic{
-        id,name, cnpj, telephone,opening_hours
+    Clinic(orderBy:[name_asc]){
+        id,name,cnpj,telephone,logo,property,opening_hours
          has_adrress{
                cep, state, street, city, complement, neighboor, number
              }

@@ -38,7 +38,7 @@
                                 hide-details
                         />
                     </v-flex>
-                    <v-flex xs6>
+                  <!--  <v-flex xs6>
                         <v-text-field
                                 v-model="ceps"
                                 v-mask="mask.cep"
@@ -121,11 +121,11 @@
                                 hide-details
                                 clearable
                         />
-                    </v-flex>
+                    </v-flex>-->
                     <p class="text-justify">Horario de Funcionamento de Segunda-Feira a Sexta-Feira:</p>
                     <v-flex xs6>
                         <v-text-field
-                                v-model="clinic.startWeek"
+                                v-model="this.clinic.opening_hours[0].split('-')[0]"
                                 label="Abre as:"
                                 placeholder="Ex.: 08:00"
                                 outlined
@@ -137,7 +137,7 @@
                     <v-spacer/>
                     <v-flex xs6>
                         <v-text-field
-                                v-model="clinic.endWeek"
+                                v-model="this.clinic.opening_hours[0].split('-')[1]"
                                 label="Fecha as:"
                                 placeholder="Ex.: 18:00"
                                 outlined
@@ -146,10 +146,12 @@
                                 hide-details
                         />
                     </v-flex>
+
                     <p class="text-justify">Horario de Funcionamento de Sábado:</p>
-                    <v-flex xs6>
+
+                    <v-flex xs6 v-if="clinic.opening_hours[5].length > 0">
                         <v-text-field
-                                v-model="clinic.startSaturday"
+                                v-model="this.clinic.opening_hours[5].split('-')[0]"
                                 label="Abre as:"
                                 placeholder="Ex.: 06:00"
                                 outlined
@@ -159,10 +161,9 @@
                         />
                     </v-flex>
                     <v-spacer/>
-                    <v-flex xs6>
+                    <v-flex xs6 v-if="clinic.opening_hours[5].length > 0">
                         <v-text-field
-                                v-model="clinic.endSaturday"
-                                label="Fecha as:"
+                                v-model="this.clinic.opening_hours[5].split('-')[1]"
                                 placeholder="Ex.: 12:00"
                                 outlined
                                 v-mask="mask.time"
@@ -170,6 +171,30 @@
                                 hide-details
                         />
                     </v-flex>
+
+                  <v-flex xs6 v-if="!clinic.opening_hours[5].length > 0">
+                    <v-text-field
+                        v-model="this.clinic.opening_hours[5].split('-')[0]"
+                        label="Abre as:"
+                        placeholder="Ex.: 06:00"
+                        outlined
+                        v-mask="mask.time"
+                        clearable
+                        hide-details
+                    />
+                  </v-flex>
+                  <v-spacer/>
+                  <v-flex xs6 v-if="!clinic.opening_hours[5].length > 0">
+                    <v-text-field
+                        v-model="this.clinic.opening_hours[5].split('-')[1]"
+                        placeholder="Ex.: 12:00"
+                        outlined
+                        v-mask="mask.time"
+                        clearable
+                        hide-details
+                    />
+                  </v-flex>
+
                 </v-layout>
             </v-container>
         </v-card-text>
@@ -180,14 +205,16 @@
             <v-btn rounded color="success"  :to="{ name: 'RegisterNewUserClinic', params: {id: clinic.cnpj } }">Gerar Link para Usuario
             </v-btn>
             <v-spacer/>
-            <submit-button
-                    color="success"
-                    @click="save"
-                    :disabled="!formIsValid"
-                    text="Salvar"
-                    :loading="loading"
-                    :success="success"
-            />
+            <ApolloMutation
+                :mutation="require('@/graphql/clinics/UpdateClinics.gql')"
+                :variables="{ id: clinic.id, telephone: clinic.telephone}"
+                @done="closeDialog"
+            >
+              <template v-slot="{ mutate, loading, error }">
+                <v-btn color="primary" @click.native="updateProduct(mutate)">Editar</v-btn>
+                <p v-if="error">Ocorreu um erro: {{ error }}</p>
+              </template>
+            </ApolloMutation>
         </v-card-actions>
     </v-card>
 </template>
@@ -195,11 +222,9 @@
 <script>
     import {mask} from 'vue-the-mask';
     import axios from 'axios';
-    import SubmitButton from "../../components/SubmitButton";
     export default {
         name: "EditClinic",
         props: ['clinic'],
-        components: {SubmitButton},
         directives: {mask},
         data: () => ({
             selectedClin: undefined,
@@ -243,7 +268,7 @@
             ],
             ceps: '',
             alertCEP: false,
-            defaultItem: {
+/*            defaultItem: {
                 name: '',
                 cnpj: '',
                 telephone: [],
@@ -260,15 +285,16 @@
                 endWeek: '',
                 startSaturday: '',
                 endSaturday: ''
-            },
+            },*/
 
         }),
         mounted() {
-            this.ceps = this.clinic.address.cep;
-            this.clinic.startWeek = this.clinic.agenda[0].split('-')[0];
-            this.clinic.endWeek = this.clinic.agenda[0].split('-')[1];
-            this.clinic.startSaturday = this.clinic.agenda[5].length > 0 ? this.clinic.agenda[5].split('-')[0] : '';
-            this.clinic.endSaturday = this.clinic.agenda[5].length > 0 ? this.clinic.agenda[5].split('-')[1] : '';
+            console.log("clinic apollo:", this.clinic)
+           /* this.ceps = this.clinic.address.cep;
+            this.clinic.startWeek = this.clinic.opening_hours[0].split('-')[0];
+            this.clinic.endWeek = this.clinic.opening_hours[0].split('-')[1];
+            this.clinic.startSaturday = this.clinic.opening_hours[5].length > 0 ? this.clinic.opening_hours[5].split('-')[0] : '';
+            this.clinic.endSaturday = this.clinic.opening_hours[5].length > 0 ? this.clinic.opening_hours[5].split('-')[1] :*/ '';
         },
 
         computed: {
@@ -314,6 +340,12 @@
         },
 
         methods: {
+            updateProduct(mutate) {
+              setTimeout(() => {
+                mutate();
+              }, 0);
+            },
+
             closeDialog : function () {
                 this.$emit('close-dialog');
                 this.clearData();

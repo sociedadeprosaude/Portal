@@ -59,7 +59,18 @@
                 <v-card-actions>
                     <v-btn rounded color="error" @click="closeDialogs">Cancelar</v-btn>
                     <v-spacer/>
-                    <v-btn rounded color="success" @click="deletingClinicfromDatabase(clinic)">Confirmar</v-btn>
+'                  <ApolloMutation
+                      :mutation="require('@/graphql/clinics/DeleteClinics.gql')"
+                      :variables="{ id: clinic.id }"
+                      @done="closeDialogs"
+                  >
+                    <template v-slot="{ mutate, loading, error }">
+                      <v-progress-circular indeterminate color="primary" v-if="loading"></v-progress-circular>
+                      <v-btn rounded color="success" @click="mutate()">Confirmar</v-btn>
+                      <p v-if="error">Ocorreu um erro: {{ error }}</p>
+                    </template>
+                  </ApolloMutation>'
+                   <!-- <v-btn rounded color="success" @click="deletingClinicfromDatabase(clinic)">Confirmar</v-btn>-->
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -146,7 +157,7 @@
 
         methods: {
             editClinic(clinic) {
-                this.clinic = this.clinics[this.clinics.indexOf(clinic)];
+                this.clinic = clinic;
                 this.editingClinic = true;
             },
             deleteClinic(clinic) {
