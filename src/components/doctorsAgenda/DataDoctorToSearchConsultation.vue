@@ -39,17 +39,16 @@
                                 :query="require('@/graphql/products/LoadProducts.gql')"
                                 :variables="{ type:'SPECIALTY', schedulable:false}"
                             >
-                                <template slot-scope="{ result: { data,loading } }">
-                                    <h1 v-if="loading" class="white--text" >kkjlkjlkj</h1>
-                                    <v-combobox
-                                        v-else
+                                <template v-slot="{ result: { data, loading } }">
+                                   <v-select
                                         class="pa-0 ma-0"
-                                        :items="data.Product"
+                                        :items="data ? data.Product : []"
                                         v-model="specialty"
                                         item-text="name"
                                         return-object
                                         placeholder="Especialidades"
                                         dense solo
+                                        :loading="loading"
                                         color="blue"
                                         clearable>
                                         <template v-slot:selection="data">
@@ -65,7 +64,7 @@
                                             >{{ data.item.name }}
                                             </v-chip>
                                         </template>
-                                    </v-combobox>
+                                    </v-select>
                                 </template>
                             </ApolloQuery>
                         </template>
@@ -75,12 +74,12 @@
                                 :query="require('@/graphql/products/LoadProducts.gql')"
                                 :variables="{ type:'EXAM', schedulable:true}"
                             >
-                                <template slot-scope="{ result: { data,loading } }">
+                                <template v-slot="{ result: { data,loading } }">
                                     <v-progress-circular v-if="loading" indeterminate></v-progress-circular>
-                                    <v-combobox
+                                    <v-select
                                             v-else
                                             class="pa-0 ma-0"
-                                            :items="data.Product"
+                                            :items="data ? data.Product : []"
                                             v-model="examType"
                                             item-text="name"
                                             return-object
@@ -101,7 +100,7 @@
                                             >{{ data.item.name }}
                                             </v-chip>
                                         </template>
-                                    </v-combobox>
+                                    </v-select>
                                 </template>
                             </ApolloQuery>
                         </template>

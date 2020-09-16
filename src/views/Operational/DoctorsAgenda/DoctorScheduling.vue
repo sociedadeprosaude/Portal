@@ -9,11 +9,11 @@
                 </v-layout>
             </v-flex>
             <v-flex sm3 class="primary hidden-sm-and-down">
-                <DataToSearchConsultation @GetConsultations="schedules= $event" :daysToListen="daysToListen"/>
+                <DataToSearchConsultation @loading="loadingConsultations = $event" @GetConsultations="schedules= $event" :daysToListen="daysToListen"/>
             </v-flex>
 
             <v-flex sm6 class="white">
-                <SchedulesConsultations :Consultations="schedules" @refreshDate="daysToListen = $event" v-if="this.viewSeleted === 'schedules'"/>
+                <SchedulesConsultations :loadingConsultations="loadingConsultations" :Consultations="schedules" @refreshDate="daysToListen = $event" v-if="this.viewSeleted === 'schedules'"/>
             </v-flex>
             <v-flex sm3 class="primary hidden-sm-and-down">
                 <DataCashierConsultation/>
@@ -43,7 +43,8 @@
                 {title: 'Consultas', view: 'schedules'},
                 {title: 'Caixa', view: 'cashier'}
             ],
-            query: {}
+            query: {},
+            loadingConsultations: true
         }),
         mounted() {
             this.query= this.$route.params.q

@@ -189,12 +189,12 @@
 
                                 <v-layout row wrap class="mb-2 mr-2 ml-2">
                                     <v-flex xs4>
-                                        <submit-button @click="searchPatient()" :loading="$apollo.queries.loadPatient.loading" :success="success"
+                                        <submit-button @click="searchPatient()" :loading="loading" :success="success"
                                                        text="Buscar" color="background" dense>
                                         </submit-button>
                                     </v-flex>
                                     <v-flex xs8>
-                                        <submit-button @click="searchPatientOldDatabase()" :loading="$apollo.queries.loadPatient.loading"
+                                        <submit-button @click="searchPatientOldDatabase()" :loading="loading"
                                                        color="background"
                                                        :success="success" text="sistema antigo">
                                         </submit-button>
@@ -846,6 +846,7 @@
                     association_number: this.numAss
                   }); */
                   //this.foundUsers = users;
+                  this.loading = true
                   this.$apollo.queries.loadPatient.refresh()
                   this.skipPatients = false
                 } catch (e) {
@@ -958,6 +959,7 @@
                 update(data) {
                     this.foundUsers = data.Patient
                     this.skipPatients = true
+                    this.loading = false
                 },
                 skip (){
                     return this.skipPatients

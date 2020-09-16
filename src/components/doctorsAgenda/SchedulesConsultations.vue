@@ -1,6 +1,9 @@
 <template>
   <v-container fluid>
-    <div class="container" id="app">
+    <v-flex xs12 v-if="loadingConsultations">
+      <v-progress-circular class="primary--text" indeterminate/>
+    </v-flex>
+    <div  v-else class="container" id="app">
       <ul class="list-group" id="infinite-list">
         <v-layout row wrap style="width:100%"
                   class="align-center justify-center py-0"
@@ -115,13 +118,11 @@
         </v-layout>
       </ul>
     </div>
-    <v-flex xs12 v-if="!consultationLoading">
+    <v-flex xs12 v-if="!loadingConsultations">
       <v-btn class="primary" rounded text @click="listenMoreConsultations">Carregar mais</v-btn>
     </v-flex>
 
-    <v-flex xs12 v-if="consultationLoading">
-      <v-progress-circular class="primary--text" indeterminate/>
-    </v-flex>
+    
     <v-dialog v-model="prolongedDialog"   max-width="500px">
         <v-card>
           <v-card-title>
@@ -154,7 +155,7 @@ import axios from "axios"
 let moment = require("moment/moment");
 
 export default {
-  props: ['Consultations'],
+  props: ['Consultations','loadingConsultations'],
   components: {SchedulingForm},
   directives: {infiniteScroll},
   data: () => ({
@@ -234,9 +235,6 @@ export default {
     },
     foundDependents() {
       return this.selectedPatient ? this.selectedPatient.dependents : undefined;
-    },
-    consultationLoading() {
-      return this.$store.getters.consultationsLoading;
     },
   },
 

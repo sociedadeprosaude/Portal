@@ -80,6 +80,7 @@ export default {
 
     changeData: {
       handler: function(val) {
+        this.$emit('loading',true)
         this.$apollo.queries.loadSchedules.refresh()
       },
       deep: true
@@ -218,6 +219,7 @@ export default {
         if(this.selectedClinic)
           this.schedules = this.schedules.filter(schedule=> schedule.clinic && schedule.clinic.id === this.selectedClinic.id)
         this.consultationsByDate(this.schedules)
+        this.$emit('loading',false)
       }
     },
   }
