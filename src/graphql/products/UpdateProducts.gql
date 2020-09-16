@@ -1,8 +1,10 @@
 mutation UpdateProduct(
     $id: ID!,
-    $price: Float!){
+    $price: Float!
+    $name: String!){
   UpdateProduct(
     id: $id,
+    name: $name,
     price: $price,
   ){
     id

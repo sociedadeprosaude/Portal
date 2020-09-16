@@ -20,7 +20,17 @@
                                     </v-flex>
                                     <v-flex sm2 class="text-right mt-2">
                                         <v-btn icon dark><v-icon small @click="selectExam(exam)">edit</v-icon></v-btn>
-                                        <v-btn icon dark><v-icon small @click="openAlertDelete(exam)">delete</v-icon></v-btn>
+                                        <ApolloMutation
+                                            :mutation="require('@/graphql/products/DeleteProducts.gql')"
+                                            :variables="{ id: exam.id }"
+                                        >
+                                          <template v-slot="{ mutate, loading, error }">
+                                            <v-progress-circular indeterminate color="primary" v-if="loading"></v-progress-circular>
+                                            <v-btn icon dark><v-icon small @click="mutate()">delete</v-icon></v-btn>
+                                            <p v-if="error">Ocorreu um erro: {{ error }}</p>
+                                          </template>
+                                        </ApolloMutation>
+                                       <!-- <v-btn icon dark><v-icon small @click="openAlertDelete(exam)">delete</v-icon></v-btn>-->
                                     </v-flex>
                                 </v-layout>
                             </v-card>

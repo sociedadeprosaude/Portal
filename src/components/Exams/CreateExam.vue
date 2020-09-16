@@ -88,10 +88,22 @@
                           >
                             <template v-slot="{ mutate, loading, error }">
                               <v-btn
+                                  v-if="!selectedExam"
                                   color="primary"
                                   :disabled="loading"
                                   @click.native="createProduct(mutate)"
                               >Adicionar</v-btn>
+                              <p v-if="error">Ocorreu um erro: {{ error }}</p>
+                            </template>
+                          </ApolloMutation>
+
+                          <ApolloMutation
+                              :mutation="require('@/graphql/products/UpdateProducts.gql')"
+                              :variables="{ id : editedExam.id, price : editedExam.price, name : editedExam.name}"
+                              @done="close"
+                          >
+                            <template v-slot="{ mutate, loading, error }">
+                              <v-btn v-if="selectedExam" color="primary" @click.native="updateProduct(mutate)">Editar</v-btn>
                               <p v-if="error">Ocorreu um erro: {{ error }}</p>
                             </template>
                           </ApolloMutation>
@@ -124,6 +136,8 @@
 
         mounted() {
             if(this.selectedExam){
+              console.log(this.selectedExam)
+                this.editedExam.id = this.selectedExam.id;
                 this.editedExam.name = this.selectedExam.name;
                 this.editedExam.price = this.selectedExam.price;
                 this.editedExam.rules = this.selectedExam.rules;
@@ -172,15 +186,16 @@
 
             createProduct(mutate) {
               this.editedExam.name = this.editedExam.name.toUpperCase().replace(/\//g, "-")
-              if(this.editedExam.type !== "EXAM"){
+/*              if(this.editedExam.type !== "EXAM"){
                 this.editedExam.type = this.editedExam.type.name
                 this.editedExam.schedulable = true
-              }
-              console.log(this.editedExam.name)
-              console.log(this.editedExam.type)
-              console.log(this.editedExam.rules)
-              console.log(this.editedExam.schedulable)
-              console.log(this.editedExam.price)
+              }*/
+              setTimeout(() => {
+                mutate();
+              }, 0);
+            },
+
+            updateProduct(mutate) {
               setTimeout(() => {
                 mutate();
               }, 0);

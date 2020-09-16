@@ -19,7 +19,16 @@
                             </v-flex>
                             <v-flex sm2 class="text-right mt-2">
                               <v-btn icon dark><v-icon small @click="selectExamType(examType)">edit</v-icon></v-btn>
-                              <v-btn icon dark><v-icon small @click="openAlertDelete(examType)">delete</v-icon></v-btn>
+                              <ApolloMutation
+                                  :mutation="require('@/graphql/products/DeleteProducts.gql')"
+                                  :variables="{ id: examType.id }"
+                              >
+                                <template v-slot="{ mutate, loading, error }">
+                                  <v-progress-circular indeterminate color="primary" v-if="loading"></v-progress-circular>
+                                  <v-btn icon dark><v-icon small @click="mutate()">delete</v-icon></v-btn>
+                                  <p v-if="error">Ocorreu um erro: {{ error }}</p>
+                                </template>
+                              </ApolloMutation>
                             </v-flex>
                           </v-layout>
                         </v-card>
@@ -29,7 +38,9 @@
                 </template>
               </ApolloQuery>
             </div>
-            <v-dialog v-model="editExamType"><createExamType :registed="registed" :selectedExamType="examType" @close-dialog="editExamType = false" /></v-dialog>
+            <v-dialog v-model="editExamType">
+              <createExamType :registed="registed" :selectedExamType="examType" @close-dialog="editExamType = false" />
+            </v-dialog>
             <v-dialog v-model="alertDelete" persistent max-width="400">
                 <v-card>
                     <v-card-title><strong>Deseja excluir este tipo de exame?</strong></v-card-title>
