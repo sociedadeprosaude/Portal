@@ -18,7 +18,8 @@ const mutations = {
         state.items = payload
     },
     addShoppingCartItem(state, payload) {
-
+        console.log('items: ', state.items)
+        console.log('payload: ', payload)
         for (let item in state.items) {
             if (state.items[item].name === payload.name) {
                 state.items[item] = payload;
@@ -71,10 +72,17 @@ const getters = {
                 }
             }
         });
-        console.log('carrinho: ', state.items)
+        let clinics = {}
+        state.items.forEach((element) => {
+            if(!clinics[element.clinic.name]) {
+                clinics[element.clinic.name] = []
+            }
+                clinics[element.clinic.name].push(element)
+        })
         return {
             consultations: consultations,
             exams: exams,
+            clinics: clinics
         }
     }
 };
