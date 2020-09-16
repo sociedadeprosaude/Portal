@@ -439,7 +439,6 @@
                 await this.saveBudget(this.generateBudget());
                 this.selectedBudget.valuesPayments.forEach(value => {value = parseFloat(value)})
                 console.log('selectedBudget: ', this.selectedBudget)
-
                 await this.$apollo.mutate({
                     mutation: require('@/graphql/transaction/NewPayIntake.gql'),
                     variables: {

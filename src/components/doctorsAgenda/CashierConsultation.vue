@@ -8,7 +8,7 @@
                 </v-btn>
                 <v-btn rounded small class="mx-1" @click="selectCategory('appointment')"
                        :color="categorySelect === 'appointment' ? 'background' : 'primary'" v-if="!historyPatient">
-                    <span>{{specialtiesLoaded ? 'Consultas' : 'Carregando consultas...'}}</span>
+                    Consultas
                 </v-btn>
                 <v-btn rounded small class="mx-1" @click="selectCategory('package')"
                        :color="categorySelect === 'package' ? 'background' : 'primary'" v-if="!historyPatient">
@@ -132,9 +132,12 @@
                 searchBudgetBtn: false,
                 type:'EXAM',
                 Products:[],
+                LocaleProducts:[],
                 Exams:[],
+                LocaleExams:[],
                 ExamsSkip: false,
                 Specialties:[],
+                LocaleSpecialties:[],
                 SpecialtieSkip: false
             }
         },
@@ -146,10 +149,14 @@
                     clearTimeout(self.typingTimer);
                     self.typingTimer = setTimeout(() => {
                         if (self.categorySelect === 'exam') {
-                            self.loading = true;
-                            self.$store.dispatch("loadSelectedExams", self.search.toUpperCase()).then(() => {
-                                self.loading = false
-                            });
+                            self.LocaleExams = self.Exams.filter((el) =>  el.name.toUpperCase().includes(self.search.toUpperCase()))
+                            console.log('Exams:', self.Exams)
+                            console.log('search: ', self.Exams.filter((el) =>  el.name.toUpperCase().includes(self.search.toUpperCase())))
+                        }
+                        if (self.categorySelect === 'appointment') {
+                            self.LocaleSpecialties = self.Specialties.filter((el) =>  el.name.toUpperCase().includes(self.search.toUpperCase()))
+                            console.log('specialties:', self.Specialties)
+                            console.log('search: ', self.Specialties.filter((el) =>  el.name.toUpperCase().includes(self.search.toUpperCase())))
                         }
                         if (self.categorySelect === 'package') {
                             self.$store.dispatch("loadBundle");
@@ -169,14 +176,11 @@
                 switch (this.categorySelect) {
                     case 'exam':
                         this.type = 'EXAM'
-                        this.skip = false
-                        this.$apollo.queries.loadSpecialties.refresh();
+                        console.log(this.categorySelect, ': ' , this.Exams)
                         break;
                     case 'appointment':
                         this.type = 'SPECIALTY'
-                        this.skip = false
-                        console.log('Specialty')
-                        this.$apollo.queries.loadSpecialties.refresh();
+                        console.log(this.categorySelect, ': ' , this.Specialties)
                         break;
                     case 'package':
                         console.log(this.package)
@@ -196,32 +200,29 @@
                 console.log( this.$store.getters.getShoppingCartItems.length);
                 return this.$store.getters.getShoppingCartItems.length;
             },
-            specialtiesLoaded() {
-                console.log('specialtes loaded')
-                return this.$store.getters.specialtiesLoaded
-            },
             package() {
                 return this.$store.getters.bundles;
             },
-            /* items() {
+            items() {
                 switch (this.categorySelect) {
                     case 'exam':
-                        return this.Exams;
+                        return this.LocaleExams.slice(0,20);
                     case 'appointment':
-                        return this.Specialties;
+                        return this.LocaleSpecialties.slice(0,20);
                     case 'package':
                         console.log(this.package)
                         return this.package;
                     default:
                         return []
                 }
-            }, */
+            },
             patient() {
                 return this.$store.getters.selectedPatient;
             }
         },
 
         methods: {
+
             selectCategory(category) {
                 this.categorySelect = category
             },
@@ -279,7 +280,8 @@
                 },
                 update(data){
                     console.log('data: ', data.Product)
-                    this.Specialties = data.Product
+                    this.Specialties = Object.assign(data.Product)
+                    this.LocaleSpecialties= data.Product
                     this.SpecialtieSkip = true
                 },
                 skip(){
@@ -295,7 +297,8 @@
                 },
                 update(data){
                     console.log('data: ', data.Product)
-                    this.Exams = data.Product
+                    this.Exams = Object.assign(data.Product)
+                    this.LocaleExams= data.Product
                     this.ExamsSkip = true
                 },
                 skip(){
