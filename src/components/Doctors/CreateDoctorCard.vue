@@ -48,9 +48,15 @@
                         />
                     </v-flex>
                     <v-flex>
+                      <!-- Apollo Query -->
+                      <ApolloQuery
+                          :query="require('@/graphql/products/ReadProcucts.gql')"
+                          :variables="{ type:'SPECIALTY', schedulable:false}"
+                      >
+                        <template slot-scope="{ result: { data } }">
                         <v-select
                                 prepend-icon="school"
-                                :items="specialtyOptions"
+                                :items="data.Product"
                                 item-text="name"
                                 item-value="name"
                                 return-object
@@ -77,13 +83,21 @@
                                 </v-chip>
                             </template>
                         </v-select>
+                        </template>
+                      </ApolloQuery>
                     </v-flex>
 
                     <v-flex>
+                      <!-- Apollo Query -->
+                      <ApolloQuery
+                          :query="require('@/graphql/clinics/LoadClinics.gql')"
+                          :variables="{property: true}"
+                      >
+                        <template slot-scope="{ result: { data } }">
                         <v-select
                                 prepend-icon="location_city"
                                 v-model="clinic"
-                                :items="clinics"
+                                :items="data.Clinic"
                                 return-object
                                 item-text="name"
                                 label="Clínica"
@@ -109,6 +123,8 @@
                                 </v-chip>
                             </template>
                         </v-select>
+                        </template>
+                      </ApolloQuery>
                     </v-flex>
 
                     <v-flex xs12 v-for="spec in specialties" :key="spec.name">
