@@ -1,5 +1,5 @@
 mutation($idSchedule:ID!,$idDay:ID!){
-    AddScheduleFor_day(
+    RemoveScheduleFor_day(
         from:{
             id:$idSchedule
         },

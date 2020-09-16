@@ -172,7 +172,7 @@ export default {
                 scheduleObj.specialty = schedule.product
               else if (schedule.product.type == "EXAM")
                 scheduleObj.exam_type = schedule.product */
-              let obj = {...scheduleObj,qtd_consultations: schedule.consultations.length, qtd_returns:schedule.returns_consultations.length};
+              let obj = {...scheduleObj,qtd_consultations: schedule.num_consultations, qtd_returns:schedule.num_regress};
               obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns;
               consultations.push(obj)
             //}

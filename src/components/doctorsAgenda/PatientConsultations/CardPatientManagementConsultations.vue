@@ -92,19 +92,21 @@
             consultations(){
                 let consultations= {};
                 for(let i=0; i<this.patient.consultations.length; i++){
-                    if(!consultations[this.patient.consultations[i].date]){
-                        consultations[this.patient.consultations[i].date] = {
-                            consultations: [],
-                            date: this.patient.consultations[i].date.substring(0,10)
+                    if(this.patient.consultations[i].came_from){
+                        if(!consultations[this.patient.consultations[i].date]){
+                            consultations[this.patient.consultations[i].date] = {
+                                consultations: [],
+                                date: this.patient.consultations[i].date.substring(0,10)
+                            }
                         }
-                    }
-                    let consultation = this.patient.consultations[i]
-                    
-                    if(!consultation.type){
-                        consultation.type = 'Consulta'
-                    }
+                        let consultation = this.patient.consultations[i]
                         
-                    consultations[this.patient.consultations[i].date].consultations.push(consultation)
+                        if(!consultation.type){
+                            consultation.type = 'Consulta'
+                        }
+                            
+                        consultations[this.patient.consultations[i].date].consultations.push(consultation)
+                    }
 
                 }
                 return consultations

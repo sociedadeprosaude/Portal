@@ -1,0 +1,12 @@
+mutation($idSchedule:ID!, $idConsultation:ID!){
+    RemoveConsultationCame_from(
+        from:{
+            id:$idConsultation
+        },
+        to:{
+            id:$idSchedule
+        }
+    ){
+        from{id}, to{id}
+    }
+}

@@ -127,6 +127,7 @@ export default {
           },
           
         }).then((data) => {
+          //newDay.schedule.days.push(data.CreateDay)
           this.saveRelationDaySchedule(data.data.CreateDay.id, newDay.schedule.id)
         }).catch((error) => {
           console.error(error)

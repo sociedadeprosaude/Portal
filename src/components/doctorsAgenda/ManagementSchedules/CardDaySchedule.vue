@@ -109,9 +109,9 @@ export default {
           },
           
       }).then((data) => {
-          console.log('Removeu',data)
           const findIndex = this.schedule.days.findIndex((day)=>day.day === this.day)
           this.schedule.days.splice(findIndex,1)
+          this.cancelConsultations()
       }).catch((error) => {
           console.error(error)
       })
@@ -139,6 +139,26 @@ export default {
         this.newDay = {}
         this.loading = false
         this.dialogUpdate = false;
+    },
+    cancelConsultations(){
+      let consultations = this.schedule.consultations
+      console.log(consultations)
+      for (const key in consultations) {
+        let consultation = consultations[key]
+
+        if(moment(consultation.date).weekday() === Number(this.day)){
+          this.$apollo.mutate({
+              mutation: require('@/graphql/consultations/RemoveRelationCameFrom.gql'),
+              variables: {
+                idSchedule:this.schedule.id,
+                idConsultation: consultation.id
+              },
+          })/* .then(data => {
+            console.log('Removeu relação came from', consultation.id)
+            console.log(this.schedule.id)
+          }) */
+        }
+      }
     }
 
   }
