@@ -154,26 +154,32 @@
         <v-card-actions>
             <v-spacer/>
             <v-flex xs4 v-if="!doctor">
-                <submit-button
-                        :disabled="!formIsValid"
-                        text="Salvar"
-                        :success="success"
-                        :loading="loading" @click="save"/>
+              <ApolloMutation
+                  :mutation="require('@/graphql/doctors/CreateDoctors.gql')"
+                  :variables="{name ,crm, cpf}"
+                  @done="close"
+              >
+                <template v-slot="{ mutate, loading, error }">
+                  <v-btn
+                      color="primary"
+                      :disabled="loading"
+                      @click.native="createDoctor(mutate)"
+                  >Adicionar</v-btn>
+                  <p v-if="error">Ocorreu um erro: {{ error }}</p>
+                </template>
+              </ApolloMutation>
             </v-flex>
             <v-flex xs12 v-else>
-                <submit-button
-                        v-if="!doctor"
-                        :disabled="!formIsValid"
-                        text="Apagar"
-                        @reset="success = false"
-                        :success="success"
-                        :loading="loading" @click="erase"/>
-                <submit-button
-                        :disabled="!formIsValid"
-                        text="Editar"
-                        @reset="success = false"
-                        :success="success"
-                        :loading="loading" @click="save"/>
+              <ApolloMutation
+                  :mutation="require('@/graphql/doctors/UpdateDoctors.gql')"
+                  :variables="{name ,crm, cpf, id}"
+                  @done="close"
+              >
+                <template v-slot="{ mutate, loading, error }">
+                  <v-btn color="primary" @click.native="updateDoctor(mutate)">Editar</v-btn>
+                  <p v-if="error">Ocorreu um erro: {{ error }}</p>
+                </template>
+              </ApolloMutation>
             </v-flex>
         </v-card-actions>
     </v-card>
@@ -181,19 +187,19 @@
 
 <script>
     import {mask} from 'vue-the-mask'
-    import SubmitButton from "../SubmitButton";
     export default {
         name: "CreateDoctorCard",
         props: ['doctor'],
         directives: { mask },
-        components: { SubmitButton },
         mounted() {
+          console.log('tem ?', this.doctor)
             this.$store.dispatch('getClinics');
             this.$store.dispatch('getSpecialties');
             if (this.doctor) {
                 console.log(this.doctor)
                 this.name = this.doctor.name;
                 this.cpf = this.doctor.cpf;
+                this.id = this.doctor.id;
                 this.crm = this.doctor.crm;
                 this.specialties = this.doctor.specialties;
                 this.clinic = this.doctor.clinics
@@ -208,6 +214,7 @@
                 name: '',
                 crm: '',
                 cpf: '',
+                id: '',
                 specialties: undefined,
                 obs: null,
                 formTitle: 'Cadastro de Médicos',
@@ -248,6 +255,17 @@
             },
         },
         methods: {
+            updateDoctor(mutate) {
+              setTimeout(() => {
+                mutate();
+              }, 0);
+            },
+            createDoctor(mutate) {
+              this.name = this.name.toUpperCase()
+              setTimeout(() => {
+                mutate();
+              }, 0);
+            },
             close() { this.$emit('close'); },
             clear() {
                 this.name = undefined;

@@ -1,0 +1,12 @@
+mutation UpdateDoctor(
+    $id: ID!,
+    $crm: String!,
+    $name: String!){
+  UpdateDoctor(
+    id: $id,
+    name: $name,
+    crm: $crm,
+  ){
+    id
+  }
+}

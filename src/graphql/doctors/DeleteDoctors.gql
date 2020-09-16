@@ -1,0 +1,6 @@
+mutation($id:ID!){
+    DeleteDoctor(id:$id){
+    id
+    }
+
+}
