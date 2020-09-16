@@ -110,7 +110,9 @@
             item: 'NOVO',
             documentDialog:false,
             receptDialog:false,
-            cancelLoading:false
+            cancelLoading:false,
+            skip:true,
+            skipPatients: true
         }),
         computed: {
             selectedPatient() {
@@ -146,6 +148,14 @@
 
                     if(this.consultation.type === "Retorno" && this.consultation.previous_consultation)
                         this.removeRelationAsRegress(this.consultation.id, this.consultation.previous_consultation.id)
+
+                    if(this.consultation.status === "Pago"){
+                        this.skip = false;
+                        this.$apollo.queries.findProductTransaction.refresh()
+                    }
+
+                    this.skipPatients = false;
+                    this.$apollo.queries.loadPatient.refresh()
 
                 }).catch((error) => {
                     console.error(error)
@@ -195,6 +205,49 @@
                 this.receptDialog = true;
             }
         },
+        
+        apollo:{
+            findProductTransaction:{
+                query:require("@/graphql/transaction/FindProductTransactionbyConsultation.gql"),
+                variables(){
+                    return {
+                        idConsultation: this.consultation.id
+                    }
+                },
+                update(data){
+                    console.log(data)
+                    this.$apollo.mutate({
+                        mutation: require('@/graphql/transaction/RemoveConsultationOfProductTransaction.gql'),
+                        variables:{
+                            idConsultation: this.consultation.id,
+                            idProductTransaction: data.ProductTransaction[0].id
+                        },
+                    
+                    })
+                    this.skip = true;
+                },
+                skip(){
+                    return this.skip
+                }
+            },
+
+            loadPatient: {
+                fetchPolicy: 'no-cache',
+                query: require("@/graphql/reactivity/ReloadConsultationsPatient.gql"),
+                variables(){
+                    return {
+                        idPatient: this.selectedPatient.id
+                    }
+                },
+                update(data) {
+                    this.$store.commit('setSelectedPatient', data.Patient[0]);
+                    this.skipPatients = true
+                },
+                skip (){
+                    return this.skipPatients
+                }
+            }
+        }
     }
 </script>
 <style scoped>

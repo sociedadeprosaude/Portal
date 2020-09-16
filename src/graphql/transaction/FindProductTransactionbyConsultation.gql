@@ -1,0 +1,5 @@
+query($idConsultation:ID!){
+  ProductTransaction(filter:{with_consultation:{id:$idConsultation}}){
+    id
+  }
+}

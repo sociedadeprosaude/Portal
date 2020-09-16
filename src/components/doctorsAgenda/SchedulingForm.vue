@@ -335,14 +335,14 @@ export default {
             status: form.consultation.status
           },
           
-        }).then((data) => {
-          this.saveRelationConsultation(data.data.CreateConsultation.id, form)
+        }).then(async (data) => {
+          await this.saveRelationConsultation(data.data.CreateConsultation.id, form)
 
           if(form.consultation.type === "Retorno" && this.previousConsultation)
-            this.saveRelationAsRegress(data.data.CreateConsultation.id, this.previousConsultation)
+            await this.saveRelationAsRegress(data.data.CreateConsultation.id, this.previousConsultation)
 
           if(form.productTransaction)
-            this.saveRelationProductTransaction(data.data.CreateConsultation.id,form.productTransaction.id)
+            await this.saveRelationProductTransaction(data.data.CreateConsultation.id,form.productTransaction.id)
 
           this.skipPatients = false
           this.$apollo.queries.loadPatient.refresh()
@@ -355,8 +355,8 @@ export default {
 
     },
 
-    saveRelationConsultation(idConsultation, form){
-        this.$apollo.mutate({
+    async saveRelationConsultation(idConsultation, form){
+        await this.$apollo.mutate({
           mutation: require('@/graphql/consultations/AddRelations.gql'),
           // Parameters
           variables:{
@@ -370,43 +370,49 @@ export default {
             //}
           },
           
-        }).then((data) => {
+        })/* .then((data) => {
           this.scheduleLoading = false;
           this.success = true;
           console.log('idConsultation',idConsultation)
         }).catch((error) => {
           console.error(error)
-        })
+        }) */
+        this.scheduleLoading = false;
+        this.success = true;
+        console.log('idConsultation')
     },
 
-    saveRelationAsRegress(idConsultation, idPreviousConsultation){
-        this.$apollo.mutate({
+    async saveRelationAsRegress(idConsultation, idPreviousConsultation){
+        await this.$apollo.mutate({
           mutation: require('@/graphql/consultations/AddRelationsAsRegress.gql'),
           variables:{
               idConsultation: idConsultation,
               idPreviousConsultation: idPreviousConsultation
           },
           
-        }).then((data) => {
+        })/* .then((data) => {
           console.log('idPreviousConsultation',this.previousConsultation)
         }).catch((error) => {
           console.error(error)
-        })
+        }) */
+        console.log('idPreviousConsultation')
     },
 
-    saveRelationProductTransaction(idConsultation, idProductTransaction){
-        this.$apollo.mutate({
+    async saveRelationProductTransaction(idConsultation, idProductTransaction){
+        await this.$apollo.mutate({
           mutation: require('@/graphql/transaction/AddRelationProductTransactionConsultation.gql'),
           variables:{
               idConsultation: idConsultation,
               idProductTransaction: idProductTransaction
           },
           
-        }).then((data) => {
+        })/* .then((data) => {
           console.log('idProductTransaction',idProductTransaction)
         }).catch((error) => {
           console.error(error)
-        })
+        }) */
+
+        console.log('idProductTransaction')
     },
 
     close: function () {
@@ -436,6 +442,7 @@ export default {
 
   apollo: {
     loadPatient: {
+      fetchPolicy: 'no-cache',
       query: require("@/graphql/reactivity/ReloadConsultationsPatient.gql"),
       variables(){
         return {
