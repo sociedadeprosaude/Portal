@@ -13,8 +13,5 @@ mutation CreateClinic(
     telephone: $telephone,
     logo: $logo,
     property: $property,
-  )
-  {
-    id,name
-  }
+  ){id},
 }

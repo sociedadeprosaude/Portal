@@ -77,7 +77,7 @@
               this.editingSpecialty = false;
             },
           close(val){
-              console.log(val)
+              console.log('reposta:', val.data)
           }
         }
     }

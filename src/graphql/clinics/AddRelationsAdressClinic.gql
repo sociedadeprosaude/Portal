@@ -1,0 +1,13 @@
+mutation($idClinic: ID!, $idAdress: ID!){
+    AddClinicHas_adrress(
+        from:{
+            id:$idClinic
+        },
+        to:{
+            id:$idAdress
+        }
+    ){
+        from{id},
+        to{id}
+    },
+}
