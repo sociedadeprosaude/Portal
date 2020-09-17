@@ -175,7 +175,7 @@
             },
 
             async setConsultationHour(consultation) {
-                let consultation_hour = moment().format('YYYY-MM-DD HH:mm:ss');
+                /* let consultation_hour = moment().format('YYYY-MM-DD HH:mm:ss');
                 if(!consultation.user)
                     consultation.user = this.selectedPatient
                 let data = {
@@ -198,7 +198,7 @@
                 await this.$store.dispatch('addSpecialtyOuttakes', outtake)
                 if(!consultation.consultation_hour)
                     await this.$store.dispatch('addConsultationHourInConsultation', data);
-                this.consultation.consultation_hour = consultation_hour;
+                this.consultation.consultation_hour = consultation_hour; */
                 this.documentDialog = true;
             },
             ConsultationRecept(consultation) {

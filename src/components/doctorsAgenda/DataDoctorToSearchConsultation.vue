@@ -184,10 +184,12 @@
         mounted() {
             //this.$store.dispatch("getExamsTypes");
             this.query = this.$route.params.q
+            console.log(this.query)
             if (this.query) {
                 this.specialty = this.query.product;
                 this.clinic = this.query.clinic;
                 this.doctor = this.query.doctor
+                console.log(this.doctor)
             }
         },
 
@@ -210,9 +212,9 @@
             },
 
             specialty(value){
-                this.clinic = undefined
+                /* this.clinic = undefined
                 this.doctor = undefined
-                this.examType = undefined
+                this.examType = undefined */
                 if(value){
                     this.clinics = value.clinics
                     this.doctors = value.doctors

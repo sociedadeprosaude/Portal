@@ -14,7 +14,7 @@ query($name:String){
         id,name,logo
       },
       product:has_product{
-        id,name, type
+        id,name,type,price
       },
       doctor:attended_by{
         id,name,crm
@@ -32,6 +32,11 @@ query($name:String){
         status,
         date,
         payment_number
+      },
+    	patient{
+        id,
+        name,
+        cpf
       },
       came_from{
         id

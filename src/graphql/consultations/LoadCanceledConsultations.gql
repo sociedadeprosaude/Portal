@@ -1,6 +1,6 @@
-query($idClinic:ID, $idProduct:ID, $date:String){
-  Consultation(filter:{has_product:{id:$idProduct}, of_clinic:{id:$idClinic}, date_starts_with:$date,came_from_not:null}){
-    id,
+query{
+  Consultation(filter:{came_from:null}){
+      id,
       type,
       status,
       date,
@@ -9,7 +9,7 @@ query($idClinic:ID, $idProduct:ID, $date:String){
         id,name,logo
       },
       product:has_product{
-        id,name,type,price
+        id,name, type
       },
       doctor:attended_by{
         id,name,crm

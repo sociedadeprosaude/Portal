@@ -344,8 +344,13 @@ export default {
           if(form.productTransaction)
             await this.saveRelationProductTransaction(data.data.CreateConsultation.id,form.productTransaction.id)
 
-          this.skipPatients = false
-          this.$apollo.queries.loadPatient.refresh()
+          if(this.$route.params.q && this.$route.params.type === 'Remarcar'){
+            await this.deleteConsultation()
+            this.$router.back()
+          }else{
+            this.skipPatients = false
+            this.$apollo.queries.loadPatient.refresh()
+          }
         }).catch((error) => {
           console.error(error)
         })
@@ -370,16 +375,22 @@ export default {
             //}
           },
           
-        })/* .then((data) => {
-          this.scheduleLoading = false;
-          this.success = true;
-          console.log('idConsultation',idConsultation)
-        }).catch((error) => {
-          console.error(error)
-        }) */
+        })
         this.scheduleLoading = false;
         this.success = true;
         console.log('idConsultation')
+    },
+
+    async deleteConsultation(){
+        await this.$apollo.mutate({
+          mutation: require('@/graphql/consultations/DeleteConsultation.gql'),
+          variables(){
+            return {
+              idConsultation: this.previousConsultation,
+            }
+          },
+          
+        })
     },
 
     async saveRelationAsRegress(idConsultation, idPreviousConsultation){
@@ -390,12 +401,7 @@ export default {
               idPreviousConsultation: idPreviousConsultation
           },
           
-        })/* .then((data) => {
-          console.log('idPreviousConsultation',this.previousConsultation)
-        }).catch((error) => {
-          console.error(error)
-        }) */
-        console.log('idPreviousConsultation')
+        })
     },
 
     async saveRelationProductTransaction(idConsultation, idProductTransaction){
@@ -406,13 +412,7 @@ export default {
               idProductTransaction: idProductTransaction
           },
           
-        })/* .then((data) => {
-          console.log('idProductTransaction',idProductTransaction)
-        }).catch((error) => {
-          console.error(error)
-        }) */
-
-        console.log('idProductTransaction')
+        })
     },
 
     close: function () {
@@ -446,7 +446,7 @@ export default {
       query: require("@/graphql/reactivity/ReloadConsultationsPatient.gql"),
       variables(){
         return {
-          idPatient: this.selectedPatient.id
+          idPatient: this.createConsultationForm.user.id
         }
       },
       update(data) {

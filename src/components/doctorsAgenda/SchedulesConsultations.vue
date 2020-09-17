@@ -185,7 +185,8 @@ export default {
     loading: false,
     nextItem: 1,
     skip:true,
-    withExam:undefined
+    withExam:undefined,
+    patient:undefined
   }),
 
   async mounted() {
@@ -209,19 +210,18 @@ export default {
       this.previousConsultation = this.query.id
       this.status = this.query.status
       this.numberReceipt = this.query.payment_number
-    } else if (this.query && this.$route.params.type === 'remarcar') {
-      this.modalidade = "Consulta";
+    } else if (this.query && this.$route.params.type === 'Remarcar') {
+      this.modalidade = this.query.type
+      this.previousConsultation = this.query.id
       this.status = this.query.status
-      console.log('status: ', this.status)
-      this.numberReceipt = this.query.num_recibo
-      console.log('numberReceipt: ', this.numberReceipt)
-    } else if (this.query && this.$route.params.reschedule) {
+      this.numberReceipt = this.query.payment_number
+    }/*  else if (this.query && this.$route.params.reschedule) {
       this.modalidade = this.query.type
       this.previousConsultation = this.query.previousConsultation
       this.status = this.query.status
       this.numberReceipt = this.query.payment_number
       this.rescheduleConsultation = this.query.id
-    } else {
+    } */ else {
       this.modalidade = "Consulta"
     }
   },
@@ -258,8 +258,7 @@ export default {
     },
 
     scheduleAppointment(consultation, date) {
-      console.log('conss', consultation)
-      if (!this.selectedPatient) {
+      if (!this.selectedPatient && !this.query.patient) {
         window.alert('Selecione um paciente')
         return;
       }
@@ -274,7 +273,7 @@ export default {
 
     async fillConsultationForm(consultation) {
       this.selectedForm = {
-        user: this.selectedPatient,
+        user: this.selectedPatient ? this.selectedPatient : this.query.patient,
         consultation: consultation
       };
 

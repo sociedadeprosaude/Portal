@@ -11,12 +11,12 @@
                                 <v-layout wrap>
                                     <v-flex xs12 sm6>
                                         <v-text-field readonly hide-details outlined prepend-icon="person"
-                                                      label="Nome do Paciente" v-model="indexSelected.paciente">
+                                                      label="Nome do Paciente" v-model="indexSelected.patient.name">
                                         </v-text-field>
                                     </v-flex>
                                     <v-flex xs12 sm6>
                                         <v-text-field readonly hide-details outlined prepend-icon="credit_card"
-                                                      label="CPF" v-model="indexSelected.cpf">
+                                                      label="CPF" v-model="indexSelected.patient.cpf">
                                         </v-text-field>
                                     </v-flex>
                                     <v-flex xs12 sm12 md12 lg12>
@@ -24,22 +24,18 @@
                                     </v-flex>
                                     <v-flex xs12 sm6>
                                         <v-text-field readonly hide-details outlined prepend-icon="person"
-                                                      label="Nome do Médico" v-model="indexSelected.medico">
+                                                      label="Nome do Médico" v-model="indexSelected.doctor.name">
                                         </v-text-field>
                                     </v-flex>
                                     <v-flex xs12 sm6>
                                         <v-text-field readonly hide-details outlined prepend-icon="credit_card"
-                                                      v-model="indexSelected.crm" label="CRM">
+                                                      v-model="indexSelected.doctor.crm" label="CRM">
                                         </v-text-field>
                                     </v-flex>
 
-                                    <v-flex xs12 sm6 v-if="indexSelected.exame">
-                                        <v-text-field readonly hide-details outlined prepend-icon="poll" label="Exame"
-                                                      v-model="indexSelected.exame.name"/>
-                                    </v-flex>
-                                    <v-flex xs12 sm6 v-else>
-                                        <v-text-field readonly hide-details outlined prepend-icon="school"
-                                                      label="Especialidade" v-model="indexSelected.esp"/>
+                                    <v-flex xs12 sm6>
+                                        <v-text-field readonly hide-details outlined prepend-icon="poll" :label="indexSelected.product.type === 'EXAM' ? 'Exame' : 'Especialidade'"
+                                                      v-model="indexSelected.product.name"/>
                                     </v-flex>
 
                                     <v-flex xs12 sm6>
@@ -58,7 +54,7 @@
                                         </v-text-field>
                                     </v-flex>
                                     <v-flex xs12 sm6>
-                                        <v-text-field prepend-icon="assignment" v-model="indexSelected.modalidade"
+                                        <v-text-field prepend-icon="assignment" v-model="indexSelected.type"
                                                       readonly outlined hide-details label="Modalidade">
                                         </v-text-field>
                                     </v-flex>
@@ -147,7 +143,7 @@
                             <v-btn
                                     color="success"
                                     rounded
-                                    :to="{ name: 'AgendamentoConsultas', params: { q: indexSelected, type:'remarcar'}}"
+                                    :to="{ name: 'AgendamentoConsultas', params: { q: indexSelected.consultation, type:'Remarcar'}}"
                                     :disabled="indexSelected.status !== 'Pago'"
                             >Remarcar
                                 <v-icon right>assignment_turned_in</v-icon>
@@ -181,7 +177,7 @@
         },
         methods: {
             deleteConsultation () {
-                this.$emit('delete', {... this.indexSelected})
+                this.$emit('delete', {... this.indexSelected.consultation})
                 this.$emit('dialog', false)
             },
             CloseDialog(){
@@ -198,7 +194,7 @@
                     this.calls.push(val);
                     let values ={
                         calls: this.calls,
-                        idConsultation: this.indexSelected.idConsultation,
+                        idConsultation: this.indexSelected.co,
                     }
                     this.$emit('registerCall', values)
                     await this.$store.dispatch('addArrayCallsToConsultation', {
