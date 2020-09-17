@@ -191,7 +191,11 @@
         <v-card-actions>
             <v-btn rounded color="error" @click="closeDialog">Cancelar</v-btn>
             <v-spacer/>
-          <ApolloMutation
+            <v-btn
+                color="primary"
+                @click="createClinics"
+            >Adicionar</v-btn>
+            <ApolloMutation
               :mutation="require('@/graphql/clinics/CreateClinics.gql')"
               :variables="{
                 name: clinic.name,
@@ -201,14 +205,14 @@
                 property: property,
                 opening_hours: opening_hours,
               }"
-              @done="closeDialog"
+              @done="closeDialog($event)"
           >
             <template v-slot="{ mutate, loading, error }">
               <v-btn
                   color="primary"
                   :disabled="loading"
                   @click.native="createClinic(mutate)"
-              >Adicionar</v-btn>
+              >Apollo</v-btn>
               <p v-if="error">Ocorreu um erro: {{ error }}</p>
             </template>
           </ApolloMutation>
@@ -231,6 +235,8 @@
             Product: false,
             loading: false,
             success: false,
+            idClinic: null,
+            idAdress: null,
             mask: {
                 cnpj: '##.###.###/####-##',
                 telephone: '(##) #####-####',
@@ -267,6 +273,7 @@
                 'Tocantins (TO)'
             ],
             ceps: '',
+            geopoint: null,
             logo: null,
             checkbox: true,
             property: false,
@@ -353,6 +360,55 @@
         },
 
         methods: {
+            closeDialog (val) {
+              console.log(val.data)
+              this.$emit('close-dialog');
+              this.clearData();
+            },
+
+           async createClinics() {
+             await this.$apollo.mutate({
+               mutation: require('@/graphql/clinics/CreateClinics.gql'),
+               variables: {
+                 name: this.clinic.name,
+                 cnpj: this.clinic.cnpj,
+                 telephone: this.clinic.telephone[0],
+                 logo: this.logo,
+                 property: this.property,
+                 opening_hours: this.opening_hours,
+               },
+             }).then(dataClinic => {
+               //console.log("id clinic:", dataClinic.data.CreateClinic.id)
+                this.$apollo.mutate({
+                 mutation: require('@/graphql/adress/CreateAddress.gql'),
+                 variables: {
+                   number: this.clinic.address.number,
+                   cep: this.ceps,
+                   city: this.clinic.address.city,
+                   state: this.clinic.address.state,
+                   street: this.clinic.address.street,
+                   neighboor: this.clinic.address.neighborhood,
+                   complement: this.clinic.address.complement,
+                   geopoint: this.geopoint,
+                 },
+               }).then(dataAdress => {
+                 //console.log("id Adress:", dataAdress.data.CreateAddress.id)
+                 this.$apollo.mutate({
+                   mutation: require('@/graphql/clinics/AddRelationsAdressClinic.gql'),
+                   variables: {
+                     idClinic: dataClinic.data.CreateClinic.id,
+                     idAdress: dataAdress.data.CreateAddress.id,
+                   }
+                 }).catch((error) => {
+                   console.error('nao criando clinica: ', error)
+                 })
+               }).catch((error) => {
+                 console.error('nao criando endereço: ', error)
+               })
+             }).catch((error) => {
+               console.error('nao criando relaçao clinica e endrereço: ', error)
+             })
+           },
             createClinic(mutate) {
               this.clinic.name = this.clinic.name.toUpperCase()
               let agenda = [];
@@ -368,10 +424,6 @@
               setTimeout(() => {
                 mutate();
               }, 0);
-            },
-            closeDialog : function () {
-                this.$emit('close-dialog');
-                this.clearData();
             },
 
             clearData() {

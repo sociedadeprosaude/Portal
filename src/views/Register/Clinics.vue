@@ -51,6 +51,8 @@
                           :query="require('@/graphql/clinics/LoadAllClinics.gql')"
                       >
                         <template slot-scope="{ result: { data } }">
+                          <div v-for="(clinic,i) in data.Clinic" :key="i">
+                          </div>
                           <ListClinics :clinics="data.Clinic" :loading="loading"/>
                         </template>
                       </ApolloQuery>
