@@ -29,11 +29,11 @@
                   <v-layout column wrap class="primary--text">
                     <span
                       class="font-weight-bold"
-                    >{{item.clinic.has_adrress[0].street}}, {{item.clinic.has_adrress[0].number}}, {{item.clinic.has_adrress[0].neighboor}}, {{item.clinic.has_adrress[0].cep}}</span>
+                    >{{item.clinic.has_address[0].street}}, {{item.clinic.has_address[0].number}}, {{item.clinic.has_address[0].neighboor}}, {{item.clinic.has_address[0].cep}}</span>
                     <span
-                      v-if="item.clinic.has_adrress[0].complement"
-                    >Complemento: {{item.clinic.has_adrress[0].complement}}</span>
-                    <span>{{item.clinic.has_adrress[0].city}} - {{item.clinic.has_adrress[0].state}}</span>
+                      v-if="item.clinic.has_address[0].complement"
+                    >Complemento: {{item.clinic.has_address[0].complement}}</span>
+                    <span>{{item.clinic.has_address[0].city}} - {{item.clinic.has_address[0].state}}</span>
                     <br />
                     <span class="font-weight-bold">
                       Contato.:

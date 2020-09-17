@@ -1,5 +1,5 @@
 mutation($idClinic: ID!, $idAdress: ID!){
-    AddClinicHas_adrress(
+    AddClinicHas_address(
         from:{
             id:$idClinic
         },

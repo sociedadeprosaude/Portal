@@ -15,7 +15,7 @@ query ($type: String!,$schedulable: Boolean) {
             cnpj,
             telephone,
              opening_hours,
-             has_adrress{
+             has_address{
                            cep, state, street, city, complement, neighboor, number
                          }
         }
