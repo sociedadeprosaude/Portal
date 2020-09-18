@@ -1,4 +1,4 @@
-mutation($idBudget:ID!,$idProduct:ID!, $idProductTransaction: ID!){
+mutation($idBudget:ID!,$idProduct:ID!, $idProductTransaction: ID!, $idUnit: ID!){
     AddProductTransactionWith_transaction(
         from:{
             id:$idProductTransaction
@@ -20,5 +20,17 @@ mutation($idBudget:ID!,$idProduct:ID!, $idProductTransaction: ID!){
         ){
         from{id},
         to{id}
-        }
+        },
+    AddTransactionWith_unit(
+            from:{
+                id:$idProductTransaction
+            },
+            to:{
+                id:$idUnit
+            }
+            ){
+            from{id},
+            to{id}
+            },
+
 }
