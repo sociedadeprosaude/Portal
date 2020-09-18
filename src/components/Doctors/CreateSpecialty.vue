@@ -84,36 +84,22 @@
   </v-card>
 </template>
 <script>
-import SubmitButton from "../SubmitButton";
 export default {
-  components: { SubmitButton },
-
   data: () => ({
-    loading: false,
-    success: false,
     specialty: undefined,
     price:0,
     rules: null,
     type:"SPECIALTY",
     schedulable: false,
-    exam: undefined,
-    typeOptions: [
-      { text: "sim", value: true },
-      { text: "não", value: false }
-    ]
   }),
-
-  computed: {
-    specialties() {
-      return this.$store.getters.specialties;
-    }
-  },
-
   methods: {
     close() {
+      this.specialty = undefined;
+      this.price = 0;
+      this.rules = null;
+      this.type = "SPECIALTY";
+      this.schedulable = false;
       this.$emit("close");
-      this.specialty = undefined
-      this.price = 0
     },
     createProduct(mutate) {
       this.specialty = this.specialty.toUpperCase()
@@ -121,23 +107,6 @@ export default {
         mutate();
       }, 0);
     },
-    async registerSpecialty() {
-      this.loading = true;
-      await this.$store.dispatch("addSpecialty", {
-        name: this.specialty.toUpperCase(),
-        price:Number(this.price),
-        status: "DEACTIVATE",
-        exam: this.exam
-      });
-      await this.$store.dispatch("getSpecialties");
-      this.success = true;
-      this.loading = false;
-      setTimeout(() => {
-        this.specialty = undefined;
-        this.exam = undefined;
-        this.close();
-      }, 1000);
-    }
   }
 };
 </script>
