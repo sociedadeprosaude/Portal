@@ -90,6 +90,7 @@
         }),
         computed: {
             consultations(){
+                console.log('no gerenciamento de pacientes', this.patient.consultations)
                 let consultations= {};
                 for(let i=0; i<this.patient.consultations.length; i++){
                     if(this.patient.consultations[i].came_from){
