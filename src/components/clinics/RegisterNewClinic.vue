@@ -230,13 +230,10 @@
         components: {SubmitButton},
         directives: {mask},
         data: () => ({
-
             selectedClin: undefined,
             Product: false,
             loading: false,
             success: false,
-            idClinic: null,
-            idAdress: null,
             mask: {
                 cnpj: '##.###.###/####-##',
                 telephone: '(##) #####-####',
@@ -394,10 +391,10 @@
                }).then(dataAdress => {
                  //console.log("id Adress:", dataAdress.data.CreateAddress.id)
                  this.$apollo.mutate({
-                   mutation: require('@/graphql/clinics/AddRelationsAdressClinic.gql'),
+                   mutation: require('@/graphql/clinics/AddRelationsAddressClinic.gql'),
                    variables: {
                      idClinic: dataClinic.data.CreateClinic.id,
-                     idAdress: dataAdress.data.CreateAddress.id,
+                     idAddress: dataAdress.data.CreateAddress.id,
                    }
                  }).catch((error) => {
                    console.error('nao criando clinica: ', error)
