@@ -38,7 +38,7 @@
                                 hide-details
                         />
                     </v-flex>
-                  <!--  <v-flex xs6>
+                    <v-flex xs6>
                         <v-text-field
                                 v-model="ceps"
                                 v-mask="mask.cep"
@@ -59,7 +59,7 @@
                         >O CEP não foi localizado
                         </v-alert>
                     </v-flex>
-                    <v-flex xs12>
+<!--                    <v-flex xs12>
                         <v-text-field
                                 v-model="clinic.address.street"
                                 label="Logradouro"
@@ -68,8 +68,8 @@
                                 hide-details
                                 clearable
                         />
-                    </v-flex>
-                    <v-flex xs4>
+                    </v-flex>-->
+<!--                    <v-flex xs4>
                         <v-text-field
                                 v-model="clinic.address.number"
                                 label="Nº"
@@ -78,8 +78,8 @@
                                 hide-details
                                 clearable
                         />
-                    </v-flex>
-                    <v-flex xs8>
+                    </v-flex>-->
+<!--                    <v-flex xs8>
                         <v-text-field
                                 v-model="clinic.address.neighboor"
                                 label="Bairro"
@@ -88,8 +88,8 @@
                                 hide-details
                                 clearable
                         />
-                    </v-flex>
-                    <v-flex xs12>
+                    </v-flex>-->
+<!--                    <v-flex xs12>
                         <v-text-field
                                 v-model="clinic.address.complement"
                                 label="Complemento"
@@ -98,8 +98,8 @@
                                 hide-details
                                 clearable
                         />
-                    </v-flex>
-                    <v-flex xs7>
+                    </v-flex>-->
+<!--                    <v-flex xs7>
                         <v-select
                                 :items="stateOptions"
                                 label="Estado"
@@ -110,8 +110,8 @@
                                 hide-details
                                 clearable
                         />
-                    </v-flex>
-                    <v-flex xs5>
+                    </v-flex>-->
+<!--                    <v-flex xs5>
                         <v-text-field
                                 label="Cidade"
                                 placeholder="Cidade"
@@ -267,44 +267,41 @@
                 'Tocantins (TO)'
             ],
             ceps: '',
+            street: '',
+            number: '',
+            neighborhood: '',
+            cep: '',
+            complement: '',
+            state: '',
+            city: '',
+            name: '',
+            cnpj: '',
+            telephone: [],
+            startWeek: '',
+            endWeek: '',
+            startSaturday: '',
+            endSaturday: '',
             alertCEP: false,
-/*            defaultItem: {
-                name: '',
-                cnpj: '',
-                telephone: [],
-                address: {
-                    street: '',
-                    number: '',
-                    neighborhood: '',
-                    cep: '',
-                    complement: '',
-                    state: '',
-                    city: '',
-                },
-                startWeek: '',
-                endWeek: '',
-                startSaturday: '',
-                endSaturday: ''
-            },*/
-
         }),
-        mounted() {
-            console.log("clinic apollo:", this.clinic)
-           /* this.ceps = this.clinic.address.cep;
-            this.clinic.startWeek = this.clinic.opening_hours[0].split('-')[0];
+        mounted () {
+          console.log("clinic apollo:", this.clinic);
+            this.ceps = this.clinic.has_address[0].cep ? this.clinic.has_address[0].cep : "";
+            this.clinic.address.city = this.clinic.has_address[0].city ? this.clinic.has_address[0].city : "";
+            this.clinic.address.number = this.clinic.has_address[0].number ? this.clinic.has_address[0].number : "";
+            this.clinic.address.street = this.clinic.has_address[0].street ? this.clinic.has_address[0].street : "";
+            this.clinic.address.state = this.clinic.has_address[0].state ? this.clinic.has_address[0].state : "";
+            this.clinic.address.complement = this.clinic.has_address[0].complement ? this.clinic.has_address[0].complement : "";
+            this.clinic.address.neighboor = this.clinic.has_address[0].neighboor ? this.clinic.has_address[0].neighboor : "";
+/*            this.clinic.startWeek = this.clinic.opening_hours[0].split('-')[0];
             this.clinic.endWeek = this.clinic.opening_hours[0].split('-')[1];
             this.clinic.startSaturday = this.clinic.opening_hours[5].length > 0 ? this.clinic.opening_hours[5].split('-')[0] : '';
-            this.clinic.endSaturday = this.clinic.opening_hours[5].length > 0 ? this.clinic.opening_hours[5].split('-')[1] :*/ '';
+            this.clinic.endSaturday = this.clinic.opening_hours[5].length > 0 ? this.clinic.opening_hours[5].split('-')[1] : '';*/
         },
-
         computed: {
-
             formIsValid() {
                 return this.clinic.name && this.clinic.telephone[0]
             },
-
         },
-
         watch: {
             ceps(val) {
                 if (val.length === 8) {

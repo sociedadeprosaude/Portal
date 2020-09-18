@@ -195,28 +195,6 @@
                 color="primary"
                 @click="createClinics"
             >Adicionar</v-btn>
-            <ApolloMutation
-              :mutation="require('@/graphql/clinics/CreateClinics.gql')"
-              :variables="{
-                name: clinic.name,
-                cnpj: clinic.cnpj,
-                telephone: clinic.telephone[0],
-                logo: logo,
-                property: property,
-                opening_hours: opening_hours,
-              }"
-              @done="closeDialog($event)"
-          >
-            <template v-slot="{ mutate, loading, error }">
-              <v-btn
-                  color="primary"
-                  :disabled="loading"
-                  @click.native="createClinic(mutate)"
-              >Apollo</v-btn>
-              <p v-if="error">Ocorreu um erro: {{ error }}</p>
-            </template>
-          </ApolloMutation>
-
         </v-card-actions>
     </v-card>
 </template>
@@ -224,19 +202,9 @@
 <script>
     import {mask} from 'vue-the-mask';
     import axios from 'axios';
-    import SubmitButton from "../../components/SubmitButton";
-
     export default {
-        components: {SubmitButton},
         directives: {mask},
         data: () => ({
-
-            selectedClin: undefined,
-            Product: false,
-            loading: false,
-            success: false,
-            idClinic: null,
-            idAdress: null,
             mask: {
                 cnpj: '##.###.###/####-##',
                 telephone: '(##) #####-####',
@@ -279,7 +247,7 @@
             property: false,
             opening_hours: null,
             alertCEP: false,
-            defaultItem: {
+            clinic: {
                 name: '',
                 cnpj: '',
                 telephone: [],
@@ -299,26 +267,6 @@
             },
 
         }),
-
-        computed: {
-
-            formIsValid() {
-                return this.clinic.name && this.clinic.telephone[0]
-            },
-
-            clinic() {
-                return this.$store.getters.selectedClinic;
-            },
-
-            indexClinic () {
-                return this.$store.getters.indexClinic;
-            },
-            clinics() {
-                return this.$store.getters.clinics;
-            },
-
-        },
-
         watch: {
             ceps(val) {
                 if (val.length === 8) {
@@ -349,24 +297,24 @@
                     this.clinic.address.city = '';
                 }
             },
-
-
         },
-
-         async beforeUpdate () {
-             let clinic = await this.$store.getters.clinic;
-             let indexClinic  = await this.$store.getters.indexClinic;
-             this.addDataToClinicExist(clinic, indexClinic);
-        },
-
         methods: {
-            closeDialog (val) {
-              console.log(val.data)
+            closeDialog() {
+              this.clinic = {}
               this.$emit('close-dialog');
-              this.clearData();
             },
 
            async createClinics() {
+             let agenda = [];
+             for (let i = 0; i < 7; i++) {
+               if (i < 5) {
+                 agenda.push(this.clinic.startWeek + '-' + this.clinic.endWeek)
+               } else if (i === 5) {
+                 agenda.push(this.clinic.startSaturday + '-' + this.clinic.endSaturday)
+               }
+             }
+             this.opening_hours = agenda
+
              await this.$apollo.mutate({
                mutation: require('@/graphql/clinics/CreateClinics.gql'),
                variables: {
@@ -394,10 +342,10 @@
                }).then(dataAdress => {
                  //console.log("id Adress:", dataAdress.data.CreateAddress.id)
                  this.$apollo.mutate({
-                   mutation: require('@/graphql/clinics/AddRelationsAdressClinic.gql'),
+                   mutation: require('@/graphql/clinics/AddRelationsAddressClinic.gql'),
                    variables: {
                      idClinic: dataClinic.data.CreateClinic.id,
-                     idAdress: dataAdress.data.CreateAddress.id,
+                     idAddress: dataAdress.data.CreateAddress.id,
                    }
                  }).catch((error) => {
                    console.error('nao criando clinica: ', error)
@@ -408,28 +356,8 @@
              }).catch((error) => {
                console.error('nao criando relaçao clinica e endrereço: ', error)
              })
+             this.closeDialog()
            },
-            createClinic(mutate) {
-              this.clinic.name = this.clinic.name.toUpperCase()
-              let agenda = [];
-              for (let i = 0; i < 7; i++) {
-                if (i < 5) {
-                  agenda.push(this.clinic.startWeek + '-' + this.clinic.endWeek)
-                } else if (i === 5) {
-                  agenda.push(this.clinic.startSaturday + '-' + this.clinic.endSaturday)
-                }
-              }
-              this.opening_hours = agenda
-              console.log(typeof (this.clinic.cnpj))
-              setTimeout(() => {
-                mutate();
-              }, 0);
-            },
-
-            clearData() {
-                this.$store.dispatch('selectClinic', this.defaultItem);
-                this.$store.dispatch('putIndex', null);
-            },
 
             addDataToClinicExist (clinic, indexClinic) {
                 if (indexClinic !== -1 && indexClinic !==null){
@@ -439,7 +367,6 @@
                     this.clinic.endWeek = this.clinic.agenda[0].split('-')[1];
                     this.clinic.startSaturday = this.clinic.agenda[5].length > 0 ? this.clinic.agenda[5].split('-')[0] : '';
                     this.clinic.endSaturday = this.clinic.agenda[5].length > 0 ? this.clinic.agenda[5].split('-')[1] : ''
-
                 } else {
                     this.cep = '';
                 }
