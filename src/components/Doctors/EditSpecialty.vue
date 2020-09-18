@@ -64,7 +64,8 @@
                 mutate();
               }, 0);
             },
-            initialize(){
+            async initialize(){
+              console.log('no comp:', this.specialty)
                 if(this.specialty){
                   this.id = this.specialty.id
                   this.name = this.specialty.name

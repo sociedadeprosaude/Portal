@@ -46,9 +46,7 @@
             creatingDoctor:"",
             selectedDoctor:"",
         }),
-
         computed: {
-
             doctorsArray() {
                 let array = [];
                 for (let doc in this.doctors) {

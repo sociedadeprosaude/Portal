@@ -20,7 +20,6 @@
               filled
             />
           </v-flex>
-
           <v-flex xs12>
             <v-currency-field
               outlined
@@ -31,35 +30,6 @@
               v-model="price"
               label="Preço de Venda"
             />
-          </v-flex>
-
-          <v-flex xs12>
-            <v-select
-              label="É Necessário Agendar Exame(s) ?"
-              v-model="exam"
-              :items="typeOptions"
-              outlined
-              rounded
-              filled
-              chips
-              color="pink"
-              clearable
-              hide-details
-            >
-              <template v-slot:selection="data">
-                <v-chip
-                  :key="JSON.stringify(data.item)"
-                  :input-value="data.selected"
-                  :disabled="data.disabled"
-                  class="v-chip--select-multi"
-                  @click.stop="data.parent.selectedIndex = data.index"
-                  @input="data.parent.selectItem(data.item)"
-                  text-color="white"
-                  color="primary"
-                  dense
-                >{{ data.item.text }}</v-chip>
-              </template>
-            </v-select>
           </v-flex>
         </v-layout>
       </v-container>

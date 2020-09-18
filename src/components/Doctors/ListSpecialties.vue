@@ -51,6 +51,7 @@ export default {
     methods: {
       editSpecialty (specialty) {
         this.specialty = specialty;
+        console.log("parameter:", this.specialty)
         this.editingSpecialty = true;
       },
       closeDialogs () {
