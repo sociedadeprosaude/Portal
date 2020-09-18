@@ -4,6 +4,20 @@ query($name:String){
     name,
     cpf,
     birth_date,
+    addresses{
+        cep,
+        city,
+        complement,
+        street,
+        number,
+        uf,
+    }
+    dependents{
+    name,
+    birth_date,
+    dependentDegree,
+    sex
+    }
     consultations:with_consultation{
       id,
       type,

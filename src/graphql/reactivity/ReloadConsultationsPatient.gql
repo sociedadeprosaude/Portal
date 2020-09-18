@@ -31,6 +31,9 @@ query($idPatient:ID!){
         status,
         date,
         payment_number
+      },
+      came_from{
+        id
       }
     }
   }
