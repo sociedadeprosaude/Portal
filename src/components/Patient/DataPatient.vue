@@ -290,7 +290,7 @@
                                         persistent-hint
                                         hint="Campo obrigatório*"
                                         v-model="birthDate"
-                                        :rules="rules"
+                                        :rules="rulesDate"
                                         v-mask="mask.date"
                                         prepend-icon="date_range"
                                         placeholder="Data de Nascimento">
@@ -432,7 +432,7 @@
                                                 filled
                                                 v-model="dependent.birthDate"
                                                 v-mask="mask.date "
-                                                :rules="rules"
+                                                :rules="rulesDate"
                                                 prepend-icon="date_range"
                                                 placeholder="Data de Nascimento">
                                         </v-text-field>
@@ -525,7 +525,7 @@
                             <v-flex xs12 class="text-right">
 
                                 <submit-button :disabled="!(this.name !== '' && this.name && ((this.cpf !== '' && this.cpf) || (this.rg !== '' && this.rg)) && this.birthDate !== '' && this.birthDate
-                                && this.dateValid(this.birthDate) && this.telephones !== [''])" :success="success"
+                                && this.telephones !== [''])" :success="success"
                                                @click="registerPatient()" :loading="loading"
                                                text="Salvar" class="mb-2 success" dark>
                                 </submit-button>
@@ -594,11 +594,11 @@
                     telephone: '(##) #####-####',
                     cep: '##.###-###',
                 },
-                rules: [
+                rulesDate: [
                     value => {
-                        const rule = this.dateValid(value);
-                        return rule || 'Data inválida'
-                    }
+                        const dataNascimento = moment(value, "DD/MM/YYYY", true);
+                        return dataNascimento.isValid() || 'Data de nascimento inválida'
+                    },
                 ],
                 states: ['AM'],
                 cities: {'AC': [], 'AL': [], 'AM': []},
@@ -693,7 +693,7 @@
                 if (!this.validateFiedls()) {
                     return
                 }
-               // this.loading = true;
+                this.loading = true;
                 let copyDependents = [];
                 for (let add in this.addresses) {
                     delete this.addresses[add].loading
@@ -724,7 +724,6 @@
                     type: 'PATIENT'
                 };
                 let finaly= parseInt(patient.addresses.length) + parseInt(patient.dependents.length)
-                console.log('patient: ', patient)
                 this.$apollo.mutate({
                     mutation: require('@/graphql/patients/CreatePatient.gql'),
                     variables: {
@@ -754,7 +753,11 @@
                                }
                            }).then((responde)=> {
                                finaly -= 1;
-                               console.log('dependent Ok')
+                               if(finaly === 0){
+                                   this.loading = false
+                                   this.addPatient = !this.addPatient
+                                   this.selectUser(patient)
+                               }
                            })
                        })
                    }
@@ -779,14 +782,16 @@
                                }
                            }).then((responde)=> {
                                finaly -= 1;
-                               console.log('endereço Ok')
+                               if(finaly === 0){
+                                   this.loading = false
+                                   this.addPatient = !this.addPatient
+                                   this.selectUser(patient)
+                               }
                            })
                        })
                    }
                 })
-                if(finaly === 0){
-                    console.log('paciente criado com sucesso: ', patient.cpf)
-                }
+
                /* if (patient.cpf) {
                     foundPatient = await this.$store.dispatch('getPatient', patient.cpf);
                     identifier = {
