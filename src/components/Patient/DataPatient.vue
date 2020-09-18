@@ -587,6 +587,7 @@
                 loading: false,
                 formError: undefined,
                 searchError: undefined,
+                id:'',
                 mask: {
                     maskRG: '#######-#',
                     cpf: '###.###.###-##',
@@ -734,12 +735,13 @@
                     },
 
                 }).then((responseCreatePatient) => {
+                    if(patient.dependents.length !== 0){
                    for(let i in patient.dependents){
                        this.$apollo.mutate({
                            mutation: require('@/graphql/dependent/CreateDependent.gql'),
                            variables: {
                                name: patient.dependents[i].name ? patient.dependents[i].name : '',
-                               birth_date: patient.dependents[i].birth_date ? patient.dependents[i].birth_date : '',
+                               birth_date: patient.dependents[i].birthDate ? patient.dependents[i].birthDate : '',
                                cpf: patient.dependents[i].cpf ? patient.dependents[i].cpf : '',
                                dependentDegree: patient.dependents[i].dependentDegree ? patient.dependents[i].dependentDegree : '',
                            },
@@ -756,11 +758,12 @@
                                if(finaly === 0){
                                    this.loading = false
                                    this.addPatient = !this.addPatient
-                                   this.selectUser(patient)
+                                   this.getPatient(responseCreatePatient.data.CreatePatient.id)
                                }
                            })
                        })
-                   }
+                   } }
+                    if(patient.addresses.length !== 0){
                    for(let i in patient.addresses){
                        this.$apollo.mutate({
                            mutation: require('@/graphql/patients/CreateAddressPatient.gql'),
@@ -785,37 +788,27 @@
                                if(finaly === 0){
                                    this.loading = false
                                    this.addPatient = !this.addPatient
-                                   this.selectUser(patient)
+                                   this.getPatient(responseCreatePatient.data.CreatePatient.id)
                                }
                            })
                        })
-                   }
+                   }}
+                    if(patient.dependents.length === 0 && patient.addresses.length ==0){
+                        this.loading = false
+                        this.addPatient = !this.addPatient
+                        this.getPatient(responseCreatePatient.data.CreatePatient.id)
+                    }
                 })
-
-               /* if (patient.cpf) {
-                    foundPatient = await this.$store.dispatch('getPatient', patient.cpf);
-                    identifier = {
-                        name: 'cpf',
-                        value: patient.cpf
+            },
+            getPatient(id){
+                this.$apollo.mutate({
+                    mutation: require('@/graphql/patients/GetPatient.gql'),
+                    variables: {
+                        id: id
                     }
-                } else {
-                    foundPatient = await this.$store.dispatch('getPatient', 'RG' + patient.rg);
-                    identifier = {
-                        name: 'rg',
-                        value: patient.rg
-                    }
-                }
-                if (foundPatient) {
-                    let dialog = {
-                        header: `Já existe um associado com o ${identifier.name} ${identifier.value}, substituir?`,
-                        body: `${foundPatient.name}, ${identifier.name}: ${identifier.value}, Num. Ass: ${foundPatient.association_number}`,
-                        show: true,
-                        functionToRun: () => this.addUserToFirestore(patient)
-                    };
-                    this.$store.commit('setSystemDialog', dialog);
-                    return
-                }
-                this.addUserToFirestore(patient) */
+                }).then((response) => {
+                    this.selectUser(response.data.Patient[0])
+                })
             },
             async addUserToFirestore(patient) {
                 await this.$store.dispatch('addUser', patient);
@@ -824,7 +817,6 @@
                 let user = await this.$store.dispatch('getPatient', patient.cpf)
                 console.log('user:', user)
                 this.selectUser(user);
-                //this.selectUser(patient);
                 setTimeout(() => {
                     this.success = false;
                     this.catchAssNumberNewPatient(patient);
@@ -852,14 +844,6 @@
             },
             async selectUser(user) {
                 if (user) {
-                    /*let intakes = await this.$store.dispatch('getUserIntakes', user);
-                    if (intakes) {
-                        user.intakes = intakes
-                    }
-                    let budgets = await this.$store.dispatch('getUserBudgets', user);
-                    if (budgets) {
-                        user.budgets = budgets
-                    } */
                     this.fillFormUser(user)
                 } else {
                     this.cpf = undefined;
@@ -877,7 +861,6 @@
                 }
                 this.$store.commit('setSelectedPatient', user);
                 this.$store.commit('clearSelectedDependent');
-                //this.updateAccessedTo(user);
                 this.foundUsers = undefined;
                 this.addPatient = false
             },
@@ -893,34 +876,13 @@
             },
 
             async searchPatient() {
-              //this.loading = true;
-              /* if(this.cpf){
                 try {
-                  let users = await this.$store.dispatch('searchUser', {
-                    name: this.name,
-                    cpf: this.cpf.replace(/\./g, '').replace('-', ''),
-                    association_number: this.numAss
-                  });
-                  this.foundUsers = users;
-                } catch (e) {
-                  window.alert(`Erro buscando usuarios, verifique sua conexão: ${e.message}`);
-                }
-              } else { */
-                try {
-                  /* let users = await this.$store.dispatch('searchUser', {
-                    name: this.name,
-                    cpf: this.cpf,
-                    association_number: this.numAss
-                  }); */
-                  //this.foundUsers = users;
                   this.loading = true
                   this.$apollo.queries.loadPatient.refresh()
                   this.skipPatients = false
                 } catch (e) {
                   window.alert(`Erro buscando usuarios, verifique sua conexão: ${e.message}`);
                 }
-             /*  }
-              this.loading = false */
             },
 
             async fillFormUser(user) {
@@ -1021,6 +983,22 @@
                 variables(){
                     return {
                         name: this.name.toUpperCase()
+                    }
+                },
+                update(data) {
+                    this.foundUsers = data.Patient
+                    this.skipPatients = true
+                    this.loading = false
+                },
+                skip (){
+                    return this.skipPatients
+                }
+            },
+            loadPatientSelected: {
+                query: require("@/graphql/patients/searchPatients.gql"),
+                variables(){
+                    return {
+                        id: this.id
                     }
                 },
                 update(data) {

@@ -513,7 +513,7 @@
                     mutation: require('@/graphql/transaction/AddRelationsNewIntake.gql'),
                     variables: {
                         idBudget: data.data.CreateTransaction.id,
-                        idColaborator: this.selectedBudget.colaborator.neo4j_id,
+                        idColaborator: this.selectedBudget.colaborator.id,
                         idPatient: this.selectedBudget.user.id,
                         idDoctor: this.selectedBudget.doctor.neo4j_id
                     },
@@ -531,7 +531,7 @@
                     // Parameters
                     variables: {
                         idBudget: data.data.CreateTransaction.id,
-                        idColaborator: this.selectedBudget.colaborator.neo4j_id,
+                        idColaborator: this.selectedBudget.colaborator.id,
                         idPatient: this.selectedBudget.user.id,
                     },
 
