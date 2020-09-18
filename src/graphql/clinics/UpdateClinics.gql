@@ -1,9 +1,20 @@
-mutation UpdateClinic(
+mutation(
     $id: ID!,
-    $telephone: [String]){
+    $name: String,
+    $cnpj: String,
+    $opening_hours: [String],
+    $telephone: [String],
+    $logo: String,
+    $property: Boolean,
+    ){
   UpdateClinic(
     id: $id,
+    name: $name,
+    cnpj: $cnpj,
+    opening_hours: $opening_hours,
     telephone: $telephone,
+    logo: $logo,
+    property: $property,
   ){
     id
   }

@@ -1,4 +1,4 @@
-mutation CreateClinic(
+mutation(
     $name: String!,
     $cnpj: String,
     $opening_hours: [String],

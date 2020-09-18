@@ -1,0 +1,16 @@
+mutation CreatePatient(
+    $name: String!,
+    $birth_date: String,
+    $cpf: String!,
+    $sex: String
+    ){
+  CreatePatient(
+    name: $name,
+    birth_date: $birth_date,
+    cpf: $cpf,
+    sex: $sex
+  )
+  {
+    id
+  }
+}

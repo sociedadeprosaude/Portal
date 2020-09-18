@@ -125,6 +125,17 @@ const actions = {
         });
         return user
     },
+    async getPatients({ }, payload) {
+        firebase.firestore().collection('users').doc(payload.cpf).update({
+            "neo4j_id": payload.id
+        })
+            .then(function() {
+                console.log("Atualizando neo4j_id");
+            }).catch((error) => {
+                console.log('erro na atualizacao')
+        })
+
+    },
 
     async searchUser({ }, searchFields) {
         // let usersRef = firestore().collection('users');
