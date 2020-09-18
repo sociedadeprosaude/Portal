@@ -118,7 +118,7 @@
         },
         apollo:{
             findColaborator:{
-                query: require("@/graphql/authentication/findColaborator.gql"),
+                query: require("@/graphql/authentication/FindUser.gql"),
                 variables(){
                     return{
                         email:this.email
@@ -126,8 +126,9 @@
                 },
                 update(data){
                     this.skip = true
-                    console.log(data.Colaborator[0])
-                    this.$store.dispatch('getUser', data.Colaborator[0]);
+                    console.log(data.User[0])
+                    const user = data.User[0].is_colaborator? data.User[0].is_colaborator : data.User[0].is_doctor
+                    this.$store.dispatch('getUser', user);
                 },
                 skip(){
                     return this.skip
