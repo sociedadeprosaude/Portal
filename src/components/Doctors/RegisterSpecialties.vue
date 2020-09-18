@@ -11,7 +11,6 @@
                                     class="mx-5"
                                     color="primary"
                                     v-model="searchSpecialty"
-                                    :loading="loading"
                                     id="searchEspecialties"
                             />
                         </v-flex>
@@ -23,9 +22,9 @@
                     </v-layout>
                 </v-card>
                 <v-card>
-                    <v-card-text v-if="specialties.length !== 0">
-                        <ListSpecialties :specialties="specialties" :loading="loading"/>
-                    </v-card-text>
+                  <v-card-text>
+                    <ListSpecialties :specialties="specialties"/>
+                  </v-card-text>
                 </v-card>
             </v-flex>
             <v-dialog v-model="creatingSpecialty" max-width="500px">
@@ -35,30 +34,16 @@
 
     </v-container>
 </template>
-<script>
 
+<script>
     import CreateSpecialty from "./CreateSpecialty";
     import ListSpecialties from "./ListSpecialties";
-
     export default {
         components: {CreateSpecialty, ListSpecialties},
         props:['specialties'],
         data: () => ({
             searchSpecialty: "",
-            loading: undefined,
             creatingSpecialty: false,
         }),
-        methods: {
-            getSpecialties(item) {
-                if (!item.specialties) return '';
-                let specialties = '';
-                for (const key in item.specialties) {
-                    specialties += item.specialties[key].name + ', '
-                }
-                specialties = specialties.slice(0, specialties.length - 2);
-                return specialties
-            },
-        },
     };
-
 </script>

@@ -42,55 +42,30 @@
     </v-card>
 </template>
 <script>
-    import SubmitButton from "../SubmitButton";
-
     export default {
         props: ['specialty'],
-        components: {SubmitButton},
-
         data: () => ({
-            loading: false,
-            success: false,
-            exam: undefined,
-            name:undefined,
+            name: undefined,
             id: undefined,
-            price:0,
-            typeOptions:[
-                { text:'sim', value: true },
-                { text:'não', value: false }
-            ],
+            price: 0,
         }),
-
-        computed: {
-            specialties() {
-                return this.$store.getters.specialties
-            },
-        },
         mounted(){
             this.initialize()
         },
         methods: {
             close() {
-                this.$emit('close');
+              this.name = undefined;
+              this.id = undefined;
+              this.price = 0;
+              this.$emit('close');
             },
-          updateProduct(mutate) {
-            setTimeout(() => {
-              mutate();
-            }, 0);
-          },
-            async editSpecialty() {
-                this.loading = true;
-                await this.$store.dispatch('editSpecialty', {
-                    name: this.name.toUpperCase(),
-                    price:Number(this.price)
-                });
-                this.success = true;
-                this.loading = false;
-                setTimeout(() => {
-                    this.close();
-                }, 1000)
+            updateProduct(mutate) {
+              setTimeout(() => {
+                mutate();
+              }, 0);
             },
-            initialize(){
+            async initialize(){
+              console.log('no comp:', this.specialty)
                 if(this.specialty){
                   this.id = this.specialty.id
                   this.name = this.specialty.name
@@ -98,11 +73,5 @@
                 }
             }
         },
-        watch:{
-            specialty(value){
-                if(value)
-                    this.initialize()
-            }
-        }
     }
 </script>
