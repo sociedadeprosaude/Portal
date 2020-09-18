@@ -1,0 +1,13 @@
+mutation($idDoctor: ID!, $idCostProduct: ID!){
+    AddCostProductDoctorWith_doctor(
+        from:{
+            id:$idCostProduct
+        },
+        to:{
+            id:$idDoctor
+        }
+    ){
+        from{id},
+        to{id}
+    },
+}

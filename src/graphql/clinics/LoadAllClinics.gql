@@ -2,7 +2,7 @@ query{
     Clinic(orderBy:[name_asc]){
         id,name,cnpj,telephone,logo,property,opening_hours
          has_address{
-               id, cep, state, street, city, complement, neighboor, number, geopoint
-             }
+            id,cep,state,street,city,complement,neighboor,number,geopoint
+         }
     }
 }

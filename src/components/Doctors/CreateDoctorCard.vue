@@ -85,6 +85,7 @@
                         </v-select>
                         </template>
                       </ApolloQuery>
+                      <span>products: {{specialties}} </span>
                     </v-flex>
 
                     <v-flex>
@@ -169,7 +170,8 @@
         <v-card-actions>
             <v-spacer/>
             <v-flex xs4 v-if="!doctor">
-              <ApolloMutation
+              <v-btn color="primary" @click="createDoctor()">Adicionar</v-btn>
+<!--              <ApolloMutation
                   :mutation="require('@/graphql/doctors/CreateDoctors.gql')"
                   :variables="{name ,crm, cpf}"
                   @done="close"
@@ -182,7 +184,7 @@
                   >Adicionar</v-btn>
                   <p v-if="error">Ocorreu um erro: {{ error }}</p>
                 </template>
-              </ApolloMutation>
+              </ApolloMutation>-->
             </v-flex>
             <v-flex xs12 v-else>
               <ApolloMutation
@@ -239,12 +241,53 @@
                 mutate();
               }, 0);
             },
-            createDoctor(mutate) {
-              this.name = this.name.toUpperCase()
-              this.cpf = this.cpf.replace(/\./g, '').replace('-', '')
-              setTimeout(() => {
-                mutate();
-              }, 0);
+
+            async createDoctor() {
+              await this.$apollo.mutate({
+                mutation: require('@/graphql/doctors/CreateDoctors.gql'),
+                variables: {
+                  name: this.name.toUpperCase(),
+                  crm: this.crm,
+                  cpf: this.cpf.replace(/\./g, '').replace('-', ''),
+                },
+              }).then(dataDoctor => {
+                console.log("id doctor:", dataDoctor.data.CreateDoctor.id)
+                this.$apollo.mutate({
+                  mutation: require('@/graphql/doctors/CreateCostProductDoctor.gql'),
+                  variables: {
+                    cost: this.ceps,
+                    payment_method: this.clinic.address.city,
+                  },
+                }).then(dataCostProductDoctor => {
+                  console.log("id cost:", dataCostProductDoctor.data.CreateCostProductDoctor.id)
+                  this.$apollo.mutate({
+                    mutation: require('@/graphql/doctors/AddCostProductDoctorWithDoctor.gql'),
+                    variables: {
+                      idCostProduct: dataCostProductDoctor.data.CreateCostProductDoctor.id,
+                      idDoctor: dataDoctor.data.CreateDoctor.id,
+                    },
+                  }).then(data => {
+                    for(let product in this.specialties){
+                    this.$apollo.mutate({
+                      mutation: require('@/graphql/doctors/AddCostProductDoctorWithProduct.gql'),
+                      variables: {
+                        idCostProduct: dataCostProductDoctor.data.CreateCostProductDoctor.id,
+                        idProduct: this.specialties[product].id,
+                      },
+                  }).catch(error => (error)).catch((error) => {
+                    console.error('nao criando doctor: ', error)
+                  })
+                    }
+                }).catch((error) => {
+                  console.error('nao criando cost: ', error)
+                })
+              }).catch((error) => {
+                console.error('nao criando relaçao doctor and cost: ', error)
+              })
+              }).catch((error) => {
+                  console.error('nao criando relaçao cost and product: ', error)
+              })
+              this.close()
             },
             close() {
               this.clear();

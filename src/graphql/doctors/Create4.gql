@@ -1,0 +1,14 @@
+mutation CreateDoctor(
+    $name: String!,
+    $crm: String!,
+    $cpf: String!,
+    ){
+  CreateDoctor(
+    name: $name,
+    crm: $crm,
+    cpf: $cpf,
+  )
+  {
+    id,name,crm,cpf
+  }
+}
