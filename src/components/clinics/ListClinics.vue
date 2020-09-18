@@ -1,13 +1,7 @@
 <template>
     <v-container fluid>
         <v-layout v-if="clinics" row nowrap>
-            <v-flex xs12 v-if="loading">
-                <v-progress-circular class="primary--text" indeterminate/>
-            </v-flex>
-            <v-flex xs12 v-if="clinics.length === 0 && loading === false">
-                <p>Não há resultado para a pesquisa realizada</p>
-            </v-flex>
-            <div v-if="clinics.length !== 0" style="width: 100%">
+            <div style="width: 100%">
                 <v-expansion-panels focusable accordion>
                     <v-expansion-panel v-for="(clinic, i) in clinics" :key="i" class="mt-3">
                         <v-expansion-panel-header class="text-left font-weight-bold pt-4 pb-3 pl-4 primary white--text">
@@ -90,18 +84,15 @@
     </v-container>
 </template>
 <script>
-
     import EditClinic from "../../components/clinics/EditClinic";
     import Exams from "../../components/clinics/Exams";
     import Consultations from "../../components/clinics/Consultations";
     import Products from "../../components/clinics/Products";
     import ListExamsSpecialties from "../../components/clinics/ListExamsSpecialties";
     import Configurations from "../../components/clinics/Configurations";
-
     export default {
-        props: ['clinics', 'loading'],
+        props: ['clinics'],
         components: {EditClinic, Exams, Consultations, Configurations, Products,ListExamsSpecialties},
-
         data: () => ({
             clinic: undefined,
             editingClinic: false,
@@ -110,7 +101,6 @@
             addSpecialtyToClinic: false,
             deletingExamsSpecialtiesFromClinic: false,
             editingExamsSpecialtiesFromClinic: false,
-
             defaultItem: {
                 name: '',
                 cnpj: '',
@@ -148,13 +138,8 @@
                     });
                 }
                 this.clinics[i].specialties = specialties;
-
             }
         },
-        computed: {
-
-        },
-
         methods: {
             editClinic(clinic) {
                 this.clinic = clinic;
@@ -162,6 +147,7 @@
             },
             deleteClinic(clinic) {
                 this.clinic = clinic;
+                console.log('for edit:', this.clinic)
                 this.deletingClinic = true;
             },
             async deletingClinicfromDatabase(clinic) {
@@ -203,14 +189,12 @@
                 this.deletingExamsSpecialtiesFromClinic = false;
                 this.editingExamsSpecialtiesFromClinic = false;
             },
-
             listando(clinic) {
                 let val = this.$store.getters.clinics.filter(a => {
                     return a.name === clinic.name;
                 });
                 return val;
             },
-
             allExams() {
                 let clinic = this.listando[0];
                 let exams = [];
@@ -222,7 +206,6 @@
                 }
                 return exams;
             },
-
             allSpecialties() {
                 let clinic = this.listando[0];
                 let specialties = [];
