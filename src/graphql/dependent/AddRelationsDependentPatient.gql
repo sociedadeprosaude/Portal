@@ -1,0 +1,13 @@
+mutation($idDependent:ID!,$idPatient:ID!){
+    AddPatientDependents(
+        from:{
+            id:$idPatient
+        },
+        to:{
+            id:$idDependent
+        }
+    ){
+        from{id},
+        to{id}
+    }
+}

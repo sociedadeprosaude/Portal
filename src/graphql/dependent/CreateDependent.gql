@@ -1,0 +1,16 @@
+mutation CreateDependent(
+    $name: String!,
+    $birth_date: String,
+    $dependentDegree: String!,
+    $sex: String
+    ){
+  CreateDependent(
+    name: $name,
+    birth_date: $birth_date,
+    dependentDegree: $dependentDegree,
+    sex: $sex
+  )
+  {
+    id
+  }
+}

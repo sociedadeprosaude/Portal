@@ -1,0 +1,6 @@
+query{
+  Patient{
+    id,
+    cpf,
+    }
+  }

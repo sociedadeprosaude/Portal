@@ -693,7 +693,7 @@
                 if (!this.validateFiedls()) {
                     return
                 }
-                this.loading = true;
+               // this.loading = true;
                 let copyDependents = [];
                 for (let add in this.addresses) {
                     delete this.addresses[add].loading
@@ -723,21 +723,83 @@
                     dependents: copyDependents,
                     type: 'PATIENT'
                 };
-                let foundPatient;
-                let identifier;
-                if (patient.cpf) {
+                let finaly= parseInt(patient.addresses.length) + parseInt(patient.dependents.length)
+                console.log('patient: ', patient)
+                this.$apollo.mutate({
+                    mutation: require('@/graphql/patients/CreatePatient.gql'),
+                    variables: {
+                        name: patient.name,
+                        birth_date: patient.birth_date,
+                        cpf: patient.cpf,
+                        sex: patient.sex,
+                    },
+
+                }).then((responseCreatePatient) => {
+                   for(let i in patient.dependents){
+                       this.$apollo.mutate({
+                           mutation: require('@/graphql/dependent/CreateDependent.gql'),
+                           variables: {
+                               name: patient.dependents[i].name ? patient.dependents[i].name : '',
+                               birth_date: patient.dependents[i].birth_date ? patient.dependents[i].birth_date : '',
+                               cpf: patient.dependents[i].cpf ? patient.dependents[i].cpf : '',
+                               dependentDegree: patient.dependents[i].dependentDegree ? patient.dependents[i].dependentDegree : '',
+                           },
+
+                       }).then((respondeCreateDependent) => {
+                           this.$apollo.mutate({
+                               mutation: require('@/graphql/dependent/AddRelationsDependentPatient.gql'),
+                               variables: {
+                                   idPatient: responseCreatePatient.data.CreatePatient.id,
+                                   idDependent: respondeCreateDependent.data.CreateDependent.id,
+                               }
+                           }).then((responde)=> {
+                               finaly -= 1;
+                               console.log('dependent Ok')
+                           })
+                       })
+                   }
+                   for(let i in patient.addresses){
+                       this.$apollo.mutate({
+                           mutation: require('@/graphql/patients/CreateAddressPatient.gql'),
+                           variables: {
+                               cep: patient.addresses[i].cep ? patient.addresses[i].cep : '',
+                               city: patient.addresses[i].city ? patient.addresses[i].city : '',
+                               complement: patient.addresses[i].complement ? patient.addresses[i].complement : '',
+                               number: patient.addresses[i].number ? patient.addresses[i].number : '',
+                               street: patient.addresses[i].street ? patient.addresses[i].street : '',
+                               uf: patient.addresses[i].uf ? patient.addresses[i].uf : '',
+                           },
+
+                       }).then((respondeCreateAddress) => {
+                           this.$apollo.mutate({
+                               mutation: require('@/graphql/patients/AddRelationsPatientAddress.gql'),
+                               variables: {
+                                   idPatient: responseCreatePatient.data.CreatePatient.id,
+                                   idAddresses: respondeCreateAddress.data.CreateAddress.id,
+                               }
+                           }).then((responde)=> {
+                               finaly -= 1;
+                               console.log('endereço Ok')
+                           })
+                       })
+                   }
+                })
+                if(finaly === 0){
+                    console.log('paciente criado com sucesso: ', patient.cpf)
+                }
+               /* if (patient.cpf) {
                     foundPatient = await this.$store.dispatch('getPatient', patient.cpf);
                     identifier = {
                         name: 'cpf',
                         value: patient.cpf
                     }
-                }/* else {
+                } else {
                     foundPatient = await this.$store.dispatch('getPatient', 'RG' + patient.rg);
                     identifier = {
                         name: 'rg',
                         value: patient.rg
                     }
-                }*/
+                }
                 if (foundPatient) {
                     let dialog = {
                         header: `Já existe um associado com o ${identifier.name} ${identifier.value}, substituir?`,
@@ -748,7 +810,7 @@
                     this.$store.commit('setSystemDialog', dialog);
                     return
                 }
-                this.addUserToFirestore(patient)
+                this.addUserToFirestore(patient) */
             },
             async addUserToFirestore(patient) {
                 await this.$store.dispatch('addUser', patient);
