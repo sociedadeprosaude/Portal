@@ -69,6 +69,7 @@
                                 clearable
                         />
                     </v-flex>
+                  {{this.clinic.has_address[0].number}}
                     <v-flex xs4>
                         <v-text-field
                                 v-model="this.clinic.has_address[0].number"
@@ -312,7 +313,7 @@
                   opening_hours: this.clinic.opening_hours,
                 },
               }).then(dataClinic => {
-                console.log("id clinic:", dataClinic.data.UpdateClinic.id)
+                console.log("id clinic:", dataClinic.data.UpdateClinic)
                 this.$apollo.mutate({
                   mutation: require('@/graphql/address/UpdateAddress.gql'),
                   variables: {
@@ -326,8 +327,8 @@
                     complement: this.clinic.has_address[0].complement,
                     geopoint: this.clinic.has_address[0].geopoint,
                   },
-                }).then(dataAdress => {
-                  console.log("id Adress:", dataAdress.data.UpdateAddress.id)
+                }).then(dataAddress => {
+                  console.log("id Adress:", dataAddress.data.UpdateAddress)
 /*                  this.$apollo.mutate({
                     mutation: require('@/graphql/clinics/AddRelationsAddressClinic.gql'),
                     variables: {

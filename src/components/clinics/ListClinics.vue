@@ -52,6 +52,7 @@
                 <v-card-actions>
                     <v-btn rounded color="error" @click="closeDialogs">Cancelar</v-btn>
                     <v-spacer/>
+                    <v-btn rounded color="success" @click="deleteClinic">ConfirmarAPOLLO</v-btn>
 '                  <ApolloMutation
                       :mutation="require('@/graphql/clinics/DeleteClinics.gql')"
                       :variables="{ id: clinic.id }"
