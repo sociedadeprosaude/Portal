@@ -38,16 +38,15 @@
                 </v-card>
 
                 <v-card>
-                    <v-card-text>
-                      <h1>APOLLO</h1>
-                      <ApolloQuery
-                          :query="require('@/graphql/clinics/LoadAllClinics.gql')"
-                      >
-                        <template slot-scope="{ result: { data } }">
-                          <ListClinics :clinics="data.Clinic"/>
-                        </template>
-                      </ApolloQuery>
-                    </v-card-text>
+                  <v-card-text>
+                    <ApolloQuery
+                        :query="require('@/graphql/clinics/LoadAllClinics.gql')"
+                    >
+                      <template slot-scope="{ result: { data } }">
+                        <ListClinics :clinics="data.Clinic"/>
+                      </template>
+                    </ApolloQuery>
+                  </v-card-text>
                 </v-card>
             </v-flex>
             <v-dialog v-model="dataClinic" width="500px" text hide-overlay>
@@ -64,7 +63,6 @@
         components: {RegisterNewClinic, ListClinics},
         data: () => ({
             search: '',
-            loading: false,
             dataClinic: false,
         }),
         methods: {

@@ -243,7 +243,6 @@
             ceps: '',
             geopoint: null,
             logo: null,
-            checkbox: true,
             property: false,
             opening_hours: null,
             alertCEP: false,
@@ -318,7 +317,7 @@
              await this.$apollo.mutate({
                mutation: require('@/graphql/clinics/CreateClinics.gql'),
                variables: {
-                 name: this.clinic.name,
+                 name: this.clinic.name.toUpperCase(),
                  cnpj: this.clinic.cnpj,
                  telephone: this.clinic.telephone[0],
                  logo: this.logo,
@@ -328,7 +327,7 @@
              }).then(dataClinic => {
                //console.log("id clinic:", dataClinic.data.CreateClinic.id)
                 this.$apollo.mutate({
-                 mutation: require('@/graphql/adress/CreateAddress.gql'),
+                 mutation: require('@/graphql/address/CreateAddress.gql'),
                  variables: {
                    number: this.clinic.address.number,
                    cep: this.ceps,
@@ -358,7 +357,6 @@
              })
              this.closeDialog()
            },
-
             addDataToClinicExist (clinic, indexClinic) {
                 if (indexClinic !== -1 && indexClinic !==null){
                     this.cep = this.clinic.address.cep;
@@ -370,49 +368,6 @@
                 } else {
                     this.cep = '';
                 }
-            },
-
-            async save() {
-                this.loading = true;
-                if (this.indexClinic > -1) {
-                    Object.assign(this.clinics[this.indexClinic], this.clinic);
-                } else {
-                    this.clinics.push(this.clinic);
-                }
-
-                let clinicData = {
-                    address: {
-                        neighboor: this.clinic.address.neighborhood,
-                        cep: this.ceps,
-                        city: this.clinic.address.city,
-                        complement: this.clinic.address.complement,
-                        state: this.clinic.address.state,
-                        street: this.clinic.address.street,
-                        number: this.clinic.address.number,
-                    },
-                    id: this.clinic.id,
-                    name: this.clinic.name.toUpperCase(),
-                    cnpj: this.clinic.cnpj,
-                    telephone: this.clinic.telephone,
-                };
-
-                let agenda = [];
-                for (let i = 0; i < 7; i++) {
-                    if (i < 5) {
-                        agenda.push(this.clinic.startWeek + '-' + this.clinic.endWeek)
-                    } else if (i === 5) {
-                        agenda.push(this.clinic.startSaturday + '-' + this.clinic.endSaturday)
-                    }
-                }
-                clinicData.agenda = agenda;
-
-                await this.$store.dispatch('addClinic', clinicData);
-                await this.$store.dispatch('getClinics');
-                this.success = true;
-                this.loading = false;
-                setTimeout(() => {
-                    this.closeDialog()
-                }, 1000)
             },
         },
     }

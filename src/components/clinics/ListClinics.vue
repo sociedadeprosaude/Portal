@@ -25,10 +25,7 @@
                                     <span>Deletar Clínica</span>
                                 </v-tooltip>
                             </v-flex>
-
-
                             <template v-slot:actions>
-
                                 <v-icon color="white">$expand</v-icon>
                             </template>
                         </v-expansion-panel-header>
@@ -39,9 +36,11 @@
                 </v-expansion-panels>
             </div>
         </v-layout>
+
         <v-dialog v-model="editingClinic" width="500px" text hide-overlay>
             <EditClinic :clinic="clinic" @close-dialog="closeDialogs"/>
         </v-dialog>
+
         <v-dialog v-if="clinic" v-model="deletingClinic" max-width="350px">
             <v-card>
                 <v-card-title class="headline">Apagar Clínica ?</v-card-title>
@@ -64,10 +63,10 @@
                       <p v-if="error">Ocorreu um erro: {{ error }}</p>
                     </template>
                   </ApolloMutation>'
-                   <!-- <v-btn rounded color="success" @click="deletingClinicfromDatabase(clinic)">Confirmar</v-btn>-->
                 </v-card-actions>
             </v-card>
         </v-dialog>
+
         <v-dialog v-model="addExamToClinic" width="500px" text hide-overlay>
             <Exams @close-dialog="closeDialogs"/>
         </v-dialog>
@@ -80,9 +79,9 @@
         <v-dialog v-model="editingExamsSpecialtiesFromClinic" width="800px" text hide-overlay>
             <Configurations @close-dialog="closeDialogs"/>
         </v-dialog>
-
     </v-container>
 </template>
+
 <script>
     import EditClinic from "../../components/clinics/EditClinic";
     import Exams from "../../components/clinics/Exams";
@@ -101,27 +100,9 @@
             addSpecialtyToClinic: false,
             deletingExamsSpecialtiesFromClinic: false,
             editingExamsSpecialtiesFromClinic: false,
-            defaultItem: {
-                name: '',
-                cnpj: '',
-                telephone: [''],
-                address: {
-                    street: '',
-                    number: '',
-                    neighborhood: '',
-                    cep: '',
-                    complement: '',
-                    state: '',
-                    city: '',
-                },
-                startWeek: '',
-                endWeek: '',
-                startSaturday: '',
-                endSaturday: ''
-            },
         }),
         mounted () {
-            for (let i in this.clinics) {
+/*            for (let i in this.clinics) {
                 let clinic = i;
                 let exams = [];
                 let specialties = [];
@@ -138,7 +119,7 @@
                     });
                 }
                 this.clinics[i].specialties = specialties;
-            }
+            }*/
         },
         methods: {
             editClinic(clinic) {
@@ -149,20 +130,6 @@
                 this.clinic = clinic;
                 console.log('for edit:', this.clinic)
                 this.deletingClinic = true;
-            },
-            async deletingClinicfromDatabase(clinic) {
-                await this.$store.dispatch('deleteClinic', clinic);
-                setTimeout(() => {
-                    this.closeDialogs()
-                }, 1000)
-            },
-            selectClinic(clinic, index) {
-                if (!clinic) {
-                    clinic = this.defaultItem;
-                    this.$store.dispatch('putIndex', index);
-                }
-                this.$store.dispatch('selectClinic', clinic);
-                this.listando(clinic);
             },
             async addExam(clinic) {
                 await this.selectClinic(clinic);

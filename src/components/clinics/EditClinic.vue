@@ -40,7 +40,7 @@
                     </v-flex>
                     <v-flex xs6>
                         <v-text-field
-                                v-model="ceps"
+                                v-model="this.clinic.has_address[0].cep"
                                 v-mask="mask.cep"
                                 label="CEP"
                                 placeholder="CEP"
@@ -59,69 +59,69 @@
                         >O CEP não foi localizado
                         </v-alert>
                     </v-flex>
-<!--                    <v-flex xs12>
+                    <v-flex xs12>
                         <v-text-field
-                                v-model="clinic.address.street"
+                                v-model="this.clinic.has_address[0].street"
                                 label="Logradouro"
                                 placeholder="Logradouro"
                                 outlined
                                 hide-details
                                 clearable
                         />
-                    </v-flex>-->
-<!--                    <v-flex xs4>
+                    </v-flex>
+                    <v-flex xs4>
                         <v-text-field
-                                v-model="clinic.address.number"
+                                v-model="this.clinic.has_address[0].number"
                                 label="Nº"
                                 placeholder="ex.: 157"
                                 outlined
                                 hide-details
                                 clearable
                         />
-                    </v-flex>-->
-<!--                    <v-flex xs8>
+                    </v-flex>
+                    <v-flex xs8>
                         <v-text-field
-                                v-model="clinic.address.neighboor"
+                                v-model="this.clinic.has_address[0].neighboor"
                                 label="Bairro"
                                 placeholder="Bairro"
                                 outlined
                                 hide-details
                                 clearable
                         />
-                    </v-flex>-->
-<!--                    <v-flex xs12>
+                    </v-flex>
+                    <v-flex xs12>
                         <v-text-field
-                                v-model="clinic.address.complement"
+                                v-model="this.clinic.has_address[0].complement"
                                 label="Complemento"
                                 placeholder="Complemento"
                                 outlined
                                 hide-details
                                 clearable
                         />
-                    </v-flex>-->
-<!--                    <v-flex xs7>
+                    </v-flex>
+                    <v-flex xs7>
                         <v-select
                                 :items="stateOptions"
                                 label="Estado"
                                 placeholder="Estado"
-                                v-model="clinic.address.state"
+                                v-model="this.clinic.has_address[0].state"
                                 outlined
                                 chips
                                 hide-details
                                 clearable
                         />
-                    </v-flex>-->
-<!--                    <v-flex xs5>
+                    </v-flex>
+                    <v-flex xs5>
                         <v-text-field
                                 label="Cidade"
                                 placeholder="Cidade"
-                                v-model="clinic.address.city"
+                                v-model="this.clinic.has_address[0].city"
                                 outlined
                                 chips
                                 hide-details
                                 clearable
                         />
-                    </v-flex>-->
+                    </v-flex>
                     <p class="text-justify">Horario de Funcionamento de Segunda-Feira a Sexta-Feira:</p>
                     <v-flex xs6>
                         <v-text-field
@@ -149,7 +149,7 @@
 
                     <p class="text-justify">Horario de Funcionamento de Sábado:</p>
 
-                    <v-flex xs6 v-if="clinic.opening_hours[5].length > 0">
+                    <v-flex xs6 >
                         <v-text-field
                                 v-model="this.clinic.opening_hours[5].split('-')[0]"
                                 label="Abre as:"
@@ -161,7 +161,7 @@
                         />
                     </v-flex>
                     <v-spacer/>
-                    <v-flex xs6 v-if="clinic.opening_hours[5].length > 0">
+                    <v-flex xs6 >
                         <v-text-field
                                 v-model="this.clinic.opening_hours[5].split('-')[1]"
                                 placeholder="Ex.: 12:00"
@@ -171,30 +171,20 @@
                                 hide-details
                         />
                     </v-flex>
-
-                  <v-flex xs6 v-if="!clinic.opening_hours[5].length > 0">
-                    <v-text-field
-                        v-model="this.clinic.opening_hours[5].split('-')[0]"
-                        label="Abre as:"
-                        placeholder="Ex.: 06:00"
-                        outlined
-                        v-mask="mask.time"
-                        clearable
-                        hide-details
-                    />
-                  </v-flex>
-                  <v-spacer/>
-                  <v-flex xs6 v-if="!clinic.opening_hours[5].length > 0">
-                    <v-text-field
-                        v-model="this.clinic.opening_hours[5].split('-')[1]"
-                        placeholder="Ex.: 12:00"
-                        outlined
-                        v-mask="mask.time"
-                        clearable
-                        hide-details
-                    />
-                  </v-flex>
-
+                    <v-flex xs12>
+                      <v-textarea
+                          filled
+                          v-model="this.clinic.logo"
+                          label="Link da logo da unidade pro-saúde (se for unidade pro-sáude)"
+                      ></v-textarea>
+                    </v-flex>
+                    <v-flex>
+                      <v-checkbox
+                          v-model="this.clinic.property"
+                          color="green"
+                          label="Unidade pro-saúde ?"
+                      ></v-checkbox>
+                    </v-flex>
                 </v-layout>
             </v-container>
         </v-card-text>
@@ -202,19 +192,10 @@
         <v-card-actions>
             <v-btn rounded color="error" @click="closeDialog">Cancelar</v-btn>
             <v-spacer/>
-            <v-btn rounded color="success"  :to="{ name: 'RegisterNewUserClinic', params: {id: clinic.cnpj } }">Gerar Link para Usuario
+            <v-btn rounded color="success"  :to="{ name: 'RegisterNewUserClinic', params: {id: clinic.id } }">Gerar Link para Usuario
             </v-btn>
             <v-spacer/>
-            <ApolloMutation
-                :mutation="require('@/graphql/clinics/UpdateClinics.gql')"
-                :variables="{ id: clinic.id, telephone: clinic.telephone}"
-                @done="closeDialog"
-            >
-              <template v-slot="{ mutate, loading, error }">
-                <v-btn color="primary" @click.native="updateProduct(mutate)">Editar</v-btn>
-                <p v-if="error">Ocorreu um erro: {{ error }}</p>
-              </template>
-            </ApolloMutation>
+            <v-btn color="primary" @click="updateClinic()">Editar</v-btn>
         </v-card-actions>
     </v-card>
 </template>
@@ -266,44 +247,15 @@
                 'Sergipe (SE)',
                 'Tocantins (TO)'
             ],
-            ceps: '',
-            street: '',
-            number: '',
-            neighborhood: '',
-            cep: '',
-            complement: '',
-            state: '',
-            city: '',
-            name: '',
-            cnpj: '',
-            telephone: [],
-            startWeek: '',
-            endWeek: '',
-            startSaturday: '',
-            endSaturday: '',
+            //ceps: '',
             alertCEP: false,
         }),
         mounted () {
-          console.log("clinic apollo:", this.clinic);
-            this.ceps = this.clinic.has_address[0].cep ? this.clinic.has_address[0].cep : "";
-            this.clinic.address.city = this.clinic.has_address[0].city ? this.clinic.has_address[0].city : "";
-            this.clinic.address.number = this.clinic.has_address[0].number ? this.clinic.has_address[0].number : "";
-            this.clinic.address.street = this.clinic.has_address[0].street ? this.clinic.has_address[0].street : "";
-            this.clinic.address.state = this.clinic.has_address[0].state ? this.clinic.has_address[0].state : "";
-            this.clinic.address.complement = this.clinic.has_address[0].complement ? this.clinic.has_address[0].complement : "";
-            this.clinic.address.neighboor = this.clinic.has_address[0].neighboor ? this.clinic.has_address[0].neighboor : "";
-/*            this.clinic.startWeek = this.clinic.opening_hours[0].split('-')[0];
-            this.clinic.endWeek = this.clinic.opening_hours[0].split('-')[1];
-            this.clinic.startSaturday = this.clinic.opening_hours[5].length > 0 ? this.clinic.opening_hours[5].split('-')[0] : '';
-            this.clinic.endSaturday = this.clinic.opening_hours[5].length > 0 ? this.clinic.opening_hours[5].split('-')[1] : '';*/
-        },
-        computed: {
-            formIsValid() {
-                return this.clinic.name && this.clinic.telephone[0]
-            },
+            console.log("clinic apollo:", this.clinic);
+            /*this.ceps = this.clinic.has_address[0].cep;*/
         },
         watch: {
-            ceps(val) {
+/*            ceps(val) {
                 if (val.length === 8) {
                     axios
                         .get('https://viacep.com.br/ws/' + val + '/json/')
@@ -312,11 +264,11 @@
                                 this.alertCEP = true
                             } else {
                                 this.alertCEP = false;
-                                this.clinic.address.street = response.data.logradouro;
-                                this.clinic.address.neighborhood = response.data.bairro;
-                                this.clinic.address.city = response.data.localidade;
+                                this.street = response.data.logradouro;
+                                this.neighboor = response.data.bairro;
+                                this.city = response.data.localidade;
                                 let array = this.stateOptions;
-                                this.clinic.state = array.find(function (element) {
+                                this.state = array.find(function (element) {
                                     if (element.includes(response.data.uf)) {
                                         return element;
                                     }
@@ -326,67 +278,72 @@
 
                         })
                 } else {
-                    this.clinic.address.street = '';
-                    this.clinic.address.neighborhood = '';
-                    this.clinic.address.state = '';
-                    this.clinic.address.city = '';
+                    this.street = '';
+                    this.neighboor = '';
+                    this.state = '';
+                    this.city = '';
                 }
-            },
-
-
+            },*/
         },
-
         methods: {
-            updateProduct(mutate) {
-              setTimeout(() => {
-                mutate();
-              }, 0);
-            },
-
-            closeDialog : function () {
-                this.$emit('close-dialog');
-                this.clearData();
-            },
-
-            clearData() {
-                /**/
-            },
-
-            async save() {
-                this.loading = true;
-                let clinicData = {
-                    address: {
-                        neighboor: this.clinic.address.neighborhood,
-                        cep: this.ceps,
-                        city: this.clinic.address.city,
-                        complement: this.clinic.address.complement,
-                        state: this.clinic.address.state,
-                        street: this.clinic.address.street,
-                        number: this.clinic.address.number,
-                    },
-                    id: this.clinic.id,
-                    name: this.clinic.name.toUpperCase(),
-                    cnpj: this.clinic.cnpj,
-                    telephone: this.clinic.telephone,
-                };
-
-                let agenda = [];
-                for (let i = 0; i < 7; i++) {
-                    if (i < 5) {
-                        agenda.push(this.clinic.startWeek + '-' + this.clinic.endWeek)
-                    } else if (i === 5) {
-                        agenda.push(this.clinic.startSaturday + '-' + this.clinic.endSaturday)
-                    }
+          closeDialog : function () {
+            this.$emit('close-dialog');
+          },
+          async updateClinic() {
+              let agenda = [];
+              for (let i = 0; i < 7; i++) {
+                if (i < 5) {
+                  agenda.push(this.clinic.opening_hours[0].split('-')[0] + '-' + this.clinic.opening_hours[0].split('-')[1])
+                } else if (i === 5) {
+                  agenda.push(this.clinic.opening_hours[5].split('-')[0] + '-' + this.clinic.opening_hours[5].split('-')[1])
                 }
-                clinicData.agenda = agenda;
+              }
+              this.clinic.opening_hours = agenda
 
-                await this.$store.dispatch('editClinic', clinicData);
-                await this.$store.dispatch('getClinics');
-                this.success = true;
-                this.loading = false;
-                setTimeout(() => {
-                    this.closeDialog()
-                }, 1000)
+              await this.$apollo.mutate({
+                mutation: require('@/graphql/clinics/UpdateClinics.gql'),
+                variables: {
+                  id: this.clinic.id,
+                  name: this.clinic.name,
+                  cnpj: this.clinic.cnpj,
+                  telephone: this.clinic.telephone[0],
+                  logo: this.clinic.logo,
+                  property: this.clinic.property,
+                  opening_hours: this.clinic.opening_hours,
+                },
+              }).then(dataClinic => {
+                console.log("id clinic:", dataClinic.data.UpdateClinic.id)
+                this.$apollo.mutate({
+                  mutation: require('@/graphql/address/UpdateAddress.gql'),
+                  variables: {
+                    id: this.clinic.has_address[0].id,
+                    number: this.clinic.has_address[0].number,
+                    cep: this.clinic.has_address[0].cep,
+                    city: this.clinic.has_address[0].city,
+                    state: this.clinic.has_address[0].state,
+                    street: this.clinic.has_address[0].street,
+                    neighboor: this.clinic.has_address[0].neighboor,
+                    complement: this.clinic.has_address[0].complement,
+                    geopoint: this.clinic.has_address[0].geopoint,
+                  },
+                }).then(dataAdress => {
+                  console.log("id Adress:", dataAdress.data.UpdateAddress.id)
+/*                  this.$apollo.mutate({
+                    mutation: require('@/graphql/clinics/AddRelationsAddressClinic.gql'),
+                    variables: {
+                      idClinic: dataClinic.data.CreateClinic.id,
+                      idAddress: dataAdress.data.CreateAddress.id,
+                    }
+                  })*//*.catch((error) => {
+                    console.error('nao criando clinica: ', error)
+                  })*/
+                }).catch((error) => {
+                  console.error('nao criando endereço: ', error)
+                })
+              }).catch((error) => {
+                console.error('nao criando relaçao clinica e endrereço: ', error)
+              })
+              this.closeDialog()
             },
         },
     }

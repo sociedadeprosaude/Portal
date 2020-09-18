@@ -1,4 +1,4 @@
-mutation CreateAddress(
+mutation(
     $cep: String,
     $city: String,
     $complement: String,
