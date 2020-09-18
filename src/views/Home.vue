@@ -334,7 +334,9 @@ export default {
   },
   computed: {
     user() {
-      return this.$store.getters.user
+      const user  = this.$store.getters.user
+      console.log(user)
+      return user
     },
     userPermissions() {
       let holder = this.$store.getters.user.permissions;

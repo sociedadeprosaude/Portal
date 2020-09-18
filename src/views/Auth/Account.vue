@@ -18,6 +18,7 @@
                             </v-flex>
                             <v-flex xs12>
                                 <v-text-field
+                                        v-if="user.telephones"
                                         v-model="user.telephones[0]"
                                         v-mask="'(##)#####-####'"
                                         label="Telefone"

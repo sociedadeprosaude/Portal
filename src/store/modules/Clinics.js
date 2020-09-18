@@ -513,17 +513,11 @@ const actions = {
         return exams
     },
 
-    async getProSaudeUnits(context) {
-        firebase.firestore().collection('clinics').where('property', '==', true).onSnapshot(clinCollection => {
-            let pros = [];
-            clinCollection.forEach(doc => {
-                pros.push(doc.data())
-            });
-            context.commit('setUnits', pros);
+    async getProSaudeUnits(context,clinics) {
+            context.commit('setUnits', clinics);
             if (!this.getters.selectedUnit) {
-                context.commit('setSelectedUnit', pros[0])
+                context.commit('setSelectedUnit', clinics[0])
             }
-        })
     },
     async setClinProperty(context, clin) {
         if (clin.property) {
