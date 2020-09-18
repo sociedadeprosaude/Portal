@@ -423,6 +423,9 @@
             async saveBudget(budget) {
                 this.$store.commit('setSelectedBudget', budget);
             },
+            async idUsers(){
+
+            },
             async pay() {
                 this.paymentLoading = true;
                 let user = this.patient
@@ -440,6 +443,7 @@
                 }
                 this.alertMessage.model = false
                 await this.saveBudget(this.generateBudget());
+                console.log('selectedBudget: ', this.selectedBudget)
                 this.selectedBudget.valuesPayments.forEach(value => {value = parseFloat(value)})
                 await this.$apollo.mutate({
                     mutation: require('@/graphql/transaction/NewPayIntake.gql'),
