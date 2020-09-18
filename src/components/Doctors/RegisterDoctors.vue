@@ -11,7 +11,6 @@
                                     class="mx-5"
                                     color="primary"
                                     v-model="search"
-                                    :loading="loading"
                                     id="search"
                             />
                         </v-flex>
@@ -22,8 +21,8 @@
                 </v-card>
 
                 <v-card>
-                    <v-card-text v-if="doctorsArray.length !== 0">
-                        <ListDoctors @deleteDoctorFromDatabase="deleteDoctorFromDatabase($event)" :doctorsArray="doctorsArray" :doctors=doctors :loading="loading" @loading="loading = !loading"/>
+                    <v-card-text v-if="doctors.length !== 0">
+                        <ListDoctors :doctors=doctors />
                     </v-card-text>
                 </v-card>
             </v-flex>
@@ -42,43 +41,14 @@
         name:"RegisterDoctors",
         data: () => ({
             search: "",
-            loading: undefined,
             creatingDoctor:"",
             selectedDoctor:"",
         }),
-        computed: {
-            doctorsArray() {
-                let array = [];
-                for (let doc in this.doctors) {
-                    let holder = {
-                        ...this.doctors[doc],
-                        specialties: this.getSpecialties(this.doctors[doc]),
-                    };
-                    array.push(holder)
-                }
-                return array.filter(a => a.name >= this.search.toUpperCase())
-            },
-        },
-
         methods: {
             addDoctor() {
                 this.selectedDoctor = undefined;
                 this.creatingDoctor = true
             },
-            getSpecialties(item) {
-                if (!item.specialties) return '';
-                let specialties = '';
-                for (const key in item.specialties) {
-                    specialties += item.specialties[key].name + ', '
-                }
-                specialties = specialties.slice(0, specialties.length - 2);
-                return specialties
-            },
-            async deleteDoctorFromDatabase(doctor){
-                await this.$store.dispatch('deleteConsultations', doctor);
-                await this.$store.dispatch('deleteDoctor', doctor);
-                this.loading = false;
-            }
         }
     };
 

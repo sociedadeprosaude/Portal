@@ -1,19 +1,8 @@
 <template>
     <v-container fluid>
-        <v-layout v-if="doctorsArray" row nowrap>
-            <v-flex xs12 v-if="loading">
-                <v-progress-circular class="primary--text" indeterminate/>
-            </v-flex>
-            <v-flex xs12 v-if="doctorsArray.length === 0 && loading === false">
-                <p>Não há resultado para a pesquisa realizada</p>
-            </v-flex>
-            <div v-if="doctors.length !== 0" style="width: 100%">
-              <!-- Apollo Query -->
-              <ApolloQuery
-                  :query="require('@/graphql/doctors/LoadDoctors.gql')"
-              >
-                <template slot-scope="{ result: { data } }">
-                  <v-flex sm12 v-for="(doctor, i) in data.Doctor" :key="i" class="mb-5">
+        <v-layout row wrap>
+            <div style="width: 100%">
+                  <v-flex sm12 v-for="(doctor, i) in doctors" :key="i" class="mb-5">
                     <v-card>
                       <v-flex xs12 sm12>
                         <v-card color="primary">
@@ -30,23 +19,20 @@
                               <v-btn icon dark @click="deleteDoctor(doctor)">
                                 <v-icon>delete</v-icon>
                               </v-btn>
-                              <v-btn icon dark @click="deactiveDoctor(doctor)">
-                                <v-icon>work_off</v-icon>
-                              </v-btn>
                             </v-flex>
                           </v-layout>
                         </v-card>
                       </v-flex>
                     </v-card>
                   </v-flex>
-                </template>
-              </ApolloQuery>
             </div>
         </v-layout>
+
         <v-dialog v-model="editingDoctor" max-width="500px" v-if="editingDoctor">
             <CreateDoctorCard @clean="selectedDoctor = undefined" :doctor="selectedDoctor"
                               @close="editingDoctor = false"/>
         </v-dialog>
+
         <v-dialog v-if="selectedDoctor" v-model="deletingDoctor" max-width="500px">
             <v-card>
                 <v-card-title>
@@ -68,7 +54,7 @@
                     >
                       <template v-slot="{ mutate, loading, error }">
                         <v-progress-circular indeterminate color="primary" v-if="loading"></v-progress-circular>
-                        <v-btn color="red" class="white--text" @click="mutate()">Apagar</v-btn>
+                        <v-btn v-if="!loading" color="red" class="white--text" @click="mutate()">Apagar</v-btn>
                         <p v-if="error">Ocorreu um erro: {{ error }}</p>
                       </template>
                     </ApolloMutation>
@@ -76,53 +62,18 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <v-dialog v-model="deactivatingDoctor" v-if="selectedDoctor" max-width="500px" persistent>
-            <v-card>
-                <v-card-title>
-                    <v-spacer/>
-                    <v-btn text @click="closeDeactivingDoctor" x-small fab><v-icon>close</v-icon></v-btn>
-                </v-card-title>
-                <v-select :items="specialtiesDoctor" v-model="specialtyToDeactivate" outlined persistent-hint
-                          class="mx-5 mb-4" multiple return-object chips
-                          hint="Selecione as especialidades para desativar"/>
-                <v-select :items="clinics" v-model="clinicsToDeactivate" outlined persistent-hint item-value="name"
-                          item-text="name"
-                          class="mx-5 mb-4" multiple return-object chips hint="Selecione a unidade"/>
-                <v-card-text>
-                    <span>Desativar </span>
-                    <span class="font-weight-bold justify-center">{{selectedDoctor.name}}</span>
-                    <span> ?</span>
-                </v-card-text>
-                <v-card-actions class="mx-3">
-                    <v-spacer/>
-                    <submit-button text="Confirmar" :loading="loading" :success="success" @reset="success = false"
-                                   @click="deactivingDoctorFromDatabase(selectedDoctor)">
-                    </submit-button>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
     </v-container>
 </template>
 <script>
     import CreateDoctorCard from "../../components/Doctors/CreateDoctorCard";
-    import SubmitButton from "../SubmitButton"
-
     export default {
-        props: ['doctors', 'loading', 'doctorsArray'],
-        components: {CreateDoctorCard, SubmitButton},
-
+        props: ['doctors'],
+        components: {CreateDoctorCard},
         data: () => ({
-            success: false,
             selectedDoctor: undefined,
-            clinics: [],
-            specialtiesDoctor: [],
-            specialtyToDeactivate: [],
-            clinicsToDeactivate: [],
             editingDoctor: false,
             deletingDoctor: false,
-            deactivatingDoctor: false,
         }),
-
         methods: {
             async editDoctor(doctor) {
                 console.log('edit ?', doctor)
@@ -133,47 +84,7 @@
                 console.log('delete ?',doctor)
                 this.selectedDoctor = doctor;
                 this.deletingDoctor = true;
-
             },
-            async deleteDoctorFromDatabase(item) {
-                let uid = item.uid;
-                let cpf = item.cpf;
-                console.log('uid:',uid)
-                console.log('cpf:',cpf)
-                this.loading = true;
-                await this.$store.dispatch('deleteConsultations', cpf);
-                await this.$store.dispatch('deleteDoctor', uid);
-                this.success = true;
-                setTimeout(() => {
-                    this.deletingDoctor = false
-                }, 800)
-            },
-            deactiveDoctor(doctor){
-                this.selectedDoctor = doctor;
-                this.clinics = doctor.clinics;
-                this.specialtiesDoctor = doctor.specialties.split(', ');
-                this.deactivatingDoctor = true;
-            },
-            closeDeactivingDoctor () {
-                this.deactivatingDoctor = false;
-                this.specialtyToDeactivate = [];
-                this.clinicsToDeactivate = [];
-            },
-            async deactivingDoctorFromDatabase (doctor) {
-                this.loading = true;
-                for (let i in this.clinicsToDeactivate) {
-                    await this.$store.dispatch('deactivateScheduleDoctor', {
-                        doctor: doctor,
-                        specialties: this.specialtyToDeactivate,
-                        clinic: this.clinicsToDeactivate[i],
-                    });
-                }
-                this.success = true;
-                this.loading = false;
-                setTimeout(() => {
-                    this.closeDeactivingDoctor()
-                }, 800)
-            }
         }
     }
 </script>

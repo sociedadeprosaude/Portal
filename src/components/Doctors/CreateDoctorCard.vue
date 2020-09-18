@@ -88,7 +88,6 @@
                     </v-flex>
 
                     <v-flex>
-                      <!-- Apollo Query -->
                       <ApolloQuery
                           :query="require('@/graphql/clinics/LoadClinics.gql')"
                           :variables="{property: true}"
@@ -207,68 +206,32 @@
         name: "CreateDoctorCard",
         props: ['doctor'],
         directives: { mask },
-        mounted() {
-          console.log('tem ?', this.doctor)
-            this.$store.dispatch('getClinics');
-            this.$store.dispatch('getSpecialties');
-            if (this.doctor) {
-                console.log(this.doctor)
-                this.name = this.doctor.name;
-                this.cpf = this.doctor.cpf;
-                this.id = this.doctor.id;
-                this.crm = this.doctor.crm;
-                this.specialties = this.doctor.specialties;
-                this.clinic = this.doctor.clinics
-            }
-        },
         data() {
             return {
+              name: '',
+              crm: '',
+              cpf: '',
+              id: '',
+              //==========
                 clinic: undefined,
                 maskCRM: '######',
                 maskCPF: '###.###.###-##',
                 paymentMethod: 'unit',
-                name: '',
-                crm: '',
-                cpf: '',
-                id: '',
                 specialties: undefined,
-                obs: null,
                 formTitle: 'Cadastro de Médicos',
-                loading: false,
-                success: false,
-                error: undefined
             }
         },
-        computed: {
-            clinics() {
-                return this.$store.getters.clinics.filter(a => {
-                    return a.property;
-                });
-            },
-            specialtyOptions() {
-                return JSON.parse(JSON.stringify(this.$store.getters.specialties))
-            },
-            formIsValid() {
-                if (!this.name || this.name.length <= 0) {
-                    return false
-                }
-                if (!this.cpf || this.cpf.length <= 0) {
-                    return false
-                }
-                if (!this.crm || this.crm.length <= 0) {
-                    return false
-                }
-                if (!this.specialties || this.specialties.length <= 0) {
-                    return false
-                } else {
-                    for (let spec in this.specialties) {
-                        if (!this.specialties[spec].payment_method) {
-                            return false
-                        }
-                    }
-                }
-                return true
-            },
+        mounted() {
+          console.log('tem ?', this.doctor)
+          if (this.doctor) {
+            console.log(this.doctor)
+            this.name = this.doctor.name;
+            this.cpf = this.doctor.cpf;
+            this.id = this.doctor.id;
+            this.crm = this.doctor.crm;
+            this.specialties = this.doctor.specialties;
+            this.clinic = this.doctor.clinics
+          }
         },
         methods: {
             updateDoctor(mutate) {
@@ -278,11 +241,15 @@
             },
             createDoctor(mutate) {
               this.name = this.name.toUpperCase()
+              this.cpf = this.cpf.replace(/\./g, '').replace('-', '')
               setTimeout(() => {
                 mutate();
               }, 0);
             },
-            close() { this.$emit('close'); },
+            close() {
+              this.clear();
+              this.$emit('close');
+            },
             clear() {
                 this.name = undefined;
                 this.crm = undefined;
@@ -339,6 +306,3 @@
         }
     }
 </script>
-
-<style scoped>
-</style>
