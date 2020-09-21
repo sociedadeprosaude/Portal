@@ -1,4 +1,4 @@
-mutation UpdateAddress (
+mutation (
     $id: ID!,
     $cep: String,
     $city: String,

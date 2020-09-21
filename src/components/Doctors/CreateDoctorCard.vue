@@ -85,7 +85,6 @@
                         </v-select>
                         </template>
                       </ApolloQuery>
-                      <span>products: {{specialties}} </span>
                     </v-flex>
 
                     <v-flex>
@@ -267,16 +266,28 @@
                       idDoctor: dataDoctor.data.CreateDoctor.id,
                     },
                   }).then(data => {
-                    for(let product in this.specialties){
-                    this.$apollo.mutate({
-                      mutation: require('@/graphql/doctors/AddCostProductDoctorWithProduct.gql'),
-                      variables: {
-                        idCostProduct: dataCostProductDoctor.data.CreateCostProductDoctor.id,
-                        idProduct: this.specialties[product].id,
-                      },
-                  }).catch(error => (error)).catch((error) => {
-                    console.error('nao criando doctor: ', error)
-                  })
+                    for (let clin in this.clinic) {
+                      this.$apollo.mutate({
+                        mutation: require('@/graphql/doctors/AddClinicHasDoctor.gql'),
+                        variables: {
+                          idClinic: this.clinic[clinc].id,
+                          idDoctor: dataDoctor.data.CreateDoctor.id,
+                        },
+                      }).catch((error) => {
+                        console.error('nao criando cost: ', error)
+                      })
+                    }
+                    for (let product in this.specialties) {
+                      this.$apollo.mutate({
+                        mutation: require('@/graphql/doctors/AddCostProductDoctorWithProductAndAddDoctorIsSpecialistOf.gql'),
+                        variables: {
+                          idCostProduct: dataCostProductDoctor.data.CreateCostProductDoctor.id,
+                          idProduct: this.specialties[product].id,
+                          idDoctor: dataDoctor.data.CreateDoctor.id,
+                        },
+                      }).catch((error) => {
+                        console.error('nao criando cost: ', error)
+                      })
                     }
                 }).catch((error) => {
                   console.error('nao criando cost: ', error)
