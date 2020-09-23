@@ -290,6 +290,7 @@
                             cost: this.specialties[j].cost,
                             price: this.specialties[j].price,
                             paymentMethod: this.specialties[j].payment_method,
+                            clinics: doctor.clinics
                         };
                         await this.$store.dispatch('addAppointmentFromDoctors', data);
                     }
