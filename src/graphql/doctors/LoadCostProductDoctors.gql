@@ -1,0 +1,11 @@
+query {
+    CostProductDoctor(orderBy:[cost_asc]){
+       id,cost,payment_method
+           with_doctor{
+             id
+           },
+           with_product{
+            id
+           }
+    }
+}
