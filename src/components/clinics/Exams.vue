@@ -95,7 +95,6 @@
                           </v-chip>
                         </template>
                       </v-select>
-                      {{exams}}
                     </v-flex>
 
                     <v-flex xs12>
