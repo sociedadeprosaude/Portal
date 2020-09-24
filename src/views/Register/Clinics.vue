@@ -39,13 +39,14 @@
 
                 <v-card>
                   <v-card-text>
-                    <ApolloQuery
+ <!--                   <ApolloQuery
                         :query="require('@/graphql/clinics/LoadAllClinics.gql')"
                     >
                       <template slot-scope="{ result: { data } }">
-                        <ListClinics :clinics="data.Clinic"/>
+                        <ListClinics :clinics="clinics"/>
                       </template>
-                    </ApolloQuery>
+                    </ApolloQuery>-->
+                    <ListClinics :clinics="clinics"/>
                   </v-card-text>
                 </v-card>
             </v-flex>
@@ -64,12 +65,25 @@
         data: () => ({
             search: '',
             dataClinic: false,
+            clinics: undefined,
         }),
-        methods: {
-            finishRegister(){
-              this.dataClinic = false;
-            },
-        }
-
+      mounted(){
+        this.FormatAddressOfClinics()
+      },
+      methods: {
+        async FormatAddressOfClinics() {
+          const unitys = await this.$apollo.mutate({
+            mutation: require('@/graphql/clinics/LoadAllClinics.gql'),
+          })
+          let forEdit = unitys.data.Clinic
+          for(let clinic in forEdit){
+            forEdit[clinic].address = forEdit[clinic].has_address[0]
+          }
+          this.clinics = forEdit
+        },
+        finishRegister(){
+          this.dataClinic = false;
+        },
+      }
     }
 </script>

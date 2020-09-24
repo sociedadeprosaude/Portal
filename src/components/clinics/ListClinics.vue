@@ -16,14 +16,14 @@
                                     </template>
                                     <span>Editar Clínica</span>
                                 </v-tooltip>
-                                <v-tooltip top color="primary">
+<!--                                <v-tooltip top color="primary">
                                     <template v-slot:activator="{ on }">
                                         <v-btn icon dark v-on="on" @click="deleteClinic(clinic)" class="mr-3">
                                             <v-icon color="white">delete</v-icon>
                                         </v-btn>
                                     </template>
                                     <span>Deletar Clínica</span>
-                                </v-tooltip>
+                                </v-tooltip>-->
                             </v-flex>
                             <template v-slot:actions>
                                 <v-icon color="white">$expand</v-icon>
