@@ -1,0 +1,17 @@
+mutation($idUser:ID!,$idColaborator:ID!){
+    AddUserIs_colaborator(
+    from:{
+      id:$idUser
+    },
+    to:{
+      id:$idColaborator
+    }
+  ){
+    from{
+        id
+    },
+    to{
+        id
+    }
+  }
+}

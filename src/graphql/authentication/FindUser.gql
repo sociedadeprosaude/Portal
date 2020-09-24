@@ -40,6 +40,8 @@ query($email:String!){
       cpf,
       email,
       group,
+      salary,
+      permissions,
       birth_date,
       clinic:work_in{
         id,

@@ -127,8 +127,12 @@
                 update(data){
                     this.skip = true
                     console.log(data.User[0])
-                    const user = data.User[0].is_colaborator? data.User[0].is_colaborator : data.User[0].is_doctor
-                    this.$store.dispatch('getUser', user);
+                    let user = undefined
+                    if(data.User.length > 0)
+                        user =  data.User[0].is_colaborator? data.User[0].is_colaborator : data.User[0].is_doctor
+                    
+                    if(user)
+                        this.$store.dispatch('getUser', user);
                 },
                 skip(){
                     return this.skip

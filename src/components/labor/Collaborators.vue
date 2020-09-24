@@ -53,7 +53,7 @@
                       <v-btn
                           @click="setUserUnit(unit, user)"
                           rounded
-                          :class="[user.clinic ? user.clinic.name === unit.name ? 'primary' : '' : '']">
+                          :class="[user.clinic ? user.clinic.id === unit.id ? 'primary' : '' : '']">
                         <img width="124px" :src="unit.logo">
                       </v-btn>
                     </v-flex>
@@ -185,7 +185,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer/>
-          <v-btn v-if="!loading" class="primary" @click="setSalary(selectedUser)">
+          <v-btn v-if="!loading" class="primary" @click="setSalary(selecteduser)">
             Salvar
           </v-btn>
           <v-progress-circular indeterminate v-else class="primary--text"/>
@@ -219,13 +219,12 @@ import moment from "moment";
 export default {
 
   name: "Collaborators",
-  props: ['collaborators'],
+  props: ['collaborators','loading'],
 
   data: () => ({
     selectedPermissions: [],
     dialog: false,
     havePermissions: false,
-    loading: true,
     registerSalary: false,
     registerAdvance: false,
     value: undefined,
@@ -237,7 +236,7 @@ export default {
   }),
 
   mounted() {
-    this.getInitialInfo()
+    //this.getInitialInfo()
   },
 
   computed: {
@@ -259,26 +258,35 @@ export default {
 
   methods: {
 
-    async getInitialInfo() {
+    /* async getInitialInfo() {
       await this.$store.dispatch('getColaborators');
       this.loading = false
-    },
+    }, */
 
-    userGroups(user) {
-      this.$store.dispatch('userPermissions', {
-        user: user.id,
-        permissions: this.selectedPermissions,
-      })
+    async userGroups(user) {
+      this.selectedPermissions = this.selectedPermissions.map(value => value.name)
+      user.permissions = this.selectedPermissions
+
+      await this.$apollo.mutate({
+          mutation: require('@/graphql/colaborators/SetColaboratorPermissions.gql'),
+          variables:{
+            idColaborator:user.id,
+            permissions: this.selectedPermissions
+          },
+      });
+
       this.dialog = false
     },
 
-    setGroup(user, group) {
-      if (user.group === group) {
-        this.$store.dispatch('updateUserField', {user: user, field: 'group', value: 'delete'})
-      } else {
-        this.$store.dispatch('updateUserField', {user: user, field: 'group', value: group})
-      }
-      this.$store.dispatch('getColaborators');
+    async setGroup(user, group) {
+      user.group = user.group === group ? null : group
+      await this.$apollo.mutate({
+          mutation: require('@/graphql/colaborators/setColaboratorGroup.gql'),
+          variables:{
+            idColaborator:user.id,
+            group: user.group
+          },
+      });
     },
 
     async setSalary(user) {
@@ -289,12 +297,15 @@ export default {
         return
       }
       this.loading = true;
-      await this.$store.dispatch('updateUserField', {
-        user: this.selecteduser,
-        field: 'salary',
-        value: this.value
+      await this.$apollo.mutate({
+          mutation: require('@/graphql/colaborators/setColaboratorSalary.gql'),
+          variables:{
+            idColaborator:this.selecteduser.id,
+            salary: this.value
+          },
       });
-      await this.getInitialInfo();
+
+      this.selecteduser.salary = this.value
       this.clearValuesForm();
     },
 
@@ -332,12 +343,16 @@ export default {
     },
 
     async setUserUnit(unit, user) {
-      await this.$store.dispatch('updateUserField', {
-        user: user,
-        field: 'clinic',
-        value: unit
+      const nameMutation = user.clinic && user.clinic.id === unit.id ? 'RemoveRelationColaboratorClinic' : 'AddRelationColaboratorClinic'
+      user.clinic = user.clinic && user.clinic.id === unit.id ? null : unit
+
+      await this.$apollo.mutate({
+          mutation: require(`@/graphql/colaborators/${nameMutation}.gql`),
+          variables:{
+            idColaborator:user.id,
+            idClinic: unit.id
+          },
       });
-      await this.getInitialInfo()
     },
 
     async deleteUser(user) {

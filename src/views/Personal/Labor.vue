@@ -4,17 +4,17 @@
       <v-flex xs12>
         <span class="my-headline">Colaboradores</span>
       </v-flex>
-      <Collaborators :collaborators="collaborators"/>
+      <Collaborators :loading="loading" :collaborators="colaborators"/>
 
-      <v-flex xs12>
+      <!-- <v-flex xs12>
         <span v-if="user.group === 'admin'" class="my-headline">Médicos</span>
       </v-flex>
       <Doctors v-if="user.group === 'admin'"/>
 
       <v-flex xs12>
         <span class="my-headline">Pagamentos</span>
-      </v-flex>
-      <paymeny-report :colaborators="collaborators"/>
+      </v-flex> -->
+      <!-- <paymeny-report :colaborators="collaborators"/> -->
     </v-layout>
 
     <v-layout row wrap v-else>
@@ -41,9 +41,10 @@ export default {
   },
   data: () => ({
     loading: true,
+    colaborators:[]
   }),
   async mounted() {
-    await this.$store.dispatch('getColaborators');
+    //await this.$store.dispatch('getColaborators');
     this.loading = false
   },
   computed: {
@@ -53,14 +54,26 @@ export default {
     unit() {
       return this.$store.getters.user.clinic
     },
-    collaborators() {
+    /* collaborators() {
       if (this.user.group === 'admin') return this.$store.getters.colaborators
       return this.$store.getters.colaborators.filter(c => {
         return !c.clinic || c.clinic.name === this.unit.name
       })
-    },
+    }, */
+  },
+  apollo:{
+    loadColaborators:{
+      query:require("@/graphql/colaborators/LoadColaborators.gql"),
+      update(data){
+        this.colaborators = data.Colaborator
+        if (this.user.group === 'admin')
+          this.colaborators = data.Colaborator
+        else
+          this.colaborators = data.Colaborator.filter(c => !c.clinic || c.clinic.id === this.unit.id)
+        this.loading = false
+      }
+    }
   }
-
 
 }
 </script>

@@ -1,5 +1,5 @@
-query($email:String!){
-  Colaborator(filter:{email:$email}){
+query{
+  Colaborator(orderBy:[name_asc]){
     id,
     name,
     cpf,
@@ -8,6 +8,7 @@ query($email:String!){
     salary,
     permissions,
     birth_date,
+    telephones,
     clinic:work_in{
       id,
       name,
