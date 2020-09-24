@@ -141,7 +141,7 @@
         mounted() {
             console.log(this.clinic);
             this.filterCPC();
-            this.allSpecialties = this.clinic.has_doctor.length > 0 ? this.clinic.has_doctor : undefined ;
+            this.allSpecialties = this.clinic.has_doctor;
         },
         methods: {
           async filterCPC(){

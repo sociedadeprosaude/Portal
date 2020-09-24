@@ -253,7 +253,7 @@
             await this.$apollo.mutate({
               mutation: require('@/graphql/doctors/UpdateDoctors.gql'),
               variables: {
-                id: this.id,
+                id: this.doctor.id,
                 name: this.name.toUpperCase(),
                 crm: this.crm,
               },
