@@ -205,7 +205,7 @@
           console.log('tem ?', this.doctor)
           if (this.doctor) {
             this.specialties = this.doctor.is_specialist_of;
-            console.log(this.specialties)
+            //console.log(this.specialties)
             this.id = this.doctor.id;
             this.name = this.doctor.name;
             this.cpf = this.doctor.cpf;
@@ -220,16 +220,15 @@
               mutation: require('@/graphql/doctors/LoadCostProductDoctors.gql'),
             })
             let costProductDoctor = costs.data.CostProductDoctor
-            console.log(costProductDoctor)
+            //console.log(costProductDoctor)
             for(let cost in costProductDoctor){
-              for(let product in this.specialties) {
-                console.log(costProductDoctor[cost])
-                console.log(costProductDoctor[cost].with_doctor[0])
-                console.log(costProductDoctor[cost].with_product[0])
-                if(this.specialties[product].id === costProductDoctor[cost].with_product[0].id && costProductDoctor[cost].with_doctor[0].id === this.id){
-                  this.specialties[product].cost = costProductDoctor[cost].cost
-                  this.specialties[product].payment_method = costProductDoctor[cost].payment_method
-                  this.specialties[product].idCostProductDoctor = costProductDoctor[cost].id
+              if(costProductDoctor[cost].with_product.length > 0 && costProductDoctor[cost].with_doctor.length > 0) {
+                for(let product in this.specialties) {
+                  if (this.specialties[product].id === costProductDoctor[cost].with_product[0].id && costProductDoctor[cost].with_doctor[0].id === this.id) {
+                    this.specialties[product].cost = costProductDoctor[cost].cost
+                    this.specialties[product].payment_method = costProductDoctor[cost].payment_method
+                    this.specialties[product].idCostProductDoctor = costProductDoctor[cost].id
+                  }
                 }
               }
             }
@@ -270,6 +269,28 @@
               });
             }
             //falta clinicas
+/*            const unitys = await this.$apollo.mutate({
+              mutation: require('@/graphql/clinics/LoadClinics.gql'),
+              variables: {property: true},
+            })
+            let clinics = unitys.data.Clinic
+            //console.log(this.clinic)
+            for(let unity in clinics) {
+              for(let doctor in clinics[unity].has_doctor){
+                if(clinics[unity].has_doctor.length > 0){
+                  if(clinics[unity].has_doctor[doctor].id === this.id){
+                    console.log('faz')
+                    /!* await this.$apollo.mutate({
+                       mutation: require('@/graphql/doctors/AddClinicHasDoctor.gql'),
+                       variables: {
+                         idClinic: this.clinic[unity].id,
+                         idDoctor: this.id,
+                       },
+                     });*!/
+                  } else { console.log('já tem na clinica, então skipp') }
+                }
+              }
+            }*/
             this.loading = false
             this.$router.push('/')
           },

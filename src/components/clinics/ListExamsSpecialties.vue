@@ -149,7 +149,7 @@
               mutation: require('@/graphql/clinics/LoadCostProductClinics.gql'),
             })
             let CostProductClinic = dataCostProductClinic.data.CostProductClinic
-            console.log(CostProductClinic)
+            //console.log(CostProductClinic)
             if(this.clinic.has_product.length > 0){
               for(let costpc in CostProductClinic){
                 for(let item in this.clinic.has_product){
