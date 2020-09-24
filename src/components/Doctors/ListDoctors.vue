@@ -29,7 +29,7 @@
         </v-layout>
 
         <v-dialog v-model="editingDoctor" max-width="500px" v-if="editingDoctor">
-            <CreateDoctorCard @clean="selectedDoctor = undefined, magic()" :doctor="selectedDoctor"
+            <CreateDoctorCard @clean="selectedDoctor = undefined" :doctor="selectedDoctor"
                               @close="editingDoctor = false"/>W
         </v-dialog>
 
@@ -85,10 +85,6 @@
                 this.selectedDoctor = doctor;
                 this.deletingDoctor = true;
             },
-          magic(){
-
-            this.$router.push('/registros/doctors')
-          }
         }
     }
 </script>

@@ -55,10 +55,12 @@ export default {
         this.editingSpecialty = true;
       },
       closeDialogs () {
+        this.$router.push('/')
         this.specialty = undefined;
         this.editingSpecialty = false;
       },
       close(val){
+        this.$router.push('/')
         console.log('reposta:', val.data)
       }
     },

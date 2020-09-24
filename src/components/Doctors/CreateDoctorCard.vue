@@ -172,8 +172,8 @@
               <v-btn v-else color="primary" @click="createDoctor()">Adicionar</v-btn>
             </v-flex>
             <v-flex xs12 v-else>
-<!--              <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
-              <v-btn v-else color="primary" @click="updateDoctor()">Editar</v-btn>-->
+              <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+              <v-btn v-else color="primary" @click="updateDoctor()">Editar</v-btn>
             </v-flex>
         </v-card-actions>
     </v-card>
@@ -271,7 +271,7 @@
             }
             //falta clinicas
             this.loading = false
-            this.close()
+            this.$router.push('/')
           },
 
           async createDoctor() {
@@ -313,9 +313,9 @@
               });
             }
             this.loading = false
-            this.close()
+            this.$router.push('/')
           },
-          close() {
+/*          close() {
             this.clear();
             this.$emit('close');
           },
@@ -326,7 +326,7 @@
             this.specialties = undefined;
             this.clinic = undefined;
             this.$emit('clean')
-          },
+          },*/
         }
     }
 </script>
