@@ -64,7 +64,6 @@ export default {
   }),
   methods: {
     close() {
-      this.$router.push('/')
       this.specialty = undefined;
       this.price = 0;
       this.rules = null;
@@ -77,6 +76,7 @@ export default {
       setTimeout(() => {
         mutate();
       }, 0);
+      this.$router.push('/')
     },
   }
 };

@@ -315,7 +315,7 @@
             this.loading = false
             this.$router.push('/')
           },
-/*          close() {
+          close() {
             this.clear();
             this.$emit('close');
           },
@@ -326,7 +326,7 @@
             this.specialties = undefined;
             this.clinic = undefined;
             this.$emit('clean')
-          },*/
+          },
         }
     }
 </script>

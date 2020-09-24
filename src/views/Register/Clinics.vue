@@ -39,13 +39,6 @@
 
                 <v-card>
                   <v-card-text>
- <!--                   <ApolloQuery
-                        :query="require('@/graphql/clinics/LoadAllClinics.gql')"
-                    >
-                      <template slot-scope="{ result: { data } }">
-                        <ListClinics :clinics="clinics"/>
-                      </template>
-                    </ApolloQuery>-->
                     <ListClinics :clinics="clinics"/>
                   </v-card-text>
                 </v-card>

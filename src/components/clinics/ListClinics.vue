@@ -102,26 +102,6 @@
             deletingExamsSpecialtiesFromClinic: false,
             editingExamsSpecialtiesFromClinic: false,
         }),
-        mounted () {
-/*            for (let i in this.clinics) {
-                let clinic = i;
-                let exams = [];
-                let specialties = [];
-
-                for (let i in clinic.exams) {
-                    exams.push({
-                        ...clinic.exams[i]
-                    });
-                }
-                this.clinics[i].exams = exams;
-                for (let i in clinic.specialties) {
-                    specialties.push({
-                        ...clinic.specialties[i]
-                    });
-                }
-                this.clinics[i].specialties = specialties;
-            }*/
-        },
         methods: {
             editClinic(clinic) {
                 this.clinic = clinic;
