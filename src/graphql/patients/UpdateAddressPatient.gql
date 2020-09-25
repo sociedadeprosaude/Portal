@@ -1,0 +1,23 @@
+mutation (
+    $idAddress: ID!,
+    $cep: String,
+    $city: String,
+    $complement: String,
+    $number: String,
+    $street: String,
+    $uf: String
+
+    ){
+    UpdateAddress(
+        cep: $cep,
+        city: $city,
+        complement: $complement,
+        street: $street,
+        number: $number,
+        uf: $uf,
+
+    )
+    {
+        id
+    }
+}

@@ -1,0 +1,5 @@
+mutation($id:ID!){
+    DeleteDependent(id:$id){
+        id
+    }
+}

@@ -3,6 +3,9 @@ query($name:String){
     id,
     name,
     cpf,
+    sex,
+    telephones,
+    association_number,
     birth_date,
     addresses{
         cep,
@@ -13,10 +16,11 @@ query($name:String){
         uf,
     }
     dependents{
-    name,
-    birth_date,
-    dependentDegree,
-    sex
+      id,
+      name,
+      birth_date,
+      dependentDegree,
+      sex
     }
     consultations:with_consultation{
       id,
