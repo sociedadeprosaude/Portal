@@ -36,20 +36,8 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer />
-      <ApolloMutation
-          :mutation="require('@/graphql/products/CreateProducts.gql')"
-          :variables="{name: specialty.toUpperCase(),type,price,schedulable,rules}"
-          @done="close"
-      >
-        <template v-slot="{ mutate, loading, error }">
-          <v-btn
-              color="primary"
-              :disabled="loading"
-              @click.native="createProduct(mutate)"
-          >Adicionar</v-btn>
-          <p v-if="error">Ocorreu um erro: {{ error }}</p>
-        </template>
-      </ApolloMutation>
+      <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+      <v-btn v-else color="primary" @click="createProduct()">Adicionar</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -61,6 +49,7 @@ export default {
     rules: null,
     type:"SPECIALTY",
     schedulable: false,
+    loading: false,
   }),
   methods: {
     close() {
@@ -71,11 +60,14 @@ export default {
       this.schedulable = false;
       this.$emit("close");
     },
-    createProduct(mutate) {
-      setTimeout(() => {
-        mutate();
-      }, 0);
-      this.$router.push('/')
+    async createProduct() {
+      this.loading = true;
+      await this.$apollo.mutate({
+        mutation: require('@/graphql/products/CreateProducts.gql'),
+        variables: {name: this.specialty.toUpperCase(),type: this.type, price: this.price, schedulable: this.schedulable, rules: this.rules},
+      });
+      this.loading = false;
+      this.$router.push('/');
     },
   }
 };

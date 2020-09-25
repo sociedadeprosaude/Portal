@@ -1,0 +1,1 @@
+mutation($id: ID!){DeleteCostProductDoctor(id: $id){id}}

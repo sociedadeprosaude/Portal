@@ -1,6 +1,1 @@
-mutation($id:ID!){
-    DeleteClinic(id:$id){
-    id
-    }
-
-}
+mutation($id:ID!){DeleteClinic(id:$id){id}}
