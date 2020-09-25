@@ -88,29 +88,6 @@
                                             </v-flex>
                                         </v-layout>
                                     </v-flex>
-                                    <!-- <v-flex xs6 class="text-left"
-                                            v-else>
-                                        <v-layout column wrap align-start justify-start>
-                <span
-                        class="my-sub-headline primary--text"
-                        style="font-size: 1.4em"
-                >{{this.consultation.patient.name}}</span>
-                                            <v-flex v-if="!this.consultation.dependent">
-                                                <span class="primary--text font-weight-bold">CPF:</span>
-                                                <span class="font-weight-bold">{{this.consultation.patient.cpf}}</span>
-                                            </v-flex>
-                                            <v-flex>
-                                                <span class="primary--text font-weight-bold">Data de Nascimento:</span>
-                                                <span class="font-weight-bold">{{formatbirthDate()}}</span>
-                                                <br/>
-                                            </v-flex>
-                                            <v-flex>
-                                                <span class="primary--text font-weight-bold">Idade:</span>
-                                                <span class="font-weight-bold">{{formatIdade()}}</span>
-                                                <br/>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-flex> -->
                                     <v-flex xs12 class="mt-2 py-1 px-4">
                                         <v-layout row wrap class="align-center"></v-layout>
                                     </v-flex>
@@ -157,7 +134,6 @@
         },
         methods: {
             formatbirthDate(){
-                console.log(this.consultation)
                 const date = this.consultation.dependent ? this.consultation.dependent.birth_date : this.consultation.patient.birth_date
                 let formatbirthDateFormat = moment(date).format('DD/MM/YYYY')
                 return formatbirthDateFormat
