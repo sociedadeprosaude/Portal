@@ -54,8 +54,16 @@ query($name:String){
     	patient{
         id,
         name,
-        cpf
+        cpf,
+        birth_date,
       },
+      dependent{
+        id,
+        name,
+        birth_date,
+        dependentDegree,
+        sex
+      }
       came_from{
         id
       }

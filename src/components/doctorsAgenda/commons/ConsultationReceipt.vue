@@ -66,20 +66,19 @@
                                     <v-flex xs12>
                                         <v-divider class="primary my-2"></v-divider>
                                     </v-flex>
-                                    <v-flex xs6 class="text-left"
-                                            v-if="this.consultation.dependent">
+                                    <v-flex xs6 class="text-left">
                                         <v-layout column wrap align-start justify-start>
-                <span
-                        class="my-sub-headline primary--text"
-                        style="font-size: 1.4em"
-                >{{this.consultation.dependent ? this.consultation.dependent.name : this.consultation.patient.name}}</span>
+                                            <span
+                                                    class="my-sub-headline primary--text"
+                                                    style="font-size: 1.4em"
+                                            >{{this.consultation.dependent ? this.consultation.dependent.name : this.consultation.patient.name}}</span>
                                             <v-flex v-if="!this.consultation.dependent">
                                                 <span class="primary--text font-weight-bold">CPF:</span>
                                                 <span class="font-weight-bold">{{user.cpf}}</span>
                                             </v-flex>
                                             <v-flex>
                                                 <span class="primary--text font-weight-bold">Data de Nascimento:</span>
-                                                <span class="font-weight-bold">{{formatbirthDate(this.consultation.dependent.birthDate)}}</span>
+                                                <span class="font-weight-bold">{{formatbirthDate()}}</span>
                                                 <br/>
                                             </v-flex>
                                             <v-flex>
@@ -89,7 +88,7 @@
                                             </v-flex>
                                         </v-layout>
                                     </v-flex>
-                                    <v-flex xs6 class="text-left"
+                                    <!-- <v-flex xs6 class="text-left"
                                             v-else>
                                         <v-layout column wrap align-start justify-start>
                 <span
@@ -98,20 +97,20 @@
                 >{{this.consultation.patient.name}}</span>
                                             <v-flex v-if="!this.consultation.dependent">
                                                 <span class="primary--text font-weight-bold">CPF:</span>
-                                                <span class="font-weight-bold">{{user.cpf}}</span>
+                                                <span class="font-weight-bold">{{this.consultation.patient.cpf}}</span>
                                             </v-flex>
                                             <v-flex>
                                                 <span class="primary--text font-weight-bold">Data de Nascimento:</span>
-                                                <span class="font-weight-bold">{{formatbirthDate(this.user.birth_date)}}</span>
+                                                <span class="font-weight-bold">{{formatbirthDate()}}</span>
                                                 <br/>
                                             </v-flex>
                                             <v-flex>
                                                 <span class="primary--text font-weight-bold">Idade:</span>
-                                                <span class="font-weight-bold">{{formatUserIdade()}}</span>
+                                                <span class="font-weight-bold">{{formatIdade()}}</span>
                                                 <br/>
                                             </v-flex>
                                         </v-layout>
-                                    </v-flex>
+                                    </v-flex> -->
                                     <v-flex xs12 class="mt-2 py-1 px-4">
                                         <v-layout row wrap class="align-center"></v-layout>
                                     </v-flex>
@@ -157,27 +156,22 @@
             //this.saveConsultationHour()
         },
         methods: {
-            formatbirthDate(birthDate){
-                let formatbirthDateFormat = moment(birthDate).format('DD/MM/YYYY')
+            formatbirthDate(){
+                console.log(this.consultation)
+                const date = this.consultation.dependent ? this.consultation.dependent.birth_date : this.consultation.patient.birth_date
+                let formatbirthDateFormat = moment(date).format('DD/MM/YYYY')
                 return formatbirthDateFormat
             },
 
             formatIdade(){
                 let idade;
-                let date = this.consultation.dependent ? this.consultation.dependent.birthDate : this.consultation.patient.birth_date;
+                let date = this.consultation.dependent ? this.consultation.dependent.birth_date : this.consultation.patient.birth_date;
                 let patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
                 if(patt.test(date)) date = moment(date,"DD/MM/YYYY").format("YYYY-MM-DD");
                 idade = moment().diff(moment(date, 'YYYY-MM-DD'), 'years');
                 return idade
             },
-            formatUserIdade(){
-                let idade;
-                let date = this.consultation.patient.birth_date;
-                let patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
-                if(patt.test(date)) date = moment(date,"DD/MM/YYYY").format("YYYY-MM-DD");
-                idade = moment().diff(moment(date, 'YYYY-MM-DD'), 'years');
-                return idade
-            },
+
             async print() {
                 this.loader = true;
                 this.loader = false

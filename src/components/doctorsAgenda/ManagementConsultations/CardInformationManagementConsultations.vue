@@ -20,7 +20,7 @@
                                     <v-spacer/>
                                 </v-flex>
                                 <v-flex xs12>
-                                    <CardPatientManagementConsultations :patient="patient"/>
+                                    <CardPatientManagementConsultations :dependent="consultation.dependent" :patient="patient"/>
                                 </v-flex>
                             </v-layout>
                         </v-card>
@@ -123,19 +123,6 @@
 
             async deletedConsultation() {
                 this.cancelLoading = true;
-                /* let patientId = this.consultation.user ? this.consultation.user.uid ? this.consultation.user.uid : this.consultation.user.cpf : this.selectedPatient.uid
-                let obj = {
-                    id: this.consultation.id,
-                    idPatient: this.selectedPatient.uid ? this.selectedPatient.uid : this.selectedPatient.cpf,
-                    type: this.consultation.type,
-                    status: 'Cancelado',
-                    payment_number: this.consultation.payment_number,
-                    specialty: this.consultation.specialty,
-                    previousConsultation: this.consultation.previousConsultation,
-                    consultation: this.consultation,
-                    exam:this.consultation.exam
-                };
-                await this.$store.dispatch('eraseAppointment', obj); */
 
                 this.$apollo.mutate({
                     mutation: require('@/graphql/consultations/CancelConsultation.gql'),
@@ -215,7 +202,6 @@
                     }
                 },
                 update(data){
-                    console.log(data)
                     this.$apollo.mutate({
                         mutation: require('@/graphql/transaction/RemoveConsultationOfProductTransaction.gql'),
                         variables:{
