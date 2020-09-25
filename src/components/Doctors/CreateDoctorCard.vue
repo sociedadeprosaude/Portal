@@ -48,7 +48,6 @@
                         />
                     </v-flex>
                     <v-flex>
-                      <!-- Apollo Query -->
                       <ApolloQuery
                           :query="require('@/graphql/products/ReadProcucts.gql')"
                           :variables="{ type:'SPECIALTY', schedulable:false}"
@@ -169,33 +168,12 @@
         <v-card-actions>
             <v-spacer/>
             <v-flex xs4 v-if="!doctor">
-              <v-btn color="primary" @click="createDoctor()">Adicionar</v-btn>
-<!--              <ApolloMutation
-                  :mutation="require('@/graphql/doctors/CreateDoctors.gql')"
-                  :variables="{name ,crm, cpf}"
-                  @done="close"
-              >
-                <template v-slot="{ mutate, loading, error }">
-                  <v-btn
-                      color="primary"
-                      :disabled="loading"
-                      @click.native="createDoctor(mutate)"
-                  >Adicionar</v-btn>
-                  <p v-if="error">Ocorreu um erro: {{ error }}</p>
-                </template>
-              </ApolloMutation>-->
+              <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+              <v-btn v-else color="primary" @click="createDoctor()">Adicionar</v-btn>
             </v-flex>
             <v-flex xs12 v-else>
-              <ApolloMutation
-                  :mutation="require('@/graphql/doctors/UpdateDoctors.gql')"
-                  :variables="{name ,crm, cpf, id}"
-                  @done="close"
-              >
-                <template v-slot="{ mutate, loading, error }">
-                  <v-btn color="primary" @click.native="updateDoctor(mutate)">Editar</v-btn>
-                  <p v-if="error">Ocorreu um erro: {{ error }}</p>
-                </template>
-              </ApolloMutation>
+              <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+              <v-btn v-else color="primary" @click="updateDoctor()">Editar</v-btn>
             </v-flex>
         </v-card-actions>
     </v-card>
@@ -213,6 +191,7 @@
               crm: '',
               cpf: '',
               id: '',
+              loading: false,
               //==========
                 clinic: undefined,
                 maskCRM: '######',
@@ -222,141 +201,153 @@
                 formTitle: 'Cadastro de Médicos',
             }
         },
-        mounted() {
+       mounted() {
           console.log('tem ?', this.doctor)
           if (this.doctor) {
-            console.log(this.doctor)
+            this.specialties = this.doctor.is_specialist_of;
+            //console.log(this.specialties)
+            this.id = this.doctor.id;
             this.name = this.doctor.name;
             this.cpf = this.doctor.cpf;
-            this.id = this.doctor.id;
             this.crm = this.doctor.crm;
-            this.specialties = this.doctor.specialties;
-            this.clinic = this.doctor.clinics
+            this.filterClinic();
+            this.filterCPD();
           }
         },
         methods: {
-            updateDoctor(mutate) {
-              setTimeout(() => {
-                mutate();
-              }, 0);
-            },
-
-            async createDoctor() {
-              await this.$apollo.mutate({
-                mutation: require('@/graphql/doctors/CreateDoctors.gql'),
-                variables: {
-                  name: this.name.toUpperCase(),
-                  crm: this.crm,
-                  cpf: this.cpf.replace(/\./g, '').replace('-', ''),
-                },
-              }).then(dataDoctor => {
-                console.log("id doctor:", dataDoctor.data.CreateDoctor.id)
-                this.$apollo.mutate({
-                  mutation: require('@/graphql/doctors/CreateCostProductDoctor.gql'),
-                  variables: {
-                    cost: this.ceps,
-                    payment_method: this.clinic.address.city,
-                  },
-                }).then(dataCostProductDoctor => {
-                  console.log("id cost:", dataCostProductDoctor.data.CreateCostProductDoctor.id)
-                  this.$apollo.mutate({
-                    mutation: require('@/graphql/doctors/AddCostProductDoctorWithDoctor.gql'),
-                    variables: {
-                      idCostProduct: dataCostProductDoctor.data.CreateCostProductDoctor.id,
-                      idDoctor: dataDoctor.data.CreateDoctor.id,
-                    },
-                  }).then(data => {
-                    for (let clin in this.clinic) {
-                      this.$apollo.mutate({
-                        mutation: require('@/graphql/doctors/AddClinicHasDoctor.gql'),
-                        variables: {
-                          idClinic: this.clinic[clinc].id,
-                          idDoctor: dataDoctor.data.CreateDoctor.id,
-                        },
-                      }).catch((error) => {
-                        console.error('nao criando cost: ', error)
-                      })
-                    }
-                    for (let product in this.specialties) {
-                      this.$apollo.mutate({
-                        mutation: require('@/graphql/doctors/AddCostProductDoctorWithProductAndAddDoctorIsSpecialistOf.gql'),
-                        variables: {
-                          idCostProduct: dataCostProductDoctor.data.CreateCostProductDoctor.id,
-                          idProduct: this.specialties[product].id,
-                          idDoctor: dataDoctor.data.CreateDoctor.id,
-                        },
-                      }).catch((error) => {
-                        console.error('nao criando cost: ', error)
-                      })
-                    }
-                }).catch((error) => {
-                  console.error('nao criando cost: ', error)
-                })
-              }).catch((error) => {
-                console.error('nao criando relaçao doctor and cost: ', error)
-              })
-              }).catch((error) => {
-                  console.error('nao criando relaçao cost and product: ', error)
-              })
-              this.close()
-            },
-            close() {
-              this.clear();
-              this.$emit('close');
-            },
-            clear() {
-                this.name = undefined;
-                this.crm = undefined;
-                this.cpf = undefined;
-                this.specialties = undefined;
-                this.clinic = undefined;
-                this.$emit('clean')
-            },
-            async save() {
-                this.loading = true;
-                for (let spec in this.specialties) {
-                    delete this.specialties[spec].doctors
-                    if (!this.specialties[spec].cost) {
-                        this.specialties[spec].cost = 0.00
-                    }
-                    if (!this.specialties[spec].price) {
-                        this.specialties[spec].price = 0.00
-                    }
+          async filterCPD() {
+            const costs = await this.$apollo.mutate({
+              mutation: require('@/graphql/doctors/LoadCostProductDoctors.gql'),
+            })
+            let costProductDoctor = costs.data.CostProductDoctor
+            //console.log(costProductDoctor)
+            for(let cost in costProductDoctor){
+              if(costProductDoctor[cost].with_product.length > 0 && costProductDoctor[cost].with_doctor.length > 0) {
+                for(let product in this.specialties) {
+                  if (this.specialties[product].id === costProductDoctor[cost].with_product[0].id && costProductDoctor[cost].with_doctor[0].id === this.id) {
+                    this.specialties[product].cost = costProductDoctor[cost].cost
+                    this.specialties[product].payment_method = costProductDoctor[cost].payment_method
+                    this.specialties[product].idCostProductDoctor = costProductDoctor[cost].id
+                  }
                 }
-                let doctor = {
-                    name: this.name.toUpperCase(),
-                    cpf: this.cpf.replace(/\./g, '').replace('-', ''),
-                    email: this.email,
-                    crm: this.crm,
-                    specialties: this.specialties,
-                    clinics: this.clinic,
-                    type: 'doctor'
-                };
-                await this.$store.dispatch('addDoctor', doctor);
-                for (let i in this.clinic) {
-                    for (let j in this.specialties) {
-                        let data = {
-                            clinic: this.clinic[i],
-                            specialtie: this.specialties[j].name,
-                            doctor: this.name.toUpperCase(),
-                            crm: this.crm,
-                            cpf: this.cpf.replace(/\./g, '').replace('-', ''),
-                            obs: this.obs,
-                            cost: this.specialties[j].cost,
-                            price: this.specialties[j].price,
-                            paymentMethod: this.specialties[j].payment_method,
-                        };
-                        await this.$store.dispatch('addAppointmentFromDoctors', data);
-                    }
-                }
-                this.success = true;
-                this.loading = false;
-                this.clear();
-                setTimeout(() => {
-                    this.success = false;
-                    this.close()
-                }, 800)
+              }
             }
+          },
+          async filterClinic() {
+            const unitys = await this.$apollo.mutate({
+              mutation: require('@/graphql/clinics/LoadClinics.gql'),
+              variables: {property: true},
+            })
+            let clins = []
+            let clinics = unitys.data.Clinic
+            for(let unity in clinics){
+              for(let doctor in clinics[unity].has_doctor)
+                if(clinics[unity].has_doctor[doctor].id === this.id){
+                  clins.push(clinics[unity])
+                }
+            }
+            this.clinic = clins
+          },
+          async updateDoctor() {
+            this.loading = true
+            await this.$apollo.mutate({
+              mutation: require('@/graphql/doctors/UpdateDoctors.gql'),
+              variables: {
+                id: this.doctor.id,
+                name: this.name.toUpperCase(),
+                crm: this.crm,
+              },
+            });
+            for(let product in this.specialties) {
+              await this.$apollo.mutate({
+                mutation: require('@/graphql/doctors/UpdateCostProductDoctor.gql'),
+                variables: {
+                  id: this.specialties[product].idCostProductDoctor,
+                  cost: this.specialties[product].cost,
+                  payment_method: this.specialties[product].payment_method,
+                },
+              });
+            }
+            //falta clinicas
+/*            const unitys = await this.$apollo.mutate({
+              mutation: require('@/graphql/clinics/LoadClinics.gql'),
+              variables: {property: true},
+            })
+            let clinics = unitys.data.Clinic
+            //console.log(this.clinic)
+            for(let unity in clinics) {
+              for(let doctor in clinics[unity].has_doctor){
+                if(clinics[unity].has_doctor.length > 0){
+                  if(clinics[unity].has_doctor[doctor].id === this.id){
+                    console.log('faz')
+                    /!* await this.$apollo.mutate({
+                       mutation: require('@/graphql/doctors/AddClinicHasDoctor.gql'),
+                       variables: {
+                         idClinic: this.clinic[unity].id,
+                         idDoctor: this.id,
+                       },
+                     });*!/
+                  } else { console.log('já tem na clinica, então skipp') }
+                }
+              }
+            }*/
+            this.loading = false
+            this.$router.push('/')
+          },
+
+          async createDoctor() {
+            this.loading = true
+            const dataDoctor = await this.$apollo.mutate({
+              mutation: require('@/graphql/doctors/CreateDoctors.gql'),
+              variables: {
+                name: this.name.toUpperCase(),
+                crm: this.crm,
+                cpf: this.cpf.replace(/\./g, '').replace('-', ''),
+              },
+            });
+            const idDoctor = dataDoctor.data.CreateDoctor.id
+            for(let product in this.specialties) {
+              const CostProductDoctor = await this.$apollo.mutate({
+                mutation: require('@/graphql/doctors/CreateCostProductDoctor.gql'),
+                variables: {
+                  cost: this.specialties[product].cost,
+                  payment_method: this.specialties[product].payment_method,
+                },
+              });
+              const idCostProductDoctor = CostProductDoctor.data.CreateCostProductDoctor.id
+              const dataRelations = await this.$apollo.mutate({
+                mutation: require('@/graphql/doctors/AddCostProductDoctorWithProducAndDoctortAndAddDoctorIsSpecialistOf.gql'),
+                variables: {
+                  idCostProduct: idCostProductDoctor,
+                  idProduct: this.specialties[product].id,
+                  idDoctor: idDoctor,
+                },
+              });
+            }
+            for(let unity in this.clinic) {
+              const dataRelationClinic = await this.$apollo.mutate({
+                mutation: require('@/graphql/doctors/AddClinicHasDoctor.gql'),
+                variables: {
+                  idClinic: this.clinic[unity].id,
+                  idDoctor: idDoctor,
+                },
+              });
+            }
+            this.loading = false
+            this.$router.push('/')
+          },
+          close() {
+            this.clear();
+            this.$emit('close');
+          },
+          clear() {
+            this.name = undefined;
+            this.crm = undefined;
+            this.cpf = undefined;
+            this.specialties = undefined;
+            this.clinic = undefined;
+            this.$emit('clean')
+          },
         }
     }
 </script>

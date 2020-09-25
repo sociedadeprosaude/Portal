@@ -16,14 +16,14 @@
                                     </template>
                                     <span>Editar Clínica</span>
                                 </v-tooltip>
-                                <v-tooltip top color="primary">
+<!--                                <v-tooltip top color="primary">
                                     <template v-slot:activator="{ on }">
                                         <v-btn icon dark v-on="on" @click="deleteClinic(clinic)" class="mr-3">
                                             <v-icon color="white">delete</v-icon>
                                         </v-btn>
                                     </template>
                                     <span>Deletar Clínica</span>
-                                </v-tooltip>
+                                </v-tooltip>-->
                             </v-flex>
                             <template v-slot:actions>
                                 <v-icon color="white">$expand</v-icon>
@@ -102,26 +102,6 @@
             deletingExamsSpecialtiesFromClinic: false,
             editingExamsSpecialtiesFromClinic: false,
         }),
-        mounted () {
-/*            for (let i in this.clinics) {
-                let clinic = i;
-                let exams = [];
-                let specialties = [];
-
-                for (let i in clinic.exams) {
-                    exams.push({
-                        ...clinic.exams[i]
-                    });
-                }
-                this.clinics[i].exams = exams;
-                for (let i in clinic.specialties) {
-                    specialties.push({
-                        ...clinic.specialties[i]
-                    });
-                }
-                this.clinics[i].specialties = specialties;
-            }*/
-        },
         methods: {
             editClinic(clinic) {
                 this.clinic = clinic;

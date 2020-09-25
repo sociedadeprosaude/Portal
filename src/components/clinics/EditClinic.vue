@@ -40,7 +40,7 @@
                     </v-flex>
                     <v-flex xs6>
                         <v-text-field
-                                v-model="this.clinic.has_address[0].cep"
+                                v-model="clinic.address.cep"
                                 v-mask="mask.cep"
                                 label="CEP"
                                 placeholder="CEP"
@@ -61,7 +61,7 @@
                     </v-flex>
                     <v-flex xs12>
                         <v-text-field
-                                v-model="this.clinic.has_address[0].street"
+                                v-model="clinic.address.street"
                                 label="Logradouro"
                                 placeholder="Logradouro"
                                 outlined
@@ -69,10 +69,9 @@
                                 clearable
                         />
                     </v-flex>
-                  {{this.clinic.has_address[0].number}}
                     <v-flex xs4>
                         <v-text-field
-                                v-model="this.clinic.has_address[0].number"
+                                v-model="clinic.address.number"
                                 label="Nº"
                                 placeholder="ex.: 157"
                                 outlined
@@ -82,7 +81,7 @@
                     </v-flex>
                     <v-flex xs8>
                         <v-text-field
-                                v-model="this.clinic.has_address[0].neighboor"
+                                v-model="clinic.address.neighboor"
                                 label="Bairro"
                                 placeholder="Bairro"
                                 outlined
@@ -92,7 +91,7 @@
                     </v-flex>
                     <v-flex xs12>
                         <v-text-field
-                                v-model="this.clinic.has_address[0].complement"
+                                v-model="clinic.address.complement"
                                 label="Complemento"
                                 placeholder="Complemento"
                                 outlined
@@ -105,7 +104,7 @@
                                 :items="stateOptions"
                                 label="Estado"
                                 placeholder="Estado"
-                                v-model="this.clinic.has_address[0].state"
+                                v-model="clinic.address.state"
                                 outlined
                                 chips
                                 hide-details
@@ -116,7 +115,7 @@
                         <v-text-field
                                 label="Cidade"
                                 placeholder="Cidade"
-                                v-model="this.clinic.has_address[0].city"
+                                v-model="clinic.address.city"
                                 outlined
                                 chips
                                 hide-details
@@ -253,10 +252,10 @@
         }),
         mounted () {
             console.log("clinic apollo:", this.clinic);
-            /*this.ceps = this.clinic.has_address[0].cep;*/
+            //this.ceps = this.clinic.address.cep;
         },
         watch: {
-/*            ceps(val) {
+  /*          ceps(val) {
                 if (val.length === 8) {
                     axios
                         .get('https://viacep.com.br/ws/' + val + '/json/')
@@ -313,38 +312,28 @@
                   opening_hours: this.clinic.opening_hours,
                 },
               }).then(dataClinic => {
-                console.log("id clinic:", dataClinic.data.UpdateClinic)
+                //console.log("id clinic:", dataClinic.data.UpdateClinic)
                 this.$apollo.mutate({
                   mutation: require('@/graphql/address/UpdateAddress.gql'),
                   variables: {
-                    id: this.clinic.has_address[0].id,
-                    number: this.clinic.has_address[0].number,
-                    cep: this.clinic.has_address[0].cep,
-                    city: this.clinic.has_address[0].city,
-                    state: this.clinic.has_address[0].state,
-                    street: this.clinic.has_address[0].street,
-                    neighboor: this.clinic.has_address[0].neighboor,
-                    complement: this.clinic.has_address[0].complement,
-                    geopoint: this.clinic.has_address[0].geopoint,
+                    id: this.clinic.address.id,
+                    number: this.clinic.address.number,
+                    cep: this.clinic.address.cep,
+                    city: this.clinic.address.city,
+                    state: this.clinic.address.state,
+                    street: this.clinic.address.street,
+                    neighboor: this.clinic.address.neighboor,
+                    complement: this.clinic.address.complement,
+                    geopoint: this.clinic.address.geopoint,
                   },
-                }).then(dataAddress => {
-                  console.log("id Adress:", dataAddress.data.UpdateAddress)
-/*                  this.$apollo.mutate({
-                    mutation: require('@/graphql/clinics/AddRelationsAddressClinic.gql'),
-                    variables: {
-                      idClinic: dataClinic.data.CreateClinic.id,
-                      idAddress: dataAdress.data.CreateAddress.id,
-                    }
-                  })*//*.catch((error) => {
-                    console.error('nao criando clinica: ', error)
-                  })*/
                 }).catch((error) => {
                   console.error('nao criando endereço: ', error)
                 })
               }).catch((error) => {
                 console.error('nao criando relaçao clinica e endrereço: ', error)
               })
-              this.closeDialog()
+              //this.closeDialog()
+            this.$router.push('/')
             },
         },
     }

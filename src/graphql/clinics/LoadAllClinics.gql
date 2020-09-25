@@ -3,6 +3,15 @@ query{
         id,name,cnpj,telephone,logo,property,opening_hours
          has_address{
             id,cep,state,street,city,complement,neighboor,number,geopoint
-         }
+         },
+         has_product{
+             id,name,type,price,rules,schedulable
+         },
+         has_doctor{
+             id, name, crm, cpf
+                is_specialist_of{
+                  	id,name,type,price,schedulable,rules
+                }
+         },
     }
 }

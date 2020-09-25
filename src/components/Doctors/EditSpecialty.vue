@@ -63,6 +63,7 @@
               setTimeout(() => {
                 mutate();
               }, 0);
+              this.$router.push('/')
             },
             async initialize(){
               console.log('no comp:', this.specialty)

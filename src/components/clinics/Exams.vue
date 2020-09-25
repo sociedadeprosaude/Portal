@@ -3,7 +3,7 @@
         <v-card-title class="headline grey lighten-2" primary-title>
             <span class="headline">Cadastro de Exames</span>
             <v-spacer></v-spacer>
-            <v-btn small color="error" @click="clear(), closeDialog()"><v-icon>close</v-icon></v-btn>
+            <v-btn small color="error" @click="closeDialog()"><v-icon>close</v-icon></v-btn>
         </v-card-title>
         <v-card-text>
             <v-container grid-list-md>
@@ -14,30 +14,45 @@
                                 label="Clinicas"
                                 outlined
                                 readonly
-                                v-model="this.selectedClinic.name"
+                                v-model="clinic.name"
                                 hide-details
                         />
                     </v-flex>
-                    <v-flex xs12 v-if="!loadingExams">
-                        <v-combobox
-                                prepend-inner-icon="search"
-                                prepend-icon="poll"
-                                :items="listExam"
-                                item-text="name"
-                                return-object
-                                label="Exames"
-                                outlined
-                                v-model="newExam"
-                                clearable
-                                chips
-                                hide-details
-                        ></v-combobox>
-                    </v-flex>
-                    <v-flex xs12 v-else>
-                        <v-layout column wrap class="align-center">
-                            <span>Carregando exames...</span>
-                            <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
-                        </v-layout>
+                    <v-flex xs12>
+                      <ApolloQuery
+                          :query="require('@/graphql/products/ReadProcucts.gql')"
+                          :variables="{ type:'EXAM', schedulable:false}"
+                      >
+                        <template slot-scope="{ result: { data } }">
+                          <v-combobox
+                              prepend-inner-icon="search"
+                              prepend-icon="poll"
+                              :items="data.Product"
+                              item-text="name"
+                              return-object
+                              label="Exames"
+                              outlined
+                              v-model="newExam"
+                              clearable
+                              chips
+                              hide-details
+                          >
+                            <template v-slot:selection="data">
+                              <v-chip
+                                  :key="JSON.stringify(data.item)"
+                                  :input-value="data.selected"
+                                  :disabled="data.disabled"
+                                  class="v-chip--select-multi"
+                                  @click.stop="data.parent.selectedIndex = data.index"
+                                  @input="data.parent.selectItem({},data.item)"
+                                  text-color="white"
+                                  color="info"
+                              >{{ data.item.name }}
+                              </v-chip>
+                            </template>
+                          </v-combobox>
+                        </template>
+                      </ApolloQuery>
                     </v-flex>
                     <v-flex>
                         <v-flex xs12>
@@ -57,32 +72,32 @@
                         <strong>EXAMES SELECIONADOS:</strong>
                     </v-flex>
                     <v-flex>
-                        <v-select
-                                :items="exams"
-                                item-text="name"
-                                return-object
-                                multiple
-                                v-model="exams"
-                                chips
-                                outlined
-                        >
-                            <template v-slot:selection="data">
-                                <v-chip
-                                        :key="JSON.stringify(data.item)"
-                                        :input-value="data.selected"
-                                        :disabled="data.disabled"
-                                        class="v-chip--select-multi"
-                                        @click.stop="data.parent.selectedIndex = data.index"
-                                        @input="data.parent.selectItem(data.item)"
-                                        text-color="white"
-                                        color="info"
-                                >{{ data.item.name }}
-                                </v-chip>
-                            </template>
-                        </v-select>
+                      <v-select
+                          :items="exams"
+                          item-text="name"
+                          return-object
+                          multiple
+                          v-model="exams"
+                          chips
+                          outlined
+                      >
+                        <template v-slot:selection="data">
+                          <v-chip
+                              :key="JSON.stringify(data.item)"
+                              :input-value="data.selected"
+                              :disabled="data.disabled"
+                              class="v-chip--select-multi"
+                              @click.stop="data.parent.selectedIndex = data.index"
+                              @input="data.parent.selectItem(data.item)"
+                              text-color="white"
+                              color="info"
+                          >{{ data.item.name }}
+                          </v-chip>
+                        </template>
+                      </v-select>
                     </v-flex>
 
-                    <v-flex xs6>
+                    <v-flex xs12>
                         <v-currency-field
                                 prepend-icon="attach_money"
                                 outlined
@@ -93,7 +108,7 @@
                                 hide-details
                         ></v-currency-field>
                     </v-flex>
-                    <v-flex xs6>
+<!--                    <v-flex xs6>
                         <v-currency-field
                                 prepend-icon="monetization_on"
                                 outlined
@@ -103,8 +118,8 @@
                                 v-model="sale"
                                 hide-details
                         ></v-currency-field>
-                    </v-flex>
-                    <v-flex xs12>
+                    </v-flex>-->
+<!--                    <v-flex xs12>
                         <v-textarea
                                 outlined
                                 v-model="obs"
@@ -116,70 +131,45 @@
                                 single-line
                                 hide-details
                         ></v-textarea>
-                    </v-flex>
+                    </v-flex>-->
                 </v-layout>
             </v-container>
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
             <v-layout align-center justify-center>
-                <v-btn color="error" @click="clear(), closeDialog()">CANCELAR</v-btn>
-                <v-spacer></v-spacer>
-                <submit-button :loading="loading" :success="succes" text="SALVAR" :disabled="!formIsValid" @click="save(), closeDialog()"></submit-button>
+              <v-spacer />
+              <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+              <v-btn v-else color="primary" @click="Create()">ADICIONAR</v-btn>
             </v-layout>
         </v-card-actions>
     </v-card>
 </template>
 
 <script>
-    import SubmitButton from "../SubmitButton";
     export default {
+      props: ['clinic'],
         data: () => ({
             cost: 0,
-            sale: 0,
-            rules: null,
-            obs: null,
             exams: [],
             newExam: null,
-            loadingExams: false,
             loading: false,
-            succes: false
         }),
-        components: {
-            SubmitButton
-        },
         computed: {
-            formIsValid() {
-                return this.exams.length > 0
-            },
             addIsValid() {
                 return this.newExam
             },
             deleteIsValid() {
                 return this.exams.length > 0
             },
-            selectedClinic() {
-                return this.$store.getters.selectedClinic;
-            },
-            listExam() {
-                return this.$store.getters.exams;
-            },
         },
-
         mounted() {
-            this.loadExams()
             window.addEventListener('keydown', this.handleEnter)
         },
         beforeDestroy() {
             window.removeEventListener('keydown', this.handleEnter)
         },
-
         methods: {
-            async loadExams() {
-                this.loadingExams = true
-                await this.$store.dispatch('loadExam');
-                this.loadingExams = false
-            },
             handleEnter(e) {
                 if (e.key === 'Enter') {
                     this.addToList()
@@ -195,40 +185,33 @@
             deleteFromList() {
                 this.exams = [];
             },
-
-            async save() {
-                this.loading = true
-                for (let i in this.exams) {
-                    let examData = {
-                        clinic: this.selectedClinic,
-                        exam: this.exams[i].name,
-                        rules: this.exams[i].rules,
-                        obs: this.obs,
-                        cost: this.cost,
-                        sale: this.sale,
-                    };
-                    await this.$store.dispatch('addExamToClinic', examData);
-                }
-                this.loading = false;
-                this.succes = true;
-                setTimeout(() => {
-                    this.clear();
-                    this.succes = false
-                }, 1000)
-            },
-
-            clear() {
-                this.cost = 0;
-                this.sale = 0;
-                this.obs = null;
-                this.exams = [];
-            },
-
-            closeDialog: function() {
-                this.$emit('close-dialog')
+          async Create(){
+            this.loading = true
+            for(let product in this.exams) {
+              const dataCostProductClinic = await this.$apollo.mutate({
+                mutation: require('@/graphql/clinics/CreateCostProductClinic.gql'),
+                variables: {
+                  cost: this.cost,
+                },
+              });
+              const idCostProductClinic = dataCostProductClinic.data.CreateCostProductClinic.id
+              const dataRelations = await this.$apollo.mutate({
+                mutation: require('@/graphql/clinics/AddCostProductClinicWith_clinicAndProduct.gql'),
+                variables: {
+                  idClinic: this.clinic.id,
+                  idCostProductClinic: idCostProductClinic,
+                  idProduct: this.exams[product].id,
+                },
+              });
+              console.log('relations:', dataRelations.data)
             }
+            this.loading = false
+            this.$router.push('/')
+          },
+
+          closeDialog: function() {
+            this.$emit('close-dialog')
+          }
         }
     }
 </script>
-<style scoped>
-</style>

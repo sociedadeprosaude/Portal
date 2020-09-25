@@ -38,7 +38,7 @@
       <v-spacer />
       <ApolloMutation
           :mutation="require('@/graphql/products/CreateProducts.gql')"
-          :variables="{name: specialty,type,price,schedulable,rules}"
+          :variables="{name: specialty.toUpperCase(),type,price,schedulable,rules}"
           @done="close"
       >
         <template v-slot="{ mutate, loading, error }">
@@ -72,10 +72,10 @@ export default {
       this.$emit("close");
     },
     createProduct(mutate) {
-      this.specialty = this.specialty.toUpperCase()
       setTimeout(() => {
         mutate();
       }, 0);
+      this.$router.push('/')
     },
   }
 };

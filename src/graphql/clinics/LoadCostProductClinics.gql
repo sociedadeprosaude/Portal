@@ -1,0 +1,11 @@
+query {
+    CostProductClinic(orderBy:[cost_asc]){
+       id,cost
+           with_clinic{
+             id,name
+           },
+           with_product{
+            id,name
+           }
+    }
+}

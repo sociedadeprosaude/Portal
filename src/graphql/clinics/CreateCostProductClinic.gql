@@ -1,0 +1,5 @@
+mutation($cost: Float!){
+  CreateCostProductClinic(
+    cost: $cost,
+  ){id},
+}

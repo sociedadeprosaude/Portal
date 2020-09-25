@@ -16,9 +16,9 @@
                               <v-btn icon dark @click="editDoctor(doctor)">
                                 <v-icon>edit</v-icon>
                               </v-btn>
-                              <v-btn icon dark @click="deleteDoctor(doctor)">
+<!--                              <v-btn icon dark @click="deleteDoctor(doctor)">
                                 <v-icon>delete</v-icon>
-                              </v-btn>
+                              </v-btn>-->
                             </v-flex>
                           </v-layout>
                         </v-card>
@@ -30,7 +30,7 @@
 
         <v-dialog v-model="editingDoctor" max-width="500px" v-if="editingDoctor">
             <CreateDoctorCard @clean="selectedDoctor = undefined" :doctor="selectedDoctor"
-                              @close="editingDoctor = false"/>
+                              @close="editingDoctor = false"/>W
         </v-dialog>
 
         <v-dialog v-if="selectedDoctor" v-model="deletingDoctor" max-width="500px">

@@ -3,6 +3,9 @@ query($property:Boolean){
         id,name,cnpj,telephone,logo,property,opening_hours
         has_address{
             cep, state, street, city, complement, neighboor, number, geopoint
-        }
+        },
+          has_doctor{
+            id
+          },
     }
 }

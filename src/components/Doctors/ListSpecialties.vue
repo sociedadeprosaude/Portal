@@ -59,6 +59,7 @@ export default {
         this.editingSpecialty = false;
       },
       close(val){
+        this.$router.push('/')
         console.log('reposta:', val.data)
       }
     },

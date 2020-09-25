@@ -355,7 +355,8 @@
              }).catch((error) => {
                console.error('nao criando relaçao clinica e endrereço: ', error)
              })
-             this.closeDialog()
+             //this.closeDialog()
+             this.$router.push('/')
            },
             addDataToClinicExist (clinic, indexClinic) {
                 if (indexClinic !== -1 && indexClinic !==null){
