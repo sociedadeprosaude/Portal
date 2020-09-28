@@ -205,7 +205,7 @@
                             </v-flex>
                             <v-divider/>
                             <v-flex xs12>
-                                <v-card v-for="user in foundUsers" :key="user.cpf" class="my-2"
+                                <v-card v-for="user in foundUsers" :key="user.id" class="my-2"
                                         @click="selectUser(user)">
                                     <v-layout row wrap class="align-center">
                                         <v-flex xs4>
@@ -407,7 +407,7 @@
                                 <v-layout row wrap justify v-for="(dependent, index) in dependents" :key="index">
                                     <v-flex xs12 class="text-right">
                                         <v-btn fab icon small class="transparent" text
-                                               @click="dependents.splice(index, 1)">
+                                               @click="removeDependent(index)">
                                             <v-icon class="background--text">remove_circle</v-icon>
                                         </v-btn>
                                     </v-flex>
@@ -695,23 +695,8 @@
                     return
                 }
                 this.loading = true;
-                let copyDependents = [];
-                for (let add in this.addresses) {
-                    delete this.addresses[add].loading
-                }
 
-                for (let dependent in this.dependents) {
-                    let birthDate = moment(this.dependents[dependent].birthDate, "DD/MM/YYYY").format("YYYY-MM-DD");
-
-                    copyDependents.push(Object.assign({birthDate: birthDate}, {
-                        name: this.dependents[dependent].name,
-                        sex: this.dependents[dependent].sex,
-                        dependentDegree: this.dependents[dependent].dependentDegree
-                    }))
-
-                }
                 let patient = {
-                    uid: this.uid ? this.uid : undefined,
                     name: this.name.toUpperCase(),
                     cpf: this.cpf ? this.cpf.replace(/\./g, '').replace('-', '') : undefined,
                     email: this.email,
@@ -721,86 +706,111 @@
                     sex: this.sex,
                     telephones: this.telephones,
                     addresses: this.addresses,
-                    dependents: copyDependents,
-                    type: 'PATIENT'
+                    dependents: this.dependents,
                 };
                 let finaly= parseInt(patient.addresses.length) + parseInt(patient.dependents.length)
-                this.$apollo.mutate({
-                    mutation: require('@/graphql/patients/CreatePatient.gql'),
+                
+                const responsePatient = await this.savePatient(patient)
+                await this.saveDependents(patient, responsePatient.id)
+                await this.saveAddress(patient,responsePatient.id)
+                this.addPatient = !this.addPatient
+                this.loading = false;
+            },
+
+            async savePatient(patient){
+                const nameMutation = this.selectedPatient ? "UpdatePatient" : "CreatePatient"
+                const response = await this.$apollo.mutate({
+                    mutation: require(`@/graphql/patients/${nameMutation}.gql`),
                     variables: {
+                        idPatient: this.selectedPatient && this.selectedPatient.id,
                         name: patient.name,
                         birth_date: patient.birth_date,
                         cpf: patient.cpf,
                         sex: patient.sex,
+                        association_number: Number(patient.association_number),
+                        telephones:patient.telephones
                     },
 
-                }).then((responseCreatePatient) => {
-                    if(patient.dependents.length !== 0){
-                   for(let i in patient.dependents){
-                       this.$apollo.mutate({
-                           mutation: require('@/graphql/dependent/CreateDependent.gql'),
-                           variables: {
-                               name: patient.dependents[i].name ? patient.dependents[i].name : '',
-                               birth_date: patient.dependents[i].birthDate ? patient.dependents[i].birthDate : '',
-                               cpf: patient.dependents[i].cpf ? patient.dependents[i].cpf : '',
-                               dependentDegree: patient.dependents[i].dependentDegree ? patient.dependents[i].dependentDegree : '',
-                           },
+                })
 
-                       }).then((respondeCreateDependent) => {
-                           this.$apollo.mutate({
-                               mutation: require('@/graphql/dependent/AddRelationsDependentPatient.gql'),
-                               variables: {
-                                   idPatient: responseCreatePatient.data.CreatePatient.id,
-                                   idDependent: respondeCreateDependent.data.CreateDependent.id,
-                               }
-                           }).then((responde)=> {
-                               finaly -= 1;
-                               if(finaly === 0){
-                                   this.loading = false
-                                   this.addPatient = !this.addPatient
-                                   this.getPatient(responseCreatePatient.data.CreatePatient.id)
-                               }
-                           })
-                       })
-                   } }
-                    if(patient.addresses.length !== 0){
+                return response.data[nameMutation]
+            },
+
+            async saveDependents(patient, idPatient){
+                if(patient.dependents.length !== 0){
+                    for(let i in patient.dependents){
+                        const dependent = patient.dependents[i]
+                        const nameMutation = dependent.id ? "UpdateDependent" : "CreateDependent"
+                        
+                        const responseDependent = await this.$apollo.mutate({
+                            mutation: require(`@/graphql/dependent/${nameMutation}.gql`),
+                            variables: {
+                                idDependent: dependent.id,
+                                name: dependent.name,
+                                birth_date: moment(dependent.birthDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
+                                cpf: dependent.cpf,
+                                dependentDegree: dependent.dependentDegree,
+                                sex:dependent.sex
+                            },
+                        });
+
+                        if(nameMutation === "CreateDependent"){
+                            this.$apollo.mutate({
+                                mutation: require('@/graphql/dependent/AddRelationsDependentPatient.gql'),
+                                variables: {
+                                    idPatient: idPatient,
+                                    idDependent: responseDependent.data.CreateDependent.id,
+                                }
+                            });
+                        }
+
+                    }
+                }
+            },
+
+            async saveAddress(patient, idPatient){
+                if(patient.addresses.length !== 0){
                    for(let i in patient.addresses){
-                       this.$apollo.mutate({
-                           mutation: require('@/graphql/patients/CreateAddressPatient.gql'),
+                       const address = patient.addresses[i]
+                       const nameMutation = address.id ? "UpdateAddressPatient" : "CreateAddressPatient"
+                       const responseAddress = await this.$apollo.mutate({
+                           mutation: require(`@/graphql/patients/${nameMutation}.gql`),
                            variables: {
-                               cep: patient.addresses[i].cep ? patient.addresses[i].cep : '',
-                               city: patient.addresses[i].city ? patient.addresses[i].city : '',
-                               complement: patient.addresses[i].complement ? patient.addresses[i].complement : '',
-                               number: patient.addresses[i].number ? patient.addresses[i].number : '',
-                               street: patient.addresses[i].street ? patient.addresses[i].street : '',
-                               uf: patient.addresses[i].uf ? patient.addresses[i].uf : '',
+                               idAddress: address.id,
+                               cep: address.cep,
+                               city: address.city,
+                               complement: address.complement,
+                               number: address.number,
+                               street: address.street,
+                               uf: address.uf,
                            },
+                       });
 
-                       }).then((respondeCreateAddress) => {
-                           this.$apollo.mutate({
-                               mutation: require('@/graphql/patients/AddRelationsPatientAddress.gql'),
-                               variables: {
-                                   idPatient: responseCreatePatient.data.CreatePatient.id,
-                                   idAddresses: respondeCreateAddress.data.CreateAddress.id,
-                               }
-                           }).then((responde)=> {
-                               finaly -= 1;
-                               if(finaly === 0){
-                                   this.loading = false
-                                   this.addPatient = !this.addPatient
-                                   this.getPatient(responseCreatePatient.data.CreatePatient.id)
-                               }
-                           })
-                       })
-                   }}
-                    if(patient.dependents.length === 0 && patient.addresses.length ==0){
-                        this.loading = false
-                        this.addPatient = !this.addPatient
-                        this.getPatient(responseCreatePatient.data.CreatePatient.id)
+                        if(nameMutation === "CreateAddressPatient"){
+                            this.$apollo.mutate({
+                                mutation: require('@/graphql/patients/AddRelationsPatientAddress.gql'),
+                                variables: {
+                                    idPatient: idPatient,
+                                    idAddresses: responseAddress.data.CreateAddress.id,
+                                }
+                            });
+                        }
+                    }
+                }
+            },
+
+            removeDependent(index){
+                const dependent = this.dependents[index];
+                this.dependents.splice(index,1)
+                this.$apollo.mutate({
+                    mutation: require('@/graphql/dependent/DeleteDependent.gql'),
+                    variables: {
+                        id: dependent.id
                     }
                 })
             },
-            getPatient(id){
+
+            /* getPatient(id){
                 this.$apollo.mutate({
                     mutation: require('@/graphql/patients/GetPatient.gql'),
                     variables: {
@@ -809,7 +819,7 @@
                 }).then((response) => {
                     this.selectUser(response.data.Patient[0])
                 })
-            },
+            }, */
             async addUserToFirestore(patient) {
                 await this.$store.dispatch('addUser', patient);
                 this.success = true;
@@ -903,7 +913,7 @@
                 if (user.dependents) {
                     for (let index in user.dependents) {
                         let patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
-                        let date = user.dependents[index].birthDate;
+                        let date = user.dependents[index].birth_date;
                         if (!patt.test(date))
                             date = moment(date, "YYYY-MM-DD").format("DD/MM/YYYY");
                         user.dependents[index].birthDate = date
@@ -995,22 +1005,6 @@
                     return this.skipPatients
                 }
             },
-            loadPatientSelected: {
-                query: require("@/graphql/patients/searchPatients.gql"),
-                variables(){
-                    return {
-                        id: this.id
-                    }
-                },
-                update(data) {
-                    this.foundUsers = data.Patient
-                    this.skipPatients = true
-                    this.loading = false
-                },
-                skip (){
-                    return this.skipPatients
-                }
-            }
         }
     }
 </script>

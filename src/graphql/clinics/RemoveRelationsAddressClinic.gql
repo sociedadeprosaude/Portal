@@ -1,0 +1,13 @@
+mutation($idClinic: ID!, $idAddress: ID!){
+    RemoveClinicHas_address(
+        from:{
+            id:$idClinic
+        },
+        to:{
+            id:$idAddress
+        }
+    ){
+        from{id},
+        to{id}
+    },
+}

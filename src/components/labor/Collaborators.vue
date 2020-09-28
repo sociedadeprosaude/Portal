@@ -41,7 +41,7 @@
                   <v-btn rounded text class="primary mx-1" @click="setAdvance(user)">Adiantamento</v-btn>
                 </v-flex>
                 <v-flex xs2 class="mt-3">
-                  <v-btn rounded text class="red mx-1" @click="deleteUser(user)">Apagar</v-btn>
+                  <v-btn rounded text class="white--text red mx-1" :loading="loading" @click="deleteUser(user)">Apagar</v-btn>
                 </v-flex>
                 <v-divider class="primary"/>
                 <v-flex xs12 v-if="loggedUser.group === 'admin'">
@@ -164,7 +164,7 @@
                         <v-flex xs6 v-if="user.permissions" class="text-center">
                           <span style="color: #003B8F">Permissões Salvas do Usuário:</span>
                           <div v-for="(node,i) in user.permissions" :key="i">
-                            {{ node.name }}
+                            {{ node }}
                           </div>
                         </v-flex>
                       </v-layout>
@@ -222,7 +222,7 @@ export default {
   props: ['collaborators','loading'],
 
   data: () => ({
-    selectedPermissions: [],
+    selectedPermissions: [{name:'Home'}],
     dialog: false,
     havePermissions: false,
     registerSalary: false,
@@ -234,10 +234,6 @@ export default {
     months: [],
     date: moment().format('YYYY-MM-DD'),
   }),
-
-  mounted() {
-    //this.getInitialInfo()
-  },
 
   computed: {
     loggedUser() {
@@ -256,12 +252,13 @@ export default {
 
   },
 
-  methods: {
+  watch:{
+    dialog(value){
 
-    /* async getInitialInfo() {
-      await this.$store.dispatch('getColaborators');
-      this.loading = false
-    }, */
+    }
+  },
+
+  methods: {
 
     async userGroups(user) {
       this.selectedPermissions = this.selectedPermissions.map(value => value.name)
@@ -356,8 +353,18 @@ export default {
     },
 
     async deleteUser(user) {
-      await this.$store.dispatch('deleteUser', {user: user})
-      this.$router.go()
+      /* await this.$store.dispatch('deleteUser', {user: user})
+      this.$router.go() */
+      this.loading = true
+      await this.$apollo.mutate({
+          mutation: require(`@/graphql/colaborators/DeleteColaborator.gql`),
+          variables:{
+            idColaborator:user.id,
+          },
+      });
+      this.loading = false
+      const indexColaborator = this.collaborators.findIndex((value) => value.id === user.id)
+      this.collaborators.splice(indexColaborator,1)
     },
 
     clearValuesForm() {

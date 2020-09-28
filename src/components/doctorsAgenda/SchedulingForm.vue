@@ -354,31 +354,38 @@ export default {
         }).catch((error) => {
           console.error(error)
         })
-      //await this.$store.dispatch("addUserToConsultation", form);
-      //this.scheduleLoading = false;
-      //this.success = true;
 
     },
 
     async saveRelationConsultation(idConsultation, form){
         await this.$apollo.mutate({
           mutation: require('@/graphql/consultations/AddRelations.gql'),
-          // Parameters
           variables:{
-            //return {
               idConsultation: idConsultation,
               idPatient: form.user.id,
               idSchedule: form.consultation.id_schedule,
               idProduct: this.exam ? this.exam.id : form.consultation.product.id,
               idClinic: form.consultation.clinic.id,
               idDoctor: form.consultation.doctor.id
-            //}
           },
-          
-        })
+        });
+        
+        if(form.user.dependent)
+          await this.saveRelationConsultationDependent(idConsultation, form)
+
         this.scheduleLoading = false;
         this.success = true;
-        console.log('idConsultation')
+    },
+
+    async saveRelationConsultationDependent(idConsultation, form){
+        await this.$apollo.mutate({
+          mutation: require('@/graphql/consultations/AddRelationsWithDependent.gql'),
+          variables:{
+              idConsultation: idConsultation,
+              idDependent: form.user.dependent.id,
+          },
+          
+        });
     },
 
     async deleteConsultation(){

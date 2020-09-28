@@ -28,16 +28,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer/>
-          <ApolloMutation
-              :mutation="require('@/graphql/products/UpdateProducts.gql')"
-              :variables="{ id, price}"
-              @done="close"
-          >
-            <template v-slot="{ mutate, loading, error }">
-              <v-btn color="primary" @click.native="updateProduct(mutate)">Editar</v-btn>
-              <p v-if="error">Ocorreu um erro: {{ error }}</p>
-            </template>
-          </ApolloMutation>
+          <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+          <v-btn v-else color="primary" @click="updateProduct()">Editar</v-btn>
         </v-card-actions>
     </v-card>
 </template>
@@ -48,6 +40,7 @@
             name: undefined,
             id: undefined,
             price: 0,
+          loading: false,
         }),
         mounted(){
             this.initialize()
@@ -59,11 +52,14 @@
               this.price = 0;
               this.$emit('close');
             },
-            updateProduct(mutate) {
-              setTimeout(() => {
-                mutate();
-              }, 0);
-              this.$router.push('/')
+            async updateProduct() {
+              this.loading = true;
+              await this.$apollo.mutate({
+                mutation: require('@/graphql/products/UpdateProducts.gql'),
+                variables: {id: this.id,price:this.price},
+              });
+              this.loading = false;
+              this.$router.push('/');
             },
             async initialize(){
               console.log('no comp:', this.specialty)

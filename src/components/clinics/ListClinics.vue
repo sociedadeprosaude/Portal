@@ -112,22 +112,6 @@
                 console.log('for edit:', this.clinic)
                 this.deletingClinic = true;
             },
-            async addExam(clinic) {
-                await this.selectClinic(clinic);
-                this.addExamToClinic = true;
-            },
-            async addSpecialty(clinic) {
-                await this.selectClinic(clinic);
-                this.addSpecialtyToClinic = true;
-            },
-            async deleteExamSpecialty(clinic) {
-                await this.selectClinic(clinic);
-                this.deletingExamsSpecialtiesFromClinic = true;
-            },
-            async editExamSpecialty(clinic) {
-                await this.selectClinic(clinic);
-                this.editingExamsSpecialtiesFromClinic = true;
-            },
             closeDialogs() {
                 this.clinic = undefined;
                 this.editingClinic = false;
@@ -137,34 +121,6 @@
                 this.deletingExamsSpecialtiesFromClinic = false;
                 this.editingExamsSpecialtiesFromClinic = false;
             },
-            listando(clinic) {
-                let val = this.$store.getters.clinics.filter(a => {
-                    return a.name === clinic.name;
-                });
-                return val;
-            },
-            allExams() {
-                let clinic = this.listando[0];
-                let exams = [];
-
-                for (let i in clinic.exams) {
-                    exams.push({
-                        ...clinic.exams[i]
-                    });
-                }
-                return exams;
-            },
-            allSpecialties() {
-                let clinic = this.listando[0];
-                let specialties = [];
-
-                for (let i in clinic.specialties) {
-                    specialties.push({
-                        ...clinic.specialties[i]
-                    });
-                }
-                return specialties;
-            }
         },
     }
 </script>

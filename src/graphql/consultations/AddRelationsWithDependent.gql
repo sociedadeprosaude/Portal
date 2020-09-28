@@ -1,0 +1,17 @@
+mutation($idConsultation: ID!, $idDependent: ID!){
+    AddDependentWith_consultations(
+        from:{
+            id:$idDependent
+        },
+        to:{
+            id:$idConsultation
+        }
+    ){
+        from{
+            id
+        },
+        to{
+            id
+        }
+    }
+}

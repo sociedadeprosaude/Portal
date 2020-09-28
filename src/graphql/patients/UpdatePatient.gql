@@ -1,4 +1,5 @@
-mutation CreatePatient(
+mutation UpdatePatient(
+    $idPatient: ID!,
     $name: String!,
     $birth_date: String,
     $cpf: String!,
@@ -6,7 +7,8 @@ mutation CreatePatient(
     $association_number: Int,
     $telephones:[String]
     ){
-  CreatePatient(
+  UpdatePatient(
+    id:$idPatient,
     name: $name,
     birth_date: $birth_date,
     cpf: $cpf,

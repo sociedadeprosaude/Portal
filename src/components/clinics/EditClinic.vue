@@ -1,7 +1,8 @@
 <template>
     <v-card width="500">
         <v-card-title class="headline grey lighten-2 mb-4" primary-title>
-            <span class="headline">Edição da Clínica</span>
+          <v-flex xs10> <span class="headline">Edição da Clínica</span></v-flex>
+         <v-flex xs2><v-btn text class="transparent" @click="closeDialog"><v-icon>close</v-icon></v-btn></v-flex>
         </v-card-title>
         <v-card-text>
             <v-container class="grid-list-md">
@@ -190,7 +191,7 @@
         </v-card-text>
         <v-divider/>
         <v-card-actions>
-            <v-btn rounded color="error" @click="closeDialog">Cancelar</v-btn>
+          <v-btn color="error" @click="deleteClinic"><v-icon>delete</v-icon></v-btn>
             <v-spacer/>
             <v-btn rounded color="success"  :to="{ name: 'RegisterNewUserClinic', params: {id: clinic.id } }">Gerar Link para Usuario
             </v-btn>
@@ -288,6 +289,28 @@
         methods: {
           closeDialog : function () {
             this.$emit('close-dialog');
+          },
+          async deleteClinic(){
+            await this.$apollo.mutate({
+              mutation: require('@/graphql/clinics/RemoveRelationsAddressClinic.gql'),
+              variables: {
+                idClinic: this.clinic.id,
+                idAddress: this.clinic.address.id,
+              }
+            })
+            await this.$apollo.mutate({
+              mutation: require('@/graphql/clinics/DeleteClinics.gql'),
+              variables: {
+                id: this.clinic.id,
+              },
+            })
+            await this.$apollo.mutate({
+              mutation: require('@/graphql/address/DeleteAddress.gql'),
+              variables: {
+                id: this.clinic.address.id,
+              },
+            })
+            this.$router.push('/')
           },
           async updateClinic() {
               let agenda = [];

@@ -3,6 +3,9 @@ query($name:String){
     id,
     name,
     cpf,
+    sex,
+    telephones,
+    association_number,
     birth_date,
     addresses{
         cep,
@@ -13,6 +16,7 @@ query($name:String){
         uf,
     },
     dependents{
+    id,
     name,
     birth_date,
     dependentDegree,
@@ -91,8 +95,16 @@ query($name:String){
     	patient{
         id,
         name,
-        cpf
+        cpf,
+        birth_date,
       },
+      dependent{
+        id,
+        name,
+        birth_date,
+        dependentDegree,
+        sex
+      }
       came_from{
         id
       }

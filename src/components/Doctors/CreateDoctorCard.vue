@@ -171,7 +171,13 @@
               <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
               <v-btn v-else color="primary" @click="createDoctor()">Adicionar</v-btn>
             </v-flex>
-            <v-flex xs12 v-else>
+
+          <v-flex xs12 v-if="doctor">
+            <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+            <v-btn v-else color="error" @click="deleteDoctor()"><v-icon>delete</v-icon> </v-btn>
+          </v-flex>
+
+            <v-flex xs12 v-if="doctor">
               <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
               <v-btn v-else color="primary" @click="updateDoctor()">Editar</v-btn>
             </v-flex>
@@ -192,6 +198,7 @@
               cpf: '',
               id: '',
               loading: false,
+              oldsClinics: undefined,
               //==========
                 clinic: undefined,
                 maskCRM: '######',
@@ -243,10 +250,49 @@
             for(let unity in clinics){
               for(let doctor in clinics[unity].has_doctor)
                 if(clinics[unity].has_doctor[doctor].id === this.id){
+                  clinics[unity].already_has = true
                   clins.push(clinics[unity])
                 }
             }
             this.clinic = clins
+            this.oldsClinics = this.clinic
+          },
+
+          async deleteDoctor(){
+            this.loading = true
+            for(let unity in this.clinic) {
+              await this.$apollo.mutate({
+                mutation: require('@/graphql/doctors/RemoveClinicHasDoctor.gql'),
+                variables: {
+                  idClinic: this.clinic[unity].id,
+                  idDoctor: this.doctor.id,
+                },
+              });
+            }
+            for(let product in this.specialties) {
+              await this.$apollo.mutate({
+                mutation: require('@/graphql/doctors/RemoveCostProductDoctorWithProducAndDoctortAndAddDoctorIsSpecialistOf.gql'),
+                variables: {
+                  idCostProduct: this.specialties[product].idCostProductDoctor,
+                  idProduct: this.specialties[product].id,
+                  idDoctor: this.doctor.id,
+                },
+              });
+              await this.$apollo.mutate({
+                mutation: require('@/graphql/doctors/DeleteCostProductDoctor.gql'),
+                variables: {
+                  id: this.specialties[product].idCostProductDoctor,
+                },
+              });
+            }
+              await this.$apollo.mutate({
+              mutation: require('@/graphql/doctors/DeleteDoctors.gql'),
+              variables: {
+                id: this.doctor.id
+              },
+            });
+            this.loading = false
+            this.$router.push('/')
           },
           async updateDoctor() {
             this.loading = true
@@ -259,38 +305,47 @@
               },
             });
             for(let product in this.specialties) {
-              await this.$apollo.mutate({
-                mutation: require('@/graphql/doctors/UpdateCostProductDoctor.gql'),
-                variables: {
-                  id: this.specialties[product].idCostProductDoctor,
-                  cost: this.specialties[product].cost,
-                  payment_method: this.specialties[product].payment_method,
-                },
-              });
-            }
-            //falta clinicas
-/*            const unitys = await this.$apollo.mutate({
-              mutation: require('@/graphql/clinics/LoadClinics.gql'),
-              variables: {property: true},
-            })
-            let clinics = unitys.data.Clinic
-            //console.log(this.clinic)
-            for(let unity in clinics) {
-              for(let doctor in clinics[unity].has_doctor){
-                if(clinics[unity].has_doctor.length > 0){
-                  if(clinics[unity].has_doctor[doctor].id === this.id){
-                    console.log('faz')
-                    /!* await this.$apollo.mutate({
-                       mutation: require('@/graphql/doctors/AddClinicHasDoctor.gql'),
-                       variables: {
-                         idClinic: this.clinic[unity].id,
-                         idDoctor: this.id,
-                       },
-                     });*!/
-                  } else { console.log('já tem na clinica, então skipp') }
-                }
+              if(this.specialties[product].idCostProductDoctor) {
+                await this.$apollo.mutate({
+                  mutation: require('@/graphql/doctors/UpdateCostProductDoctor.gql'),
+                  variables: {
+                    id: this.specialties[product].idCostProductDoctor,
+                    cost: this.specialties[product].cost,
+                    payment_method: this.specialties[product].payment_method,
+                  },
+                });
+              } else {
+                const CostProductDoctor = await this.$apollo.mutate({
+                  mutation: require('@/graphql/doctors/CreateCostProductDoctor.gql'),
+                  variables: {
+                    cost: this.specialties[product].cost,
+                    payment_method: this.specialties[product].payment_method,
+                  },
+                });
+                const idCostProductDoctor = CostProductDoctor.data.CreateCostProductDoctor.id
+                  await this.$apollo.mutate({
+                  mutation: require('@/graphql/doctors/AddCostProductDoctorWithProducAndDoctortAndAddDoctorIsSpecialistOf.gql'),
+                  variables: {
+                    idCostProduct: idCostProductDoctor,
+                    idProduct: this.specialties[product].id,
+                    idDoctor: this.doctor.id,
+                  },
+                });
               }
-            }*/
+            }
+            if(this.clinic.length !== this.oldsClinics.length){
+              for(let unity in this.clinic) {
+                if(!this.clinic[unity].already_has){
+                    await this.$apollo.mutate({
+                    mutation: require('@/graphql/doctors/AddClinicHasDoctor.gql'),
+                    variables: {
+                      idClinic: this.clinic[unity].id,
+                      idDoctor: this.doctor.id,
+                    },
+                  });
+                } else { console.log('já tem o doctor nessa clinica, então skipp') }
+              }
+            } else { console.log('não mudou o N de clinicas, então skipp') }
             this.loading = false
             this.$router.push('/')
           },
@@ -315,7 +370,7 @@
                 },
               });
               const idCostProductDoctor = CostProductDoctor.data.CreateCostProductDoctor.id
-              const dataRelations = await this.$apollo.mutate({
+                await this.$apollo.mutate({
                 mutation: require('@/graphql/doctors/AddCostProductDoctorWithProducAndDoctortAndAddDoctorIsSpecialistOf.gql'),
                 variables: {
                   idCostProduct: idCostProductDoctor,
@@ -325,7 +380,7 @@
               });
             }
             for(let unity in this.clinic) {
-              const dataRelationClinic = await this.$apollo.mutate({
+                await this.$apollo.mutate({
                 mutation: require('@/graphql/doctors/AddClinicHasDoctor.gql'),
                 variables: {
                   idClinic: this.clinic[unity].id,
