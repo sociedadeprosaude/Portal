@@ -285,6 +285,7 @@ export default {
         this.selectUnitDialog = true;
         return;
       }
+      console.log('unit: ', unit)
       this.$store.commit("setSelectedUnit", unit);
     },
     overviewToggle() {

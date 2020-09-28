@@ -11,13 +11,54 @@ query($name:String){
         street,
         number,
         uf,
-    }
+    },
     dependents{
     name,
     birth_date,
     dependentDegree,
     sex
-    }
+    },
+    intakes{
+       date,
+       id,
+      discount,
+      value,
+      payments,
+      parcels,
+      payment_methods,
+      products: with_productTransaction_relations{
+         price,
+         with_product{
+            name,
+            type,
+          },
+         clinic: with_clinic{
+            id,
+            name,
+            logo,
+            cnpj,
+            telephone,
+            opening_hours,
+            has_address{
+                    neighboor,
+                    city,
+                    complement,
+                    street,
+                    number,
+                    complement,
+                    state,
+                    cep
+            }
+         }
+       },
+       with_unit{
+         id,
+         name,
+         logo,
+         cnpj,
+         telephone
+       }
+     },
     consultations:with_consultation{
       id,
       type,

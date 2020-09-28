@@ -859,6 +859,7 @@
                     this.$emit('removed');
                     localStorage.removeItem('patient');
                 }
+                console.log('user: ', user)
                 this.$store.commit('setSelectedPatient', user);
                 this.$store.commit('clearSelectedDependent');
                 this.foundUsers = undefined;

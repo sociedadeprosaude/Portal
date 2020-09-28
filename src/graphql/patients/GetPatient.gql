@@ -40,6 +40,36 @@ query($id:ID!){
             date,
             payment_number
           },
+         intakes{
+                date,
+               discount,
+               value,
+               id,
+               payments,
+               parcels,
+               payment_methods,
+               products: with_productTransaction_relations{
+                  price,
+                  with_product{
+                     name,
+                     type,
+                   },
+                  clinic: with_clinic{
+                     id,
+                     name,
+                     logo,
+                     cnpj,
+                     telephone
+                  }
+                },
+                with_unit{
+                  id,
+                  name,
+                  logo,
+                  cnpj,
+                  telephone
+                }
+              },
           previous_consultation{
             id,
             type,

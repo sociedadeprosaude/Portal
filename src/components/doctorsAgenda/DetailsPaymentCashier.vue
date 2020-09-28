@@ -467,11 +467,12 @@
                         }).then(dataProduct => {
                             console.log('id do produto', this.selectedBudget.exams[exam].id)
                             this.$apollo.mutate({
-                                mutation: require('@/graphql/transaction/AddRelationsProductTransaction.gql'),
+                                mutation: require('@/graphql/transaction/AddRelationsProductTransactionExams.gql'),
                                 variables: {
                                     idBudget: data.data.CreateTransaction.id,
                                     idProduct: this.selectedBudget.exams[exam].id,
                                     idProductTransaction: dataProduct.data.CreateProductTransaction.id,
+                                    idClinic: this.selectedBudget.exams[exam].clinic.id
                                 }
                             }).then(dataaa => {
                                 this.verifyUnpaidConsultations({id:dataProduct.data.CreateProductTransaction.id, product:this.selectedBudget.exams[exam]})
@@ -491,7 +492,7 @@
                                 variables: {
                                     idBudget: data.data.CreateTransaction.id,
                                     idProduct: this.selectedBudget.specialties[specialtie].id,
-                                    idProductTransaction: dataProduct.data.CreateProductTransaction.id
+                                    idProductTransaction: dataProduct.data.CreateProductTransaction.id,
                                 }
                             }).then(dataaa => {
                                 this.verifyUnpaidConsultations({id:dataProduct.data.CreateProductTransaction.id, product:this.selectedBudget.specialties[specialtie]})

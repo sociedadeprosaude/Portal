@@ -21,7 +21,7 @@
                                                 <!--
                                                 <p v-if="intake.payment_method">{{intake.payment_method}}</p>
                                                 -->
-                                                <p>R$ {{intake.total}}</p>
+                                                <p>R$ {{intake.value}}</p>
                                             </v-flex>
                                         </v-layout>
                                     </v-card>
@@ -145,11 +145,11 @@
             },
             async receipt(intake) {
                 this.loading = true;
-                let getIntake = await this.$store.dispatch(
+               /* let getIntake = await this.$store.dispatch(
                     "getIntakeDetails",
                     intake
-                );
-                this.selectedIntake = getIntake[0];
+                ); */
+                this.selectedIntake = intake;
                 this.receiptDialog = true;
                 this.loading = false;
             },
@@ -182,11 +182,12 @@
                 return this.$store.getters.selectedPatient;
             },
             intakes() {
-                let intakes= Object.assign({}, this.patient.intakes.reverse())
+                console.log('this.patient', this.patient.intakes)
+                let intakes= Object.assign({}, this.patient.intakes)
                 return intakes;
             },
             budgets() {
-                let budgets= Object.assign({}, this.patient.budgets.reverse())
+                let budgets= Object.assign({}, this.patient.budgets)
                 return budgets;
             }
         }
