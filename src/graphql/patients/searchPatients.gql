@@ -30,6 +30,7 @@ query($name:String){
       payments,
       parcels,
       payment_methods,
+      status,
       products: with_productTransaction_relations{
          price,
          with_product{

@@ -18,9 +18,6 @@
                                             </v-flex>
                                             <v-flex xs12 class="text-left">
                                                 <p class="my-0">{{intake.date | dateFilter}}</p>
-                                                <!--
-                                                <p v-if="intake.payment_method">{{intake.payment_method}}</p>
-                                                -->
                                                 <p>R$ {{intake.value}}</p>
                                             </v-flex>
                                         </v-layout>
@@ -109,7 +106,7 @@
 
     let moment = require('moment');
 
-    export default {
+    export default{
         props: ['option'],
         components: {receipt},
 
@@ -121,6 +118,8 @@
                 cancelBuyDialog: false,
                 managerPassword: "",
                 error: undefined,
+                idUser:'',
+                skipPatients:true,
                 intakeStatus: constants.INTAKE_STATUS
             };
         },
@@ -154,6 +153,8 @@
                 this.loading = false;
             },
             async cancelBuy(intake) {
+                console.log('intake: ', intake)
+                console.log('colaborator: ', this.$store.getters.user)
                 if (!this.cancelBuyDialog) {
                     this.selectedIntake = intake;
                     this.cancelBuyDialog = true;
@@ -167,15 +168,30 @@
                 }
                 this.loading = true;
                 intake.user = this.patient;
-                await this.$store.dispatch("cancelIntake", intake);
-                this.patient.intakes = await this.$store.dispatch(
+                await this.$apollo.mutate({
+                    mutation: require('@/graphql/transaction/IntakeCancel.gql'),
+                    variables: {
+                        idColaborator: this.$store.getters.user.id,
+                        idTransaction: intake.id
+                    }
+                }).then(()=> {
+                        console.log('entrei')
+                        this.skipPatients = false
+                        this.idUser= intake.user.id
+                        this.$apollo.queries.loadPatient.refresh()
+                })
+                this.cancelBuyDialog = false;
+
+               // await this.$store.dispatch("cancelIntake", intake);
+               /* this.patient.intakes = await this.$store.dispatch(
                     "getUserIntakes",
                     this.patient
-                );
-                this.$store.commit("setSelectedPatient", this.patient);
+                ); */
+               // this.$store.commit("setSelectedPatient", this.patient);
                 this.loading = false;
             }
         },
+
 
         computed: {
             patient() {
@@ -190,6 +206,23 @@
                 let budgets= Object.assign({}, this.patient.budgets)
                 return budgets;
             }
+        },
+        apollo: {
+            loadPatient: {
+                query: require("@/graphql/patients/GetPatient.gql"),
+                variables(){
+                    return {
+                        id: this.idUser
+                    }
+                },
+                update(data) {
+                    this.skipPatients = true
+                    this.$store.commit('setSelectedPatient', data.Patient[0]);
+                },
+                skip (){
+                    return this.skipPatients
+                }
+            },
         }
     };
 </script>

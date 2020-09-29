@@ -128,7 +128,7 @@ const actions = {
         return intake
     },
 
-    async cancelIntake(context, intake) {
+    /*async cancelIntake(context, intake) {
         await firebase.firestore().collection('intakes').doc(intake.id.toString()).update(
             {
                 status: constants.INTAKE_STATUS.CANCELLED,
@@ -140,7 +140,7 @@ const actions = {
                 cancelled_by: context.getters.user
             });
         return
-    },
+    }, */
 
     async thereIsIntakes(context, payload) {
         return new Promise(async (resolve, reject) => {

@@ -1,0 +1,21 @@
+mutation (
+    $idTransaction: ID!,
+    $idColaborator: ID!
+    ) {
+    AddTransactionCancelled_by(
+        from:{
+          id:$idTransaction
+        },
+        to:{
+          id:$idColaborator
+        }
+      ){
+        from{id},to{id}
+      },
+        UpdateTransaction(
+        id:$idTransaction,
+        status:"cancelled",
+        ){
+        id
+    }
+    }
