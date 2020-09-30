@@ -118,6 +118,7 @@ const actions = {
         intakes = intakes.filter(intake => intake.date <= payload.dataFinal);
         console.log('intakes depois da data final: ', intakes)
         intakes = intakes.filter(intake => intake.status !== 'cancelled');
+        intakes = intakes.filter(intake => intake.clinic[0].name === context.getters.selectedUnit.name)
         console.log('intakes depois dos filtros: ', intakes)
         let selectedUnit = context.getters.selectedUnit;
         /* let intakesSnap = await firebase.firestore().collection('intakes').where('date', '>=', payload.dataInicio)
@@ -150,9 +151,9 @@ const actions = {
         let consultations = {};
         for (let intake in intakes) {
             console.log('intake: ', intakes[intake])
-            intakes[intake].exams= intakes[intake].products.filtes(product => {
-                product.name = product.with_product.name
-                return product.with_product.TYPE === 'EXAM'})
+            intakes[intake].exams= intakes[intake].produts.filter(product => {
+                product.name = product.with_product ? product.with_product.name : undefined
+                return product.with_product ? product.with_product.type : 'erro'  === 'EXAM'})
             console.log('intake editado:', intakes[intake])
             if (!intakes[intake].cancelled_by || intakes[intake].cancelled_by !== null ){
                 console.log('entrei')
