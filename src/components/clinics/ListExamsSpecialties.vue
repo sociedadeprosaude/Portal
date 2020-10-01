@@ -56,7 +56,7 @@
                             <v-flex xs10>
                               <p class="text-left font-weight-black">{{ item.name }}</p>
                               <div v-for="(spc,index) in item.is_specialist_of" :key="index">
-                                <p class="text-left font-weight-black">{{spc.name}}</p>
+                                <p class="text-left font-weight-black primary" style="color: white">{{spc.name}}</p>
                                 <p class="text-left mt-n4">Custo: R$ {{spc.name}}</p>
                                 <p class="text-left mt-n4">Preço: R$ {{spc.price}}</p>
                               </div>
@@ -129,9 +129,30 @@
         mounted() {
             console.log(this.clinic);
             this.filterCPC();
-            this.allSpecialties = this.clinic.has_doctor;
+            this.filterCPD();
+            //this.allSpecialties = this.clinic.has_doctor;
         },
         methods: {
+          async filterCPD() {
+            const costs = await this.$apollo.mutate({
+              mutation: require('@/graphql/doctors/LoadCostProductDoctors.gql'),
+            })
+            let costProductDoctor = costs.data.CostProductDoctor
+            //console.log(costProductDoctor)
+            for(let cost in costProductDoctor){
+              if(costProductDoctor[cost].with_product.length > 0 && costProductDoctor[cost].with_doctor.length > 0) {
+                for(let product in this.specialties) {
+                  if (this.specialties[product].id === costProductDoctor[cost].with_product[0].id && costProductDoctor[cost].with_doctor[0].id === this.id) {
+                    this.specialties[product].cost = costProductDoctor[cost].cost
+                    this.specialties[product].payment_method = costProductDoctor[cost].payment_method
+                    this.specialties[product].idCostProductDoctor = costProductDoctor[cost].id
+                  }
+                }
+              }
+            }
+            this.allSpecialties = this.clinic.has_doctor;
+          },
+
           async filterCPC(){
             const dataCostProductClinic = await this.$apollo.mutate({
               mutation: require('@/graphql/clinics/LoadCostProductClinics.gql'),
