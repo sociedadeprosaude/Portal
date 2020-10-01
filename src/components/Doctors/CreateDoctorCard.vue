@@ -240,6 +240,7 @@
               }
             }
           },
+
           async filterClinic() {
             const unitys = await this.$apollo.mutate({
               mutation: require('@/graphql/clinics/LoadClinics.gql'),

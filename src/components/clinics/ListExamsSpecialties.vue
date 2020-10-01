@@ -138,21 +138,23 @@
               mutation: require('@/graphql/doctors/LoadCostProductDoctors.gql'),
             })
             let costProductDoctor = costs.data.CostProductDoctor
-            //console.log(costProductDoctor)
-            for(let cost in costProductDoctor){
-              if(costProductDoctor[cost].with_product.length > 0 && costProductDoctor[cost].with_doctor.length > 0) {
-                for(let product in this.specialties) {
-                  if (this.specialties[product].id === costProductDoctor[cost].with_product[0].id && costProductDoctor[cost].with_doctor[0].id === this.id) {
-                    this.specialties[product].cost = costProductDoctor[cost].cost
-                    this.specialties[product].payment_method = costProductDoctor[cost].payment_method
-                    this.specialties[product].idCostProductDoctor = costProductDoctor[cost].id
+            console.log('load all:', costProductDoctor)
+            console.log('clin', this.clinic)
+            console.log('doctos of clin', this.clinic.has_doctor)
+
+            if(this.clinic.has_doctor.length > 0){
+              for(let costpd in costProductDoctor){
+                for(let item in this.clinic.has_doctor){
+                  if(costProductDoctor[costpd].with_doctor.length > 0 && costProductDoctor[costpd].with_product.length > 0) {
+/*                    if(costProductDoctor[costpd].with_clinic[0].name === this.clinic.name && this.clinic.has_product[item].name === costProductDoctor[costpd].with_product[0].name){
+                      this.clinic.has_doctor[item].cost = costProductDoctor[costpd].cost;
+                    }*/
                   }
                 }
               }
             }
             this.allSpecialties = this.clinic.has_doctor;
           },
-
           async filterCPC(){
             const dataCostProductClinic = await this.$apollo.mutate({
               mutation: require('@/graphql/clinics/LoadCostProductClinics.gql'),

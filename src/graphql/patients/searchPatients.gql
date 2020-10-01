@@ -30,13 +30,10 @@ query($name:String){
       payments,
       parcels,
       payment_methods,
-<<<<<<< HEAD
-=======
        cancelled_by{
                id,
                name
        }
->>>>>>> c74d35b6c45ce005ccc2b94e33e5ca759e0bb339
       products: with_productTransaction_relations{
          price,
          with_product{
