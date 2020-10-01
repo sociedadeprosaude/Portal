@@ -30,7 +30,10 @@ query($id:ID!){
          payments,
          parcels,
          payment_methods,
-         status,
+         cancelled_by{
+         id,
+         name
+         }
          products: with_productTransaction_relations{
             price,
             with_product{

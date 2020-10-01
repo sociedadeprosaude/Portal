@@ -1,0 +1,5 @@
+query($idDoctor:ID!, $idProduct:ID!){
+    CostProductDoctor(filter:{with_doctor_in:{id:$idDoctor}, with_product_in:{id:$idProduct}}){
+        id,cost
+    }
+}

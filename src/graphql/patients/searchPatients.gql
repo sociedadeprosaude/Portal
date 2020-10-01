@@ -30,7 +30,10 @@ query($name:String){
       payments,
       parcels,
       payment_methods,
-      status,
+       cancelled_by{
+               id,
+               name
+       }
       products: with_productTransaction_relations{
          price,
          with_product{
@@ -79,6 +82,9 @@ query($name:String){
       doctor:attended_by{
         id,name,crm
       },
+      productTransaction{
+        id
+      }
       regress{
         id,
         type,

@@ -23,7 +23,7 @@
                                         </v-layout>
                                     </v-card>
                                 </v-flex>
-                                <v-flex xs2 v-if="!loading && intake.status !== intakeStatus.CANCELLED">
+                                <v-flex xs2 v-if="!loading && !intake.cancelled_by">
                                     <v-btn @click="cancelBuy(intake)" text
                                            style="min-width: 0; width: 32px; height: 100%">
                                         <v-icon class="secondary--text">delete</v-icon>
@@ -120,7 +120,6 @@
                 error: undefined,
                 idUser:'',
                 skipPatients:true,
-                intakeStatus: constants.INTAKE_STATUS
             };
         },
         methods: {

@@ -1,0 +1,12 @@
+mutation CreateCharge(
+    $date: String,
+    $value: Float
+    ){
+  CreateCharge(
+    value: $value,
+    date: $date,
+  )
+  {
+    id
+  }
+}
