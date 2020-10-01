@@ -339,7 +339,7 @@ export default {
 
           if(form.consultation.type === "Retorno" && this.previousConsultation)
             await this.saveRelationAsRegress(data.data.CreateConsultation.id, this.previousConsultation)
-
+          console.log('data: ', data)
           if(form.productTransaction)
             await this.saveRelationProductTransaction(data.data.CreateConsultation.id,form.productTransaction.id)
 
@@ -416,8 +416,8 @@ export default {
               idConsultation: idConsultation,
               idProductTransaction: idProductTransaction
           },
-          
         })
+      console.log('ligacao com productTransaction Feita')
     },
 
     close: function () {

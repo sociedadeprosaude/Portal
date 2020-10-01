@@ -1,5 +1,5 @@
 mutation($idProductTransaction:ID!,$idConsultation:ID!){
-  AddTransactionCancelled_by(
+  AddProductTransactionWith_consultation(
     from:{
       id:$idProductTransaction
     },

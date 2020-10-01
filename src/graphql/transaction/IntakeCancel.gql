@@ -11,11 +11,5 @@ mutation (
         }
       ){
         from{id},to{id}
-      },
-        UpdateTransaction(
-        id:$idTransaction,
-        status:"cancelled",
-        ){
-        id
-    }
+      }
     }

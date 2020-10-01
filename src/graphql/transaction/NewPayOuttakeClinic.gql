@@ -1,8 +1,0 @@
-mutation (
-    $date: String ) {
-    CreateTransaction(
-     date:$date
-     ){
-        id
-    }
-}
