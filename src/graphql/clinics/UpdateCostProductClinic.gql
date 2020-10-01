@@ -1,0 +1,6 @@
+mutation($cost: Float!, $id: ID!){
+  UpdateCostProductClinic(
+    id: $id,
+    cost: $cost,
+  ){id},
+}

@@ -13,7 +13,7 @@
                     <v-divider class="primary"/>
                 </v-flex>
                 <v-layout v-if="allExams.length !== 0" class="align-start justify-start" wrap>
-                    <v-flex sm4 v-for="(item,index) in allExams" :key="index">
+                    <v-flex sm4 v-for="(item,index) in allExams" :key="index" v-if="item.type === 'EXAM'">
                         <v-card outlined class="borderCard mx-2 mr-2 grey_light">
                             <v-layout row wrap class="mt-2 mr-2 ml-2">
                                 <v-flex xs10>

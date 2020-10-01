@@ -8,7 +8,7 @@
                   :query="require('@/graphql/doctors/LoadDoctors.gql')"
               >
                 <template slot-scope="{ result: { data } }">
-                  <register-doctors :doctors="data.Doctor"></register-doctors>
+                  <register-doctors v-if="data" :doctors="data.Doctor"></register-doctors>
                 </template>
               </ApolloQuery>
             </v-tab-item>
@@ -18,7 +18,7 @@
                   :variables="{ type:'SPECIALTY', schedulable:false}"
               >
                 <template slot-scope="{ result: { data } }">
-                  <register-specialties :specialties="data.Product" ></register-specialties>
+                  <register-specialties v-if="data" :specialties="data.Product" ></register-specialties>
                 </template>
               </ApolloQuery>
             </v-tab-item>
