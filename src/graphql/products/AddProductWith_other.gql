@@ -1,0 +1,13 @@
+mutation($idSchedulableTrue: ID!, $idSchedulableFalse: ID!){
+    AddProductWith_other(
+        from:{
+            id:$idSchedulableTrue
+        },
+        to:{
+            id:$idSchedulableFalse
+        }
+    ){
+        from{id},
+        to{id}
+    },
+}

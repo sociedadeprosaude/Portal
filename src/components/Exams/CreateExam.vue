@@ -33,6 +33,7 @@
                                           return-object
                                           outlined
                                           chips
+                                          :disabled='selectedExam'
                                           color="pink"
                                           clearable
                                       >
@@ -77,36 +78,19 @@
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer/>
-                          <ApolloMutation
-                              :mutation="require('@/graphql/products/CreateProducts.gql')"
-                              :variables="{price: editedExam.price,
-                               rules: editedExam.rules,
-                               type: editedExam.type,
-                               name: editedExam.name,
-                               schedulable: editedExam.schedulable }"
-                              @done="close"
-                          >
-                            <template v-slot="{ mutate, loading, error }">
-                              <v-btn
-                                  v-if="!selectedExam"
-                                  color="primary"
-                                  :disabled="loading"
-                                  @click.native="createProduct(mutate)"
-                              >Adicionar</v-btn>
-                              <p v-if="error">Ocorreu um erro: {{ error }}</p>
-                            </template>
-                          </ApolloMutation>
+                          <div>
+                            <v-progress-circular v-if="loading && !selectedExam" indeterminate color="primary"></v-progress-circular>
+                            <v-btn
+                                v-if="!selectedExam && !loading"
+                                color="primary"
+                                @click="createProduct()"
+                            >Adicionar</v-btn>
+                          </div>
 
-                          <ApolloMutation
-                              :mutation="require('@/graphql/products/UpdateProducts.gql')"
-                              :variables="{ id : editedExam.id, price : editedExam.price, name : editedExam.name}"
-                              @done="close"
-                          >
-                            <template v-slot="{ mutate, loading, error }">
-                              <v-btn v-if="selectedExam" color="primary" @click.native="updateProduct(mutate)">Editar</v-btn>
-                              <p v-if="error">Ocorreu um erro: {{ error }}</p>
-                            </template>
-                          </ApolloMutation>
+                          <div>
+                            <v-progress-circular v-if="loading && selectedExam" indeterminate color="primary"></v-progress-circular>
+                            <v-btn v-if="selectedExam && !loading" color="primary" @click="updateProduct()">Editar</v-btn>
+                          </div>
                         </v-card-actions>
                     </v-form>
                 </v-card>
@@ -145,15 +129,6 @@
             }
         },
 
-        computed: {
-            formRegister() {
-                return this.editedExam.name;
-            },
-            examTypes() {
-                return this.$store.getters.examsTypes
-            }
-        },
-
         methods: {
             handleEnter(e) {
                 if (e.key === 'Enter') {
@@ -165,41 +140,60 @@
                 }
             },
 
-            validateRegister() {
-                this.loading = true;
-                this.registerProduct()
-            },
+           async createProduct() {
+             this.loading = true
+             this.editedExam.name = this.editedExam.name.toUpperCase().replace(/\//g, "-")
+             if ( this.editedExam.type === "EXAM") {
+               await this.$apollo.mutate({
+                 mutation: require('@/graphql/products/CreateProducts.gql'),
+                 variables: {
+                   name: this.editedExam.name,
+                   price: this.editedExam.price,
+                   rules: this.editedExam.rules,
+                   type: this.editedExam.type,
+                   schedulable: this.editedExam.schedulable
+                 },
+               });
+             } else {
+               let other = this.editedExam.type
+               this.editedExam.type = "EXAM"
+               console.log('true', other)
+               const dataProduct = await this.$apollo.mutate({
+                 mutation: require('@/graphql/products/CreateProducts.gql'),
+                 variables: {
+                   name: this.editedExam.name,
+                   price: this.editedExam.price,
+                   rules: this.editedExam.rules,
+                   type: this.editedExam.type,
+                   schedulable: this.editedExam.schedulable
+                 },
+               });
+               const idProduct = dataProduct.data.CreateProduct.id
+               await this.$apollo.mutate({
+                 mutation: require('@/graphql/products/AddProductWith_other.gql'),
+                 variables: {
+                   idSchedulableTrue: other.id,
+                   idSchedulableFalse: idProduct,
+                 },
+               });
+             }
+             this.loading = false
+             this.clear();
+             this.$router.push('/')
+           },
 
-            async registerProduct() {
-                const examData = {
-                    id: '',
-                    name: this.editedExam.name.toUpperCase().replace(/\//g, "-"),
-                    rules: this.editedExam.rules,
-                    type: this.editedExam.type ? this.editedExam.type.name : undefined,
-                };
-                await this.$store.dispatch('addExam', examData);
-                this.success = true;
-                this.loading = false;
-                this.clear();
-                this.close();
-            },
-
-            createProduct(mutate) {
-              this.editedExam.name = this.editedExam.name.toUpperCase().replace(/\//g, "-")
-/*              if(this.editedExam.type !== "EXAM"){
-                this.editedExam.type = this.editedExam.type.name
-                this.editedExam.schedulable = true
-              }*/
-              setTimeout(() => {
-                mutate();
-              }, 0);
-            },
-
-            updateProduct(mutate) {
-              setTimeout(() => {
-                mutate();
-              }, 0);
-            },
+          async updateProduct() {
+            this.loading = true
+            await this.$apollo.mutate({
+              mutation: require('@/graphql/products/UpdateProducts.gql'),
+              variables: {
+                id : this.editedExam.id, price : this.editedExam.price, name : this.editedExam.name,  rules: this.editedExam.rules,
+              },
+            });
+            this.loading = false
+            this.clear();
+            this.$router.push('/')
+          },
 
             clear() {
                 this.editedExam.name = '';

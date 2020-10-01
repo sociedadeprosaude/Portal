@@ -1,12 +1,13 @@
 mutation UpdateProduct(
     $id: ID!,
     $price: Float!
-    $name: String){
+    $name: String
+    $rules: String){
   UpdateProduct(
     id: $id,
     name: $name,
     price: $price,
-  ){
+    rules: $rules){
     id
   }
 }

@@ -25,7 +25,7 @@
                               >
                                 <template v-slot="{ mutate, loading, error }">
                                   <v-progress-circular indeterminate color="primary" v-if="loading"></v-progress-circular>
-                                  <v-btn icon dark><v-icon small @click="mutate()">delete</v-icon></v-btn>
+                                  <v-btn icon dark><v-icon small @click.native="deleteProduct(mutate)">delete</v-icon></v-btn>
                                   <p v-if="error">Ocorreu um erro: {{ error }}</p>
                                 </template>
                               </ApolloMutation>
@@ -81,6 +81,13 @@
         },
 
         methods: {
+          deleteProduct(mutate) {
+            setTimeout(() => {
+              mutate();
+            }, 0);
+            this.$router.push('/')
+          },
+
             async selectExamType (examType) {
                 this.examType = examType;
                 this.editExamType = true;

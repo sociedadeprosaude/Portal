@@ -81,19 +81,12 @@ export default {
         }, 300);
       }
     });
+
     window.addEventListener("keydown", function(e) {
       if (e.target.id === "search") {
         clearTimeout(self.typingTimer);
       }
     });
   },
-
-/*  Apollo:{
-    loadProducts:{
-      query,
-      variables,
-
-    }
-  }*/
 };
 </script>
