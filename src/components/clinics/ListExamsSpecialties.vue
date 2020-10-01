@@ -50,36 +50,24 @@
                 </v-flex>
                 <v-layout class="align-center justify-center" wrap>
                     <v-layout v-if="allSpecialties.length !== 0" class="align-center justify-center" wrap>
-                        <v-expansion-panels v-model="panel" accordion>
-                            <v-expansion-panel v-for="(item,index) in allSpecialties" :key="index">
-                                <v-expansion-panel-header class="primary white--text">
-                                  {{item.name}} -<div v-for="(spc,index) in item.is_specialist_of" :key="index"> - {{spc.name}} - PREÇO: R$ {{spc.price}}</div>
-                                    <template v-slot:actions>
-                                        <v-icon color="white">$expand</v-icon>
-                                    </template>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-layout class="align-start justify-start mt-3" wrap>
-                                      <!--v-for="(doctor,index2) in item.doctors" :key="index2"-->
-                                        <v-flex sm4>
-                                            <v-card outlined class="borderCard mx-2 mr-2 grey_light">
-                                                <v-layout row wrap class="mt-2 mr-2 ml-2">
-                                                    <v-flex xs10>
-<!--                                                        <p class="text-left font-weight-black">{{ doctor.name }}</p>
-                                                        <p class="text-left mt-n4">Custo: R$ {{ doctor.cost }}</p>
-                                                        <p class="text-left mt-n4">Preço: R$ {{ doctor.price }}</p>-->
-                                                    </v-flex>
-                                                    <v-flex xs2>
-                                                        <v-btn fab icon color="primary" x-small to="/registros/doctors"><v-icon>edit</v-icon></v-btn>
-                                                        <v-btn fab icon color="error" class="mt-2" x-small to="/registros/doctors"><v-icon>delete</v-icon></v-btn>
-                                                    </v-flex>
-                                                </v-layout>
-                                            </v-card>
-                                        </v-flex>
-                                    </v-layout>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
+                      <v-flex sm4 v-for="(item,index) in allSpecialties" :key="index">
+                        <v-card outlined class="borderCard mx-2 mr-2 grey_light">
+                          <v-layout row wrap class="mt-2 mr-2 ml-2">
+                            <v-flex xs10>
+                              <p class="text-left font-weight-black">{{ item.name }}</p>
+                              <div v-for="(spc,index) in item.is_specialist_of" :key="index">
+                                <p class="text-left font-weight-black">{{spc.name}}</p>
+                                <p class="text-left mt-n4">Custo: R$ {{spc.name}}</p>
+                                <p class="text-left mt-n4">Preço: R$ {{spc.price}}</p>
+                              </div>
+                            </v-flex>
+                            <v-flex xs2>
+                              <v-btn fab icon color="primary" x-small to="/registros/doctors"><v-icon>edit</v-icon></v-btn>
+                              <v-btn fab icon color="error" class="mt-2" x-small to="/registros/doctors"><v-icon>delete</v-icon></v-btn>
+                            </v-flex>
+                          </v-layout>
+                        </v-card>
+                      </v-flex>
                     </v-layout>
                     <v-layout v-if="allSpecialties.length === 0" class="align-center justify-center" wrap>
                         <v-card-text class="justify-center text-center">
