@@ -33,7 +33,6 @@
                                           return-object
                                           outlined
                                           chips
-                                          :disabled='selectedExam'
                                           color="pink"
                                           clearable
                                       >
@@ -184,12 +183,45 @@
 
           async updateProduct() {
             this.loading = true
-            await this.$apollo.mutate({
-              mutation: require('@/graphql/products/UpdateProducts.gql'),
-              variables: {
-                id : this.editedExam.id, price : this.editedExam.price, name : this.editedExam.name,  rules: this.editedExam.rules,
-              },
-            });
+            if (this.editedExam.type === "EXAM") {
+              await this.$apollo.mutate({
+                mutation: require('@/graphql/products/UpdateProducts.gql'),
+                variables: {
+                  id : this.editedExam.id,
+                  price : this.editedExam.price,
+                  name : this.editedExam.name,
+                  rules: this.editedExam.rules,
+                },
+              });
+            } else {
+              let other = this.editedExam.type
+              this.editedExam.type = "EXAM"
+              console.log('true', other)
+              const dataProduct = await this.$apollo.mutate({
+                mutation: require('@/graphql/products/UpdateProducts.gql'),
+                variables: {
+                  id : this.editedExam.id,
+                  price : this.editedExam.price,
+                  name : this.editedExam.name,
+                  rules: this.editedExam.rules,
+                },
+              });
+              const idProduct = dataProduct.data.UpdateProduct.id
+              for (let item in other.with_other){
+                if(other.with_other[item].name !== this.editedExam.name){
+                  //console.log('make conection')
+                  await this.$apollo.mutate({
+                    mutation: require('@/graphql/products/AddProductWith_other.gql'),
+                    variables: {
+                      idSchedulableTrue: other.id,
+                      idSchedulableFalse: idProduct,
+                    },
+                  });
+                } else {
+                  //console.log('ja tem concetioon')
+                }
+              }
+            }
             this.loading = false
             this.clear();
             this.$router.push('/')
