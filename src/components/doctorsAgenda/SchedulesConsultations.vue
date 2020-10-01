@@ -192,7 +192,6 @@ export default {
   async mounted() {
     this.$emit('refreshDate', this.daysToListen);
     await this.listenMoreConsultations();
-    console.log('cons', this.Consultations)
 
     const listElm = document.querySelector('#infinite-list');
     listElm.addEventListener('scroll', e => {
@@ -327,7 +326,6 @@ export default {
           }
         },
         update(data){
-          console.log(data)
           this.skip = true;
           if(data.ProductTransaction.length > 0){
             this.status = "Pago"

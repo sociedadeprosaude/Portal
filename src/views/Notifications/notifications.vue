@@ -34,15 +34,15 @@
     import moment from "moment";
     export default {
         mounted() {
-            this.$store.dispatch('WarningColaborators');
-            this.$store.dispatch('getConsultationsCanceled');
-            this.$store.dispatch('getContestValue');
-            this.$store.dispatch('getOuttakes');
+            //this.$store.dispatch('WarningColaborators');
+            //this.$store.dispatch('getConsultationsCanceled');
+            //this.$store.dispatch('getContestValue');
+            //this.$store.dispatch('getOuttakes');
             let data = {
                 date: moment().format("YYYY-MM-DD").toString(),
                 outtakes: this.$store.getters.outtakes,
             };
-            this.$store.dispatch('dueDateToday', data);
+            //this.$store.dispatch('dueDateToday', data);
             this.$store.dispatch('loadNotifications');
         },
         computed: {

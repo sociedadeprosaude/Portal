@@ -1,5 +1,5 @@
 query{
-  Consultation(filter:{came_from:null}){
+  Consultation(filter:{came_from:null,canceled_schedule:true}){
       id,
       type,
       status,

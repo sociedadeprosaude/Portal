@@ -8,5 +8,8 @@ mutation($idSchedule:ID!, $idConsultation:ID!){
         }
     ){
         from{id}, to{id}
+    },
+    UpdateConsultation(id:$idConsultation, canceled_schedule:true){
+        id
     }
 }

@@ -324,7 +324,6 @@ export default {
           dependent: form.user.dependent
         }; */
       this.loading = true;
-      console.log(form)
       this.$apollo.mutate({
           mutation: require('@/graphql/consultations/NewConsultation.gql'),
           // Parameters
@@ -391,10 +390,9 @@ export default {
     async deleteConsultation(){
         await this.$apollo.mutate({
           mutation: require('@/graphql/consultations/DeleteConsultation.gql'),
-          variables(){
-            return {
+          variables:{
               idConsultation: this.previousConsultation,
-            }
+            
           },
           
         })
@@ -457,7 +455,6 @@ export default {
         }
       },
       update(data) {
-        console.log(data)
         this.$store.commit('setSelectedPatient', data.Patient[0]);
         this.skipPatients = true
       },
