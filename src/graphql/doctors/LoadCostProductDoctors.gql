@@ -2,10 +2,10 @@ query {
     CostProductDoctor(orderBy:[cost_asc]){
        id,cost,payment_method
            with_doctor{
-             id
+             id,name
            },
            with_product{
-            id
+            id,name
            }
     }
 }

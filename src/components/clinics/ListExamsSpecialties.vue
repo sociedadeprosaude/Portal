@@ -57,7 +57,7 @@
                               <p class="text-left font-weight-black">{{ item.name }}</p>
                               <div v-for="(spc,index) in item.is_specialist_of" :key="index">
                                 <p class="text-left font-weight-black primary" style="color: white">{{spc.name}}</p>
-                                <p class="text-left mt-n4">Custo: R$ {{spc.name}}</p>
+                                <p class="text-left mt-n4">Custo: R$ {{spc.cost}}</p>
                                 <p class="text-left mt-n4">Preço: R$ {{spc.price}}</p>
                               </div>
                             </v-flex>
@@ -127,10 +127,8 @@
           allSpecialties: undefined,
         }),
         mounted() {
-            console.log(this.clinic);
             this.filterCPC();
             this.filterCPD();
-            //this.allSpecialties = this.clinic.has_doctor;
         },
         methods: {
           async filterCPD() {
@@ -138,22 +136,20 @@
               mutation: require('@/graphql/doctors/LoadCostProductDoctors.gql'),
             })
             let costProductDoctor = costs.data.CostProductDoctor
-            console.log('load all:', costProductDoctor)
-            console.log('clin', this.clinic)
-            console.log('doctos of clin', this.clinic.has_doctor)
-
             if(this.clinic.has_doctor.length > 0){
-              for(let costpd in costProductDoctor){
-                for(let item in this.clinic.has_doctor){
-                  if(costProductDoctor[costpd].with_doctor.length > 0 && costProductDoctor[costpd].with_product.length > 0) {
-/*                    if(costProductDoctor[costpd].with_clinic[0].name === this.clinic.name && this.clinic.has_product[item].name === costProductDoctor[costpd].with_product[0].name){
-                      this.clinic.has_doctor[item].cost = costProductDoctor[costpd].cost;
-                    }*/
+              for(let costpd in costProductDoctor) {
+                  for (let doctor in this.clinic.has_doctor) {
+                    for (let spc in this.clinic.has_doctor[doctor].is_specialist_of) {
+                      if (costProductDoctor[costpd].with_doctor.length > 0 && costProductDoctor[costpd].with_product.length > 0) {
+                        if (costProductDoctor[costpd].with_doctor[0].name === this.clinic.has_doctor[doctor].name && this.clinic.has_doctor[doctor].is_specialist_of[spc].name === costProductDoctor[costpd].with_product[0].name) {
+                          this.clinic.has_doctor[doctor].is_specialist_of[spc].cost = costProductDoctor[costpd].cost;
+                        }
+                      }
+                    }
                   }
                 }
               }
-            }
-            this.allSpecialties = this.clinic.has_doctor;
+            this.allSpecialties = this.clinic.has_doctor
           },
           async filterCPC(){
             const dataCostProductClinic = await this.$apollo.mutate({
