@@ -1,0 +1,18 @@
+mutation (
+    $idDependent: ID!,
+    $name: String!,
+    $birth_date: String,
+    $dependentDegree: String!,
+    $sex: String
+    ){
+  UpdateDependent(
+    id: $idDependent,
+    name: $name,
+    birth_date: $birth_date,
+    dependentDegree: $dependentDegree,
+    sex: $sex
+  )
+  {
+    id
+  }
+}

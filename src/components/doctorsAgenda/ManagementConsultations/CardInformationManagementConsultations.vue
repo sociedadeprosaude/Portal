@@ -20,7 +20,7 @@
                                     <v-spacer/>
                                 </v-flex>
                                 <v-flex xs12>
-                                    <CardPatientManagementConsultations :patient="patient"/>
+                                    <CardPatientManagementConsultations :dependent="consultation.dependent" :patient="patient"/>
                                 </v-flex>
                             </v-layout>
                         </v-card>
@@ -55,9 +55,9 @@
                         <v-btn
                                 color="white"
                                 rounded
-                                :to="{ name: 'AgendamentoConsultas', params: { q: consultation, type:'retorno'}}"
-                                :disabled="consultation.status !== 'Pago' || consultation.regress"
-                                v-if="consultation.type !== 'Retorno' && consultation.specialty"
+                                :to="{ name: 'AgendamentoConsultas', params: { q: consultation, type:'Retorno'}}"
+                                :disabled="/*consultation.status !== 'Pago' ||*/ consultation.regress"
+                                v-if="consultation.type !== 'Retorno' && consultation.product"
                         >Retorno
                         </v-btn>
                         <v-btn
@@ -110,7 +110,14 @@
             item: 'NOVO',
             documentDialog:false,
             receptDialog:false,
-            cancelLoading:false
+            cancelLoading:false,
+            costDoctor: 0,
+            idDoctor:'',
+            idProduct:'',
+            ConsultationSelect:{},
+            skip:true,
+            skipPatients: true,
+            skipCost: true
         }),
         computed: {
             selectedPatient() {
@@ -121,24 +128,52 @@
 
             async deletedConsultation() {
                 this.cancelLoading = true;
-                let patientId = this.consultation.user ? this.consultation.user.uid ? this.consultation.user.uid : this.consultation.user.cpf : this.selectedPatient.uid
-                let obj = {
-                    id: this.consultation.id,
-                    idPatient: this.selectedPatient.uid ? this.selectedPatient.uid : this.selectedPatient.cpf,
-                    type: this.consultation.type,
-                    status: 'Cancelado',
-                    payment_number: this.consultation.payment_number,
-                    specialty: this.consultation.specialty,
-                    previousConsultation: this.consultation.previousConsultation,
-                    consultation: this.consultation,
-                    exam:this.consultation.exam
-                };
-                await this.$store.dispatch('eraseAppointment', obj);
-                this.cancelLoading = false
 
+                this.$apollo.mutate({
+                    mutation: require('@/graphql/consultations/CancelConsultation.gql'),
+                    variables: {
+                        idConsultation: this.consultation.id
+                    },
+                    
+                }).then((data) => {
+                    this.cancelLoading = false
+
+                    if(this.consultation.type === "Retorno" && this.consultation.previous_consultation)
+                        this.removeRelationAsRegress(this.consultation.id, this.consultation.previous_consultation.id)
+
+                    if(this.consultation.status === "Pago"){
+                        this.skip = false;
+                        this.$apollo.queries.findProductTransaction.refresh()
+                    }
+
+                    this.skipPatients = false;
+                    this.$apollo.queries.loadPatient.refresh()
+
+                }).catch((error) => {
+                    console.error(error)
+                    this.cancelLoading = false
+                })
             },
+
+            removeRelationAsRegress(idConsultation, idPreviousConsultation){
+                this.$apollo.mutate({
+                    mutation: require('@/graphql/consultations/RemoveRelationsAsRegress.gql'),
+                    variables:{
+                        idConsultation: idConsultation,
+                        idPreviousConsultation: idPreviousConsultation
+                    },
+                
+                });
+            },
+
             async setConsultationHour(consultation) {
-                let consultation_hour = moment().format('YYYY-MM-DD HH:mm:ss');
+                console.log('consultation: ', consultation)
+                this.ConsultationSelect = consultation
+                this.idDoctor = consultation.doctor.id
+                this.idProduct = consultation.product.id
+                this.skipCost=false
+                this.$apollo.queries.loadCostProductDoctor.refresh()
+                /* let consultation_hour = moment().format('YYYY-MM-DD HH:mm:ss');
                 if(!consultation.user)
                     consultation.user = this.selectedPatient
                 let data = {
@@ -157,17 +192,97 @@
                     realized:moment().format('YYYY-MM-DD'),
                     crm: consultation.doctor.crm
                 }
+
                 console.log('outtake: ', outtake)
                 await this.$store.dispatch('addSpecialtyOuttakes', outtake)
                 if(!consultation.consultation_hour)
                     await this.$store.dispatch('addConsultationHourInConsultation', data);
-                this.consultation.consultation_hour = consultation_hour;
-                this.documentDialog = true;
+                this.consultation.consultation_hour = consultation_hour; */
+            },
+            CreateChargee(data){
+                this.$apollo.mutate({
+                    mutation: require ('@/graphql/charge/CreateCharge.gql'),
+                    variables:{
+                        date: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        cost: data.CostProductDoctor[0].cost
+                    }
+                }).then((dataa)=> {
+                    this.RelationsCharge(dataa)
+                })
+            },
+            RelationsCharge(data){
+                this.$apollo.mutate({
+                    mutation: require ('@/graphql/charge/RelationsCharge.gql'),
+                    variables:{
+                        idCharge: data.data.CreateCharge.id,
+                        idProductTransaction: this.ConsultationSelect.productTransaction.id
+                    }
+                }).then((data) => {
+                    this.documentDialog = true
+                })
             },
             ConsultationRecept(consultation) {
                 this.receptDialog = true;
             }
         },
+        
+        apollo:{
+            findProductTransaction:{
+                query:require("@/graphql/transaction/FindProductTransactionbyConsultation.gql"),
+                variables(){
+                    return {
+                        idConsultation: this.consultation.id
+                    }
+                },
+                update(data){
+                    this.$apollo.mutate({
+                        mutation: require('@/graphql/transaction/RemoveConsultationOfProductTransaction.gql'),
+                        variables:{
+                            idConsultation: this.consultation.id,
+                            idProductTransaction: data.ProductTransaction[0].id
+                        },
+                    
+                    })
+                    this.skip = true;
+                },
+                skip(){
+                    return this.skip
+                }
+            },
+
+            loadPatient: {
+                fetchPolicy: 'no-cache',
+                query: require("@/graphql/reactivity/ReloadConsultationsPatient.gql"),
+                variables(){
+                    return {
+                        idPatient: this.selectedPatient.id
+                    }
+                },
+                update(data) {
+                    this.$store.commit('setSelectedPatient', data.Patient[0]);
+                    this.skipPatients = true
+                },
+                skip (){
+                    return this.skipPatients
+                }
+            },
+            loadCostProductDoctor: {
+                query: require("@/graphql/doctors/GetCostProductDoctor.gql"),
+                variables(){
+                    return {
+                        idDoctor: this.idDoctor,
+                        idProduct: this.idProduct
+                    }
+                },
+                update(data) {
+                    this.CreateChargee(data)
+                    this.skipCost = true
+                },
+                skip (){
+                    return this.skipCost
+                }
+            }
+        }
     }
 </script>
 <style scoped>

@@ -28,12 +28,13 @@
                 <v-flex>
                   <v-layout column wrap class="primary--text">
                     <span
+                        v-if="item.clinic.has_address[0]"
                       class="font-weight-bold"
-                    >{{item.clinic.address.street}}, {{item.clinic.address.number}}, {{item.clinic.address.neighboor}}, {{item.clinic.address.cep}}</span>
+                    >{{item.clinic.has_address[0].street}}, {{item.clinic.has_address[0].number}}, {{item.clinic.has_address[0].neighboor}}, {{item.clinic.has_address[0].cep}}</span>
                     <span
-                      v-if="item.clinic.address.complement"
-                    >Complemento: {{item.clinic.address.complement}}</span>
-                    <span>{{item.clinic.address.city}} - {{item.clinic.address.state}}</span>
+                      v-if="item.clinic.has_address[0] && item.clinic.has_address[0].complement"
+                    >Complemento: {{item.clinic.has_address[0].complement}}</span>
+                    <span v-if="item.clinic.has_address[0]">{{item.clinic.has_address[0].city}} - {{item.clinic.has_address[0].state}}</span>
                     <br />
                     <span class="font-weight-bold">
                       Contato.:
@@ -56,30 +57,30 @@
                 <span class="font-weight-bold">Dias e Horarios de Funcionamento:</span>
                 <span>
                   <v-icon>event</v-icon>
-                  Segunda-Feira: {{item.clinic.agenda[0]}}
+                  Segunda-Feira: {{item.clinic.opening_hours[0]}}
                 </span>
                 <span>
                   <v-icon>event</v-icon>
-                  Terça-Feira: {{item.clinic.agenda[1]}}
+                  Terça-Feira: {{item.clinic.opening_hours[1]}}
                 </span>
                 <span>
                   <v-icon>event</v-icon>
-                  Quarta-Feira: {{item.clinic.agenda[2]}}
+                  Quarta-Feira: {{item.clinic.opening_hours[2]}}
                 </span>
                 <span>
                   <v-icon>event</v-icon>
-                  Quinta-Feira: {{item.clinic.agenda[3]}}
+                  Quinta-Feira: {{item.clinic.opening_hours[3]}}
                 </span>
                 <span>
                   <v-icon>event</v-icon>
-                  Sexta-Feira: {{item.clinic.agenda[4]}}
+                  Sexta-Feira: {{item.clinic.opening_hours[4]}}
                 </span>
                 <span>
                   <v-icon>event</v-icon>
-                  Sábado: {{item.clinic.agenda[5]}}
+                  Sábado: {{item.clinic.opening_hours[5]}}
                 </span>
               </v-layout>
-            </v-flex>
+            </v-flex> *
             <v-flex xs2 class="align-text-top text-right">
               <v-layout column wrap>
                   <span class="primary--text font-weight-bold align-text-top">
@@ -133,7 +134,7 @@
                   <v-layout column wrap class="justify-start align-start">
                     <span class="font-weight-bold">{{selectedDependent ? selectedDependent.name : patient.name}}</span>
                     <span v-if="!selectedDependent" class="font-weight-bold">{{patient.association_number}}</span>
-                    <span class="font-weight-bold">{{selectedDependent ? selectedDependent.birthDate :patient.birth_date | dateFilter}}</span>
+                    <span class="font-weight-bold">{{selectedDependent ? selectedDependent.birth_date :patient.birth_date | dateFilter}}</span>
                   </v-layout>
 
             </v-flex>
@@ -162,7 +163,7 @@
             <v-flex xs6 class="text-left mt-12">
               <v-layout column wrap class="primary--text">
                 <span class="font-weight-bold">Instituto Pró Saúde do Amazonas</span>
-                <span> {{selectedUnit.address.street + ' ' + selectedUnit.address.number +  ',' +  selectedUnit.address.neighboor}}</span>
+                <span v-if="selectedUnit.has_address"> {{selectedUnit.has_address[0].street + ' ' + selectedUnit.has_address[0].number +  ',' +  selectedUnit.has_address[0].neighboor}}</span>
                 <span>Manaus - AM</span>
                 <span>CNPJ: 09.066.632/0001-22</span>
               </v-layout>
@@ -181,6 +182,7 @@ export default {
   props: ["guide","id"],
   computed: {
     items() {
+      console.log('items: ', this.guide)
       return this.guide;
     },
     selectedUnit() {

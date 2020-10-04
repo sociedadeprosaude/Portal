@@ -16,15 +16,21 @@
               </v-dialog>
             </v-flex>
             <v-flex xs12 sm3>
-              <v-select
-                outlined
-                v-model="category"
-                :items="categories"
-                item-text="name"
-                return-object
-                label="Categoria"
-                multiple
-              ></v-select>
+              <ApolloQuery
+                      :query="require('@/graphql/category/LoadCategories.gql')"
+              >
+                <template slot-scope="{ result: { data } }">
+                  <v-select
+                          outlined
+                          v-model="category"
+                          :items="data ? data.Category : []"
+                          item-text="name"
+                          return-object
+                          label="Categoria"
+                          multiple
+                  ></v-select>
+                </template>
+              </ApolloQuery>
             </v-flex>
             <v-flex xs12 sm3 class="ml-3">
               <v-select

@@ -43,7 +43,7 @@
                                           </v-flex>
                                           <v-flex xs8 class="mb-3">
                                               <v-flex xs12>
-                                                  <h4 class="text-left font-weight-bold">{{item.specialty ? item.specialty.name: item.exam.name}}</h4>
+                                                  <h4 class="text-left font-weight-bold">{{item.product.name}}</h4>
                                                   <h5 class="text-left mt-1">{{item.date.substring(11,16)}}</h5>
                                                   <h5 class="text-left">{{item.doctor.name}}</h5>
                                               </v-flex>
@@ -90,21 +90,24 @@
         }),
         computed: {
             consultations(){
+                console.log('no gerenciamento de pacientes', this.patient.consultations)
                 let consultations= {};
                 for(let i=0; i<this.patient.consultations.length; i++){
-                    if(!consultations[this.patient.consultations[i].date]){
-                        consultations[this.patient.consultations[i].date] = {
-                            consultations: [],
-                            date: this.patient.consultations[i].date.substring(0,10)
+                    if(this.patient.consultations[i].came_from){
+                        if(!consultations[this.patient.consultations[i].date]){
+                            consultations[this.patient.consultations[i].date] = {
+                                consultations: [],
+                                date: this.patient.consultations[i].date.substring(0,10)
+                            }
                         }
-                    }
-                    let consultation = this.patient.consultations[i]
-                    
-                    if(!consultation.type){
-                        consultation.type = 'Consulta'
-                    }
+                        let consultation = this.patient.consultations[i]
                         
-                    consultations[this.patient.consultations[i].date].consultations.push(consultation)
+                        if(!consultation.type){
+                            consultation.type = 'Consulta'
+                        }
+                            
+                        consultations[this.patient.consultations[i].date].consultations.push(consultation)
+                    }
 
                 }
                 return consultations

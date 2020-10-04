@@ -17,8 +17,8 @@
                 <p class="text-left">Recibo: {{consultation.payment_number}}</p>
             </v-flex>
             <v-flex xs12>
-                <p v-if="consultation.specialty" class="text-left">ESPECIALIDADE: {{consultation.specialty.id}}</p>
-                <p v-else class="text-left">EXAME: {{consultation.exam.name}}</p>
+                <p v-if="consultation.product.type === 'SPECIALTY'" class="text-left">ESPECIALIDADE: {{consultation.product.name}}</p>
+                <p v-else class="text-left">EXAME: {{consultation.product.name}}</p>
             </v-flex>
             <v-flex xs12>
                 <p class="text-left">Tipo: {{consultation.type}} </p>

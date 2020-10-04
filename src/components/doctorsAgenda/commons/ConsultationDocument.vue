@@ -35,25 +35,14 @@
                                                 <span class="font-weight-bold">{{consultation.doctor.crm}}</span>
                                             </v-flex>
 
-                                            <div v-if="consultation.exam">
+                                            <div >
                                                 <v-flex>
                                                     <span class="primary--text font-weight-bold">Procedimento: </span>
-                                                    <span class="font-weight-bold">Exame</span>
+                                                    <span class="font-weight-bold">{{ this.consultation.product.type === 'EXAM' ? 'Exame' : 'Especialidade' }}</span>
                                                 </v-flex>
                                                 <v-flex>
-                                                    <span class="primary--text font-weight-bold">Exame: </span>
-                                                    <span class="font-weight-bold">{{this.consultation.exam.name}}</span>
-                                                </v-flex>
-                                            </div>
-
-                                            <div v-else>
-                                                <v-flex>
-                                                    <span class="primary--text font-weight-bold">Especialidade: </span>
-                                                    <span class="font-weight-bold">{{this.consultation.specialty.name}}</span>
-                                                </v-flex>
-                                                <v-flex>
-                                                    <span class="primary--text font-weight-bold">Procedimento: </span>
-                                                    <span class="font-weight-bold">{{this.consultation.type}}</span>
+                                                    <span class="primary--text font-weight-bold">{{ this.consultation.product.type === 'EXAM' ? 'Exame' : 'Especialidade' }}: </span>
+                                                    <span class="font-weight-bold">{{this.consultation.product.name}}</span>
                                                 </v-flex>
                                             </div>
 
@@ -74,44 +63,24 @@
                                     <v-flex xs12>
                                         <v-divider class="primary my-2"></v-divider>
                                     </v-flex>
-                                    <v-flex xs6 class="text-left"
-                                            v-if="this.consultation.dependent">
+                                    <v-flex xs6 class="text-left">
                                         <v-layout column wrap align-start justify-start>
-                <span
-                        class="my-sub-headline primary--text"
-                        style="font-size: 1.4em"
-                >{{ this.consultation.dependent.name}}</span>
-                                            <v-flex>
-                                                <span class="primary--text font-weight-bold">Data de Nascimento:</span>
-                                                <span class="font-weight-bold">{{formatbirthDate(this.consultation.dependent.birthDate)}}</span>
-                                                <br/>
-                                            </v-flex>
-                                            <v-flex>
-                                                <span class="primary--text font-weight-bold">Idade:</span>
-                                                <span class="font-weight-bold">{{formatIdade()}}</span>
-                                                <br/>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-flex>
-                                    <v-flex xs6 class="text-left"
-                                            v-else>
-                                        <v-layout column wrap align-start justify-start>
-                <span
-                        class="my-sub-headline primary--text"
-                        style="font-size: 1.4em"
-                >{{user.name}}</span>
+                                            <span
+                                                    class="my-sub-headline primary--text"
+                                                    style="font-size: 1.4em"
+                                            >{{this.consultation.dependent ? this.consultation.dependent.name : this.consultation.patient.name}}</span>
                                             <v-flex v-if="!this.consultation.dependent">
                                                 <span class="primary--text font-weight-bold">CPF:</span>
                                                 <span class="font-weight-bold">{{user.cpf}}</span>
                                             </v-flex>
                                             <v-flex>
                                                 <span class="primary--text font-weight-bold">Data de Nascimento:</span>
-                                                <span class="font-weight-bold">{{formatbirthDate(this.user.birth_date)}}</span>
+                                                <span class="font-weight-bold">{{formatbirthDate()}}</span>
                                                 <br/>
                                             </v-flex>
                                             <v-flex>
                                                 <span class="primary--text font-weight-bold">Idade:</span>
-                                                <span class="font-weight-bold">{{formatUserIdade()}}</span>
+                                                <span class="font-weight-bold">{{formatIdade()}}</span>
                                                 <br/>
                                             </v-flex>
                                         </v-layout>
@@ -182,7 +151,7 @@
         computed: {
 
             user() {
-                return this.$store.getters.selectedPatient
+                return this.$store.getters.user
             },
             selectedUnit() {
                 return this.$store.getters.selectedUnit
@@ -203,49 +172,19 @@
             loader: false,
             payment_number: undefined
         }),
-        async mounted() {
-            this.saveConsultationHour()
-            await this.$store.dispatch('loadSpecialties')
-            console.log('consultation document')
+        mounted() {
+            //this.saveConsultationHour()
         },
         methods: {
-            formatbirthDate(birthDate){
-                let formatbirthDateFormat = moment(birthDate).format('DD/MM/YYYY')
+            formatbirthDate(){
+                const date = this.consultation.dependent ? this.consultation.dependent.birth_date : this.consultation.patient.birth_date
+                let formatbirthDateFormat = moment(date).format('DD/MM/YYYY')
                 return formatbirthDateFormat
             },
-            specialtyCost() {
-                let espArray = Object.values(this.$store.getters.specialties);
-                let cost = undefined
-                espArray.forEach(specialty => {
-                    if (specialty.name == this.consultation.specialty.name) {
-
-                        specialty.doctors.forEach(doctor => {
-                            if (doctor.cpf === this.consultation.doctor.cpf) {
-                                cost = {
-                                    cost: doctor.cost,
-                                    price: doctor.price,
-                                    doctorConsultation: doctor
-                                }
-                                return cost
-                            }
-                        });
-                    }
-                });
-                return cost
-            },
-
 
             formatIdade(){
                 let idade;
-                let date = this.consultation.dependent ? this.consultation.dependent.birthDate : this.user.birth_date;
-                let patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
-                if(patt.test(date)) date = moment(date,"DD/MM/YYYY").format("YYYY-MM-DD");
-                idade = moment().diff(moment(date, 'YYYY-MM-DD'), 'years');
-                return idade
-            },
-            formatUserIdade(){
-                let idade;
-                let date = this.user.birth_date;
+                let date = this.consultation.dependent ? this.consultation.dependent.birth_date : this.consultation.patient.birth_date;
                 let patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
                 if(patt.test(date)) date = moment(date,"DD/MM/YYYY").format("YYYY-MM-DD");
                 idade = moment().diff(moment(date, 'YYYY-MM-DD'), 'years');
@@ -253,31 +192,10 @@
             },
             async print() {
                 this.loader = true;
-                let cost = this.specialtyCost();
-                if (cost && cost.price === 0) {
-                    this.$store
-                        .dispatch("thereIsIntakes", {
-                            user: this.user,
-                            specialty: this.consultation.specialty,
-                            status: ['Agendado', 'Consulta Paga'],
-                            payment_number: this.consultation.payment_number
-                        })
-                        .then(async (obj) => {
-
-                            this.loader = false
-                            window.print()
-                        })
-                        .catch(async (response) => {
-                            await this.newIntake(cost)
-                            this.consultation.payment_number = this.payment_number
-                            await this.$store.dispatch('updatePaymentNumberConsultation', {
-                                user: this.user,
-                                consultation: this.consultation,
-                                payment_number: this.payment_number
-                            })
-                            this.loader = false
-                            window.print()
-                        });
+                if (this.consultation.product.price === 0) {
+                        console.log('Gratuito')
+                        this.skip = false
+                        this.$apollo.queries.findProductTransaction.refresh() 
                 } else {
                     this.loader = false
                     window.print()
@@ -289,7 +207,7 @@
                 this.hoje = moment().locale('pt-BR').format('DD/MM/YYYY HH:mm:ss')
                 this.dia = moment().format('dddd')
             },
-            saveConsultationHour() {
+            /* saveConsultationHour() {
                 this.inititize()
                 if(this.openDocument){
                     this.$store.dispatch('setConsultationHour',{consultation:this.consultation.id,patient:this.user.cpf ,consultationHour:this.consultationHour,day:this.dia})
@@ -302,43 +220,98 @@
                         })
                 }
 
-            },
-            async newIntake(costConsultation) {
+            }, */
+            async setNewtransaction(){
+                const transaction = await this.$apollo.mutate({
+                    mutation: require('@/graphql/transaction/NewPayIntake.gql'),
+                    variables: {
+                        value: this.consultation.product.price,
+                        date: moment().format('YYYY-MM-DD HH:mm'),
+                    },
 
-                let id = moment().valueOf();
-                let budget = {
-                    id: id,
-                    specialties: [
-                        {
-                            doctor: costConsultation.doctorConsultation,
-                            cost: costConsultation.cost,
-                            price: costConsultation.price,
-                            name: this.consultation.specialty.name
+                });
+
+                const transactionId = transaction.data.CreateTransaction.id
+                
+                const productTransaction = await this.$apollo.mutate({
+                        mutation: require('@/graphql/transaction/CreateProductTransaction.gql'),
+                        variables: {
+                            price: this.consultation.product.price
                         }
-                    ],
-                    exams: undefined,
-                    subTotal: 0,
-                    discount: 0,
-                    total: 0,
-                    date: moment().format("YYYY-MM-DD HH:mm:ss"),
-                    cost: costConsultation.cost,
-                    user: this.$store.getters.selectedPatient,
-                    colaborator: this.$store.getters.user,
-                    doctor: costConsultation.doctorConsultation,
-                    unit: this.selectedUnit,
-                    consultation: this.consultation
-                };
-                await this.$store.dispatch("addIntake", budget);
-                this.payment_number = id
+                 });
 
+                const productTransactionId = productTransaction.data.CreateProductTransaction.id
+                
+                await this.$apollo.mutate({
+                    mutation: require('@/graphql/transaction/AddRelationsProductTransaction.gql'),
+                    variables: {
+                        idBudget: transactionId,
+                        idProduct: this.consultation.product.id,
+                        idProductTransaction: productTransactionId
+                    }
+                });
+
+                this.AddRelationsIntake(transactionId)
+                this.saveRelationProductTransactionwithConsultation(productTransactionId)
             },
-        },
-        watch: {
+
+            async AddRelationsIntake(transactionId){
+                
+                await this.$apollo.mutate({
+                    mutation: require('@/graphql/transaction/AddRelationsNewIntake.gql'),
+                    variables: {
+                        idBudget: transactionId,
+                        idColaborator: this.user.neo4j_id, //TODO Trocar quando finalizar autenticação do colaborador
+                        idPatient: this.consultation.patient.id,
+                        idDoctor: this.consultation.doctor.id
+                    },
+
+                });
+
+                console.log('Transation',transactionId)
+            },
+            
+            async saveRelationProductTransactionwithConsultation(idProductTransaction){
+                await this.$apollo.mutate({
+                mutation: require('@/graphql/transaction/AddRelationProductTransactionConsultation.gql'),
+                variables:{
+                    idConsultation: this.consultation.id,
+                    idProductTransaction: idProductTransaction
+                },
+            })
+    },
+
+        },//TODO Verificar consultationHour
+
+        /* watch: {
             openDocument(value) {
                 this.saveConsultationHour()
                 return value
             }
 
+        }, */
+        apollo:{
+            findProductTransaction:{
+                query:require("@/graphql/transaction/FindProductTransactionbyConsultation.gql"),
+                variables(){
+                    return {
+                        idConsultation: this.consultation.id
+                    }
+                },
+                update(data){
+                    console.log(data.ProductTransaction)
+
+                    if(data.ProductTransaction.length == 0)
+                        this.setNewtransaction()
+
+                    this.loader = false
+                    window.print()
+                    this.skip = true;
+                },
+                skip(){
+                    return this.skip
+                }
+            },
         }
     }
 </script>

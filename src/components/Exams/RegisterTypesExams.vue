@@ -27,7 +27,7 @@
 
             <v-card>
               <v-card-text>
-                <listExamsTypes :examsTypes="examsTypes" />
+                <listExamsTypes />
               </v-card-text>
             </v-card>
           </v-flex>

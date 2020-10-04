@@ -1,0 +1,5 @@
+mutation($idColaborator:ID!, $salary:Float){
+  UpdateColaborator(id:$idColaborator,salary:$salary){
+    id
+  }
+}

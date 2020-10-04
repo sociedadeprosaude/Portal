@@ -34,41 +34,33 @@
                                                 class="py-3"
                                                 @click="viewConsultation = {
                                                                     idConsultation:item.id,
-                                                                    idPaciente: item.user.cpf,
-                                                                    paciente: item.user.name,
-                                                                    cartaoId: item.user.association_number,
-                                                                    cpf:item.user.cpf,
+                                                                    patient: item.patient,
                                                                     data: item.date.split(' ')[0],
                                                                     hora: item.date.split(' ')[1],
-                                                                    crm: item.doctor.crm,
-                                                                    especialidade: item.specialty,
-                                                                    exame: item.exam,
-                                                                    esp:item.specialty ? item.specialty.name : undefined,
+                                                                    product:item.product,
                                                                     status: item.status,
-                                                                    modalidade: item.type,
+                                                                    type: item.type,
                                                                     calls: item.calls,
-                                                                    medico:item.doctor.name,
                                                                     doctor:item.doctor,
                                                                     num_recibo:item.payment_number,
-                                                                    pacienteObj:item.user,
                                                                     consultation:item
                                                         }">
                                             <v-list-item-content>
                                                 <v-list-item-title class="primary--text">
                                                                     <span style="font-weight: bolder">
-                                                                        {{item.user.dependent ? item.user.dependent.name:
-                                                                    item.user.name}}
+                                                                        {{item.patient.dependent ? item.patient.dependent.name:
+                                                                    item.patient.name}}
                                                                     </span>
                                                 </v-list-item-title>
                                                 <br>
                                                 <v-list-item-subtitle class="text-center font-weight-bold">
-                                                    {{item.user.dependent ? 'Nascimento:' +
-                                                    item.user.dependent.birthDate
-                                                    : 'CPF:' + item.user.cpf}}
+                                                    {{item.patient.dependent ? 'Nascimento:' +
+                                                    item.patient.dependent.birthDate
+                                                    : 'CPF:' + item.patient.cpf}}
                                                 </v-list-item-subtitle>
                                                 <br>
                                                 <v-list-item-subtitle class="text-center font-weight-bold">
-                                                    Telefone: {{item.user.telephones ? item.user.telephones[0] : 'Número não informado'}}
+                                                    Telefone: {{item.patient.telephones ? item.patient.telephones[0] : 'Número não informado'}}
                                                 </v-list-item-subtitle>
                                                 <br>
                                                 <v-list-item-action-text>
@@ -124,7 +116,7 @@
                 },
                 set: function (index) {
                    this.statusSelected = index.status;
-                    this.$emit('user', index.pacienteObj )
+                    this.$emit('patient', index.pacienteObj )
                     this.$emit('dialog', true)
                     this.$emit('indexSelected', {...index})
                 }

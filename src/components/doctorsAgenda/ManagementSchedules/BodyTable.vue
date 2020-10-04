@@ -7,9 +7,9 @@
 
       <v-flex v-for="day in 6" :key="day" class="xs6 sm4 md2 lg2 pa-2">
         <CardDaySchedule
-          v-if="item.days && item.days[day]"
+          v-if="findDay(day)"
           :schedule="item"
-          :dayObj="item.days[day]"
+          :dayObj="findDay(day)"
           :day="day"
         ></CardDaySchedule>
         <v-card v-else @click="openDialogNewDay(item,day)" class="py-7 grey--text" elevation="2">
@@ -143,6 +143,12 @@ export default {
     newPeriod: {}
   }),
   methods: {
+    findDay(target){
+      if(this.item.days)
+        return this.item.days.find(value => value.day === target.toString())
+
+      return undefined
+    },
     openDialogNewDay(schedule, day) {
       this.dialog = true;
       this.newDay = {

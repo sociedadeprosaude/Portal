@@ -1,0 +1,37 @@
+query{
+    Transaction{
+    id,
+    date,
+    discount,
+    value,
+    paid,
+    payments,
+    parcels,
+    status,
+    payment_methods,
+    root,
+    description,
+    realizade,
+    category,
+    subCategory,
+    created_at,
+    cancelled_by{
+        id,
+        name,
+        cpf
+        }
+    produts: with_productTransaction_relations{
+        price,
+        with_product{
+            name
+            type
+        }
+    }
+     unit: with_unit{
+            id,
+            name,
+            cnpj
+     }
+
+    }
+}

@@ -1,0 +1,17 @@
+query($email:String!){
+  Colaborator(filter:{email:$email}){
+    id,
+    name,
+    cpf,
+    email,
+    group,
+    salary,
+    permissions,
+    birth_date,
+    clinic:work_in{
+      id,
+      name,
+      logo
+    }
+  }
+}

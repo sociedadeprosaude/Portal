@@ -18,7 +18,8 @@ const mutations = {
         state.items = payload
     },
     addShoppingCartItem(state, payload) {
-
+        console.log('items: ', state.items)
+        console.log('payload: ', payload)
         for (let item in state.items) {
             if (state.items[item].name === payload.name) {
                 state.items[item] = payload;
@@ -52,12 +53,13 @@ const getters = {
     },
     getShoppingCartItemsByCategory(state) {
         let consultations = state.items.filter((a) => {
-            if(a.doctor){
-                return a.doctor
+            if(a.type === 'appointment'){
+                console.log('a: ', a)
+                return a
             }
         });
         let exams = state.items.filter((a) => {
-            if(a.clinic){
+            if(a.type === 'exam'){
                 if(a.priceDiscount){
                     let trocarNumero= a.price;
                     a.price= a.priceDiscount;
@@ -70,10 +72,17 @@ const getters = {
                 }
             }
         });
-
+        let clinics = {}
+        state.items.forEach((element) => {
+            if(!clinics[element.clinic.name]) {
+                clinics[element.clinic.name] = []
+            }
+                clinics[element.clinic.name].push(element)
+        })
         return {
             consultations: consultations,
             exams: exams,
+            clinics: clinics
         }
     }
 };

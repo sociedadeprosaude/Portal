@@ -170,6 +170,20 @@
                                 hide-details
                         />
                     </v-flex>
+                  <v-flex xs12>
+                    <v-textarea
+                        filled
+                        v-model="logo"
+                        label="Link da logo da unidade pro-saúde (se for unidade pro-sáude)"
+                    ></v-textarea>
+                  </v-flex>
+                  <v-flex>
+                    <v-checkbox
+                        v-model="property"
+                        color="green"
+                        :label="`Unidade pro-saúde ? : ${property.toString()}`"
+                    ></v-checkbox>
+                  </v-flex>
                 </v-layout>
             </v-container>
         </v-card-text>
@@ -177,14 +191,10 @@
         <v-card-actions>
             <v-btn rounded color="error" @click="closeDialog">Cancelar</v-btn>
             <v-spacer/>
-            <submit-button
-                    color="success"
-                    @click="save"
-                    :disabled="!formIsValid"
-                    text="Salvar"
-                    :loading="loading"
-                    :success="success"
-            />
+            <v-btn
+                color="primary"
+                @click="createClinics"
+            >Adicionar</v-btn>
         </v-card-actions>
     </v-card>
 </template>
@@ -192,17 +202,9 @@
 <script>
     import {mask} from 'vue-the-mask';
     import axios from 'axios';
-    import SubmitButton from "../../components/SubmitButton";
-
     export default {
-        components: {SubmitButton},
         directives: {mask},
         data: () => ({
-
-            selectedClin: undefined,
-            Product: false,
-            loading: false,
-            success: false,
             mask: {
                 cnpj: '##.###.###/####-##',
                 telephone: '(##) #####-####',
@@ -239,8 +241,12 @@
                 'Tocantins (TO)'
             ],
             ceps: '',
+            geopoint: null,
+            logo: null,
+            property: false,
+            opening_hours: null,
             alertCEP: false,
-            defaultItem: {
+            clinic: {
                 name: '',
                 cnpj: '',
                 telephone: [],
@@ -260,26 +266,6 @@
             },
 
         }),
-
-        computed: {
-
-            formIsValid() {
-                return this.clinic.name && this.clinic.telephone[0]
-            },
-
-            clinic() {
-                return this.$store.getters.selectedClinic;
-            },
-
-            indexClinic () {
-                return this.$store.getters.indexClinic;
-            },
-            clinics() {
-                return this.$store.getters.clinics;
-            },
-
-        },
-
         watch: {
             ceps(val) {
                 if (val.length === 8) {
@@ -310,27 +296,68 @@
                     this.clinic.address.city = '';
                 }
             },
-
-
         },
-
-         async beforeUpdate () {
-             let clinic = await this.$store.getters.clinic;
-             let indexClinic  = await this.$store.getters.indexClinic;
-             this.addDataToClinicExist(clinic, indexClinic);
-        },
-
         methods: {
-            closeDialog : function () {
-                this.$emit('close-dialog');
-                this.clearData();
+            closeDialog() {
+              this.clinic = {}
+              this.$emit('close-dialog');
             },
 
-            clearData() {
-                this.$store.dispatch('selectClinic', this.defaultItem);
-                this.$store.dispatch('putIndex', null);
-            },
+           async createClinics() {
+             let agenda = [];
+             for (let i = 0; i < 7; i++) {
+               if (i < 5) {
+                 agenda.push(this.clinic.startWeek + '-' + this.clinic.endWeek)
+               } else if (i === 5) {
+                 agenda.push(this.clinic.startSaturday + '-' + this.clinic.endSaturday)
+               }
+             }
+             this.opening_hours = agenda
 
+             await this.$apollo.mutate({
+               mutation: require('@/graphql/clinics/CreateClinics.gql'),
+               variables: {
+                 name: this.clinic.name.toUpperCase(),
+                 cnpj: this.clinic.cnpj,
+                 telephone: this.clinic.telephone[0],
+                 logo: this.logo,
+                 property: this.property,
+                 opening_hours: this.opening_hours,
+               },
+             }).then(dataClinic => {
+               //console.log("id clinic:", dataClinic.data.CreateClinic.id)
+                this.$apollo.mutate({
+                 mutation: require('@/graphql/address/CreateAddress.gql'),
+                 variables: {
+                   number: this.clinic.address.number,
+                   cep: this.ceps,
+                   city: this.clinic.address.city,
+                   state: this.clinic.address.state,
+                   street: this.clinic.address.street,
+                   neighboor: this.clinic.address.neighborhood,
+                   complement: this.clinic.address.complement,
+                   geopoint: this.geopoint,
+                 },
+               }).then(dataAdress => {
+                 //console.log("id Adress:", dataAdress.data.CreateAddress.id)
+                 this.$apollo.mutate({
+                   mutation: require('@/graphql/clinics/AddRelationsAddressClinic.gql'),
+                   variables: {
+                     idClinic: dataClinic.data.CreateClinic.id,
+                     idAddress: dataAdress.data.CreateAddress.id,
+                   }
+                 }).catch((error) => {
+                   console.error('nao criando clinica: ', error)
+                 })
+               }).catch((error) => {
+                 console.error('nao criando endereço: ', error)
+               })
+             }).catch((error) => {
+               console.error('nao criando relaçao clinica e endrereço: ', error)
+             })
+             //this.closeDialog()
+             this.$router.push('/')
+           },
             addDataToClinicExist (clinic, indexClinic) {
                 if (indexClinic !== -1 && indexClinic !==null){
                     this.cep = this.clinic.address.cep;
@@ -339,53 +366,9 @@
                     this.clinic.endWeek = this.clinic.agenda[0].split('-')[1];
                     this.clinic.startSaturday = this.clinic.agenda[5].length > 0 ? this.clinic.agenda[5].split('-')[0] : '';
                     this.clinic.endSaturday = this.clinic.agenda[5].length > 0 ? this.clinic.agenda[5].split('-')[1] : ''
-
                 } else {
                     this.cep = '';
                 }
-            },
-
-            async save() {
-                this.loading = true;
-                if (this.indexClinic > -1) {
-                    Object.assign(this.clinics[this.indexClinic], this.clinic);
-                } else {
-                    this.clinics.push(this.clinic);
-                }
-
-                let clinicData = {
-                    address: {
-                        neighboor: this.clinic.address.neighborhood,
-                        cep: this.ceps,
-                        city: this.clinic.address.city,
-                        complement: this.clinic.address.complement,
-                        state: this.clinic.address.state,
-                        street: this.clinic.address.street,
-                        number: this.clinic.address.number,
-                    },
-                    id: this.clinic.id,
-                    name: this.clinic.name.toUpperCase(),
-                    cnpj: this.clinic.cnpj,
-                    telephone: this.clinic.telephone,
-                };
-
-                let agenda = [];
-                for (let i = 0; i < 7; i++) {
-                    if (i < 5) {
-                        agenda.push(this.clinic.startWeek + '-' + this.clinic.endWeek)
-                    } else if (i === 5) {
-                        agenda.push(this.clinic.startSaturday + '-' + this.clinic.endSaturday)
-                    }
-                }
-                clinicData.agenda = agenda;
-
-                await this.$store.dispatch('addClinic', clinicData);
-                await this.$store.dispatch('getClinics');
-                this.success = true;
-                this.loading = false;
-                setTimeout(() => {
-                    this.closeDialog()
-                }, 1000)
             },
         },
     }

@@ -205,7 +205,7 @@
                             </v-flex>
                             <v-divider/>
                             <v-flex xs12>
-                                <v-card v-for="user in foundUsers" :key="user.cpf" class="my-2"
+                                <v-card v-for="user in foundUsers" :key="user.id" class="my-2"
                                         @click="selectUser(user)">
                                     <v-layout row wrap class="align-center">
                                         <v-flex xs4>
@@ -290,7 +290,7 @@
                                         persistent-hint
                                         hint="Campo obrigatório*"
                                         v-model="birthDate"
-                                        :rules="rules"
+                                        :rules="rulesDate"
                                         v-mask="mask.date"
                                         prepend-icon="date_range"
                                         placeholder="Data de Nascimento">
@@ -407,7 +407,7 @@
                                 <v-layout row wrap justify v-for="(dependent, index) in dependents" :key="index">
                                     <v-flex xs12 class="text-right">
                                         <v-btn fab icon small class="transparent" text
-                                               @click="dependents.splice(index, 1)">
+                                               @click="removeDependent(index)">
                                             <v-icon class="background--text">remove_circle</v-icon>
                                         </v-btn>
                                     </v-flex>
@@ -432,7 +432,7 @@
                                                 filled
                                                 v-model="dependent.birthDate"
                                                 v-mask="mask.date "
-                                                :rules="rules"
+                                                :rules="rulesDate"
                                                 prepend-icon="date_range"
                                                 placeholder="Data de Nascimento">
                                         </v-text-field>
@@ -525,7 +525,7 @@
                             <v-flex xs12 class="text-right">
 
                                 <submit-button :disabled="!(this.name !== '' && this.name && ((this.cpf !== '' && this.cpf) || (this.rg !== '' && this.rg)) && this.birthDate !== '' && this.birthDate
-                                && this.dateValid(this.birthDate) && this.telephones !== [''])" :success="success"
+                                && this.telephones !== [''])" :success="success"
                                                @click="registerPatient()" :loading="loading"
                                                text="Salvar" class="mb-2 success" dark>
                                 </submit-button>
@@ -567,26 +567,7 @@
             PatientCard,
             PatientTag
         },
-        computed: {
-            selectedPatient() {
-                let user = this.$store.getters.selectedPatient;
-                if (user) {
-                    this.name = user.name;
-                    this.cpf = user.cpf;
-                    this.numAss = user.association_number
-                }
-                return user
-            },
-            selectedDependent() {
-                let dependent = this.$store.getters.selectedDependent;
-                if (dependent) {
-                    this.dependentName = dependent.name
-                }
-                return dependent
-            }
-        },
-        data() {
-            return {
+        data:() => ({
                 patientCard: false,
                 patientTag: false,
                 addPatient: false,
@@ -606,6 +587,7 @@
                 loading: false,
                 formError: undefined,
                 searchError: undefined,
+                id:'',
                 mask: {
                     maskRG: '#######-#',
                     cpf: '###.###.###-##',
@@ -613,17 +595,36 @@
                     telephone: '(##) #####-####',
                     cep: '##.###-###',
                 },
-                rules: [
+                rulesDate: [
                     value => {
-                        const rule = this.dateValid(value);
-                        return rule || 'Data inválida'
-                    }
+                        const dataNascimento = moment(value, "DD/MM/YYYY", true);
+                        return dataNascimento.isValid() || 'Data de nascimento inválida'
+                    },
                 ],
                 states: ['AM'],
                 cities: {'AC': [], 'AL': [], 'AM': []},
                 foundUsers: undefined,
                 foundDependents: undefined,
                 success: false,
+                skipPatients:true
+            
+        }),
+        computed: {
+            selectedPatient() {
+                let user = this.$store.getters.selectedPatient;
+                if (user) {
+                    this.name = user.name;
+                    this.cpf = user.cpf;
+                    this.numAss = user.association_number
+                }
+                return user
+            },
+            selectedDependent() {
+                let dependent = this.$store.getters.selectedDependent;
+                if (dependent) {
+                    this.dependentName = dependent.name
+                }
+                return dependent
             }
         },
         watch: {
@@ -694,23 +695,8 @@
                     return
                 }
                 this.loading = true;
-                let copyDependents = [];
-                for (let add in this.addresses) {
-                    delete this.addresses[add].loading
-                }
 
-                for (let dependent in this.dependents) {
-                    let birthDate = moment(this.dependents[dependent].birthDate, "DD/MM/YYYY").format("YYYY-MM-DD");
-
-                    copyDependents.push(Object.assign({birthDate: birthDate}, {
-                        name: this.dependents[dependent].name,
-                        sex: this.dependents[dependent].sex,
-                        dependentDegree: this.dependents[dependent].dependentDegree
-                    }))
-
-                }
                 let patient = {
-                    uid: this.uid ? this.uid : undefined,
                     name: this.name.toUpperCase(),
                     cpf: this.cpf ? this.cpf.replace(/\./g, '').replace('-', '') : undefined,
                     email: this.email,
@@ -720,36 +706,120 @@
                     sex: this.sex,
                     telephones: this.telephones,
                     addresses: this.addresses,
-                    dependents: copyDependents,
-                    type: 'PATIENT'
+                    dependents: this.dependents,
                 };
-                let foundPatient;
-                let identifier;
-                if (patient.cpf) {
-                    foundPatient = await this.$store.dispatch('getPatient', patient.cpf);
-                    identifier = {
-                        name: 'cpf',
-                        value: patient.cpf
-                    }
-                }/* else {
-                    foundPatient = await this.$store.dispatch('getPatient', 'RG' + patient.rg);
-                    identifier = {
-                        name: 'rg',
-                        value: patient.rg
-                    }
-                }*/
-                if (foundPatient) {
-                    let dialog = {
-                        header: `Já existe um associado com o ${identifier.name} ${identifier.value}, substituir?`,
-                        body: `${foundPatient.name}, ${identifier.name}: ${identifier.value}, Num. Ass: ${foundPatient.association_number}`,
-                        show: true,
-                        functionToRun: () => this.addUserToFirestore(patient)
-                    };
-                    this.$store.commit('setSystemDialog', dialog);
-                    return
-                }
-                this.addUserToFirestore(patient)
+                let finaly= parseInt(patient.addresses.length) + parseInt(patient.dependents.length)
+                
+                const responsePatient = await this.savePatient(patient)
+                await this.saveDependents(patient, responsePatient.id)
+                await this.saveAddress(patient,responsePatient.id)
+                this.addPatient = !this.addPatient
+                this.loading = false;
             },
+
+            async savePatient(patient){
+                const nameMutation = this.selectedPatient ? "UpdatePatient" : "CreatePatient"
+                const response = await this.$apollo.mutate({
+                    mutation: require(`@/graphql/patients/${nameMutation}.gql`),
+                    variables: {
+                        idPatient: this.selectedPatient && this.selectedPatient.id,
+                        name: patient.name,
+                        birth_date: patient.birth_date,
+                        cpf: patient.cpf,
+                        sex: patient.sex,
+                        association_number: Number(patient.association_number),
+                        telephones:patient.telephones
+                    },
+
+                })
+
+                return response.data[nameMutation]
+            },
+
+            async saveDependents(patient, idPatient){
+                if(patient.dependents.length !== 0){
+                    for(let i in patient.dependents){
+                        const dependent = patient.dependents[i]
+                        const nameMutation = dependent.id ? "UpdateDependent" : "CreateDependent"
+                        
+                        const responseDependent = await this.$apollo.mutate({
+                            mutation: require(`@/graphql/dependent/${nameMutation}.gql`),
+                            variables: {
+                                idDependent: dependent.id,
+                                name: dependent.name,
+                                birth_date: moment(dependent.birthDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
+                                cpf: dependent.cpf,
+                                dependentDegree: dependent.dependentDegree,
+                                sex:dependent.sex
+                            },
+                        });
+
+                        if(nameMutation === "CreateDependent"){
+                            this.$apollo.mutate({
+                                mutation: require('@/graphql/dependent/AddRelationsDependentPatient.gql'),
+                                variables: {
+                                    idPatient: idPatient,
+                                    idDependent: responseDependent.data.CreateDependent.id,
+                                }
+                            });
+                        }
+
+                    }
+                }
+            },
+
+            async saveAddress(patient, idPatient){
+                if(patient.addresses.length !== 0){
+                   for(let i in patient.addresses){
+                       const address = patient.addresses[i]
+                       const nameMutation = address.id ? "UpdateAddressPatient" : "CreateAddressPatient"
+                       const responseAddress = await this.$apollo.mutate({
+                           mutation: require(`@/graphql/patients/${nameMutation}.gql`),
+                           variables: {
+                               idAddress: address.id,
+                               cep: address.cep,
+                               city: address.city,
+                               complement: address.complement,
+                               number: address.number,
+                               street: address.street,
+                               uf: address.uf,
+                           },
+                       });
+
+                        if(nameMutation === "CreateAddressPatient"){
+                            this.$apollo.mutate({
+                                mutation: require('@/graphql/patients/AddRelationsPatientAddress.gql'),
+                                variables: {
+                                    idPatient: idPatient,
+                                    idAddresses: responseAddress.data.CreateAddress.id,
+                                }
+                            });
+                        }
+                    }
+                }
+            },
+
+            removeDependent(index){
+                const dependent = this.dependents[index];
+                this.dependents.splice(index,1)
+                this.$apollo.mutate({
+                    mutation: require('@/graphql/dependent/DeleteDependent.gql'),
+                    variables: {
+                        id: dependent.id
+                    }
+                })
+            },
+
+            /* getPatient(id){
+                this.$apollo.mutate({
+                    mutation: require('@/graphql/patients/GetPatient.gql'),
+                    variables: {
+                        id: id
+                    }
+                }).then((response) => {
+                    this.selectUser(response.data.Patient[0])
+                })
+            }, */
             async addUserToFirestore(patient) {
                 await this.$store.dispatch('addUser', patient);
                 this.success = true;
@@ -757,7 +827,6 @@
                 let user = await this.$store.dispatch('getPatient', patient.cpf)
                 console.log('user:', user)
                 this.selectUser(user);
-                //this.selectUser(patient);
                 setTimeout(() => {
                     this.success = false;
                     this.catchAssNumberNewPatient(patient);
@@ -785,14 +854,6 @@
             },
             async selectUser(user) {
                 if (user) {
-                    let intakes = await this.$store.dispatch('getUserIntakes', user);
-                    if (intakes) {
-                        user.intakes = intakes
-                    }
-                    let budgets = await this.$store.dispatch('getUserBudgets', user);
-                    if (budgets) {
-                        user.budgets = budgets
-                    }
                     this.fillFormUser(user)
                 } else {
                     this.cpf = undefined;
@@ -808,9 +869,9 @@
                     this.$emit('removed');
                     localStorage.removeItem('patient');
                 }
+                console.log('user: ', user)
                 this.$store.commit('setSelectedPatient', user);
                 this.$store.commit('clearSelectedDependent');
-                this.updateAccessedTo(user);
                 this.foundUsers = undefined;
                 this.addPatient = false
             },
@@ -826,31 +887,13 @@
             },
 
             async searchPatient() {
-              this.loading = true;
-              if(this.cpf){
                 try {
-                  let users = await this.$store.dispatch('searchUser', {
-                    name: this.name,
-                    cpf: this.cpf.replace(/\./g, '').replace('-', ''),
-                    association_number: this.numAss
-                  });
-                  this.foundUsers = users;
+                  this.loading = true
+                  this.$apollo.queries.loadPatient.refresh()
+                  this.skipPatients = false
                 } catch (e) {
                   window.alert(`Erro buscando usuarios, verifique sua conexão: ${e.message}`);
                 }
-              } else {
-                try {
-                  let users = await this.$store.dispatch('searchUser', {
-                    name: this.name,
-                    cpf: this.cpf,
-                    association_number: this.numAss
-                  });
-                  this.foundUsers = users;
-                } catch (e) {
-                  window.alert(`Erro buscando usuarios, verifique sua conexão: ${e.message}`);
-                }
-              }
-              this.loading = false
             },
 
             async fillFormUser(user) {
@@ -870,7 +913,7 @@
                 if (user.dependents) {
                     for (let index in user.dependents) {
                         let patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
-                        let date = user.dependents[index].birthDate;
+                        let date = user.dependents[index].birth_date;
                         if (!patt.test(date))
                             date = moment(date, "YYYY-MM-DD").format("DD/MM/YYYY");
                         user.dependents[index].birthDate = date
@@ -943,6 +986,25 @@
         },
         beforeDestroy() {
             window.removeEventListener('keydown', this.handleEnter)
+        },
+
+        apollo: {
+            loadPatient: {
+                query: require("@/graphql/patients/searchPatients.gql"),
+                variables(){
+                    return {
+                        name: this.name.toUpperCase()
+                    }
+                },
+                update(data) {
+                    this.foundUsers = data.Patient
+                    this.skipPatients = true
+                    this.loading = false
+                },
+                skip (){
+                    return this.skipPatients
+                }
+            },
         }
     }
 </script>

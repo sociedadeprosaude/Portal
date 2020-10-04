@@ -1,0 +1,18 @@
+query{
+  Colaborator(orderBy:[name_asc]){
+    id,
+    name,
+    cpf,
+    email,
+    group,
+    salary,
+    permissions,
+    birth_date,
+    telephones,
+    clinic:work_in{
+      id,
+      name,
+      logo
+    }
+  }
+}

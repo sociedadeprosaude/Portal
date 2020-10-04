@@ -48,9 +48,14 @@
                         />
                     </v-flex>
                     <v-flex>
+                      <ApolloQuery
+                          :query="require('@/graphql/products/ReadProcucts.gql')"
+                          :variables="{ type:'SPECIALTY', schedulable:false}"
+                      >
+                        <template slot-scope="{ result: { data } }">
                         <v-select
                                 prepend-icon="school"
-                                :items="specialtyOptions"
+                                :items="data.Product"
                                 item-text="name"
                                 item-value="name"
                                 return-object
@@ -77,13 +82,20 @@
                                 </v-chip>
                             </template>
                         </v-select>
+                        </template>
+                      </ApolloQuery>
                     </v-flex>
 
                     <v-flex>
+                      <ApolloQuery
+                          :query="require('@/graphql/clinics/LoadClinics.gql')"
+                          :variables="{property: true}"
+                      >
+                        <template slot-scope="{ result: { data } }">
                         <v-select
                                 prepend-icon="location_city"
                                 v-model="clinic"
-                                :items="clinics"
+                                :items="data.Clinic"
                                 return-object
                                 item-text="name"
                                 label="Clínica"
@@ -109,6 +121,8 @@
                                 </v-chip>
                             </template>
                         </v-select>
+                        </template>
+                      </ApolloQuery>
                     </v-flex>
 
                     <v-flex xs12 v-for="spec in specialties" :key="spec.name">
@@ -154,26 +168,18 @@
         <v-card-actions>
             <v-spacer/>
             <v-flex xs4 v-if="!doctor">
-                <submit-button
-                        :disabled="!formIsValid"
-                        text="Salvar"
-                        :success="success"
-                        :loading="loading" @click="save"/>
+              <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+              <v-btn v-else color="primary" @click="createDoctor()">Adicionar</v-btn>
             </v-flex>
-            <v-flex xs12 v-else>
-                <submit-button
-                        v-if="!doctor"
-                        :disabled="!formIsValid"
-                        text="Apagar"
-                        @reset="success = false"
-                        :success="success"
-                        :loading="loading" @click="erase"/>
-                <submit-button
-                        :disabled="!formIsValid"
-                        text="Editar"
-                        @reset="success = false"
-                        :success="success"
-                        :loading="loading" @click="save"/>
+
+          <v-flex xs12 v-if="doctor">
+            <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+            <v-btn v-else color="error" @click="deleteDoctor()"><v-icon>delete</v-icon> </v-btn>
+          </v-flex>
+
+            <v-flex xs12 v-if="doctor">
+              <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+              <v-btn v-else color="primary" @click="updateDoctor()">Editar</v-btn>
             </v-flex>
         </v-card-actions>
     </v-card>
@@ -181,130 +187,223 @@
 
 <script>
     import {mask} from 'vue-the-mask'
-    import SubmitButton from "../SubmitButton";
     export default {
         name: "CreateDoctorCard",
         props: ['doctor'],
         directives: { mask },
-        components: { SubmitButton },
-        mounted() {
-            this.$store.dispatch('getClinics');
-            this.$store.dispatch('getSpecialties');
-            if (this.doctor) {
-                console.log(this.doctor)
-                this.name = this.doctor.name;
-                this.cpf = this.doctor.cpf;
-                this.crm = this.doctor.crm;
-                this.specialties = this.doctor.specialties;
-                this.clinic = this.doctor.clinics
-            }
-        },
         data() {
             return {
+              name: '',
+              crm: '',
+              cpf: '',
+              id: '',
+              loading: false,
+              oldsClinics: undefined,
+              //==========
                 clinic: undefined,
                 maskCRM: '######',
                 maskCPF: '###.###.###-##',
                 paymentMethod: 'unit',
-                name: '',
-                crm: '',
-                cpf: '',
                 specialties: undefined,
-                obs: null,
                 formTitle: 'Cadastro de Médicos',
-                loading: false,
-                success: false,
-                error: undefined
             }
         },
-        computed: {
-            clinics() {
-                return this.$store.getters.clinics.filter(a => {
-                    return a.property;
-                });
-            },
-            specialtyOptions() {
-                return JSON.parse(JSON.stringify(this.$store.getters.specialties))
-            },
-            formIsValid() {
-                if (!this.name || this.name.length <= 0) {
-                    return false
-                }
-                if (!this.cpf || this.cpf.length <= 0) {
-                    return false
-                }
-                if (!this.crm || this.crm.length <= 0) {
-                    return false
-                }
-                if (!this.specialties || this.specialties.length <= 0) {
-                    return false
-                } else {
-                    for (let spec in this.specialties) {
-                        if (!this.specialties[spec].payment_method) {
-                            return false
-                        }
-                    }
-                }
-                return true
-            },
+       mounted() {
+          console.log('tem ?', this.doctor)
+          if (this.doctor) {
+            this.specialties = this.doctor.is_specialist_of;
+            //console.log(this.specialties)
+            this.id = this.doctor.id;
+            this.name = this.doctor.name;
+            this.cpf = this.doctor.cpf;
+            this.crm = this.doctor.crm;
+            this.filterClinic();
+            this.filterCPD();
+          }
         },
         methods: {
-            close() { this.$emit('close'); },
-            clear() {
-                this.name = undefined;
-                this.crm = undefined;
-                this.cpf = undefined;
-                this.specialties = undefined;
-                this.clinic = undefined;
-                this.$emit('clean')
-            },
-            async save() {
-                this.loading = true;
-                for (let spec in this.specialties) {
-                    delete this.specialties[spec].doctors
-                    if (!this.specialties[spec].cost) {
-                        this.specialties[spec].cost = 0.00
-                    }
-                    if (!this.specialties[spec].price) {
-                        this.specialties[spec].price = 0.00
-                    }
+          async filterCPD() {
+            const costs = await this.$apollo.mutate({
+              mutation: require('@/graphql/doctors/LoadCostProductDoctors.gql'),
+            })
+            let costProductDoctor = costs.data.CostProductDoctor
+            //console.log(costProductDoctor)
+            for(let cost in costProductDoctor){
+              if(costProductDoctor[cost].with_product.length > 0 && costProductDoctor[cost].with_doctor.length > 0) {
+                for(let product in this.specialties) {
+                  if (this.specialties[product].id === costProductDoctor[cost].with_product[0].id && costProductDoctor[cost].with_doctor[0].id === this.id) {
+                    this.specialties[product].cost = costProductDoctor[cost].cost
+                    this.specialties[product].payment_method = costProductDoctor[cost].payment_method
+                    this.specialties[product].idCostProductDoctor = costProductDoctor[cost].id
+                  }
                 }
-                let doctor = {
-                    name: this.name.toUpperCase(),
-                    cpf: this.cpf.replace(/\./g, '').replace('-', ''),
-                    email: this.email,
-                    crm: this.crm,
-                    specialties: this.specialties,
-                    clinics: this.clinic,
-                    type: 'doctor'
-                };
-                await this.$store.dispatch('addDoctor', doctor);
-                for (let i in this.clinic) {
-                    for (let j in this.specialties) {
-                        let data = {
-                            clinic: this.clinic[i],
-                            specialtie: this.specialties[j].name,
-                            doctor: this.name.toUpperCase(),
-                            crm: this.crm,
-                            cpf: this.cpf.replace(/\./g, '').replace('-', ''),
-                            obs: this.obs,
-                            cost: this.specialties[j].cost,
-                            price: this.specialties[j].price,
-                            paymentMethod: this.specialties[j].payment_method,
-                        };
-                        await this.$store.dispatch('addAppointmentFromDoctors', data);
-                    }
-                }
-                this.success = true;
-                this.loading = false;
-                this.clear();
-                setTimeout(() => {
-                    this.success = false;
-                    this.close()
-                }, 800)
+              }
             }
+          },
+
+          async filterClinic() {
+            const unitys = await this.$apollo.mutate({
+              mutation: require('@/graphql/clinics/LoadClinics.gql'),
+              variables: {property: true},
+            })
+            let clins = []
+            let clinics = unitys.data.Clinic
+            for(let unity in clinics){
+              for(let doctor in clinics[unity].has_doctor)
+                if(clinics[unity].has_doctor[doctor].id === this.id){
+                  clinics[unity].already_has = true
+                  clins.push(clinics[unity])
+                }
+            }
+            this.clinic = clins
+            this.oldsClinics = this.clinic
+          },
+
+          async deleteDoctor(){
+            this.loading = true
+            for(let unity in this.clinic) {
+              await this.$apollo.mutate({
+                mutation: require('@/graphql/doctors/RemoveClinicHasDoctor.gql'),
+                variables: {
+                  idClinic: this.clinic[unity].id,
+                  idDoctor: this.doctor.id,
+                },
+              });
+            }
+            for(let product in this.specialties) {
+              await this.$apollo.mutate({
+                mutation: require('@/graphql/doctors/RemoveCostProductDoctorWithProducAndDoctortAndAddDoctorIsSpecialistOf.gql'),
+                variables: {
+                  idCostProduct: this.specialties[product].idCostProductDoctor,
+                  idProduct: this.specialties[product].id,
+                  idDoctor: this.doctor.id,
+                },
+              });
+              await this.$apollo.mutate({
+                mutation: require('@/graphql/doctors/DeleteCostProductDoctor.gql'),
+                variables: {
+                  id: this.specialties[product].idCostProductDoctor,
+                },
+              });
+            }
+              await this.$apollo.mutate({
+              mutation: require('@/graphql/doctors/DeleteDoctors.gql'),
+              variables: {
+                id: this.doctor.id
+              },
+            });
+            this.loading = false
+            this.$router.push('/')
+          },
+          async updateDoctor() {
+            this.loading = true
+            await this.$apollo.mutate({
+              mutation: require('@/graphql/doctors/UpdateDoctors.gql'),
+              variables: {
+                id: this.doctor.id,
+                name: this.name.toUpperCase(),
+                crm: this.crm,
+              },
+            });
+            for(let product in this.specialties) {
+              if(this.specialties[product].idCostProductDoctor) {
+                await this.$apollo.mutate({
+                  mutation: require('@/graphql/doctors/UpdateCostProductDoctor.gql'),
+                  variables: {
+                    id: this.specialties[product].idCostProductDoctor,
+                    cost: this.specialties[product].cost,
+                    payment_method: this.specialties[product].payment_method,
+                  },
+                });
+              } else {
+                const CostProductDoctor = await this.$apollo.mutate({
+                  mutation: require('@/graphql/doctors/CreateCostProductDoctor.gql'),
+                  variables: {
+                    cost: this.specialties[product].cost,
+                    payment_method: this.specialties[product].payment_method,
+                  },
+                });
+                const idCostProductDoctor = CostProductDoctor.data.CreateCostProductDoctor.id
+                  await this.$apollo.mutate({
+                  mutation: require('@/graphql/doctors/AddCostProductDoctorWithProducAndDoctortAndAddDoctorIsSpecialistOf.gql'),
+                  variables: {
+                    idCostProduct: idCostProductDoctor,
+                    idProduct: this.specialties[product].id,
+                    idDoctor: this.doctor.id,
+                  },
+                });
+              }
+            }
+            if(this.clinic.length !== this.oldsClinics.length){
+              for(let unity in this.clinic) {
+                if(!this.clinic[unity].already_has){
+                    await this.$apollo.mutate({
+                    mutation: require('@/graphql/doctors/AddClinicHasDoctor.gql'),
+                    variables: {
+                      idClinic: this.clinic[unity].id,
+                      idDoctor: this.doctor.id,
+                    },
+                  });
+                } else { console.log('já tem o doctor nessa clinica, então skipp') }
+              }
+            } else { console.log('não mudou o N de clinicas, então skipp') }
+            this.loading = false
+            this.$router.push('/')
+          },
+
+          async createDoctor() {
+            this.loading = true
+            const dataDoctor = await this.$apollo.mutate({
+              mutation: require('@/graphql/doctors/CreateDoctors.gql'),
+              variables: {
+                name: this.name.toUpperCase(),
+                crm: this.crm,
+                cpf: this.cpf.replace(/\./g, '').replace('-', ''),
+              },
+            });
+            const idDoctor = dataDoctor.data.CreateDoctor.id
+            for(let product in this.specialties) {
+              const CostProductDoctor = await this.$apollo.mutate({
+                mutation: require('@/graphql/doctors/CreateCostProductDoctor.gql'),
+                variables: {
+                  cost: this.specialties[product].cost,
+                  payment_method: this.specialties[product].payment_method,
+                },
+              });
+              const idCostProductDoctor = CostProductDoctor.data.CreateCostProductDoctor.id
+                await this.$apollo.mutate({
+                mutation: require('@/graphql/doctors/AddCostProductDoctorWithProducAndDoctortAndAddDoctorIsSpecialistOf.gql'),
+                variables: {
+                  idCostProduct: idCostProductDoctor,
+                  idProduct: this.specialties[product].id,
+                  idDoctor: idDoctor,
+                },
+              });
+            }
+            for(let unity in this.clinic) {
+                await this.$apollo.mutate({
+                mutation: require('@/graphql/doctors/AddClinicHasDoctor.gql'),
+                variables: {
+                  idClinic: this.clinic[unity].id,
+                  idDoctor: idDoctor,
+                },
+              });
+            }
+            this.loading = false
+            this.$router.push('/')
+          },
+          close() {
+            this.clear();
+            this.$emit('close');
+          },
+          clear() {
+            this.name = undefined;
+            this.crm = undefined;
+            this.cpf = undefined;
+            this.specialties = undefined;
+            this.clinic = undefined;
+            this.$emit('clean')
+          },
         }
     }
 </script>
-
-<style scoped>
-</style>

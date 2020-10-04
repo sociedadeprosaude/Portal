@@ -1,0 +1,5 @@
+mutation($name:String,$email:String!,$telephones:[String],$cpf:String){
+    CreateColaborator(name:$name,email:$email,telephones:$telephones,cpf:$cpf){
+        id
+    }
+}

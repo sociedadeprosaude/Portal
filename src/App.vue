@@ -45,7 +45,9 @@
         data() {
             return {
                 patientDialog: false,
-                ready: false
+                ready: false,
+                skip:true,
+                email:undefined
             }
         },
         computed: {
@@ -60,10 +62,10 @@
                     return true
                 }
                 if (this.$store.getters.user) {
-                    if (this.$store.getters.examsLoaded
+                    if (/* this.$store.getters.examsLoaded
                         && this.$store.getters.doctorsLoaded
                         && this.$store.getters.clinicsLoaded
-                        && this.$store.getters.unitsLoaded) {
+                        &&*/this.$store.getters.unitsLoaded) {
                         return true
                     }
                 }
@@ -84,18 +86,20 @@
         },
         methods: {
             async getUser(user) {
-                await this.$store.dispatch('getUser', user);
-                await this.$store.dispatch('getProSaudeUnits')
+                //await this.$store.dispatch('getUser', user);
+                this.skip = false
+                this.email = user.email
             },
         },
         created() {
 
-            this.$store.dispatch("loadSpecialties");
-            this.$store.dispatch("getDoctors");
-            this.$store.dispatch("getClinics");
-            this.$store.dispatch("loadExam");
-            this.$store.dispatch("getExamsTypes");
+            //this.$store.dispatch("loadSpecialties");
+            //this.$store.dispatch("getDoctors");
+            //this.$store.dispatch("getClinics");
+            //this.$store.dispatch("loadExam");
+            //this.$store.dispatch("getExamsTypes");
             this.$store.dispatch("startConnectionListener")
+            this.$apollo.queries.loadUnitsClinics.refresh()
         },
         mounted() {
             firebase.auth().onAuthStateChanged((user) => {
@@ -111,6 +115,41 @@
                     this.getUser(user)
                 }
             })
+        },
+        apollo:{
+            findColaborator:{
+                query: require("@/graphql/authentication/FindUser.gql"),
+                variables(){
+                    return{
+                        email:this.email
+                    }
+                },
+                update(data){
+                    this.skip = true
+                    console.log(data.User[0])
+                    let user = undefined
+                    if(data.User.length > 0)
+                        user =  data.User[0].is_colaborator? data.User[0].is_colaborator : data.User[0].is_doctor
+                    
+                    if(user)
+                        this.$store.dispatch('getUser', user);
+                },
+                skip(){
+                    return this.skip
+                }
+            },
+            loadUnitsClinics:{
+                query: require("@/graphql/clinics/LoadClinics.gql"),
+                variables(){
+                    return{
+                        property:true
+                    }
+                },
+                update(data){
+                    this.$store.dispatch('getProSaudeUnits',data.Clinic)
+                    console.log(data.Clinic)
+                }
+            }
         }
     }
 </script>

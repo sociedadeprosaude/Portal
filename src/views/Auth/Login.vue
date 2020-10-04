@@ -72,7 +72,13 @@
                 password: '',
                 passwordError: false,
                 loading: false,
-                errorMessage: undefined
+                errorMessage: undefined,
+                skip:true
+            }
+        },
+        mounted() {
+            if (firebase.auth().currentUser) {
+                this.$router.push('/')
             }
         },
         methods: {
@@ -82,12 +88,13 @@
             }
           },
             async signIn() {
+                
                 try {
                     this.loading = true;
                     let user = await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
-                    await this.$store.dispatch('getUser', user);
-
-                    await this.$router.go()
+                    
+                    this.skip = false
+                    this.$apollo.queries.findColaborator.refresh()
                 } catch (e) {
                     switch (e.code) {
                         case 'auth/user-not-found':
@@ -103,10 +110,25 @@
                 }
                 this.loading = false
             }
-        },
-        mounted() {
-            if (firebase.auth().currentUser) {
-                this.$router.push('/')
+        }, 
+        apollo:{
+            findColaborator:{
+                query: require("@/graphql/authentication/FindUser.gql"),
+                variables(){
+                    return{
+                        email:this.email
+                    }
+                },
+                update(data){
+                    this.skip = true
+                    console.log(data.User[0])
+                    const user = data.User[0].is_colaborator? data.User[0].is_colaborator : data.User[0].is_doctor
+                    this.$store.dispatch('getUser', user);
+                    this.$router.go()
+                },
+                skip(){
+                    return this.skip
+                }
             }
           window.addEventListener('keydown', this.handleEnter)
         },

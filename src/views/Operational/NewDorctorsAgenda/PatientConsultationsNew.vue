@@ -41,13 +41,14 @@
             },
             patient() {
                 let val = this.$store.getters.selectedPatient;
+                console.log('No gerenciamento', val)
                 if (val != null) {
                     let consultas = [];
                     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.QtdConsultations = 0;
                     this.QtdReturn = 0;
                     for (const key in val.consultations) {
-
+                        console.log(val.consultations[key].type )
                         if (val.consultations[key].type === 'Consulta') {
                             // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                             this.QtdConsultations += 1

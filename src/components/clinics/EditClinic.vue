@@ -1,7 +1,8 @@
 <template>
     <v-card width="500">
         <v-card-title class="headline grey lighten-2 mb-4" primary-title>
-            <span class="headline">Edição da Clínica</span>
+          <v-flex xs10> <span class="headline">Edição da Clínica</span></v-flex>
+         <v-flex xs2><v-btn text class="transparent" @click="closeDialog"><v-icon>close</v-icon></v-btn></v-flex>
         </v-card-title>
         <v-card-text>
             <v-container class="grid-list-md">
@@ -40,7 +41,7 @@
                     </v-flex>
                     <v-flex xs6>
                         <v-text-field
-                                v-model="ceps"
+                                v-model="clinic.address.cep"
                                 v-mask="mask.cep"
                                 label="CEP"
                                 placeholder="CEP"
@@ -125,7 +126,7 @@
                     <p class="text-justify">Horario de Funcionamento de Segunda-Feira a Sexta-Feira:</p>
                     <v-flex xs6>
                         <v-text-field
-                                v-model="clinic.startWeek"
+                                v-model="this.clinic.opening_hours[0].split('-')[0]"
                                 label="Abre as:"
                                 placeholder="Ex.: 08:00"
                                 outlined
@@ -137,7 +138,7 @@
                     <v-spacer/>
                     <v-flex xs6>
                         <v-text-field
-                                v-model="clinic.endWeek"
+                                v-model="this.clinic.opening_hours[0].split('-')[1]"
                                 label="Fecha as:"
                                 placeholder="Ex.: 18:00"
                                 outlined
@@ -146,10 +147,12 @@
                                 hide-details
                         />
                     </v-flex>
+
                     <p class="text-justify">Horario de Funcionamento de Sábado:</p>
-                    <v-flex xs6>
+
+                    <v-flex xs6 >
                         <v-text-field
-                                v-model="clinic.startSaturday"
+                                v-model="this.clinic.opening_hours[5].split('-')[0]"
                                 label="Abre as:"
                                 placeholder="Ex.: 06:00"
                                 outlined
@@ -159,10 +162,9 @@
                         />
                     </v-flex>
                     <v-spacer/>
-                    <v-flex xs6>
+                    <v-flex xs6 >
                         <v-text-field
-                                v-model="clinic.endSaturday"
-                                label="Fecha as:"
+                                v-model="this.clinic.opening_hours[5].split('-')[1]"
                                 placeholder="Ex.: 12:00"
                                 outlined
                                 v-mask="mask.time"
@@ -170,24 +172,31 @@
                                 hide-details
                         />
                     </v-flex>
+                    <v-flex xs12>
+                      <v-textarea
+                          filled
+                          v-model="this.clinic.logo"
+                          label="Link da logo da unidade pro-saúde (se for unidade pro-sáude)"
+                      ></v-textarea>
+                    </v-flex>
+                    <v-flex>
+                      <v-checkbox
+                          v-model="this.clinic.property"
+                          color="green"
+                          label="Unidade pro-saúde ?"
+                      ></v-checkbox>
+                    </v-flex>
                 </v-layout>
             </v-container>
         </v-card-text>
         <v-divider/>
         <v-card-actions>
-            <v-btn rounded color="error" @click="closeDialog">Cancelar</v-btn>
+          <v-btn color="error" @click="deleteClinic"><v-icon>delete</v-icon></v-btn>
             <v-spacer/>
-            <v-btn rounded color="success"  :to="{ name: 'RegisterNewUserClinic', params: {id: clinic.cnpj } }">Gerar Link para Usuario
+            <v-btn rounded color="success"  :to="{ name: 'RegisterNewUserClinic', params: {id: clinic.id } }">Gerar Link para Usuario
             </v-btn>
             <v-spacer/>
-            <submit-button
-                    color="success"
-                    @click="save"
-                    :disabled="!formIsValid"
-                    text="Salvar"
-                    :loading="loading"
-                    :success="success"
-            />
+            <v-btn color="primary" @click="updateClinic()">Editar</v-btn>
         </v-card-actions>
     </v-card>
 </template>
@@ -195,11 +204,9 @@
 <script>
     import {mask} from 'vue-the-mask';
     import axios from 'axios';
-    import SubmitButton from "../../components/SubmitButton";
     export default {
         name: "EditClinic",
         props: ['clinic'],
-        components: {SubmitButton},
         directives: {mask},
         data: () => ({
             selectedClin: undefined,
@@ -241,46 +248,15 @@
                 'Sergipe (SE)',
                 'Tocantins (TO)'
             ],
-            ceps: '',
+            //ceps: '',
             alertCEP: false,
-            defaultItem: {
-                name: '',
-                cnpj: '',
-                telephone: [],
-                address: {
-                    street: '',
-                    number: '',
-                    neighborhood: '',
-                    cep: '',
-                    complement: '',
-                    state: '',
-                    city: '',
-                },
-                startWeek: '',
-                endWeek: '',
-                startSaturday: '',
-                endSaturday: ''
-            },
-
         }),
-        mounted() {
-            this.ceps = this.clinic.address.cep;
-            this.clinic.startWeek = this.clinic.agenda[0].split('-')[0];
-            this.clinic.endWeek = this.clinic.agenda[0].split('-')[1];
-            this.clinic.startSaturday = this.clinic.agenda[5].length > 0 ? this.clinic.agenda[5].split('-')[0] : '';
-            this.clinic.endSaturday = this.clinic.agenda[5].length > 0 ? this.clinic.agenda[5].split('-')[1] : '';
+        mounted () {
+            console.log("clinic apollo:", this.clinic);
+            //this.ceps = this.clinic.address.cep;
         },
-
-        computed: {
-
-            formIsValid() {
-                return this.clinic.name && this.clinic.telephone[0]
-            },
-
-        },
-
         watch: {
-            ceps(val) {
+  /*          ceps(val) {
                 if (val.length === 8) {
                     axios
                         .get('https://viacep.com.br/ws/' + val + '/json/')
@@ -289,11 +265,11 @@
                                 this.alertCEP = true
                             } else {
                                 this.alertCEP = false;
-                                this.clinic.address.street = response.data.logradouro;
-                                this.clinic.address.neighborhood = response.data.bairro;
-                                this.clinic.address.city = response.data.localidade;
+                                this.street = response.data.logradouro;
+                                this.neighboor = response.data.bairro;
+                                this.city = response.data.localidade;
                                 let array = this.stateOptions;
-                                this.clinic.state = array.find(function (element) {
+                                this.state = array.find(function (element) {
                                     if (element.includes(response.data.uf)) {
                                         return element;
                                     }
@@ -303,61 +279,84 @@
 
                         })
                 } else {
-                    this.clinic.address.street = '';
-                    this.clinic.address.neighborhood = '';
-                    this.clinic.address.state = '';
-                    this.clinic.address.city = '';
+                    this.street = '';
+                    this.neighboor = '';
+                    this.state = '';
+                    this.city = '';
                 }
-            },
-
-
+            },*/
         },
-
         methods: {
-            closeDialog : function () {
-                this.$emit('close-dialog');
-                this.clearData();
-            },
-
-            clearData() {
-                /**/
-            },
-
-            async save() {
-                this.loading = true;
-                let clinicData = {
-                    address: {
-                        neighboor: this.clinic.address.neighborhood,
-                        cep: this.ceps,
-                        city: this.clinic.address.city,
-                        complement: this.clinic.address.complement,
-                        state: this.clinic.address.state,
-                        street: this.clinic.address.street,
-                        number: this.clinic.address.number,
-                    },
-                    id: this.clinic.id,
-                    name: this.clinic.name.toUpperCase(),
-                    cnpj: this.clinic.cnpj,
-                    telephone: this.clinic.telephone,
-                };
-
-                let agenda = [];
-                for (let i = 0; i < 7; i++) {
-                    if (i < 5) {
-                        agenda.push(this.clinic.startWeek + '-' + this.clinic.endWeek)
-                    } else if (i === 5) {
-                        agenda.push(this.clinic.startSaturday + '-' + this.clinic.endSaturday)
-                    }
+          closeDialog : function () {
+            this.$emit('close-dialog');
+          },
+          async deleteClinic(){
+            await this.$apollo.mutate({
+              mutation: require('@/graphql/clinics/RemoveRelationsAddressClinic.gql'),
+              variables: {
+                idClinic: this.clinic.id,
+                idAddress: this.clinic.address.id,
+              }
+            })
+            await this.$apollo.mutate({
+              mutation: require('@/graphql/clinics/DeleteClinics.gql'),
+              variables: {
+                id: this.clinic.id,
+              },
+            })
+            await this.$apollo.mutate({
+              mutation: require('@/graphql/address/DeleteAddress.gql'),
+              variables: {
+                id: this.clinic.address.id,
+              },
+            })
+            this.$router.push('/')
+          },
+          async updateClinic() {
+              let agenda = [];
+              for (let i = 0; i < 7; i++) {
+                if (i < 5) {
+                  agenda.push(this.clinic.opening_hours[0].split('-')[0] + '-' + this.clinic.opening_hours[0].split('-')[1])
+                } else if (i === 5) {
+                  agenda.push(this.clinic.opening_hours[5].split('-')[0] + '-' + this.clinic.opening_hours[5].split('-')[1])
                 }
-                clinicData.agenda = agenda;
+              }
+              this.clinic.opening_hours = agenda
 
-                await this.$store.dispatch('editClinic', clinicData);
-                await this.$store.dispatch('getClinics');
-                this.success = true;
-                this.loading = false;
-                setTimeout(() => {
-                    this.closeDialog()
-                }, 1000)
+              await this.$apollo.mutate({
+                mutation: require('@/graphql/clinics/UpdateClinics.gql'),
+                variables: {
+                  id: this.clinic.id,
+                  name: this.clinic.name,
+                  cnpj: this.clinic.cnpj,
+                  telephone: this.clinic.telephone[0],
+                  logo: this.clinic.logo,
+                  property: this.clinic.property,
+                  opening_hours: this.clinic.opening_hours,
+                },
+              }).then(dataClinic => {
+                //console.log("id clinic:", dataClinic.data.UpdateClinic)
+                this.$apollo.mutate({
+                  mutation: require('@/graphql/address/UpdateAddress.gql'),
+                  variables: {
+                    id: this.clinic.address.id,
+                    number: this.clinic.address.number,
+                    cep: this.clinic.address.cep,
+                    city: this.clinic.address.city,
+                    state: this.clinic.address.state,
+                    street: this.clinic.address.street,
+                    neighboor: this.clinic.address.neighboor,
+                    complement: this.clinic.address.complement,
+                    geopoint: this.clinic.address.geopoint,
+                  },
+                }).catch((error) => {
+                  console.error('nao criando endereço: ', error)
+                })
+              }).catch((error) => {
+                console.error('nao criando relaçao clinica e endrereço: ', error)
+              })
+              //this.closeDialog()
+            this.$router.push('/')
             },
         },
     }

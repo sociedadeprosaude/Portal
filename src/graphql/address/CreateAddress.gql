@@ -1,0 +1,22 @@
+mutation(
+    $cep: String,
+    $city: String,
+    $complement: String,
+    $geopoint: String,
+    $neighboor: String,
+    $number: String,
+    $state: String,
+    $street: String,
+    ){
+    CreateAddress(
+    cep: $cep,
+    city: $city,
+    complement: $complement,
+    geopoint: $geopoint,
+    neighboor: $neighboor,
+    number: $number,
+    state: $state,
+    street: $street,
+    )
+    {id}
+}

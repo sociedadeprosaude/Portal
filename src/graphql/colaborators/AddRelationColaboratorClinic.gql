@@ -1,0 +1,17 @@
+mutation($idColaborator:ID!,$idClinic:ID!){
+  AddColaboratorWork_in(
+    from:{
+        id:$idColaborator
+    },
+    to:{
+        id:$idClinic
+    }
+  ){
+      from{
+          id
+      },
+      to{
+          id
+      }
+  }
+}

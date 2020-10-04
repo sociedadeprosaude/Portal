@@ -1,0 +1,16 @@
+mutation($idSchedule:ID!,$idDay:ID!){
+    RemoveScheduleFor_day(
+        from:{
+            id:$idSchedule
+        },
+        to:{
+            id:$idDay
+        }
+    ){
+        from{id},
+        to{id}
+    },
+    DeleteDay(id:$idDay){
+        id
+    }
+}

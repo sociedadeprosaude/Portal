@@ -1,0 +1,5 @@
+mutation ($interval: Int!) {
+    CreateSchedule(interval:$interval){
+        id
+    },
+}

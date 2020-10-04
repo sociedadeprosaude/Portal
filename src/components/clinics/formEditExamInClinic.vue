@@ -20,25 +20,12 @@
                     <v-currency-field
                             prepend-icon="monetization_on"
                             outlined
-                            clearable
                             label="Preço de Venda"
                             prefix="R$"
                             v-model="exam.price"
+                            readonly
                             hide-details>
                     </v-currency-field>
-                </v-flex>
-                <v-flex xs12 class="mt-3">
-                    <v-textarea
-                            outlined
-                            v-model="exam.obs"
-                            label="Observação:"
-                            counter
-                            clearable
-                            maxlength="280"
-                            full-width
-                            single-line
-                            hide-details>
-                    </v-textarea>
                 </v-flex>
             </v-layout>
             <v-divider class="primary mt-3"/>
@@ -46,13 +33,12 @@
                 <v-layout class="align-center justify-center">
                     <v-btn color="error" @click="closeForm()">CANCELAR</v-btn>
                     <v-spacer/>
-                    <v-btn
-                            :disabled="!formIsValide"
-                            @click="editExam()"
-                            color="success"
-                    >
+                  <div>
+                    <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+                    <v-btn v-else @click="editExam()" color="success">
                         SALVAR
                     </v-btn>
+                  </div>
                 </v-layout>
             </v-card-actions>
         </v-card-text>
@@ -61,24 +47,23 @@
 <script>
     export default {
         props: ['exam', 'clinic'],
-        data: () => ({}),
-        computed: {
-            formIsValide() {
-                return this.exam.name
-            },
-        },
+        data: () => ({
+          loading: false,
+        }),
         methods: {
-            editExam() {
-                this.$store.dispatch('addExamToClinic', {
-                    clinic: this.clinic,
-                    exam: this.exam.name,
-                    cost: this.exam.cost,
-                    sale: this.exam.price,
-                    rules: this.exam.rules,
-                    obs: this.exam.obs,
-                });
-                this.closeForm()
+            async editExam() {
+              this.loading = true
+              await this.$apollo.mutate({
+                mutation: require('@/graphql/clinics/UpdateCostProductClinic.gql'),
+                variables: {
+                  id: this.exam.idcpc,
+                  cost: this.exam.cost,
+                },
+              });
+              this.loading = false
+              this.$router.push('/')
             },
+
             closeForm() {
                 this.$emit('close-dialog')
             },

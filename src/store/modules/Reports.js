@@ -109,14 +109,23 @@ const actions = {
         return intakes
     },
     async searchReports(context, payload) {
+        let intakes = payload.intake
+        console.log('intakes antes dos filtros: ', intakes)
         payload.dataFinal = payload.dataFinal + ' 24:00:00';
         payload.dataInicio = payload.dataInicio + ' 00:00:00';
+        intakes = intakes.filter(intake => intake.date >= payload.dataInicio);
+        console.log('intakes depois da data inicial: ', intakes)
+        intakes = intakes.filter(intake => intake.date <= payload.dataFinal);
+        console.log('intakes depois da data final: ', intakes)
+        intakes = intakes.filter(intake => intake.status !== 'cancelled');
+        intakes = intakes.filter(intake => intake.clinic[0].name === context.getters.selectedUnit.name)
+        console.log('intakes depois dos filtros: ', intakes)
         let selectedUnit = context.getters.selectedUnit;
-        let intakesSnap = await firebase.firestore().collection('intakes').where('date', '>=', payload.dataInicio)
+        /* let intakesSnap = await firebase.firestore().collection('intakes').where('date', '>=', payload.dataInicio)
             .where('unit.name', '==', selectedUnit.name)
-            .where('date', '<=', payload.dataFinal).orderBy('date').get();
-        let intakes = [];
-        for (let doc of intakesSnap.docs) {
+            .where('date', '<=', payload.dataFinal).orderBy('date').get(); */
+        //let intakes = [];
+        /* for (let doc of intakesSnap.docs) {
             if (doc.data().colaborator) {
                 if (payload.colaborator) {
 
@@ -128,7 +137,7 @@ const actions = {
                     intakes.push(doc.data())
                 }
             }
-        }
+        } */
 
         let exams = {};
         let clinics = {};
@@ -140,9 +149,14 @@ const actions = {
         let relatorio = {};
         let doctors = {};
         let consultations = {};
-
         for (let intake in intakes) {
-            if (!intakes[intake].cancelled_by) {
+            console.log('intake: ', intakes[intake])
+            intakes[intake].exams= intakes[intake].produts.filter(product => {
+                product.name = product.with_product ? product.with_product.name : undefined
+                return product.with_product ? product.with_product.type : 'erro'  === 'EXAM'})
+            console.log('intake editado:', intakes[intake])
+            if (!intakes[intake].cancelled_by || intakes[intake].cancelled_by !== null ){
+                console.log('entrei')
                 if (intakes[intake].type === 'financial_support') {
                     financialSupport.push(intakes[intake]);
                     continue
@@ -293,7 +307,7 @@ const actions = {
             specialties: specialties,
             exams: exams,
             clinics: clinics,
-            quantidadeOuttakes: quantidadeOuttakes,  //
+            quantidadeOuttakes: quantidadeOuttakes,
             outtakes: outtakes,
             intakes: intaker,
             doctors: doctors,

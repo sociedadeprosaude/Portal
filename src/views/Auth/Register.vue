@@ -7,7 +7,7 @@
                         <v-layout row wrap>
                             <v-flex xs12 class="text-left">
                                 <v-alert class="text-center" :value="alert" type="error">
-                                    Já existe um colaborador com o mesmo CPF!
+                                    Já existe um colaborador com o mesmo Email!
                                 </v-alert>
                             </v-flex>
                             <v-flex xs12 class="text-left">
@@ -20,21 +20,13 @@
                                 <v-text-field v-model="email" label="Email"/>
                             </v-flex>
                             <v-flex xs12>
-                                <v-text-field
-                                    v-model="password"
-                                    label="Senha"
-                                    :append-icon="show_password ? 'visibility' : 'visibility_off'"
-                                    :type="show_password ? 'text' : 'password'"
-                                    @click:append="show_password = !show_password"
-                                />
+                                <v-text-field v-model="password" label="Senha" type="password"/>
                             </v-flex>
                             <v-flex xs12>
                                 <v-text-field
                                         v-model="confirm_password"
                                         label="Confirmação de senha"
-                                        :append-icon="show_password ? 'visibility' : 'visibility_off'"
-                                        :type="show_password ? 'text' : 'password'"
-                                        @click:append="show_password = !show_password"
+                                        type="password"
                                 />
                             </v-flex>
                             <v-flex xs12>
@@ -88,7 +80,6 @@
                 email: "",
                 password: "",
                 confirm_password: "",
-                show_password: false,
                 telephone: "",
                 cpf: "",
                 name: "",
@@ -97,70 +88,107 @@
                 loading: false,
                 asDoctor: false,
                 crm: undefined,
-                alert: false
+                alert: false,
+                skip:true
             };
         },
         methods: {
             async register() {
+                this.loading = true
                 if (!this.email.includes("@") || !this.email.includes(".com")) {
                     this.errorMessage = "Email inválido";
+                    this.loading = false
                     return;
                 }
                 if (this.name.length < 2) {
                     this.errorMessage = "Nome inválido";
+                    this.loading = false
                     return;
                 }
                 if (this.password.length < 6) {
                     this.errorMessage = "Senha deve conter pelo menos 6 caracteres";
+                    this.loading = false
                     return;
                 }
                 if (this.password !== this.confirm_password) {
                     this.errorMessage = "Confirmação de senha não confere";
+                    this.loading = false
                     return;
                 }
 
-                try {
-                    this.$store.dispatch('thereIsUserCPF', this.cpf.replace(/\./g, "").replace("-", ""))
-                        .then(async (exist) => {
-                            if (exist){
-                                this.loading = true;
-                                let resp = await firebase.auth()
-                                    .createUserWithEmailAndPassword(this.email, this.password)
-                                await this.$store.dispatch("addUser", {
-                                    email: resp.user.email,
-                                    name: this.name,
-                                    uid: resp.user.uid,
-                                    cpf: this.cpf.replace(/\./g, "").replace("-", ""),
-                                    telephones: [this.telephone],
-                                    type: exist.crm ? "DOCTOR" : "COLABORATOR",
-                                    group: exist.crm ? 'doctor' : '',
-                                });
-                                this.registered = true;
-                            } else {
-                                //this.alert = true
-                              this.loading = true;
-                              let resp = await firebase.auth()
-                                  .createUserWithEmailAndPassword(this.email, this.password)
-                              await this.$store.dispatch("addUser", {
+                this.skip = false
+                this.$apollo.queries.findUser.refresh()
+            },
+
+            async createUser(){
+                try{
+                    let resp = await firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+                
+                    const newUser = await this.$apollo.mutate({
+                        mutation: require('@/graphql/authentication/CreateUser.gql'),
+                        variables:{
+                            email:this.email
+                            
+                        },
+                    });
+                    const userId = newUser.data.CreateUser.id
+
+                    const newColaborator = await this.$apollo.mutate({
+                        mutation: require('@/graphql/authentication/CreateColaborator.gql'),
+                        variables:{
                                 email: resp.user.email,
                                 name: this.name,
-                                uid: resp.user.uid,
                                 cpf: this.cpf.replace(/\./g, "").replace("-", ""),
                                 telephones: [this.telephone],
-                                type: "COLABORATOR",
-                                group: '',
-                              });
-                              this.registered = true;
-                            }
-                        }).catch(error=>{
-                            this.errorMessage = error.message
-                            this.loading = false
-                        })
-                } catch (e) {
+                            
+                        },
+                    });
+                    const colaboratorId = newColaborator.data.CreateColaborator.id
+
+                    await this.setRelationUserColaborator(userId, colaboratorId)
+
+                    this.$router.push('/')
+
+                    this.loading = false
+                }catch(error){
                     this.errorMessage = e.code;
                     this.loading = false
                 }
-                this.loading = false;
+                
+            },
+            async setRelationUserColaborator(idUser,idColaborator){
+                await this.$apollo.mutate({
+                    mutation: require('@/graphql/authentication/AddRelationUserColaborator.gql'),
+                    variables:{
+                        idUser:idUser,
+                        idColaborator:idColaborator
+                    },
+                });
+            }
+        },
+        apollo:{
+            findUser:{
+                query: require("@/graphql/authentication/FindUser.gql"),
+                variables(){
+                    return{
+                        email:this.email
+                    }
+                },
+                update(data){
+                    this.skip = true
+                    console.log(data.User[0])
+                    const user = data.User ? data.User[0] : undefined
+                    
+                    if(!user){
+                        this.createUser()
+                    }else{
+                        this.loading = false
+                        this.alert = true
+                    }
+                },
+                skip(){
+                    return this.skip
+                }
             }
         }
     };

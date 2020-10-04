@@ -1,0 +1,18 @@
+mutation CreateProduct(
+    $name: String!,
+    $type: String!,
+    $schedulable: Boolean!,
+    $price: Float,
+    $rules: String,
+    ){
+  CreateProduct(
+    name: $name,
+    rules: $rules,
+    type: $type,
+    price: $price,
+    schedulable: $schedulable,
+  )
+  {
+    id,name,type,price,rules,schedulable
+  }
+}

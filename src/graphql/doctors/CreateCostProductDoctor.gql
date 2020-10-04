@@ -1,0 +1,12 @@
+mutation(
+    $cost: Float!,
+    $payment_method: String!,
+    ){
+    CreateCostProductDoctor(
+    cost: $cost,
+    payment_method: $payment_method,
+    )
+    {
+    id,cost,payment_method
+    }
+}

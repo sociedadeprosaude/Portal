@@ -41,7 +41,7 @@
                   <v-btn rounded text class="primary mx-1" @click="setAdvance(user)">Adiantamento</v-btn>
                 </v-flex>
                 <v-flex xs2 class="mt-3">
-                  <v-btn rounded text class="red mx-1" @click="deleteUser(user)">Apagar</v-btn>
+                  <v-btn rounded text class="white--text red mx-1" :loading="loading" @click="deleteUser(user)">Apagar</v-btn>
                 </v-flex>
                 <v-divider class="primary"/>
                 <v-flex xs12 v-if="loggedUser.group === 'admin'">
@@ -53,7 +53,7 @@
                       <v-btn
                           @click="setUserUnit(unit, user)"
                           rounded
-                          :class="[user.clinic ? user.clinic.name === unit.name ? 'primary' : '' : '']">
+                          :class="[user.clinic ? user.clinic.id === unit.id ? 'primary' : '' : '']">
                         <img width="124px" :src="unit.logo">
                       </v-btn>
                     </v-flex>
@@ -164,7 +164,7 @@
                         <v-flex xs6 v-if="user.permissions" class="text-center">
                           <span style="color: #003B8F">Permissões Salvas do Usuário:</span>
                           <div v-for="(node,i) in user.permissions" :key="i">
-                            {{ node.name }}
+                            {{ node }}
                           </div>
                         </v-flex>
                       </v-layout>
@@ -185,7 +185,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer/>
-          <v-btn v-if="!loading" class="primary" @click="setSalary(selectedUser)">
+          <v-btn v-if="!loading" class="primary" @click="setSalary(selecteduser)">
             Salvar
           </v-btn>
           <v-progress-circular indeterminate v-else class="primary--text"/>
@@ -219,13 +219,12 @@ import moment from "moment";
 export default {
 
   name: "Collaborators",
-  props: ['collaborators'],
+  props: ['collaborators','loading'],
 
   data: () => ({
-    selectedPermissions: [],
+    selectedPermissions: [{name:'Home'}],
     dialog: false,
     havePermissions: false,
-    loading: true,
     registerSalary: false,
     registerAdvance: false,
     value: undefined,
@@ -235,10 +234,6 @@ export default {
     months: [],
     date: moment().format('YYYY-MM-DD'),
   }),
-
-  mounted() {
-    this.getInitialInfo()
-  },
 
   computed: {
     loggedUser() {
@@ -257,28 +252,38 @@ export default {
 
   },
 
+  watch:{
+    dialog(value){
+
+    }
+  },
+
   methods: {
 
-    async getInitialInfo() {
-      await this.$store.dispatch('getColaborators');
-      this.loading = false
-    },
+    async userGroups(user) {
+      this.selectedPermissions = this.selectedPermissions.map(value => value.name)
+      user.permissions = this.selectedPermissions
 
-    userGroups(user) {
-      this.$store.dispatch('userPermissions', {
-        user: user.id,
-        permissions: this.selectedPermissions,
-      })
+      await this.$apollo.mutate({
+          mutation: require('@/graphql/colaborators/SetColaboratorPermissions.gql'),
+          variables:{
+            idColaborator:user.id,
+            permissions: this.selectedPermissions
+          },
+      });
+
       this.dialog = false
     },
 
-    setGroup(user, group) {
-      if (user.group === group) {
-        this.$store.dispatch('updateUserField', {user: user, field: 'group', value: 'delete'})
-      } else {
-        this.$store.dispatch('updateUserField', {user: user, field: 'group', value: group})
-      }
-      this.$store.dispatch('getColaborators');
+    async setGroup(user, group) {
+      user.group = user.group === group ? null : group
+      await this.$apollo.mutate({
+          mutation: require('@/graphql/colaborators/setColaboratorGroup.gql'),
+          variables:{
+            idColaborator:user.id,
+            group: user.group
+          },
+      });
     },
 
     async setSalary(user) {
@@ -289,12 +294,15 @@ export default {
         return
       }
       this.loading = true;
-      await this.$store.dispatch('updateUserField', {
-        user: this.selecteduser,
-        field: 'salary',
-        value: this.value
+      await this.$apollo.mutate({
+          mutation: require('@/graphql/colaborators/setColaboratorSalary.gql'),
+          variables:{
+            idColaborator:this.selecteduser.id,
+            salary: this.value
+          },
       });
-      await this.getInitialInfo();
+
+      this.selecteduser.salary = this.value
       this.clearValuesForm();
     },
 
@@ -332,17 +340,31 @@ export default {
     },
 
     async setUserUnit(unit, user) {
-      await this.$store.dispatch('updateUserField', {
-        user: user,
-        field: 'clinic',
-        value: unit
+      const nameMutation = user.clinic && user.clinic.id === unit.id ? 'RemoveRelationColaboratorClinic' : 'AddRelationColaboratorClinic'
+      user.clinic = user.clinic && user.clinic.id === unit.id ? null : unit
+
+      await this.$apollo.mutate({
+          mutation: require(`@/graphql/colaborators/${nameMutation}.gql`),
+          variables:{
+            idColaborator:user.id,
+            idClinic: unit.id
+          },
       });
-      await this.getInitialInfo()
     },
 
     async deleteUser(user) {
-      await this.$store.dispatch('deleteUser', {user: user})
-      this.$router.go()
+      /* await this.$store.dispatch('deleteUser', {user: user})
+      this.$router.go() */
+      this.loading = true
+      await this.$apollo.mutate({
+          mutation: require(`@/graphql/colaborators/DeleteColaborator.gql`),
+          variables:{
+            idColaborator:user.id,
+          },
+      });
+      this.loading = false
+      const indexColaborator = this.collaborators.findIndex((value) => value.id === user.id)
+      this.collaborators.splice(indexColaborator,1)
     },
 
     clearValuesForm() {

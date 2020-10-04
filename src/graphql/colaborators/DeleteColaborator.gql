@@ -1,0 +1,5 @@
+mutation($idColaborator:ID!){
+  DeleteColaborator(id:$idColaborator){
+    id
+  }
+}

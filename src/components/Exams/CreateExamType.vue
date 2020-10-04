@@ -11,34 +11,45 @@
                                             outlined
                                             required
                                             label="Nome"
-                                            v-model="editedExamType.name"
+                                            v-model="name"
                                             prepend-icon="description"
-                                            :rules="rules.campoObrigatorio"
                                             class="ml-3 mr-3"
-                                    />
-                                </v-flex>
-                                <v-flex xs12 sm12>
-                                    <v-checkbox
-                                            outlined
-                                            required
-                                            label="Agendável"
-                                            v-model="editedExamType.scheduleable"
-                                            class="ml-3 mr-3"
-                                            color="primary"
                                     />
                                 </v-flex>
                             </v-layout>
                         </v-card-text>
                         <v-card-actions>
-                            <v-spacer/>
-                            <submit-button
-                                    :loading="loading"
-                                    :success="success"
-                                    :text="registed ? 'Editar tipo de exame':'Cadastrar tipo de exame'"
-                                    :disabled="!formRegister"
-                                    @click="validateRegister()"
-                                    class="ma-3"
-                            />
+                          <v-spacer/>
+                          <ApolloMutation
+                              :mutation="require('@/graphql/products/CreateProducts.gql')"
+                              :variables="{price: price,
+                               rules: rules,
+                               type: type,
+                               name: name,
+                               schedulable: schedulable}"
+                              @done="close"
+                          >
+                            <template v-slot="{ mutate, loading, error }">
+                              <v-btn
+                                  v-if="!selectedExamType"
+                                  color="primary"
+                                  :disabled="loading"
+                                  @click.native="createProduct(mutate)"
+                              >Adicionar</v-btn>
+                              <p v-if="error">Ocorreu um erro: {{ error }}</p>
+                            </template>
+                          </ApolloMutation>
+
+                          <ApolloMutation
+                              :mutation="require('@/graphql/products/UpdateProducts.gql')"
+                              :variables="{ id : id, price : price, name: name}"
+                              @done="close"
+                          >
+                            <template v-slot="{ mutate, loading, error }">
+                              <v-btn v-if="selectedExamType" color="primary" @click.native="updateProduct(mutate)">Editar</v-btn>
+                              <p v-if="error">Ocorreu um erro: {{ error }}</p>
+                            </template>
+                          </ApolloMutation>
                         </v-card-actions>
                     </v-form>
                 </v-card>
@@ -47,34 +58,29 @@
     </v-container>
 </template>
 <script>
-    import SubmitButton from "../SubmitButton";
-
     export default {
-
-        components: {SubmitButton},
         props: ['registed','selectedExamType'],
 
         data: () => ({
             validRegister: true,
             loading: false,
             success: false,
-
-            editedExamType: {
-                name: '', scheduleable:false,
-            },
-
-            rules: {
-                campoObrigatorio: [
-                    v => !!v || 'Campo é Obrigatório',
-                ],
-            }
+            price: 0,
+            type: "EXAM",
+            rules: null,
+            name: '',
+            schedulable: true,
+            id: '',
         }),
 
         mounted() {
             if(this.selectedExamType){
-                this.editedExamType.id = this.selectedExamType.id
-                this.editedExamType.name = this.selectedExamType.name;
-                this.editedExamType.scheduleable = this.selectedExamType.scheduleable;
+                this.id = this.selectedExamType.id
+                this.name = this.selectedExamType.name;
+                this.scheduleable = this.selectedExamType.scheduleable;
+                this.price = this.selectedExamType.price;
+                this.type = this.selectedExamType.type;
+                this.rules = this.selectedExamType.rules;
             }
         },
         watch:{
@@ -125,18 +131,31 @@
                    
                 this.success = true;
                 this.loading = false;
-                
                 this.close();
 
             },
 
-            clear() {
-                this.editedExamType.name = '';
-                this.editedExamType.scheduleable = false
-                this.editedExamType.id = '';
+            createProduct(mutate) {
+              this.name = this.name.toUpperCase().replace(/\//g, "-")
+              setTimeout(() => {
+                mutate();
+              }, 0);
+              this.$router.push('/')
             },
 
+            updateProduct(mutate) {
+              this.name = this.name.toUpperCase().replace(/\//g, "-")
+              setTimeout(() => {
+                mutate();
+              }, 0);
+              this.$router.push('/')
+            },
+
+            clear() {
+                this.name = '';
+            },
             close () {
+              this.clear()
                 this.$emit('close-dialog')
             }
 

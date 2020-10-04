@@ -22,24 +22,9 @@ const state = {
 
 const mutations = {
     async setSelectedPatient(state, payload) {
-        let patientId
-        let consultations;
-
-        if (payload) {
-            patientId = payload.uid ? payload.uid : payload.id
-            localStorage.setItem('patient', patientId);
-            await firebase.firestore().collection('users').doc(patientId).collection('consultations')
-                .onSnapshot((querySnapshot) => {
-                    consultations = [];
-                    querySnapshot.forEach((consultation) => {
-                        consultations.push({ ...consultation.data() })
-                    });
-                    payload = { ...payload, consultations: consultations };
-                    state.selectedPatient = payload
-                })
-        } else {
-            state.selectedPatient = payload
-        }
+        if (payload)
+            localStorage.setItem('patient', payload.id)
+        state.selectedPatient = payload
     },
     setSelectedDependent(state, payload) {
         state.selectedDependent = payload
@@ -140,6 +125,17 @@ const actions = {
         });
         return user
     },
+    async getPatients({ }, payload) {
+        firebase.firestore().collection('users').doc(payload.cpf).update({
+            "neo4j_id": payload.id
+        })
+            .then(function() {
+                console.log("Atualizando neo4j_id");
+            }).catch((error) => {
+                console.log('erro na atualizacao')
+        })
+
+    },
 
     async searchUser({ }, searchFields) {
         // let usersRef = firestore().collection('users');
@@ -233,7 +229,6 @@ const actions = {
     },
 
     async addUser({ getters }, patient) {
-        console.log('patient:', patient)
         functions.removeUndefineds(patient);
         try {
             let user;
@@ -244,7 +239,6 @@ const actions = {
                 id = doc.id,
                     type = doc.data().type
             });
-            console.log('encontrado:', id)
             if (id) {
                 //se já existir: collaborator / patient / doctor (passar a ter field uid !== de doc.id)
                 if (type === 'COLABORATOR') {

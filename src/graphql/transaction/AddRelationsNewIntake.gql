@@ -1,0 +1,35 @@
+mutation($idBudget:ID!,$idColaborator:ID!, $idPatient: ID!, $idUnit: ID!){
+    AddColaboratorWith_transaction(
+        from:{
+            id:$idColaborator
+        },
+        to:{
+            id:$idBudget
+        }
+    ){
+        from{id},
+        to{id}
+    },
+    AddTransactionWith_user(
+        from:{
+            id:$idBudget
+        },
+        to:{
+            id:$idPatient
+        }
+        ){
+        from{id},
+        to{id}
+        },
+         AddTransactionWith_unit(
+                    from:{
+                        id:$idBudget
+                    },
+                    to:{
+                        id:$idUnit
+                    }
+                    ){
+                    from{id},
+                    to{id}
+                    },
+}

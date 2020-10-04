@@ -1,0 +1,17 @@
+mutation(
+    $name: String!,
+    $cnpj: String,
+    $opening_hours: [String],
+    $telephone: [String],
+    $logo: String,
+    $property: Boolean,
+    ){
+  CreateClinic(
+    name: $name,
+    cnpj: $cnpj,
+    opening_hours: $opening_hours,
+    telephone: $telephone,
+    logo: $logo,
+    property: $property,
+  ){id},
+}

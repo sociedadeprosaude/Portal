@@ -1,0 +1,36 @@
+mutation($idProduct: ID!, $idCostProduct: ID!, $idDoctor: ID!){
+    AddCostProductDoctorWith_product(
+        from:{
+            id:$idCostProduct
+        },
+        to:{
+            id:$idProduct
+        }
+    ){
+        from{id},
+        to{id}
+    },
+    AddDoctorIs_specialist_of(
+         from:{
+                id:$idDoctor
+         },
+         to:{
+                id:$idProduct
+         }
+        ){
+            from{id},
+            to{id}
+    },
+    AddCostProductDoctorWith_doctor(
+          from:{
+                id:$idCostProduct
+            },
+          to:{
+                id:$idDoctor
+            }
+        ){
+            from{id},
+            to{id}
+    },
+
+}

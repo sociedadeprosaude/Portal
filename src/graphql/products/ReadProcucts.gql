@@ -1,0 +1,8 @@
+query ($type: String!,$schedulable: Boolean!) {
+    Product (type: $type, schedulable: $schedulable){
+        id,name,type,price, schedulable,rules,
+        with_other{
+        id,name,type,price, schedulable,rules,
+        }
+    }
+}

@@ -1,0 +1,36 @@
+mutation($idBudget:ID!,$idProduct:ID!, $idProductTransaction: ID!, $idClinic: ID!){
+    AddProductTransactionWith_transaction(
+        from:{
+            id:$idProductTransaction
+        },
+        to:{
+            id:$idBudget
+        }
+    ){
+        from{id},
+        to{id}
+    },
+    AddProductTransactionWith_product(
+        from:{
+            id:$idProductTransaction
+        },
+        to:{
+            id:$idProduct
+        }
+        ){
+        from{id},
+        to{id}
+    },
+    AddProductTransactionWith_clinic(
+        from:{
+            id:$idProductTransaction
+        },
+        to:{
+          id:$idClinic
+        }
+        ){
+        from{id},
+        to{id}
+    },
+
+}

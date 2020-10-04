@@ -8,7 +8,7 @@
                 </v-btn>
                 <v-btn rounded small class="mx-1" @click="selectCategory('appointment')"
                        :color="categorySelect === 'appointment' ? 'background' : 'primary'" v-if="!historyPatient">
-                    <span>{{specialtiesLoaded ? 'Consultas' : 'Carregando consultas...'}}</span>
+                    Consultas
                 </v-btn>
                 <v-btn rounded small class="mx-1" @click="selectCategory('package')"
                        :color="categorySelect === 'package' ? 'background' : 'primary'" v-if="!historyPatient">
@@ -130,6 +130,15 @@
                 searchBudgetNumber: undefined,
                 searchBudgetLoading: false,
                 searchBudgetBtn: false,
+                type:'EXAM',
+                Products:[],
+                LocaleProducts:[],
+                Exams:[],
+                LocaleExams:[],
+                ExamsSkip: false,
+                Specialties:[],
+                LocaleSpecialties:[],
+                SpecialtieSkip: false
             }
         },
 
@@ -140,10 +149,10 @@
                     clearTimeout(self.typingTimer);
                     self.typingTimer = setTimeout(() => {
                         if (self.categorySelect === 'exam') {
-                            self.loading = true;
-                            self.$store.dispatch("loadSelectedExams", self.search.toUpperCase()).then(() => {
-                                self.loading = false
-                            });
+                            self.LocaleExams = self.Exams.filter((el) =>  el.name.toUpperCase().includes(self.search.toUpperCase()))
+                        }
+                        if (self.categorySelect === 'appointment') {
+                            self.LocaleSpecialties = self.Specialties.filter((el) =>  el.name.toUpperCase().includes(self.search.toUpperCase()))
                         }
                         if (self.categorySelect === 'package') {
                             self.$store.dispatch("loadBundle");
@@ -159,7 +168,20 @@
         },
 
         watch: {
-            categorySelect: function () {
+            categorySelect(value) {
+                switch (this.categorySelect) {
+                    case 'exam':
+                        this.type = 'EXAM'
+                        break;
+                    case 'appointment':
+                        this.type = 'SPECIALTY'
+                        break;
+                    case 'package':
+                        console.log(this.package)
+                        break;
+                    default:
+                        return []
+                }
                 this.search = ''
             },
             patient() {
@@ -169,33 +191,7 @@
 
         computed: {
             itemsShopping () {
-                console.log( this.$store.getters.getShoppingCartItems.length);
                 return this.$store.getters.getShoppingCartItems.length;
-            },
-            specialties() {
-                let specialties = this.$store.getters.specialties;
-                for (let spec in specialties) {
-                    if (specialties[spec].doctors) {
-
-                        specialties[spec].doctors = specialties[spec].doctors.filter((a) => {
-                            return a.cost
-                        })
-                    }
-                }
-                specialties = this.$store.getters.specialties.filter((a) => {
-                    if (a.doctors) {
-                        return a.doctors.length > 0 && a.name.includes(this.search.toUpperCase())
-                    } else {
-                        return false
-                    }
-                });
-                return specialties
-            },
-            specialtiesLoaded() {
-                return this.$store.getters.specialtiesLoaded
-            },
-            exams() {
-                return this.$store.getters.examsSelected;
             },
             package() {
                 return this.$store.getters.bundles;
@@ -203,11 +199,10 @@
             items() {
                 switch (this.categorySelect) {
                     case 'exam':
-                        return this.exams;
+                        return this.LocaleExams.slice(0,20);
                     case 'appointment':
-                        return this.specialties;
+                        return this.LocaleSpecialties.slice(0,20);
                     case 'package':
-                        console.log(this.package)
                         return this.package;
                     default:
                         return []
@@ -219,6 +214,7 @@
         },
 
         methods: {
+
             selectCategory(category) {
                 this.categorySelect = category
             },
@@ -265,6 +261,40 @@
                 this.searchBudgetLoading = false
             },
 
+        },
+        apollo: {
+            loadSpecialties: {
+                query: require("@/graphql/products/LoadProducts.gql"),
+                variables(){
+                    return {
+                        type: 'SPECIALTY'
+                    }
+                },
+                update(data){
+                    this.Specialties = Object.assign(data.Product)
+                    this.LocaleSpecialties= data.Product
+                    this.SpecialtieSkip = true
+                },
+                skip(){
+                    return this.SpecialtieSkip
+                }
+            },
+            loadExams: {
+                query: require("@/graphql/products/LoadProducts.gql"),
+                variables(){
+                    return {
+                        type: 'EXAM'
+                    }
+                },
+                update(data){
+                    this.Exams = Object.assign(data.Product)
+                    this.LocaleExams= data.Product
+                    this.ExamsSkip = true
+                },
+                skip(){
+                    return this.ExamsSkip
+                }
+            }
         }
     }
 

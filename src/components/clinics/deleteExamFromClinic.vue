@@ -17,26 +17,41 @@
         <v-card-actions>
             <v-btn color="error" rounded @click="close()">NÃO</v-btn>
             <v-spacer/>
-            <v-btn color="success" rounded @click="deleteItem">SIM</v-btn>
+          <div>
+            <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+            <v-btn v-else color="success" rounded @click="deleteItem">SIM</v-btn>
+          </div>
         </v-card-actions>
     </v-card>
 </template>
 <script>
     export default {
         props: ['item', 'clinic'],
+        data: () => ({
+          loading: false,
+        }),
         methods: {
             close() {
                 this.$emit('close-dialog')
             },
-            deleteItem(){
-                let info = {
-                    product: this.item,
-                    clinic: this.clinic,
-                };
-                this.$store.dispatch("removeExamFromClinic", info);
-                this.$store.dispatch("removeClinicFromExam", info);
-                this.$store.dispatch("loadClinics");
-                this.close()
+            async deleteItem(){
+              this.loading = true
+              await this.$apollo.mutate({
+                mutation: require('@/graphql/clinics/RemoveCostProductClinicWith_clinicAndProduct.gql'),
+                variables: {
+                  idClinic: this.clinic.id,
+                  idCostProductClinic: this.item.idcpc,
+                  idProduct: this.item.id,
+                },
+              });
+              await this.$apollo.mutate({
+                mutation: require('@/graphql/clinics/DeleteCostProductClinic.gql'),
+                variables: {
+                  id: this.item.idcpc,
+                },
+              });
+              this.loading = false
+              this.$router.push('/')
             },
         }
     }

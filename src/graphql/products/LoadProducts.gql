@@ -1,0 +1,23 @@
+query ($type: String!,$schedulable: Boolean) {
+    Product (type: $type, schedulable: $schedulable){
+        id,
+        name,
+        doctors{
+            id,
+            name,
+            crm
+        },
+        price,
+        final_price,
+        clinics{
+            id,
+            name,
+            cnpj,
+            telephone,
+             opening_hours,
+             has_address{
+                           cep, state, street, city, complement, neighboor, number
+                         }
+        }
+    }
+}

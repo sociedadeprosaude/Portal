@@ -1,0 +1,29 @@
+mutation($idConsultation: ID!, $idPreviousConsultation: ID!){
+    AddConsultationRegress(
+        from:{
+            id:$idPreviousConsultation
+        },
+        to:{
+            id:$idConsultation
+        }
+    ){
+        from{
+            id
+        },
+        to{
+            id
+        }
+    }
+
+    AddConsultationPrevious_consultation(
+        from:{
+            id:$idConsultation
+        },
+        to:{
+            id:$idPreviousConsultation
+        }
+    ){
+        from{id},
+        to{id}
+    }
+}

@@ -206,7 +206,7 @@
                 xDown: undefined,
                 yDown: undefined,
                 parcel: 1,
-                parcels: [1, 2, 3, 4, 5],
+                parcels: ["1", "2", "3", "4", "5"],
                 paymentLoading: false,
                 quantParcelas: ["1", "2", "3", "4", "5"],
                 paymentSuccess: false,
@@ -219,8 +219,10 @@
                 valuesPayments: [''],
                 payment: {paymentForm: ['Dinheiro'], value: [''], parcel: ['1']},
                 moneyDiscout: 0,
+                idUser:'',
                 data: moment().format("YYYY-MM-DD HH:mm:ss"),
                 parcelas: '1',
+                skipPatients: true,
                 totalCusto: 0,
                 percentageDiscount: 0,
                 moneyDiscount: 0,
@@ -234,7 +236,8 @@
                 alertMessage: {
                     text: '',
                     model: false
-                }
+                },
+                clinics: {}
             }
         },
         computed: {
@@ -280,6 +283,9 @@
             },
             consultas() {
                 return this.$store.getters.getShoppingCartItemsByCategory.consultations
+            },
+            clinic(){
+                return this.$store.getters.getShoppingCartItemsByCategory.clinics
             },
             cost() {
                 let itens = this.$store.getters.getShoppingCartItems;
@@ -337,6 +343,11 @@
         },
         methods: {
             CloseReceipt(){
+                this.$store.commit('setSelectedBudget', undefined);
+                this.$store.commit('clearShoppingCartItens');
+                this.card = false;
+                this.paymentLoading= false
+                this.paymentSuccess= true
                 this.clearCart()
                 this.receiptDialog=false
             },
@@ -397,14 +408,13 @@
                     specialties: this.consultas.length > 0 ? this.consultas : undefined,
                     exams: this.exames.length > 0 ? this.exames : undefined,
                     subTotal: this.subTotal,
+                    perClinic: this.clinic,
                     discount: this.moneyDiscount,
                     total: this.total,
                     parcel: this.payment.parcel,
                     date: moment().format('YYYY-MM-DD HH:mm:ss'),
-                    cost: this.cost,
                     user: this.$store.getters.selectedPatient,
                     colaborator: this.$store.getters.user,
-                    parcelar: this.parcelar,
                     doctor: this.selectedDoctor.name === this.noDoctorKeyWord ? undefined : this.selectedDoctor,
                     payments: this.payment.paymentForm,
                     valuesPayments: this.payment.value,
@@ -412,23 +422,13 @@
                 }
             },
 
-            async updateBudgetsIntakes() {
-                let user = this.patient;
-                let intakes = await this.$store.dispatch('getUserIntakes', user);
-                let budgets = await this.$store.dispatch('getUserBudgets', user);
-                user.intakes = intakes;
-                user.budgets = budgets;
-                this.$store.commit('setSelectedPatient', user)
-            },
             async saveBudget(budget) {
                 this.$store.commit('setSelectedBudget', budget);
-                await this.$store.dispatch('getUserBudgets', this.patient);
-                await this.$store.dispatch('addBudget', budget);
-                this.updateBudgetsIntakes()
             },
             async pay() {
                 this.paymentLoading = true;
                 let user = this.patient
+                this.idUser= user.id
                 if (!user) {
                     this.paymentLoading = false
                     this.alertMessage.model = true
@@ -443,62 +443,119 @@
                 }
                 this.alertMessage.model = false
                 await this.saveBudget(this.generateBudget());
-                let newBudget = this.generateBudget();
-                newBudget.id = this.selectedBudget.id;
-                this.$store.dispatch('getClinics');
-                this.$store.commit('setSelectedBudget', newBudget);
-                if (!this.selectedBudget) {
-                    await this.saveBudget(this.generateBudget())
-                }
-                await this.$store.dispatch('addIntake', this.selectedBudget);
-                let clinics = this.$store.getters.clinics
-                for(let i=0; i< clinics.length; i++){
-                    let outtake = {
-                        intake_id: this.selectedBudget.id,
-                        user: this.selectedBudget.user,
-                        unit: this.selectedBudget.unit,
-                        clinic: clinics[i],
-                        exams: this.selectedBudget.exams ? this.selectedBudget.exams.filter( exam => exam.clinic.name === clinics[i].name ) : [],
-                        specialties: this.selectedBudget.specialties ? this.selectedBudget.specialties.filter( specialtie => specialtie.doctor.clinic.name === clinics[i].name ): [],
-                        paid: false,
-                        root:true,
-                        cnpj: clinics[i].cnpj
-                    }
-                    if( outtake.exams.length !== 0  || outtake.specialties.length !== 0 ){
-                        await this.$store.dispatch('addOuttakes', outtake)
-                    }
-                }
-                let porcentagem = (this.selectedBudget.discount / this.selectedBudget.subTotal);
-                if (porcentagem >= 0.5 || parseFloat(this.searchBudget.subTotal) > this.selectedBudget.cost) {
-
-                    await this.$store.dispatch('DiscountWarning', {
-                        orcamento: this.selectedBudget.id,
+                console.log('selectedBudget: ', this.selectedBudget)
+                this.selectedBudget.valuesPayments.forEach(value => {value = parseFloat(value)})
+                await this.$apollo.mutate({
+                    mutation: require('@/graphql/transaction/NewPayIntake.gql'),
+                    variables: {
+                        value: parseFloat(this.selectedBudget.total),
+                        payment_methods: this.selectedBudget.payments,
+                        payments: this.selectedBudget.valuesPayments,
+                        parcels: this.selectedBudget.parcel,
+                        discount: parseFloat(this.selectedBudget.discount) ? parseFloat(this.selectedBudget.discount) : 0,
                         date: this.selectedBudget.date,
-                        discont: ((this.selectedBudget.discount / this.selectedBudget.subTotal) * 100),
-                        name: this.selectedBudget.colaborator.name,
-                        cpf: this.selectedBudget.colaborator.cpf
-                    })
-                }
+                    },
 
-                this.updateBudgetsIntakes();
-                await this.receipt(this.selectedBudget);
-                this.paymentLoading = false;
-                this.paymentSuccess = true;
-                    let data = {
-                       user: this.patient,
-                       budgetId: this.selectedBudget.id.toString(),
-                   };
-                await this.$store.dispatch('deleteBudget', data);
-                   await this.$store.commit('setSelectedBudget', undefined);
-                   this.$store.commit('clearShoppingCartItens');
+                }).then((data) => {
+                        this.selectedBudget.id= data.data.CreateTransaction.id
+                    for(let exam in this.selectedBudget.exams){
+                        this.$apollo.mutate({
+                            mutation: require('@/graphql/transaction/CreateProductTransaction.gql'),
+                            variables: {
+                                price: this.selectedBudget.exams[exam].price
+                            }
+                        }).then(dataProduct => {
+                            this.$apollo.mutate({
+                                mutation: require('@/graphql/transaction/AddRelationsProductTransactionExams.gql'),
+                                variables: {
+                                    idBudget: data.data.CreateTransaction.id,
+                                    idProduct: this.selectedBudget.exams[exam].id,
+                                    idProductTransaction: dataProduct.data.CreateProductTransaction.id,
+                                    idClinic: this.selectedBudget.exams[exam].clinic.id
+                                }
+                            }).then(dataaa => {
+                                this.verifyUnpaidConsultations({id:dataProduct.data.CreateProductTransaction.id, product:this.selectedBudget.exams[exam]})
+                            }).catch((error) => {
+                                console.error('Relação product Transaction', error)
+                            })
+                        }).catch( (error) => {
+                            console.error('Criar ProductTransaction', error)
+                        })
+                    }
+                    for(let specialtie in this.selectedBudget.specialties){
+                        this.$apollo.mutate({
+                            mutation: require('@/graphql/transaction/CreateProductTransaction.gql'),
+                            variables: {
+                                price: this.selectedBudget.specialties[specialtie].price
+                            }
+                        }).then(dataProduct => {
+                            this.$apollo.mutate({
+                                mutation: require('@/graphql/transaction/AddRelationsProductTransaction.gql'),
+                                variables: {
+                                    idBudget: data.data.CreateTransaction.id,
+                                    idProduct: this.selectedBudget.specialties[specialtie].id,
+                                    idProductTransaction: dataProduct.data.CreateProductTransaction.id,
+                                }
+                            }).then(dataaa => {
+                                this.verifyUnpaidConsultations({id:dataProduct.data.CreateProductTransaction.id, product:this.selectedBudget.specialties[specialtie]})
+                            }).catch((error) => {
+                                console.error('Relação product Transaction', error)
+                            })
+                        }).catch( (error) => {
+                            console.error('Criar ProductTransaction', error)
+                        })
+                    }
+                    if(this.selectedBudget.doctor) {
+                        this.AddRelationsIntakeDoctor(data)
+                    }
+                    else{
+                        this.AddRelationsIntake(data)
+                    }
+                }).catch((error) => {
+                    console.error('Crianção da transaction: ',error)
+                })
+            },
+            async AddRelationsIntakeDoctor(data){
+                this.$apollo.mutate({
+                    mutation: require('@/graphql/transaction/AddRelationsNewIntake.gql'),
+                    variables: {
+                        idBudget: data.data.CreateTransaction.id,
+                        idColaborator: this.selectedBudget.colaborator.id,
+                        idPatient: this.selectedBudget.user.id,
+                        idDoctor: this.selectedBudget.doctor.neo4j_id,
+                        idUnit: this.selectedBudget.unit.id
+                    },
 
-                this.card = false;
+                })
+                    .then((dataa) => {
+                        this.receipt(this.selectedBudget)
+                    }).catch((error) => {
+                    console.error('Relações da transaction: ', error)
+                })
+            },
+            async AddRelationsIntake(data){
+                await this.$apollo.mutate({
+                    mutation: require('@/graphql/transaction/AddRelationsNewIntake.gql'),
+                    // Parameters
+                    variables: {
+                        idBudget: data.data.CreateTransaction.id,
+                        idColaborator: this.selectedBudget.colaborator.id,
+                        idPatient: this.selectedBudget.user.id,
+                        idUnit: this.selectedBudget.unit.id
+                    },
 
+                })
+                    .then((dataa) => {
+                        this.receipt(this.selectedBudget)
+                    }).catch((error) => {
+                    console.error('ligações da transaction nao funcionando: ', error)
+                })
             },
             async receipt(intake) {
-                let intakes = await this.$store.dispatch('getIntakeDetails', intake);
-                this.selectedIntake = intakes[0]
+                this.selectedIntake = this.selectedBudget
                 this.receiptDialog = true
+                this.skipPatients = false
+                this.$apollo.queries.loadPatient.refresh()
             },
 
             clearCart() {
@@ -510,10 +567,42 @@
                 this.$store.commit('setSelectedBudget', undefined);
                 let user = undefined;
                 this.$store.commit('setSelectedPatient', user)
-
             },
 
+            verifyUnpaidConsultations(productTransaction){
+                let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product.id === productTransaction.product.id && consultation.status === "Aguardando pagamento")
+                if(unpaidConsultation){
+                    this.saveRelationProductTransaction(unpaidConsultation.id, productTransaction.id)
+                }
+            },
 
+            saveRelationProductTransaction(idConsultation, idProductTransaction){
+                this.$apollo.mutate({
+                    mutation: require('@/graphql/transaction/AddRelationProductTransactionConsultation.gql'),
+                    variables:{
+                        idConsultation: idConsultation,
+                        idProductTransaction: idProductTransaction
+                    },
+                })
+            },
+        },
+        apollo: {
+            loadPatient: {
+                query: require("@/graphql/patients/GetPatient.gql"),
+                variables(){
+                    return {
+                        id: this.idUser
+                    }
+                },
+                update(data) {
+                    this.skipPatients = true
+                    this.$store.commit('setSelectedPatient', data.Patient[0]);
+                },
+                skip (){
+                    return this.skipPatients
+                }
+            },
         }
     }
+
 </script>

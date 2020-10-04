@@ -35,18 +35,27 @@
             indexSelected: {},
             statusSelected:'',
             animation: false,
+            consultations:[]
         }),
-        computed: {
+        /* computed: {
             consultations () { return this.$store.getters.consultationsCanceled; }
-        },
+        }, */
         created() { this.animation = true },
         async mounted() {
-            await this.$store.dispatch('getConsultationsCanceled');
+            //await this.$store.dispatch('getConsultationsCanceled');
             setTimeout(() => (this.animation = false), 3000)
         },
         methods: {
-            deleteConsultation (consultation) {
-                this.$store.dispatch('removeAppointmentForever',consultation);
+            async deleteConsultation (consultation) {
+                await this.$apollo.mutate({
+                    mutation: require('@/graphql/consultations/DeleteConsultation.gql'),
+                    variables:{
+                        idConsultation: consultation.id,
+                    },
+                
+                })
+                const index = this.consultations.findIndex(value => value.id === consultation.id)
+                this.consultations.splice(index,1)
                 this.dialog = false
             },
             async registerCall(values){
@@ -70,5 +79,14 @@
                 this.$store.commit('clearSelectedDependent');
             },
         },
+        apollo: {
+            loadConsultations: {
+                query: require("@/graphql/consultations/LoadCanceledConsultations.gql"),
+                update(data) {
+                    this.consultations = data.Consultation.filter(consultations => consultations.patient)
+                    console.log(this.consultations)
+                }
+            },
+        }
     };
 </script>

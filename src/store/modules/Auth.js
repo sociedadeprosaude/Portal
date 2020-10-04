@@ -30,8 +30,12 @@ const actions = {
         return
     },
     async getUser({ commit }, user) {
+        commit('setUser',user)
+        console.log('user: ', user)
+        if(user.clinic)
+            commit('setSelectedUnit', user.clinic)
 
-        try {
+        /* try {
             let userDoc = await firebase.firestore().collection('users/').where('uid', '==', user.uid).get()
             commit('setUser', userDoc.docs[0].data());
             if (userDoc.docs[0].data().clinic) {
@@ -45,7 +49,7 @@ const actions = {
                 await router.push('/login');
                 return
             }
-        }
+        } */
 
     },
 

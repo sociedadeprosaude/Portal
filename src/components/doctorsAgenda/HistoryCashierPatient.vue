@@ -18,15 +18,12 @@
                                             </v-flex>
                                             <v-flex xs12 class="text-left">
                                                 <p class="my-0">{{intake.date | dateFilter}}</p>
-                                                <!--
-                                                <p v-if="intake.payment_method">{{intake.payment_method}}</p>
-                                                -->
-                                                <p>R$ {{intake.total}}</p>
+                                                <p>R$ {{intake.value}}</p>
                                             </v-flex>
                                         </v-layout>
                                     </v-card>
                                 </v-flex>
-                                <v-flex xs2 v-if="!loading && intake.status !== intakeStatus.CANCELLED">
+                                <v-flex xs2 v-if="!loading && !intake.cancelled_by">
                                     <v-btn @click="cancelBuy(intake)" text
                                            style="min-width: 0; width: 32px; height: 100%">
                                         <v-icon class="secondary--text">delete</v-icon>
@@ -109,7 +106,7 @@
 
     let moment = require('moment');
 
-    export default {
+    export default{
         props: ['option'],
         components: {receipt},
 
@@ -121,7 +118,8 @@
                 cancelBuyDialog: false,
                 managerPassword: "",
                 error: undefined,
-                intakeStatus: constants.INTAKE_STATUS
+                idUser:'',
+                skipPatients:true,
             };
         },
         methods: {
@@ -145,15 +143,17 @@
             },
             async receipt(intake) {
                 this.loading = true;
-                let getIntake = await this.$store.dispatch(
+               /* let getIntake = await this.$store.dispatch(
                     "getIntakeDetails",
                     intake
-                );
-                this.selectedIntake = getIntake[0];
+                ); */
+                this.selectedIntake = intake;
                 this.receiptDialog = true;
                 this.loading = false;
             },
             async cancelBuy(intake) {
+                console.log('intake: ', intake)
+                console.log('colaborator: ', this.$store.getters.user)
                 if (!this.cancelBuyDialog) {
                     this.selectedIntake = intake;
                     this.cancelBuyDialog = true;
@@ -167,28 +167,61 @@
                 }
                 this.loading = true;
                 intake.user = this.patient;
-                await this.$store.dispatch("cancelIntake", intake);
-                this.patient.intakes = await this.$store.dispatch(
+                await this.$apollo.mutate({
+                    mutation: require('@/graphql/transaction/IntakeCancel.gql'),
+                    variables: {
+                        idColaborator: this.$store.getters.user.id,
+                        idTransaction: intake.id
+                    }
+                }).then(()=> {
+                        console.log('entrei')
+                        this.skipPatients = false
+                        this.idUser= intake.user.id
+                        this.$apollo.queries.loadPatient.refresh()
+                })
+                this.cancelBuyDialog = false;
+
+               // await this.$store.dispatch("cancelIntake", intake);
+               /* this.patient.intakes = await this.$store.dispatch(
                     "getUserIntakes",
                     this.patient
-                );
-                this.$store.commit("setSelectedPatient", this.patient);
+                ); */
+               // this.$store.commit("setSelectedPatient", this.patient);
                 this.loading = false;
             }
         },
+
 
         computed: {
             patient() {
                 return this.$store.getters.selectedPatient;
             },
             intakes() {
-                let intakes= Object.assign({}, this.patient.intakes.reverse())
+                console.log('this.patient', this.patient.intakes)
+                let intakes= Object.assign({}, this.patient.intakes)
                 return intakes;
             },
             budgets() {
-                let budgets= Object.assign({}, this.patient.budgets.reverse())
+                let budgets= Object.assign({}, this.patient.budgets)
                 return budgets;
             }
+        },
+        apollo: {
+            loadPatient: {
+                query: require("@/graphql/patients/GetPatient.gql"),
+                variables(){
+                    return {
+                        id: this.idUser
+                    }
+                },
+                update(data) {
+                    this.skipPatients = true
+                    this.$store.commit('setSelectedPatient', data.Patient[0]);
+                },
+                skip (){
+                    return this.skipPatients
+                }
+            },
         }
     };
 </script>

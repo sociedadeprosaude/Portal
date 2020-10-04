@@ -146,6 +146,7 @@ export default {
     colaborator: null,
     menu1: false,
     menu2: false,
+    skipTransaction: true,
     intakes: undefined,
     formattedReport: undefined,
     formattedReportAllUnits: undefined,
@@ -235,11 +236,9 @@ export default {
       this.loading = false;
     },
     async searchReports() {
-      this.formattedReport = await this.$store.dispatch("searchReports", {
-        dataInicio: this.date,
-        dataFinal: this.date2,
-        colaborator: this.colaborator
-      });
+      this.skipTransaction = false
+      this.$apollo.queries.loadTransactions.refresh()
+      console.log('formatReport: ', this.formattedReport)
     },
     async searchReportsAllClinics() {
       this.formattedReportAllUnits = await this.$store.dispatch(
@@ -330,6 +329,26 @@ export default {
     hide() {
       return this.selected > 11;
     }
+  },
+  apollo: {
+    loadTransactions: {
+      query: require('@/graphql/transaction/GetTransactions.gql'),
+      async update(data) {
+        this.formattedReport = data.Transaction
+        console.log('entrei')
+        this.formattedReport = await this.$store.dispatch("searchReports", {
+          dataInicio: this.date,
+          dataFinal: this.date2,
+          intake: this.formattedReport,
+          colaborator: this.colaborator
+        });
+        console.log('formatReport: ', this.formattedReport)
+        this.skipTransaction = true
+      },
+      skip (){
+        return this.skipTransaction
+      }
+    },
   }
 };
 </script>

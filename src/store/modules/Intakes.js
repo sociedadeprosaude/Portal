@@ -255,15 +255,14 @@ const actions = {
     },
 
     async getIntakeDetails(context, intake) {
-        intake = await firebase.firestore().collection('intakes').doc(intake.id.toString()).get();
-        intake = {
-            ...intake.data(),
-            id: intake.id
-        };
-        //console.log('intake puxando: ', intake.user)
+        console.log('intake: ', intake)
+
         //console.log('user.dependents tamanho: ', intake.user.dependents.length)
-        if(intake.user.dependents && intake.user.dependents.length === 0){
-           delete intake.user.dependents
+
+        if(intake.user.dependents){
+            if(intake.user.dependents.length === 0){
+                delete intake.user.dependents
+            }
         }
         let examsSnap = await firebase.firestore().collection('intakes').doc(intake.id.toString()).collection('exams').get();
         let specialtiesSnap = await firebase.firestore().collection('intakes').doc(intake.id.toString()).collection('specialties').get();

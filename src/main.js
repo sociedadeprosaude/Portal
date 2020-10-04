@@ -20,6 +20,7 @@ import { iconsSet as icons } from './assets/icons/icons.js'
 import './registerServiceWorker'
 import * as firebase from "firebase";
 import VueHtmlToPaper from 'vue-html-to-paper';
+import { createProvider } from './vue-apollo'
 
 const options = {
   name: '_blank',
@@ -96,9 +97,11 @@ new Vue({
   icons,
   vuetify: new Vuetify(vuetifyOptions),
   render: h => h(App),
+  apolloProvider: createProvider(),
+
   created() {
     firebase.initializeApp(constants.FIREBASE_CONFIG);
     firebase.firestore().enablePersistence()
 
-  },
+  }
 }).$mount('#app');

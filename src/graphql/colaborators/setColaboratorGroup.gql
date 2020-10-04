@@ -1,0 +1,5 @@
+mutation($idColaborator:ID!, $group:String){
+  UpdateColaborator(id:$idColaborator,group:$group){
+    id
+  }
+}

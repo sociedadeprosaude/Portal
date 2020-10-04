@@ -1,12 +1,12 @@
 {
   "name": "portal",
-  "version": "2.7.8",
+  "version": "3.0.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "node --max_old_space_size=8192 node_modules/.bin/vue-cli-service build --open",
-    "build-deploy": "vue-cli-service build --max_old_space_size=8192 && firebase deploy --only hosting",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "build-deploy": "vue-cli-service build --max_old_space_size=8192 && firebase deploy --only hosting"
   },
   "dependencies": {
     "@coreui/icons": "^1.0.1",
@@ -32,6 +32,7 @@
     "register-service-worker": "^1.6.2",
     "v-currency-field": "^3.0.6",
     "vue": "^2.6.10",
+    "vue-apollo": "^3.0.0-beta.11",
     "vue-chartjs": "^3.5.0",
     "vue-html-to-paper": "^1.1.1",
     "vue-infinite-scroll": "^2.0.2",
@@ -56,9 +57,11 @@
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "fibers": "^5.0.0",
-    "sass": "^1.22.9",
+    "graphql-tag": "^2.9.0",
     "node-sass": "~4.14.1",
+    "sass": "^1.22.9",
     "sass-loader": "^7.2.0",
+    "vue-cli-plugin-apollo": "~0.22.2",
     "vue-template-compiler": "^2.6.10"
   }
 }

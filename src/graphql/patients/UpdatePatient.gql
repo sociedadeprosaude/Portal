@@ -1,0 +1,22 @@
+mutation UpdatePatient(
+    $idPatient: ID!,
+    $name: String!,
+    $birth_date: String,
+    $cpf: String!,
+    $sex: String,
+    $association_number: Int,
+    $telephones:[String]
+    ){
+  UpdatePatient(
+    id:$idPatient,
+    name: $name,
+    birth_date: $birth_date,
+    cpf: $cpf,
+    sex: $sex,
+    association_number: $association_number,
+    telephones:$telephones
+  )
+  {
+    id
+  }
+}

@@ -2,7 +2,13 @@
   <v-container>
     <v-layout column>
       <v-flex sm12>
-        <DataDoctorToSearchConsultation/>
+        <DataDoctorToSearchConsultation 
+          @selectExamTypeCheck="filterExams=$event"
+          @selectExamType="selectedProduct=$event"
+          @selectSpecialty="selectedProduct=$event"
+          @selectDoctor="selectedDoctor=$event"
+          @selectClinic="selectedClinic=$event"
+        />
       </v-flex>
       <v-flex xs12 class="justify-start text-left">
         <v-tooltip right color="white">
@@ -15,7 +21,7 @@
           <span style="color: #003B8F; font-weight: bold">Calendário</span>
         </v-tooltip>
       </v-flex>
-      <v-flex xs12 class="mt-3" v-show="showCalendar">
+      <!-- <v-flex xs12 class="mt-3" v-show="showCalendar">
         <v-date-picker
             :allowed-dates="allowedDates"
             class="mx-2"
@@ -24,7 +30,7 @@
             no-title
             color="primary"
         />
-      </v-flex>
+      </v-flex> -->
       <v-flex class="mt-4" sm12>
         <CardPatient ref="patientCard"/>
       </v-flex>
@@ -49,11 +55,18 @@ export default {
     showCalendar: false,
     date: moment().format("YYYY-MM-DD"),
     consultationsListenerUnsubscriber: undefined,
+    schedules:[],
+    filterExams:false,
+    //selectedExam: undefined,
+    //selectedSpecialty:undefined,
+    selectedProduct:undefined,
+    selectedDoctor:undefined,
+    selectedClinic:undefined
   }),
 
   async mounted() {
     this.showCalendar = true;
-    await this.listenConsultations();
+    //await this.listenConsultations();
     this.showCalendar = false;
   },
 
@@ -65,47 +78,32 @@ export default {
       else this.$vuetify.goTo("#group-" + val, this.options);
     },
 
-    doctor() {
-      return this.$store.getters.doctorSelected
+    changeData: {
+      handler: function(val) {
+        this.$emit('loading',true)
+        this.$apollo.queries.loadSchedules.refresh()
+      },
+      deep: true
     },
 
-    clinic() {
-      return this.$store.getters.selectedClinic
+    daysToListen(value){
+      this.consultationsByDate(this.schedules)
     },
-
-    specialty() {
-      return this.$store.getters.selectedSpecialty
-    },
-
-    schedules() {
-      return this.$store.getters.schedules
-    },
-    consultations() {
-      return this.$store.getters.consultations
-    }
 
   },
 
   computed: {
 
-    doctor() {
-      return this.$store.getters.doctorSelected;
-    },
-
-    clinic() {
-      return this.$store.getters.selectedClinic
-    },
-
-    specialty() {
-      return this.$store.getters.selectedSpecialty
-    },
-
-    examType() {
-      return this.$store.getters.scheduleExamSelected
-    },
-    examTypeCheck() {
-      return this.$store.getters.scheduleExamSelectedCheck
-    },
+    changeData() {
+      const { selectedProduct, selectedDoctor, selectedClinic, filterExams} = this
+      
+      return {
+        selectedProduct,
+        selectedDoctor, 
+        selectedClinic, 
+        filterExams
+      }
+    },    
 
     options() {
       return {
@@ -115,50 +113,8 @@ export default {
       };
     },
 
-    schedules() {
-      let schedules = this.$store.getters.schedules.filter(a => {
-        let response = true;
-        if (this.doctor) {
-          if (this.doctor.cpf !== a.doctor.cpf) response = false;
-        }
-        if (this.specialty) {
-          if (!a.specialty || this.specialty.name !== a.specialty.name) response = false;
-        }
-        if (this.clinic) {
-          if (this.clinic !== a.clinic.name) response = false;
-        }
-        if (this.examType) {
-          if (!a.exam_type || this.examType.name !== a.exam_type.name) response = false;
-        }
-        if ((this.examTypeCheck && !a.exam_type) || (!this.examTypeCheck && a.exam_type)) response = false
-
-        return response;
-      });
-      return this.consultationsOfSchedules(schedules);
-    },
-
     selectedPatient() {
       return this.$store.getters.selectedPatient;
-    },
-    consultations() {
-      return this.$store.getters.consultations.filter(a => {
-        let response = true;
-        if (this.doctor) {
-          if (this.doctor.cpf !== a.doctor.cpf) response = false;
-        }
-        if (this.specialty && a.specialty) {
-          if (this.specialty.name !== a.specialty.name) response = false;
-        }
-
-        if (this.examType && a.exam) {
-          if (this.examType.name !== a.exam.type) response = false;
-        }
-
-        if (this.clinic) {
-          if (this.clinic !== a.clinic.name) response = false;
-        }
-        return response;
-      });
     },
 
   },
@@ -166,22 +122,7 @@ export default {
   methods: {
 
     async listenConsultations() {
-      this.consultationsListenerUnsubscriber = await this.$store.dispatch(
-          "getSchedules",
-          {
-            start_date: moment()
-                .subtract(5, "hours")
-                .format("YYYY-MM-DD HH:mm:ss"),
-            final_date: moment()
-                .add(this.daysToListen, "days")
-                .format("YYYY-MM-DD 23:59:59")
-          }
-      );
-      await this.$store.dispatch('listenConsultations',
-          {
-            start_date: new Date().toISOString().substr(0, 10),
-            final_date: moment().add(this.daysToListen, 'days').format('YYYY-MM-DD 23:59:59')
-          });
+     
     },
 
     allowedDates(val) {
@@ -190,7 +131,8 @@ export default {
       );
     },
 
-    consultationsByDate(consultations) {
+    consultationsByDate(schedules) {
+      let consultations = this.consultationsOfSchedules(schedules)
       let res = {};
       consultations.sort((a, b) => {
         return a.date > b.date ? 1 : a.date < b.date ? -1 : 0
@@ -210,29 +152,30 @@ export default {
       let consultations = [];
       schedules.forEach((schedule) => {
         //let keys = Object.keys(schedule.days);
-        if (schedule.days) {
+        if (schedule.days && schedule.product && schedule.doctor) {
           let dates = this.datesOfInterval({days: schedule.days});
-
           dates.forEach((date, index) => {
-            let hourConsultation = schedule.days[moment(date).weekday()].hour;
-            if (schedule.cancelations_schedules.indexOf(date) === -1 && schedule.cancelations_schedules.indexOf(date + ' ' + hourConsultation) === -1) {
+            let findDay = schedule.days.find(day => Number(day.day) == moment(date).weekday())
+            let hourConsultation = findDay.hour;
+            //if (schedule.cancelations_schedules.indexOf(date) === -1 && schedule.cancelations_schedules.indexOf(date + ' ' + hourConsultation) === -1) {
               let scheduleObj = {
                 clinic: schedule.clinic,
                 doctor: schedule.doctor,
                 date: date + ' ' + hourConsultation,
                 interval: schedule.interval,
                 routine_id: schedule.routine_id,
-                vacancy: schedule.days[moment(date).weekday()].vacancy,
+                vacancy: findDay.vacancy,
                 id_schedule: schedule.id,
+                product:schedule.product
               };
-              if (schedule.specialty)
-                scheduleObj.specialty = schedule.specialty
-              if (schedule.exam_type)
-                scheduleObj.exam_type = schedule.exam_type
-              let obj = {...scheduleObj, ...this.numberVacancyAndReturns(scheduleObj)};
+              /* if (schedule.product.type == "SPECIALTY")
+                scheduleObj.specialty = schedule.product
+              else if (schedule.product.type == "EXAM")
+                scheduleObj.exam_type = schedule.product */
+              let obj = {...scheduleObj,qtd_consultations: schedule.num_consultations, qtd_returns:schedule.num_regress};
               obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns;
               consultations.push(obj)
-            }
+            //}
           })
         }
       });
@@ -241,11 +184,11 @@ export default {
 
     datesOfInterval(payload) {
       let days = payload.days
-      let weekDays = Object.keys(days);
+      let weekDays //= Object.keys(days);
       let startDate = moment();
       let dates = [];
-      weekDays = weekDays.map((day) => {
-        return Number(day)
+      weekDays = days.map((day) => {
+        return Number(day.day)
       });
       let day = startDate;
       for (let i = 0; i < this.daysToListen; i++) {
@@ -257,24 +200,27 @@ export default {
       }
       return dates
     },
+  },
+  apollo: {
+    loadSchedules: {
+      query: require("@/graphql/schedules/LoadSchedules.gql"),
+      update(data) {
+        if(this.filterExams) 
+          this.schedules = data.Schedule.filter(schedule => schedule.product && schedule.product.type === 'EXAM')
+        else
+          this.schedules = data.Schedule.filter(schedule => schedule.product && schedule.product.type === 'SPECIALTY')
 
-    numberVacancyAndReturns(schedule) {
+        if(this.selectedProduct)
+          this.schedules = this.schedules.filter(schedule=> schedule.product && schedule.product.id === this.selectedProduct.id)
+        
+        if(this.selectedDoctor)
+          this.schedules = this.schedules.filter(schedule=> schedule.doctor && schedule.doctor.id === this.selectedDoctor.id)
 
-      let consultations = this.consultations;
-      return consultations.reduce((obj, item) => {
-        let specialtyOrExamType = ((schedule.specialty && item.specialty && schedule.specialty.name === item.specialty.name)
-            || (schedule.exam_type && item.exam && schedule.exam_type.name === item.exam.type))
-        if (schedule.clinic.name === item.clinic.name && specialtyOrExamType
-            && schedule.doctor.cpf === item.doctor.cpf && schedule.date === item.date && item.user) {
-          if (item.type === 'Consulta' || !item.type) {
-            obj.qtd_consultations = obj.qtd_consultations + 1
-          } else
-            obj.qtd_returns += 1
-          if (!obj.scheduled_hours) obj.scheduled_hours = []
-          obj.scheduled_hours.push(item.date)
-        }
-        return obj
-      }, {qtd_consultations: 0, qtd_returns: 0})
+        if(this.selectedClinic)
+          this.schedules = this.schedules.filter(schedule=> schedule.clinic && schedule.clinic.id === this.selectedClinic.id)
+        this.consultationsByDate(this.schedules)
+        this.$emit('loading',false)
+      }
     },
   }
 }

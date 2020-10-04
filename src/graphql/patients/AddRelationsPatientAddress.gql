@@ -1,0 +1,13 @@
+mutation($idAddresses:ID!,$idPatient:ID!){
+    AddPatientAddresses(
+        from:{
+            id:$idPatient
+        },
+        to:{
+            id:$idAddresses
+        }
+    ){
+        from{id},
+        to{id}
+    }
+}
