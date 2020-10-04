@@ -77,7 +77,8 @@
             }
         },
         mounted() {
-            if (firebase.auth().currentUser) {
+          window.addEventListener('keydown', this.handleEnter)
+          if (firebase.auth().currentUser) {
                 this.$router.push('/')
             }
         },
@@ -88,11 +89,11 @@
             }
           },
             async signIn() {
-                
+
                 try {
                     this.loading = true;
                     let user = await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
-                    
+
                     this.skip = false
                     this.$apollo.queries.findColaborator.refresh()
                 } catch (e) {
@@ -110,7 +111,7 @@
                 }
                 this.loading = false
             }
-        }, 
+        },
         apollo:{
             findColaborator:{
                 query: require("@/graphql/authentication/FindUser.gql"),
@@ -130,7 +131,6 @@
                     return this.skip
                 }
             }
-          window.addEventListener('keydown', this.handleEnter)
         },
         beforeDestroy() {
           window.removeEventListener('keydown', this.handleEnter)
