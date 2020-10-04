@@ -229,11 +229,22 @@ const actions = {
             uid: uid,
             cpf: payload.cpf
         };
+
+
         let info = { name: payload.specialtie };
         await firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties').doc(payload.specialtie).set(info);
         await firebase.firestore().collection('clinics/' + payload.clinic.name + '/specialties/' + payload.specialtie + '/doctors').doc(uid).set(data);
         await firebase.firestore().collection('users/' + uid + '/specialties').doc(payload.specialtie).collection('clinics/').doc(payload.clinic.name).set(payload.clinic);
         await firebase.firestore().collection('specialties/' + payload.specialtie + '/doctors').doc(uid).collection('clinics/').doc(payload.clinic.name).set(payload.clinic);
+        let specialtie = await firebase.firestore().collection('specialties').doc(payload.specialtie).get()
+        specialtie = specialtie.data()
+        specialtie.doctors.filter( (a) => {
+            if(a.name === payload.doctor){
+                a.clinics = payload.clinics
+            }
+        })
+        await firebase.firestore().collection('specialties').doc(payload.specialtie).update({doctors: specialtie.doctors})
+
         console.log('foi?3')
     },
 
