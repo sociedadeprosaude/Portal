@@ -28,12 +28,13 @@
                 <v-flex>
                   <v-layout column wrap class="primary--text">
                     <span
+                        v-if="item.clinic.has_address[0]"
                       class="font-weight-bold"
                     >{{item.clinic.has_address[0].street}}, {{item.clinic.has_address[0].number}}, {{item.clinic.has_address[0].neighboor}}, {{item.clinic.has_address[0].cep}}</span>
                     <span
-                      v-if="item.clinic.has_address[0].complement"
+                      v-if="item.clinic.has_address[0] && item.clinic.has_address[0].complement"
                     >Complemento: {{item.clinic.has_address[0].complement}}</span>
-                    <span>{{item.clinic.has_address[0].city}} - {{item.clinic.has_address[0].state}}</span>
+                    <span v-if="item.clinic.has_address[0]">{{item.clinic.has_address[0].city}} - {{item.clinic.has_address[0].state}}</span>
                     <br />
                     <span class="font-weight-bold">
                       Contato.:
@@ -162,7 +163,7 @@
             <v-flex xs6 class="text-left mt-12">
               <v-layout column wrap class="primary--text">
                 <span class="font-weight-bold">Instituto Pró Saúde do Amazonas</span>
-                <span> {{selectedUnit.has_address[0].street + ' ' + selectedUnit.has_address[0].number +  ',' +  selectedUnit.has_address[0].neighboor}}</span>
+                <span v-if="selectedUnit.has_address"> {{selectedUnit.has_address[0].street + ' ' + selectedUnit.has_address[0].number +  ',' +  selectedUnit.has_address[0].neighboor}}</span>
                 <span>Manaus - AM</span>
                 <span>CNPJ: 09.066.632/0001-22</span>
               </v-layout>
