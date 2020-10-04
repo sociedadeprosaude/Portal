@@ -53,13 +53,13 @@ const getters = {
     },
     getShoppingCartItemsByCategory(state) {
         let consultations = state.items.filter((a) => {
-            if(a.type === 'appointment'){
+            if(a.doctor){
                 console.log('a: ', a)
                 return a
             }
         });
         let exams = state.items.filter((a) => {
-            if(a.type === 'exam'){
+            if(!a.doctor){
                 if(a.priceDiscount){
                     let trocarNumero= a.price;
                     a.price= a.priceDiscount;
@@ -73,11 +73,13 @@ const getters = {
             }
         });
         let clinics = {}
+        console.log('aaa', state.items)
         state.items.forEach((element) => {
-            if(!clinics[element.clinic.name]) {
-                clinics[element.clinic.name] = []
+            let clinicName = element.clinic ? element.clinic.name : element.doctor.clinic.name
+            if(!clinics[clinicName]) {
+                clinics[clinicName] = []
             }
-                clinics[element.clinic.name].push(element)
+                clinics[clinicName].push(element)
         })
         return {
             consultations: consultations,

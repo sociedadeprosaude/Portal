@@ -37,7 +37,7 @@
                     </v-flex>
                     <v-flex xs12>
                         <v-layout row wrap class="mx-1 black--text">
-                            <span>{{item.clinic.name}}</span>
+                            <span>{{item.doctor.clinic.name}}</span>
                             <v-spacer/>
                             <span>R$ {{item.price}}</span>
                         </v-layout>
