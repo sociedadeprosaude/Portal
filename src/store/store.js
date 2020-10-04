@@ -49,7 +49,7 @@ const vuexLocal = new VuexPersistence({
 });
 
 const store = new Vuex.Store({
-    // plugins: [vuexLocal.plugin],
+    plugins: [vuexLocal.plugin],
 
     modules: {
         Auth,
