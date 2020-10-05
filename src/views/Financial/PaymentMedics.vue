@@ -279,8 +279,23 @@
         mounted() {
             this.getInitialInfo()
         },
-        watch: {
-
+        apollo: {
+            loadDoctors: {
+                query: require("@/graphql/doctors/LoadDoctorsPayment.gql"),
+                variables(){
+                    return {
+                        type: 'SPECIALTY'
+                    }
+                },
+                update(data){
+                    this.Specialties = Object.assign(data.Product)
+                    this.LocaleSpecialties= data.Product
+                    this.SpecialtieSkip = true
+                },
+                skip(){
+                    return this.SpecialtieSkip
+                }
+            }
         }
     }
 </script>

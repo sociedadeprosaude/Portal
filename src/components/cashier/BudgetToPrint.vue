@@ -87,7 +87,7 @@
                                     <v-flex xs6 class="text-left mt-12">
                                         <v-layout column wrap class="primary--text">
                                             <span class="font-weight-bold">Instituto Pró Saúde do Amazonas</span>
-                                            <span> {{selectedUnit.address.street + ' ' + selectedUnit.address.number +  ',' +  selectedUnit.address.neighboor}}</span>
+                                            <span v-if="selectedUnit.has_address"> {{selectedUnit.has_address[0].street + ' ' + selectedUnit.has_address[0].number +  ',' +  selectedUnit.has_address[0].neighboor}}</span>
                                             <span>Manaus - AM</span>
                                             <span>CNPJ: 09.066.632/0001-22</span>
                                         </v-layout>
