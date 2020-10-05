@@ -1,8 +1,13 @@
 <template>
   <v-container fluid class="ma-0 pa-0">
+    <ApolloQuery
+            :query="require('@/graphql/category/LoadCategories.gql')"
+    >
+      <template slot-scope="{ result: { data } }">
     <v-data-table
       :headers="headers"
-      :items="categories.map((category)=>({name:category}))"
+      :items="data ? data.Category : []"
+      item-text="name"
       :search="search"
       item-key="name"
       :items-per-page="-1"
@@ -32,7 +37,8 @@
         </v-btn>
       </template>
     </v-data-table>
-
+      </template>
+    </ApolloQuery>
     <div class="text-center">
       <v-dialog v-model="dialogCreateCategory" width="500">
         <v-card>
@@ -114,12 +120,20 @@ export default {
 
   methods: {
     createCategory() {
+      this.$apollo.mutate({
+        mutation: require ('@/graphql/category/NewCategory.gql'),
+        variables:{
+          name: this.newCategory
+        }
+      }).then((data) => {
+          console.log('data: ', data)
+      })
       this.dialogCreateCategory = false;
-      if (this.categories.indexOf(this.newCategory) < 0) {
+      /* if (this.categories.indexOf(this.newCategory) < 0) {
         this.$store.dispatch("addOuttakesCategory", {
           category: this.newCategory
         });
-      } else console.log("ja existe");
+      } else console.log("ja existe"); */
     },
 
     confirmDeletion(item) {

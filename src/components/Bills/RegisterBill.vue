@@ -244,13 +244,13 @@ export default {
         description: this.description,
         value: this.value,
         date_to_pay: this.dateToPay,
-        created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+        date: moment().format("YYYY-MM-DD HH:mm:ss"),
         colaborator: this.user,
         unit: this.unit.name !== this.other ? this.unit : null,
         recurrent: this.recurrent ? "true" : "false"
       };
-
-      if (this.files.length > 0) {
+      console.log('bill: ', bill)
+      /* if (this.files.length > 0) {
         bill.appends = await this.submitFiles(this.files);
       }
       await this.$store.dispatch("addOuttakes", bill);
@@ -261,7 +261,8 @@ export default {
           .format("YYYY-MM-DD 23:59:59")
       });
       this.loading = false;
-      this.resetData();
+      this.resetData(); */
+      this.loading = false;
     },
 
     handleFileUpload() {
