@@ -31,16 +31,15 @@ import Attendance from "./views/DoctorAttendance/Attendance";
 import TicketsDashboard from "./views/Operational/Tickets/TicketsDashboard";
 import RoomDashboard from "./views/Operational/Tickets/RoomDashboard";
 
-
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
 import CashierRoutes from "./routes/CashierRoutes";
-
 
 import discount from "./views/Notifications/discount"
 import notifications from "./views/Notifications/notifications";
 
-
 import RelatoriosDashboard from "@/views/Reports/ReportsDashboard";
+
+import ErrorAuthentication from "@/views/Auth/ErrorAuthentication";
 
 
 const Clinic = {
@@ -61,6 +60,11 @@ let mainRoutes = [
     path: '/login',
     name: 'Login',
     component: Login,
+  },
+  {
+    path: '/error-authentication',
+    name: 'ErrorAuthentication',
+    component: ErrorAuthentication
   },
   {
     path: '/ContestValueAlert',

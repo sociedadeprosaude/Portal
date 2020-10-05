@@ -32,7 +32,7 @@ const actions = {
     async getUser({ commit }, user) {
         commit('setUser',user)
         console.log('user: ', user)
-        if(user.clinic)
+        if(user && user.clinic)
             commit('setSelectedUnit', user.clinic)
 
         /* try {

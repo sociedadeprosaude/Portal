@@ -18,6 +18,7 @@
         <template v-slot:top>
           <ApolloQuery 
             :query="require('@/graphql/clinics/LoadClinics.gql')"
+            :variables="{property:true}"
           >
             <template slot-scope="{ result: { data } }">
               <HeaderTable :clinics="data.Clinic" @filterClinic="clinic=$event" @examTypeCheck="examTypeCheck=$event"/>
