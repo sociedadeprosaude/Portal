@@ -1,5 +1,5 @@
 <template>
-    <v-card width="500">
+    <v-card width="500" v-if="clinic">
         <v-card-title class="headline grey lighten-2 mb-4" primary-title>
           <v-flex xs10> <span class="headline">Edição da Clínica</span></v-flex>
          <v-flex xs2><v-btn text class="transparent" @click="closeDialog"><v-icon>close</v-icon></v-btn></v-flex>
