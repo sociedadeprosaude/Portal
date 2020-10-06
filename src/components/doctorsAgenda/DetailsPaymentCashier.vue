@@ -518,7 +518,7 @@
             },
             async AddRelationsIntakeDoctor(data){
                 this.$apollo.mutate({
-                    mutation: require('@/graphql/transaction/AddRelationsNewIntake.gql'),
+                    mutation: require('@/graphql/transaction/AddRelationsNewIntakeDoctor.gql'),
                     variables: {
                         idBudget: data.data.CreateTransaction.id,
                         idColaborator: this.selectedBudget.colaborator.id,
