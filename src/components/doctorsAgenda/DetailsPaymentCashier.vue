@@ -510,9 +510,9 @@
                         this.AddRelationsIntakeDoctor(data)
                     }
                     else{
-                        this.AddRelationsIntake(data)
+                       this.AddRelationsIntake(data)
                     }
-                }).catch((error) => {
+                 }).catch((error) => {
                     console.error('Crianção da transaction: ',error)
                 })
             },
@@ -523,7 +523,7 @@
                         idBudget: data.data.CreateTransaction.id,
                         idColaborator: this.selectedBudget.colaborator.id,
                         idPatient: this.selectedBudget.user.id,
-                        idDoctor: this.selectedBudget.doctor.neo4j_id,
+                        idDoctor: this.selectedBudget.doctor.id,
                         idUnit: this.selectedBudget.unit.id
                     },
 

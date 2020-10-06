@@ -47,32 +47,38 @@
             </v-card>
             <v-layout row wrap class="mt-3">
                 <v-flex xs12>
-                    <v-combobox class="pa-0"
-                                v-model="selectedDoctor"
-                                :items="doctors"
-                                return-object
-                                item-text="name"
-                                label="Médico"
-                                outlined
-                                dense
-                                solo
-                                color="blue"
-                                clearable
+                    <ApolloQuery
+                            :query="require('@/graphql/doctors/LoadDoctorsId.gql')"
                     >
-                        <template v-slot:selection="data">
-                            <v-chip
-                                    :key="JSON.stringify(data.item)"
-                                    :input-value="data.selected"
-                                    :disabled="data.disabled"
-                                    class="v-chip--select-multi"
-                                    @click.stop="data.parent.selectedIndex = data.index"
-                                    @input="data.parent.selectItem(data.item)"
-                                    text-color="white" dense
-                                    color="primary"
-                            >{{ data.item.name }}
-                            </v-chip>
+                        <template slot-scope="{ result: { data } }">
+                            <v-combobox class="pa-0"
+                                        v-model="selectedDoctor"
+                                        :items="data ? doctors : []"
+                                        return-object
+                                        item-text="name"
+                                        label="Médico"
+                                        outlined
+                                        dense
+                                        solo
+                                        color="blue"
+                                        clearable
+                            >
+                                <template v-slot:selection="dataa">
+                                    <v-chip
+                                            :key="JSON.stringify(dataa.item)"
+                                            :input-value="dataa.selected"
+                                            :disabled="dataa.disabled"
+                                            class="v-chip--select-multi"
+                                            @click.stop="dataa.parent.selectedIndex = dataa.index"
+                                            @input="dataa.parent.selectItem(dataa.item)"
+                                            text-color="white" dense
+                                            color="primary"
+                                    >{{ dataa.item.name }}
+                                    </v-chip>
+                                </template>
+                            </v-combobox>
                         </template>
-                    </v-combobox>
+                    </ApolloQuery>
                 </v-flex>
             </v-layout>
         </v-layout>
@@ -85,7 +91,9 @@
         data() {
             return {
                 receiptDialog: false,
-                noDoctorKeyWord: 'Nenhum'
+                noDoctorKeyWord: 'Nenhum',
+                doctors:{},
+                skipDoctors: false
 
             }
         },
@@ -96,16 +104,6 @@
             },
             consultations() {
                 return this.$store.getters.getShoppingCartItemsByCategory.consultations
-            },
-            doctors: {
-                get: function () {
-                    let docArray = [];
-                    docArray.push({
-                        name: this.noDoctorKeyWord
-                    });
-                    docArray = docArray.concat(Object.values(this.$store.getters.doctors));
-                    return docArray;
-                }
             },
             selectedDoctor: {
                 get() {
@@ -125,16 +123,25 @@
             removeItem(item) {
                 this.$store.commit('removeShoppingCartItem', item)
             },
-
             clearCart() {
                 this.$store.commit('clearShoppingCartItens');
                 this.$store.commit('setSelectedBudget', undefined);
                 let user = undefined;
                 this.$store.commit('setSelectedPatient', user)
-
             },
-
-
+        },
+        apollo: {
+            loadDoctors: {
+                query: require("@/graphql/doctors/LoadDoctorsId.gql"),
+                update(data) {
+                    this.doctors = data.Doctor
+                    this.doctors.push({name: this.noDoctorKeyWord})
+                    this.skipDoctors = true
+                },
+                skip (){
+                    return this.skipDoctors
+                }
+            },
         }
     }
 </script>
