@@ -12,7 +12,7 @@
                     </v-card-title>
                     <v-divider class="primary"/>
                 </v-flex>
-                <v-layout v-if="allExams" class="align-start justify-start" wrap>
+                <v-layout v-if="allExams.length !== 0" class="align-start justify-start" wrap>
                     <v-flex sm4 v-for="(item,index) in allExams" :key="index" v-if="item.type === 'EXAM'">
                         <v-card outlined class="borderCard mx-2 mr-2 grey_light">
                             <v-layout row wrap class="mt-2 mr-2 ml-2">
@@ -33,7 +33,7 @@
                         </v-card>
                     </v-flex>
                 </v-layout>
-                <v-layout v-else class="align-center justify-center" wrap>
+                <v-layout v-if="allExams.length === 0" class="align-center justify-center" wrap>
                     <v-card-text class="justify-center text-center">
                         <span class="font-italic">Não há <strong>exames</strong> cadastrados para esta clínica.</span>
                     </v-card-text>
@@ -49,7 +49,7 @@
                     <v-divider class="primary"/>
                 </v-flex>
                 <v-layout class="align-center justify-center" wrap>
-                    <v-layout v-if="allSpecialties" class="align-center justify-center" wrap>
+                    <v-layout v-if="allSpecialties.length !== 0" class="align-center justify-center" wrap>
                       <v-flex sm4 v-for="(item,index) in allSpecialties" :key="index">
                         <v-card outlined class="borderCard mx-2 mr-2 grey_light">
                           <v-layout row wrap class="mt-2 mr-2 ml-2">
@@ -69,7 +69,7 @@
                         </v-card>
                       </v-flex>
                     </v-layout>
-                    <v-layout v-else class="align-center justify-center" wrap>
+                    <v-layout v-if="allSpecialties.length === 0" class="align-center justify-center" wrap>
                         <v-card-text class="justify-center text-center">
                             <span class="font-italic">Não há <strong>especialidades</strong> cadastrados para esta clínica.</span>
                         </v-card-text>
