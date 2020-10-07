@@ -132,7 +132,8 @@
                 this.$apollo.mutate({
                     mutation: require('@/graphql/consultations/CancelConsultation.gql'),
                     variables: {
-                        idConsultation: this.consultation.id
+                        idConsultation: this.consultation.id,
+                        idSchedule: this.consultation.came_from.id
                     },
                     
                 }).then((data) => {
