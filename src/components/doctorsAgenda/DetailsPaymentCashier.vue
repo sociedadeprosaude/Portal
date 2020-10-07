@@ -469,12 +469,7 @@ export default {
       this.selectedBudget.id = transaction.data.CreateTransaction.id
 
 
-      // for (let exam in this.selectedBudget.exams) {
-        await this.createProductTransaction(this.selectedBudget.exams, transaction.data.CreateTransaction)
-      // }
-      // for (let specialtie in this.selectedBudget.specialties) {
-      //   await this.createProductTransaction(this.selectedBudget.specialties[specialtie], transaction.data.CreateTransaction)
-      // }
+      await this.createProductTransaction(this.selectedBudget.exams, transaction.data.CreateTransaction)
       if (this.selectedBudget.doctor) {
         this.AddRelationsIntakeDoctor(transaction)
       } else {
