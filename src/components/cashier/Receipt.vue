@@ -221,11 +221,6 @@ export default {
   components: {
     AttendanceGuide
   },
-  watch: {
-    budget(value) {
-      console.log(value)
-    }
-  },
   computed: {
     patient() {
       return this.$store.getters.selectedPatient;
