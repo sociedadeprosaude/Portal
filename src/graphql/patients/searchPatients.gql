@@ -23,7 +23,9 @@ query($name:String){
     sex
     },
     intakes{
-       date,
+       date {
+        formatted
+       },
        id,
       discount,
       value,
