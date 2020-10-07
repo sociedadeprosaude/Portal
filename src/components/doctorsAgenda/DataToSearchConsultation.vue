@@ -168,11 +168,12 @@ export default {
                 id_schedule: schedule.id,
                 product:schedule.product
               };
-              /* if (schedule.product.type == "SPECIALTY")
-                scheduleObj.specialty = schedule.product
-              else if (schedule.product.type == "EXAM")
-                scheduleObj.exam_type = schedule.product */
-              let obj = {...scheduleObj,qtd_consultations: schedule.num_consultations, qtd_returns:schedule.num_regress};
+              
+              const consultationsOfDay = schedule.consultations.filter(consultation => consultation.date === scheduleObj.date)
+              const qtd_returns = consultationsOfDay.filter(consultation => consultation.type === "Retorno").length
+              const qtd_consultations = consultationsOfDay.length - qtd_returns;
+
+              const obj = {...scheduleObj,qtd_consultations, qtd_returns};
               obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns;
               consultations.push(obj)
             //}
@@ -192,7 +193,7 @@ export default {
       });
       let day = startDate;
       for (let i = 0; i < this.daysToListen; i++) {
-        let expiration_date = days[day.weekday().toString()] ? days[day.weekday().toString()].expiration_date : undefined
+        let expiration_date = days[day.weekday().toString()] ? days[day.weekday().toString()].expiration_date.formatted : undefined
         if (weekDays.indexOf(day.weekday()) > -1 && (!expiration_date || day.isSameOrBefore(moment(expiration_date, 'YYYY-MM-DD')))) {
           dates.push(day.format('YYYY-MM-DD'))
         }
