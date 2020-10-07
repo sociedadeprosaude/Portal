@@ -89,6 +89,11 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-row>
+      <v-card class="pa-4">
+        <strong>Nenhuma venda neste período</strong>
+      </v-card>
+    </v-row>
   </v-container>
 </template>
 

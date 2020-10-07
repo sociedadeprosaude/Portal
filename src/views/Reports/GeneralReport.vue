@@ -39,7 +39,7 @@
           <template v-slot="{result: {data, loading, error}}">
             <v-progress-linear v-if="loading" color="primary" indeterminate></v-progress-linear>
             <strong class="red--text" v-else-if="error">Erro ao carregar as unidades, verifique sua conexão</strong>
-            <v-chip-group v-else-if="data" active-class="primary white--text">
+            <v-chip-group mandatory v-else-if="data" active-class="primary white--text">
               <v-chip v-for="unit in data.Clinic" :key="unit.name" @click="selectedUnit = unit">
                   <strong style="font-size: 0.6em">{{ unit.name }}</strong>
               </v-chip>
