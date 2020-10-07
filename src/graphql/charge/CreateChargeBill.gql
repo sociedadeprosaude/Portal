@@ -1,0 +1,20 @@
+mutation (
+    $value: Float,
+    $payment_methods: [String],
+    $date: String,
+    $description: String,
+    $date_to_pay: String,
+    $recurrent: Boolean
+     )
+    {
+    CreateCharge(
+     value:$value,
+     payment_methods:$payment_methods,
+     date:$date,
+     description:$description,
+     date_to_pay:$date_to_pay,
+     recorrent: $recurrent
+     ){
+        id, value, payment_methods, date
+    }
+}

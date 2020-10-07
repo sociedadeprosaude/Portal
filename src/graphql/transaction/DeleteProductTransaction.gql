@@ -1,0 +1,5 @@
+mutation($idProductTransaction:ID!){
+  DeleteProductTransaction( id:$idProductTransaction){
+      id
+      }
+}

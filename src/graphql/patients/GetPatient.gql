@@ -38,6 +38,7 @@ query($id:ID!){
          }
          products: with_productTransaction_relations{
             price,
+            id,
             with_product{
                name,
                type,

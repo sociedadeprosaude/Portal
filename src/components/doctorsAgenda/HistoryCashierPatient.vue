@@ -166,12 +166,21 @@
                         idColaborator: this.$store.getters.user.id,
                         idTransaction: intake.id
                     }
-                }).then(()=> {
-                        console.log('entrei')
-                        this.skipPatients = false
-                        this.idUser= intake.user.id
-                        this.$apollo.queries.loadPatient.refresh()
                 })
+                console.log('intake', intake)
+                for(let i in intake.products){
+                    console.log('intake.produts', intake.products[i])
+                    await this.$apollo.mutate({
+                        mutation: require('@/graphql/transaction/DeleteProductTransaction.gql'),
+                        variables:{
+                            idProductTransaction: intake.products[i].id
+                        }
+                    })
+                }
+                console.log('entrei')
+                this.skipPatients = false
+                this.idUser= intake.user.id
+                this.$apollo.queries.loadPatient.refresh()
                 this.cancelBuyDialog = false;
 
                // await this.$store.dispatch("cancelIntake", intake);
