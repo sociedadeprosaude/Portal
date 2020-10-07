@@ -221,9 +221,6 @@ export default {
   components: {
     AttendanceGuide
   },
-  mounted() {
-    console.log('aa', this.budget)
-  },
   watch: {
     budget(value) {
       console.log(value)
