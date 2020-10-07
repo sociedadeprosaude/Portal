@@ -57,6 +57,7 @@
                               <p class="text-left font-weight-black">{{ item.name }}</p>
                               <div v-for="(spc,index) in item.is_specialist_of" :key="index">
                                 <p class="text-left font-weight-black primary" style="color: white">{{spc.name}}</p>
+                                <p class="text-left font-weight-black mt-n4">Metodo de Pagamento: {{ spc.payment_method === 'unit' ? "Consulta" : "Dia" }} </p>
                                 <p class="text-left mt-n4">Custo: R$ {{spc.cost}}</p>
                                 <p class="text-left mt-n4">Preço: R$ {{spc.price}}</p>
                               </div>
@@ -143,6 +144,7 @@
                       if (costProductDoctor[costpd].with_doctor.length > 0 && costProductDoctor[costpd].with_product.length > 0) {
                         if (costProductDoctor[costpd].with_doctor[0].name === this.clinic.has_doctor[doctor].name && this.clinic.has_doctor[doctor].is_specialist_of[spc].name === costProductDoctor[costpd].with_product[0].name) {
                           this.clinic.has_doctor[doctor].is_specialist_of[spc].cost = costProductDoctor[costpd].cost;
+                          this.clinic.has_doctor[doctor].is_specialist_of[spc].payment_method = costProductDoctor[costpd].payment_method;
                         }
                       }
                     }
