@@ -1,5 +1,5 @@
-query($name:String){
-  Patient(first:15, filter:{name_starts_with:$name}){
+query($cpf:String){
+  Patient(first:15, filter:{cpf_starts_with:$cpf}){
     id,
     name,
     cpf,
