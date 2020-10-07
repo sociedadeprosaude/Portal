@@ -1,7 +1,13 @@
-mutation($idConsultation: ID!){
+mutation($idConsultation: ID!,$idSchedule:ID!){
   UpdateConsultation(id:$idConsultation,status:"Cancelado"){
     id,
     type,
     status
+  },
+  RemoveConsultationCame_from(
+    from:{id:$idConsultation},
+    to:{id:$idSchedule}
+  ){
+    from{id},to{id}
   }
 }

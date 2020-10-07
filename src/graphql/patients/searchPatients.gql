@@ -72,7 +72,8 @@ query($name:String){
       type,
       status,
       date,
-      payment_number
+      payment_number,
+      canceled_schedule,
       clinic:of_clinic{
         id,name,logo
       },
