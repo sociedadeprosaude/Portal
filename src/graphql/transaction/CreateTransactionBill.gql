@@ -13,6 +13,6 @@ mutation (
      description:$description,
      date_to_pay:$date_to_pay,
      ){
-        id, value, payment_methods, date
+        id, value, payment_methods, date{formatted}
     }
 }

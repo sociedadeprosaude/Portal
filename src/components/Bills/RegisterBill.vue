@@ -258,7 +258,7 @@ export default {
         bill.value = (parseFloat(bill.value) - (2 * parseFloat(bill.value)))
       }
       console.log('bill: ', bill)
-      this.$apollo.mutate({
+     let charge = await this.$apollo.mutate({
         mutation: require ('@/graphql/charge/CreateChargeBill.gql'),
         variables:{
           payment_methods: bill.payment_method,
@@ -289,6 +289,7 @@ export default {
           })
         }
       })
+      console.log('charge: ', charge)
       console.log('parcels final: ', parcels)
       if(parcels === 0){
           this.resetData()

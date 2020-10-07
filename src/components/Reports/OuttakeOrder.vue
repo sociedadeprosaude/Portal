@@ -233,7 +233,10 @@ export default {
       return moment(date, "YYYY-MM-DD").diff(now, "days");
     },
     async payOuttake(outtake) {
+      this.outtakeSelect = outtake
       this.loading = true;
+      let relationTransactionBills = 0
+      let relationTransactionBillsCategory = outtake.categories.length
       console.log('outtake: ', outtake)
       if(outtake.recorrent === true){
         console.log('recorrent')
@@ -246,12 +249,14 @@ export default {
           }
         }).then((dataDelete) => {
                   console.log('deletado')
+                  let date = { formatted: moment(outtake.date).format('YYYY-MM-DDTHH:mm:ss')}
+                  console.log('date: ', date)
                   this.$apollo.mutate({
                     mutation: require('@/graphql/transaction/CreateTransactionBill.gql'),
                     variables: {
                       payment_methods: outtake.payment_method,
                       value: outtake.value,
-                      date: { formatted: moment(outtake.date).format("YYYY-MM-DDTHH:mm:ss")},
+                      date: date,
                       description: outtake.description,
                       date_to_pay: outtake.date_to_pay
                     }
@@ -261,17 +266,29 @@ export default {
                       mutation: require('@/graphql/transaction/AddRelationsTransactionBillRelations.gql'),
                       variables: {
                         idColaborator: outtake.colaborator.id,
-                        idUnit: outtake.unit.id,
+                        idUnit: outtake.unit[0].id,
                         idTransaction: data.data.CreateTransaction.id
                       }
+                    }).then(() => {relationTransactionBills -= 1
+                      if(relationTransactionBillsCategory === 0 && relationTransactionBills === 0 ){
+                        this.loading = false;
+                        this.$emit('UpdateCharges')
+                      }
                     })
-                    for(let i in outtake.category){
-                      console.log('category', outtake.category[i])
+                    for(let i in outtake.categories){
+                      console.log('category', outtake.categories[i])
                       this.$apollo.mutate({
                         mutation: require ('@/graphql/transaction/AddRelationsTransactionBill-CategoryRelations.gql'),
                         variables:{
-                          idCategory: outtake.category[i].id,
+                          idCategory: outtake.categories[i].id,
                           idTransaction: data.data.CreateTransaction.id
+                        }
+                      }).then(() => {
+                        relationTransactionBillsCategory -= 1
+                        if(relationTransactionBillsCategory === 0 && relationTransactionBills === 0 ){
+                          this.loading = false;
+                          this.$emit('UpdateCharges')
+
                         }
                       })
                     }
@@ -308,7 +325,6 @@ export default {
                 .format("YYYY-MM-DD 23:59:59")
       });
       await this.$store.dispatch("getOuttakesPaidToday"); */
-      this.loading = false;
     },
     async deleteOuttake(outtake) {
       this.loading = true;
