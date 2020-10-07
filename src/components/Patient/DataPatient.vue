@@ -606,7 +606,8 @@
                 foundUsers: undefined,
                 foundDependents: undefined,
                 success: false,
-                skipPatients:true
+                skipPatients:true,
+                skipPatientsCpf: true
             
         }),
         computed: {
@@ -888,9 +889,19 @@
 
             async searchPatient() {
                 try {
-                  this.loading = true
-                  this.$apollo.queries.loadPatient.refresh()
-                  this.skipPatients = false
+                    this.loading = true
+                    if(this.name){
+                        this.skipPatients = false
+                        this.$apollo.queries.loadPatient.refresh()
+                    }
+                    else if(this.cpf){
+                        this.skipPatientsCpf = false
+                        this.$apollo.queries.loadPatientCpf.refresh()
+                    }
+                    else{
+                        this.skipPatients = false
+                        this.$apollo.queries.loadPatient.refresh()
+                    }
                 } catch (e) {
                   window.alert(`Erro buscando usuarios, verifique sua conexão: ${e.message}`);
                 }
@@ -1005,6 +1016,22 @@
                     return this.skipPatients
                 }
             },
+            loadPatientCpf: {
+                query: require("@/graphql/patients/searchPatientsCpf.gql"),
+                variables(){
+                    return {
+                        cpf: this.cpf.replace(/\./g, '').replace('-', '')
+                    }
+                },
+                update(data) {
+                    this.foundUsers = data.Patient
+                    this.skipPatientsCpf = true
+                    this.loading = false
+                },
+                skip (){
+                    return this.skipPatientsCpf
+                }
+            }
         }
     }
 </script>
