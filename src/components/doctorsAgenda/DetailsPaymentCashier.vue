@@ -102,7 +102,9 @@
           </v-flex>
           <v-flex v-for="(x , index) in payments" :key="index">
             <v-flex xs12 v-if="payment.paymentForm[index] === 'Crédito'">
-              <span>Crédito: {{ payment.parcel[index] }}x de R$ {{ (payment.value[index] / payment.parcel[index]).toFixed(2) }}</span>
+              <span>Crédito: {{
+                  payment.parcel[index]
+                }}x de R$ {{ (payment.value[index] / payment.parcel[index]).toFixed(2) }}</span>
             </v-flex>
             <v-flex xs12 v-if="payment.paymentForm[index] === 'Débito'">
               <span>Débito: R$ {{ (payment.value[index]) }}</span>
@@ -189,6 +191,8 @@
 import SubmitButton from "../SubmitButton";
 import BudgetToPrint from "../../components/cashier/BudgetToPrint";
 import Receipt from "../cashier/Receipt";
+import gql from 'graphql-tag'
+
 import functions from "../../utils/functions";
 
 let moment = require('moment');
@@ -465,39 +469,90 @@ export default {
       this.selectedBudget.id = transaction.data.CreateTransaction.id
 
 
-      for (let exam in this.selectedBudget.exams) {
-        await this.createProductTransaction(this.selectedBudget.exams[exam], transaction.data.CreateTransaction)
-      }
-      for (let specialtie in this.selectedBudget.specialties) {
-        await this.createProductTransaction(this.selectedBudget.specialties[specialtie], transaction.data.CreateTransaction)
-      }
+      // for (let exam in this.selectedBudget.exams) {
+        await this.createProductTransaction(this.selectedBudget.exams, transaction.data.CreateTransaction)
+      // }
+      // for (let specialtie in this.selectedBudget.specialties) {
+      //   await this.createProductTransaction(this.selectedBudget.specialties[specialtie], transaction.data.CreateTransaction)
+      // }
       if (this.selectedBudget.doctor) {
         this.AddRelationsIntakeDoctor(transaction)
       } else {
         this.AddRelationsIntake(transaction)
       }
     },
-    async createProductTransaction(product, transaction) {
-      let productTransaction = await this.$apollo.mutate({
-        mutation: require('@/graphql/transaction/CreateProductTransaction.gql'),
-        variables: {
-          price: product.price
+    generateStringProductsTransactions(products) {
+      let mutation = 'mutation {'
+      for (let product in products) {
+        mutation += `
+                productTransaction${product}: CreateProductTransaction(price:${products[product].price}){
+                    id
+                },`
+      }
+      mutation += '}'
+      return mutation
+    },
+    generateStringRelationProductsTransactions(products, productsTransactions, transaction) {
+      let mutation = 'mutation {'
+      for (let product in products) {
+        let productTransactionId = productsTransactions[`productTransaction${product}`].id
+        mutation += `
+                ProductTransactionWith_transaction${product}:AddProductTransactionWith_transaction(
+        from:{
+            id:"${productTransactionId}"
+        },
+        to:{
+            id:"${transaction.id}"
         }
+    ){
+        from{id},
+        to{id}
+    },
+    ProductTransactionWith_product${product}:AddProductTransactionWith_product(
+        from:{
+            id:"${productTransactionId}"
+        },
+        to:{
+            id:"${products[product].id}"
+        }
+        ){
+        from{id},
+        to{id}
+    },
+    ${products[product].clinic ? `ProductTransactionWith_clinic${product}:AddProductTransactionWith_clinic(
+        from:{
+            id:"${productTransactionId}"
+        },
+        to:{
+          id:"${products[product].clinic.id}"
+        }
+        ){
+        from{id},
+        to{id}
+    }` : ''},`
+      }
+      mutation += '}'
+      return mutation
+    },
+    async createProductTransaction(products, transaction) {
+      let mutation = this.generateStringProductsTransactions(products)
+
+      let productTransaction = await this.$apollo.mutate({
+        mutation: gql`${mutation}`,
       })
+      let relationsMutation = this.generateStringRelationProductsTransactions(products, productTransaction.data, transaction)
 
       await this.$apollo.mutate({
-        mutation: require('@/graphql/transaction/AddRelationsProductTransactionExams.gql'),
-        variables: {
-          idBudget: transaction.id,
-          idProduct: product.id,
-          idProductTransaction: productTransaction.data.CreateProductTransaction.id,
-          idClinic: product.clinic ? product.clinic.id : null
-        }
+        mutation: gql`${relationsMutation}`,
       })
-      this.verifyUnpaidConsultations({
-        id: productTransaction.data.CreateProductTransaction.id,
-        product: product
-      })
+
+
+      for (let product in products) {
+        this.verifyUnpaidConsultations({
+          id: productTransaction.data[`productTransaction${product}`].id,
+          product: products[product]
+        })
+      }
     },
     async AddRelationsIntakeDoctor(data) {
       this.$apollo.mutate({
