@@ -4,7 +4,7 @@ mutation (
     $payments: [Float],
     $parcels: [String],
     $discount: Float,
-    $date: String )
+    $date: _Neo4jDateTimeInput )
     {
     CreateTransaction(
      value:$value,
@@ -14,6 +14,8 @@ mutation (
      discount:$discount,
      date:$date
      ){
-        id, value, payment_methods, payments, parcels, discount, date
+        id, value, payment_methods, payments, parcels, discount, date{
+        formatted
+        }
     }
 }

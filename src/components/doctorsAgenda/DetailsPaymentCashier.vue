@@ -454,7 +454,8 @@
                         payments: this.selectedBudget.valuesPayments,
                         parcels: this.selectedBudget.parcel,
                         discount: parseFloat(this.selectedBudget.discount) ? parseFloat(this.selectedBudget.discount) : 0,
-                        date: this.selectedBudget.date,
+                        date: {
+                          formatted: moment(this.selectedBudget.date).format("YYYY-MM-DDTHH:mm:ss")},
                     },
 
                 }).then((data) => {
