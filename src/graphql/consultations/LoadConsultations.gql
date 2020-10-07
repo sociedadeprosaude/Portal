@@ -43,6 +43,9 @@ query($idClinic:ID, $idProduct:ID, $date:String){
       }
       came_from{
         id
+      },
+      productTransaction{
+        id
       }
   }
 }

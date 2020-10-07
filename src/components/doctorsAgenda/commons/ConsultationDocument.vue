@@ -170,7 +170,8 @@
             idade: '',
             birthDate: '',
             loader: false,
-            payment_number: undefined
+            payment_number: undefined,
+            skipCost: true
         }),
         mounted() {
             //this.saveConsultationHour()
@@ -226,7 +227,9 @@
                     mutation: require('@/graphql/transaction/NewPayIntake.gql'),
                     variables: {
                         value: this.consultation.product.price,
-                        date: moment().format('YYYY-MM-DD HH:mm'),
+                        date: {
+                            formatted: moment().format('YYYY-MM-DDTHH:mm'),
+                        }
                     },
 
                 });
@@ -273,13 +276,36 @@
             
             async saveRelationProductTransactionwithConsultation(idProductTransaction){
                 await this.$apollo.mutate({
-                mutation: require('@/graphql/transaction/AddRelationProductTransactionConsultation.gql'),
-                variables:{
-                    idConsultation: this.consultation.id,
-                    idProductTransaction: idProductTransaction
-                },
-            })
-    },
+                    mutation: require('@/graphql/transaction/AddRelationProductTransactionConsultation.gql'),
+                    variables:{
+                        idConsultation: this.consultation.id,
+                        idProductTransaction: idProductTransaction
+                    },
+                })
+            },
+
+            CreateChargee(data){
+                this.$apollo.mutate({
+                    mutation: require ('@/graphql/charge/CreateCharge.gql'),
+                    variables:{
+                        date: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        cost: data.CostProductDoctor[0].cost
+                    }
+                }).then((dataa)=> {
+                    this.RelationsCharge(dataa)
+                })
+            },
+            RelationsCharge(data){
+                this.$apollo.mutate({
+                    mutation: require ('@/graphql/charge/RelationsCharge.gql'),
+                    variables:{
+                        idCharge: data.data.CreateCharge.id,
+                        idProductTransaction: this.ConsultationSelect.productTransaction.id
+                    }
+                }).then((data) => {
+                    this.documentDialog = true
+                })
+            },
 
         },//TODO Verificar consultationHour
 
@@ -312,6 +338,22 @@
                     return this.skip
                 }
             },
+            loadCostProductDoctor: {
+                query: require("@/graphql/doctors/GetCostProductDoctor.gql"),
+                variables(){
+                    return {
+                        idDoctor: this.consultation.doctor.id,
+                        idProduct: this.consultation.product.id
+                    }
+                },
+                update(data) {
+                    this.CreateChargee(data)
+                    this.skipCost = true
+                },
+                skip (){
+                    return this.skipCost
+                }
+            }
         }
     }
 </script>
