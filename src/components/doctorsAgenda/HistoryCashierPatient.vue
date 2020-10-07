@@ -109,7 +109,6 @@
     export default{
         props: ['option'],
         components: {receipt},
-
         data() {
             return {
                 loading: false,
@@ -143,17 +142,11 @@
             },
             async receipt(intake) {
                 this.loading = true;
-               /* let getIntake = await this.$store.dispatch(
-                    "getIntakeDetails",
-                    intake
-                ); */
                 this.selectedIntake = intake;
                 this.receiptDialog = true;
                 this.loading = false;
             },
             async cancelBuy(intake) {
-                console.log('intake: ', intake)
-                console.log('colaborator: ', this.$store.getters.user)
                 if (!this.cancelBuyDialog) {
                     this.selectedIntake = intake;
                     this.cancelBuyDialog = true;

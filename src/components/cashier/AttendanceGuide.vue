@@ -91,7 +91,7 @@
                 </span>
               </v-layout>
             </v-flex>
-            <v-flex v-if="patient.dependents && patient.dependents.length > 0" xs5 class="my-0 py-0  d-print-none">
+            <v-flex v-if="patient && patient.dependents && patient.dependents.length > 0" xs5 class="my-0 py-0  d-print-none">
                 <v-select
                         :items="patient.dependents"
                         v-model="selectedDependent"

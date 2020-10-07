@@ -59,7 +59,7 @@
                                     <v-flex class="align-start pt-6" xs3>
                                         <v-layout class="justify-start align-start" column wrap>
                                             <span class="font-weight-bold">{{this.budget.id}}</span>
-                                            <span class="font-weight-bold">{{this.budget.date | dateFilter}}</span>
+                                            <span class="font-weight-bold">{{this.formartDate(this.budget.date.formatted)}}</span>
                                         </v-layout>
                                     </v-flex>
                                     <v-flex class="mt-12 primary py-1 px-4" style="height: 32px" xs12>
@@ -155,24 +155,26 @@
 
 <script>
     import AttendanceGuide from "./AttendanceGuide";
-
+    import moment from 'moment';
     export default {
         name: "Receipt",
         props: ['budget'],
         components: {
             AttendanceGuide
         },
+        watch:{
+            budget(value){
+                console.log(value)
+            }
+        },
         computed: {
             patient() {
-                console.log('patient: ', this.$store.getters.selectedPatient)
                 return this.$store.getters.selectedPatient;
             },
             selectedUnit() {
-                console.log('selected UNit: ', this.$store.getters.selectedUnit)
                 return this.$store.getters.selectedUnit
             },
             items() {
-                console.log('Intake ',this.budget)
                 if(this.budget.exams === undefined && this.budget.specialties !== undefined){
                     return this.budget.specialties
                 }
@@ -180,14 +182,12 @@
                     return this.budget.exams
                 }
                 if(this.budget.specialties === undefined && this.budget.exams === undefined){
-                    console.log('entrei no products', this.budget.products)
                     return this.budget.products
                 }
                 return this.budget.specialties.concat(this.budget.exams)
             },
             examsPerClinic(){
                 let examsPerClinic = {};
-                console.log('budget:', this.budget)
                 if(this.budget.exams){
                     for (let exam in this.budget.exams) {
                         if (!examsPerClinic[this.budget.exams[exam].clinic.name]) {
@@ -207,7 +207,6 @@
                             examsPerClinic[this.budget.products[exam].clinic.name].push(this.budget.products[exam])
                         }
                     }
-                    console.log('examsPerClinic', examsPerClinic)
                     return examsPerClinic
                 }
                 return examsPerClinic
@@ -216,6 +215,9 @@
         methods: {
             print(ref) {
                 window.print()
+            },
+            formartDate(date){
+                return moment(date).format('DD/MM/YYYY')
             }
         }
     }
