@@ -26,6 +26,7 @@
       :getOuttakesPaid="getOuttakesPaid"
       :unpayOuttake="unpayOuttake"
       :openAppend="openAppend"
+      @updateCharges="updateCharges()"
       @change-selectedOption="(value)=>selectedOption=value"
       @change-switchDate="(value)=>switchDate=value"
       @change-switchCategory="(value)=>switchCategory=value"
@@ -67,7 +68,9 @@ export default {
       filesPreviews: [],
       mask: {
         number: "###"
-      }
+      },
+      Charges:{},
+      ChargeSkip: false
     };
   },
   mounted() {
@@ -92,9 +95,14 @@ export default {
         : this.outtakesPaid;
     },
     pendingOuttakes() {
-      return this.$store.getters.outtakesPending.sort((a, b) => {
+      if(this.Charges.length){
+        console.log('anteriores: ', this.$store.getters.outtakesPending )
+        return this.Charges
+      }
+      return []
+      /* return this.$store.getters.outtakesPending.sort((a, b) => {
         return b.date_to_pay < a.date_to_pay ? 1 : -1;
-      });
+      }); */
     },
     categories() {
       return this.$store.getters.outtakesCategories;
@@ -146,6 +154,11 @@ export default {
       });
       this.loadingFilter = false;
     },
+    updateCharges(){
+      console.log('entrei aqui')
+      this.ChargeSkip = false
+      this.$apollo.queries.LoadChargeBills.refresh()
+    },
     async unpayOuttake(outtake) {
       this.loadingDelete = true;
       this.outtakeSelect = outtake;
@@ -164,6 +177,19 @@ export default {
     },
     openAppend(append) {
       window.open(append);
+    }
+  },
+  apollo :{
+    LoadChargeBills: {
+      query: require("@/graphql/charge/LoadChargeBills.gql"),
+      update(data){
+        console.log('data.Charge', data.Charge)
+        this.Charges = Object.assign(data.Charge)
+        this.ChargeSkip = true
+      },
+      skip(){
+        return this.ChargeSkip
+      }
     }
   }
 };

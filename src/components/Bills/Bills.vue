@@ -1,12 +1,12 @@
 <template>
   <v-container>
     <v-layout row wrap>
-      <RegisterBill />
+      <RegisterBill @UpdateCharges="updateCharges()" />
       <v-flex xs12 class="text-left mt-6">
         <span class="my-headline">{{pendingOuttakes.length}} Contas à pagar</span>
       </v-flex>
       <v-flex xs12>
-        <outtake-order :outtakes="pendingOuttakes" />
+        <outtake-order @UpdateCharges="updateCharges()" :outtakes="pendingOuttakes" />
       </v-flex>
       <v-flex xs12 class="text-left mt-6">
         <span class="my-headline">{{selectedPaidOuttakesList.length}} Contas pagas</span>
@@ -156,6 +156,11 @@ export default {
   components: {
     OuttakeOrder,
     RegisterBill
+  },
+  methods:{
+    updateCharges(){
+      this.$emit('updateCharges')
+    }
   },
   props: {
     other: String,

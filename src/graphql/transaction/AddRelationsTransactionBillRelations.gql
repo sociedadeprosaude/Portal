@@ -1,0 +1,24 @@
+mutation($idTransaction:ID!,$idColaborator:ID!, $idUnit: ID!){
+    AddColaboratorWith_transaction(
+        from:{
+            id:$idColaborator
+        },
+        to:{
+            id:$idTransaction
+        }
+    ){
+        from{id},
+        to{id}
+    },
+         AddTransactionWith_unit(
+                    from:{
+                        id:$idTransaction
+                    },
+                    to:{
+                        id:$idUnit
+                    }
+                    ){
+                    from{id},
+                    to{id}
+                    },
+}

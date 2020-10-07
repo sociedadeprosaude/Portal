@@ -224,16 +224,21 @@ export default {
       if (this.parcel) {
         this.value = this.value / this.parcels;
         for (let i = 0; i < this.parcels; i++) {
-          this.addBill();
+          console.log('entrei' , this.parcels)
+          await this.addBill(i - (this.parcels - 1));
           this.dateToPay = moment(this.dateToPay)
             .add(1, "months")
             .format("YYYY-MM-DD");
+          console.log('i: ', i)
+          console.log('parcels: ', this.parcels)
         }
+
       } else {
-        this.addBill();
+        await this.addBill(0);
+
       }
     },
-    async addBill() {
+    async addBill(parcels) {
       this.loading = true;
       delete this.unit.exams;
       delete this.unit.specialties;
@@ -247,9 +252,49 @@ export default {
         date: moment().format("YYYY-MM-DD HH:mm:ss"),
         colaborator: this.user,
         unit: this.unit.name !== this.other ? this.unit : null,
-        recurrent: this.recurrent ? "true" : "false"
+        recurrent: this.recurrent ? true : false
       };
+      if(parseFloat(bill.value) > 0){
+        bill.value = (parseFloat(bill.value) - (2 * parseFloat(bill.value)))
+      }
       console.log('bill: ', bill)
+      this.$apollo.mutate({
+        mutation: require ('@/graphql/charge/CreateChargeBill.gql'),
+        variables:{
+          payment_methods: bill.payment_method,
+          value: bill.value,
+          date: bill.date,
+          description: bill.description,
+          date_to_pay: bill.date_to_pay,
+          recurrent: bill.recurrent
+        }
+      }).then( (data) => {
+        console.log('data: ', data)
+        this.$apollo.mutate({
+          mutation: require ('@/graphql/charge/AddRelationsChargeBillRelations.gql'),
+          variables:{
+            idColaborator: bill.colaborator.id,
+            idUnit: bill.unit.id,
+            idCharge: data.data.CreateCharge.id
+          }
+        })
+        for(let i in bill.category){
+          console.log('category', bill.category[i])
+          this.$apollo.mutate({
+            mutation: require ('@/graphql/charge/AddRelationsChargeBill-CategoryRelations.gql'),
+            variables:{
+              idCategory: bill.category[i].id,
+              idCharge: data.data.CreateCharge.id
+            }
+          })
+        }
+      })
+      console.log('parcels final: ', parcels)
+      if(parcels === 0){
+          this.resetData()
+          this.loading = false;
+          this.$emit('UpdateCharges')
+      }
       /* if (this.files.length > 0) {
         bill.appends = await this.submitFiles(this.files);
       }
@@ -260,9 +305,7 @@ export default {
           .add(5, "days")
           .format("YYYY-MM-DD 23:59:59")
       });
-      this.loading = false;
-      this.resetData(); */
-      this.loading = false;
+      this.loading = false;*/
     },
 
     handleFileUpload() {

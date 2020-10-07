@@ -1,0 +1,24 @@
+mutation($idCharge:ID!,$idColaborator:ID!, $idUnit: ID!){
+    AddColaboratorWith_charge(
+        from:{
+            id:$idColaborator
+        },
+        to:{
+            id:$idCharge
+        }
+    ){
+        from{id},
+        to{id}
+    },
+         AddChargeWith_unit(
+                    from:{
+                        id:$idCharge
+                    },
+                    to:{
+                        id:$idUnit
+                    }
+                    ){
+                    from{id},
+                    to{id}
+                    },
+}

@@ -1,0 +1,14 @@
+query{
+    Charge(filter:{date_to_pay_not:"00/00/0000"}){
+        date,value,date_to_pay,description,payment_methods,recorrent,id
+        categories{
+            name
+        },
+        unit:with_unit{
+            name,id
+        }
+        colaborator{
+            name,id
+        }
+    }
+}

@@ -1,0 +1,14 @@
+mutation($idCharge:ID!,$idCategory:ID!){
+
+         AddChargeCategories(
+                    from:{
+                        id:$idCharge
+                    },
+                    to:{
+                        id:$idCategory
+                    }
+                    ){
+                    from{id},
+                    to{id}
+                    },
+}

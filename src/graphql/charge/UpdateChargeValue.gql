@@ -1,0 +1,10 @@
+mutation ( $id: ID!, $value: Float)
+{
+  UpdateCharge(
+    id: $id,
+    value: $value,
+  )
+  {
+    id
+  }
+}

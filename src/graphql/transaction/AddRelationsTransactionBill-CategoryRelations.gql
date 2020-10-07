@@ -1,0 +1,14 @@
+mutation($idTransaction:ID!,$idCategory:ID!){
+
+         AddTransactionCategories(
+                    from:{
+                        id:$idTransaction
+                    },
+                    to:{
+                        id:$idCategory
+                    }
+                    ){
+                    from{id},
+                    to{id}
+                    },
+}
