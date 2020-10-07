@@ -34,7 +34,7 @@
                 <v-flex class="text-right" xs6>
                   <img :src="selectedUnit.logo" height="84px">
                 </v-flex>
-                <v-flex class="text-left" xs6 v-if="this.budget.user ? this.budget.user.addresses : false">
+               <!-- <v-flex class="text-left" xs6 v-if="this.budget.user ? this.budget.user.addresses : false">
                   <v-layout column v-if="budget.user.addresses && budget.user.addresses[0]" wrap>
                     <span
                         class="primary--text font-weight-bold mt-2">{{ this.budget.user.addresses[0].street }} {{ this.budget.user.addresses[0].number }}</span>
@@ -55,7 +55,7 @@
                         class="primary--text font-weight-bold">{{ this.patient.addresses[0].city }} - {{ this.patient.addresses[0].uf }}</span>
                     <span class="primary--text font-weight-bold">{{ this.patient.addresses[0].cep }}</span>
                   </v-layout>
-                </v-flex>
+                </v-flex>  -->
                 <v-flex class="align-start pt-6" xs3>
                   <v-layout class="justify-start align-start" column wrap>
                     <span class="primary--text font-weight-bold">Recibo #</span>
