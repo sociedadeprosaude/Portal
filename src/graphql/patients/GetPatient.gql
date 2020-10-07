@@ -23,7 +23,9 @@ query($id:ID!){
        sex
        },
        intakes{
-          date,
+          date {
+          formatted
+          },
           id,
          discount,
          value,

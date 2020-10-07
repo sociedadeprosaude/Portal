@@ -17,7 +17,7 @@
                                                                      class="primary--text"/>
                                             </v-flex>
                                             <v-flex xs12 class="text-left">
-                                                <p class="my-0">{{intake.date | dateFilter}}</p>
+                                                <p class="my-0">{{intake.date.formatted | dateFilter}}</p>
                                                 <p>R$ {{intake.value}}</p>
                                             </v-flex>
                                         </v-layout>
