@@ -160,7 +160,8 @@
         mounted() {
             this.initialConfig();
             this.date = moment().format('YYYY-MM-DD');
-            this.dateFormatted = moment().format('DD/MM/YYYY')
+            this.dateFormatted = moment().format('DD/MM/YYYY');
+            this.clinic = this.$store.getters.selectedUnit
         },
         watch: {
             date(val) {

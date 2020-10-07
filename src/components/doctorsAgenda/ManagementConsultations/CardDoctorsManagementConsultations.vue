@@ -218,7 +218,7 @@
                     this.product = this.filterByExam ? this.examType : this.specialty
                     console.log(this.product)
                     console.log(this.clinic)
-                    if(this.product && this.clinic && this.date){
+                    if(this.product || this.clinic || this.date){
                         this.consultations = []
                         this.skipConsultations = false
                         this.$apollo.queries.loadConsultations.refresh()
