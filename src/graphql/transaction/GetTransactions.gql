@@ -1,20 +1,15 @@
-query{
-    Transaction{
-    id,
-    date,
+query GetTransactions($date_start: String, $unit_name: String, $date_final: String){
+    Transaction(filter:{AND: [{date_gte: {formatted: $date_start}}, {date_lte: {formatted: $date_final}} {cancelled_by: null}, {with_unit_some: {name: $unit_name}}]}){
+    date{
+      formatted
+    },
     discount,
     value,
     paid,
     payments,
     parcels,
-    status,
     payment_methods,
-    root,
     description,
-    realizade,
-    category,
-    subCategory,
-    created_at,
     cancelled_by{
         id,
         name,
@@ -32,6 +27,5 @@ query{
             name,
             cnpj
      }
-
     }
 }

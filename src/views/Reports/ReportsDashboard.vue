@@ -2,15 +2,15 @@
   <v-container fluid>
     <DrawerRelatorio @change-selected="(value)=>{selected=value;searchView()}" />
 
-    <DateSelector
-      v-if="!hide"
-      :cb="()=>searchView()"
-      :loadingFather="loading"
-      @change-date="(value)=>date=value"
-      @change-date2="(value)=>date2=value"
-      @change-dateFormatted="(value)=>dateFormatted=value"
-      @change-dateFormatted2="(value)=>dateFormatted2=value"
-    />
+<!--    <DateSelector-->
+<!--      v-if="!hide"-->
+<!--      :cb="()=>searchView()"-->
+<!--      :loadingFather="loading"-->
+<!--      @change-date="(value)=>date=value"-->
+<!--      @change-date2="(value)=>date2=value"-->
+<!--      @change-dateFormatted="(value)=>dateFormatted=value"-->
+<!--      @change-dateFormatted2="(value)=>dateFormatted2=value"-->
+<!--    />-->
 
     <general-report
       v-if="selected == 0"

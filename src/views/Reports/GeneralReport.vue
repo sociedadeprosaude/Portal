@@ -1,63 +1,79 @@
 <template>
   <v-container>
-    <GeneralReport
-      v-if="report && reportAllUnits"
-      :report="report"
-      :loading="loading"
-      :reportAllUnits="reportAllUnits"
-      :now="now"
-      :total="total"
-      :reportOptions="reportOptions"
-      :reportSelected="reportSelected"
-      :finalProfit="finalProfit"
-      :totalProfit="totalProfit"
-      :totalCost="totalCost"
-      :totalFinancialSupport="totalFinancialSupport"
-      :proceduresQuantity="proceduresQuantity"
-      :examsQuantity="examsQuantity"
-      :totalExamsIntakes="totalExamsIntakes"
-      :totalCostExamsIntakes="totalCostExamsIntakes"
-      :totalSpecialtiesIntakes="totalSpecialtiesIntakes"
-      :totalCostSpecialtiesIntakes="totalCostSpecialtiesIntakes"
-      :totalOuttakesInMoney="totalOuttakesInMoney"
-      :totalOuttakesNotMoney="totalOuttakesNotMoney"
-      :totalRawIntake="totalRawIntake"
-      :totalCredit="totalCredit"
-      :totalTaxaCredit="totalTaxaCredit"
-      :totalDebit="totalDebit"
-      :totalTaxaDebit="totalTaxaDebit"
-      :totalMoney="totalMoney"
-      :finalProfitAllClinics="finalProfitAllClinics"
-      :totalProfitAllClinics="totalProfitAllClinics"
-      :totalCostAllClinics="totalCostAllClinics"
-      :totalFinancialSupportAllClinics="totalFinancialSupportAllClinics"
-      :proceduresQuantityAllClinics="proceduresQuantityAllClinics"
-      :examsQuantityAllClinics="examsQuantityAllClinics"
-      :totalExamsIntakesAllClinics="totalExamsIntakesAllClinics"
-      :totalCostExamsIntakesAllClinics="totalCostExamsIntakesAllClinics"
-      :totalSpecialtiesIntakesAllClinics="totalSpecialtiesIntakesAllClinics"
-      :totalCostSpecialtiesIntakesAllClinics="totalCostSpecialtiesIntakesAllClinics"
-      :totalOuttakesInMoneyAllClinics="totalOuttakesInMoneyAllClinics"
-      :totalOuttakesNotMoneyAllClinics="totalOuttakesNotMoneyAllClinics"
-      :totalRawIntakeAllClinics="totalRawIntakeAllClinics"
-      :totalCreditAllClinics="totalCreditAllClinics"
-      :totalTaxaCreditAllClinics="totalTaxaCreditAllClinics"
-      :totalDebitAllClinics="totalDebitAllClinics"
-      :totalTaxaDebitAllClinics="totalTaxaDebitAllClinics"
-      :totalMoneyAllClinics="totalMoneyAllClinics"
-      @change-reportSelected="(value)=>reportSelected=value"
-    />
+    <v-row align="center" justify="center">
+      <v-col cols="4" class="pa-0">
+        <v-menu v-model="dateMenuStart">
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field
+                v-model="formattedSelectedStartDate"
+                label="Data"
+                prepend-icon="mdi-calendar"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+            ></v-text-field>
+          </template>
+          <v-date-picker
+              v-model="selectedStartDate"></v-date-picker>
+        </v-menu>
+      </v-col>
+      <v-col cols="4">
+        <v-menu v-model="dateMenuFinal">
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field
+                v-model="formattedSelectedFinalDate"
+                label="Data"
+                prepend-icon="mdi-calendar"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+            ></v-text-field>
+          </template>
+          <v-date-picker
+              v-model="selectedFinalDate"></v-date-picker>
+        </v-menu>
+      </v-col>
+      <v-col cols="12" class="py-0">
+        <ApolloQuery :query="require('@/graphql/clinics/LoadClinics.gql')"
+                     :variables="{property: true}">
+          <template v-slot="{result: {data, loading, error}}">
+            <v-progress-linear v-if="loading" color="primary" indeterminate></v-progress-linear>
+            <strong class="red--text" v-else-if="error">Erro ao carregar as unidades, verifique sua conexão</strong>
+            <v-chip-group v-else-if="data" active-class="primary white--text">
+              <v-chip v-for="unit in data.Clinic" :key="unit.name" @click="selectedUnit = unit">
+                  <strong style="font-size: 0.6em">{{ unit.name }}</strong>
+              </v-chip>
+            </v-chip-group>
+          </template>
+        </ApolloQuery>
+      </v-col>
+      <ApolloQuery v-if="selectedUnit" :query="require('@/graphql/transaction/GetTransactions.gql')"
+                   :variables="{date_start: selectedStartDate + 'T00:00:00', date_final: selectedFinalDate + 'T23:59:59', unit_name: selectedUnit.name}"
+      >
+        <template v-slot="{result: {data, loading, error}}">
+          <v-progress-circular indeterminate color="primary" v-if="loading"></v-progress-circular>
+          <strong class="red--text" v-else-if="error">Erro ao carregar relatorio, verifique sua conexão</strong>
+          <GeneralReport v-else-if="data" :transactions="data.Transaction"/>
+        </template>
+      </ApolloQuery>
+    </v-row>
   </v-container>
 </template>
 
 <script>
 import GeneralReport from "@/components/Reports/GeneralReport";
 import moment from "moment";
+
 export default {
-  components: { GeneralReport },
+  components: {GeneralReport},
   props: ["report", "loading", "reportAllUnits"],
   data() {
     return {
+      dateMenuStart: false,
+      dateMenuFinal: false,
+      selectedStartDate: moment().format("YYYY-MM-DD"),
+      selectedFinalDate: moment().format("YYYY-MM-DD"),
+      selectedUnit: undefined,
       now: moment().format("YYYY-MM-DD HH:mm:ss"),
       total: 0,
       reportOptions: [
@@ -69,27 +85,46 @@ export default {
       reportSelected: 0
     };
   },
+  mounted() {
+    console.log(moment().format())
+  },
   computed: {
+    formattedSelectedStartDate: {
+      get() {
+        return moment(this.selectedStartDate).format("DD/MM/YYYY")
+      },
+      set(val) {
+        this.selectedDate = val
+      }
+    },
+    formattedSelectedFinalDate: {
+      get() {
+        return moment(this.selectedFinalDate).format("DD/MM/YYYY")
+      },
+      set(val) {
+        this.selectedDate = val
+      }
+    },
     finalProfit() {
       return (
-        parseFloat(this.totalProfit) - parseFloat(this.totalCost)
+          parseFloat(this.totalProfit) - parseFloat(this.totalCost)
       ).toFixed(2);
     },
     totalProfit() {
       return (
-        parseFloat(this.totalSpecialtiesIntakes) +
-        parseFloat(this.totalExamsIntakes) +
-        parseFloat(this.totalFinancialSupport)
+          parseFloat(this.totalSpecialtiesIntakes) +
+          parseFloat(this.totalExamsIntakes) +
+          parseFloat(this.totalFinancialSupport)
       );
     },
     totalCost() {
       return (
-        parseFloat(this.totalCostSpecialtiesIntakes) +
-        parseFloat(this.totalCostExamsIntakes) +
-        parseFloat(this.totalTaxaDebit) +
-        parseFloat(this.totalTaxaCredit) +
-        parseFloat(this.totalOuttakesInMoney) +
-        parseFloat(this.totalOuttakesNotMoney)
+          parseFloat(this.totalCostSpecialtiesIntakes) +
+          parseFloat(this.totalCostExamsIntakes) +
+          parseFloat(this.totalTaxaDebit) +
+          parseFloat(this.totalTaxaCredit) +
+          parseFloat(this.totalOuttakesInMoney) +
+          parseFloat(this.totalOuttakesNotMoney)
       );
     },
     totalFinancialSupport() {
@@ -110,8 +145,8 @@ export default {
       let quantity = 0;
       for (let clinic in this.report.clinics) {
         quantity += this.report.clinics[clinic].quantity
-          ? this.report.clinics[clinic].quantity
-          : this.report.clinics[clinic].quantidade;
+            ? this.report.clinics[clinic].quantity
+            : this.report.clinics[clinic].quantidade;
       }
       return quantity;
     },
@@ -189,8 +224,8 @@ export default {
     },
     totalRawIntake() {
       return this.report.intakesArray.reduce(
-        (sum, intake) => sum + parseFloat(intake.total),
-        0
+          (sum, intake) => sum + parseFloat(intake.total),
+          0
       );
     },
     totalCredit() {
@@ -209,31 +244,31 @@ export default {
           if (intake.payments[payment] === "Crédito") {
             if (intake.parcel[payment] === 1) {
               return (
-                sum + (parseFloat(intake.valuesPayments[payment]) * 0.026) / 100
+                  sum + (parseFloat(intake.valuesPayments[payment]) * 0.026) / 100
               );
             } else if (intake.parcel[payment] === 2) {
               return (
-                sum +
-                ((parseFloat(intake.valuesPayments[payment]) * 0.026) / 100 +
-                  (parseFloat(intake.valuesPayments[payment]) * 0.0191) / 100)
+                  sum +
+                  ((parseFloat(intake.valuesPayments[payment]) * 0.026) / 100 +
+                      (parseFloat(intake.valuesPayments[payment]) * 0.0191) / 100)
               );
             } else if (intake.parcel[payment] === 3) {
               return (
-                sum +
-                ((parseFloat(intake.valuesPayments[payment]) * 0.026) / 100 +
-                  (parseFloat(intake.valuesPayments[payment]) * 0.0254) / 100)
+                  sum +
+                  ((parseFloat(intake.valuesPayments[payment]) * 0.026) / 100 +
+                      (parseFloat(intake.valuesPayments[payment]) * 0.0254) / 100)
               );
             } else if (intake.parcel[payment] === 4) {
               return (
-                sum +
-                ((parseFloat(intake.valuesPayments[payment]) * 0.026) / 100 +
-                  (parseFloat(intake.valuesPayments[payment]) * 0.0317) / 100)
+                  sum +
+                  ((parseFloat(intake.valuesPayments[payment]) * 0.026) / 100 +
+                      (parseFloat(intake.valuesPayments[payment]) * 0.0317) / 100)
               );
             } else if (intake.parcel[payment] === 5) {
               return (
-                sum +
-                ((parseFloat(intake.valuesPayments[payment]) * 0.026) / 100 +
-                  (parseFloat(intake.valuesPayments[payment]) * 0.0378) / 100)
+                  sum +
+                  ((parseFloat(intake.valuesPayments[payment]) * 0.026) / 100 +
+                      (parseFloat(intake.valuesPayments[payment]) * 0.0378) / 100)
               );
             }
           }
@@ -245,8 +280,8 @@ export default {
       return this.report.intakesArray.reduce((sum, intake) => {
         for (let payment in intake.payments) {
           if (
-            intake.payments[payment] === "Débito" ||
-            intake.payments[payment] === ""
+              intake.payments[payment] === "Débito" ||
+              intake.payments[payment] === ""
           ) {
             return sum + parseFloat(intake.valuesPayments[payment]);
           }
@@ -259,7 +294,7 @@ export default {
         for (let payment in intake.payments) {
           if (intake.payments[payment] === "Débito") {
             return (
-              sum + (parseFloat(intake.valuesPayments[payment]) * 0.0299) / 100
+                sum + (parseFloat(intake.valuesPayments[payment]) * 0.0299) / 100
             );
           }
         }
@@ -278,25 +313,25 @@ export default {
     },
     finalProfitAllClinics() {
       return (
-        parseFloat(this.totalProfitAllClinics) -
-        parseFloat(this.totalCostAllClinics)
+          parseFloat(this.totalProfitAllClinics) -
+          parseFloat(this.totalCostAllClinics)
       ).toFixed(2);
     },
     totalProfitAllClinics() {
       return (
-        parseFloat(this.totalSpecialtiesIntakesAllClinics) +
-        parseFloat(this.totalExamsIntakesAllClinics) +
-        parseFloat(this.totalFinancialSupportAllClinics)
+          parseFloat(this.totalSpecialtiesIntakesAllClinics) +
+          parseFloat(this.totalExamsIntakesAllClinics) +
+          parseFloat(this.totalFinancialSupportAllClinics)
       );
     },
     totalCostAllClinics() {
       return (
-        parseFloat(this.totalCostSpecialtiesIntakesAllClinics) +
-        parseFloat(this.totalCostExamsIntakesAllClinics) +
-        parseFloat(this.totalTaxaDebitAllClinics) +
-        parseFloat(this.totalTaxaCreditAllClinics) +
-        parseFloat(this.totalOuttakesInMoneyAllClinics) +
-        parseFloat(this.totalOuttakesNotMoneyAllClinics)
+          parseFloat(this.totalCostSpecialtiesIntakesAllClinics) +
+          parseFloat(this.totalCostExamsIntakesAllClinics) +
+          parseFloat(this.totalTaxaDebitAllClinics) +
+          parseFloat(this.totalTaxaCreditAllClinics) +
+          parseFloat(this.totalOuttakesInMoneyAllClinics) +
+          parseFloat(this.totalOuttakesNotMoneyAllClinics)
       );
     },
     totalFinancialSupportAllClinics() {
@@ -310,8 +345,8 @@ export default {
       let procQt = 0;
       for (let specialty in this.reportAllUnits.specialties) {
         procQt += this.reportAllUnits.specialties[specialty].quantity
-          ? this.reportAllUnits.specialties[specialty].quantity
-          : this.reportAllUnits.specialties[specialty].quantidade;
+            ? this.reportAllUnits.specialties[specialty].quantity
+            : this.reportAllUnits.specialties[specialty].quantidade;
       }
       return procQt;
     },
@@ -319,8 +354,8 @@ export default {
       let quantity = 0;
       for (let clinic in this.reportAllUnits.clinics) {
         quantity += this.reportAllUnits.clinics[clinic].quantity
-          ? this.reportAllUnits.clinics[clinic].quantity
-          : this.reportAllUnits.clinics[clinic].quantidade;
+            ? this.reportAllUnits.clinics[clinic].quantity
+            : this.reportAllUnits.clinics[clinic].quantidade;
       }
       return quantity;
     },
@@ -398,8 +433,8 @@ export default {
     },
     totalRawIntakeAllClinics() {
       return this.reportAllUnits.intakesArray.reduce(
-        (sum, intake) => sum + parseFloat(intake.total),
-        0
+          (sum, intake) => sum + parseFloat(intake.total),
+          0
       );
     },
     totalCreditAllClinics() {
@@ -420,31 +455,31 @@ export default {
           if (intake.payments[payment] === "Crédito") {
             if (intake.parcel[payment] === 1) {
               return (
-                sum + (parseFloat(intake.valuesPayments[payment]) * 0.026) / 100
+                  sum + (parseFloat(intake.valuesPayments[payment]) * 0.026) / 100
               );
             } else if (intake.parcel[payment] === 2) {
               return (
-                sum +
-                ((parseFloat(intake.valuesPayments[payment]) * 0.026) / 100 +
-                  (parseFloat(intake.valuesPayments[payment]) * 0.0191) / 100)
+                  sum +
+                  ((parseFloat(intake.valuesPayments[payment]) * 0.026) / 100 +
+                      (parseFloat(intake.valuesPayments[payment]) * 0.0191) / 100)
               );
             } else if (intake.parcel[payment] === 3) {
               return (
-                sum +
-                ((parseFloat(intake.valuesPayments[payment]) * 0.026) / 100 +
-                  (parseFloat(intake.valuesPayments[payment]) * 0.0254) / 100)
+                  sum +
+                  ((parseFloat(intake.valuesPayments[payment]) * 0.026) / 100 +
+                      (parseFloat(intake.valuesPayments[payment]) * 0.0254) / 100)
               );
             } else if (intake.parcel[payment] === 4) {
               return (
-                sum +
-                ((parseFloat(intake.valuesPayments[payment]) * 0.026) / 100 +
-                  (parseFloat(intake.valuesPayments[payment]) * 0.0317) / 100)
+                  sum +
+                  ((parseFloat(intake.valuesPayments[payment]) * 0.026) / 100 +
+                      (parseFloat(intake.valuesPayments[payment]) * 0.0317) / 100)
               );
             } else if (intake.parcel[payment] === 5) {
               return (
-                sum +
-                ((parseFloat(intake.valuesPayments[payment]) * 0.026) / 100 +
-                  (parseFloat(intake.valuesPayments[payment]) * 0.0378) / 100)
+                  sum +
+                  ((parseFloat(intake.valuesPayments[payment]) * 0.026) / 100 +
+                      (parseFloat(intake.valuesPayments[payment]) * 0.0378) / 100)
               );
             }
           }
@@ -456,8 +491,8 @@ export default {
       return this.reportAllUnits.intakesArray.reduce((sum, intake) => {
         for (let payment in intake.payments) {
           if (
-            intake.payments[payment] === "Débito" ||
-            intake.payments[payment] === ""
+              intake.payments[payment] === "Débito" ||
+              intake.payments[payment] === ""
           ) {
             return sum + parseFloat(intake.valuesPayments[payment]);
           }
@@ -470,7 +505,7 @@ export default {
         for (let payment in intake.payments) {
           if (intake.payments[payment] === "Débito") {
             return (
-              sum + (parseFloat(intake.valuesPayments[payment]) * 0.0299) / 100
+                sum + (parseFloat(intake.valuesPayments[payment]) * 0.0299) / 100
             );
           }
         }
