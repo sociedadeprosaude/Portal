@@ -510,20 +510,20 @@
                         this.AddRelationsIntakeDoctor(data)
                     }
                     else{
-                        this.AddRelationsIntake(data)
+                       this.AddRelationsIntake(data)
                     }
-                }).catch((error) => {
+                 }).catch((error) => {
                     console.error('Crianção da transaction: ',error)
                 })
             },
             async AddRelationsIntakeDoctor(data){
                 this.$apollo.mutate({
-                    mutation: require('@/graphql/transaction/AddRelationsNewIntake.gql'),
+                    mutation: require('@/graphql/transaction/AddRelationsNewIntakeDoctor.gql'),
                     variables: {
                         idBudget: data.data.CreateTransaction.id,
                         idColaborator: this.selectedBudget.colaborator.id,
                         idPatient: this.selectedBudget.user.id,
-                        idDoctor: this.selectedBudget.doctor.neo4j_id,
+                        idDoctor: this.selectedBudget.doctor.id,
                         idUnit: this.selectedBudget.unit.id
                     },
 
