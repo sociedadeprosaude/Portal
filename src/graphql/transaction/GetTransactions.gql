@@ -20,12 +20,13 @@ query GetTransactions($date_start: String, $unit_name: String, $date_final: Stri
         with_product{
             name
             type
+        },
+        with_clinic {
+            name
         }
     }
      unit: with_unit{
-            id,
             name,
-            cnpj
      }
     }
 }

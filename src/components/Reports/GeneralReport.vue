@@ -1,6 +1,12 @@
 <template>
   <v-container>
     <v-row v-if="transactions && transactions.length > 0" style="font-size: 0.8em">
+      <v-col cols="12" class="py-0">
+        <v-chip-group mandatory active-class="primary white--text">
+          <v-chip @click="filter = 'with_product'" style="font-size: 0.8em">Por procedimento</v-chip>
+          <v-chip @click="filter = 'with_clinic'" style="font-size: 0.8em">Por clinica</v-chip>
+        </v-chip-group>
+      </v-col>
       <v-col cols="12" class="pa-0">
         <v-card class="pa-4 receipt-to-print">
           <v-row>
@@ -112,25 +118,33 @@ export default {
   props: [
     "transactions"
   ],
+  mounted() {
+    console.log('tra', this.transactions)
+  },
+  data() {
+    return {
+      filter: 'with_product'
+    }
+  },
   computed: {
     transactionByProduct() {
       let products = {}
       for (let transaction of this.transactions) {
         if (transaction.produts.length > 0) {
           for (let product of transaction.produts) {
-            if (!products[product.with_product.name]) {
-              products[product.with_product.name] = {
-                name: product.with_product.name || product.description,
+            if (!products[product[this.filter].name]) {
+              products[product[this.filter].name] = {
+                name: product[this.filter].name || product.description,
                 quantity: 0,
                 price: 0,
-                type: product.with_product.type
+                // type: product[this.filter].type
               }
             }
-            products[product.with_product.name] = {
-              name: product.with_product.name,
-              quantity: products[product.with_product.name].quantity + 1,
-              price: products[product.with_product.name].price + product.price,
-              type: product.with_product.type
+            products[product[this.filter].name] = {
+              name: product[this.filter].name,
+              quantity: products[product[this.filter].name].quantity + 1,
+              price: products[product[this.filter].name].price + product.price,
+              // type: product[this.filter].type
             }
           }
         } else {
