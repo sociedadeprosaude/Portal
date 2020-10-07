@@ -106,10 +106,10 @@
                           <v-progress-circular indeterminate class="primary--text"/>
                         </v-flex>
                         <v-flex xs12 class="text-right"  v-else>
-                          <v-btn @click="$refs[bill.id][0].click()" class="primary mx-2" fab small>
+                          <v-btn v-show="user === 'admin' || user === 'caixa'" @click="$refs[bill.id][0].click()" class="primary mx-2" fab small>
                             <v-icon>receipt</v-icon>
                           </v-btn>
-                          <v-btn  @click="deleteOuttake(bill)" class="error mx-2" fab small>
+                          <v-btn v-show="user === 'admin' || user === 'caixa'" @click="deleteOuttake(bill)" class="error mx-2" fab small>
                             <v-icon>delete</v-icon>
                           </v-btn>
                           <!-- v-show="user === 'admin' || user === 'caixa'" -->
