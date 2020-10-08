@@ -485,7 +485,7 @@ export default {
       let products = this.selectedBudget.exams.concat(this.selectedBudget.specialties)
       products = products.filter(p => p)
       for (let product in products) {
-        let prodId = uuid.v4()
+          let prodId = uuid.v4()
         products[product].prodId = prodId
         productsTransactionIds.push(prodId)
         productsTransactionString += `
@@ -494,6 +494,8 @@ export default {
                 price:${products[product].price}){
                     id
                 },`
+        this.verifyUnpaidConsultations(products[product])
+
       }
 
       let productTransactionLinkString = ''
@@ -598,9 +600,9 @@ export default {
     },
 
     verifyUnpaidConsultations(productTransaction) {
-      let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product.id === productTransaction.product.id && consultation.status === "Aguardando pagamento")
+      let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product.id === productTransaction.id && consultation.status === "Aguardando pagamento")
       if (unpaidConsultation) {
-        this.saveRelationProductTransaction(unpaidConsultation.id, productTransaction.id)
+        this.saveRelationProductTransaction(unpaidConsultation.id, productTransaction.prodId)
       }
     },
 
