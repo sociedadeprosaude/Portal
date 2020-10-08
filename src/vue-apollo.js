@@ -9,8 +9,8 @@ Vue.use(VueApollo)
 const AUTH_TOKEN = 'apollo-token'
 
 // Http endpoint
-// const httpEndpoint = process.env.VUE_APP_GRAPHQL_HTTP || 'https://grand-stack-backend.vercel.app/graphql'
-const httpEndpoint = process.env.VUE_APP_GRAPHQL_HTTP || 'http://localhost:4001/graphql'
+const httpEndpoint = process.env.VUE_APP_GRAPHQL_HTTP || 'https://grand-stack-backend.vercel.app/graphql'
+// const httpEndpoint = process.env.VUE_APP_GRAPHQL_HTTP || 'http://localhost:4001/graphql'
 
 // Config
 const defaultOptions = {
