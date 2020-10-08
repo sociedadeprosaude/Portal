@@ -5,7 +5,8 @@ query ($type: String!,$schedulable: Boolean) {
         doctors{
             id,
             name,
-            crm
+            crm,
+            cpf
         },
         price,
         final_price,
