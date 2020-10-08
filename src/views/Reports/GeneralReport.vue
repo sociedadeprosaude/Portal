@@ -66,7 +66,6 @@ import moment from "moment";
 
 export default {
   components: {GeneralReport},
-  props: ["report", "loading", "reportAllUnits"],
   data() {
     return {
       dateMenuStart: false,

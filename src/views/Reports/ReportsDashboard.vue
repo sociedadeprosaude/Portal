@@ -14,10 +14,6 @@
 
     <general-report
       v-if="selected == 0"
-      :report="formattedReport"
-      :loading="loading"
-      :intakes="intakes"
-      :reportAllUnits="formattedReportAllUnits"
     />
 
     <luiz-fernando-report
@@ -28,7 +24,7 @@
       :reportAllUnits="formattedReportAllUnits"
     />
 
-    <colaborators-production-report v-if="selected == 2" :loading="loading" :intakes="intakes"></colaborators-production-report>
+    <colaborators-production-report v-if="selected == 2"></colaborators-production-report>
 
     <intakes-report
       v-else-if="selected == 3"
@@ -173,7 +169,7 @@ export default {
           break;
         case "RelatorioColaboradoresProducao":
           this.selected = 2;
-          await this.getIntakes(true);
+          // await this.getIntakes(true);
           break;
         case "RelatorioEntradas":
           this.selected = 3;
