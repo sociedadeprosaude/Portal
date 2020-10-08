@@ -1,4 +1,4 @@
-mutation (
+mutation MakeSell (
     $value: Float,
     $payment_methods: [String],
     $payments: [Float],
