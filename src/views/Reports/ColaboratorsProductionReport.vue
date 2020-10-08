@@ -78,7 +78,7 @@ export default {
     return {
       dateMenuStart: false,
       dateMenuFinal: false,
-      selectedStartDate: moment().add(-1, 'days').format("YYYY-MM-DD"),
+      selectedStartDate: moment().format("YYYY-MM-DD"),
       selectedFinalDate: moment().format("YYYY-MM-DD"),
       selectedUnit: null
     };
