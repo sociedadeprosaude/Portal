@@ -37,6 +37,7 @@
         data: () => ({
             intakes: false,
             cart: false,
+
         }),
         components: {
             Receipt,
@@ -93,7 +94,7 @@
             isMobile() {
               return this.$store.getters.isMobile
             },
-        },
+        }
     }
 </script>
 

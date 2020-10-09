@@ -1,0 +1,12 @@
+query{
+    Transaction(filter:{date_to_pay_not:"00/00/0000"}){
+        date{formatted} ,value,date_to_pay,description,payment_methods,recorrent,id
+        categories{
+            name
+        },
+        unit:with_unit{
+            name,id
+        }
+
+    }
+}

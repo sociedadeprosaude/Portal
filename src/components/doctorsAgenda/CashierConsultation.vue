@@ -138,7 +138,10 @@
                 ExamsSkip: false,
                 Specialties:[],
                 LocaleSpecialties:[],
-                SpecialtieSkip: false
+                SpecialtieSkip: false,
+                Bundles: [],
+                LocaleBundles: [],
+                BundlesSkip: false
             }
         },
 
@@ -203,7 +206,7 @@
                     case 'appointment':
                         return this.LocaleSpecialties.slice(0,20);
                     case 'package':
-                        return this.package;
+                        return this.LocaleBundles;
                     default:
                         return []
                 }
@@ -293,6 +296,17 @@
                 },
                 skip(){
                     return this.ExamsSkip
+                }
+            },
+            loadBundles: {
+                query: require("@/graphql/bundles/loadBundles.gql"),
+                update(data){
+                    this.Bundles = Object.assign(data.Bundles)
+                    this.LocaleBundles= data.Bundles
+                    this.BundlesSkip = true
+                },
+                skip(){
+                    return this.BundlesSkip
                 }
             }
         }
