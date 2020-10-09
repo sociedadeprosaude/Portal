@@ -192,6 +192,7 @@ import SubmitButton from "../SubmitButton";
 import BudgetToPrint from "../../components/cashier/BudgetToPrint";
 import Receipt from "../cashier/Receipt";
 import gql from 'graphql-tag'
+import { uuid } from 'vue-uuid'
 
 import functions from "../../utils/functions";
 
@@ -447,57 +448,66 @@ export default {
       }
       this.alertMessage.model = false
       await this.saveBudget(this.generateBudget());
-      console.log('selectedBudget: ', this.selectedBudget)
       this.selectedBudget.valuesPayments.forEach(value => {
         value = parseFloat(value)
       })
 
-      let transaction = await this.$apollo.mutate({
-        mutation: require('@/graphql/transaction/NewPayIntake.gql'),
-        variables: {
-          value: parseFloat(this.selectedBudget.total),
-          payment_methods: this.selectedBudget.payments,
-          payments: this.selectedBudget.valuesPayments,
-          parcels: this.selectedBudget.parcel,
-          discount: parseFloat(this.selectedBudget.discount) ? parseFloat(this.selectedBudget.discount) : 0,
-          date: {
-            formatted: moment(this.selectedBudget.date).format("YYYY-MM-DDTHH:mm:ss")
-          },
-        },
-      })
-
-      this.selectedBudget.id = transaction.data.CreateTransaction.id
+      let transactionId = await this.makeTransaction()
 
 
-      await this.createProductTransaction(this.selectedBudget.exams, transaction.data.CreateTransaction)
+      // await this.createProductTransaction(this.selectedBudget.exams, transaction.data.CreateTransaction)
       if (this.selectedBudget.doctor) {
-        this.AddRelationsIntakeDoctor(transaction)
+        this.AddRelationsIntakeDoctor(transactionId)
       } else {
-        this.AddRelationsIntake(transaction)
+        this.AddRelationsIntake(transactionId)
       }
     },
-    generateStringProductsTransactions(products) {
-      let mutation = 'mutation {'
+    async makeTransaction() {
+      let transactionId = uuid.v4()
+      let transactionString = `CreateTransaction(
+      id: "${transactionId}",
+     value:${parseFloat(this.selectedBudget.total)},
+     payment_methods:"${this.selectedBudget.payments}",
+     payments:${this.selectedBudget.valuesPayments},
+     parcels:"${this.selectedBudget.parcel}",
+     discount:${parseFloat(this.selectedBudget.discount) ? parseFloat(this.selectedBudget.discount) : 0},
+     date:
+          {
+            formatted: "${moment(this.selectedBudget.date).format("YYYY-MM-DDTHH:mm:ss")}"
+          }
+     ){
+        id, value, payment_methods, payments, parcels, discount, date{
+        formatted
+        }
+    }`
+      let productsTransactionIds = []
+      let productsTransactionString = ''
+      let products = this.selectedBudget.exams.concat(this.selectedBudget.specialties)
+      products = products.filter(p => p)
       for (let product in products) {
-        mutation += `
-                productTransaction${product}: CreateProductTransaction(price:${products[product].price}){
+          let prodId = uuid.v4()
+        products[product].prodId = prodId
+        productsTransactionIds.push(prodId)
+        productsTransactionString += `
+                productTransaction${product}: CreateProductTransaction(
+                id: "${prodId}"
+                price:${products[product].price}){
                     id
                 },`
+        this.verifyUnpaidConsultations(products[product])
+
       }
-      mutation += '}'
-      return mutation
-    },
-    generateStringRelationProductsTransactions(products, productsTransactions, transaction) {
-      let mutation = 'mutation {'
+
+      let productTransactionLinkString = ''
       for (let product in products) {
-        let productTransactionId = productsTransactions[`productTransaction${product}`].id
-        mutation += `
+        let productTransactionId = products[product].prodId
+        productTransactionLinkString += `
                 ProductTransactionWith_transaction${product}:AddProductTransactionWith_transaction(
         from:{
             id:"${productTransactionId}"
         },
         to:{
-            id:"${transaction.id}"
+            id:"${transactionId}"
         }
     ){
         from{id},
@@ -526,34 +536,20 @@ export default {
         to{id}
     }` : ''},`
       }
-      mutation += '}'
-      return mutation
-    },
-    async createProductTransaction(products, transaction) {
-      let mutation = this.generateStringProductsTransactions(products)
 
-      let productTransaction = await this.$apollo.mutate({
-        mutation: gql`${mutation}`,
-      })
-      let relationsMutation = this.generateStringRelationProductsTransactions(products, productTransaction.data, transaction)
+      let finalString = `mutation { ${transactionString} ${productsTransactionString} ${productTransactionLinkString} }`
 
       await this.$apollo.mutate({
-        mutation: gql`${relationsMutation}`,
+        mutation: gql`${finalString}`,
       })
 
-
-      for (let product in products) {
-        this.verifyUnpaidConsultations({
-          id: productTransaction.data[`productTransaction${product}`].id,
-          product: products[product]
-        })
-      }
+      return transactionId
     },
-    async AddRelationsIntakeDoctor(data) {
+    async AddRelationsIntakeDoctor(transactionId) {
       this.$apollo.mutate({
         mutation: require('@/graphql/transaction/AddRelationsNewIntakeDoctor.gql'),
         variables: {
-          idBudget: data.data.CreateTransaction.id,
+          idBudget: transactionId,
           idColaborator: this.selectedBudget.colaborator.id,
           idPatient: this.selectedBudget.user.id,
           idDoctor: this.selectedBudget.doctor.id,
@@ -567,12 +563,12 @@ export default {
         console.error('Relações da transaction: ', error)
       })
     },
-    async AddRelationsIntake(data) {
+    async AddRelationsIntake(transactionId) {
       await this.$apollo.mutate({
         mutation: require('@/graphql/transaction/AddRelationsNewIntake.gql'),
         // Parameters
         variables: {
-          idBudget: data.data.CreateTransaction.id,
+          idBudget: transactionId,
           idColaborator: this.selectedBudget.colaborator.id,
           idPatient: this.selectedBudget.user.id,
           idUnit: this.selectedBudget.unit.id
@@ -604,9 +600,9 @@ export default {
     },
 
     verifyUnpaidConsultations(productTransaction) {
-      let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product.id === productTransaction.product.id && consultation.status === "Aguardando pagamento")
+      let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product.id === productTransaction.id && consultation.status === "Aguardando pagamento")
       if (unpaidConsultation) {
-        this.saveRelationProductTransaction(unpaidConsultation.id, productTransaction.id)
+        this.saveRelationProductTransaction(unpaidConsultation.id, productTransaction.prodId)
       }
     },
 
