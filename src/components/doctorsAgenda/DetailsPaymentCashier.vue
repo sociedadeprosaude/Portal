@@ -470,9 +470,9 @@ export default {
           `CreateTransaction(
       id: "${transactionId}",
      value:${parseFloat(this.selectedBudget.total)},
-     payment_methods:"${this.selectedBudget.payments}",
-     payments:${this.selectedBudget.valuesPayments},
-     parcels:"${this.selectedBudget.parcel}",
+     payment_methods:[${this.selectedBudget.payments.map(p => `"${p}"`)}],
+     payments:[${this.selectedBudget.valuesPayments}],
+     parcels:[${this.selectedBudget.parcel.map(p => `"${p}"`)}],
      discount:${parseFloat(this.selectedBudget.discount) ? parseFloat(this.selectedBudget.discount) : 0},
      date:
           {
@@ -542,6 +542,7 @@ export default {
 
       let finalString = mutationBuilder.generateMutationRequest()
 
+      console.log('aaa', finalString)
       await this.$apollo.mutate({
         mutation: gql`${finalString}`,
       })
