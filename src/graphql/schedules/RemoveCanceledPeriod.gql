@@ -1,0 +1,5 @@
+mutation($idCanceledPeriod:ID!){
+    DeleteCanceledPeriod(id:$idCanceledPeriod){
+        id
+    }
+}

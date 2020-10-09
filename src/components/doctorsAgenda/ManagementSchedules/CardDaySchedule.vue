@@ -109,18 +109,12 @@ export default {
           },
           
       }).then((data) => {
-          const findIndex = this.schedule.days.findIndex((day)=>day.day === this.day)
-          this.schedule.days.splice(findIndex,1)
           this.cancelConsultations()
       }).catch((error) => {
           console.error(error)
-      })
+      });
 
-      //delete copySchedule.days[this.day];
-      /* await this.$store.dispatch("updateScheduleDays", {
-        idSchedule: this.schedule.id,
-        days: copySchedule.days
-      }); */
+      this.$emit('removedDay',this.day)
       this.loading = false;
       this.dialogRemove = false;
     },
@@ -130,12 +124,12 @@ export default {
     },
     async updateDay(){
         this.loading = true;
-        let copySchedule = Object.assign({}, this.schedule);
+        /* let copySchedule = Object.assign({}, this.schedule);
         copySchedule.days[this.day] = this.newDay;
         await this.$store.dispatch("updateScheduleDays", {
             idSchedule: this.schedule.id,
             days: copySchedule.days
-        });
+        }); */
         this.newDay = {}
         this.loading = false
         this.dialogUpdate = false;
@@ -146,7 +140,7 @@ export default {
       for (const key in consultations) {
         let consultation = consultations[key]
 
-        if(moment(consultation.date).weekday() === Number(this.day)){
+        if(moment(consultation.date).weekday() === Number(this.day) && moment(consultation.date).isAfter(moment())){
           this.$apollo.mutate({
               mutation: require('@/graphql/consultations/RemoveRelationCameFrom.gql'),
               variables: {

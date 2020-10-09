@@ -21,7 +21,7 @@
             :variables="{property:true}"
           >
             <template slot-scope="{ result: { data } }">
-              <HeaderTable :clinics="data.Clinic" @filterClinic="clinic=$event" @examTypeCheck="examTypeCheck=$event"/>
+              <HeaderTable :clinics="data && data.Clinic" @filterClinic="clinic=$event" @examTypeCheck="examTypeCheck=$event"/>
             </template>
           </ApolloQuery>
         </template>
@@ -117,8 +117,6 @@ export default {
       return moment(date, "YYYY-MM-DD").format("DD/MM/YYYY");
     },
     async createNewDay(newDay) {
-      this.loading = true;
-      
       this.$apollo.mutate({
           mutation: require('@/graphql/schedules/NewDay.gql'),
           variables: {
@@ -146,28 +144,34 @@ export default {
           },
           
         }).then((data) => {
-          console.log(data)
+          this.$apollo.queries.loadSchedules.refresh();
         }).catch((error) => {
           console.error(error)
         })
     },
 
     async createNewPeriod(newPeriod) {
-      this.loading = true;
-      let periods = newPeriod.schedule.cancelations_schedules
-        ? newPeriod.schedule.cancelations_schedules
-        : [];
-      periods.push({
-        start_date: newPeriod.start_date,
-        final_date: newPeriod.final_date
+      const response = await this.$apollo.mutate({
+        mutation: require('@/graphql/schedules/NewCanceledPeriod.gql'),
+        variables:{
+          start_date:{
+            formatted: newPeriod.start_date
+          },
+          final_date:{
+            formatted: newPeriod.final_date
+          }
+        }
       });
-      await this.$store.dispatch("updateSchedulePeriods", {
-        idSchedule: newPeriod.schedule.id,
-        cancelations_schedules: periods
+      
+      await this.$apollo.mutate({
+        mutation: require('@/graphql/schedules/AddRelationCanceledPeriod.gql'),
+        variables:{
+          idSchedule: newPeriod.schedule.id,
+          idCanceledPeriod: response.data.CreateCanceledPeriod.id
+        }
       });
-      this.loading = false;
-      /* this.dialogNewPeriod = false;
-      this.newPeriod = {}; */
+
+      this.$apollo.queries.loadSchedules.refresh();
     },
     async updateExpirationDate(schedule) {
       this.loading = true;
@@ -193,9 +197,6 @@ export default {
           this.schedules = data.Schedule.filter(schedule => schedule.clinic && schedule.doctor && schedule.product && schedule.product.type === "EXAM")
         else
           this.schedules = data.Schedule.filter(schedule => schedule.clinic && schedule.doctor && schedule.product && schedule.product.type === "SPECIALTY")
-      },
-      result(data){
-        console.log('->',data)
       }
     },
   }

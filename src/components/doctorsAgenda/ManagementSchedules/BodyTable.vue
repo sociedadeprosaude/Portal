@@ -11,6 +11,7 @@
           :schedule="item"
           :dayObj="findDay(day)"
           :day="day"
+          @removedDay="removeDay($event)"
         ></CardDaySchedule>
         <v-card v-else @click="openDialogNewDay(item,day)" class="py-7 grey--text" elevation="2">
           <h1 class="title font-weight-bold">{{days[day]}}</h1>
@@ -62,11 +63,11 @@
       </v-flex>
 
       <v-flex
-        v-for="(period,index) in item.cancelations_schedules"
+        v-for="(period,index) in item.canceled_periods"
         :key="index"
         class="xs6 sm4 md2 lg2 pa-2"
       >
-        <CardPeriodCanceledSchedule :periodObj="period" :schedule="item" :index="index"></CardPeriodCanceledSchedule>
+        <CardPeriodCanceledSchedule :periodObj="period" :schedule="item" :index="index" @removedPeriod="removePeriod($event)"></CardPeriodCanceledSchedule>
       </v-flex>
       <v-flex :cols="2" class="xs6 sm4 md2 lg2 pa-2">
         <v-card @click="openDialogNewPeriod(item)" class="py-5 grey--text" elevation="2">
@@ -173,8 +174,15 @@ export default {
         this.loading = true;
         this.$emit('createNewPeriod',this.newPeriod)
         this.loading = false;
-        this.dialog = false;
+        this.dialogNewPeriod = false;
         this.newPeriod = {};
+    },
+    removePeriod(index){
+      this.item.canceled_periods.splice(index,1);
+    },
+    removeDay(day){
+      const index = this.item.days.findIndex(value => value.day === day.toString())
+      this.item.days.splice(index,1);
     }
   }
 };

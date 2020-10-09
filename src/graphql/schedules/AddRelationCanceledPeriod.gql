@@ -1,0 +1,13 @@
+mutation($idSchedule:ID!,$idCanceledPeriod:ID!){
+    AddScheduleCanceled_periods(
+        from:{
+            id:$idSchedule
+        },
+        to:{
+            id:$idCanceledPeriod
+        }
+    ){
+        from{id},
+        to{id}
+    }
+}

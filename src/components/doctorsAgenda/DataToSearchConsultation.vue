@@ -157,7 +157,7 @@ export default {
           dates.forEach((date, index) => {
             let findDay = schedule.days.find(day => Number(day.day) == moment(date).weekday())
             let hourConsultation = findDay.hour;
-            //if (schedule.cancelations_schedules.indexOf(date) === -1 && schedule.cancelations_schedules.indexOf(date + ' ' + hourConsultation) === -1) {
+            if (!this.dateIsInCancledPeriod(schedule,date)) {
               let scheduleObj = {
                 clinic: schedule.clinic,
                 doctor: schedule.doctor,
@@ -176,7 +176,7 @@ export default {
               const obj = {...scheduleObj,qtd_consultations, qtd_returns};
               obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns;
               consultations.push(obj)
-            //}
+            }
           })
         }
       });
@@ -201,6 +201,13 @@ export default {
       }
       return dates
     },
+    dateIsInCancledPeriod(schedule,date){
+      const foundCanceledPeriod = schedule.canceled_periods.find((period)=>{
+        return moment(date).isSameOrAfter(period.start_date.formatted) && moment(date).isSameOrBefore(period.final_date.formatted)
+      });
+
+      return foundCanceledPeriod;
+    }
   },
   apollo: {
     loadSchedules: {

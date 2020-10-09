@@ -1,8 +1,8 @@
 <template>
   <v-card class="py-5" elevation="2">
-    <v-chip class="primary subtitle-2 font-weight-bold">{{formatDate(periodObj.start_date)}}</v-chip>
+    <v-chip class="primary subtitle-2 font-weight-bold">{{formatDate(periodObj.start_date.formatted)}}</v-chip>
     <h1 class="grey--text text-darken-2 subtitle-1 font-weight-bold">Até</h1>
-    <v-chip class="primary subtitle-2 font-weight-bold">{{formatDate(periodObj.final_date)}}</v-chip>
+    <v-chip class="primary subtitle-2 font-weight-bold">{{formatDate(periodObj.final_date.formatted)}}</v-chip>
     <br />
     <br />
     <v-spacer></v-spacer>
@@ -16,7 +16,7 @@
     <v-dialog v-model="dialogRemove" max-width="400px">
       <v-card class="text-left">
         <v-card-title>
-          <span class="headline">Remover dia da agenda</span>
+          <span class="headline">Remover Período</span>
         </v-card-title>
         <v-card-text>
           <p>Você deseja remover o período de cancelamento da agenda médica?</p>
@@ -24,7 +24,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" text @click="dialogRemove = false">Não</v-btn>
-          <v-btn :loading="loading" color="blue darken-1" text @click="removeDay">Sim</v-btn>
+          <v-btn :loading="loading" color="blue darken-1" text @click="removePeriod">Sim</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -38,7 +38,7 @@
           <v-container>
             <v-row>
               <v-col cols="12">
-                <v-text-field v-model="newPeriod.start_date" type="date" label="Data inicial" required></v-text-field>
+                <v-text-field v-model="newPeriod.start_date " type="date" label="Data inicial" required></v-text-field>
               </v-col>
               <v-col cols="12">
                 <v-text-field
@@ -82,29 +82,35 @@ export default {
     formatDate(date) {
       return moment(date, "YYYY-MM-DD").format("DD/MM/YYYY");
     },
-    async removeDay() {
+    async removePeriod() {
       this.loading = true;
-      let copySchedule = Object.assign({}, this.schedule);
-      copySchedule.cancelations_schedules.splice(this.index,1);
-      await this.$store.dispatch("updateSchedulePeriods", {
-        idSchedule: this.schedule.id,
-        cancelations_schedules: copySchedule.cancelations_schedules
+      console.log(this.periodObj)
+      await this.$apollo.mutate({
+        mutation: require('@/graphql/schedules/RemoveCanceledPeriod.gql'),
+        variables:{
+          idCanceledPeriod: this.periodObj.id
+        }
       });
       this.loading = false;
       this.dialogRemove = false;
+      this.$emit('removedPeriod',this.index);
+
     },
     openDialoaUpdateDay() {
       this.dialogUpdate = true;
-      this.newPeriod = { ...this.periodObj };
+      this.newPeriod = { 
+        start_date: this.periodObj.start_date.formatted,
+        final_date: this.periodObj.final_date.formatted
+       };
     },
     async updateDay() {
       this.loading = true;
       let copySchedule = Object.assign({}, this.schedule);
-      copySchedule.cancelations_schedules[this.index] = this.newPeriod;
+      /* copySchedule.cancelations_schedules[this.index] = this.newPeriod;
       await this.$store.dispatch("updateSchedulePeriods", {
         idSchedule: this.schedule.id,
         cancelations_schedules: copySchedule.cancelations_schedules
-      });
+      }); */
       this.loading = false;
       this.dialogRemove = false;
     }

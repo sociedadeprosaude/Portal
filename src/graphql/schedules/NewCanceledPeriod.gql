@@ -1,0 +1,14 @@
+mutation($start_date:_Neo4jDateInput!, $final_date: _Neo4jDateInput!){
+  CreateCanceledPeriod(
+    start_date:$start_date,
+    final_date:$final_date
+  ){
+    id,
+    start_date{
+        formatted
+    },
+    final_date{
+        formatted
+    }
+  }
+}
