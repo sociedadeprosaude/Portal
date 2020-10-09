@@ -542,7 +542,6 @@ export default {
 
       let finalString = mutationBuilder.generateMutationRequest()
 
-      console.log('aaa', finalString)
       await this.$apollo.mutate({
         mutation: gql`${finalString}`,
       })
@@ -586,7 +585,8 @@ export default {
           })
     },
     async receipt(intake) {
-      this.selectedIntake = this.selectedBudget
+      console.log('intr', intake)
+      this.selectedIntake = intake
       this.receiptDialog = true
       this.skipPatients = false
       this.$apollo.queries.loadPatient.refresh()

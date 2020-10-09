@@ -108,8 +108,8 @@
                                                     <span class="primary--text font-weight-bold pr-6"
                                                           style="font-size: 1.2em">{{ budget.payments[index] }} :</span>
                       <span v-if="budget.payments[index] === 'Crédito'"
-                            class="font-weight-bold"> {{ budget.parcels[index] }} x {{
-                          (parseFloat(budget.valuesPayments[index]) / parseFloat(budget.parcels[index])).toLocaleString('en-us', {
+                            class="font-weight-bold"> {{ budget.parcel[index] }} x {{
+                          (parseFloat(budget.valuesPayments[index]) / parseFloat(budget.parcel[index])).toLocaleString('en-us', {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2
                           })
@@ -220,6 +220,9 @@ export default {
   props: ['budget'],
   components: {
     AttendanceGuide
+  },
+  mounted() {
+    console.log('bud', this.budget)
   },
   computed: {
     patient() {
