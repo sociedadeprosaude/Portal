@@ -192,7 +192,8 @@ import SubmitButton from "../SubmitButton";
 import BudgetToPrint from "../../components/cashier/BudgetToPrint";
 import Receipt from "../cashier/Receipt";
 import gql from 'graphql-tag'
-import { uuid } from 'vue-uuid'
+import MutationBuilder from "../../classes/MutationBuilder"
+import {uuid} from 'vue-uuid'
 
 import functions from "../../utils/functions";
 
@@ -464,7 +465,9 @@ export default {
     },
     async makeTransaction() {
       let transactionId = uuid.v4()
-      let transactionString = `CreateTransaction(
+      let mutationBuilder = new MutationBuilder()
+      mutationBuilder.addMutation(
+          `CreateTransaction(
       id: "${transactionId}",
      value:${parseFloat(this.selectedBudget.total)},
      payment_methods:"${this.selectedBudget.payments}",
@@ -480,20 +483,20 @@ export default {
         formatted
         }
     }`
+      )
       let productsTransactionIds = []
-      let productsTransactionString = ''
       let products = this.selectedBudget.exams.concat(this.selectedBudget.specialties)
       products = products.filter(p => p)
       for (let product in products) {
-          let prodId = uuid.v4()
+        let prodId = uuid.v4()
         products[product].prodId = prodId
         productsTransactionIds.push(prodId)
-        productsTransactionString += `
-                productTransaction${product}: CreateProductTransaction(
+        mutationBuilder.addMutation(`
+                CreateProductTransaction(
                 id: "${prodId}"
                 price:${products[product].price}){
                     id
-                },`
+                }`)
         this.verifyUnpaidConsultations(products[product])
 
       }
@@ -501,8 +504,8 @@ export default {
       let productTransactionLinkString = ''
       for (let product in products) {
         let productTransactionId = products[product].prodId
-        productTransactionLinkString += `
-                ProductTransactionWith_transaction${product}:AddProductTransactionWith_transaction(
+        mutationBuilder.addMutation(`
+                AddProductTransactionWith_transaction(
         from:{
             id:"${productTransactionId}"
         },
@@ -512,8 +515,8 @@ export default {
     ){
         from{id},
         to{id}
-    },
-    ProductTransactionWith_product${product}:AddProductTransactionWith_product(
+    }`)
+        mutationBuilder.addMutation(`AddProductTransactionWith_product(
         from:{
             id:"${productTransactionId}"
         },
@@ -523,21 +526,21 @@ export default {
         ){
         from{id},
         to{id}
-    },
-    ${products[product].clinic ? `ProductTransactionWith_clinic${product}:AddProductTransactionWith_clinic(
-        from:{
-            id:"${productTransactionId}"
+    }`)
+        products[product].clinic ? mutationBuilder.addMutation(`AddProductTransactionWith_clinic(
+            from:{
+          id:"${productTransactionId}"
         },
         to:{
           id:"${products[product].clinic.id}"
         }
-        ){
-        from{id},
-        to{id}
-    }` : ''},`
+      ){
+          from{id},
+          to{id}
+        }` ) : ''
       }
 
-      let finalString = `mutation { ${transactionString} ${productsTransactionString} ${productTransactionLinkString} }`
+      let finalString = mutationBuilder.generateMutationRequest()
 
       await this.$apollo.mutate({
         mutation: gql`${finalString}`,
