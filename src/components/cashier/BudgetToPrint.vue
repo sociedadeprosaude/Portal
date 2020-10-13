@@ -39,7 +39,7 @@
                                     <v-flex xs3 class="align-start pt-6">
                                         <v-layout column wrap class="justify-start align-start">
                                             <span class="font-weight-bold">{{this.budget.id}}</span>
-                                            <span class="font-weight-bold">{{this.budget.date | dateFilter}}</span>
+                                            <span class="font-weight-bold">{{this.budget.date.formatted | dateFilter}}</span>
                                         </v-layout>
                                     </v-flex>
                                     <v-flex xs12 class="mt-12 primary py-1 px-4" style="height: 32px">
