@@ -418,7 +418,7 @@ export default {
         discount: this.moneyDiscount,
         total: this.total,
         parcel: this.payment.parcel,
-        date: moment().format('YYYY-MM-DD HH:mm:ss'),
+        date: {formatted:moment().format('YYYY-MM-DD HH:mm:ss')},
         user: this.$store.getters.selectedPatient,
         colaborator: this.$store.getters.user,
         doctor: this.selectedDoctor.name === this.noDoctorKeyWord ? undefined : this.selectedDoctor,
@@ -476,7 +476,7 @@ export default {
      discount:${parseFloat(this.selectedBudget.discount) ? parseFloat(this.selectedBudget.discount) : 0},
      date:
           {
-            formatted: "${moment(this.selectedBudget.date).format("YYYY-MM-DDTHH:mm:ss")}"
+            formatted: "${moment(this.selectedBudget.date.formatted).format("YYYY-MM-DDTHH:mm:ss")}"
           }
      ){
         id, value, payment_methods, payments, parcels, discount, date{
