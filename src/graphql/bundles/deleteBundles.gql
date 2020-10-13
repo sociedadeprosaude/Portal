@@ -1,0 +1,9 @@
+mutation (
+    $id: ID!
+        ){
+  DeleteBundles(
+    id: $id
+  ) {
+  id
+  }
+}

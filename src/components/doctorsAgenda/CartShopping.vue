@@ -8,14 +8,14 @@
                            v-if="item.percentageDiscount">
                         {{item.name}}
                         <v-spacer/>
-                        {{parseFloat((item.price * parseFloat(item.percentageDiscount)) / 100).toFixed(2)}}
+                        {{parseFloat(item.total).toFixed(2)}}
                     </v-btn>
 
                     <v-btn rounded dense x-small block class="background font-weight-bold" @click="selectBudget(item)"
                            v-else>
                         {{item.name}}
                         <v-spacer/>
-                        {{parseFloat(item.price).toFixed(2)}}
+                        {{parseFloat(item.total).toFixed(2)}}
                     </v-btn>
                 </v-layout>
                 <h4 v-else class="text-left ml-2">{{item.name}}</h4>
@@ -50,26 +50,14 @@
                     </v-layout>
                 </v-card-text>
                 <v-card-text v-if="categorySelect === 'package'">
-                    <div v-if="item.exams">
+                    <div v-if="item.product">
                         <v-flex xs12 class="align-center justify-center text-center pa-0">
-                            <span class="font-weight-bold" v-if="item.exams.length !== 0">Exames</span>
+                            <span class="font-weight-bold" v-if="item.product.length !== 0">Produtos</span>
                         </v-flex>
                         <v-divider/>
-                        <v-layout row v-for="n in item.exams" :key="n.name" class="my-2 justify-center"
+                        <v-layout row v-for="n in item.product.filter(p => p.product[0])" :key="n.name" class="my-2 justify-center"
                                   style="width: 100%">
-                            <h5>{{n.name}}
-                                <v-spacer/>
-                            </h5>
-                        </v-layout>
-                    </div>
-                    <div v-if="item.consultations">
-                        <v-flex xs12 class="align-center justify-center text-center">
-                            <span class="font-weight-bold" v-if="item.consultations.length !== 0">Consultas</span>
-                        </v-flex>
-                        <v-divider/>
-                        <v-layout row v-for="n in item.consultations" :key="n.name" class="my-2 justify-center"
-                                  style="width: 100%">
-                            <h5>{{n.name}}
+                            <h5>{{n["product"][0]["name"]}}
                                 <v-spacer/>
                             </h5>
                         </v-layout>
@@ -101,6 +89,24 @@
 
         methods: {
             async selectBudget(budget) {
+                if (budget.product) {
+                    budget.product.filter( e => {
+                        if( e.product[0].type === "EXAM") {
+                            e.product[0].type="exam"
+                        }
+                        else{
+                            e.product[0].type="appointment"
+                        }
+                        let product = {
+                            type: e.product[0].type ,
+                            name: e.product[0].name,
+                            id: e.product[0].id,
+                            price: e.price -  ( e.price * e.discount / 100 ),
+                            clinic: e.clinic.length ? e.clinic[0] : e.clinic
+                        }
+                        this.$store.commit('addShoppingCartItem', product)
+                    })
+                }
                 this.$store.commit('setSelectedBudget', budget);
                 for (let exam in budget.exams) {
                     this.$store.commit('addShoppingCartItem', budget.exams[exam])

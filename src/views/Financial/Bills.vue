@@ -70,7 +70,9 @@ export default {
         number: "###"
       },
       Charges:{},
-      ChargeSkip: false
+      Transactions:{},
+      ChargeSkip: false,
+      TransactionSkip: false
     };
   },
   mounted() {
@@ -143,7 +145,7 @@ export default {
     },
     async getOuttakesPaid() {
       this.loadingFilter = true;
-      await this.$store.dispatch("getOuttakesPaid", {
+      /* await this.$store.dispatch("getOuttakesPaid", {
         initialDate: this.switchDate
           ? moment(this.selectedDate).format("YYYY-MM-DD 00:00:00")
           : null,
@@ -151,8 +153,10 @@ export default {
           ? moment(this.selectedDate).format("YYYY-MM-DD 23:59:59")
           : null,
         category: this.switchCategory ? this.selectedCategory : null
-      });
+      }); */
       this.loadingFilter = false;
+      return  this.Transactions? this.Transactions : []
+
     },
     updateCharges(){
       console.log('entrei aqui')
@@ -189,6 +193,17 @@ export default {
       },
       skip(){
         return this.ChargeSkip
+      }
+    },
+    LoadTransactionBills: {
+      query: require("@/graphql/transaction/LoadTransactionBills.gql"),
+      update(data){
+        console.log('data.transaction', data.Transaction)
+        this.Transactions = Object.assign(data.Transaction)
+        this.TransactionSkip = true
+      },
+      skip(){
+        return this.TransactionSkip
       }
     }
   }
