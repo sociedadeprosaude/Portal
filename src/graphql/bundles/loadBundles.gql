@@ -1,0 +1,21 @@
+query {
+    Bundles{
+     id, total, discount, name,
+        product: with_product{
+            discount, price,
+            product: with_product{
+            name, type, id
+            },
+            clinic: with_clinic{
+                           id,
+                           name,
+                           cnpj,
+                           telephone,
+                           opening_hours,
+                           has_address{
+                              cep, state, street, city, complement, neighboor, number
+                           }
+            }
+        },
+    }
+}

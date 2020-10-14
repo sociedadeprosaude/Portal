@@ -71,7 +71,7 @@
                                             >{{this.consultation.dependent ? this.consultation.dependent.name : this.consultation.patient.name}}</span>
                                             <v-flex v-if="!this.consultation.dependent">
                                                 <span class="primary--text font-weight-bold">CPF:</span>
-                                                <span class="font-weight-bold">{{user.cpf}}</span>
+                                                <span class="font-weight-bold">{{this.consultation.patient.cpf}}</span>
                                             </v-flex>
                                             <v-flex>
                                                 <span class="primary--text font-weight-bold">Data de Nascimento:</span>

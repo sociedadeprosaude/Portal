@@ -15,7 +15,7 @@
                                 <v-btn rounded small class="mx-2"
                                        :color="categorySelect === 'appointment' ? 'primary' : 'background'"
                                        @click="selectCategory('appointment')">
-                                    <span class="hidden-xs-only">{{specialtiesLoaded ? 'Consultas' : 'Carregando consultas...'}}</span>
+                                    <span class="hidden-xs-only">{{'Consultas'}}</span>
                                     <img src="@/assets/icons/doctor.svg" height="24px" class="hidden-sm-and-up">
                                 </v-btn>
                             </v-flex>
@@ -50,100 +50,35 @@
                                             </div>
                                         </v-flex>
                                         <v-container fluid grid-list-sm class="py-0 my-3 mx-2">
-                                            <v-layout row wrap v-if="categorySelect === 'exam'">
-                                                <v-flex v-for="n in item.clinics" :key="n.name" sm12 xs12
-                                                        class="px-2 py-2">
-                                                    <v-card class="pa-4 background"
-                                                            style="border-radius:20px; height: 100%">
-                                                        <v-layout>
-                                                            <v-layout row wrap>
-                                                                <v-flex xs12 class="text-left">
-                                                                    <v-layout row wrap>
-                                                                        <span class="subtitle-2 font-weight-bold">{{n.name}}</span>
-                                                                        <v-spacer/>
-                                                                        <v-chip small color="primary_dark"
-                                                                                text-color="white" class="mb-2">
-                                                                            Preço :
-                                                                            {{n.price}}
-                                                                        </v-chip>
-                                                                    </v-layout>
-                                                                </v-flex>
-                                                                <v-flex xs12 class="mb-1">
-                                                                    <v-divider class="primary"/>
-                                                                </v-flex>
-                                                                <v-flex xs12 class="text-right">
-                                                                    <v-fade-transition>
-                                                                        <v-btn
-                                                                                rounded
-                                                                                small
-                                                                                color="primary_dark white--text"
-                                                                                class="mx-0"
-                                                                                @click="addProduct(item, n, 'exam')"
-                                                                        >Adicionar
-                                                                        </v-btn>
-                                                                        <v-btn
-                                                                                rounded
-                                                                                small
-                                                                                color="grey"
-                                                                                class="mx-0"
-                                                                        >Sem conexão
-                                                                        </v-btn>
-                                                                    </v-fade-transition>
-                                                                </v-flex>
-                                                            </v-layout>
+                                            <v-card-text v-if="categorySelect === 'exam'" class="ma-0 pa-0 my-1">
+                                                <v-flex xs12>
+                                                    <p v-if="!item.clinics"> {{item.price}}</p>
+                                                    <v-layout row v-for="n in item.clinics" :key="n.name" class="my-2" style="width: 100%">
+                                                        <v-btn rounded dense x-small block class="background font-weight-bold"
+                                                               @click="addProduct(item, 'exam', n)">
+                                                            {{n.name}}
+                                                            <v-spacer/>
+                                                            {{item.price ? item.price : item.final_price}}
+                                                        </v-btn>
+                                                    </v-layout>
+                                                </v-flex>
+                                            </v-card-text>
+                                            <v-card-text v-if="categorySelect === 'appointment'" class="ma-0 pa-0 my-1">
+                                                <v-layout row class="my-2">
+                                                    <v-flex xs12>
+                                                        <v-layout row no-wrap v-for="clinic in item.clinics"
+                                                                  :key="clinic.name + item.name"
+                                                                  class="align-center justify-center text-center my-1">
+                                                            <v-btn rounded dense x-small block class="background font-weight-bold"
+                                                                   @click="addProduct(item, 'appointment', clinic)">
+                                                                {{clinic.name}}
+                                                                <v-spacer/>
+                                                                {{item.price ? item.price : item.final_price}}
+                                                            </v-btn>
                                                         </v-layout>
-                                                    </v-card>
-                                                </v-flex>
-                                            </v-layout>
-                                            <v-layout row wrap v-if="categorySelect === 'appointment'">
-                                                <v-flex v-for="(n, index) in item.doctors"
-                                                        :key="n.crm + index" sm12 xs12 class="px-2 py-2">
-                                                    <div v-for="clinic in n.clinics" :key="clinic.name" class="mb-3">
-                                                        <v-card class="pa-4 background"
-                                                                style="border-radius:20px; height: 100%">
-                                                            <v-layout>
-                                                                <v-layout row wrap>
-                                                                    <v-flex xs12 class="text-left">
-                                                                        <v-layout row wrap>
-                                                                            <span class="subtitle-2 font-weight-bold">
-                                                                                {{n.name}} - {{clinic.name}}
-                                                                            </span>
-                                                                            <v-spacer/>
-                                                                            <v-chip small color="primary_dark"
-                                                                                    text-color="white" class="mb-2">
-                                                                                Preço :
-                                                                                {{n.price}}
-                                                                            </v-chip>
-                                                                        </v-layout>
-                                                                    </v-flex>
-                                                                    <v-flex xs12 class="mb-1">
-                                                                        <v-divider class="primary"/>
-                                                                    </v-flex>
-                                                                    <v-flex xs12 class="text-right">
-                                                                        <v-fade-transition>
-                                                                            <v-btn
-                                                                                    rounded
-                                                                                    small
-                                                                                    color="primary_dark white--text"
-                                                                                    class="mx-0"
-                                                                                    @click="addProduct(item, n, 'appointment', clinic)"
-                                                                            >Adicionar
-                                                                            </v-btn>
-                                                                            <v-btn
-                                                                                    rounded
-                                                                                    small
-                                                                                    color="grey"
-                                                                                    class="mx-0"
-                                                                            >Sem conexão
-                                                                            </v-btn>
-                                                                        </v-fade-transition>
-                                                                    </v-flex>
-                                                                </v-layout>
-                                                            </v-layout>
-                                                        </v-card>
-                                                    </div>
-                                                </v-flex>
-                                            </v-layout>
+                                                    </v-flex>
+                                                </v-layout>
+                                            </v-card-text>
                                         </v-container>
                                     </v-layout>
                                 </v-flex>
@@ -164,6 +99,12 @@
                 categorySelect: 'appointment',
                 search: '',
                 loading: undefined,
+                Exams:[],
+                LocaleExams:[],
+                ExamsSkip: false,
+                Specialties:[],
+                LocaleSpecialties:[],
+                SpecialtieSkip: false,
             }
         },
         watch: {
@@ -203,9 +144,9 @@
             items() {
                 switch (this.categorySelect) {
                     case 'exam':
-                        return this.exams;
+                        return this.LocaleExams.slice(0,20);
                     case 'appointment':
-                        return this.specialties;
+                        return this.LocaleSpecialties.slice(0,20);
                     case 'package':
                         return this.package;
                     default:
@@ -231,28 +172,25 @@
                 this.loading = false
             },
 
-            addProduct(product, selection, type, clinic) {
+            addProduct(product, type, clinic) {
                 let holder = Object.assign({}, product);
-
                 switch (type) {
                     case 'appointment':
                         delete holder.doctors;
-                        holder.doctor = selection;
-                        holder.doctor.clinic = clinic;
-                        holder.cost = selection.cost;
-                        holder.price = selection.price;
+                        delete holder.clinics
+                        holder.type ='appointment'
+                        holder.clinic = clinic
                         break;
                     case 'exam':
                         delete holder.clinics;
-                        holder.clinic = selection;
-                        holder.cost = selection.cost;
-                        holder.price = selection.price;
-                        holder.realized = false;
+                        delete holder.doctors;
+                        holder.type ='exam'
+                        holder.clinic = clinic;
                         break;
                     default:
                 }
                 this.$store.commit('addShoppingCartItem', holder)
-            }
+            },
         },
         mounted() {
             let self = this;
@@ -277,6 +215,42 @@
                     clearTimeout(self.typingTimer)
                 }
             })
+        },
+        apollo: {
+            loadSpecialties: {
+                query: require("@/graphql/products/LoadProducts.gql"),
+                variables(){
+                    return {
+                        type: 'SPECIALTY'
+                    }
+                },
+                update(data){
+                    console.log('especialidades: ', data.Product)
+                    this.Specialties = Object.assign(data.Product)
+                    this.LocaleSpecialties= data.Product
+                    this.SpecialtieSkip = true
+                },
+                skip(){
+                    return this.SpecialtieSkip
+                }
+            },
+            loadExams: {
+                query: require("@/graphql/products/LoadProducts.gql"),
+                variables(){
+                    return {
+                        type: 'EXAM'
+                    }
+                },
+                update(data){
+                    console.log('exams: ', data.Product)
+                    this.Exams = Object.assign(data.Product)
+                    this.LocaleExams= data.Product
+                    this.ExamsSkip = true
+                },
+                skip(){
+                    return this.ExamsSkip
+                }
+            },
         }
     }
 </script>

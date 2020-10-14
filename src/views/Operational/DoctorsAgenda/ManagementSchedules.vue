@@ -173,14 +173,6 @@ export default {
 
       this.$apollo.queries.loadSchedules.refresh();
     },
-    async updateExpirationDate(schedule) {
-      this.loading = true;
-      await this.$store.dispatch("updateExpirationDate", {
-        idSchedule: schedule.id,
-        expiration_date: schedule.expiration_date
-      });
-      this.loading = false;
-    },
     deleteSchedule(item) {
       const index = this.schedules.indexOf(item);
       if (confirm("Você tem certeza que dejesa remover a agenda?")) {

@@ -181,7 +181,7 @@ export default {
       this.doctor = undefined
       this.examType = undefined
       if(value){
-        this.clinics = value.clinics
+        //this.clinics = value.clinics
         this.doctors = value.doctors
       }
     },

@@ -124,12 +124,14 @@ export default {
     },
     async updateDay(){
         this.loading = true;
-        /* let copySchedule = Object.assign({}, this.schedule);
-        copySchedule.days[this.day] = this.newDay;
-        await this.$store.dispatch("updateScheduleDays", {
-            idSchedule: this.schedule.id,
-            days: copySchedule.days
-        }); */
+        /* this.$apollo.mutate({
+          mutation: require('@/graphql/schedules/UpdateDaySchedule.gql'),
+          variables: {
+            idSchedule:this.schedule.id,
+            idDay: this.dayObj.id
+          },
+          
+        }) */
         this.newDay = {}
         this.loading = false
         this.dialogUpdate = false;

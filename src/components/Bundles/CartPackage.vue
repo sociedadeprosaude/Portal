@@ -7,7 +7,7 @@
                         <v-select
                                 v-if="!registerPackage"
                                 v-model="searchData"
-                                :items="listPackage"
+                                :items="LocaleBundles ? LocaleBundles : []"
                                 item-text="name"
                                 auto-select-first
                                 :loading="isLoading"
@@ -140,7 +140,7 @@
                                 </v-layout>
                             </v-flex>
                             <v-flex xs12 class="mt-3 mb-3">
-                                <v-layout row wrap class="align-end fill-height">
+                                <v-layout row wrap class="align-end fill-height" v-if="!loading">
                                     <v-flex xs4 class="text-center">
                                         <submit-button
                                                 text="Salvar" :loading="paymentLoading" outlined
@@ -154,6 +154,12 @@
                                     <v-spacer/>
                                     <v-flex xs4 class="text-center mt-4">
                                         <v-btn outlined color="error" @click="deletePackage()">excluir</v-btn>
+                                    </v-flex>
+                                </v-layout>
+                                <v-layout row wrap class="align-end fill-height" v-else>
+                                    <v-flex xs12 class="text-center">
+                                        <v-btn  :loading="loading">
+                                        </v-btn>
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
@@ -181,6 +187,8 @@
     import SubmitButton from "../SubmitButton";
     import BudgetToPrint from "../cashier/BudgetToPrint";
     import Receipt from "../cashier/Receipt";
+    import gql from 'graphql-tag'
+    import { uuid } from 'vue-uuid'
 
     export default {
         name: "Cart",
@@ -222,8 +230,11 @@
                 receiptDialog: false,
                 searchPackage: true, registerPackage: false, searchData: '',
                 newPackageName: '',
-                isLoading: false
-
+                isLoading: false,
+                Bundles: [],
+                loading:false,
+                LocaleBundles: [],
+                BundlesSkip: false
             }
         },
         computed: {
@@ -241,18 +252,22 @@
                 return this.$store.getters.getShoppingCartItems
             },
             exams() {
-                if (this.searchData.exams) {
-                    return this.searchData.exams
-                } else {
-                    return this.$store.getters.getShoppingCartItemsByCategory.exams
+                if (this.searchData.product) {
+                    this.searchData.product.filter( e => { if(e.clinic.length){
+                        e.type = e.product[0].type
+                        e.name = e.product[0].name
+                        e.clinic = e.clinic[0]
+                        e.id = e.product[0].id
+                        this.$store.commit('addShoppingCartItem', e) }
+                    })
                 }
+                return this.$store.getters.getShoppingCartItemsByCategory.exams
             },
             consultations() {
                 if (this.searchData.consultations) {
                     return this.searchData.consultations
-                } else {
-                    return this.$store.getters.getShoppingCartItemsByCategory.consultations
                 }
+                return this.$store.getters.getShoppingCartItemsByCategory.consultations
             },
             cost() {
                 let total = 0;
@@ -277,22 +292,9 @@
             },
             subTotal() {
                 let total = 0;
-                if (this.searchData.name) {
-                    if (this.searchData.consultations) {
-                        for (let item in this.searchData.consultations) {
-                            total += parseFloat(this.searchData.consultations[item].priceOriginal)
-                        }
-                    }
-                    if (this.searchData.exams) {
-                        for (let item in this.searchData.exams) {
-                            total += parseFloat(this.searchData.exams[item].priceOriginal)
-                        }
-                    }
-                } else {
-                    let itens = this.$store.getters.getShoppingCartItems;
-                    for (let item in itens) {
-                        total += parseFloat(itens[item].price);
-                    }
+                let itens = this.$store.getters.getShoppingCartItems;
+                for (let item in itens) {
+                    total += parseFloat(itens[item].price);
                 }
                 return total
             },
@@ -311,20 +313,12 @@
         },
         methods: {
             GetPackage(product) {
-                this.percentageDiscount = product.percentageDiscount
-                this.moneyDiscount = product.moneyDiscount
-
+                console.log('searchData: ', product)
+                this.percentageDiscount = ( (product.discount * 100)/(product.total + product.discount))
+                this.moneyDiscount = product.discount
             },
             removeItem(item, type) {
-                if (this.searchData.name) {
-                    if (type === 'exams') {
-                        this.searchData.exams.splice(this.searchData.exams.indexOf(item), 1)
-                    } else {
-                        this.searchData.consultations.splice(this.searchData.consultations.indexOf(item), 1)
-                    }
-                } else {
-                    this.$store.commit('removeShoppingCartItem', item)
-                }
+                this.$store.commit('removeShoppingCartItem', item)
             },
 
             generateBudget() {
@@ -375,26 +369,45 @@
                 this.$store.commit('setSelectedPatient', user)
 
             },
-            deletePackage() {
-                this.$store.dispatch('deletePackage', this.searchData).then(() => {
+            async deletePackage() {
+                /* this.$store.dispatch('deletePackage', this.searchData).then(() => {
                     this.$store.dispatch('loadBundle');
-                });
-                this.clearCart();
+                }); */
+                for( let i in this.searchData.product){
+                    await this.$apollo.mutate({
+                        mutation: require ('@/graphql/bundles/deleteProductBundles.gql'),
+                        variables:{
+                           id: this.searchData.product[i].id
+                        }
+                    })
+                }
+                this.$apollo.mutate({
+                    mutation: require ('@/graphql/bundles/deleteBundles.gql'),
+                    variables:{
+                        id: this.searchData.id
+                    }
+                }).then((data)=> {
+                    console.log('deletado com sucesso')
+                    this.BundlesSkip = false
+                    this.$apollo.queries.loadBundles.refresh()
+                    this.clearCart();
+                })
 
             },
             async validateRegister() {
+                this.loading= true
                 const packageData = {
                     exams: this.exams,
                     consultations: this.consultations,
-                    moneyDiscount: this.moneyDiscount,
-                    percentageDiscount: this.percentageDiscount,
+                    moneyDiscount: parseFloat(this.moneyDiscount),
+                    percentageDiscount: parseFloat(this.percentageDiscount),
                     cost: this.cost,
                     price: this.subTotal.toLocaleString('en-us', {minimumFractionDigits: 2}),
                     total: (this.total),
                     name: this.newPackageName !== '' ? this.newPackageName : this.searchData.name,
                 };
-
-                for (let exam in packageData.exams) {
+                console.log('valid Register:', packageData)
+                /* for (let exam in packageData.exams) {
                     if (!packageData.exams[exam].priceOriginal) {
                         packageData.exams[exam].priceOriginal = packageData.exams[exam].price
                     }
@@ -412,9 +425,115 @@
                     this.clearCart();
                     this.registerPackage = !this.registerPackage
                     this.$store.dispatch('loadBundle');
-                });
-            }
+                }); */
+                if(this.searchData.name){
+                    for( let i in this.searchData.product){
+                        await this.$apollo.mutate({
+                            mutation: require ('@/graphql/bundles/deleteProductBundles.gql'),
+                            variables:{
+                                id: this.searchData.product[i].id
+                            }
+                        })
+                    }
+                    this.$apollo.mutate({
+                        mutation: require ('@/graphql/bundles/deleteBundles.gql'),
+                        variables:{
+                            id: this.searchData.id
+                        }
+                    })
+                }
+                let products = packageData.exams.concat(packageData.specialties)
 
+                    let BundleId = uuid.v4()
+                    let BundleString = `CreateBundles(
+                 id: "${BundleId}",
+                 total: ${parseFloat(packageData.total)},
+                 name: "${packageData.name}",
+                 discount: ${parseFloat(packageData.moneyDiscount)}
+                ){
+                id, total, name, discount
+                }`
+                    let ProductBundlesIds = []
+                    let ProductBundlesString = ''
+                products = products.filter(p => p)
+                    for (let product in products) {
+                        let prodId = uuid.v4()
+                        products[product].prodId = prodId
+                        ProductBundlesIds.push(prodId)
+                        ProductBundlesString += `
+                        ProductBundles${product}: CreateProductBundles(
+                        id: "${prodId}"
+                        discount: ${parseFloat(packageData.percentageDiscount)}
+                        price:${parseFloat(products[product].price)}
+                        ){
+                            id
+                        },`
+                    }
+                let ProductBundlesLinkString = ''
+                for (let product in products) {
+                        let ProductBundlesIds = products[product].prodId
+                        ProductBundlesLinkString += `
+                AddBundlesWith_product${product}:AddBundlesWith_product(
+        from:{
+            id:"${BundleId}"
+        },
+        to:{
+            id:"${ProductBundlesIds}"
+        }
+    ){
+        from{id},
+        to{id}
+    },
+    AddProductBundlesWith_product${product}:AddProductBundlesWith_product(
+        from:{
+            id:"${ProductBundlesIds}"
+        },
+        to:{
+            id:"${products[product].id}"
+        }
+        ){
+        from{id},
+        to{id}
+    },
+    ${products[product].clinic ? `AddProductBundlesWith_clinic${product}:AddProductBundlesWith_clinic(
+        from:{
+            id:"${ProductBundlesIds}"
+        },
+        to:{
+          id:"${products[product].clinic.id}"
+        }
+        ){
+        from{id},
+        to{id}
+    }` : ''},`
+                    }
+                let finalString = `mutation { ${BundleString} ${ProductBundlesString} ${ProductBundlesLinkString} }`
+                    await this.$apollo.mutate({
+                        mutation: gql`${finalString}`,
+                    })
+                    this.BundlesSkip = false
+                    this.$apollo.queries.loadBundles.refresh()
+                    this.clearCart();
+                this.loading= false
+                return BundleId
+
+
+            }
+        },
+
+        apollo: {
+            loadBundles: {
+                query: require("@/graphql/bundles/loadBundles.gql"),
+                update(data){
+                    console.log('Bundle: ', data)
+                    this.Bundles = Object.assign(data.Bundles)
+                    this.LocaleBundles= data.Bundles
+                    this.BundlesSkip = true
+                },
+                skip(){
+                    return this.BundlesSkip
+                }
+            }
         }
     }
 </script>
