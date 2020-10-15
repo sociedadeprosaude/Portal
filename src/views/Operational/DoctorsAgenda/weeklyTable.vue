@@ -36,7 +36,8 @@ export default {
     search: undefined,
     dialogRemove: false,
     specialty: undefined,
-    doctor: undefined
+    doctor: undefined,
+    schedules: []
   }),
   computed: {
     specialties() {
@@ -88,7 +89,7 @@ export default {
         currentDate = currentDate.add(30, "minutes");
       });
 
-      let schedules = this.$store.getters.AllSchedules.filter(schedule => {
+      /* let schedules = this.$store.getters.AllSchedules.filter(schedule => {
         if (
           this.specialty &&
           schedule.specialty &&
@@ -98,15 +99,12 @@ export default {
         if (this.doctor && schedule.doctor.name != this.doctor.name)
           return false;
         return true;
-      });
+      }); */
 
-      for (let schedule in schedules) {
-        if (schedules[schedule].cancelations_schedules) {
-          for (let canceled in schedules[schedule].cancelations_schedules) {
-            if (
-              this.today >
-              schedules[schedule].cancelations_schedules[canceled].final_date
-            ) {
+      /* for (let schedule in schedules) {
+        if (schedules[schedule].canceled_periods) {
+          for (let canceled in schedules[schedule].canceled_periods) {
+            if (this.today >schedules[schedule].cancelations_schedules[canceled].final_date) {
               let deleted = schedules[schedule].cancelations_schedules.shift();
               this.$store.dispatch("copyCanceledSchedules", {
                 schedule: schedules[schedule],
@@ -124,10 +122,10 @@ export default {
             }
           }
         }
-      }
+      } */
 
-      for (let schedule in schedules) {
-        let daysOfTheWeek = schedules[schedule].days;
+      for (let schedule in this.schedules) {
+        let daysOfTheWeek = this.schedules[schedule].days;
         for (let dayOfTheWeek in daysOfTheWeek) {
           for (let weeklyItem in weeklyTable) {
             if (
@@ -135,37 +133,37 @@ export default {
                 weeklyTable[weeklyItem].hour &&
               dayOfTheWeek === "1"
             ) {
-              weeklyTable[weeklyItem].monday.push(schedules[schedule]);
+              weeklyTable[weeklyItem].monday.push(this.schedules[schedule]);
             } else if (
               daysOfTheWeek[dayOfTheWeek].hour ===
                 weeklyTable[weeklyItem].hour &&
               dayOfTheWeek === "2"
             ) {
-              weeklyTable[weeklyItem].tuesday.push(schedules[schedule]);
+              weeklyTable[weeklyItem].tuesday.push(this.schedules[schedule]);
             } else if (
               daysOfTheWeek[dayOfTheWeek].hour ===
                 weeklyTable[weeklyItem].hour &&
               dayOfTheWeek === "3"
             ) {
-              weeklyTable[weeklyItem].wednesday.push(schedules[schedule]);
+              weeklyTable[weeklyItem].wednesday.push(this.schedules[schedule]);
             } else if (
               daysOfTheWeek[dayOfTheWeek].hour ===
                 weeklyTable[weeklyItem].hour &&
               dayOfTheWeek === "4"
             ) {
-              weeklyTable[weeklyItem].thursday.push(schedules[schedule]);
+              weeklyTable[weeklyItem].thursday.push(this.schedules[schedule]);
             } else if (
               daysOfTheWeek[dayOfTheWeek].hour ===
                 weeklyTable[weeklyItem].hour &&
               dayOfTheWeek === "5"
             ) {
-              weeklyTable[weeklyItem].friday.push(schedules[schedule]);
+              weeklyTable[weeklyItem].friday.push(this.schedules[schedule]);
             } else if (
               daysOfTheWeek[dayOfTheWeek].hour ===
                 weeklyTable[weeklyItem].hour &&
               dayOfTheWeek === "6"
             ) {
-              weeklyTable[weeklyItem].saturday.push(schedules[schedule]);
+              weeklyTable[weeklyItem].saturday.push(this.schedules[schedule]);
             }
           }
         }
@@ -174,7 +172,7 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch("getAllSchedules");
+    //this.$store.dispatch("getAllSchedules");
   },
   methods: {
     async removeDay(payload) {
@@ -186,12 +184,45 @@ export default {
       });
     },
     async updateDay(payload) {
-      let copySchedule = Object.assign({}, payload.scheduleSelected);
-      copySchedule.days[this.dayScheduleSelected] = payload.editDay;
-      await this.$store.dispatch("updateScheduleDays", {
-        idSchedule: payload.scheduleSelected.id,
-        days: copySchedule.days
-      });
+      console.log(payload)
+      let variables = {
+          idDay: payload.editDay.id,
+          vacancy: Number(payload.editDay.vacancy),
+      }
+
+      /*if(payload.editDay.expiration_date){
+        variables.expiration_date = {
+          formatted:payload.editDay.expiration_date
+        }
+      } */
+
+      await this.$apollo.mutate({
+        mutation: require('@/graphql/schedules/UpdateDaySchedule.gql'),
+        variables:variables
+      })
+    }
+  },
+  apollo: {
+    loadSchedules: {
+      query: require("@/graphql/schedules/LoadSchedules.gql"),
+      update(data) {
+        /* if(this.filterExams) 
+          this.schedules = data.Schedule.filter(schedule => schedule.product && schedule.product.type === 'EXAM')
+        else
+          this.schedules = data.Schedule.filter(schedule => schedule.product && schedule.product.type === 'SPECIALTY')
+
+        if(this.selectedProduct)
+          this.schedules = this.schedules.filter(schedule=> schedule.product && schedule.product.id === this.selectedProduct.id)
+        
+        if(this.selectedDoctor)
+          this.schedules = this.schedules.filter(schedule=> schedule.doctor && schedule.doctor.id === this.selectedDoctor.id)
+
+        if(this.selectedClinic)
+          this.schedules = this.schedules.filter(schedule=> schedule.clinic && schedule.clinic.id === this.selectedClinic.id) */
+        console.log('Loading schedules')
+        this.schedules = data.Schedule 
+  
+      }
     }
   }
 };
