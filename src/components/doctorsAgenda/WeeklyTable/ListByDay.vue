@@ -15,9 +15,9 @@
             <v-btn @click="openDialoaUpdateDay(index)" x-small fab>
               <v-icon>edit</v-icon>
             </v-btn>
-            <v-btn class="ml-2" x-small fab @click="openDialogDelete(index)">
+            <!-- <v-btn class="ml-2" x-small fab @click="openDialogDelete(index)">
               <v-icon>delete_outline</v-icon>
-            </v-btn>
+            </v-btn> -->
           </v-card>
         </template>
         <span>
@@ -38,9 +38,9 @@
         <v-btn @click="openDialoaUpdateDay(index)" x-small fab>
           <v-icon>edit</v-icon>
         </v-btn>
-        <v-btn class="ml-2" x-small fab @click="openDialogDelete(index)">
+        <!-- <v-btn class="ml-2" x-small fab @click="openDialogDelete(index)">
           <v-icon>delete_outline</v-icon>
-        </v-btn>
+        </v-btn> -->
       </v-card>
     </strong>
     <br />
