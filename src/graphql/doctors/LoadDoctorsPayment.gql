@@ -1,14 +1,14 @@
 query {
     Doctor(orderBy:[name_asc]){
-        id,name,crm,cpf
+        id,name,crm,cpf,
         charges{
-            date {formatted},
-            value,
-            ProductTransaction: with_ProductTransaction{
-                product: with_product{
-                    name
+                    date {formatted},id,
+                    value,
+                    ProductTransaction: with_ProductTransaction{
+                        product: with_product{
+                            name
+                        }
+                    }
                 }
-            }
-        }
     }
 }

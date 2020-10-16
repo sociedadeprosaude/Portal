@@ -12,6 +12,7 @@
                               :query="require('@/graphql/doctors/LoadDoctorsPayment.gql')"
                           >
                             <template slot-scope="{ result: { data } }">
+                              <v-btn @click="mostrar(data)"></v-btn>
                             <v-card v-for="(doctor,i) in data ? data.Doctor : []" :key="i" outlined class="mb-4 primary">
 
                                 <v-layout row wrap>
@@ -49,14 +50,14 @@
                                         <v-flex xs5 md2>
                                             <v-card sm3 class="mx-4 elevation-0 transparent">
                                                 <span class="font-weight-bold white--text">
-                                                    Custo : {{CostExamsDoctor(doctor)}}
+                                                      Custo : {{CostExamsDoctor(doctor)}}
                                                 </span>
                                             </v-card>
                                         </v-flex>
                                         <v-flex xs7 md2>
                                             <v-card sm3 class="mx-4 elevation-0 transparent">
                                                 <span  class="font-weight-bold white--text">
-                                                            Nº de exames : {{QuantExamsDoctor(doctor)}}
+                                                            Nº de exames : {{doctor.charges ? doctor.charges.length : 0}}
                                                 </span>
                                             </v-card>
                                         </v-flex>
@@ -72,15 +73,6 @@
                                         </v-flex>
                                         <v-flex xs12 class="mb-2 hidden-md-and-up">
                                             <v-spacer></v-spacer>
-                                        </v-flex>
-                                        <v-flex md3>
-                                            <v-card sm3 class="mx-4 elevation-0 transparent">
-                                                <v-btn @click="ChangeDateDialog(doctor)"  outlined dark class=" elevation-0">
-                                                    <span class="font-weight-bold white--text">
-                                                        Alterar Periodo
-                                                    </span>
-                                                </v-btn>
-                                            </v-card>
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
@@ -110,6 +102,7 @@
                                     <DoctorOuttakes @close-dialog="intakesObserv = false" :doctor="doctorSelected" :outtakes="outtakesSelected"></DoctorOuttakes>
                                 </v-card>
                             </v-card>
+                            <v-btn v-if="!data" :loading="true"></v-btn>
                             </template>
                           </ApolloQuery>
                         </v-flex>
@@ -126,24 +119,7 @@
                 </v-card>
             </v-flex>
         </v-layout>
-        <v-dialog v-model="change" max-width="300px">
-            <v-card>
-                <v-card-title>Período de Pagamento</v-card-title>
-                <v-flex class="mt-5 ml-3">
-                    <v-select
-                            v-model="period"
-                            :items="days"
-                            label="período"
-                    >
-                    </v-select>
-                </v-flex>
-                <v-flex>
-                    <v-btn @click="ChangeDate()">
-                        Confirmar
-                    </v-btn>
-                </v-flex>
-            </v-card>
-        </v-dialog>
+
         <v-dialog v-model="dialogReceipt">
             <ReceiptOuttakesDoctor @close="CloseReceipt()"  :doctorSelected="doctorSelected" :outtakes="outtakesSelected"></ReceiptOuttakesDoctor>
         </v-dialog>
@@ -154,7 +130,9 @@
     import moment from "moment/moment";
     import DoctorOuttakes from "../../components/DoctorOuttakes"
     import ReceiptOuttakesDoctor from "../../components/OuttakesDoctor/ReceiptOuttakesDoctor"
-
+    import {uuid} from "vue-uuid";
+    import MutationBuilder from "@/classes/MutationBuilder";
+    import gql from "graphql-tag";
 
 
     export default {
@@ -191,12 +169,12 @@
         computed: {
             units() {
                 return this.$store.getters.units
-            },
-            outtakes(){
-                return this.$store.getters.outtakeAllDoctors
             }
         },
         methods: {
+          mostrar(data){
+            console.log('data: ', data)
+          },
             OpenReceipt(item,doctor){
                 this.outtakesSelected= this.outtakes.filter(outtake => outtake.doctor.crm === doctor.crm)
                 this.doctorSelected = doctor
@@ -204,22 +182,13 @@
                     this.dialogReceipt= !this.dialogReceipt
                 }
             },
-            QuantExamsDoctor(doctor){
-                let outtakes = this.outtakes.filter(outtake => outtake.doctor.crm === doctor.crm)
-                let cont =0;
-                outtakes.filter(function (element){
-                    cont += 1
-                })
-                return cont
+             CostExamsDoctor(doctor){
+                let cost = 0;
+                for(let i in doctor.charges){
+                  cost += parseFloat(doctor.charges[i].value)
+                }
+                return cost ? cost : 0
             },
-            /* CostExamsDoctor(doctor){
-                let outtakes = this.outtakes.filter(outtake => outtake.doctor.crm === doctor.crm)
-                let cost =0;
-                outtakes.filter(function (element){
-                    cost += element.consultations.price
-                })
-                return cost
-            }, */
             CloseReceipt(){
                 this.dialogReceipt= !this.dialogReceipt
             },
@@ -235,7 +204,6 @@
                 this.change = !this.change;
                 await this.$store.dispatch('AddPaymentDayDoctor', {
                     doctor: this.doctorSelected,
-                    period: this.period
                 });
                 this.getInitialInfo()
             },
@@ -259,8 +227,45 @@
 
             },
             async payDoctor(doctor){
-                await this.$store.dispatch('PayDoctor', doctor)
-                this.getInitialInfo()
+                //await this.$store.dispatch('PayDoctor', doctor)
+                //this.getInitialInfo()
+              let transactionId = uuid.v4()
+              let mutationBuilder = new MutationBuilder()
+              mutationBuilder.addMutation(
+                  `CreateTransaction(
+                    data:{formatted: "${moment().format("YYYY-MM-DDTHH:mm:ss")}"},
+                    id:${transactionId},
+                    value:${parseFloat(this.CostExamsDoctor(doctor))},
+                  ){
+                  id,data{formatted},value,
+                  }`
+              )
+              mutationBuilder.addMutation(`
+                  AddDoctorPayments(
+                  id:${transactionId},
+                  idDoctor:${doctor.id}
+                  ){
+                    from:{
+                      id:"${doctor.id}"
+                    },
+                    to:{
+                      id:"${transactionId}"
+                    }
+                  }
+              `)
+              for (let charge in doctor.charges) {
+                mutationBuilder.addMutation(`
+                  DeleteCharge(id:"${charge.id}"){
+                  id
+                  }
+                `)
+              }
+              let finalString = mutationBuilder.generateMutationRequest()
+              await this.$apollo.mutate({
+                mutation: gql`${finalString}`,
+              })
+
+              console.log('doctor: ', doctor)
             },
             async payAllDoctor(){
                 await this.$store.dispatch('PayAllDoctor', this.doctors)
