@@ -1,5 +1,5 @@
 query($id:ID!){
-    Clinic(id:$id){
+    Clinic(id: $id){
     id,name
       has_sectors{
         id,name

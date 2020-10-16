@@ -1,4 +1,4 @@
 mutation($name:String!){
-    CreateSector(name: $name)
+    CreateRoom(name: $name)
     {id},
 }

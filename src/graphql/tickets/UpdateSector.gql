@@ -1,0 +1,9 @@
+mutation(
+    $id: ID!,
+    ){
+  UpdateSector(
+    id: $id,
+  ){
+    id
+  }
+}

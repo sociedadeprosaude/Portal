@@ -1,0 +1,13 @@
+mutation($idUnity : ID! , $idSector : ID!){
+      AddClinicHas_sectors(
+        from:{
+          id:$idUnity
+        },
+        to:{
+          id:$idSector
+        }
+      ){
+      from{id},
+      to{id}
+    },
+}

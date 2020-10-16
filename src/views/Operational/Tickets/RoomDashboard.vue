@@ -57,6 +57,9 @@ export default {
   },
   data() {
     return {
+      sector: undefined,
+      sectorName: undefined,
+      //
       doctorsListDialog: {
         active: false,
         search: "",
@@ -90,7 +93,8 @@ export default {
       }
     },
     rooms() {
-      return this.sector ? this.sector.rooms : {};
+      console.log('rooms', this.sector)
+      return this.sector ? this.sector.has_rooms : [];
     },
     roomsLoaded() {
       return this.$store.getters.roomsLoaded;
@@ -108,20 +112,34 @@ export default {
     doctorsLoaded() {
       return this.$store.getters.doctorsLoaded;
     },
-    sectorName() {
+/*    sectorName() {
       return this.$route.params["sector_name"];
-    },
-    sector() {
-      return this.$store.getters.sectors
+    },*/
+/*    sector() {
+/!*      return this.$store.getters.sectors
         ? this.$store.getters.sectors.find(
             (sector) => sector.name == this.sectorName
           )
-        : undefined;
-    },
+        : undefined;*!/
+    },*/
   },
   methods: {
     async initialInfo() {
-      if (
+      this.sectorName = this.$route.params["sector_name"];
+      const idUnity  = this.$store.getters.user.clinic.id
+      const Datasectors = await this.$apollo.mutate({
+        mutation: require('@/graphql/sectors/LoadRoomsOfSector.gql'),
+        variables: {id: idUnity},
+      })
+      let sectors = Datasectors.data.Clinic[0].has_sectors
+      if(sectors.length > 0)
+        for(let sector in sectors){
+          if(sectors[sector].name === this.sectorName){
+            this.sector = sectors[sector]
+            console.log('setor do paramentro e etc:', sectors[sector])
+          }
+      }
+/*      if (
         moment(this.$store.getters.ticketGeneralInfo.last_updated).dayOfYear !==
         moment().dayOfYear
       ) {
@@ -131,7 +149,7 @@ export default {
         this.$store.dispatch("getTicketsGeneralInfo");
         this.$store.dispatch("listenTicketsSectors");
       }
-      this.$store.dispatch("listenLastTicket");
+      this.$store.dispatch("listenLastTicket");*/
     },
     async saveAndReset() {
       // this.$store.dispatch("updateGeneralInfo", {
@@ -152,13 +170,29 @@ export default {
     },
     async createRoom(room) {
       this.loading = true;
-      const sector = this.sector;
-      await this.$store.dispatch("createSectorRoom", { sector, room });
+      const idSector = this.sector.id;
+      const dataRoom = await this.$apollo.mutate({
+        mutation: require('@/graphql/rooms/CreateRoom.gql'),
+        variables: {
+          name: room.name.toUpperCase(),
+        },
+      });
+      const idRoom = dataRoom.data.CreateRoom.id
+      await this.$apollo.mutate({
+        mutation: require('@/graphql/rooms/AddRelationsRoomSector.gql'),
+        variables: {
+          idSector: idSector,
+          idRoom: idRoom,
+
+        },
+      });
+      //await this.$store.dispatch("createSectorRoom", { sector, room });
       this.loading = false;
       this.success = true;
       setTimeout(() => {
         this.success = false;
       }, 1000);
+      this.$router.push('/');
     },
     async setDoctorToRoom(room, doctor) {
       room.doctor = doctor;
@@ -264,12 +298,26 @@ export default {
         return;
       }
       this.deletionRoom.deleting = true;
-      await this.$store.dispatch("deleteSectorRoom", {
+      console.log('del sala:', room.room_has_tickets)
+      if(room.room_has_tickets.length > 0){
+        for (let ticket in room.room_has_tickets){
+          console.log(room.room_has_tickets[ticket])
+          //mandar deletar os tockets associados a esta sala
+        }
+      }
+      await this.$apollo.mutate({
+        mutation: require('@/graphql/rooms/DeleteRoom.gql'),
+        variables: {
+          id: room.id,
+        },
+      });
+/*      await this.$store.dispatch("deleteSectorRoom", {
         room: room,
         sector: this.sector,
-      });
+      });*/
       this.deletionRoom.deleting = false;
       this.deletionRoom.deleteRoomDialog = false;
+      this.$router.push('/');
     },
     alertActualTicket(room) {},
     openSingleView(room) {

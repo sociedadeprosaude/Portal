@@ -13,9 +13,9 @@
         >
           <v-icon>edit</v-icon>
         </v-btn>
-        <v-btn fab @click="$emit('change-dialog-change-ticket',true)" class="ml-2">
+<!--        <v-btn fab @click="$emit('change-dialog-change-ticket',true)" class="ml-2">
           <v-icon>mdi-ticket-confirmation</v-icon>
-        </v-btn>
+        </v-btn>-->
       </v-col>
 
       <v-row v-if="!loading" justify="center" align="center" align-content="center">

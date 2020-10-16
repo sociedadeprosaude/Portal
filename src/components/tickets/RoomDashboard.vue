@@ -347,7 +347,7 @@ export default {
     success: Boolean,
     multipleViewDialog: Boolean,
     favoritedRoom: String,
-    rooms: Object,
+    rooms: Array,
     roomsLoaded: Boolean,
     ticketInfo: Object,
     doctors: Array,
