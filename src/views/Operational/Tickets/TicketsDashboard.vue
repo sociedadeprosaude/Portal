@@ -44,6 +44,7 @@ export default {
       lastTicket: null,
       sector: null,
       production: null,
+      //sectors: undefined,
     };
   },
   mounted() {
@@ -51,6 +52,14 @@ export default {
   },
   methods: {
     async initialInfo() {
+      const clinicID  = this.$store.getters.user.clinic.id
+      const unitys = await this.$apollo.mutate({
+        mutation: require('@/graphql/sectors/LoadSectorsOfUnity.gql'),
+        variables: {id: clinicID},
+      })
+      let unity = unitys.data.Clinic[0]
+      console.log('unity:', unity)
+      //this.sectors = unity.has_sectors
       const generalInfo = await this.$store.dispatch("getTicketsGeneralInfo");
       this.$store.dispatch("listenTicketsSectors");
 
