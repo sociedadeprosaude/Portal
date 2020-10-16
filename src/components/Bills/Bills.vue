@@ -85,11 +85,11 @@
           <v-layout row wrap>
             <v-flex xs12>
               <v-layout row wrap>
-                <span>{{ bill.category}}</span>
-                <br />
-                <span>{{bill.subCategory}}</span>
+                <v-layout row wrap v-for="cat in bill.categories" v-bind:key="cat.name">
+                  <span>{{cat.name}}</span>
+                </v-layout>
                 <v-divider vertical class="mx-4" />
-                <span>{{bill.payment_method}}</span>
+                <span>{{bill.payment_methods}}</span>
                 <v-divider vertical class="mx-4" />
                 <span class="font-weight-bold">{{bill.date_to_pay | dateFilter}}</span>
                 <v-divider vertical class="mx-4" />

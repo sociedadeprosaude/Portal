@@ -8,7 +8,12 @@
                 <v-card>
                     <v-layout row wrap>
                         <v-flex xs12 class="px-3 my-3">
-                            <v-card v-for="(doctor,i) in doctors" :key="i" outlined class="mb-4 primary">
+                          <ApolloQuery
+                              :query="require('@/graphql/doctors/LoadDoctorsPayment.gql')"
+                          >
+                            <template slot-scope="{ result: { data } }">
+                            <v-card v-for="(doctor,i) in data ? data.Doctor : []" :key="i" outlined class="mb-4 primary">
+
                                 <v-layout row wrap>
                                     <v-flex s10 md3 class="text-left">
                                         <span class="font-weight-bold white--text ml-2">{{doctor.name.toUpperCase()}}</span>
@@ -105,6 +110,8 @@
                                     <DoctorOuttakes @close-dialog="intakesObserv = false" :doctor="doctorSelected" :outtakes="outtakesSelected"></DoctorOuttakes>
                                 </v-card>
                             </v-card>
+                            </template>
+                          </ApolloQuery>
                         </v-flex>
                         <v-flex xs12>
                             <v-card class="mx-4 elevation-0 transparent">
@@ -163,11 +170,13 @@
                 dialogReceipt:false,
                 doctorSelected:[],
                 cost:'',
+                ChargeSkip:false,
                 outtakesSelected:[],
                 intakes:[],
                 period:'',
                 NumberExams:'',
                 intakesObserv:false,
+                charges:[],
                 Menu: [
                     { title: 'Gerar Boleto' },
                     { title: 'Anexar Recibo' },
@@ -182,11 +191,6 @@
         computed: {
             units() {
                 return this.$store.getters.units
-            },
-            doctors() {
-                return this.$store.getters.colaboratorsDoctors.filter(a => {
-                    return a.status !== 'pending' && a.crm
-                })
             },
             outtakes(){
                 return this.$store.getters.outtakeAllDoctors
@@ -208,22 +212,18 @@
                 })
                 return cont
             },
-            CostExamsDoctor(doctor){
+            /* CostExamsDoctor(doctor){
                 let outtakes = this.outtakes.filter(outtake => outtake.doctor.crm === doctor.crm)
                 let cost =0;
                 outtakes.filter(function (element){
                     cost += element.consultations.price
                 })
                 return cost
-            },
+            }, */
             CloseReceipt(){
                 this.dialogReceipt= !this.dialogReceipt
             },
             async getInitialInfo() {
-                await this.$store.dispatch('getColaboratorsDoctors');
-
-                await this.$store.dispatch('GetReceiptsAllDoctors');
-
                 this.loading = false
             },
             ChangeDateDialog(doctor) {
@@ -278,24 +278,6 @@
         },
         mounted() {
             this.getInitialInfo()
-        },
-        apollo: {
-            loadDoctors: {
-                query: require("@/graphql/doctors/LoadDoctorsPayment.gql"),
-                variables(){
-                    return {
-                        type: 'SPECIALTY'
-                    }
-                },
-                update(data){
-                    this.Specialties = Object.assign(data.Product)
-                    this.LocaleSpecialties= data.Product
-                    this.SpecialtieSkip = true
-                },
-                skip(){
-                    return this.SpecialtieSkip
-                }
-            }
         }
     }
 </script>

@@ -288,8 +288,9 @@
                 this.$apollo.mutate({
                     mutation: require ('@/graphql/charge/CreateCharge.gql'),
                     variables:{
-                        date: moment().format('YYYY-MM-DD HH:mm:ss'),
-                        cost: data.CostProductDoctor[0].cost
+                        date: {formatted: moment().format('YYYY-MM-DDTHH:mm:ss')},
+                        cost: data.CostProductDoctor[0].cost,
+                        type: 'doctor'
                     }
                 }).then((dataa)=> {
                     this.RelationsCharge(dataa)

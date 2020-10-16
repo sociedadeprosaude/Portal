@@ -213,6 +213,9 @@ export default {
     async editBillValue (bill) {
       if (!this.isEditing) {
         console.log('bill', bill)
+        if(bill.value > 0){
+          bill.value = parseFloat(bill.value) - parseFloat(2*bill.value)
+        }
         this.$apollo.mutate({
           mutation: require ('@/graphql/charge/UpdateChargeValue.gql'),
           variables:{
@@ -249,7 +252,7 @@ export default {
           }
         }).then((dataDelete) => {
                   console.log('deletado')
-                  let date = { formatted: moment(outtake.date).format('YYYY-MM-DDTHH:mm:ss')}
+                  let date = { formatted: moment().format('YYYY-MM-DDTHH:mm:ss')}
                   console.log('date: ', date)
                   this.$apollo.mutate({
                     mutation: require('@/graphql/transaction/CreateTransactionBill.gql'),

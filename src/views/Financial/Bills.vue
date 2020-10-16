@@ -39,9 +39,6 @@
 <script>
 import Bills from "@/components/Bills/Bills";
 import BillsMobile from "@/views/Financial/BillsMobile";
-import OuttakeOrder from "../../components/Reports/OuttakeOrder";
-import RegisterBill from "../../components/Bills/RegisterBill";
-import { mask } from "vue-the-mask";
 
 import moment from "moment";
 export default {
@@ -63,6 +60,8 @@ export default {
       loading: false,
       loadingFilter: false,
       loadingDelete: false,
+      outtakesPaid: [],
+      outtakesPaidToday: [],
       outtakeSelect: null,
       files: [],
       filesPreviews: [],
@@ -80,17 +79,6 @@ export default {
     this.initiate();
   },
   computed: {
-    outtakesPaid() {
-      return this.$store.getters.outtakesPaid.sort((a, b) => {
-        return b.date_to_pay > a.date_to_pay ? 1 : -1;
-      });
-    },
-    outtakesPaidToday() {
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      return this.$store.getters.outtakesPaidToday.sort((a, b) =>
-        b.date_to_pay > a.date_to_pay ? 1 : -1
-      );
-    },
     selectedPaidOuttakesList() {
       return this.selectedOption == 0
         ? this.outtakesPaidToday
@@ -186,6 +174,9 @@ export default {
   apollo :{
     LoadChargeBills: {
       query: require("@/graphql/charge/LoadChargeBills.gql"),
+      variables:{
+        type:'bill'
+      },
       update(data){
         console.log('data.Charge', data.Charge)
         this.Charges = Object.assign(data.Charge)
@@ -200,6 +191,8 @@ export default {
       update(data){
         console.log('data.transaction', data.Transaction)
         this.Transactions = Object.assign(data.Transaction)
+        this.outtakesPaid = this.Transactions
+        this.outtakesPaidToday = this.Transactions.filter((e) => e.date.formatted[0,9] === moment().format('YYYY-MM-DD'))
         this.TransactionSkip = true
       },
       skip(){

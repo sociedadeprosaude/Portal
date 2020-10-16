@@ -1,10 +1,11 @@
 mutation (
     $value: Float,
     $payment_methods: [String],
-    $date: String,
+    $date: _Neo4jDateTimeInput,
     $description: String,
-    $date_to_pay: String,
-    $recurrent: Boolean
+    $date_to_pay: _Neo4jDateTimeInput,
+    $recurrent: Boolean,
+    $type: String
      )
     {
     CreateCharge(
@@ -13,7 +14,8 @@ mutation (
      date:$date,
      description:$description,
      date_to_pay:$date_to_pay,
-     recorrent: $recurrent
+     recorrent: $recurrent,
+     type: $type
      ){
         id, value, payment_methods, date
     }

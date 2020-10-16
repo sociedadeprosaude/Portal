@@ -248,8 +248,8 @@ export default {
         payment_method: this.paymentMethod,
         description: this.description,
         value: this.value,
-        date_to_pay: this.dateToPay,
-        date: moment().format("YYYY-MM-DD HH:mm:ss"),
+        date_to_pay: {formatted: moment(this.date_to_pay).format('YYYY-MM-DDTHH:mm')},
+        date: {formatted: moment().format('YYYY-MM-DDTHH:mm')},
         colaborator: this.user,
         unit: this.unit.name !== this.other ? this.unit : null,
         recurrent: this.recurrent ? true : false
@@ -258,7 +258,7 @@ export default {
         bill.value = (parseFloat(bill.value) - (2 * parseFloat(bill.value)))
       }
       console.log('bill: ', bill)
-     let charge = await this.$apollo.mutate({
+      let charge = await this.$apollo.mutate({
         mutation: require ('@/graphql/charge/CreateChargeBill.gql'),
         variables:{
           payment_methods: bill.payment_method,
@@ -266,7 +266,8 @@ export default {
           date: bill.date,
           description: bill.description,
           date_to_pay: bill.date_to_pay,
-          recurrent: bill.recurrent
+          recurrent: bill.recurrent,
+          type: 'bill'
         }
       }).then( (data) => {
         console.log('data: ', data)

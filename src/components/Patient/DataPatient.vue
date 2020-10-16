@@ -714,7 +714,9 @@
                 const responsePatient = await this.savePatient(patient)
                 await this.saveDependents(patient, responsePatient.id)
                 await this.saveAddress(patient,responsePatient.id)
-                this.addPatient = !this.addPatient
+              this.$store.commit('setSelectedPatient', patient);
+
+              this.addPatient = !this.addPatient
                 this.loading = false;
             },
 

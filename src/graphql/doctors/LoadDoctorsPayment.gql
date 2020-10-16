@@ -2,8 +2,8 @@ query {
     Doctor(orderBy:[name_asc]){
         id,name,crm,cpf
         charges{
-            date,
-            value
+            date {formatted},
+            value,
             ProductTransaction: with_ProductTransaction{
                 product: with_product{
                     name
