@@ -1,0 +1,5 @@
+query($start_date:String, $final_date: String){
+  attendanceCount(start_date:$start_date,final_date:$final_date){
+    date{formatted},count,patients,genres
+  }
+}
