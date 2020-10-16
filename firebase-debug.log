@@ -1,0 +1,32 @@
+[debug] [2020-10-16T16:43:47.664Z] ----------------------------------------------------------------------
+[debug] [2020-10-16T16:43:47.666Z] Command:       /usr/local/bin/firebase /Users/luisfnicolau/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/bin/firebase deploy --only hosting
+[debug] [2020-10-16T16:43:47.666Z] CLI Version:   8.6.0
+[debug] [2020-10-16T16:43:47.666Z] Platform:      darwin
+[debug] [2020-10-16T16:43:47.666Z] Node Version:  v12.18.1
+[debug] [2020-10-16T16:43:47.667Z] Time:          Fri Oct 16 2020 13:43:47 GMT-0300 (Brasilia Standard Time)
+[debug] [2020-10-16T16:43:47.667Z] ----------------------------------------------------------------------
+[debug] [2020-10-16T16:43:47.667Z] 
+[debug] [2020-10-16T16:43:47.675Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-10-16T16:43:47.676Z] > authorizing via signed-in user
+[debug] [2020-10-16T16:43:47.679Z] [iam] checking project prosaude-36f66 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2020-10-16T16:43:47.685Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/prosaude-36f66:testIamPermissions  
+ {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2020-10-16T16:43:48.536Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 16 Oct 2020 16:43:48 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=702","alt-svc":"h3-Q050=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-10-16T16:43:48.538Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/prosaude-36f66  
+ 
+[debug] [2020-10-16T16:43:49.555Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 16 Oct 2020 16:43:49 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-Q050=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions.
+Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[info] 
+[info] === Deploying to 'prosaude-36f66'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2020-10-16T16:43:52.436Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/prosaude-36f66/versions  
+ {"config":{"rewrites":[{"glob":"**","path":"/index.html"}],"headers":[{"glob":"/**","headers":{"Cache-Control":"no-cache, no-store, must-revalidate"}},{"glob":"**/*.@(jpg|jpeg|gif|png|svg|webp|js|css|eot|otf|ttf|ttc|woff|woff2|font.css)","headers":{"Cache-Control":"max-age=604800"}}]},"labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2020-10-16T16:43:53.725Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 16 Oct 2020 16:43:53 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-Q050=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] i  hosting[prosaude-36f66]: beginning deploy... 
+[info] i  hosting[prosaude-36f66]: found 48 files in dist 
+[debug] [2020-10-16T16:43:54.983Z] [hosting] hash cache [ZGlzdA] stored for 48 files
+[debug] [2020-10-16T16:43:54.984Z] [hosting][hash queue][FINAL] {"max":1227,"min":19,"avg":59.91666666666666,"active":0,"complete":48,"success":48,"errored":0,"retried":0,"total":48,"elapsed":1243}
+[debug] [2020-10-16T16:43:54.984Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/prosaude-36f66/versions/09add2dc32f36099:populateFiles  
+ <request body omitted>
