@@ -53,6 +53,19 @@ export default {
   mounted() {
     this.initialInfo();
   },
+/*  apollo: {
+    LoadSectorsOfUnity: {
+      query: require("@/graphql/sectors/LoadSectorsOfUnity.gql"),
+      variables: {id: this.idUnity},
+      update(data){
+        console.log('Sectors: ', data)
+        this.sectors = Object.assign(data.Clinic[0].has_sectors)
+        console.log('reativo:', this.sectors)
+        console.log('id', this.idUnity)
+        //this.LocaleBundles= data.Bundles
+      },
+    }
+  },*/
   methods: {
     async initialInfo() {
       const clinicID  = this.$store.getters.user.clinic.id
@@ -101,7 +114,7 @@ export default {
           idSector: idSector,
         },
       });
-      this.$apollo.queries.LoadSectorsOfUnity.refresh();
+      //this.$apollo.queries.LoadSectorsOfUnity.refresh();
       this.resetCreation();
     },
     async deleteSector(sector) {

@@ -1,0 +1,4 @@
+mutation($name:String!, $type: type){
+    CreateTicket(name: $name, type: $type)
+    {id},
+}

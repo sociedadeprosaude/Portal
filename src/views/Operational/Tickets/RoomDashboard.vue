@@ -59,6 +59,7 @@ export default {
     return {
       sector: undefined,
       sectorName: undefined,
+      doctors: undefined,
       //
       doctorsListDialog: {
         active: false,
@@ -132,12 +133,13 @@ export default {
         variables: {id: idUnity},
       })
       let sectors = Datasectors.data.Clinic[0].has_sectors
-      if(sectors.length > 0)
+      if(sectors.length > 0){
         for(let sector in sectors){
           if(sectors[sector].name === this.sectorName){
             this.sector = sectors[sector]
             console.log('setor do paramentro e etc:', sectors[sector])
-          }
+            }
+        }
       }
 /*      if (
         moment(this.$store.getters.ticketGeneralInfo.last_updated).dayOfYear !==
@@ -216,17 +218,47 @@ export default {
       await this.$store.dispatch("updateSectorRoom", { sector, room });
     },
     async generateSectorTicket(preferential) {
-      let sector = this.sector;
-      if (!sector.tickets) {
-        sector.tickets = [];
+      let count = 0;
+      console.log(this.sector)
+      if(this.sector.sector_has_tickets.length > 0){ count = this.sector.sector_has_tickets.length + 1 }
+      count = count.toString();
+      let idSector = this.sector.id; b
+      console.log(preferential,count)
+      if(preferential === true) {
+        const dataTicket = await this.$apollo.mutate({
+          mutation: require('@/graphql/tickets/CreateTicket.gql'),
+          variables: {
+            name: count,
+            type: 'priority',
+          },
+        });
+        const idTicket = dataTicket.data.CreateTicket.id
+        await this.$apollo.mutate({
+          mutation: require('@/graphql/tickets/AddRelationsSectorTicket.gql'),
+          variables: {
+            idTicket: idTicket,
+            idSector: idSector,
+          },
+        });
+        //console.log('true')
+      } else {
+        const dataTicket = await this.$apollo.mutate({
+          mutation: require('@/graphql/tickets/CreateTicket.gql'),
+          variables: {
+            name: count,
+            type: 'normal',
+          },
+        });
+        const idTicket = dataTicket.data.CreateTicket.id
+        await this.$apollo.mutate({
+          mutation: require('@/graphql/tickets/AddRelationsSectorTicket.gql'),
+          variables: {
+            idTicket: idTicket,
+            idSector: idSector,
+          },
+        });
+        //console.log('false')
       }
-      sector.tickets.push({
-        number: this.ticketInfo.ticket_number,
-        created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
-        preferential: preferential,
-      });
-      await this.upgradeTicketNumber();
-      await this.$store.dispatch("updateSector", sector);
     },
     async upgradeTicketNumber() {
       let ticketInfo = this.ticketInfo;

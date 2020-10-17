@@ -12,7 +12,7 @@
               @click="()=>generateSectorTicket(false)"
             >
               Proxima senha:
-              {{ticketInfo.ticket_number}}
+              {{normal}}
             </v-btn>
           </template>
           <span>Pular próxima senha</span>
@@ -30,7 +30,7 @@
               @click="()=>generateSectorTicket(true)"
             >
               Proxima senha preferencial:
-              {{ticketInfo.ticket_number}}
+              {{priority}}
             </v-btn>
           </template>
           <span>Pular próxima senha</span>
@@ -370,9 +370,30 @@ export default {
     alertActualTicket: Function,
     openSingleView: Function,
   },
+  data() {
+    return {
+      normal: 0,
+      priority: 0,
+    }
+  },
+  mounted() {
+    console.log('sec', this.sector)
+    if(this.sector){
+      if(this.sector.sector_has_tickets.length > 0){
+        for(let type in this.sector.sector_has_tickets){
+          console.log('mostre:', this.sector.sector_has_tickets[type].type)
+          if(this.sector.sector_has_tickets[type].type === 'normal'){
+            this.normal = this.normal + 1;
+          } else if (this.sector.sector_has_tickets[type].type === 'priority'){
+            this.priority = this.priority + 1;
+          }
+        }
+      } else {
+        this.normal = 0;
+        this.priority = 0;
+      }
+    }
+  },
 };
 </script>
-
-<style scoped>
-</style>
 
