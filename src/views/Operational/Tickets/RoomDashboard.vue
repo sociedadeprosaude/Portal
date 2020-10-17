@@ -157,8 +157,8 @@ export default {
       //   last_updated: moment().format("YYYY-MM-DD HH:mm:ss")
       // });
       //resetTickets faz isso aqui em cima
-      await this.$store.dispatch("resetTickets");
-      await this.$store.dispatch("saveTicketsHistory");
+/*      await this.$store.dispatch("resetTickets");
+      await this.$store.dispatch("saveTicketsHistory");*/
     },
     getActualTicket(tickets) {
       let calledTickets = tickets

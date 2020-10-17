@@ -101,6 +101,7 @@ export default {
           idSector: idSector,
         },
       });
+      this.$apollo.queries.LoadSectorsOfUnity.refresh();
       this.resetCreation();
     },
     async deleteSector(sector) {
@@ -154,7 +155,7 @@ export default {
         choosed: undefined,
         deleting: false,
       };
-      this.$router.push('/')
+      //this.$router.push('/')
     },
   },
   computed: {

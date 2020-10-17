@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col sm="12" md="6">
-        <v-tooltip top v-if="doctorsLoaded">
+        <v-tooltip top >
           <template v-slot:activator="{ on }">
             <v-btn
               width="100%"
@@ -20,7 +20,7 @@
       </v-col>
 
       <v-col sm="12" md="6">
-        <v-tooltip top v-if="doctorsLoaded">
+        <v-tooltip top >
           <template v-slot:activator="{ on }">
             <v-btn
               width="100%"
