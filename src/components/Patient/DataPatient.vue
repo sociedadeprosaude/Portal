@@ -551,6 +551,7 @@
     import PatientCard from "./PatientCard";
     import PatientTag from "./PatientTag";
     import axios from 'axios';
+    import {uuid} from 'vue-uuid'
 
     let moment = require("moment");
     export default {
@@ -858,6 +859,7 @@
             async selectUser(user) {
                 if (user) {
                     this.fillFormUser(user)
+                    this.creacteAttendance(user);
                 } else {
                     this.cpf = undefined;
                     this.name = undefined;
@@ -981,6 +983,18 @@
                 if (e.key === 'Enter') {
                     this.searchPatient()
                 }
+            },
+            creacteAttendance(user){
+                const attendanceId = uuid.v4();
+                const today = moment().format('YYYY-MM-DD');
+                this.$apollo.mutate({
+                    mutation: require('@/graphql/patients/CreateAttendancePatient.gql'),
+                    variables:{
+                        idAttendance: attendanceId,
+                        date:{formatted:today},
+                        idPatient: user.id
+                    }
+                })
             }
         },
         async mounted() {

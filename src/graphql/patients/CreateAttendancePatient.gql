@@ -1,0 +1,8 @@
+mutation($idAttendance:ID!, $date:_Neo4jDateInput!,$idPatient:ID!){
+    CreateAttendancePatient(id:$idAttendance, date: $date){
+        id,
+    },
+    AddAttendancePatientWith_patient(from:{id:$idAttendance},to:{id:$idPatient}){
+        from{id},to{id}
+    }
+}
