@@ -4,9 +4,8 @@
       <v-flex xs12>
         <v-card>
           <HeaderTable
-            :specialties="specialties"
             :doctors="doctors"
-            @specialtyFilter="specialty = $event"
+            @specialtyFilter="product = $event"
             @doctorFilter="doctor=$event"
           ></HeaderTable>
           <WeekTable
@@ -17,6 +16,9 @@
         </v-card>
       </v-flex>
     </v-layout>
+    <v-overlay :value="overlay">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
   </v-container>
 </template>
 
@@ -35,44 +37,34 @@ export default {
     dialogUpdate: false,
     search: undefined,
     dialogRemove: false,
-    specialty: undefined,
-    doctor: undefined
+    product: undefined,
+    doctor: undefined,
+    schedules: [],
+    overlay:true
   }),
+  watch:{
+    product(value){
+      
+    }
+  },
   computed: {
-    specialties() {
-      let espArray = Object.values(this.$store.getters.specialties);
-      /* espArray = espArray.filter(specialty => {
-                    if (!this.doctor) {
-                    return true;
-                    }
-                    var find = false;
-                    specialty.doctors.forEach(doctor => {
-                    if (doctor.cpf === this.doctor.cpf) {
-                        find = true;
-                        return true;
-                    }
-                    });
-
-                    return find;
-                }); */
-      return espArray;
-    },
-
     doctors() {
-      let doctors = Object.values(this.$store.getters.doctors);
-      /* if (this.specialty) {
-                    doctors = doctors.filter(a => {
-                    for (let spe in a.specialties) {
-                        if (a.specialties[spe].name === this.specialty.name) {
-                        return true;
-                        }
-                    }
-                    return false;
-                    });
-                } */
+      let doctors = [];
+      if(this.product)
+        doctors = this.product.doctors
       return doctors;
     },
     doctorsMapping() {
+      let schedules = Object.assign([],this.schedules);
+      
+      if(this.product){
+        schedules = schedules.filter(schedule=> schedule.product && schedule.product.id === this.product.id)
+      }
+
+      if(this.doctor){
+        schedules = schedules.filter(schedule=> schedule.doctor && schedule.doctor.id === this.doctor.id)
+      }
+
       var weeklyTable = [];
       var currentDate = moment("06:00", "hh:mm");
       new Array(23).fill().map((acc, index) => {
@@ -87,44 +79,6 @@ export default {
         });
         currentDate = currentDate.add(30, "minutes");
       });
-
-      let schedules = this.$store.getters.AllSchedules.filter(schedule => {
-        if (
-          this.specialty &&
-          schedule.specialty &&
-          schedule.specialty.name != this.specialty.name
-        )
-          return false;
-        if (this.doctor && schedule.doctor.name != this.doctor.name)
-          return false;
-        return true;
-      });
-
-      for (let schedule in schedules) {
-        if (schedules[schedule].cancelations_schedules) {
-          for (let canceled in schedules[schedule].cancelations_schedules) {
-            if (
-              this.today >
-              schedules[schedule].cancelations_schedules[canceled].final_date
-            ) {
-              let deleted = schedules[schedule].cancelations_schedules.shift();
-              this.$store.dispatch("copyCanceledSchedules", {
-                schedule: schedules[schedule],
-                cancelations_schedules: deleted
-              });
-              if (schedules[schedule].cancelations_schedules.length === 0) {
-                delete schedules[schedule].cancelations_schedules;
-              }
-              this.$store.dispatch("updateCanceledSchedules", {
-                cancelations_schedules:
-                  schedules[schedule].cancelations_schedules,
-                id: schedules[schedule].id,
-                schedule: schedules[schedule]
-              });
-            }
-          }
-        }
-      }
 
       for (let schedule in schedules) {
         let daysOfTheWeek = schedules[schedule].days;
@@ -173,9 +127,6 @@ export default {
       return weeklyTable;
     }
   },
-  mounted() {
-    this.$store.dispatch("getAllSchedules");
-  },
   methods: {
     async removeDay(payload) {
       let copySchedule = Object.assign({}, payload.scheduleSelected);
@@ -186,12 +137,38 @@ export default {
       });
     },
     async updateDay(payload) {
-      let copySchedule = Object.assign({}, payload.scheduleSelected);
-      copySchedule.days[this.dayScheduleSelected] = payload.editDay;
-      await this.$store.dispatch("updateScheduleDays", {
-        idSchedule: payload.scheduleSelected.id,
-        days: copySchedule.days
-      });
+      console.log(payload)
+      let variables = {
+          idDay: payload.editDay.id,
+          vacancy: Number(payload.editDay.vacancy),
+      }
+
+      /*if(payload.editDay.expiration_date){
+        variables.expiration_date = {
+          formatted:payload.editDay.expiration_date
+        }
+      } */
+
+      await this.$apollo.mutate({
+        mutation: require('@/graphql/schedules/UpdateDaySchedule.gql'),
+        variables:variables
+      })
+    }
+  },
+  apollo: {
+    loadSchedules: {
+      query: require("@/graphql/schedules/LoadSchedules.gql"),
+      update(data) {
+        this.schedules = data.Schedule 
+        /* if(this.filterExams) 
+          this.schedules = data.Schedule.filter(schedule => schedule.product && schedule.product.type === 'EXAM')
+        else
+          this.schedules = data.Schedule.filter(schedule => schedule.product && schedule.product.type === 'SPECIALTY')
+        */
+        
+        this.overlay = false
+  
+      }
     }
   }
 };

@@ -6,7 +6,14 @@
     <v-spacer />
     <v-layout class="mt-5" row wrap>
       <v-flex class="mr-5" xs12 sm5 md4>
-        <ComboboxSpecialty :items="specialties" v-on:model="$emit('specialtyFilter', $event)"></ComboboxSpecialty>
+        <ApolloQuery 
+            :query="require('@/graphql/products/LoadProducts.gql')"
+            :variables="{type:'SPECIALTY', schedulable:false}"
+          >
+            <template slot-scope="{ result: { data } }">
+              <ComboboxSpecialty :items="data && data.Product" v-on:model="$emit('specialtyFilter', $event)"></ComboboxSpecialty>
+            </template>
+          </ApolloQuery>
       </v-flex>
       <v-flex xs12 sm5 md4>
         <ComboboxDoctor :items="doctors" v-on:model="$emit('doctorFilter', $event)"></ComboboxDoctor>

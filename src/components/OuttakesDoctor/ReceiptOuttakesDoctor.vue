@@ -27,18 +27,18 @@
                 <img :src="selectedUnit.logo" height="84px">
             </v-flex>
             <v-flex xs12>
-                <v-card v-for="(intake,i) in intakes" v-bind:key="i" class="elevation-0">
+                <v-card v-for="(charge,i) in outtakes" v-bind:key="i" class="elevation-0">
                         <v-layout row wrap>
                             <v-flex xs5 class="align-center justify-center">
                                 <p class="font-weight-black mt-5">
-                                    {{intake.consultations.name}}
+                                    {{charge.id}}
                                 </p>
                             </v-flex>
                             <v-flex xs1>
                                 <v-spacer></v-spacer>
                             </v-flex>
                             <v-flex xs6 class="text-center align-center justify-center">
-                                <p class="mt-5"> PREÇO: {{intake.consultations.price}}</p>
+                                <p class="mt-5"> PREÇO: {{charge.value ? charge.value : 0}}</p>
                             </v-flex>
                             <v-flex xs12>
                                 <v-divider color="black"></v-divider>
@@ -49,7 +49,7 @@
                     <v-flex xs6>
                         <p class="font-weight-black">Valor Total</p>
                     </v-flex>
-                    <v-flex xs6> Valor total: {{PriceTot}}</v-flex>
+                    <v-flex xs6> Valor total: {{CostExamsDoctor}}</v-flex>
                 </v-layout>
                 <v-layout>
                     <v-flex xs6 class="text-left mt-12">
@@ -99,17 +99,14 @@
             selectedUnit() {
                 return this.$store.getters.selectedUnit
             },
-            intakes(){
-                console.log('intakes: ', this.$store.getters.OuttakesConsultationDoctor)
-                return this.$store.getters.OuttakesConsultationDoctor
-            },
-            PriceTot(){
-                let price=0;
-                for(let i=0; i < this.intakes.length ; i++){
-                        price +=  this.intakes[i].consultations.price
-                }
-                return price
+          CostExamsDoctor(){
+            let cost = 0;
+            console.log('outtakes: ', this.outtakes)
+            for(let i in this.outtakes){
+              cost += parseFloat(this.outtakes[i].value)
             }
+            return cost ? cost : 0
+          },
         },
         methods: {
             print(ref) {
