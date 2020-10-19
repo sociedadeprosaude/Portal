@@ -12,7 +12,6 @@
                               :query="require('@/graphql/doctors/LoadDoctorsPayment.gql')"
                           >
                             <template slot-scope="{ result: { data } }">
-                              <v-btn @click="mostrar(data)"></v-btn>
                             <v-card v-for="(doctor,i) in data ? data.Doctor : []" :key="i" outlined class="mb-4 primary">
 
                                 <v-layout row wrap>
@@ -86,7 +85,7 @@
                                         </v-flex>
                                         <v-flex xs6 class="text-right">
                                             <v-card class="mx-4 elevation-0 transparent">
-                                                <v-btn @click="payDoctor(doctor)" outlined dark class="elevation-0">
+                                                <v-btn :loading="loadingPayment"  @click="payDoctor(doctor)" outlined dark class="elevation-0">
                                                     <span class="font-weight-bold white--text">
                                                         Pagar
                                                     </span>
@@ -102,18 +101,18 @@
                                     <DoctorOuttakes @close-dialog="intakesObserv = false" :doctor="doctorSelected" :outtakes="outtakesSelected"></DoctorOuttakes>
                                 </v-card>
                             </v-card>
-                            <v-btn v-if="!data" :loading="true"></v-btn>
-                            </template>
-                          </ApolloQuery>
-                        </v-flex>
-                        <v-flex xs12>
-                            <v-card class="mx-4 elevation-0 transparent">
-                                <v-btn @click="payAllDoctor()"  outlined class="elevation-0">
+                              <v-flex xs12 v-if="data">
+                                <v-card class="mx-4 elevation-0 transparent">
+                                  <v-btn @click="payAllDoctor(data ? data.Doctor : [])"  outlined class="elevation-0">
                                  <span class="font-weight-bold">
                                      Pagar Todos
                                  </span>
-                                </v-btn>
-                            </v-card>
+                                  </v-btn>
+                                </v-card>
+                              </v-flex>
+                            <v-btn elevation="0" color="white" v-if="!data" :loading="true"></v-btn>
+                            </template>
+                          </ApolloQuery>
                         </v-flex>
                     </v-layout>
                 </v-card>
@@ -143,6 +142,7 @@
         data() {
             return {
                 loading: true,
+                loadingPayment:false,
                 value: undefined,
                 change: false,
                 dialogReceipt:false,
@@ -176,7 +176,7 @@
             console.log('data: ', data)
           },
             OpenReceipt(item,doctor){
-                this.outtakesSelected= this.outtakes.filter(outtake => outtake.doctor.crm === doctor.crm)
+                this.outtakesSelected= doctor.charges
                 this.doctorSelected = doctor
                 if(item.title === 'Gerar Boleto'){
                     this.dialogReceipt= !this.dialogReceipt
@@ -221,7 +221,7 @@
             },
 
             async checkReceipts(doctor){
-                this.outtakesSelected= this.outtakes.filter(outtake => outtake.doctor.crm === doctor.crm)
+                this.outtakesSelected= doctor.charges
                 this.doctorSelected = doctor
                 this.intakesObserv = !this.intakesObserv
 
@@ -229,33 +229,35 @@
             async payDoctor(doctor){
                 //await this.$store.dispatch('PayDoctor', doctor)
                 //this.getInitialInfo()
+              this.loadingPayment= true
               let transactionId = uuid.v4()
               let mutationBuilder = new MutationBuilder()
               mutationBuilder.addMutation(
                   `CreateTransaction(
-                    data:{formatted: "${moment().format("YYYY-MM-DDTHH:mm:ss")}"},
-                    id:${transactionId},
-                    value:${parseFloat(this.CostExamsDoctor(doctor))},
+                    date:{formatted: "${moment().format("YYYY-MM-DDTHH:mm:ss")}"},
+                    id:"${transactionId}",
+                    value:${-parseFloat(this.CostExamsDoctor(doctor))},
                   ){
-                  id,data{formatted},value,
+                  id,date{formatted},value,
                   }`
               )
               mutationBuilder.addMutation(`
                   AddDoctorPayments(
-                  id:${transactionId},
-                  idDoctor:${doctor.id}
-                  ){
-                    from:{
+                 from:{
                       id:"${doctor.id}"
                     },
+
                     to:{
                       id:"${transactionId}"
                     }
+                  ){
+                     from{id},
+                      to{id}
                   }
               `)
               for (let charge in doctor.charges) {
                 mutationBuilder.addMutation(`
-                  DeleteCharge(id:"${charge.id}"){
+                  DeleteCharge(id:"${doctor.charges[charge].id}"){
                   id
                   }
                 `)
@@ -264,12 +266,49 @@
               await this.$apollo.mutate({
                 mutation: gql`${finalString}`,
               })
-
+              this.loadingPayment= false
               console.log('doctor: ', doctor)
             },
-            async payAllDoctor(){
-                await this.$store.dispatch('PayAllDoctor', this.doctors)
-                this.getInitialInfo()
+            async payAllDoctor(doctors){
+              this.loadingPayment= true
+              let mutationBuilder = new MutationBuilder()
+              for(let i in doctors){
+                let transactionId = uuid.v4()
+                mutationBuilder.addMutation(
+                    `CreateTransaction(
+                    date:{formatted: "${moment().format("YYYY-MM-DDTHH:mm:ss")}"},
+                    id:"${transactionId}",
+                    value:${-parseFloat(this.CostExamsDoctor(doctors[i]))},
+                  ){
+                  id,date{formatted},value,
+                  }`
+                )
+                mutationBuilder.addMutation(`
+                  AddDoctorPayments(
+                 from:{
+                      id:"${doctors[i].id}"
+                    },
+
+                    to:{
+                      id:"${transactionId}"
+                    }
+                  ){
+                     from{id},
+                      to{id}
+                  }
+              `)
+                for (let charge in doctors[i].charges) {
+                  mutationBuilder.addMutation(`
+                  DeleteCharge(id:"${doctors[i].charges[charge].id}"){
+                  id
+                  }
+                `)
+                }
+              }
+              let finalString = mutationBuilder.generateMutationRequest()
+              await this.$apollo.mutate({
+                mutation: gql`${finalString}`,
+              })
             },
             date(day,period){
                 if(!period){
