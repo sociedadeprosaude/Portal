@@ -31,10 +31,10 @@
       :date="date2"
       :menu="menu"
       :dateFormatted="dateFormatted2"
-      :clientsServed="attendances"
+      :clientsServed="clientsServed"
       :newClients="newClients"
       :ageClientsServed="ageClientsServed"
-      :genresClientsServed="genres"
+      :genderClientsServed="genderClientsServed"
       :geopoints="geopoints"
       :generateDatasetServed="generateDatasetServed"
       :generateDatasetNewClients="generateDatasetNewClients"
@@ -60,9 +60,7 @@ export default {
     date2: new Date().toISOString().substr(0, 7),
     menu: false,
     menu2:false,
-    overlay:false,
-    attendances:undefined,
-    genres:undefined
+    overlay:false
   }),
   components: {
     Clients,
@@ -79,14 +77,9 @@ export default {
     dateFormatted2() {
       return this.date2 ? moment(this.date2, "YYYY-MM").format("MMMM/YYYY") : "";
     },
-    /* clientsServed:{
-      set(value){
-        this.attendances = value
-      },
-      get(){
-        return this.attendances
-      }
-    }, */
+    clientsServed() {
+      return this.$store.getters.getClientsServed;
+    },
     newClients() {
       return this.$store.getters.getNewClients;
     },
@@ -94,14 +87,8 @@ export default {
       let data = this.$store.getters.getAgeClientsServed;
       return this.$store.getters.getAgeClientsServed;
     },
-    genresClientsServed() {
-      let genresObj = this.genres;
-      genresObj.male = (genresObj.male/genresObj.total)/100;
-      genresObj.feminine = (genresObj.feminine/genresObj.total)/100;
-      genresObj.others = (genresObj.others/genresObj.total)/100;
-
-      console.log('jkjhkjhkjh')
-      return genresObj;
+    genderClientsServed() {
+      return this.$store.getters.getGenderClientsServed;
     },
     /* usersServed(){
       let complements = this.$store.getters.getUsersServed.map((user)=>[user.addresses[0].street,user.addresses[0].complement].join(" "));
@@ -124,7 +111,7 @@ export default {
   methods: {
     initializeData(){
       this.overlay = true
-      /* let promise1 = this.$store.dispatch('loadClientsServed',{
+      let promise1 = this.$store.dispatch('loadClientsServed',{
         initialDate:this.date,
         finalDate:moment().format("YYYY-MM-DD 23:59:00"),
       })
@@ -135,10 +122,9 @@ export default {
 
       Promise.all([promise1,promise2]).then(()=>{
         this.overlay = false
-      }); */
+      });
     },
     generateDatasetServed(dataset) {
-      console.log('chegou aqui',dataset)
       return {
         labels: Object.keys(dataset),
         datasets: [
@@ -209,51 +195,7 @@ export default {
         },
       };
     },
-    countUniqueValuesGenre(array){
-      const result = { male:0, feminine:0}
-
-
-      for (let i = 0; i < array.length; i++) {
-        result[array[i]] = (result[array[i]] || 0) + 1
-      }
-
-      Object.keys(result).map(key => ({ [key]: result[key] }))
-    }
   },
-  apollo:{
-    attendanceCount:{
-        query: require("@/graphql/patients/AttendanceCount.gql"),
-        variables(){
-          return{
-            start_date:this.date,
-            final_date: moment().format("YYYY-MM-DD")
-          }
-        },
-        update(data) {
-          this.attendances = {}
-          this.genres = {male:0, feminine:0, others:0, total:0}
-          const attendances = data.attendanceCount;
-          for (const key in attendances) {
-            const attendance = attendances[key];
-            this.attendances[attendance.date.formatted] = attendance.count
-            this.genres = attendance.genres.reduce((obj,value)=>{
-              if(value === "Masculino") obj.male += 1;
-              else if(value === 'Feminino') obj.feminine += 1;
-              else obj.others += 1;
-
-              obj.total += 1;
-              return obj;
-            },this.genres)
-          }
-
-          this.genres.male = (this.genres.male/this.genres.total)*100;
-          this.genres.feminine = (this.genres.feminine/this.genres.total)*100;
-          this.genres.others = (this.genres.others/this.genres.total)*100;
-
-          this.overlay = false;
-        },
-    }
-  }
 };
 </script>
 

@@ -27,22 +27,24 @@
                     <img :src="selectedUnit.logo" height="84px">
                 </v-flex>
                 <v-flex xs12>
-                    <v-card v-for="(outtake,i) in outtakes" v-bind:key="i" class="elevation-0">
+                    <v-card v-for="(intake,i) in intakes" v-bind:key="i" class="elevation-0">
+                        <v-layout v-for="(exam,i) in intake.exams" v-bind:key="i">
                             <v-layout row wrap>
                                 <v-flex xs5 class="align-center justify-center">
                                     <p class="font-weight-black mt-5">
-                                        {{outtake.id}}
+                                        {{exam.name}}
                                     </p>
                                 </v-flex>
                                 <v-flex xs1>
                                     <v-spacer></v-spacer>
                                 </v-flex>
                                 <v-flex xs6 class="text-center align-center justify-center">
-                                    <p class="mt-5"> PREÇO: {{outtake.value}}</p>
+                                    <p class="mt-5"> PREÇO: {{exam.price}}</p>
                                 </v-flex>
                                 <v-flex xs12>
                                     <v-divider color="black"></v-divider>
                                 </v-flex>
+                            </v-layout>
                         </v-layout>
                     </v-card>
                     <v-layout row wrap>
@@ -106,11 +108,13 @@
                 return this.$store.getters.IntakesExamsClinics
             },
             PriceTot(){
-              let cost =0;
-              for(let i in this.outtakes) {
-                cost += this.outtakes[i].value
-              }
-              return cost
+                let cost =0;
+                this.outtakes.filter(function (element){
+                    element.exams.filter(function (element2) {
+                        cost += element2.price
+                    })
+                })
+                return cost
             }
         },
         methods: {
