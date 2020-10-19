@@ -12,11 +12,11 @@
               :disabled="loading"
               @click="()=>generateSectorTicket(false)"
             >
-              Proxima senha:
+              Gerar Proxima senha:
               {{normal}}
             </v-btn>
           </template>
-          <span>Pular próxima senha</span>
+          <span>Gerar próxima senha</span>
         </v-tooltip>
       </v-col>
 
@@ -31,11 +31,11 @@
               :disabled="loading"
               @click="()=>generateSectorTicket(true)"
             >
-              Proxima senha preferencial:
+              Gerar Proxima senha preferencial:
               {{priority}}
             </v-btn>
           </template>
-          <span>Pular próxima senha</span>
+          <span>Gerar próxima senha preferencial</span>
         </v-tooltip>
       </v-col>
 
@@ -96,10 +96,10 @@
                 <v-btn x-small fab class="red" @click="deleteRoom(room)">
                   <v-icon class="white--text">delete</v-icon>
                 </v-btn>
-                <v-btn small fab icon @click="favoriteRoom(room)">
-                  <v-icon class="warning--text" v-if="room.name === favoritedRoom.name">grade</v-icon>
-                  <v-icon class="primary--text" v-else>grade</v-icon>
-                </v-btn>
+                <!--<v-btn small fab icon @click="favoriteRoom(room)">
+                  <v-icon class="warning&#45;&#45;text" v-if="room.name === favoritedRoom.name">grade</v-icon>
+                  <v-icon class="primary&#45;&#45;text" v-else>grade</v-icon>
+                </v-btn>-->
               </v-layout>
             </v-col>
           </v-row>
@@ -203,8 +203,8 @@
                   </v-btn>
                 </template>
                 <span>Alertar senha atual</span>
-              </v-tooltip>
-              <v-tooltip top v-if="doctorsLoaded">
+              </v-tooltip>-->
+<!--              <v-tooltip top >
                 <template v-slot:activator="{ on }">
                   <v-btn
                     v-on="on"
