@@ -53,33 +53,24 @@ export default {
   mounted() {
     this.initialInfo();
   },
-/*  apollo: {
+  apollo: {
     LoadSectorsOfUnity: {
       query: require("@/graphql/sectors/LoadSectorsOfUnity.gql"),
-      variables: {id: this.idUnity},
+      variables () {
+        // Use vue reactive properties here
+        return {
+          id: this.idUnity,
+        }
+      },
       update(data){
-        console.log('Sectors: ', data)
         this.sectors = Object.assign(data.Clinic[0].has_sectors)
         console.log('reativo:', this.sectors)
-        console.log('id', this.idUnity)
-        //this.LocaleBundles= data.Bundles
       },
     }
-  },*/
+  },
   methods: {
     async initialInfo() {
-      const clinicID  = this.$store.getters.user.clinic.id
-      const unitys = await this.$apollo.mutate({
-        mutation: require('@/graphql/sectors/LoadSectorsOfUnity.gql'),
-        variables: {id: clinicID},
-      })
-      let unity = unitys.data.Clinic[0].has_sectors
-      this.idUnity = unitys.data.Clinic[0].id
-      console.log('unity:', unity)
-      this.sectors = unity
-/*      const generalInfo = await this.$store.dispatch("getTicketsGeneralInfo");
-      this.$store.dispatch("listenTicketsSectors");*/
-      /*this.lastTicket = generalInfo.ticket_number;*/
+      this.idUnity  = this.$store.getters.user.clinic.id
     },
 
     async updateLastTicket(number) {
@@ -114,46 +105,70 @@ export default {
           idSector: idSector,
         },
       });
-      //this.$apollo.queries.LoadSectorsOfUnity.refresh();
+      this.$apollo.queries.LoadSectorsOfUnity.refresh();
       this.resetCreation();
     },
     async deleteSector(sector) {
       console.log('deleting:', sector)
-      let rooms = sector.has_rooms
-      if( sector.has_rooms.length > 0){
-        for (let room in rooms){
-          console.log('RS',rooms[room])
-          //mandar deletar as salas do setor
-          if(rooms[room].room_has_tickets.length > 0){
-            for(let ticketroom in rooms[room].room_has_tickets){
-              console.log('TR',rooms[room].room_has_tickets[ticketroom])
-              //mandar deletar os ticekts das salas dos setores
-            }
-          }
-        }
-      }
-      let sector_has_tickets = sector.sector_has_tickets
-      if(sector.sector_has_tickets.length > 0){
-        for(let ticketsector in sector_has_tickets){
-          console.log('TS',sector_has_tickets[ticketsector])
-          //mandar deletar os ticktes do setor
-        }
-      }
       this.creation.choosed = sector;
       if (!this.creation.deletingDialog) {
         this.creation.deletingDialog = true;
         return;
       }
       this.creation.deleting = true;
-/*      await this.$apollo.mutate({
-        mutation: require('@/graphql/sectors/DeleteRoom.gql'),
+      let rooms = sector.has_rooms
+      //tickets rooms
+      if( sector.has_rooms.length > 0){
+        for (let room in rooms){
+          if(rooms[room].room_has_tickets.length > 0){
+            for(let ticketroom in rooms[room].room_has_tickets){
+              await this.$apollo.mutate({
+                mutation: require('@/graphql/tickets/DeleteTicket.gql'),
+                variables: {
+                  id: rooms[room].room_has_tickets[ticketroom].id,
+                },
+              });
+            }
+          }
+        }
+      }
+      //tickets rooms
+      //rooms
+      if( sector.has_rooms.length > 0) {
+        for (let room in rooms) {
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/rooms/DeleteRoom.gql'),
+            variables: {
+              id: rooms[room].id,
+            },
+          });
+        }
+      }
+      //rooms
+      //tickets sectors
+      let sector_has_tickets = sector.sector_has_tickets
+      if(sector.sector_has_tickets.length > 0){
+        for(let ticketsector in sector_has_tickets){
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/DeleteTicket.gql'),
+            variables: {
+              id: sector_has_tickets[ticketsector].id,
+            },
+          });
+        }
+      }
+      //tickets sectors
+      //sector
+      await this.$apollo.mutate({
+        mutation: require('@/graphql/sectors/DeleteSector.gql'),
         variables: {
           id: sector.id,
         },
-      });*/
+      });
+      //sector
       this.creation.deleting = false;
       this.creation.deletingDialog = false;
-      this.$router.push('/');
+      this.$apollo.queries.LoadSectorsOfUnity.refresh();
     },
     async choose(sector) {
       this.$router.push("/senhas/" + sector.name);

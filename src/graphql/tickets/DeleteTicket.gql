@@ -1,0 +1,1 @@
+mutation($id:ID!){DeleteTicket(id:$id){id}}

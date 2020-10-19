@@ -348,6 +348,8 @@ export default {
     multipleViewDialog: Boolean,
     favoritedRoom: String,
     rooms: Array,
+    normal: Number,
+    priority: Number,
     roomsLoaded: Boolean,
     ticketInfo: Object,
     doctors: Array,
@@ -369,30 +371,6 @@ export default {
     deleteRoom: Function,
     alertActualTicket: Function,
     openSingleView: Function,
-  },
-  data() {
-    return {
-      normal: 0,
-      priority: 0,
-    }
-  },
-  mounted() {
-    console.log('sec', this.sector)
-    if(this.sector){
-      if(this.sector.sector_has_tickets.length > 0){
-        for(let type in this.sector.sector_has_tickets){
-          console.log('mostre:', this.sector.sector_has_tickets[type].type)
-          if(this.sector.sector_has_tickets[type].type === 'normal'){
-            this.normal = this.normal + 1;
-          } else if (this.sector.sector_has_tickets[type].type === 'priority'){
-            this.priority = this.priority + 1;
-          }
-        }
-      } else {
-        this.normal = 0;
-        this.priority = 0;
-      }
-    }
   },
 };
 </script>

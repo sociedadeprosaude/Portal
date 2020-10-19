@@ -15,6 +15,8 @@
     :openSingleView="openSingleView"
     :favoritedRoom="favoritedRoom"
     :rooms="rooms"
+    :normal="normal"
+    :priority="priority"
     :roomsLoaded="roomsLoaded"
     :ticketInfo="ticketInfo"
     :doctors="doctors"
@@ -59,8 +61,9 @@ export default {
     return {
       sector: undefined,
       sectorName: undefined,
-      doctors: undefined,
-      //
+      normal: 0,
+      priority: 0,
+      //doctors: undefined,
       doctorsListDialog: {
         active: false,
         search: "",
@@ -94,7 +97,6 @@ export default {
       }
     },
     rooms() {
-      console.log('rooms', this.sector)
       return this.sector ? this.sector.has_rooms : [];
     },
     roomsLoaded() {
@@ -124,34 +126,32 @@ export default {
         : undefined;*!/
     },*/
   },
+  apollo: {
+    LoadRoomsOfSector: {
+      query: require("@/graphql/rooms/LoadRoomsOfSector.gql"),
+      variables () {
+        // Use vue reactive properties here
+        return {
+          name: this.sectorName,
+        }
+      },
+      update(data){
+        this.sector = Object.assign(data.Sector[0])
+        let n = this.sector.sector_has_tickets.filter(a => {
+          return a.type === 'normal';
+        });
+        this.normal = n.length
+        let p = this.sector.sector_has_tickets.filter(a => {
+          return a.type === 'priority';
+        });
+        this.priority = p.length
+        console.log('reativo:', this.sector)
+      },
+    }
+  },
   methods: {
     async initialInfo() {
       this.sectorName = this.$route.params["sector_name"];
-      const idUnity  = this.$store.getters.user.clinic.id
-      const Datasectors = await this.$apollo.mutate({
-        mutation: require('@/graphql/sectors/LoadRoomsOfSector.gql'),
-        variables: {id: idUnity},
-      })
-      let sectors = Datasectors.data.Clinic[0].has_sectors
-      if(sectors.length > 0){
-        for(let sector in sectors){
-          if(sectors[sector].name === this.sectorName){
-            this.sector = sectors[sector]
-            console.log('setor do paramentro e etc:', sectors[sector])
-            }
-        }
-      }
-/*      if (
-        moment(this.$store.getters.ticketGeneralInfo.last_updated).dayOfYear !==
-        moment().dayOfYear
-      ) {
-        await this.saveAndReset();
-      }
-      if (!this.sector) {
-        this.$store.dispatch("getTicketsGeneralInfo");
-        this.$store.dispatch("listenTicketsSectors");
-      }
-      this.$store.dispatch("listenLastTicket");*/
     },
     async saveAndReset() {
       // this.$store.dispatch("updateGeneralInfo", {
@@ -188,13 +188,12 @@ export default {
 
         },
       });
-      //await this.$store.dispatch("createSectorRoom", { sector, room });
       this.loading = false;
       this.success = true;
       setTimeout(() => {
         this.success = false;
       }, 1000);
-      this.$router.push('/');
+      this.$apollo.queries.LoadRoomsOfSector.refresh();
     },
     async setDoctorToRoom(room, doctor) {
       room.doctor = doctor;
@@ -218,18 +217,20 @@ export default {
       await this.$store.dispatch("updateSectorRoom", { sector, room });
     },
     async generateSectorTicket(preferential) {
+      //console.log('antes', this.sector)
+      //this.$apollo.queries.LoadRoomsOfSector.refresh();
+      console.log('depois', this.sector)
       let count = 0;
-      console.log(this.sector)
       if(this.sector.sector_has_tickets.length > 0){ count = this.sector.sector_has_tickets.length + 1 }
       count = count.toString();
-      let idSector = this.sector.id; b
       console.log(preferential,count)
       if(preferential === true) {
         const dataTicket = await this.$apollo.mutate({
           mutation: require('@/graphql/tickets/CreateTicket.gql'),
           variables: {
             name: count,
-            type: 'priority',
+            type: "priority",
+            created_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
           },
         });
         const idTicket = dataTicket.data.CreateTicket.id
@@ -237,16 +238,16 @@ export default {
           mutation: require('@/graphql/tickets/AddRelationsSectorTicket.gql'),
           variables: {
             idTicket: idTicket,
-            idSector: idSector,
+            idSector: this.sector.id,
           },
         });
-        //console.log('true')
       } else {
         const dataTicket = await this.$apollo.mutate({
           mutation: require('@/graphql/tickets/CreateTicket.gql'),
           variables: {
             name: count,
-            type: 'normal',
+            type: "normal",
+            created_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
           },
         });
         const idTicket = dataTicket.data.CreateTicket.id
@@ -254,11 +255,11 @@ export default {
           mutation: require('@/graphql/tickets/AddRelationsSectorTicket.gql'),
           variables: {
             idTicket: idTicket,
-            idSector: idSector,
+            idSector: this.sector.id,
           },
         });
-        //console.log('false')
       }
+      this.$apollo.queries.LoadRoomsOfSector.refresh();
     },
     async upgradeTicketNumber() {
       let ticketInfo = this.ticketInfo;
@@ -324,17 +325,21 @@ export default {
       this.$store.commit("setFavoriteRoomSection", this.sector);
     },
     async deleteRoom(room) {
+      console.log('del sala:', room)
       this.deletionRoom.selectedRoom = room;
       if (!this.deletionRoom.deleteRoomDialog) {
         this.deletionRoom.deleteRoomDialog = true;
         return;
       }
       this.deletionRoom.deleting = true;
-      console.log('del sala:', room.room_has_tickets)
       if(room.room_has_tickets.length > 0){
         for (let ticket in room.room_has_tickets){
-          console.log(room.room_has_tickets[ticket])
-          //mandar deletar os tockets associados a esta sala
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/DeleteTicket.gql'),
+            variables: {
+              id: room.room_has_tickets[ticket].id,
+            },
+          });
         }
       }
       await this.$apollo.mutate({
@@ -343,13 +348,9 @@ export default {
           id: room.id,
         },
       });
-/*      await this.$store.dispatch("deleteSectorRoom", {
-        room: room,
-        sector: this.sector,
-      });*/
       this.deletionRoom.deleting = false;
       this.deletionRoom.deleteRoomDialog = false;
-      this.$router.push('/');
+      this.$apollo.queries.LoadRoomsOfSector.refresh();
     },
     alertActualTicket(room) {},
     openSingleView(room) {

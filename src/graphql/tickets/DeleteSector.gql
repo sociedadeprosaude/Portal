@@ -1,1 +1,0 @@
-mutation($id:ID!){DeleteSector(id:$id){id}}
