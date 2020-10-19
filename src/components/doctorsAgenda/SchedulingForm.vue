@@ -283,9 +283,8 @@ export default {
       return this.selectedPatient ? this.selectedPatient.dependents : undefined;
     },
     computedDateFormatted() {
-      return this.formatDate(
-          this.createConsultationForm.consultation.date.split(" ")[0]
-      );
+      let date = this.createConsultationForm.consultation.date.formatted;
+      return this.formatDate(date.split("T")[0]);
     },
   },
   methods: {
@@ -308,6 +307,8 @@ export default {
         type: this.modalidade,
         payment_number: this.numberReceipt,
       };
+
+      form.consultation.date = {formatted:form.consultation.date.replace(" ", "T")}
       
       const consultationId = uuid.v4();
       let mutationBuilder = new MutationBuilder();

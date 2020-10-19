@@ -9,7 +9,9 @@ query($email:String!){
     is_patient{
       id,name,
       association_number,
-      birth_date,
+      birth_date{
+        formatted
+      },
       cpf,
       name,
       sex,
@@ -42,7 +44,7 @@ query($email:String!){
       group,
       salary,
       permissions,
-      birth_date,
+      birth_date{formatted},
       clinic:work_in{
         id,
         name,

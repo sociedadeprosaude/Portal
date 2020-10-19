@@ -6,7 +6,7 @@ query($cpf:String){
     sex,
     telephones,
     association_number,
-    birth_date,
+    birth_date{formatted},
     addresses{
         cep,
         city,
@@ -16,11 +16,11 @@ query($cpf:String){
         uf,
     },
     dependents{
-    id,
-    name,
-    birth_date,
-    dependentDegree,
-    sex
+      id,
+      name,
+      birth_date{formatted},
+      dependentDegree,
+      sex
     },
     intakes{
        date {
@@ -74,7 +74,7 @@ query($cpf:String){
       id,
       type,
       status,
-      date,
+      date{formatted},
       payment_number,
       canceled_schedule,
       clinic:of_clinic{
@@ -93,26 +93,26 @@ query($cpf:String){
         id,
         type,
         status,
-        date,
+        date{formatted},
         payment_number
       },
       previous_consultation{
         id,
         type,
         status,
-        date,
+        date{formatted},
         payment_number
       },
     	patient{
         id,
         name,
         cpf,
-        birth_date,
+        birth_date{formatted},
       },
       dependent{
         id,
         name,
-        birth_date,
+        birth_date{formatted},
         dependentDegree,
         sex
       }

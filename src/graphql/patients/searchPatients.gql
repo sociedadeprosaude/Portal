@@ -6,7 +6,7 @@ query($name:String){
     sex,
     telephones,
     association_number,
-    birth_date,
+    birth_date{formatted},
     addresses{
         cep,
         city,
@@ -16,17 +16,17 @@ query($name:String){
         uf,
     },
     dependents{
-    id,
-    name,
-    birth_date,
-    dependentDegree,
-    sex
+      id,
+      name,
+      birth_date{formatted},
+      dependentDegree,
+      sex
     },
     intakes{
-       date {
+      date {
         formatted
-       },
-       id,
+      },
+      id,
       discount,
       value,
       payments,
@@ -74,7 +74,7 @@ query($name:String){
       id,
       type,
       status,
-      date,
+      date{formatted},
       payment_number,
       canceled_schedule,
       clinic:of_clinic{
@@ -93,26 +93,26 @@ query($name:String){
         id,
         type,
         status,
-        date,
+        date{formatted},
         payment_number
       },
       previous_consultation{
         id,
         type,
         status,
-        date,
+        date{formatted},
         payment_number
       },
     	patient{
         id,
         name,
         cpf,
-        birth_date,
+        birth_date{formatted},
       },
       dependent{
         id,
         name,
-        birth_date,
+        birth_date{formatted},
         dependentDegree,
         sex
       }

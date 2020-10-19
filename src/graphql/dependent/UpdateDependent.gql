@@ -1,7 +1,7 @@
 mutation (
     $idDependent: ID!,
     $name: String!,
-    $birth_date: String,
+    $birth_date: _Neo4jDateInput,
     $dependentDegree: String!,
     $sex: String
     ){

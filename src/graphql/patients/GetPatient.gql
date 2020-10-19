@@ -6,7 +6,7 @@ query($id:ID!){
        sex,
        telephones,
        association_number,
-       birth_date,
+       birth_date{formatted},
        addresses{
            cep,
            city,
@@ -16,11 +16,11 @@ query($id:ID!){
            uf,
        },
        dependents{
-       id,
-       name,
-       birth_date,
-       dependentDegree,
-       sex
+        id,
+        name,
+        birth_date{formatted},
+        dependentDegree,
+        sex
        },
        intakes{
           date {
@@ -74,7 +74,7 @@ query($id:ID!){
          id,
          type,
          status,
-         date,
+         date{formatted},
          payment_number
          clinic:of_clinic{
            id,name,logo
@@ -89,26 +89,26 @@ query($id:ID!){
            id,
            type,
            status,
-           date,
+           date{formatted},
            payment_number
          },
          previous_consultation{
            id,
            type,
            status,
-           date,
+           date{formatted},
            payment_number
          },
        	patient{
            id,
            name,
            cpf,
-           birth_date,
+           birth_date{formatted},
          },
          dependent{
            id,
            name,
-           birth_date,
+           birth_date{formatted},
            dependentDegree,
            sex
          }

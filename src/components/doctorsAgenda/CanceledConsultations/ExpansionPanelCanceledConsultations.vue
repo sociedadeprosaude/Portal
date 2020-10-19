@@ -55,7 +55,7 @@
                                                 <br>
                                                 <v-list-item-subtitle class="text-center font-weight-bold">
                                                     {{item.patient.dependent ? 'Nascimento:' +
-                                                    item.patient.dependent.birthDate
+                                                    item.patient.dependent.birth_date.formatted
                                                     : 'CPF:' + item.patient.cpf}}
                                                 </v-list-item-subtitle>
                                                 <br>

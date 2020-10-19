@@ -33,7 +33,7 @@ query{
     num_regress,
     consultations{
       id,
-      date
+      date{formatted}
     },
     canceled_periods{
       id,

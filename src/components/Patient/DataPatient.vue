@@ -726,7 +726,7 @@
                     variables: {
                         idPatient: this.selectedPatient && this.selectedPatient.id,
                         name: patient.name,
-                        birth_date: patient.birth_date,
+                        birth_date: {formatted:patient.birth_date},
                         cpf: patient.cpf,
                         sex: patient.sex,
                         association_number: Number(patient.association_number),
@@ -915,7 +915,7 @@
                 this.email = user.email;
                 this.rg = user.rg;
                 this.numAss = user.association_number;
-                this.birthDate = await moment(user.birth_date).format('DD/MM/YYYY');
+                this.birthDate = moment(user.birth_date.formatted).format('DD/MM/YYYY');
                 this.sex = user.sex;
                 this.dependents = user.dependents ? user.dependents : [];
                 this.telephones = user.telephones ? user.telephones : [''];
