@@ -204,7 +204,7 @@
                 </template>
                 <span>Alertar senha atual</span>
               </v-tooltip>-->
-<!--              <v-tooltip top >
+              <v-tooltip top >
                 <template v-slot:activator="{ on }">
                   <v-btn
                     v-on="on"
@@ -219,7 +219,7 @@
                   </v-btn>
                 </template>
                 <span>Visualizador único</span>
-              </v-tooltip>-->
+              </v-tooltip>
             </v-col>
           </v-row>
           <v-row>

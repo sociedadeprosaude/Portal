@@ -1,15 +1,15 @@
 <template>
-  <v-card class="pa-4" @click="$emit('close')" style="overflow: hidden !important;">
-    <v-container fill-height fluid class="one white--text">
-      <v-row class="ml-2 indigo--text text--darken-4 font-weight-bold">
+<!--  <v-card class="pa-4" @click="$emit('close')" style="overflow: hidden !important;">
+    <v-container fill-height fluid class="one white&#45;&#45;text">
+      <v-row class="ml-2 indigo&#45;&#45;text text&#45;&#45;darken-4 font-weight-bold">
         <p style="font-size: 2em;">Últimas senhas</p>
+        {{sector.has_rooms}}
       </v-row>
-
       <v-row justify="center">
         <v-col
           class="py-2 px-0"
           cols="12"
-          v-for="(ticket, index) in lastTicketsCalled"
+          v-for="(ticket, index) in sector.has_rooms"
           :key="index"
         >
           <v-card elevation="0" :color="index%2 != 0? 'grey lighten-2':'grey lighten-4'">
@@ -17,13 +17,13 @@
               <v-col align-self="center" class="font-weight-bold">
                 <p
                   style="font-size: 2em;"
-                >senha {{ticket.preferential?'preferencial':''}} {{ticket.number}}</p>
+                >senha {{type(ticket.current_ticket)}} {{ticket.current_ticket}}</p>
               </v-col>
               <v-col
                 class="font-weight-bold"
                 :style="[ticket.preferential ?'color: rgb(35, 151, 118);':'color:#1A237E']"
               >
-                <p style="font-size: 4em;">{{ticket.roomName}}</p>
+                <p style="font-size: 4em;">{{ticket.name}}</p>
               </v-col>
             </v-row>
           </v-card>
@@ -35,7 +35,7 @@
         </v-card>
       </v-row>
     </v-container>
-    <v-container fluid :class="[lastTicketCalled.preferential?'three':'two', 'white--text']">
+&lt;!&ndash;    <v-container fluid :class="[lastTicketCalled.preferential?'three':'two', 'white&#45;&#45;text']">
       <v-row class="pa-0 ma-0 half">
         <v-col align-self="center">
           <v-row
@@ -70,8 +70,8 @@
           </v-row>
         </v-col>
       </v-row>
-    </v-container>
-  </v-card>
+    </v-container>&ndash;&gt;
+  </v-card>-->
 </template>
 
 <script>
@@ -181,6 +181,15 @@ export default {
     },
   },
   methods: {
+    type(name){
+      console.log( this.sector.sector_has_tickets)
+      let tikets = this.sector.sector_has_tickets
+      for (let t in tikets){
+        if(tikets[t].name === name){
+          return tikets[t].type
+        }
+      }
+    },
     playTicketSound() {
       let sound = new Audio(
         "https://firebasestorage.googleapis.com/v0/b/prosaude-36f66.appspot.com/o/assets%2FCollected%20Coin%20A1.mp3?alt=media&token=57509b64-12aa-4946-9814-42995ac8ab41"
