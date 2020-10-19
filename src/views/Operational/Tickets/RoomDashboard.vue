@@ -130,7 +130,6 @@ export default {
     LoadRoomsOfSector: {
       query: require("@/graphql/rooms/LoadRoomsOfSector.gql"),
       variables () {
-        // Use vue reactive properties here
         return {
           name: this.sectorName,
         }
@@ -147,7 +146,26 @@ export default {
         this.priority = p.length
         console.log('reativo:', this.sector)
       },
-    }
+    },
+/*    LoadTicketsOfSector: {
+      query: require("@/graphql/sectors/LoadTcketsOfSector.gql"),
+      variables () {
+        return {
+          name: this.sectorName,
+        }
+      },
+      update(data){
+        let sector = Object.assign(data.Sector[0])
+        let n = sector.sector_has_tickets.filter(a => {
+          return a.type === 'normal';
+        });
+        this.normal = n.length
+        let p = sector.sector_has_tickets.filter(a => {
+          return a.type === 'priority';
+        });
+        this.priority = p.length
+      }
+    },*/
   },
   methods: {
     async initialInfo() {
@@ -217,13 +235,10 @@ export default {
       await this.$store.dispatch("updateSectorRoom", { sector, room });
     },
     async generateSectorTicket(preferential) {
-      //console.log('antes', this.sector)
-      //this.$apollo.queries.LoadRoomsOfSector.refresh();
-      console.log('depois', this.sector)
+      this.$apollo.queries.LoadRoomsOfSector.refresh();
       let count = 0;
       if(this.sector.sector_has_tickets.length > 0){ count = this.sector.sector_has_tickets.length + 1 }
       count = count.toString();
-      console.log(preferential,count)
       if(preferential === true) {
         const dataTicket = await this.$apollo.mutate({
           mutation: require('@/graphql/tickets/CreateTicket.gql'),

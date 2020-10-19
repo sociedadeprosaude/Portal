@@ -103,7 +103,7 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-tooltip top v-if="doctorsLoaded">
+              <v-tooltip top >
                 <template v-slot:activator="{ on }">
                   <v-btn
                     v-on="on"
@@ -119,7 +119,7 @@
                 </template>
                 <span>Chamar próxima senha</span>
               </v-tooltip>
-              <v-tooltip top v-if="doctorsLoaded">
+              <v-tooltip top >
                 <template v-slot:activator="{ on }">
                   <v-btn
                     v-on="on"

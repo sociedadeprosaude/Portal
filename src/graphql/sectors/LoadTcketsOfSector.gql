@@ -1,0 +1,7 @@
+query($name: String!){
+      Sector(name: $name){
+        sector_has_tickets{
+            id,name,type
+          }
+   },
+}
