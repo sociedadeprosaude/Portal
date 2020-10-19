@@ -5,7 +5,7 @@ query($name: String!){
             id,name,type,created_at{formatted},called_at{formatted},
           }
         has_rooms{
-          name,id
+          name,id,previos_ticket,current_ticket
           room_has_tickets{
             id,name,type,created_at{formatted},called_at{formatted},
           }

@@ -283,59 +283,77 @@ export default {
     async callSectorTicket(room, preferential) {
       this.$apollo.queries.LoadRoomsOfSector.refresh();
       if(preferential === true) {
-        let priority = this.sector.sector_has_tickets.filter(a => {
+        let prioritys = this.sector.sector_has_tickets.filter(a => {
           return a.type === 'priority';
         });
-        priority.reverse()
-        for(let p in priority){
-          console.log('data',priority[p].created_at.formatted)
-          if(!priority[p].created_at.formatted){
-            console.log('update ticket');
+        prioritys.reverse()
+        console.log('P:',prioritys)
+        let priority = []
+        for(let p in prioritys) { if(!prioritys[p].called_at.formatted) { priority.push(prioritys[p]) }}
+
+        await this.$apollo.mutate({
+          mutation: require('@/graphql/tickets/UpdateTicket.gql'),
+          variables: {
+            id: priority[0].id,
+            called_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
+          },
+        });
+        if(!room.previos_ticket) {
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/rooms/UpdateRoom.gql'),
+            variables: {
+              id: room.id,
+              previos_ticket: '*',
+              current_ticket: priority[0].name,
+            },
+          });
+        } else {
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/rooms/UpdateRoom.gql'),
+            variables: {
+              id: room.id,
+              previos_ticket: room.current_ticket,
+              current_ticket: priority[0].name,
+            },
+          });
+        }
+      } else {
+        let normals = this.sector.sector_has_tickets.filter(a => {
+          return a.type === 'normal';
+        });
+        normals.reverse()
+        console.log('N:',normals)
+        let normal = []
+        for(let n in normals){ if(!normals[n].called_at.formatted){ normal.push(normals[n]) }}
+        console.log(normal)
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/UpdateTicket.gql'),
+            variables: {
+              id: normal[0].id,
+              called_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
+            },
+          });
+          if(!room.previos_ticket) {
             await this.$apollo.mutate({
-              mutation: require('@/graphql/tickets/UpdateTicket.gql'),
+              mutation: require('@/graphql/rooms/UpdateRoom.gql'),
               variables: {
-                name: priority.id,
-                called_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
+                id: room.id,
+                previos_ticket: '*',
+                current_ticket: normal[0].name,
+              },
+            });
+          } else {
+            await this.$apollo.mutate({
+              mutation: require('@/graphql/rooms/UpdateRoom.gql'),
+              variables: {
+                id: room.id,
+                previos_ticket: room.current_ticket,
+                current_ticket: normal[0].name,
               },
             });
           }
-        }
-      } else {
-        let normal = this.sector.sector_has_tickets.filter(a => {
-          return a.type === 'normal';
-        });
-        normal.reverse()
-        for(let n in normal){
-          console.log('data',normal[n].created_at.formatted)
-        }
       }
       this.$apollo.queries.LoadRoomsOfSector.refresh();
-/*      let ticketIndex = this.sector.tickets
-        ? this.sector.tickets.findIndex((ticket) => {
-            return (
-              !ticket.called_at &&
-              (preferential ? ticket.preferential : !ticket.preferential)
-            );
-          })
-        : -1;
-      if (ticketIndex < 0) {
-        this.snackbar = true;
-
-        //criando e chamando uma nova senha na sala se nao tiver nenhuma pra ser chamada
-        //await this.generateSectorTicket(preferential);
-        //await this.callNextTicket(room, preferential);
-        return;
-      }
-      this.sector.tickets[ticketIndex].called_at = moment().format(
-        "YYYY-MM-DD HH:mm:ss"
-      );
-      room.tickets
-        ? room.tickets.push(this.sector.tickets[ticketIndex])
-        : (room.tickets = [this.sector.tickets[ticketIndex]]);
-      const sector = this.sector;
-      await this.$store.dispatch("updateSectorRoom", { sector, room });
-      this.sector.tickets.splice(ticketIndex, 1);
-      await this.$store.dispatch("updateSector", this.sector);*/
     },
     favoriteRoom(room) {
       this.$store.commit("setFavoriteRoom", room);

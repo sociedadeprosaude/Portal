@@ -229,9 +229,7 @@
                 <v-col class="pa-0">
                   <span style="font-size: 0.8em">Ultima senha:</span>
                   <br />
-                  <span
-                    v-if="room.room_has_tickets && room.room_has_tickets.length > 0"
-                  >{{room.room_has_tickets.length}}</span>
+                  <span v-if="room.previos_ticket">{{room.previos_ticket}}</span>
                   <span v-else>*</span>
                 </v-col>
                 <v-divider vertical></v-divider>
@@ -239,9 +237,7 @@
                   <div>
                     <span style="font-size: 0.8em">Senha atual:</span>
                     <br />
-                    <span
-                      v-if="room.tickets && room.tickets.length != 0 && getActualTicket(room.tickets)"
-                    >{{getActualTicket(room.tickets).number}}</span>
+                    <span v-if="room.current_ticket">{{room.current_ticket}}</span>
                     <span v-else>*</span>
                   </div>
                 </v-col>
