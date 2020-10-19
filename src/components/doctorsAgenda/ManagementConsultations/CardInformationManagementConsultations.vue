@@ -63,6 +63,7 @@
                         <v-btn
                                 color="white"
                                 rounded
+                                :loading="loadingCharge"
                                 :disabled="consultation.status !== 'Pago'"
                                 @click="setConsultationHour(consultation)"
                         >
@@ -99,6 +100,9 @@
         from '../../../components/doctorsAgenda/ManagementConsultations/CardPatientManagementConsultations'
     import ConsultationDocument from "../commons/ConsultationDocument"
     import ConsultationReceipt from "../commons/ConsultationReceipt"
+    import {uuid} from "vue-uuid";
+    import MutationBuilder from "@/classes/MutationBuilder";
+    import gql from "graphql-tag";
     let moment = require('moment');
 
     export default {
@@ -111,6 +115,7 @@
             documentDialog:false,
             receptDialog:false,
             cancelLoading:false,
+            loadingCharge:false,
             costDoctor: 0,
             idDoctor:'',
             idProduct:'',
@@ -168,11 +173,81 @@
             },
 
             async setConsultationHour(consultation) {
-                console.log('consultation: ', consultation)
+              this.ConsultationSelect = consultation
+              this.loadingCharge= true
+              this.idDoctor = consultation.doctor.id
+              this.idProduct = consultation.product.id
+              let idProductTransaction = await this.$apollo.mutate({
+                mutation: require('@/graphql/productTransaction/GetProductTransactionId.gql'),
+                variables:{
+                  idConsultation: consultation.id
+                }
+              })
+              idProductTransaction = idProductTransaction.data.ProductTransaction[0].id
+              let Charge = await  this.$apollo.mutate({
+                mutation: require('@/graphql/charge/GetChargeProductTransactionId.gql'),
+                variables:{
+                  idProductTransaction: idProductTransaction
+                }
+              })
+              Charge = Charge.data.Charge
+              if(Charge.length === 0){
+                let CostProductDoctor = await this.$apollo.mutate({
+                  mutation: require ('@/graphql/doctors/LoadCostProductDoctor.gql'),
+                  variables:{
+                    idDoctor: consultation.doctor.id,
+                    idProduct: consultation.product.id
+                  }
+                })
+                let ChargeId = uuid.v4()
+                let mutationBuilder = new MutationBuilder()
+                mutationBuilder.addMutation(`
+              CreateCharge(
+                  id:"${ChargeId}"
+                  value:${-CostProductDoctor.data.CostProductDoctor[0].cost}
+                  date:
+          {
+            formatted: "${moment().format("YYYY-MM-DDTHH:mm:ss")}"
+          }
+              ){
+              id,value,date{formatted}
+              }
+          `),
+                    mutationBuilder.addMutation(`
+            AddChargeWith_ProductTransaction(
+            from:{
+            id:"${ChargeId}"
+        },
+        to:{
+            id:"${idProductTransaction}"
+        }
+    ){
+        from{id},
+        to{id}
+    } `)
+                let finalString = mutationBuilder.generateMutationRequest()
+                await this.$apollo.mutate({
+                  mutation: gql`${finalString}`,
+                })
+                this.loadingCharge = false
+                this.documentDialog = true;
+              }
+              else{
+                this.loadingCharge = false
+                this.documentDialog = true;
+              }
+               /*  let charge = await this.$apollo.mutate({
+                  mutation: require ('@/graphql/charge/FindChargeDoctor'),
+                  variables:{
+                    consultationId: consultation.id,
+                    type:'doctor'
+                  }
+                })
+                console.log('charge: ', charge)
                 this.documentDialog = true;
                 this.ConsultationSelect = consultation
                 this.idDoctor = consultation.doctor.id
-                this.idProduct = consultation.product.id
+                this.idProduct = consultation.product.id */
                 /* this.skipCost=false
                 this.$apollo.queries.loadCostProductDoctor.refresh() */
                 /* let consultation_hour = moment().format('YYYY-MM-DD HH:mm:ss');
