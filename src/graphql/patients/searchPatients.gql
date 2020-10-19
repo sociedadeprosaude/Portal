@@ -86,9 +86,6 @@ query($name:String){
       doctor:attended_by{
         id,name,crm
       },
-      productTransaction{
-        id
-      }
       regress{
         id,
         type,
