@@ -63,7 +63,9 @@ export default {
       sectorName: undefined,
       normal: 0,
       priority: 0,
-      //doctors: undefined,
+      new: undefined,
+      old: undefined,
+      //gffdgdf
       doctorsListDialog: {
         active: false,
         search: "",
@@ -113,7 +115,7 @@ export default {
       });
     },
     doctorsLoaded() {
-      return this.$store.getters.doctorsLoaded;
+      return true;
     },
 /*    sectorName() {
       return this.$route.params["sector_name"];
@@ -147,25 +149,6 @@ export default {
         console.log('reativo:', this.sector)
       },
     },
-/*    LoadTicketsOfSector: {
-      query: require("@/graphql/sectors/LoadTcketsOfSector.gql"),
-      variables () {
-        return {
-          name: this.sectorName,
-        }
-      },
-      update(data){
-        let sector = Object.assign(data.Sector[0])
-        let n = sector.sector_has_tickets.filter(a => {
-          return a.type === 'normal';
-        });
-        this.normal = n.length
-        let p = sector.sector_has_tickets.filter(a => {
-          return a.type === 'priority';
-        });
-        this.priority = p.length
-      }
-    },*/
   },
   methods: {
     async initialInfo() {
@@ -283,32 +266,51 @@ export default {
       await this.$store.dispatch("updateGeneralInfo", this.ticketInfo);
     },
     async callNextTicket(room, preferential) {
-      // console.log(room.tickets);
-      // console.log(preferential);
       this.loading = true;
-
-      let ticketIndex = room.tickets
-        ? room.tickets.findIndex(
-            (ticket) =>
-              !ticket.called_at &&
-              (preferential ? ticket.preferential : !ticket.preferential)
-          )
-        : -1;
-      if (ticketIndex < 0) {
+      console.log('r',room.room_has_tickets);
+      console.log('bool',preferential);
+      if(room.room_has_tickets.length > 0){
+        console.log('chamar ticket do sala')
+      } else {
+        console.log('chamar ticket do setor')
         await this.callSectorTicket(room, preferential);
-        this.loading = false;
-        return;
       }
-
-      room.tickets[ticketIndex].called_at = moment().format(
-        "YYYY-MM-DD HH:mm:ss"
-      );
-      const sector = this.sector;
-      await this.$store.dispatch("updateSectorRoom", { sector, room });
+      //update in room e update ticket
+      //const sector = this.sector;
+      //await this.$store.dispatch("updateSectorRoom", { sector, room });
       this.loading = false;
     },
     async callSectorTicket(room, preferential) {
-      let ticketIndex = this.sector.tickets
+      this.$apollo.queries.LoadRoomsOfSector.refresh();
+      if(preferential === true) {
+        let priority = this.sector.sector_has_tickets.filter(a => {
+          return a.type === 'priority';
+        });
+        priority.reverse()
+        for(let p in priority){
+          console.log('data',priority[p].created_at.formatted)
+          if(!priority[p].created_at.formatted){
+            console.log('update ticket');
+            await this.$apollo.mutate({
+              mutation: require('@/graphql/tickets/UpdateTicket.gql'),
+              variables: {
+                name: priority.id,
+                called_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
+              },
+            });
+          }
+        }
+      } else {
+        let normal = this.sector.sector_has_tickets.filter(a => {
+          return a.type === 'normal';
+        });
+        normal.reverse()
+        for(let n in normal){
+          console.log('data',normal[n].created_at.formatted)
+        }
+      }
+      this.$apollo.queries.LoadRoomsOfSector.refresh();
+/*      let ticketIndex = this.sector.tickets
         ? this.sector.tickets.findIndex((ticket) => {
             return (
               !ticket.called_at &&
@@ -333,7 +335,7 @@ export default {
       const sector = this.sector;
       await this.$store.dispatch("updateSectorRoom", { sector, room });
       this.sector.tickets.splice(ticketIndex, 1);
-      await this.$store.dispatch("updateSector", this.sector);
+      await this.$store.dispatch("updateSector", this.sector);*/
     },
     favoriteRoom(room) {
       this.$store.commit("setFavoriteRoom", room);

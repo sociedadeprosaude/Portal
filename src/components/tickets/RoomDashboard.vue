@@ -103,10 +103,11 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-tooltip top >
-                <template v-slot:activator="{ on }">
+              <v-tooltip top v-if="normal > 0">
+                <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                    v-on="on"
+                      v-bind="attrs"
+                      v-on="on"
                     :disabled="loading"
                     @click="callNextTicket(room,false)"
                     text
@@ -119,10 +120,11 @@
                 </template>
                 <span>Chamar próxima senha</span>
               </v-tooltip>
-              <v-tooltip top >
-                <template v-slot:activator="{ on }">
+              <v-tooltip top v-if="priority > 0">
+                <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                    v-on="on"
+                      v-bind="attrs"
+                      v-on="on"
                     :disabled="loading"
                     @click="callNextTicket(room,true)"
                     text
@@ -135,7 +137,7 @@
                 </template>
                 <span>Chamar próxima senha preferencial</span>
               </v-tooltip>
-              <v-tooltip top v-if="doctorsLoaded">
+              <!--<v-tooltip top v-if="doctorsLoaded">
                 <template v-slot:activator="{ on }">
                   <v-btn
                     v-on="on"
@@ -151,7 +153,7 @@
                 </template>
                 <span>Selecionar médico</span>
               </v-tooltip>
-              <v-progress-circular indeterminate class="primary--text" v-else></v-progress-circular>
+              <v-progress-circular indeterminate class="primary&#45;&#45;text" v-else></v-progress-circular>
               <v-tooltip top v-if="doctorsLoaded">
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -215,7 +217,7 @@
                   </v-btn>
                 </template>
                 <span>Visualizador único</span>
-              </v-tooltip>
+              </v-tooltip>-->
             </v-col>
           </v-row>
           <v-row>
@@ -228,8 +230,8 @@
                   <span style="font-size: 0.8em">Ultima senha:</span>
                   <br />
                   <span
-                    v-if="room.tickets && room.tickets.length != 0"
-                  >{{room.tickets[room.tickets.length - 1].number}}</span>
+                    v-if="room.room_has_tickets && room.room_has_tickets.length > 0"
+                  >{{room.room_has_tickets.length}}</span>
                   <span v-else>*</span>
                 </v-col>
                 <v-divider vertical></v-divider>

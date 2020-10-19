@@ -4,12 +4,12 @@ query($id:ID!){
       has_sectors{
         id,name
         sector_has_tickets{
-            id,name,type
+            id,name,type,created_at{formatted},called_at{formatted},
           }
         has_rooms{
           name,id
           room_has_tickets{
-            id,name,type
+            id,name,type,created_at{formatted},called_at{formatted},
           }
         }
       },
