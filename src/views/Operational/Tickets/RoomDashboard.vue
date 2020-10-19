@@ -218,6 +218,7 @@ export default {
       await this.$store.dispatch("updateSectorRoom", { sector, room });
     },
     async generateSectorTicket(preferential) {
+      this.loading = true;
       this.$apollo.queries.LoadRoomsOfSector.refresh();
       let count = 0;
       if(this.sector.sector_has_tickets.length > 0){ count = this.sector.sector_has_tickets.length + 1 }
@@ -258,6 +259,7 @@ export default {
         });
       }
       this.$apollo.queries.LoadRoomsOfSector.refresh();
+      this.loading = false;
     },
     async upgradeTicketNumber() {
       let ticketInfo = this.ticketInfo;
@@ -287,10 +289,9 @@ export default {
           return a.type === 'priority';
         });
         prioritys.reverse()
-        console.log('P:',prioritys)
         let priority = []
         for(let p in prioritys) { if(!prioritys[p].called_at.formatted) { priority.push(prioritys[p]) }}
-
+        if(priority[0] !== undefined){
         await this.$apollo.mutate({
           mutation: require('@/graphql/tickets/UpdateTicket.gql'),
           variables: {
@@ -316,16 +317,15 @@ export default {
               current_ticket: priority[0].name,
             },
           });
-        }
+        } } else { alert("todas as senhas 'preferencial' foram chamadas, crie novas senhas preferenciais!") }
       } else {
         let normals = this.sector.sector_has_tickets.filter(a => {
           return a.type === 'normal';
         });
         normals.reverse()
-        console.log('N:',normals)
         let normal = []
         for(let n in normals){ if(!normals[n].called_at.formatted){ normal.push(normals[n]) }}
-        console.log(normal)
+        if(normal[0] !== undefined){
           await this.$apollo.mutate({
             mutation: require('@/graphql/tickets/UpdateTicket.gql'),
             variables: {
@@ -352,6 +352,7 @@ export default {
               },
             });
           }
+        } else { alert("todas as senhas 'normal' foram chamadas, crie novas senhas normais!") }
       }
       this.$apollo.queries.LoadRoomsOfSector.refresh();
     },

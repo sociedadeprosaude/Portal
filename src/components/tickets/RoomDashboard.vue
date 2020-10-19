@@ -9,6 +9,7 @@
               v-on="on"
               class="primary"
               rounded
+              :disabled="loading"
               @click="()=>generateSectorTicket(false)"
             >
               Proxima senha:
@@ -27,6 +28,7 @@
               v-on="on"
               class="primary"
               rounded
+              :disabled="loading"
               @click="()=>generateSectorTicket(true)"
             >
               Proxima senha preferencial:
