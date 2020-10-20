@@ -35,9 +35,9 @@
                         </v-flex>
                         <v-divider vertical class="mx-4 hidden-xs-only"/>
                         <v-flex xs12 md2 class="text-center">
-                          <span class="font-weight-bold">{{bill.date_to_pay.formatted | dateFilter}}</span>
+                          <span class="font-weight-bold">{{bill.date_to_pay | dateFilter}}</span>
                           <v-icon class="warning--text align-start ml-2"
-                                  v-if="distanceToToday(bill.date_to_pay.formatted) < 3"
+                                  v-if="distanceToToday(bill.date_to_pay) < 3"
                           >warning</v-icon>
                         </v-flex>
                         <v-divider vertical class="mx-4 hidden-xs-only"/>
@@ -202,7 +202,7 @@ export default {
     outtakesByDate(outtakes) {
       let res = {};
       for (let outtake in outtakes) {
-        let targetDate = outtakes[outtake].date_to_pay.formatted.split(" ")[0];
+        let targetDate = outtakes[outtake].date_to_pay.split(" ")[0];
         if (!res[targetDate]) {
           res[targetDate] = [];
         }

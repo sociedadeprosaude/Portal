@@ -284,6 +284,30 @@
                 })
             },
 
+            CreateChargee(data){
+                this.$apollo.mutate({
+                    mutation: require ('@/graphql/charge/CreateCharge.gql'),
+                    variables:{
+                        date: {formatted: moment().format('YYYY-MM-DDTHH:mm:ss')},
+                        cost: data.CostProductDoctor[0].cost,
+                        type: 'doctor'
+                    }
+                }).then((dataa)=> {
+                    this.RelationsCharge(dataa)
+                })
+            },
+            RelationsCharge(data){
+                this.$apollo.mutate({
+                    mutation: require ('@/graphql/charge/RelationsCharge.gql'),
+                    variables:{
+                        idCharge: data.data.CreateCharge.id,
+                        idProductTransaction: this.ConsultationSelect.productTransaction.id
+                    }
+                }).then((data) => {
+                    this.documentDialog = true
+                })
+            },
+
         },//TODO Verificar consultationHour
 
         /* watch: {

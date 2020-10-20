@@ -4,26 +4,29 @@
       <br />
       <v-tooltip
         bottom
-        v-if="index.canceled_periods && index.canceled_periods.length > 0 && todayInPeriods(index.canceled_periods)"
+        v-if="index.cancelations_schedules && index.cancelations_schedules.length > 0 && index.cancelations_schedules[0].final_date >= today && index.cancelations_schedules[0].start_date <= today"
         color="primary"
       >
         <template v-slot:activator="{ on }">
           <v-card v-on="on" class="white--text pa-1 my-n2" color="grey">
-            {{index.doctor.name}} - {{index.product.name}} - {{index.clinic.name}}
+            {{index.doctor.name}} - {{index.specialty ? index.specialty.name : index.exam_type.name}} - {{index.clinic.name}}
             <br />
             <br />
             <v-btn @click="openDialoaUpdateDay(index)" x-small fab>
               <v-icon>edit</v-icon>
             </v-btn>
-            <!-- <v-btn class="ml-2" x-small fab @click="openDialogDelete(index)">
+            <v-btn class="ml-2" x-small fab @click="openDialogDelete(index)">
               <v-icon>delete_outline</v-icon>
-            </v-btn> -->
+            </v-btn>
           </v-card>
         </template>
         <span>
-          <strong>Períodos de cancelamento:</strong>
-          <div v-for="(period,index) in index.canceled_periods" :key="index">
-            <strong>{{period.start_date.formatted | dateFilter}} a {{period.final_date.formatted | dateFilter}}</strong>
+          <strong>Período de cancelamento: {{index.cancelations_schedules[0].start_date | dateFilter}} a {{index.cancelations_schedules[0].final_date | dateFilter}}</strong>
+          <div v-if="index.cancelations_schedules.length == 2">
+            <strong>Período de cancelamento: {{index.cancelations_schedules[1].start_date | dateFilter}} a {{index.cancelations_schedules[1].final_date | dateFilter}}</strong>
+          </div>
+          <div v-if="index.cancelations_schedules.length == 3">
+            <strong>Período de cancelamento: {{index.cancelations_schedules[2].start_date | dateFilter}} a {{index.cancelations_schedules[2].final_date | dateFilter}}</strong>
           </div>
         </span>
       </v-tooltip>
@@ -32,15 +35,15 @@
         class="white--text pa-1 my-n2"
         :color="i === 0 ? 'blue' : i === 1 ? 'green' : i === 2 ? 'red' : i === 3 ? 'purple' : i === 4 ? 'orange' : 'pink'"
       >
-        {{index.doctor.name}} - {{index.product.name}} - {{index.clinic.name}}
+        {{index.doctor.name}} - {{index.specialty ? index.specialty.name : index.exam_type.name}} - {{index.clinic.name}}
         <br />
         <br />
         <v-btn @click="openDialoaUpdateDay(index)" x-small fab>
           <v-icon>edit</v-icon>
         </v-btn>
-        <!-- <v-btn class="ml-2" x-small fab @click="openDialogDelete(index)">
+        <v-btn class="ml-2" x-small fab @click="openDialogDelete(index)">
           <v-icon>delete_outline</v-icon>
-        </v-btn> -->
+        </v-btn>
       </v-card>
     </strong>
     <br />
@@ -70,7 +73,6 @@
             <v-row>
               <v-col cols="12">
                 <v-text-field
-                  readonly
                   type="time"
                   min="05:00"
                   max="18:00"
@@ -110,7 +112,6 @@
 </template>
 
 <script>
-import moment from 'moment';
 export default {
   props: ["schedules","day"],
 
@@ -128,8 +129,6 @@ export default {
       this.scheduleSelected = schedule;
       this.editDay = schedule.days[this.day];
       this.dialogUpdate = true;
-
-      console.log
     },
     openDialogDelete(schedule) {
       this.dialogRemove = true;
@@ -139,31 +138,21 @@ export default {
       this.loading = true
       this.$emit('removeDay',{
         scheduleSelected:this.scheduleSelected,
-        dayScheduleSelected:this.scheduleSelected.days[this.day].id
+        dayScheduleSelected:this.day
       })
       this.loading = false
       this.dialogRemove = false
     },
-    async updateDay(){
+    updateDay(){
       this.loading = true
       this.$emit("updateDay",{
+        scheduleSelected:this.scheduleSelected,
+        dayScheduleSelected:this.day,
         editDay:this.editDay
       })
-
       this.editDay = {}
       this.loading = false
       this.dialogUpdate = false;
-    },
-    todayInPeriods(periods){
-      const today  = moment();
-      for (const key in periods) {
-        const start_date = moment(periods[key].start_date.formatted)
-        const final_date = moment(periods[key].final_date.formatted)
-        if(today.isSameOrAfter(start_date) && today.isSameOrBefore(final_date))
-          return true;
-      }
-
-      return false;
     }
   }
 };
