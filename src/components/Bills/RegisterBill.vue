@@ -248,8 +248,8 @@ export default {
         payment_method: this.paymentMethod,
         description: this.description,
         value: this.value,
-        date_to_pay: moment(this.date_to_pay).format('YYYY-MM-DDTHH:mm'),
-        date:moment().format('YYYY-MM-DDTHH:mm'),
+        date_to_pay: {formatted: moment(this.date_to_pay).format('YYYY-MM-DDTHH:mm')},
+        date: {formatted: moment().format('YYYY-MM-DDTHH:mm')},
         colaborator: this.user,
         unit: this.unit.name !== this.other ? this.unit : null,
         recurrent: this.recurrent ? true : false

@@ -1,5 +1,0 @@
-query($idDoctor:ID!, $idProduct:ID!) {
-      CostProductDoctor(filter:{with_doctor:{id:$idDoctor},with_product:{id:$idProduct}}){
-       id,cost
-    }
-}

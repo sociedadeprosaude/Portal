@@ -11,12 +11,12 @@ mutation (
     CreateCharge(
      value:$value,
      payment_methods:$payment_methods,
-     date:{formatted: $date},
+     date:$date,
      description:$description,
-     date_to_pay:{formatted: $date_to_pay},
+     date_to_pay:$date_to_pay,
      recorrent: $recurrent,
      type: $type
      ){
-        id, value, payment_methods, date{formatted}
+        id, value, payment_methods, date
     }
 }

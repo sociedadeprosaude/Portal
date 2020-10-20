@@ -49,14 +49,14 @@
                                         <v-flex xs5 md2>
                                             <v-card sm3 class="mx-4 elevation-0 transparent">
                                                 <span class="font-weight-bold white--text">
-                                                      Custo : {{CostExamsDoctor(doctor)}}
+                                                    Custo : {{CostExamsDoctor(doctor)}}
                                                 </span>
                                             </v-card>
                                         </v-flex>
                                         <v-flex xs7 md2>
                                             <v-card sm3 class="mx-4 elevation-0 transparent">
                                                 <span  class="font-weight-bold white--text">
-                                                            Nº de exames : {{doctor.charges ? doctor.charges.length : 0}}
+                                                            Nº de exames : {{QuantExamsDoctor(doctor)}}
                                                 </span>
                                             </v-card>
                                         </v-flex>
@@ -73,6 +73,15 @@
                                         <v-flex xs12 class="mb-2 hidden-md-and-up">
                                             <v-spacer></v-spacer>
                                         </v-flex>
+                                        <v-flex md3>
+                                            <v-card sm3 class="mx-4 elevation-0 transparent">
+                                                <v-btn @click="ChangeDateDialog(doctor)"  outlined dark class=" elevation-0">
+                                                    <span class="font-weight-bold white--text">
+                                                        Alterar Periodo
+                                                    </span>
+                                                </v-btn>
+                                            </v-card>
+                                        </v-flex>
                                     </v-layout>
                                 </v-flex>
                                 <v-flex xs12 class="mb-4 hidden-md-and-up">
@@ -85,7 +94,7 @@
                                         </v-flex>
                                         <v-flex xs6 class="text-right">
                                             <v-card class="mx-4 elevation-0 transparent">
-                                                <v-btn :loading="loadingPayment"  @click="payDoctor(doctor)" outlined dark class="elevation-0">
+                                                <v-btn @click="payDoctor(doctor)" outlined dark class="elevation-0">
                                                     <span class="font-weight-bold white--text">
                                                         Pagar
                                                     </span>
@@ -101,24 +110,40 @@
                                     <DoctorOuttakes @close-dialog="intakesObserv = false" :doctor="doctorSelected" :outtakes="outtakesSelected"></DoctorOuttakes>
                                 </v-card>
                             </v-card>
-                              <v-flex xs12 v-if="data">
-                                <v-card class="mx-4 elevation-0 transparent">
-                                  <v-btn @click="payAllDoctor(data ? data.Doctor : [])"  outlined class="elevation-0">
+                            </template>
+                          </ApolloQuery>
+                        </v-flex>
+                        <v-flex xs12>
+                            <v-card class="mx-4 elevation-0 transparent">
+                                <v-btn @click="payAllDoctor()"  outlined class="elevation-0">
                                  <span class="font-weight-bold">
                                      Pagar Todos
                                  </span>
-                                  </v-btn>
-                                </v-card>
-                              </v-flex>
-                            <v-btn elevation="0" color="white" v-if="!data" :loading="true"></v-btn>
-                            </template>
-                          </ApolloQuery>
+                                </v-btn>
+                            </v-card>
                         </v-flex>
                     </v-layout>
                 </v-card>
             </v-flex>
         </v-layout>
-
+        <v-dialog v-model="change" max-width="300px">
+            <v-card>
+                <v-card-title>Período de Pagamento</v-card-title>
+                <v-flex class="mt-5 ml-3">
+                    <v-select
+                            v-model="period"
+                            :items="days"
+                            label="período"
+                    >
+                    </v-select>
+                </v-flex>
+                <v-flex>
+                    <v-btn @click="ChangeDate()">
+                        Confirmar
+                    </v-btn>
+                </v-flex>
+            </v-card>
+        </v-dialog>
         <v-dialog v-model="dialogReceipt">
             <ReceiptOuttakesDoctor @close="CloseReceipt()"  :doctorSelected="doctorSelected" :outtakes="outtakesSelected"></ReceiptOuttakesDoctor>
         </v-dialog>
@@ -129,9 +154,7 @@
     import moment from "moment/moment";
     import DoctorOuttakes from "../../components/DoctorOuttakes"
     import ReceiptOuttakesDoctor from "../../components/OuttakesDoctor/ReceiptOuttakesDoctor"
-    import {uuid} from "vue-uuid";
-    import MutationBuilder from "@/classes/MutationBuilder";
-    import gql from "graphql-tag";
+
 
 
     export default {
@@ -142,7 +165,6 @@
         data() {
             return {
                 loading: true,
-                loadingPayment:false,
                 value: undefined,
                 change: false,
                 dialogReceipt:false,
@@ -169,26 +191,35 @@
         computed: {
             units() {
                 return this.$store.getters.units
+            },
+            outtakes(){
+                return this.$store.getters.outtakeAllDoctors
             }
         },
         methods: {
-          mostrar(data){
-            console.log('data: ', data)
-          },
             OpenReceipt(item,doctor){
-                this.outtakesSelected= doctor.charges
+                this.outtakesSelected= this.outtakes.filter(outtake => outtake.doctor.crm === doctor.crm)
                 this.doctorSelected = doctor
                 if(item.title === 'Gerar Boleto'){
                     this.dialogReceipt= !this.dialogReceipt
                 }
             },
-             CostExamsDoctor(doctor){
-                let cost = 0;
-                for(let i in doctor.charges){
-                  cost += parseFloat(doctor.charges[i].value)
-                }
-                return cost ? cost : 0
+            QuantExamsDoctor(doctor){
+                let outtakes = this.outtakes.filter(outtake => outtake.doctor.crm === doctor.crm)
+                let cont =0;
+                outtakes.filter(function (element){
+                    cont += 1
+                })
+                return cont
             },
+            /* CostExamsDoctor(doctor){
+                let outtakes = this.outtakes.filter(outtake => outtake.doctor.crm === doctor.crm)
+                let cost =0;
+                outtakes.filter(function (element){
+                    cost += element.consultations.price
+                })
+                return cost
+            }, */
             CloseReceipt(){
                 this.dialogReceipt= !this.dialogReceipt
             },
@@ -204,6 +235,7 @@
                 this.change = !this.change;
                 await this.$store.dispatch('AddPaymentDayDoctor', {
                     doctor: this.doctorSelected,
+                    period: this.period
                 });
                 this.getInitialInfo()
             },
@@ -221,94 +253,18 @@
             },
 
             async checkReceipts(doctor){
-                this.outtakesSelected= doctor.charges
+                this.outtakesSelected= this.outtakes.filter(outtake => outtake.doctor.crm === doctor.crm)
                 this.doctorSelected = doctor
                 this.intakesObserv = !this.intakesObserv
 
             },
             async payDoctor(doctor){
-                //await this.$store.dispatch('PayDoctor', doctor)
-                //this.getInitialInfo()
-              this.loadingPayment= true
-              let transactionId = uuid.v4()
-              let mutationBuilder = new MutationBuilder()
-              mutationBuilder.addMutation(
-                  `CreateTransaction(
-                    date:{formatted: "${moment().format("YYYY-MM-DDTHH:mm:ss")}"},
-                    id:"${transactionId}",
-                    value:${-parseFloat(this.CostExamsDoctor(doctor))},
-                  ){
-                  id,date{formatted},value,
-                  }`
-              )
-              mutationBuilder.addMutation(`
-                  AddDoctorPayments(
-                 from:{
-                      id:"${doctor.id}"
-                    },
-
-                    to:{
-                      id:"${transactionId}"
-                    }
-                  ){
-                     from{id},
-                      to{id}
-                  }
-              `)
-              for (let charge in doctor.charges) {
-                mutationBuilder.addMutation(`
-                  DeleteCharge(id:"${doctor.charges[charge].id}"){
-                  id
-                  }
-                `)
-              }
-              let finalString = mutationBuilder.generateMutationRequest()
-              await this.$apollo.mutate({
-                mutation: gql`${finalString}`,
-              })
-              this.loadingPayment= false
-              console.log('doctor: ', doctor)
+                await this.$store.dispatch('PayDoctor', doctor)
+                this.getInitialInfo()
             },
-            async payAllDoctor(doctors){
-              this.loadingPayment= true
-              let mutationBuilder = new MutationBuilder()
-              for(let i in doctors){
-                let transactionId = uuid.v4()
-                mutationBuilder.addMutation(
-                    `CreateTransaction(
-                    date:{formatted: "${moment().format("YYYY-MM-DDTHH:mm:ss")}"},
-                    id:"${transactionId}",
-                    value:${-parseFloat(this.CostExamsDoctor(doctors[i]))},
-                  ){
-                  id,date{formatted},value,
-                  }`
-                )
-                mutationBuilder.addMutation(`
-                  AddDoctorPayments(
-                 from:{
-                      id:"${doctors[i].id}"
-                    },
-
-                    to:{
-                      id:"${transactionId}"
-                    }
-                  ){
-                     from{id},
-                      to{id}
-                  }
-              `)
-                for (let charge in doctors[i].charges) {
-                  mutationBuilder.addMutation(`
-                  DeleteCharge(id:"${doctors[i].charges[charge].id}"){
-                  id
-                  }
-                `)
-                }
-              }
-              let finalString = mutationBuilder.generateMutationRequest()
-              await this.$apollo.mutate({
-                mutation: gql`${finalString}`,
-              })
+            async payAllDoctor(){
+                await this.$store.dispatch('PayAllDoctor', this.doctors)
+                this.getInitialInfo()
             },
             date(day,period){
                 if(!period){

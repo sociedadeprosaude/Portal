@@ -551,7 +551,6 @@
     import PatientCard from "./PatientCard";
     import PatientTag from "./PatientTag";
     import axios from 'axios';
-    import {uuid} from 'vue-uuid'
 
     let moment = require("moment");
     export default {
