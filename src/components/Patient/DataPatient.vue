@@ -859,7 +859,6 @@
             async selectUser(user) {
                 if (user) {
                     this.fillFormUser(user)
-                    this.creacteAttendance(user);
                 } else {
                     this.cpf = undefined;
                     this.name = undefined;

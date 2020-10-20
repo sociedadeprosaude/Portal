@@ -144,7 +144,7 @@
             <v-btn outlined color="primary" @click="SelectNewPatient()">Novo</v-btn>
           </v-flex>
           <v-flex xs4 class="text-center">
-            <v-btn :disabled="cartItems.length === 0" outlined
+            <v-btn :disabled="cartItems.length === 0" outlined :loading="loadingImp"
                    color="primary" @click="imprimir()">Imprimir
             </v-btn>
           </v-flex>
@@ -212,6 +212,7 @@ export default {
       xDown: undefined,
       yDown: undefined,
       parcel: 1,
+      loadingImp:false,
       parcels: ["1", "2", "3", "4", "5"],
       paymentLoading: false,
       quantParcelas: ["1", "2", "3", "4", "5"],
@@ -402,6 +403,7 @@ export default {
       this.$store.commit('removeShoppingCartItem', item)
     },
     async imprimir() {
+      this.loadingImp= true
       this.saveBudget(this.generateBudget());
       this.budgetToPrint = this.selectedBudget;
       console.log('budget: ', this.selectedBudget)
@@ -477,8 +479,51 @@ export default {
           to{id}
         }` ) : ''
       }
+      mutationBuilder.addMutation(`
+                AddBudgetWith_user(
+        from:{
+            id:"${budgetId}"
+        },
+        to:{
+            id:"${this.selectedBudget.user.id}"
+        }
+    ){
+        from{id},
+        to{id}
+    }`)
+      mutationBuilder.addMutation(`
+                AddBudgetWith_unit(
+        from:{
+            id:"${budgetId}"
+        },
+        to:{
+            id:"${this.selectedBudget.unit.id}"
+        }
+    ){
+        from{id},
+        to{id}
+    }`)
+      mutationBuilder.addMutation(`
+                AddBudgetColaborator(
+        from:{
+            id:"${budgetId}"
+        },
+        to:{
+            id:"${this.selectedBudget.colaborator.id}"
+        }
+    ){
+        from{id},
+        to{id}
+    }`)
 
-      //this.budgetToPrintDialog = true
+      let finalString = mutationBuilder.generateMutationRequest()
+
+      await this.$apollo.mutate({
+        mutation: gql`${finalString}`,
+      })
+      console.log('budgetId: ', budgetId)
+      this.loadingImp= false
+      this.budgetToPrintDialog = true
     },
 
     generateBudget() {
