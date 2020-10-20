@@ -219,6 +219,7 @@
                     if(this.product || this.clinic || this.date){
                         this.consultations = []
                         this.skipConsultations = false
+                        console.log(this.filterByExam)
                         if(this.filterByExam)
                             this.$apollo.queries.loadConsultations.refresh()
                         else
@@ -357,7 +358,8 @@
                     }
                 },
                 update(data) {
-                    this.consultations = data.Consultation.filter(consultation => consultation.product.with_product_schedulable.id === this.product.id)
+                    console.log('LoadConsultationsExms', this.product)
+                    this.consultations = data.Consultation//.filter(consultation => consultation.product.with_product_schedulable && consultation.product.with_product_schedulable.id === "562196df-2bcb-4b72-a9f8-7aa560d20122")
                     this.loadingConsultations = false
                     this.skipConsultations = true
                 },
