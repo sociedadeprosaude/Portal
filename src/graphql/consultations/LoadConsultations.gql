@@ -9,7 +9,7 @@ query($idClinic:ID, $idProduct:ID, $date:String){
         id,name,logo
       },
       product:has_product{
-        id,name,type,price
+        id,name,type,price,with_product_schedulable{id,name}
       },
       doctor:attended_by{
         id,name,crm
