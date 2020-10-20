@@ -3,27 +3,29 @@
     <v-container fill-height fluid class="one white--text">
       <v-row class="ml-2 indigo--text text--darken-4 font-weight-bold">
         <p style="font-size: 2em;">Últimas senhas</p>
+        <!--{{sector.has_rooms.length}}-->
       </v-row>
-
       <v-row justify="center">
         <v-col
           class="py-2 px-0"
           cols="12"
-          v-for="(ticket, index) in lastTicketsCalled"
+          v-for="(ticket, index) in sector.has_rooms.slice(1,5)"
           :key="index"
         >
           <v-card elevation="0" :color="index%2 != 0? 'grey lighten-2':'grey lighten-4'">
             <v-row>
               <v-col align-self="center" class="font-weight-bold">
                 <p
+                    v-if="ticket.current_ticket"
                   style="font-size: 2em;"
-                >senha {{ticket.preferential?'preferencial':''}} {{ticket.number}}</p>
+                >Senha {{type(ticket.current_ticket)}} {{ticket.current_ticket}}</p>
+                <p v-else style="font-size: 5em;">Senha *</p>
               </v-col>
               <v-col
                 class="font-weight-bold"
-                :style="[ticket.preferential ?'color: rgb(35, 151, 118);':'color:#1A237E']"
+                :style="[type(ticket.current_ticket) === 'PRIORITY' ?'color: rgb(35, 151, 118);':'color:#1A237E']"
               >
-                <p style="font-size: 4em;">{{ticket.roomName}}</p>
+                <p style="font-size: 4em;">{{ticket.name}}</p>
               </v-col>
             </v-row>
           </v-card>
@@ -34,42 +36,37 @@
           <img :src="constants.ASSETS.logo" height="124px" />
         </v-card>
       </v-row>
-    </v-container>
-    <v-container fluid :class="[lastTicketCalled.preferential?'three':'two', 'white--text']">
-      <v-row class="pa-0 ma-0 half">
+    </v-container><!--:class="[lastTicketCalled.preferential?'three':'two', 'white&#45;&#45;text']"-->
+    <v-container fluid class="white--text">
+      <div v-for="(ticket, index) in sector.has_rooms.slice(0,1)"
+           :key="index">
+      <v-row class="pa-0 ma-0 half primary">
         <v-col align-self="center">
-          <v-row
-            v-if="lastTicketCalled"
-            justify="center"
-            class="display-2"
-          >{{removeNumbers(lastTicketCalled.roomName)}}</v-row>
-
           <v-row justify="center">
             <v-col class="ma-0 pa-0">
               <p
-                v-if="lastTicketCalled"
                 style="font-size: 6em;"
-              >{{onlyNumbers(lastTicketCalled.roomName)}}</p>
+              >{{ticket.name}}</p>
             </v-col>
           </v-row>
         </v-col>
       </v-row>
-      <v-divider class="white"></v-divider>
-      <v-row class="pa-0 ma-0 half">
+      <!--<v-divider class="white"></v-divider>-->
+      <v-row class="pa-0 ma-0 half primary">
         <v-col align-self="center">
           <v-row
-            justify="center"
-            class="display-1"
-          >Senha {{lastTicketCalled.preferential?'preferencial':''}} atual</v-row>
-
+              justify="center"
+              class="display-2"
+          >Senha {{type(ticket.current_ticket)}} <!--atual--></v-row>
           <v-row justify="center">
             <v-col class="ma-0 pa-0">
-              <p v-if="lastTicketCalled" style="font-size: 7em;">{{lastTicketCalled.number}}</p>
+              <p v-if="ticket.current_ticket" style="font-size: 7em;">{{ticket.current_ticket}}</p>
               <p v-else style="font-size: 5em;">*</p>
             </v-col>
           </v-row>
         </v-col>
       </v-row>
+      </div>
     </v-container>
   </v-card>
 </template>
@@ -80,6 +77,21 @@ import constants from "../../utils/constants";
 export default {
   name: "MultipleVisualizer",
   props: ["sector"],
+  apollo: {
+    LoadRoomsOfSector: {
+      query: require("@/graphql/rooms/LoadRoomsOfSector.gql"),
+      variables () {
+        return {
+          name: this.sector.name,
+        }
+      },
+      update(data){
+        this.sector = Object.assign(data.Sector[0])
+        //console.log('reativo:', this.sector)
+      },
+      pollInterval: 300, // ms
+    },
+  },
   mounted() {
     this.clockInterval = setInterval(() => {
       this.$nextTick(() => {
@@ -181,6 +193,29 @@ export default {
     },
   },
   methods: {
+    type(name){
+      let tikets = this.sector.sector_has_tickets
+      for (let t in tikets){
+        if(tikets[t].name === name){
+          return tikets[t].type.toUpperCase()
+        }
+      }
+    },
+/*    last(){
+      console.log( this.sector.sector_has_tickets)
+      let tikets = this.sector.sector_has_tickets
+      let calleds = []
+      let not_calleds = []
+      for (let t in tikets){
+        if(!tikets[t].called_at.formatted){
+          this.not_calleds.push(tikets[t])
+        } else{
+          this.calleds.push(tikets[t])
+        }
+      }
+      console.log('calleds:', calleds)
+      console.log('nots:', not_calleds)
+    },*/
     playTicketSound() {
       let sound = new Audio(
         "https://firebasestorage.googleapis.com/v0/b/prosaude-36f66.appspot.com/o/assets%2FCollected%20Coin%20A1.mp3?alt=media&token=57509b64-12aa-4946-9814-42995ac8ab41"
