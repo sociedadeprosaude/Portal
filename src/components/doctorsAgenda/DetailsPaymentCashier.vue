@@ -173,7 +173,7 @@
       </v-flex>
     </v-layout>
     <v-dialog v-model="budgetToPrintDialog" v-if="budgetToPrint">
-      <budget-to-print @close="budgetToPrintDialog = false" :budget="budgetToPrint"/>
+      <budget-to-print @close="CloseBudgetToPrint()" :budget="budgetToPrint"/>
     </v-dialog>
     <v-dialog
         transition="dialog-bottom-transition"
@@ -302,6 +302,17 @@ export default {
       }
       return total
     },
+    discountBudget(){
+      if(this.$store.getters.getDiscountBudget !== 0){
+        this.moneyDiscount = this.$store.getters.getDiscountBudget
+        this.percentageDiscount = ((100 * this.moneyDiscount)/this.total)
+      }
+      return 0
+    },
+    idBudget(){
+      let idBudget = this.$store.getters.getIdBudget;
+      return idBudget
+    },
     subTotal() {
       let itens = this.$store.getters.getShoppingCartItems;
       let total = 0;
@@ -346,7 +357,7 @@ export default {
   watch: {
     percentageDiscount: function () {
       this.moneyDiscount = ((this.percentageDiscount * this.subTotal) / 100);
-    },
+      },
   },
   methods: {
     CloseReceipt() {
@@ -357,6 +368,12 @@ export default {
       this.paymentSuccess = true
       this.clearCart()
       this.receiptDialog = false
+    },
+    CloseBudgetToPrint() {
+      this.budgetToPrintDialog = false
+      this.skipPatients = false
+      this.$apollo.queries.loadPatient.refresh()
+
     },
     async searchBudget() {
       this.searchBudgetLoading = true;
@@ -515,7 +532,6 @@ export default {
         from{id},
         to{id}
     }`)
-
       let finalString = mutationBuilder.generateMutationRequest()
 
       await this.$apollo.mutate({
@@ -704,6 +720,22 @@ export default {
           from{id},
           to{id}
         }` ) : ''
+      }
+
+
+      if(this.idBudget !== undefined){
+        mutationBuilder.addMutation(`
+                AddBudgetWith_transaction(
+        from:{
+            id:"${this.idBudget}"
+        },
+        to:{
+            id:"${transactionId}"
+        }
+    ){
+        from{id},
+        to{id}
+    }`)
       }
 
       let finalString = mutationBuilder.generateMutationRequest()
