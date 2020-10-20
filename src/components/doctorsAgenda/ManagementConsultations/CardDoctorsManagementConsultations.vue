@@ -216,8 +216,6 @@
                 handler: function(val) {
                     this.loadingConsultations = true
                     this.product = this.filterByExam ? this.examType : this.specialty
-                    console.log(this.product)
-                    console.log(this.clinic)
                     if(this.product || this.clinic || this.date){
                         this.consultations = []
                         this.skipConsultations = false
@@ -316,7 +314,6 @@
                 this.confirmDeactivate = false
             },
             async selectUser(user) {
-                console.log('user: ', user)
                 if (user) {
                     let intakes = await this.$store.dispatch('getUserIntakes', user);
                     if (intakes) {
@@ -342,7 +339,6 @@
                     }
                 },
                 update(data) {
-                    console.log('kjnkjhkjk',this.filterByExam)
                     this.consultations = data.Consultation
                     this.loadingConsultations = false
                     this.skipConsultations = true
@@ -361,7 +357,6 @@
                     }
                 },
                 update(data) {
-                    console.log('kjnkjjhkjhkjk',this.product)
                     this.consultations = data.Consultation.filter(consultation => consultation.product.with_product_schedulable.id === this.product.id)
                     this.loadingConsultations = false
                     this.skipConsultations = true
