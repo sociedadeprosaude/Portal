@@ -1,0 +1,13 @@
+mutation($idTicket : ID! , $idSector : ID!){
+       AddSectorSector_has_tickets(
+        from:{
+          id:$idSector
+        },
+        to:{
+          id:$idTicket
+        }
+      ){
+      from{id},
+      to{id}
+    },
+}

@@ -1,0 +1,4 @@
+mutation($id: ID!,$called_at: _Neo4jDateTimeInput){
+  UpdateTicket(id: $id, called_at: $called_at)
+  {id}
+}

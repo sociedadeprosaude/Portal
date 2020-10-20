@@ -120,19 +120,18 @@ export default {
     },
     openDialoaUpdateDay(){
         this.dialogUpdate = true;
-        this.newDay=this.dayObj
+        this.newDay={...this.dayObj}
     },
     async updateDay(){
         this.loading = true;
-        console.log(this.newDay)
-        this.$apollo.mutate({
+        /* this.$apollo.mutate({
           mutation: require('@/graphql/schedules/UpdateDaySchedule.gql'),
           variables: {
-              idDay: this.newDay.id,
-              vacancy: Number(this.newDay.vacancy),
-          }
+            idSchedule:this.schedule.id,
+            idDay: this.dayObj.id
+          },
           
-        })
+        }) */
         this.newDay = {}
         this.loading = false
         this.dialogUpdate = false;

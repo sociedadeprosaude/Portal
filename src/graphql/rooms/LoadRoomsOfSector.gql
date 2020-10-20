@@ -1,7 +1,5 @@
-query($id:ID!){
-    Clinic(id:$id){
-    id,name
-      has_sectors{
+query($name: String!){
+      Sector(name: $name){
         id,name
         sector_has_tickets{
             id,name,type,created_at{formatted},called_at{formatted},
@@ -12,6 +10,5 @@ query($id:ID!){
             id,name,type,created_at{formatted},called_at{formatted},
           }
         }
-      },
-    }
+   },
 }

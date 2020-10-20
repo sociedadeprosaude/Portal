@@ -44,26 +44,33 @@ export default {
       lastTicket: null,
       sector: null,
       production: null,
-      //sectors: undefined,
+      //
+      idUnity: undefined,
+      sectors: undefined,
+      //
     };
   },
   mounted() {
     this.initialInfo();
   },
+  apollo: {
+    LoadSectorsOfUnity: {
+      query: require("@/graphql/sectors/LoadSectorsOfUnity.gql"),
+      variables () {
+        // Use vue reactive properties here
+        return {
+          id: this.idUnity,
+        }
+      },
+      update(data){
+        this.sectors = Object.assign(data.Clinic[0].has_sectors)
+        console.log('reativo:', this.sectors)
+      },
+    }
+  },
   methods: {
     async initialInfo() {
-      const clinicID  = this.$store.getters.user.clinic.id
-      const unitys = await this.$apollo.mutate({
-        mutation: require('@/graphql/sectors/LoadSectorsOfUnity.gql'),
-        variables: {id: clinicID},
-      })
-      let unity = unitys.data.Clinic[0]
-      console.log('unity:', unity)
-      //this.sectors = unity.has_sectors
-      const generalInfo = await this.$store.dispatch("getTicketsGeneralInfo");
-      this.$store.dispatch("listenTicketsSectors");
-
-      this.lastTicket = generalInfo.ticket_number;
+      this.idUnity  = this.$store.getters.user.clinic.id
     },
 
     async updateLastTicket(number) {
@@ -84,19 +91,84 @@ export default {
       }
       if (!name || name.lenght === 0) return;
       this.creation.creating = true;
-      await this.$store.dispatch("createTicketsSector", name);
+      const dataSector = await this.$apollo.mutate({
+        mutation: require('@/graphql/sectors/CreateSector.gql'),
+        variables: {
+          name: name.toUpperCase(),
+        },
+      });
+      const idSector = dataSector.data.CreateSector.id
+      await this.$apollo.mutate({
+        mutation: require('@/graphql/sectors/AddRelationsSectorUnity.gql'),
+        variables: {
+          idUnity: this.idUnity,
+          idSector: idSector,
+        },
+      });
+      this.$apollo.queries.LoadSectorsOfUnity.refresh();
       this.resetCreation();
     },
     async deleteSector(sector) {
+      console.log('deleting:', sector)
       this.creation.choosed = sector;
       if (!this.creation.deletingDialog) {
         this.creation.deletingDialog = true;
         return;
       }
       this.creation.deleting = true;
-      await this.$store.dispatch("deleteSector", sector);
+      let rooms = sector.has_rooms
+      //tickets rooms
+      if( sector.has_rooms.length > 0){
+        for (let room in rooms){
+          if(rooms[room].room_has_tickets.length > 0){
+            for(let ticketroom in rooms[room].room_has_tickets){
+              await this.$apollo.mutate({
+                mutation: require('@/graphql/tickets/DeleteTicket.gql'),
+                variables: {
+                  id: rooms[room].room_has_tickets[ticketroom].id,
+                },
+              });
+            }
+          }
+        }
+      }
+      //tickets rooms
+      //rooms
+      if( sector.has_rooms.length > 0) {
+        for (let room in rooms) {
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/rooms/DeleteRoom.gql'),
+            variables: {
+              id: rooms[room].id,
+            },
+          });
+        }
+      }
+      //rooms
+      //tickets sectors
+      let sector_has_tickets = sector.sector_has_tickets
+      if(sector.sector_has_tickets.length > 0){
+        for(let ticketsector in sector_has_tickets){
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/DeleteTicket.gql'),
+            variables: {
+              id: sector_has_tickets[ticketsector].id,
+            },
+          });
+        }
+      }
+      //tickets sectors
+      //sector
+      await this.$apollo.mutate({
+        mutation: require('@/graphql/sectors/DeleteSector.gql'),
+        variables: {
+          id: sector.id,
+        },
+      });
+      //sector
       this.creation.deleting = false;
       this.creation.deletingDialog = false;
+      this.$apollo.queries.LoadSectorsOfUnity.refresh();
     },
     async choose(sector) {
       this.$router.push("/senhas/" + sector.name);
@@ -111,12 +183,14 @@ export default {
         choosed: undefined,
         deleting: false,
       };
+      //this.$router.push('/')
     },
   },
   computed: {
-    sectors() {
+/*    sectors() {
+      console.log('firebase:',this.$store.getters.sectors)
       return this.$store.getters.sectors;
-    },
+    },*/
     loading() {
       return !this.sectors;
     },
