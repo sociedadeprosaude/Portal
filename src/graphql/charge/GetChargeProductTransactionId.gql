@@ -1,0 +1,5 @@
+query($idProductTransaction:ID!){
+  	Charge(filter:{with_ProductTransaction:{id:$idProductTransaction}}){
+      id
+    }
+}

@@ -15,7 +15,7 @@
       </v-col>
     </v-row>
 
-    <v-row class="mt-2">
+    <!-- <v-row class="mt-2">
       <h1 class="headline">Novos Clientes</h1>
     </v-row>
     <v-row>
@@ -28,9 +28,9 @@
           </v-row>
         </v-card>
       </v-col>
-    </v-row>
+    </v-row> -->
 
-    <v-row class="mt-2">
+    <!-- <v-row class="mt-2">
       <h1 class="headline">Idade dos visitantes</h1>
     </v-row>
     <v-row>
@@ -46,7 +46,7 @@
           </v-row>
         </v-card>
       </v-col>
-    </v-row>
+    </v-row> -->
 
     <v-row class="mt-2">
       <h1 class="headline">Gênero dos visitantes</h1>
@@ -54,12 +54,12 @@
     <v-row>
       <v-col>
         <v-card class="pa-5" elevation="0">
-          <v-row v-if="genderClientsServed">
+          <v-row v-if="genresClientsServed">
             <v-col>
               <h1 class="subtitle-1">Masculino</h1>
               <v-progress-linear
                 rounded
-                :value="genderClientsServed.Masculino"
+                :value="genresClientsServed.male"
                 color="#FFAB00"
                 height="15"
               >
@@ -70,10 +70,10 @@
 
               <br />
 
-              <h1 class="subtitle-1">Feeminino</h1>
+              <h1 class="subtitle-1">Feminino</h1>
               <v-progress-linear
                 rounded
-                :value="genderClientsServed.Feminino"
+                :value="genresClientsServed.feminine"
                 color="#D81B60"
                 height="15"
               >
@@ -87,7 +87,7 @@
               <h1 class="subtitle-1">Outros</h1>
               <v-progress-linear
                 rounded
-                :value="genderClientsServed.others"
+                :value="genresClientsServed.others"
                 color="#00E5FF"
                 height="15"
               >
@@ -101,7 +101,7 @@
       </v-col>
     </v-row>
 
-    <v-row class="mt-2">
+    <!-- <v-row class="mt-2">
       <h1 class="headline">Localidade dos visitantes</h1>
       <v-spacer></v-spacer>
       <v-menu
@@ -142,7 +142,7 @@
       <v-col>
         <Gmaps :geopoints="geopoints" :period_report="date"></Gmaps>
       </v-col>
-    </v-row>
+    </v-row>  -->
   </v-container>
 </template>
 
@@ -160,7 +160,7 @@ export default {
     "clientsServed",
     "newClients",
     "ageClientsServed",
-    "genderClientsServed",
+    "genresClientsServed",
     "geopoints",
     "generateDatasetServed",
     "generateDatasetNewClients",
