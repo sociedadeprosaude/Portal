@@ -497,6 +497,53 @@ export default {
                 price:${products[product].price}){
                     id
                 }`)
+        if(products[product].type === "exam"){
+          let chargeID = uuid.v4()
+          let CostProductClinic = await this.$apollo.mutate({
+            mutation: require ('@/graphql/clinics/LoadCostProductClinic.gql'),
+            variables:{
+              idClinic: products[product].clinic.id,
+              idProduct: products[product].id
+            }
+          })
+          mutationBuilder.addMutation(`
+              CreateCharge(
+                  id:"${chargeID}"
+                  value:${-CostProductClinic.data.CostProductClinic[0].cost}
+                  date:
+          {
+            formatted: "${moment().format("YYYY-MM-DDTHH:mm:ss")}"
+          }
+              ){
+              id,value,date{formatted}
+              }
+          `)
+          mutationBuilder.addMutation(`
+            AddChargeWith_ProductTransaction(
+            from:{
+            id:"${chargeID}"
+        },
+        to:{
+            id:"${prodId}"
+        }
+    ){
+        from{id},
+        to{id}
+    } `)
+       mutationBuilder.addMutation(`
+         AddChargeWith_unit(
+            from:{
+            id:"${chargeID}"
+        },
+        to:{
+            id:"${this.selectedBudget.unit.id}"
+        }
+    ){
+        from{id},
+        to{id}
+    }
+       `)
+        }
         this.verifyUnpaidConsultations(products[product])
 
       }
@@ -585,7 +632,6 @@ export default {
           })
     },
     async receipt(intake) {
-      console.log('intr', intake)
       this.selectedIntake = intake
       this.receiptDialog = true
       this.skipPatients = false
