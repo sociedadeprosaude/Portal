@@ -216,12 +216,13 @@
                 handler: function(val) {
                     this.loadingConsultations = true
                     this.product = this.filterByExam ? this.examType : this.specialty
-                    console.log(this.product)
-                    console.log(this.clinic)
                     if(this.product || this.clinic || this.date){
                         this.consultations = []
                         this.skipConsultations = false
-                        this.$apollo.queries.loadConsultations.refresh()
+                        if(this.filterByExam)
+                            this.$apollo.queries.loadConsultations.refresh()
+                        else
+                          this.$apollo.queries.loadConsultationsExams.refresh()
                     }
                 },
                 deep: true
@@ -313,7 +314,6 @@
                 this.confirmDeactivate = false
             },
             async selectUser(user) {
-                console.log('user: ', user)
                 if (user) {
                     let intakes = await this.$store.dispatch('getUserIntakes', user);
                     if (intakes) {
@@ -330,7 +330,7 @@
         },
         apollo: {
             loadConsultations: {
-                query: require("@/graphql/consultations/LoadConsultations.gql"),
+                query: require(`@/graphql/consultations/LoadConsultations.gql`),
                 variables(){
                     return{
                         idClinic:this.clinic.id,
@@ -340,6 +340,24 @@
                 },
                 update(data) {
                     this.consultations = data.Consultation
+                    this.loadingConsultations = false
+                    this.skipConsultations = true
+                },
+                skip (){
+                    return this.skipConsultations
+                }
+            },
+            loadConsultationsExams: {
+                query: require(`@/graphql/consultations/LoadConsultationsExams.gql`),
+                variables(){
+                    return{
+                        idClinic:this.clinic.id,
+                        idProduct:this.product.id,
+                        date:this.date
+                    }
+                },
+                update(data) {
+                    this.consultations = data.Consultation.filter(consultation => consultation.product.with_product_schedulable.id === this.product.id)
                     this.loadingConsultations = false
                     this.skipConsultations = true
                 },
