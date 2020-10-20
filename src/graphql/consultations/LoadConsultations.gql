@@ -1,5 +1,5 @@
 query($idClinic:ID, $idProduct:ID, $date:_Neo4jDateTimeInput){
-  Consultation(filter:{has_product:{id:$idProduct}, of_clinic:{id:$idClinic}, date_starts_with:$date,came_from_not:null}){
+  Consultation(filter:{has_product:{id:$idProduct}, of_clinic:{id:$idClinic}, date_gte:$date,came_from_not:null}){
     id,
       type,
       status,
