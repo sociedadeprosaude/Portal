@@ -350,7 +350,7 @@ export default {
 
       if(form.user.dependent){
         mutationBuilder.addMutation(
-          `AddDependentWith_consultations(from:{id:"${form.user.dependent.id}"},to:{id:"${consultationId}"){
+          `AddDependentWith_consultations(from:{id:"${form.user.dependent.id}"},to:{id:"${consultationId}"}){
               from{id},to{id}
             }
         `);

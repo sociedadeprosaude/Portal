@@ -3,17 +3,85 @@ query($idPatient:ID!){
     id,
     name,
     cpf,
+    sex,
+    telephones,
+    association_number,
+    birth_date,
+    addresses{
+        cep,
+        city,
+        complement,
+        street,
+        number,
+        uf,
+    },
+    dependents{
+    id,
+    name,
+    birth_date,
+    dependentDegree,
+    sex
+    },
+    intakes{
+       date {
+        formatted
+       },
+       id,
+      discount,
+      value,
+      payments,
+      parcels,
+      payment_methods,
+       cancelled_by{
+               id,
+               name
+       }
+      products: with_productTransaction_relations{
+         price,
+         with_product{
+            name,
+            type,
+          },
+         id,
+         clinic: with_clinic{
+            id,
+            name,
+            logo,
+            cnpj,
+            telephone,
+            opening_hours,
+            has_address{
+                    neighboor,
+                    city,
+                    complement,
+                    street,
+                    number,
+                    complement,
+                    state,
+                    cep
+            }
+         }
+       },
+       with_unit{
+         id,
+         name,
+         logo,
+         cnpj,
+         telephone
+       }
+     },
     consultations:with_consultation{
       id,
       type,
       status,
       date,
-      payment_number
+      payment_number,
+      canceled_schedule,
       clinic:of_clinic{
         id,name,logo
       },
       product:has_product{
-        id,name, type
+        id,name,type,price
       },
       doctor:attended_by{
         id,name,crm
@@ -32,6 +100,19 @@ query($idPatient:ID!){
         date,
         payment_number
       },
+    	patient{
+        id,
+        name,
+        cpf,
+        birth_date,
+      },
+      dependent{
+        id,
+        name,
+        birth_date,
+        dependentDegree,
+        sex
+      }
       came_from{
         id
       }

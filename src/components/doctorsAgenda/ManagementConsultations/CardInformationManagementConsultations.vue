@@ -286,7 +286,6 @@ export default {
       this.consultation.consultation_hour = consultation_hour; */
     },
     ConsultationRecept(consultation) {
-      this.$store.commit('setSelectedPatient', consultation.patient);
       console.log('consultation: ', consultation)
       this.receptDialog = true;
     }
