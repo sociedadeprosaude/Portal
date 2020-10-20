@@ -401,10 +401,84 @@ export default {
     removeItem(item) {
       this.$store.commit('removeShoppingCartItem', item)
     },
-    imprimir() {
+    async imprimir() {
       this.saveBudget(this.generateBudget());
       this.budgetToPrint = this.selectedBudget;
-      this.budgetToPrintDialog = true
+      console.log('budget: ', this.selectedBudget)
+      let budgetId = uuid.v4()
+      let mutationBuilder = new MutationBuilder()
+      mutationBuilder.addMutation(
+          `CreateBudget(
+      id: "${budgetId}",
+     value:${parseFloat(this.selectedBudget.total)},
+     payment_methods:[${this.selectedBudget.payments.map(p => `"${p}"`)}],
+     payments:[${this.selectedBudget.valuesPayments}],
+     parcels:[${this.selectedBudget.parcel.map(p => `"${p}"`)}],
+     discount:${parseFloat(this.selectedBudget.discount) ? parseFloat(this.selectedBudget.discount) : 0},
+     date:
+          {
+            formatted: "${moment(this.selectedBudget.date.formatted).format("YYYY-MM-DDTHH:mm:ss")}"
+          }
+     ){
+        id, value, payment_methods, payments, parcels, discount, date{
+        formatted
+        }
+    }`
+      )
+      let productsBudgetIds = []
+      let products = this.selectedBudget.exams.concat(this.selectedBudget.specialties)
+      products = products.filter(p => p)
+      for (let product in products) {
+        let prodId = uuid.v4()
+        products[product].prodId = prodId
+        productsBudgetIds.push(prodId)
+        mutationBuilder.addMutation(`
+                CreateProductBudget(
+                id: "${prodId}"
+                price:${products[product].price}){
+                    id
+                }`)
+      }
+      let productTransactionLinkString = ''
+      for (let product in products) {
+        let productBudgetId = products[product].prodId
+        mutationBuilder.addMutation(`
+                AddBudgetWith_productBundget(
+        from:{
+            id:"${budgetId}"
+        },
+        to:{
+            id:"${productBudgetId}"
+        }
+    ){
+        from{id},
+        to{id}
+    }`)
+        mutationBuilder.addMutation(`AddProductBudgetWith_product(
+        from:{
+            id:"${productBudgetId}"
+        },
+        to:{
+            id:"${products[product].id}"
+        }
+        ){
+        from{id},
+        to{id}
+    }`)
+        products[product].clinic ? mutationBuilder.addMutation(`AddProductBudgetWith_clinic(
+            from:{
+          id:"${productBudgetId}"
+        },
+        to:{
+          id:"${products[product].clinic.id}"
+        }
+      ){
+          from{id},
+          to{id}
+        }` ) : ''
+      }
+
+      //this.budgetToPrintDialog = true
     },
 
     generateBudget() {
