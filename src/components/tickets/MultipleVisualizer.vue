@@ -16,8 +16,10 @@
             <v-row>
               <v-col align-self="center" class="font-weight-bold">
                 <p
+                    v-if="ticket.current_ticket"
                   style="font-size: 2em;"
-                >senha {{type(ticket.current_ticket)}} {{ticket.current_ticket}}</p>
+                >Senha {{type(ticket.current_ticket)}} {{ticket.current_ticket}}</p>
+                <p v-else style="font-size: 5em;">Senha *</p>
               </v-col>
               <v-col
                 class="font-weight-bold"
