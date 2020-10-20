@@ -2,24 +2,24 @@
     <v-container>
         <v-layout row wrap>
             <v-flex xs12>
-                    <v-card v-for="(intake,i) in intakes" :key="i">
+                    <v-card v-for="(outtake,i) in outtakes" :key="i">
                     <v-layout row wrap>
                         <v-flex xs3 class="align-center justify-center">
                             <p class="font-weight-black mt-5">
-                                {{intake.intakeNumber}}
+                                {{outtake.id}}
                             </p>
                         </v-flex>
                         <v-flex xs1>
                             <v-divider class="primary" vertical/>
                         </v-flex>
                         <v-flex xs4 class="text-center align-center justify-center">
-                            <p class="mt-5"> CONSULTA: {{intake.consultations.name}}</p>
+                            <p class="mt-5"> CONSULTA: {{outtake.ProductTransaction[0].Consultation.Product.name}}</p>
                         </v-flex>
                         <v-flex xs1>
                             <v-divider class="primary" vertical/>
                         </v-flex>
                         <v-flex xs2>
-                            <p class="mt-5"> PREÇO: {{intake.consultations.price}}</p>
+                            <p class="mt-5"> PREÇO: {{outtake.value}}</p>
                         </v-flex>
                     </v-layout>
                 </v-card>
@@ -65,9 +65,7 @@
 
         },
         computed: {
-            intakes(){
-                return this.$store.getters.OuttakesConsultationDoctor
-            },
+
             mostrarOuttakes(){
                 console.log('outtakes: ', this.outtakes)
             }

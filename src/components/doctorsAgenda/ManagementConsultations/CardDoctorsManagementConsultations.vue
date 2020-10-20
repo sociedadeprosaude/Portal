@@ -216,12 +216,18 @@
                 handler: function(val) {
                     this.loadingConsultations = true
                     this.product = this.filterByExam ? this.examType : this.specialty
-                    console.log(this.product)
-                    console.log(this.clinic)
                     if(this.product || this.clinic || this.date){
                         this.consultations = []
                         this.skipConsultations = false
-                        this.$apollo.queries.loadConsultations.refresh()
+                        console.log(this.filterByExam)
+                        if(this.filterByExam){
+                            console.log('Deveria chamar os loads dos exams')
+                            this.$apollo.queries.loadConsultationsExams.refresh()
+                        }
+                        else{
+                          console.log('Deveria cahamar só o load normal')
+                          this.$apollo.queries.loadConsultations.refresh()
+                        }
                     }
                 },
                 deep: true
@@ -313,7 +319,6 @@
                 this.confirmDeactivate = false
             },
             async selectUser(user) {
-                console.log('user: ', user)
                 if (user) {
                     let intakes = await this.$store.dispatch('getUserIntakes', user);
                     if (intakes) {
@@ -330,7 +335,7 @@
         },
         apollo: {
             loadConsultations: {
-                query: require("@/graphql/consultations/LoadConsultations.gql"),
+                query: require(`@/graphql/consultations/LoadConsultations.gql`),
                 variables(){
                     return{
                         idClinic:this.clinic.id,
@@ -340,12 +345,32 @@
                 },  
                 update(data) {
                     this.consultations = data.Consultation
+                    console.log('lOAD CONSULTATIONS SÓ')
                     this.loadingConsultations = false
                     this.skipConsultations = true
                 },
                 skip (){
                     return this.skipConsultations
                 }
+            },
+            loadConsultationsExams: {
+                query: require(`@/graphql/consultations/LoadConsultationsExams.gql`),
+                variables(){
+                    return{
+                        idClinic:this.clinic.id,
+                        idProduct:this.product.id,
+                        date:{formatted: moment().format("YYYY-MM-DD")}
+                    }
+                },
+                update(data) {
+                    console.log('LoadConsultationsExms', this.product)
+                    this.consultations = data.Consultation.filter(consultation => consultation.product.with_product_schedulable && consultation.product.with_product_schedulable.id === this.product.id)
+                    this.loadingConsultations = false
+                    this.skipConsultations = true
+                },
+                /* skip (){
+                    return this.skipConsultations
+                } */
             },
         }
     }

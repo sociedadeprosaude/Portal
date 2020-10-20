@@ -1,0 +1,4 @@
+mutation($name:String!){
+    CreateRoom(name: $name)
+    {id},
+}

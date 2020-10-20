@@ -1,5 +1,5 @@
 mutation($idDay:ID!,$vacancy:Int, $expiration_date: _Neo4jDateInput){
-        UpdateDay(id:$idDay, vacancy:$vacancy,expiration_date:$expiration_date){
+        UpdateDay(id:$idDay, vacancy:3,expiration_date:$expiration_date){
             id
         }
 }

@@ -1,0 +1,13 @@
+mutation($idRoom : ID! , $idSector : ID!){
+      AddSectorHas_rooms(
+        from:{
+          id:$idSector
+        },
+        to:{
+          id:$idRoom
+        }
+      ){
+      from{id},
+      to{id}
+    },
+}

@@ -15,6 +15,8 @@
     :openSingleView="openSingleView"
     :favoritedRoom="favoritedRoom"
     :rooms="rooms"
+    :normal="normal"
+    :priority="priority"
     :roomsLoaded="roomsLoaded"
     :ticketInfo="ticketInfo"
     :doctors="doctors"
@@ -57,6 +59,13 @@ export default {
   },
   data() {
     return {
+      sector: undefined,
+      sectorName: undefined,
+      normal: 0,
+      priority: 0,
+      new: undefined,
+      old: undefined,
+      //gffdgdf
       doctorsListDialog: {
         active: false,
         search: "",
@@ -90,7 +99,7 @@ export default {
       }
     },
     rooms() {
-      return this.sector ? this.sector.rooms : {};
+      return this.sector ? this.sector.has_rooms : [];
     },
     roomsLoaded() {
       return this.$store.getters.roomsLoaded;
@@ -106,32 +115,44 @@ export default {
       });
     },
     doctorsLoaded() {
-      return this.$store.getters.doctorsLoaded;
+      return true;
     },
-    sectorName() {
+/*    sectorName() {
       return this.$route.params["sector_name"];
-    },
-    sector() {
-      return this.$store.getters.sectors
+    },*/
+/*    sector() {
+/!*      return this.$store.getters.sectors
         ? this.$store.getters.sectors.find(
             (sector) => sector.name == this.sectorName
           )
-        : undefined;
+        : undefined;*!/
+    },*/
+  },
+  apollo: {
+    LoadRoomsOfSector: {
+      query: require("@/graphql/rooms/LoadRoomsOfSector.gql"),
+      variables () {
+        return {
+          name: this.sectorName,
+        }
+      },
+      update(data){
+        this.sector = Object.assign(data.Sector[0])
+        let n = this.sector.sector_has_tickets.filter(a => {
+          return a.type === 'normal';
+        });
+        this.normal = n.length
+        let p = this.sector.sector_has_tickets.filter(a => {
+          return a.type === 'priority';
+        });
+        this.priority = p.length
+        console.log('reativo:', this.sector)
+      },
     },
   },
   methods: {
     async initialInfo() {
-      if (
-        moment(this.$store.getters.ticketGeneralInfo.last_updated).dayOfYear !==
-        moment().dayOfYear
-      ) {
-        await this.saveAndReset();
-      }
-      if (!this.sector) {
-        this.$store.dispatch("getTicketsGeneralInfo");
-        this.$store.dispatch("listenTicketsSectors");
-      }
-      this.$store.dispatch("listenLastTicket");
+      this.sectorName = this.$route.params["sector_name"];
     },
     async saveAndReset() {
       // this.$store.dispatch("updateGeneralInfo", {
@@ -139,8 +160,8 @@ export default {
       //   last_updated: moment().format("YYYY-MM-DD HH:mm:ss")
       // });
       //resetTickets faz isso aqui em cima
-      await this.$store.dispatch("resetTickets");
-      await this.$store.dispatch("saveTicketsHistory");
+/*      await this.$store.dispatch("resetTickets");
+      await this.$store.dispatch("saveTicketsHistory");*/
     },
     getActualTicket(tickets) {
       let calledTickets = tickets
@@ -152,13 +173,28 @@ export default {
     },
     async createRoom(room) {
       this.loading = true;
-      const sector = this.sector;
-      await this.$store.dispatch("createSectorRoom", { sector, room });
+      const idSector = this.sector.id;
+      const dataRoom = await this.$apollo.mutate({
+        mutation: require('@/graphql/rooms/CreateRoom.gql'),
+        variables: {
+          name: room.name.toUpperCase(),
+        },
+      });
+      const idRoom = dataRoom.data.CreateRoom.id
+      await this.$apollo.mutate({
+        mutation: require('@/graphql/rooms/AddRelationsRoomSector.gql'),
+        variables: {
+          idSector: idSector,
+          idRoom: idRoom,
+
+        },
+      });
       this.loading = false;
       this.success = true;
       setTimeout(() => {
         this.success = false;
       }, 1000);
+      this.$apollo.queries.LoadRoomsOfSector.refresh();
     },
     async setDoctorToRoom(room, doctor) {
       room.doctor = doctor;
@@ -182,17 +218,48 @@ export default {
       await this.$store.dispatch("updateSectorRoom", { sector, room });
     },
     async generateSectorTicket(preferential) {
-      let sector = this.sector;
-      if (!sector.tickets) {
-        sector.tickets = [];
+      this.loading = true;
+      this.$apollo.queries.LoadRoomsOfSector.refresh();
+      let count = 0;
+      if(this.sector.sector_has_tickets.length > 0){ count = this.sector.sector_has_tickets.length + 1 }
+      count = count.toString();
+      if(preferential === true) {
+        const dataTicket = await this.$apollo.mutate({
+          mutation: require('@/graphql/tickets/CreateTicket.gql'),
+          variables: {
+            name: count,
+            type: "priority",
+            created_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
+          },
+        });
+        const idTicket = dataTicket.data.CreateTicket.id
+        await this.$apollo.mutate({
+          mutation: require('@/graphql/tickets/AddRelationsSectorTicket.gql'),
+          variables: {
+            idTicket: idTicket,
+            idSector: this.sector.id,
+          },
+        });
+      } else {
+        const dataTicket = await this.$apollo.mutate({
+          mutation: require('@/graphql/tickets/CreateTicket.gql'),
+          variables: {
+            name: count,
+            type: "normal",
+            created_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
+          },
+        });
+        const idTicket = dataTicket.data.CreateTicket.id
+        await this.$apollo.mutate({
+          mutation: require('@/graphql/tickets/AddRelationsSectorTicket.gql'),
+          variables: {
+            idTicket: idTicket,
+            idSector: this.sector.id,
+          },
+        });
       }
-      sector.tickets.push({
-        number: this.ticketInfo.ticket_number,
-        created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
-        preferential: preferential,
-      });
-      await this.upgradeTicketNumber();
-      await this.$store.dispatch("updateSector", sector);
+      this.$apollo.queries.LoadRoomsOfSector.refresh();
+      this.loading = false;
     },
     async upgradeTicketNumber() {
       let ticketInfo = this.ticketInfo;
@@ -201,75 +268,125 @@ export default {
       await this.$store.dispatch("updateGeneralInfo", this.ticketInfo);
     },
     async callNextTicket(room, preferential) {
-      // console.log(room.tickets);
-      // console.log(preferential);
       this.loading = true;
-
-      let ticketIndex = room.tickets
-        ? room.tickets.findIndex(
-            (ticket) =>
-              !ticket.called_at &&
-              (preferential ? ticket.preferential : !ticket.preferential)
-          )
-        : -1;
-      if (ticketIndex < 0) {
+      console.log('r',room.room_has_tickets);
+      console.log('bool',preferential);
+      if(room.room_has_tickets.length > 0){
+        console.log('chamar ticket do sala')
+      } else {
+        console.log('chamar ticket do setor')
         await this.callSectorTicket(room, preferential);
-        this.loading = false;
-        return;
       }
-
-      room.tickets[ticketIndex].called_at = moment().format(
-        "YYYY-MM-DD HH:mm:ss"
-      );
-      const sector = this.sector;
-      await this.$store.dispatch("updateSectorRoom", { sector, room });
+      //update in room e update ticket
+      //const sector = this.sector;
+      //await this.$store.dispatch("updateSectorRoom", { sector, room });
       this.loading = false;
     },
     async callSectorTicket(room, preferential) {
-      let ticketIndex = this.sector.tickets
-        ? this.sector.tickets.findIndex((ticket) => {
-            return (
-              !ticket.called_at &&
-              (preferential ? ticket.preferential : !ticket.preferential)
-            );
-          })
-        : -1;
-      if (ticketIndex < 0) {
-        this.snackbar = true;
-
-        //criando e chamando uma nova senha na sala se nao tiver nenhuma pra ser chamada
-        //await this.generateSectorTicket(preferential);
-        //await this.callNextTicket(room, preferential);
-        return;
+      this.$apollo.queries.LoadRoomsOfSector.refresh();
+      if(preferential === true) {
+        let prioritys = this.sector.sector_has_tickets.filter(a => {
+          return a.type === 'priority';
+        });
+        prioritys.reverse()
+        let priority = []
+        for(let p in prioritys) { if(!prioritys[p].called_at.formatted) { priority.push(prioritys[p]) }}
+        if(priority[0] !== undefined){
+        await this.$apollo.mutate({
+          mutation: require('@/graphql/tickets/UpdateTicket.gql'),
+          variables: {
+            id: priority[0].id,
+            called_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
+          },
+        });
+        if(!room.previos_ticket) {
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/rooms/UpdateRoom.gql'),
+            variables: {
+              id: room.id,
+              previos_ticket: '*',
+              current_ticket: priority[0].name,
+            },
+          });
+        } else {
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/rooms/UpdateRoom.gql'),
+            variables: {
+              id: room.id,
+              previos_ticket: room.current_ticket,
+              current_ticket: priority[0].name,
+            },
+          });
+        } } else { alert("todas as senhas 'preferencial' foram chamadas, crie novas senhas preferenciais!") }
+      } else {
+        let normals = this.sector.sector_has_tickets.filter(a => {
+          return a.type === 'normal';
+        });
+        normals.reverse()
+        let normal = []
+        for(let n in normals){ if(!normals[n].called_at.formatted){ normal.push(normals[n]) }}
+        if(normal[0] !== undefined){
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/UpdateTicket.gql'),
+            variables: {
+              id: normal[0].id,
+              called_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
+            },
+          });
+          if(!room.previos_ticket) {
+            await this.$apollo.mutate({
+              mutation: require('@/graphql/rooms/UpdateRoom.gql'),
+              variables: {
+                id: room.id,
+                previos_ticket: '*',
+                current_ticket: normal[0].name,
+              },
+            });
+          } else {
+            await this.$apollo.mutate({
+              mutation: require('@/graphql/rooms/UpdateRoom.gql'),
+              variables: {
+                id: room.id,
+                previos_ticket: room.current_ticket,
+                current_ticket: normal[0].name,
+              },
+            });
+          }
+        } else { alert("todas as senhas 'normal' foram chamadas, crie novas senhas normais!") }
       }
-      this.sector.tickets[ticketIndex].called_at = moment().format(
-        "YYYY-MM-DD HH:mm:ss"
-      );
-      room.tickets
-        ? room.tickets.push(this.sector.tickets[ticketIndex])
-        : (room.tickets = [this.sector.tickets[ticketIndex]]);
-      const sector = this.sector;
-      await this.$store.dispatch("updateSectorRoom", { sector, room });
-      this.sector.tickets.splice(ticketIndex, 1);
-      await this.$store.dispatch("updateSector", this.sector);
+      this.$apollo.queries.LoadRoomsOfSector.refresh();
     },
     favoriteRoom(room) {
       this.$store.commit("setFavoriteRoom", room);
       this.$store.commit("setFavoriteRoomSection", this.sector);
     },
     async deleteRoom(room) {
+      console.log('del sala:', room)
       this.deletionRoom.selectedRoom = room;
       if (!this.deletionRoom.deleteRoomDialog) {
         this.deletionRoom.deleteRoomDialog = true;
         return;
       }
       this.deletionRoom.deleting = true;
-      await this.$store.dispatch("deleteSectorRoom", {
-        room: room,
-        sector: this.sector,
+      if(room.room_has_tickets.length > 0){
+        for (let ticket in room.room_has_tickets){
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/DeleteTicket.gql'),
+            variables: {
+              id: room.room_has_tickets[ticket].id,
+            },
+          });
+        }
+      }
+      await this.$apollo.mutate({
+        mutation: require('@/graphql/rooms/DeleteRoom.gql'),
+        variables: {
+          id: room.id,
+        },
       });
       this.deletionRoom.deleting = false;
       this.deletionRoom.deleteRoomDialog = false;
+      this.$apollo.queries.LoadRoomsOfSector.refresh();
     },
     alertActualTicket(room) {},
     openSingleView(room) {

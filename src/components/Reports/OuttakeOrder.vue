@@ -35,9 +35,9 @@
                         </v-flex>
                         <v-divider vertical class="mx-4 hidden-xs-only"/>
                         <v-flex xs12 md2 class="text-center">
-                          <span class="font-weight-bold">{{bill.date_to_pay | dateFilter}}</span>
+                          <span class="font-weight-bold">{{bill.date_to_pay.formatted | dateFilter}}</span>
                           <v-icon class="warning--text align-start ml-2"
-                                  v-if="distanceToToday(bill.date_to_pay) < 3"
+                                  v-if="distanceToToday(bill.date_to_pay.formatted) < 3"
                           >warning</v-icon>
                         </v-flex>
                         <v-divider vertical class="mx-4 hidden-xs-only"/>
@@ -202,7 +202,7 @@ export default {
     outtakesByDate(outtakes) {
       let res = {};
       for (let outtake in outtakes) {
-        let targetDate = outtakes[outtake].date_to_pay.split(" ")[0];
+        let targetDate = outtakes[outtake].date_to_pay.formatted.split(" ")[0];
         if (!res[targetDate]) {
           res[targetDate] = [];
         }
@@ -213,6 +213,9 @@ export default {
     async editBillValue (bill) {
       if (!this.isEditing) {
         console.log('bill', bill)
+        if(bill.value > 0){
+          bill.value = parseFloat(bill.value) - parseFloat(2*bill.value)
+        }
         this.$apollo.mutate({
           mutation: require ('@/graphql/charge/UpdateChargeValue.gql'),
           variables:{
@@ -249,7 +252,7 @@ export default {
           }
         }).then((dataDelete) => {
                   console.log('deletado')
-                  let date = { formatted: moment(outtake.date).format('YYYY-MM-DDTHH:mm:ss')}
+                  let date = { formatted: moment().format('YYYY-MM-DDTHH:mm:ss')}
                   console.log('date: ', date)
                   this.$apollo.mutate({
                     mutation: require('@/graphql/transaction/CreateTransactionBill.gql'),

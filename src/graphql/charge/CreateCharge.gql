@@ -1,10 +1,12 @@
 mutation CreateCharge(
-    $date: String,
-    $value: Float
+    $date: _Neo4jDateTimeInput,
+    $value: Float,
+    $type: String
     ){
   CreateCharge(
     value: $value,
     date: $date,
+    type: $type
   )
   {
     id

@@ -38,10 +38,10 @@
                                             <div >
                                                 <v-flex>
                                                     <span class="primary--text font-weight-bold">Procedimento: </span>
-                                                    <span class="font-weight-bold">{{ this.consultation.product.type === 'EXAM' ? 'Exame' : 'Especialidade' }}</span>
+                                                    <span class="font-weight-bold">{{ this.consultation.regress !== null ? 'Retorno' : 'Consulta' }}</span>
                                                 </v-flex>
                                                 <v-flex>
-                                                    <span class="primary--text font-weight-bold">{{ this.consultation.product.type === 'EXAM' ? 'Exame' : 'Especialidade' }}: </span>
+                                                    <span class="primary--text font-weight-bold">{{ this.consultation.regress !== null ? 'Retorno' : 'Consulta' }}: </span>
                                                     <span class="font-weight-bold">{{this.consultation.product.name}}</span>
                                                 </v-flex>
                                             </div>
@@ -284,29 +284,6 @@
                         idConsultation: this.consultation.id,
                         idProductTransaction: idProductTransaction
                     },
-                })
-            },
-
-            CreateChargee(data){
-                this.$apollo.mutate({
-                    mutation: require ('@/graphql/charge/CreateCharge.gql'),
-                    variables:{
-                        date: moment().format('YYYY-MM-DD HH:mm:ss'),
-                        cost: data.CostProductDoctor[0].cost
-                    }
-                }).then((dataa)=> {
-                    this.RelationsCharge(dataa)
-                })
-            },
-            RelationsCharge(data){
-                this.$apollo.mutate({
-                    mutation: require ('@/graphql/charge/RelationsCharge.gql'),
-                    variables:{
-                        idCharge: data.data.CreateCharge.id,
-                        idProductTransaction: this.ConsultationSelect.productTransaction.id
-                    }
-                }).then((data) => {
-                    this.documentDialog = true
                 })
             },
 

@@ -2,38 +2,40 @@
   <v-container>
     <v-row>
       <v-col sm="12" md="6">
-        <v-tooltip top v-if="doctorsLoaded">
+        <v-tooltip top >
           <template v-slot:activator="{ on }">
             <v-btn
               width="100%"
               v-on="on"
               class="primary"
               rounded
+              :disabled="loading"
               @click="()=>generateSectorTicket(false)"
             >
-              Proxima senha:
-              {{ticketInfo.ticket_number}}
+              Gerar Proxima senha:
+              {{normal}}
             </v-btn>
           </template>
-          <span>Pular próxima senha</span>
+          <span>Gerar próxima senha</span>
         </v-tooltip>
       </v-col>
 
       <v-col sm="12" md="6">
-        <v-tooltip top v-if="doctorsLoaded">
+        <v-tooltip top >
           <template v-slot:activator="{ on }">
             <v-btn
               width="100%"
               v-on="on"
               class="primary"
               rounded
+              :disabled="loading"
               @click="()=>generateSectorTicket(true)"
             >
-              Proxima senha preferencial:
-              {{ticketInfo.ticket_number}}
+              Gerar Proxima senha preferencial:
+              {{priority}}
             </v-btn>
           </template>
-          <span>Pular próxima senha</span>
+          <span>Gerar próxima senha preferencial</span>
         </v-tooltip>
       </v-col>
 
@@ -94,19 +96,20 @@
                 <v-btn x-small fab class="red" @click="deleteRoom(room)">
                   <v-icon class="white--text">delete</v-icon>
                 </v-btn>
-                <v-btn small fab icon @click="favoriteRoom(room)">
-                  <v-icon class="warning--text" v-if="room.name === favoritedRoom.name">grade</v-icon>
-                  <v-icon class="primary--text" v-else>grade</v-icon>
-                </v-btn>
+                <!--<v-btn small fab icon @click="favoriteRoom(room)">
+                  <v-icon class="warning&#45;&#45;text" v-if="room.name === favoritedRoom.name">grade</v-icon>
+                  <v-icon class="primary&#45;&#45;text" v-else>grade</v-icon>
+                </v-btn>-->
               </v-layout>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-tooltip top v-if="doctorsLoaded">
-                <template v-slot:activator="{ on }">
+              <v-tooltip top v-if="normal > 0">
+                <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                    v-on="on"
+                      v-bind="attrs"
+                      v-on="on"
                     :disabled="loading"
                     @click="callNextTicket(room,false)"
                     text
@@ -119,10 +122,11 @@
                 </template>
                 <span>Chamar próxima senha</span>
               </v-tooltip>
-              <v-tooltip top v-if="doctorsLoaded">
-                <template v-slot:activator="{ on }">
+              <v-tooltip top v-if="priority > 0">
+                <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                    v-on="on"
+                      v-bind="attrs"
+                      v-on="on"
                     :disabled="loading"
                     @click="callNextTicket(room,true)"
                     text
@@ -135,7 +139,7 @@
                 </template>
                 <span>Chamar próxima senha preferencial</span>
               </v-tooltip>
-              <v-tooltip top v-if="doctorsLoaded">
+              <!--<v-tooltip top v-if="doctorsLoaded">
                 <template v-slot:activator="{ on }">
                   <v-btn
                     v-on="on"
@@ -151,7 +155,7 @@
                 </template>
                 <span>Selecionar médico</span>
               </v-tooltip>
-              <v-progress-circular indeterminate class="primary--text" v-else></v-progress-circular>
+              <v-progress-circular indeterminate class="primary&#45;&#45;text" v-else></v-progress-circular>
               <v-tooltip top v-if="doctorsLoaded">
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -199,8 +203,8 @@
                   </v-btn>
                 </template>
                 <span>Alertar senha atual</span>
-              </v-tooltip>
-              <v-tooltip top v-if="doctorsLoaded">
+              </v-tooltip>-->
+<!--              <v-tooltip top >
                 <template v-slot:activator="{ on }">
                   <v-btn
                     v-on="on"
@@ -215,7 +219,7 @@
                   </v-btn>
                 </template>
                 <span>Visualizador único</span>
-              </v-tooltip>
+              </v-tooltip>-->
             </v-col>
           </v-row>
           <v-row>
@@ -227,9 +231,7 @@
                 <v-col class="pa-0">
                   <span style="font-size: 0.8em">Ultima senha:</span>
                   <br />
-                  <span
-                    v-if="room.tickets && room.tickets.length != 0"
-                  >{{room.tickets[room.tickets.length - 1].number}}</span>
+                  <span v-if="room.previos_ticket">{{room.previos_ticket}}</span>
                   <span v-else>*</span>
                 </v-col>
                 <v-divider vertical></v-divider>
@@ -237,9 +239,7 @@
                   <div>
                     <span style="font-size: 0.8em">Senha atual:</span>
                     <br />
-                    <span
-                      v-if="room.tickets && room.tickets.length != 0 && getActualTicket(room.tickets)"
-                    >{{getActualTicket(room.tickets).number}}</span>
+                    <span v-if="room.current_ticket">{{room.current_ticket}}</span>
                     <span v-else>*</span>
                   </div>
                 </v-col>
@@ -347,7 +347,9 @@ export default {
     success: Boolean,
     multipleViewDialog: Boolean,
     favoritedRoom: String,
-    rooms: Object,
+    rooms: Array,
+    normal: Number,
+    priority: Number,
     roomsLoaded: Boolean,
     ticketInfo: Object,
     doctors: Array,
@@ -372,7 +374,4 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-</style>
 

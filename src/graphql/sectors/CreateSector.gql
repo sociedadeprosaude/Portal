@@ -1,0 +1,4 @@
+mutation($name:String!){
+    CreateSector(name: $name)
+    {id},
+}

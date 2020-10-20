@@ -1,0 +1,17 @@
+query($id:ID!){
+    Clinic(id: $id){
+    id,name
+      has_sectors{
+        id,name
+        sector_has_tickets{
+            id,name,type
+          }
+        has_rooms{
+          name,id
+          room_has_tickets{
+            id,name,type
+          }
+        }
+      },
+    }
+}

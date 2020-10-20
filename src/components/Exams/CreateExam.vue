@@ -53,6 +53,7 @@
                                     </template>
                                   </ApolloQuery>
                                 </v-flex>
+                              <!--<span>{{ editedExam.type }}</span>-->
                                 <v-flex xs12 sm12>
                                     <v-textarea
                                             outlined
@@ -196,8 +197,8 @@
             } else {
               let other = this.editedExam.type
               this.editedExam.type = "EXAM"
-              console.log('true', other)
-              const dataProduct = await this.$apollo.mutate({
+              console.log('agendavel:', other)
+              await this.$apollo.mutate({
                 mutation: require('@/graphql/products/UpdateProducts.gql'),
                 variables: {
                   id : this.editedExam.id,
@@ -206,20 +207,31 @@
                   rules: this.editedExam.rules,
                 },
               });
-              const idProduct = dataProduct.data.UpdateProduct.id
-              for (let item in other.with_other){
-                if(other.with_other[item].name !== this.editedExam.name){
-                  //console.log('make conection')
-                  await this.$apollo.mutate({
-                    mutation: require('@/graphql/products/AddProductWith_other.gql'),
-                    variables: {
-                      idSchedulableTrue: other.id,
-                      idSchedulableFalse: idProduct,
-                    },
-                  });
-                } else {
-                  //console.log('ja tem concetioon')
+              if(other.with_other.length > 0){
+                for (let item in other.with_other){
+                  if(other.with_other[item].name !== this.editedExam.name){
+                    //console.log('make conection')
+                    await this.$apollo.mutate({
+                      mutation: require('@/graphql/products/AddProductWith_other.gql'),
+                      variables: {
+                        idSchedulableTrue: other.id,
+                        idSchedulableFalse: this.editedExam.id,
+                      },
+                    });
+                  } else {
+                    //console.log('ja tem concetioon')
+                  }
                 }
+              }
+              else{
+                //console.log('make conection')
+                await this.$apollo.mutate({
+                  mutation: require('@/graphql/products/AddProductWith_other.gql'),
+                  variables: {
+                    idSchedulableTrue: other.id,
+                    idSchedulableFalse: this.editedExam.id,
+                  },
+                });
               }
             }
             this.loading = false

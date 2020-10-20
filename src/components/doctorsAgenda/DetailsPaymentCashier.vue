@@ -418,7 +418,7 @@ export default {
         discount: this.moneyDiscount,
         total: this.total,
         parcel: this.payment.parcel,
-        date: moment().format('YYYY-MM-DD HH:mm:ss'),
+        date: {formatted:moment().format('YYYY-MM-DD HH:mm:ss')},
         user: this.$store.getters.selectedPatient,
         colaborator: this.$store.getters.user,
         doctor: this.selectedDoctor.name === this.noDoctorKeyWord ? undefined : this.selectedDoctor,
@@ -476,7 +476,7 @@ export default {
      discount:${parseFloat(this.selectedBudget.discount) ? parseFloat(this.selectedBudget.discount) : 0},
      date:
           {
-            formatted: "${moment(this.selectedBudget.date).format("YYYY-MM-DDTHH:mm:ss")}"
+            formatted: "${moment(this.selectedBudget.date.formatted).format("YYYY-MM-DDTHH:mm:ss")}"
           }
      ){
         id, value, payment_methods, payments, parcels, discount, date{
@@ -497,6 +497,53 @@ export default {
                 price:${products[product].price}){
                     id
                 }`)
+        if(products[product].type === "exam"){
+          let chargeID = uuid.v4()
+          let CostProductClinic = await this.$apollo.mutate({
+            mutation: require ('@/graphql/clinics/LoadCostProductClinic.gql'),
+            variables:{
+              idClinic: products[product].clinic.id,
+              idProduct: products[product].id
+            }
+          })
+          mutationBuilder.addMutation(`
+              CreateCharge(
+                  id:"${chargeID}"
+                  value:${-CostProductClinic.data.CostProductClinic[0].cost}
+                  date:
+          {
+            formatted: "${moment().format("YYYY-MM-DDTHH:mm:ss")}"
+          }
+              ){
+              id,value,date{formatted}
+              }
+          `)
+          mutationBuilder.addMutation(`
+            AddChargeWith_ProductTransaction(
+            from:{
+            id:"${chargeID}"
+        },
+        to:{
+            id:"${prodId}"
+        }
+    ){
+        from{id},
+        to{id}
+    } `)
+       mutationBuilder.addMutation(`
+         AddChargeWith_unit(
+            from:{
+            id:"${chargeID}"
+        },
+        to:{
+            id:"${this.selectedBudget.unit.id}"
+        }
+    ){
+        from{id},
+        to{id}
+    }
+       `)
+        }
         this.verifyUnpaidConsultations(products[product])
 
       }
@@ -585,7 +632,6 @@ export default {
           })
     },
     async receipt(intake) {
-      console.log('intr', intake)
       this.selectedIntake = intake
       this.receiptDialog = true
       this.skipPatients = false

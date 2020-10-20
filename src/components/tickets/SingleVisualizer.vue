@@ -4,7 +4,6 @@
       <v-row class="ml-2 indigo--text text--darken-4 font-weight-bold">
         <p style="font-size: 2em;">Últimas senhas</p>
       </v-row>
-
       <v-row justify="center">
         <v-col
           class="py-2 px-0"

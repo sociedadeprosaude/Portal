@@ -215,7 +215,7 @@
 import AttendanceGuide from "./AttendanceGuide";
 import moment from 'moment';
 
-export default {
+export default{
   name: "Receipt",
   props: ['budget'],
   components: {

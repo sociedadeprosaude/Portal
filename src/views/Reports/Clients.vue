@@ -220,40 +220,6 @@ export default {
       Object.keys(result).map(key => ({ [key]: result[key] }))
     }
   },
-  apollo:{
-    attendanceCount:{
-        query: require("@/graphql/patients/AttendanceCount.gql"),
-        variables(){
-          return{
-            start_date:this.date,
-            final_date: moment().format("YYYY-MM-DD")
-          }
-        },
-        update(data) {
-          this.attendances = {}
-          this.genres = {male:0, feminine:0, others:0, total:0}
-          const attendances = data.attendanceCount;
-          for (const key in attendances) {
-            const attendance = attendances[key];
-            this.attendances[attendance.date.formatted] = attendance.count
-            this.genres = attendance.genres.reduce((obj,value)=>{
-              if(value === "Masculino") obj.male += 1;
-              else if(value === 'Feminino') obj.feminine += 1;
-              else obj.others += 1;
-
-              obj.total += 1;
-              return obj;
-            },this.genres)
-          }
-
-          this.genres.male = (this.genres.male/this.genres.total)*100;
-          this.genres.feminine = (this.genres.feminine/this.genres.total)*100;
-          this.genres.others = (this.genres.others/this.genres.total)*100;
-
-          this.overlay = false;
-        },
-    }
-  }
 };
 </script>
 
