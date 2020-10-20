@@ -114,29 +114,19 @@
         },
         computed: {
             specialties() {
-                let specialties = this.$store.getters.specialties;
-                for (let spec in specialties) {
-                    if (specialties[spec].doctors) {
-
-                        specialties[spec].doctors = specialties[spec].doctors.filter((a) => {
-                            return a.cost
-                        })
-                    }
-                }
-                specialties = this.$store.getters.specialties.filter((a) => {
+                return this.LocaleSpecialties.filter((a) => {
                     if (a.doctors) {
                         return a.doctors.length > 0 && a.name.includes(this.search.toUpperCase())
                     } else {
                         return false
                     }
                 });
-                return specialties
             },
             specialtiesLoaded() {
                 return this.$store.getters.specialtiesLoaded
             },
             exams() {
-                return this.$store.getters.examsSelected;
+                return this.LocaleExams.filter(e => e.name.includes(this.search.toUpperCase()));
             },
             package() {
                 return this.$store.getters.bundles;
@@ -144,9 +134,9 @@
             items() {
                 switch (this.categorySelect) {
                     case 'exam':
-                        return this.LocaleExams.slice(0,20);
+                        return this.exams.slice(0,20);
                     case 'appointment':
-                        return this.LocaleSpecialties.slice(0,20);
+                        return this.specialties.slice(0,20);
                     case 'package':
                         return this.package;
                     default:
