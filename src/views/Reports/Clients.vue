@@ -31,10 +31,10 @@
       :date="date2"
       :menu="menu"
       :dateFormatted="dateFormatted2"
-      :clientsServed="clientsServed"
+      :clientsServed="attendances"
       :newClients="newClients"
       :ageClientsServed="ageClientsServed"
-      :genderClientsServed="genderClientsServed"
+      :genresClientsServed="genres"
       :geopoints="geopoints"
       :generateDatasetServed="generateDatasetServed"
       :generateDatasetNewClients="generateDatasetNewClients"
@@ -60,7 +60,9 @@ export default {
     date2: new Date().toISOString().substr(0, 7),
     menu: false,
     menu2:false,
-    overlay:false
+    overlay:false,
+    attendances:undefined,
+    genres:undefined
   }),
   components: {
     Clients,
@@ -77,9 +79,14 @@ export default {
     dateFormatted2() {
       return this.date2 ? moment(this.date2, "YYYY-MM").format("MMMM/YYYY") : "";
     },
-    clientsServed() {
-      return this.$store.getters.getClientsServed;
-    },
+    /* clientsServed:{
+      set(value){
+        this.attendances = value
+      },
+      get(){
+        return this.attendances
+      }
+    }, */
     newClients() {
       return this.$store.getters.getNewClients;
     },
@@ -87,8 +94,14 @@ export default {
       let data = this.$store.getters.getAgeClientsServed;
       return this.$store.getters.getAgeClientsServed;
     },
-    genderClientsServed() {
-      return this.$store.getters.getGenderClientsServed;
+    genresClientsServed() {
+      let genresObj = this.genres;
+      genresObj.male = (genresObj.male/genresObj.total)/100;
+      genresObj.feminine = (genresObj.feminine/genresObj.total)/100;
+      genresObj.others = (genresObj.others/genresObj.total)/100;
+
+      console.log('jkjhkjhkjh')
+      return genresObj;
     },
     /* usersServed(){
       let complements = this.$store.getters.getUsersServed.map((user)=>[user.addresses[0].street,user.addresses[0].complement].join(" "));
@@ -111,7 +124,7 @@ export default {
   methods: {
     initializeData(){
       this.overlay = true
-      let promise1 = this.$store.dispatch('loadClientsServed',{
+      /* let promise1 = this.$store.dispatch('loadClientsServed',{
         initialDate:this.date,
         finalDate:moment().format("YYYY-MM-DD 23:59:00"),
       })
@@ -122,9 +135,10 @@ export default {
 
       Promise.all([promise1,promise2]).then(()=>{
         this.overlay = false
-      });
+      }); */
     },
     generateDatasetServed(dataset) {
+      console.log('chegou aqui',dataset)
       return {
         labels: Object.keys(dataset),
         datasets: [
@@ -195,6 +209,16 @@ export default {
         },
       };
     },
+    countUniqueValuesGenre(array){
+      const result = { male:0, feminine:0}
+
+
+      for (let i = 0; i < array.length; i++) {
+        result[array[i]] = (result[array[i]] || 0) + 1
+      }
+
+      Object.keys(result).map(key => ({ [key]: result[key] }))
+    }
   },
 };
 </script>

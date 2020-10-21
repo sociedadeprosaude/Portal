@@ -255,6 +255,9 @@
 <script>
 
 import SubmitButton from "../SubmitButton";
+import gql from 'graphql-tag'
+import MutationBuilder from "../../classes/MutationBuilder"
+import {uuid} from 'vue-uuid'
 
 export default {
 
@@ -299,127 +302,115 @@ export default {
     async saveConsultation() {
       this.scheduleLoading = true;
       let form = this.createConsultationForm;
-      /* form.user = {
-        ...form.user,
-        status: this.status,
-        type: this.modalidade,
-        payment_number: this.numberReceipt,
-        exam: this.exam
-      }; */
       form.consultation = {
         ...form.consultation,
         status: this.status,
         type: this.modalidade,
         payment_number: this.numberReceipt,
-        //exam: this.exam,
-        //prolonged: this.prolonged ? this.prolonged : undefined,
-        //previousConsultation: this.previousConsultation ? this.previousConsultation : undefined
       };
-
-     /*  if (this.payment_numberFound)
-        form = {...form, payment_numberFound: this.payment_numberFound}; */
-      /* if (form.user.dependent)
-        form.consultation = {
-          ...form.consultation,
-          dependent: form.user.dependent
-        }; */
-      this.loading = true;
-      this.$apollo.mutate({
-          mutation: require('@/graphql/consultations/NewConsultation.gql'),
-          // Parameters
-          variables: {
-            type: form.consultation.type,
-            date: form.consultation.date,
-            payment_number: form.consultation.payment_number,
-            status: form.consultation.status
-          },
-          
-        }).then(async (data) => {
-          await this.saveRelationConsultation(data.data.CreateConsultation.id, form)
-
-          if(form.consultation.type === "Retorno" && this.previousConsultation)
-            await this.saveRelationAsRegress(data.data.CreateConsultation.id, this.previousConsultation)
-          console.log('data: ', data)
-          if(form.productTransaction)
-            await this.saveRelationProductTransaction(data.data.CreateConsultation.id,form.productTransaction.id)
-
-          if(this.$route.params.q && this.$route.params.type === 'Remarcar'){
-            await this.deleteConsultation()
-            this.$router.back()
-          }else{
-            this.skipPatients = false
-            this.$apollo.queries.loadPatient.refresh()
+      
+      const consultationId = uuid.v4();
+      let mutationBuilder = new MutationBuilder();
+      mutationBuilder.addMutation(
+        `CreateConsultation(id:"${consultationId}" type:"${form.consultation.type}", date:"${form.consultation.date}",payment_number:"${form.consultation.payment_number}",status:"${form.consultation.status}"){
+            id
           }
-        }).catch((error) => {
-          console.error(error)
-        })
+        `
+      )
 
+      mutationBuilder.addMutation(
+        `AddPatientWith_consultation(from:{id:"${form.user.id}"},to:{id:"${consultationId}"}){
+          from{id},to{id}
+        }
+      `);
+
+      mutationBuilder.addMutation(
+        `AddConsultationCame_from(from:{id:"${consultationId}"},to:{id:"${form.consultation.id_schedule}"}){
+          from{id},to{id}
+        }
+      `);
+
+      mutationBuilder.addMutation(
+        `AddConsultationHas_product(from:{id:"${consultationId}"},to:{id:"${this.exam ? this.exam.id : form.consultation.product.id}"}){
+          from{id},to{id}
+        }
+      `);
+
+      mutationBuilder.addMutation(
+        `AddConsultationOf_clinic(from:{id:"${consultationId}"},to:{id:"${form.consultation.clinic.id}"}){
+          from{id},to{id}
+        }
+      `);
+
+      mutationBuilder.addMutation(
+        `AddConsultationAttended_by(from:{id:"${consultationId}"},to:{id:"${form.consultation.doctor.id}"}){
+          from{id},to{id}
+        }
+      `);
+
+      if(form.user.dependent){
+        mutationBuilder.addMutation(
+          `AddDependentWith_consultations(from:{id:"${form.user.dependent.id}"},to:{id:"${consultationId}"}){
+              from{id},to{id}
+            }
+        `);
+      }
+
+      if(form.consultation.type === "Retorno" && this.previousConsultation){
+        mutationBuilder.addMutation(
+          `AddConsultationRegress(from:{id:"${this.previousConsultation}"},to:{id:"${consultationId}"}){
+              from{id},to{id}
+            }
+        `);
+
+        mutationBuilder.addMutation(
+          `AddConsultationPrevious_consultation(from:{id:"${consultationId}"},to:{id:"${this.previousConsultation}"}){
+              from{id},to{id}
+            }
+        `);
+      }
+
+      if(form.productTransaction){
+        mutationBuilder.addMutation(
+          `AddProductTransactionWith_consultation(from:{id:"${form.productTransaction.id}"},to:{id:"${consultationId}"}){
+              from{id},to{id}
+            }
+        `);
+
+        mutationBuilder.addMutation(
+          `UpdateConsultation(id:"${consultationId}",status:"Pago"){
+              id
+            }
+        `);
+      }
+
+      const reescheduleConsultation = this.$route.params.q && this.$route.params.type === 'Remarcar'
+
+      if(reescheduleConsultation){
+        mutationBuilder.addMutation(
+          `DeleteConsultation(id:"${this.previousConsultation}"){
+              id
+            }
+        `);
+      }
+      
+      let finalString = mutationBuilder.generateMutationRequest()
+
+      await this.$apollo.mutate({
+        mutation: gql`${finalString}`,
+      })
+      
+      this.scheduleLoading = false;
+      this.success = true;
+
+      if(reescheduleConsultation){
+        this.$router.back()
+      }else{
+        this.skipPatients = false
+        this.$apollo.queries.loadPatient.refresh()
+      }
     },
-
-    async saveRelationConsultation(idConsultation, form){
-        await this.$apollo.mutate({
-          mutation: require('@/graphql/consultations/AddRelations.gql'),
-          variables:{
-              idConsultation: idConsultation,
-              idPatient: form.user.id,
-              idSchedule: form.consultation.id_schedule,
-              idProduct: this.exam ? this.exam.id : form.consultation.product.id,
-              idClinic: form.consultation.clinic.id,
-              idDoctor: form.consultation.doctor.id
-          },
-        });
-        
-        if(form.user.dependent)
-          await this.saveRelationConsultationDependent(idConsultation, form)
-
-        this.scheduleLoading = false;
-        this.success = true;
-    },
-
-    async saveRelationConsultationDependent(idConsultation, form){
-        await this.$apollo.mutate({
-          mutation: require('@/graphql/consultations/AddRelationsWithDependent.gql'),
-          variables:{
-              idConsultation: idConsultation,
-              idDependent: form.user.dependent.id,
-          },
-          
-        });
-    },
-
-    async deleteConsultation(){
-        await this.$apollo.mutate({
-          mutation: require('@/graphql/consultations/DeleteConsultation.gql'),
-          variables:{
-              idConsultation: this.previousConsultation,
-            
-          },
-          
-        })
-    },
-
-    async saveRelationAsRegress(idConsultation, idPreviousConsultation){
-        await this.$apollo.mutate({
-          mutation: require('@/graphql/consultations/AddRelationsAsRegress.gql'),
-          variables:{
-              idConsultation: idConsultation,
-              idPreviousConsultation: idPreviousConsultation
-          },
-          
-        })
-    },
-
-    async saveRelationProductTransaction(idConsultation, idProductTransaction){
-        await this.$apollo.mutate({
-          mutation: require('@/graphql/transaction/AddRelationProductTransactionConsultation.gql'),
-          variables:{
-              idConsultation: idConsultation,
-              idProductTransaction: idProductTransaction
-          },
-        })
-      console.log('ligacao com productTransaction Feita')
-    },
-
+    
     close: function () {
       this.exam = undefined
       this.$emit('close-dialog')

@@ -126,18 +126,17 @@
                 },
                 update(data){
                     this.skip = true
-                    console.log(data.User[0])
                     let user = undefined
                     if(data.User.length > 0){
                         user =  data.User[0].is_colaborator? data.User[0].is_colaborator : data.User[0].is_doctor
                         this.$store.dispatch('getUser', user);
                     }
-     
+
                     if(!user || !user[0].is_colaborator || !user[0].is_doctor){
                         this.ready = true
                         this.$router.push('/error-authentication')
                     }
-                       
+
                 },
                 skip(){
                     return this.skip
