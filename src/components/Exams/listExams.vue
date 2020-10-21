@@ -23,6 +23,7 @@
                                         <ApolloMutation
                                             :mutation="require('@/graphql/products/DeleteProducts.gql')"
                                             :variables="{ id: exam.id }"
+                                            @done="DeleteProduct"
                                         >
                                           <template v-slot="{ mutate, loading, error }">
                                             <v-progress-circular indeterminate color="primary" v-if="loading"></v-progress-circular>
@@ -95,9 +96,8 @@
                 this.alertDelete = true;
             },
 
-            async deleteExam(exam) {
-                await this.$store.dispatch('deleteExam', exam.name);
-                this.$emit('clear-search')
+          async DeleteProduct() {
+            this.$emit('reload')
             },
         }
     }
