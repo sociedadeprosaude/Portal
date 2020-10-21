@@ -88,7 +88,7 @@
             <v-text-field
                 disabled
                 label="Desconto: R$ "
-                v-model="moneyDiscount"
+                v-model="discountMoney"
                 dense
                 outlined
             />
@@ -122,7 +122,7 @@
             <span>Subtotal: R$ {{ this.subTotal.toLocaleString('en-us', {minimumFractionDigits: 2}) }}</span>
           </v-flex>
           <v-flex xs6>
-            <span>Desconto: R$ {{ this.moneyDiscount.toLocaleString('en-us', {minimumFractionDigits: 2}) }}</span>
+            <span>Desconto: R$ {{ this.discountMoney.toLocaleString('en-us', {minimumFractionDigits: 2}) }}</span>
           </v-flex>
         </v-layout>
 
@@ -302,12 +302,16 @@ export default {
       }
       return total
     },
-    discountBudget(){
+    discountMoney(){
       if(this.$store.getters.getDiscountBudget !== 0){
         this.moneyDiscount = this.$store.getters.getDiscountBudget
-        this.percentageDiscount = ((100 * this.moneyDiscount)/this.total)
+        this.percentageDiscount = ((100 * this.moneyDiscount)/this.subTotal)
+        this.$store.commit('setDiscount',0)
       }
-      return 0
+
+      this.moneyDiscount = ((this.percentageDiscount * this.subTotal)/100)
+
+      return this.moneyDiscount
     },
     idBudget(){
       let idBudget = this.$store.getters.getIdBudget;
@@ -423,7 +427,6 @@ export default {
       this.loadingImp= true
       this.saveBudget(this.generateBudget());
       this.budgetToPrint = this.selectedBudget;
-      console.log('budget: ', this.selectedBudget)
       let budgetId = uuid.v4()
       let mutationBuilder = new MutationBuilder()
       mutationBuilder.addMutation(
@@ -537,7 +540,6 @@ export default {
       await this.$apollo.mutate({
         mutation: gql`${finalString}`,
       })
-      console.log('budgetId: ', budgetId)
       this.loadingImp= false
       this.budgetToPrintDialog = true
     },
@@ -795,6 +797,8 @@ export default {
     },
     SelectNewPatient() {
       this.$store.commit('clearShoppingCartItens');
+      this.$store.commit('setDiscount', 0);
+      this.$store.commit('setIdBudget', undefined)
       this.$store.commit('setSelectedBudget', undefined);
       let user = undefined;
       this.$store.commit('setSelectedPatient', user)
