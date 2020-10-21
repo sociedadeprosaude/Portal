@@ -220,7 +220,7 @@ export default {
     async generateSectorTicket(preferential) {
       this.loading = true;
       this.$apollo.queries.LoadRoomsOfSector.refresh();
-      let count = 0;
+      let count = 1;
       if(this.sector.sector_has_tickets.length > 0){ count = this.sector.sector_has_tickets.length + 1 }
       count = count.toString();
       if(preferential === true) {
