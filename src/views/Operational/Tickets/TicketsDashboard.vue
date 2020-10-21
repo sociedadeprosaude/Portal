@@ -57,9 +57,8 @@ export default {
     LoadSectorsOfUnity: {
       query: require("@/graphql/sectors/LoadSectorsOfUnity.gql"),
       variables () {
-        // Use vue reactive properties here
         return {
-          id: this.idUnity,
+          id: this.$store.getters.user.clinic.id,
         }
       },
       update(data){
@@ -70,7 +69,7 @@ export default {
   },
   methods: {
     async initialInfo() {
-      this.idUnity  = this.$store.getters.user.clinic.id
+      this.idUnity = this.$store.getters.user.clinic.id
     },
 
     async updateLastTicket(number) {
