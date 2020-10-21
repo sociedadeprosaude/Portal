@@ -38,10 +38,10 @@
                                             <div >
                                                 <v-flex>
                                                     <span class="primary--text font-weight-bold">Procedimento: </span>
-                                                    <span class="font-weight-bold">{{ this.consultation.regress !== null ? 'Retorno' : 'Consulta' }}</span>
+                                                    <span class="font-weight-bold">{{ this.consultation.product.type === 'EXAM' ? 'Exame' : this.consultation.type }}</span>
                                                 </v-flex>
                                                 <v-flex>
-                                                    <span class="primary--text font-weight-bold">{{ this.consultation.regress !== null ? 'Retorno' : 'Consulta' }}: </span>
+                                                    <span class="primary--text font-weight-bold">{{ this.consultation.product.type === 'EXAM' ? 'Exame' : 'Especialidade' }}: </span>
                                                     <span class="font-weight-bold">{{this.consultation.product.name}}</span>
                                                 </v-flex>
                                             </div>
