@@ -129,7 +129,7 @@
             }
         },
 
-      apollo: {
+/*      apollo: {
         LoadProcuctSpecific: {
           query: require("@/graphql/products/LoadProcuctSpecific.gql"),
           variables () {
@@ -140,14 +140,14 @@
           update(data){
             //this.sectors = Object.assign(data.Clinic[0].has_sectors)
             console.log('reativo:', data.Product[0])
-/*            this.editedExam.id = this.selectedExam.id;
+/!*            this.editedExam.id = this.selectedExam.id;
             this.editedExam.name = this.selectedExam.name;
             this.editedExam.price = this.selectedExam.price;
             this.editedExam.rules = this.selectedExam.rules;
-            this.editedExam.type = this.selectedExam.type;*/
+            this.editedExam.type = this.selectedExam.type;*!/
           },
         }
-      },
+      },*/
 
         methods: {
             handleEnter(e) {
