@@ -85,7 +85,8 @@ export default {
           txt: "Outtakes clinicas",
           link: "RelatorioSaidasClinicasEstatisticas"
         },
-        { txt: "Clientes", link: "RelatorioClientesEstatisticas" }
+        { txt: "Clientes", link: "RelatorioClientesEstatisticas" },
+        { txt: "Relatorio de Atendimentos por Colaboradores", link: "RelatorioAtendimentosColaboradores" }
       ]
     };
   },
