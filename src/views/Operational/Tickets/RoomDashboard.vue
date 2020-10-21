@@ -133,7 +133,7 @@ export default {
       query: require("@/graphql/rooms/LoadRoomsOfSector.gql"),
       variables () {
         return {
-          name: this.sectorName,
+          name: this.$route.params["sector_name"]
         }
       },
       update(data){
@@ -152,7 +152,7 @@ export default {
   },
   methods: {
     async initialInfo() {
-      this.sectorName = this.$route.params["sector_name"];
+      //
     },
     async saveAndReset() {
       // this.$store.dispatch("updateGeneralInfo", {
