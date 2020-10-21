@@ -199,7 +199,9 @@
              }
              this.loading = false
              this.clear();
-             this.$router.push('/')
+             this.close();
+             this.$emit('reload')
+             //this.$router.push('/')
            },
 
           async updateProduct() {

@@ -5,11 +5,11 @@
         <v-card class="pt-3">
           <v-layout row wrap>
             <v-flex sm8>
-              <ApolloQuery
+<!--              <ApolloQuery
                   :query="require('@/graphql/products/ReadProcucts.gql')"
                   :variables="{ type:'EXAM', schedulable:false}"
               >
-                <template slot-scope="{ result: { data } }">
+                <template slot-scope="{ result: { data } }">-->
                   <v-flex xs12 sm12 class="mb-5">
                     <v-text-field
                         outlined
@@ -21,15 +21,15 @@
                         id="search"
                     />
                     <div v-if="search">
-                      <div v-for="(exam,i) in data.Product" :key="i">
+                      <div v-for="(exam,i) in products" :key="i">
                         <div v-if="exam.name.includes(search.toUpperCase()) ">
-                          <listExams :exams="new Array(exam)" :loading="loading" @clear-search="search = ''"/>
+                          <listExams @reload="reload" :exams="new Array(exam)" :loading="loading" @clear-search="search = ''"/>
                         </div>
                       </div>
                     </div>
                   </v-flex>
-                </template>
-              </ApolloQuery>
+<!--                </template>
+              </ApolloQuery>-->
             </v-flex>
             <v-flex sm4 class="text-right pr-3 mt-2">
               <v-btn outlined class="primary--text" @click="newExam = true">cadastrar exame</v-btn>
@@ -43,7 +43,7 @@
         </v-card>
       </v-flex>
       <v-dialog v-model="newExam">
-        <createExam :registed="registed" @close-dialog="newExam = false"/>
+        <createExam @reload="reload" :registed="registed" @close-dialog="newExam = false"/>
       </v-dialog>
     </v-layout>
   </v-container>
@@ -59,13 +59,29 @@ export default {
     search: "",
     loading: undefined,
     newExam: false,
-    registed: false
+    registed: false,
+    products: undefined,
   }),
-/*  watch:{
-    search() {
-      this.search = this.search.toUpperCase()
+  apollo: {
+    ReadProcucts: {
+      query: require("@/graphql/products/ReadProcucts.gql"),
+      variables () {
+        return {
+          type:'EXAM',
+          schedulable: false,
+        }
+      },
+      update(data){
+        this.products = Object.assign(data.Product)
+        //console.log('reativo:', this.products)
+      },
+    }
+  },
+  methods: {
+    reload(){
+      this.$apollo.queries.ReadProcucts.refresh();
     },
-  },*/
+  },
   mounted() {
     let self = this;
     window.addEventListener("keyup", function(e) {
