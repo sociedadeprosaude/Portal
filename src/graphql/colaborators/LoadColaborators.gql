@@ -13,6 +13,9 @@ query{
       id,
       name,
       logo
-    }
+    },
+    tickets_called_by_collaborator{
+      id,name,type,created_at{formatted},called_at{formatted},
+    },
   }
 }
