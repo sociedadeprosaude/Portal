@@ -140,22 +140,9 @@
             clinics:[]
         }),
         computed: {
-            /* specialties() {
-                return this.$store.getters.specialties;
-            }, */
             computedDateFormatted() {
                 return this.formatDate(this.date)
             },
-            /* examTypes() {
-                return this.$store.getters.examsTypes.filter((examType)=>{
-                    return examType.scheduleable
-                });
-            }, */
-          /* clinics() {
-            return this.$store.getters.clinics.filter(a => {
-              return a.property;
-            });
-          }, */
         },
         mounted() {
             this.initialConfig();

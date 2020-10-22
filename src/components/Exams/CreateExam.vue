@@ -129,6 +129,26 @@
             }
         },
 
+/*      apollo: {
+        LoadProcuctSpecific: {
+          query: require("@/graphql/products/LoadProcuctSpecific.gql"),
+          variables () {
+            return {
+              id: this.editedExam.id,
+            }
+          },
+          update(data){
+            //this.sectors = Object.assign(data.Clinic[0].has_sectors)
+            console.log('reativo:', data.Product[0])
+/!*            this.editedExam.id = this.selectedExam.id;
+            this.editedExam.name = this.selectedExam.name;
+            this.editedExam.price = this.selectedExam.price;
+            this.editedExam.rules = this.selectedExam.rules;
+            this.editedExam.type = this.selectedExam.type;*!/
+          },
+        }
+      },*/
+
         methods: {
             handleEnter(e) {
                 if (e.key === 'Enter') {
@@ -179,7 +199,9 @@
              }
              this.loading = false
              this.clear();
-             this.$router.push('/')
+             this.close();
+             this.$emit('reload')
+             //this.$router.push('/')
            },
 
           async updateProduct() {
@@ -235,8 +257,9 @@
               }
             }
             this.loading = false
-            this.clear();
-            this.$router.push('/')
+            //this.$apollo.queries.LoadProcuctSpecific.refresh();
+            //this.clear();
+            //this.$router.push('/')
           },
 
             clear() {

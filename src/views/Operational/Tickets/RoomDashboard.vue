@@ -65,7 +65,6 @@ export default {
       priority: 0,
       new: undefined,
       old: undefined,
-      //gffdgdf
       doctorsListDialog: {
         active: false,
         search: "",
@@ -133,7 +132,7 @@ export default {
       query: require("@/graphql/rooms/LoadRoomsOfSector.gql"),
       variables () {
         return {
-          name: this.sectorName,
+          name: this.$route.params["sector_name"]
         }
       },
       update(data){
@@ -146,13 +145,13 @@ export default {
           return a.type === 'priority';
         });
         this.priority = p.length
-        console.log('reativo:', this.sector)
+        //console.log('reativo:', this.sector)
       },
     },
   },
   methods: {
     async initialInfo() {
-      this.sectorName = this.$route.params["sector_name"];
+      //
     },
     async saveAndReset() {
       // this.$store.dispatch("updateGeneralInfo", {
@@ -220,7 +219,7 @@ export default {
     async generateSectorTicket(preferential) {
       this.loading = true;
       this.$apollo.queries.LoadRoomsOfSector.refresh();
-      let count = 0;
+      let count = 1;
       if(this.sector.sector_has_tickets.length > 0){ count = this.sector.sector_has_tickets.length + 1 }
       count = count.toString();
       if(preferential === true) {
@@ -269,8 +268,8 @@ export default {
     },
     async callNextTicket(room, preferential) {
       this.loading = true;
-      console.log('r',room.room_has_tickets);
-      console.log('bool',preferential);
+      //console.log('r',room.room_has_tickets);
+      //console.log('bool',preferential);
       if(room.room_has_tickets.length > 0){
         console.log('chamar ticket do sala')
       } else {
@@ -361,7 +360,7 @@ export default {
       this.$store.commit("setFavoriteRoomSection", this.sector);
     },
     async deleteRoom(room) {
-      console.log('del sala:', room)
+      //console.log('del sala:', room)
       this.deletionRoom.selectedRoom = room;
       if (!this.deletionRoom.deleteRoomDialog) {
         this.deletionRoom.deleteRoomDialog = true;

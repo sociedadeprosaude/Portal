@@ -126,259 +126,257 @@
                           </div>
                         </v-flex>
 
-                      <!--<v-flex sm4 v-for="item in consultation.consultations" class="mt-3 mb-2" v-if="!clinic">
+            <!--<v-flex sm4 v-for="item in consultation.consultations" class="mt-3 mb-2" v-if="!clinic">
 
-                      </v-flex>-->
-                    </v-layout>
-                </v-card>
-            </v-flex>
-            <v-flex xs12 v-if="loadingConsultations">
-                <v-progress-circular class="primary--text" indeterminate/>
-            </v-flex>
-            <v-flex xs12 v-if="consultations.length === 0 && loadingConsultations === false">
-                <p>Não a consultas marcadas para hoje :(</p>
-            </v-flex>
-            <v-dialog v-if="selectedDoctor" v-model="confirmDeactivate" max-width="500px" persistent>
-                <v-flex xs12 v-if="loading">
-                    <v-progress-circular class="primary--text" indeterminate/>
-                </v-flex>
-                <v-card v-else>
-                    <v-card-title>
-                        <v-spacer/>
-                        <v-btn text @click="confirmDeactivate = false, cleanSpecialtyToDeactivate()" x-small fab>
-                            <v-icon>close</v-icon>
-                        </v-btn>
-                    </v-card-title>
-                    <v-select :items="specialtiesDoctor" v-model="specialtyToDeactivate" outlined persistent-hint
-                              item-text="name"
-                              class="mx-5 mb-4" return-object chips
-                              hint="Selecione as especialidades para desativar"/>
-                    <v-select :items="clinics" v-model="clinicsToDeactivate" outlined persistent-hint
-                              item-text="name"
-                              class="mx-5 mb-4" return-object chips hint="Selecione a unidade"/>
-                    <v-card-text>
-                        <span>Desativar </span>
-                        <span class="font-weight-bold justify-center">{{selectedDoctor.name}}</span>
-                        <span> ?</span>
-                    </v-card-text>
-                    <v-card-actions class="mx-3">
-                        <v-spacer/>
-                        <submit-button text="Confirmar" :loading="loading" :success="success" @reset="success = false"
-                                       @click="deleteAllSchedule(doctor)">
-                        </submit-button>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
-            <v-dialog v-model="success" max-width="300px">
-                <v-alert type="success">
-                    Médico apagado com sucesso.
-                </v-alert>
-            </v-dialog>
-        </v-layout>
-    </v-container>
+            </v-flex>-->
+          </v-layout>
+        </v-card>
+      </v-flex>
+      <v-flex xs12 v-if="loadingConsultations">
+        <v-progress-circular class="primary--text" indeterminate/>
+      </v-flex>
+      <v-flex xs12 v-if="consultations.length === 0 && loadingConsultations === false">
+        <p>Não a consultas marcadas para hoje :(</p>
+      </v-flex>
+      <v-dialog v-if="selectedDoctor" v-model="confirmDeactivate" max-width="500px" persistent>
+        <v-flex xs12 v-if="loading">
+          <v-progress-circular class="primary--text" indeterminate/>
+        </v-flex>
+        <v-card v-else>
+          <v-card-title>
+            <v-spacer/>
+            <v-btn text @click="confirmDeactivate = false, cleanSpecialtyToDeactivate()" x-small fab>
+              <v-icon>close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-select :items="specialtiesDoctor" v-model="specialtyToDeactivate" outlined persistent-hint
+                    item-text="name"
+                    class="mx-5 mb-4" return-object chips
+                    hint="Selecione as especialidades para desativar"/>
+          <v-select :items="clinics" v-model="clinicsToDeactivate" outlined persistent-hint
+                    item-text="name"
+                    class="mx-5 mb-4" return-object chips hint="Selecione a unidade"/>
+          <v-card-text>
+            <span>Desativar </span>
+            <span class="font-weight-bold justify-center">{{ selectedDoctor.name }}</span>
+            <span> ?</span>
+          </v-card-text>
+          <v-card-actions class="mx-3">
+            <v-spacer/>
+            <submit-button text="Confirmar" :loading="loading" :success="success" @reset="success = false"
+                           @click="deleteAllSchedule(doctor)">
+            </submit-button>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-dialog v-model="success" max-width="300px">
+        <v-alert type="success">
+          Médico apagado com sucesso.
+        </v-alert>
+      </v-dialog>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
-    import moment from 'moment/moment'
-    import SubmitButton from '../../../components/SubmitButton'
+import moment from 'moment/moment'
+import SubmitButton from '../../../components/SubmitButton'
 
-    export default {
-        name: "CardDoctorsManagementConsultations",
-        components: {SubmitButton},
+export default {
+  name: "CardDoctorsManagementConsultations",
+  components: {SubmitButton},
 
-        props: ['clinic' ,'specialty', 'date','examType','filterByExam'],
-        data: () => ({
-            semanaOptions: [
-                "Domingo",
-                "Segunda-feira",
-                "Terça-feira",
-                "Quarta-feira",
-                "Quinta-feira",
-                "Sexta-feira",
-                "Sábado"
-            ],
-            clinics: [],
-            selectedDoctor: [],
-            specialtiesDoctor: '',
-            success: false,
-            loading: false,
-            loadingConsultations: false,
-            confirmDeactivate: false,
-            patientSelected: [],
-            specialtyToDeactivate: {},
-            clinicsToDeactivate: {},
-            consultations:[],
-            product:undefined,
-            skipConsultations:true
-        }),
-        watch:{
-            changeData: {
-                handler: function(val) {
-                    this.loadingConsultations = true
-                    this.product = this.filterByExam ? this.examType : this.specialty
-                    if(this.product || this.clinic || this.date){
-                        this.consultations = []
-                        this.skipConsultations = false
-                        console.log(this.filterByExam)
-                        if(this.filterByExam){
-                            console.log('Deveria chamar os loads dos exams')
-                            this.$apollo.queries.loadConsultationsExams.refresh()
-                        }
-                        else{
-                          console.log('Deveria cahamar só o load normal')
-                          this.$apollo.queries.loadConsultations.refresh()
-                        }
-                    }
-                },
-                deep: true
-            },
-        },
-        computed: {
-            /* consultations() {
-                if (moment().format('YYYY-MM-DD') !== this.date) {
-                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-                    this.loadingConsultations = !this.loadingConsultations
-                }
-                this.loadingConsultations = true
-                let response =  this.$store.getters.consultations.filter((a) => {
-                    let filtedBySpecialty = !this.filterByExam && this.specialty && a.specialty && this.specialty.name === a.specialty.name
-                    let filtedByExamType = this.filterByExam && this.examType && a.exam && this.examType.name === a.exam.type
-                    return this.date && this.date === a.date.split(' ')[0] && a.user && (filtedBySpecialty || filtedByExamType)
-                });
-                this.loadingConsultations = false
-                return response
-            }, */
-
-            ConsultationsByDoctors() {
-                let res = {};
-                for (let cons in this.consultations) {
-                    let targetDate = this.consultations[cons].doctor.uid ? this.consultations[cons].doctor.uid : this.consultations[cons].doctor.cpf;
-                    if (!res[targetDate]) {
-                        res[targetDate] = {
-                            doctor: this.consultations[cons].doctor,
-                            numConsultations: 0,
-                            numRegress: 0,
-                            consultations: []
-                        }
-                    }
-                    if (this.consultations[cons].type === 'Consulta') res[targetDate].numConsultations += 1;
-                    else res[targetDate].numRegress += 1;
-                    res[targetDate].consultations.push(this.consultations[cons])
-                }
-                return res
-            },  
-            doctor() {
-                return this.$store.getters.doctor
-            },
-            changeData() {
-                const { specialty, examType, clinic, date, filterByExam} = this
-                
-                return {
-                    specialty,
-                    examType, 
-                    clinic,
-                    date,
-                    filterByExam
-                }
-            }, 
-        },
-        methods: {
-
-            cleanSpecialtyToDeactivate() {
-                this.specialtyToDeactivate = [];
-                this.clinicsToDeactivate = []
-            },
-            async deactivateDoctor(item) {
-                await this.$store.dispatch('getDoctor', item.cpf);
-                if (this.doctor.cpf === item.cpf) {
-                    this.selectedDoctor = this.doctor;
-                    this.clinics = this.doctor.clinics;
-                    this.specialtiesDoctor = this.doctor.specialties;
-                    this.confirmDeactivate = true;
-                }
-            },
-            daydate(date) {
-                let dateMoment = moment(date);
-                return this.semanaOptions[dateMoment.day()];
-            },
-            patientSelect: function (item) {
-                this.selectUser(item.user)
-                this.$emit('patientSelect', item.patient);
-                this.$emit('consultationSelect', item)
-            },
-            async deleteAllSchedule(doctor) {
-                this.loading = true;
-                let payload = {
-                    doctor: doctor,
-                    specialty: this.specialtyToDeactivate,
-                    clinic: this.clinicsToDeactivate,
-                };
-                await this.$store.dispatch('deleteAllSchedule', payload);
-                this.success = true;
-                this.loading = false;
-                this.confirmDeactivate = false
-            },
-            async selectUser(user) {
-                if (user) {
-                    let intakes = await this.$store.dispatch('getUserIntakes', user);
-                    if (intakes) {
-                        user.intakes = intakes
-                    }
-                    let budgets = await this.$store.dispatch('getUserBudgets', user);
-                    if (budgets) {
-                        user.budgets = budgets
-                    }
-                }
-                this.$store.commit('setSelectedPatient', user);
-                this.$store.commit('clearSelectedDependent');
-            },
-        },
-        apollo: {
-            loadConsultations: {
-                query: require(`@/graphql/consultations/LoadConsultations.gql`),
-                variables(){
-                    return{
-                        idClinic:this.clinic.id,
-                        idProduct:this.product.id,
-                        date:{formatted: moment().format("YYYY-MM-DD")}
-                    }
-                },  
-                update(data) {
-                    this.consultations = data.Consultation
-                    console.log('lOAD CONSULTATIONS SÓ')
-                    this.loadingConsultations = false
-                    this.skipConsultations = true
-                },
-                skip (){
-                    return this.skipConsultations
-                }
-            },
-            loadConsultationsExams: {
-                query: require(`@/graphql/consultations/LoadConsultationsExams.gql`),
-                variables(){
-                    return{
-                        idClinic:this.clinic.id,
-                        idProduct:this.product.id,
-                        date:{formatted: moment().format("YYYY-MM-DD")}
-                    }
-                },
-                update(data) {
-                    console.log('LoadConsultationsExms', this.product)
-                    this.consultations = data.Consultation.filter(consultation => consultation.product.with_product_schedulable && consultation.product.with_product_schedulable.id === this.product.id)
-                    this.loadingConsultations = false
-                    this.skipConsultations = true
-                },
-                /* skip (){
-                    return this.skipConsultations
-                } */
-            },
+  props: ['clinic', 'specialty', 'date', 'examType', 'filterByExam'],
+  data: () => ({
+    semanaOptions: [
+      "Domingo",
+      "Segunda-feira",
+      "Terça-feira",
+      "Quarta-feira",
+      "Quinta-feira",
+      "Sexta-feira",
+      "Sábado"
+    ],
+    clinics: [],
+    selectedDoctor: [],
+    specialtiesDoctor: '',
+    success: false,
+    loading: false,
+    loadingConsultations: false,
+    confirmDeactivate: false,
+    patientSelected: [],
+    specialtyToDeactivate: {},
+    clinicsToDeactivate: {},
+    consultations: [],
+    product: undefined,
+    skipConsultationsExams: true,
+    skipConsultations: true
+  }),
+  watch: {
+    changeData: {
+      handler: function (val) {
+        this.loadingConsultations = true
+        this.product = this.filterByExam ? this.examType : this.specialty
+        if (this.product && this.clinic ) {
+          this.consultations = []
+         
+          if (this.filterByExam) {
+             this.skipConsultationsExams = false
+            this.$apollo.queries.loadConsultationsExams.refresh()
+          } else {
+            this.skipConsultations = false
+            this.$apollo.queries.loadConsultations.refresh()
+          }
         }
-    }
+      },
+      deep: true
+    },
+  },
+  computed: {
+    /* consultations() {
+        if (moment().format('YYYY-MM-DD') !== this.date) {
+            // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+            this.loadingConsultations = !this.loadingConsultations
+        }
+        this.loadingConsultations = true
+        let response =  this.$store.getters.consultations.filter((a) => {
+            let filtedBySpecialty = !this.filterByExam && this.specialty && a.specialty && this.specialty.name === a.specialty.name
+            let filtedByExamType = this.filterByExam && this.examType && a.exam && this.examType.name === a.exam.type
+            return this.date && this.date === a.date.split(' ')[0] && a.user && (filtedBySpecialty || filtedByExamType)
+        });
+        this.loadingConsultations = false
+        return response
+    }, */
+
+    ConsultationsByDoctors() {
+      let res = {};
+      for (let cons in this.consultations) {
+        let targetDate = this.consultations[cons].doctor.id
+        if (!res[targetDate]) {
+          res[targetDate] = {
+            doctor: this.consultations[cons].doctor,
+            numConsultations: 0,
+            numRegress: 0,
+            consultations: []
+          }
+        }
+        if (this.consultations[cons].type === 'Consulta') res[targetDate].numConsultations += 1;
+        else res[targetDate].numRegress += 1;
+        res[targetDate].consultations.push(this.consultations[cons])
+      }
+      console.log('res', JSON.parse(JSON.stringify(res)))
+      return res
+    },
+    doctor() {
+      return this.$store.getters.doctor
+    },
+    changeData() {
+      const {specialty, examType, clinic, date, filterByExam} = this
+
+      return {
+        specialty,
+        examType,
+        clinic,
+        date,
+        filterByExam
+      }
+    },
+  },
+  methods: {
+
+    cleanSpecialtyToDeactivate() {
+      this.specialtyToDeactivate = [];
+      this.clinicsToDeactivate = []
+    },
+    async deactivateDoctor(item) {
+      await this.$store.dispatch('getDoctor', item.cpf);
+      if (this.doctor.cpf === item.cpf) {
+        this.selectedDoctor = this.doctor;
+        this.clinics = this.doctor.clinics;
+        this.specialtiesDoctor = this.doctor.specialties;
+        this.confirmDeactivate = true;
+      }
+    },
+    daydate(date) {
+      let dateMoment = moment(date);
+      return this.semanaOptions[dateMoment.day()];
+    },
+    patientSelect: function (item) {
+      this.selectUser(item.user)
+      this.$emit('patientSelect', item.patient);
+      this.$emit('consultationSelect', item)
+    },
+    async deleteAllSchedule(doctor) {
+      this.loading = true;
+      let payload = {
+        doctor: doctor,
+        specialty: this.specialtyToDeactivate,
+        clinic: this.clinicsToDeactivate,
+      };
+      await this.$store.dispatch('deleteAllSchedule', payload);
+      this.success = true;
+      this.loading = false;
+      this.confirmDeactivate = false
+    },
+    async selectUser(user) {
+      if (user) {
+        let intakes = await this.$store.dispatch('getUserIntakes', user);
+        if (intakes) {
+          user.intakes = intakes
+        }
+        let budgets = await this.$store.dispatch('getUserBudgets', user);
+        if (budgets) {
+          user.budgets = budgets
+        }
+      }
+      this.$store.commit('setSelectedPatient', user);
+      this.$store.commit('clearSelectedDependent');
+    },
+  },
+  apollo: {
+    loadConsultations: {
+      query: require(`@/graphql/consultations/LoadConsultations.gql`),
+      variables() {
+        return {
+          idClinic: this.clinic.id,
+          idProduct: this.product.id,
+          date:{formatted: moment().format("YYYY-MM-DD")}
+        }
+      },
+      update(data) {
+        this.consultations = data.Consultation
+        this.loadingConsultations = false
+        this.skipConsultations = true
+      },
+      skip() {
+        return this.skipConsultations
+      }
+    },
+    loadConsultationsExams: {
+       query: require(`@/graphql/consultations/LoadConsultationsExams.gql`),
+       variables() {
+         return {
+           idClinic: this.clinic.id,
+           idProduct: this.product.id,
+           date:{formatted: moment().format("YYYY-MM-DD")}
+         }
+       },
+       update(data) {
+         this.consultations = data.Consultation.filter(consultation => consultation.product.with_product_schedulable && consultation.product.with_product_schedulable.id === this.product.id)
+         this.loadingConsultations = false
+         this.skipConsultationsExams = true
+       },
+       skip (){
+           return this.skipConsultationsExams
+      }
+    },
+  }
+}
 </script>
 <style scoped>
-    .borderCard {
-        border-radius: 50%;
-        border: #808080 solid;
-    }
+.borderCard {
+  border-radius: 50%;
+  border: #808080 solid;
+}
 
 </style>
