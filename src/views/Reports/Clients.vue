@@ -69,8 +69,8 @@ export default {
   },
   mounted() {
     this.date = moment().subtract(7,'days').format('YYYY-MM-DD')
-    this.initializeData()
-    this.$store.dispatch('loadUsersGeopoints')
+    /* this.initializeData()
+    this.$store.dispatch('loadUsersGeopoints') */
   },
   computed: {
     dateFormatted() {
@@ -99,8 +99,6 @@ export default {
       genresObj.male = (genresObj.male/genresObj.total)/100;
       genresObj.feminine = (genresObj.feminine/genresObj.total)/100;
       genresObj.others = (genresObj.others/genresObj.total)/100;
-
-      console.log('jkjhkjhkjh')
       return genresObj;
     },
     /* usersServed(){
@@ -220,6 +218,40 @@ export default {
       Object.keys(result).map(key => ({ [key]: result[key] }))
     }
   },
+  apollo:{
+    loadAttendanceCount:{
+      query: require("@/graphql/patients/LoadAttendanceCount.gql"),
+      variables(){
+        return {
+          start_date:this.date,
+          final_date:moment().format('YYYY-MM-DD')
+        }
+      },
+      update(data){
+        this.attendances = data.attendanceCount.reduce((obj, attendance)=>{
+          obj[attendance.date.formatted] = attendance.count
+          return obj
+        },{})
+        this.genres = {male: 0, feminine:0, others:0, total:0}
+        for (const key in data.attendanceCount) {
+          const attendance = data.attendanceCount[key];
+          for (const key2 in attendance.genres) {
+            if (attendance.genres[key2] === 'Masculino'){
+              this.genres.male += 1;
+            }
+            else if(attendance.genres[key2] === 'Feminino'){
+              this.genres.feminine += 1;
+            }else
+              this.genres.others += 1;
+            
+            this.genres.total += 1;
+          }
+        }
+        console.log(this.attendances)
+        this.overlay = false
+      }
+    }
+  }
 };
 </script>
 
