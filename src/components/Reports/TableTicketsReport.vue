@@ -75,6 +75,21 @@ export default {
       if(this.collaborators[collaborator].clinic){
         holder.unity = this.collaborators[collaborator].clinic.name
       }
+      holder.all = this.collaborators[collaborator].tickets_called_by_collaborator.length
+      if(this.collaborators[collaborator].tickets_called_by_collaborator.length > 0){
+        let n = this.collaborators[collaborator].tickets_called_by_collaborator.filter(a => {
+          return a.type === 'normal';
+        });
+        holder.normal = n.length
+        let p = this.collaborators[collaborator].tickets_called_by_collaborator.filter(a => {
+          return a.type === 'priority';
+        });
+        holder.priority = p.length
+      } else {
+        holder.normal = 0
+        holder.priority = 0
+        holder.time = 0
+      }
       this.desserts.push(holder)
     }
   },
@@ -93,9 +108,9 @@ export default {
       headers: [
         { text: 'Nome', align: 'start', sortable: false, value: 'collaborator' },
         { text: 'Unidade', value: 'unity' , align: 'center', sortable: false,},
-        { text: 'Atendimentos normal', value: 'normal' , align: 'center', sortable: false,},
-        { text: 'Atendimentos priority', value: 'priority' , align: 'center', sortable: false,},
-        { text: 'Atendimentos Total (normal+priority)', value: 'all' , align: 'center', sortable: false,},
+        { text: 'Atendimentos: NORMAL', value: 'normal' , align: 'center', sortable: false,},
+        { text: 'Atendimentos: PRIORITY', value: 'priority' , align: 'center', sortable: false,},
+        { text: 'Atendimentos: TOTAL (NORMAL + PRIORITY)', value: 'all' , align: 'center', sortable: false,},
         { text: 'Média Geral dos Atendimentos (minutos)', value: 'time' , align: 'center', sortable: false,},
       ],
       desserts: [
