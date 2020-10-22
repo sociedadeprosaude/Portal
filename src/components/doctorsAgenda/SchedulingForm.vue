@@ -283,8 +283,9 @@ export default {
       return this.selectedPatient ? this.selectedPatient.dependents : undefined;
     },
     computedDateFormatted() {
-      let date = this.createConsultationForm.consultation.date.formatted;
-      return this.formatDate(date.split("T")[0]);
+      console.log(this.createConsultationForm.consultation)
+      let date = this.createConsultationForm.consultation.date;
+      return this.formatDate(date.split(" ")[0]);
     },
   },
   methods: {
@@ -300,7 +301,7 @@ export default {
 
     async saveConsultation() {
       this.scheduleLoading = true;
-      let form = this.createConsultationForm;
+      let form = Object.assign({},this.createConsultationForm);
       form.consultation = {
         ...form.consultation,
         status: this.status,
@@ -308,12 +309,13 @@ export default {
         payment_number: this.numberReceipt,
       };
 
-      form.consultation.date = {formatted:form.consultation.date.replace(" ", "T")}
-      
+      form.consultation.date = form.consultation.date.replace(" ", "T")
+      console.log(form.consultation.date)
+
       const consultationId = uuid.v4();
       let mutationBuilder = new MutationBuilder();
       mutationBuilder.addMutation(
-        `CreateConsultation(id:"${consultationId}" type:"${form.consultation.type}", date:"${form.consultation.date}",payment_number:"${form.consultation.payment_number}",status:"${form.consultation.status}"){
+        `CreateConsultation(id:"${consultationId}" type:"${form.consultation.type}", date:{formatted:"${form.consultation.date}"},payment_number:"${form.consultation.payment_number}",status:"${form.consultation.status}"){
             id
           }
         `
