@@ -65,7 +65,6 @@ export default {
       priority: 0,
       new: undefined,
       old: undefined,
-      //gffdgdf
       doctorsListDialog: {
         active: false,
         search: "",
@@ -146,7 +145,7 @@ export default {
           return a.type === 'priority';
         });
         this.priority = p.length
-        console.log('reativo:', this.sector)
+        //console.log('reativo:', this.sector)
       },
     },
   },
@@ -269,8 +268,8 @@ export default {
     },
     async callNextTicket(room, preferential) {
       this.loading = true;
-      console.log('r',room.room_has_tickets);
-      console.log('bool',preferential);
+      //console.log('r',room.room_has_tickets);
+      //console.log('bool',preferential);
       if(room.room_has_tickets.length > 0){
         console.log('chamar ticket do sala')
       } else {
@@ -361,7 +360,7 @@ export default {
       this.$store.commit("setFavoriteRoomSection", this.sector);
     },
     async deleteRoom(room) {
-      console.log('del sala:', room)
+      //console.log('del sala:', room)
       this.deletionRoom.selectedRoom = room;
       if (!this.deletionRoom.deleteRoomDialog) {
         this.deletionRoom.deleteRoomDialog = true;
