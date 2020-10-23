@@ -243,6 +243,15 @@
                     <span v-else>*</span>
                   </div>
                 </v-col>
+                <v-divider vertical></v-divider>
+                <v-col class="pa-0">
+                  <div>
+                    <span style="font-size: 0.8em">Proxima Senha:</span>
+                    <br />
+                    <!--<span v-if="room.current_ticket">{{room.current_ticket}}</span>-->
+                    <span>*</span>
+                  </div>
+                </v-col>
               </v-row>
             </v-container>
           </v-row>
