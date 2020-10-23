@@ -137,12 +137,12 @@
           <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
         </v-date-picker>
       </v-menu>
-    </v-row>
+    </v-row> -->
     <v-row>
       <v-col>
         <Gmaps :geopoints="geopoints" :period_report="date"></Gmaps>
       </v-col>
-    </v-row>  -->
+    </v-row> 
   </v-container>
 </template>
 

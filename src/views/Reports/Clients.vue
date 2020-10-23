@@ -64,6 +64,7 @@ export default {
     attendances:undefined,
     genres:undefined,
     ages:undefined,
+    geopoints:undefined
   }),
   components: {
     Clients,
@@ -91,10 +92,10 @@ export default {
     newClients() {
       return this.$store.getters.getNewClients;
     },
-    ageClientsServed() {
+    /* ageClientsServed() {
       let data = this.$store.getters.getAgeClientsServed;
       return this.$store.getters.getAgeClientsServed;
-    },
+    }, */
     genresClientsServed() {
       let genresObj = this.genres;
       genresObj.male = (genresObj.male/genresObj.total)/100;
@@ -110,9 +111,9 @@ export default {
         return a
       },[])
     } */
-    geopoints() {
+    /* geopoints() {
       return this.$store.getters.getGeopoints;
-    },
+    }, */
   },
   watch:{
     date(value){
@@ -238,6 +239,19 @@ export default {
             this.ages[differance] += 1;
           }
         }
+    },
+    formartGeopoints(attendances){
+      this.geopoints = []
+        for (const key in attendances) {
+          const attendance = attendances[key];
+          for (const key2 in attendance.geopoints) {
+            const geopoint = attendance.geopoints[key2];
+            const foundIndex = this.geopoints.findIndex((value) => value.latitude === geopoint.latitude && value.longitude === geopoint.longitude)
+            if(foundIndex === -1) this.geopoints.push({...geopoint, count: 1});
+            else this.geopoints[foundIndex].count += 1;
+          }
+        }
+        console.log('geopoints', this.geopoints)
     }
   },
   apollo:{
@@ -256,6 +270,7 @@ export default {
         },{})
         this.formatGenresObject(data.attendanceCount);
         this.formartAgesObject(data.attendanceCount);
+        this.formartGeopoints(data.attendanceCountGeopoint)
 
         this.overlay = false
       }
