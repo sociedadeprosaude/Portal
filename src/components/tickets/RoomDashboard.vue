@@ -229,7 +229,7 @@
             <v-container class="pa-0">
               <v-row>
                 <v-col class="pa-0">
-                  <span style="font-size: 0.8em">Ultima senha:</span>
+                  <span style="font-size: 0.8em">Senha Anterior:</span>
                   <br />
                   <span v-if="room.previos_ticket">{{room.previos_ticket}}</span>
                   <span v-else>*</span>
@@ -237,7 +237,7 @@
                 <v-divider vertical></v-divider>
                 <v-col class="pa-0">
                   <div>
-                    <span style="font-size: 0.8em">Senha atual:</span>
+                    <span style="font-size: 0.8em">Senha Atual:</span>
                     <br />
                     <span v-if="room.current_ticket">{{room.current_ticket}}</span>
                     <span v-else>*</span>

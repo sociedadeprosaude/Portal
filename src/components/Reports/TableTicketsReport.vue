@@ -4,7 +4,7 @@
       <v-flex xs12>
         <v-card v-if="collaborators && selectedUnit">
           <v-card-title>
-            <span>Relatorio de Atendimentos por Colaborador</span>
+            <span>Relatorio de Atendimentos por Colaborador{{selectedUnit}}</span>
             <v-spacer></v-spacer>
             <v-divider vertical></v-divider>
             <v-spacer></v-spacer>

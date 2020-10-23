@@ -53,14 +53,14 @@
           </ApolloQuery>
         </v-col>
       </v-row>
-      <v-layout class="align-center justify-center" row wrap>
+<!--      <v-layout class="align-center justify-center" row wrap>
         <table-tickets-report v-if="collaborators && selectedUnit" :collaborators="collaborators" :selectedUnit="selectedUnit"></table-tickets-report>
         <v-row v-else class="align-center justify-center">
           <v-alert type="warning">
             <strong>Nenhum Ticket chamado Neste Período</strong>
           </v-alert>
         </v-row>
-      </v-layout>
+      </v-layout>-->
     </v-container>
   </v-content>
 </template>
@@ -78,15 +78,15 @@ export default {
     selectedFinalDate: moment().format("YYYY-MM-DD"),
     selectedUnit: undefined,
   }),
-  apollo: {
+/*  apollo: {
     LoadColaborators: {
       query: require("@/graphql/colaborators/LoadColaborators.gql"),
       update(data){
         this.collaborators = Object.assign(data.Colaborator)
-        //console.log('reativo:', this.collaborators)
+        console.log('reativo:', this.collaborators)
       },
     }
-  },
+  },*/
   computed:{
     formattedSelectedStartDate: {
       get() {
