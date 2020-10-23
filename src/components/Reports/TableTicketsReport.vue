@@ -2,12 +2,14 @@
   <v-container>
     <v-layout>
       <v-flex xs12>
-        <v-card>
+        <v-card v-if="collaborators && selectedUnit">
           <v-card-title>
-            <span>EmployeeServiceReport</span>
-            {{this.collaborators.length}}
+            <span>Relatorio de Atendimentos por Colaborador</span>
+            <v-spacer></v-spacer>
+            <v-divider vertical></v-divider>
             <v-spacer></v-spacer>
             <v-text-field
+                outlined
                 v-model="search"
                 append-icon="mdi-magnify"
                 label="Search"
@@ -63,12 +65,22 @@
 
 <script>
 export default {
-  props:["collaborators"],
+  props:["collaborators", "selectedUnit"],
   mounted() {
-    //this.desserts = this.colaborators
+    if(this.selectedUnit){
+      let val =  this.collaborators.filter(a => {
+        return a.clinic;
+      });
+      let aux = val.filter(a => {
+        return a.clinic.id === this.selectedUnit.id;
+      });
+      //console.log('filter1', val)
+      //console.log('filter2', aux)
+      this.collaborators = aux;
+    }
+    //fgdfhgdfgdf
     for (let collaborator in this.collaborators){
       let holder = {}
-      //console.log('i:', this.collaborators[collaborator])
       if(this.collaborators[collaborator].name){
         holder.collaborator = this.collaborators[collaborator].name
       }
@@ -110,18 +122,18 @@ export default {
         { text: 'Unidade', value: 'unity' , align: 'center', sortable: false,},
         { text: 'Atendimentos: NORMAL', value: 'normal' , align: 'center', sortable: false,},
         { text: 'Atendimentos: PRIORITY', value: 'priority' , align: 'center', sortable: false,},
-        { text: 'Atendimentos: TOTAL (NORMAL + PRIORITY)', value: 'all' , align: 'center', sortable: false,},
-        { text: 'Média Geral dos Atendimentos (minutos)', value: 'time' , align: 'center', sortable: false,},
+        { text: 'Atendimentos: TOTAL', value: 'all' , align: 'center', sortable: false,},
+        { text: 'Média dos Atendimentos (minutos)', value: 'time' , align: 'center', sortable: false,},
       ],
       desserts: [
-        {
+/*        {
           collaborator: 'dummy',
           unity: 'dummy',
           normal: 20,
           priority: 6,
           all: 26,
           time: 6,
-        },
+        },*/
       ],
     }
   },
