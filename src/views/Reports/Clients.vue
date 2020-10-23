@@ -33,7 +33,7 @@
       :dateFormatted="dateFormatted2"
       :clientsServed="attendances"
       :newClients="newClients"
-      :ageClientsServed="ageClientsServed"
+      :ageClientsServed="ages"
       :genresClientsServed="genres"
       :geopoints="geopoints"
       :generateDatasetServed="generateDatasetServed"
@@ -62,7 +62,8 @@ export default {
     menu2:false,
     overlay:false,
     attendances:undefined,
-    genres:undefined
+    genres:undefined,
+    ages:undefined,
   }),
   components: {
     Clients,
@@ -207,15 +208,36 @@ export default {
         },
       };
     },
-    countUniqueValuesGenre(array){
-      const result = { male:0, feminine:0}
+    formatGenresObject(attendances){
+      this.genres = {male: 0, feminine:0, others:0, total:0}
+        for (const key in attendances) {
+          const attendance = attendances[key];
+          for (const key2 in attendance.genres) {
+            if (attendance.genres[key2] === 'Masculino'){
+              this.genres.male += 1;
+            }
+            else if(attendance.genres[key2] === 'Feminino'){
+              this.genres.feminine += 1;
+            }else
+              this.genres.others += 1;
+            
+            this.genres.total += 1;
+          }
+        }
 
-
-      for (let i = 0; i < array.length; i++) {
-        result[array[i]] = (result[array[i]] || 0) + 1
-      }
-
-      Object.keys(result).map(key => ({ [key]: result[key] }))
+      
+    },
+    formartAgesObject(attendances){
+      this.ages = {}
+        for (const key in attendances) {
+          const attendance = attendances[key];
+          for (const key2 in attendance.patients_birth_date) {
+            const birth_date = moment(attendance.patients_birth_date[key2].formatted,'YYYY-MM-DD');
+            const differance = moment().diff(birth_date,'years').toString();
+            if(!this.ages[differance]) this.ages[differance] = 0
+            this.ages[differance] += 1;
+          }
+        }
     }
   },
   apollo:{
@@ -232,22 +254,9 @@ export default {
           obj[attendance.date.formatted] = attendance.count
           return obj
         },{})
-        this.genres = {male: 0, feminine:0, others:0, total:0}
-        for (const key in data.attendanceCount) {
-          const attendance = data.attendanceCount[key];
-          for (const key2 in attendance.genres) {
-            if (attendance.genres[key2] === 'Masculino'){
-              this.genres.male += 1;
-            }
-            else if(attendance.genres[key2] === 'Feminino'){
-              this.genres.feminine += 1;
-            }else
-              this.genres.others += 1;
-            
-            this.genres.total += 1;
-          }
-        }
-        console.log(this.attendances)
+        this.formatGenresObject(data.attendanceCount);
+        this.formartAgesObject(data.attendanceCount);
+
         this.overlay = false
       }
     }
