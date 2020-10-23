@@ -64,7 +64,8 @@ export default {
     attendances:undefined,
     genres:undefined,
     ages:undefined,
-    geopoints:undefined
+    geopoints:undefined,
+    newClients: undefined
   }),
   components: {
     Clients,
@@ -89,9 +90,9 @@ export default {
         return this.attendances
       }
     }, */
-    newClients() {
+    /* newClients() {
       return this.$store.getters.getNewClients;
-    },
+    }, */
     /* ageClientsServed() {
       let data = this.$store.getters.getAgeClientsServed;
       return this.$store.getters.getAgeClientsServed;
@@ -252,6 +253,13 @@ export default {
           }
         }
         console.log('geopoints', this.geopoints)
+    },
+    reduceAttendances(attendances){
+      return attendances.reduce((obj, attendance)=>{
+          const date = moment(attendance.date.formatted).format('DD/MM/YYYY')
+          obj[date] = attendance.count
+          return obj
+      },{})
     }
   },
   apollo:{
@@ -264,10 +272,8 @@ export default {
         }
       },
       update(data){
-        this.attendances = data.attendanceCount.reduce((obj, attendance)=>{
-          obj[attendance.date.formatted] = attendance.count
-          return obj
-        },{})
+        this.attendances = this.reduceAttendances(data.attendanceCount);
+        this.newClients = this.reduceAttendances(data.createdPatientCount);
         this.formatGenresObject(data.attendanceCount);
         this.formartAgesObject(data.attendanceCount);
         this.formartGeopoints(data.attendanceCountGeopoint)

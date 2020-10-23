@@ -15,7 +15,7 @@
       </v-col>
     </v-row>
 
-    <!-- <v-row class="mt-2">
+    <v-row class="mt-2">
       <h1 class="headline">Novos Clientes</h1>
     </v-row>
     <v-row>
@@ -28,7 +28,7 @@
           </v-row>
         </v-card>
       </v-col>
-    </v-row> -->
+    </v-row>
 
     <v-row class="mt-2">
       <h1 class="headline">Idade dos visitantes</h1>
