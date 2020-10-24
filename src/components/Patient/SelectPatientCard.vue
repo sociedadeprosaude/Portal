@@ -773,7 +773,7 @@
                 this.email = user.email;
                 this.rg = user.rg;
                 this.numAss = user.association_number;
-                this.birthDate = await moment(user.birth_date).format('DD/MM/YYYY');
+                this.birthDate = moment(user.birth_date.formatted).format('DD/MM/YYYY');
                 this.sex = user.sex;
                 this.dependents = user.dependents ? user.dependents : [];
                 this.telephones = user.telephones ? user.telephones : [''];

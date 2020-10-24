@@ -44,7 +44,7 @@
                                           <v-flex xs8 class="mb-3">
                                               <v-flex xs12>
                                                   <h4 class="text-left font-weight-bold">{{item.product.name}}</h4>
-                                                  <h5 class="text-left mt-1">{{item.date.substring(11,16)}}</h5>
+<!--                                                   <h5 class="text-left mt-1">{{item.date.substring(11,16)}}</h5> -->
                                                   <h5 class="text-left">{{item.doctor.name}}</h5>
                                               </v-flex>
                                           </v-flex>
@@ -94,10 +94,12 @@
                 let consultations= {};
                 for(let i=0; i<this.patient.consultations.length; i++){
                     if(!this.patient.consultations[i].canceled_schedule){
-                        if(!consultations[this.patient.consultations[i].date]){
-                            consultations[this.patient.consultations[i].date] = {
+                        let dateTimeConsultation = this.patient.consultations[i].date.formatted;
+                        const date = dateTimeConsultation.split("T")[0];
+                        if(!consultations[date]){
+                            consultations[date] = {
                                 consultations: [],
-                                date: this.patient.consultations[i].date.substring(0,10)
+                                date: date
                             }
                         }
                         let consultation = this.patient.consultations[i]
@@ -106,7 +108,7 @@
                             consultation.type = 'Consulta'
                         }
                             
-                        consultations[this.patient.consultations[i].date].consultations.push(consultation)
+                        consultations[date].consultations.push(consultation)
                     }
 
                 }

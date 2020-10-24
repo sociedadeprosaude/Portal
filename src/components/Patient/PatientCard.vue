@@ -43,7 +43,7 @@
                                     <span class="font-weight-bold white--text"
                                           style="font-size: 0.6em">Nascimento</span>
                                     <span class="font-weight-bold white--text"
-                                          style="font-size: 1.2em">{{user.birth_date | dateFilter}}</span>
+                                          style="font-size: 1.2em">{{user.birth_date.formatted | dateFilter}}</span>
                                 </v-layout>
                             </v-flex>
                         </v-layout>

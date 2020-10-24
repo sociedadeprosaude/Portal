@@ -2,7 +2,7 @@ query($property:Boolean){
     Clinic(orderBy:[name_desc],property:$property){
         id,name,cnpj,telephone,logo,property,opening_hours
         has_address{
-            cep, state, street, city, complement, neighboor, number, geopoint
+            cep, state, street, city, complement, neighboor, number,geopoint{latitude,longitude}
         },
           has_doctor{
             id

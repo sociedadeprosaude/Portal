@@ -15,7 +15,7 @@
       </v-col>
     </v-row>
 
-    <!-- <v-row class="mt-2">
+    <v-row class="mt-2">
       <h1 class="headline">Novos Clientes</h1>
     </v-row>
     <v-row>
@@ -28,9 +28,9 @@
           </v-row>
         </v-card>
       </v-col>
-    </v-row> -->
+    </v-row>
 
-    <!-- <v-row class="mt-2">
+    <v-row class="mt-2">
       <h1 class="headline">Idade dos visitantes</h1>
     </v-row>
     <v-row>
@@ -46,7 +46,7 @@
           </v-row>
         </v-card>
       </v-col>
-    </v-row> -->
+    </v-row>
 
     <v-row class="mt-2">
       <h1 class="headline">Gênero dos visitantes</h1>
@@ -137,12 +137,12 @@
           <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
         </v-date-picker>
       </v-menu>
-    </v-row>
+    </v-row> -->
     <v-row>
       <v-col>
         <Gmaps :geopoints="geopoints" :period_report="date"></Gmaps>
       </v-col>
-    </v-row>  -->
+    </v-row> 
   </v-container>
 </template>
 

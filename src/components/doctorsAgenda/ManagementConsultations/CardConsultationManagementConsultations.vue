@@ -8,10 +8,10 @@
                 <p class="text-left">CRM: {{consultation.doctor.crm}}</p>
             </v-flex>
             <v-flex xs8>
-                <p class="text-left">Dia: {{dateFormat(consultation.date)}}</p>
+                <p class="text-left">Dia: {{dateFormat(date)}}</p>
             </v-flex>
             <v-flex xs4>
-                <p class="text-left">Hora: {{consultation.date.substring(11,16)}}</p>
+                <p class="text-left">Hora: {{hour.substring(0,5)}}</p>
             </v-flex>
             <v-flex xs12 v-if="user.type !== 'DOCTOR'">
                 <p class="text-left">Recibo: {{consultation.payment_number}}</p>
@@ -31,32 +31,31 @@
 </template>
 
 <script>
+    import moment from 'moment';
     export default {
         name: "CardConsultationManagementConsultations",
         props: ['consultation'],
         data: () => ({
-
+            date:undefined,
+            hour:undefined
         }),
         computed: {
             user(){
                 return this.$store.getters.user
             },
         },
-        mounted() {
-            this.initialConfig()
-
-        },
         watch: {
-
+            consultation(value){
+                if(value){
+                    this.date = this.consultation.date.formatted.split("T")[0]
+                    this.hour = this.consultation.date.formatted.split("T")[1]
+                }
+            }
         },
         methods: {
 
-            async initialConfig() {
-
-            },
-            dateFormat(item){
-               let date= item.substring(8,10) + '/' + item.substring(5,7) + '/' + item.substring(0,4)
-                return date
+            dateFormat(date){
+                return moment(date).format("DD/MM/YYYY")
             }
 
         },
