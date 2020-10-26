@@ -7,7 +7,7 @@ query($email:String!){
     group,
     salary,
     permissions,
-    birth_date,
+    birth_date{formatted},
     clinic:work_in{
       id,
       name,

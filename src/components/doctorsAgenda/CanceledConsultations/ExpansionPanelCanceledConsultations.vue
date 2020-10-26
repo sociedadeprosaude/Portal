@@ -35,8 +35,8 @@
                                                 @click="viewConsultation = {
                                                                     idConsultation:item.id,
                                                                     patient: item.patient,
-                                                                    data: item.date.split(' ')[0],
-                                                                    hora: item.date.split(' ')[1],
+                                                                    data: item.date.formatted.split('T')[0],
+                                                                    hora: item.date.formatted.split('T')[1],
                                                                     product:item.product,
                                                                     status: item.status,
                                                                     type: item.type,
@@ -55,7 +55,7 @@
                                                 <br>
                                                 <v-list-item-subtitle class="text-center font-weight-bold">
                                                     {{item.patient.dependent ? 'Nascimento:' +
-                                                    item.patient.dependent.birthDate
+                                                    item.patient.dependent.birth_date.formatted
                                                     : 'CPF:' + item.patient.cpf}}
                                                 </v-list-item-subtitle>
                                                 <br>
