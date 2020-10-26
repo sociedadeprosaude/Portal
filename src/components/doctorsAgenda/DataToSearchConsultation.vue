@@ -174,11 +174,8 @@ export default {
                 //console.log(moment.parseZone(consultation.date.formatted, 'YYYY-MM-DD HH:mmZ').isSame(moment(scheduleObj.date)))
                 return moment(consultation.date.formatted,'YYYY-MM-DD HH:mmZ').utc().format('YYYY-MM-DD HH:mm') === scheduleObj.date
               })
-              /* if(consultationsOfDay.length > 0)
-                console.log('pegou esse',consultationsOfDay) */
               const qtd_returns = consultationsOfDay.filter(consultation => consultation.type === "Retorno").length
               const qtd_consultations = consultationsOfDay.length - qtd_returns;
-
               const obj = {...scheduleObj,qtd_consultations, qtd_returns};
               obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns;
               consultations.push(obj)
