@@ -303,13 +303,13 @@ export default {
             called_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
           },
         });
-        await this.$apollo.mutate({
+/*        await this.$apollo.mutate({
             mutation: require('@/graphql/tickets/AddColaboratorTickets_called_by_collaborator.gql'),
             variables: {
               idCollaborator: this.$store.getters.user.id,
               idTicket: priority[0].id,
             },
-          });
+          });*/
         if(!room.previos_ticket) {
           await this.$apollo.mutate({
             mutation: require('@/graphql/rooms/UpdateRoom.gql'),
@@ -344,13 +344,13 @@ export default {
               called_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
             },
           });
-          await this.$apollo.mutate({
+/*          await this.$apollo.mutate({
             mutation: require('@/graphql/tickets/AddColaboratorTickets_called_by_collaborator.gql'),
             variables: {
               idCollaborator: this.$store.getters.user.id,
               idTicket: normal[0].id,
             },
-          });
+          });*/
           if(!room.previos_ticket) {
             await this.$apollo.mutate({
               mutation: require('@/graphql/rooms/UpdateRoom.gql'),
