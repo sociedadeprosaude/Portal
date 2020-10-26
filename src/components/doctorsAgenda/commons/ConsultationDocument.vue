@@ -181,14 +181,14 @@
         },
         methods: {
             formatbirthDate(){
-                const date = this.consultation.dependent ? this.consultation.dependent.birth_date : this.consultation.patient.birth_date.formatted
+                const date = this.consultation.dependent ? this.consultation.dependent.birth_date.formatted : this.consultation.patient.birth_date.formatted
                 let formatbirthDateFormat = moment(date).format('DD/MM/YYYY')
                 return formatbirthDateFormat
             },
 
             formatIdade(){
                 let idade;
-                let date = this.consultation.dependent ? this.consultation.dependent.birth_date : this.consultation.patient.birth_date.formatted;
+                let date = this.consultation.dependent ? this.consultation.dependent.birth_date.formatted : this.consultation.patient.birth_date.formatted;
                 let patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
                 if(patt.test(date)) date = moment(date,"DD/MM/YYYY").format("YYYY-MM-DD");
                 idade = moment().diff(moment(date, 'YYYY-MM-DD'), 'years');

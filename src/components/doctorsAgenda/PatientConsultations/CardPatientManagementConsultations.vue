@@ -93,7 +93,7 @@
                 console.log('no gerenciamento de pacientes', this.patient.consultations)
                 let consultations= {};
                 for(let i=0; i<this.patient.consultations.length; i++){
-                    if(!this.patient.consultations[i].canceled_schedule){
+                    if(!this.patient.consultations[i].canceled_schedule && this.patient.consultations[i].date.formatted){
                         let dateTimeConsultation = this.patient.consultations[i].date.formatted;
                         const date = dateTimeConsultation.split("T")[0];
                         if(!consultations[date]){

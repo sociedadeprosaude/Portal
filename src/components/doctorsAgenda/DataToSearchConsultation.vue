@@ -169,7 +169,12 @@ export default {
                 product:schedule.product
               };
               
-              const consultationsOfDay = schedule.consultations.filter(consultation => consultation.date === scheduleObj.date)
+              const consultationsOfDay = schedule.consultations.filter(consultation => {
+                console.log(scheduleObj.date,moment(consultation.date.formatted).format('YYYY-MM-DD HH:mm'))
+                return consultation.date.formatted && moment(consultation.date.formatted).format('YYYY-MM-DD HH:mm') === scheduleObj.date
+              })
+              /* if(consultationsOfDay.length > 0)
+                console.log('pegou esse',consultationsOfDay) */
               const qtd_returns = consultationsOfDay.filter(consultation => consultation.type === "Retorno").length
               const qtd_consultations = consultationsOfDay.length - qtd_returns;
 
