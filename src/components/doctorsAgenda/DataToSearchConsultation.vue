@@ -170,8 +170,9 @@ export default {
               };
               
               const consultationsOfDay = schedule.consultations.filter(consultation => {
-                console.log(scheduleObj.date,moment(consultation.date.formatted).format('YYYY-MM-DD HH:mm'))
-                return consultation.date.formatted && moment(consultation.date.formatted).format('YYYY-MM-DD HH:mm') === scheduleObj.date
+                
+                //console.log(moment.parseZone(consultation.date.formatted, 'YYYY-MM-DD HH:mmZ').isSame(moment(scheduleObj.date)))
+                return moment(consultation.date.formatted,'YYYY-MM-DD HH:mmZ').utc().format('YYYY-MM-DD HH:mm') === scheduleObj.date
               })
               /* if(consultationsOfDay.length > 0)
                 console.log('pegou esse',consultationsOfDay) */
