@@ -103,7 +103,7 @@
             </v-flex>
             <v-flex xs12 v-if="historyPatient" class="mt-4 mx-3">
                 <v-card>
-                    <HistoryCashierPatient :option="optionPatient"/>
+                    <HistoryCashierPatient @SelectBudget="budget()" :option="optionPatient"/>
                 </v-card>
             </v-flex>
         </v-layout>
@@ -217,7 +217,10 @@
         },
 
         methods: {
-
+            budget(){
+              this.historyPatient = !this.historyPatient
+              this.cartPatient= !this.cartPatient
+            },
             selectCategory(category) {
                 this.categorySelect = category
             },
