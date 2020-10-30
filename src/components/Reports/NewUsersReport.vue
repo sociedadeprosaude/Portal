@@ -26,8 +26,7 @@
                 <v-flex xs3>
                     <v-text-field outlined
                                   dense
-                                  v-model="dateStart"
-                                  :rules="rulesDate"
+                                  v-model="dateStartText"
                                   v-mask="mask.date"
                                   prepend-icon="date_range"
                                   placeholder="Data inicial"
@@ -38,8 +37,7 @@
                     <v-text-field outlined
                                   class="mx-1"
                                   dense
-                                  v-model="dateEnd"
-                                  :rules="rulesDate"
+                                  v-model="dateEndText"
                                   v-mask="mask.date"
                                   placeholder="Data final"/>
                 </v-flex>
@@ -48,6 +46,7 @@
             </v-card-title>
 
             <ApolloQuery
+                    v-if="dateEnd.length && dateStart.length"
                     :query="require('@/graphql/reports/ReportNewPatients.gql')"
                     :variables="{ start_date: dateStart, end_date: dateEnd}"
             >
@@ -97,33 +96,24 @@
                 date: '##/##/####',
 
             },
-            dateStart: undefined,
-            dateEnd: undefined,
-            rulesDate: [
-                value => {
-                    const data = moment(value, "DD/MM/YYYY", true);
-                    this.dateStart = moment(this.value, "DD/MM/YYYY").format("YYYY-MM-DD");
-                    return data.isValid() || 'Data inválida'
-                },
-            ],
+          dateStartText: moment().format('DD/MM/YYYY'),
+          dateEndText: moment().add(1, 'days').format('DD/MM/YYYY'),
         }),
-
-        watch: {
-            dataStart (date) {
-                return moment(date, "DD/MM/YYYY").format("YYYY-MM-DD")
+        computed:{
+          dateStart(){
+            if(this.dateStartText.length === 10){
+              return moment(this.dateStartText,'DD/MM/YYYY').format('YYYY-MM-DD')
             }
+            return moment().format('YYYY-MM-DD')
+          },
+          dateEnd(){
+            if(this.dateEndText.length === 10){
+              return moment(this.dateEndText,'DD/MM/YYYY').format('YYYY-MM-DD')
+            }
+            return moment().format('YYYY-MM-DD')
+          }
         },
-
-        mounted() {
-            this.dateStart = moment().format('YYYY-MM-DD');
-            this.dateEnd = moment().add(1, 'days').format('YYYY-MM-DD');
-
-        },
-
         props: [
-            "date",
-            "date2",
-            "todayNewUsers",
             "search",
             "now",
             "total",

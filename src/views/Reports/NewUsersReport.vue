@@ -1,9 +1,6 @@
 <template>
     <v-container>
         <NewUsersReport
-                :date="date"
-                :date2="date2"
-                :todayNewUsers="todayNewUsers"
                 :search="search"
                 :now="now"
                 :total="total"
@@ -73,7 +70,7 @@
                 if (this.actualList) return this.actualList.length;
                 return 0;
             }
-        }
+        },
     };
 </script>
 
