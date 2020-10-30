@@ -19,7 +19,7 @@
                     fullscreen
                     v-model="dialogPaidBills"
             >
-                <v-card color="grey">
+                <v-card color="background">
                     <v-toolbar dark color="primary">
                         <v-btn style="display: none" text color="transparent" class="transparent"/>
                         <v-spacer/>
@@ -111,8 +111,8 @@
             <v-dialog transition="dialog-bottom-transition" v-model="dialogInfoPaidBill">
                 <v-card outlined>
                     <v-flex xs12>
-                      <span style="font-weight: bold; color: black; font-size: small">{{ bill.category }}<br/></span>
-                      <span style="font-weight: bold; color: red; font-size: small">R$ {{ bill.value }}</span>
+                        <span style="font-weight: bold; color: black; font-size: small">{{ bill.category }}<br/></span>
+                        <span style="font-weight: bold; color: red; font-size: small">R$ {{ bill.value }}</span>
                     </v-flex>
                     <v-divider/>
                     <v-card-text>
@@ -171,7 +171,10 @@
             </v-dialog>
         </div>
 
-        <v-row class="align-center justify-center">
+        <v-layout row wrap class="justify-center" v-show="!pendingOuttakes">
+            <v-progress-circular indeterminate color="primary" large/>
+        </v-layout>
+        <v-row class="align-center justify-center" v-model="billsToPay">
             <outtake-order-mobile class="mt-n9" :outtakes="pendingOuttakes"/>
         </v-row>
 
@@ -181,21 +184,31 @@
                     <v-card class="elevation-0" tile color="primary">
                         <v-card-actions>
                             <v-spacer/>
+                            <!--menu lateral-->
+                            <v-btn fab small>
+                                <v-icon color="primary">menu</v-icon>
+                            </v-btn>
+                            <v-spacer/>
+                            <!--                            adicionar categoria-->
                             <v-btn fab small>
                                 <v-icon color="primary">playlist_add</v-icon>
                             </v-btn>
                             <v-spacer/>
-                            <v-btn @click="dialogPaidBills = true" fab small>
-                                <v-icon color="primary">playlist_add_check</v-icon>
-                            </v-btn>
-                            <v-spacer/>
+                            <!--                            registrar nova conta-->
                             <v-btn rounded @click="dialogRegisterBill = true">
                                 <v-icon color="primary">add</v-icon>
                             </v-btn>
                             <v-spacer/>
-                            <v-btn fab small>3</v-btn>
+                            <!--                            contas pagas-->
+                            <v-btn @click="dialogPaidBills = true" fab small>
+                                <v-icon color="primary">playlist_add_check</v-icon>
+                            </v-btn>
                             <v-spacer/>
-                            <v-btn fab small>4</v-btn>
+                            <!--                            contas-->
+                            <v-btn fab small
+                                   @click="billsToPay = true, dialogInfoPaidBill = false, dialogRegisterBill = false">
+                                <v-icon color="primary">attach_money</v-icon>
+                            </v-btn>
                             <v-spacer/>
                         </v-card-actions>
                     </v-card>
@@ -218,6 +231,7 @@
         },
         data() {
             return {
+                billsToPay: true,
                 dialogInfoPaidBill: false,
                 dialogPaidBills: false,
                 dialogRegisterBill: false,
