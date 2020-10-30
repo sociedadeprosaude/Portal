@@ -145,9 +145,7 @@
                 window.print()
             },
           download(){
-            window.open('https://prosaude-36f66.web.app/pdf/orcamento' + this.budget.id)
-            //const download = document.getElementById("fileRequest");
-            //download.download = window
+            window.open('https://prosaude-36f66.web.app/pdf/orcamento/' + this.budget.id)
           }
         }
     }
