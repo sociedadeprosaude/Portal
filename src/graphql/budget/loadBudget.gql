@@ -1,0 +1,52 @@
+query($ID:ID) {
+    Budget(id:$ID){
+     date {
+                       formatted
+                       },
+                       id,
+                      discount,
+                      value,
+                      payments,
+                      parcels,
+                      payment_methods,
+                      user: with_user{
+                        id, name, email, cpf, sex
+                      }
+                      products: with_productBundget{
+                         price,
+                         id,
+                         with_product{
+                            name,
+                            type,
+                          },
+                         clinic: with_clinic{
+                            id,
+                            name,
+                            logo,
+                            cnpj,
+                            telephone,
+                            opening_hours,
+                            has_address{
+                                    neighboor,
+                                    city,
+                                    complement,
+                                    street,
+                                    number,
+                                    complement,
+                                    state,
+                                    cep
+                            }
+                         }
+                       },
+                       with_unit{
+                         id,
+                         name,
+                         logo,
+                         cnpj,
+                         telephone,
+                         has_address{
+                         cep, city, complement, neighboor, number, state, street, uf
+                         }
+                       }
+    }
+}

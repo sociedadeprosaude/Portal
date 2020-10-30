@@ -10,6 +10,7 @@ import Labor from "./views/Personal/Labor";
 import NewBundles from "./views/Register/Bundles";
 import PaymentCovenants from "./views/Financial/PaymentCovenants";
 import PaymentMedics from "./views/Financial/PaymentMedics";
+import BudgetToPrint from "./views/Pdf/BudgetToPrint"
 
 import ContestValue from "./views/Notifications/contestValues"
 
@@ -48,6 +49,12 @@ const Clinic = {
 }
 Vue.use(Router);
 let mainRoutes = [
+  {
+    path: '/pdf/:id',
+    name: 'BudgetToPrint',
+    component: BudgetToPrint,
+    props: true,
+  },
   {
     path: '/',
     name: 'Home',
@@ -312,7 +319,7 @@ router.afterEach((to, from, next) => {
       name: routes[i].name,
       path: routes[i].path,
     }
-    permissions[0].children.push(holder)
+      permissions[0].children.push(holder)
   }
   store.commit('Setpermissions', permissions);
   if (to.path.includes('agenda')) {
