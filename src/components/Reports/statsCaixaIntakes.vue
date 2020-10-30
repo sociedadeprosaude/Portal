@@ -37,22 +37,6 @@
         />
       </v-col>
       <v-col cols="12" sm="6" md="3">
-        <MiniStatistic
-          icon="mdi-currency-usd-off"
-          :title="`R$ ${cost}`"
-          sub-title="Custos"
-          color="red"
-        />
-      </v-col>
-      <v-col cols="12" sm="6" md="3">
-        <MiniStatistic
-          icon="mdi-plus"
-          :title="`R$ ${profit}`"
-          sub-title="Lucro Líquido"
-          color="green"
-        />
-      </v-col>
-      <v-col cols="12" sm="6" md="3">
         <MiniStatistic icon="mdi-counter" :title="numOfSales" sub-title="Nº Vendas" color="blue" />
       </v-col>
     </v-row>
