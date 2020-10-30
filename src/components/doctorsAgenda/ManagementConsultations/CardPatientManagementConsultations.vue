@@ -5,7 +5,8 @@
                 <p class="text-left">Nome: {{dependent ? dependent.name : patient.name}}</p>
             </v-flex>
             <v-flex xs12>
-                <p class="text-left">Data de Nascimento: {{dependent ? formartDate(dependent.birth_date) : patient.cpf}}</p>
+                <p class="text-left" v-if="dependent">Data de Nascimento: {{formartDate(dependent.birth_date.formatted)}}</p>
+                <p class="text-left" v-else>CPF: {{patient.cpf}}</p>
             </v-flex>
         </v-layout>
     </v-container>

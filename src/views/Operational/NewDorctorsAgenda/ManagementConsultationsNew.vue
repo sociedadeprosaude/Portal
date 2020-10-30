@@ -52,7 +52,7 @@
                                 </template>
                         </ApolloQuery>
                     </v-flex>
-                    <v-flex xs12 sm3>
+                    <!-- <v-flex xs12 sm3>
                         <v-menu
                                 ref="menu1"
                                 v-model="menu1"
@@ -75,7 +75,7 @@
                             <v-date-picker v-model="date" no-title @input="menu1 = false"
                                            @change="getConsultationsDorctors()"/>
                         </v-menu>
-                    </v-flex>
+                    </v-flex> -->
                   <v-flex xs12 sm5>
                     <v-select
                         v-model="clinic"

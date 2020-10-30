@@ -2,7 +2,11 @@
   <td :colspan="headers.length">
     <v-layout class="text-center pt-5" row wrap>
       <v-flex class="mb-0 pb-0 xs12">
-        <h1 class="headline font-weight-bold">Dias da semana</h1>
+         <ObservationsDialog :schedule="item" class="text-right"/>
+      </v-flex>
+      
+      <v-flex class="mb-0 pb-0 xs12">
+          <span class="text-left headline font-weight-bold">Dias da semana</span>
       </v-flex>
 
       <v-flex v-for="day in 6" :key="day" class="xs6 sm4 md2 lg2 pa-2">
@@ -120,11 +124,13 @@
 var moment = require("moment");
 import CardDaySchedule from "../../../components/doctorsAgenda/ManagementSchedules/CardDaySchedule";
 import CardPeriodCanceledSchedule from "../../../components/doctorsAgenda/ManagementSchedules/CardPeriodCanceledSchedule";
+import ObservationsDialog from './ObservationsDialog';
 export default {
   props: ["headers", "item"],
   components: {
     CardDaySchedule,
-    CardPeriodCanceledSchedule
+    CardPeriodCanceledSchedule,
+    ObservationsDialog
   },
   data: () => ({
     days: [

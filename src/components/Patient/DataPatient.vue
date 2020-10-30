@@ -722,18 +722,28 @@
             },
 
             async savePatient(patient){
-                const nameMutation = this.selectedPatient ? "UpdatePatient" : "CreatePatient"
-                const response = await this.$apollo.mutate({
-                    mutation: require(`@/graphql/patients/${nameMutation}.gql`),
-                    variables: {
+                let nameMutation = this.selectedPatient ? "UpdatePatient" : "CreatePatient"
+                let variables = {
                         idPatient: this.selectedPatient && this.selectedPatient.id,
                         name: patient.name,
-                        birth_date: patient.birth_date,
+                        birth_date: {formatted:patient.birth_date},
                         cpf: patient.cpf,
                         sex: patient.sex,
                         association_number: Number(patient.association_number),
                         telephones:patient.telephones
-                    },
+                }
+                
+                if(this.selectedPatient){
+                    nameMutation = "UpdatePatient";
+                }else{
+                    nameMutation = "CreatePatient";
+                    variables.created_at = {formatted: moment().format('YYYY-MM-DDTHH:mm')}
+                }
+
+
+                const response = await this.$apollo.mutate({
+                    mutation: require(`@/graphql/patients/${nameMutation}.gql`),
+                    variables: variables,
 
                 })
 
@@ -751,7 +761,7 @@
                             variables: {
                                 idDependent: dependent.id,
                                 name: dependent.name,
-                                birth_date: moment(dependent.birthDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
+                                birth_date: {formatted: moment(dependent.birthDate, "DD/MM/YYYY").format("YYYY-MM-DD")},
                                 cpf: dependent.cpf,
                                 dependentDegree: dependent.dependentDegree,
                                 sex:dependent.sex
@@ -880,16 +890,6 @@
                 this.addPatient = false
             },
 
-            async updateAccessedTo(user) {
-                if(user){
-                    await this.$store.dispatch('updateAccessedTo', {
-                        accessed_to: moment().format('YYYY-MM-DD HH:mm:ss'),
-                        id: user.uid? user.uid : user.id,
-                        addresses:user.addresses
-                    })
-                }
-            },
-
             async searchPatient() {
                 try {
                     this.loading = true
@@ -916,7 +916,7 @@
                 this.email = user.email;
                 this.rg = user.rg;
                 this.numAss = user.association_number;
-                this.birthDate = await moment(user.birth_date).format('DD/MM/YYYY');
+                this.birthDate = moment(user.birth_date.formatted).format('DD/MM/YYYY');
                 this.sex = user.sex;
                 this.dependents = user.dependents ? user.dependents : [];
                 this.telephones = user.telephones ? user.telephones : [''];
@@ -927,7 +927,7 @@
                 if (user.dependents) {
                     for (let index in user.dependents) {
                         let patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
-                        let date = user.dependents[index].birth_date;
+                        let date = user.dependents[index].birth_date.formatted;
                         if (!patt.test(date))
                             date = moment(date, "YYYY-MM-DD").format("DD/MM/YYYY");
                         user.dependents[index].birthDate = date

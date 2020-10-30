@@ -137,15 +137,20 @@ export default {
       },
       update(data){
         this.sector = Object.assign(data.Sector[0])
-        let n = this.sector.sector_has_tickets.filter(a => {
+        let normals = this.sector.sector_has_tickets.filter(a => {
           return a.type === 'normal';
         });
-        this.normal = n.length
-        let p = this.sector.sector_has_tickets.filter(a => {
+        //=========
+        let norma = []
+        for(let n in normals){ if(!normals[n].called_at.formatted){ norma.push(normals[n]) }}
+        if(norma[0] !== undefined){ this.normal = norma[0].name }
+        //=========
+        let prioritys = this.sector.sector_has_tickets.filter(a => {
           return a.type === 'priority';
         });
-        this.priority = p.length
-        //console.log('reativo:', this.sector)
+        let priorit = []
+        for(let p in prioritys) { if(!prioritys[p].called_at.formatted) { priorit.push(prioritys[p]) }}
+        if(priorit[0] !== undefined) {this.priority = priorit[0].name}
       },
     },
   },
@@ -298,6 +303,13 @@ export default {
             called_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
           },
         });
+/*        await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/AddColaboratorTickets_called_by_collaborator.gql'),
+            variables: {
+              idCollaborator: this.$store.getters.user.id,
+              idTicket: priority[0].id,
+            },
+          });*/
         if(!room.previos_ticket) {
           await this.$apollo.mutate({
             mutation: require('@/graphql/rooms/UpdateRoom.gql'),
@@ -332,6 +344,13 @@ export default {
               called_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
             },
           });
+/*          await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/AddColaboratorTickets_called_by_collaborator.gql'),
+            variables: {
+              idCollaborator: this.$store.getters.user.id,
+              idTicket: normal[0].id,
+            },
+          });*/
           if(!room.previos_ticket) {
             await this.$apollo.mutate({
               mutation: require('@/graphql/rooms/UpdateRoom.gql'),

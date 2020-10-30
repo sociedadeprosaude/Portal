@@ -134,7 +134,7 @@
                   <v-layout column wrap class="justify-start align-start">
                     <span class="font-weight-bold">{{selectedDependent ? selectedDependent.name : patient.name}}</span>
                     <span v-if="!selectedDependent" class="font-weight-bold">{{patient.association_number}}</span>
-                    <span class="font-weight-bold">{{selectedDependent ? selectedDependent.birth_date :patient.birth_date | dateFilter}}</span>
+                    <span class="font-weight-bold">{{selectedDependent ? selectedDependent.birth_date :patient.birth_date.formatted | dateFilter}}</span>
                   </v-layout>
 
             </v-flex>

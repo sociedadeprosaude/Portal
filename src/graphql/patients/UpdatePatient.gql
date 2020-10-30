@@ -1,7 +1,7 @@
 mutation UpdatePatient(
     $idPatient: ID!,
     $name: String!,
-    $birth_date: String,
+    $birth_date: _Neo4jDateInput,
     $cpf: String!,
     $sex: String,
     $association_number: Int,

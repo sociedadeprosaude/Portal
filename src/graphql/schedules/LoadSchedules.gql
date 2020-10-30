@@ -29,11 +29,13 @@ query{
       hour,
       vacancy
     },
+    observations,
     num_consultations,
     num_regress,
     consultations{
       id,
-      date
+      date{formatted},
+      type
     },
     canceled_periods{
       id,

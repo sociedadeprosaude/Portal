@@ -1,0 +1,5 @@
+mutation UpdateObservations($id:ID!,$observations:[String]){
+  UpdateSchedule(id:$id,observations:$observations){
+    id
+  }
+}

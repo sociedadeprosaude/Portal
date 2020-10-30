@@ -1,138 +1,130 @@
 <template>
-  <v-container>
-    <v-layout row wrap v-if="specialty || examType">
-      <v-flex xs12 v-for="(consultation, i) in ConsultationsByDoctors" :key="i">
-        <v-card>
-          <v-layout row wrap>
-            <v-flex xs12>
-              <v-card color="primary">
-                <v-layout row wrap class="py-2 px-3">
-                  <v-flex xs5>
-                    <p class="white--text text-left font-weight-bold">
-                      <v-icon dark left large>account_circle</v-icon>
-                      {{ consultation.doctor.name }}
-                    </p>
-                  </v-flex>
-                  <v-spacer/>
-                  <v-flex xs3>
-                    <p class="white--text font-weight-bold text-left"> N° de Consultas:
-                      {{ consultation.numConsultations }}</p>
-                  </v-flex>
-                  <v-flex xs5>
-                    <p class="white--text text-left font-weight-bold"> CRM:
-                      {{ consultation.doctor.crm }}</p>
-                  </v-flex>
-                  <v-spacer/>
-                  <v-flex xs3>
-                    <p class="white--text font-weight-bold text-left"> N° de Retorno:
-                      {{ consultation.numRegress }}</p>
-                  </v-flex>
-                  <v-flex xs5>
-                    <p class="white--text text-left font-weight-bold"> CPF:
-                      {{ consultation.doctor.cpf }}</p>
-                  </v-flex>
-                  <v-spacer/>
-                  <v-flex xs1>
-                    <v-btn icon class="grey my-1 mx-1" dark x-small text fab>
-                      <v-icon @click="deactivateDoctor(consultation.doctor)">power_settings_new
-                      </v-icon>
-                    </v-btn>
-                  </v-flex>
-                </v-layout>
-              </v-card>
-            </v-flex>
-            <v-flex xs12 class="mt-4 mb-3">
-              <p class="text-left primary--text font-weight-bold ml-2"
-                 v-if="ConsultationsByDoctors.length !== 0">{{
-                  date |
-                      dateFilter
-                }} - {{ daydate(date) }}</p>
-              <v-divider class="primary"/>
-            </v-flex>
-            <v-flex sm4 v-for="(item,index) in consultation.consultations " :key="index" class="mt-3 mb-2">
-              <div>
-                <v-tooltip top color="white">
-                  <template v-slot:activator="{ on, attrs }">
-                    <div v-bind="attrs" v-on="on">
-                      <v-card outlined class="borderCard mx-2 mr-2 grey lighten-5 elevation-1"
-                              @click="patientSelect(item)">
-                        <v-layout row wrap class="mt-2">
-                          <v-flex xs4>
-                            <v-icon large>person</v-icon>
-                            <br>
-                            <v-icon v-if="item.type === 'Retorno'" color="primary" small class="mt-1">restore</v-icon>
-                            <v-icon v-else small class="mt-1" color="primary">event</v-icon>
-                            <v-icon v-if="item.status === 'Pago'" color="green" small class="mt-1">attach_money</v-icon>
-                            <v-icon v-if="item.status === 'Aguardando pagamento'" small class="mt-1" color="red">
-                              money_off
-                            </v-icon>
-                            <v-icon v-if="item.status === 'Cancelado'" small class="mt-1" color="red">cancel</v-icon>
+    <v-container>
+        <v-layout row wrap v-if="specialty || examType">
+            <v-flex xs12 v-for="(consultation, i) in ConsultationsByDoctors" :key="i">
+                <v-card>
+                    <v-layout row wrap>
+                        <v-flex xs12>
+                            <v-card color="primary">
+                                <v-layout row wrap class="py-2 px-3">
+                                    <v-flex xs5>
+                                        <p class="white--text text-left font-weight-bold">
+                                            <v-icon dark left large>account_circle</v-icon>
+                                            {{consultation.doctor.name}}
+                                        </p>
+                                    </v-flex>
+                                    <v-spacer/>
+                                    <v-flex xs3>
+                                        <p class="white--text font-weight-bold text-left"> N° de Consultas:
+                                            {{consultation.numConsultations}}</p>
+                                    </v-flex>
+                                    <v-flex xs5>
+                                        <p class="white--text text-left font-weight-bold"> CRM:
+                                            {{consultation.doctor.crm}}</p>
+                                    </v-flex>
+                                    <v-spacer/>
+                                    <v-flex xs3>
+                                        <p class="white--text font-weight-bold text-left"> N° de Retorno:
+                                            {{consultation.numRegress}}</p>
+                                    </v-flex>
+                                    <v-flex xs5>
+                                        <p class="white--text text-left font-weight-bold"> CPF:
+                                            {{consultation.doctor.cpf}}</p>
+                                    </v-flex>
+                                    <v-spacer/>
+                                    <v-flex xs1>
+                                        <v-btn icon class="grey my-1 mx-1" dark x-small text fab>
+                                            <v-icon @click="deactivateDoctor(consultation.doctor)">power_settings_new
+                                            </v-icon>
+                                        </v-btn>
+                                    </v-flex>
+                                </v-layout>
+                            </v-card>
+                        </v-flex>
+                        <v-flex xs12 class="mt-4 mb-3">
+<!--                             <p class="text-left primary--text font-weight-bold ml-2"
+                               v-if="ConsultationsByDoctors.length !== 0">{{date |
+                                dateFilter}} - {{daydate(date)}}</p> -->
+                            <v-divider class="primary"/>
+                        </v-flex>
+                        <v-flex sm4 v-for="(item,index) in consultation.consultations " :key="index" class="mt-3 mb-2">
+                          <div >
+                            <v-tooltip top color="white">
+                            <template v-slot:activator="{ on, attrs }">
+                              <div v-bind="attrs" v-on="on">
+                                <v-card outlined class="borderCard py-3 mx-2 mr-2 grey lighten-5 elevation-1" @click="patientSelect(item)">
+                                    <v-layout row wrap class="mt-2">
+                                        <v-flex xs4>
+                                            <v-icon large>person</v-icon>
+                                            <br>
+                                            <v-icon v-if="item.type === 'Retorno'"  color="primary" small class="mt-1">restore</v-icon>
+                                            <v-icon v-else small class="mt-1"  color="primary">event</v-icon>
+                                            <v-icon v-if="item.status === 'Pago'" color="green" small class="mt-1">attach_money</v-icon>
+                                            <v-icon v-if="item.status === 'Aguardando pagamento'" small class="mt-1" color="red">money_off</v-icon>
+                                            <v-icon v-if="item.status === 'Cancelado'" small class="mt-1" color="red">cancel</v-icon>
 
-                          </v-flex>
-                          <v-flex xs8 class="mb-3">
-                            <v-flex xs12>
-                              <h4 class="text-left font-weight-bold">{{ item.patient.name }}</h4>
-                              <h5 class="text-left mt-1">{{ item.date.substring(11, 16) }}</h5>
-                              <h5 class="text-left">Agendado em: {{ item.date.substring(0, 10) }}</h5>
-                            </v-flex>
-                          </v-flex>
-                        </v-layout>
-                      </v-card>
-                    </div>
-                  </template>
-                  <v-layout v-if="item.clinic.logo" class="align-center justify-center">
-                    <v-flex xs6>
-                      <v-img
-                          :src="item.clinic.logo"
-                          width="400"
-                      ></v-img>
-                    </v-flex>
-                  </v-layout>
-                  <span v-if="!item.clinic.logo" style="color: #003B8F; font-weight: bold">{{ item.clinic.name }}</span>
-                </v-tooltip>
-              </div>
-              <div v-if="!clinic">
-                <v-tooltip top color="white">
-                  <template v-slot:activator="{ on, attrs }">
-                    <div v-bind="attrs" v-on="on">
-                      <v-card outlined class="borderCard mx-2 mr-2 grey lighten-5 elevation-1"
-                              @click="patientSelect(item)">
-                        <v-layout row wrap class="mt-2">
-                          <v-flex xs4>
-                            <v-icon large>person</v-icon>
-                            <br>
-                            <v-icon v-if="item.type === 'Retorno'" color="primary" small class="mt-1">restore</v-icon>
-                            <v-icon v-else small class="mt-1" color="primary">event</v-icon>
-                            <v-icon v-if="item.status === 'Pago'" color="green" small class="mt-1">attach_money</v-icon>
-                            <v-icon v-if="item.status === 'Aguardando pagamento'" small class="mt-1" color="red">
-                              money_off
-                            </v-icon>
-                            <v-icon v-if="item.status === 'Cancelado'" small class="mt-1" color="red">cancel</v-icon>
+                                        </v-flex>
+                                        <v-flex xs8 class="mb-3">
+                                            <v-flex xs12>
+                                                <h4 class="text-left font-weight-bold">{{item.patient.name}}</h4>
+                                                <h5 class="text-left mt-1">{{item.date.formatted.split('T')[1].substring(0,5)}}</h5>
+                                                <h5 class="text-left">Agendado em: {{item.date.formatted.split('T')[0] | dateFilter}}</h5>
+                                            </v-flex>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-card>
+                              </div>
+                            </template>
+                            <v-layout v-if="item.clinic.logo" class="align-center justify-center">
+                              <v-flex xs6>
+                                <v-img
+                                    :src="item.clinic.logo"
+                                    width="400"
+                                ></v-img>
+                              </v-flex>
+                            </v-layout>
+                            <span v-if="!item.clinic.logo" style="color: #003B8F; font-weight: bold">{{item.clinic.name}}</span>
+                          </v-tooltip>
+                          </div>
+                          <div v-if="!clinic">
+                            <v-tooltip top color="white">
+                              <template v-slot:activator="{ on, attrs }">
+                                <div v-bind="attrs" v-on="on">
+                                  <v-card outlined class="borderCard mx-2 mr-2 grey lighten-5 elevation-1" @click="patientSelect(item)">
+                                    <v-layout row wrap class="mt-2">
+                                      <v-flex xs4>
+                                        <v-icon large>person</v-icon>
+                                        <br>
+                                        <v-icon v-if="item.type === 'Retorno'"  color="primary" small class="mt-1">restore</v-icon>
+                                        <v-icon v-else small class="mt-1"  color="primary">event</v-icon>
+                                        <v-icon v-if="item.status === 'Pago'" color="green" small class="mt-1">attach_money</v-icon>
+                                        <v-icon v-if="item.status === 'Aguardando pagamento'" small class="mt-1" color="red">money_off</v-icon>
+                                        <v-icon v-if="item.status === 'Cancelado'" small class="mt-1" color="red">cancel</v-icon>
 
-                          </v-flex>
-                          <v-flex xs8 class="mb-3">
-                            <v-flex xs12>
-                              <h4 class="text-left font-weight-bold">{{ item.patient.name }}</h4>
-                              <h5 class="text-left mt-1">{{ item.date.substring(11, 16) }}</h5>
-                              <h5 class="text-left">Agendado em: {{ item.date.substring(0, 10) }}</h5>
-                            </v-flex>
-                          </v-flex>
-                        </v-layout>
-                      </v-card>
-                    </div>
-                  </template>
-                  <v-layout v-if="item.clinic.logo" class="align-center justify-center">
-                    <v-flex xs6>
-                      <v-img
-                          :src="item.clinic.logo"
-                          width="400"
-                      ></v-img>
-                    </v-flex>
-                  </v-layout>
-                  <span v-if="!item.clinic.logo" style="color: #003B8F; font-weight: bold">{{ item.clinic.name }}</span>
-                </v-tooltip>
-              </div>
-            </v-flex>
+                                      </v-flex>
+                                      <v-flex xs8 class="mb-3">
+                                        <v-flex xs12>
+                                          <h4 class="text-left font-weight-bold">{{item.patient.name}}</h4>
+                                          <h5 class="text-left mt-1">{{item.date.formatted.split('T')[1].substring(0,5)}}</h5>
+                                          <h5 class="text-left">Agendado em: {{item.date.formatted.split('T')[0] | dateFilter}}</h5>
+                                        </v-flex>
+                                      </v-flex>
+                                    </v-layout>
+                                  </v-card>
+                                </div>
+                              </template>
+                              <v-layout v-if="item.clinic.logo" class="align-center justify-center">
+                                <v-flex xs6>
+                                  <v-img
+                                      :src="item.clinic.logo"
+                                      width="400"
+                                  ></v-img>
+                                </v-flex>
+                              </v-layout>
+                              <span v-if="!item.clinic.logo" style="color: #003B8F; font-weight: bold">{{item.clinic.name}}</span>
+                            </v-tooltip>
+                          </div>
+                        </v-flex>
 
             <!--<v-flex sm4 v-for="item in consultation.consultations" class="mt-3 mb-2" v-if="!clinic">
 
@@ -348,7 +340,7 @@ export default {
         return {
           idClinic: this.clinic.id,
           idProduct: this.product.id,
-          date: this.date
+          date:{formatted: moment().format("YYYY-MM-DD")}
         }
       },
       update(data) {
@@ -366,7 +358,7 @@ export default {
          return {
            idClinic: this.clinic.id,
            idProduct: this.product.id,
-           date: this.date
+           date:{formatted: moment().format("YYYY-MM-DD")}
          }
        },
        update(data) {

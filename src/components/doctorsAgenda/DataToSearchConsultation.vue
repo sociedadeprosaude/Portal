@@ -169,10 +169,13 @@ export default {
                 product:schedule.product
               };
               
-              const consultationsOfDay = schedule.consultations.filter(consultation => consultation.date === scheduleObj.date)
+              const consultationsOfDay = schedule.consultations.filter(consultation => {
+                
+                //console.log(moment.parseZone(consultation.date.formatted, 'YYYY-MM-DD HH:mmZ').isSame(moment(scheduleObj.date)))
+                return moment(consultation.date.formatted,'YYYY-MM-DD HH:mmZ').utc().format('YYYY-MM-DD HH:mm') === scheduleObj.date
+              })
               const qtd_returns = consultationsOfDay.filter(consultation => consultation.type === "Retorno").length
               const qtd_consultations = consultationsOfDay.length - qtd_returns;
-
               const obj = {...scheduleObj,qtd_consultations, qtd_returns};
               obj.vacancy = obj.vacancy - obj.qtd_consultations - obj.qtd_returns;
               consultations.push(obj)

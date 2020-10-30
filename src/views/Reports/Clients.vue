@@ -33,7 +33,7 @@
       :dateFormatted="dateFormatted2"
       :clientsServed="attendances"
       :newClients="newClients"
-      :ageClientsServed="ageClientsServed"
+      :ageClientsServed="ages"
       :genresClientsServed="genres"
       :geopoints="geopoints"
       :generateDatasetServed="generateDatasetServed"
@@ -62,15 +62,18 @@ export default {
     menu2:false,
     overlay:false,
     attendances:undefined,
-    genres:undefined
+    genres:undefined,
+    ages:undefined,
+    geopoints:undefined,
+    newClients: undefined
   }),
   components: {
     Clients,
   },
   mounted() {
     this.date = moment().subtract(7,'days').format('YYYY-MM-DD')
-    this.initializeData()
-    this.$store.dispatch('loadUsersGeopoints')
+    /* this.initializeData()
+    this.$store.dispatch('loadUsersGeopoints') */
   },
   computed: {
     dateFormatted() {
@@ -87,20 +90,18 @@ export default {
         return this.attendances
       }
     }, */
-    newClients() {
+    /* newClients() {
       return this.$store.getters.getNewClients;
-    },
-    ageClientsServed() {
+    }, */
+    /* ageClientsServed() {
       let data = this.$store.getters.getAgeClientsServed;
       return this.$store.getters.getAgeClientsServed;
-    },
+    }, */
     genresClientsServed() {
       let genresObj = this.genres;
       genresObj.male = (genresObj.male/genresObj.total)/100;
       genresObj.feminine = (genresObj.feminine/genresObj.total)/100;
       genresObj.others = (genresObj.others/genresObj.total)/100;
-
-      console.log('jkjhkjhkjh')
       return genresObj;
     },
     /* usersServed(){
@@ -111,9 +112,9 @@ export default {
         return a
       },[])
     } */
-    geopoints() {
+    /* geopoints() {
       return this.$store.getters.getGeopoints;
-    },
+    }, */
   },
   watch:{
     date(value){
@@ -209,17 +210,78 @@ export default {
         },
       };
     },
-    countUniqueValuesGenre(array){
-      const result = { male:0, feminine:0}
+    formatGenresObject(attendances){
+      this.genres = {male: 0, feminine:0, others:0, total:0}
+        for (const key in attendances) {
+          const attendance = attendances[key];
+          for (const key2 in attendance.genres) {
+            if (attendance.genres[key2] === 'Masculino'){
+              this.genres.male += 1;
+            }
+            else if(attendance.genres[key2] === 'Feminino'){
+              this.genres.feminine += 1;
+            }else
+              this.genres.others += 1;
+            
+            this.genres.total += 1;
+          }
+        }
 
-
-      for (let i = 0; i < array.length; i++) {
-        result[array[i]] = (result[array[i]] || 0) + 1
-      }
-
-      Object.keys(result).map(key => ({ [key]: result[key] }))
+      
+    },
+    formartAgesObject(attendances){
+      this.ages = {}
+        for (const key in attendances) {
+          const attendance = attendances[key];
+          for (const key2 in attendance.patients_birth_date) {
+            const birth_date = moment(attendance.patients_birth_date[key2].formatted,'YYYY-MM-DD');
+            const differance = moment().diff(birth_date,'years').toString();
+            if(!this.ages[differance]) this.ages[differance] = 0
+            this.ages[differance] += 1;
+          }
+        }
+    },
+    formartGeopoints(attendances){
+      this.geopoints = []
+        for (const key in attendances) {
+          const attendance = attendances[key];
+          for (const key2 in attendance.geopoints) {
+            const geopoint = attendance.geopoints[key2];
+            const foundIndex = this.geopoints.findIndex((value) => value.latitude === geopoint.latitude && value.longitude === geopoint.longitude)
+            if(foundIndex === -1) this.geopoints.push({...geopoint, count: 1});
+            else this.geopoints[foundIndex].count += 1;
+          }
+        }
+        console.log('geopoints', this.geopoints)
+    },
+    reduceAttendances(attendances){
+      return attendances.reduce((obj, attendance)=>{
+          const date = moment(attendance.date.formatted).format('DD/MM/YYYY')
+          obj[date] = attendance.count
+          return obj
+      },{})
     }
   },
+  apollo:{
+    loadAttendanceCount:{
+      query: require("@/graphql/patients/LoadAttendanceCount.gql"),
+      variables(){
+        return {
+          start_date:this.date,
+          final_date:moment().format('YYYY-MM-DD')
+        }
+      },
+      update(data){
+        this.attendances = this.reduceAttendances(data.attendanceCount);
+        this.newClients = this.reduceAttendances(data.createdPatientCount);
+        this.formatGenresObject(data.attendanceCount);
+        this.formartAgesObject(data.attendanceCount);
+        this.formartGeopoints(data.attendanceCountGeopoint)
+
+        this.overlay = false
+      }
+    }
+  }
 };
 </script>
 
