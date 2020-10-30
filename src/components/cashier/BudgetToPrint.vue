@@ -10,6 +10,15 @@
                         </v-btn>
                     </v-flex>
                         <v-flex xs6 class="text-right hidden-print-only">
+                          <v-btn class="transparent" text @click="shareWhatsApp()">
+                            <img class="black" src="../../assets/icons/icons8-whatsapp.svg" height="22px">
+                          </v-btn>
+                          <v-btn class="transparent" text @click="shareFacebook()">
+                            <v-icon>facebook</v-icon>
+                          </v-btn>
+                          <v-btn class="transparent" text @click="download()">
+                            <v-icon>cloud_download</v-icon>
+                          </v-btn>
                         <v-btn class="transparent" text @click="print()">
                             <v-icon>print</v-icon>
                         </v-btn>
@@ -126,18 +135,19 @@
         methods: {
           shareWhatsApp(){
             let initApi = "https://api.whatsapp.com/send?text="
-             window.open(initApi + 'https://prosaude-36f66.web.app/pdf/' + this.budget.id)
+             window.open(initApi + 'https://prosaude-36f66.web.app/pdf/orcamento/' + this.budget.id)
           },
           shareFacebook(){
             let initApi = "https://www.facebook.com/sharer/sharer.php?u="
-            window.open(initApi + 'https://prosaude-36f66.web.app/pdf/' + this.budget.id)
+            window.open(initApi + 'https://prosaude-36f66.web.app/pdf/orcamento/' + this.budget.id)
           },
             print() {
                 window.print()
             },
           download(){
-            const download = document.getElementById("fileRequest");
-            download.download = window
+            window.open('https://prosaude-36f66.web.app/pdf/orcamento' + this.budget.id)
+            //const download = document.getElementById("fileRequest");
+            //download.download = window
           }
         }
     }

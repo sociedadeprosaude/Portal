@@ -146,7 +146,6 @@
           update(data) {
             this.skipBudget = true
             this.budget = data.Budget[0]
-            console.log('budget: ', this.budget)
             this.selectedUnit = data.Budget[0].with_unit[0]
             this.loading = false
           },

@@ -50,7 +50,7 @@ const Clinic = {
 Vue.use(Router);
 let mainRoutes = [
   {
-    path: '/pdf/:id',
+    path: '/pdf/orcamento/:id',
     name: 'BudgetToPrint',
     component: BudgetToPrint,
     props: true,

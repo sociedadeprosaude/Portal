@@ -425,8 +425,13 @@ export default {
     },
     async imprimir() {
       this.loadingImp= true
-      this.saveBudget(this.generateBudget());
-      this.budgetToPrint = this.selectedBudget;
+      if(this.idBudget !== undefined){
+        this.selectedBudget.id = this.idBudget
+        this.budgetToPrint = this.selectedBudget;
+      }
+      else{
+        this.saveBudget(this.generateBudget());
+        this.budgetToPrint = this.selectedBudget;
       let budgetId = uuid.v4()
       let mutationBuilder = new MutationBuilder()
       mutationBuilder.addMutation(
@@ -540,6 +545,7 @@ export default {
       await this.$apollo.mutate({
         mutation: gql`${finalString}`,
       })
+      }
       this.loadingImp= false
       this.budgetToPrintDialog = true
     },
