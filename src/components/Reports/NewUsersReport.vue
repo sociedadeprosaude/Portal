@@ -64,20 +64,22 @@
                       pageText:'{0}-{1} de {2}'
                         }"
                     />
+                    <v-card class="mt-4">
+                        <v-container>
+                            <v-row>
+                                <v-col>
+                                    <span class="my-headline">{{data.Patient.length}}</span>
+                                    <br/>Número de novos pacientes
+                                </v-col>
+                            </v-row>
+                        </v-container>
+                    </v-card>
+
                 </template>
             </ApolloQuery>
         </v-card>
 
-        <v-card class="mt-4">
-            <v-container>
-                <v-row>
-                    <v-col>
-                        <span class="my-headline">{{numNewUsers}}</span>
-                        <br/>Número de novos pacientes
-                    </v-col>
-                </v-row>
-            </v-container>
-        </v-card>
+
     </v-container>
 </template>
 
@@ -128,8 +130,6 @@
             "options",
             "optionSelected",
             "headers",
-            "dateBegin",
-            "dateEnd",
             "actualList",
             "newUsers",
             "numNewUsers"

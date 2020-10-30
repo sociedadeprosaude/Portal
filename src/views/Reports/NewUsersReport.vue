@@ -10,8 +10,6 @@
                 :options="options"
                 :optionSelected="optionSelected"
                 :headers="headers"
-                :dateBegin="dateBegin"
-                :dateEnd="dateEnd"
                 :actualList="actualList"
                 :newUsers="newUsers"
                 :numNewUsers="numNewUsers"
