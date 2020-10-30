@@ -7,6 +7,7 @@ query($id:ID!){
        telephones,
        association_number,
        birth_date{formatted},
+       created_at{formatted},
        addresses{
            cep,
            city,

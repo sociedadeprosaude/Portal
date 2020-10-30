@@ -1,0 +1,10 @@
+query ($start_date:String!, $end_date:String! ){
+  Patient (filter: { AND: [{created_at_gte : {formatted: $start_date}} {created_at_lte: {formatted: $end_date}}]})
+   {
+    name,
+    cpf,
+    email,
+    _id,
+    created_at {day, month, year, formatted}
+  }
+}

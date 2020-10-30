@@ -704,7 +704,7 @@
                     email: this.email,
                     rg: this.rg ? this.rg.replace(/\./g, '').replace('-', '').replace('.', '') : undefined,
                     association_number: this.numAss ? this.numAss.toString() : undefined,
-                    birth_date: moment(this.birthDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
+                    birth_date: 'moment(this.birthDate, "DD/MM/YYYY").format("YYYY-MM-DD")',
                     sex: this.sex,
                     telephones: this.telephones,
                     addresses: this.addresses,
@@ -736,8 +736,10 @@
                 if(this.selectedPatient){
                     nameMutation = "UpdatePatient";
                 }else{
+                    console.log(moment().format('YYYY-MM-DDTHH:mm'))
+                    let created_at = moment().format('YYYY-MM-DDTHH:mm')
                     nameMutation = "CreatePatient";
-                    variables.created_at = {formatted: moment().format('YYYY-MM-DDTHH:mm')}
+                    variables.created_at = {formatted: created_at}
                 }
 
 
