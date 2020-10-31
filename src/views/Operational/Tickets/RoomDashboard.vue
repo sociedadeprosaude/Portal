@@ -393,6 +393,17 @@ export default {
         prioritys.reverse()
         let priority = []
         for(let p in prioritys) { if(!prioritys[p].called_at.formatted) { priority.push(prioritys[p]) }}
+        //proxima senha prioridade
+        if(priority[1] !== undefined){
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/sectors/UpdateSector.gql'),
+            variables: {
+              id: this.sector.id,
+              next_ticket_priority: priority[1].name,
+            },
+          });
+        }
+        //proxima senha prioridade
         if(priority[0] !== undefined){
         await this.$apollo.mutate({
           mutation: require('@/graphql/tickets/UpdateTicket.gql'),
@@ -401,13 +412,13 @@ export default {
             called_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
           },
         });
-/*        await this.$apollo.mutate({
-            mutation: require('@/graphql/tickets/AddColaboratorTickets_called_by_collaborator.gql'),
+        await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/AddTicketColaborator.gql'),
             variables: {
-              idCollaborator: this.$store.getters.user.id,
+              idColaborator: this.$store.getters.user.id,
               idTicket: priority[0].id,
             },
-          });*/
+          });
         if(!room.previos_ticket) {
           await this.$apollo.mutate({
             mutation: require('@/graphql/rooms/UpdateRoom.gql'),
@@ -434,6 +445,17 @@ export default {
         normals.reverse()
         let normal = []
         for(let n in normals){ if(!normals[n].called_at.formatted){ normal.push(normals[n]) }}
+        //proxima senha normal
+        if(normal[1] !== undefined){
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/sectors/UpdateSector.gql'),
+            variables: {
+              id: this.sector.id,
+              next_ticket_normal: normal[1].name,
+            },
+          });
+        }
+        //proxima senha normal
         if(normal[0] !== undefined){
           await this.$apollo.mutate({
             mutation: require('@/graphql/tickets/UpdateTicket.gql'),
@@ -442,13 +464,13 @@ export default {
               called_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
             },
           });
-/*          await this.$apollo.mutate({
-            mutation: require('@/graphql/tickets/AddColaboratorTickets_called_by_collaborator.gql'),
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/AddTicketColaborator.gql'),
             variables: {
-              idCollaborator: this.$store.getters.user.id,
+              idColaborator: this.$store.getters.user.id,
               idTicket: normal[0].id,
             },
-          });*/
+          });
           if(!room.previos_ticket) {
             await this.$apollo.mutate({
               mutation: require('@/graphql/rooms/UpdateRoom.gql'),

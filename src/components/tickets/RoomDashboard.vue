@@ -254,7 +254,7 @@
                 </template>
                 <span>Alertar senha atual</span>
               </v-tooltip>-->
-<!--              <v-tooltip top >
+              <v-tooltip top >
                 <template v-slot:activator="{ on }">
                   <v-btn
                     v-on="on"
@@ -269,7 +269,7 @@
                   </v-btn>
                 </template>
                 <span>Visualizador único</span>
-              </v-tooltip>-->
+              </v-tooltip>
             </v-col>
           </v-row>
           <v-row>
@@ -343,11 +343,7 @@
       </v-card>
     </v-dialog>
     <v-dialog v-model="singleViewDialog.active" fullscreen transition="dialog-bottom-transition">
-      <single-visualizer
-        :sector="sector"
-        @close="$emit('close-single-view-dialog')"
-        :selectedRoom="singleViewDialog.room"
-      ></single-visualizer>
+      <single-visualizer :sector="sector" @close="$emit('close-single-view-dialog')" :selectedRoom="singleViewDialog.room"></single-visualizer>
     </v-dialog>
     <v-dialog v-model="multipleViewDialog" fullscreen transition="dialog-bottom-transition">
       <multiple-visualizer :sector="sector" @close="$emit('close-multiple-view-dialog')"></multiple-visualizer>
