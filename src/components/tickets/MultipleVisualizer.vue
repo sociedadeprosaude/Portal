@@ -36,7 +36,7 @@
           <img :src="constants.ASSETS.logo" height="124px" />
         </v-card>
       </v-row>
-    </v-container><!--:class="[lastTicketCalled.preferential?'three':'two', 'white&#45;&#45;text']"-->
+    </v-container>
     <v-container fluid class="white--text">
       <div v-for="(ticket, index) in sector.has_rooms.slice(0,1)"
            :key="index">
@@ -44,14 +44,11 @@
           <v-col align-self="center">
             <v-row justify="center">
               <v-col class="ma-0 pa-0">
-                <p
-                    style="font-size: 6em;"
-                >{{ticket.name}}</p>
+                <p style="font-size: 6em;">{{ticket.name}}</p>
               </v-col>
             </v-row>
           </v-col>
         </v-row>
-        <!--<v-divider class="white"></v-divider>-->
         <v-row class="pa-0 ma-0 half primary">
           <v-col align-self="center">
             <v-row
