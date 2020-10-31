@@ -17,6 +17,7 @@
     :rooms="rooms"
     :normal="normal"
     :priority="priority"
+    :resetSectorTicket="resetSectorTicket"
     :roomsLoaded="roomsLoaded"
     :ticketInfo="ticketInfo"
     :doctors="doctors"
@@ -61,8 +62,8 @@ export default {
     return {
       sector: undefined,
       sectorName: undefined,
-      normal: 0,
-      priority: 0,
+      normal: '0',
+      priority: '0',
       new: undefined,
       old: undefined,
       doctorsListDialog: {
@@ -137,6 +138,8 @@ export default {
       },
       update(data){
         this.sector = Object.assign(data.Sector[0])
+        console.log('sector and rooms:', this.sector)
+
         let normals = this.sector.sector_has_tickets.filter(a => {
           return a.type === 'normal';
         });
@@ -221,11 +224,86 @@ export default {
       const sector = this.sector;
       await this.$store.dispatch("updateSectorRoom", { sector, room });
     },
+    async resetSectorTicket(number){
+      this.loading = true;
+      this.$apollo.queries.LoadRoomsOfSector.refresh();
+      let count = number.toString()
+      let rooms = this.sector.has_rooms
+      let ticketsSector = this.sector.sector_has_tickets
+      //start logic of reset os tickets of sector
+      const dataTicket = await this.$apollo.mutate({
+        mutation: require('@/graphql/tickets/CreateTicket.gql'),
+        variables: {
+          name: count,
+          type: "normal",
+          created_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
+        },
+      });
+      const idTicket = dataTicket.data.CreateTicket.id
+      await this.$apollo.mutate({
+        mutation: require('@/graphql/tickets/AddRelationsSectorTicket.gql'),
+        variables: {
+          idSector: this.sector.id,
+          idTicket: idTicket,
+        },
+      });
+      await this.$apollo.mutate({
+        mutation: require('@/graphql/sectors/UpdateSector.gql'),
+        variables: {
+          id: this.sector.id,
+          counter_reset: 0,
+          counter_normal: number,//number count inicial
+          counter_priority: 0,
+          next_ticket_normal: null,
+          next_ticket_priority: null,
+        },
+      });
+      if(ticketsSector.length > 0){
+        for(let ts in ticketsSector) {
+          console.log('tem tickets no setor', ticketsSector)
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/sectors/RemoveSectorSector_has_tickets.gql'),
+            variables: {
+              idSector:  this.sector.id,
+              idTicket: ticketsSector[ts].id,
+            },
+          });
+        }
+      }
+      if(rooms.length > 0){
+        for(let room in rooms){
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/rooms/UpdateRoom.gql'),
+            variables: {
+              id: rooms[room].id,
+              current_ticket: null,
+              previos_ticket: null,
+            },
+          });
+          if(rooms[room].room_has_tickets.length > 0){
+            console.log('tem tickets na sala', rooms[room].name)
+            for(let tr in rooms[room].room_has_tickets){
+              await this.$apollo.mutate({
+                mutation: require('@/graphql/rooms/RemoveRoomRoom_has_tickets.gql'),
+                variables: {
+                  idRoom: rooms[room].id,
+                  idTicket: rooms[room].room_has_tickets[tr].id,
+                },
+              });
+            }
+          }
+        }
+      }
+      //end of reset
+      this.$apollo.queries.LoadRoomsOfSector.refresh();
+      this.loading = false;
+    },
     async generateSectorTicket(preferential) {
       this.loading = true;
       this.$apollo.queries.LoadRoomsOfSector.refresh();
-      let count = 1;
-      if(this.sector.sector_has_tickets.length > 0){ count = this.sector.sector_has_tickets.length + 1 }
+      let count = 0;
+      let all =  this.sector.counter_normal + this.sector.counter_priority
+      if(all >= 0) { count = all + 1 }
       count = count.toString();
       if(preferential === true) {
         const dataTicket = await this.$apollo.mutate({
@@ -244,6 +322,16 @@ export default {
             idSector: this.sector.id,
           },
         });
+        //ultima prioridade do setor
+        await this.$apollo.mutate({
+          mutation: require('@/graphql/sectors/UpdateSector.gql'),
+          variables: {
+            id: this.sector.id,
+            counter_reset: 0,
+            counter_normal: this.sector.counter_normal,
+            counter_priority: this.sector.counter_priority = this.sector.counter_priority + 1,
+          },
+        });
       } else {
         const dataTicket = await this.$apollo.mutate({
           mutation: require('@/graphql/tickets/CreateTicket.gql'),
@@ -259,6 +347,16 @@ export default {
           variables: {
             idTicket: idTicket,
             idSector: this.sector.id,
+          },
+        });
+        //ultima normal do setor
+        await this.$apollo.mutate({
+          mutation: require('@/graphql/sectors/UpdateSector.gql'),
+          variables: {
+            id: this.sector.id,
+            counter_reset: 0,
+            counter_normal: this.sector.counter_normal = this.sector.counter_normal + 1,
+            counter_priority: this.sector.counter_priority,
           },
         });
       }

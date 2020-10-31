@@ -1,4 +1,9 @@
-mutation($name:String!){
-    CreateSector(name: $name)
+mutation($name:String!, $counter_reset:Int, $counter_normal:Int, $counter_priority:Int){
+    CreateSector(
+    name: $name,
+    counter_reset: $counter_reset,
+    counter_normal: $counter_normal,
+    counter_priority: $counter_priority,
+    )
     {id},
 }

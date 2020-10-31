@@ -63,7 +63,7 @@ export default {
       },
       update(data){
         this.sectors = Object.assign(data.Clinic[0].has_sectors)
-        //console.log('reativo:', this.sectors)
+        console.log('setors of unity:', this.sectors)
       },
     }
   },
@@ -94,6 +94,9 @@ export default {
         mutation: require('@/graphql/sectors/CreateSector.gql'),
         variables: {
           name: name.toUpperCase(),
+          counter_reset: 0,
+          counter_normal: 0,
+          counter_priority: 0,
         },
       });
       const idSector = dataSector.data.CreateSector.id

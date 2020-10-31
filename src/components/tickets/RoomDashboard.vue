@@ -1,6 +1,7 @@
 <template>
   <v-container>
     <v-row>
+
       <v-col sm="12" md="6">
         <v-tooltip top >
           <template v-slot:activator="{ on }">
@@ -82,6 +83,55 @@
           >Adicionar Sala</v-btn>
         </v-fade-transition>
       </v-col>
+
+      <v-col sm="12" md="6">
+        <v-dialog
+            v-model="dialog"
+            width="250"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+                width="100%"
+                class="primary"
+                rounded
+                v-bind="attrs"
+                v-on="on"
+            >
+              <v-icon large>replay_10</v-icon>Resetar Senhas do Setor<v-icon large>forward_30</v-icon>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title class="headline grey lighten-2">Senha Inicial<v-spacer/><v-btn class="transparent" small fab @click="dialog = false"><v-icon>close</v-icon></v-btn></v-card-title>
+            <v-divider></v-divider>
+            <v-spacer/>
+            <v-card-text>
+              <br/>
+              <v-text-field
+                  prepend-icon="mdi-ticket-confirmation"
+                  outlined
+                  v-model="number"
+                  label="Número"
+                  hide-details
+                  clearable
+                  v-mask="['#','##','###']"
+              ></v-text-field>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn width="100%"
+                     class="primary"
+                     rounded
+                     :disabled="!number"
+                     @click="resetSectorTicket(Number(number))"
+                     v-if="!loading"
+              >
+                RESETAR
+              </v-btn>
+              <v-progress-circular v-else color="primary" indeterminate></v-progress-circular>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-col>
+
     </v-row>
 
     <v-row class="mt-4">
@@ -246,10 +296,19 @@
                 <v-divider vertical></v-divider>
                 <v-col class="pa-0">
                   <div>
-                    <span style="font-size: 0.8em">Proxima Senha:</span>
+                    <span style="font-size: 0.8em">Proxima Senha Normal:</span>
                     <br />
-                    <!--<span v-if="room.current_ticket">{{room.current_ticket}}</span>-->
-                    <span>*</span>
+                    <span v-if="sector.next_ticket_normal">{{sector.next_ticket_normal}}</span>
+                    <span v-else>*</span>
+                  </div>
+                </v-col>
+                <v-divider vertical></v-divider>
+                <v-col class="pa-0">
+                  <div>
+                    <span style="font-size: 0.8em">Proxima Senha Preferencial:</span>
+                    <br />
+                    <span v-if="sector.next_ticket_priority">{{sector.next_ticket_priority}}</span>
+                    <span v-else>*</span>
                   </div>
                 </v-col>
               </v-row>
@@ -333,16 +392,24 @@
 </template>
 
 <script>
+import {mask} from 'vue-the-mask';
 import SubmitButton from "@/components/SubmitButton";
 import SingleVisualizer from "@/components/tickets/SingleVisualizer";
 import MultipleVisualizer from "@/components/tickets/MultipleVisualizer";
 
 export default {
+  directives: {mask},
   name: "Tickets",
   components: {
     SubmitButton,
     SingleVisualizer,
     MultipleVisualizer,
+  },
+  data () {
+    return {
+      dialog: false,
+      number: undefined,
+    }
   },
   props: {
     snackbar: Boolean,
@@ -357,8 +424,8 @@ export default {
     multipleViewDialog: Boolean,
     favoritedRoom: String,
     rooms: Array,
-    normal: Number,
-    priority: Number,
+    normal: String,
+    priority: String,
     roomsLoaded: Boolean,
     ticketInfo: Object,
     doctors: Array,
@@ -373,6 +440,7 @@ export default {
     setDoctorToRoom: Function,
     generateNextTicket: Function,
     generateSectorTicket: Function,
+    resetSectorTicket: Function,
     upgradeTicketNumber: Function,
     callNextTicket: Function,
     callSectorTicket: Function,

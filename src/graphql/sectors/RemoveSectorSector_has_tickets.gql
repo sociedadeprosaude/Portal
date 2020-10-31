@@ -1,0 +1,13 @@
+mutation($idSector: ID!, $idTicket: ID!){
+    RemoveSectorSector_has_tickets(
+        from:{
+            id:$idSector
+        },
+        to:{
+            id:$idTicket
+        }
+    ){
+        from{id},
+        to{id}
+    },
+}

@@ -1,0 +1,13 @@
+mutation($idRoom: ID!, $idTicket: ID!){
+    RemoveRoomRoom_has_tickets(
+        from:{
+            id:$idRoom
+        },
+        to:{
+            id:$idTicket
+        }
+    ){
+        from{id},
+        to{id}
+    },
+}
