@@ -61,6 +61,7 @@ export default {
   data() {
     return {
       sector: undefined,
+      rooms: undefined,
       sectorName: undefined,
       normal: '0',
       priority: '0',
@@ -98,9 +99,9 @@ export default {
         };
       }
     },
-    rooms() {
+/*    rooms() {
       return this.sector ? this.sector.has_rooms : [];
-    },
+    },*/
     roomsLoaded() {
       return this.$store.getters.roomsLoaded;
     },
@@ -139,6 +140,7 @@ export default {
       update(data){
         this.sector = Object.assign(data.Sector[0])
         console.log('sector and rooms:', this.sector)
+        this.rooms = this.sector.has_rooms
 
         let normals = this.sector.sector_has_tickets.filter(a => {
           return a.type === 'normal';
@@ -146,14 +148,14 @@ export default {
         //=========
         let norma = []
         for(let n in normals){ if(!normals[n].called_at.formatted){ norma.push(normals[n]) }}
-        if(norma[0] !== undefined){ this.normal = norma[0].name }
+        if(norma[0] !== undefined){ this.normal = norma[0].name } else { this.normal = normals[0].name }//bug
         //=========
         let prioritys = this.sector.sector_has_tickets.filter(a => {
           return a.type === 'priority';
         });
         let priorit = []
         for(let p in prioritys) { if(!prioritys[p].called_at.formatted) { priorit.push(prioritys[p]) }}
-        if(priorit[0] !== undefined) {this.priority = priorit[0].name}
+        if(priorit[0] !== undefined) {this.priority = priorit[0].name} else { this.priority = prioritys[0].name }//bug
       },
     },
   },
@@ -395,6 +397,7 @@ export default {
         for(let p in prioritys) { if(!prioritys[p].called_at.formatted) { priority.push(prioritys[p]) }}
         //proxima senha prioridade
         if(priority[1] !== undefined){
+          console.log('gernado proxima senha prioridade')
           await this.$apollo.mutate({
             mutation: require('@/graphql/sectors/UpdateSector.gql'),
             variables: {
@@ -447,6 +450,7 @@ export default {
         for(let n in normals){ if(!normals[n].called_at.formatted){ normal.push(normals[n]) }}
         //proxima senha normal
         if(normal[1] !== undefined){
+          console.log('gernado proxima senha normal')
           await this.$apollo.mutate({
             mutation: require('@/graphql/sectors/UpdateSector.gql'),
             variables: {

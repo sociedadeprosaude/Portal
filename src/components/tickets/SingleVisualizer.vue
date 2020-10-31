@@ -6,7 +6,7 @@
         <v-col align-self="center">
           <v-row justify="center">
             <v-col class="ma-0 pa-0 title">
-              <p class="display-3" >{{selectedRoom.name}}</p>
+              <p class="display-2" >{{selectedRoom.name}}</p>
             </v-col>
           </v-row>
         </v-col>
@@ -33,9 +33,11 @@
           <v-row justify="start">
             <v-col class="ma-0 pa-0">
               <v-expand-x-transition>
-                <p v-show="expand" v-if="selectedRoom.current_ticket" style="font-weight: bold; font-size: x-large" class="info">{{ (selectedRoom.current_ticket) }}</p>
+                <p v-show="expand" v-if="selectedRoom.current_ticket" style="font-weight: bold; font-size: x-large; color: deeppink">{{ (selectedRoom.current_ticket) }}</p>
               </v-expand-x-transition>
-              <p v-show="!expand" v-if="selectedRoom.current_ticket" style="font-weight: bold; font-size: x-large">{{ selectedRoom.current_ticket }}</p>
+              <v-expand-x-transition>
+                <p v-show="!expand" v-if="selectedRoom.current_ticket" style="font-weight: bold; font-size: x-large">{{ selectedRoom.current_ticket }}</p>
+              </v-expand-x-transition>
               <p v-if="!selectedRoom.current_ticket" style="font-weight: bold">*</p>
             </v-col>
           </v-row>
@@ -102,8 +104,13 @@
           <v-row justify="center" class="display-2">Senha Atual: {{type(selectedRoom.current_ticket) ===  'PRIORITY'? 'Preferencial' : type(selectedRoom.current_ticket)}}</v-row>
           <v-row justify="start">
             <v-col class="ma-0 pa-0">
-              <p v-if="selectedRoom.current_ticket" style="font-size: 7em;">{{selectedRoom.current_ticket}}</p>
-              <p v-else style="font-size: 5em;">*</p>
+              <v-expand-x-transition>
+                <p v-show="expand" v-if="selectedRoom.current_ticket" style="font-size: 7em;color: deeppink">{{selectedRoom.current_ticket}}</p>
+              </v-expand-x-transition>
+              <v-expand-x-transition>
+                <p v-show="!expand" v-if="selectedRoom.current_ticket" style="font-size: 7em;">{{selectedRoom.current_ticket}}</p>
+              </v-expand-x-transition>
+              <p v-if="!selectedRoom.current_ticket" style="font-size: 5em;">*</p>
             </v-col>
           </v-row>
         </v-col>
@@ -133,6 +140,12 @@
         </v-col>
 
       </v-row>
+      <br/><br/><br/><br/>
+      <v-row justify="center">
+        <v-card flat>
+          <img :src="constants.ASSETS.logo" height="200px" />
+        </v-card>
+      </v-row>
     </v-container>
     <!--end else-->
   </v-card>
@@ -150,7 +163,6 @@ export default {
       hour: moment().format("HH:mm"),
       clockInterval: undefined,
       constants: constants,
-      animation: "",
       lastTicket: null,
       expand: false,
       old: undefined,
@@ -183,7 +195,6 @@ export default {
         this.selectedRoom = Object.assign(data.Room[0])
         this.new = this.selectedRoom.current_ticket
         if(this.old !== this.new){
-          console.log("'trigger'")
           this.soundAndAnimation();
         }
         //console.log('Room:', this.selectedRoom)
@@ -265,11 +276,10 @@ export default {
     },
     soundAndAnimation(){
       this.playTicketSound();
-      //for 1 até 60 ou 0 a 59
       this.expand = true;
       setTimeout(() => {
         this.expand = false;
-      }, 1000);
+      }, 15000);
     },
     playTicketSound() {
       let sound = new Audio(
@@ -289,41 +299,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.animation {
-  animation: fade-in 1s infinite;
-}
-
-.one,
-.two,
-.three {
-  float: left;
-  width: 50%;
-  min-height: 100vh;
-}
-
-.half {
-  min-height: 50vh;
-}
-
-.strechAll {
-  min-height: 100vh;
-}
-
-.two {
-  background-color: rgb(21, 21, 99);
-}
-.three {
-  background-color: rgb(35, 151, 118);
-}
-@keyframes fade-in {
-  0% {
-    opacity: 0.5;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-</style>
