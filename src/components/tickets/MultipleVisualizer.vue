@@ -55,11 +55,13 @@
           <v-card elevation="0" :color="index%2 != 0? 'grey lighten-2':'grey lighten-4'">
             <v-row>
               <v-col align-self="center" class="font-weight-bold">
-                <p
-                    v-if="ticket.current_ticket"
-                    style="font-size: 2em;"
-                >Senha {{type(ticket.current_ticket)}} {{ticket.current_ticket}}</p>
-                <p v-else style="font-size: 5em;">Senha *</p>
+                <v-expand-transition>
+                <p v-show="expand" v-if="ticket.current_ticket" style="font-size: 2em; color: deeppink">SENHA {{type(ticket.current_ticket)}} {{ticket.current_ticket}}</p>
+                </v-expand-transition>
+                <v-expand-transition>
+                  <p v-show="!expand" v-if="ticket.current_ticket" style="font-size: 2em;">SENHA {{type(ticket.current_ticket)}} {{ticket.current_ticket}}</p>
+                </v-expand-transition>
+                <p v-if="!ticket.current_ticket" style="font-size: 5em;">Senha *</p>
               </v-col>
               <v-col
                   class="font-weight-bold"
@@ -122,7 +124,19 @@ export default {
         }
       },
       update(data){
+        this.old = this.sector.has_rooms
         this.sector = Object.assign(data.Sector[0])
+        this.new = this.sector.has_rooms
+
+        for(let i in this.old){
+          for(let j in this.new){
+            if(this.old[i].name === this.new[j].name){
+              if(this.old[i].current_ticket !== this.new[j].current_ticket){
+                this.soundAndAnimation();
+              }
+            }
+          }
+        }
         //console.log('reativo:', this.sector)
       },
       pollInterval: 300, // ms
@@ -146,6 +160,9 @@ export default {
       lastRoomCalled: null,
       animation: "",
       playingAudio: false,
+      expand: false,
+      old: undefined,
+      new: undefined,
     };
   },
   watch: {
@@ -237,21 +254,13 @@ export default {
         }
       }
     },
-    /*    last(){
-          console.log( this.sector.sector_has_tickets)
-          let tikets = this.sector.sector_has_tickets
-          let calleds = []
-          let not_calleds = []
-          for (let t in tikets){
-            if(!tikets[t].called_at.formatted){
-              this.not_calleds.push(tikets[t])
-            } else{
-              this.calleds.push(tikets[t])
-            }
-          }
-          console.log('calleds:', calleds)
-          console.log('nots:', not_calleds)
-        },*/
+    soundAndAnimation(){
+      this.playTicketSound();
+      this.expand = true;
+      setTimeout(() => {
+        this.expand = false;
+      }, 15000);
+    },
     playTicketSound() {
       let sound = new Audio(
           "https://firebasestorage.googleapis.com/v0/b/prosaude-36f66.appspot.com/o/assets%2FCollected%20Coin%20A1.mp3?alt=media&token=57509b64-12aa-4946-9814-42995ac8ab41"
