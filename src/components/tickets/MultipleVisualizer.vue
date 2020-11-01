@@ -61,7 +61,7 @@
                 <v-expand-transition>
                   <p v-show="!expand" v-if="ticket.current_ticket" style="font-size: 2em;">SENHA {{type(ticket.current_ticket)}} {{ticket.current_ticket}}</p>
                 </v-expand-transition>
-                <p v-if="!ticket.current_ticket" style="font-size: 5em;">Senha *</p>
+                <p v-if="!ticket.current_ticket" style="font-size: 5em;">SENHA *</p>
               </v-col>
               <v-col
                   class="font-weight-bold"
@@ -125,7 +125,17 @@ export default {
       },
       update(data){
         this.old = this.sector.has_rooms
+
+        for (let k in this.sector.has_rooms){
+          this.sector.has_rooms[k].expand = false
+        }
+
         this.sector = Object.assign(data.Sector[0])
+
+        for (let k in this.sector.has_rooms){
+          this.sector.has_rooms[k].expand = false
+        }
+
         this.new = this.sector.has_rooms
 
         for(let i in this.old){
