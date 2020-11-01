@@ -145,17 +145,13 @@ export default {
         let normals = this.sector.sector_has_tickets.filter(a => {
           return a.type === 'normal';
         });
-        //=========
-        let norma = []
-        for(let n in normals){ if(!normals[n].called_at.formatted){ norma.push(normals[n]) }}
-        if(norma[0] !== undefined){ this.normal = norma[0].name } else { this.normal = normals[0].name }//bug
-        //=========
+        if(normals[0] !== undefined){ this.normal = normals[0].name }
+
         let prioritys = this.sector.sector_has_tickets.filter(a => {
           return a.type === 'priority';
         });
-        let priorit = []
-        for(let p in prioritys) { if(!prioritys[p].called_at.formatted) { priorit.push(prioritys[p]) }}
-        if(priorit[0] !== undefined) {this.priority = priorit[0].name} else { this.priority = prioritys[0].name }//bug
+        if(prioritys[0] !== undefined) {this.priority = prioritys[0].name}
+
       },
     },
   },
