@@ -761,7 +761,7 @@
                             variables: {
                                 idDependent: dependent.id,
                                 name: dependent.name,
-                                birth_date: moment(dependent.birthDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
+                                birth_date: {formatted: moment(dependent.birthDate, "DD/MM/YYYY").format("YYYY-MM-DD")},
                                 cpf: dependent.cpf,
                                 dependentDegree: dependent.dependentDegree,
                                 sex:dependent.sex
@@ -927,7 +927,7 @@
                 if (user.dependents) {
                     for (let index in user.dependents) {
                         let patt = new RegExp(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/);
-                        let date = user.dependents[index].birth_date;
+                        let date = user.dependents[index].birth_date.formatted;
                         if (!patt.test(date))
                             date = moment(date, "YYYY-MM-DD").format("DD/MM/YYYY");
                         user.dependents[index].birthDate = date
