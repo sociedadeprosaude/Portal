@@ -158,14 +158,15 @@
               <v-tooltip top v-if="normal > 0">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
+                      v-if="!room.doctor"
                       v-bind="attrs"
                       v-on="on"
-                    :disabled="loading"
-                    @click="callNextTicket(room,false)"
-                    text
-                    fab
-                    small
-                    class="primary my-2"
+                      :disabled="loading"
+                      @click="callNextTicket(room,false)"
+                      text
+                      fab
+                      small
+                      class="primary my-2"
                   >
                     <v-icon>add_alert</v-icon>
                   </v-btn>
@@ -175,38 +176,75 @@
               <v-tooltip top v-if="priority > 0">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
+                      v-if="!room.doctor"
                       v-bind="attrs"
                       v-on="on"
-                    :disabled="loading"
-                    @click="callNextTicket(room,true)"
-                    text
-                    fab
-                    small
-                    class="primary ml-2 my-2"
+                      :disabled="loading"
+                      @click="callNextTicket(room,true)"
+                      text
+                      fab
+                      small
+                      class="primary ml-2 my-2"
                   >
                     <v-icon>notification_important</v-icon>
                   </v-btn>
                 </template>
                 <span>Chamar próxima senha preferencial</span>
               </v-tooltip>
-              <!--<v-tooltip top v-if="doctorsLoaded">
+
+              <v-tooltip top v-if="normal > 0">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                      v-if="room.doctor && room.room_has_tickets.length > 0"
+                      v-bind="attrs"
+                      v-on="on"
+                      :disabled="loading"
+                      @click="callNextTicket(room,false)"
+                      text
+                      fab
+                      small
+                      class="primary my-2"
+                  >
+                    <v-icon>add_alert</v-icon>
+                  </v-btn>
+                </template>
+                <span>Chamar próxima senha</span>
+              </v-tooltip>
+              <v-tooltip top v-if="priority > 0">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                      v-if="room.doctor && room.room_has_tickets.length > 0"
+                      v-bind="attrs"
+                      v-on="on"
+                      :disabled="loading"
+                      @click="callNextTicket(room,true)"
+                      text
+                      fab
+                      small
+                      class="primary ml-2 my-2"
+                  >
+                    <v-icon>notification_important</v-icon>
+                  </v-btn>
+                </template>
+                <span>Chamar próxima senha preferencial</span>
+              </v-tooltip>
+              <v-tooltip top v-if="doctorsLoaded">
                 <template v-slot:activator="{ on }">
                   <v-btn
-                    v-on="on"
-                    :disabled="loading"
-                    @click="$emit('open-selected-room',room)"
-                    text
-                    fab
-                    x-small
-                    class="primary ml-2 my-2"
+                      v-on="on"
+                      :disabled="loading"
+                      @click="$emit('open-selected-room',room)"
+                      text
+                      fab
+                      x-small
+                      class="primary ml-2 my-2"
                   >
                     <v-icon>person</v-icon>
                   </v-btn>
                 </template>
                 <span>Selecionar médico</span>
               </v-tooltip>
-              <v-progress-circular indeterminate class="primary&#45;&#45;text" v-else></v-progress-circular>
-              <v-tooltip top v-if="doctorsLoaded">
+<!--              <v-tooltip top v-if="doctorsLoaded">
                 <template v-slot:activator="{ on }">
                   <v-btn
                     v-on="on"
@@ -221,8 +259,8 @@
                   </v-btn>
                 </template>
                 <span>Gerar senha</span>
-              </v-tooltip>
-              <v-tooltip top v-if="doctorsLoaded">
+              </v-tooltip>-->
+<!--              <v-tooltip top v-if="doctorsLoaded">
                 <template v-slot:activator="{ on }">
                   <v-btn
                     v-on="on"
@@ -237,8 +275,8 @@
                   </v-btn>
                 </template>
                 <span>Gerar senha preferencial</span>
-              </v-tooltip>
-              <v-tooltip top v-if="doctorsLoaded">
+              </v-tooltip>-->
+<!--              <v-tooltip top v-if="doctorsLoaded">
                 <template v-slot:activator="{ on }">
                   <v-btn
                     v-on="on"
@@ -329,19 +367,47 @@
           <v-flex xs12>
             <span class="my-headline">{{selectedRoom.name}}</span>
           </v-flex>
-          <v-flex xs12>
-            <v-text-field prepend-icon="search" label="Médico" v-model="doctorsListDialog.search"></v-text-field>
+          <br/>
+          <v-flex xs12 class="mx-3">
+            <v-combobox
+                v-model="doctor"
+                :items="doctors"
+                return-object
+                item-text="name"
+                label="Pesquisar"
+                outlined
+                dense
+                chips
+                color="blue"
+                clearable
+            >
+              <template v-slot:selection="data">
+                <v-chip
+                    :key="JSON.stringify(data.item)"
+                    :input-value="data.selected"
+                    :disabled="data.disabled"
+                    class="v-chip--select-multi"
+                    @click.stop="data.parent.selectedIndex = data.index"
+                    @input="data.parent.selectItem(data.item)"
+                    text-color="white"
+                    color="info"
+                >{{ data.item.name }}
+                </v-chip>
+              </template>
+            </v-combobox>
           </v-flex>
-          <v-flex xs12 class="mt-2" v-for="(doctor,i) in doctors" :key="i">
-            <v-card flat @click="setDoctorToRoom(selectedRoom, doctor)">
-              <v-divider class="mb-2"></v-divider>
-              <span>{{doctor.name}}</span>
-            </v-card>
+
+          <v-flex xs12 v-if="doctor">
+            <span>Selecionar:</span>
+            <v-btn :disabled="loading" color="primary" @click="setDoctorToRoom(selectedRoom, doctor)">
+                <span>{{doctor.name}}</span>
+            </v-btn>
           </v-flex>
           <v-divider></v-divider>
         </v-layout>
       </v-card>
     </v-dialog>
+
     <v-dialog v-model="singleViewDialog.active" fullscreen transition="dialog-bottom-transition">
       <single-visualizer :sector="sector" @close="$emit('close-single-view-dialog')" :selectedRoom="singleViewDialog.room"></single-visualizer>
     </v-dialog>
@@ -405,6 +471,7 @@ export default {
     return {
       dialog: false,
       number: undefined,
+      doctor: '',
     }
   },
   props: {

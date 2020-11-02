@@ -35,10 +35,7 @@
     :deletionRoom="deletionRoom"
     :snackbar="snackbar"
     @open-multiple-view-dialog="multipleViewDialog = true"
-    @open-selected-room="(room)=>{
-      selectedRoom = room;
-       doctorsListDialog.active = true
-    }"
+    @open-selected-room="(room)=>{selectedRoom = room;doctorsListDialog.active = true;}"
     @close-multiple-view-dialog="multipleViewDialog = false"
     @close-single-view-dialog="singleViewDialog.active = false"
     @close-doctors-list-dialog="doctorsListDialog = false"
@@ -67,9 +64,9 @@ export default {
       priority: '0',
       new: undefined,
       old: undefined,
+      doctors: undefined,
       doctorsListDialog: {
         active: false,
-        search: "",
       },
       snackbar: false,
       selectedRoom: {},
@@ -108,13 +105,14 @@ export default {
     ticketInfo() {
       return this.$store.getters.ticketGeneralInfo;
     },
-    doctors() {
+/*    doctors() {
+
       return Object.values(this.$store.getters.doctors).filter((doctor) => {
         return doctor.name.includes(
           this.doctorsListDialog.search.toUpperCase()
         );
       });
-    },
+    },*/
     doctorsLoaded() {
       return true;
     },
@@ -152,6 +150,12 @@ export default {
         });
         if(prioritys[0] !== undefined) {this.priority = prioritys[0].name}
 
+      },
+    },
+    LoadDoctors: {
+      query: require("@/graphql/doctors/LoadDoctors.gql"),
+      update(data){
+        this.doctors = Object.assign(data.Doctor)
       },
     },
   },
@@ -202,10 +206,16 @@ export default {
       this.$apollo.queries.LoadRoomsOfSector.refresh();
     },
     async setDoctorToRoom(room, doctor) {
-      room.doctor = doctor;
       this.loading = true;
-      const sector = this.sector;
-      await this.$store.dispatch("updateSectorRoom", { sector, room });
+      await this.$apollo.mutate({
+        mutation: require('@/graphql/rooms/AddRelationsRoomDoctor.gql'),
+        variables: {
+          idRoom: room.id,
+          idDoctor: doctor.id,
+        },
+      });
+      this.$apollo.queries.LoadRoomsOfSector.refresh();
+      this.doctorsListDialog.active = false
       this.loading = false;
     },
     async generateNextTicket(room, preferential) {
