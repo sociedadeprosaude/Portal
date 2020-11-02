@@ -72,6 +72,15 @@
             <v-btn
                 color="white"
                 rounded
+                :loading="loadingCharge"
+                :disabled="consultation.status !== 'Pago'"
+                @click="setConsultationHour(consultation)"
+            >
+              Prontuário
+            </v-btn>
+            <v-btn
+                color="white"
+                rounded
                 @click="ConsultationRecept(consultation)"
             >
               Comprovante
