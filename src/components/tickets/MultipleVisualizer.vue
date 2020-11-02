@@ -1,49 +1,44 @@
 <template>
   <v-card class="pa-4" @click="$emit('close')" style="overflow: hidden !important;" v-if="this.$vuetify.breakpoint.xs">
-    <v-container fill-height fluid class="one white--text">
-      <v-row class="ml-2 indigo--text text--darken-4 font-weight-bold">
-        <p style="font-size: 2em;">Últimas senhas</p>
-        <!--{{sector.has_rooms.length}}-->
+    <div>
+    <v-container fill-height fluid class="white--text align-center justify-center">
+      <v-row class="ml-2 indigo--text text--darken-4 font-weight-bold align-center justify-center">
+        <p style="font-size: 1em;">Últimas Senhas</p>
       </v-row>
       <v-row justify="center">
         <v-col
-            class="py-2 px-0"
+            class="py-3 px-2"
             cols="12"
+            xs="12"
             v-for="(ticket, index) in sector.has_rooms"
             :key="index"
         >
-          <v-card elevation="0" :color="index%2 != 0? 'grey lighten-2':'grey lighten-4'">
+          <v-card elevation="1" :color="index%2 != 0? 'grey lighten-2':'grey lighten-4'">
             <v-row>
-              <v-col align-self="center" class="font-weight-bold">
-                <p
-                    v-if="ticket.current_ticket"
-                    style="font-size: 2em;"
-                >Senha {{type(ticket.current_ticket)}} {{ticket.current_ticket}}</p>
-                <p v-else style="font-size: 5em;">Senha *</p>
+              <v-col xs="12" cols="12" class="font-weight-bold" :style="[type(ticket.current_ticket) === 'PRIORITY' ?'color: rgb(35, 151, 118);':'color:#1A237E']">
+                <p style="font-size: 2em;">{{ticket.name}}</p>
               </v-col>
-              <v-col
-                  class="font-weight-bold"
-                  :style="[type(ticket.current_ticket) === 'PRIORITY' ?'color: rgb(35, 151, 118);':'color:#1A237E']"
-              >
-                <p style="font-size: 4em;">{{ticket.name}}</p>
+              <v-col align-self="center" class="font-weight-bold">
+                <v-expand-transition>
+                  <p v-show="expand" v-if="ticket.current_ticket" style="font-size: 2em; color: deeppink">Senha {{type(ticket.current_ticket)}} {{ticket.current_ticket}}</p>
+                </v-expand-transition>
+                <v-expand-transition>
+                  <p v-show="!expand" v-if="ticket.current_ticket" style="font-size: 2em;">Senha {{type(ticket.current_ticket)}} {{ticket.current_ticket}}</p>
+                </v-expand-transition>
+                <p v-if="!ticket.current_ticket" style="font-size: 2em;">Senha *</p>
               </v-col>
             </v-row>
           </v-card>
         </v-col>
       </v-row>
-      <v-row justify="center">
-        <v-card flat>
-          <img :src="constants.ASSETS.logo" height="124px" />
-        </v-card>
-      </v-row>
     </v-container>
+    </div>
   </v-card>
   <!--else-->
   <v-card class="pa-4" @click="$emit('close')" style="overflow: hidden !important;" v-else>
     <v-container fill-height fluid class="one white--text">
       <v-row class="ml-2 indigo--text text--darken-4 font-weight-bold">
         <p style="font-size: 2em;">Últimas senhas</p>
-        <!--{{sector.has_rooms.length}}-->
       </v-row>
       <v-row justify="center">
         <v-col
@@ -54,20 +49,17 @@
         >
           <v-card elevation="0" :color="index%2 != 0? 'grey lighten-2':'grey lighten-4'">
             <v-row>
+              <v-col class="font-weight-bold" :style="[type(ticket.current_ticket) === 'PRIORITY' ?'color: rgb(35, 151, 118);':'color:#1A237E']">
+                <p style="font-size: 4em;">{{ticket.name}}</p>
+              </v-col>
               <v-col align-self="center" class="font-weight-bold">
                 <v-expand-transition>
-                <p v-show="expand" v-if="ticket.current_ticket" style="font-size: 2em; color: deeppink">SENHA {{type(ticket.current_ticket)}} {{ticket.current_ticket}}</p>
+                <p v-show="expand" v-if="ticket.current_ticket" style="font-size: 3em; color: deeppink">SENHA {{type(ticket.current_ticket)}} {{ticket.current_ticket}}</p>
                 </v-expand-transition>
                 <v-expand-transition>
-                  <p v-show="!expand" v-if="ticket.current_ticket" style="font-size: 2em;">SENHA {{type(ticket.current_ticket)}} {{ticket.current_ticket}}</p>
+                  <p v-show="!expand" v-if="ticket.current_ticket" style="font-size: 3em;">SENHA {{type(ticket.current_ticket)}} {{ticket.current_ticket}}</p>
                 </v-expand-transition>
                 <p v-if="!ticket.current_ticket" style="font-size: 5em;">SENHA *</p>
-              </v-col>
-              <v-col
-                  class="font-weight-bold"
-                  :style="[type(ticket.current_ticket) === 'PRIORITY' ?'color: rgb(35, 151, 118);':'color:#1A237E']"
-              >
-                <p style="font-size: 4em;">{{ticket.name}}</p>
               </v-col>
             </v-row>
           </v-card>
