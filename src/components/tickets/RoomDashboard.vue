@@ -32,7 +32,7 @@
               :disabled="loading"
               @click="()=>generateSectorTicket(true)"
             >
-              G. P. senha preferencial:
+              Gerar proxima senha preferencial
               {{priority}}
             </v-btn>
           </template>

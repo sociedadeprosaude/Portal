@@ -96,16 +96,16 @@
             <v-row
                 justify="center"
                 class="display-2"
-            >Senha {{type(ticket.current_ticket)}} <!--atual--></v-row>
+            >SENHA {{type(ticket.current_ticket)}} <!--atual--></v-row>
             <v-row justify="center">
               <v-col class="ma-0 pa-0">
                 <v-expand-transition>
-                  <p v-show="expand" v-if="ticket.current_ticket" style="font-size: 2em; color: deeppink">SENHA {{type(ticket.current_ticket)}} {{ticket.current_ticket}}</p>
+                  <p v-show="expand" v-if="ticket.current_ticket" style="font-size: 5em; color: deeppink">{{ticket.current_ticket}}</p>
                 </v-expand-transition>
                 <v-expand-transition>
-                  <p v-show="!expand" v-if="ticket.current_ticket" style="font-size: 2em;">SENHA {{type(ticket.current_ticket)}} {{ticket.current_ticket}}</p>
+                  <p v-show="!expand" v-if="ticket.current_ticket" style="font-size: 5em;">{{ticket.current_ticket}}</p>
                 </v-expand-transition>
-                <p v-if="!ticket.current_ticket" style="font-size: 5em;">SENHA *</p>
+                <p v-if="!ticket.current_ticket" style="font-size: 5em;">*</p>
               </v-col>
             </v-row>
           </v-col>
