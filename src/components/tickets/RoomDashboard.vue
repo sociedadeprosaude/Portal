@@ -173,6 +173,7 @@
                 </template>
                 <span>Chamar próxima senha</span>
               </v-tooltip>
+
               <v-tooltip top v-if="priority > 0">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn

@@ -60,12 +60,12 @@
                 v-if="consultation.type !== 'Retorno' && consultation.product"
             >Retorno
             </v-btn>
+            <!--disabled-->
             <v-btn
                 color="white"
                 rounded
-                :loading="loadingCharge"
                 :disabled="consultation.status !== 'Pago'"
-                @click="setConsultationHour(consultation)"
+                @click="ConsultationTicket(consultation)"
             >
               Atender
             </v-btn>
@@ -98,6 +98,50 @@
     <v-dialog v-model="receptDialog">
       <consultation-receipt @close="receptDialog=false" :consultation="consultation"/>
     </v-dialog>
+
+    <dialog v-model="dialogTicket">
+      <gerenate-ticket-and-choose-type :consultation="consultation"/>
+    </dialog>
+
+    <v-dialog
+        v-model="dialog"
+        width="500"
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+            color="red lighten-2"
+            dark
+            v-bind="attrs"
+            v-on="on"
+        >
+          Click Me
+        </v-btn>
+      </template>
+
+      <v-card>
+        <v-card-title class="headline grey lighten-2">
+          Privacy Policy
+        </v-card-title>
+
+        <v-card-text>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+              color="primary"
+              text
+              @click="dialog = false"
+          >
+            I accept
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   </v-layout>
 </template>
 
@@ -112,6 +156,7 @@ import ConsultationReceipt from "../commons/ConsultationReceipt"
 import {uuid} from "vue-uuid";
 import MutationBuilder from "@/classes/MutationBuilder";
 import gql from "graphql-tag";
+import GerenateTicketAndChooseType from "../commons/GerenateTicketAndChooseType";
 
 let moment = require('moment');
 
@@ -119,6 +164,7 @@ export default {
   name: "CardInformationManagementConsultations",
   props: ['patient', 'consultation'],
   components: {
+    GerenateTicketAndChooseType,
     CardConsultationManagementConsultations,
     CardPatientManagementConsultations,
     ConsultationDocument,
@@ -137,7 +183,9 @@ export default {
     ConsultationSelect: {},
     skip: true,
     skipPatients: true,
-    skipCost: true
+    skipCost: true,
+    dialogTicket: false,
+    dialog: false,
   }),
   computed: {
     selectedPatient() {
@@ -297,6 +345,11 @@ export default {
     ConsultationRecept(consultation) {
       console.log('consultation: ', consultation)
       this.receptDialog = true;
+    },
+    ConsultationTicket(consultation){
+      console.log('consultation: ', consultation)
+      this.dialogTicket = true;
+      console.log('bol:', this.dialogTicket)
     }
   },
 
