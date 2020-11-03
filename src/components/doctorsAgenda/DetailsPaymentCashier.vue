@@ -44,7 +44,7 @@
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-flex sm12 xs12 v-if="payment.paymentForm.length === 1">
+        <v-flex sm12 xs12 v-if="payment.paymentForm.length === 1 && this.paymentValues">
           <v-layout row wrap class="align-center" v-for="(x ,index) in payments" :key="index">
             <v-flex xs12>
               <v-select
@@ -224,7 +224,7 @@ export default {
       searchPatient: false,
       payments: ['Dinheiro'],
       valuesPayments: [''],
-      payment: {paymentForm: ['Dinheiro'], value: [''], parcel: ['1']},
+      payment: {paymentForm: ['Dinheiro'], value: ['0'], parcel: ['1']},
       idUser: '',
       data: moment().format("YYYY-MM-DD HH:mm:ss"),
       parcelas: '1',
@@ -297,7 +297,13 @@ export default {
         this.percentageDiscount = ((100 * this.moneyDiscount)/this.subTotal)
         this.$store.commit('setDiscount',0)
       }
-      this.percentageDiscount= ((100 * this.moneyDiscount) / this.subTotal)
+      if(this.moneyDiscount.length === 0){
+        this.moneyDiscount = 0
+        this.percentageDiscount = 0
+      }
+      else{
+        this.percentageDiscount= ((100 * this.moneyDiscount) / this.subTotal)
+      }
       return this.percentageDiscount
     },
     idBudget(){
@@ -309,11 +315,13 @@ export default {
       let total = 0;
       for (let item in itens) {
         total += parseFloat(itens[item].price);
-
       }
       return total
     },
     total() {
+      if(this.moneyDiscount.length === 0){
+        return (parseFloat(this.subTotal).toFixed(2))
+      }
       return (parseFloat(this.subTotal) - parseFloat(this.moneyDiscount)).toFixed(2)
     },
     paymentValues() {
@@ -345,11 +353,6 @@ export default {
         return true
       }
     },
-  },
-  watch: {
-    percentageDiscount: function () {
-      this.moneyDiscount = ((this.percentageDiscount * this.subTotal) / 100);
-      },
   },
   methods: {
     CloseReceipt() {
@@ -637,7 +640,6 @@ export default {
               idProduct: products[product].id
             }
           })
-          console.log('cost product clinic: ', CostProductClinic.data.CostProductClinic[0])
           mutationBuilder.addMutation(`
               CreateCharge(
                   id:"${chargeID}"
