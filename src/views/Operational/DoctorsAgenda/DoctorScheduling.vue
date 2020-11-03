@@ -1,7 +1,7 @@
 <template>
-    <v-container fluid class="ma-0 mt-n2 pa-0 hidden-print-only">
-        <v-layout row wrap>
-            <v-flex xs12 class="hidden-sm-and-up mt-n4" >
+    <v-container fluid class="ma-0 mt-n4 pa-0 hidden-print-only">
+        <v-layout row wrap class="justify-center">
+            <v-flex xs12 class="hidden-md-and-up mt-n2" >
                 <v-layout row wrap class="justify-space-between primary">
                     <v-btn v-for="item in items" :key="item.title" class="primary" text large @click="chooseView(item.view)">
                         {{item.title}}
@@ -12,15 +12,16 @@
                 <DataToSearchConsultation @loading="loadingConsultations = $event" @GetConsultations="schedules= $event" :daysToListen="daysToListen"/>
             </v-flex>
 
-            <v-flex sm6 class="white">
+            <v-flex sm6 class="white hidden-sm-and-down">
                 <SchedulesConsultations :loadingConsultations="loadingConsultations" :Consultations="schedules" @refreshDate="daysToListen = $event" v-if="this.viewSeleted === 'schedules'"/>
             </v-flex>
             <v-flex sm3 class="primary hidden-sm-and-down">
                 <DataCashierConsultation/>
             </v-flex>
 
-            <v-flex xs12 class="primary hidden-sm-and-up">
+            <v-flex xs12 class="primary hidden-md-and-up">
                 <DataToSearchConsultation @GetConsultations="schedules= $event" :daysToListen="daysToListen" v-if="this.viewSeleted === 'data'"/>
+                <SchedulesConsultations :loadingConsultations="loadingConsultations" :Consultations="schedules" @refreshDate="daysToListen = $event" v-if="this.viewSeleted === 'schedules'"/>
                 <DataCashierConsultation v-if="this.viewSeleted === 'cashier'"/>
             </v-flex>
         </v-layout>
