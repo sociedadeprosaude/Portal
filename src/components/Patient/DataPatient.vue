@@ -1007,7 +1007,7 @@
                 query: require("@/graphql/patients/searchPatients.gql"),
                 variables(){
                     return {
-                        name: this.name.toUpperCase()
+                        name: this.name ? this.name.toUpperCase() : this.name
                     }
                 },
                 update(data) {

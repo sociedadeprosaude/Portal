@@ -76,21 +76,21 @@
           </v-layout>
         </v-flex>
         <v-layout wrap>
-          <v-flex xs6>
-            <v-text-field
-                label="Desconto: %"
-                v-model="percentageDiscount"
-                outlined
-                dense
-            />
-          </v-flex>
           <v-flex xs5 class="ml-4">
             <v-text-field
-                disabled
                 label="Desconto: R$ "
-                v-model="discountMoney"
+                v-model="moneyDiscount"
                 dense
                 outlined
+            />
+          </v-flex>
+          <v-flex xs6>
+            <v-text-field
+                disabled
+                label="Desconto: %"
+                v-model="PercentageDiscount"
+                outlined
+                dense
             />
           </v-flex>
         </v-layout>
@@ -122,7 +122,7 @@
             <span>Subtotal: R$ {{ this.subTotal.toLocaleString('en-us', {minimumFractionDigits: 2}) }}</span>
           </v-flex>
           <v-flex xs6>
-            <span>Desconto: R$ {{ this.discountMoney.toLocaleString('en-us', {minimumFractionDigits: 2}) }}</span>
+            <span>Desconto: R$ {{ this.moneyDiscount.toLocaleString('en-us', {minimumFractionDigits: 2}) }}</span>
           </v-flex>
         </v-layout>
 
@@ -225,7 +225,6 @@ export default {
       payments: ['Dinheiro'],
       valuesPayments: [''],
       payment: {paymentForm: ['Dinheiro'], value: [''], parcel: ['1']},
-      moneyDiscout: 0,
       idUser: '',
       data: moment().format("YYYY-MM-DD HH:mm:ss"),
       parcelas: '1',
@@ -267,8 +266,6 @@ export default {
         this.$store.commit('setSelectedDoctor', val)
       }
     },
-
-
     loadingDoctors() {
       return !this.$store.getters.doctorsLoaded
     },
@@ -302,16 +299,14 @@ export default {
       }
       return total
     },
-    discountMoney(){
+    PercentageDiscount(){
       if(this.$store.getters.getDiscountBudget !== 0){
         this.moneyDiscount = this.$store.getters.getDiscountBudget
         this.percentageDiscount = ((100 * this.moneyDiscount)/this.subTotal)
         this.$store.commit('setDiscount',0)
       }
-
-      this.moneyDiscount = ((this.percentageDiscount * this.subTotal)/100)
-
-      return this.moneyDiscount
+      this.percentageDiscount= ((100 * this.moneyDiscount) / this.subTotal)
+      return this.percentageDiscount
     },
     idBudget(){
       let idBudget = this.$store.getters.getIdBudget;
