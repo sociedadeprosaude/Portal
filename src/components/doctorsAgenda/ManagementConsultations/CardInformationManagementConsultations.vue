@@ -6,6 +6,8 @@
         <v-layout row wrap aling-center>
           <v-flex xs12>
             <p class="white--text text-left title">Consultas</p>
+            <v-divider color="white"/>
+            <span class="white--text font-weight-bold title">SETOR: {{sector === '' ? 'NENHUM' : sector }} <v-divider color="white"/> SALA: {{room === '' ? 'NENHUMA' : room}}</span>
           </v-flex>
           <v-flex xs12 class="mb-2">
             <v-divider color="white"/>
@@ -67,7 +69,7 @@
                 :disabled="consultation.status !== 'Pago'"
                 @click="ConsultationTicket(consultation)"
             >
-              Atender
+              Gerar Senha
             </v-btn>
             <v-btn
                 color="white"
@@ -155,7 +157,12 @@ export default {
     skipPatients: true,
     skipCost: true,
     dialogTicket: false,
+    room: '',
+    sector: '',
   }),
+  mounted() {
+    this.$apollo.queries.LoadSectorsOfUnity.refresh();
+  },
   computed: {
     selectedPatient() {
       return this.$store.getters.selectedPatient
@@ -322,6 +329,33 @@ export default {
   },
 
   apollo: {
+    LoadSectorsOfUnity: {
+      query: require("@/graphql/sectors/LoadSectorsOfUnity.gql"),
+      variables () {
+        return {
+          id: this.consultation.clinic.id,
+        }
+      },
+      update(data){
+        let sectors = Object.assign(data.Clinic[0].has_sectors)
+        console.log('G:', sectors)
+        for (let sector in sectors){
+          if(sectors[sector].has_rooms){
+            for(let room in sectors[sector].has_rooms){
+              if(sectors[sector].has_rooms[room].doctor){
+                if(sectors[sector].has_rooms[room].doctor.id === this.consultation.doctor.id){
+                  //console.log('name sector', sectors[sector].name)
+                  this.sector = sectors[sector].name
+                  //console.log('room name', sectors[sector].has_rooms[room].name)
+                  this.room = sectors[sector].has_rooms[room].name
+                }
+              }
+            }
+          }
+        }
+      },
+    },
+
     findProductTransaction: {
       query: require("@/graphql/transaction/FindProductTransactionbyConsultation.gql"),
       variables() {
