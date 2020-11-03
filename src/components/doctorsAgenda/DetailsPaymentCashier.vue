@@ -291,14 +291,6 @@ export default {
     clinic() {
       return this.$store.getters.getShoppingCartItemsByCategory.clinics
     },
-    cost() {
-      let itens = this.$store.getters.getShoppingCartItems;
-      let total = 0;
-      for (let item in itens) {
-        total += parseFloat(itens[item].cost)
-      }
-      return total
-    },
     PercentageDiscount(){
       if(this.$store.getters.getDiscountBudget !== 0){
         this.moneyDiscount = this.$store.getters.getDiscountBudget
@@ -317,6 +309,7 @@ export default {
       let total = 0;
       for (let item in itens) {
         total += parseFloat(itens[item].price);
+
       }
       return total
     },
@@ -644,6 +637,7 @@ export default {
               idProduct: products[product].id
             }
           })
+          console.log('cost product clinic: ', CostProductClinic.data.CostProductClinic[0])
           mutationBuilder.addMutation(`
               CreateCharge(
                   id:"${chargeID}"
