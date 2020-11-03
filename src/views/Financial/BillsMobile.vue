@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container class="fill-height">
         <div class="text-center">
             <v-dialog
                     hide-overlay
@@ -171,7 +171,7 @@
             </v-dialog>
         </div>
 
-        <v-layout row wrap class="justify-center" v-show="!pendingOuttakes">
+        <v-layout row wrap class="justify-center" v-show="loading">
             <v-progress-circular indeterminate color="primary" large/>
         </v-layout>
         <v-row class="align-center justify-center" v-model="billsToPay">
