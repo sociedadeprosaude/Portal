@@ -198,22 +198,9 @@
             CloseReceipt(){
                 this.dialogReceipt= !this.dialogReceipt
             },
-            async getInitialInfo() {
-                await this.$store.dispatch('loadClinics');
-                await this.$store.dispatch('GetReceiptsAllClinic');
-                this.loading = false
-            },
             ChangeDateDialog(clinic) {
                 this.clinica = clinic;
                 this.change = !this.change;
-            },
-            async ChangeDate(clinic) {
-                this.change = !this.change;
-                await this.$store.dispatch('AddPaymentDay', {
-                    clinic: clinic,
-                    period: this.period
-                });
-                this.getInitialInfo()
             },
             formatDate(date) {
                 if (!date) return null;
@@ -285,14 +272,15 @@
             },
           mostrar(data){
               console.log('data: ', data)
-          }
+          },
+          async getInitialInfo() {
+            this.loading = false
+          },
 
         },
-        mounted() {
-            this.getInitialInfo()
-        },
-        watch: {
+      mounted() {
+        this.getInitialInfo()
+      }
 
-        }
     }
 </script>
