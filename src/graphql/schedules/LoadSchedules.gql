@@ -29,7 +29,6 @@ query{
       hour,
       vacancy
     },
-    observations,
     num_consultations,
     num_regress,
     consultations{
