@@ -74,7 +74,7 @@
                                                 <span class="font-weight-bold">{{item.name}}</span>
                                             </v-flex>
                                             <v-flex xs4 class="text-right">
-                                                <span class="font-weight-bold">{{item.price}}</span>
+                                                <span class="font-weight-bold">{{item.price.toFixed(2)}}</span>
                                             </v-flex>
                                         </v-layout>
                                     </v-flex>
