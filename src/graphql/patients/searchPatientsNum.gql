@@ -1,6 +1,6 @@
-query($name:String){
-  Patient(first:15, filter:{name_starts_with:$name}){
-    id, _id,
+query($association_number:String ){
+  Patient(first:15, _id:$association_number, orderBy:[_id_asc]){
+    id,  _id,
     name,
     cpf,
     sex,
@@ -26,10 +26,10 @@ query($name:String){
       sex
     },
     intakes{
-      date {
+       date {
         formatted
-      },
-      id,
+       },
+       id,
       discount,
       value,
       payments,
@@ -73,50 +73,6 @@ query($name:String){
          telephone
        }
      },
-     budgets{
-                       date {
-                       formatted
-                       },
-                       id,
-                      discount,
-                      value,
-                      payments,
-                      parcels,
-                      payment_methods,
-                      products: with_productBundget{
-                         price,
-                         id,
-                         with_product{
-                            name,
-                            type,
-                          },
-                         clinic: with_clinic{
-                            id,
-                            name,
-                            logo,
-                            cnpj,
-                            telephone,
-                            opening_hours,
-                            has_address{
-                                    neighboor,
-                                    city,
-                                    complement,
-                                    street,
-                                    number,
-                                    complement,
-                                    state,
-                                    cep
-                            }
-                         }
-                       },
-                       with_unit{
-                         id,
-                         name,
-                         logo,
-                         cnpj,
-                         telephone
-                       }
-     },
     consultations:with_consultation{
       id,
       type,
@@ -133,6 +89,9 @@ query($name:String){
       doctor:attended_by{
         id,name,crm
       },
+      productTransaction{
+        id
+      }
       regress{
         id,
         type,

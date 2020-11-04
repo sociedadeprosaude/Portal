@@ -1,6 +1,6 @@
 query($id:ID!){
   Patient(filter:{id:$id}){
-   id,
+   id, _id,
        name,
        cpf,
        sex,

@@ -21,7 +21,7 @@
                                 <v-layout column wrap>
                                     <span class="font-weight-bold white--text"
                                           style="font-size: 0.6em">No Associado</span>
-                                    <span class="font-weight-bold white--text" style="font-size: 1.2em">{{user.association_number}}</span>
+                                    <span class="font-weight-bold white--text" style="font-size: 1.2em">{{user._id}}</span>
                                 </v-layout>
                             </v-flex>
                             <v-flex xs4 class="text-left">

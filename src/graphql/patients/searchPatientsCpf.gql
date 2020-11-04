@@ -1,6 +1,6 @@
 query($cpf:String){
   Patient(first:15, filter:{cpf_starts_with:$cpf}){
-    id,
+    id,  _id,
     name,
     cpf,
     sex,
