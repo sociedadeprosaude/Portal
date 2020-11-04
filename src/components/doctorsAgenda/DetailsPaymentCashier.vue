@@ -417,7 +417,7 @@ export default {
       this.loadingImp= true
       if(this.idBudget !== undefined){
         this.saveBudget(this.generateBudget());
-        this.selectedBudget.id = this.idBudget
+        this.selectedBudget._id = this.idBudget
         this.budgetToPrint = this.selectedBudget;
         this.$store.commit('setIdBudget',undefined)
       }
@@ -439,7 +439,7 @@ export default {
             formatted: "${moment(this.selectedBudget.date.formatted).format("YYYY-MM-DDTHH:mm:ss")}"
           }
      ){
-        id, value, payment_methods, payments, parcels, discount, date{
+        id, _id,value, payment_methods, payments, parcels, discount, date{
         formatted
         }
     }`
@@ -533,10 +533,12 @@ export default {
         to{id}
     }`)
       let finalString = mutationBuilder.generateMutationRequest()
-
-      await this.$apollo.mutate({
+      let id = ''
+      id = await this.$apollo.mutate({
         mutation: gql`${finalString}`,
       })
+        id = id.data.mutation0._id
+        this.budgetToPrint._id = id
       }
       this.loadingImp= false
       this.budgetToPrintDialog = true
