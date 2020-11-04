@@ -128,7 +128,7 @@
         methods: {
             async selectBudget(budget) {
                 this.loading = true;
-                console.log('budget: ', budget)
+              this.$store.commit('clearShoppingCartItens');
                 for( let i in budget.products){
                   if(budget.products[i].clinic.length){
                     budget.products[i].type = budget.products[i].with_product[0].type
@@ -137,7 +137,8 @@
                     budget.products[i].id = budget.products[i].with_product[0].id
                     this.$store.commit('addShoppingCartItem', budget.products[i]) }
                 }
-                this.$store.commit('setDiscount',budget.discount)
+              this.$store.commit('setSelectedBudget',budget)
+              this.$store.commit('setDiscount',budget.discount)
                 this.$store.commit('setIdBudget',budget.id)
               /* budget = await this.$store.dispatch("getBudget", budget.id.toString());
               this.$store.commit("clearShoppingCartItens");

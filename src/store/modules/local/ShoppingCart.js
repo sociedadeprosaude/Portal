@@ -26,8 +26,6 @@ const mutations = {
         state.idBudget = payload
     },
     addShoppingCartItem(state, payload) {
-        console.log('items: ', state.items)
-        console.log('payload: ', payload)
         for (let item in state.items) {
             if (state.items[item].name === payload.name) {
                 state.items[item] = payload;
