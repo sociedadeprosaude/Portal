@@ -307,8 +307,7 @@ export default {
       return this.percentageDiscount
     },
     idBudget(){
-      let idBudget = this.$store.getters.getIdBudget;
-      return idBudget
+      return this.$store.getters.getIdBudget
     },
     subTotal() {
       let itens = this.$store.getters.getShoppingCartItems;
@@ -417,8 +416,10 @@ export default {
     async imprimir() {
       this.loadingImp= true
       if(this.idBudget !== undefined){
+        this.saveBudget(this.generateBudget());
         this.selectedBudget.id = this.idBudget
         this.budgetToPrint = this.selectedBudget;
+        this.$store.commit('setIdBudget',undefined)
       }
       else{
         this.saveBudget(this.generateBudget());
