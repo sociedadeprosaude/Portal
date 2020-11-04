@@ -12,7 +12,7 @@
                               :query="require('@/graphql/clinics/LoadClinicsPayment.gql')"
                           >
                             <template slot-scope="{ result: { data } }">
-                              <v-card v-for="(clinic,i) in data ? data.Clinic : []" :key="i" outlined class="mb-4 primary">
+                              <v-card v-for="(clinic,i) in data ? data.Clinic : []" :key="i" outlined class="mb-4 primary" v-if="clinic.charges.length !== 0">
                                 <v-layout row wrap>
                                   <v-flex xs10 md5 class="text-left">
                                     <span class="font-weight-bold white--text ml-2">{{clinic.name}}</span>
