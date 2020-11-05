@@ -8,17 +8,20 @@
           </v-btn>
         </v-card-title>
         <v-card-text>
-            <v-checkbox
-                v-model="type"
-                label="NORMAL"
-                value="normal"
-            ></v-checkbox>
-          <v-icon> </v-icon>
-            <v-checkbox
-                v-model="type"
-                label="PREFERENCIAL"
-                value="priority"
-            ></v-checkbox>
+          <v-checkbox
+              v-model="type"
+              label="NORMAL"
+              value="normal"
+          ></v-checkbox>
+          <v-icon x-large :color="type === 'normal' ? 'info': ''">wc</v-icon>
+          <v-checkbox
+              v-model="type"
+              label="PREFERENCIAL"
+              value="priority"
+          ></v-checkbox>
+          <v-icon x-large :color="type === 'priority' ? 'info': ''">elderly</v-icon>
+          <v-icon x-large :color="type === 'priority' ? 'info': ''">pregnant_woman</v-icon>
+          <v-icon x-large :color="type === 'priority' ? 'info': ''">accessible</v-icon>
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
