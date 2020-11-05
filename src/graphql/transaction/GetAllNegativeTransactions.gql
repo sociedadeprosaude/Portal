@@ -15,7 +15,13 @@ query GetTransactions{
     },
     categories{
         name
-    }
+    },
+    with_clinic{
+    name, id
+    },
+    with_doctorPayments{
+    name,id
+    },
     cancelled_by{
         id,
         name,

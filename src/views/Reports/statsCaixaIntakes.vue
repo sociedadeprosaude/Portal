@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid v-if="statistics && months && years && skipTransaction">
+  <v-container fluid v-if="statistics && monthsNew && yearsNew && skipTransaction">
     <statsCaixaIntakes
       :years="yearsNew"
       :year="year"

@@ -22,6 +22,7 @@
       :mostSpentDataset="mostSpentDataset"
       :mostSpentDatasetMontly="mostSpentDatasetMontly"
       :options="options"
+      :numOfSalesMontlyDataset="numOfSalesMontlyDataset"
 
       @change-month="(value)=>month=value"
       @change-year="(value)=>year=value"
@@ -82,14 +83,11 @@ export default {
   },
   watch: {
     statistics(val) {
-      if (Object.keys(val).length) {
+      if (val) {
         this.years = Object.keys(val);
         this.year = this.years[0];
         this.months = Object.keys(val[this.years[0]]);
         this.month = this.months[0];
-      }
-      else{
-        this.not = true
       }
     },
     year(val) {
@@ -147,7 +145,84 @@ export default {
       return this.$store.getters.getStatisticsOuttakes;
     },
     info() {
-      return this.statistics[this.year][this.month];
+      let itens= {}
+      let arrTotalRaw= []
+      let NewMonth = moment(this.year + '-' + (this.month)).add(1,'months')
+      for(let i=0; i < parseInt(moment(NewMonth).subtract(1,'days').format('DD')); i++){
+        arrTotalRaw[i] = 0
+      }
+      this.Transactions.filter(e=> {
+        if(arrTotalRaw[(parseInt(e.date.formatted.substring(8,11))-1)] >= 0){
+          console.log('achou, ', e.date.formatted.substring(8,11),'colocando valor', e.value)
+          arrTotalRaw[(parseInt(e.date.formatted.substring(8,11))-1)] -= e.value
+          console.log('arrTotalRaw: ', arrTotalRaw)
+        }
+        else{
+          console.log('nao achou', (e.date.formatted.substring(8,11)))
+          console.log('arrTotalRaw: ', arrTotalRaw)
+          arrTotalRaw[(parseInt(e.date.formatted.substring(8,11))-1)] = 0
+        }
+        console.log('e : ', e)
+        if(e.with_clinic.length){
+          console.log('e clinic', e.with_clinic[0])
+          if(itens[e.with_clinic[0].name]){
+            itens[e.with_clinic[0].name].numOfSales += 1
+            itens[e.with_clinic[0].name].totalRaw += e.value
+          }
+          else{
+            itens[e.with_clinic[0].name] = {
+              numOfSales: 1,
+              totalRaw: e.value
+            }
+          }
+        }
+        else if( e.categories.length){
+          console.log('e categories', e.categories[0])
+          if(itens[e.categories[0].name]){
+            itens[e.categories[0].name].numOfSales += 1
+            itens[e.categories[0].name].totalRaw += e.value
+          }
+          else{
+            itens[e.categories[0].name] = {
+              numOfSales: 1,
+              totalRaw: e.value
+            }
+          }
+        }
+        else if(e.with_doctorPayments.length){
+          console.log('e doctor', e.with_doctorPayments[0])
+          if(itens[e.with_doctorPayments[0].name]){
+            itens[e.with_doctorPayments[0].name].numOfSales += 1
+            itens[e.with_doctorPayments[0].name].totalRaw += e.value
+          }
+          else{
+            itens[e.with_doctorPayments[0].name] = {
+              numOfSales: 1,
+              totalRaw: e.value
+            }
+          }
+        }
+        else{
+          console.log('e nada')
+          if(itens['sem categoria']){
+            itens['sem categoria'].numOfSales += 1
+            itens['sem categoria'].totalRaw += e.value
+          }
+          else{
+            itens['sem categoria'] = {
+              numOfSales: 1,
+              totalRaw: e.value
+            }
+          }
+        }
+      })
+      let info = {}
+      info.itens = itens
+      info.arrTotalRaw = arrTotalRaw
+      console.log('info meu: ', info)
+      console.log('arrTotalRaw: ', arrTotalRaw)
+      console.log('estatisticas deles; ',this.statistics[this.year][this.month] )
+      return info;
     },
     totalLeftToPay() {
       return String(this.round2(this.info.totalLeftToPay));
@@ -192,20 +267,21 @@ export default {
             lineTension: 0,
             fill: false,
             borderColor: "rgb(75, 192, 192)",
-            data: this.info.arrTotalToPay
+            data: this.info.arrTotalRaw
           }
         ]
       };
     },
     spentDataset() {
       const days = Array.from(
-        Array(moment(`${this.year}-${this.month}`).daysInMonth()).keys()
+          Array(moment(`${this.year}-${this.month}`).daysInMonth()).keys()
       )
-        .map(num => ++num)
-        .slice(8 * this.week, 8 * (1 + this.week));
-
-      const arrData = days.map(num => this.info.arrTotalToPay[num - 1]);
-
+          .map(num => ++num)
+          .slice(8 * this.week, 8 * (1 + this.week));
+      const arrData = days.map(num => this.info.arrTotalRaw[num - 1]);
+      console.log('days: ', days)
+      console.log('week: ', this.week)
+      console.log('info: ', this.info)
       return {
         labels: days,
         datasets: [
@@ -222,7 +298,7 @@ export default {
       return Object.keys(this.info.itens)
         .map(key => ({
           name: key,
-          totalToPay: this.round2(this.info.itens[key].totalToPay)
+          totalToPay: this.round2(-this.info.itens[key].totalRaw)
         }))
         .sort((a, b) => b.totalToPay - a.totalToPay)
         .slice(0, 10);
@@ -233,7 +309,7 @@ export default {
         datasets: [
           {
             data: Object.keys(this.info.itens).map(
-              key => this.info.itens[key].numOfOuttakes
+              key => this.info.itens[key].numOfSales
             )
           }
         ]
@@ -269,6 +345,38 @@ export default {
             fill: false,
             backgroundColor: "rgba(255, 99, 132,1)",
             data: arrTotalLeftToPayMonthly
+          }
+        ]
+      };
+    },
+    numOfSalesMontlyDataset() {
+      const arrNum = Array.from(Array(12).keys()).map(() => 0);
+      console.log('arrNum', arrNum)
+      for(let i=0; i<arrNum.length; i++){
+        let sales=0
+        this.TransactionsFixed.filter(e => {
+          if ((e.date.formatted.substring(0,11) >= (this.year + '-' + (i+1) + '-01' )) && (e.date.formatted.substring(0,11) <= (moment(this.year + '-' + (i+1) + '-01').add(1,'months').format('YYYY-MM-DD')))) {
+            sales += 1
+          }
+        })
+        arrNum[i] = sales
+        sales = 0
+      }
+      /* var arrMonths = Object.keys(this.statistics[this.year]).forEach(
+        month =>
+          (arrNum[Number(month) - 1] = this.statistics[this.year][
+            month
+          ].numOfSales)
+      ); */
+
+      return {
+        labels: this.monsthsName,
+        datasets: [
+          {
+            lineTension: 0,
+            fill: false,
+            borderColor: "rgb(75, 192, 192)",
+            data: arrNum
           }
         ]
       };
