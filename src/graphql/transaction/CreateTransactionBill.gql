@@ -3,7 +3,7 @@ mutation (
     $payment_methods: [String],
     $date: _Neo4jDateTimeInput,
     $description: String,
-    $date_to_pay: String,
+    $date_to_pay: _Neo4jDateTimeInput,
      )
     {
     CreateTransaction(

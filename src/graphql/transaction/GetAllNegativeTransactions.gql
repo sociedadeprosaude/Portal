@@ -1,5 +1,5 @@
-query GetTransactions($unit_name: String){
-    Transaction(filter:{AND: [{cancelled_by: null},{value_lt:0}, {with_unit_some: {name: $unit_name}}]} orderBy:[date_desc]){
+query GetTransactions{
+    Transaction(filter:{AND: [{cancelled_by: null},{value_lt:0}]} orderBy:[date_desc]){
     date{
       formatted
     },

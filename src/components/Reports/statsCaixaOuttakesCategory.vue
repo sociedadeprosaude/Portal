@@ -48,7 +48,7 @@
         <MiniStatistic
           icon="mdi-counter"
           :title="numOfOuttakesToPay"
-          sub-title="Nº de contas pendentes"
+          sub-title="Nº de contas pagar"
           color="blue"
         />
       </v-col>

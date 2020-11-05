@@ -6,7 +6,7 @@ query($type:String){
         },
         unit:with_unit{
             name,id
-        }
+        },
         colaborator{
             name,id
         }

@@ -168,10 +168,11 @@ export default {
       return String(this.round2(this.info.totalRecurrent));
     },
     numOfOuttakesToPay() {
+      //numero de constas pagas
       let sales=0
       console.log('transactions: ', this.Transactions)
       this.Transactions.filter(e => {
-        sales += parseInt(e.produts.length)
+        sales += 1
       })
       return  sales
     },
@@ -292,16 +293,13 @@ export default {
   apollo: {
     loadTransactions: {
       query: require("@/graphql/transaction/GetAllNegativeTransactions.gql"),
-      variables() {
-        return {
-          unit_name: this.selectedUnit.name
-        }
-      },
       update(data) {
         console.log('data: ', data.Transaction)
+        if(data.Transaction){
         this.lastYear = data.Transaction[data.Transaction.length - 1].date.formatted.substring(0,4)
         this.lastMonth = data.Transaction[data.Transaction.length - 1].date.formatted.substring(5,7)
         this.TransactionsFixed= data.Transaction
+        }
         this.skipTransaction = true
       },
       skip() {
