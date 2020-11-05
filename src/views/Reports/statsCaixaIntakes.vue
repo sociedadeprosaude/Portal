@@ -125,7 +125,6 @@ export default {
           months.push(i.toString())
         }
       }
-      months.push('09')
       console.log('months: ', months)
       return months
     },
@@ -144,7 +143,7 @@ export default {
       }
       this.Transactions.filter(e=> {
         if(arrTotalRaw[(parseInt(e.date.formatted.substring(8,11))-1)] >= 0){
-          arrTotalRaw[ (parseInt(e.date.formatted.substring(8,11))-1)] += e.value
+          arrTotalRaw[(parseInt(e.date.formatted.substring(8,11))-1)] += e.value
         }
         else{
           arrTotalRaw[(parseInt(e.date.formatted.substring(8,11))-1)] = 0
@@ -262,7 +261,7 @@ export default {
       console.log('arrNum', arrNum)
       for(let i=0; i<arrNum.length; i++){
         let sales=0
-        this.Transactions.filter(e => {
+        this.TransactionsFixed.filter(e => {
           if ((e.date.formatted.substring(0,11) >= (this.year + '-' + (i+1) + '-01' )) && (e.date.formatted.substring(0,11) <= (moment(this.year + '-' + (i+1) + '-01').add(1,'months').format('YYYY-MM-DD')))) {
             sales += parseInt(e.produts.length)
           }

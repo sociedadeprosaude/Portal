@@ -1,6 +1,6 @@
 query{
-    Transaction(filter:{date_to_pay_not:"00/00/0000"}){
-        date{formatted} ,value,date_to_pay,description,payment_methods,recorrent,id
+    Transaction(filter:{date_to_pay_not:{formatted:"2020-09-01T10"}}){
+        date{formatted} ,value,date_to_pay{formatted},description,payment_methods,recorrent,id
         categories{
             name
         },
