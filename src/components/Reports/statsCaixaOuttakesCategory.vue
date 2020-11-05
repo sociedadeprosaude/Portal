@@ -30,14 +30,6 @@
     <v-row>
       <v-col cols="12" sm="6" md="3">
         <MiniStatistic
-          icon="mdi-currency-usd"
-          :title="`R$ ${totalLeftToPay}`"
-          sub-title="Restando pagar"
-          color="orange"
-        />
-      </v-col>
-      <v-col cols="12" sm="6" md="3">
-        <MiniStatistic
           icon="mdi-currency-usd-off"
           :title="`R$ ${totalToPay}`"
           sub-title="Contas total"
@@ -172,7 +164,6 @@ export default {
     "round2",
     "statistics",
     "info",
-    "totalLeftToPay",
     "totalToPay",
     "totalRecurrent",
     "numOfOuttakesToPay",

@@ -1,0 +1,38 @@
+query GetTransactions($unit_name: String){
+    Transaction(filter:{AND: [{cancelled_by: null},{value_lt:0}, {with_unit_some: {name: $unit_name}}]} orderBy:[date_desc]){
+    date{
+      formatted
+    },
+    discount,
+    value,
+    paid,
+    payments,
+    parcels,
+    payment_methods,
+    description,
+    colaborator {
+        name
+    },
+    categories{
+        name
+    }
+    cancelled_by{
+        id,
+        name,
+        cpf
+        }
+    produts: with_productTransaction_relations{
+        price,
+        with_product{
+            name
+            type
+        },
+        with_clinic {
+            name
+        }
+    }
+     unit: with_unit{
+            name,
+     }
+    }
+}
