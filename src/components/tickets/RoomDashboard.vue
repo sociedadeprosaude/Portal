@@ -155,10 +155,9 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-tooltip top v-if="normal > 0">
+              <v-tooltip top v-if="normal > 0 && !room.doctor">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                      v-if="!room.doctor"
                       v-bind="attrs"
                       v-on="on"
                       :disabled="loading"
@@ -174,10 +173,9 @@
                 <span>Chamar próxima senha</span>
               </v-tooltip>
 
-              <v-tooltip top v-if="priority > 0">
+              <v-tooltip top v-if="priority > 0 && !room.doctor">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                      v-if="!room.doctor"
                       v-bind="attrs"
                       v-on="on"
                       :disabled="loading"
@@ -193,10 +191,9 @@
                 <span>Chamar próxima senha preferencial</span>
               </v-tooltip>
 
-              <v-tooltip top v-if="normal > 0">
+              <v-tooltip top v-if="normal > 0 && room.doctor && room.room_has_tickets.length > 0">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                      v-if="room.doctor && room.room_has_tickets.length > 0"
                       v-bind="attrs"
                       v-on="on"
                       :disabled="loading"
@@ -211,10 +208,9 @@
                 </template>
                 <span>Chamar próxima senha</span>
               </v-tooltip>
-              <v-tooltip top v-if="priority > 0">
+              <v-tooltip top v-if="priority > 0 && room.doctor && room.room_has_tickets.length > 0">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                      v-if="room.doctor && room.room_has_tickets.length > 0"
                       v-bind="attrs"
                       v-on="on"
                       :disabled="loading"
@@ -240,10 +236,26 @@
                       x-small
                       class="primary ml-2 my-2"
                   >
-                    <v-icon>person</v-icon>
+                    <v-icon>person_add</v-icon>
                   </v-btn>
                 </template>
-                <span>Selecionar médico</span>
+                <span>Selecionar Médico</span>
+              </v-tooltip>
+              <v-tooltip top v-if="room.doctor">
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                      v-on="on"
+                      :disabled="loading"
+                      @click="$emit('open-selected-room',room)"
+                      text
+                      fab
+                      x-small
+                      class="primary ml-2 my-2"
+                  >
+                    <v-icon>person_remove</v-icon>
+                  </v-btn>
+                </template>
+                <span>Remover Médico</span>
               </v-tooltip>
 <!--              <v-tooltip top v-if="doctorsLoaded">
                 <template v-slot:activator="{ on }">

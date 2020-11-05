@@ -13,6 +13,7 @@
                 label="NORMAL"
                 value="normal"
             ></v-checkbox>
+          <v-icon> </v-icon>
             <v-checkbox
                 v-model="type"
                 label="PREFERENCIAL"
