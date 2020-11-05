@@ -18,6 +18,7 @@
     :normal="normal"
     :priority="priority"
     :resetSectorTicket="resetSectorTicket"
+    :removeDoctorRoom="removeDoctorRoom"
     :roomsLoaded="roomsLoaded"
     :ticketInfo="ticketInfo"
     :doctors="doctors"
@@ -231,6 +232,16 @@ export default {
       await this.upgradeTicketNumber();
       const sector = this.sector;
       await this.$store.dispatch("updateSectorRoom", { sector, room });
+    },
+
+    async removeDoctorRoom(room){
+      this.loading = true;
+      console.log('sala do p:',room)
+      console.log('doc do p:',room.doctor)
+      //asdbjas
+      this.$apollo.queries.LoadRoomsOfSector.refresh();
+      this.loading = false;
+
     },
     async resetSectorTicket(number){
       this.loading = true;

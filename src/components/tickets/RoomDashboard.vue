@@ -246,7 +246,7 @@
                   <v-btn
                       v-on="on"
                       :disabled="loading"
-                      @click="$emit('open-selected-room',room)"
+                      @click="removeDoctorRoom(room)"
                       text
                       fab
                       x-small
@@ -517,6 +517,7 @@ export default {
     generateNextTicket: Function,
     generateSectorTicket: Function,
     resetSectorTicket: Function,
+    removeDoctorRoom: Function,
     upgradeTicketNumber: Function,
     callNextTicket: Function,
     callSectorTicket: Function,
