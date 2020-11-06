@@ -1,0 +1,13 @@
+mutation($idRoom: ID!, $idDoctor: ID!){
+    RemoveRoomDoctor(
+        from:{
+            id:$idRoom
+        },
+        to:{
+            id:$idDoctor
+        }
+    ){
+        from{id},
+        to{id}
+    },
+}

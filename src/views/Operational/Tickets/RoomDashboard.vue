@@ -138,7 +138,7 @@ export default {
       },
       update(data){
         this.sector = Object.assign(data.Sector[0])
-        console.log('sector and rooms:', this.sector)
+        //console.log('sector and rooms:', this.sector)
         this.rooms = this.sector.has_rooms
 
         let normals = this.sector.sector_has_tickets.filter(a => {
@@ -236,13 +236,19 @@ export default {
 
     async removeDoctorRoom(room){
       this.loading = true;
-      console.log('sala do p:',room)
-      console.log('doc do p:',room.doctor)
-      //asdbjas
+      if(room && room.doctor){
+        await this.$apollo.mutate({
+          mutation: require('@/graphql/rooms/RemoveRoomDoctor.gql'),
+          variables: {
+            idRoom: room.id,
+            idDoctor: room.doctor.id,
+          },
+        });
+      }
       this.$apollo.queries.LoadRoomsOfSector.refresh();
       this.loading = false;
-
     },
+
     async resetSectorTicket(number){
       this.loading = true;
       this.$apollo.queries.LoadRoomsOfSector.refresh();
