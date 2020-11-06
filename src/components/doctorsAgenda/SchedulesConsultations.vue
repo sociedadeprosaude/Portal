@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-flex xs12 v-if="loadingConsultations">
-      <v-progress-circular class="primary--text" indeterminate/>
+      <v-progress-circular class="background--text" indeterminate/>
     </v-flex>
     <div  v-else class="container" id="app">
       <ul class="list-group" id="infinite-list">

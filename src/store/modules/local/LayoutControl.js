@@ -1,4 +1,5 @@
 const state = {
+    showBillsMobile: false,
     showDoctorsAgendaToolbar: false,
     showOverviewToggle: false,
     overviewDrawer: false,
@@ -18,6 +19,9 @@ const mutations = {
     },
     setBillsToolbar(state, payload) {
         state.showBillsToolbar = payload
+    },
+    setBillsMobile (state, payload) {
+        state.showBillsMobile = payload
     },
     setRegistersToolbar(state, payload) {
         state.showRegistersToolbar = payload
@@ -41,6 +45,9 @@ const getters = {
     },
     showBillsToolbar(state) {
         return state.showBillsToolbar
+    },
+    showBillsMobile (state) {
+        return state.showBillsMobile
     },
     showRegistersToolbar(state) {
         return state.showRegistersToolbar
