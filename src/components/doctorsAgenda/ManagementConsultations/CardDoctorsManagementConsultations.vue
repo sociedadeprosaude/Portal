@@ -38,6 +38,19 @@
                                             </v-icon>
                                         </v-btn>
                                     </v-flex>
+                                  <v-flex xs12>
+                                    <v-tooltip top>
+                                      <template v-slot:activator="{ on, attrs }">
+                                        <v-btn
+                                            color="white"
+                                            rounded
+                                            v-bind="attrs"
+                                            v-on="on"
+                                        >Gerar Prontuários de Todos os Pacientes</v-btn>
+                                      </template>
+                                      <span>Gerar Todos os Prontuários</span>
+                                    </v-tooltip>
+                                  </v-flex>
                                 </v-layout>
                             </v-card>
                         </v-flex>

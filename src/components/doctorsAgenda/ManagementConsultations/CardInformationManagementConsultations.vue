@@ -88,15 +88,6 @@
               Comprovante
             </v-btn>
           </v-card-actions>
-          <v-col cols="12" xs="12" v-show="false">
-            <v-btn
-                color="white"
-                rounded
-                @click="ConsultationRecept(consultation)"
-            >
-              Gerar Todos os Prontuários
-            </v-btn>
-          </v-col>
           <v-flex xs12 class="mt-4 mb-2">
             <v-divider color="white"/>
           </v-flex>
@@ -129,9 +120,7 @@ import {uuid} from "vue-uuid";
 import MutationBuilder from "@/classes/MutationBuilder";
 import gql from "graphql-tag";
 import GerenateTicketAndChooseType from "../commons/GerenateTicketAndChooseType";
-
 let moment = require('moment');
-
 export default {
   name: "CardInformationManagementConsultations",
   props: ['patient', 'consultation'],
@@ -161,7 +150,7 @@ export default {
     sector: '',
   }),
   mounted() {
-    this.$apollo.queries.LoadSectorsOfUnity.refresh();
+    //
   },
   computed: {
     selectedPatient() {
@@ -355,7 +344,6 @@ export default {
         }
       },
     },
-
     findProductTransaction: {
       query: require("@/graphql/transaction/FindProductTransactionbyConsultation.gql"),
       variables() {

@@ -1,0 +1,13 @@
+mutation($idTicket : ID! , $idPatient: ID!){
+       AddTicketPatient(
+        from:{
+          id: $idTicket
+        },
+        to:{
+          id: $idPatient
+        }
+      ){
+      from{id},
+      to{id}
+    },
+}

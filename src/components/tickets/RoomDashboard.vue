@@ -101,7 +101,7 @@
             </v-btn>
           </template>
           <v-card>
-            <v-card-title class="headline grey lighten-2">Senha Inicial<v-spacer/><v-btn class="transparent" small fab @click="dialog = false"><v-icon>close</v-icon></v-btn></v-card-title>
+            <v-card-title class="headline grey lighten-2">Senha Inicial<v-spacer/><v-btn class="transparent" text small fab @click="dialog = false"><v-icon>close</v-icon></v-btn></v-card-title>
             <v-divider></v-divider>
             <v-spacer/>
             <v-card-text>

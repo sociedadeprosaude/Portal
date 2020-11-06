@@ -26,11 +26,28 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn v-if="inside === true" rounded color="primary" @click="dialog = false" :disabled="!type">Gerar Senha</v-btn>
+          <v-btn v-if="inside === true" rounded color="primary" :disabled="!type">Gerar Senha</v-btn>
           <v-alert class="justify-center align-center" v-else type="warning"><strong>{{consultation.doctor.name}}</strong> Ainda não está dentro de nenhuma sala.</v-alert>
         </v-card-actions>
       </v-card>
     </v-layout>
+
+    <v-dialog v-model="dialog" width="300">
+      <v-card>
+        <v-card-title class="headline grey lighten-2">Senha Gerada <v-spacer/><v-btn class="transparent" small text fab @click="dialog = false"><v-icon>close</v-icon></v-btn> </v-card-title>
+        <v-card-text>
+          <br/><br/>
+          <span style="font-weight: bold; color: #003B8F; font-size: xx-large">
+            Sala: {{roomName}}
+          </span><br/>
+          <span style="font-weight: bold; color: #003B8F; font-size: xx-large">
+            Senha: 5 {{ticket}}
+          </span>
+          <br/><br/>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
   </v-container>
 </template>
 
@@ -44,6 +61,10 @@ export default {
     return {
       type: undefined,
       inside: false,
+      dialog: false,
+      roomName: undefined,
+      room: undefined,
+      ticket: undefined,
     }
   },
   apollo: {
@@ -56,14 +77,14 @@ export default {
       },
       update(data){
         let sectors = Object.assign(data.Clinic[0].has_sectors)
-        console.log('G:', sectors)
         for (let sector in sectors){
           if(sectors[sector].has_rooms){
             for(let room in sectors[sector].has_rooms){
               if(sectors[sector].has_rooms[room].doctor){
                 if(sectors[sector].has_rooms[room].doctor.id === this.consultation.doctor.id){
                   this.inside = true
-                  this.gerenateTicketforPatient(sectors[sector].has_rooms[room]);
+                  this.roomName = sectors[sector].has_rooms[room].name
+                  this.room = sectors[sector].has_rooms[room]
                 }
               }
             }
@@ -73,15 +94,44 @@ export default {
     }
   },
   methods:{
-    async gerenateTicketforPatient(room){
-      console.log('room', room)
-      console.log('leng:', room.room_has_tickets.length)
-      console.log('idDoctor', this.consultation.doctor.id)
-      //criar ticket para a sala
-      if(room.room_has_tickets.length > 0){
-        let count = room.room_has_tickets.length + 1
+    async gerenateTicketforPatient(){
+/*      console.log('room', this.room)
+      console.log('leng:', this.room.room_has_tickets.length)
+      console.log('idDoctor', this.consultation.doctor.id)*/
+      if(this.room.room_has_tickets.length > 0){
+        console.log('gerando quando tem + de 0(zero)')
+        let count = this.room.room_has_tickets.length + 1
+        count = count.toString();
         if(this.type === 'normal'){
-          console.log('GN')
+          console.log('Gerar Normal')
+          const dataTicket = await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/CreateTicket.gql'),
+            variables: {
+              name: count,
+              type: "normal",
+              created_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
+            },
+          });
+          //add relation ticket romm
+          const idTicket = dataTicket.data.CreateTicket.id
+          this.ticket = dataTicket.data.CreateTicket.name
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/AddRelationsRoomTicket.gql'),
+            variables: {
+              idTicket: idTicket,
+              idRoom: this.room.id,
+            },
+          });
+          //add relation ticket patient
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/AddTicketPatient.gql'),
+            variables: {
+              idPatient: this.consultation.patient.id,
+              idTicket: idTicket,
+            },
+          });
+        } else {
+          console.log('Gerar Prioridade')
           const dataTicket = await this.$apollo.mutate({
             mutation: require('@/graphql/tickets/CreateTicket.gql'),
             variables: {
@@ -91,33 +141,87 @@ export default {
             },
           });
           //add relation ticket romm
-          //add relation ticket patient
           const idTicket = dataTicket.data.CreateTicket.id
+          this.ticket = dataTicket.data.CreateTicket.name
           await this.$apollo.mutate({
-            mutation: require('@/graphql/tickets/AddRelationsSectorTicket.gql'),
+            mutation: require('@/graphql/tickets/AddRelationsRoomTicket.gql'),
             variables: {
               idTicket: idTicket,
-              idSector: this.sector.id,
+              idRoom: this.room.id,
             },
           });
-          //ultima prioridade do setor
+          //add relation ticket patient
           await this.$apollo.mutate({
-            mutation: require('@/graphql/sectors/UpdateSector.gql'),
+            mutation: require('@/graphql/tickets/AddTicketPatient.gql'),
             variables: {
-              id: this.sector.id,
-              counter_reset: 0,
-              counter_normal: this.sector.counter_normal,
-              counter_priority: this.sector.counter_priority = this.sector.counter_priority + 1,
+              idPatient: this.consultation.patient.id,
+              idTicket: idTicket,
             },
           });
-        } else {
-          console.log('GP')
         }
       } else {
         let count = 1
-        //
+        count = count.toString();
+        if(this.type === 'normal'){
+          console.log('Gerar Normal')
+          const dataTicket = await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/CreateTicket.gql'),
+            variables: {
+              name: count,
+              type: "normal",
+              created_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
+            },
+          });
+          //add relation ticket romm
+          const idTicket = dataTicket.data.CreateTicket.id
+          this.ticket = dataTicket.data.CreateTicket.name
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/AddRelationsRoomTicket.gql'),
+            variables: {
+              idTicket: idTicket,
+              idRoom: this.room.id,
+            },
+          });
+          //add relation ticket patient
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/AddTicketPatient.gql'),
+            variables: {
+              idPatient: this.consultation.patient.id,
+              idTicket: idTicket,
+            },
+          });
+        } else {
+          console.log('Gerar Prioridade')
+          const dataTicket = await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/CreateTicket.gql'),
+            variables: {
+              name: count,
+              type: "priority",
+              created_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
+            },
+          });
+          //add relation ticket romm
+          const idTicket = dataTicket.data.CreateTicket.id
+          this.ticket = dataTicket.data.CreateTicket.name
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/AddRelationsRoomTicket.gql'),
+            variables: {
+              idTicket: idTicket,
+              idRoom: this.room.id,
+            },
+          });
+          //add relation ticket patient
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/AddTicketPatient.gql'),
+            variables: {
+              idPatient: this.consultation.patient.id,
+              idTicket: idTicket,
+            },
+          });
+        }
       }
-    }
+      this.dialog = true
+    },
   },
   mounted() {
     console.log('componente:', this.consultation)

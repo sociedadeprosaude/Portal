@@ -125,9 +125,10 @@ export default {
           if(rooms[room].room_has_tickets.length > 0){
             for(let ticketroom in rooms[room].room_has_tickets){
               await this.$apollo.mutate({
-                mutation: require('@/graphql/tickets/DeleteTicket.gql'),
+                mutation: require('@/graphql/rooms/RemoveRoomRoom_has_tickets.gql'),
                 variables: {
-                  id: rooms[room].room_has_tickets[ticketroom].id,
+                  idRoom: rooms[room].id,
+                  idTicket: rooms[room].room_has_tickets[ticketroom].id,
                 },
               });
             }
@@ -152,9 +153,10 @@ export default {
       if(sector.sector_has_tickets.length > 0){
         for(let ticketsector in sector_has_tickets){
           await this.$apollo.mutate({
-            mutation: require('@/graphql/tickets/DeleteTicket.gql'),
+            mutation: require('@/graphql/sectors/RemoveSectorSector_has_tickets.gql'),
             variables: {
-              id: sector_has_tickets[ticketsector].id,
+              idSector: sector.id,
+              idTicket: sector_has_tickets[ticketsector].id,
             },
           });
         }
