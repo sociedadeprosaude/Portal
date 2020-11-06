@@ -1,7 +1,7 @@
 <template>
-    <v-container fluid class="ma-0 mt-n4 pa-0 hidden-print-only">
-        <v-layout row wrap class="justify-center">
-            <v-flex xs12 class="hidden-md-and-up mt-n2" >
+    <v-container fluid class="ma-0 mt-n4 pa-0 fill-height hidden-print-only">
+        <v-layout row wrap class="justify-center ">
+            <v-flex xs12 class="hidden-md-and-up " >
                 <v-layout row wrap class="justify-space-between primary">
                     <v-btn v-for="item in items" :key="item.title" class="primary" text large @click="chooseView(item.view)">
                         {{item.title}}
@@ -19,8 +19,8 @@
                 <DataCashierConsultation/>
             </v-flex>
 
-            <v-flex xs12 class="primary hidden-md-and-up">
-                <DataToSearchConsultation @GetConsultations="schedules= $event" :daysToListen="daysToListen" v-if="this.viewSeleted === 'data'"/>
+            <v-flex xs12 class="primary hidden-md-and-up fill-height align-start">
+                <DataToSearchConsultation @GetConsultations="schedules= $event" :daysToListen="daysToListen" v-if="this.viewSeleted === 'data'" />
                 <SchedulesConsultations :loadingConsultations="loadingConsultations" :Consultations="schedules" @refreshDate="daysToListen = $event" v-if="this.viewSeleted === 'schedules'"/>
                 <DataCashierConsultation v-if="this.viewSeleted === 'cashier'"/>
             </v-flex>
