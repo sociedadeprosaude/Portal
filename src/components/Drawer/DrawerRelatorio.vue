@@ -86,7 +86,11 @@ export default {
           link: "RelatorioSaidasClinicasEstatisticas"
         },
         { txt: "Clientes", link: "RelatorioClientesEstatisticas" },
-        { txt: "Relatorio de Atendimentos por Colaboradores", link: "RelatorioAtendimentosColaboradores" }
+        { txt: "Relatorio de Atendimentos por Colaboradores", link: "RelatorioAtendimentosColaboradores" },
+        {
+          txt: "Statisticas Orcamentos",
+          link: "StatisticasOrcamento"
+        },
       ]
     };
   },

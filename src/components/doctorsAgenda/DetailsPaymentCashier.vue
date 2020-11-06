@@ -144,7 +144,8 @@
             <v-btn outlined color="primary" @click="SelectNewPatient()">Novo</v-btn>
           </v-flex>
           <v-flex xs4 class="text-center">
-            <v-btn :disabled="cartItems.length === 0" outlined :loading="loadingImp"
+            <v-btn                 :disabled="!patient || cartItems.length === 0 || this.paymentValues !== this.total || this.paymentNull === false"
+                                   outlined :loading="loadingImp"
                    color="primary" @click="imprimir()">Imprimir
             </v-btn>
           </v-flex>

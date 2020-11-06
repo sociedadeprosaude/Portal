@@ -12,24 +12,24 @@ query GetTransactions($date_start: String, $unit_name: String, $date_final: Stri
     description,
     colaborator {
         name
-    }
+    },
     cancelled_by{
         id,
         name,
         cpf
-        }
+        },
     produts: with_productTransaction_relations{
         price,
         with_product{
-            name
-            type
+            name,
+            type, id
         },
-        with_clinic {
-            name
+        with_clinic{
+            name, id
         }
     }
      unit: with_unit{
-            name,
+            name, id
      }
     }
 }

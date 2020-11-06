@@ -38,14 +38,6 @@
       </v-col>
       <v-col cols="12" sm="6" md="3">
         <MiniStatistic
-          icon="mdi-update"
-          :title="`R$ ${totalRecurrent}`"
-          sub-title="Custos recorrentes"
-          color="blue-grey darken-2"
-        />
-      </v-col>
-      <v-col cols="12" sm="6" md="3">
-        <MiniStatistic
           icon="mdi-counter"
           :title="numOfOuttakesToPay"
           sub-title="Nº de contas pagar"
@@ -115,22 +107,14 @@
     <v-row>
       <v-col>
         <v-card elevation="0">
-          <v-row v-if="mostSpentDatasetMontly">
+          <v-row v-if="numOfSalesMontlyDataset">
             <v-col>
               <bar-chart
-                :chart-data="mostSpentDatasetMontly"
-                :options="{
+                  :chart-data="numOfSalesMontlyDataset"
+                  :options="{
                 legend: {
           display: false
-        },
-        scales: {
-            xAxes: [{
-                stacked: true
-            }],
-          
-        }
-     
-              }"
+        },}"
               ></bar-chart>
             </v-col>
           </v-row>
@@ -174,6 +158,7 @@ export default {
     "higherCostDataset",
     "mostSpentDataset",
     "mostSpentDatasetMontly",
+      "numOfSalesMontlyDataset",
     "options"
   ]
 };

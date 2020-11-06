@@ -10,11 +10,11 @@
             <v-flex xs6 class="text-right">
               <span
                 class="font-italic font-weight-bold"
-              >{{report.dataInicio | dateFilter}} até {{report.dataFinal | dateFilter}}</span>
+              >{{dateStart | dateFilter}} até {{dateEnd | dateFilter}}</span>
             </v-flex>
             <v-flex
               xs12
-              v-for="(intake, label) in report.intakes"
+              v-for="(intake, label) in report"
               :key="'intake' + label"
               class="my-1"
             >
@@ -54,11 +54,11 @@
                 <v-flex xs1>
                   <v-divider vertical />
                 </v-flex>
-                <v-flex xs1>{{intake.cost | moneyFilter}}</v-flex>
+                <!-- <v-flex xs1>{{intake.cost | moneyFilter}}</v-flex> -->
                 <v-flex xs1>
                   <v-divider vertical />
                 </v-flex>
-                <v-flex xs2>{{intake.price | moneyFilter}}</v-flex>
+                <v-flex xs2>{{intake.value | moneyFilter}}</v-flex>
                 <v-flex xs1>
                   <v-divider vertical />
                 </v-flex>
@@ -66,7 +66,7 @@
                   <v-divider />
                 </v-flex>
               </v-layout>
-              <v-flex xs12 v-if="intake.exams && intake.exams.length > 0">
+              <v-flex xs12 v-if="intake.produts && intake.produts.length > 0">
                 <v-layout row wrap class="mt-2">
                   <v-flex xs12>
                     <v-divider />
@@ -74,7 +74,7 @@
                   <v-flex xs1>
                     <v-divider vertical />
                   </v-flex>
-                  <v-flex xs2 class="font-weight-bold">Exames</v-flex>
+                  <v-flex xs2 class="font-weight-bold">Produto</v-flex>
                   <v-flex xs1>
                     <v-divider vertical />
                   </v-flex>
@@ -97,8 +97,8 @@
               </v-flex>
               <v-flex
                 xs12
-                v-for="(examees, labels) in intake.exams"
-                :key="'exams' + labels"
+                v-for="(product, labels) in intake.produts"
+                :key="'products' + labels"
                 class="my-1"
               >
                 <v-layout row wrap>
@@ -108,74 +108,30 @@
                   <v-flex xs1>
                     <v-divider vertical />
                   </v-flex>
-                  <v-flex xs2>{{examees.name}}</v-flex>
+                  <v-flex xs2>{{product.with_product ? product.with_product.name : 'error'}}</v-flex>
                   <v-flex xs1>
                     <v-divider vertical />
                   </v-flex>
-                  <v-flex xs2>{{examees.clinic.name}}</v-flex>
+                  <v-flex xs2>{{product.with_clinic ? product.with_clinic.name : 'error' }}</v-flex>
                   <v-flex xs1>
                     <v-divider vertical />
                   </v-flex>
-                  <v-flex xs1>{{examees.cost | moneyFilter}}</v-flex>
                   <v-flex xs1>
-                    <v-divider vertical />
-                  </v-flex>
-                  <v-flex xs2>{{examees.price | moneyFilter}}</v-flex>
-                  <v-flex xs1>
-                    <v-divider vertical />
-                  </v-flex>
-                  <v-flex xs12>
-                    <v-divider />
-                  </v-flex>
-                </v-layout>
-              </v-flex>
-              <v-flex xs12 v-if="intake.specialties && intake.specialties.length > 0">
-                <v-layout row wrap class="mt-2">
-                  <v-flex xs12>
-                    <v-divider />
+                    <ApolloQuery v-if="product.with_product && product.with_clinic && product.with_product.type === 'EXAM' "
+                                 :query="require('@/graphql/clinics/LoadCostProductClinic.gql')"
+                                 :variables="{idClinic: product.with_clinic.id, idProduct: product.with_product.id}"
+                    >
+                      <template v-slot="{result: {data, loading, error}}">
+                        <v-flex v-if="data">{{data.CostProductClinic[0].cost | moneyFilter}}</v-flex>
+                        <v-flex v-if="error">error</v-flex>
+                      </template>
+                    </ApolloQuery>
+                    <v-flex v-else> :)</v-flex>
                   </v-flex>
                   <v-flex xs1>
                     <v-divider vertical />
                   </v-flex>
-                  <v-flex xs5 class="font-weight-bold">Especialidade</v-flex>
-                  <v-flex xs1>
-                    <v-divider vertical />
-                  </v-flex>
-                  <v-flex xs1 class="font-weight-bold">Custo</v-flex>
-                  <v-flex xs1>
-                    <v-divider vertical />
-                  </v-flex>
-                  <v-flex xs2 class="font-weight-bold">Venda</v-flex>
-                  <v-flex xs1>
-                    <v-divider vertical />
-                  </v-flex>
-                  <v-flex xs12>
-                    <v-divider />
-                  </v-flex>
-                </v-layout>
-              </v-flex>
-              <v-flex
-                xs12
-                v-for="(specialtie, labels) in intake.specialties"
-                :key="'specs'+labels"
-                class="my-1"
-              >
-                <v-layout row wrap>
-                  <v-flex xs12>
-                    <v-divider />
-                  </v-flex>
-                  <v-flex xs1>
-                    <v-divider vertical />
-                  </v-flex>
-                  <v-flex xs5>{{specialtie.name}}</v-flex>
-                  <v-flex xs1>
-                    <v-divider vertical />
-                  </v-flex>
-                  <v-flex xs1>{{specialtie.cost | moneyFilter}}</v-flex>
-                  <v-flex xs1>
-                    <v-divider vertical />
-                  </v-flex>
-                  <v-flex xs2>{{specialtie.price | moneyFilter}}</v-flex>
+                  <v-flex xs2>{{product.price | moneyFilter}}</v-flex>
                   <v-flex xs1>
                     <v-divider vertical />
                   </v-flex>
@@ -227,15 +183,15 @@
                     <v-flex xs1>
                       <v-divider vertical />
                     </v-flex>
-                    <v-flex xs3>{{report.credito ? report.credito : 'X' | moneyFilter}}</v-flex>
+                    <v-flex xs3>{{payments.credito ? payments.credito : 'X' | moneyFilter}}</v-flex>
                     <v-flex xs1>
                       <v-divider vertical />
                     </v-flex>
-                    <v-flex xs3>{{report.debito ? report.debito : 'X' | moneyFilter}}</v-flex>
+                    <v-flex xs3>{{payments.debito ? payments.debito : 'X' | moneyFilter}}</v-flex>
                     <v-flex xs1>
                       <v-divider vertical />
                     </v-flex>
-                    <v-flex xs2>{{report.dinheiro ? report.dinheiro : 'X' | moneyFilter}}</v-flex>
+                    <v-flex xs2>{{payments.dinheiro ? payments.dinheiro : 'X' | moneyFilter}}</v-flex>
                     <v-flex xs1>
                       <v-divider vertical />
                     </v-flex>
@@ -269,7 +225,7 @@
                     </v-flex>
                   </v-layout>
                 </v-flex>
-                <v-flex xs12 class="my-1">
+                <!-- <v-flex xs12 class="my-1">
                   <v-layout row wrap>
                     <v-flex xs12>
                       <v-divider />
@@ -358,7 +314,7 @@
                       <v-divider />
                     </v-flex>
                   </v-layout>
-                </v-flex>
+                </v-flex> -->
               </v-layout>
             </v-flex>
           </v-layout>
@@ -377,9 +333,10 @@ export default {
     "now",
     "total",
     "colaborator",
-    "proceduresQuantity",
-    "examsQuantity"
-  ]
+      "dateStart",
+      "dateEnd",
+      "payments"
+  ],
 };
 </script>
 
