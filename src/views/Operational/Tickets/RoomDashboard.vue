@@ -394,15 +394,20 @@ export default {
       ticketInfo.last_updated = moment().format("YYYY-MM-DD HH:mm:ss");
       await this.$store.dispatch("updateGeneralInfo", this.ticketInfo);
     },
+    async callRoomTicket(room, preferential) {
+      alert('chamar ticket do sala')
+      console.log('chamar ticket do sala')
+      console.log(room,preferential)
+    },
     async callNextTicket(room, preferential) {
       this.loading = true;
       //console.log('r',room.room_has_tickets);
       //console.log('bool',preferential);
       if(room.room_has_tickets.length > 0){
-        console.log('chamar ticket do sala')
+        await this.callRoomTicket(room, preferential)
       } else {
-        console.log('chamar ticket do setor')
-        await this.callSectorTicket(room, preferential);
+        //console.log('chamar ticket do setor')
+        await this.callSectorTicket(room, preferential)
       }
       //update in room e update ticket
       //const sector = this.sector;

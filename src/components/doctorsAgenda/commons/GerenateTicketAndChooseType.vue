@@ -8,6 +8,7 @@
           </v-btn>
         </v-card-title>
         <v-card-text>
+          <!--{{room}}-->
           <v-checkbox
               v-model="type"
               label="NORMAL"
@@ -26,8 +27,9 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn v-if="inside === true" rounded color="primary" :disabled="!type">Gerar Senha</v-btn>
-          <v-alert class="justify-center align-center" v-else type="warning"><strong>{{consultation.doctor.name}}</strong> Ainda não está dentro de nenhuma sala.</v-alert>
+          <v-btn v-if="inside === true" rounded color="primary" :disabled="!type" @click="gerenateTicketforPatient" :loading="loading">Gerar Senha</v-btn>
+          <v-alert v-if="inside === false" class="justify-center align-center" type="warning"><strong>{{consultation.doctor.name}}</strong> Ainda não está dentro de nenhuma sala.</v-alert>
+          <!--<v-alert v-if="already_have_ticket === true" class="justify-center align-center" type="error"><strong>{{consultation.patient.name}}</strong> Já tem senha: <strong>{{ticket}}</strong></v-alert>-->
         </v-card-actions>
       </v-card>
     </v-layout>
@@ -41,8 +43,9 @@
             Sala: {{roomName}}
           </span><br/>
           <span style="font-weight: bold; color: #003B8F; font-size: xx-large">
-            Senha: 5 {{ticket}}
-          </span>
+            Senha: {{ticket}}
+          </span><br/>
+          <span style="font-weight: bold; color: deeppink; font-size: xx-large">{{type === 'normal' ? 'Normal' : 'Preferencial' }}</span>
           <br/><br/>
         </v-card-text>
       </v-card>
@@ -65,6 +68,8 @@ export default {
       roomName: undefined,
       room: undefined,
       ticket: undefined,
+      loading: false,
+      //already_have_ticket: false,
     }
   },
   apollo: {
@@ -85,7 +90,17 @@ export default {
                   this.inside = true
                   this.roomName = sectors[sector].has_rooms[room].name
                   this.room = sectors[sector].has_rooms[room]
-                }
+/*                  if(sectors[sector].has_rooms[room].room_has_tickets.length > 0){
+                    for(let ticket in sectors[sector].has_rooms[room].room_has_tickets){
+                      if(sectors[sector].has_rooms[room].room_has_tickets[ticket].patient){
+                        if(sectors[sector].has_rooms[room].room_has_tickets[ticket].patient.id === this.consultation.patient.id){
+                          this.already_have_ticket =  true
+                          this.ticket = sectors[sector].has_rooms[room].room_has_tickets[ticket].name
+                        } else { this.already_have_ticket =  false }
+                      }
+                    }
+                  }*/
+                } else{ this.inside = false}
               }
             }
           }
@@ -95,9 +110,8 @@ export default {
   },
   methods:{
     async gerenateTicketforPatient(){
-/*      console.log('room', this.room)
-      console.log('leng:', this.room.room_has_tickets.length)
-      console.log('idDoctor', this.consultation.doctor.id)*/
+      await this.$apollo.queries.LoadSectorsOfUnity.refresh()
+      this.loading = true
       if(this.room.room_has_tickets.length > 0){
         console.log('gerando quando tem + de 0(zero)')
         let count = this.room.room_has_tickets.length + 1
@@ -220,11 +234,15 @@ export default {
           });
         }
       }
+      this.loading = false
+      //this.inside = false
       this.dialog = true
+      await this.$apollo.queries.LoadSectorsOfUnity.refresh()
     },
   },
   mounted() {
     console.log('componente:', this.consultation)
+    this.$apollo.queries.LoadSectorsOfUnity.refresh()
   }
 }
 </script>

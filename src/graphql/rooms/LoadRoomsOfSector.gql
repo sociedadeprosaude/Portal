@@ -8,6 +8,9 @@ query($name: String!){
           name,id,previos_ticket,current_ticket
           room_has_tickets{
             id,name,type,created_at{formatted},called_at{formatted},
+                                  patient{
+                                    id,name
+                                  }
           },
           doctor{
             id,name
