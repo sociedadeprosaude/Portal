@@ -32,6 +32,11 @@
                           <v-chip color="primary_dark" class="mb-2" small text-color="white">
                             {{ schedule.clinic.name }}
                           </v-chip>
+                          <v-spacer></v-spacer>
+                          <ObservationsSheduleAlert 
+                            v-if="schedule.observations && schedule.observations.length > 0" 
+                            :observations="schedule.observations"
+                          />
                         </v-layout>
                       </v-flex>
                       <v-flex xs12 class="mb-1">
@@ -151,12 +156,13 @@
 import SchedulingForm from "../doctorsAgenda/SchedulingForm"
 import {infiniteScroll} from "vue-infinite-scroll"
 import axios from "axios"
+import ObservationsSheduleAlert from './ObservationsScheduleAlert';
 
 let moment = require("moment/moment");
 
 export default {
   props: ['Consultations','loadingConsultations'],
-  components: {SchedulingForm},
+  components: {SchedulingForm, ObservationsSheduleAlert},
   directives: {infiniteScroll},
   data: () => ({
     moment: (data) => moment(data),

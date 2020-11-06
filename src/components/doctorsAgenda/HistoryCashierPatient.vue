@@ -10,7 +10,7 @@
                                     <v-card flat @click="receipt(intake)">
                                         <v-layout row wrap>
                                             <v-flex xs10 class="text-left ripple">
-                                                <span class="my-sub-headline">{{intake.id}}</span>
+                                                <span class="my-sub-headline">{{intake._id}}</span>
                                             </v-flex>
                                             <v-flex xs2>
                                                 <v-progress-circular indeterminate v-if="loading"
@@ -40,24 +40,28 @@
                 </div>
                 <div v-show="option === 'budgets'">
                     <v-flex xs12 v-for="budget in budgets" :key="budget.id">
-                        <v-card ripple class="my-2 pa-2" @click="selectBudget(budget)">
-                            <v-layout row wrap>
-                                <v-flex xs12>
-                                    <v-btn rounded dense small block class="background font-weight-bold">
-                                        {{budget.id}} <v-spacer/> R$ {{budget.total}}
-                                    </v-btn>
-                                </v-flex>
-                                <v-flex xs12 class="text-left">
-                                    <p class="ma-1">{{budget.date | dateFilter}}</p>
-                                    <!--
-                                    <span>{{budget.payment_method}}</span>
-                                    -->
+                      <v-card :class="['my-2 pl-2 py-2', diffByNow(budget) < 30000 ? 'green' : '']" >
+                        <v-layout row wrap>
+                          <v-card ripple class="my-2 pa-2" @click="selectBudget(budget)">
+                              <v-layout row wrap>
+                                <v-flex xs10 class="text-left ripple">
+                                  <span class="my-sub-headline">{{budget._id}}</span>
                                 </v-flex>
                                 <v-flex xs2>
-                                    <v-progress-circular x-small indeterminate v-if="loading" class="primary--text"/>
+                                  <v-progress-circular indeterminate v-if="loading"
+                                                       class="primary--text"/>
                                 </v-flex>
-                            </v-layout>
+                                <v-flex xs12 class="text-left">
+                                  <p class="my-0">{{budget.date.formatted | dateFilter}}</p>
+                                  <p>R$ {{budget.value}}</p>
+                                </v-flex>
+                                <v-flex xs2>
+                                  <v-progress-circular x-small indeterminate v-if="loading" class="primary--text"/>
+                                </v-flex>
+                              </v-layout>
                         </v-card>
+                        </v-layout>
+                      </v-card>
                     </v-flex>
                 </div>
             </v-card>
@@ -124,16 +128,29 @@
         methods: {
             async selectBudget(budget) {
                 this.loading = true;
-                budget = await this.$store.dispatch("getBudget", budget.id.toString());
-                this.$store.commit("clearShoppingCartItens");
-                this.$store.commit("setSelectedBudget", budget);
-                for (let exam in budget.exams) {
-                    this.$store.commit("addShoppingCartItem", budget.exams[exam]);
+              this.$store.commit('clearShoppingCartItens');
+                for( let i in budget.products){
+                  if(budget.products[i].clinic.length){
+                    budget.products[i].type = budget.products[i].with_product[0].type
+                    budget.products[i].name = budget.products[i].with_product[0].name
+                    budget.products[i].clinic = budget.products[i].clinic[0]
+                    budget.products[i].id = budget.products[i].with_product[0].id
+                    this.$store.commit('addShoppingCartItem', budget.products[i]) }
                 }
-                for (let spec in budget.specialties) {
-                    this.$store.commit("addShoppingCartItem", budget.specialties[spec]);
-                }
+              this.$store.commit('setSelectedBudget',budget)
+              this.$store.commit('setDiscount',budget.discount)
+                this.$store.commit('setIdBudget',budget._id)
+              /* budget = await this.$store.dispatch("getBudget", budget.id.toString());
+              this.$store.commit("clearShoppingCartItens");
+              this.$store.commit("setSelectedBudget", budget);
+              for (let exam in budget.exams) {
+                  this.$store.commit("addShoppingCartItem", budget.exams[exam]);
+              }
+              for (let spec in budget.specialties) {
+                  this.$store.commit("addShoppingCartItem", budget.specialties[spec]);
+              } */
                 this.loading = false;
+                this.$emit('SelectBudget', false)
             },
             diffByNow(product) {
                 let now = moment();
@@ -204,7 +221,8 @@
                 return intakes;
             },
             budgets() {
-                let budgets= Object.assign({}, this.patient.budgets)
+              console.log('this.patient', this.patient.budgets)
+              let budgets= Object.assign({}, this.patient.budgets)
                 return budgets;
             }
         },

@@ -166,7 +166,8 @@ export default {
                 routine_id: schedule.routine_id,
                 vacancy: findDay.vacancy,
                 id_schedule: schedule.id,
-                product:schedule.product
+                product:schedule.product,
+                observations:schedule.observations
               };
               
               const consultationsOfDay = schedule.consultations.filter(consultation => {

@@ -103,10 +103,13 @@
         },
         mounted() {
             firebase.auth().onAuthStateChanged((user) => {
+              console.log('rota:',this.$router.currentRoute)
                 if (!user) {
                     this.ready = true
+                  let rota = this.$router.currentRoute.path
+                  if(!rota.includes('/pdf')){
                     this.$router.push('/login')
-
+                  }
                     return
                 } else if (this.$router.currentRoute.path.includes('login')) {
                     this.$router.push('/')

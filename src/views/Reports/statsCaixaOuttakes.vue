@@ -1,9 +1,9 @@
 <template>
   <v-container fluid v-if="statistics && months && years || not">
     <statsCaixaOuttakesCategory v-if="statistics && months && years"
-      :years="yearsNew"
+      :years="years"
       :year="year"
-      :months="monthsNew"
+      :months="months"
       :month="month"
       :week="week"
       :monsthsName="monsthsName"
@@ -11,7 +11,8 @@
       :round2="round2"
       :statistics="statistics"
       :info="info"
-      :totalToPay="total"
+      :totalLeftToPay="totalLeftToPay"
+      :totalToPay="totalToPay"
       :totalRecurrent="totalRecurrent"
       :numOfOuttakesToPay="numOfOuttakesToPay"
       :maisVendidos="maisVendidos"
@@ -36,7 +37,6 @@
 
 <script>
 import statsCaixaOuttakesCategory from "../../components/Reports/statsCaixaOuttakesCategory";
-import moment from "moment";
 export default {
   components: { statsCaixaOuttakesCategory },
   data: vm => ({
@@ -46,10 +46,6 @@ export default {
     month: null,
     not:null,
     week: 0,
-    skipTransaction: '',
-    lastYear: '',
-    lastMonth: '',
-    TransactionsFixed: '',
     monsthsName: [
       "Janeiro",
       "Fevereiro",
@@ -104,45 +100,6 @@ export default {
     }
   },
   computed: {
-    Transactions(){
-      let transactions = this.TransactionsFixed
-      console.log('data inicial mes: ',this.year + '-' + this.month + '-01' )
-      console.log('transactions: ', transactions.filter(e => (e.date.formatted >= (this.lastYear + '-' + this.lastMonth + '-01' ))))
-      return transactions.filter(e => (e.date.formatted.substring(0,11) >= (this.year + '-' + this.month + '-01' )) && (e.date.formatted.substring(0,11) <= (moment(this.year + '-' + this.month + '-01').add(1,'months').format('YYYY-MM-DD'))))
-    },
-    yearsNew(){
-      let years = []
-      let year = moment().format('YYYY')
-      console.log('year:', year)
-      for(let i=parseInt(this.lastYear); i<= parseInt(year); i++){
-        console.log('i:', i)
-        years.push(i.toString())
-      }
-      console.log('years: ', years)
-      return years
-    },
-    monthsNew(){
-      let months = []
-      let month = moment().format('MM')
-      console.log('month:', month)
-      if(this.lastYear ===  moment().format('YYYY')){
-        for(let i=parseInt(this.lastMonth); i<= parseInt(month); i++){
-          console.log('i:', i)
-          months.push(i.toString())
-        }
-      }
-      else{
-        for(let i=parseInt(this.lastMonth); i<= 12; i++){
-          console.log('i:', i)
-          months.push(i.toString())
-        }
-      }
-      console.log('months: ', months)
-      return months
-    },
-    selectedUnit() {
-      return this.$store.getters.selectedUnit
-    },
     statistics() {
       return this.$store.getters.getStatisticsOuttakes;
     },
@@ -155,26 +112,11 @@ export default {
     totalToPay() {
       return String(this.round2(this.info.totalToPay));
     },
-    total() {
-      let total=0
-      this.Transactions.filter(e => {
-        total += e.value
-      })
-      console.log('transactions: ', this.Transactions )
-      console.log('total : ', total.toFixed(2))
-      return String(-total.toFixed(2));
-    },
     totalRecurrent() {
       return String(this.round2(this.info.totalRecurrent));
     },
     numOfOuttakesToPay() {
-      //numero de constas pagas
-      let sales=0
-      console.log('transactions: ', this.Transactions)
-      this.Transactions.filter(e => {
-        sales += 1
-      })
-      return  sales
+      return String(this.info.numOfOuttakesToPay);
     },
     maisVendidos() {
       return this.info.itens;
@@ -289,23 +231,6 @@ export default {
         }
       };
     }
-  },
-  apollo: {
-    loadTransactions: {
-      query: require("@/graphql/transaction/GetAllNegativeTransactions.gql"),
-      update(data) {
-        console.log('data: ', data.Transaction)
-        if(data.Transaction){
-        this.lastYear = data.Transaction[data.Transaction.length - 1].date.formatted.substring(0,4)
-        this.lastMonth = data.Transaction[data.Transaction.length - 1].date.formatted.substring(5,7)
-        this.TransactionsFixed= data.Transaction
-        }
-        this.skipTransaction = true
-      },
-      skip() {
-        return this.skipTransaction
-      }
-    },
   }
 };
 </script>

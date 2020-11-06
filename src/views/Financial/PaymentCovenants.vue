@@ -12,7 +12,12 @@
                               :query="require('@/graphql/clinics/LoadClinicsPayment.gql')"
                           >
                             <template slot-scope="{ result: { data } }">
-                              <v-card v-for="(clinic,i) in data ? data.Clinic : []" :key="i" outlined class="mb-4 primary">
+                              <v-layout>
+                                <v-flex>
+                                  <h4 class="text-left mb-2 ">Total a pagar: {{TotalCostExamsClinic(data)}}</h4>
+                                </v-flex>
+                              </v-layout>
+                              <v-card v-for="(clinic,i) in data ? data.Clinic : []" :key="i" outlined class="mb-4 primary" v-if="clinic.charges.length !== 0">
                                 <v-layout row wrap>
                                   <v-flex xs10 md5 class="text-left">
                                     <span class="font-weight-bold white--text ml-2">{{clinic.name}}</span>
@@ -193,27 +198,26 @@
                 for(let i in clinic.charges) {
                   cost += clinic.charges[i].value
                 }
-                return cost
+                return -cost.toFixed(2)
             },
+          TotalCostExamsClinic(data){
+            let cost = 0;
+            if(data !== null){
+              for(let j in data.Clinic){
+                for(let i in data.Clinic[j].charges) {
+                  cost += data.Clinic[j].charges[i].value
+                }
+              }
+
+            }
+            return cost ? -cost.toFixed(2) : 0
+          },
             CloseReceipt(){
                 this.dialogReceipt= !this.dialogReceipt
-            },
-            async getInitialInfo() {
-                await this.$store.dispatch('loadClinics');
-                await this.$store.dispatch('GetReceiptsAllClinic');
-                this.loading = false
             },
             ChangeDateDialog(clinic) {
                 this.clinica = clinic;
                 this.change = !this.change;
-            },
-            async ChangeDate(clinic) {
-                this.change = !this.change;
-                await this.$store.dispatch('AddPaymentDay', {
-                    clinic: clinic,
-                    period: this.period
-                });
-                this.getInitialInfo()
             },
             formatDate(date) {
                 if (!date) return null;
@@ -261,13 +265,13 @@
                       to{id}
                   }
               `)
-              for (let charge in clinic.charges) {
+              /* for (let charge in clinic.charges) {
                 mutationBuilder.addMutation(`
                   DeleteCharge(id:"${clinic.charges[charge].id}"){
                   id
                   }
                 `)
-              }
+              } */
               let finalString = mutationBuilder.generateMutationRequest()
               await this.$apollo.mutate({
                 mutation: gql`${finalString}`,
@@ -285,14 +289,15 @@
             },
           mostrar(data){
               console.log('data: ', data)
-          }
+          },
+          async getInitialInfo() {
+            this.loading = false
+          },
 
         },
-        mounted() {
-            this.getInitialInfo()
-        },
-        watch: {
+      mounted() {
+        this.getInitialInfo()
+      }
 
-        }
     }
 </script>

@@ -44,7 +44,7 @@
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-flex sm12 xs12 v-if="payment.paymentForm.length === 1">
+        <v-flex sm12 xs12 v-if="payment.paymentForm.length === 1 && this.paymentValues">
           <v-layout row wrap class="align-center" v-for="(x ,index) in payments" :key="index">
             <v-flex xs12>
               <v-select
@@ -76,21 +76,21 @@
           </v-layout>
         </v-flex>
         <v-layout wrap>
-          <v-flex xs6>
-            <v-text-field
-                label="Desconto: %"
-                v-model="percentageDiscount"
-                outlined
-                dense
-            />
-          </v-flex>
           <v-flex xs5 class="ml-4">
             <v-text-field
-                disabled
                 label="Desconto: R$ "
                 v-model="moneyDiscount"
                 dense
                 outlined
+            />
+          </v-flex>
+          <v-flex xs6>
+            <v-text-field
+                disabled
+                label="Desconto: %"
+                v-model="PercentageDiscount"
+                outlined
+                dense
             />
           </v-flex>
         </v-layout>
@@ -144,7 +144,7 @@
             <v-btn outlined color="primary" @click="SelectNewPatient()">Novo</v-btn>
           </v-flex>
           <v-flex xs4 class="text-center">
-            <v-btn :disabled="cartItems.length === 0" outlined
+            <v-btn :disabled="cartItems.length === 0" outlined :loading="loadingImp"
                    color="primary" @click="imprimir()">Imprimir
             </v-btn>
           </v-flex>
@@ -173,7 +173,7 @@
       </v-flex>
     </v-layout>
     <v-dialog v-model="budgetToPrintDialog" v-if="budgetToPrint">
-      <budget-to-print @close="budgetToPrintDialog = false" :budget="budgetToPrint"/>
+      <budget-to-print @close="CloseBudgetToPrint()" :budget="budgetToPrint"/>
     </v-dialog>
     <v-dialog
         transition="dialog-bottom-transition"
@@ -212,6 +212,7 @@ export default {
       xDown: undefined,
       yDown: undefined,
       parcel: 1,
+      loadingImp:false,
       parcels: ["1", "2", "3", "4", "5"],
       paymentLoading: false,
       quantParcelas: ["1", "2", "3", "4", "5"],
@@ -223,8 +224,7 @@ export default {
       searchPatient: false,
       payments: ['Dinheiro'],
       valuesPayments: [''],
-      payment: {paymentForm: ['Dinheiro'], value: [''], parcel: ['1']},
-      moneyDiscout: 0,
+      payment: {paymentForm: ['Dinheiro'], value: ['0'], parcel: ['1']},
       idUser: '',
       data: moment().format("YYYY-MM-DD HH:mm:ss"),
       parcelas: '1',
@@ -266,8 +266,6 @@ export default {
         this.$store.commit('setSelectedDoctor', val)
       }
     },
-
-
     loadingDoctors() {
       return !this.$store.getters.doctorsLoaded
     },
@@ -293,13 +291,23 @@ export default {
     clinic() {
       return this.$store.getters.getShoppingCartItemsByCategory.clinics
     },
-    cost() {
-      let itens = this.$store.getters.getShoppingCartItems;
-      let total = 0;
-      for (let item in itens) {
-        total += parseFloat(itens[item].cost)
+    PercentageDiscount(){
+      if(this.$store.getters.getDiscountBudget !== 0){
+        this.moneyDiscount = this.$store.getters.getDiscountBudget
+        this.percentageDiscount = ((100 * this.moneyDiscount)/this.subTotal)
+        this.$store.commit('setDiscount',0)
       }
-      return total
+      if(this.moneyDiscount.length === 0){
+        this.moneyDiscount = 0
+        this.percentageDiscount = 0
+      }
+      else{
+        this.percentageDiscount= ((100 * this.moneyDiscount) / this.subTotal)
+      }
+      return this.percentageDiscount
+    },
+    idBudget(){
+      return this.$store.getters.getIdBudget
     },
     subTotal() {
       let itens = this.$store.getters.getShoppingCartItems;
@@ -310,6 +318,9 @@ export default {
       return total
     },
     total() {
+      if(this.moneyDiscount.length === 0){
+        return (parseFloat(this.subTotal).toFixed(2))
+      }
       return (parseFloat(this.subTotal) - parseFloat(this.moneyDiscount)).toFixed(2)
     },
     paymentValues() {
@@ -342,11 +353,6 @@ export default {
       }
     },
   },
-  watch: {
-    percentageDiscount: function () {
-      this.moneyDiscount = ((this.percentageDiscount * this.subTotal) / 100);
-    },
-  },
   methods: {
     CloseReceipt() {
       this.$store.commit('setSelectedBudget', undefined);
@@ -356,6 +362,12 @@ export default {
       this.paymentSuccess = true
       this.clearCart()
       this.receiptDialog = false
+    },
+    CloseBudgetToPrint() {
+      this.budgetToPrintDialog = false
+      this.skipPatients = false
+      this.$apollo.queries.loadPatient.refresh()
+
     },
     async searchBudget() {
       this.searchBudgetLoading = true;
@@ -401,9 +413,134 @@ export default {
     removeItem(item) {
       this.$store.commit('removeShoppingCartItem', item)
     },
-    imprimir() {
-      this.saveBudget(this.generateBudget());
-      this.budgetToPrint = this.selectedBudget;
+    async imprimir() {
+      this.loadingImp= true
+      if(this.idBudget !== undefined){
+        this.saveBudget(this.generateBudget());
+        this.selectedBudget._id = this.idBudget
+        this.budgetToPrint = this.selectedBudget;
+        this.$store.commit('setIdBudget',undefined)
+      }
+      else{
+        this.saveBudget(this.generateBudget());
+        this.budgetToPrint = this.selectedBudget;
+      let budgetId = uuid.v4()
+      let mutationBuilder = new MutationBuilder()
+      mutationBuilder.addMutation(
+          `CreateBudget(
+      id: "${budgetId}",
+     value:${parseFloat(this.selectedBudget.total)},
+     payment_methods:[${this.selectedBudget.payments.map(p => `"${p}"`)}],
+     payments:[${this.selectedBudget.valuesPayments}],
+     parcels:[${this.selectedBudget.parcel.map(p => `"${p}"`)}],
+     discount:${parseFloat(this.selectedBudget.discount) ? parseFloat(this.selectedBudget.discount) : 0},
+     date:
+          {
+            formatted: "${moment(this.selectedBudget.date.formatted).format("YYYY-MM-DDTHH:mm:ss")}"
+          }
+     ){
+        id, _id,value, payment_methods, payments, parcels, discount, date{
+        formatted
+        }
+    }`
+      )
+      let productsBudgetIds = []
+      let products = this.selectedBudget.exams.concat(this.selectedBudget.specialties)
+      products = products.filter(p => p)
+      for (let product in products) {
+        let prodId = uuid.v4()
+        products[product].prodId = prodId
+        productsBudgetIds.push(prodId)
+        mutationBuilder.addMutation(`
+                CreateProductBudget(
+                id: "${prodId}"
+                price:${products[product].price}){
+                    id
+                }`)
+      }
+      let productTransactionLinkString = ''
+      for (let product in products) {
+        let productBudgetId = products[product].prodId
+        mutationBuilder.addMutation(`
+                AddBudgetWith_productBundget(
+        from:{
+            id:"${budgetId}"
+        },
+        to:{
+            id:"${productBudgetId}"
+        }
+    ){
+        from{id},
+        to{id}
+    }`)
+        mutationBuilder.addMutation(`AddProductBudgetWith_product(
+        from:{
+            id:"${productBudgetId}"
+        },
+        to:{
+            id:"${products[product].id}"
+        }
+        ){
+        from{id},
+        to{id}
+    }`)
+        products[product].clinic ? mutationBuilder.addMutation(`AddProductBudgetWith_clinic(
+            from:{
+          id:"${productBudgetId}"
+        },
+        to:{
+          id:"${products[product].clinic.id}"
+        }
+      ){
+          from{id},
+          to{id}
+        }` ) : ''
+      }
+      mutationBuilder.addMutation(`
+                AddBudgetWith_user(
+        from:{
+            id:"${budgetId}"
+        },
+        to:{
+            id:"${this.selectedBudget.user.id}"
+        }
+    ){
+        from{id},
+        to{id}
+    }`)
+      mutationBuilder.addMutation(`
+                AddBudgetWith_unit(
+        from:{
+            id:"${budgetId}"
+        },
+        to:{
+            id:"${this.selectedBudget.unit.id}"
+        }
+    ){
+        from{id},
+        to{id}
+    }`)
+      mutationBuilder.addMutation(`
+                AddBudgetColaborator(
+        from:{
+            id:"${budgetId}"
+        },
+        to:{
+            id:"${this.selectedBudget.colaborator.id}"
+        }
+    ){
+        from{id},
+        to{id}
+    }`)
+      let finalString = mutationBuilder.generateMutationRequest()
+      let id = ''
+      id = await this.$apollo.mutate({
+        mutation: gql`${finalString}`,
+      })
+        id = id.data.mutation0._id
+        this.budgetToPrint._id = id
+      }
+      this.loadingImp= false
       this.budgetToPrintDialog = true
     },
 
@@ -587,6 +724,22 @@ export default {
         }` ) : ''
       }
 
+
+      if(this.idBudget !== undefined){
+        mutationBuilder.addMutation(`
+                AddBudgetWith_transaction(
+        from:{
+            id:"${this.idBudget}"
+        },
+        to:{
+            id:"${transactionId}"
+        }
+    ){
+        from{id},
+        to{id}
+    }`)
+      }
+
       let finalString = mutationBuilder.generateMutationRequest()
 
       await this.$apollo.mutate({
@@ -644,6 +797,8 @@ export default {
     },
     SelectNewPatient() {
       this.$store.commit('clearShoppingCartItens');
+      this.$store.commit('setDiscount', 0);
+      this.$store.commit('setIdBudget', undefined)
       this.$store.commit('setSelectedBudget', undefined);
       let user = undefined;
       this.$store.commit('setSelectedPatient', user)

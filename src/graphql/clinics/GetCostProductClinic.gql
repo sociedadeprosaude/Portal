@@ -1,0 +1,4 @@
+mutation($idExam: ID!, $idClinic: ID!){
+  CostProductClinic( (filter:{with_clinic:{id:$idClinic},with_product:{id:$idExam}})
+  ){id, cost},
+}

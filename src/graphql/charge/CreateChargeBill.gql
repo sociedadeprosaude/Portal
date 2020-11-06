@@ -1,9 +1,9 @@
 mutation (
     $value: Float,
     $payment_methods: [String],
-    $date: _Neo4jDateTimeInput,
+    $date: String,
     $description: String,
-    $date_to_pay: _Neo4jDateTimeInput,
+    $date_to_pay: String,
     $recurrent: Boolean,
     $type: String
      )

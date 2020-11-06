@@ -17,7 +17,7 @@
                         <v-layout row wrap class="mx-1 black--text">
                             <span>{{item.clinic.name}}</span>
                             <v-spacer/>
-                            <span>R$ {{item.price}}</span>
+                            <span>R$ {{item.price.toFixed(2)}}</span>
                         </v-layout>
                     </v-flex>
                     <v-btn rounded dense x-small class="error px-6" @click="removeItem(item)">Remover Item</v-btn>
@@ -39,7 +39,7 @@
                         <v-layout row wrap class="mx-1 black--text">
                             <span>{{item.doctor.clinic.name}}</span>
                             <v-spacer/>
-                            <span>R$ {{item.price}}</span>
+                            <span>R$ {{item.price.toFixed(2)}}</span>
                         </v-layout>
                     </v-flex>
                     <v-btn rounded dense x-small class="error px-6" @click="removeItem(item)">Remover Item</v-btn>

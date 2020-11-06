@@ -4,7 +4,9 @@ const state = {
     items: [],
     test: {},
     budget: undefined,
-    doctor: undefined
+    doctor: undefined,
+    discount: 0,
+    idBudget: undefined
 };
 
 const mutations = {
@@ -17,9 +19,13 @@ const mutations = {
     setShoppingCartItems(state, payload) {
         state.items = payload
     },
+    setDiscount(state, payload){
+        state.discount = payload
+    },
+    setIdBudget(state, payload){
+        state.idBudget = payload
+    },
     addShoppingCartItem(state, payload) {
-        console.log('items: ', state.items)
-        console.log('payload: ', payload)
         for (let item in state.items) {
             if (state.items[item].name === payload.name) {
                 state.items[item] = payload;
@@ -50,6 +56,12 @@ const getters = {
     },
     getShoppingCartItems(state) {
         return state.items
+    },
+    getIdBudget(state) {
+        return state.idBudget
+    },
+    getDiscountBudget(state) {
+        return state.discount
     },
     getShoppingCartItemsByCategory(state) {
         let consultations = state.items.filter((a) => {
