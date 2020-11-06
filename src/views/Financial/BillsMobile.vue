@@ -196,6 +196,7 @@
                 return this.semanaOptions[dateMoment.day()];
             },
             async initiate() {
+                this.goRoute('/BillsMobile/pendentes');
                 this.loading = true;
                 await this.$store.dispatch("getOuttakesCategories");
                 await this.$store.dispatch("getOuttakesPending", {

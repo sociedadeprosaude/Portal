@@ -1,6 +1,6 @@
 <template>
-    <v-container class="fill-height white align-start mt-n3">
-        <v-flex xs12 class="white">
+    <v-container class="fill-height grey_light2 align-start mt-n3">
+        <v-flex xs12 class="grey_light2">
             <div class="mt-0">
                 <v-layout row wrap class="align-center justify-start pa-3">
                     <v-flex xs12>
