@@ -196,14 +196,7 @@ let mainRoutes = [
       requiresAuth: false,
     }
   },
-  {
-    path: '/BillsMobile',
-    name: 'BillsMobile',
-    component: BillsMobile,
-    meta: {
-      requiresAuth: false,
-    }
-  },
+
   {
     path: '/Categorias',
     name: 'OuttakesCategories',

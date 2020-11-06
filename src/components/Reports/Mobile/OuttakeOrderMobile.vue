@@ -16,9 +16,11 @@
                 </v-card>
             </v-col>
         </v-row>
-
+        <v-layout row wrap class="justify-center" v-show="!pendingOuttakes">
+            <v-progress-circular indeterminate color="primary" large/>
+        </v-layout>
         <v-row class="align-center justify-center"
-               v-for="(outtakesGroup, i) in outtakesByDate(outtakes)"
+               v-for="(outtakesGroup, i) in outtakesByDate(pendingOuttakes)"
                :key="i"
         >
             <v-col cols="12" xs="12" class="mx-3">
@@ -188,7 +190,7 @@
     import moment from "moment";
 
     export default {
-        props: ["outtakes"],
+
         data() {
             return {
                 isEditing: false,
@@ -215,11 +217,16 @@
             };
         },
         computed: {
+            pendingOuttakes() {
+                return this.$store.getters.outtakesPending.sort((a, b) => {
+                    return b.date_to_pay < a.date_to_pay ? 1 : -1;
+                });
+            },
             user() {
                 return this.$store.getters.user.group;
             },
             dates() {
-                let holder = this.outtakesByDate(this.outtakes);
+                let holder = this.outtakesByDate(this.pendingOuttakes);
                 let dates = [];
                 for (let item in holder) {
                     dates.push(holder[item][0].date_to_pay)
@@ -227,7 +234,7 @@
                 return dates
             },
             totalPayable() {
-                let holder = this.outtakesByDate(this.outtakes);
+                let holder = this.outtakesByDate(this.pendingOuttakes);
                 let total = 0.00;
                 for (let item in holder) {
                     total = total + Number(holder[item][0].value)
@@ -248,7 +255,7 @@
             },
             allowedDates(val) {
                 return (
-                    Object.keys(this.outtakesByDate(this.outtakes)).indexOf(val) !== -1
+                    Object.keys(this.outtakesByDate(this.pendingOuttakes)).indexOf(val) !== -1
                 );
             },
             daydate(date) {

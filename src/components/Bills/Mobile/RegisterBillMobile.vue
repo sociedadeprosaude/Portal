@@ -1,13 +1,5 @@
 <template>
-    <v-card class="ma-0 pa-0">
-        <v-card-title class="primary text--white" primary-title>
-            <v-flex xs12>
-                <v-btn icon dark @click="clear">
-                    <v-icon>close</v-icon>
-                </v-btn>
-            </v-flex>
-        </v-card-title>
-
+    <v-container class="fill-height white align-start mt-n3">
         <v-flex xs12 class="white">
             <div class="mt-0">
                 <v-layout row wrap class="align-center justify-start pa-3">
@@ -141,7 +133,7 @@
                 </v-layout>
             </div>
         </v-flex>
-    </v-card>
+    </v-container>
 </template>
 
 <script>

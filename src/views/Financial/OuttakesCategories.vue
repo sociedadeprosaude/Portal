@@ -19,6 +19,8 @@
                                 <v-spacer/>
 
                                 <v-btn
+                                        fab
+                                        small
                                         rounded
                                         color="primary"
                                         dark

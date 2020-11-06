@@ -1,6 +1,6 @@
 <template>
     <v-container class="fill-height align-content-space-between" style="height: 90%">
-        <BillsMobile  v-if="this.$vuetify.breakpoint.xs"/>
+        <BillsMobile  v-if="this.$vuetify.breakpoint.xs" class="fill-height "/>
         <Bills
                 v-else
                 v-bind:other="other"
