@@ -91,6 +91,10 @@ export default {
           txt: "Statisticas Orcamentos",
           link: "StatisticasOrcamento"
         },
+        {
+          txt: "Pacientes Geopoint",
+          link: "StatisticPatientsGeoPoint"
+        },
       ]
     };
   },
