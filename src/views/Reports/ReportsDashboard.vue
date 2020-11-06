@@ -85,6 +85,7 @@
     <statsCaixaOuttakesClinics v-else-if="selected == 14"></statsCaixaOuttakesClinics>
     <Clients v-else-if="selected == 15"></Clients>
     <EmployeeServiceReport v-else-if="selected == 16"></EmployeeServiceReport>
+    <statistics-budgets v-else-if="selected == 17"></statistics-budgets>
   </v-container>
 </template>
 
@@ -108,6 +109,7 @@ import Clients from "@/views/Reports/Clients";
 import DrawerRelatorio from "@/components/Drawer/DrawerRelatorio";
 import DateSelector from "@/components/Common/DateSelector";
 import EmployeeServiceReport from "@/views/Reports/EmployeeServiceReport";
+import StatisticsBudgets from "@/views/Reports/StatisticsBudgets";
 export default {
   components: {
     DrawerRelatorio,
@@ -129,6 +131,7 @@ export default {
     statsCaixaOuttakesClinics,
     Clients,
     EmployeeServiceReport,
+    StatisticsBudgets
   },
   data: vm => ({
     selected: 0,
@@ -225,6 +228,9 @@ export default {
           break;
         case "RelatorioAtendimentosColaboradores":
           this.selected = 16;
+          break;
+        case "StatisticasOrcamento":
+          this.selected = 17;
           break;
         default:
           this.selected = 0;

@@ -95,7 +95,7 @@ export default {
     Transactions(){
       let transactions = this.TransactionsFixed
       console.log('data inicial mes: ',this.year + '-' + this.month + '-01' )
-      console.log('transactions: ', transactions.filter(e => (e.date.formatted >= (this.lastYear + '-' + this.lastMonth + '-01' ))))
+      console.log('transactions: ', transactions.filter(e => (e.date.formatted.substring(0,11) >= (this.year + '-' + this.month + '-01' )) && (e.date.formatted.substring(0,11) <= (moment(this.year + '-' + this.month + '-01').add(1,'months').format('YYYY-MM-DD')))))
       return transactions.filter(e => (e.date.formatted.substring(0,11) >= (this.year + '-' + this.month + '-01' )) && (e.date.formatted.substring(0,11) <= (moment(this.year + '-' + this.month + '-01').add(1,'months').format('YYYY-MM-DD'))))
     },
     yearsNew(){
@@ -113,6 +113,7 @@ export default {
       let months = []
       let month = moment().format('MM')
       console.log('month:', month)
+      console.log('lastMonth,', this.lastMonth)
       if(this.lastYear ===  moment().format('YYYY')){
         for(let i=parseInt(this.lastMonth); i<= parseInt(month); i++){
           console.log('i:', i)
@@ -149,12 +150,12 @@ export default {
           arrTotalRaw[(parseInt(e.date.formatted.substring(8,11))-1)] = 0
         }
         e.produts.filter( f => {
-          if(itens[f.with_product.name]){
-            itens[f.with_product.name].numOfSales += 1
-            itens[f.with_product.name].totalRaw += f.price
+          if(itens[f.with_product? f.with_product.name : 'error']){
+            itens[f.with_product? f.with_product.name : 'error'].numOfSales += 1
+            itens[f.with_product? f.with_product.name : 'error'].totalRaw += f.price
           }
           else{
-            itens[f.with_product.name] = {
+            itens[f.with_product? f.with_product.name : 'error'] = {
               numOfSales: 1,
               totalRaw: f.price
             }
@@ -218,7 +219,6 @@ export default {
       )
         .map(num => ++num)
         .slice(8 * this.week, 8 * (1 + this.week));
-
       const arrData = days.map(num => this.info.arrTotalRaw[num - 1]);
       console.log('days: ', days)
       console.log('week: ', this.week)
