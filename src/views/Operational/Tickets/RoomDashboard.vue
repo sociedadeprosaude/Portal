@@ -285,7 +285,7 @@ export default {
       });
       if(ticketsSector.length > 0){
         for(let ts in ticketsSector) {
-          console.log('tem tickets no setor', ticketsSector)
+          //console.log('tem tickets no setor', ticketsSector)
           await this.$apollo.mutate({
             mutation: require('@/graphql/sectors/RemoveSectorSector_has_tickets.gql'),
             variables: {
@@ -306,7 +306,7 @@ export default {
             },
           });
           if(rooms[room].room_has_tickets.length > 0){
-            console.log('tem tickets na sala', rooms[room].name)
+            //console.log('tem tickets na sala', rooms[room].name)
             for(let tr in rooms[room].room_has_tickets){
               await this.$apollo.mutate({
                 mutation: require('@/graphql/rooms/RemoveRoomRoom_has_tickets.gql'),
@@ -396,10 +396,6 @@ export default {
     },
     async callRoomTicket(room, preferential) {
       await this.$apollo.queries.LoadRoomsOfSector.refresh();
-      alert('chamar ticket do sala')
-      console.log('chamar ticket do sala')
-      console.log('r',room.room_has_tickets);
-      console.log('bool',preferential);
       //star
       if(preferential === true) {
         let prioritys = room.room_has_tickets.filter(a => {
@@ -410,7 +406,6 @@ export default {
         for(let p in prioritys) { if(!prioritys[p].called_at.formatted) { priority.push(prioritys[p]) }}
         //proxima senha prioridade
         if(priority[1] !== undefined){
-          console.log('gernado proxima senha prioridade')
           await this.$apollo.mutate({
             mutation: require('@/graphql/rooms/UpdateRoom.gql'),
             variables: {
@@ -465,7 +460,6 @@ export default {
         for(let n in normals){ if(!normals[n].called_at.formatted){ normal.push(normals[n]) }}
         //proxima senha normal
         if(normal[1] !== undefined){
-          console.log('gernado proxima senha normal')
           await this.$apollo.mutate({
             mutation: require('@/graphql/rooms/UpdateRoom.gql'),
             variables: {
@@ -515,16 +509,15 @@ export default {
       }
       //end
       await this.$apollo.queries.LoadRoomsOfSector.refresh();
-
     },
     async callNextTicket(room, preferential) {
-      this.loading = true;
+      this.loading = true
       if(room.room_has_tickets.length > 0){
         await this.callRoomTicket(room, preferential)
       } else {
         await this.callSectorTicket(room, preferential)
       }
-      this.loading = false;
+      this.loading = false
     },
     async callSectorTicket(room, preferential) {
       await this.$apollo.queries.LoadRoomsOfSector.refresh();
@@ -537,7 +530,6 @@ export default {
         for(let p in prioritys) { if(!prioritys[p].called_at.formatted) { priority.push(prioritys[p]) }}
         //proxima senha prioridade
         if(priority[1] !== undefined){
-          console.log('gernado proxima senha prioridade')
           await this.$apollo.mutate({
             mutation: require('@/graphql/sectors/UpdateSector.gql'),
             variables: {
@@ -590,7 +582,6 @@ export default {
         for(let n in normals){ if(!normals[n].called_at.formatted){ normal.push(normals[n]) }}
         //proxima senha normal
         if(normal[1] !== undefined){
-          console.log('gernado proxima senha normal')
           await this.$apollo.mutate({
             mutation: require('@/graphql/sectors/UpdateSector.gql'),
             variables: {
@@ -643,7 +634,6 @@ export default {
       this.$store.commit("setFavoriteRoomSection", this.sector);
     },
     async deleteRoom(room) {
-      //console.log('del sala:', room)
       this.deletionRoom.selectedRoom = room;
       if (!this.deletionRoom.deleteRoomDialog) {
         this.deletionRoom.deleteRoomDialog = true;

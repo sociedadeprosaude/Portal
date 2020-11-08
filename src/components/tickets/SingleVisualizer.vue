@@ -121,8 +121,14 @@
           <v-row justify="center" class="display-2">Proxima Senha Normal</v-row>
           <v-row justify="start">
             <v-col class="ma-0 pa-0">
-              <p v-if="sector.next_ticket_normal" style="font-size: 7em;">{{sector.next_ticket_normal}}</p>
-              <p v-else style="font-size: 5em;">*</p>
+              <div v-if="selectedRoom.next_ticket_normal">
+                <p v-if="selectedRoom.next_ticket_normal" style="font-size: 7em;">{{selectedRoom.next_ticket_normal}}</p>
+                <p v-else style="font-size: 5em;">*</p>
+              </div>
+              <div v-if="!selectedRoom.next_ticket_normal">
+                <p v-if="sector.next_ticket_normal" style="font-size: 7em;">{{sector.next_ticket_normal}}</p>
+                <p v-else style="font-size: 5em;">*</p>
+              </div>
             </v-col>
           </v-row>
         </v-col>
@@ -133,8 +139,14 @@
           <v-row justify="center" class="display-2">Proxima Senha Preferencial</v-row>
           <v-row justify="start">
             <v-col class="ma-0 pa-0">
-              <p v-if="sector.next_ticket_priority" style="font-size: 7em;">{{sector.next_ticket_priority}}</p>
-              <p v-else style="font-size: 5em;">*</p>
+              <div v-if="selectedRoom.next_ticket_priority">
+                <p v-if="selectedRoom.next_ticket_priority" style="font-size: 7em;">{{selectedRoom.next_ticket_priority}}</p>
+                <p v-else style="font-size: 5em;">*</p>
+              </div>
+              <div v-if="!selectedRoom.next_ticket_priority">
+                <p v-if="sector.next_ticket_priority" style="font-size: 7em;">{{sector.next_ticket_priority}}</p>
+                <p v-else style="font-size: 5em;">*</p>
+              </div>
             </v-col>
           </v-row>
         </v-col>

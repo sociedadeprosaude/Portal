@@ -63,7 +63,7 @@ export default {
       },
       update(data){
         this.sectors = Object.assign(data.Clinic[0].has_sectors)
-        console.log('setors of unity:', this.sectors)
+        //console.log('setors of unity:', this.sectors)
       },
     }
   },
