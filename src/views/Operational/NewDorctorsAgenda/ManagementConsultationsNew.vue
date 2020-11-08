@@ -280,6 +280,9 @@
             examTypeCheck:false,
             patientSelected: {},
             consultatioSelect: {},
+            roomSelect: {},
+            sectorSelect: {},
+            ticketSelect:{},
             clinics:[],
             //news
             tab:'consultations',

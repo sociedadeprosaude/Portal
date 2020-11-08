@@ -7,8 +7,12 @@
             <v-icon>close</v-icon>
           </v-btn>
         </v-card-title>
+        <br/>
+        C:{{consultation}}<br/>
+        R:{{room}}<br/>
+        S:{{sector}}<br/>
+        T:{{ticket}}<br/>
         <v-card-text>
-          <!--{{room}}-->
           <v-checkbox
               v-model="type"
               label="NORMAL"
@@ -27,8 +31,13 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn v-if="inside === true" rounded color="primary" :disabled="!type" @click="gerenateTicketforPatient" :loading="loading">Gerar Senha</v-btn>
-          <v-alert v-if="inside === false" class="justify-center align-center" type="warning"><strong>{{consultation.doctor.name}}</strong> Ainda não está dentro de nenhuma sala.</v-alert>
+          <div v-if="!ticket">
+          <v-btn v-if="sector" rounded color="primary" :disabled="!type" @click="gerenateTicketforPatient" :loading="loading">Gerar Senha</v-btn>
+          <v-alert v-if="!sector" class="justify-center align-center" type="warning"><strong>{{consultation.doctor.name}}</strong> Ainda não está dentro de nenhuma sala.</v-alert>
+          </div>
+          <div v-if="ticket">
+            <v-alert v-if="ticket" class="justify-center align-center" type="error">Já  exite um senha criada para: <strong>{{consultation.patient.name}}</strong></v-alert>
+          </div>
         </v-card-actions>
       </v-card>
     </v-layout>
@@ -55,7 +64,7 @@
 
 <script>
 export default {
-  props: ['consultation'],
+  props: ['consultation', 'room', 'sector', 'ticket'],
   name: "GerenateTicketAndChooseType",
   data () {
     return {
@@ -63,8 +72,8 @@ export default {
       inside: false,
       dialog: false,
       roomName: undefined,
-      room: undefined,
-      ticket: undefined,
+/*      room: undefined,
+      ticket: undefined,*/
       loading: false,
     }
   },
@@ -83,9 +92,9 @@ export default {
             for(let room in sectors[sector].has_rooms){
               if(sectors[sector].has_rooms[room].doctor){
                 if(sectors[sector].has_rooms[room].doctor.id === this.consultation.doctor.id){
-                  this.inside = true
+                  //this.inside = true
                   this.roomName = sectors[sector].has_rooms[room].name
-                  this.room = sectors[sector].has_rooms[room]
+                  //this.room = sectors[sector].has_rooms[room]
                 } //else{ this.inside = false}
               }
             }
@@ -124,7 +133,7 @@ export default {
           });
           //add relation ticket patient
           await this.$apollo.mutate({
-            mutation: require('@/graphql/tickets/AddTicketPatient.gql'),
+            mutation: require('@/graphql/tickets/AddTicketConsultation.gql'),
             variables: {
               idPatient: this.consultation.patient.id,
               idTicket: idTicket,
@@ -152,7 +161,7 @@ export default {
           });
           //add relation ticket patient
           await this.$apollo.mutate({
-            mutation: require('@/graphql/tickets/AddTicketPatient.gql'),
+            mutation: require('@/graphql/tickets/AddTicketConsultation.gql'),
             variables: {
               idPatient: this.consultation.patient.id,
               idTicket: idTicket,
@@ -184,7 +193,7 @@ export default {
           });
           //add relation ticket patient
           await this.$apollo.mutate({
-            mutation: require('@/graphql/tickets/AddTicketPatient.gql'),
+            mutation: require('@/graphql/tickets/AddTicketConsultation.gql'),
             variables: {
               idPatient: this.consultation.patient.id,
               idTicket: idTicket,
@@ -212,7 +221,7 @@ export default {
           });
           //add relation ticket patient
           await this.$apollo.mutate({
-            mutation: require('@/graphql/tickets/AddTicketPatient.gql'),
+            mutation: require('@/graphql/tickets/AddTicketConsultation.gql'),
             variables: {
               idPatient: this.consultation.patient.id,
               idTicket: idTicket,
@@ -227,8 +236,8 @@ export default {
     },
   },
   async mounted() {
-    console.log('componente:', this.consultation)
-    await this.$apollo.queries.LoadSectorsOfUnity.refresh()
+    console.log('componente:', this.consultation, this.sector, this.room, this.ticket)
+    //await this.$apollo.queries.LoadSectorsOfUnity.refresh()
   }
 }
 </script>

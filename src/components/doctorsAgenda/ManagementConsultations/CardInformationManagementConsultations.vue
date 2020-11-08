@@ -7,7 +7,7 @@
           <v-flex xs12>
             <p class="white--text text-left title">Consultas</p>
             <v-divider color="white"/>
-            <span class="white--text font-weight-bold">SETOR: {{sector === undefined ? 'NENHUM' : sector }} <v-divider color="white"/> SALA: {{room === undefined ? 'NENHUMA' : room}} <v-divider color="white"/> SENHA: {{ticket === undefined ? 'NENHUM' : ticket}}</span>
+            <span class="white--text font-weight-bold">SETOR: {{sector === undefined ? 'NENHUM' : sector.name }} <v-divider color="white"/> SALA: {{room === undefined ? 'NENHUMA' : room.name}} <v-divider color="white"/> SENHA: {{ticket === undefined ? 'NENHUM' : ticket.name}}</span>
           </v-flex>
           <v-flex xs12 class="mb-2">
             <v-divider color="white"/>
@@ -101,7 +101,7 @@
     </v-dialog>
 
     <v-dialog v-model="dialogTicket">
-      <gerenate-ticket-and-choose-type @close="dialogTicket=false" :consultation="consultation"/>
+      <gerenate-ticket-and-choose-type @close="dialogTicket=false" :consultation="consultation" :sector="sector" :room="room" :ticket="ticket"/>
     </v-dialog>
 
   </v-layout>

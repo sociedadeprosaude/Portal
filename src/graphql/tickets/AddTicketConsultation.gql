@@ -1,10 +1,10 @@
-mutation($idTicket : ID! , $idPatient: ID!){
-       AddTicketPatient(
+mutation($idTicket : ID! , $idConsultation: ID!){
+       AddTicketConsultation(
         from:{
           id: $idTicket
         },
         to:{
-          id: $idPatient
+          id: $idConsultation
         }
       ){
       from{id},
