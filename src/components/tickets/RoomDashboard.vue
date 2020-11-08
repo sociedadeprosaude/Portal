@@ -349,8 +349,14 @@
                   <div>
                     <span style="font-size: 0.8em">Proxima Senha Normal:</span>
                     <br />
-                    <span v-if="sector.next_ticket_normal">{{sector.next_ticket_normal}}</span>
-                    <span v-else>*</span>
+                    <div v-if="room.next_ticket_normal">
+                      <span v-if="room.next_ticket_normal">{{room.next_ticket_normal}}</span>
+                      <span v-else>*</span>
+                    </div>
+                    <div v-if="!room.next_ticket_normal">
+                      <span v-if="sector.next_ticket_normal">{{sector.next_ticket_normal}}</span>
+                      <span v-else>*</span>
+                    </div>
                   </div>
                 </v-col>
                 <v-divider vertical></v-divider>
@@ -358,8 +364,14 @@
                   <div>
                     <span style="font-size: 0.8em">Proxima Senha Preferencial:</span>
                     <br />
-                    <span v-if="sector.next_ticket_priority">{{sector.next_ticket_priority}}</span>
-                    <span v-else>*</span>
+                    <div v-if="room.next_ticket_priority">
+                      <span v-if="room.next_ticket_priority">{{room.next_ticket_priority}}</span>
+                      <span v-else>*</span>
+                    </div>
+                      <div v-if="!room.next_ticket_priority">
+                      <span v-if="sector.next_ticket_priority">{{sector.next_ticket_priority}}</span>
+                      <span v-else>*</span>
+                    </div>
                   </div>
                 </v-col>
               </v-row>

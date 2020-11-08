@@ -7,7 +7,7 @@
           <v-flex xs12>
             <p class="white--text text-left title">Consultas</p>
             <v-divider color="white"/>
-            <span class="white--text font-weight-bold title">SETOR: {{sector === '' ? 'NENHUM' : sector }} <v-divider color="white"/> SALA: {{room === '' ? 'NENHUMA' : room}}</span>
+            <span class="white--text font-weight-bold">SETOR: {{sector === '' ? 'NENHUM' : sector }} <v-divider color="white"/> SALA: {{room === '' ? 'NENHUMA' : room}} <v-divider color="white"/> SENHA: {{ticket === '' ? 'NENHUM' : ticket}}</span>
           </v-flex>
           <v-flex xs12 class="mb-2">
             <v-divider color="white"/>
@@ -147,6 +147,7 @@ export default {
     skipCost: true,
     dialogTicket: false,
     room: '',
+    ticket: '',
     sector: '',
   }),
   mounted() {

@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid v-if="consultation" fluid class=" ma-0 pa-0">
+  <v-container v-if="consultation" fluid class=" ma-0 pa-0">
     <v-layout row wrap class="align-center justify-center">
       <v-card flat class="item-to-print ma-0 mb-0">
         <v-card-title class="headline grey lighten-2">Selecione o Tipo da Senha
@@ -55,9 +55,7 @@
 </template>
 
 <script>
-import Alert from "@/components/alert";
 export default {
-  components: {Alert},
   props: ['consultation'],
   name: "GerenateTicketAndChooseType",
   data () {

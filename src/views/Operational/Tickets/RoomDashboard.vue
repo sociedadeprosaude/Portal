@@ -539,17 +539,6 @@ export default {
         return;
       }
       this.deletionRoom.deleting = true;
-      if(room.room_has_tickets.length > 0){
-        for (let ticket in room.room_has_tickets){
-          await this.$apollo.mutate({
-            mutation: require('@/graphql/rooms/RemoveRoomRoom_has_tickets.gql'),
-            variables: {
-              idRoom: room.id,
-              idTicket: room.room_has_tickets[ticket].id,
-            },
-          });
-        }
-      }
       await this.$apollo.mutate({
         mutation: require('@/graphql/rooms/DeleteRoom.gql'),
         variables: {
