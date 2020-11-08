@@ -243,6 +243,9 @@
         <v-layout aling-center row wrap>
           <v-flex xs12>
             <CardDoctorsManagementConsultations @consultationSelect="consultatioSelect= $event"
+                                                @roomSelect="roomSelect= $event"
+                                                @sectorSelect="sectorSelect= $event"
+                                                @ticketSelect="ticketSelect= $event"
                                                 @patientSelect="patientSelected = $event" :filterByExam="examTypeCheck" :examType="examType"
                                                 :specialty="specialty" :date="date"
                                                 :clinic="clinic"
@@ -252,7 +255,7 @@
       </v-card>
     </v-flex>
     <v-flex xs4>
-      <CardInformationManagementConsultations :patient="patientSelected" :consultation="consultatioSelect"/>
+      <CardInformationManagementConsultations :patient="patientSelected" :consultation="consultatioSelect" :room="roomSelect" :sector="sectorSelect" :ticket="ticketSelect"/>
     </v-flex>
   </v-layout>
   <!--end desktop-->
@@ -280,6 +283,9 @@
             clinics:[],
             //news
             tab:'consultations',
+            room: undefined,
+            ticket: undefined,
+            sector: undefined,
         }),
         computed: {
             computedDateFormatted() {

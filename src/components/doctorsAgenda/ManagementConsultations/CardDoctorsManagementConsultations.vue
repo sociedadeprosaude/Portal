@@ -223,7 +223,13 @@ export default {
     consultations: [],
     product: undefined,
     skipConsultationsExams: true,
-    skipConsultations: true
+    skipConsultations: true,
+    room: undefined,
+    ticket: undefined,
+    sector: undefined,
+    id: undefined,
+    idConsultation: undefined,
+    idDoctor: undefined,
   }),
   watch: {
     changeData: {
@@ -314,10 +320,17 @@ export default {
       let dateMoment = moment(date);
       return this.semanaOptions[dateMoment.day()];
     },
-    patientSelect: function (item) {
+     patientSelect: function (item) {
+      this.id = item.clinic.id;
+      this.idConsultation = item.id;
+      this.idDoctor = item.doctor.id
+      this.$apollo.queries.LoadSectorsOfUnity.refresh();
       this.selectUser(item.user)
       this.$emit('patientSelect', item.patient);
-      this.$emit('consultationSelect', item)
+      this.$emit('consultationSelect', item);
+      this.$emit('roomSelect', this.room);
+      this.$emit('sectorSelect', this.sector);
+      this.$emit('ticketSelect', this.ticket);
     },
     async deleteAllSchedule(doctor) {
       this.loading = true;
@@ -347,6 +360,38 @@ export default {
     },
   },
   apollo: {
+    LoadSectorsOfUnity: {
+      query: require("@/graphql/sectors/LoadSectorsOfUnity.gql"),
+      variables () {
+        return {
+          id: this.id
+        }
+      },
+      update(data){
+        let sectors = Object.assign(data.Clinic[0].has_sectors)
+        console.log('G:', sectors)
+        for (let sector in sectors){
+          if(sectors[sector].has_rooms){
+            for(let room in sectors[sector].has_rooms){
+              if(sectors[sector].has_rooms[room].doctor){
+                if(sectors[sector].has_rooms[room].doctor.id === this.idDoctor){
+                  //console.log('name sector', sectors[sector].name)
+                  this.sector = sectors[sector].name
+                  //console.log('room name', sectors[sector].has_rooms[room].name)
+                  this.room = sectors[sector].has_rooms[room].name
+                  if(sectors[sector].has_rooms[room].room_has_tickets.length > 0){
+                    //procurar o id da consulta aqui
+/*                    let prioritys = room.room_has_tickets.filter(a => {
+                      return a.type === 'priority';
+                    });*/
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+    },
     loadConsultations: {
       query: require(`@/graphql/consultations/LoadConsultations.gql`),
       variables() {

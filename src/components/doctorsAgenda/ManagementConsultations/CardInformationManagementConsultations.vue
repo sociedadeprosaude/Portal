@@ -7,7 +7,7 @@
           <v-flex xs12>
             <p class="white--text text-left title">Consultas</p>
             <v-divider color="white"/>
-            <span class="white--text font-weight-bold">SETOR: {{sector === '' ? 'NENHUM' : sector }} <v-divider color="white"/> SALA: {{room === '' ? 'NENHUMA' : room}} <v-divider color="white"/> SENHA: {{ticket === '' ? 'NENHUM' : ticket}}</span>
+            <span class="white--text font-weight-bold">SETOR: {{sector === undefined ? 'NENHUM' : sector }} <v-divider color="white"/> SALA: {{room === undefined ? 'NENHUMA' : room}} <v-divider color="white"/> SENHA: {{ticket === undefined ? 'NENHUM' : ticket}}</span>
           </v-flex>
           <v-flex xs12 class="mb-2">
             <v-divider color="white"/>
@@ -62,7 +62,6 @@
                 v-if="consultation.type !== 'Retorno' && consultation.product"
             >Retorno
             </v-btn>
-            <!--disabled-->
             <v-btn
                 color="white"
                 rounded
@@ -123,7 +122,7 @@ import GerenateTicketAndChooseType from "../commons/GerenateTicketAndChooseType"
 let moment = require('moment');
 export default {
   name: "CardInformationManagementConsultations",
-  props: ['patient', 'consultation'],
+  props: ['patient', 'consultation', 'room', 'sector', 'ticket'],
   components: {
     GerenateTicketAndChooseType,
     CardConsultationManagementConsultations,
@@ -146,9 +145,6 @@ export default {
     skipPatients: true,
     skipCost: true,
     dialogTicket: false,
-    room: '',
-    ticket: '',
-    sector: '',
   }),
   mounted() {
     //
@@ -319,32 +315,6 @@ export default {
   },
 
   apollo: {
-    LoadSectorsOfUnity: {
-      query: require("@/graphql/sectors/LoadSectorsOfUnity.gql"),
-      variables () {
-        return {
-          id: this.consultation.clinic.id,
-        }
-      },
-      update(data){
-        let sectors = Object.assign(data.Clinic[0].has_sectors)
-        console.log('G:', sectors)
-        for (let sector in sectors){
-          if(sectors[sector].has_rooms){
-            for(let room in sectors[sector].has_rooms){
-              if(sectors[sector].has_rooms[room].doctor){
-                if(sectors[sector].has_rooms[room].doctor.id === this.consultation.doctor.id){
-                  //console.log('name sector', sectors[sector].name)
-                  this.sector = sectors[sector].name
-                  //console.log('room name', sectors[sector].has_rooms[room].name)
-                  this.room = sectors[sector].has_rooms[room].name
-                }
-              }
-            }
-          }
-        }
-      },
-    },
     findProductTransaction: {
       query: require("@/graphql/transaction/FindProductTransactionbyConsultation.gql"),
       variables() {

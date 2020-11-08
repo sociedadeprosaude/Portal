@@ -29,7 +29,6 @@
           <v-spacer></v-spacer>
           <v-btn v-if="inside === true" rounded color="primary" :disabled="!type" @click="gerenateTicketforPatient" :loading="loading">Gerar Senha</v-btn>
           <v-alert v-if="inside === false" class="justify-center align-center" type="warning"><strong>{{consultation.doctor.name}}</strong> Ainda não está dentro de nenhuma sala.</v-alert>
-          <!--<v-alert v-if="already_have_ticket === true" class="justify-center align-center" type="error"><strong>{{consultation.patient.name}}</strong> Já tem senha: <strong>{{ticket}}</strong></v-alert>-->
         </v-card-actions>
       </v-card>
     </v-layout>
@@ -67,7 +66,6 @@ export default {
       room: undefined,
       ticket: undefined,
       loading: false,
-      //already_have_ticket: false,
     }
   },
   apollo: {
@@ -88,17 +86,7 @@ export default {
                   this.inside = true
                   this.roomName = sectors[sector].has_rooms[room].name
                   this.room = sectors[sector].has_rooms[room]
-/*                  if(sectors[sector].has_rooms[room].room_has_tickets.length > 0){
-                    for(let ticket in sectors[sector].has_rooms[room].room_has_tickets){
-                      if(sectors[sector].has_rooms[room].room_has_tickets[ticket].patient){
-                        if(sectors[sector].has_rooms[room].room_has_tickets[ticket].patient.id === this.consultation.patient.id){
-                          this.already_have_ticket =  true
-                          this.ticket = sectors[sector].has_rooms[room].room_has_tickets[ticket].name
-                        } else { this.already_have_ticket =  false }
-                      }
-                    }
-                  }*/
-                } else{ this.inside = false}
+                } //else{ this.inside = false}
               }
             }
           }
@@ -238,9 +226,9 @@ export default {
       await this.$apollo.queries.LoadSectorsOfUnity.refresh()
     },
   },
-  mounted() {
+  async mounted() {
     console.log('componente:', this.consultation)
-    this.$apollo.queries.LoadSectorsOfUnity.refresh()
+    await this.$apollo.queries.LoadSectorsOfUnity.refresh()
   }
 }
 </script>
