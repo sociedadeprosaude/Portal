@@ -204,7 +204,7 @@ export default {
       setTimeout(() => {
         this.success = false;
       }, 1000);
-      this.$apollo.queries.LoadRoomsOfSector.refresh();
+      await this.$apollo.queries.LoadRoomsOfSector.refresh();
     },
     async setDoctorToRoom(room, doctor) {
       this.loading = true;
@@ -215,7 +215,7 @@ export default {
           idDoctor: doctor.id,
         },
       });
-      this.$apollo.queries.LoadRoomsOfSector.refresh();
+      await this.$apollo.queries.LoadRoomsOfSector.refresh();
       this.doctorsListDialog.active = false
       this.loading = false;
     },
@@ -245,13 +245,13 @@ export default {
           },
         });
       }
-      this.$apollo.queries.LoadRoomsOfSector.refresh();
+      await this.$apollo.queries.LoadRoomsOfSector.refresh();
       this.loading = false;
     },
 
     async resetSectorTicket(number){
       this.loading = true;
-      this.$apollo.queries.LoadRoomsOfSector.refresh();
+      await this.$apollo.queries.LoadRoomsOfSector.refresh();
       let count = number.toString()
       let rooms = this.sector.has_rooms
       let ticketsSector = this.sector.sector_has_tickets
@@ -320,12 +320,12 @@ export default {
         }
       }
       //end of reset
-      this.$apollo.queries.LoadRoomsOfSector.refresh();
+      await this.$apollo.queries.LoadRoomsOfSector.refresh();
       this.loading = false;
     },
     async generateSectorTicket(preferential) {
       this.loading = true;
-      this.$apollo.queries.LoadRoomsOfSector.refresh();
+      await this.$apollo.queries.LoadRoomsOfSector.refresh();
       let count = 0;
       let all =  this.sector.counter_normal + this.sector.counter_priority
       if(all >= 0) { count = all + 1 }
@@ -385,7 +385,7 @@ export default {
           },
         });
       }
-      this.$apollo.queries.LoadRoomsOfSector.refresh();
+      await this.$apollo.queries.LoadRoomsOfSector.refresh();
       this.loading = false;
     },
     async upgradeTicketNumber() {
@@ -395,15 +395,126 @@ export default {
       await this.$store.dispatch("updateGeneralInfo", this.ticketInfo);
     },
     async callRoomTicket(room, preferential) {
-      this.$apollo.queries.LoadRoomsOfSector.refresh();
+      await this.$apollo.queries.LoadRoomsOfSector.refresh();
       alert('chamar ticket do sala')
       console.log('chamar ticket do sala')
       console.log('r',room.room_has_tickets);
       console.log('bool',preferential);
       //star
-      //function
+      if(preferential === true) {
+        let prioritys = room.room_has_tickets.filter(a => {
+          return a.type === 'priority';
+        });
+        prioritys.reverse()
+        let priority = []
+        for(let p in prioritys) { if(!prioritys[p].called_at.formatted) { priority.push(prioritys[p]) }}
+        //proxima senha prioridade
+        if(priority[1] !== undefined){
+          console.log('gernado proxima senha prioridade')
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/rooms/UpdateRoom.gql'),
+            variables: {
+              id: room.id,
+              next_ticket_priority: priority[1].name,
+            },
+          });
+        }
+        //proxima senha prioridade
+        if(priority[0] !== undefined){
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/UpdateTicket.gql'),
+            variables: {
+              id: priority[0].id,
+              called_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
+            },
+          });
+          //falar com luis
+/*          await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/AddTicketColaborator.gql'),
+            variables: {
+              idColaborator: this.$store.getters.user.id,
+              idTicket: priority[0].id,
+            },
+          });*/
+          //falar com luis
+          if(!room.previos_ticket) {
+            await this.$apollo.mutate({
+              mutation: require('@/graphql/rooms/UpdateRoom.gql'),
+              variables: {
+                id: room.id,
+                previos_ticket: '*',
+                current_ticket: priority[0].name,
+              },
+            });
+          } else {
+            await this.$apollo.mutate({
+              mutation: require('@/graphql/rooms/UpdateRoom.gql'),
+              variables: {
+                id: room.id,
+                previos_ticket: room.current_ticket,
+                current_ticket: priority[0].name,
+              },
+            });
+          } } else { alert("todas as senhas 'preferencial' foram chamadas, tente novamente mais tarde (depois)!") }
+      } else {
+        let normals = room.room_has_tickets.filter(a => {
+          return a.type === 'normal';
+        });
+        normals.reverse()
+        let normal = []
+        for(let n in normals){ if(!normals[n].called_at.formatted){ normal.push(normals[n]) }}
+        //proxima senha normal
+        if(normal[1] !== undefined){
+          console.log('gernado proxima senha normal')
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/rooms/UpdateRoom.gql'),
+            variables: {
+              id: room.id,
+              next_ticket_normal: normal[1].name,
+            },
+          });
+        }
+        //proxima senha normal
+        if(normal[0] !== undefined){
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/UpdateTicket.gql'),
+            variables: {
+              id: normal[0].id,
+              called_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
+            },
+          });
+          //falar com luis
+/*          await this.$apollo.mutate({
+            mutation: require('@/graphql/tickets/AddTicketColaborator.gql'),
+            variables: {
+              idColaborator: this.$store.getters.user.id,
+              idTicket: normal[0].id,
+            },
+          });*/
+          //falar com luis
+          if(!room.previos_ticket) {
+            await this.$apollo.mutate({
+              mutation: require('@/graphql/rooms/UpdateRoom.gql'),
+              variables: {
+                id: room.id,
+                previos_ticket: '*',
+                current_ticket: normal[0].name,
+              },
+            });
+          } else {
+            await this.$apollo.mutate({
+              mutation: require('@/graphql/rooms/UpdateRoom.gql'),
+              variables: {
+                id: room.id,
+                previos_ticket: room.current_ticket,
+                current_ticket: normal[0].name,
+              },
+            });
+          }
+        } else { alert("todas as senhas 'normal' foram chamadas, tente novamente mais tarde (depois) !") }
+      }
       //end
-      this.$apollo.queries.LoadRoomsOfSector.refresh();
+      await this.$apollo.queries.LoadRoomsOfSector.refresh();
 
     },
     async callNextTicket(room, preferential) {
@@ -416,7 +527,7 @@ export default {
       this.loading = false;
     },
     async callSectorTicket(room, preferential) {
-      this.$apollo.queries.LoadRoomsOfSector.refresh();
+      await this.$apollo.queries.LoadRoomsOfSector.refresh();
       if(preferential === true) {
         let prioritys = this.sector.sector_has_tickets.filter(a => {
           return a.type === 'priority';
@@ -525,7 +636,7 @@ export default {
           }
         } else { alert("todas as senhas 'normal' foram chamadas, crie novas senhas normais!") }
       }
-      this.$apollo.queries.LoadRoomsOfSector.refresh();
+      await this.$apollo.queries.LoadRoomsOfSector.refresh();
     },
     favoriteRoom(room) {
       this.$store.commit("setFavoriteRoom", room);
@@ -547,7 +658,7 @@ export default {
       });
       this.deletionRoom.deleting = false;
       this.deletionRoom.deleteRoomDialog = false;
-      this.$apollo.queries.LoadRoomsOfSector.refresh();
+      await this.$apollo.queries.LoadRoomsOfSector.refresh();
     },
     alertActualTicket(room) {},
     openSingleView(room) {

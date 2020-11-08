@@ -107,7 +107,7 @@ export default {
           idSector: idSector,
         },
       });
-      this.$apollo.queries.LoadSectorsOfUnity.refresh();
+      await this.$apollo.queries.LoadSectorsOfUnity.refresh();
       this.resetCreation();
     },
     async deleteSector(sector) {
@@ -139,7 +139,7 @@ export default {
       });
       this.creation.deleting = false;
       this.creation.deletingDialog = false;
-      this.$apollo.queries.LoadSectorsOfUnity.refresh();
+      await this.$apollo.queries.LoadSectorsOfUnity.refresh();
     },
     async choose(sector) {
       this.$router.push("/senhas/" + sector.name);
