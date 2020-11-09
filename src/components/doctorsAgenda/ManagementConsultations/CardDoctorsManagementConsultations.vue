@@ -344,7 +344,7 @@ export default {
          this.$emit('sectorSelect', this.sector);
          this.$emit('ticketSelect', this.ticket);
          this.loading = false;
-       }, 1000);
+       }, 2000);
 /*      this.selectUser(item.user)
       this.$emit('patientSelect', item.patient);
       this.$emit('consultationSelect', item);
