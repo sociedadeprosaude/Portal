@@ -53,13 +53,44 @@
         methods: {
             async editExam() {
               this.loading = true
-              await this.$apollo.mutate({
-                mutation: require('@/graphql/clinics/UpdateCostProductClinic.gql'),
+              console.log('exam: ', this.exam)
+              console.log('clinic: ', this.clinic)
+              let CostProductClinic = ''
+              CostProductClinic = await this.$apollo.mutate({
+                mutation: require('@/graphql/clinics/LoadCostProductClinic.gql'),
                 variables: {
-                  id: this.exam.idcpc,
-                  cost: this.exam.cost,
-                },
-              });
+                  idProduct: this.exam.id,
+                  idClinic: this.clinic.id,
+                }
+              })
+              console.log('constProductClinics:', CostProductClinic)
+              if(CostProductClinic.data.CostProductClinic.length === 0){
+                CostProductClinic = await this.$apollo.mutate({
+                  mutation: require('@/graphql/clinics/CreateCostProductClinic.gql'),
+                  variables: {
+                    cost: this.exam.cost,
+                  }
+                });
+                console.log('CostProductClinic Criado: ', CostProductClinic)
+                await this.$apollo.mutate({
+                  mutation: require('@/graphql/clinics/AddCostProductClinicWith_clinicAndProduct.gql'),
+                  variables: {
+                    idClinic: this.clinic.id,
+                    idProduct: this.exam.id,
+                    idCostProductClinic: CostProductClinic.data.CreateCostProductClinic.id
+                  }
+                });
+              }
+              else{
+                await this.$apollo.mutate({
+                  mutation: require('@/graphql/clinics/UpdateCostProductClinic.gql'),
+                  variables: {
+                    ExamId: this.exam.id,
+                    clinicID: this.clinic.id,
+                    cost: this.exam.cost,
+                  },
+                });
+              }
               this.loading = false
               this.$router.push('/')
             },

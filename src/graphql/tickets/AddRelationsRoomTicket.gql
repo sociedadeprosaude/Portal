@@ -1,0 +1,13 @@
+mutation($idTicket : ID! , $idRoom : ID!){
+       AddRoomRoom_has_tickets(
+        from:{
+          id:$idRoom
+        },
+        to:{
+          id:$idTicket
+        }
+      ){
+      from{id},
+      to{id}
+    },
+}

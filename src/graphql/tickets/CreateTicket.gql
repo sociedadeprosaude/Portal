@@ -2,5 +2,5 @@ mutation($name:String!, $type: String, $created_at: _Neo4jDateTimeInput){
     CreateTicket(name: $name,
     type: $type,
     created_at: $created_at,
-    ){id},
+    ){id,name},
 }

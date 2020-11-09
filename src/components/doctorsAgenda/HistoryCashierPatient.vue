@@ -10,7 +10,7 @@
                                     <v-card flat @click="receipt(intake)">
                                         <v-layout row wrap>
                                             <v-flex xs10 class="text-left ripple">
-                                                <span class="my-sub-headline">{{intake.id}}</span>
+                                                <span class="my-sub-headline">{{intake._id}}</span>
                                             </v-flex>
                                             <v-flex xs2>
                                                 <v-progress-circular indeterminate v-if="loading"
@@ -45,7 +45,7 @@
                           <v-card ripple class="my-2 pa-2" @click="selectBudget(budget)">
                               <v-layout row wrap>
                                 <v-flex xs10 class="text-left ripple">
-                                  <span class="my-sub-headline">{{budget.id}}</span>
+                                  <span class="my-sub-headline">{{budget._id}}</span>
                                 </v-flex>
                                 <v-flex xs2>
                                   <v-progress-circular indeterminate v-if="loading"
@@ -128,7 +128,7 @@
         methods: {
             async selectBudget(budget) {
                 this.loading = true;
-                console.log('budget: ', budget)
+              this.$store.commit('clearShoppingCartItens');
                 for( let i in budget.products){
                   if(budget.products[i].clinic.length){
                     budget.products[i].type = budget.products[i].with_product[0].type
@@ -137,8 +137,9 @@
                     budget.products[i].id = budget.products[i].with_product[0].id
                     this.$store.commit('addShoppingCartItem', budget.products[i]) }
                 }
-                this.$store.commit('setDiscount',budget.discount)
-                this.$store.commit('setIdBudget',budget.id)
+              this.$store.commit('setSelectedBudget',budget)
+              this.$store.commit('setDiscount',budget.discount)
+                this.$store.commit('setIdBudget',budget._id)
               /* budget = await this.$store.dispatch("getBudget", budget.id.toString());
               this.$store.commit("clearShoppingCartItens");
               this.$store.commit("setSelectedBudget", budget);

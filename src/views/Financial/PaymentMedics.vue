@@ -12,7 +12,12 @@
                               :query="require('@/graphql/doctors/LoadDoctorsPayment.gql')"
                           >
                             <template slot-scope="{ result: { data } }">
-                            <v-card v-for="(doctor,i) in data ? data.Doctor : []" :key="i" outlined class="mb-4 primary">
+                              <v-layout>
+                                <v-flex>
+                                  <h4 class="text-left mb-2 ">Total a pagar: {{TotalCostExamsDoctor(data)}}</h4>
+                                </v-flex>
+                              </v-layout>
+                            <v-card v-for="(doctor,i) in data ? data.Doctor : []" :key="i" outlined class="mb-4 primary" v-if="doctor.charges.length !== 0">
 
                                 <v-layout row wrap>
                                     <v-flex s10 md3 class="text-left">
@@ -187,8 +192,20 @@
                 for(let i in doctor.charges){
                   cost += parseFloat(doctor.charges[i].value)
                 }
-                return cost ? cost : 0
+                return cost ? -cost.toFixed(2) : 0
             },
+          TotalCostExamsDoctor(data){
+            let cost = 0;
+            if(data !== null){
+              for(let j in data.Doctor){
+                for(let i in data.Doctor[j].charges) {
+                  cost += data.Doctor[j].charges[i].value
+                }
+              }
+
+            }
+            return cost ? -cost.toFixed(2) : 0
+          },
             CloseReceipt(){
                 this.dialogReceipt= !this.dialogReceipt
             },

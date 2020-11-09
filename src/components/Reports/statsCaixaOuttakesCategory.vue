@@ -30,14 +30,6 @@
     <v-row>
       <v-col cols="12" sm="6" md="3">
         <MiniStatistic
-          icon="mdi-currency-usd"
-          :title="`R$ ${totalLeftToPay}`"
-          sub-title="Restando pagar"
-          color="orange"
-        />
-      </v-col>
-      <v-col cols="12" sm="6" md="3">
-        <MiniStatistic
           icon="mdi-currency-usd-off"
           :title="`R$ ${totalToPay}`"
           sub-title="Contas total"
@@ -46,17 +38,9 @@
       </v-col>
       <v-col cols="12" sm="6" md="3">
         <MiniStatistic
-          icon="mdi-update"
-          :title="`R$ ${totalRecurrent}`"
-          sub-title="Custos recorrentes"
-          color="blue-grey darken-2"
-        />
-      </v-col>
-      <v-col cols="12" sm="6" md="3">
-        <MiniStatistic
           icon="mdi-counter"
           :title="numOfOuttakesToPay"
-          sub-title="Nº de contas pendentes"
+          sub-title="Nº de contas pagar"
           color="blue"
         />
       </v-col>
@@ -123,22 +107,14 @@
     <v-row>
       <v-col>
         <v-card elevation="0">
-          <v-row v-if="mostSpentDatasetMontly">
+          <v-row v-if="numOfSalesMontlyDataset">
             <v-col>
               <bar-chart
-                :chart-data="mostSpentDatasetMontly"
-                :options="{
+                  :chart-data="numOfSalesMontlyDataset"
+                  :options="{
                 legend: {
           display: false
-        },
-        scales: {
-            xAxes: [{
-                stacked: true
-            }],
-          
-        }
-     
-              }"
+        },}"
               ></bar-chart>
             </v-col>
           </v-row>
@@ -172,7 +148,6 @@ export default {
     "round2",
     "statistics",
     "info",
-    "totalLeftToPay",
     "totalToPay",
     "totalRecurrent",
     "numOfOuttakesToPay",
@@ -183,6 +158,7 @@ export default {
     "higherCostDataset",
     "mostSpentDataset",
     "mostSpentDatasetMontly",
+      "numOfSalesMontlyDataset",
     "options"
   ]
 };

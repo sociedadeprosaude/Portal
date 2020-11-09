@@ -1,8 +1,11 @@
-mutation(
-    $id: ID!,
-    ){
+mutation($id: ID!, $counter_reset: Int, $counter_priority: Int, $counter_normal: Int, $next_ticket_normal: String, $next_ticket_priority: String){
   UpdateSector(
     id: $id,
+    counter_reset: $counter_reset,
+    counter_normal: $counter_normal,
+    counter_priority: $counter_priority,
+    next_ticket_normal: $next_ticket_normal,
+    next_ticket_priority: $next_ticket_priority,
   ){
     id
   }

@@ -214,8 +214,8 @@
                                         <v-flex xs4>
                                             <span>CPF: {{user.cpf}}</span>
                                         </v-flex>
-                                        <v-flex xs4 v-if="user.association_number">
-                                            <span>Numero de Associado: {{user.association_number}}</span>
+                                        <v-flex xs4 v-if="user._id">
+                                            <span>Numero de Associado: {{user._id}}</span>
                                         </v-flex>
                                         <v-flex xs4 v-if="user.crm">
                                             <span>CRM: {{user.crm}}</span>
@@ -608,8 +608,10 @@
                 foundDependents: undefined,
                 success: false,
                 skipPatients:true,
-                skipPatientsCpf: true
-            
+                skipPatientsCpf: true,
+                skipPatientsNum: true
+
+
         }),
         computed: {
             selectedPatient() {
@@ -617,8 +619,9 @@
                 if (user) {
                     this.name = user.name;
                     this.cpf = user.cpf;
-                    this.numAss = user.association_number
+                    this.numAss = user._id
                 }
+                console.log('user: ', user)
                 return user
             },
             selectedDependent() {
@@ -729,7 +732,7 @@
                         birth_date: {formatted:patient.birth_date},
                         cpf: patient.cpf,
                         sex: patient.sex,
-                        association_number: Number(patient.association_number),
+                        association_number: Number(patient._id),
                         telephones:patient.telephones
                 }
                 
@@ -839,7 +842,6 @@
                 this.success = true;
                 this.loading = false;
                 let user = await this.$store.dispatch('getPatient', patient.cpf)
-                console.log('user:', user)
                 this.selectUser(user);
                 setTimeout(() => {
                     this.success = false;
@@ -854,7 +856,7 @@
                         cpf: patient.cpf,
                         type: 'patient'
                     });
-                if (!users[0].association_number) {
+                if (!users[0]._id) {
                     this.catchAssNumberNewPatient(patient)
                 } else {
                     await this.selectUser(users[0]);
@@ -901,9 +903,13 @@
                         this.skipPatientsCpf = false
                         this.$apollo.queries.loadPatientCpf.refresh()
                     }
+                    else if(this.numAss){
+                      this.skipPatientsNum = false
+                      this.$apollo.queries.loadPatientNum.refresh()
+                    }
                     else{
-                        this.skipPatients = false
-                        this.$apollo.queries.loadPatient.refresh()
+                      this.skipPatients = false
+                      this.$apollo.queries.loadPatient.refresh()
                     }
                 } catch (e) {
                   window.alert(`Erro buscando usuarios, verifique sua conexão: ${e.message}`);
@@ -915,7 +921,7 @@
                 this.cpf = user.cpf;
                 this.email = user.email;
                 this.rg = user.rg;
-                this.numAss = user.association_number;
+                this.numAss = user._id;
                 this.birthDate = moment(user.birth_date.formatted).format('DD/MM/YYYY');
                 this.sex = user.sex;
                 this.dependents = user.dependents ? user.dependents : [];
@@ -1007,7 +1013,7 @@
                 query: require("@/graphql/patients/searchPatients.gql"),
                 variables(){
                     return {
-                        name: this.name.toUpperCase()
+                        name: this.name ? this.name.toUpperCase() : this.name
                     }
                 },
                 update(data) {
@@ -1034,7 +1040,23 @@
                 skip (){
                     return this.skipPatientsCpf
                 }
+            },
+          loadPatientNum: {
+            query: require("@/graphql/patients/searchPatientsNum.gql"),
+            variables(){
+              return {
+                association_number: this.numAss
+              }
+            },
+            update(data) {
+              this.foundUsers = data.Patient
+              this.skipPatientsNum = true
+              this.loading = false
+            },
+            skip (){
+              return this.skipPatientsNum
             }
+          }
         }
     }
 </script>

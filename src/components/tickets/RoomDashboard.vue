@@ -1,6 +1,7 @@
 <template>
   <v-container>
     <v-row>
+
       <v-col sm="12" md="6">
         <v-tooltip top >
           <template v-slot:activator="{ on }">
@@ -31,7 +32,7 @@
               :disabled="loading"
               @click="()=>generateSectorTicket(true)"
             >
-              Gerar Proxima senha preferencial:
+              Gerar proxima senha preferencial
               {{priority}}
             </v-btn>
           </template>
@@ -82,6 +83,55 @@
           >Adicionar Sala</v-btn>
         </v-fade-transition>
       </v-col>
+
+      <v-col sm="12" md="6">
+        <v-dialog
+            v-model="dialog"
+            width="250"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+                width="100%"
+                class="primary"
+                rounded
+                v-bind="attrs"
+                v-on="on"
+            >
+              <v-icon large>replay_10</v-icon>Resetar Senhas do Setor<v-icon large>forward_30</v-icon>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title class="headline grey lighten-2">Senha Inicial<v-spacer/><v-btn class="transparent" text small fab @click="dialog = false"><v-icon>close</v-icon></v-btn></v-card-title>
+            <v-divider></v-divider>
+            <v-spacer/>
+            <v-card-text>
+              <br/>
+              <v-text-field
+                  prepend-icon="mdi-ticket-confirmation"
+                  outlined
+                  v-model="number"
+                  label="Número"
+                  hide-details
+                  clearable
+                  v-mask="['#','##','###']"
+              ></v-text-field>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn width="100%"
+                     class="primary"
+                     rounded
+                     :disabled="!number"
+                     @click="resetSectorTicket(Number(number))"
+                     v-if="!loading"
+              >
+                RESETAR
+              </v-btn>
+              <v-progress-circular v-else color="primary" indeterminate></v-progress-circular>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-col>
+
     </v-row>
 
     <v-row class="mt-4">
@@ -105,58 +155,109 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-tooltip top v-if="normal > 0">
+              <v-tooltip top v-if="normal > 0 && !room.doctor">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                       v-bind="attrs"
                       v-on="on"
-                    :disabled="loading"
-                    @click="callNextTicket(room,false)"
-                    text
-                    fab
-                    small
-                    class="primary my-2"
+                      :disabled="loading"
+                      @click="callNextTicket(room,false)"
+                      text
+                      fab
+                      small
+                      class="primary my-2"
                   >
                     <v-icon>add_alert</v-icon>
                   </v-btn>
                 </template>
                 <span>Chamar próxima senha</span>
               </v-tooltip>
-              <v-tooltip top v-if="priority > 0">
+
+              <v-tooltip top v-if="priority > 0 && !room.doctor">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                       v-bind="attrs"
                       v-on="on"
-                    :disabled="loading"
-                    @click="callNextTicket(room,true)"
-                    text
-                    fab
-                    small
-                    class="primary ml-2 my-2"
+                      :disabled="loading"
+                      @click="callNextTicket(room,true)"
+                      text
+                      fab
+                      small
+                      class="primary ml-2 my-2"
                   >
                     <v-icon>notification_important</v-icon>
                   </v-btn>
                 </template>
                 <span>Chamar próxima senha preferencial</span>
               </v-tooltip>
-              <!--<v-tooltip top v-if="doctorsLoaded">
-                <template v-slot:activator="{ on }">
+
+              <v-tooltip top v-if="room.doctor && room.room_has_tickets.length > 0">
+                <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                    v-on="on"
-                    :disabled="loading"
-                    @click="$emit('open-selected-room',room)"
-                    text
-                    fab
-                    x-small
-                    class="primary ml-2 my-2"
+                      v-bind="attrs"
+                      v-on="on"
+                      :disabled="loading"
+                      @click="callNextTicket(room,false)"
+                      text
+                      fab
+                      small
+                      class="primary my-2"
                   >
-                    <v-icon>person</v-icon>
+                    <v-icon>add_alert</v-icon>
                   </v-btn>
                 </template>
-                <span>Selecionar médico</span>
+                <span>Chamar próxima senha</span>
               </v-tooltip>
-              <v-progress-circular indeterminate class="primary&#45;&#45;text" v-else></v-progress-circular>
-              <v-tooltip top v-if="doctorsLoaded">
+              <v-tooltip top v-if="room.doctor && room.room_has_tickets.length > 0">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                      v-bind="attrs"
+                      v-on="on"
+                      :disabled="loading"
+                      @click="callNextTicket(room,true)"
+                      text
+                      fab
+                      small
+                      class="primary ml-2 my-2"
+                  >
+                    <v-icon>notification_important</v-icon>
+                  </v-btn>
+                </template>
+                <span>Chamar próxima senha preferencial</span>
+              </v-tooltip>
+              <v-tooltip top v-if="!room.doctor">
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                      v-on="on"
+                      :disabled="loading"
+                      @click="$emit('open-selected-room',room)"
+                      text
+                      fab
+                      x-small
+                      class="primary ml-2 my-2"
+                  >
+                    <v-icon>person_add</v-icon>
+                  </v-btn>
+                </template>
+                <span>Selecionar Médico</span>
+              </v-tooltip>
+              <v-tooltip top v-if="room.doctor">
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                      v-on="on"
+                      :disabled="loading"
+                      @click="removeDoctorRoom(room)"
+                      text
+                      fab
+                      x-small
+                      class="primary ml-2 my-2"
+                  >
+                    <v-icon>person_remove</v-icon>
+                  </v-btn>
+                </template>
+                <span>Remover Médico</span>
+              </v-tooltip>
+<!--              <v-tooltip top v-if="doctorsLoaded">
                 <template v-slot:activator="{ on }">
                   <v-btn
                     v-on="on"
@@ -171,8 +272,8 @@
                   </v-btn>
                 </template>
                 <span>Gerar senha</span>
-              </v-tooltip>
-              <v-tooltip top v-if="doctorsLoaded">
+              </v-tooltip>-->
+<!--              <v-tooltip top v-if="doctorsLoaded">
                 <template v-slot:activator="{ on }">
                   <v-btn
                     v-on="on"
@@ -187,8 +288,8 @@
                   </v-btn>
                 </template>
                 <span>Gerar senha preferencial</span>
-              </v-tooltip>
-              <v-tooltip top v-if="doctorsLoaded">
+              </v-tooltip>-->
+<!--              <v-tooltip top v-if="doctorsLoaded">
                 <template v-slot:activator="{ on }">
                   <v-btn
                     v-on="on"
@@ -204,7 +305,7 @@
                 </template>
                 <span>Alertar senha atual</span>
               </v-tooltip>-->
-<!--              <v-tooltip top >
+              <v-tooltip top >
                 <template v-slot:activator="{ on }">
                   <v-btn
                     v-on="on"
@@ -219,7 +320,7 @@
                   </v-btn>
                 </template>
                 <span>Visualizador único</span>
-              </v-tooltip>-->
+              </v-tooltip>
             </v-col>
           </v-row>
           <v-row>
@@ -246,10 +347,31 @@
                 <v-divider vertical></v-divider>
                 <v-col class="pa-0">
                   <div>
-                    <span style="font-size: 0.8em">Proxima Senha:</span>
+                    <span style="font-size: 0.8em">Proxima Senha Normal:</span>
                     <br />
-                    <!--<span v-if="room.current_ticket">{{room.current_ticket}}</span>-->
-                    <span>*</span>
+                    <div v-if="room.next_ticket_normal">
+                      <span v-if="room.next_ticket_normal">{{room.next_ticket_normal}}</span>
+                      <span v-else>*</span>
+                    </div>
+                    <div v-if="!room.next_ticket_normal">
+                      <span v-if="sector.next_ticket_normal">{{sector.next_ticket_normal}}</span>
+                      <span v-else>*</span>
+                    </div>
+                  </div>
+                </v-col>
+                <v-divider vertical></v-divider>
+                <v-col class="pa-0">
+                  <div>
+                    <span style="font-size: 0.8em">Proxima Senha Preferencial:</span>
+                    <br />
+                    <div v-if="room.next_ticket_priority">
+                      <span v-if="room.next_ticket_priority">{{room.next_ticket_priority}}</span>
+                      <span v-else>*</span>
+                    </div>
+                      <div v-if="!room.next_ticket_priority">
+                      <span v-if="sector.next_ticket_priority">{{sector.next_ticket_priority}}</span>
+                      <span v-else>*</span>
+                    </div>
                   </div>
                 </v-col>
               </v-row>
@@ -270,25 +392,49 @@
           <v-flex xs12>
             <span class="my-headline">{{selectedRoom.name}}</span>
           </v-flex>
-          <v-flex xs12>
-            <v-text-field prepend-icon="search" label="Médico" v-model="doctorsListDialog.search"></v-text-field>
+          <br/>
+          <v-flex xs12 class="mx-3">
+            <v-combobox
+                v-model="doctor"
+                :items="doctors"
+                return-object
+                item-text="name"
+                label="Pesquisar"
+                outlined
+                dense
+                chips
+                color="blue"
+                clearable
+            >
+              <template v-slot:selection="data">
+                <v-chip
+                    :key="JSON.stringify(data.item)"
+                    :input-value="data.selected"
+                    :disabled="data.disabled"
+                    class="v-chip--select-multi"
+                    @click.stop="data.parent.selectedIndex = data.index"
+                    @input="data.parent.selectItem(data.item)"
+                    text-color="white"
+                    color="info"
+                >{{ data.item.name }}
+                </v-chip>
+              </template>
+            </v-combobox>
           </v-flex>
-          <v-flex xs12 class="mt-2" v-for="(doctor,i) in doctors" :key="i">
-            <v-card flat @click="setDoctorToRoom(selectedRoom, doctor)">
-              <v-divider class="mb-2"></v-divider>
-              <span>{{doctor.name}}</span>
-            </v-card>
+
+          <v-flex xs12 v-if="doctor">
+            <span>Selecionar:</span>
+            <v-btn :disabled="loading" color="primary" @click="setDoctorToRoom(selectedRoom, doctor)">
+                <span>{{doctor.name}}</span>
+            </v-btn>
           </v-flex>
           <v-divider></v-divider>
         </v-layout>
       </v-card>
     </v-dialog>
+
     <v-dialog v-model="singleViewDialog.active" fullscreen transition="dialog-bottom-transition">
-      <single-visualizer
-        :sector="sector"
-        @close="$emit('close-single-view-dialog')"
-        :selectedRoom="singleViewDialog.room"
-      ></single-visualizer>
+      <single-visualizer :sector="sector" @close="$emit('close-single-view-dialog')" :selectedRoom="singleViewDialog.room"></single-visualizer>
     </v-dialog>
     <v-dialog v-model="multipleViewDialog" fullscreen transition="dialog-bottom-transition">
       <multiple-visualizer :sector="sector" @close="$emit('close-multiple-view-dialog')"></multiple-visualizer>
@@ -333,16 +479,25 @@
 </template>
 
 <script>
+import {mask} from 'vue-the-mask';
 import SubmitButton from "@/components/SubmitButton";
 import SingleVisualizer from "@/components/tickets/SingleVisualizer";
 import MultipleVisualizer from "@/components/tickets/MultipleVisualizer";
 
 export default {
+  directives: {mask},
   name: "Tickets",
   components: {
     SubmitButton,
     SingleVisualizer,
     MultipleVisualizer,
+  },
+  data () {
+    return {
+      dialog: false,
+      number: undefined,
+      doctor: '',
+    }
   },
   props: {
     snackbar: Boolean,
@@ -357,8 +512,8 @@ export default {
     multipleViewDialog: Boolean,
     favoritedRoom: String,
     rooms: Array,
-    normal: Number,
-    priority: Number,
+    normal: String,
+    priority: String,
     roomsLoaded: Boolean,
     ticketInfo: Object,
     doctors: Array,
@@ -373,6 +528,8 @@ export default {
     setDoctorToRoom: Function,
     generateNextTicket: Function,
     generateSectorTicket: Function,
+    resetSectorTicket: Function,
+    removeDoctorRoom: Function,
     upgradeTicketNumber: Function,
     callNextTicket: Function,
     callSectorTicket: Function,

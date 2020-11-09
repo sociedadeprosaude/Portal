@@ -261,7 +261,7 @@ export default {
                       value: outtake.value,
                       date: date,
                       description: outtake.description,
-                      date_to_pay: outtake.date_to_pay
+                      date_to_pay: {formatted: outtake.date_to_pay.formatted}
                     }
                   }).then((data) => {
                     console.log('data criado: ', data)

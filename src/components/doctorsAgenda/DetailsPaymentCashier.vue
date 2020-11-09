@@ -44,7 +44,7 @@
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-flex sm12 xs12 v-if="payment.paymentForm.length === 1">
+        <v-flex sm12 xs12 v-if="payment.paymentForm.length === 1 && this.paymentValues">
           <v-layout row wrap class="align-center" v-for="(x ,index) in payments" :key="index">
             <v-flex xs12>
               <v-select
@@ -76,21 +76,21 @@
           </v-layout>
         </v-flex>
         <v-layout wrap>
-          <v-flex xs6>
-            <v-text-field
-                label="Desconto: %"
-                v-model="percentageDiscount"
-                outlined
-                dense
-            />
-          </v-flex>
           <v-flex xs5 class="ml-4">
             <v-text-field
-                disabled
                 label="Desconto: R$ "
-                v-model="discountMoney"
+                v-model="moneyDiscount"
                 dense
                 outlined
+            />
+          </v-flex>
+          <v-flex xs6>
+            <v-text-field
+                disabled
+                label="Desconto: %"
+                v-model="PercentageDiscount"
+                outlined
+                dense
             />
           </v-flex>
         </v-layout>
@@ -122,7 +122,7 @@
             <span>Subtotal: R$ {{ this.subTotal.toLocaleString('en-us', {minimumFractionDigits: 2}) }}</span>
           </v-flex>
           <v-flex xs6>
-            <span>Desconto: R$ {{ this.discountMoney.toLocaleString('en-us', {minimumFractionDigits: 2}) }}</span>
+            <span>Desconto: R$ {{ this.moneyDiscount.toLocaleString('en-us', {minimumFractionDigits: 2}) }}</span>
           </v-flex>
         </v-layout>
 
@@ -144,7 +144,8 @@
             <v-btn outlined color="primary" @click="SelectNewPatient()">Novo</v-btn>
           </v-flex>
           <v-flex xs4 class="text-center">
-            <v-btn :disabled="cartItems.length === 0" outlined :loading="loadingImp"
+            <v-btn                 :disabled="cartItems.length === 0 || this.paymentValues !== this.total || this.paymentNull === false"
+                                   outlined :loading="loadingImp"
                    color="primary" @click="imprimir()">Imprimir
             </v-btn>
           </v-flex>
@@ -224,8 +225,7 @@ export default {
       searchPatient: false,
       payments: ['Dinheiro'],
       valuesPayments: [''],
-      payment: {paymentForm: ['Dinheiro'], value: [''], parcel: ['1']},
-      moneyDiscout: 0,
+      payment: {paymentForm: ['Dinheiro'], value: ['0'], parcel: ['1']},
       idUser: '',
       data: moment().format("YYYY-MM-DD HH:mm:ss"),
       parcelas: '1',
@@ -267,8 +267,6 @@ export default {
         this.$store.commit('setSelectedDoctor', val)
       }
     },
-
-
     loadingDoctors() {
       return !this.$store.getters.doctorsLoaded
     },
@@ -294,28 +292,23 @@ export default {
     clinic() {
       return this.$store.getters.getShoppingCartItemsByCategory.clinics
     },
-    cost() {
-      let itens = this.$store.getters.getShoppingCartItems;
-      let total = 0;
-      for (let item in itens) {
-        total += parseFloat(itens[item].cost)
-      }
-      return total
-    },
-    discountMoney(){
+    PercentageDiscount(){
       if(this.$store.getters.getDiscountBudget !== 0){
         this.moneyDiscount = this.$store.getters.getDiscountBudget
         this.percentageDiscount = ((100 * this.moneyDiscount)/this.subTotal)
         this.$store.commit('setDiscount',0)
       }
-
-      this.moneyDiscount = ((this.percentageDiscount * this.subTotal)/100)
-
-      return this.moneyDiscount
+      if(this.moneyDiscount.length === 0){
+        this.moneyDiscount = 0
+        this.percentageDiscount = 0
+      }
+      else{
+        this.percentageDiscount= ((100 * this.moneyDiscount) / this.subTotal)
+      }
+      return this.percentageDiscount
     },
     idBudget(){
-      let idBudget = this.$store.getters.getIdBudget;
-      return idBudget
+      return this.$store.getters.getIdBudget
     },
     subTotal() {
       let itens = this.$store.getters.getShoppingCartItems;
@@ -326,6 +319,9 @@ export default {
       return total
     },
     total() {
+      if(this.moneyDiscount.length === 0){
+        return (parseFloat(this.subTotal).toFixed(2))
+      }
       return (parseFloat(this.subTotal) - parseFloat(this.moneyDiscount)).toFixed(2)
     },
     paymentValues() {
@@ -357,11 +353,6 @@ export default {
         return true
       }
     },
-  },
-  watch: {
-    percentageDiscount: function () {
-      this.moneyDiscount = ((this.percentageDiscount * this.subTotal) / 100);
-      },
   },
   methods: {
     CloseReceipt() {
@@ -425,9 +416,18 @@ export default {
     },
     async imprimir() {
       this.loadingImp= true
+      let user = this.patient
+      if (!user) {
+        this.loadingImp = false
+        this.alertMessage.model = true
+        this.alertMessage.text = 'Escolha um paciente'
+        return
+      }
       if(this.idBudget !== undefined){
-        this.selectedBudget.id = this.idBudget
+        this.saveBudget(this.generateBudget());
+        this.selectedBudget._id = this.idBudget
         this.budgetToPrint = this.selectedBudget;
+        this.$store.commit('setIdBudget',undefined)
       }
       else{
         this.saveBudget(this.generateBudget());
@@ -447,7 +447,7 @@ export default {
             formatted: "${moment(this.selectedBudget.date.formatted).format("YYYY-MM-DDTHH:mm:ss")}"
           }
      ){
-        id, value, payment_methods, payments, parcels, discount, date{
+        id, _id,value, payment_methods, payments, parcels, discount, date{
         formatted
         }
     }`
@@ -541,10 +541,12 @@ export default {
         to{id}
     }`)
       let finalString = mutationBuilder.generateMutationRequest()
-
-      await this.$apollo.mutate({
+      let id = ''
+      id = await this.$apollo.mutate({
         mutation: gql`${finalString}`,
       })
+        id = id.data.mutation0._id
+        this.budgetToPrint._id = id
       }
       this.loadingImp= false
       this.budgetToPrintDialog = true

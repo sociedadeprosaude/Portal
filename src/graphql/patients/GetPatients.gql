@@ -1,0 +1,11 @@
+query{
+  Patient{
+       addresses{
+           cep,
+           city,
+           geopoint{
+           latitude, longitude
+           }
+       }
+     }
+   }

@@ -1,6 +1,6 @@
 query($id:ID!){
   Patient(filter:{id:$id}){
-   id,
+   id, _id,
        name,
        cpf,
        sex,
@@ -33,7 +33,7 @@ query($id:ID!){
          parcels,
          payment_methods,
          cancelled_by{
-         id,
+         id,_id,
          name
          }
          products: with_productTransaction_relations{
@@ -74,7 +74,7 @@ query($id:ID!){
                   date {
                   formatted
                   },
-                  id,
+                  id, _id,
                  discount,
                  value,
                  payments,
