@@ -138,7 +138,7 @@ export default {
       },
       update(data){
         this.sector = Object.assign(data.Sector[0])
-        //console.log('sector and rooms:', this.sector)
+        console.log('sector and rooms:', this.sector)
         this.rooms = this.sector.has_rooms
 
         let normals = this.sector.sector_has_tickets.filter(a => {

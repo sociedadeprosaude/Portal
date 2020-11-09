@@ -191,7 +191,7 @@
                 <span>Chamar próxima senha preferencial</span>
               </v-tooltip>
 
-              <v-tooltip top v-if="normal > 0 && room.doctor && room.room_has_tickets.length > 0">
+              <v-tooltip top v-if="room.doctor && room.room_has_tickets.length > 0">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                       v-bind="attrs"
@@ -208,7 +208,7 @@
                 </template>
                 <span>Chamar próxima senha</span>
               </v-tooltip>
-              <v-tooltip top v-if="priority > 0 && room.doctor && room.room_has_tickets.length > 0">
+              <v-tooltip top v-if="room.doctor && room.room_has_tickets.length > 0">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                       v-bind="attrs"

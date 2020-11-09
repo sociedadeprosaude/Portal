@@ -399,10 +399,8 @@ export default {
                   this.room = sectors[sector].has_rooms[room]
                   if(sectors[sector].has_rooms[room].room_has_tickets.length > 0){
                     //procurar o id da consulta aqui
-                    this.ticket = sectors[sector].has_rooms[room].room_has_tickets.find( consultation => consultation.id === this.idConsultation );
-                    console.log('find', this.ticket)
-                    let r = sectors[sector].has_rooms[room].room_has_tickets.filter(a => {return a.consultation.id === this.idConsultation});
-                    console.log('filter', r)
+                    let result = sectors[sector].has_rooms[room].room_has_tickets.filter(a => {return a.consultation.id === this.idConsultation});
+                    this.ticket = result[0];
                   }
                 }
               }

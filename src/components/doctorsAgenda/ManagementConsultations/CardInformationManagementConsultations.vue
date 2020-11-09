@@ -62,7 +62,6 @@
                 v-if="consultation.type !== 'Retorno' && consultation.product"
             >Retorno
             </v-btn>
-            <!-- -->
             <v-btn
                 v-if="!ticket"
                 color="white"

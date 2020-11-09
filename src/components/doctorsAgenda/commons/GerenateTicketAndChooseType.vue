@@ -47,7 +47,7 @@
         <v-card-text>
           <br/><br/>
           <span style="font-weight: bold; color: #003B8F; font-size: xx-large">
-            Sala: {{roomName}}
+            Sala: {{this.room.name}}
           </span><br/>
           <span style="font-weight: bold; color: #003B8F; font-size: xx-large">
             Senha: {{ticketName}}
@@ -69,7 +69,6 @@ export default {
     return {
       type: undefined,
       dialog: false,
-      roomName: undefined,
       ticketName: undefined,
       loading: false,
     }
@@ -225,7 +224,6 @@ export default {
     console.log('setor:',this.sector)
     console.log('sala:', this.room)
     console.log('senha:', this.ticket)
-    this.roomName = this.room.name
     //await this.$apollo.queries.LoadRoomOnly.refresh()
   }
 }
