@@ -265,13 +265,13 @@
                       to{id}
                   }
               `)
-              /* for (let charge in clinic.charges) {
+               for (let charge in clinic.charges) {
                 mutationBuilder.addMutation(`
                   DeleteCharge(id:"${clinic.charges[charge].id}"){
                   id
                   }
                 `)
-              } */
+              }
               let finalString = mutationBuilder.generateMutationRequest()
               await this.$apollo.mutate({
                 mutation: gql`${finalString}`,
