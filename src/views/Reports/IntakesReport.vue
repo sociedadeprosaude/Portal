@@ -97,9 +97,7 @@ export default {
       let credito = 0;
       let debito = 0;
       let dinheiro = 0;
-      console.log('entrei aqui', transactions)
       for( let i in transactions){
-        console.log('i: ', i)
         for(let j in transactions[i].payments){
             if(transactions[i].payment_methods[j] === 'Dinheiro'){
               dinheiro += parseFloat(transactions[i].payments[j])
@@ -116,7 +114,6 @@ export default {
       payments.credito = credito;
       payments.debito = debito;
       payments.dinheiro = dinheiro;
-      console.log('payments : ', payments)
       return payments
     }
   },
