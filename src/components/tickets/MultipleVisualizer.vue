@@ -1,4 +1,5 @@
 <template>
+  <!--if-->
   <v-card class="pa-4" @click="$emit('close')" style="overflow: hidden !important;" v-if="this.$vuetify.breakpoint.xs">
     <div>
     <v-container fill-height fluid class="white--text align-center justify-center">
@@ -20,10 +21,10 @@
               </v-col>
               <v-col align-self="center" class="font-weight-bold">
                 <v-expand-transition>
-                  <p v-show="expand" v-if="ticket.current_ticket" style="font-size: 2em; color: deeppink">Senha {{type(ticket.current_ticket)}} {{ticket.current_ticket}}</p>
+                  <p v-show="expand" v-if="ticket.current_ticket" style="font-size: 2em; color: deeppink">Senha {{ (type(ticket.current_ticket)) === 'normal' ? 'Normal' : 'Preferencial'}} {{ticket.current_ticket}}</p>
                 </v-expand-transition>
                 <v-expand-transition>
-                  <p v-show="!expand" v-if="ticket.current_ticket" style="font-size: 2em;">Senha {{type(ticket.current_ticket)}} {{ticket.current_ticket}}</p>
+                  <p v-show="!expand" v-if="ticket.current_ticket" style="font-size: 2em;">Senha {{ (type(ticket.current_ticket)) === 'normal' ? 'Normal' : 'Preferencial'}} {{ticket.current_ticket}}</p>
                 </v-expand-transition>
                 <p v-if="!ticket.current_ticket" style="font-size: 2em;">Senha *</p>
               </v-col>
@@ -44,20 +45,20 @@
         <v-col
             class="py-2 px-0"
             cols="12"
-            v-for="(ticket, index) in sector.has_rooms.slice(1,5)"
+            v-for="(ticket, index) in sector.has_rooms.slice(1,7)"
             :key="index"
         >
-          <v-card elevation="0" :color="index%2 != 0? 'grey lighten-2':'grey lighten-4'">
+          <v-card elevation="0" :color="index%2 != 0? 'grey lighten-2':'grey lighten-4'" height="125">
             <v-row>
               <v-col class="font-weight-bold" :style="[type(ticket.current_ticket) === 'PRIORITY' ?'color: rgb(35, 151, 118);':'color:#1A237E']">
                 <p style="font-size: 4em;">{{ticket.name}}</p>
               </v-col>
               <v-col align-self="center" class="font-weight-bold">
                 <v-expand-transition>
-                <p v-show="expand" v-if="ticket.current_ticket" style="font-size: 3em; color: deeppink">SENHA {{type(ticket.current_ticket)}} {{ticket.current_ticket}}</p>
+                <p v-show="expand" v-if="ticket.current_ticket" style="font-size: 3em; color: deeppink">SENHA {{ (type(ticket.current_ticket)) === 'normal' ? 'Normal' : 'Preferencial'}} {{ticket.current_ticket}}</p>
                 </v-expand-transition>
                 <v-expand-transition>
-                  <p v-show="!expand" v-if="ticket.current_ticket" style="font-size: 3em;">SENHA {{type(ticket.current_ticket)}} {{ticket.current_ticket}}</p>
+                  <p v-show="!expand" v-if="ticket.current_ticket" style="font-size: 3em;">SENHA {{ (type(ticket.current_ticket)) === 'normal' ? 'Normal' : 'Preferencial'}} {{ticket.current_ticket}}</p>
                 </v-expand-transition>
                 <p v-if="!ticket.current_ticket" style="font-size: 5em;">SENHA *</p>
               </v-col>
@@ -65,11 +66,11 @@
           </v-card>
         </v-col>
       </v-row>
-      <v-row justify="center">
+<!--      <v-row justify="center">
         <v-card flat>
           <img :src="constants.ASSETS.logo" height="124px" />
         </v-card>
-      </v-row>
+      </v-row>-->
     </v-container>
     <v-container fluid class="white--text">
       <div v-for="(ticket, index) in sector.has_rooms.slice(0,1)"
@@ -88,7 +89,7 @@
             <v-row
                 justify="center"
                 class="display-2"
-            >SENHA {{type(ticket.current_ticket)}} <!--atual--></v-row>
+            >SENHA {{ (type(ticket.current_ticket)) === 'normal' ? 'Normal' : 'Preferencial'}} </v-row>
             <v-row justify="center">
               <v-col class="ma-0 pa-0">
                 <v-expand-transition>
@@ -257,7 +258,7 @@ export default {
       let tikets = this.sector.sector_has_tickets
       for (let t in tikets){
         if(tikets[t].name === name){
-          return tikets[t].type.toUpperCase()
+          return tikets[t].type
         }
       }
     },
