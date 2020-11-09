@@ -55,6 +55,8 @@
                   <v-divider vertical />
                 </v-flex>
                 <!-- <v-flex xs1>{{intake.cost | moneyFilter}}</v-flex> -->
+
+
                 <v-flex xs1>{{report[label].cost | moneyFilter}}</v-flex>
                 <v-flex xs1>
                   <v-divider vertical />

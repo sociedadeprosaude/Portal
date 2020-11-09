@@ -95,6 +95,10 @@ export default {
           txt: "Pacientes Geopoint",
           link: "StatisticPatientsGeoPoint"
         },
+        {
+          txt: "Orçamentos Não Comprados",
+          link: "PatientsBudgets"
+        },
       ]
     };
   },
