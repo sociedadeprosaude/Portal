@@ -107,18 +107,6 @@
                         hide-details
                         clearable
                 >
-                  <template v-slot:selection="data">
-                    <v-chip
-                            :key="JSON.stringify(data.item)"
-                            :input-value="data.selected"
-                            :disabled="data.disabled"
-                            class="v-chip--select-multi"
-                            @click.stop="data.parent.selectedIndex = data.index"
-                            @input="data.parent.selectItem(data.item)"
-                            text-color="white"
-                            color="info"
-                    >{{ data.item.name }}</v-chip>
-                  </template>
                 </v-select>
             </v-flex>
             <v-flex xs7></v-flex>
@@ -134,7 +122,7 @@
                   <v-layout column wrap class="justify-start align-start">
                     <span class="font-weight-bold">{{selectedDependent ? selectedDependent.name : patient.name}}</span>
                     <span v-if="!selectedDependent" class="font-weight-bold">{{patient.association_number}}</span>
-                    <span class="font-weight-bold">{{selectedDependent ? selectedDependent.birth_date :patient.birth_date.formatted | dateFilter}}</span>
+                    <span class="font-weight-bold">{{selectedDependent ? selectedDependent.birth_date.formatted :patient.birth_date.formatted | dateFilter}}</span>
                   </v-layout>
 
             </v-flex>

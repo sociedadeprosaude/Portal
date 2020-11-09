@@ -127,7 +127,6 @@
                 for (let exam in this.report.exams) {
                     quantidade += this.report.exams[exam].quantidade;
                 }
-
                 return quantidade;
             },
             colaborators() {
