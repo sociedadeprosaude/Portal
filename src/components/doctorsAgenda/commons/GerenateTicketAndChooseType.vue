@@ -7,11 +7,10 @@
             <v-icon>close</v-icon>
           </v-btn>
         </v-card-title>
-        <br/>
-        C:{{consultation}}<br/>
-        R:{{room}}<br/>
-        S:{{sector}}<br/>
-        T:{{ticket}}<br/>
+<!--        C:{{this.consultation}}<br/>
+        S:{{this.sector}}<br/>
+        R:{{this.room}}<br/>
+        T:{{this.ticket}}<br/>-->
         <v-card-text>
           <v-checkbox
               v-model="type"
@@ -32,11 +31,11 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <div v-if="!ticket">
-          <v-btn v-if="sector" rounded color="primary" :disabled="!type" @click="gerenateTicketforPatient" :loading="loading">Gerar Senha</v-btn>
-          <v-alert v-if="!sector" class="justify-center align-center" type="warning"><strong>{{consultation.doctor.name}}</strong> Ainda não está dentro de nenhuma sala.</v-alert>
+          <v-btn v-if="room" rounded color="primary" :disabled="!type" @click="gerenateTicketforPatient" :loading="loading">Gerar Senha</v-btn>
+          <v-alert v-if="!room" class="justify-center align-center" type="warning"><strong>{{consultation.doctor.name}}</strong> Ainda não está dentro de nenhuma sala.</v-alert>
           </div>
           <div v-if="ticket">
-            <v-alert v-if="ticket" class="justify-center align-center" type="error">Já  exite um senha criada para: <strong>{{consultation.patient.name}}</strong></v-alert>
+            <v-alert v-if="ticket" class="justify-center align-center" type="error">Já existe um senha criada para: <strong>{{consultation.patient.name}}</strong></v-alert>
           </div>
         </v-card-actions>
       </v-card>
@@ -51,7 +50,7 @@
             Sala: {{roomName}}
           </span><br/>
           <span style="font-weight: bold; color: #003B8F; font-size: xx-large">
-            Senha: {{ticket}}
+            Senha: {{ticketName}}
           </span><br/>
           <span style="font-weight: bold; color: deeppink; font-size: xx-large">{{type === 'normal' ? 'Normal' : 'Preferencial' }}</span>
           <br/><br/>
@@ -69,43 +68,30 @@ export default {
   data () {
     return {
       type: undefined,
-      inside: false,
       dialog: false,
       roomName: undefined,
-/*      room: undefined,
-      ticket: undefined,*/
+      ticketName: undefined,
       loading: false,
     }
   },
   apollo: {
-    LoadSectorsOfUnity: {
-      query: require("@/graphql/sectors/LoadSectorsOfUnity.gql"),
+    LoadRoomOnly: {
+      query: require("@/graphql/rooms/LoadRoomOnly.gql"),
       variables () {
         return {
-          id: this.consultation.clinic.id,
+          id: this.room.id,
         }
       },
       update(data){
-        let sectors = Object.assign(data.Clinic[0].has_sectors)
-        for (let sector in sectors){
-          if(sectors[sector].has_rooms){
-            for(let room in sectors[sector].has_rooms){
-              if(sectors[sector].has_rooms[room].doctor){
-                if(sectors[sector].has_rooms[room].doctor.id === this.consultation.doctor.id){
-                  //this.inside = true
-                  this.roomName = sectors[sector].has_rooms[room].name
-                  //this.room = sectors[sector].has_rooms[room]
-                } //else{ this.inside = false}
-              }
-            }
-          }
-        }
+        this.room = Object.assign(data.Room[0])
+        console.log('query', this.room)
       },
-    }
+      //pollInterval: 300, // ms
+    },
   },
   methods:{
     async gerenateTicketforPatient(){
-      await this.$apollo.queries.LoadSectorsOfUnity.refresh()
+      await this.$apollo.queries.LoadRoomOnly.refresh()
       this.loading = true
       if(this.room.room_has_tickets.length > 0){
         console.log('gerando quando tem + de 0(zero)')
@@ -123,7 +109,7 @@ export default {
           });
           //add relation ticket romm
           const idTicket = dataTicket.data.CreateTicket.id
-          this.ticket = dataTicket.data.CreateTicket.name
+          this.ticketName = dataTicket.data.CreateTicket.name
           await this.$apollo.mutate({
             mutation: require('@/graphql/tickets/AddRelationsRoomTicket.gql'),
             variables: {
@@ -131,11 +117,11 @@ export default {
               idRoom: this.room.id,
             },
           });
-          //add relation ticket patient
+          //add relation ticket consultation
           await this.$apollo.mutate({
             mutation: require('@/graphql/tickets/AddTicketConsultation.gql'),
             variables: {
-              idPatient: this.consultation.patient.id,
+              idConsultation: this.consultation.id,
               idTicket: idTicket,
             },
           });
@@ -151,7 +137,7 @@ export default {
           });
           //add relation ticket romm
           const idTicket = dataTicket.data.CreateTicket.id
-          this.ticket = dataTicket.data.CreateTicket.name
+          this.ticketName = dataTicket.data.CreateTicket.name
           await this.$apollo.mutate({
             mutation: require('@/graphql/tickets/AddRelationsRoomTicket.gql'),
             variables: {
@@ -159,11 +145,11 @@ export default {
               idRoom: this.room.id,
             },
           });
-          //add relation ticket patient
+          //add relation ticket consultation
           await this.$apollo.mutate({
             mutation: require('@/graphql/tickets/AddTicketConsultation.gql'),
             variables: {
-              idPatient: this.consultation.patient.id,
+              idConsultation: this.consultation.id,
               idTicket: idTicket,
             },
           });
@@ -183,7 +169,7 @@ export default {
           });
           //add relation ticket romm
           const idTicket = dataTicket.data.CreateTicket.id
-          this.ticket = dataTicket.data.CreateTicket.name
+          this.ticketName = dataTicket.data.CreateTicket.name
           await this.$apollo.mutate({
             mutation: require('@/graphql/tickets/AddRelationsRoomTicket.gql'),
             variables: {
@@ -191,11 +177,11 @@ export default {
               idRoom: this.room.id,
             },
           });
-          //add relation ticket patient
+          //add relation ticket consultation
           await this.$apollo.mutate({
             mutation: require('@/graphql/tickets/AddTicketConsultation.gql'),
             variables: {
-              idPatient: this.consultation.patient.id,
+              idConsultation: this.consultation.id,
               idTicket: idTicket,
             },
           });
@@ -211,7 +197,7 @@ export default {
           });
           //add relation ticket romm
           const idTicket = dataTicket.data.CreateTicket.id
-          this.ticket = dataTicket.data.CreateTicket.name
+          this.ticketName = dataTicket.data.CreateTicket.name
           await this.$apollo.mutate({
             mutation: require('@/graphql/tickets/AddRelationsRoomTicket.gql'),
             variables: {
@@ -219,25 +205,28 @@ export default {
               idRoom: this.room.id,
             },
           });
-          //add relation ticket patient
+          //add relation ticket consultation
           await this.$apollo.mutate({
             mutation: require('@/graphql/tickets/AddTicketConsultation.gql'),
             variables: {
-              idPatient: this.consultation.patient.id,
+              idConsultation: this.consultation.id,
               idTicket: idTicket,
             },
           });
         }
       }
       this.loading = false
-      //this.inside = false
       this.dialog = true
-      await this.$apollo.queries.LoadSectorsOfUnity.refresh()
+      await this.$apollo.queries.LoadRoomOnly.refresh()
     },
   },
   async mounted() {
-    console.log('componente:', this.consultation, this.sector, this.room, this.ticket)
-    //await this.$apollo.queries.LoadSectorsOfUnity.refresh()
+    console.log('consulta:', this.consultation)
+    console.log('setor:',this.sector)
+    console.log('sala:', this.room)
+    console.log('senha:', this.ticket)
+    this.roomName = this.room.name
+    //await this.$apollo.queries.LoadRoomOnly.refresh()
   }
 }
 </script>

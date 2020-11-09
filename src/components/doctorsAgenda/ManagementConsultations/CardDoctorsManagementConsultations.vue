@@ -327,6 +327,11 @@ export default {
     },
      patientSelect: function (item) {
       this.loading = true;
+      //"garantindo reatividade"
+      this.room = undefined;
+      this.ticket =  undefined;
+      this.sector = undefined;
+      //"garantindo reatividade"
        this.id = item.clinic.id;
        this.idConsultation = item.id;
        this.idDoctor = item.doctor.id;

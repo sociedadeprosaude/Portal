@@ -62,7 +62,9 @@
                 v-if="consultation.type !== 'Retorno' && consultation.product"
             >Retorno
             </v-btn>
+            <!-- -->
             <v-btn
+                v-if="!ticket"
                 color="white"
                 rounded
                 :disabled="consultation.status !== 'Pago'"
@@ -100,7 +102,7 @@
       <consultation-receipt @close="receptDialog=false" :consultation="consultation"/>
     </v-dialog>
 
-    <v-dialog v-model="dialogTicket">
+    <v-dialog v-model="dialogTicket" width="500">
       <gerenate-ticket-and-choose-type @close="dialogTicket=false" :consultation="consultation" :sector="sector" :room="room" :ticket="ticket"/>
     </v-dialog>
 

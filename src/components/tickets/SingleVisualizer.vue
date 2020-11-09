@@ -199,7 +199,7 @@ export default {
       query: require("@/graphql/rooms/LoadRoomOnly.gql"),
       variables () {
         return {
-          name: this.selectedRoom.name,
+          id: this.selectedRoom.id,
         }
       },
       update(data){
