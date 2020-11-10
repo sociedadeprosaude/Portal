@@ -2,7 +2,7 @@
     <v-container v-if="consultation" fluid class=" ma-0 pa-0">
         <v-layout>
             <v-flex>
-                <v-card flat class="item-to-print ma-0 mb-0" >
+                <v-card flat class="item-to-print ma-0 mb-0">
                     <v-layout row wrap>
                         <v-flex xs6 class="text-left hidden-print-only">
                             <v-btn  text @click="$emit('close')">

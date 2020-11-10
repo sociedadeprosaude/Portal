@@ -1,7 +1,9 @@
-mutation($id: ID!,$previos_ticket:String, $current_ticket: String){
+mutation($id: ID!, $previos_ticket:String, $current_ticket: String, $next_ticket_normal: String, $next_ticket_priority: String){
   UpdateRoom(
     id: $id,
     previos_ticket: $previos_ticket,
-    current_ticket: $current_ticket
+    current_ticket: $current_ticket,
+    next_ticket_normal: $next_ticket_normal,
+    next_ticket_priority: $next_ticket_priority,
   ){id}
 }

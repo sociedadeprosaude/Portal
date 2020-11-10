@@ -1,5 +1,6 @@
 query($name: String!){
       Sector(name: $name){
+        id,name, counter_reset, counter_normal, counter_priority, next_ticket_normal, next_ticket_priority
         sector_has_tickets{
             id,name,type,created_at{formatted},called_at{formatted},
           }

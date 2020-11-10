@@ -1,66 +1,165 @@
 <template>
   <v-card height="100%" class="pa-4" @click="$emit('close')" style="overflow: hidden !important;">
-    <v-container fluid class="one white--text">
-      <v-row class="ml-2 indigo--text text--darken-4 font-weight-bold">
-        <p style="font-size: 2em;">Últimas senhas</p>
-      </v-row>
-      <v-row justify="center">
-        <v-col
-          class="py-2 px-0"
-          cols="12"
-          v-for="(ticket, index) in calledTicketsInOrder.slice(1,5)"
-          :key="index"
-        >
-          <v-card elevation="0" :color="index%2 != 0? 'grey lighten-2':'grey lighten-4'">
-            <v-row>
-              <v-col align-self="center" class="font-weight-bold">
-                <p style="font-size: 2em;">senha {{ticket.preferential?'preferencial':''}}</p>
-              </v-col>
-              <v-col
-                class="'font-weight-bold'"
-                :style="[ticket.preferential ?'color: rgb(35, 151, 118);':'color:#1A237E']"
-              >
-                <p style="font-size: 4em;">{{ticket.number}}</p>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-      </v-row>
-      <v-row justify="center">
-        <v-card flat>
-          <img :src="constants.ASSETS.logo" height="124px" />
-        </v-card>
-      </v-row>
-    </v-container>
-    <v-container fluid :class="[currentTicket.preferential?'three':'two', 'white--text']">
-      <v-row class="pa-0 ma-0 half">
+    <!--if-->
+    <v-container fluid class="white--text" v-if="this.$vuetify.breakpoint.xs">
+      <v-row class="pa-0 ma-0 primary">
         <v-col align-self="center">
-          <v-row justify="center" class="display-2">{{removeNumbers( selectedRoom.name)}}</v-row>
-
           <v-row justify="center">
-            <v-col class="ma-0 pa-0">
-              <p style="font-size: 6em;">{{onlyNumbers(selectedRoom.name)}}</p>
+            <v-col class="ma-0 pa-0 title">
+              <p class="display-2" >{{selectedRoom.name}}</p>
             </v-col>
           </v-row>
         </v-col>
       </v-row>
       <v-divider class="white"></v-divider>
-      <v-row class="pa-0 ma-0 half">
-        <v-col align-self="center">
-          <v-row
-            justify="center"
-            class="display-1"
-          >Senha {{currentTicket.preferential?'preferencial':''}}</v-row>
+      <v-row class="pa-0 ma-0 half primary">
 
+        <v-flex xs12>
+        <v-col align-self="center">
+          <v-row justify="center" class="title font-weight-bold">Senha Anterior: {{type(selectedRoom.previos_ticket) ===  'PRIORITY'? 'Preferencial' : type(selectedRoom.previos_ticket)}}</v-row>
+          <v-row justify="start">
+            <v-col class="ma-0 pa-0">
+              <p v-if="selectedRoom.previos_ticket" style="font-weight: bold; font-size: x-large">{{selectedRoom.previos_ticket}}</p>
+              <p v-else style="font-weight: bold">*</p>
+            </v-col>
+          </v-row>
+          <v-divider class="white"></v-divider>
+        </v-col>
+        </v-flex>
+
+        <v-flex xs12>
+        <v-col align-self="center">
+          <v-row justify="center" class="title font-weight-bold">Senha Atual: {{type(selectedRoom.current_ticket) ===  'PRIORITY'? 'Preferencial' : type(selectedRoom.current_ticket)}}</v-row>
+          <v-row justify="start">
+            <v-col class="ma-0 pa-0">
+              <v-expand-x-transition>
+                <p v-show="expand" v-if="selectedRoom.current_ticket" style="font-weight: bold; font-size: x-large; color: deeppink">{{ (selectedRoom.current_ticket) }}</p>
+              </v-expand-x-transition>
+              <v-expand-x-transition>
+                <p v-show="!expand" v-if="selectedRoom.current_ticket" style="font-weight: bold; font-size: x-large">{{ selectedRoom.current_ticket }}</p>
+              </v-expand-x-transition>
+              <p v-if="!selectedRoom.current_ticket" style="font-weight: bold">*</p>
+            </v-col>
+          </v-row>
+          <v-divider class="white"></v-divider>
+        </v-col>
+        </v-flex>
+
+        <v-flex xs12>
+        <v-col align-self="center" xs="12">
+          <v-row justify="center" class="title font-weight-bold">Proxima Senha Normal</v-row>
+          <v-row justify="start">
+            <v-col class="ma-0 pa-0" xs="12">
+              <p v-if="sector.next_ticket_normal" style="font-weight: bold; font-size: x-large">{{sector.next_ticket_normal}}</p>
+              <p v-else style="font-weight: bold">*</p>
+            </v-col>
+          </v-row>
+          <v-divider class="white"></v-divider>
+        </v-col>
+        </v-flex>
+
+        <v-flex xs12>
+        <v-col align-self="center" >
+          <v-row justify="center" class="title font-weight-bold">Proxima Senha Preferencial</v-row>
+          <v-row justify="start">
+            <v-col class="ma-0 pa-0">
+              <p v-if="sector.next_ticket_priority" style="font-weight: bold; font-size: x-large">{{sector.next_ticket_priority}}</p>
+              <p v-else style="font-weight: bold">*</p>
+            </v-col>
+          </v-row>
+          <v-divider class="white"></v-divider>
+        </v-col>
+        </v-flex>
+
+      </v-row>
+    </v-container>
+    <!--end if-->
+    <!--else-->
+    <v-container fluid class="white--text" v-else>
+      <v-row class="pa-0 ma-0 half primary">
+        <v-col align-self="center">
           <v-row justify="center">
             <v-col class="ma-0 pa-0">
-              <p v-if="currentTicket" style="font-size: 7em;">{{currentTicket.number}}</p>
-              <p v-else style="font-size: 5em;">*</p>
+              <p style="font-size: 6em;">{{selectedRoom.name}}</p>
             </v-col>
           </v-row>
         </v-col>
       </v-row>
+      <v-divider class="white"></v-divider>
+      <v-row class="pa-0 ma-0 half primary">
+
+        <v-col align-self="center">
+          <v-row justify="center" class="display-2">Senha Anterior: {{type(selectedRoom.previos_ticket) ===  'PRIORITY'? 'Preferencial' : type(selectedRoom.previos_ticket)}}</v-row>
+          <v-row justify="start">
+            <v-col class="ma-0 pa-0">
+              <p v-if="selectedRoom.previos_ticket" style="font-size: 7em;">{{selectedRoom.previos_ticket}}</p>
+              <p v-else style="font-size: 5em;">*</p>
+            </v-col>
+          </v-row>
+        </v-col>
+
+        <v-divider class="white" vertical></v-divider>
+
+        <v-col align-self="center">
+          <v-row justify="center" class="display-2">Senha Atual: {{type(selectedRoom.current_ticket) ===  'PRIORITY'? 'Preferencial' : type(selectedRoom.current_ticket)}}</v-row>
+          <v-row justify="start">
+            <v-col class="ma-0 pa-0">
+              <v-expand-x-transition>
+                <p v-show="expand" v-if="selectedRoom.current_ticket" style="font-size: 7em;color: deeppink">{{selectedRoom.current_ticket}}</p>
+              </v-expand-x-transition>
+              <v-expand-x-transition>
+                <p v-show="!expand" v-if="selectedRoom.current_ticket" style="font-size: 7em;">{{selectedRoom.current_ticket}}</p>
+              </v-expand-x-transition>
+              <p v-if="!selectedRoom.current_ticket" style="font-size: 5em;">*</p>
+            </v-col>
+          </v-row>
+        </v-col>
+
+        <v-divider class="white" vertical></v-divider>
+
+        <v-col align-self="center">
+          <v-row justify="center" class="display-2">Proxima Senha Normal</v-row>
+          <v-row justify="start">
+            <v-col class="ma-0 pa-0">
+              <div v-if="selectedRoom.next_ticket_normal">
+                <p v-if="selectedRoom.next_ticket_normal" style="font-size: 7em;">{{selectedRoom.next_ticket_normal}}</p>
+                <p v-else style="font-size: 5em;">*</p>
+              </div>
+              <div v-if="!selectedRoom.next_ticket_normal">
+                <p v-if="sector.next_ticket_normal" style="font-size: 7em;">{{sector.next_ticket_normal}}</p>
+                <p v-else style="font-size: 5em;">*</p>
+              </div>
+            </v-col>
+          </v-row>
+        </v-col>
+
+        <v-divider class="white" vertical></v-divider>
+
+        <v-col align-self="center">
+          <v-row justify="center" class="display-2">Proxima Senha Preferencial</v-row>
+          <v-row justify="start">
+            <v-col class="ma-0 pa-0">
+              <div v-if="selectedRoom.next_ticket_priority">
+                <p v-if="selectedRoom.next_ticket_priority" style="font-size: 7em;">{{selectedRoom.next_ticket_priority}}</p>
+                <p v-else style="font-size: 5em;">*</p>
+              </div>
+              <div v-if="!selectedRoom.next_ticket_priority">
+                <p v-if="sector.next_ticket_priority" style="font-size: 7em;">{{sector.next_ticket_priority}}</p>
+                <p v-else style="font-size: 5em;">*</p>
+              </div>
+            </v-col>
+          </v-row>
+        </v-col>
+
+      </v-row>
+      <br/><br/><br/><br/>
+      <v-row justify="center">
+        <v-card flat>
+          <img :src="constants.ASSETS.logo" height="200px" />
+        </v-card>
+      </v-row>
     </v-container>
+    <!--end else-->
   </v-card>
 </template>
 
@@ -76,9 +175,44 @@ export default {
       hour: moment().format("HH:mm"),
       clockInterval: undefined,
       constants: constants,
-      animation: "",
       lastTicket: null,
+      expand: false,
+      old: undefined,
+      new: undefined,
     };
+  },
+  apollo: {
+    LoadSectorOnly: {
+      query: require("@/graphql/sectors/LoadSectorOnly.gql"),
+      variables () {
+        return {
+          name: this.sector.name,
+        }
+      },
+      update(data){
+        this.sector = Object.assign(data.Sector[0])
+        //console.log('Sector:', this.sector)
+      },
+      pollInterval: 300, // ms
+    },
+    LoadRoomOnly: {
+      query: require("@/graphql/rooms/LoadRoomOnly.gql"),
+      variables () {
+        return {
+          id: this.selectedRoom.id,
+        }
+      },
+      update(data){
+        this.old = this.selectedRoom.current_ticket
+        this.selectedRoom = Object.assign(data.Room[0])
+        this.new = this.selectedRoom.current_ticket
+        if(this.old !== this.new){
+          this.soundAndAnimation();
+        }
+        //console.log('Room:', this.selectedRoom)
+      },
+      pollInterval: 300, // ms
+    },
   },
   mounted() {
     this.clockInterval = setInterval(() => {
@@ -144,6 +278,21 @@ export default {
     },
   },
   methods: {
+    type(name){
+      let tikets = this.sector.sector_has_tickets
+      for (let t in tikets){
+        if(tikets[t].name === name){
+          return tikets[t].type.toUpperCase()
+        }
+      }
+    },
+    soundAndAnimation(){
+      this.playTicketSound();
+      this.expand = true;
+      setTimeout(() => {
+        this.expand = false;
+      }, 15000);
+    },
     playTicketSound() {
       let sound = new Audio(
         "https://firebasestorage.googleapis.com/v0/b/prosaude-36f66.appspot.com/o/assets%2FCollected%20Coin%20A1.mp3?alt=media&token=57509b64-12aa-4946-9814-42995ac8ab41"
@@ -162,41 +311,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.animation {
-  animation: fade-in 1s infinite;
-}
-
-.one,
-.two,
-.three {
-  float: left;
-  width: 50%;
-  min-height: 100vh;
-}
-
-.half {
-  min-height: 50vh;
-}
-
-.strechAll {
-  min-height: 100vh;
-}
-
-.two {
-  background-color: rgb(21, 21, 99);
-}
-.three {
-  background-color: rgb(35, 151, 118);
-}
-@keyframes fade-in {
-  0% {
-    opacity: 0.5;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-</style>

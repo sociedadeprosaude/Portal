@@ -6,6 +6,8 @@
         <v-layout row wrap aling-center>
           <v-flex xs12>
             <p class="white--text text-left title">Consultas</p>
+            <v-divider color="white"/>
+            <span class="white--text font-weight-bold">SETOR: {{sector === undefined ? 'NENHUM' : sector.name }} <v-divider color="white"/> SALA: {{room === undefined ? 'NENHUMA' : room.name}} <v-divider color="white"/> SENHA: {{ticket === undefined ? 'NENHUM' : ticket.name}}</span>
           </v-flex>
           <v-flex xs12 class="mb-2">
             <v-divider color="white"/>
@@ -61,13 +63,22 @@
             >Retorno
             </v-btn>
             <v-btn
+                v-if="!ticket"
+                color="white"
+                rounded
+                :disabled="consultation.status !== 'Pago'"
+                @click="ConsultationTicket(consultation)"
+            >
+              Gerar Senha
+            </v-btn>
+            <v-btn
                 color="white"
                 rounded
                 :loading="loadingCharge"
                 :disabled="consultation.status !== 'Pago'"
                 @click="setConsultationHour(consultation)"
             >
-              Atender
+              Prontuário
             </v-btn>
             <v-btn
                 color="white"
@@ -89,6 +100,11 @@
     <v-dialog v-model="receptDialog">
       <consultation-receipt @close="receptDialog=false" :consultation="consultation"/>
     </v-dialog>
+
+    <v-dialog v-model="dialogTicket" width="500">
+      <gerenate-ticket-and-choose-type @close="dialogTicket=false" :consultation="consultation" :sector="sector" :room="room" :ticket="ticket"/>
+    </v-dialog>
+
   </v-layout>
 </template>
 
@@ -103,13 +119,13 @@ import ConsultationReceipt from "../commons/ConsultationReceipt"
 import {uuid} from "vue-uuid";
 import MutationBuilder from "@/classes/MutationBuilder";
 import gql from "graphql-tag";
-
+import GerenateTicketAndChooseType from "../commons/GerenateTicketAndChooseType";
 let moment = require('moment');
-
 export default {
   name: "CardInformationManagementConsultations",
-  props: ['patient', 'consultation'],
+  props: ['patient', 'consultation', 'room', 'sector', 'ticket'],
   components: {
+    GerenateTicketAndChooseType,
     CardConsultationManagementConsultations,
     CardPatientManagementConsultations,
     ConsultationDocument,
@@ -128,8 +144,12 @@ export default {
     ConsultationSelect: {},
     skip: true,
     skipPatients: true,
-    skipCost: true
+    skipCost: true,
+    dialogTicket: false,
   }),
+  mounted() {
+    //
+  },
   computed: {
     selectedPatient() {
       return this.$store.getters.selectedPatient
@@ -286,8 +306,12 @@ export default {
       this.consultation.consultation_hour = consultation_hour; */
     },
     ConsultationRecept(consultation) {
-      console.log('consultation: ', consultation)
+      //console.log('consultation: ', consultation)
       this.receptDialog = true;
+    },
+    ConsultationTicket(consultation){
+      this.dialogTicket = true;
+      //console.log('bol:', this.dialogTicket)
     }
   },
 
