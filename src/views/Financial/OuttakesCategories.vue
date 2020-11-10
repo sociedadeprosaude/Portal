@@ -82,7 +82,7 @@ export default {
     dialogCreateCategory: false,
     newCategory: "",
     category: "",
-    categoryToRemove: { category: "" },
+    categoryToRemove: { category: "", id:"" },
     typeOptions: [
       { text: "sim", value: true },
       { text: "não", value: false }
@@ -138,15 +138,18 @@ export default {
 
     confirmDeletion(item) {
       this.categoryToRemove.category = item.name;
-      console.log(this.categoryToRemove);
+      this.categoryToRemove.id = item.id
       this.dialogRemoveCategory = true;
     },
 
     async remove() {
-      await this.$store.dispatch(
-        "removeOuttakeCategory",
-        this.categoryToRemove
-      );
+      await this.$apollo.mutate({
+        mutation: require("@/graphql/category/DeleteCategory.gql"),
+        variables:{
+          id: this.categoryToRemove.id
+        }
+      })
+      console.log('deletado')
       this.dialogRemoveCategory = false;
     },
     
