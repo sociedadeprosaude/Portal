@@ -31,14 +31,14 @@
                         <v-layout row wrap>
                             <v-flex xs5 class="align-center justify-center">
                                 <p class="font-weight-black mt-5">
-                                    {{charge.id}}
+                                    {{charge._id}}
                                 </p>
                             </v-flex>
                             <v-flex xs1>
                                 <v-spacer></v-spacer>
                             </v-flex>
                             <v-flex xs6 class="text-center align-center justify-center">
-                                <p class="mt-5"> PREÇO: {{charge.value ? charge.value : 0}}</p>
+                                <p class="mt-5"> PREÇO: {{charge.value ? -charge.value : 0}}</p>
                             </v-flex>
                             <v-flex xs12>
                                 <v-divider color="black"></v-divider>
@@ -49,7 +49,7 @@
                     <v-flex xs6>
                         <p class="font-weight-black">Valor Total</p>
                     </v-flex>
-                    <v-flex xs6> Valor total: {{CostExamsDoctor}}</v-flex>
+                    <v-flex xs6> Valor total: {{-CostExamsDoctor}}</v-flex>
                 </v-layout>
                 <v-layout>
                     <v-flex xs6 class="text-left mt-12">

@@ -71,7 +71,7 @@
                                         <v-flex md3>
                                             <v-card sm3 class="mx-4 elevation-0 transparent">
                                             <span class="font-weight-bold white--text">
-                                                         Próximo Pagamento: {{date(doctor.last_payment,doctor.period)}}
+                                                         Último Pagamento: {{lastPayment(doctor)}}
                                             </span>
                                             </v-card>
                                         </v-flex>
@@ -205,6 +205,12 @@
 
             }
             return cost ? -cost.toFixed(2) : 0
+          },
+          lastPayment(doctor){
+            if(doctor.payments[0]){
+              return moment(doctor.payments[0].date.formatted).format('DD/MM/YYYY')
+            }
+            return 'Sem pagamentos até o momento'
           },
             CloseReceipt(){
                 this.dialogReceipt= !this.dialogReceipt

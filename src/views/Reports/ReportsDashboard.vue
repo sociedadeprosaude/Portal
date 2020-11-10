@@ -113,7 +113,7 @@ import DateSelector from "@/components/Common/DateSelector";
 import EmployeeServiceReport from "@/views/Reports/EmployeeServiceReport";
 import StatisticsBudgets from "@/views/Reports/StatisticsBudgets";
 import StatisticPatientsGeoPoint from "@/views/Reports/StatisticPatientsGeoPoint";
-import PatientsBudgets from "@/components/Reports/PatientsBudgets";
+import PatientsBudgets from "@/views/Reports/PatientsBudgets";
 export default {
   components: {
     DrawerRelatorio,
