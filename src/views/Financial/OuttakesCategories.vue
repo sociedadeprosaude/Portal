@@ -76,27 +76,26 @@
 </template>
 
 <script>
-    export default {
-        name: "OuttakesCategories",
-        data: () => ({
-            search: "",
-            loading: false,
-            dialogRemoveCategory: false,
-            dialogCreateCategory: false,
-            newCategory: "",
-            category: "",
-            categoryToRemove: {category: ""},
-            typeOptions: [
-                {text: "sim", value: true},
-                {text: "não", value: false}
-            ],
-            headers: [
-                {
-                    text: "Nome",
-                    align: "left",
-                    value: "name",
-                    filterable: true
-                },
+export default {
+  data: () => ({
+    search: "",
+    loading: false,
+    dialogRemoveCategory: false,
+    dialogCreateCategory: false,
+    newCategory: "",
+    category: "",
+    categoryToRemove: { category: "", id:"" },
+    typeOptions: [
+      { text: "sim", value: true },
+      { text: "não", value: false }
+    ],
+    headers: [
+      {
+        text: "Nome",
+        align: "left",
+        value: "name",
+        filterable: true
+      },
 
                 {text: "Ações", value: "action", sortable: false, align: "center"}
             ],
@@ -138,20 +137,26 @@
                   });
                 } else console.log("ja existe"); */
             },
+    confirmDeletion(item) {
+      this.categoryToRemove.category = item.name;
+      this.categoryToRemove.id = item.id
+      this.dialogRemoveCategory = true;
+    },
 
-            confirmDeletion(item) {
-                this.categoryToRemove.category = item.name;
-                console.log(this.categoryToRemove);
-                this.dialogRemoveCategory = true;
-            },
-
-            async remove() {
-                await this.$store.dispatch(
-                    "removeOuttakeCategory",
-                    this.categoryToRemove
-                );
-                this.dialogRemoveCategory = false;
-            },
+    async remove() {
+      await this.$apollo.mutate({
+        mutation: require("@/graphql/category/DeleteCategory.gql"),
+        variables:{
+          id: this.categoryToRemove.id
+        }
+      })
+      console.log('deletado')
+      this.dialogRemoveCategory = false;
+    },
+    
+  }
+};
+</script>
 
         }
     };
