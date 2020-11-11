@@ -236,7 +236,7 @@ export default {
     },
 
     async checkReceipts(clinic) {
-      this.outtakesSelected = clinic.charges
+      this.outtakesSelected = clinic.charges.sort((a, b) => a.date.formatted.localeCompare(b.date.formatted))
       this.clinicSelected = clinic
       this.intakesObserv = !this.intakesObserv
 
