@@ -1,7 +1,7 @@
 <template>
     <v-container fill-height>
         <v-layout row wrap class="align-center justify-center">
-            <v-flex xs6 class="text-center align-center justify-center">
+            <v-flex xs12 sm5 class="text-center align-center justify-center">
                 <v-slide-x-transition>
                     <v-card class="px-5 py-3" v-if="!registered">
                         <v-layout row wrap>
@@ -10,32 +10,49 @@
                                     Já existe um colaborador com o mesmo Email!
                                 </v-alert>
                             </v-flex>
-                            <v-flex xs12 class="text-left">
+                            <v-flex xs12 class="text-center align-center justify-center">
                                 <span class="my-headline">Cadastro</span>
                             </v-flex>
-                            <v-flex xs12>
-                                <v-text-field v-model="name" label="Nome Completo"/>
+                            <v-flex xs12 class="transparent text-center align-center justify-center">
+                              <span style="color: transparent">.</span>
                             </v-flex>
                             <v-flex xs12>
-                                <v-text-field v-model="email" label="Email"/>
+                                <v-text-field outlined v-model="name" label="Nome Completo"/>
                             </v-flex>
                             <v-flex xs12>
-                                <v-text-field v-model="password" label="Senha" type="password"/>
+                                <v-text-field outlined v-model="email" label="Email"/>
+                            </v-flex>
+                            <v-flex xs12>
+                                <v-text-field outlined v-model="password" label="Senha" type="password"/>
                             </v-flex>
                             <v-flex xs12>
                                 <v-text-field
+                                        outlined
                                         v-model="confirm_password"
                                         label="Confirmação de senha"
                                         type="password"
                                 />
                             </v-flex>
                             <v-flex xs12>
-                                <v-text-field v-model="cpf" v-mask="'###.###.###-##'" label="CPF"/>
+                                <v-text-field outlined v-model="cpf" v-mask="'###.###.###-##'" label="CPF"/>
                             </v-flex>
                             <v-flex xs12>
-                                <v-text-field v-model="telephone" v-mask="'(##)#####-####'"
-                                              label="Telefone"/>
+                                <v-text-field outlined v-model="telephone" v-mask="'(##)#####-####'" label="Telefone"/>
                             </v-flex>
+                          <v-flex xs12>
+                            <v-checkbox
+                                hide-details
+                                v-model="which_user"
+                                label="Colaborador"
+                                value="colaborator"
+                            ></v-checkbox>
+                            <v-checkbox
+                                hide-details
+                                v-model="which_user"
+                                label="Médico"
+                                value="doctor"
+                            ></v-checkbox>
+                          </v-flex>
                             <v-expand-transition>
                                 <v-flex xs12 v-if="loading">
                                     <v-progress-linear color="primary" indeterminate/>
@@ -44,13 +61,7 @@
                         </v-layout>
                         <v-card-actions>
                             <v-spacer/>
-                            <v-btn
-                                    :disabled="loading"
-                                    @click="register()"
-                                    class="primary_dark--text"
-                                    text
-                            >{{'Cadastrar'}}
-                            </v-btn>
+                            <v-btn color="primary" :disabled="loading" @click="register()">{{'Cadastrar'}}</v-btn>
                         </v-card-actions>
                         <v-flex xs12>
                             <span class="red--text">{{errorMessage}}</span>
@@ -88,6 +99,7 @@
                 loading: false,
                 asDoctor: false,
                 crm: undefined,
+                which_user: undefined,
                 alert: false,
                 skip:true
             };
