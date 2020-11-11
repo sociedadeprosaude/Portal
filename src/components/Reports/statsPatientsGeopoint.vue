@@ -12,7 +12,7 @@
     </v-row>
     <v-row>
       <v-col cols="12" md="12">
-        <h1>Bairro</h1>
+        <h1>Pacientes por Bairro</h1>
         <v-card>
           <v-card-text>
             <div v-for="(item,i) in bairrosPrint" :key="i">
