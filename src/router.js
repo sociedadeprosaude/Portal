@@ -34,6 +34,7 @@ import RoomDashboard from "./views/Operational/Tickets/RoomDashboard";
 
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
 import CashierRoutes from "./routes/CashierRoutes";
+import BillRoutes from './routes/BillRoutes'
 
 import discount from "./views/Notifications/discount"
 import notifications from "./views/Notifications/notifications";
@@ -46,7 +47,7 @@ import ErrorAuthentication from "@/views/Auth/ErrorAuthentication";
 const Clinic = {
   props: ['id'],
   template: '<div>Clinic {{ id }}</div>'
-}
+};
 Vue.use(Router);
 let mainRoutes = [
   {
@@ -195,14 +196,7 @@ let mainRoutes = [
       requiresAuth: false,
     }
   },
-  {
-    path: '/BillsMobile',
-    name: 'BillsMobile',
-    component: BillsMobile,
-    meta: {
-      requiresAuth: false,
-    }
-  },
+
   {
     path: '/Categorias',
     name: 'OuttakesCategories',
@@ -299,7 +293,7 @@ let mainRoutes = [
   },
 ];
 
-let routes = mainRoutes.concat(DoctorsAgendaRoutes, CashierRoutes);
+let routes = mainRoutes.concat(DoctorsAgendaRoutes, CashierRoutes, BillRoutes);
 let router = new Router({
   mode: 'history',
   routes: routes
@@ -338,6 +332,11 @@ router.afterEach((to, from, next) => {
     store.commit('setRegistersToolbar', true)
   } else {
     store.commit('setRegistersToolbar', false)
+  }
+  if (to.path.includes('/pagamento/financeiro')) {
+    store.commit('setBillsMobile', true)
+  } else {
+    store.commit('setBillsMobile', false)
   }
 });
 

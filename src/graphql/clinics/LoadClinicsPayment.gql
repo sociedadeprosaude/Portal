@@ -5,6 +5,7 @@ query{
             id,cep,state,street,city,complement,neighboor,number,geopoint{latitude,longitude}
          },
          charges{
+         _id,
             date {formatted},id,
             value,
             ProductTransaction: with_ProductTransaction{

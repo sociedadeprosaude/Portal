@@ -132,18 +132,18 @@ export default {
       for (let transaction of this.transactions) {
         if (transaction.produts.length > 0) {
           for (let product of transaction.produts) {
-            if (!products[product[this.filter].name]) {
-              products[product[this.filter].name] = {
-                name: product[this.filter].name || product.description,
+            if (!products[product[this.filter] ? product[this.filter].name : 'Error']) {
+              products[product[this.filter] ? product[this.filter].name : 'Error'] = {
+                name: product[this.filter] ? product[this.filter].name : 'Error' || product.description,
                 quantity: 0,
                 price: 0,
                 // type: product[this.filter].type
               }
             }
-            products[product[this.filter].name] = {
-              name: product[this.filter].name,
-              quantity: products[product[this.filter].name].quantity + 1,
-              price: products[product[this.filter].name].price + product.price,
+            products[product[this.filter] ? product[this.filter].name : 'Error'] = {
+              name: product[this.filter] ? product[this.filter].name : 'Error',
+              quantity: products[product[this.filter] ? product[this.filter].name : 'Error'].quantity + 1,
+              price: products[product[this.filter] ? product[this.filter].name : 'Error'].price + product.price,
               // type: product[this.filter].type
             }
           }
