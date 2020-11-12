@@ -45,48 +45,42 @@
               </v-layout>
             </v-card>
           </v-flex>
-          <v-card-actions class="mt-4 ">
+          <v-card-actions class="mt-4 ml-n3">
             <v-btn
                 color="white"
                 rounded
                 :disabled="consultation.status === 'Cancelado'"
                 @click="deletedConsultation()"
                 :loading="cancelLoading"
-            > Cancelar
-            </v-btn>
+            >Cancelar</v-btn>
             <v-btn
                 color="white"
                 rounded
                 :to="{ name: 'AgendamentoConsultas', params: { q: consultation, type:'Retorno'}}"
                 :disabled="/*consultation.status !== 'Pago' ||*/ consultation.regress"
                 v-if="consultation.type !== 'Retorno' && consultation.product"
-            >Retorno
-            </v-btn>
-            <v-btn
-                v-if="!ticket"
-                color="white"
-                rounded
-                :disabled="consultation.status !== 'Pago'"
-                @click="ConsultationTicket(consultation)"
-            >
-              Gerar Senha
-            </v-btn>
+            >Retorno</v-btn>
             <v-btn
                 color="white"
                 rounded
                 :loading="loadingCharge"
                 :disabled="consultation.status !== 'Pago'"
                 @click="setConsultationHour(consultation)"
-            >
-              Prontuário
-            </v-btn>
+            >Prontuário</v-btn>
             <v-btn
                 color="white"
                 rounded
                 @click="ConsultationRecept(consultation)"
-            >
-              Comprovante
-            </v-btn>
+            >Comprovante</v-btn>
+          </v-card-actions>
+          <v-card-actions class="mt-3 ml-n3">
+            <v-btn
+                v-if="!ticket"
+                color="white"
+                rounded
+                :disabled="consultation.status !== 'Pago'"
+                @click="ConsultationTicket(consultation)"
+            >Gerar Senha</v-btn>
           </v-card-actions>
           <v-flex xs12 class="mt-4 mb-2">
             <v-divider color="white"/>
