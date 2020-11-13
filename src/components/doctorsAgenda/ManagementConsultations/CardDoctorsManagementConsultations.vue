@@ -38,27 +38,6 @@
                       </v-icon>
                     </v-btn>
                   </v-flex>
-
-                  <v-flex xs12>
-                  <div class="text-center">
-                    <v-dialog v-model="dialog">
-
-                      <template v-slot:activator="{ on, attrs }">
-                        <!--@click="printALL(consultation.consultations)"-->
-                          <v-btn dark color="white" rounded v-bind="attrs" v-on="on"><span style="color: #003B8F; font-weight: bold">Gerar Prontuários de Todos os Pacientes</span></v-btn>
-                      </template>
-
-                      <div v-for="(item,i) in consultation.consultations" :key="i">
-                        <div v-if="item.status === 'Pago'">
-                          <consultation-document @close="documentDialog=false" :consultation="item"/>
-                        </div>
-                      </div>
-
-                    </v-dialog>
-                  </div>
-                  </v-flex>
-
-
                 </v-layout>
               </v-card>
             </v-flex>
@@ -209,9 +188,6 @@
 import moment from 'moment/moment'
 import SubmitButton from '../../../components/SubmitButton'
 import ConsultationDocument from "@/components/doctorsAgenda/commons/ConsultationDocument";
-import {uuid} from "vue-uuid";
-import MutationBuilder from "@/classes/MutationBuilder";
-import gql from "graphql-tag";
 
 export default {
   name: "CardDoctorsManagementConsultations",
@@ -248,7 +224,6 @@ export default {
     id: undefined,
     idConsultation: undefined,
     idDoctor: undefined,
-    dialog: false,
   }),
   watch: {
     changeData: {
@@ -321,80 +296,6 @@ export default {
     },
   },
   methods: {
-    printALL(consultations){
-      for (let paid in consultations) {
-        if(consultations[paid].status === "Pago") {
-          this.setConsultationHour(consultations[paid])
-        }
-      }
-    },
-    async setConsultationHour(consultation) {
-      //this.ConsultationSelect = consultation
-      //this.loadingCharge = true
-      //this.idDoctor = consultation.doctor.id
-      //this.idProduct = consultation.product.id
-      let idProductTransaction = await this.$apollo.mutate({
-        mutation: require('@/graphql/productTransaction/GetProductTransactionId.gql'),
-        variables: {
-          idConsultation: consultation.id
-        }
-      })
-      let Charge
-      if (idProductTransaction.data.ProductTransaction[0]) {
-        idProductTransaction = idProductTransaction.data.ProductTransaction[0].id
-
-        Charge = await this.$apollo.mutate({
-          mutation: require('@/graphql/charge/GetChargeProductTransactionId.gql'),
-          variables: {
-            idProductTransaction: idProductTransaction
-          }
-        })
-        Charge = Charge.data.Charge
-      }
-      if (Charge && Charge.length === 0) {
-        let CostProductDoctor = await this.$apollo.mutate({
-          mutation: require('@/graphql/doctors/LoadCostProductDoctor.gql'),
-          variables: {
-            idDoctor: consultation.doctor.id,
-            idProduct: consultation.product.id
-          }
-        })
-        let ChargeId = uuid.v4()
-        let mutationBuilder = new MutationBuilder()
-        mutationBuilder.addMutation(`
-                  CreateCharge(
-                      id:"${ChargeId}"
-                      value:${-CostProductDoctor.data.CostProductDoctor[0].cost}
-                      date:
-                        {
-                          formatted: "${moment().format("YYYY-MM-DDTHH:mm:ss")}"
-                        }
-                            ){
-                            id,value,date{formatted}
-                            }
-                        `),
-            mutationBuilder.addMutation(`
-                          AddChargeWith_ProductTransaction(
-                          from:{
-                          id:"${ChargeId}"
-                      },
-                      to:{
-                          id:"${idProductTransaction}"
-                      }
-                  ){
-                      from{id},
-                      to{id}
-                  } `)
-        let finalString = mutationBuilder.generateMutationRequest()
-        await this.$apollo.mutate({
-          mutation: gql`${finalString}`,
-        })
-        //this.loadingCharge = false
-      } else {
-        //this.loadingCharge = false
-      }
-    },
-
     cleanSpecialtyToDeactivate() {
       this.specialtyToDeactivate = [];
       this.clinicsToDeactivate = []

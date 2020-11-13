@@ -352,6 +352,7 @@ export default {
       await this.$apollo.queries.LoadRoomsOfSector.refresh();
 
       if(preferential === true) {
+        let count = 'P'
         this.sector.counter_priority = this.sector.counter_priority + 1
         const dataTicket = await this.$apollo.mutate({
           mutation: require('@/graphql/tickets/CreateTicket.gql'),
