@@ -63,7 +63,7 @@
                                                :scheduled="data.Consultation.length"
                                                :consultationsDone="filterConsultationsDone(data).length"
                                                :timeSchedule="timeConsultation(data.Consultation)"
-                                               :timeConsultation="timeConsultation(filterConsultationsDone(data))"
+                                               :timeConsultations="timeConsultation(filterConsultationsDone(data))"
                 />
                 <v-progress-linear v-else-if="!data"
                                    class="mt-5"
@@ -193,6 +193,29 @@
                     ]
                 };
             },
+
+            // weekConsultation (data) {
+            //     const days = Array.from(
+            //         Array(moment(`${this.year}-${this.month}`).daysInMonth()).keys()
+            //     )
+            //         .map(num => ++num)
+            //         .slice(8 * this.week, 8 * (1 + this.week));
+            //     const arrData = days.map(num => this.info.arrTotalRaw[num - 1]);
+            //     console.log('days: ', days)
+            //     console.log('week: ', this.week)
+            //     console.log('info: ', this.info)
+            //     return {
+            //         labels: days,
+            //         datasets: [
+            //             {
+            //                 lineTension: 0,
+            //                 fill: false,
+            //                 borderColor: "rgb(75, 192, 192)",
+            //                 data: arrData
+            //             }
+            //         ]
+            //     };
+            // },
 
             filterConsultationsDone (data) {
                 return data.Consultation.filter(e => e.attended_by !== null)
