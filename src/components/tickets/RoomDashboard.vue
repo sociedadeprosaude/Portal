@@ -132,6 +132,54 @@
         </v-dialog>
       </v-col>
 
+      <v-col sm="12" md="6">
+        <v-dialog
+            v-model="dialog"
+            width="250"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+                width="100%"
+                class="primary"
+                rounded
+                v-bind="attrs"
+                v-on="on"
+            >
+              <v-icon large>replay_10</v-icon>Resetar Senhas do Setor<v-icon large>forward_30</v-icon>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title class="headline grey lighten-2">Senha Inicial<v-spacer/><v-btn class="transparent" text small fab @click="dialog = false"><v-icon>close</v-icon></v-btn></v-card-title>
+            <v-divider></v-divider>
+            <v-spacer/>
+            <v-card-text>
+              <br/>
+              <v-text-field
+                  prepend-icon="mdi-ticket-confirmation"
+                  outlined
+                  v-model="number"
+                  label="Número"
+                  hide-details
+                  clearable
+                  v-mask="['#','##','###']"
+              ></v-text-field>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn width="100%"
+                     class="primary"
+                     rounded
+                     :disabled="!number"
+                     @click="resetSectorTicket(Number(number))"
+                     v-if="!loading"
+              >
+                RESETAR
+              </v-btn>
+              <v-progress-circular v-else color="primary" indeterminate></v-progress-circular>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-col>
+
     </v-row>
 
     <v-row class="mt-4">

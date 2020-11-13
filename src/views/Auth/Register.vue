@@ -39,20 +39,6 @@
                             <v-flex xs12>
                                 <v-text-field outlined v-model="telephone" v-mask="'(##)#####-####'" label="Telefone"/>
                             </v-flex>
-                          <v-flex xs12>
-                            <v-checkbox
-                                hide-details
-                                v-model="which_user"
-                                label="Colaborador"
-                                value="colaborator"
-                            ></v-checkbox>
-                            <v-checkbox
-                                hide-details
-                                v-model="which_user"
-                                label="Médico"
-                                value="doctor"
-                            ></v-checkbox>
-                          </v-flex>
                             <v-expand-transition>
                                 <v-flex xs12 v-if="loading">
                                     <v-progress-linear color="primary" indeterminate/>
@@ -99,7 +85,6 @@
                 loading: false,
                 asDoctor: false,
                 crm: undefined,
-                which_user: undefined,
                 alert: false,
                 skip:true
             };
@@ -140,7 +125,6 @@
                         mutation: require('@/graphql/authentication/CreateUser.gql'),
                         variables:{
                             email:this.email
-                            
                         },
                     });
                     const userId = newUser.data.CreateUser.id

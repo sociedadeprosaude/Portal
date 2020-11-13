@@ -245,6 +245,19 @@ export default {
           },
         });
       }
+      //remover tickets da room se houver
+      if(room.room_has_tickets.length > 0){
+        console.log('tem tickets na sala, removendo.')
+        for(let tr in room.room_has_tickets){
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/rooms/RemoveRoomRoom_has_tickets.gql'),
+            variables: {
+              idRoom: room.id,
+              idTicket: room.room_has_tickets[tr].id,
+            },
+          });
+        }
+      }
       await this.$apollo.queries.LoadRoomsOfSector.refresh();
       this.loading = false;
     },
