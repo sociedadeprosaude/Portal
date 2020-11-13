@@ -87,7 +87,7 @@
       <v-col sm="12" md="6">
         <v-dialog
             v-model="dialog"
-            width="250"
+            width="275"
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -97,11 +97,11 @@
                 v-bind="attrs"
                 v-on="on"
             >
-              <v-icon large>replay_10</v-icon>Resetar Senhas do Setor<v-icon large>forward_30</v-icon>
+              <v-icon large>replay_10</v-icon>Resetar Senhas NORMAL<v-icon large>forward_30</v-icon>
             </v-btn>
           </template>
           <v-card>
-            <v-card-title class="headline grey lighten-2">Senha Inicial<v-spacer/><v-btn class="transparent" text small fab @click="dialog = false"><v-icon>close</v-icon></v-btn></v-card-title>
+            <v-card-title class="headline grey lighten-2">Senha NORMAL<v-spacer/><v-btn class="transparent" text small fab @click="dialog = false"><v-icon>close</v-icon></v-btn></v-card-title>
             <v-divider></v-divider>
             <v-spacer/>
             <v-card-text>
@@ -121,7 +121,7 @@
                      class="primary"
                      rounded
                      :disabled="!number"
-                     @click="resetSectorTicket(Number(number))"
+                     @click="resetSectorTicketNormal(Number(number))"
                      v-if="!loading"
               >
                 RESETAR
@@ -134,8 +134,8 @@
 
       <v-col sm="12" md="6">
         <v-dialog
-            v-model="dialog"
-            width="250"
+            v-model="dialog2"
+            width="350"
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -145,11 +145,11 @@
                 v-bind="attrs"
                 v-on="on"
             >
-              <v-icon large>replay_10</v-icon>Resetar Senhas do Setor<v-icon large>forward_30</v-icon>
+              <v-icon large>replay_10</v-icon>Resetar Senhas PREFERENCIAL<v-icon large>forward_30</v-icon>
             </v-btn>
           </template>
           <v-card>
-            <v-card-title class="headline grey lighten-2">Senha Inicial<v-spacer/><v-btn class="transparent" text small fab @click="dialog = false"><v-icon>close</v-icon></v-btn></v-card-title>
+            <v-card-title class="headline grey lighten-2">Senha PREFERENCIAL<v-spacer/><v-btn class="transparent" text small fab @click="dialog2 = false"><v-icon>close</v-icon></v-btn></v-card-title>
             <v-divider></v-divider>
             <v-spacer/>
             <v-card-text>
@@ -169,7 +169,7 @@
                      class="primary"
                      rounded
                      :disabled="!number"
-                     @click="resetSectorTicket(Number(number))"
+                     @click="resetSectorTicketPriority(Number(number))"
                      v-if="!loading"
               >
                 RESETAR
@@ -543,6 +543,7 @@ export default {
   data () {
     return {
       dialog: false,
+      dialog2: false,
       number: undefined,
       doctor: '',
     }
@@ -576,7 +577,8 @@ export default {
     setDoctorToRoom: Function,
     generateNextTicket: Function,
     generateSectorTicket: Function,
-    resetSectorTicket: Function,
+    resetSectorTicketNormal: Function,
+    resetSectorTicketPriority: Function,
     removeDoctorRoom: Function,
     upgradeTicketNumber: Function,
     callNextTicket: Function,

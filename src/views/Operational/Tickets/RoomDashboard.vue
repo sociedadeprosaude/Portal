@@ -17,7 +17,8 @@
     :rooms="rooms"
     :normal="normal"
     :priority="priority"
-    :resetSectorTicket="resetSectorTicket"
+    :resetSectorTicketNormal="resetSectorTicketNormal"
+    :resetSectorTicketPriority="resetSectorTicketPriority"
     :removeDoctorRoom="removeDoctorRoom"
     :roomsLoaded="roomsLoaded"
     :ticketInfo="ticketInfo"
@@ -196,7 +197,6 @@ export default {
         variables: {
           idSector: idSector,
           idRoom: idRoom,
-
         },
       });
       this.loading = false;
@@ -247,7 +247,7 @@ export default {
       }
       //remover tickets da room se houver
       if(room.room_has_tickets.length > 0){
-        console.log('tem tickets na sala, removendo.')
+        //console.log('tem tickets na sala, removendo.')
         for(let tr in room.room_has_tickets){
           await this.$apollo.mutate({
             mutation: require('@/graphql/rooms/RemoveRoomRoom_has_tickets.gql'),
@@ -261,15 +261,26 @@ export default {
       await this.$apollo.queries.LoadRoomsOfSector.refresh();
       this.loading = false;
     },
-
-    async resetSectorTicket(number){
+    async resetSectorTicketNormal(number) {
       this.loading = true;
       await this.$apollo.queries.LoadRoomsOfSector.refresh();
       let count = number.toString()
       let rooms = this.sector.has_rooms
       let ticketsSector = this.sector.sector_has_tickets
-      //start logic of reset os tickets of sector
-      const dataTicket = await this.$apollo.mutate({
+      //start
+      alert('normal')
+      //end
+      await this.$apollo.queries.LoadRoomsOfSector.refresh();
+      this.loading = false;
+    },
+    async resetSectorTicketPriority(number){
+      this.loading = true;
+      await this.$apollo.queries.LoadRoomsOfSector.refresh();
+      let count = number.toString()
+      let rooms = this.sector.has_rooms
+      let ticketsSector = this.sector.sector_has_tickets
+      alert('priority')
+    /*const dataTicket = await this.$apollo.mutate({
         mutation: require('@/graphql/tickets/CreateTicket.gql'),
         variables: {
           name: count,
@@ -331,23 +342,21 @@ export default {
             }
           }
         }
-      }
-      //end of reset
+      }*/
+      //end
       await this.$apollo.queries.LoadRoomsOfSector.refresh();
       this.loading = false;
     },
     async generateSectorTicket(preferential) {
       this.loading = true;
       await this.$apollo.queries.LoadRoomsOfSector.refresh();
-      let count = 0;
-      let all =  this.sector.counter_normal + this.sector.counter_priority
-      if(all >= 0) { count = all + 1 }
-      count = count.toString();
+
       if(preferential === true) {
+        this.sector.counter_priority = this.sector.counter_priority + 1
         const dataTicket = await this.$apollo.mutate({
           mutation: require('@/graphql/tickets/CreateTicket.gql'),
           variables: {
-            name: count,
+            name: this.sector.counter_priority.toString(),
             type: "priority",
             created_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
           },
@@ -371,10 +380,11 @@ export default {
           },
         });
       } else {
+        this.sector.counter_normal = this.sector.counter_normal + 1
         const dataTicket = await this.$apollo.mutate({
           mutation: require('@/graphql/tickets/CreateTicket.gql'),
           variables: {
-            name: count,
+            name: this.sector.counter_normal.toString(),
             type: "normal",
             created_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
           },
