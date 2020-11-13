@@ -27,9 +27,11 @@ query GetTransactions($date_start: String, $unit_name: String, $date_final: Stri
         with_clinic{
             name, id
         }
+        with_consultation{
+                attended_by{
+                    id
+                }
+        }
     }
-     unit: with_unit{
-            name, id
-     }
     }
 }

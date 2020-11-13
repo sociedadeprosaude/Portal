@@ -20,6 +20,7 @@ query{
       id,
       name
     },
+    observations,
     days:for_day{
       id,
       day,
