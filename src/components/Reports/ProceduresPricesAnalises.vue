@@ -101,11 +101,27 @@
                                                                 <v-flex xs2>
                                                                     <span>{{product.cost}}</span>
                                                                 </v-flex>
-                                                                <v-flex xs2>
-                                                                    <span>{{product.with_product[0].price}}</span>
+                                                                <v-flex xs2 v-if="!editingPrice">
+                                                                    <span @click="editingProduct(product)">{{product.with_product[0].price}}</span>
                                                                 </v-flex>
-                                                                <v-flex xs3>
+                                                                <v-flex xs3 v-if="!editingPrice">
                                                                     <span>{{getIdealCost(product)}}</span>
+                                                                </v-flex>
+                                                                <v-flex xs5 v-else-if="loadingEditing">
+                                                                    <v-progress-linear class="primary" indeterminate/>
+                                                                </v-flex>
+                                                                <v-flex xs5 v-else-if="!loadingEditing && editingPrice"
+                                                                        class="justify-center">
+                                                                    <v-text-field
+                                                                                  v-show="selectedProduct === product"
+                                                                                  solo
+                                                                                  outlined
+                                                                                  dense
+                                                                                  append-outer-icon="done"
+                                                                                  type="number"
+                                                                                  @click:append-outer="editingPrice = false"
+
+                                                                    />
                                                                 </v-flex>
                                                                 <v-flex xs3>
                                                                     <span>{{getIdealPrice(product)}}</span>
@@ -159,11 +175,26 @@
                                                                 <v-flex xs2>
                                                                     <span>{{product.cost}}</span>
                                                                 </v-flex>
-                                                                <v-flex xs2>
-                                                                    <span>{{product.with_product[0].price}}</span>
+                                                                <v-flex xs2 v-if="!editingPrice">
+                                                                    <span @click="editingProduct(product)">{{product.with_product[0].price}}</span>
                                                                 </v-flex>
-                                                                <v-flex xs3>
+                                                                <v-flex xs3 v-if="!editingPrice">
                                                                     <span>{{getIdealCost(product)}}</span>
+                                                                </v-flex>
+                                                                <v-flex xs5 v-else-if="loadingEditing">
+                                                                    <v-progress-linear class="primary" indeterminate/>
+                                                                </v-flex>
+                                                                <v-flex xs5 v-else-if="!loadingEditing && editingPrice" class="justify-center">
+                                                                    <v-text-field
+                                                                            v-show="selectedProduct === product"
+                                                                            solo
+                                                                            outlined
+                                                                            dense
+                                                                            append-outer-icon="done"
+                                                                            type="number"
+                                                                            @click:append-outer="editingPrice = false"
+
+                                                                    />
                                                                 </v-flex>
                                                                 <v-flex xs3>
                                                                     <span>{{getIdealPrice(product)}}</span>
@@ -213,6 +244,9 @@
         ],
         data() {
             return {
+                editingPrice: false,
+                loadingEditing: false,
+                selectedProduct: null,
                 search: '',
                 type: null,
                 CostProductClinicObject: {}
@@ -222,6 +256,12 @@
 
         },
         methods: {
+            async editingProduct(product) {
+                this.loadingEditing = true;
+                this.selectedProduct = product;
+                this.editingPrice = true;
+                this.loadingEditing = false;
+            },
             CostProductClinicFilter(data, type,filter) {
               if(filter.length !== 0){
                 if(type === 0){
