@@ -63,7 +63,6 @@
                                                :scheduled="data.Consultation.length"
                                                :consultationsDone="filterConsultationsDone(data)"
                                                :timeConsultations="timeConsultations(data.Consultation)"
-
                 />
                 <v-progress-linear v-else-if="!data"
                                    class="mt-5"
@@ -171,21 +170,27 @@
         },
         methods: {
             timeConsultations(data) {
-
-                const arrData = this.hours.map(h => h === data.date.formatted.substring(11,12));
-
-                console.log('arrayData: ', this.arrData)
-                return {
-                    labels: this.hours,
-                    datasets: [
-                        {
-                            lineTension: 0,
-                            fill: false,
-                            borderColor: "rgb(75, 192, 192)",
-                            data: arrData
-                        }
-                    ]
-                };
+                const arrData= [];
+                data.map(e => {
+                    if(arrData[parseInt(e.date.formatted.substring(11,13))]){
+                        arrData[parseInt(e.date.formatted.substring(11,13))] +=1
+                    }
+                    else{
+                        arrData[parseInt(e.date.formatted.substring(11,13))] =1
+                    }
+                });
+                
+                // return {
+                //     labels: this.hours,
+                //     datasets: [
+                //         {
+                //             lineTension: 0,
+                //             fill: false,
+                //             borderColor: "rgb(75, 192, 192)",
+                //             data: arrData
+                //         }
+                //     ]
+                // };
             },
             filterConsultationsDone (data) {
                 return data.Consultation.filter(e => e.attended_by !== null).length

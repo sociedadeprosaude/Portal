@@ -1,5 +1,12 @@
-query( $date_start:_Neo4jDateTimeInput, $date_end: _Neo4jDateTimeInput, $specialty: String){
-  Consultation(filter:{date_gte:$date_start, date_lte:$date_end, has_product:{type: "SPECIALTY", name_contains: $specialty}}){
+query( $date_start:_Neo4jDateTimeInput, $date_end: _Neo4jDateTimeInput, $specialty: String ){
+  Consultation(filter:{
+    date_gte:$date_start,
+    date_lte:$date_end,
+    has_product:{
+        type: "SPECIALTY",
+        name_contains: $specialty
+    }
+  }){
        id,
        date{formatted},
        attended_by {
