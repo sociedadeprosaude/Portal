@@ -1,0 +1,21 @@
+query{
+    Charge (filter: {description_not: null, date_to_pay_not: null}) {
+        description,
+            colaborator {
+              name
+            },
+            payment_methods,
+            value,
+            date_to_pay{formatted},
+            date{formatted},
+            id,
+            with_unit {
+              logo,
+              name
+            },
+            categories {
+              name
+            }
+  }
+
+}

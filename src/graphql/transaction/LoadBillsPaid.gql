@@ -1,0 +1,19 @@
+query {
+   Transaction (filter: {value_lt: 0, description_not: null, with_unit_not: null, categories_not: null}) {
+    value,
+  	description,
+  	date{formatted},
+    categories{
+      name
+    },
+    colaborator{
+    	name
+    },
+    payment_methods,
+    id,
+    with_unit{
+      name,
+      logo
+    }
+  },
+}

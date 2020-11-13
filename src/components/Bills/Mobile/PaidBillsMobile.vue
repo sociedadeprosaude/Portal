@@ -1,53 +1,165 @@
 <template>
-    <v-container fluid class="fill-height align-start " style="width: 120%">
+    <v-container class="ma-0 pa-0" fluid>
+        <v-row class="align-center justify-center">
+            <v-col cols="12" xs="12" class="primary mt-n5">
+                <v-card class="elevation-0 white--text mt-n2 primary" style="border-radius: 0">
+                    <v-card-title class="font-weight-bold align-lg-center justify-center">
+                        R$
+                    </v-card-title>
+                    <v-card-subtitle style="font-size: small" class="white--text font-italic">Valor pago
+                    </v-card-subtitle>
 
-<!--        <v-toolbar dark color="primary" class="justify-center">-->
-<!--            <v-toolbar-title>Lançamentos</v-toolbar-title>-->
-<!--        </v-toolbar>-->
+                    <v-chip-group active-class="primary--text" class="mt-n2 mb-n3 mx-0 my-0" show-arrows>
+                        <v-chip mandatory
+                                active-class="primary--text"
+                                v-for="(month,i) in months" :key="i" class="white" x-small @click="mapMonths(month)">
+                          <span
+                                  v-if="month.format('YYYY') === year"
+                                  style="font-weight: bold"
+                          >{{ month.format('MMMM') }}</span>
+                            <span
+                                    v-if="month.format('YYYY') !== year"
+                                    style="font-weight: bold"
+                            >{{ month.format('MM/YYYY') }}</span>
+                        </v-chip>
+                    </v-chip-group>
+                </v-card>
+            </v-col>
+        </v-row>
+        <ApolloQuery :query="require('@/graphql/transaction/LoadBillsPaid.gql')">
+            <template v-slot="{result: {data}}">
+                <v-layout row wrap class="justify-center fill-height mt-4" v-if="!data" >
+                    <v-progress-circular indeterminate color="primary" large :size="200"/>
+                </v-layout>
+                <v-container fluid class="ma-0 " v-if="data && data.length === 0">
+                    <v-card elevation="10" class="pa-4">Não há contas pagas neste mês</v-card>
+                </v-container>
+                <v-row v-if="data && data.length !== 0" class="align-center justify-center">
+<!--                    <v-col cols="12" xs="12" class="mx-3">-->
+<!--                        <div v-bind:id="'group-' + i">-->
+<!--                            &lt;!&ndash;                    <span style="color: #003B8F; font-weight: bold; font-size: small"> {{i | dateFilter}} - {{daydate(i)}} - {{outtakesGroup.length}} conta(s)</span>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                    <v-flex xs12 class="primary" style="height: 2px;"/>&ndash;&gt;-->
+<!--                        </div>-->
+<!--                    </v-col>-->
+                    <v-col  md="8" xs="12">
+                        <v-card class="pa-2 pb-0 my-0 elevation-0 mb-5"
+                                v-for="bill in data.Transaction"
+                                :key="bill.id"
+                                @click="mapping(bill)">
+                            <v-layout row wrap>
+                                <v-flex xs4>
+                                    <v-img :src="bill.with_unit[0].logo" width="175px"/>
+                                </v-flex>
+                                <v-flex xs1><span style="color: transparent">.</span></v-flex>
+                                <v-flex xs7 class="text-end">
+                                    <span style="font-weight: bold; font-size: small">{{bill.categories[0].name}}</span>
+<!--                                    <br>-->
+<!--                                    <span style="font-weight: bold; font-size: small">{{bill.subCategory}}</span>-->
+                                </v-flex>
+                                <v-flex xs4 class="mt-4 text-start">
+                                    <strong style="font-size: large">R$ {{-bill.value}}</strong>
+                                </v-flex>
+                                <v-flex xs8 class="text-end mt-3">
+<!--                                    <v-flex class="text-right" v-if="loading">-->
+<!--                                        <v-progress-circular indeterminate class="primary&#45;&#45;text"/>-->
+<!--                                    </v-flex>-->
+                                    <v-flex >
+                                        <v-btn @click="$refs[bill.id][0].click()" class="primary mx-1" fab x-small>
+                                            <v-icon>receipt</v-icon>
+                                        </v-btn>
+
+                                    </v-flex>
+                                </v-flex>
+                                <v-flex xs12 class="mt-2">
+                                    <v-divider color="grey"/>
+                                </v-flex>
+                                <v-flex xs12 class="text-start">
+                                    <span style="font-size: small">Colaborador: </span><span style="font-weight: bold; font-size: small">
+                                        {{bill.colaborator[0].name}}
+                                    </span>
+                                </v-flex>
+
+                                <v-flex xs12 class="mt-3">
+                                    <v-layout row wrap>
+                                        <v-flex xs12 class="text-start">
+                                            <span style="font-size: small">Método de pagamento: </span><span style="font-weight: bold; font-size: small">{{bill.payment_methods[0]}}</span>
+                                        </v-flex>
+                                        <v-flex xs12 class="text-start">
+                                            <span style="font-size: small">Data para pagamento: </span><span style="font-weight: bold; font-size: small">{{bill.date.formatted | dateFilter}}</span>
+                                        </v-flex>
+                                        <v-flex xs12 class="mt-2">
+                                            <span style="font-weight: bold; font-size: small; font-style: italic">{{bill.description}}</span>
+                                        </v-flex>
+
+                                        <v-flex xs12 class="mt-1">
+                                            <v-divider color="grey"/>
+                                        </v-flex>
+
+                                        <v-flex xs12 class="mt-0">
+                                            <v-layout row wrap>
+                                                <v-flex xs6>
+                                                    <v-layout column wrap class="mt-4">
+                                                <span class="mb-4 font-weight-bold"
+                                                      style="font-size: medium">Anexos</span>
+                                                        <v-layout row wrap>
+                                                            <v-flex v-for="(append, i) in bill.appends" :key="i">
+                                                                <v-card @click="openAppend(append)" flat>
+                                                                    <v-avatar>
+                                                                        <img :src="append"
+                                                                             style="max-width: 124px; max-width: 124px"/>
+                                                                    </v-avatar>
+                                                                </v-card>
+                                                            </v-flex>
+                                                        </v-layout>
+                                                    </v-layout>
+
+                                                </v-flex>
+                                                <v-divider vertical/>
+                                                <v-flex xs5>
+                                                    <v-layout column wrap class="mt-4 justify-center text-center">
+                                                        <span class="mb-4 font-weight-bold" style="font-size: medium">Comprovante</span>
+                                                        <v-flex xs12 sm2 class="text-right"
+                                                                v-if="loadingAnexo && outtakeSelect === bill">
+                                                            <v-progress-circular indeterminate class="primary--text"/>
+                                                        </v-flex>
+                                                        <v-layout row wrap v-else>
+                                                            <v-flex v-for="(append, i) in bill.receipts" :key="i">
+                                                                <v-card @click="openAppend(append)" flat>
+                                                                    <v-avatar>
+                                                                        <img :src="append"
+                                                                             style="max-width: 124px; max-width: 124px"/>
+                                                                    </v-avatar>
+                                                                </v-card>
+                                                            </v-flex>
+                                                        </v-layout>
+                                                    </v-layout>
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-flex>
+                                    </v-layout>
+<!--                                    <input-->
+<!--                                            v-show="false"-->
+<!--                                            type="file"-->
+<!--                                            :id="bill.id"-->
+<!--                                            :ref="bill.id"-->
+<!--                                            multiple-->
+<!--                                            v-on:change="handleFileUpload(bill)"-->
+<!--                                    />-->
+                                </v-flex>
+                            </v-layout>
+                        </v-card>
+                    </v-col>
+                </v-row>
+            </template>
+        </ApolloQuery>
+
+
 
         <v-flex xs12>
-            <v-row justify="space-around">
-                <v-col cols="12" xs="12">
-                    <v-flex xs12 class="elevation-0 primary" >
-                        <v-chip-group class="mt-n6" active-class="primary--text">
-                            <v-chip
-                                    color="grey lighten-2"
-                                    v-for="(month,i) in months"
-                                    :key="i"
-                                    class="white"
-                                    @click="mapMonths(month)"
-                            >
-                      <span
-                              v-if="month.format('YYYY') === year"
-                              style="font-weight: bold; font-size: small"
-                      >{{ month.format('MMMM') }}</span>
-                                <span
-                                        v-if="month.format('YYYY') !== year"
-                                        style="font-weight: bold; font-size: small"
-                                >{{ month.format('MM/YYYY') }}</span>
-                            </v-chip>
-                        </v-chip-group>
-                    </v-flex>
-                </v-col>
-            </v-row>
+
             <v-container fluid class="ma-0 pa-0">
-                <v-container v-if="loadingFilter">
-                    <v-row align="center" justify="center">
-                        <v-col>
-                            <v-card elevation="10" class="pa-4">
-                                <v-progress-circular indeterminate color="primary"/>
-                            </v-card>
-                        </v-col>
-                    </v-row>
-                </v-container>
 
-                <v-container fluid class="ma-0 " v-else-if="selectedPaidOuttakesList.length === 0">
-
-                    <v-card elevation="10" class="pa-4">Não há contas pagas neste mês</v-card>
-
-                </v-container>
-
-                <v-flex xs12 class="mt-4" v-else>
+                <v-flex xs12 class="mt-4" >
                     <v-card
                             class="pa-4 my-4 elevation-0 transparent"
                             v-for="bill in selectedPaidOuttakesList"
@@ -62,22 +174,23 @@
                         >{{ bill.date_to_pay | dateFilter }} - {{ daydate(bill.date_to_pay) }}</span>
                                 </div>
                             </v-flex>
-                            <v-flex xs6 class="text-start">
-                                <span style="font-weight: bold;">{{bill.category}}</span>
-                                <br/>
-                                <span>{{bill.subCategory}}</span>
-                            </v-flex>
-                            <v-flex xs5 class="text-right">
-                                <span class="font-weight-bold">R$ {{bill.value}}</span>
-                            </v-flex>
-                            <v-flex xs12>
-                                <v-divider color="black"/>
-                            </v-flex>
+<!--                            <v-flex xs6 class="text-start">-->
+<!--                                <span style="font-weight: bold;">{{bill.category}}</span>-->
+<!--                                <br/>-->
+<!--                                <span>{{bill.subCategory}}</span>-->
+<!--                            </v-flex>-->
+<!--                            <v-flex xs5 class="text-right">-->
+<!--                                <span class="font-weight-bold">R$ {{bill.value}}</span>-->
+<!--                            </v-flex>-->
+<!--                            <v-flex xs12>-->
+<!--                                <v-divider color="black"/>-->
+<!--                            </v-flex>-->
                         </v-layout>
                     </v-card>
                 </v-flex>
             </v-container>
         </v-flex>
+
         <v-dialog transition="dialog-bottom-transition" v-model="dialogInfoPaidBill">
             <v-card outlined>
                 <v-flex xs12>
@@ -173,6 +286,7 @@
                 return this.outtakesPaidMonth;
             },
             outtakesPaidMonth() {
+                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                 return this.$store.getters.outtakesPaidMonth.sort((a, b) => {
                     return b.date_to_pay > a.date_to_pay ? 1 : -1;
                 });

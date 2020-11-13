@@ -3,12 +3,12 @@
     <v-layout row wrap>
       <v-flex xs12 class="mb-4">
         <v-btn v-if="allLoaded" class="primary rounded" @click="beginAnalises">Iniciar Analise</v-btn>
-        <v-progress-circular v-else class="primary--text" indeterminate></v-progress-circular>
+        <v-progress-circular v-else class="primary--text" indeterminate/>
         <v-text-field
           v-bind:value="idealProfitPercentage"
           @change="(event)=>$emit('change-idealProfitPercentage',event)"
           label="Porcentagem Ideal de Lucro"
-        ></v-text-field>
+        />
       </v-flex>
       <v-flex xs12>
         <v-layout row wrap>

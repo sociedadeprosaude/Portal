@@ -53,7 +53,7 @@
                         @done="deletingDoctor = false"
                     >
                       <template v-slot="{ mutate, loading, error }">
-                        <v-progress-circular indeterminate color="primary" v-if="loading"></v-progress-circular>
+                        <v-progress-circular indeterminate color="primary" v-if="loading"/>
                         <v-btn v-if="!loading" color="red" class="white--text" @click="mutate()">Apagar</v-btn>
                         <p v-if="error">Ocorreu um erro: {{ error }}</p>
                       </template>
