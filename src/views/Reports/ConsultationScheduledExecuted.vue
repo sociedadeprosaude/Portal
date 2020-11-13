@@ -61,8 +61,9 @@
             <template slot-scope="{ result: { data } }">
                 <ConsultationScheduledExecuted v-if="data"
                                                :scheduled="data.Consultation.length"
-                                               :consultationsDone="filterConsultationsDone(data)"
-                                               :timeConsultations="timeConsultations(data.Consultation)"
+                                               :consultationsDone="filterConsultationsDone(data).length"
+                                               :timeSchedule="timeConsultation(data.Consultation)"
+                                               :timeConsultation="timeConsultation(filterConsultationsDone(data))"
                 />
                 <v-progress-linear v-else-if="!data"
                                    class="mt-5"
@@ -169,8 +170,8 @@
             }
         },
         methods: {
-            timeConsultations(data) {
-                const arrData= [];
+            timeConsultation(data) {
+                const arrData= [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
                 data.map(e => {
                     if(arrData[parseInt(e.date.formatted.substring(11,13))]){
                         arrData[parseInt(e.date.formatted.substring(11,13))] +=1
@@ -180,20 +181,21 @@
                     }
                 });
                 
-                // return {
-                //     labels: this.hours,
-                //     datasets: [
-                //         {
-                //             lineTension: 0,
-                //             fill: false,
-                //             borderColor: "rgb(75, 192, 192)",
-                //             data: arrData
-                //         }
-                //     ]
-                // };
+                return {
+                    labels: this.hours,
+                    datasets: [
+                        {
+                            lineTension: 0,
+                            fill: false,
+                            borderColor: "rgb(75, 192, 192)",
+                            data: arrData,
+                        }
+                    ]
+                };
             },
+
             filterConsultationsDone (data) {
-                return data.Consultation.filter(e => e.attended_by !== null).length
+                return data.Consultation.filter(e => e.attended_by !== null)
             },
             clearSpecialty(){
                 this.specialty = ""
