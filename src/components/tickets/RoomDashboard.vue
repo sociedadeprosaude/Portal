@@ -375,7 +375,7 @@
             <v-col v-if="room.doctor">{{room.doctor.name}}</v-col>
           </v-row>
           <v-row>
-            <v-container class="pa-0">
+            <v-container class="pa-3">
               <v-row>
                 <v-col class="pa-0">
                   <span style="font-size: 0.8em">Senha Anterior:</span>
