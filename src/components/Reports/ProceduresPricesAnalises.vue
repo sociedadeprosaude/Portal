@@ -88,7 +88,7 @@
                                                             row
                                                             wrap
                                                             class="align-center py-2"
-                                                            v-for="product in CostProductClinicFilter(data, selectedType,search)"
+                                                            v-for="(product, label) in CostProductClinicFilter(data, selectedType,search)"
                                                             :key="product.id"
                                                     >
 
@@ -116,10 +116,11 @@
                                                                                   v-show="selectedProduct === product"
                                                                                   solo
                                                                                   outlined
+                                                                                  v-model="newPrice"
                                                                                   dense
                                                                                   append-outer-icon="done"
                                                                                   type="number"
-                                                                                  @click:append-outer="editingPrice = false"
+                                                                                  @click:append-outer="editPrice(label)"
 
                                                                     />
                                                                 </v-flex>
@@ -162,7 +163,7 @@
                                                             row
                                                             wrap
                                                             class="align-center py-2"
-                                                            v-for="product in CostProductClinicFilter(data, selectedType,search)"
+                                                            v-for="(product,label) in CostProductClinicFilter(data, selectedType,search)"
                                                             :key="product.id"
                                                     >
 
@@ -190,9 +191,10 @@
                                                                             solo
                                                                             outlined
                                                                             dense
+                                                                            v-model="newPrice"
                                                                             append-outer-icon="done"
                                                                             type="number"
-                                                                            @click:append-outer="editingPrice = false"
+                                                                            @click:append-outer="editPrice(label)"
 
                                                                     />
                                                                 </v-flex>
@@ -248,6 +250,7 @@
                 loadingEditing: false,
                 selectedProduct: null,
                 search: '',
+                newPrice:0,
                 type: null,
                 CostProductClinicObject: {}
             }
@@ -262,18 +265,30 @@
                 this.editingPrice = true;
                 this.loadingEditing = false;
             },
+          async editPrice(){
+              console.log('selectedProduct:', this.selectedProduct)
+            let edit = await this.$apollo.mutate({
+                mutation: require('@/graphql/products/EditPriceProduct.gql'),
+                variables:{
+                  id: this.selectedProduct.with_product[0].id,
+                  price: parseFloat(this.newPrice)
+                }
+              })
+            console.log('edit: ', edit)
+            this.editingPrice = false
+          },
             CostProductClinicFilter(data, type,filter) {
               if(filter.length !== 0){
                 if(type === 0){
-                  return this.CostProductClinicObject.filter(e => e.with_clinic[0].name.includes(this.search.toUpperCase()))
+                  return this.CostProductClinicObject.filter(e => e.with_clinic[0].name.includes(this.search.toUpperCase())).slice(0,50)
                 }
                 else{
-                  return this.CostProductClinicObject.filter(e => e.with_product[0].name.includes(this.search.toUpperCase()))
+                  return this.CostProductClinicObject.filter(e => e.with_product[0].name.includes(this.search.toUpperCase())).slice(0,50)
                 }
               }
               else {
                 if (this.type === type) {
-                  return this.CostProductClinicObject
+                  return this.CostProductClinicObject.slice(0,50)
                 } else {
 
                   if (this.selectedType === 0) {
@@ -287,7 +302,7 @@
                       }
                       return 0
                     });
-                    return this.CostProductClinicObject
+                    return this.CostProductClinicObject.slice(0,50)
 
                   } else {
                     this.type = type;
@@ -300,12 +315,12 @@
                       }
                       return 0
                     });
-                    return this.CostProductClinicObject
+                    return this.CostProductClinicObject.slice(0,50)
                   }
                 }
               }
                 this.type = type;
-                return data.CostProductClinic
+                return data.CostProductClinic.slice(0,50)
             },
             changeSelectType(type) {
                 this.CostProductClinic = this.CostProductClinicFilter(data)
