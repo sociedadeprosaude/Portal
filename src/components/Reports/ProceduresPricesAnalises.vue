@@ -122,7 +122,7 @@
                 :key="clinic.name"
               >
                 <v-flex xs12>
-                  <v-divider class="black"></v-divider>
+                  <v-divider class="black"/>
                 </v-flex>
                 <v-flex xs2>{{clinic.name}}</v-flex>
                 <v-divider vertical></v-divider>
