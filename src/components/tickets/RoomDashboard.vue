@@ -6,37 +6,42 @@
         <v-tooltip top >
           <template v-slot:activator="{ on }">
             <v-btn
-              width="100%"
-              v-on="on"
-              class="primary"
-              rounded
-              :disabled="loading"
-              @click="()=>generateSectorTicket(false)"
+                width="100%"
+                v-on="on"
+                class="primary"
+                rounded
+                :disabled="loading"
+                @click="()=>generateSectorTicket(false)"
             >
-              Gerar Proxima senha:
-              {{normal}}
+              <span>Gerar Proxima Senha Normal:</span>
+              <v-avatar color="white" size="30">
+                <span style="color: #003B8F;font-weight: bold">{{normal}}</span>
+              </v-avatar>
             </v-btn>
           </template>
-          <span>Gerar próxima senha</span>
+          <span>Gerar Próxima Senha Normal</span>
         </v-tooltip>
       </v-col>
+
 
       <v-col sm="12" md="6">
         <v-tooltip top >
           <template v-slot:activator="{ on }">
             <v-btn
-              width="100%"
-              v-on="on"
-              class="primary"
-              rounded
-              :disabled="loading"
-              @click="()=>generateSectorTicket(true)"
+                width="100%"
+                v-on="on"
+                class="primary"
+                rounded
+                :disabled="loading"
+                @click="()=>generateSectorTicket(true)"
             >
-              Gerar proxima senha preferencial
-              {{priority}}
+              <span>Gerar Proxima Senha Preferencial:</span>
+              <v-chip color="white">
+                <span style="color: #003B8F;font-weight: bold">{{priority}}</span>
+              </v-chip>
             </v-btn>
           </template>
-          <span>Gerar próxima senha preferencial</span>
+          <span>Gerar Próxima Senha Preferencial</span>
         </v-tooltip>
       </v-col>
 
