@@ -102,7 +102,7 @@
                 v-bind="attrs"
                 v-on="on"
             >
-              <v-icon large>replay_10</v-icon>Resetar Senhas NORMAL<v-icon large>forward_30</v-icon>
+              Resetar Senhas NORMAL
             </v-btn>
           </template>
           <v-card>
@@ -150,7 +150,7 @@
                 v-bind="attrs"
                 v-on="on"
             >
-              <v-icon large>replay_10</v-icon>Resetar Senhas PREFERENCIAL<v-icon large>forward_30</v-icon>
+              Resetar Senhas PREFERENCIAL
             </v-btn>
           </template>
           <v-card>
@@ -385,7 +385,7 @@
                 <v-col class="pa-0">
                   <span style="font-size: 0.8em">Senha Anterior:</span>
                   <br />
-                  <span v-if="room.previos_ticket">{{room.previos_ticket}}</span>
+                  <span v-if="room.previos_ticket" style="color: #003B8F;font-weight: bold">{{room.previos_ticket}}</span>
                   <span v-else>*</span>
                 </v-col>
                 <v-divider vertical></v-divider>
@@ -393,7 +393,7 @@
                   <div>
                     <span style="font-size: 0.8em">Senha Atual:</span>
                     <br />
-                    <span v-if="room.current_ticket">{{room.current_ticket}}</span>
+                    <span v-if="room.current_ticket" style="color: #003B8F;font-weight: bold">{{room.current_ticket}}</span>
                     <span v-else>*</span>
                   </div>
                 </v-col>
@@ -403,11 +403,11 @@
                     <span style="font-size: 0.8em">Proxima Senha Normal:</span>
                     <br />
                     <div v-if="room.next_ticket_normal">
-                      <span v-if="room.next_ticket_normal">{{room.next_ticket_normal}}</span>
+                      <span v-if="room.next_ticket_normal" style="color: #003B8F;font-weight: bold">{{room.next_ticket_normal}}</span>
                       <span v-else>*</span>
                     </div>
                     <div v-if="!room.next_ticket_normal">
-                      <span v-if="sector.next_ticket_normal">{{sector.next_ticket_normal}}</span>
+                      <span v-if="sector.next_ticket_normal" style="color: #003B8F;font-weight: bold">{{sector.next_ticket_normal}}</span>
                       <span v-else>*</span>
                     </div>
                   </div>
@@ -418,11 +418,11 @@
                     <span style="font-size: 0.8em">Proxima Senha Preferencial:</span>
                     <br />
                     <div v-if="room.next_ticket_priority">
-                      <span v-if="room.next_ticket_priority">{{room.next_ticket_priority}}</span>
+                      <span v-if="room.next_ticket_priority" style="color: #003B8F;font-weight: bold">{{room.next_ticket_priority}}</span>
                       <span v-else>*</span>
                     </div>
                       <div v-if="!room.next_ticket_priority">
-                      <span v-if="sector.next_ticket_priority">{{sector.next_ticket_priority}}</span>
+                      <span v-if="sector.next_ticket_priority" style="color: #003B8F;font-weight: bold">{{sector.next_ticket_priority}}</span>
                       <span v-else>*</span>
                     </div>
                   </div>
