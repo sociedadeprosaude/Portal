@@ -66,15 +66,16 @@
           </v-card>
         </v-col>
       </v-row>
-<!--      <v-row justify="center">
+      <v-row justify="center" v-if="size_off <= 5">
         <v-card flat>
           <img :src="constants.ASSETS.logo" height="124px" />
         </v-card>
-      </v-row>-->
+      </v-row>
     </v-container>
     <v-container fluid class="white--text">
       <div v-for="(ticket, index) in sector.has_rooms.slice(0,1)"
            :key="index">
+        <div v-if="ticket.current_ticket">
         <v-row class="pa-0 ma-0 half primary">
           <v-col align-self="center">
             <v-row justify="center">
@@ -103,6 +104,14 @@
             </v-row>
           </v-col>
         </v-row>
+        </div>
+        <div else>
+          <v-row justify="center">
+            <v-card flat>
+              <img :src="constants.ASSETS.logo" height="300px"/>
+            </v-card>
+          </v-row>
+        </div>
       </div>
     </v-container>
   </v-card>
@@ -136,6 +145,8 @@ export default {
 
         this.new = this.sector.has_rooms
 
+        this.size_off = this.sector.has_rooms.length
+
         for(let i in this.old){
           for(let j in this.new){
             if(this.old[i].name === this.new[j].name){
@@ -151,14 +162,22 @@ export default {
     },
   },
   mounted() {
-    this.clockInterval = setInterval(() => {
+    let rooms = this.sector.has_rooms
+    this.size_off = this.sector.has_rooms.length
+    console.log('ft:', rooms)
+    for(let room in rooms){
+      if(rooms[romm].current_ticket){
+
+      }
+    }
+/*    this.clockInterval = setInterval(() => {
       this.$nextTick(() => {
         this.hour = moment().format("HH:mm");
       });
     }, 1000);
     window.addEventListener("beforeunload", () => {
       clearInterval(this.clockInterval);
-    });
+    });*/
   },
   data() {
     return {
@@ -168,6 +187,7 @@ export default {
       lastRoomCalled: null,
       animation: "",
       playingAudio: false,
+      size_off: undefined,
       expand: false,
       old: undefined,
       new: undefined,

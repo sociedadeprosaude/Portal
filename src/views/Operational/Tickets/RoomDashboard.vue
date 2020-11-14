@@ -341,10 +341,12 @@ export default {
     async resetSectorTicketPriority(number){
       this.loading = true;
       await this.$apollo.queries.LoadRoomsOfSector.refresh();
+      let prioritys = this.sector.sector_has_tickets.filter(a => {
+        return a.type === 'priority';
+      });
       let count = 'P'+' '+ number.toString()
       let rooms = this.sector.has_rooms
-      let ticketsSector = this.sector.sector_has_tickets
-      alert('priority')
+      let ticketsSector = prioritys
       const dataTicket = await this.$apollo.mutate({
         mutation: require('@/graphql/tickets/CreateTicket.gql'),
         variables: {
