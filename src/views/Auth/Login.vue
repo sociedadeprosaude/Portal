@@ -1,12 +1,13 @@
 <template>
     <v-container fluid fill-height>
         <v-layout row wrap class="align-center justify-center" style="margin-bottom: 30vh">
-            <v-flex xs8 sm4 class="text-xs-center">
+            <v-flex xs12 sm4 class="text-xs-center">
                 <img :src="require('../../assets/pro_saude_logo.png')"
                      width="100px" class="mb-5 mt-5">
                 <v-card style="min-width: 300px" class="mb-5">
                     <v-card-text>
                         <v-text-field
+                            outlined
                                 slot="activator"
                                 v-model="email"
                                 label="Email"
@@ -15,6 +16,7 @@
                                 prepend-icon="email">
                         </v-text-field>
                         <v-text-field
+                            outlined
                                 slot="activator"
                                 v-model="password"
                                 label="Senha"
@@ -31,14 +33,14 @@
                             <v-flex xs12>
                                 <v-progress-linear :indeterminate="true" v-if="loading"/>
                             </v-flex>
-                            <v-flex xs6>
-                                <v-btn text class="primary_dark--text" to="/cadastro">
+                            <v-flex xs6 class="text-left pl-1">
+                                <v-btn outlined to="/cadastro">
                                     Cadastre-se
                                 </v-btn>
                             </v-flex>
                             <v-spacer/>
-                            <v-flex xs6 class="text-right pr-3">
-                                <v-btn text class="primary_dark--text" @click.native="signIn">
+                            <v-flex xs6 class="text-right pr-1">
+                                <v-btn color="primary" @click.native="signIn">
                                     Entrar
                                 </v-btn>
                             </v-flex>
