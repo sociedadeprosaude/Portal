@@ -14,9 +14,9 @@
                 @click="()=>generateSectorTicket(false)"
             >
               <span>Gerar Proxima Senha Normal:</span>
-              <v-avatar color="white" size="30">
+              <v-chip color="white">
                 <span style="color: #003B8F;font-weight: bold">{{normal}}</span>
-              </v-avatar>
+              </v-chip>
             </v-btn>
           </template>
           <span>Gerar Próxima Senha Normal</span>
