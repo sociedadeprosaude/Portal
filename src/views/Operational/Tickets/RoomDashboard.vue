@@ -189,6 +189,7 @@ export default {
         mutation: require('@/graphql/rooms/CreateRoom.gql'),
         variables: {
           name: room.name.toUpperCase(),
+          show: false,
         },
       });
       const idRoom = dataRoom.data.CreateRoom.id
@@ -264,23 +265,14 @@ export default {
     async resetSectorTicketNormal(number) {
       this.loading = true;
       await this.$apollo.queries.LoadRoomsOfSector.refresh();
+      let normals = this.sector.sector_has_tickets.filter(a => {
+        return a.type === 'normal';
+      });
       let count = number.toString()
       let rooms = this.sector.has_rooms
-      let ticketsSector = this.sector.sector_has_tickets
+      let ticketsSector = normals
       //start
-      alert('normal')
-      //end
-      await this.$apollo.queries.LoadRoomsOfSector.refresh();
-      this.loading = false;
-    },
-    async resetSectorTicketPriority(number){
-      this.loading = true;
-      await this.$apollo.queries.LoadRoomsOfSector.refresh();
-      let count = number.toString()
-      let rooms = this.sector.has_rooms
-      let ticketsSector = this.sector.sector_has_tickets
-      alert('priority')
-    /*const dataTicket = await this.$apollo.mutate({
+      const dataTicket = await this.$apollo.mutate({
         mutation: require('@/graphql/tickets/CreateTicket.gql'),
         variables: {
           name: count,
@@ -301,9 +293,80 @@ export default {
         variables: {
           id: this.sector.id,
           counter_reset: 0,
-          counter_normal: number,//number count inicial
-          counter_priority: 0,
+          counter_normal: number,//number count inicial //counter_priority: 0,next_ticket_priority: null,
           next_ticket_normal: null,
+        },
+      });
+      if(ticketsSector.length > 0){
+        for(let ts in ticketsSector) {
+          //console.log('tem tickets no setor', ticketsSector)
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/sectors/RemoveSectorSector_has_tickets.gql'),
+            variables: {
+              idSector:  this.sector.id,
+              idTicket: ticketsSector[ts].id,
+            },
+          });
+        }
+      }
+      if(rooms.length > 0){
+        for(let room in rooms){
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/rooms/UpdateRoom.gql'),
+            variables: {
+              id: rooms[room].id,
+              current_ticket: null,
+              previos_ticket: null,
+              show: false,
+            },
+          });
+          if(rooms[room].room_has_tickets.length > 0){
+            //console.log('tem tickets na sala', rooms[room].name)
+            for(let tr in rooms[room].room_has_tickets){
+              await this.$apollo.mutate({
+                mutation: require('@/graphql/rooms/RemoveRoomRoom_has_tickets.gql'),
+                variables: {
+                  idRoom: rooms[room].id,
+                  idTicket: rooms[room].room_has_tickets[tr].id,
+                },
+              });
+            }
+          }
+        }
+      }
+      //end
+      await this.$apollo.queries.LoadRoomsOfSector.refresh();
+      this.loading = false;
+    },
+    async resetSectorTicketPriority(number){
+      this.loading = true;
+      await this.$apollo.queries.LoadRoomsOfSector.refresh();
+      let count = 'P'+' '+ number.toString()
+      let rooms = this.sector.has_rooms
+      let ticketsSector = this.sector.sector_has_tickets
+      alert('priority')
+      const dataTicket = await this.$apollo.mutate({
+        mutation: require('@/graphql/tickets/CreateTicket.gql'),
+        variables: {
+          name: count,
+          type: "priority",
+          created_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
+        },
+      });
+      const idTicket = dataTicket.data.CreateTicket.id
+      await this.$apollo.mutate({
+        mutation: require('@/graphql/tickets/AddRelationsSectorTicket.gql'),
+        variables: {
+          idSector: this.sector.id,
+          idTicket: idTicket,
+        },
+      });
+      await this.$apollo.mutate({
+        mutation: require('@/graphql/sectors/UpdateSector.gql'),
+        variables: {
+          id: this.sector.id,
+          counter_reset: 0,
+          counter_priority: number,//number count inicial //counter_priority: 0,next_ticket_priority: null,
           next_ticket_priority: null,
         },
       });
@@ -327,6 +390,7 @@ export default {
               id: rooms[room].id,
               current_ticket: null,
               previos_ticket: null,
+              show: false,
             },
           });
           if(rooms[room].room_has_tickets.length > 0){
@@ -342,7 +406,7 @@ export default {
             }
           }
         }
-      }*/
+      }
       //end
       await this.$apollo.queries.LoadRoomsOfSector.refresh();
       this.loading = false;
@@ -352,12 +416,14 @@ export default {
       await this.$apollo.queries.LoadRoomsOfSector.refresh();
 
       if(preferential === true) {
-        let count = 'P'
+        let count;
         this.sector.counter_priority = this.sector.counter_priority + 1
+        count = this.sector.counter_priority.toString()
+        count = 'P'+' '+count
         const dataTicket = await this.$apollo.mutate({
           mutation: require('@/graphql/tickets/CreateTicket.gql'),
           variables: {
-            name: this.sector.counter_priority.toString(),
+            name: count,
             type: "priority",
             created_at: { formatted : moment().format('YYYY-MM-DDTHH:mm:ss')}
           },
@@ -545,6 +611,23 @@ export default {
     },
     async callSectorTicket(room, preferential) {
       await this.$apollo.queries.LoadRoomsOfSector.refresh();
+
+      let rooms  = this.sector.has_rooms.filter(a => {
+        return a.id !== room.id;
+      });
+
+      for (let room in rooms ){
+        if(rooms[room].show === true){
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/rooms/UpdateRoom.gql'),
+            variables: {
+              id: rooms[room].id,
+              show: false,
+            },
+          });
+        }
+      }
+
       if(preferential === true) {
         let prioritys = this.sector.sector_has_tickets.filter(a => {
           return a.type === 'priority';
@@ -585,6 +668,7 @@ export default {
               id: room.id,
               previos_ticket: '*',
               current_ticket: priority[0].name,
+              show: true,
             },
           });
         } else {
@@ -594,6 +678,7 @@ export default {
               id: room.id,
               previos_ticket: room.current_ticket,
               current_ticket: priority[0].name,
+              show: true,
             },
           });
         } } else { alert("todas as senhas 'preferencial' foram chamadas, crie novas senhas preferenciais!") }
@@ -637,6 +722,7 @@ export default {
                 id: room.id,
                 previos_ticket: '*',
                 current_ticket: normal[0].name,
+                show: true,
               },
             });
           } else {
@@ -646,6 +732,7 @@ export default {
                 id: room.id,
                 previos_ticket: room.current_ticket,
                 current_ticket: normal[0].name,
+                show: true,
               },
             });
           }

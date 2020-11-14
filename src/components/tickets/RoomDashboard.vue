@@ -221,7 +221,7 @@
                 <span>Chamar próxima senha</span>
               </v-tooltip>
 
-              <v-tooltip top v-if="priority > 0 && !room.doctor">
+              <v-tooltip top v-if="priority > '0' && !room.doctor">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                       v-bind="attrs"
