@@ -20,7 +20,7 @@
                 v-bind:filesPreviews="filesPreviews"
                 v-bind:outtakesPaid="outtakesPaid"
                 v-bind:outtakesPaidToday="outtakesPaidToday"
-                v-bind:pendingOuttakes="pendingOuttakes"
+                :pendingOuttakes="pendingOuttakes"
                 v-bind:selectedPaidOuttakesList="selectedPaidOuttakesList"
                 v-bind:categories="categories"
                 :getOuttakesPaid="getOuttakesPaid"
@@ -87,13 +87,9 @@
             },
             pendingOuttakes() {
                 if (this.Charges.length) {
-                    console.log('anteriores: ', this.$store.getters.outtakesPending)
                     return this.Charges
                 }
                 return []
-                /* return this.$store.getters.outtakesPending.sort((a, b) => {
-                  return b.date_to_pay < a.date_to_pay ? 1 : -1;
-                }); */
             },
             categories() {
                 return this.$store.getters.outtakesCategories;
@@ -148,7 +144,6 @@
 
             },
             updateCharges() {
-                console.log('entrei aqui')
                 this.ChargeSkip = false
                 this.$apollo.queries.LoadChargeBills.refresh()
             },
@@ -179,7 +174,6 @@
                     type: 'bill'
                 },
                 update(data) {
-                    console.log('data.Charge', data.Charge)
                     this.Charges = Object.assign(data.Charge)
                     this.ChargeSkip = true
                 },
