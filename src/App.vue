@@ -125,11 +125,11 @@
                     this.skip = true;
                     let user = undefined;
                     if(data.User.length > 0){
-                        user =  data.User[0]
+                        user =  data.User[0].is_colaborator? data.User[0].is_colaborator : data.User[0].is_doctor;
                         this.$store.dispatch('getUser', user);
                     }
 
-                    if(!user){
+                    if(!user || !user[0].is_colaborator || !user[0].is_doctor){
                         this.ready = true;
                         this.$router.push('/error-authentication')
                     }
