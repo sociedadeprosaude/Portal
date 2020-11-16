@@ -6,6 +6,7 @@
       </v-col>
     </v-row>
     <v-card>
+
       <v-row row wrap class="mt-2">
         <v-col cols="12" >
           <v-divider></v-divider>
@@ -103,6 +104,7 @@ import moment from 'moment'
 export default {
   props: [
       "Budgets",
+      "budgetsForDate"
   ],
   data: vm => ({
     budgetSelected: ''

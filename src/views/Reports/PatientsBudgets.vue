@@ -1,7 +1,9 @@
 <template>
   <v-container fluid v-if="skipBudgets">
     <PatientsBudgets
-    :budgets="Budgets">
+    :budgets="Budgets"
+    :budgetsForDate="BudgetsForDate"
+    >
 
     </PatientsBudgets>
   </v-container>
@@ -33,7 +35,26 @@ export default {
     },
     selectedUnit() {
       return this.$store.getters.selectedUnit
+    },
+    BudgetsForDate(){
+      let DateForBudget= {}
+      this.Budgets.map(e =>{
+        if(DateForBudget[e.date.formatted.substring(0, 10)]){
+          DateForBudget[e.date.formatted.substring(0, 10)].NumBudgets +=1
+          DateForBudget[e.date.formatted.substring(0, 10)].Budgets.push(e)
+        }
+        else{
+          DateForBudget[e.date.formatted.substring(0, 10)] = {
+            Budgets: [],
+            NumBudgets: 1
+          }
+          DateForBudget[e.date.formatted.substring(0, 10)].Budgets.push(e)
+        }
+      return 1
+      })
+      return DateForBudget
     }
+
   },
   apollo: {
     loadTransactions: {
