@@ -3,6 +3,7 @@
     <PatientsBudgets
     :budgets="Budgets"
     :budgetsForDate="BudgetsForDate"
+    :dates="dates"
     >
 
     </PatientsBudgets>
@@ -46,13 +47,35 @@ export default {
         else{
           DateForBudget[e.date.formatted.substring(0, 10)] = {
             Budgets: [],
-            NumBudgets: 1
+            NumBudgets: 1,
+            date: e.date.formatted.substring(0,10)
           }
           DateForBudget[e.date.formatted.substring(0, 10)].Budgets.push(e)
         }
       return 1
       })
-      return DateForBudget
+      console.log('DateForBudget', DateForBudget)
+      const ordered = {};
+
+      Object.keys(DateForBudget).sort(function (a,b){ if (a > b) {
+        return -1;
+      }
+        if (a < b) {
+          return 1;
+        }
+        return 0;}).forEach(function(key) {
+        ordered[key] = DateForBudget[key];
+      });
+
+      return ordered
+    },
+    dates(){
+      let dates = []
+      dates.push('')
+      for(let i in this.BudgetsForDate){
+        dates.push( moment(i).format('DD/MM/YYYY'))
+      }
+      return dates
     }
 
   },

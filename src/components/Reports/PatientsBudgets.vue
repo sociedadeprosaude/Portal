@@ -1,12 +1,23 @@
 <template>
   <v-container>
     <v-row>
+      <v-col cols="4">
+        <v-select
+        v-model="selectedDate"
+        :items="dates"
+        label="Escolha uma data"
+        >
+        </v-select>
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col>
         <span class="my-sub-headline mb-4 mx-4">Relatório Orçamentos Não Comprados</span>
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12"  v-for="(budgetsDate, index) in budgetsForDate" v-bind:key="index">
+      {{print(budgetsForDate)}}
+      <v-col cols="12"  v-for="(budgetsDate, index) in Budgets" v-bind:key="index">
         <v-card>
         <v-card color="primary elevation-0">
           <h3 class="text-center font-weight-bold ml-2 white--text">{{index |
@@ -123,11 +134,12 @@
 import moment from 'moment'
 export default {
   props: [
-      "Budgets",
-      "budgetsForDate"
+      "budgetsForDate",
+      "dates"
   ],
   data: vm => ({
     budgetSelected: '',
+    selectedDate: '',
     semanaOptions: [
       "Domingo",
       "Segunda-feira",
@@ -148,10 +160,23 @@ export default {
       }
     },
     daydate(date) {
-      console.log('date: ',date)
       let dateMoment = moment(date);
       return this.semanaOptions[dateMoment.day()];
     },
+    print(dat){
+      console.log('objet:', dat)
+    }
+  },
+  computed:{
+    Budgets(){
+      let Budgets = {}
+      let date = moment(this.selectedDate, 'DD/MM/YYYY').format('YYYY-MM-DD')
+      if(this.selectedDate !== ''){
+        Budgets[date] =  this.budgetsForDate[date]
+        return Budgets
+      }
+      return this.budgetsForDate
+    }
   }
 };
 </script>
