@@ -187,6 +187,7 @@
                     labels: this.hours,
                     datasets: [
                         {
+                            label: 'consultas',
                             lineTension: 0,
                             fill: false,
                             borderColor: "rgb(75, 192, 192)",
@@ -220,6 +221,7 @@
                     ],
                     datasets: [
                         {
+                            label: 'consultas',
                             lineTension: 0,
                             fill: false,
                             borderColor: "rgb(75, 192, 192)",

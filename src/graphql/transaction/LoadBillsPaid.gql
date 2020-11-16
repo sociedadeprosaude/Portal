@@ -1,5 +1,6 @@
-query {
-   Transaction (filter: {value_lt: 0, description_not: null, with_unit_not: null, categories_not: null}) {
+query ($date_start:_Neo4jDateTimeInput, $date_end: _Neo4jDateTimeInput) {
+   Transaction (filter: {value_lt: 0, description_not: null, with_unit_not: null, categories_not: null,
+   date_gte: $date_start, date_lte: $date_end,}) {
     value,
   	description,
   	date{formatted},

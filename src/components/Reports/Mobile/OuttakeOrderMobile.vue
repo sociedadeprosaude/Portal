@@ -2,7 +2,7 @@
     <v-container class="ma-0 pa-0 align-start justify-center" fluid >
         <v-row class="align-center justify-center">
             <v-col cols="12" xs="12" class="primary mt-n5">
-                <v-card class="elevation-0 white--text mt-n2 primary" style="border-radius: 0">
+                <v-card class="elevation-0 white--text mt-n2 mt-md-2 primary" style="border-radius: 0">
                     <v-card-title class="font-weight-bold align-lg-center justify-center">
                         R$ {{ totalPayable }}
                     </v-card-title>
@@ -13,15 +13,34 @@
                             <span style="font-weight: bold;"> {{ day | dateFilter }} </span>
                         </v-chip>
                     </v-chip-group>
+                    <v-layout row wrap class="justify-center">
+                        <v-flex xs3>
+                        <v-text-field rounded solo filled dense color="background" v-model="dateStart.formatted"/>
+                        </v-flex>
+                        <v-flex xs1 class="pt-2">
+                            <v-icon color="white">event</v-icon>
+                        </v-flex>
+                        <v-flex xs3>
+                            <v-text-field rounded solo filled dense color="background" v-model="dateEnd.formatted"/>
+                        </v-flex>
+                    </v-layout>
+
                 </v-card>
             </v-col>
         </v-row>
-        <ApolloQuery :query="require('@/graphql/transaction/LoadBillsToPay.gql')">
+        <ApolloQuery :query="require('@/graphql/transaction/LoadBillsToPay.gql')"
+                     :variables="{ date_start: dateStart, date_end: dateEnd}"
+                     @done="Total"
+        >
             <template v-slot="{result: {data}}">
+
                 <v-layout row wrap class="justify-center fill-height mt-4" v-if="!data" >
                     <v-progress-circular indeterminate color="primary" large :size="200"/>
                 </v-layout>
-                <v-row class="align-start justify-center" xs="8" v-else
+                <v-container fluid class="ma-0 " v-if="data">
+
+                    <v-card v-if="data.Charge.length === 0" elevation="10" class="pa-4">Não há contas a serem pagas neste mês</v-card>
+                    <v-row class="align-start justify-center" xs="8" v-else
                        v-for="(outtakesGroup, i) in outtakesByDate(data.Charge)"
                        :key="i"
                 >
@@ -179,6 +198,7 @@
                         </v-card>
                     </v-col>
                 </v-row>
+                </v-container>
             </template>
         </ApolloQuery>
 
@@ -193,6 +213,9 @@
 
         data() {
             return {
+                dateStart: {formatted: "2018-10-01T01:00"},
+                dateEnd: {formatted: "2020-11-12T01:00"},
+                monthSelected: 'Outubro',
                 isEditing: false,
                 loading: false,
                 loadingAnexo: false,
@@ -213,10 +236,53 @@
                     "Quinta-feira",
                     "Sexta-feira",
                     "Sábado"
-                ]
+                ],
+                monsthsName: [
+                    "Janeiro",
+                    "Fevereiro",
+                    "Março",
+                    "Abril",
+                    "Maio",
+                    "Junho",
+                    "Julho",
+                    "Agosto",
+                    "Setembro",
+                    "Outubro",
+                    "Novembro",
+                    "Dezembro"
+                ],
+                lastYear: '',
+                lastMonth: '',
+                month: null,
             };
         },
         computed: {
+            years() {
+                let years = [];
+                let year = moment().format('YYYY');
+                for (let i = parseInt(this.lastYear); i <= parseInt(year); i++) {
+
+                    years.push(i.toString())
+                }
+                return years
+            },
+            monthsNew() {
+                let months = [];
+                let month = moment().format('MM');
+
+                if (this.lastYear === moment().format('YYYY')) {
+                    for (let i = parseInt(this.lastMonth); i <= parseInt(month); i++) {
+
+                        months.push(i.toString())
+                    }
+                } else {
+                    for (let i = parseInt(this.lastMonth); i <= 12; i++) {
+
+                        months.push(i.toString())
+                    }
+                }
+                return months
+            },
             pendingOuttakes() {
                 return this.$store.getters.outtakesPending.sort((a, b) => {
                     return b.date_to_pay < a.date_to_pay ? 1 : -1;
@@ -234,12 +300,8 @@
                 return dates
             },
             totalPayable() {
-                let holder = this.outtakesByDate(this.pendingOuttakes);
+
                 let total = 0.00;
-                for (let item in holder) {
-                    total = total + Number(holder[item][0].value)
-                }
-                //total = Math.round(total)
                 total = total.toFixed(2)
                 return total
             }
@@ -250,13 +312,16 @@
             }
         },
         methods: {
+            Total(data) {
+                console.log('data', data)
+            },
             mappingDates(val) {
                 this.date = val;
             },
 
             daydate(date) {
 
-                var dateMoment = moment(date);
+                let dateMoment = moment(date);
                 return this.semanaOptions[dateMoment.day()];
             },
             outtakesByDate(outtakes) {

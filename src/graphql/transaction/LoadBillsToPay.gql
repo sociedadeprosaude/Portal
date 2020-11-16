@@ -1,6 +1,11 @@
-query{
-    Charge (filter: {description_not: null, date_to_pay_not: null}) {
-        description,
+query ($date_start:_Neo4jDateTimeInput, $date_end: _Neo4jDateTimeInput){
+    Charge (filter: {
+        description_not: null,
+        date_to_pay_not: null,
+        date_gte: $date_start,
+        date_lte: $date_end,
+        }) {
+            description,
             colaborator {
               name
             },

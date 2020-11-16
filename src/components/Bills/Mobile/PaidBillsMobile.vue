@@ -2,31 +2,45 @@
     <v-container class="ma-0 pa-0" fluid>
         <v-row class="align-center justify-center">
             <v-col cols="12" xs="12" class="primary mt-n5">
-                <v-card class="elevation-0 white--text mt-n2 primary" style="border-radius: 0">
+                <v-card class="elevation-0 white--text mt-n2 mt-md-2 primary" style="border-radius: 0">
                     <v-card-title class="font-weight-bold align-lg-center justify-center">
                         R$
                     </v-card-title>
                     <v-card-subtitle style="font-size: small" class="white--text font-italic">Valor pago
                     </v-card-subtitle>
 
-                    <v-chip-group active-class="primary--text" class="mt-n2 mb-n3 mx-0 my-0" show-arrows>
-                        <v-chip mandatory
-                                active-class="primary--text"
-                                v-for="(month,i) in months" :key="i" class="white" x-small @click="mapMonths(month)">
-                          <span
-                                  v-if="month.format('YYYY') === year"
-                                  style="font-weight: bold"
-                          >{{ month.format('MMMM') }}</span>
-                            <span
-                                    v-if="month.format('YYYY') !== year"
-                                    style="font-weight: bold"
-                            >{{ month.format('MM/YYYY') }}</span>
-                        </v-chip>
-                    </v-chip-group>
+<!--                    <v-chip-group active-class="primary&#45;&#45;text" class="mt-n2 mb-n3 mx-0 my-0" show-arrows>-->
+<!--                        <v-chip mandatory-->
+<!--                                active-class="primary&#45;&#45;text"-->
+<!--                                v-for="(month,i) in months" :key="i" class="white" x-small @click="mapMonths(month)">-->
+<!--                          <span-->
+<!--                                  v-if="month.format('YYYY') === year"-->
+<!--                                  style="font-weight: bold"-->
+<!--                          >{{ month.format('MMMM') }}</span>-->
+<!--                            <span-->
+<!--                                    v-if="month.format('YYYY') !== year"-->
+<!--                                    style="font-weight: bold"-->
+<!--                            >{{ month.format('MM/YYYY') }}</span>-->
+<!--                        </v-chip>-->
+<!--                    </v-chip-group>-->
+                    <v-layout row wrap class="justify-center">
+                        <v-flex xs3>
+                            <v-text-field rounded solo filled dense color="background" v-model="dateStart.formatted"/>
+                        </v-flex>
+                        <v-flex xs1 class="pt-2">
+                            <v-icon color="white">event</v-icon>
+                        </v-flex>
+                        <v-flex xs3>
+                            <v-text-field rounded solo filled dense color="background" v-model="dateEnd.formatted"/>
+                        </v-flex>
+                    </v-layout>
                 </v-card>
             </v-col>
         </v-row>
-        <ApolloQuery :query="require('@/graphql/transaction/LoadBillsPaid.gql')">
+        <ApolloQuery :query="require('@/graphql/transaction/LoadBillsPaid.gql')"
+                     :variables="{ date_start: dateStart, date_end: dateEnd}"
+                     @done="total"
+        >
             <template v-slot="{result: {data}}">
                 <v-layout row wrap class="justify-center fill-height mt-4" v-if="!data" >
                     <v-progress-circular indeterminate color="primary" large :size="200"/>
@@ -118,20 +132,20 @@
                                                 <v-flex xs5>
                                                     <v-layout column wrap class="mt-4 justify-center text-center">
                                                         <span class="mb-4 font-weight-bold" style="font-size: medium">Comprovante</span>
-                                                        <v-flex xs12 sm2 class="text-right"
-                                                                v-if="loadingAnexo && outtakeSelect === bill">
-                                                            <v-progress-circular indeterminate class="primary--text"/>
-                                                        </v-flex>
-                                                        <v-layout row wrap v-else>
-                                                            <v-flex v-for="(append, i) in bill.receipts" :key="i">
-                                                                <v-card @click="openAppend(append)" flat>
-                                                                    <v-avatar>
-                                                                        <img :src="append"
-                                                                             style="max-width: 124px; max-width: 124px"/>
-                                                                    </v-avatar>
-                                                                </v-card>
-                                                            </v-flex>
-                                                        </v-layout>
+<!--                                                        <v-flex xs12 sm2 class="text-right"-->
+<!--                                                                v-if="loadingAnexo && outtakeSelect === bill">-->
+<!--                                                            <v-progress-circular indeterminate class="primary&#45;&#45;text"/>-->
+<!--                                                        </v-flex>-->
+<!--                                                        <v-layout row wrap v-else>-->
+<!--                                                            <v-flex v-for="(append, i) in bill.receipts" :key="i">-->
+<!--                                                                <v-card @click="openAppend(append)" flat>-->
+<!--                                                                    <v-avatar>-->
+<!--                                                                        <img :src="append"-->
+<!--                                                                             style="max-width: 124px; max-width: 124px"/>-->
+<!--                                                                    </v-avatar>-->
+<!--                                                                </v-card>-->
+<!--                                                            </v-flex>-->
+<!--                                                        </v-layout>-->
                                                     </v-layout>
                                                 </v-flex>
                                             </v-layout>
@@ -260,6 +274,8 @@
     export default {
         name: "PaidBillsMobile",
         data: () => ({
+            dateStart: {formatted: "2018-10-01T01:00"},
+            dateEnd: {formatted: "2020-11-12T01:00"},
             selectedMonth: "",
             loadingFilter: false,
             dialogInfoPaidBill: false,
@@ -293,6 +309,9 @@
             },
         },
         methods: {
+            async total (data){
+                console.log('data: ', data)
+            },
             mapMonths(month) {
                 this.selectedMonth = month.format("YYYY-MM");
             },
