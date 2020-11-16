@@ -87,26 +87,20 @@
         methods: {
             async getUser(user) {
                 //await this.$store.dispatch('getUser', user);
-                this.skip = false
+                this.skip = false;
                 this.email = user.email
             },
         },
         created() {
 
-            //this.$store.dispatch("loadSpecialties");
-            //this.$store.dispatch("getDoctors");
-            //this.$store.dispatch("getClinics");
-            //this.$store.dispatch("loadExam");
-            //this.$store.dispatch("getExamsTypes");
-            this.$store.dispatch("startConnectionListener")
+            this.$store.dispatch("startConnectionListener");
             this.$apollo.queries.loadUnitsClinics.refresh()
         },
         mounted() {
             firebase.auth().onAuthStateChanged((user) => {
-              console.log('rota:',this.$router.currentRoute)
                 if (!user) {
-                    this.ready = true
-                  let rota = this.$router.currentRoute.path
+                    this.ready = true;
+                  let rota = this.$router.currentRoute.path;
                   if(!rota.includes('/pdf')){
                     this.$router.push('/login')
                   }
@@ -128,15 +122,15 @@
                     }
                 },
                 update(data){
-                    this.skip = true
-                    let user = undefined
+                    this.skip = true;
+                    let user = undefined;
                     if(data.User.length > 0){
-                        user =  data.User[0].is_colaborator? data.User[0].is_colaborator : data.User[0].is_doctor
+                        user =  data.User[0].is_colaborator? data.User[0].is_colaborator : data.User[0].is_doctor;
                         this.$store.dispatch('getUser', user);
                     }
 
                     if(!user || !user[0].is_colaborator || !user[0].is_doctor){
-                        this.ready = true
+                        this.ready = true;
                         this.$router.push('/error-authentication')
                     }
 
@@ -153,7 +147,7 @@
                     }
                 },
                 update(data){
-                    this.$store.dispatch('getProSaudeUnits',data.Clinic)
+                    this.$store.dispatch('getProSaudeUnits',data.Clinic);
                     console.log(data.Clinic)
                 }
             }

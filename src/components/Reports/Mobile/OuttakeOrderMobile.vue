@@ -1,46 +1,87 @@
 <template>
-    <v-container class="ma-0 pa-0">
+    <v-container class="ma-0 pa-0" fluid>
         <v-row class="align-center justify-center">
-            <v-col cols="12" xs="12" class="primary">
-                <v-card class="primary elevation-0 white--text mt-n5">
+            <v-col cols="12" xs="12" class="primary mt-n5">
+                <v-card class="elevation-0 white--text mt-n2 primary" style="border-radius: 0">
                     <v-card-title class="font-weight-bold align-lg-center justify-center">
                         R$ {{ totalPayable }}
                     </v-card-title>
-                    <v-card-subtitle style="font-size: x-small" class="white--text">Débito Restante</v-card-subtitle>
-                    <v-chip-group active-class="primary--text" class="mt-n5 mb-n3 mx-0 my-0">
-                            <v-chip v-for="(day,i) in dates" :key="i" class="white" x-small @click="mappingDates(day)">
-                                <span style="font-weight: bold;"> {{ day | dateFilter }} </span>
-                            </v-chip>
+                    <v-card-subtitle style="font-size: small" class="white--text font-italic">Débitos restantes
+                    </v-card-subtitle>
+                    <v-chip-group active-class="primary--text" class="mt-n2 mb-n3 mx-0 my-0">
+                        <v-chip v-for="(day,i) in dates" :key="i" class="white" x-small @click="mappingDates(day)">
+                            <span style="font-weight: bold;"> {{ day | dateFilter }} </span>
+                        </v-chip>
                     </v-chip-group>
                 </v-card>
             </v-col>
         </v-row>
-
+        <v-layout row wrap class="justify-center" v-show="!pendingOuttakes">
+            <v-progress-circular indeterminate color="primary" large/>
+        </v-layout>
         <v-row class="align-center justify-center"
-               v-for="(outtakesGroup, i) in outtakesByDate(outtakes)"
+               v-for="(outtakesGroup, i) in outtakesByDate(pendingOuttakes)"
                :key="i"
         >
-            <v-col cols="11" xs="11" class="mx-3">
+            <v-col cols="12" xs="12" class="mx-3">
                 <div v-bind:id="'group-' + i">
                     <span style="color: #003B8F; font-weight: bold; font-size: small"> {{i | dateFilter}} - {{daydate(i)}} - {{outtakesGroup.length}} conta(s)</span>
-                    <v-flex xs12 class="primary" style="height: 2px;"></v-flex>
+                    <v-flex xs12 class="primary" style="height: 2px;"/>
                 </div>
             </v-col>
             <v-col cols="12" xs="12">
-                <v-card class="pa-2 my-3 elevation-0" v-for="(bill) in outtakesGroup" :key="bill.id">
+                <v-card class="pa-2 pb-0 my-0 elevation-0 mb-5" v-for="(bill) in outtakesGroup" :key="bill.id">
                     <v-layout row wrap>
                         <v-flex xs4>
-                            <v-img :src="bill.unit.logo" width="175px"></v-img>
+                            <v-img :src="bill.unit.logo" width="175px"/>
                         </v-flex>
                         <v-flex xs1><span style="color: transparent">.</span></v-flex>
-                        <v-flex xs7>
-                            <v-text-field v-model="bill.value"
+                        <v-flex xs6 class="text-end">
+                            <span style="font-weight: bold; font-size: small">{{bill.category}}</span>
+                            <br>
+                            <span style="font-weight: bold; font-size: small">{{bill.subCategory}}</span>
+                        </v-flex>
+                        <v-flex xs1>
+                            <v-icon class="warning--text  "
+                                    v-if="distanceToToday(bill.date_to_pay) < 3 && !(distanceToToday(bill.date_to_pay) <= 0)"
+                            >warning
+                            </v-icon>
+                            <v-icon class="error--text "
+                                    v-if="today > bill.date_to_pay"
+                            >error
+                            </v-icon>
+                        </v-flex>
+                        <v-flex xs4 v-show="!isEditing" class="mt-4 text-start">
+                            <strong style="font-size: large">R$ {{bill.value}}</strong>
+                        </v-flex>
+                        <v-flex xs8 class="text-end mt-3">
+                            <v-flex class="text-right" v-if="loading && outtakeSelect === bill">
+                                <v-progress-circular indeterminate class="primary--text"/>
+                            </v-flex>
+                            <v-flex v-else>
+                                <v-btn @click="$refs[bill.id][0].click()" class="primary mx-1" fab x-small>
+                                    <v-icon>receipt</v-icon>
+                                </v-btn>
+                                <v-btn @click="isEditing = true, editBillValue(bill)" class="primary mx-1" fab x-small>
+                                    <v-icon>edit</v-icon>
+                                </v-btn>
+                                <v-btn v-show="user === 'admin' || user === 'caixa'" @click="deleteOuttake(bill)"
+                                       class="error mx-1" fab x-small>
+                                    <v-icon>delete</v-icon>
+                                </v-btn>
+                                <v-btn v-show="user === 'admin' || user === 'caixa'" @click="payOuttake(bill)"
+                                       class="success mx-1" fab x-small placeholder="Complemento">
+                                    <v-icon>attach_money</v-icon>
+                                </v-btn>
+                            </v-flex>
+                        </v-flex>
+                        <v-flex xs12 class="mt-2">
+                            <v-text-field v-show="isEditing" v-model="bill.value"
                                           dense
-                                          rounded
                                           outlined
                                           persistent-hint
                                           :readonly="!isEditing"
-                                          prepend-inner-icon="monetization_on"
+                                          prefix="R$"
                                           class="font-weight-bold"
                                           :hint="!isEditing ? 'Clique no icon para editar' : 'Clique no icon para salvar'"
                             >
@@ -48,91 +89,84 @@
                                     <v-slide-x-reverse-transition
                                             mode="out-in"
                                     >
-                                        <v-icon  :key="`icon-${isEditing}`"
-                                                 :color="isEditing ? 'success' : 'info'"
-                                                 @click="isEditing = !isEditing, editBillValue(bill)"
-                                                 v-text="isEditing ? 'mdi-check-outline' : 'mdi-circle-edit-outline'">
+                                        <v-icon :key="`icon-${isEditing}`"
+                                                :color="isEditing ? 'success' : 'primary'"
+                                                @click="isEditing = !isEditing, editBillValue(bill)"
+                                                v-text="isEditing ? 'mdi-check-outline' : 'mdi-circle-edit-outline'">
                                         </v-icon>
                                     </v-slide-x-reverse-transition>
                                 </template>
                             </v-text-field>
                         </v-flex>
-                        <v-flex xs5 class="text-start">
-                            <span style="font-weight: bold; font-size: small">{{bill.category}}</span>
-                            <br>
-                            <span style="font-weight: bold; font-size: small">{{bill.subCategory}}</span>
+
+                        <v-flex xs12 class="mt-2">
+                            <v-divider color="grey"/>
                         </v-flex>
-                        <v-flex xs7 class="text-right" v-if="loading && outtakeSelect === bill">
-                            <v-progress-circular indeterminate class="primary--text"/>
+                        <v-flex xs12 class="text-start">
+                            <span style="font-size: small">Colaborador: </span><span style="font-weight: bold; font-size: small">
+                                {{bill.colaborator.name}}
+                            </span>
                         </v-flex>
-                        <v-flex xs7 class="text-right" v-else>
-                            <v-btn @click="$refs[bill.id][0].click()" class="primary mx-2" fab x-small>
-                                <v-icon>receipt</v-icon>
-                            </v-btn>
-                            <v-btn v-show="user === 'admin' || user === 'caixa'" @click="deleteOuttake(bill)" class="error mx-2" fab x-small>
-                                <v-icon>delete</v-icon>
-                            </v-btn>
-                            <v-btn v-show="user === 'admin' || user === 'caixa'" @click="payOuttake(bill)" class="success mx-2" fab x-small placeholder="Complemento">
-                                <v-icon>attach_money</v-icon>
-                            </v-btn>
-                        </v-flex>
-                        <v-flex xs12><v-divider color="grey"></v-divider></v-flex>
-                        <v-flex xs12 class="text-centert">
-                            <span>Colaborador: </span><span style="font-weight: bold; font-size: small">{{bill.colaborator.name}}</span>
-                        </v-flex>
-                        <v-flex xs12><v-divider color="grey"></v-divider></v-flex>
-                        <v-flex xs12 class="my-2">
+
+                        <!--                        <v-flex xs12>-->
+                        <!--                            <v-divider color="grey"/>-->
+                        <!--                        </v-flex>-->
+                        <v-flex xs12 class="mt-3">
                             <v-layout row wrap>
-                                <v-flex xs12 md2 class="text-center">
-                                    <span>Metodo de Pagamento: </span><span style="font-weight: bold; font-size: small">{{bill.payment_method}}</span>
+                                <v-flex xs12 md2 class="text-start">
+                                    <span style="font-size: small">Método de pagamento: </span><span style="font-weight: bold; font-size: small">{{bill.payment_method}}</span>
                                 </v-flex>
-                                <v-flex xs12 md2 class="text-center">
-                                    <span>Data para Pagamento: </span><span style="font-weight: bold; font-size: small">{{bill.date_to_pay | dateFilter}}</span>
-                                    <v-icon class="warning--text align-start ml-2"
-                                            v-if="distanceToToday(bill.date_to_pay) < 3 && !(distanceToToday(bill.date_to_pay) <= 0)"
-                                    >warning</v-icon>
-                                    <v-icon class="error--text align-start ml-2"
-                                            v-if="today > bill.date_to_pay"
-                                    >error</v-icon>
+                                <v-flex xs12 md2 class="text-start">
+                                    <span style="font-size: small">Data para pagamento: </span><span style="font-weight: bold; font-size: small">{{bill.date_to_pay | dateFilter}}</span>
                                 </v-flex>
-                                <v-flex xs12>
+                                <v-flex xs12 class="mt-2">
                                     <span style="font-weight: bold; font-size: small; font-style: italic">{{bill.description}}</span>
                                 </v-flex>
 
-                                <v-flex xs12><v-divider color="grey"></v-divider></v-flex>
+                                <v-flex xs12 class="mt-1">
+                                    <v-divider color="grey"/>
+                                </v-flex>
 
-                                <v-flex xs12 class="mt-4">
+                                <v-flex xs12 class="mt-0">
                                     <v-layout row wrap>
-                                        <v-layout column wrap>
-                                            <span class="my-sub-headline mb-4">Anexos</span>
-                                            <v-layout row wrap>
-                                                <v-flex v-for="(append, i) in bill.appends" :key="i">
-                                                    <v-card @click="openAppend(append)" flat>
-                                                        <v-avatar>
-                                                            <img :src="append" style="max-width: 124px; max-width: 124px" />
-                                                        </v-avatar>
-                                                    </v-card>
-                                                </v-flex>
+                                        <v-flex xs6>
+                                            <v-layout column wrap class="mt-4">
+                                                <span class="mb-4 font-weight-bold"
+                                                      style="font-size: medium">Anexos</span>
+                                                <v-layout row wrap>
+                                                    <v-flex v-for="(append, i) in bill.appends" :key="i">
+                                                        <v-card @click="openAppend(append)" flat>
+                                                            <v-avatar>
+                                                                <img :src="append"
+                                                                     style="max-width: 124px; max-width: 124px"/>
+                                                            </v-avatar>
+                                                        </v-card>
+                                                    </v-flex>
+                                                </v-layout>
                                             </v-layout>
-                                        </v-layout>
 
+                                        </v-flex>
                                         <v-divider vertical/>
-
-                                        <v-layout column wrap>
-                                            <span class="my-sub-headline mb-4">Comprovante</span>
-                                            <v-flex xs12 sm2 class="text-right" v-if="loadingAnexo && outtakeSelect === bill">
-                                                <v-progress-circular indeterminate class="primary--text"/>
-                                            </v-flex>
-                                            <v-layout row wrap v-else>
-                                                <v-flex v-for="(append, i) in bill.receipts" :key="i">
-                                                    <v-card @click="openAppend(append)" flat>
-                                                        <v-avatar>
-                                                            <img :src="append" style="max-width: 124px; max-width: 124px" />
-                                                        </v-avatar>
-                                                    </v-card>
+                                        <v-flex xs5>
+                                            <v-layout column wrap class="mt-4 justify-center text-center">
+                                                <span class="mb-4 font-weight-bold" style="font-size: medium">Comprovante</span>
+                                                <v-flex xs12 sm2 class="text-right"
+                                                        v-if="loadingAnexo && outtakeSelect === bill">
+                                                    <v-progress-circular indeterminate class="primary--text"/>
                                                 </v-flex>
+                                                <v-layout row wrap v-else>
+                                                    <v-flex v-for="(append, i) in bill.receipts" :key="i">
+                                                        <v-card @click="openAppend(append)" flat>
+                                                            <v-avatar>
+                                                                <img :src="append"
+                                                                     style="max-width: 124px; max-width: 124px"/>
+                                                            </v-avatar>
+                                                        </v-card>
+                                                    </v-flex>
+                                                </v-layout>
                                             </v-layout>
-                                        </v-layout>
+                                        </v-flex>
+
                                     </v-layout>
                                 </v-flex>
                             </v-layout>
@@ -148,15 +182,15 @@
                     </v-layout>
                 </v-card>
             </v-col>
-
         </v-row>
     </v-container>
 </template>
 
 <script>
     import moment from "moment";
+
     export default {
-        props: ["outtakes"],
+
         data() {
             return {
                 isEditing: false,
@@ -183,21 +217,26 @@
             };
         },
         computed: {
+            pendingOuttakes() {
+                return this.$store.getters.outtakesPending.sort((a, b) => {
+                    return b.date_to_pay < a.date_to_pay ? 1 : -1;
+                });
+            },
             user() {
                 return this.$store.getters.user.group;
             },
-            dates () {
-                let holder = this.outtakesByDate(this.outtakes)
-                let dates = []
-                for(let item in holder){
+            dates() {
+                let holder = this.outtakesByDate(this.pendingOuttakes);
+                let dates = [];
+                for (let item in holder) {
                     dates.push(holder[item][0].date_to_pay)
                 }
                 return dates
             },
-            totalPayable(){
-                let holder = this.outtakesByDate(this.outtakes)
-                let total = 0.00
-                for(let item in holder){
+            totalPayable() {
+                let holder = this.outtakesByDate(this.pendingOuttakes);
+                let total = 0.00;
+                for (let item in holder) {
                     total = total + Number(holder[item][0].value)
                 }
                 //total = Math.round(total)
@@ -211,12 +250,12 @@
             }
         },
         methods: {
-            mappingDates(val){
+            mappingDates(val) {
                 this.date = val;
             },
             allowedDates(val) {
                 return (
-                    Object.keys(this.outtakesByDate(this.outtakes)).indexOf(val) !== -1
+                    Object.keys(this.outtakesByDate(this.pendingOuttakes)).indexOf(val) !== -1
                 );
             },
             daydate(date) {
@@ -235,7 +274,7 @@
                 }
                 return res;
             },
-            async editBillValue (bill) {
+            async editBillValue(bill) {
                 if (!this.isEditing) {
                     await this.$store.dispatch("editOuttakes", bill);
                     await this.$store.dispatch("getOuttakes");
@@ -249,7 +288,7 @@
             },
             async payOuttake(outtake) {
                 this.loading = true;
-                this.outtakeSelect= outtake;
+                this.outtakeSelect = outtake;
                 await this.$store.dispatch("updateOuttake", {
                     outtake: outtake,
                     field: "paid",
@@ -266,13 +305,13 @@
                         date_to_pay: moment(outtake.date_to_pay).add(1, 'months').format('YYYY-MM-DD'),
                         created_at: outtake.created_at,
                         colaborator: outtake.colaborator,
-                        unit:outtake.unit,
+                        unit: outtake.unit,
                         recurrent: 'true',
                     };
 
                     await this.$store.dispatch("addOuttakes", bill);
                 }
-                this.outtakeSelect= [];
+                this.outtakeSelect = [];
                 await this.$store.dispatch("getOuttakes");
                 await this.$store.dispatch("getOuttakesPending", {
                     finalDate: moment()
@@ -297,7 +336,7 @@
             async handleFileUpload(outtake) {
 
                 this.loadingAnexo = true;
-                this.outtakeSelect= outtake;
+                this.outtakeSelect = outtake;
                 await this.$store.dispatch("deleteFile", {
                     imagePaths: outtake.receipts,
                     path: "outtakes/receipts"
@@ -327,7 +366,7 @@
                 });
                 this.files = [];
                 this.loadingAnexo = false;
-                this.outtakeSelect= [];
+                this.outtakeSelect = [];
 
             },
             removeFile(index) {
@@ -346,6 +385,3 @@
         }
     };
 </script>
-
-<style scoped>
-</style>

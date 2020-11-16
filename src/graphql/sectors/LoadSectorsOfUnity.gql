@@ -7,7 +7,7 @@ query($id:ID!){
             id,name,type,created_at{formatted},called_at{formatted},
           }
         has_rooms{
-          name,id,previos_ticket,current_ticket, next_ticket_normal, next_ticket_priority
+          name,id,previos_ticket,current_ticket, next_ticket_normal, next_ticket_priority, show
           room_has_tickets{
             id,name,type,created_at{formatted},called_at{formatted},
                 consultation{

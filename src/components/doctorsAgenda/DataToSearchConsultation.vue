@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="align-start">
     <v-layout column>
       <v-flex sm12>
         <DataDoctorToSearchConsultation 

@@ -6,37 +6,42 @@
         <v-tooltip top >
           <template v-slot:activator="{ on }">
             <v-btn
-              width="100%"
-              v-on="on"
-              class="primary"
-              rounded
-              :disabled="loading"
-              @click="()=>generateSectorTicket(false)"
+                width="100%"
+                v-on="on"
+                class="primary"
+                rounded
+                :disabled="loading"
+                @click="()=>generateSectorTicket(false)"
             >
-              Gerar Proxima senha:
-              {{normal}}
+              <span>Gerar Proxima Senha Normal:</span>
+              <v-chip color="white">
+                <span style="color: #003B8F;font-weight: bold">{{normal}}</span>
+              </v-chip>
             </v-btn>
           </template>
-          <span>Gerar próxima senha</span>
+          <span>Gerar Próxima Senha Normal</span>
         </v-tooltip>
       </v-col>
+
 
       <v-col sm="12" md="6">
         <v-tooltip top >
           <template v-slot:activator="{ on }">
             <v-btn
-              width="100%"
-              v-on="on"
-              class="primary"
-              rounded
-              :disabled="loading"
-              @click="()=>generateSectorTicket(true)"
+                width="100%"
+                v-on="on"
+                class="primary"
+                rounded
+                :disabled="loading"
+                @click="()=>generateSectorTicket(true)"
             >
-              Gerar proxima senha preferencial
-              {{priority}}
+              <span>Gerar Proxima Senha Preferencial:</span>
+              <v-chip color="white">
+                <span style="color: #003B8F;font-weight: bold">{{priority}}</span>
+              </v-chip>
             </v-btn>
           </template>
-          <span>Gerar próxima senha preferencial</span>
+          <span>Gerar Próxima Senha Preferencial</span>
         </v-tooltip>
       </v-col>
 
@@ -87,7 +92,7 @@
       <v-col sm="12" md="6">
         <v-dialog
             v-model="dialog"
-            width="250"
+            width="275"
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -97,11 +102,11 @@
                 v-bind="attrs"
                 v-on="on"
             >
-              <v-icon large>replay_10</v-icon>Resetar Senhas do Setor<v-icon large>forward_30</v-icon>
+              Resetar Senhas NORMAL
             </v-btn>
           </template>
           <v-card>
-            <v-card-title class="headline grey lighten-2">Senha Inicial<v-spacer/><v-btn class="transparent" text small fab @click="dialog = false"><v-icon>close</v-icon></v-btn></v-card-title>
+            <v-card-title class="headline grey lighten-2">Senha NORMAL<v-spacer/><v-btn class="transparent" text small fab @click="dialog = false"><v-icon>close</v-icon></v-btn></v-card-title>
             <v-divider></v-divider>
             <v-spacer/>
             <v-card-text>
@@ -121,7 +126,55 @@
                      class="primary"
                      rounded
                      :disabled="!number"
-                     @click="resetSectorTicket(Number(number))"
+                     @click="resetSectorTicketNormal(Number(number))"
+                     v-if="!loading"
+              >
+                RESETAR
+              </v-btn>
+              <v-progress-circular v-else color="primary" indeterminate></v-progress-circular>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-col>
+
+      <v-col sm="12" md="6">
+        <v-dialog
+            v-model="dialog2"
+            width="350"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+                width="100%"
+                class="primary"
+                rounded
+                v-bind="attrs"
+                v-on="on"
+            >
+              Resetar Senhas PREFERENCIAL
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title class="headline grey lighten-2">Senha PREFERENCIAL<v-spacer/><v-btn class="transparent" text small fab @click="dialog2 = false"><v-icon>close</v-icon></v-btn></v-card-title>
+            <v-divider></v-divider>
+            <v-spacer/>
+            <v-card-text>
+              <br/>
+              <v-text-field
+                  prepend-icon="mdi-ticket-confirmation"
+                  outlined
+                  v-model="number"
+                  label="Número"
+                  hide-details
+                  clearable
+                  v-mask="['#','##','###']"
+              ></v-text-field>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn width="100%"
+                     class="primary"
+                     rounded
+                     :disabled="!number"
+                     @click="resetSectorTicketPriority(Number(number))"
                      v-if="!loading"
               >
                 RESETAR
@@ -173,7 +226,7 @@
                 <span>Chamar próxima senha</span>
               </v-tooltip>
 
-              <v-tooltip top v-if="priority > 0 && !room.doctor">
+              <v-tooltip top v-if="priority > '0' && !room.doctor">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                       v-bind="attrs"
@@ -327,12 +380,12 @@
             <v-col v-if="room.doctor">{{room.doctor.name}}</v-col>
           </v-row>
           <v-row>
-            <v-container class="pa-0">
+            <v-container class="pa-3">
               <v-row>
                 <v-col class="pa-0">
                   <span style="font-size: 0.8em">Senha Anterior:</span>
                   <br />
-                  <span v-if="room.previos_ticket">{{room.previos_ticket}}</span>
+                  <span v-if="room.previos_ticket" style="color: #003B8F;font-weight: bold">{{room.previos_ticket}}</span>
                   <span v-else>*</span>
                 </v-col>
                 <v-divider vertical></v-divider>
@@ -340,7 +393,7 @@
                   <div>
                     <span style="font-size: 0.8em">Senha Atual:</span>
                     <br />
-                    <span v-if="room.current_ticket">{{room.current_ticket}}</span>
+                    <span v-if="room.current_ticket" style="color: #003B8F;font-weight: bold">{{room.current_ticket}}</span>
                     <span v-else>*</span>
                   </div>
                 </v-col>
@@ -350,11 +403,11 @@
                     <span style="font-size: 0.8em">Proxima Senha Normal:</span>
                     <br />
                     <div v-if="room.next_ticket_normal">
-                      <span v-if="room.next_ticket_normal">{{room.next_ticket_normal}}</span>
+                      <span v-if="room.next_ticket_normal" style="color: #003B8F;font-weight: bold">{{room.next_ticket_normal}}</span>
                       <span v-else>*</span>
                     </div>
                     <div v-if="!room.next_ticket_normal">
-                      <span v-if="sector.next_ticket_normal">{{sector.next_ticket_normal}}</span>
+                      <span v-if="sector.next_ticket_normal" style="color: #003B8F;font-weight: bold">{{sector.next_ticket_normal}}</span>
                       <span v-else>*</span>
                     </div>
                   </div>
@@ -365,11 +418,11 @@
                     <span style="font-size: 0.8em">Proxima Senha Preferencial:</span>
                     <br />
                     <div v-if="room.next_ticket_priority">
-                      <span v-if="room.next_ticket_priority">{{room.next_ticket_priority}}</span>
+                      <span v-if="room.next_ticket_priority" style="color: #003B8F;font-weight: bold">{{room.next_ticket_priority}}</span>
                       <span v-else>*</span>
                     </div>
                       <div v-if="!room.next_ticket_priority">
-                      <span v-if="sector.next_ticket_priority">{{sector.next_ticket_priority}}</span>
+                      <span v-if="sector.next_ticket_priority" style="color: #003B8F;font-weight: bold">{{sector.next_ticket_priority}}</span>
                       <span v-else>*</span>
                     </div>
                   </div>
@@ -495,6 +548,7 @@ export default {
   data () {
     return {
       dialog: false,
+      dialog2: false,
       number: undefined,
       doctor: '',
     }
@@ -528,7 +582,8 @@ export default {
     setDoctorToRoom: Function,
     generateNextTicket: Function,
     generateSectorTicket: Function,
-    resetSectorTicket: Function,
+    resetSectorTicketNormal: Function,
+    resetSectorTicketPriority: Function,
     removeDoctorRoom: Function,
     upgradeTicketNumber: Function,
     callNextTicket: Function,

@@ -45,7 +45,7 @@
         <v-col
             class="py-2 px-0"
             cols="12"
-            v-for="(ticket, index) in sector.has_rooms.slice(1,7)"
+            v-for="(ticket, index) in rooms"
             :key="index"
         >
           <v-card elevation="0" :color="index%2 != 0? 'grey lighten-2':'grey lighten-4'" height="125">
@@ -54,27 +54,28 @@
                 <p style="font-size: 4em;">{{ticket.name}}</p>
               </v-col>
               <v-col align-self="center" class="font-weight-bold">
-                <v-expand-transition>
+<!--                <v-expand-transition>
                 <p v-show="expand" v-if="ticket.current_ticket" style="font-size: 3em; color: deeppink">SENHA {{ (type(ticket.current_ticket)) === 'normal' ? 'Normal' : 'Preferencial'}} {{ticket.current_ticket}}</p>
                 </v-expand-transition>
                 <v-expand-transition>
                   <p v-show="!expand" v-if="ticket.current_ticket" style="font-size: 3em;">SENHA {{ (type(ticket.current_ticket)) === 'normal' ? 'Normal' : 'Preferencial'}} {{ticket.current_ticket}}</p>
-                </v-expand-transition>
-                <p v-if="!ticket.current_ticket" style="font-size: 5em;">SENHA *</p>
+                </v-expand-transition>-->
+                <p v-if="ticket.current_ticket" style="font-size: 3em;">SENHA {{ (type(ticket.current_ticket)) === 'normal' ? 'Normal' : 'Preferencial'}} {{ticket.current_ticket}}</p>
+                <p v-else style="font-size: 5em;">SENHA *</p>
               </v-col>
             </v-row>
           </v-card>
         </v-col>
       </v-row>
-<!--      <v-row justify="center">
+      <v-row justify="center" v-if="size_off <= 5">
         <v-card flat>
           <img :src="constants.ASSETS.logo" height="124px" />
         </v-card>
-      </v-row>-->
+      </v-row>
     </v-container>
     <v-container fluid class="white--text">
-      <div v-for="(ticket, index) in sector.has_rooms.slice(0,1)"
-           :key="index">
+      <div v-if="room.length > 0">
+        <div v-for="(ticket, index) in room" :key="index">
         <v-row class="pa-0 ma-0 half primary">
           <v-col align-self="center">
             <v-row justify="center">
@@ -103,6 +104,15 @@
             </v-row>
           </v-col>
         </v-row>
+        </div>
+      </div>
+      <div else>
+        <v-row justify="center">
+          <v-card flat>
+            <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+            <img :src="constants.ASSETS.logo" height="175px"/>
+          </v-card>
+        </v-row>
       </div>
     </v-container>
   </v-card>
@@ -123,19 +133,30 @@ export default {
       },
       update(data){
         this.old = this.sector.has_rooms
-
         for (let k in this.sector.has_rooms){
           this.sector.has_rooms[k].expand = false
         }
 
         this.sector = Object.assign(data.Sector[0])
+        this.size_off = this.sector.has_rooms.length
 
+        this.room = this.sector.has_rooms.filter(a => {
+          return a.show === true;
+        });
+        this.room.expand = false
+
+        console.log('true', this.room)
+        this.rooms = this.sector.has_rooms.filter(a => {
+          return a.show === false;
+        });
+        console.log('false', this.rooms)
+        console.log('animação')
+        //this.soundAndAnimation();
         for (let k in this.sector.has_rooms){
           this.sector.has_rooms[k].expand = false
         }
-
         this.new = this.sector.has_rooms
-
+        this.size_off = this.sector.has_rooms.length
         for(let i in this.old){
           for(let j in this.new){
             if(this.old[i].name === this.new[j].name){
@@ -147,18 +168,27 @@ export default {
         }
         //console.log('reativo:', this.sector)
       },
-      pollInterval: 300, // ms
+      pollInterval: 150, // ms
     },
   },
   mounted() {
-    this.clockInterval = setInterval(() => {
+    this.size_off = this.sector.has_rooms.length
+    this.room = this.sector.has_rooms.filter(a => {
+      return a.show === true;
+    });
+    console.log('true', this.room)
+    this.rooms = this.sector.has_rooms.filter(a => {
+      return a.show === false;
+    });
+    console.log('false', this.rooms)
+/*    this.clockInterval = setInterval(() => {
       this.$nextTick(() => {
         this.hour = moment().format("HH:mm");
       });
     }, 1000);
     window.addEventListener("beforeunload", () => {
       clearInterval(this.clockInterval);
-    });
+    });*/
   },
   data() {
     return {
@@ -168,6 +198,9 @@ export default {
       lastRoomCalled: null,
       animation: "",
       playingAudio: false,
+      size_off: undefined,
+      room: undefined,
+      rooms: undefined,
       expand: false,
       old: undefined,
       new: undefined,
@@ -191,9 +224,9 @@ export default {
     // rooms() {
     //   return this.$store.getters.rooms;
     // },
-    rooms() {
+/*    rooms() {
       return this.sector ? this.sector.rooms : [];
-    },
+    },*/
     doctorName() {
       let names = this.room.doctor.name.split(" ");
       let finalName = "";
