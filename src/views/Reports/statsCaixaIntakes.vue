@@ -244,16 +244,16 @@ export default {
         .sort((a, b) => b.profit - a.profit)
         .slice(0, 10);
     },
-    bestSellersDataset() {
-      return {
-        labels: Object.keys(this.info.itens),
+          bestSellersDataset() {
+        return {
+          labels: Object.keys(this.info.itens),
         datasets: [
           {
             data: Object.keys(this.info.itens).map(
               key => this.info.itens[key].numOfSales
             )
           }
-        ]
+          ]
       };
     },
     numOfSalesMontlyDataset() {

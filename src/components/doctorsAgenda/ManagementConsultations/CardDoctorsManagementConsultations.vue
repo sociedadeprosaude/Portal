@@ -38,19 +38,6 @@
                       </v-icon>
                     </v-btn>
                   </v-flex>
-                  <v-flex xs12>
-                    <v-tooltip top>
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                            color="white"
-                            rounded
-                            v-bind="attrs"
-                            v-on="on"
-                        >Gerar Prontuários de Todos os Pacientes</v-btn>
-                      </template>
-                      <span>Gerar Todos os Prontuários</span>
-                    </v-tooltip>
-                  </v-flex>
                 </v-layout>
               </v-card>
             </v-flex>
@@ -156,6 +143,7 @@
       <v-flex xs12 v-if="consultations.length === 0 && loadingConsultations === false">
         <p>Não a consultas marcadas para hoje :(</p>
       </v-flex>
+
       <v-dialog v-if="selectedDoctor" v-model="confirmDeactivate" max-width="500px" persistent>
         <v-flex xs12 v-if="loading">
           <v-progress-circular class="primary--text" indeterminate/>
@@ -199,10 +187,11 @@
 <script>
 import moment from 'moment/moment'
 import SubmitButton from '../../../components/SubmitButton'
+import ConsultationDocument from "@/components/doctorsAgenda/commons/ConsultationDocument";
 
 export default {
   name: "CardDoctorsManagementConsultations",
-  components: {SubmitButton},
+  components: {SubmitButton,ConsultationDocument,},
 
   props: ['clinic', 'specialty', 'date', 'examType', 'filterByExam'],
   data: () => ({
@@ -307,7 +296,6 @@ export default {
     },
   },
   methods: {
-
     cleanSpecialtyToDeactivate() {
       this.specialtyToDeactivate = [];
       this.clinicsToDeactivate = []

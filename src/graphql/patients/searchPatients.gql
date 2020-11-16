@@ -45,6 +45,9 @@ query($name:String){
             name,
             type,
           },
+          with_charge{
+                      id
+          },
          id,
          clinic: with_clinic{
             id,

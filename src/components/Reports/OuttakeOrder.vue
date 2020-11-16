@@ -30,7 +30,7 @@
                           <span>{{categorie.name}}</span>
                         </v-flex>
                         <v-divider vertical class="mx-4 hidden-xs-only"/>
-                        <v-flex xs12 md2 class="text-center">
+                        <v-flex v-if="bill.payment_methods" xs12 md2 class="text-center">
                           <span>{{bill.payment_methods[0]}}</span>
                         </v-flex>
                         <v-divider vertical class="mx-4 hidden-xs-only"/>
@@ -67,7 +67,7 @@
                         <v-flex xs12>
                         <v-divider class="mx-10"/>
                         </v-flex>
-                        <v-flex xs12 class="text-centert">
+                        <v-flex xs12 class="text-centert" v-if="bill.colaborator">
                           <span>Colaborador: </span><span style="font-weight: bold">{{bill.colaborator.name}}</span>
                         </v-flex>
                         <v-divider class="mx-10"/>
@@ -106,13 +106,12 @@
                           <v-progress-circular indeterminate class="primary--text"/>
                         </v-flex>
                         <v-flex xs12 class="text-right"  v-else>
-                          <v-btn v-show="user === 'admin' || user === 'caixa'" @click="$refs[bill.id][0].click()" class="primary mx-2" fab small>
+                          <v-btn @click="$refs[bill.id][0].click()" class="primary mx-2" fab small>
                             <v-icon>receipt</v-icon>
                           </v-btn>
-                          <v-btn v-show="user === 'admin' || user === 'caixa'" @click="deleteOuttake(bill)" class="error mx-2" fab small>
+                          <v-btn  @click="deleteOuttake(bill)" class="error mx-2" fab small>
                             <v-icon>delete</v-icon>
                           </v-btn>
-                          <!-- v-show="user === 'admin' || user === 'caixa'" -->
                           <v-btn   @click="payOuttake(bill)" class="success mx-2" fab small
                                  placeholder="Complemento">
                             <v-icon>attach_money</v-icon>
@@ -177,12 +176,6 @@ export default {
       ]
     };
   },
-  computed: {
-    user() {
-      console.log('user: ', this.$store.getters.user.group )
-      return this.$store.getters.user.group;
-    },
-  },
   watch: {
     date(val) {
       this.$vuetify.goTo("#group-" + val, this.options);
@@ -212,7 +205,6 @@ export default {
     },
     async editBillValue (bill) {
       if (!this.isEditing) {
-        console.log('bill', bill)
         if(bill.value > 0){
           bill.value = parseFloat(bill.value) - parseFloat(2*bill.value)
         }
@@ -240,20 +232,14 @@ export default {
       this.loading = true;
       let relationTransactionBills = 0
       let relationTransactionBillsCategory = outtake.categories.length
-      console.log('outtake: ', outtake)
-      if(outtake.recorrent === true){
-        console.log('recorrent')
-      }
-      else {
+      if(!outtake.recorrent){
         this.$apollo.mutate({
           mutation: require('@/graphql/charge/DeleteCharge.gql'),
           variables: {
             id: outtake.id
           }
         }).then((dataDelete) => {
-                  console.log('deletado')
                   let date = { formatted: moment().format('YYYY-MM-DDTHH:mm:ss')}
-                  console.log('date: ', date)
                   this.$apollo.mutate({
                     mutation: require('@/graphql/transaction/CreateTransactionBill.gql'),
                     variables: {
@@ -264,7 +250,6 @@ export default {
                       date_to_pay: {formatted: outtake.date_to_pay.formatted}
                     }
                   }).then((data) => {
-                    console.log('data criado: ', data)
                     this.$apollo.mutate({
                       mutation: require('@/graphql/transaction/AddRelationsTransactionBillRelations.gql'),
                       variables: {
@@ -279,7 +264,6 @@ export default {
                       }
                     })
                     for(let i in outtake.categories){
-                      console.log('category', outtake.categories[i])
                       this.$apollo.mutate({
                         mutation: require ('@/graphql/transaction/AddRelationsTransactionBill-CategoryRelations.gql'),
                         variables:{
@@ -331,14 +315,12 @@ export default {
     },
     async deleteOuttake(outtake) {
       this.loading = true;
-      console.log('outtake: ', outtake)
       this.$apollo.mutate({
         mutation: require ('@/graphql/charge/DeleteCharge.gql'),
         variables:{
           id: outtake.id
         }
       }).then((data) => {
-        console.log('deletado')
         this.$emit('UpdateCharges')
       })
       /* await this.$store.dispatch("deleteOuttake", outtake);
@@ -359,9 +341,7 @@ export default {
         imagePaths: outtake.receipts,
         path: "outtakes/receipts"
       });
-      console.log('outtake: ', outtake)
       let uploadedFiles = this.$refs[outtake.id][0].files;
-      console.log('files', uploadedFiles)
 
       for (let i = 0; i < uploadedFiles.length; i++) {
 
@@ -369,9 +349,7 @@ export default {
           this.files.push(uploadedFiles[i]);
         }
       }
-      console.log('files: ', this.files)
       let urls = await this.submitFiles(this.files);
-      console.log('url: ', urls)
       await this.$store.dispatch("updateOuttake", {
         outtake: outtake,
         field: "receipts",

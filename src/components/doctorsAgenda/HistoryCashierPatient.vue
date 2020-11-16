@@ -193,6 +193,14 @@
                             idProductTransaction: intake.products[i].id
                         }
                     })
+                    if(intake.products[i].with_charge){
+                      await  this.$apollo.mutate({
+                        mutation: require ('@/graphql/charge/DeleteCharge.gql'),
+                        variables:{
+                          id: intake.products[i].with_charge.id
+                        }
+                      })
+                    }
                 }
                 console.log('entrei')
                 this.skipPatients = false
