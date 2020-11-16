@@ -1,38 +1,39 @@
 <template>
     <v-container class="fill-height align-content-space-between" style="height: 90%">
-        <BillsMobile  v-if="this.$vuetify.breakpoint.xs" class="fill-height "/>
-        <Bills
-                v-else
-                v-bind:other="other"
-                v-bind:billsOptions="billsOptions"
-                v-bind:dialogSelectDate="dialogSelectDate"
-                v-bind:dialogCategory="dialogCategory"
-                :switchDate.sync="switchDate"
-                v-bind:switchCategory="switchCategory"
-                v-bind:selectedOption="selectedOption"
-                v-bind:selectedDate="selectedDate"
-                v-bind:selectedCategory="selectedCategory"
-                v-bind:loading="loading"
-                v-bind:loadingFilter="loadingFilter"
-                v-bind:loadingDelete="loadingDelete"
-                v-bind:outtakeSelect="outtakeSelect"
-                v-bind:files="files"
-                v-bind:filesPreviews="filesPreviews"
-                v-bind:outtakesPaid="outtakesPaid"
-                v-bind:outtakesPaidToday="outtakesPaidToday"
-                :pendingOuttakes="pendingOuttakes"
-                v-bind:selectedPaidOuttakesList="selectedPaidOuttakesList"
-                v-bind:categories="categories"
-                :getOuttakesPaid="getOuttakesPaid"
-                :unpayOuttake="unpayOuttake"
-                :openAppend="openAppend"
-                @updateCharges="updateCharges()"
-                @change-selectedOption="(value)=>selectedOption=value"
-                @change-switchDate="(value)=>switchDate=value"
-                @change-switchCategory="(value)=>switchCategory=value"
-                @change-selectedDate="(value)=>selectedDate=value"
-                @change-selectedCategory="(value)=>selectedCategory=value"
-        />
+<!--        <BillsMobile  v-if="this.$vuetify.breakpoint.xs" class="fill-height "/>-->
+<!--        <Bills-->
+<!--                v-else-->
+<!--                v-bind:other="other"-->
+<!--                v-bind:billsOptions="billsOptions"-->
+<!--                v-bind:dialogSelectDate="dialogSelectDate"-->
+<!--                v-bind:dialogCategory="dialogCategory"-->
+<!--                :switchDate.sync="switchDate"-->
+<!--                v-bind:switchCategory="switchCategory"-->
+<!--                v-bind:selectedOption="selectedOption"-->
+<!--                v-bind:selectedDate="selectedDate"-->
+<!--                v-bind:selectedCategory="selectedCategory"-->
+<!--                v-bind:loading="loading"-->
+<!--                v-bind:loadingFilter="loadingFilter"-->
+<!--                v-bind:loadingDelete="loadingDelete"-->
+<!--                v-bind:outtakeSelect="outtakeSelect"-->
+<!--                v-bind:files="files"-->
+<!--                v-bind:filesPreviews="filesPreviews"-->
+<!--                v-bind:outtakesPaid="outtakesPaid"-->
+<!--                v-bind:outtakesPaidToday="outtakesPaidToday"-->
+<!--                v-bind:pendingOuttakes="pendingOuttakes"-->
+<!--                v-bind:selectedPaidOuttakesList="selectedPaidOuttakesList"-->
+<!--                v-bind:categories="categories"-->
+<!--                :getOuttakesPaid="getOuttakesPaid"-->
+<!--                :unpayOuttake="unpayOuttake"-->
+<!--                :openAppend="openAppend"-->
+<!--                @updateCharges="updateCharges()"-->
+<!--                @change-selectedOption="(value)=>selectedOption=value"-->
+<!--                @change-switchDate="(value)=>switchDate=value"-->
+<!--                @change-switchCategory="(value)=>switchCategory=value"-->
+<!--                @change-selectedDate="(value)=>selectedDate=value"-->
+<!--                @change-selectedCategory="(value)=>selectedCategory=value"-->
+<!--        />-->
+        <BillsMobile class="fill-height"/>
     </v-container>
 </template>
 

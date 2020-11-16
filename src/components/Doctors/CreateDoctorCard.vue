@@ -168,19 +168,19 @@
     <v-card-actions>
       <v-spacer/>
       <v-flex xs4 v-if="!doctor">
-        <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+        <v-progress-circular v-if="loading" indeterminate color="primary"/>
         <v-btn v-else color="primary" @click="createDoctor()">Adicionar</v-btn>
       </v-flex>
 
       <v-flex xs12 v-if="doctor">
-        <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+        <v-progress-circular v-if="loading" indeterminate color="primary"/>
         <v-btn v-else color="error" @click="deleteDoctor()">
           <v-icon>delete</v-icon>
         </v-btn>
       </v-flex>
 
       <v-flex xs12 v-if="doctor">
-        <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+        <v-progress-circular v-if="loading" indeterminate color="primary"/>
         <v-btn v-else color="primary" @click="updateDoctor()">Editar</v-btn>
       </v-flex>
     </v-card-actions>

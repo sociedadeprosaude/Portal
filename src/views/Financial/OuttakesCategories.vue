@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid class="ma-0 pa-0">
+    <v-container fluid class="ma-0 mt-md-4 mr-md-2 ml-md-2 pa-0 align-start">
         <ApolloQuery
                 :query="require('@/graphql/category/LoadCategories.gql')"
         >
@@ -8,6 +8,7 @@
                         :headers="headers"
                         :items="data ? data.Category : []"
                         item-text="name"
+                        sort-by="name"
                         :search="search"
                         item-key="name"
                         :items-per-page="-1"
@@ -15,9 +16,8 @@
                     <template v-slot:top>
                         <v-flex xs12 class="text-right pa-2">
                             <v-layout row wrap>
-                                <v-text-field prepend-icon="search" v-model="search" label="Pesquisa" class="mx-2"/>
+                                <v-text-field prepend-icon="search" v-model="search" outlined dense label="Pesquisa" class="mx-2"/>
                                 <v-spacer/>
-
                                 <v-btn
                                         fab
                                         small
@@ -46,11 +46,11 @@
                 <v-card>
                     <v-card-title class="headline grey lighten-2" primary-title>Nova categoria</v-card-title>
                     <v-card-text>
-                        <v-text-field label="Categoria" v-model="newCategory"></v-text-field>
+                        <v-text-field label="Categoria" v-model="newCategory"/>
                     </v-card-text>
-                    <v-divider></v-divider>
+                    <v-divider/>
                     <v-card-actions>
-                        <v-spacer></v-spacer>
+                        <v-spacer/>
                         <v-btn text @click="dialogCreateCategory = false">Cancelar</v-btn>
                         <v-btn :loading="loading" color="green darken-1" text @click="createCategory()">Criar</v-btn>
                     </v-card-actions>
@@ -63,9 +63,9 @@
                 <v-card>
                     <v-card-title class="headline grey lighten-2" primary-title>Deletar categoria?</v-card-title>
 
-                    <v-divider></v-divider>
+                    <v-divider/>
                     <v-card-actions>
-                        <v-spacer></v-spacer>
+                        <v-spacer/>
                         <v-btn text @click="dialogRemoveCategory = false">Não</v-btn>
                         <v-btn :loading="loading" color="red darken-1" text @click="remove()">Sim</v-btn>
                     </v-card-actions>
@@ -129,13 +129,9 @@ export default {
                     }
                 }).then((data) => {
                     console.log('data: ', data)
-                })
+                });
                 this.dialogCreateCategory = false;
-                /* if (this.categories.indexOf(this.newCategory) < 0) {
-                  this.$store.dispatch("addOuttakesCategory", {
-                    category: this.newCategory
-                  });
-                } else console.log("ja existe"); */
+
             },
     confirmDeletion(item) {
       this.categoryToRemove.category = item.name;

@@ -352,7 +352,7 @@ export default {
       query: require('@/graphql/transaction/GetTransactions.gql'),
       async update(data) {
         this.formattedReport = data.Transaction
-        console.log('entrei')
+
         this.formattedReport = await this.$store.dispatch("searchReports", {
           dataInicio: this.date,
           dataFinal: this.date2,
