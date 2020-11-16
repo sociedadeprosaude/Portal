@@ -1,196 +1,334 @@
 <template>
-  <v-container>
-    <v-layout row wrap>
-      <v-flex xs12 class="mb-4">
-        <v-btn v-if="allLoaded" class="primary rounded" @click="beginAnalises">Iniciar Analise</v-btn>
-        <v-progress-circular v-else class="primary--text" indeterminate></v-progress-circular>
-        <v-text-field
-          v-bind:value="idealProfitPercentage"
-          @change="(event)=>$emit('change-idealProfitPercentage',event)"
-          label="Porcentagem Ideal de Lucro"
-        ></v-text-field>
-      </v-flex>
-      <v-flex xs12>
-        <v-layout row wrap>
-          <v-chip-group
-            row
-            mandatory
-            v-bind:value="selectedType"
-            @change="(event)=>$emit('change-selectedType',event)"
-            active-class="primary--text"
-          >
-            <v-chip v-for="type in types" :key="type">{{ type }}</v-chip>
-          </v-chip-group>
-          <v-divider vertical class="mr-2"></v-divider>
-          <v-chip-group
-            row
-            mandatory
-            v-bind:value="showOption"
-            @change="(event)=>$emit('change-showOption',event)"
-            active-class="primary--text"
-          >
-            <v-chip v-for="type in showOptions" :key="type">{{ type }}</v-chip>
-          </v-chip-group>
-        </v-layout>
-      </v-flex>
-      <v-flex xs12 id="card-to-print" v-if="selectedType === 0">
-        <v-card flat style="border: 2px solid black">
-          <v-layout row wrap>
-            <v-flex xs2>Clínica</v-flex>
-            <v-flex xs9>
-              <v-layout row wrap>
-                <v-flex xs4>Exame</v-flex>
-                <v-flex xs2>Custo/Preço</v-flex>
-                <v-flex xs2>Custo Ideal</v-flex>
-                <v-flex xs2>Preço Ideal</v-flex>
-                <v-flex xs2>Lucro</v-flex>
-              </v-layout>
-            </v-flex>
+    <v-container>
+        <v-flex xs12>
+            <v-card class="pa-3">
+                <v-card-title class="justify-center">
+                    <v-col cols="4">
+                        <v-text-field v-bind:value="idealProfitPercentage"
+                                      @change="(event)=>$emit('change-idealProfitPercentage',event)"
+                                      placeholder="Porcentagem ideal de lucro"
+                                      dense
+                                      outlined
+                                      type="number"
+                                      prefix="%"
 
-            <v-flex xs12>
-              <v-layout
-                row
-                wrap
-                class="align-center py-2"
-                v-for="clinic in clinics"
-                :key="clinic.name"
-              >
-                <v-flex xs12>
-                  <v-divider class="black"></v-divider>
-                </v-flex>
-                <v-flex xs2>{{clinic.name}}</v-flex>
-                <v-divider vertical></v-divider>
-                <v-flex xs9>
-                  <v-layout column wrap class="ma-0 pa-0">
-                    <v-flex
-                      xs12
-                      v-for="exam in filterExams(clinic.exams)"
-                      :key="clinic.name + exam.name"
-                    >
-                      <v-divider></v-divider>
-                      <v-layout row wrap class="align-center ma-0 pa-0">
-                        <v-flex xs4>
-                          <span>{{exam.name}}</span>
-                        </v-flex>
-                        <v-flex xs2>
-                          <span>{{exam.cost}}/{{exam.price}}</span>
-                        </v-flex>
-                        <v-flex xs2>
-                          <span>{{getIdealCost(exam)}}</span>
-                        </v-flex>
-                        <v-flex xs2>
-                          <span>{{getIdealPrice(exam)}}</span>
-                        </v-flex>
-                        <v-flex xs2>
-                          <span
-                            :class="[getProfitPercentage(exam) < idealProfitPercentage / 100 ? 'red--text' : '']"
-                          >{{(getProfitPercentage(exam) * 100).toFixed(2)}}%</span>
-                        </v-flex>
-                      </v-layout>
-                      <v-divider></v-divider>
+                        />
+                        <v-btn class="primary mt-n10" rounded @click="beginAnalises" small>Iniciar Análise</v-btn>
+                    </v-col>
+                    <v-progress-circular v-if="allLoaded" class="primary--text" indeterminate/>
+                </v-card-title>
+                <v-card-text>
+                    <v-flex xs12>
+                        <v-layout row wrap>
+                            <v-chip-group
+                                    row
+                                    mandatory
+                                    v-bind:value="selectedType"
+                                    @change="(event)=>$emit('change-selectedType',event)"
+                                    active-class="primary--text">
+                                <v-chip v-for="type in types" :key="type" @click="changeSelectType(type)">{{ type }}
+                                </v-chip>
+                            </v-chip-group>
+                            <v-spacer/>
+                            <v-chip-group
+                                    row
+                                    mandatory
+                                    v-bind:value="showOption"
+                                    @change="(event)=>$emit('change-showOption',event)"
+                                    active-class="primary--text"
+                            >
+                                <v-chip v-for="type in showOptions" :key="type">{{ type }}</v-chip>
+                            </v-chip-group>
+                        </v-layout>
                     </v-flex>
-                  </v-layout>
-                </v-flex>
-                <v-flex xs12>
-                  <v-divider class="black"></v-divider>
-                </v-flex>
-              </v-layout>
-            </v-flex>
-          </v-layout>
-        </v-card>
-      </v-flex>
-      <v-flex xs12 id="card-to-print" v-else>
-        <v-card flat style="border: 2px solid black">
-          <v-layout row wrap>
-            <v-flex xs2>Exames</v-flex>
-            <v-flex xs9>
-              <v-layout row wrap>
-                <v-flex xs4>Clínica</v-flex>
-                <v-flex xs2>Custo/Preço</v-flex>
-                <v-flex xs2>Custo Ideal</v-flex>
-                <v-flex xs2>Preço Ideal</v-flex>
-                <v-flex xs2>Lucro</v-flex>
-              </v-layout>
-            </v-flex>
+                    <ApolloQuery :query="require('@/graphql/clinics/LoadCostExamClinics.gql')">
+                        <template slot-scope="{ result: { data } }" >
+                            <v-card class="background">
+                                <v-card-title class="justify-center">
+                                    <v-flex xs5>
+                                        <v-progress-linear
+                                                v-if="!data"
+                                                color="primary"
+                                                indeterminate
+                                                rounded
+                                                height="6"
+                                        />
+                                        <v-text-field
+                                                v-else
+                                                rounded
+                                                dense
+                                                prepend-inner-icon="search"
+                                                solo
+                                                v-model="search"
+                                                @keyup="CostProductClinicFilter('', selectedType,true)"
+                                        />
+                                    </v-flex>
+                                </v-card-title>
+                                <v-flex xs12 v-if="data">
+                                    <v-flex xs12 id="card-to-print" v-if="selectedType === 0">
+                                        <v-card flat>
+                                            <v-layout row wrap class="blue_grey">
+                                                <v-flex xs3>
+                                                    <h4>Clínica</h4>
+                                                </v-flex>
+                                                <v-flex xs4>Exames</v-flex>
+                                                <v-flex xs5>
+                                                    <v-layout row wrap>
+                                                        <v-flex xs2>Custo</v-flex>
+                                                        <v-flex xs2>Preço</v-flex>
+                                                        <v-flex xs3>Custo Ideal</v-flex>
+                                                        <v-flex xs3>Preço Ideal</v-flex>
+                                                        <v-flex xs2>Lucro</v-flex>
+                                                    </v-layout>
+                                                </v-flex>
+                                            </v-layout>
+                                            <v-layout row wrap>
+                                                <v-flex xs12>
+                                                    <v-layout
+                                                            row
+                                                            wrap
+                                                            class="align-center py-2"
+                                                            v-for="(product, label) in CostProductClinicFilter(data, selectedType,search)"
+                                                            :key="product.id"
+                                                    >
 
-            <v-flex xs12>
-              <v-layout
-                row
-                wrap
-                class="align-center py-2"
-                v-for="clinic in this.exams"
-                :key="clinic.name"
-              >
-                <v-flex xs12>
-                  <v-divider class="black"></v-divider>
-                </v-flex>
-                <v-flex xs2>{{clinic.name}}</v-flex>
-                <v-divider vertical></v-divider>
-                <v-flex xs9>
-                  <v-layout column wrap class="ma-0 pa-0">
-                    <v-flex
-                      xs12
-                      v-for="exam in filterClinics(clinic.clinics)"
-                      :key="clinic.name + exam.name"
-                    >
-                      <v-divider></v-divider>
-                      <v-layout row wrap class="align-center ma-0 pa-0">
-                        <v-flex xs4>
-                          <span>{{exam.name}}</span>
-                        </v-flex>
-                        <v-flex xs2>
-                          <span>{{exam.cost}}/{{exam.price}}</span>
-                        </v-flex>
-                        <v-flex xs2>
-                          <span>{{getIdealCost(exam)}}</span>
-                        </v-flex>
-                        <v-flex xs2>
-                          <span>{{getIdealPrice(exam)}}</span>
-                        </v-flex>
-                        <v-flex xs2>
-                          <span
-                            :class="[getProfitPercentage(exam) < idealProfitPercentage / 100 ? 'red--text' : '']"
-                          >{{(getProfitPercentage(exam) * 100).toFixed(2)}}%</span>
-                        </v-flex>
-                      </v-layout>
-                      <v-divider></v-divider>
-                    </v-flex>
-                  </v-layout>
-                </v-flex>
-                <v-flex xs12>
-                  <v-divider class="black"></v-divider>
-                </v-flex>
-              </v-layout>
-            </v-flex>
-          </v-layout>
-        </v-card>
-      </v-flex>
-    </v-layout>
-  </v-container>
+                                                        <v-flex xs3>{{product.with_clinic[0].name}}</v-flex>
+                                                        <v-flex xs4>
+                                                            <span>{{product.with_product[0].name}}</span>
+                                                        </v-flex>
+                                                        <v-flex xs5>
+                                                            <v-layout row wrap class="justify-center align-center">
+                                                                <v-flex xs2>
+                                                                    <span>{{product.cost}}</span>
+                                                                </v-flex>
+                                                                <v-flex xs2 v-if="!editingPrice">
+                                                                    <span @click="editingProduct(product)">{{product.with_product[0].price}}</span>
+                                                                </v-flex>
+                                                                <v-flex xs3 v-if="!editingPrice">
+                                                                    <span>{{getIdealCost(product)}}</span>
+                                                                </v-flex>
+                                                                <v-flex xs5 v-else-if="loadingEditing">
+                                                                    <v-progress-linear class="primary" indeterminate/>
+                                                                </v-flex>
+                                                                <v-flex xs5 v-else-if="!loadingEditing && editingPrice"
+                                                                        class="justify-center">
+                                                                    <v-text-field
+                                                                                  v-show="selectedProduct === product"
+                                                                                  solo
+                                                                                  outlined
+                                                                                  v-model="newPrice"
+                                                                                  dense
+                                                                                  append-outer-icon="done"
+                                                                                  type="number"
+                                                                                  @click:append-outer="editPrice(label)"
+
+                                                                    />
+                                                                </v-flex>
+                                                                <v-flex xs3>
+                                                                    <span>{{getIdealPrice(product)}}</span>
+                                                                </v-flex>
+                                                                <v-flex xs2>
+                                                            <span :class="[getProfitPercentage(product) < idealProfitPercentage / 100 ? 'red--text' : '']">
+                                                              {{(getProfitPercentage(product) * 100).toFixed(2)}}%
+                                                            </span>
+                                                                </v-flex>
+                                                            </v-layout>
+                                                        </v-flex>
+                                                    </v-layout>
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-card>
+                                    </v-flex>
+                                    <v-flex xs12 id="card-to-print" v-else>
+                                        <v-card flat>
+                                            <v-layout row wrap class="blue_grey">
+                                                <v-flex xs4>
+                                                    <h4>Exames</h4>
+                                                </v-flex>
+                                                <v-flex xs3>Clínica</v-flex>
+                                                <v-flex xs5>
+                                                    <v-layout row wrap>
+                                                        <v-flex xs2>Custo</v-flex>
+                                                        <v-flex xs2>Preço</v-flex>
+                                                        <v-flex xs3>Custo Ideal</v-flex>
+                                                        <v-flex xs3>Preço Ideal</v-flex>
+                                                        <v-flex xs2>Lucro</v-flex>
+                                                    </v-layout>
+                                                </v-flex>
+                                            </v-layout>
+                                            <v-layout row wrap>
+
+                                                <v-flex xs12>
+                                                    <v-layout
+                                                            row
+                                                            wrap
+                                                            class="align-center py-2"
+                                                            v-for="(product,label) in CostProductClinicFilter(data, selectedType,search)"
+                                                            :key="product.id"
+                                                    >
+
+                                                        <v-flex xs4>
+                                                            <span>{{product.with_product[0].name}}</span>
+                                                        </v-flex>
+                                                        <v-flex xs3>{{product.with_clinic[0].name}}</v-flex>
+                                                        <v-flex xs5>
+                                                            <v-layout row wrap class="justify-center align-center">
+                                                                <v-flex xs2>
+                                                                    <span>{{product.cost}}</span>
+                                                                </v-flex>
+                                                                <v-flex xs2 v-if="!editingPrice">
+                                                                    <span @click="editingProduct(product)">{{product.with_product[0].price}}</span>
+                                                                </v-flex>
+                                                                <v-flex xs3 v-if="!editingPrice">
+                                                                    <span>{{getIdealCost(product)}}</span>
+                                                                </v-flex>
+                                                                <v-flex xs5 v-else-if="loadingEditing">
+                                                                    <v-progress-linear class="primary" indeterminate/>
+                                                                </v-flex>
+                                                                <v-flex xs5 v-else-if="!loadingEditing && editingPrice" class="justify-center">
+                                                                    <v-text-field
+                                                                            v-show="selectedProduct === product"
+                                                                            solo
+                                                                            outlined
+                                                                            dense
+                                                                            v-model="newPrice"
+                                                                            append-outer-icon="done"
+                                                                            type="number"
+                                                                            @click:append-outer="editPrice(label)"
+
+                                                                    />
+                                                                </v-flex>
+                                                                <v-flex xs3>
+                                                                    <span>{{getIdealPrice(product)}}</span>
+                                                                </v-flex>
+                                                                <v-flex xs2>
+                                                            <span :class="[getProfitPercentage(product) < idealProfitPercentage / 100 ? 'red--text' : '']">
+                                                              {{(getProfitPercentage(product) * 100).toFixed(2)}}%
+                                                            </span>
+                                                                </v-flex>
+                                                            </v-layout>
+                                                        </v-flex>
+                                                    </v-layout>
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-card>
+                                    </v-flex>
+                                </v-flex>
+                            </v-card>
+                        </template>
+                    </ApolloQuery>
+                </v-card-text>
+            </v-card>
+        </v-flex>
+    </v-container>
 </template>
 
 <script>
-export default {
-  props: [
-    "loading",
-    "idealProfitPercentage",
-    "selectedType",
-    "types",
-    "showOptions",
-    "showOption",
-    "exams",
-    "clinics",
-    "allLoaded",
-    "filterExams",
-    "filterClinics",
-    "getClinicExams",
-    "beginAnalises",
-    "turnClinicsInExams",
-    "getIdealCost",
-    "getIdealPrice",
-    "getProfitPercentage"
-  ]
-};
+    export default {
+        props: [
+            "loading",
+            "idealProfitPercentage",
+            "selectedType",
+            "types",
+            "showOptions",
+            "showOption",
+            "exams",
+            "clinics",
+            "allLoaded",
+            "filterExams",
+            "filterClinics",
+            "getClinicExams",
+            "beginAnalises",
+            "turnClinicsInExams",
+            "getIdealCost",
+            "getIdealPrice",
+            "getProfitPercentage"
+        ],
+        data() {
+            return {
+                editingPrice: false,
+                loadingEditing: false,
+                selectedProduct: null,
+                search: '',
+                newPrice:0,
+                type: null,
+                CostProductClinicObject: {}
+            }
+        },
+        mounted() {
+
+        },
+        methods: {
+            async editingProduct(product) {
+                this.loadingEditing = true;
+                this.selectedProduct = product;
+                this.editingPrice = true;
+                this.loadingEditing = false;
+            },
+          async editPrice(){
+              console.log('selectedProduct:', this.selectedProduct)
+            let edit = await this.$apollo.mutate({
+                mutation: require('@/graphql/products/EditPriceProduct.gql'),
+                variables:{
+                  id: this.selectedProduct.with_product[0].id,
+                  price: parseFloat(this.newPrice)
+                }
+              })
+            console.log('edit: ', edit)
+            this.editingPrice = false
+          },
+            CostProductClinicFilter(data, type,filter) {
+              if(filter.length !== 0){
+                if(type === 0){
+                  return this.CostProductClinicObject.filter(e => e.with_clinic[0].name.includes(this.search.toUpperCase())).slice(0,50)
+                }
+                else{
+                  return this.CostProductClinicObject.filter(e => e.with_product[0].name.includes(this.search.toUpperCase())).slice(0,50)
+                }
+              }
+              else {
+                if (this.type === type) {
+                  return this.CostProductClinicObject.slice(0,50)
+                } else {
+
+                  if (this.selectedType === 0) {
+                    this.type = type;
+                    this.CostProductClinicObject = data.CostProductClinic.filter(e => e.with_clinic[0].name.includes(this.search.toUpperCase())).sort(function (a, b) {
+                      if (a.with_clinic[0].name > b.with_clinic[0].name) {
+                        return 1
+                      }
+                      if (a.with_clinic[0].name < b.with_clinic[0].name) {
+                        return -1
+                      }
+                      return 0
+                    });
+                    return this.CostProductClinicObject.slice(0,50)
+
+                  } else {
+                    this.type = type;
+                    this.CostProductClinicObject = data.CostProductClinic.filter(e => e.with_product[0].name.includes(this.search.toUpperCase())).sort(function (a, b) {
+                      if (a.with_product[0].name > b.with_product[0].name) {
+                        return 1
+                      }
+                      if (a.with_product[0].name < b.with_product[0].name) {
+                        return -1
+                      }
+                      return 0
+                    });
+                    return this.CostProductClinicObject.slice(0,50)
+                  }
+                }
+              }
+                this.type = type;
+                return data.CostProductClinic.slice(0,50)
+            },
+            changeSelectType(type) {
+                this.CostProductClinic = this.CostProductClinicFilter(data)
+            },
+
+        }
+
+    };
 </script>
 
 <style scoped>

@@ -35,8 +35,8 @@ export default {
       loading: false,
       idealProfitPercentage: 105,
       selectedType: 0,
-      types: ["Por Clinicas", "Por Exames"],
-      showOptions: ["Tudo", "Somente as falhas"],
+      types: ["Por clínicas", "Por exames"],
+      showOptions: ["Tudo", "Somente falhas"],
       showOption: 0
     };
   },
@@ -115,7 +115,7 @@ export default {
       return exams;
     },
     getIdealCost(exam) {
-      return (exam.price / (1 + this.idealProfitPercentage / 100)).toFixed(2);
+      return (exam.with_product[0].price / (1 + this.idealProfitPercentage / 100)).toFixed(2);
     },
     getIdealPrice(exam) {
       return Number(
@@ -124,7 +124,7 @@ export default {
     },
     getProfitPercentage(exam) {
       if (exam.cost == 0) return 0;
-      return (exam.price - exam.cost) / exam.cost;
+      return (exam.with_product[0].price - exam.cost) / exam.cost;
     }
   }
 };

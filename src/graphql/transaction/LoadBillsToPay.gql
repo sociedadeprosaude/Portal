@@ -1,0 +1,26 @@
+query ($date_start:_Neo4jDateTimeInput, $date_end: _Neo4jDateTimeInput){
+    Charge (filter: {
+        description_not: null,
+        date_to_pay_not: null,
+        date_gte: $date_start,
+        date_lte: $date_end,
+        }) {
+            description,
+            colaborator {
+              name
+            },
+            payment_methods,
+            value,
+            date_to_pay{formatted},
+            date{formatted},
+            id,
+            with_unit {
+              logo,
+              name
+            },
+            categories {
+              name
+            }
+  }
+
+}

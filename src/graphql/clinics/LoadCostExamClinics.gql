@@ -1,0 +1,13 @@
+query {
+    CostProductClinic(orderBy:[cost_asc], filter: {
+      with_product: {type: "EXAM", price_not: null},
+    }){
+       id,cost
+           with_clinic{
+             id,name
+           },
+           with_product  {
+            id,name,price
+           }
+    }
+}

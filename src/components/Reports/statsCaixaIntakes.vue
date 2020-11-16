@@ -12,7 +12,7 @@
           label="Ano"
           v-bind:value="year"
           @change="(event)=>$emit('change-year',event)"
-        ></v-select>
+        />
       </v-col>
       <v-col cols="6" md="2">
         <v-select

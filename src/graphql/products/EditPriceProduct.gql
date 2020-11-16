@@ -1,0 +1,5 @@
+mutation ($id: ID!,$price: Float) {
+    UpdateProduct(id: $id, price:$price){
+        id,price
+    }
+}
