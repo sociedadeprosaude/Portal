@@ -1,6 +1,6 @@
 query($start_date:String!, $final_date:String!){
   attendanceCount(start_date:$start_date,final_date:$final_date){
-    date{formatted},count,patients_name,genres, patients_birth_date{formatted}
+    date{formatted},times{hour,minute},count,patients_name,genres, patients_birth_date{formatted}
   },
   attendanceCountGeopoint(start_date:$start_date,final_date:$final_date){
     date{formatted},count,patients_name,geopoints{latitude,longitude}

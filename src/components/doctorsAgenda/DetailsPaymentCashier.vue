@@ -566,7 +566,7 @@ export default {
         date: {formatted:moment().format('YYYY-MM-DD HH:mm:ss')},
         user: this.$store.getters.selectedPatient,
         colaborator: this.$store.getters.user,
-        doctor: this.selectedDoctor.name === this.noDoctorKeyWord ? undefined : this.selectedDoctor,
+        doctor: this.selectedDoctor && this.selectedDoctor.name === this.noDoctorKeyWord ? undefined : this.selectedDoctor,
         payments: this.payment.paymentForm,
         valuesPayments: this.payment.value,
         unit: this.selectedUnit
