@@ -197,7 +197,7 @@
                       await  this.$apollo.mutate({
                         mutation: require ('@/graphql/charge/DeleteCharge.gql'),
                         variables:{
-                          idCharge: intake.products[i].with_charge.id
+                          id: intake.products[i].with_charge.id
                         }
                       })
                     }
