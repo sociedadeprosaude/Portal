@@ -34,7 +34,7 @@
                     <v-btn color="error" @click="closeForm()">CANCELAR</v-btn>
                     <v-spacer/>
                   <div>
-                    <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+                    <v-progress-circular v-if="loading" indeterminate color="primary"/>
                     <v-btn v-else @click="editExam()" color="success">
                         SALVAR
                     </v-btn>

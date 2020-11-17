@@ -32,28 +32,23 @@
                 <v-icon color="white">menu</v-icon>
             </v-btn>
 
-            <!--adicionar categoria-->
             <v-btn fab small @click="goRoute('/BillsMobile/categorias')" >
                 <v-icon color="white">playlist_add</v-icon>
             </v-btn>
 
-            <!--registrar nova conta-->
             <v-btn fab small  @click="goRoute('/BillsMobile/registro')">
                 <v-icon color="white">add</v-icon>
             </v-btn>
 
-            <!--contas pagas-->
             <v-btn fab small @click="goRoute('/BillsMobile/pagos')">
                 <v-icon color="white">playlist_add_check</v-icon>
             </v-btn>
 
-            <!--contas-->
             <v-btn fab small @click="goRoute('/BillsMobile/pendentes')">
                 <v-icon color="white">attach_money</v-icon>
             </v-btn>
 
         </v-bottom-navigation>
-
     </v-container>
 </template>
 

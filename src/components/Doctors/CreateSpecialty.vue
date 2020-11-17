@@ -36,7 +36,7 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer />
-      <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+      <v-progress-circular v-if="loading" indeterminate color="primary"/>
       <v-btn v-else color="primary" @click="createProduct()">Adicionar</v-btn>
     </v-card-actions>
   </v-card>

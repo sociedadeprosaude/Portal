@@ -20,7 +20,7 @@
                         @done="close($event)"
                     >
                       <template v-slot="{ mutate, loading, error }">
-                        <v-progress-circular indeterminate color="primary" v-if="loading"></v-progress-circular>
+                        <v-progress-circular indeterminate color="primary" v-if="loading"/>
                         <v-btn icon dark><v-icon small @click="mutate()">delete</v-icon></v-btn>
                         <p v-if="error">Ocorreu um erro: {{ error }}</p>
                       </template>
