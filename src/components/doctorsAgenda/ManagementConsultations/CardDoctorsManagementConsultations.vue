@@ -41,14 +41,16 @@
                 </v-layout>
               </v-card>
             </v-flex>
-            <v-flex xs12 class="mt-4 mb-3">
-              <!--                             <p class="text-left primary--text font-weight-bold ml-2"
-                                             v-if="ConsultationsByDoctors.length !== 0">{{date |
-                                              dateFilter}} - {{daydate(date)}}</p> -->
+            <v-flex xs12 v-for="(days,index) in consultation.consultations ">
+              <v-card>
+                <v-layout row wrap>
+            <v-flex xs12 class="mt-4 mb-3"  >
+                                           <p class="text-left primary--text font-weight-bold ml-2"
+                                             v-if="ConsultationsByDoctors.length !== 0">{{days.date |
+                                              dateFilter}} - {{daydate(days.date)}}</p>
               <v-divider class="primary"/>
             </v-flex>
-            <v-flex sm4 v-for="(item,index) in consultation.consultations " :key="index" class="mt-3 mb-2">
-              <div >
+            <v-flex sm4 v-for="(item,index) in days.consultations " :key="index" class="mt-3 mb-2">
                 <v-tooltip top color="white">
                   <template v-slot:activator="{ on, attrs }">
                     <div v-bind="attrs" v-on="on">
@@ -76,17 +78,18 @@
                       </v-card>
                     </div>
                   </template>
-                  <v-layout v-if="item.clinic.logo" class="align-center justify-center">
-                    <v-flex xs6>
+                  <v-layout v-if="item.clinic" class="align-center justify-center">
+                    <v-flex xs6 v-if="item.clinic.logo">
                       <v-img
                           :src="item.clinic.logo"
                           width="400"
                       ></v-img>
                     </v-flex>
                   </v-layout>
-                  <span v-if="!item.clinic.logo" style="color: #003B8F; font-weight: bold">{{item.clinic.name}}</span>
+                  <v-layout v-if="!item.clinic">
+                    <span v-if="!item.clinic.logo" style="color: #003B8F; font-weight: bold">{{item.clinic.name}}</span>
+                  </v-layout>
                 </v-tooltip>
-              </div>
               <div v-if="!clinic">
                 <v-tooltip top color="white">
                   <template v-slot:activator="{ on, attrs }">
@@ -122,18 +125,23 @@
                       </v-card>
                     </div>
                   </template>
-                  <v-layout v-if="item.clinic.logo" class="align-center justify-center">
-                    <v-flex xs6>
+                  <v-layout v-if="item.clinic" class="align-center justify-center">
+                    <v-flex xs6 v-if="item.clinic.logo">
                       <v-img
                           :src="item.clinic.logo"
                           width="400"
                       ></v-img>
                     </v-flex>
                   </v-layout>
-                  <span v-if="!item.clinic.logo" style="color: #003B8F; font-weight: bold">{{item.clinic.name}}</span>
+                  <v-layout v-if="!item.clinic">
+                    <span v-if="!item.clinic.logo" style="color: #003B8F; font-weight: bold">{{item.clinic.name}}</span>
+                  </v-layout>
                 </v-tooltip>
               </div>
             </v-flex>
+                </v-layout>
+              </v-card>
+          </v-flex>
           </v-layout>
         </v-card>
       </v-flex>
@@ -270,13 +278,27 @@ export default {
             doctor: this.consultations[cons].doctor,
             numConsultations: 0,
             numRegress: 0,
-            consultations: []
+            consultations: {}
           }
         }
         if (this.consultations[cons].type === 'Consulta') res[targetDate].numConsultations += 1;
         else res[targetDate].numRegress += 1;
-        res[targetDate].consultations.push(this.consultations[cons])
-      }
+          let dateTimeConsultation = this.consultations[cons].date.formatted;
+          const date = dateTimeConsultation.split("T")[0];
+          if(!res[targetDate].consultations[date]){
+            res[targetDate].consultations[date] = {
+              consultations: [],
+              date: date
+            }
+          }
+          let consultation = this.consultations[cons]
+
+          if(!consultation.type){
+            consultation.type = 'Consulta'
+          }
+
+          res[targetDate].consultations[date].consultations.push(consultation)
+        }
       console.log('res', JSON.parse(JSON.stringify(res)))
       return res
     },

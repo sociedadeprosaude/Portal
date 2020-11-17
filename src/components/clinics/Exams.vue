@@ -139,7 +139,7 @@
         <v-card-actions>
             <v-layout align-center justify-center>
               <v-spacer />
-              <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+              <v-progress-circular v-if="loading" indeterminate color="primary"/>
               <v-btn v-else color="primary" @click="Create()">ADICIONAR</v-btn>
             </v-layout>
         </v-card-actions>
