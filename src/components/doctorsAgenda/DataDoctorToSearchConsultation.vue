@@ -42,7 +42,7 @@
                             :variables="{ type:'SPECIALTY', schedulable:false}"
                     >
                         <template v-slot="{ result: { data, loading } }">
-                            <v-autocomplete
+                            <v-combobox
                                     class="pa-0 ma-0"
                                     :items="data ? data.Product : []"
                                     return-object
@@ -67,7 +67,7 @@
                                     >{{ data.item.name }}
                                     </v-chip>
                                 </template>
-                            </v-autocomplete>
+                            </v-combobox>
                         </template>
                     </ApolloQuery>
                 </template>
