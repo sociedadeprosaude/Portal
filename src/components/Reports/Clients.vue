@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row class="mt-2">
-      <h1 class="headline">Clientes Atendidos</h1>
+      <h1 class="headline">Clientes Atendidos por dia</h1>
     </v-row>
     <v-row>
       <v-col>
@@ -9,6 +9,21 @@
           <v-row v-if="clientsServed">
             <v-col>
               <line-chart :chart-data="generateDatasetServed(clientsServed)" :options="options"></line-chart>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <v-row class="mt-2">
+      <h1 class="headline">Clientes Atendidos por hora</h1>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-card elevation="0">
+          <v-row v-if="clientsServed">
+            <v-col>
+              <line-chart :chart-data="generateDatasetServedByHour(clientsServedByHour)" :options="options"></line-chart>
             </v-col>
           </v-row>
         </v-card>
@@ -158,11 +173,13 @@ export default {
     "menu",
     "dateFormatted",
     "clientsServed",
+    "clientsServedByHour",
     "newClients",
     "ageClientsServed",
     "genresClientsServed",
     "geopoints",
     "generateDatasetServed",
+    "generateDatasetServedByHour",
     "generateDatasetNewClients",
     "generateDatasetClientsAge",
     "options",

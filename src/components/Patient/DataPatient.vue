@@ -870,7 +870,16 @@
             },
             async selectUser(user) {
                 if (user) {
-                    this.fillFormUser(user)
+                    this.fillFormUser(user);
+                    console.log('SelectUSER')
+                    this.$apollo.mutate({
+                        mutation:require('@/graphql/patients/CreateAttendancePatient.gql'),
+                        variables:{
+                            date:{formatted: moment().format('YYYY-MM-DDTHH:mm')},
+                            id_attendance: uuid.v4(),
+                            id_patient: user.id
+                        }
+                    });
                 } else {
                     this.cpf = undefined;
                     this.name = undefined;

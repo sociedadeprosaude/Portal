@@ -92,7 +92,7 @@ export default {
           link: "StatisticasOrcamento"
         },
         {
-          txt: "Pacientes Geopoint",
+          txt: "Pacientes por Bairro",
           link: "StatisticPatientsGeoPoint"
         },
         {

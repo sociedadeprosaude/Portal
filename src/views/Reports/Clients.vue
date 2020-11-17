@@ -32,11 +32,13 @@
       :menu="menu"
       :dateFormatted="dateFormatted2"
       :clientsServed="attendances"
+      :clientsServedByHour="attendancesByHour"
       :newClients="newClients"
       :ageClientsServed="ages"
       :genresClientsServed="genres"
       :geopoints="geopoints"
       :generateDatasetServed="generateDatasetServed"
+      :generateDatasetServedByHour="generateDatasetServedByHour"
       :generateDatasetNewClients="generateDatasetNewClients"
       :generateDatasetClientsAge="generateDatasetClientsAge"
       :options="options"
@@ -62,6 +64,7 @@ export default {
     menu2:false,
     overlay:false,
     attendances:undefined,
+    attendancesByHour:undefined,
     genres:undefined,
     ages:undefined,
     geopoints:undefined,
@@ -139,7 +142,6 @@ export default {
       }); */
     },
     generateDatasetServed(dataset) {
-      console.log('chegou aqui',dataset)
       return {
         labels: Object.keys(dataset),
         datasets: [
@@ -147,6 +149,21 @@ export default {
             //lineTension:0,
 
             label: "Clientes Atendidos",
+            backgroundColor: "#81C784",
+            borderColor: "#fff",
+            data: Object.values(dataset),
+          },
+        ],
+      };
+    },
+    generateDatasetServedByHour(dataset) {
+      return {
+        labels: Object.keys(dataset).map((hour) => `${hour} horas`),
+        datasets: [
+          {
+            //lineTension:0,
+
+            label: "Clientes Atendidos por Hora",
             backgroundColor: "#81C784",
             borderColor: "#fff",
             data: Object.values(dataset),
@@ -254,6 +271,27 @@ export default {
         }
         console.log('geopoints', this.geopoints)
     },
+    reduceAttendancesByHour(attendances){
+      /* return attendances.reduce((obj, attendance)=>{
+          const date = moment(attendance.date.formatted).format('DD/MM/YYYY')
+          obj[date] = attendance.count
+          return obj
+      },{}); */
+      let attendancesByHour = {};
+      for (const key in attendances) {
+        for (const key2 in attendances[key].times) {
+          
+          if(!attendancesByHour[attendances[key].times[key2].hour]) attendancesByHour[attendances[key].times[key2].hour] = 0;
+          attendancesByHour[attendances[key].times[key2].hour] += 1;
+
+          console.log(attendancesByHour[attendances[key].times[key2].hour])
+        }
+      }
+
+      console.log(attendancesByHour)
+
+      return attendancesByHour;
+    },
     reduceAttendances(attendances){
       return attendances.reduce((obj, attendance)=>{
           const date = moment(attendance.date.formatted).format('DD/MM/YYYY')
@@ -268,11 +306,12 @@ export default {
       variables(){
         return {
           start_date:this.date,
-          final_date:moment().format('YYYY-MM-DD')
+          final_date:`${moment().format('YYYY-MM-DD')}`
         }
       },
       update(data){
         this.attendances = this.reduceAttendances(data.attendanceCount);
+        this.attendancesByHour = this.reduceAttendancesByHour(data.attendanceCount);
         this.newClients = this.reduceAttendances(data.createdPatientCount);
         this.formatGenresObject(data.attendanceCount);
         this.formartAgesObject(data.attendanceCount);

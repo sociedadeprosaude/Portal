@@ -98,7 +98,6 @@
         },
         mounted() {
             firebase.auth().onAuthStateChanged((user) => {
-              console.log('rota:',this.$router.currentRoute);
                 if (!user) {
                     this.ready = true;
                   let rota = this.$router.currentRoute.path;

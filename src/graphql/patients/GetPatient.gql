@@ -43,6 +43,9 @@ query($id:ID!){
                name,
                type,
              },
+            with_charge{
+            id
+            },
             clinic: with_clinic{
                id,
                name,
