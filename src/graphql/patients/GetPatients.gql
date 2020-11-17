@@ -3,9 +3,8 @@ query{
        addresses{
            cep,
            city,
-           geopoint{
-           latitude, longitude
-           }
+           neighboor,
+           id
        }
-     }
-   }
+  }
+}

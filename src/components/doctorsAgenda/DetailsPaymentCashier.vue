@@ -813,7 +813,7 @@ export default {
     },
 
     verifyUnpaidConsultations(productTransaction) {
-      let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product.id === productTransaction.id && consultation.status === "Aguardando pagamento")
+      let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product ? consultation.product.id : '0' === productTransaction.id && consultation.status === "Aguardando pagamento")
       if (unpaidConsultation) {
         this.saveRelationProductTransaction(unpaidConsultation.id, productTransaction.prodId)
       }
