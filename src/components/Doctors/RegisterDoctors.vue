@@ -27,7 +27,7 @@
                 </v-card>
             </v-flex>
             <v-dialog v-model="creatingDoctor" max-width="500px">
-                <CreateDoctorCard @clean="selectedDoctor = undefined" @close="creatingDoctor = false"/>
+                <CreateDoctorCard @reload="reload" @clean="selectedDoctor = undefined" @close="creatingDoctor = false"/>
             </v-dialog>
         </v-layout>
     </v-container>
@@ -37,14 +37,31 @@
     import ListDoctors from "../../components/Doctors/ListDoctors";
     export default {
         components: {CreateDoctorCard, ListDoctors},
-        props:['doctors'],
+        //props:['doctors'],
         name:"RegisterDoctors",
         data: () => ({
             search: "",
             creatingDoctor:"",
             selectedDoctor:"",
+            doctors: undefined,
         }),
+      apollo: {
+        LoadDoctors: {
+          query: require("@/graphql/doctors/LoadDoctors.gql"),
+          update(data){
+            //this.doctors = undefined;
+            this.doctors = Object.assign(data.Doctor);
+            //console.log('reativo:', this.products)
+          },
+        }
+      },
         methods: {
+          async reload(){
+            console.log('create ?')
+            setTimeout(() => {
+              this.$apollo.queries.LoadDoctors.refresh();
+            }, 1500);
+          },
             addDoctor() {
                 this.selectedDoctor = undefined;
                 this.creatingDoctor = true

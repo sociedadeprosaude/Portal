@@ -1,0 +1,13 @@
+mutation($idClinic:ID!,$idProduct:ID!){
+    AddClinicHas_product(
+            from:{
+                id:$idClinic
+            },
+            to:{
+                id:$idProduct
+            }
+        ){
+            from{id},
+            to{id}
+        },
+}

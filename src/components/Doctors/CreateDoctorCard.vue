@@ -296,6 +296,8 @@ export default {
         },
       });
       this.loading = false
+      //this.close();
+      //this.$emit('reloaded')
       this.$router.push('/')
     },
     async updateDoctor() {
@@ -308,6 +310,30 @@ export default {
           crm: this.crm,
         },
       });
+      //fghfghfg
+      for (let unity in this.clinic) {
+        for (let product in this.specialties) {
+          let holder = this.specialties[product].clinics.filter(a => {
+            return a.id === this.clinic[unity].id;
+          });
+          if (holder[0] !== undefined) {
+            //console.log('holder', holder)
+            console.log("já tem então skipp")
+          } else {
+            //console.log('holder', holder)
+            //console.log('whats ?', this.clinic[unity].id)
+            await this.$apollo.mutate({
+              mutation: require('@/graphql/clinics/AddClinicHas_product.gql'),
+              variables: {
+                idClinic: this.clinic[unity].id,
+                idProduct: this.specialties[product].id,
+              },
+            });
+            console.log("faz pq não tem")
+          }
+        }
+      }
+      //sdfsdfsdf
       for (let product in this.specialties) {
         if (this.specialties[product].idCostProductDoctor) {
           await this.$apollo.mutate({
@@ -355,9 +381,9 @@ export default {
         console.log('não mudou o N de clinicas, então skipp')
       }
       this.loading = false
-      await this.$apollo.queries.loadDoctors.refresh()
-      this.$emit('close')
-      // this.$router.push('/')
+      //this.close();
+      //this.$emit('reload')
+      this.$router.push('/')
     },
 
     async createDoctor() {
@@ -397,9 +423,31 @@ export default {
             idDoctor: idDoctor,
           },
         });
+        for (let product in this.specialties) {
+          let holder = this.specialties[product].clinics.filter(a => {
+            return a.id === this.clinic[unity].id;
+          });
+          if (holder[0] !== undefined) {
+            //console.log('holder', holder)
+            //console.log("já tem então skipp")
+          } else {
+            //console.log('holder', holder)
+            //console.log('whats ?', this.clinic[unity].id)
+            await this.$apollo.mutate({
+              mutation: require('@/graphql/clinics/AddClinicHas_product.gql'),
+              variables: {
+                idClinic: this.clinic[unity].id,
+                idProduct: this.specialties[product].id,
+              },
+            });
+            //console.log("faz pq não tem")
+          }
+        }
       }
       this.loading = false
-      this.$router.push('/')
+      this.close();
+      this.$emit('reload')
+      //this.$router.push('/')
     },
     close() {
       this.clear();
@@ -414,10 +462,5 @@ export default {
       this.$emit('clean')
     },
   },
-  apollo: {
-    loadDoctors: {
-      query: require( "@/graphql/doctors/LoadDoctors.gql")
-    },
-  }
 }
 </script>
