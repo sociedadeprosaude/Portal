@@ -140,7 +140,8 @@
               setTimeout(() => {
                 mutate();
               }, 0);
-              this.$router.push('/')
+              this.$emit('reload')
+              //this.$router.push('/')
             },
 
             updateProduct(mutate) {
@@ -149,6 +150,7 @@
                 mutate();
               }, 0);
               this.$router.push('/')
+              //this.$emit('reload')
             },
 
             clear() {

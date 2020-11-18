@@ -27,12 +27,12 @@
 
             <v-card>
               <v-card-text>
-                <listExamsTypes />
+                <listExamsTypes @reloadDelete="reloadDelete" :products="products" />
               </v-card-text>
             </v-card>
           </v-flex>
           <v-dialog v-model="newExamType">
-            <createExamType @close-dialog="newExamType = false" :registed="registed" />
+            <createExamType @reload="reload" @close-dialog="newExamType = false" :registed="registed" />
           </v-dialog>
         </v-layout>
   </v-container>
@@ -49,8 +49,39 @@ export default {
     searchType: "",
     loading: undefined,
     newExamType: false,
-    registed: false
+    registed: false,
+    products: undefined,
   }),
+  apollo: {
+    ReadProcucts: {
+      query: require("@/graphql/products/ReadProcucts.gql"),
+      variables () {
+        return {
+          type:'EXAM',
+          schedulable: true,
+        }
+      },
+      update(data){
+        this.products = undefined;
+        this.products = Object.assign(data.Product);
+        //console.log('reativo:', this.products)
+      },
+    }
+  },
+  methods: {
+    async reload(){
+      console.log('create ?')
+      setTimeout(() => {
+        this.$apollo.queries.ReadProcucts.refresh();
+      }, 1500);
+    },
+    async reloadDelete(){
+      console.log('del ?')
+      setTimeout(() => {
+        this.$apollo.queries.ReadProcucts.refresh();
+      }, 1500);
+    },
+  },
   mounted() {
     let self = this;
     self.$store.dispatch("getExamsTypes");
