@@ -9,7 +9,10 @@ query {
                   Product:has_product{
                       name
                   }
-              }
+              },
+              with_transaction{
+                             id
+                             }
            }
         },
         payments{

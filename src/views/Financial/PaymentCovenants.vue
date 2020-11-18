@@ -242,7 +242,8 @@ export default {
 
     },
     async payClinic(clinic) {
-      this.loadingPayment = true
+      console.log('Clinic: ',clinic)
+       this.loadingPayment = true
       let transactionId = uuid.v4()
       let mutationBuilder = new MutationBuilder()
       mutationBuilder.addMutation(
@@ -269,6 +270,18 @@ export default {
                   }
               `)
       for (let charge in clinic.charges) {
+        mutationBuilder.addMutation(`AddTransactionSales_transactions(
+                from:{
+                      id:"${transactionId}"
+                    },
+
+                    to:{
+                      id:"${clinic.charges[charge].ProductTransaction[0].with_transaction.id}"
+                    }
+                  ){
+                     from{id},
+                      to{id}
+                  }`)
         mutationBuilder.addMutation(`
                   DeleteCharge(id:"${clinic.charges[charge].id}"){
                   id

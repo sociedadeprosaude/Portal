@@ -252,38 +252,52 @@
             async payDoctor(doctor){
                 //await this.$store.dispatch('PayDoctor', doctor)
                 //this.getInitialInfo()
-              this.loadingPayment= true
-              let transactionId = uuid.v4()
-              let mutationBuilder = new MutationBuilder()
-              mutationBuilder.addMutation(
-                  `CreateTransaction(
-                    date:{formatted: "${moment().format("YYYY-MM-DDTHH:mm:ss")}"},
-                    id:"${transactionId}",
-                    value:${-parseFloat(this.CostExamsDoctor(doctor))},
-                  ){
-                  id,date{formatted},value,
-                  }`
-              )
-              mutationBuilder.addMutation(`
-                  AddDoctorPayments(
-                 from:{
-                      id:"${doctor.id}"
-                    },
+              console.log('dortor: ', doctor)
+               this.loadingPayment= true
+               let transactionId = uuid.v4()
+               let mutationBuilder = new MutationBuilder()
+               mutationBuilder.addMutation(
+                   `CreateTransaction(
+                     date:{formatted: "${moment().format("YYYY-MM-DDTHH:mm:ss")}"},
+                     id:"${transactionId}",
+                     value:${-parseFloat(this.CostExamsDoctor(doctor))},
+                   ){
+                   id,date{formatted},value,
+                   }`
+               )
+               mutationBuilder.addMutation(`
+                   AddDoctorPayments(
+                  from:{
+                       id:"${doctor.id}"
+                     },
 
-                    to:{
-                      id:"${transactionId}"
-                    }
-                  ){
-                     from{id},
-                      to{id}
-                  }
-              `)
-              for (let charge in doctor.charges) {
-                mutationBuilder.addMutation(`
-                  DeleteCharge(id:"${doctor.charges[charge].id}"){
-                  id
-                  }
-                `)
+                     to:{
+                       id:"${transactionId}"
+                     }
+                   ){
+                      from{id},
+                       to{id}
+                   }
+               `)
+              console.log('transactionId: ', transactionId)
+               for (let charge in doctor.charges) {
+                 mutationBuilder.addMutation(`AddTransactionSales_transactions(
+                 from:{
+                       id:"${transactionId}"
+                     },
+
+                     to:{
+                       id:"${doctor.charges[charge].ProductTransaction[0].with_transaction.id}"
+                     }
+                   ){
+                      from{id},
+                       to{id}
+                   }`)
+                   mutationBuilder.addMutation(`
+                   DeleteCharge(id:"${doctor.charges[charge].id}"){
+                   id
+                   }
+                 `)
               }
               let finalString = mutationBuilder.generateMutationRequest()
               await this.$apollo.mutate({
