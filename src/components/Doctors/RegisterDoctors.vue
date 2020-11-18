@@ -22,7 +22,7 @@
 
                 <v-card>
                     <v-card-text v-if="doctors.length !== 0">
-                        <ListDoctors :doctors=doctors />
+                        <ListDoctors @reload="reload" :doctors=doctors />
                     </v-card-text>
                 </v-card>
             </v-flex>

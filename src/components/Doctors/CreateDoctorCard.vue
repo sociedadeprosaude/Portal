@@ -296,9 +296,9 @@ export default {
         },
       });
       this.loading = false
-      //this.close();
-      //this.$emit('reloaded')
-      this.$router.push('/')
+      this.close();
+      this.$emit('reloaded')
+      //this.$router.push('/')
     },
     async updateDoctor() {
       this.loading = true
@@ -381,9 +381,9 @@ export default {
         console.log('não mudou o N de clinicas, então skipp')
       }
       this.loading = false
-      //this.close();
-      //this.$emit('reload')
-      this.$router.push('/')
+      this.close();
+      this.$emit('reloaded')
+      //this.$router.push('/')
     },
 
     async createDoctor() {
