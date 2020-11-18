@@ -11,6 +11,9 @@ query{
             ProductTransaction: with_ProductTransaction{
                Product: with_product{
                    name
+               },
+               with_transaction{
+               id
                }
             }
          }
