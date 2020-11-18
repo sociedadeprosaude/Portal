@@ -1,9 +1,8 @@
-query ($date_start:_Neo4jDateTimeInput, $date_end: _Neo4jDateTimeInput){
+query ($date_start: String, $date_end: String){
     Charge (filter: {
-        description_not: null,
-        date_to_pay_not: null,
-        date_gte: $date_start,
-        date_lte: $date_end,
+        date_gte: {formatted: $date_start},
+        date_lte: {formatted: $date_end},
+        value_not: null,
         }) {
             description,
             colaborator {
@@ -20,7 +19,8 @@ query ($date_start:_Neo4jDateTimeInput, $date_end: _Neo4jDateTimeInput){
             },
             categories {
               name
-            }
+            },
+            balance
   }
 
 }
