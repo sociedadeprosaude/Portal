@@ -99,6 +99,10 @@ export default {
           txt: "Orçamentos Não Comprados",
           link: "PatientsBudgets"
         },
+        {
+          txt: "Pacientes",
+          link: "Patients"
+        },
       ]
     };
   },

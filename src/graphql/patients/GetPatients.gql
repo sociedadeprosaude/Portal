@@ -1,10 +1,5 @@
 query{
-  Patient{
-       addresses{
-           cep,
-           city,
-           neighboor,
-           id
-       }
+  Patient(orderBy:name_asc){
+      name, attedanceHistory{date{formatted}},email,telephones, created_at{formatted}
   }
 }
