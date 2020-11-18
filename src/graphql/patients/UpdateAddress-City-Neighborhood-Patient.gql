@@ -1,0 +1,15 @@
+mutation (
+    $idAddress: ID!,
+    $city: String,
+    $neighboor: String
+
+    ){
+    UpdateAddress(
+        id: $idAddress
+        city: $city,
+        neighboor: $neighboor,
+    )
+    {
+        id
+    }
+}
