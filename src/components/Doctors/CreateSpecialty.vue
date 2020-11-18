@@ -67,7 +67,9 @@ export default {
         variables: {name: this.specialty.toUpperCase(),type: this.type, price: this.price, schedulable: this.schedulable, rules: this.rules},
       });
       this.loading = false;
-      this.$router.push('/');
+      this.$emit('reload')
+      this.$emit("close")
+      //this.$router.push('/');
     },
   }
 };

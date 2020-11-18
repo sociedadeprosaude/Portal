@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid>
+    <v-container fluid v-if="specialties">
         <v-layout row wrap>
             <v-flex sm12>
                 <v-card class="pt-3">
@@ -23,12 +23,12 @@
                 </v-card>
                 <v-card>
                   <v-card-text>
-                    <ListSpecialties :specialties="specialties"/>
+                    <ListSpecialties @reload="reload" :specialties="specialties"/>
                   </v-card-text>
                 </v-card>
             </v-flex>
             <v-dialog v-model="creatingSpecialty" max-width="500px">
-                <CreateSpecialty @close="creatingSpecialty = false"/>
+                <CreateSpecialty @reload="reload" @close="creatingSpecialty = false"/>
             </v-dialog>
         </v-layout>
 
@@ -40,10 +40,36 @@
     import ListSpecialties from "./ListSpecialties";
     export default {
         components: {CreateSpecialty, ListSpecialties},
-        props:['specialties'],
+        //props:['specialties'],
         data: () => ({
             searchSpecialty: "",
             creatingSpecialty: false,
+            specialties: undefined,
         }),
+      apollo: {
+        ReadProcucts: {
+          query: require("@/graphql/products/ReadProcucts.gql"),
+          variables () {
+            return {
+              type:'SPECIALTY',
+              schedulable: false,
+            }
+          },
+          update(data){
+            //this.specialties = undefined;
+            this.specialties = Object.assign(data.Product);
+            //console.log('reativo:', this.products)
+          },
+        }
+      },
+      methods: {
+        async reload() {
+          console.log('recarregar')
+          await this.$apollo.queries.ReadProcucts.refresh();
+/*          setTimeout(() => {
+            this.$apollo.queries.ReadProcucts.refresh();
+          }, 1500);*/
+        },
+      },
     };
 </script>

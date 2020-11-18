@@ -13,14 +13,14 @@
               </ApolloQuery>
             </v-tab-item>
             <v-tab-item value="specialties">
-              <ApolloQuery
+<!--              <ApolloQuery
                   :query="require('@/graphql/products/ReadProcucts.gql')"
                   :variables="{ type:'SPECIALTY', schedulable:false}"
               >
-                <template slot-scope="{ result: { data } }">
-                  <register-specialties v-if="data" :specialties="data.Product" ></register-specialties>
-                </template>
-              </ApolloQuery>
+                <template slot-scope="{ result: { data } }">-->
+                  <register-specialties></register-specialties>
+<!--                </template>
+              </ApolloQuery>-->
             </v-tab-item>
         </v-tabs>
     </v-container>
