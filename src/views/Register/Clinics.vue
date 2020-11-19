@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-layout row wrap>
+        <v-layout row wrap v-if="clinics">
             <v-flex sm12>
                 <v-card class="pt-3 mb-4">
                     <v-layout row wrap>
@@ -47,6 +47,9 @@
                 <RegisterNewClinic @close-dialog="finishRegister()"/>
             </v-dialog>
         </v-layout>
+      <v-layout class="align-center justify-center" row wrap v-else>
+        <v-progress-circular :size="300" :width="10" color="primary" indeterminate>CARREGANDO...</v-progress-circular>
+      </v-layout>
     </v-container>
 </template>
 
@@ -61,10 +64,20 @@
             clinics: undefined,
         }),
       mounted(){
-        this.FormatAddressOfClinics()
+        //this.FormatAddressOfClinics()
+      },
+      apollo: {
+        LoadSectorsOfUnity: {
+          query: require("@/graphql/clinics/LoadAllClinics.gql"),
+          update(data){
+            let forEdit = Object.assign(data.Clinic)
+            for(let clinic in forEdit) { forEdit[clinic].address = forEdit[clinic].has_address[0] }
+            this.clinics = forEdit
+          },
+        }
       },
       methods: {
-        async FormatAddressOfClinics() {
+/*        async FormatAddressOfClinics() {
           const unitys = await this.$apollo.mutate({
             mutation: require('@/graphql/clinics/LoadAllClinics.gql'),
           })
@@ -73,7 +86,7 @@
             forEdit[clinic].address = forEdit[clinic].has_address[0]
           }
           this.clinics = forEdit
-        },
+        },*/
         finishRegister(){
           this.dataClinic = false;
         },

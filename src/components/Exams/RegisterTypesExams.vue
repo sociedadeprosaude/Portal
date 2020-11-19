@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-        <v-layout row wrap>
+        <v-layout row wrap v-if="products">
           <v-flex sm12>
             <v-card class="pt-3 mb-4">
               <v-layout row wrap>
@@ -35,6 +35,9 @@
             <createExamType @reload="reload" @close-dialog="newExamType = false" :registed="registed" />
           </v-dialog>
         </v-layout>
+    <v-layout class="align-center justify-center" row wrap v-else>
+      <v-progress-circular :size="300" :width="10" color="primary" indeterminate>CARREGANDO...</v-progress-circular>
+    </v-layout>
   </v-container>
 </template>
 <script>

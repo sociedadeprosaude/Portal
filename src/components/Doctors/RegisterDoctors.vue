@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-layout row wrap>
+        <v-layout row wrap v-if="doctors">
             <v-flex sm12>
                 <v-card class="pt-3">
                     <v-layout row wrap>
@@ -30,6 +30,9 @@
                 <CreateDoctorCard @reload="reload" @clean="selectedDoctor = undefined" @close="creatingDoctor = false"/>
             </v-dialog>
         </v-layout>
+      <v-layout class="align-center justify-center" row wrap v-else>
+        <v-progress-circular :size="300" :width="10" color="primary" indeterminate>CARREGANDO...</v-progress-circular>
+      </v-layout>
     </v-container>
 </template>
 <script>
