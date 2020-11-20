@@ -4,8 +4,11 @@ query($property:Boolean){
         has_address{
             cep, state, street, city, complement, neighboor, number,geopoint{latitude,longitude}
         },
-          has_doctor{
-            id
-          },
+        has_doctor{
+          id
+        },
+        providers{
+          id, providedByClinic{id,name}, provides{id,name}
+        }
     }
 }

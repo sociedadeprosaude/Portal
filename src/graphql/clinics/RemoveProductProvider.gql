@@ -1,0 +1,5 @@
+mutation DeleteProductProvider($idProductProvider:ID!){
+   DeleteProductProvider(id:$idProductProvider){
+    id
+  }
+}

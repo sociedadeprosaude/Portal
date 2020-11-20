@@ -129,7 +129,7 @@
                         this.$store.dispatch('getUser', user);
                     }
 
-                    if(!user || !user[0].is_colaborator || !user[0].is_doctor){
+                    if(!user || ( user[0] && !user[0].is_colaborator) || ( user[0] && !user[0].is_doctor)){
                         this.ready = true;
                         this.$router.push('/error-authentication')
                     }
@@ -148,7 +148,6 @@
                 },
                 update(data){
                     this.$store.dispatch('getProSaudeUnits',data.Clinic);
-                    console.log(data.Clinic)
                 }
             }
         }

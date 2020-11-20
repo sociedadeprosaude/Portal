@@ -12,7 +12,7 @@
                     </v-card-title>
                     <v-divider class="primary"/>
                 </v-flex>
-                <v-layout v-if="allExams.length !== 0" class="align-start justify-start" wrap>
+                <v-layout v-if="allExams && allExams.length !== 0" class="align-start justify-start" wrap>
                     <v-flex sm4 v-for="(item,index) in allExams" :key="index" v-if="item.type === 'EXAM'">
                         <v-card outlined class="borderCard mx-2 mr-2 grey_light">
                             <v-layout row wrap class="mt-2 mr-2 ml-2">
@@ -33,7 +33,7 @@
                         </v-card>
                     </v-flex>
                 </v-layout>
-                <v-layout v-if="allExams.length === 0" class="align-center justify-center" wrap>
+                <v-layout v-if="allExams && allExams.length === 0" class="align-center justify-center" wrap>
                     <v-card-text class="justify-center text-center">
                         <span class="font-italic">Não há <strong>exames</strong> cadastrados para esta clínica.</span>
                     </v-card-text>
@@ -49,7 +49,7 @@
                     <v-divider class="primary"/>
                 </v-flex>
                 <v-layout class="align-center justify-center" wrap>
-                    <v-layout v-if="allSpecialties.length !== 0" class="align-center justify-center" wrap>
+                    <v-layout v-if="allSpecialties && allSpecialties.length !== 0" class="align-center justify-center" wrap>
                       <v-flex sm4 v-for="(item,index) in allSpecialties" :key="index">
                         <v-card outlined class="borderCard mx-2 mr-2 grey_light">
                           <v-layout row wrap class="mt-2 mr-2 ml-2">
@@ -70,7 +70,7 @@
                         </v-card>
                       </v-flex>
                     </v-layout>
-                    <v-layout v-if="allSpecialties.length === 0" class="align-center justify-center" wrap>
+                    <v-layout v-if="allSpecialties && allSpecialties.length === 0" class="align-center justify-center" wrap>
                         <v-card-text class="justify-center text-center">
                             <span class="font-italic">Não há <strong>especialidades</strong> cadastrados para esta clínica.</span>
                         </v-card-text>
@@ -123,7 +123,6 @@
             price: 0,
             rules: null,
             obs: null,
-          clinic: undefined,
           allExams: undefined,
           allSpecialties: undefined,
         }),
@@ -137,11 +136,11 @@
               mutation: require('@/graphql/doctors/LoadCostProductDoctors.gql'),
             })
             let costProductDoctor = costs.data.CostProductDoctor
-            if(this.clinic.has_doctor.length > 0){
+            if(this.clinic && this.clinic.has_doctor.length > 0){
               for(let costpd in costProductDoctor) {
                   for (let doctor in this.clinic.has_doctor) {
                     for (let spc in this.clinic.has_doctor[doctor].is_specialist_of) {
-                      if (costProductDoctor[costpd].with_doctor.length > 0 && costProductDoctor[costpd].with_product.length > 0) {
+                      if (costProductDoctor[costpd].with_doctor && costProductDoctor[costpd].with_doctor.length > 0 && costProductDoctor[costpd].with_product && costProductDoctor[costpd].with_product.length > 0) {
                         if (costProductDoctor[costpd].with_doctor[0].name === this.clinic.has_doctor[doctor].name && this.clinic.has_doctor[doctor].is_specialist_of[spc].name === costProductDoctor[costpd].with_product[0].name) {
                           this.clinic.has_doctor[doctor].is_specialist_of[spc].cost = costProductDoctor[costpd].cost;
                           this.clinic.has_doctor[doctor].is_specialist_of[spc].payment_method = costProductDoctor[costpd].payment_method;
@@ -159,10 +158,10 @@
             })
             let CostProductClinic = dataCostProductClinic.data.CostProductClinic
             //console.log(CostProductClinic)
-            if(this.clinic.has_product.length > 0){
+            if(this.clinic && this.clinic.has_product.length > 0){
               for(let costpc in CostProductClinic){
                 for(let item in this.clinic.has_product){
-                  if(CostProductClinic[costpc].with_clinic.length > 0 && CostProductClinic[costpc].with_product.length > 0){
+                  if(CostProductClinic[costpc].with_clinic && CostProductClinic[costpc].with_clinic.length > 0 && CostProductClinic[costpc].with_product.length > 0){
                     if(CostProductClinic[costpc].with_clinic[0].name === this.clinic.name && this.clinic.has_product[item].name === CostProductClinic[costpc].with_product[0].name){
                       this.clinic.has_product[item].idcpc = CostProductClinic[costpc].id;
                       this.clinic.has_product[item].cost = CostProductClinic[costpc].cost;
@@ -183,10 +182,9 @@
               }
             })
             let products = Object.assign(clin.data.Clinic[0].has_product)
-            //console.log('p', products)
-            //console.log('antes:', this.clinic.has_product)
             this.clinic.has_product = products
-            //console.log('now:', this.clinic.has_product)
+            this.clinic.providers = clin.data.Clinic[0].providers
+            console.log(this.clinic)
             await this.filterCPC();
 
           },

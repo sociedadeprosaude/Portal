@@ -1,5 +1,5 @@
 <template>
-    <v-card>
+    <v-card class="pa-2">
         <v-card-text>
             <v-layout wrap row class="mt-4">
                 <v-flex xs12>
@@ -27,6 +27,41 @@
                             hide-details>
                     </v-currency-field>
                 </v-flex>
+
+                <v-flex class="mt-5 pl-8" xs12>
+                    <ApolloQuery
+                          :query="require('@/graphql/clinics/LoadAllClinics.gql')"
+                      >
+                        <template slot-scope="{ result: { data } }">
+                          <v-combobox
+                              prepend-inner-icon="search"
+                              :items="data ? data.Clinic : []"
+                              item-text="name"
+                              return-object
+                              label="Fornecedor do Exame"
+                              outlined
+                              v-model="provider"
+                              clearable
+                              chips
+                              hide-details
+                          >
+                            <template v-slot:selection="data">
+                              <v-chip
+                                  :key="JSON.stringify(data.item)"
+                                  :input-value="data.selected"
+                                  :disabled="data.disabled"
+                                  class="v-chip--select-multi"
+                                  @click.stop="data.parent.selectedIndex = data.index"
+                                  @input="data.parent.selectItem({},data.item)"
+                                  text-color="white"
+                                  color="info"
+                              >{{ data.item.name }}
+                              </v-chip>
+                            </template>
+                          </v-combobox>
+                        </template>
+                      </ApolloQuery>
+                </v-flex>
             </v-layout>
             <v-divider class="primary mt-3"/>
             <v-card-actions>
@@ -45,23 +80,46 @@
     </v-card>
 </template>
 <script>
+    import {uuid} from 'vue-uuid';
     export default {
         props: ['exam', 'clinic'],
         data: () => ({
           loading: false,
+          provider: undefined,
+          providerFound: undefined
         }),
+        updated(){
+          this.findProvider();
+        },
+        mounted(){
+          this.findProvider();
+        },
         methods: {
+            findProvider(){
+              if(this.exam && this.clinic){
+                  const providerFound = this.clinic.providers.find(provider => provider.provides.id === this.exam.id);
+                  this.provider = providerFound && Object.assign({},providerFound.providedByClinic);
+                  this.providerFound = providerFound;
+              }
+            },
             async editExam() {
               this.loading = true
-              //console.log('exam: ', this.exam)
-              //console.log('clinic: ', this.clinic)
-              await this.$apollo.mutate({
+              let promises = []
+              const updatePromise = this.$apollo.mutate({
                 mutation: require('@/graphql/clinics/UpdateCostProductClinic.gql'),
                 variables: {
                   id: this.exam.idcpc,
                   cost: this.exam.cost,
                 },
               });
+              promises.push(updatePromise);
+              
+              const actionFieldProvider = this.actionFieldProvider();
+              if(actionFieldProvider) promises.push(actionFieldProvider); 
+
+              await Promise.all(promises);
+              this.providerFound = this.provider;
+
 /*              let CostProductClinic = ''
               CostProductClinic = await this.$apollo.mutate({
                 mutation: require('@/graphql/clinics/LoadCostProductClinic.gql'),
@@ -102,6 +160,43 @@
               this.closeForm();
               this.$emit('reload')
               //this.$router.push('/')
+            },
+            actionFieldProvider(){
+              let promise = undefined;
+              if(this.provider && !this.providerFound){
+                console.log('Criar provider')
+                const uuidProductProvider = uuid.v4();
+                promise = this.$apollo.mutate({
+                  mutation: require('@/graphql/clinics/CreateProductProvider.gql'),
+                  variables: {
+                    idProductProvider: uuidProductProvider,
+                    provider: this.provider.id,
+                    product: this.exam.id,
+                    consumer: this.clinic.id
+                  },
+                });
+              }else if(this.provider && this.providerFound && this.provider.id !== this.providerFound.providedByClinic.id){
+                console.log('Atualizar Provider')
+                promise = this.$apollo.mutate({
+                  mutation: require('@/graphql/clinics/UpdateProductProviderClinic.gql'),
+                  variables: {
+                    idProductProvider: this.providerFound.id,
+                    oldProvider: this.providerFound.providedByClinic.id,
+                    newProvider: this.provider.id
+                  },
+                });
+              }else if(!this.provider && this.providerFound){
+                console.log('Remover Provider')
+                promise = this.$apollo.mutate({
+                  mutation: require('@/graphql/clinics/RemoveProductProvider.gql'),
+                  variables: {
+                    idProductProvider: this.providerFound.id
+                  },
+                });
+              }
+
+
+              return promise;
             },
             closeForm() {
                 this.$emit('close-dialog')

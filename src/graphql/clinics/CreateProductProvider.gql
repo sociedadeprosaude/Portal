@@ -1,0 +1,15 @@
+mutation CreateProductProvider($idProductProvider:ID!, $provider:ID!, $product:ID!, $consumer:ID!){
+  CreateProductProvider(id:$idProductProvider){
+    id,
+  }
+  
+  AddProductProviderProvidedByClinic(from:{id:$idProductProvider},to:{id:$provider}){
+    from{id},to{id}
+  }
+  AddProductProviderProvides(from:{id:$idProductProvider},to:{id:$product}){
+    from{id},to{id}
+  }
+  AddProductProviderConsumer(from:{id:$idProductProvider},to:{id:$consumer}){
+    from{id},to{id}
+  }
+}
