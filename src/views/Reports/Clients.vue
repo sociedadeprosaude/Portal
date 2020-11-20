@@ -1,50 +1,25 @@
 <template>
   <v-container>
     <v-row class="pa-0 ma-0">
-      <v-col class="ma-0" cols="5">
-        <span class="display-1 font-weight-medium">Relatórios a partir de</span>
-      </v-col>
-      <v-col class="pa-0" cols="2">
-        <v-menu
-        v-model="menu2"
-        :close-on-content-click="false"
-        :nudge-right="40"
-        transition="scale-transition"
-        offset-y
-        min-width="290px"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-text-field
-            v-model="dateFormatted"
-            prepend-icon="event"
-            readonly
-            v-bind="attrs"
-            v-on="on"
-          ></v-text-field>
-        </template>
-        <v-date-picker v-model="date" @input="menu2 = false"></v-date-picker>
-      </v-menu>
-      </v-col>
+        <span class="display-1 font-weight-medium">Relatórios de Atendimento</span>
     </v-row>
     <Clients
       :dataset="dataset"
-      :date="date2"
       :menu="menu"
-      :dateFormatted="dateFormatted2"
       :clientsServed="attendances"
       :clientsServedByHour="attendancesByHour"
       :newClients="newClients"
       :ageClientsServed="ages"
       :genresClientsServed="genres"
       :geopoints="geopoints"
+      :clientsServedByWeekDay="attendancesByWeekDay"
       :generateDatasetServed="generateDatasetServed"
       :generateDatasetServedByHour="generateDatasetServedByHour"
       :generateDatasetNewClients="generateDatasetNewClients"
       :generateDatasetClientsAge="generateDatasetClientsAge"
+      :generateDatasetClientsWeekDay="generateDatasetServedByWeekDay"
       :options="options"
-
-       @change-date="(value)=>date=value"
-       @change-menu="(value)=>menu=value"
+      @changeDateReport="date=$event"
     />
     <v-overlay :value="overlay">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
@@ -59,7 +34,6 @@ export default {
   data: () => ({
     dataset: null,
     date: '',
-    date2: new Date().toISOString().substr(0, 7),
     menu: false,
     menu2:false,
     overlay:false,
@@ -68,7 +42,9 @@ export default {
     genres:undefined,
     ages:undefined,
     geopoints:undefined,
-    newClients: undefined
+    newClients: undefined,
+    attendancesByWeekDay: undefined,
+    weekdays:['Domingo','Segunda','Terça-feira','Quarta-feita','Quinta-feira','Sexta','Sábado']
   }),
   components: {
     Clients,
@@ -79,12 +55,6 @@ export default {
     this.$store.dispatch('loadUsersGeopoints') */
   },
   computed: {
-    dateFormatted() {
-      return this.date ? moment(this.date, "YYYY-MM-DD").format("DD/MM/YYYY") : "";
-    },
-    dateFormatted2() {
-      return this.date2 ? moment(this.date2, "YYYY-MM").format("MMMM/YYYY") : "";
-    },
     /* clientsServed:{
       set(value){
         this.attendances = value
@@ -171,6 +141,22 @@ export default {
         ],
       };
     },
+
+    generateDatasetServedByWeekDay(dataset) {
+      return {
+        labels: Object.keys(dataset),
+        datasets: [
+          {
+            //lineTension:0,
+
+            label: "Dia da semana com fluxo de atendimento",
+            backgroundColor: "#81C784",
+            borderColor: "#fff",
+            data: Object.values(dataset),
+          },
+        ],
+      };
+    },
     generateDatasetNewClients(dataset) {
       return {
         labels: Object.keys(dataset),
@@ -227,36 +213,32 @@ export default {
         },
       };
     },
-    formatGenresObject(attendances){
+    formatGenresObject(genresPatients){
       this.genres = {male: 0, feminine:0, others:0, total:0}
-        for (const key in attendances) {
-          const attendance = attendances[key];
-          for (const key2 in attendance.genres) {
-            if (attendance.genres[key2] === 'Masculino'){
-              this.genres.male += 1;
-            }
-            else if(attendance.genres[key2] === 'Feminino'){
-              this.genres.feminine += 1;
-            }else
-              this.genres.others += 1;
+      for (const key in genresPatients) {
+          const genre = genresPatients[key];
+          if (genre.sex === 'Masculino'){
+              this.genres.male = genre.count;
+          }
+          else if(genre.sex === 'Feminino'){
+            this.genres.feminine = genre.count;
+          }else
+            this.genres.others = genre.count;
             
-            this.genres.total += 1;
-          }
-        }
+          this.genres.total += genre.count;
+      }
 
-      
+      this.genres.male = (this.genres.male/this.genres.total) * 100;
+      this.genres.feminine = (this.genres.feminine/this.genres.total) * 100;
+      this.genres.others = (this.genres.others/this.genres.total) * 100;
     },
-    formartAgesObject(attendances){
-      this.ages = {}
-        for (const key in attendances) {
-          const attendance = attendances[key];
-          for (const key2 in attendance.patients_birth_date) {
-            const birth_date = moment(attendance.patients_birth_date[key2].formatted,'YYYY-MM-DD');
-            const differance = moment().diff(birth_date,'years').toString();
-            if(!this.ages[differance]) this.ages[differance] = 0
-            this.ages[differance] += 1;
-          }
-        }
+    formartAgesObject(agesPatients){
+      this.ages = agesPatients.reduce((obj, agePatient)=>{
+        if(agePatient.age >= 0 && agePatient.age <= 120)
+          obj[agePatient.age] = agePatient.count;
+
+        return obj
+      },{});
     },
     formartGeopoints(attendances){
       this.geopoints = []
@@ -269,28 +251,26 @@ export default {
             else this.geopoints[foundIndex].count += 1;
           }
         }
-        console.log('geopoints', this.geopoints)
     },
     reduceAttendancesByHour(attendances){
-      /* return attendances.reduce((obj, attendance)=>{
-          const date = moment(attendance.date.formatted).format('DD/MM/YYYY')
-          obj[date] = attendance.count
-          return obj
-      },{}); */
-      let attendancesByHour = {};
-      for (const key in attendances) {
-        for (const key2 in attendances[key].times) {
-          
-          if(!attendancesByHour[attendances[key].times[key2].hour]) attendancesByHour[attendances[key].times[key2].hour] = 0;
-          attendancesByHour[attendances[key].times[key2].hour] += 1;
+      let attendancesByHour = attendances.reduce((obj, attendance)=>{
+        let hour = attendance.hour.split(':');
+        obj[`${hour[0]}:${hour[1]}`] = attendance.count;
 
-          console.log(attendancesByHour[attendances[key].times[key2].hour])
-        }
-      }
-
-      console.log(attendancesByHour)
+        return obj
+      },{});
 
       return attendancesByHour;
+    },
+
+    reduceAttendancesByWeekDay(attendances){
+      let attendancesByWeekDay = attendances.reduce((obj, attendance)=>{
+        obj[this.weekdays[attendance.weekday]] = attendance.count;
+
+        return obj
+      },{});
+
+      return attendancesByWeekDay;
     },
     reduceAttendances(attendances){
       return attendances.reduce((obj, attendance)=>{
@@ -311,10 +291,11 @@ export default {
       },
       update(data){
         this.attendances = this.reduceAttendances(data.attendanceCount);
-        this.attendancesByHour = this.reduceAttendancesByHour(data.attendanceCount);
+        this.attendancesByHour = this.reduceAttendancesByHour(data.attendanceCountHours);
+        this.attendancesByWeekDay = this.reduceAttendancesByWeekDay(data.attendanceCountWeekDay);
         this.newClients = this.reduceAttendances(data.createdPatientCount);
-        this.formatGenresObject(data.attendanceCount);
-        this.formartAgesObject(data.attendanceCount);
+        this.formatGenresObject(data.attendanceCountGenres);
+        this.formartAgesObject(data.attendanceCountAges);
         this.formartGeopoints(data.attendanceCountGeopoint)
 
         this.overlay = false

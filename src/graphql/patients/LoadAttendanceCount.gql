@@ -7,5 +7,17 @@ query($start_date:String!, $final_date:String!){
   },
   createdPatientCount(start_date:$start_date,final_date:$final_date){
     date{formatted},count
+  },
+   attendanceCountGenres(final_date:$final_date){
+    count,sex
+  },
+  attendanceCountAges(final_date:$final_date){
+    count,age
+  },
+  attendanceCountHours(final_date:$final_date){
+    count,hour
+  },
+  attendanceCountWeekDay(final_date:$final_date){
+    count,weekday
   }
 }
