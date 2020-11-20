@@ -206,9 +206,10 @@
               console.log('relations:', dataRelations.data)
             }
             this.loading = false
-            this.$router.push('/')
+            this.closeDialog();
+            this.$emit('reload')
+           // this.$router.push('/')
           },
-
           closeDialog: function() {
             this.$emit('close-dialog')
           }

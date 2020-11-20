@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-layout row wrap>
+        <v-layout row wrap v-if="clinics">
             <v-flex sm12>
                 <v-card class="pt-3 mb-4">
                     <v-layout row wrap>
@@ -39,14 +39,17 @@
 
                 <v-card>
                   <v-card-text>
-                    <ListClinics :clinics="clinics"/>
+                    <ListClinics @reload="reload" :clinics="clinics"/>
                   </v-card-text>
                 </v-card>
             </v-flex>
             <v-dialog v-model="dataClinic" width="500px" text hide-overlay>
-                <RegisterNewClinic @close-dialog="finishRegister()"/>
+                <RegisterNewClinic @reload="reload" @close-dialog="finishRegister()"/>
             </v-dialog>
         </v-layout>
+      <v-layout class="align-center justify-center" row wrap v-else>
+        <v-progress-circular :size="300" :width="10" color="primary" indeterminate>CARREGANDO...</v-progress-circular>
+      </v-layout>
     </v-container>
 </template>
 
@@ -61,18 +64,28 @@
             clinics: undefined,
         }),
       mounted(){
-        this.FormatAddressOfClinics()
+      },
+      apollo: {
+        LoadAllClinics: {
+          query: require("@/graphql/clinics/LoadAllClinics.gql"),
+          update(data){
+            this.clinics = undefined
+            let forEdit = Object.assign(data.Clinic)
+            for(let clinic in forEdit) { forEdit[clinic].address = forEdit[clinic].has_address[0] }
+            setTimeout(() => {
+              this.clinics = forEdit;
+          }, 1500);
+            //this.clinics = forEdit
+          },
+        }
       },
       methods: {
-        async FormatAddressOfClinics() {
-          const unitys = await this.$apollo.mutate({
-            mutation: require('@/graphql/clinics/LoadAllClinics.gql'),
-          })
-          let forEdit = unitys.data.Clinic
-          for(let clinic in forEdit){
-            forEdit[clinic].address = forEdit[clinic].has_address[0]
-          }
-          this.clinics = forEdit
+        async reload(){
+          console.log('create ?')
+          await this.$apollo.queries.LoadAllClinics.refresh();
+/*          setTimeout(() => {
+            this.$apollo.queries.LoadAllClinics.refresh();
+          }, 1500);*/
         },
         finishRegister(){
           this.dataClinic = false;

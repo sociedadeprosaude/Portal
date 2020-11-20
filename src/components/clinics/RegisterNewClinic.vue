@@ -192,9 +192,11 @@
             <v-btn rounded color="error" @click="closeDialog">Cancelar</v-btn>
             <v-spacer/>
             <v-btn
+                v-if="!loading"
                 color="primary"
                 @click="createClinics"
             >Adicionar</v-btn>
+          <v-progress-circular v-else color="primary" indeterminate></v-progress-circular>
         </v-card-actions>
     </v-card>
 </template>
@@ -205,6 +207,7 @@
     export default {
         directives: {mask},
         data: () => ({
+          loading: false,
             mask: {
                 cnpj: '##.###.###/####-##',
                 telephone: '(##) #####-####',
@@ -304,6 +307,7 @@
             },
 
            async createClinics() {
+              this.loading = true
              let agenda = [];
              for (let i = 0; i < 7; i++) {
                if (i < 5) {
@@ -355,8 +359,10 @@
              }).catch((error) => {
                console.error('nao criando relaçao clinica e endrereço: ', error)
              })
-             //this.closeDialog()
-             this.$router.push('/')
+             this.$emit('reload')
+             this.loading = false
+             this.closeDialog()
+             //this.$router.push('/')
            },
             addDataToClinicExist (clinic, indexClinic) {
                 if (indexClinic !== -1 && indexClinic !==null){

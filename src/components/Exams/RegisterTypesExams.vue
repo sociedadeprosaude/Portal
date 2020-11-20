@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-        <v-layout row wrap>
+        <v-layout row wrap v-if="products">
           <v-flex sm12>
             <v-card class="pt-3 mb-4">
               <v-layout row wrap>
@@ -27,14 +27,17 @@
 
             <v-card>
               <v-card-text>
-                <listExamsTypes />
+                <listExamsTypes @reloadDelete="reloadDelete" :products="products" />
               </v-card-text>
             </v-card>
           </v-flex>
           <v-dialog v-model="newExamType">
-            <createExamType @close-dialog="newExamType = false" :registed="registed" />
+            <createExamType @reload="reload" @close-dialog="newExamType = false" :registed="registed" />
           </v-dialog>
         </v-layout>
+    <v-layout class="align-center justify-center" row wrap v-else>
+      <v-progress-circular :size="300" :width="10" color="primary" indeterminate>CARREGANDO...</v-progress-circular>
+    </v-layout>
   </v-container>
 </template>
 <script>
@@ -49,8 +52,39 @@ export default {
     searchType: "",
     loading: undefined,
     newExamType: false,
-    registed: false
+    registed: false,
+    products: undefined,
   }),
+  apollo: {
+    ReadProcucts: {
+      query: require("@/graphql/products/ReadProcucts.gql"),
+      variables () {
+        return {
+          type:'EXAM',
+          schedulable: true,
+        }
+      },
+      update(data){
+        this.products = undefined;
+        this.products = Object.assign(data.Product);
+        //console.log('reativo:', this.products)
+      },
+    }
+  },
+  methods: {
+    async reload(){
+      console.log('create ?')
+      setTimeout(() => {
+        this.$apollo.queries.ReadProcucts.refresh();
+      }, 1500);
+    },
+    async reloadDelete(){
+      console.log('del ?')
+      setTimeout(() => {
+        this.$apollo.queries.ReadProcucts.refresh();
+      }, 1500);
+    },
+  },
   mounted() {
     let self = this;
     self.$store.dispatch("getExamsTypes");

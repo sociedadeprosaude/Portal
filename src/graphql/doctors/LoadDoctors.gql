@@ -3,6 +3,9 @@ query {
         id,name,crm,cpf
             is_specialist_of{
               id,name,type,price,schedulable,rules
+                      clinics{
+                      id,name
+                      },
             }
     }
 }

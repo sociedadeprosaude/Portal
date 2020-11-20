@@ -53,9 +53,16 @@
         methods: {
             async editExam() {
               this.loading = true
-              console.log('exam: ', this.exam)
-              console.log('clinic: ', this.clinic)
-              let CostProductClinic = ''
+              //console.log('exam: ', this.exam)
+              //console.log('clinic: ', this.clinic)
+              await this.$apollo.mutate({
+                mutation: require('@/graphql/clinics/UpdateCostProductClinic.gql'),
+                variables: {
+                  id: this.exam.idcpc,
+                  cost: this.exam.cost,
+                },
+              });
+/*              let CostProductClinic = ''
               CostProductClinic = await this.$apollo.mutate({
                 mutation: require('@/graphql/clinics/LoadCostProductClinic.gql'),
                 variables: {
@@ -90,11 +97,12 @@
                     cost: this.exam.cost,
                   },
                 });
-              }
+              }*/
               this.loading = false
-              this.$router.push('/')
+              this.closeForm();
+              this.$emit('reload')
+              //this.$router.push('/')
             },
-
             closeForm() {
                 this.$emit('close-dialog')
             },

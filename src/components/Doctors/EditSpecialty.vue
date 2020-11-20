@@ -59,10 +59,11 @@
                 variables: {id: this.id,price:this.price},
               });
               this.loading = false;
-              this.$router.push('/');
+              this.$emit('close');
+              //this.$router.push('/');
             },
             async initialize(){
-              console.log('no comp:', this.specialty)
+              //console.log('no comp:', this.specialty)
                 if(this.specialty){
                   this.id = this.specialty.id
                   this.name = this.specialty.name

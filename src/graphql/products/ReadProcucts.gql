@@ -3,6 +3,9 @@ query ($type: String!,$schedulable: Boolean!) {
         id,name,type,price, schedulable,rules,
         with_other{
         id,name,type,price, schedulable,rules,
-        }
+        },
+        clinics{
+        id,name
+        },
     }
 }
