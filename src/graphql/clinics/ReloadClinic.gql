@@ -4,5 +4,8 @@ query($id:ID!){
          has_product{
              id,name,type,price,rules,schedulable
          },
+         providers{
+            id, providedByClinic{id,name}, provides{id,name}
+         }
     }
 }

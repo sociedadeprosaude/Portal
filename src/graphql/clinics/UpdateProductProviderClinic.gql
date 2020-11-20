@@ -1,0 +1,8 @@
+mutation UpdateProductProviderClinic($idProductProvider:ID!,  $oldProvider:ID!,$newProvider:ID!){
+  RemoveProductProviderProvidedByClinic(from:{id:$idProductProvider},to:{id:$oldProvider}){
+    from{id},to{id}
+  }
+  AddProductProviderProvidedByClinic(from:{id:$idProductProvider},to:{id:$newProvider}){
+    from{id},to{id}
+  }
+}

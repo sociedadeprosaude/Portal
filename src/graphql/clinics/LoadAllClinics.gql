@@ -1,4 +1,4 @@
-query{
+query LoadAllClinics{
     Clinic(orderBy:[name_asc]){
         id,name,cnpj,telephone,logo,property,opening_hours
          has_address{
@@ -13,5 +13,8 @@ query{
                   	id,name,type,price,schedulable,rules
                 }
          },
+         providers{
+            id, providedByClinic{id,name}, provides{id,name}
+         }
     }
 }
