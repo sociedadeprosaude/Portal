@@ -1,7 +1,29 @@
 <template>
   <v-container>
     <v-row class="mt-2">
-      <h1 class="headline">Clientes Atendidos por dia</h1>
+      <h1 class="headline">Clientes Atendidos por dia a partir de </h1>
+
+      <v-col class="ml-3 mt-n8" cols="2">
+        <v-menu
+        v-model="menu2"
+        :close-on-content-click="false"
+        :nudge-right="40"
+        transition="scale-transition"
+        offset-y
+        min-width="290px"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-text-field
+            v-model="dateFormatted"
+            prepend-icon="event"
+            readonly
+            v-bind="attrs"
+            v-on="on"
+          ></v-text-field>
+        </template>
+        <v-date-picker v-model="date" @input="menu2 = false"></v-date-picker>
+      </v-menu>
+      </v-col>
     </v-row>
     <v-row>
       <v-col>
@@ -9,6 +31,21 @@
           <v-row v-if="clientsServed">
             <v-col>
               <line-chart :chart-data="generateDatasetServed(clientsServed)" :options="options"></line-chart>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <v-row class="mt-2">
+      <h1 class="headline">Novos Clientes</h1>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-card elevation="0">
+          <v-row v-if="newClients">
+            <v-col>
+              <line-chart :chart-data="generateDatasetNewClients(newClients)" :options="options"></line-chart>
             </v-col>
           </v-row>
         </v-card>
@@ -31,14 +68,14 @@
     </v-row>
 
     <v-row class="mt-2">
-      <h1 class="headline">Novos Clientes</h1>
+      <h1 class="headline">Clientes Atendidos por dia da semana</h1>
     </v-row>
     <v-row>
       <v-col>
         <v-card elevation="0">
-          <v-row v-if="newClients">
+          <v-row v-if="clientsServedByWeekDay">
             <v-col>
-              <line-chart :chart-data="generateDatasetNewClients(newClients)" :options="options"></line-chart>
+              <line-chart :chart-data="generateDatasetClientsWeekDay(clientsServedByWeekDay)" :options="options"></line-chart>
             </v-col>
           </v-row>
         </v-card>
@@ -169,11 +206,10 @@ import moment from "moment";
 export default {
   props: [
     "dataset",
-    "date",
     "menu",
-    "dateFormatted",
     "clientsServed",
     "clientsServedByHour",
+    "clientsServedByWeekDay",
     "newClients",
     "ageClientsServed",
     "genresClientsServed",
@@ -182,14 +218,34 @@ export default {
     "generateDatasetServedByHour",
     "generateDatasetNewClients",
     "generateDatasetClientsAge",
+    "generateDatasetClientsWeekDay",
     "options",
   ],
-
   components: {
     LineChart,
     BarChart,
     Gmaps,
   },
+
+  data: () => ({
+    menu2:false,
+    date:undefined
+  }),
+  mounted(){
+    this.date = moment().subtract(7,'days').format('YYYY-MM-DD')
+  },
+  watch:{
+    date(value){
+      if(value){
+        this.$emit('changeDateReport',value)
+      }
+    }
+  },
+  computed:{
+    dateFormatted() {
+      return this.date ? moment(this.date, "YYYY-MM-DD").format("DD/MM/YYYY") : "";
+    },
+  }
 };
 </script>
 
