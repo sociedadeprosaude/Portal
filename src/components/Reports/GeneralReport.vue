@@ -166,7 +166,7 @@ export default {
       }
       return Object.values(products).sort((a, b) => {
         if (a.type === b.type) {
-          return a.name.localeCompare(b.name)
+          return a.name? a.name.localeCompare(b.name? b.name : '') : 0
         }
         if (a.type === 'SPECIALTY') return -1
         return 1

@@ -707,7 +707,7 @@
                     email: this.email,
                     rg: this.rg ? this.rg.replace(/\./g, '').replace('-', '').replace('.', '') : undefined,
                     association_number: this.numAss ? this.numAss.toString() : undefined,
-                    birth_date: 'moment(this.birthDate, "DD/MM/YYYY").format("YYYY-MM-DD")',
+                    birth_date: moment(this.birthDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
                     sex: this.sex,
                     telephones: this.telephones,
                     addresses: this.addresses,

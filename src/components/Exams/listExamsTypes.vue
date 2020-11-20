@@ -2,12 +2,12 @@
     <v-container fluid>
         <v-layout row nowrap>
             <div style="width: 100%">
-              <ApolloQuery
+<!--              <ApolloQuery
                   :query="require('@/graphql/products/ReadProcucts.gql')"
                   :variables="{ type:'EXAM', schedulable:true}"
               >
-                <template slot-scope="{ result: { data } }">
-                  <v-flex sm12 v-for="(examType, i) in data.Product" :key="i" class="mb-5">
+                <template slot-scope="{ result: { data } }">-->
+                  <v-flex sm12 v-for="(examType, i) in products" :key="i" class="mb-5">
                     <v-card>
                       <v-flex xs12 sm12>
                         <v-card color="primary">
@@ -35,8 +35,8 @@
                       </v-flex>
                     </v-card>
                   </v-flex>
-                </template>
-              </ApolloQuery>
+<!--                </template>
+              </ApolloQuery>-->
             </div>
             <v-dialog v-model="editExamType">
               <createExamType :registed="registed" :selectedExamType="examType" @close-dialog="editExamType = false" />
@@ -61,6 +61,7 @@
 <script>
     import createExamType from "./CreateExamType"
     export default {
+        props:['products'],
         components: {createExamType},
         data: () => ({
             editExamType: false,
@@ -85,9 +86,9 @@
             setTimeout(() => {
               mutate();
             }, 0);
-            this.$router.push('/')
+            this.$emit('reloadDelete')
+            //this.$router.push('/')
           },
-
             async selectExamType (examType) {
                 this.examType = examType;
                 this.editExamType = true;

@@ -17,7 +17,7 @@
                     <ApolloMutation
                         :mutation="require('@/graphql/products/DeleteProducts.gql')"
                         :variables="{ id: specialty.id }"
-                        @done="close($event)"
+                        @done="close()"
                     >
                       <template v-slot="{ mutate, loading, error }">
                         <v-progress-circular indeterminate color="primary" v-if="loading"/>
@@ -51,16 +51,18 @@ export default {
     methods: {
       editSpecialty (specialty) {
         this.specialty = specialty;
-        console.log("parameter:", this.specialty)
+        //console.log("parameter:", this.specialty)
         this.editingSpecialty = true;
       },
       closeDialogs () {
+        this.close();
         this.specialty = undefined;
         this.editingSpecialty = false;
       },
-      close(val){
-        this.$router.push('/')
-        console.log('reposta:', val.data)
+      close(){
+        this.$emit('reload')
+        //this.$router.push('/')
+        //console.log('reposta:', val.data)
       }
     },
   }

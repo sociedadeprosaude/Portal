@@ -51,7 +51,9 @@
                 },
               });
               this.loading = false
-              this.$router.push('/')
+              this.close();
+              this.$emit('reload')
+              //this.$router.push('/')
             },
         }
     }

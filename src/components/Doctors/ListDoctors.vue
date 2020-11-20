@@ -29,8 +29,7 @@
         </v-layout>
 
         <v-dialog v-model="editingDoctor" max-width="500px" v-if="editingDoctor">
-            <CreateDoctorCard @clean="selectedDoctor = undefined" :doctor="selectedDoctor"
-                              @close="editingDoctor = false"/>W
+            <CreateDoctorCard @reloaded="reloaded" @clean="selectedDoctor = undefined" :doctor="selectedDoctor" @close="editingDoctor = false"/>
         </v-dialog>
 
         <v-dialog v-if="selectedDoctor" v-model="deletingDoctor" max-width="500px">
@@ -75,12 +74,15 @@
             deletingDoctor: false,
         }),
         methods: {
+          async reloaded() {
+            this.$emit('reload')
+          },
             async editDoctor(doctor) {
                 console.log('edit ?', doctor)
                 this.selectedDoctor = doctor;
                 this.editingDoctor = true;
             },
-            async deleteDoctor(doctor){
+            async deleteDoctor(doctor) {
                 console.log('delete ?',doctor)
                 this.selectedDoctor = doctor;
                 this.deletingDoctor = true;

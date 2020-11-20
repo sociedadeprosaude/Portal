@@ -1,0 +1,8 @@
+query($id:ID!){
+    Clinic(id: $id){
+        id,name,
+         has_product{
+             id,name,type,price,rules,schedulable
+         },
+    }
+}

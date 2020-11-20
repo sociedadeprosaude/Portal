@@ -173,7 +173,7 @@
         </v-layout>
       </v-flex>
     </v-layout>
-    <v-dialog v-model="budgetToPrintDialog" v-if="budgetToPrint">
+    <v-dialog v-model="budgetToPrintDialog" v-if="budgetToPrint" persistent>
       <budget-to-print @close="CloseBudgetToPrint()" :budget="budgetToPrint"/>
     </v-dialog>
     <v-dialog
@@ -181,6 +181,7 @@
         fullscreen
         v-model="receiptDialog"
         v-if="selectedIntake"
+        persistent
     >
       <receipt @close="CloseReceipt()" :budget="selectedIntake"/>
     </v-dialog>
@@ -417,6 +418,7 @@ export default {
     async imprimir() {
       this.loadingImp= true
       let user = this.patient
+      this.idUser = user.id
       if (!user) {
         this.loadingImp = false
         this.alertMessage.model = true
@@ -796,7 +798,6 @@ export default {
       this.selectedIntake = intake
       this.receiptDialog = true
       this.skipPatients = false
-      this.$apollo.queries.loadPatient.refresh()
     },
 
     clearCart() {
@@ -813,7 +814,7 @@ export default {
     },
 
     verifyUnpaidConsultations(productTransaction) {
-      let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product ? consultation.product.id : '0' === productTransaction.id && consultation.status === "Aguardando pagamento")
+      let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product && consultation.product.id === productTransaction.id && consultation.status === "Aguardando pagamento")
       if (unpaidConsultation) {
         this.saveRelationProductTransaction(unpaidConsultation.id, productTransaction.prodId)
       }

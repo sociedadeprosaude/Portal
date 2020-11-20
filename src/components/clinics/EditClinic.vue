@@ -191,12 +191,12 @@
         </v-card-text>
         <v-divider/>
         <v-card-actions>
-          <v-btn color="error" @click="deleteClinic"><v-icon>delete</v-icon></v-btn>
+          <v-btn v-if="!loading" color="error" @click="deleteClinic"><v-icon>delete</v-icon></v-btn>
             <v-spacer/>
-            <v-btn rounded color="success"  :to="{ name: 'RegisterNewUserClinic', params: {id: clinic.id } }">Gerar Link para Usuario
-            </v-btn>
+            <v-btn v-if="!loading" rounded color="success"  :to="{ name: 'RegisterNewUserClinic', params: {id: clinic.id } }">Gerar Link para Usuario</v-btn>
+            <v-progress-circular v-if="loading" color="primary" indeterminate></v-progress-circular>
             <v-spacer/>
-            <v-btn color="primary" @click="updateClinic()">Editar</v-btn>
+            <v-btn v-if="!loading" color="primary" @click="updateClinic()">Editar</v-btn>
         </v-card-actions>
     </v-card>
 </template>
@@ -291,6 +291,7 @@
             this.$emit('close-dialog');
           },
           async deleteClinic(){
+            this.loading = true
             await this.$apollo.mutate({
               mutation: require('@/graphql/clinics/RemoveRelationsAddressClinic.gql'),
               variables: {
@@ -310,9 +311,12 @@
                 id: this.clinic.address.id,
               },
             })
-            this.$router.push('/')
+            //this.$router.push('/')
+            this.loading = false
+            this.closeDialog()
           },
           async updateClinic() {
+            this.loading = true
               let agenda = [];
               for (let i = 0; i < 7; i++) {
                 if (i < 5) {
@@ -321,8 +325,8 @@
                   agenda.push(this.clinic.opening_hours[5].split('-')[0] + '-' + this.clinic.opening_hours[5].split('-')[1])
                 }
               }
-              this.clinic.opening_hours = agenda
-
+              //this.clinic.opening_hours = agenda
+            console.log('agenda:', agenda)
               await this.$apollo.mutate({
                 mutation: require('@/graphql/clinics/UpdateClinics.gql'),
                 variables: {
@@ -332,7 +336,7 @@
                   telephone: this.clinic.telephone[0],
                   logo: this.clinic.logo,
                   property: this.clinic.property,
-                  opening_hours: this.clinic.opening_hours,
+                  opening_hours: agenda,
                 },
               }).then(dataClinic => {
                 //console.log("id clinic:", dataClinic.data.UpdateClinic)
@@ -355,8 +359,9 @@
               }).catch((error) => {
                 console.error('nao criando relaçao clinica e endrereço: ', error)
               })
-              //this.closeDialog()
-            this.$router.push('/')
+            this.loading = false
+            this.closeDialog()
+            //this.$router.push('/')
             },
         },
     }
