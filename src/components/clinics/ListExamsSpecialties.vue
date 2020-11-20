@@ -78,13 +78,13 @@
                 </v-layout>
             </v-card-text>
             <v-dialog v-model="addExamToClinic" width="500px" text hide-overlay>
-                <Exams :clinic="clinic" @close-dialog="closeDialogs"/>
+                <Exams @reload="reload" :clinic="clinic" @close-dialog="closeDialogs"/>
             </v-dialog>
-            <v-dialog v-model="editExamInClinic" width="500px" text hide-overlay>
-                <formEditExamInClinic @close-dialog="closeDialogs" :exam="this.exam" :clinic="this.clinic"/>
+            <v-dialog  v-model="editExamInClinic" width="500px" text hide-overlay>
+                <formEditExamInClinic @reload="reload" @close-dialog="closeDialogs" :exam="this.exam" :clinic="this.clinic"/>
             </v-dialog>
             <v-dialog v-model="deleteExamInClinic" width="500px" text hide-overlay>
-                <deleteExamFromClinic @close-dialog="closeDialogs" :item="this.item" :clinic="this.clinic"/>
+                <deleteExamFromClinic @reload="reload" @close-dialog="closeDialogs" :item="this.item" :clinic="this.clinic"/>
             </v-dialog>
         </v-card>
     </v-container>
@@ -172,6 +172,23 @@
               }
             }
             this.allExams = this.clinic.has_product
+          },
+
+          async reload(){
+            //this.allExams = undefined;
+            const clin = await this.$apollo.mutate({
+              mutation: require('@/graphql/clinics/ReloadClinic.gql'),
+              variables: {
+                id: this.clinic.id,
+              }
+            })
+            let products = Object.assign(clin.data.Clinic[0].has_product)
+            //console.log('p', products)
+            //console.log('antes:', this.clinic.has_product)
+            this.clinic.has_product = products
+            //console.log('now:', this.clinic.has_product)
+            await this.filterCPC();
+
           },
             async editExam(item) {
                 this.exam = item;
