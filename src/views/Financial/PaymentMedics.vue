@@ -281,18 +281,29 @@
                `)
               console.log('transactionId: ', transactionId)
                for (let charge in doctor.charges) {
-                 mutationBuilder.addMutation(`AddTransactionSales_transactions(
-                 from:{
-                       id:"${transactionId}"
-                     },
+                   mutationBuilder.addMutation(`AddProductTransactionWith_transactionPay(
 
-                     to:{
-                       id:"${doctor.charges[charge].ProductTransaction[0].with_transaction.id}"
-                     }
-                   ){
-                      from{id},
-                       to{id}
-                   }`)
+         from:{
+                      id:"${doctor.charges[charge].ProductTransaction[0].id}"
+                    },
+
+                    to:{
+                      id:"${transactionId}"
+                    }
+                  ){
+                     from{id},
+                      to{id}
+                  }`)
+                   let costProduct = await this.$apollo.mutate({
+                       mutation: require ('../../graphql/doctors/LoadCostProductDoctor.gql'),
+                       variables:{idDoctor: doctor.id, idProduct: doctor.charges[charge].ProductTransaction[0].Consultation.Product.id}
+                   })
+                   console.log('cost: ', costProduct.data.CostProductDoctor[0].cost)
+                   mutationBuilder.addMutation(`UpdateProductTransaction(
+          id:"${doctor.charges[charge].ProductTransaction[0].id}"
+          cost:${costProduct.data.CostProductDoctor[0].cost}
+        ){
+        id}`)
                    mutationBuilder.addMutation(`
                    DeleteCharge(id:"${doctor.charges[charge].id}"){
                    id
@@ -335,6 +346,29 @@
                   }
               `)
                 for (let charge in doctors[i].charges) {
+                    mutationBuilder.addMutation(`AddProductTransactionWith_transactionPay(
+
+         from:{
+                      id:"${doctors[i].charges[charge].ProductTransaction[0].id}"
+                    },
+
+                    to:{
+                      id:"${transactionId}"
+                    }
+                  ){
+                     from{id},
+                      to{id}
+                  }`)
+                    let costProduct = await this.$apollo.mutate({
+                        mutation: require ('../../graphql/doctors/LoadCostProductDoctor.gql'),
+                        variables:{idDoctor: doctors[i].id, idProduct: doctors[i].charges[charge].ProductTransaction[0].Consultation.Product.id}
+                    })
+                    console.log('cost: ', costProduct.data.CostProductDoctor[0].cost)
+                    mutationBuilder.addMutation(`UpdateProductTransaction(
+          id:"${doctors[i].charges[charge].ProductTransaction[0].id}"
+          cost:${costProduct.data.CostProductDoctor[0].cost}
+        ){
+        id}`)
                   mutationBuilder.addMutation(`
                   DeleteCharge(id:"${doctors[i].charges[charge].id}"){
                   id
