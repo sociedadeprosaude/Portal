@@ -4,7 +4,7 @@
                 <img
                         ref="logo"
                         class="pulse-anim"
-                        :src="require('../../../assets/pro_saude_logo.png')"
+                        :src="require('../../../assets/logo.png')"
                         width="150px"
                         height="150px"
                 >
@@ -52,7 +52,7 @@
                     variables:{
                         idConsultation: consultation.id,
                     },
-                
+
                 })
                 const index = this.consultations.findIndex(value => value.id === consultation.id)
                 this.consultations.splice(index,1)

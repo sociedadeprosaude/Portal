@@ -73,7 +73,7 @@
 
             <v-toolbar-title>
                 <router-link to="/" tag="span" style="cursor: pointer">
-                    <v-img v-if="selectedUnit" :src="selectedUnit.logo" aspect-radio="1" width="240"/>
+                    <v-img v-if="selectedUnit" :src="selectedUnit.logo" aspect-radio="1" width="160"/>
                 </router-link>
             </v-toolbar-title>
             <v-toolbar-items>

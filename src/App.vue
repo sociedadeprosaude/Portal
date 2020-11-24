@@ -26,7 +26,7 @@
                 <img
                         ref="logo"
                         class="pulse-anim"
-                        :src="require('./assets/pro_saude_logo.png')"
+                        :src="require('./assets/logo.png')"
                         width="150px"
                         height="150px"
                 >
