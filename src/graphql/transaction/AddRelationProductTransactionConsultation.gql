@@ -1,4 +1,4 @@
-mutation($idProductTransaction:ID!,$idConsultation:ID!){
+mutation AddRelationProductTransactionConsultation($idProductTransaction:ID!,$idConsultation:ID!){
   AddProductTransactionWith_consultation(
     from:{
       id:$idProductTransaction
@@ -9,7 +9,6 @@ mutation($idProductTransaction:ID!,$idConsultation:ID!){
   ){
     from{id},to{id}
   },
-
   UpdateConsultation(id:$idConsultation,status:"Pago"){
     id
   }
