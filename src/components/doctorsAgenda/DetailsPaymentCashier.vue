@@ -637,7 +637,7 @@ export default {
       for (let product in products) {
         let prodId = uuid.v4()
         products[product].prodId = prodId
-        productsTransactionIds.push(prodId)
+        productsTransactionIds.push(Object.assign({},products[product]))
         mutationBuilder.addMutation(`
                 CreateProductTransaction(
                 id: "${prodId}"
@@ -691,7 +691,6 @@ export default {
     }
        `)
         }
-        this.verifyUnpaidConsultations(products[product])
 
       }
 
@@ -754,9 +753,11 @@ export default {
 
       await this.$apollo.mutate({
         mutation: gql`${finalString}`,
-      })
+      });
 
-      return transactionId
+      this.verifyUnpaidConsultations(productsTransactionIds);
+
+      return transactionId;
     },
     async AddRelationsIntakeDoctor(transactionId) {
       this.$apollo.mutate({
@@ -813,10 +814,14 @@ export default {
       this.$store.commit('setSelectedPatient', user)
     },
 
-    verifyUnpaidConsultations(productTransaction) {
-      let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product && consultation.product.id === productTransaction.id && consultation.status === "Aguardando pagamento")
-      if (unpaidConsultation) {
-        this.saveRelationProductTransaction(unpaidConsultation.id, productTransaction.prodId)
+    verifyUnpaidConsultations(productTransactions) {
+      for (const key in productTransactions) {
+        const productTransaction = productTransactions[key];
+        let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product && consultation.product.id === productTransaction.id && consultation.status === "Aguardando pagamento")
+        
+        if (unpaidConsultation) {
+          this.saveRelationProductTransaction(unpaidConsultation.id, productTransaction.prodId)
+        }
       }
     },
 

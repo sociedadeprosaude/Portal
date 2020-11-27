@@ -12,7 +12,7 @@
                                 </v-layout>
                             </v-flex>
                             <v-flex xs6 class="text-right">
-                                <img height="64px" :src="require('@/assets/pro_saude_logo.png')">
+                                <img height="64px" :src="require('@/assets/logo.png')">
                             </v-flex>
                             <v-flex xs12 class="text-left">
                                 <span class="font-weight-bold white--text" style="font-size: 1.0em">{{user.name}}</span>
