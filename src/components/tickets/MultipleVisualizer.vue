@@ -132,55 +132,44 @@ export default {
         }
       },
       update(data){
-        this.old = this.sector.has_rooms
-        for (let k in this.sector.has_rooms){
-          this.sector.has_rooms[k].expand = false
-        }
-
         this.sector = Object.assign(data.Sector[0])
         this.size_off = this.sector.has_rooms.length
-
         this.room = this.sector.has_rooms.filter(a => {
           return a.show === true;
         });
-        this.room.expand = false
-
-        console.log('true', this.room)
         this.rooms = this.sector.has_rooms.filter(a => {
           return a.show === false;
         });
-        console.log('false', this.rooms)
-        console.log('animação')
-        //this.soundAndAnimation();
-        for (let k in this.sector.has_rooms){
-          this.sector.has_rooms[k].expand = false
-        }
-        this.new = this.sector.has_rooms
-        this.size_off = this.sector.has_rooms.length
-        for(let i in this.old){
-          for(let j in this.new){
-            if(this.old[i].name === this.new[j].name){
-              if(this.old[i].current_ticket !== this.new[j].current_ticket){
-                this.soundAndAnimation();
-              }
-            }
+        let rooms  = this.sector.has_rooms
+        for (let room in rooms ){
+          if(rooms[room].show === true){
+            this.room[0].expand = false
+            this.soundAndAnimation();
           }
         }
-        //console.log('reativo:', this.sector)
+        //console.log('true apollo', this.room)
+        //console.log('false apollo', this.rooms)
       },
       pollInterval: 150, // ms
     },
   },
   mounted() {
-    this.size_off = this.sector.has_rooms.length
+/*    this.size_off = this.sector.has_rooms.length
     this.room = this.sector.has_rooms.filter(a => {
       return a.show === true;
     });
-    console.log('true', this.room)
     this.rooms = this.sector.has_rooms.filter(a => {
       return a.show === false;
     });
-    console.log('false', this.rooms)
+    let rooms  = this.sector.has_rooms
+    for (let room in rooms ){
+      if(rooms[room].show === true){
+        this.room[0].expand = false
+        this.soundAndAnimation();
+      }
+    }
+    console.log('true mounted', this.room)
+    console.log('false mounted', this.rooms)*/
 /*    this.clockInterval = setInterval(() => {
       this.$nextTick(() => {
         this.hour = moment().format("HH:mm");
