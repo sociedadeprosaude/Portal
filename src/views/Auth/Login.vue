@@ -2,7 +2,7 @@
     <v-container fluid fill-height>
         <v-layout row wrap class="align-center justify-center" style="margin-bottom: 30vh">
             <v-flex xs12 sm4 class="text-xs-center">
-                <img :src="require('../../assets/pro_saude_logo.png')"
+                <img :src="require('../../assets/logo.png')"
                      width="100px" class="mb-5 mt-5">
                 <v-card style="min-width: 300px" class="mb-5">
                     <v-card-text>
