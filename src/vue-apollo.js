@@ -11,7 +11,6 @@ const AUTH_TOKEN = 'apollo-token';
 // Http endpoint
 const httpEndpoint = process.env.NODE_ENV === 'development' ?  'https://grand-stack-backend.prodevs.vercel.app/graphql': 'https://grand-stack-backend.prodevs.vercel.app/graphql'
 
-
 // const httpEndpoint = process.env.VUE_APP_GRAPHQL_HTTP || 'http://localhost:4001/graphql'
 
 // Config
