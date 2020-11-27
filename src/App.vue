@@ -47,7 +47,8 @@
                 patientDialog: false,
                 ready: false,
                 skip:true,
-                email:undefined
+                email:undefined,
+                id:undefined
             }
         },
         computed: {
@@ -88,7 +89,7 @@
             async getUser(user) {
                 //await this.$store.dispatch('getUser', user);
                 this.skip = false;
-                this.email = user.email
+                this.id = user.id
             },
         },
         created() {
@@ -118,7 +119,7 @@
                 query: require("@/graphql/authentication/FindUser.gql"),
                 variables(){
                     return{
-                        email:this.email
+                        id:this.id
                     }
                 },
                 update(data){
