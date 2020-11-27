@@ -1,5 +1,5 @@
-query($email:String!){
-  User(filter:{email:$email}){
+query($id:ID!){
+  User(filter:{id:$id}){
     id,email,
     is_doctor{
       id,name,

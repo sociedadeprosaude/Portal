@@ -69,12 +69,14 @@
         data() {
             return {
                 email: '',
+                user_id: undefined,
                 show_password: false,
                 credentialError: false,
                 password: '',
                 passwordError: false,
                 loading: false,
                 errorMessage: undefined,
+                skipSignIn:true,
                 skip:true
             }
         },
@@ -94,12 +96,12 @@
 
                 try {
                     this.loading = true;
-                    let user = await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
+                    this.$apollo.queries.signIn.refresh()//await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
 
-                    this.skip = false
-                    this.$apollo.queries.findColaborator.refresh()
+                    this.skipSignIn = false
+                    //this.$apollo.queries.findColaborator.refresh()
                 } catch (e) {
-                    switch (e.code) {
+                    /* switch (e.code) {
                         case 'auth/user-not-found':
                             this.errorMessage = 'Usuário não cadastrado';
                             break;
@@ -109,25 +111,53 @@
                     }
                     setTimeout(() => {
                         this.errorMessage = undefined
-                    }, 2000)
+                    }, 2000) */
+                    console.log('Error na autenticação')
                 }
-                this.loading = false
+                //this.loading = false
             }
         },
         apollo:{
+            signIn:{
+                query: require("@/graphql/authentication/SignIn.gql"),
+                variables(){
+                    return{
+                        email:this.email,
+                        password: this.password
+                    }
+                },
+                update(data){
+                    this.skipSignIn = true;
+                    this.skip = false;
+                    localStorage.setItem('apollo-token', data.signIn.token);
+                    this.user_id = data.signIn.user_id;
+                    this.$apollo.queries.findColaborator.refresh();
+                },
+                error({graphQLErrors}){
+                   this.loading = false;
+                   this.errorMessage = graphQLErrors[0].message
+                },
+                skip(){
+                    return this.skipSignIn;
+                }
+            },
             findColaborator:{
                 query: require("@/graphql/authentication/FindUser.gql"),
                 variables(){
                     return{
-                        email:this.email
+                        id:this.user_id
                     }
                 },
                 update(data){
                     this.skip = true
-                    console.log(data.User[0])
                     const user = data.User[0].is_colaborator? data.User[0].is_colaborator : data.User[0].is_doctor
                     this.$store.dispatch('getUser', user);
-                    this.$router.go()
+                    this.loading = false;
+                    //this.$router.go();
+                },
+                error({graphQLErrors}){
+                   this.loading = false;
+                   this.errorMessage = graphQLErrors[0].message
                 },
                 skip(){
                     return this.skip

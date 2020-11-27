@@ -326,7 +326,8 @@ export default {
       window.open(url)
     },
     logout() {
-      this.$store.dispatch('logOut')
+      this.$store.dispatch('logOut');
+      localStorage.removeItem("apollo-token");
     },
     profile() {
       this.$router.push('/conta')
