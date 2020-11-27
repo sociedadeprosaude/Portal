@@ -763,7 +763,29 @@ export default {
       this.deletionRoom.deleteRoomDialog = false;
       await this.$apollo.queries.LoadRoomsOfSector.refresh();
     },
-    alertActualTicket(room) {},
+    async alertActualTicket(room) {
+      await this.$apollo.queries.LoadRoomsOfSector.refresh();
+      let rooms  = this.sector.has_rooms
+      for (let room in rooms ){
+        if(rooms[room].show === true){
+          await this.$apollo.mutate({
+            mutation: require('@/graphql/rooms/UpdateRoom.gql'),
+            variables: {
+              id: rooms[room].id,
+              show: false,
+            },
+          });
+        }
+      }
+      await this.$apollo.mutate({
+        mutation: require('@/graphql/rooms/UpdateRoom.gql'),
+        variables: {
+          id: room.id,
+          show: true,
+        },
+      });
+      await this.$apollo.queries.LoadRoomsOfSector.refresh();
+    },
     openSingleView(room) {
       this.singleViewDialog.room = room;
       this.singleViewDialog.active = true;

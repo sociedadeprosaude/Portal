@@ -342,7 +342,7 @@
                 </template>
                 <span>Gerar senha preferencial</span>
               </v-tooltip>-->
-<!--              <v-tooltip top v-if="doctorsLoaded">
+              <v-tooltip top v-if="doctorsLoaded">
                 <template v-slot:activator="{ on }">
                   <v-btn
                     v-on="on"
@@ -353,11 +353,11 @@
                     x-small
                     class="primary ml-2 my-2"
                   >
-                    <v-icon>notification_important</v-icon>
+                    <v-icon large>error_outline</v-icon>
                   </v-btn>
                 </template>
-                <span>Alertar senha atual</span>
-              </v-tooltip>-->
+                <span>Alertar Senha Atual</span>
+              </v-tooltip>
               <v-tooltip top >
                 <template v-slot:activator="{ on }">
                   <v-btn
