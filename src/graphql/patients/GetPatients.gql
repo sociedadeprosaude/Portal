@@ -1,5 +1,10 @@
 query{
   Patient(orderBy:name_asc){
-      name, attedanceHistory{date{formatted}},email,telephones, created_at{formatted}
+  id,
+      name,
+    attedanceHistory{date{formatted}},
+    email,
+    telephones,
+    created_at{formatted}
   }
 }

@@ -12,6 +12,9 @@
               >
               </v-text-field>
             </v-col>
+            <v-col>
+              <v-btn @click="ExportPatients(patients)">Exportar Pacientes</v-btn>
+            </v-col>
             <v-col cols="12" class="mb-0">
               <v-divider color="black"></v-divider>
             </v-col>
@@ -81,6 +84,7 @@
 <script>
 import PieChart from "@/components/Charts/PieChart";
 import MiniStatistic from "@/components/MiniStatistic";
+const {Parser} = require('json2csv');
 import moment from 'moment'
 
 export default {
@@ -100,6 +104,11 @@ export default {
     this.PatientFilter()
   },
   methods: {
+    ExportPatients(Patients){
+      const json2csvParser = new Parser();
+      const csv = json2csvParser.parse(Patients)
+      console.log('csv: ', csv)
+    },
     PatientFilter() {
       console.log('chamando')
       if (this.Patients) {

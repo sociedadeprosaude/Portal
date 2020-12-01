@@ -1,0 +1,17 @@
+mutation($idConsultation: ID!, $idProductTransaction: ID!){
+    AddProductTransactionWith_consultation(
+        from:{
+            id:$idProductTransaction
+        },
+        to:{
+            id:$idConsultation
+        }
+    ){
+        from{
+            id
+        },
+        to{
+            id
+        }
+    }
+}

@@ -1,0 +1,17 @@
+mutation($idConsultation: ID!, $idPreviousConsultation: ID!){
+    AddConsultationCame_from(
+        from:{
+            id:$idPreviousConsultation
+        },
+        to:{
+            id:$idConsultation
+        }
+    ){
+        from{
+            id
+        },
+        to{
+            id
+        }
+    }
+}
