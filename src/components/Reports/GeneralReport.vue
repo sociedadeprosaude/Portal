@@ -54,7 +54,12 @@
 
                   <v-col cols="2" class="pa-0  text-center">{{ productTransactions.price | moneyFilter }}</v-col>
 
-                  <v-col cols="2" class="pa-0  text-center">{{profitPercentage(productTransactions.price, productTransactions.cost)}}</v-col>
+                  <v-col v-if="(((productTransactions.price - productTransactions.cost)/productTransactions.cost)*100) >= 0"  cols="2" class="pa-0 text-center">
+                    {{profitPercentage(productTransactions.price, productTransactions.cost)}}
+                  </v-col>
+                  <v-col v-else  cols="2" class="pa-0 text-center colorText">
+                    {{profitPercentage(productTransactions.price, productTransactions.cost)}}
+                  </v-col>
 
                 </v-row>
                 <v-row class="background">
@@ -292,5 +297,8 @@ export default {
 <style scoped>
 .border {
   border: 1px solid grey;
+}
+.colorText{
+  color: red;
 }
 </style>
