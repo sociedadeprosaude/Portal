@@ -1,0 +1,12 @@
+mutation (
+    $id: ID!,
+    $price: Float,
+     )
+    {
+    CreateProductBudget(
+     id:$id,
+     price:$price,
+     ){
+        id
+    }
+}

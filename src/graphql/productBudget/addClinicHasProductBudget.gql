@@ -1,0 +1,13 @@
+mutation($idProductBudget:ID!, $idClinic:ID!){
+    AddProductBudgetWith_clinic(
+        from:{
+            id:$idProductBudget
+        },
+        to:{
+            id:$idClinic
+        }
+    ){
+        from{id},
+        to{id}
+    },
+}
