@@ -1,0 +1,22 @@
+mutation (
+    $id: ID!
+    $value: Float,
+    $date: _Neo4jDateTimeInput,
+    $payment_methods: [String],
+    $payments: [Float],
+    $parcels: [String],
+    $discount: Float
+     )
+    {
+    CreateTransaction(
+    id: $id,
+     value:$value,
+     date:$date,
+     payment_methods: $payment_methods,
+     payments: $payments,
+     parcels: $parcels,
+     discount: $discount
+     ){
+        id, value, payment_methods, date{formatted}
+    }
+}

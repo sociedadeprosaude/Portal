@@ -613,24 +613,22 @@ export default {
     async makeTransaction() {
       let transactionId = uuid.v4()
       let mutationBuilder = new MutationBuilder()
-      mutationBuilder.addMutation(
-          `CreateTransaction(
-      id: "${transactionId}",
-     value:${parseFloat(this.selectedBudget.total)},
-     payment_methods:[${this.selectedBudget.payments.map(p => `"${p}"`)}],
-     payments:[${this.selectedBudget.valuesPayments}],
-     parcels:[${this.selectedBudget.parcel.map(p => `"${p}"`)}],
-     discount:${parseFloat(this.selectedBudget.discount) ? parseFloat(this.selectedBudget.discount) : 0},
-     date:
-          {
-            formatted: "${moment(this.selectedBudget.date.formatted).format("YYYY-MM-DDTHH:mm:ss")}"
-          }
-     ){
-        id, value, payment_methods, payments, parcels, discount, date{
-        formatted
+      mutationBuilder.addMutation({
+        mutation: require('@/graphql/transaction/CreateTransactionPayment.gql'),
+        variables:{
+          id: transactionId,
+          value: parseFloat(this.selectedBudget.total),
+          payment_methods:[this.selectedBudget.payments.map(p => `"${p}"`)],
+            payments:[this.selectedBudget.valuesPayments],
+          parcels:[this.selectedBudget.parcel.map(p => `"${p}"`)],
+        discount:parseFloat(this.selectedBudget.discount) ? parseFloat(this.selectedBudget.discount) : 0,
+      date:
+      {
+        formatted: moment(this.selectedBudget.date.formatted).format("YYYY-MM-DDTHH:mm:ss")
+      }
         }
-    }`
-      )
+      })
+
       let productsTransactionIds = []
       let products = this.selectedBudget.exams.concat(this.selectedBudget.specialties)
       products = products.filter(p => p)
