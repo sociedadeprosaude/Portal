@@ -45,7 +45,7 @@
         data() {
             return {
                 patientDialog: false,
-                ready: false,
+                ready: true,
                 skip:true,
                 email:undefined,
                 id:undefined
@@ -93,12 +93,11 @@
             },
         },
         created() {
-
             this.$store.dispatch("startConnectionListener");
             this.$apollo.queries.loadUnitsClinics.refresh()
         },
         mounted() {
-            firebase.auth().onAuthStateChanged((user) => {
+            /* firebase.auth().onAuthStateChanged((user) => {
                 if (!user) {
                     this.ready = true;
                   let rota = this.$router.currentRoute.path;
@@ -112,34 +111,28 @@
                 if (user) {
                     this.getUser(user)
                 }
-            })
+            }); */
         },
         apollo:{
-            findColaborator:{
-                query: require("@/graphql/authentication/FindUser.gql"),
-                variables(){
-                    return{
-                        id:this.id
-                    }
-                },
+            /* findColaborator:{
+                query: require("@/graphql/authentication/currentColaborator.gql"),
                 update(data){
                     this.skip = true;
                     let user = undefined;
-                    if(data.User.length > 0){
-                        user =  data.User[0].is_colaborator? data.User[0].is_colaborator : data.User[0].is_doctor;
-                        this.$store.dispatch('getUser', user);
-                    }
-
-                    if(!user || ( user[0] && !user[0].is_colaborator) || ( user[0] && !user[0].is_doctor)){
-                        this.ready = true;
-                        this.$router.push('/error-authentication')
-                    }
-
+                    user = data.current_user_colaborator
+                    this.$store.dispatch('getUser', user);
+                    this.ready = true;
+                },
+                error({graphQLErrors}){
+                   /* this.loading = false;
+                   this.errorMessage = graphQLErrors[0].message
+                   //this.$router.push('/login')
+                   // this.$router.push('/error-authentication');
                 },
                 skip(){
                     return this.skip
                 }
-            },
+            }, */
             loadUnitsClinics:{
                 query: require("@/graphql/clinics/LoadClinics.gql"),
                 variables(){

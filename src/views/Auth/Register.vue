@@ -119,12 +119,13 @@
 
             async createUser(){
                 try{
-                    let resp = await firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+                    //let resp = await firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
                 
                     const newUser = await this.$apollo.mutate({
                         mutation: require('@/graphql/authentication/CreateUser.gql'),
                         variables:{
-                            email:this.email
+                            email:this.email,
+                            password: this.password
                         },
                     });
                     const userId = newUser.data.CreateUser.id
@@ -132,7 +133,7 @@
                     const newColaborator = await this.$apollo.mutate({
                         mutation: require('@/graphql/authentication/CreateColaborator.gql'),
                         variables:{
-                                email: resp.user.email,
+                                email: this.email,
                                 name: this.name,
                                 cpf: this.cpf.replace(/\./g, "").replace("-", ""),
                                 telephones: [this.telephone],
@@ -147,7 +148,7 @@
 
                     this.loading = false
                 }catch(error){
-                    this.errorMessage = e.code;
+                    this.errorMessage = error;
                     this.loading = false
                 }
                 
@@ -164,7 +165,7 @@
         },
         apollo:{
             findUser:{
-                query: require("@/graphql/authentication/FindUser.gql"),
+                query: require("@/graphql/authentication/VerifyUserExistsbyEmail.gql"),
                 variables(){
                     return{
                         email:this.email
@@ -172,11 +173,10 @@
                 },
                 update(data){
                     this.skip = true
-                    console.log(data.User[0])
                     const user = data.User ? data.User[0] : undefined
                     
                     if(!user){
-                        this.createUser()
+                        this.createUser();
                     }else{
                         this.loading = false
                         this.alert = true

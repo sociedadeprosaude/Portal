@@ -82,9 +82,9 @@
         },
         mounted() {
           window.addEventListener('keydown', this.handleEnter)
-          if (firebase.auth().currentUser) {
+          /* if (firebase.auth().currentUser) {
                 this.$router.push('/')
-            }
+            } */
         },
         methods: {
           handleEnter(e) {
@@ -129,9 +129,9 @@
                 update(data){
                     this.skipSignIn = true;
                     this.skip = false;
-                    localStorage.setItem('apollo-token', data.signIn.token);
+                    localStorage.setItem('token', data.signIn.token);
                     this.user_id = data.signIn.user_id;
-                    this.$apollo.queries.findColaborator.refresh();
+                    this.$apollo.queries.currentColaborator.refresh();
                 },
                 error({graphQLErrors}){
                    this.loading = false;
@@ -141,19 +141,14 @@
                     return this.skipSignIn;
                 }
             },
-            findColaborator:{
-                query: require("@/graphql/authentication/FindUser.gql"),
-                variables(){
-                    return{
-                        id:this.user_id
-                    }
-                },
+            currentColaborator:{
+                query: require("@/graphql/authentication/currentColaborator.gql"),
                 update(data){
                     this.skip = true
-                    const user = data.User[0].is_colaborator? data.User[0].is_colaborator : data.User[0].is_doctor
+                    const user = Object.assign({},data.current_user_colaborator)
                     this.$store.dispatch('getUser', user);
                     this.loading = false;
-                    //this.$router.go();
+                    this.$router.push('/');
                 },
                 error({graphQLErrors}){
                    this.loading = false;

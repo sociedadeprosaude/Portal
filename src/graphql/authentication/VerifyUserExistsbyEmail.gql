@@ -1,0 +1,5 @@
+query VerifyUserExistsbyEmail($email:String!){
+  User(filter:{email:$email}){
+    id,email
+  }
+}

@@ -23,10 +23,11 @@ const mutations = {
 const actions = {
 
     async logOut(context) {
-        firebase.auth().signOut();
-        setTimeout(() => {
+        //firebase.auth().signOut();
+        /* setTimeout(() => {
             context.commit('setUser', undefined)
-        }, 500);
+        }, 500); */
+        context.commit('setUser', undefined)
         return
     },
     async getUser({ commit }, user) {
