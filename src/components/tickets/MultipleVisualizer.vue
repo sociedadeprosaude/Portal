@@ -81,9 +81,8 @@
       <v-col cols="6" class="all">
         <v-card fill-height fluid class="one" color="#E5E5E5">
                 <v-row>
-                  <v-col cols="4"></v-col>
-                  <v-col cols="8" justify-self="center" align-self="center">
-                    <p class="next text-center">Próxima senha</p>
+                  <v-col cols="12" class="text-center justify-center" justify-self="center" align-self="center">
+                    <p class="next text-center justify-center">Próxima senha</p>
                   </v-col>
                 </v-row>
                 <v-row v-if="room.length > 0">
@@ -91,12 +90,12 @@
 
                     <v-row justify="center">
                       <v-col class="ma-0 pa-0">
-                        <p class="guicheLast">{{ ticket.name }}</p>
+                        <p class="guicheLast text-center justify-center ">{{ ticket.name }}</p>
                       </v-col>
                     </v-row>
 
                     <v-row class="half">
-                      <v-col class="passwordLast" cols="12">
+                      <v-col class="passwordLast   text-center justify-center" cols="12">
                         Senha {{ (type(ticket.current_ticket)) === 'normal' ? '' : 'P' }}
                         {{ ticket.current_ticket ? ticket.current_ticket : '*' }}
                       </v-col>
@@ -500,7 +499,7 @@ body {
 }
 
 .image{
-  margin-top: 50px;
+  margin-top: 35px;
   padding-left: 70px;
 }
 .all{
@@ -547,7 +546,6 @@ body {
   border-radius: 12px;
 }
 .guicheLast{
-  padding-left: 190px;
   font-family: Montserrat;
   font-style: normal;
   font-weight: bold;
@@ -560,7 +558,6 @@ body {
   color: #E84D9B;
 }
 .passwordLast{
-  padding-left: 120px;
   padding-top: 80px;
   height: 10px;
   padding-bottom: 50px;
@@ -597,7 +594,6 @@ body {
 }
 
 .next{
-  margin-bottom: 0px;
   font-family: Montserrat;
   font-style: normal;
   font-weight: 600;
