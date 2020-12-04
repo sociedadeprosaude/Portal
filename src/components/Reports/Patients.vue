@@ -84,7 +84,8 @@
 <script>
 import PieChart from "@/components/Charts/PieChart";
 import MiniStatistic from "@/components/MiniStatistic";
-const {Parser} = require('json2csv');
+const { Parser } = require('json2csv');
+const fields= ['Nome' , 'Telefone' , 'Data' ] ;
 import moment from 'moment'
 
 export default {
@@ -104,10 +105,31 @@ export default {
     this.PatientFilter()
   },
   methods: {
-    ExportPatients(Patients){
-      const json2csvParser = new Parser();
-      const csv = json2csvParser.parse(Patients)
+    PatientsFormatArray(budgets){
+      let PatientsArray= []
+      console.log('budgets: ', budgets)
+      this.Patients.map(e =>{
+        PatientsArray.push({
+          Nome: e.name? e.name :'error',
+          Telefone: e.telephones[0] ? e.telephones[0] :'error',
+          Data: moment(e.date.formatted,'YYYY-MM-DDTHH:mm:ss').format('DD/MM/YYYY')
+        })
+      })
+      this.ExportPatients(PatientsArray)
+    },
+    ExportPatients(PatientsArray){
+      console.log('patientsArray: ', PatientsArray)
+      const json2csvParser = new Parser({ fields});
+      const csv = json2csvParser.parse(PatientsArray);
       console.log('csv: ', csv)
+
+      var pom = document.createElement('a');
+      var csvContent=csv;
+      var blob = new Blob([csvContent], { type: 'text/csv;charset=UTF-16LE;'  });
+      var url = URL.createObjectURL(blob);
+      pom.href = url;
+      pom.setAttribute('download', 'foo.csv');
+      pom.click();
     },
     PatientFilter() {
       console.log('chamando')
