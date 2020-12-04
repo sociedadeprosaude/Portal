@@ -1,4 +1,4 @@
-query($idClinic:ID!, $idProduct:ID!) {
+query ($idClinic:ID!, $idProduct:ID!) {
       CostProductClinic(filter:{with_clinic:{id:$idClinic},with_product:{id:$idProduct}}){
        id,cost
     }

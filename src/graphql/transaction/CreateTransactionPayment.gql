@@ -1,12 +1,4 @@
-mutation (
-    $id: ID!
-    $value: Float,
-    $date: _Neo4jDateTimeInput,
-    $payment_methods: [String],
-    $payments: [Float],
-    $parcels: [String],
-    $discount: Float
-     )
+mutation
     {
     CreateTransaction(
     id: $id,

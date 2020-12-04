@@ -1,9 +1,4 @@
-mutation CreateCharge(
-    $id: ID!,
-    $date: _Neo4jDateTimeInput,
-    $value: Float,
-    $type: String,
-    ){
+mutation {
   CreateCharge(
     value: $value,
     date: $date,

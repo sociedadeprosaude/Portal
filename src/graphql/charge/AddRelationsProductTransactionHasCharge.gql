@@ -1,4 +1,4 @@
-mutation($idCharge:ID!,$idProductTransaction:ID!){
+mutation {
     AddChargeWith_ProductTransaction(
         from:{
             id:$idCharge

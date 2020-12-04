@@ -589,17 +589,17 @@ export default {
             payments:[this.selectedBudget.valuesPayments],
           parcels:[this.selectedBudget.parcel.map(p => `"${p}"`)],
         discount:parseFloat(this.selectedBudget.discount) ? parseFloat(this.selectedBudget.discount) : 0,
-      date:
-      {
-        formatted: moment(this.selectedBudget.date.formatted).format("YYYY-MM-DDTHH:mm:ss")
-      }
+      date: {
+        formatted: moment(this.selectedBudget.date.formatted).format("YYYY-MM-DDTHH:mm:ss")}
         }
       })
 
       let productsTransactionIds = []
       let products = this.selectedBudget.exams.concat(this.selectedBudget.specialties)
       products = products.filter(p => p)
+      console.log('products: ', products)
       for (let product in products) {
+        console.log('product: ', products[product])
         let prodId = uuid.v4()
         products[product].prodId = prodId
         productsTransactionIds.push(Object.assign({},products[product]))
@@ -607,7 +607,7 @@ export default {
           mutation: require('@/graphql/productTransaction/CreateProductTransaction.gql'),
           variables:{
             id: prodId,
-            price: products[product].price,
+            price: parseFloat(products[product].price),
           }
         })
         mutationBuilder.addMutation({
@@ -676,7 +676,7 @@ export default {
           }
         })
       }
-
+      console.log('mutation: ', mutationBuilder.getMutationString())
       let response = await this.$apollo.mutate({
         mutation: mutationBuilder.generateMutationRequest(),
       })

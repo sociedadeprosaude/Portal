@@ -1,4 +1,4 @@
-mutation($idBudget:ID!, $idTransaction:ID!){
+mutation {
     AddBudgetWith_transaction(
         from:{
             id:$idBudget

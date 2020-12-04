@@ -1,7 +1,4 @@
-mutation (
-    $id: ID!,
-    $price: Float,
-     )
+mutation
     {
     CreateProductTransaction(
      id:$id,

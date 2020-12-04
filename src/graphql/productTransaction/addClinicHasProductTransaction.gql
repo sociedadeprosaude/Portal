@@ -1,4 +1,4 @@
-mutation($idProductTransaction:ID!, $idClinic:ID!){
+mutation {
     AddProductTransactionWith_clinic(
         from:{
             id:$idProductTransaction

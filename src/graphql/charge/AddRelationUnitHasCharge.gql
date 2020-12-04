@@ -1,4 +1,4 @@
-mutation($idCharge:ID!,$idUnit:ID!){
+mutation {
     AddChargeWith_unit(
         from:{
             id:$idCharge
