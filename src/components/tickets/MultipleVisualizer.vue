@@ -81,8 +81,9 @@
       <v-col cols="6" class="all">
         <v-card fill-height fluid class="one" color="#E5E5E5">
                 <v-row>
-                  <v-col cols="12" justify-self="center" align-self="center">
-                    <p class="next">Próxima senha</p>
+                  <v-col cols="4"></v-col>
+                  <v-col cols="8" justify-self="center" align-self="center">
+                    <p class="next text-center">Próxima senha</p>
                   </v-col>
                 </v-row>
                 <v-row v-if="room.length > 0">
@@ -98,20 +99,9 @@
                       <v-col class="passwordLast" cols="12">
                         Senha {{ (type(ticket.current_ticket)) === 'normal' ? '' : 'P' }}
                         {{ ticket.current_ticket ? ticket.current_ticket : '*' }}
-                        <!-- <v-row justify="center">
-                          <v-col class="ma-0 pa-0">
-                            <v-expand-transition>
-                              <p v-show="expand" v-if="ticket.current_ticket" style="font-size: 5em; color: deeppink">{{ticket.current_ticket}}</p>
-                            </v-expand-transition>
-                            <v-expand-transition>
-                              <p v-show="!expand" v-if="ticket.current_ticket" style="font-size: 5em;">{{ticket.current_ticket}}</p>
-                            </v-expand-transition>
-                            <p v-if="!ticket.current_ticket" style="font-size: 5em;">*</p>
-                          </v-col>
-                        </v-row> -->
                       </v-col>
                       <v-col>
-                        <svg class="image" width="230" height="230" viewBox="0 0 298 344" fill="none"
+                        <svg class="image" width="300" height="300" viewBox="0 0 298 344" fill="none"
                              xmlns="http://www.w3.org/2000/svg">
                           <path
                               d="M251.777 121.175C251.777 54.2521 195.415 0 125.889 0C56.3623 0 0 54.2521 0 121.175V211.739C0 278.662 56.3623 332.914 125.889 332.914C195.415 332.914 251.777 278.662 251.777 211.739V121.175Z"
@@ -510,6 +500,8 @@ body {
 }
 
 .image{
+  margin-top: 50px;
+  padding-left: 70px;
 }
 .all{
   padding: 0px;
@@ -555,12 +547,12 @@ body {
   border-radius: 12px;
 }
 .guicheLast{
-  padding-left: 74px;
+  padding-left: 190px;
   font-family: Montserrat;
   font-style: normal;
   font-weight: bold;
-  font-size: 124px;
-  line-height: 151px;
+  font-size: 100px;
+  line-height: 130px;
   display: flex;
   align-items: center;
   text-align: center;
@@ -568,14 +560,16 @@ body {
   color: #E84D9B;
 }
 .passwordLast{
+  padding-left: 120px;
+  padding-top: 80px;
   height: 10px;
   padding-bottom: 50px;
-  padding-left: 90px;
+
 
   font-family: Montserrat;
   font-style: normal;
   font-weight: bold;
-  font-size: 100px;
+  font-size: 90px;
   line-height: 120px;
   display: flex;
   align-items: center;
@@ -613,23 +607,6 @@ body {
   align-items: center;
   text-align: center;
   letter-spacing: -0.05em;
-  /* Purple */
-  color: #8134AF;
-  font-size: 40px;
-  text-align: center;
-  width: 462px;
-  left: 160px;
-
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 48px;
-  line-height: 59px;
-  display: flex;
-  align-items: center;
-  text-align: center;
-  letter-spacing: -0.05em;
-
   /* Purple */
 
   color: #8134AF;
