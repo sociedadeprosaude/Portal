@@ -2,18 +2,16 @@
     <v-container>
         <v-card>
             <v-layout row wrap  class="justify-center pt-5">
+                <v-flex xs3>
+                  <v-text-field rounded solo filled dense color="background"
+                                placeholder="Data inicial"
+                                v-model="dateStart" v-mask="mask.date" append-outer-icon="event"/>
 
-                    <v-flex xs3>
-                        <v-text-field rounded solo filled dense color="background" v-model="dateStart.formatted"/>
-                    </v-flex>
-                    <v-flex xs1 class="pt-2">
-                        <v-icon color="primary">event</v-icon>
-                    </v-flex>
-                    <v-flex xs3>
-                        <v-text-field rounded solo filled dense color="background" v-model="dateEnd.formatted"/>
-                    </v-flex>
-
-
+                </v-flex>
+                <v-flex xs3 class="ml-2">
+                  <v-text-field rounded solo filled dense color="background" class="mr-4"
+                                v-model="dateEnd" v-mask="mask.date" placeholder="Data final"/>
+                </v-flex>
                     <v-flex xs7>
                         <ApolloQuery
                                 :query="require('@/graphql/products/LoadProducts.gql')"
@@ -57,7 +55,7 @@
         </v-card>
 
         <ApolloQuery :query="require('@/graphql/consultations/LoadConsultationScheduled.gql')"
-                     :variables="{ date_start: dateStart, date_end: dateEnd, specialty: specialty.name}">
+                     :variables="{  date_start:{formatted:formattedDate(dateStart)}, date_end:{formatted:formattedDate(dateEnd)}, specialty: specialty.name}">
             <template slot-scope="{ result: { data } }">
                 <ConsultationScheduledExecuted v-if="data"
                                                :scheduled="data.Consultation.length"
@@ -85,6 +83,7 @@
 <script>
     import ConsultationScheduledExecuted from "@/components/Reports/ConsultationScheduledExecuted";
     import moment from "moment";
+    import {mask} from 'vue-the-mask'
 
     export default {
         // name: "ConsultationScheduledExecuted",
@@ -94,9 +93,12 @@
         props: ["report", "loading"],
         data() {
             return {
+              mask: {
+                date: '##/##/####',
+              },
                 specialty: "",
-                dateStart: {formatted: "2020-10-01T01:00"},
-                dateEnd: {formatted: "2020-10-30T01:00"},
+              dateStart: moment().subtract(1, 'month').format('DD/MM/YYYY'),
+              dateEnd: moment().format('DD/MM/YYYY'),
                 now: moment().format("YYYY-MM-DD HH:mm:ss"),
                 total: 0,
                 reportOptions: [
@@ -172,6 +174,9 @@
             }
         },
         methods: {
+          formattedDate (date) {
+            return moment(date, 'DD/MM/YYYY').format('YYYY-MM-DDTHH:mm')
+          },
             timeConsultation(data) {
                 const arrData= [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
                 data.map(e => {
@@ -232,7 +237,7 @@
             },
 
             filterConsultationsDone (data) {
-                return data.Consultation.filter(e => e.attended_by !== null)
+                return data.Consultation.filter(e => e.productTransaction !== null && e.productTransaction.with_charge !== null)
             },
             clearSpecialty(){
                 this.specialty = ""
