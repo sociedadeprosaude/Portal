@@ -10,7 +10,10 @@ query{
             value,
             ProductTransaction: with_ProductTransaction{
                Product: with_product{
-                   name
+                   name, id
+               },
+               with_transaction{
+               id
                }
             }
          }

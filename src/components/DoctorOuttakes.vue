@@ -12,7 +12,7 @@
                         <v-flex xs1>
                             <v-divider class="primary" vertical/>
                         </v-flex>
-                        <v-flex xs4 class="text-center align-center justify-center">
+                        <v-flex xs3 class="text-center align-center justify-center">
                             <p class="mt-5"> CONSULTA: {{outtake.ProductTransaction[0].Consultation.Product.name}}</p>
                         </v-flex>
                       <v-flex xs1>
@@ -26,9 +26,19 @@
                         <v-flex xs1>
                             <v-divider class="primary" vertical/>
                         </v-flex>
-                        <v-flex xs2>
+                        <v-flex xs1>
                             <p class="mt-5"> PREÇO: {{-outtake.value}}</p>
                         </v-flex>
+                      <v-flex xs1>
+                        <v-divider class="primary" vertical/>
+                      </v-flex>
+                      <v-flex xs1>
+                            <v-btn :loading="loadingPaymentConsultation"  @click="payConsultationDoctor(outtake)" outlined class="elevation-0 mt-5">
+                                                    <span class="font-weight-bold">
+                                                        Pagar
+                                                    </span>
+                            </v-btn>
+                      </v-flex>
                     </v-layout>
                 </v-card>
             </v-flex>
@@ -47,6 +57,9 @@
 <script>
     import {mask} from "vue-the-mask";
     import  moment from 'moment'
+    import {uuid} from "vue-uuid";
+    import MutationBuilder from "@/classes/MutationBuilder";
+    import gql from "graphql-tag";
 
     export default {
         props: ['doctor','outtakes'],
@@ -57,6 +70,7 @@
         data() {
             return {
                 numberIntake:'',
+                loadingPaymentConsultation: false,
                 loading: false,
                 successUpdateExams: false,
                 dialogContestValue: false,
@@ -71,7 +85,75 @@
           date(dat){
               console.log('dat: ', dat)
              return moment(dat).format('DD/MM/YYYY')
-          }
+          },
+          async payConsultationDoctor(charge){
+              this.loadingPaymentConsultation= true
+            //await this.$store.dispatch('PayDoctor', doctor)
+            //this.getInitialInfo()
+            console.log('dortor: ', this.doctor)
+            console.log('outtake: ', charge)
+            this.loadingPayment= true
+            let transactionId = uuid.v4()
+            let mutationBuilder = new MutationBuilder()
+            mutationBuilder.addMutation(
+                `CreateTransaction(
+                     date:{formatted: "${moment().format("YYYY-MM-DDTHH:mm:ss")}"},
+                     id:"${transactionId}",
+                     value:${-parseFloat(charge.value)},
+                   ){
+                   id,date{formatted},value,
+                   }`
+            )
+            mutationBuilder.addMutation(`
+                   AddDoctorPayments(
+                  from:{
+                       id:"${this.doctor.id}"
+                     },
+
+                     to:{
+                       id:"${transactionId}"
+                     }
+                   ){
+                      from{id},
+                       to{id}
+                   }
+               `)
+            console.log('transactionId: ', transactionId)
+              mutationBuilder.addMutation(`AddProductTransactionWith_transactionPay(
+
+         from:{
+                      id:"${charge.ProductTransaction[0].id}"
+                    },
+
+                    to:{
+                      id:"${transactionId}"
+                    }
+                  ){
+                     from{id},
+                      to{id}
+                  }`)
+              let costProduct = await this.$apollo.mutate({
+                mutation: require ('@/graphql/doctors/LoadCostProductDoctor.gql'),
+                variables:{idDoctor: this.doctor.id, idProduct: charge.ProductTransaction[0].Consultation.Product.id}
+              })
+              console.log('cost: ', costProduct.data.CostProductDoctor[0].cost)
+              mutationBuilder.addMutation(`UpdateProductTransaction(
+          id:"${charge.ProductTransaction[0].id}"
+          cost:${costProduct.data.CostProductDoctor[0].cost}
+        ){
+        id}`)
+            mutationBuilder.addMutation(`
+                   DeleteCharge(id:"${charge.id}"){
+                   id
+                   }
+                 `)
+
+            let finalString = mutationBuilder.generateMutationRequest()
+            await this.$apollo.mutate({
+              mutation: gql`${finalString}`,
+            })
+            this.loadingPaymentConsultation= false
+          },
         },
         mounted(){
             this.$store.dispatch('GetReceiptsDoctor', this.doctor)

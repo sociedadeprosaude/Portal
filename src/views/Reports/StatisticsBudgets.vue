@@ -5,7 +5,7 @@
       :NumBudgetsPaid="NumBudgetsPaid"
       :NumBudgetsNotPaid="NumBudgetsNotPaid"
       :NumTotal="NumTotal"
-      :Budgets="BudgetFixed"
+      :Budgets="Budget"
       :BudgetsNotPaid="BudgetsNotPaid"
       :BudgetsPaid="BudgetsPaid"
 

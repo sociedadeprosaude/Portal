@@ -23,6 +23,47 @@
                 <v-col>
                   <span class="ml-auto font-weight-bold">Pacientes: {{item.patients}}</span>
                 </v-col>
+                <v-col>
+                  <v-btn class="pa-0 " icon rounded  @click="selectedLocale= item.name , shower=50"> <v-icon>arrow_drop_down</v-icon></v-btn>
+                </v-col>
+              </v-row>
+              <v-row v-if="selectedLocale === item.name">
+                <v-col cols="12">
+                <apollo-query :query="require('@/graphql/patients/GetPatientsCite-Neighboor.gql')"
+                :variables="{city:item.name.split('-')[0], neighboor: item.name.split('-')[1]}"
+                >
+                  <template slot-scope="{ result: { data,error } }">
+                    <v-row v-if="data">
+                      <v-col>
+                        <span class="ml-auto font-weight-bold">Nome</span>
+                      </v-col>
+                      <v-col>
+                        <span class="ml-auto font-weight-bold">Email</span>
+                      </v-col>
+                      <v-col>
+                        <span class="ml-auto font-weight-bold">Telefone</span>
+                      </v-col>
+                    </v-row>
+                    <v-row v-if="data" v-for="patient in PatientFilter(data)">
+                      <v-col>
+                        <span class="ml-auto font-weight-bold">{{patient.name}}</span>
+                      </v-col>
+                      <v-col>
+                        <span class="ml-auto font-weight-bold">{{patient.email ? patient.email : 'Sem email'}}</span>
+                      </v-col>
+                      <v-col>
+                        <span class="ml-auto font-weight-bold">{{patient.telephones[0]}}</span>
+                      </v-col>
+                    </v-row>
+                    <v-row v-if="error">{{error}}</v-row>
+                  </template>
+                </apollo-query>
+                </v-col>
+              </v-row>
+              <v-row v-if="selectedLocale === item.name">
+                <v-col cols="12">
+                  <v-btn @click="shower = shower + 50">Carregar mais 50</v-btn>
+                </v-col>
               </v-row>
               <v-divider />
             </div>
@@ -63,7 +104,9 @@ export default {
   ],
   data: vm => ({
     bairrosLocale: [],
-    bairrosPrint: ''
+    bairrosPrint: '',
+    selectedLocale: '',
+    shower: 50
   }),
   mounted() {
     this.Bairro(this.Bairros)
@@ -83,6 +126,17 @@ export default {
     },
   },
   methods:{
+    PatientFilter(data){
+      if(data.Patient){
+        if(data.Patient.length < this.shower){
+          return data.Patient
+        }
+        else{
+          return data.Patient.slice(0,this.shower)
+        }
+      }
+      return []
+    },
     date(date){
       return moment(date).format('DD/MM/YYYY')
     },

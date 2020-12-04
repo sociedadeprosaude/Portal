@@ -1,0 +1,5 @@
+query($city:String, $neighboor: String){
+    Patient(filter:{addresses:{city:$city, neighboor:$neighboor}}){
+       name, email, telephones
+  }
+}
