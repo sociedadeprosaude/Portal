@@ -37,14 +37,26 @@ export default {
     Patients(){
       return this.PatientFixed
     },
-    PatientsNotAdrress(){
+    PatientsAdrress(){
       return this.Patients.filter(e => e.addresses[0])
     },
     async Bairros() {
+      let ObjectBairros = []
       let bairros = []
-      this.PatientsNotAdrress.filter(e => {
-        if (!e.addresses[0].cep) {
-          if (bairros['sem cep']) {
+      this.PatientsAdrress.filter(e => {
+        if(e.addresses[0].city && e.addresses[0].neighboor){
+          if(ObjectBairros[e.addresses[0].city + '-' + e.addresses[0].neighboor]){
+            ObjectBairros[e.addresses[0].city + '-' + e.addresses[0].neighboor].patients += 1
+          }
+          else{
+            ObjectBairros[e.addresses[0].city + '-' + e.addresses[0].neighboor] = {
+              name: e.addresses[0].city + '-' + e.addresses[0].neighboor,
+              patients: 1
+            }
+          }
+        }
+        else if (!e.addresses[0].cep){
+          if (bairros['sem cep']){
             bairros['sem cep'].name = 'sem cep'
             bairros['sem cep'].patients += 1
           } else {
@@ -71,27 +83,40 @@ export default {
               bairros[e.addresses[0].cep.substring(0, 5)].name = e.addresses[0].cep
             }
             bairros[e.addresses[0].cep.substring(0, 5)].patients += 1
+            bairros[e.addresses[0].cep.substring(0, 5)].idAddresses.push(e.addresses[0].id)
           } else {
             bairros[e.addresses[0].cep.substring(0, 5)] = {
               name: e.addresses[0].cep,
-              patients: 1
+              patients: 1,
+              idAddresses: []
             }
+            bairros[e.addresses[0].cep.substring(0, 5)].idAddresses.push(e.addresses[0].id)
           }
         }
       })
-      let ObjectBairros = []
       for (let bairro in bairros) {
         if (bairro !== 'sem cep') {
           if (bairros[bairro].name.length === 8) {
             let endereço = await axios.get('https://viacep.com.br/ws/' + bairros[bairro].name + '/json/')
             if (!endereço.data.erro) {
+              for(let id in bairros[bairro].idAddresses){
+                console.log('bairro: ', bairro)
+                this.$apollo.mutate({
+                  mutation: require('@/graphql/patients/UpdateAddress-City-Neighborhood-Patient.gql'),
+                  variables: {
+                    idAddress: bairros[bairro].idAddresses[id],
+                    city: endereço.data.localidade,
+                    neighboor: endereço.data.bairro
+                  }
+                })
+              }
               bairros[bairro].name = endereço.data.localidade + '-' + endereço.data.bairro
               if (ObjectBairros[bairros[bairro].name]) {
                 ObjectBairros[bairros[bairro].name].patients += bairros[bairro].patients
               } else {
                 ObjectBairros[bairros[bairro].name] = {
                   name: bairros[bairro].name,
-                  patients: bairros[bairro].patients
+                  patients: bairros[bairro].patients,
                 }
               }
             } else {

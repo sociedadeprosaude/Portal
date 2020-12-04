@@ -1,11 +1,5 @@
 query{
-  Patient{
-       addresses{
-           cep,
-           city,
-           geopoint{
-           latitude, longitude
-           }
-       }
-     }
-   }
+  Patient(orderBy:name_asc){
+      name, attedanceHistory{date{formatted}},email,telephones, created_at{formatted}
+  }
+}

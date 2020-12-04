@@ -12,9 +12,15 @@ query( $date_start:_Neo4jDateTimeInput, $date_end: _Neo4jDateTimeInput, $special
        attended_by {
              name
        },
+       status,
        has_product {
              name,
              type
+       },
+       productTransaction{
+            with_charge{
+            id
+            }
        }
   }
 }

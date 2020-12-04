@@ -1,0 +1,6 @@
+query LoadProduct ($idProduct: ID!) {
+    Product (id:$idProduct){
+        id,
+        averageCosts
+    }
+}

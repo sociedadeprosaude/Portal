@@ -9,17 +9,23 @@
                                   class="primary--text"/>
                     </v-flex>
                     <v-flex xs12 class="mt-n3">
-                        <v-combobox
-                                v-model="category"
-                                :items="categories"
-                                item-text="name"
-                                return-object
-                                label="Categoria"
-                                clearable
-                                multiple
-                                outlined
-                                dense
-                        />
+                        <ApolloQuery
+                                :query="require('@/graphql/category/LoadCategories.gql')"
+                        >
+                            <template slot-scope="{ result: { data } }">
+                                <v-select
+                                        outlined
+                                        v-model="category"
+                                        :items="data ? data.Category : []"
+                                        item-text="name"
+                                        return-object
+                                        label="Categoria"
+                                        multiple
+                                        dense
+                                        clearable
+                                />
+                            </template>
+                        </ApolloQuery>
                     </v-flex>
                     <v-flex xs12 class="mt-n3">
                         <v-textarea clearable label="Descrição" v-model="description" outlined dense/>
@@ -221,19 +227,22 @@
                 });
             },
             async bifurcation() {
-                if (this.parcels) {
+                if (this.parcel) {
                     this.value = this.value / this.parcels;
                     for (let i = 0; i < this.parcels; i++) {
-                        this.addBill();
+                        await this.addBill(i - (this.parcels - 1));
                         this.dateToPay = moment(this.dateToPay)
                             .add(1, "months")
                             .format("YYYY-MM-DD");
+
                     }
+
                 } else {
-                    this.addBill();
+                    await this.addBill(0);
+
                 }
             },
-            async addBill() {
+            async addBill(parcels) {
                 this.loading = true;
                 delete this.unit.exams;
                 delete this.unit.specialties;
@@ -243,25 +252,53 @@
                     payment_method: this.paymentMethod,
                     description: this.description,
                     value: this.value,
-                    date_to_pay: this.dateToPay,
-                    created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+                    date_to_pay: moment(this.date_to_pay).format('YYYY-MM-DDTHH:mm'),
+                    date: moment().format('YYYY-MM-DDTHH:mm'),
                     colaborator: this.user,
                     unit: this.unit.name !== this.other ? this.unit : null,
-                    recurrent: this.recurrent ? "true" : "false"
+                    recurrent: this.recurrent ? true : false
                 };
-                await this.newCategory(this.category);
-
-                if (this.files.length > 0) {
-                    bill.appends = await this.submitFiles(this.files);
+                if (parseFloat(bill.value) > 0) {
+                    bill.value = (parseFloat(bill.value) - (2 * parseFloat(bill.value)))
                 }
-                await this.$store.dispatch("addOuttakes", bill);
-                await this.$store.dispatch("getOuttakes");
-                await this.$store.dispatch("getOuttakesPending", {
-                    finalDate: moment()
-                        .add(5, "days")
-                        .format("YYYY-MM-DD 23:59:59")
+                let charge = ''
+                await this.$apollo.mutate({
+                    mutation: require('@/graphql/charge/CreateChargeBill.gql'),
+                    variables: {
+                        payment_methods: bill.payment_method,
+                        value: bill.value,
+                        date: bill.date,
+                        description: bill.description,
+                        date_to_pay: bill.date_to_pay,
+                        recurrent: bill.recurrent,
+                        type: 'bill'
+                    }
+                }).then((data) => {
+                    charge = data.data.CreateCharge;
+                    this.$apollo.mutate({
+                        mutation: require('@/graphql/charge/AddRelationsChargeBillRelations.gql'),
+                        variables: {
+                            idColaborator: bill.colaborator.id,
+                            idUnit: bill.unit.id,
+                            idCharge: data.data.CreateCharge.id
+                        }
+                    });
+                    for (let i in bill.category) {
+                        this.$apollo.mutate({
+                            mutation: require('@/graphql/charge/AddRelationsChargeBill-CategoryRelations.gql'),
+                            variables: {
+                                idCategory: bill.category[i].id,
+                                idCharge: data.data.CreateCharge.id
+                            }
+                        })
+                    }
                 });
-                this.loading = false;
+
+                if (parcels === 0) {
+                    this.resetData();
+                    this.loading = false;
+                    this.$emit('UpdateCharges')
+                }
             },
             handleFileUpload() {
                 this.uploading = true;
@@ -292,6 +329,16 @@
                     files: files,
                     path: "/outtakes/orders"
                 });
+            },
+            async resetData() {
+                this.category = null;
+                this.paymentMethod = undefined;
+                this.value = 0.0;
+                this.description = undefined;
+                this.parcel = false;
+                this.parcels = null;
+                this.recurrent = false;
+                this.dateToPay = moment().format("YYYY-MM-DD");
             }
         }
     };

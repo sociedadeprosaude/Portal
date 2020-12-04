@@ -5,11 +5,15 @@ query {
            date {formatted},id, _id,
            value,
            ProductTransaction: with_ProductTransaction{
+           id
               Consultation: with_consultation{
                   Product:has_product{
-                      name
+                      name, id
                   }
-              }
+              },
+              with_transaction{
+                             id
+                             }
            }
         },
         payments{
