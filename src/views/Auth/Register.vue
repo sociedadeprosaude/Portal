@@ -83,10 +83,10 @@
                 errorMessage: undefined,
                 registered: false,
                 loading: false,
-                asDoctor: false,
-                crm: undefined,
                 alert: false,
-                skip:true
+                skip:true,
+                skipSignIn:true,
+                skipCurrent: true
             };
         },
         methods: {
@@ -144,9 +144,8 @@
 
                     await this.setRelationUserColaborator(userId, colaboratorId)
 
-                    this.$router.push('/')
-
-                    this.loading = false
+                    this.$apollo.queries.signIn.refresh()
+                    this.skipSignIn = false
                 }catch(error){
                     this.errorMessage = error;
                     this.loading = false
@@ -184,6 +183,45 @@
                 },
                 skip(){
                     return this.skip
+                }
+            },
+            signIn:{
+                query: require("@/graphql/authentication/SignIn.gql"),
+                variables(){
+                    return{
+                        email:this.email,
+                        password: this.password
+                    }
+                },
+                update(data){
+                    this.skipSignIn = true;
+                    this.skipCurrent = false;
+                    localStorage.setItem('token', data.signIn.token);
+                    this.$apollo.queries.currentColaborator.refresh();
+                },
+                error({graphQLErrors}){
+                   this.loading = false;
+                   this.errorMessage = graphQLErrors[0].message
+                },
+                skip(){
+                    return this.skipSignIn;
+                }
+            },
+            currentColaborator:{
+                query: require("@/graphql/authentication/currentColaborator.gql"),
+                update(data){
+                    this.skip = true
+                    const user = Object.assign({},data.current_user_colaborator)
+                    this.$store.dispatch('setCurrentUser', user);
+                    this.loading = false;
+                    this.$router.push('/');
+                },
+                error({graphQLErrors}){
+                   this.loading = false;
+                   this.errorMessage = graphQLErrors[0].message
+                },
+                skip(){
+                    return this.skipCurrent;
                 }
             }
         }

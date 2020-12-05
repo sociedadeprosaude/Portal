@@ -68,11 +68,10 @@
         name: "Login",
         data() {
             return {
-                email: '',
-                user_id: undefined,
+                email: undefined,
                 show_password: false,
                 credentialError: false,
-                password: '',
+                password: undefined,
                 passwordError: false,
                 loading: false,
                 errorMessage: undefined,
@@ -96,25 +95,11 @@
 
                 try {
                     this.loading = true;
-                    this.$apollo.queries.signIn.refresh()//await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
-
+                    this.$apollo.queries.signIn.refresh()
                     this.skipSignIn = false
-                    //this.$apollo.queries.findColaborator.refresh()
                 } catch (e) {
-                    /* switch (e.code) {
-                        case 'auth/user-not-found':
-                            this.errorMessage = 'Usuário não cadastrado';
-                            break;
-                        case 'auth/wrong-password':
-                            this.errorMessage = 'Senha incorreta';
-                            break
-                    }
-                    setTimeout(() => {
-                        this.errorMessage = undefined
-                    }, 2000) */
                     console.log('Error na autenticação')
                 }
-                //this.loading = false
             }
         },
         apollo:{
@@ -130,7 +115,6 @@
                     this.skipSignIn = true;
                     this.skip = false;
                     localStorage.setItem('token', data.signIn.token);
-                    this.user_id = data.signIn.user_id;
                     this.$apollo.queries.currentColaborator.refresh();
                 },
                 error({graphQLErrors}){
@@ -146,7 +130,7 @@
                 update(data){
                     this.skip = true
                     const user = Object.assign({},data.current_user_colaborator)
-                    this.$store.dispatch('getUser', user);
+                    this.$store.dispatch('setCurrentUser', user);
                     this.loading = false;
                     this.$router.push('/');
                 },

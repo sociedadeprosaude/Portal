@@ -30,27 +30,11 @@ const actions = {
         context.commit('setUser', undefined)
         return
     },
-    async getUser({ commit }, user) {
+    async setCurrentUser({ commit }, user) {
         commit('setUser',user)
         console.log('user: ', user)
         if(user && user.clinic)
             commit('setSelectedUnit', user.clinic)
-
-        /* try {
-            let userDoc = await firebase.firestore().collection('users/').where('uid', '==', user.uid).get()
-            commit('setUser', userDoc.docs[0].data());
-            if (userDoc.docs[0].data().clinic) {
-                this.commit('setSelectedUnit', userDoc.docs[0].data().clinic)
-            }
-            return userDoc.docs[0].data()
-        }
-        catch (e) {
-            if (e.code === 'permission-denied') {
-                await firebase.auth().signOut();
-                await router.push('/login');
-                return
-            }
-        } */
 
     },
 

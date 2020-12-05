@@ -85,54 +85,11 @@
                 }
             }
         },
-        methods: {
-            async getUser(user) {
-                //await this.$store.dispatch('getUser', user);
-                this.skip = false;
-                this.id = user.id
-            },
-        },
         created() {
             this.$store.dispatch("startConnectionListener");
             this.$apollo.queries.loadUnitsClinics.refresh()
         },
-        mounted() {
-            /* firebase.auth().onAuthStateChanged((user) => {
-                if (!user) {
-                    this.ready = true;
-                  let rota = this.$router.currentRoute.path;
-                  if(!rota.includes('/pdf')){
-                    this.$router.push('/login')
-                  }
-                    return
-                } else if (this.$router.currentRoute.path.includes('login')) {
-                    this.$router.push('/')
-                }
-                if (user) {
-                    this.getUser(user)
-                }
-            }); */
-        },
         apollo:{
-            /* findColaborator:{
-                query: require("@/graphql/authentication/currentColaborator.gql"),
-                update(data){
-                    this.skip = true;
-                    let user = undefined;
-                    user = data.current_user_colaborator
-                    this.$store.dispatch('getUser', user);
-                    this.ready = true;
-                },
-                error({graphQLErrors}){
-                   /* this.loading = false;
-                   this.errorMessage = graphQLErrors[0].message
-                   //this.$router.push('/login')
-                   // this.$router.push('/error-authentication');
-                },
-                skip(){
-                    return this.skip
-                }
-            }, */
             loadUnitsClinics:{
                 query: require("@/graphql/clinics/LoadClinics.gql"),
                 variables(){
@@ -142,6 +99,18 @@
                 },
                 update(data){
                     this.$store.dispatch('getProSaudeUnits',data.Clinic);
+                }
+            },
+            currentColaborator:{
+                query: require("@/graphql/authentication/currentColaborator.gql"),
+                update(data){
+                    this.skip = true
+                    const user = Object.assign({},data.current_user_colaborator)
+                    this.$store.dispatch('setCurrentUser', user);
+                    this.ready = true;
+                },
+                skip(){
+                    return this.skip
                 }
             }
         }
