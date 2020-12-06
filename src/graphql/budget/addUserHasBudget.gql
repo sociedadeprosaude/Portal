@@ -1,0 +1,13 @@
+mutation($idBudget:ID!, $idUser:ID!){
+    AddBudgetWith_user(
+        from:{
+            id:$idBudget
+        },
+        to:{
+            id:$idUser
+        }
+    ){
+        from{id},
+        to{id}
+    },
+}

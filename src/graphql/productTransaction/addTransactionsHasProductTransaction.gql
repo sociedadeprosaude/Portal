@@ -1,0 +1,13 @@
+mutation {
+    AddProductTransactionWith_transactionPay(
+        from:{
+            id:$idProductTransaction
+        },
+        to:{
+            id:$idTransaction
+        }
+    ){
+        from{id},
+        to{id}
+    },
+}

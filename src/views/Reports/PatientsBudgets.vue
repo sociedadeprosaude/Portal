@@ -4,6 +4,7 @@
     :budgets="Budgets"
     :budgetsForDate="BudgetsForDate"
     :dates="dates"
+    :PatientsArray="PatientsArray"
     >
 
     </PatientsBudgets>
@@ -36,6 +37,17 @@ export default {
     },
     selectedUnit() {
       return this.$store.getters.selectedUnit
+    },
+    PatientsArray(){
+      let PatientsArray= []
+      this.Budgets.map(e =>{
+        PatientsArray.push({
+          Nome: e.user[0]? e.user[0].name :'error',
+          Telefone: e.user[0]?e.user[0].telephones[0] :'error',
+          Data: moment(e.date.formatted,'YYYY-MM-DDTHH:mm:ss').format('DD/MM/YYYY')
+        })
+    })
+      return PatientsArray
     },
     BudgetsForDate(){
       let DateForBudget= {}
@@ -91,6 +103,17 @@ export default {
         console.log('data: ', data.Budget)
         this.BudgetFixed= data.Budget
         this.skipBudgets = true
+      },
+      skip() {
+        return this.skipBudgets
+      }
+    },
+    loadPatients: {
+      query: require("@/graphql/patients/GetPatients.gql"),
+      update(data) {
+        console.log('data: ', data.Patient)
+        this.PatientFixed= data.Patient
+        this.skipPatient = true
       },
       skip() {
         return this.skipBudgets

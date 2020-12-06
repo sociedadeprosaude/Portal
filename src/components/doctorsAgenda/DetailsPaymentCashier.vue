@@ -436,24 +436,21 @@ export default {
         this.budgetToPrint = this.selectedBudget;
       let budgetId = uuid.v4()
       let mutationBuilder = new MutationBuilder()
-      mutationBuilder.addMutation(
-          `CreateBudget(
-      id: "${budgetId}",
-     value:${parseFloat(this.selectedBudget.total)},
-     payment_methods:[${this.selectedBudget.payments.map(p => `"${p}"`)}],
-     payments:[${this.selectedBudget.valuesPayments}],
-     parcels:[${this.selectedBudget.parcel.map(p => `"${p}"`)}],
-     discount:${parseFloat(this.selectedBudget.discount) ? parseFloat(this.selectedBudget.discount) : 0},
-     date:
-          {
-            formatted: "${moment(this.selectedBudget.date.formatted).format("YYYY-MM-DDTHH:mm:ss")}"
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/budget/CreateBudget.gql'),
+          variables:{
+            id: budgetId,
+            value: parseFloat(this.selectedBudget.total),
+            payment_methods:[this.selectedBudget.payments.map(p => `"${p}"`)],
+            payments:[this.selectedBudget.valuesPayments],
+            parcels:[this.selectedBudget.parcel.map(p => `"${p}"`)],
+            discount:parseFloat(this.selectedBudget.discount) ? parseFloat(this.selectedBudget.discount) : 0,
+            date:
+                {
+                  formatted: moment(this.selectedBudget.date.formatted).format("YYYY-MM-DDTHH:mm:ss")
+                }
           }
-     ){
-        id, _id,value, payment_methods, payments, parcels, discount, date{
-        formatted
-        }
-    }`
-      )
+        })
       let productsBudgetIds = []
       let products = this.selectedBudget.exams.concat(this.selectedBudget.specialties)
       products = products.filter(p => p)
@@ -461,94 +458,64 @@ export default {
         let prodId = uuid.v4()
         products[product].prodId = prodId
         productsBudgetIds.push(prodId)
-        mutationBuilder.addMutation(`
-                CreateProductBudget(
-                id: "${prodId}"
-                price:${products[product].price}){
-                    id
-                }`)
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/productBudget/CreateProductBudget.gql'),
+          variables:{
+            id: prodId,
+            price: products[product].price
+          }
+        })
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/productBudget/addBudgetHasProductBudget.gql'),
+          variables:{
+            idBudget: budgetId,
+            idProductBudget: prodId
+          }
+        })
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/productBudget/addProductHasProductBudget.gql'),
+          variables:{
+            idProduct: products[product].id,
+            idProductBudget: prodId
+          }
+        })
+        products[product].clinic ? mutationBuilder.addMutation({
+          mutation: require('@/graphql/productBudget/addClinicHasProductBudget.gql'),
+          variables:{
+            idClinic: products[product].clinic.id,
+            idProductBudget: prodId
+          }
+        }) : ''
       }
-      let productTransactionLinkString = ''
-      for (let product in products) {
-        let productBudgetId = products[product].prodId
-        mutationBuilder.addMutation(`
-                AddBudgetWith_productBundget(
-        from:{
-            id:"${budgetId}"
-        },
-        to:{
-            id:"${productBudgetId}"
-        }
-    ){
-        from{id},
-        to{id}
-    }`)
-        mutationBuilder.addMutation(`AddProductBudgetWith_product(
-        from:{
-            id:"${productBudgetId}"
-        },
-        to:{
-            id:"${products[product].id}"
-        }
-        ){
-        from{id},
-        to{id}
-    }`)
-        products[product].clinic ? mutationBuilder.addMutation(`AddProductBudgetWith_clinic(
-            from:{
-          id:"${productBudgetId}"
-        },
-        to:{
-          id:"${products[product].clinic.id}"
-        }
-      ){
-          from{id},
-          to{id}
-        }` ) : ''
-      }
-      mutationBuilder.addMutation(`
-                AddBudgetWith_user(
-        from:{
-            id:"${budgetId}"
-        },
-        to:{
-            id:"${this.selectedBudget.user.id}"
-        }
-    ){
-        from{id},
-        to{id}
-    }`)
-      mutationBuilder.addMutation(`
-                AddBudgetWith_unit(
-        from:{
-            id:"${budgetId}"
-        },
-        to:{
-            id:"${this.selectedBudget.unit.id}"
-        }
-    ){
-        from{id},
-        to{id}
-    }`)
-      mutationBuilder.addMutation(`
-                AddBudgetColaborator(
-        from:{
-            id:"${budgetId}"
-        },
-        to:{
-            id:"${this.selectedBudget.colaborator.id}"
-        }
-    ){
-        from{id},
-        to{id}
-    }`)
-      let finalString = mutationBuilder.generateMutationRequest()
-      let id = ''
-      id = await this.$apollo.mutate({
-        mutation: gql`${finalString}`,
-      })
-        id = id.data.mutation0._id
-        this.budgetToPrint._id = id
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/budget/addUserHasBudget.gql'),
+          variables:{
+            idUser: this.selectedBudget.user.id,
+            idBudget: budgetId
+          }
+        })
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/budget/addUserHasBudget.gql'),
+          variables:{
+            idUnit: this.selectedBudget.unit.id,
+            idBudget: budgetId
+          }
+        })
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/budget/addColaboratorHasBudget.gql'),
+          variables:{
+            idColaborator: this.selectedBudget.colaborator.id,
+            idBudget: budgetId
+          }
+        })
+
+        let response = await this.$apollo.mutate({
+          mutation: mutationBuilder.generateMutationRequest(),
+        })
+        response= response.data.mutation0._id
+        this.budgetToPrint._id = response
+
+        console.log('response :', response)
       }
       this.loadingImp= false
       this.budgetToPrintDialog = true
@@ -613,37 +580,57 @@ export default {
     async makeTransaction() {
       let transactionId = uuid.v4()
       let mutationBuilder = new MutationBuilder()
-      mutationBuilder.addMutation(
-          `CreateTransaction(
-      id: "${transactionId}",
-     value:${parseFloat(this.selectedBudget.total)},
-     payment_methods:[${this.selectedBudget.payments.map(p => `"${p}"`)}],
-     payments:[${this.selectedBudget.valuesPayments}],
-     parcels:[${this.selectedBudget.parcel.map(p => `"${p}"`)}],
-     discount:${parseFloat(this.selectedBudget.discount) ? parseFloat(this.selectedBudget.discount) : 0},
-     date:
-          {
-            formatted: "${moment(this.selectedBudget.date.formatted).format("YYYY-MM-DDTHH:mm:ss")}"
-          }
-     ){
-        id, value, payment_methods, payments, parcels, discount, date{
-        formatted
+      mutationBuilder.addMutation({
+        mutation: require('@/graphql/transaction/CreateTransactionPayment.gql'),
+        variables:{
+          id: transactionId,
+          value: parseFloat(this.selectedBudget.total),
+          payment_methods:[this.selectedBudget.payments.map(p => `"${p}"`)],
+            payments:[this.selectedBudget.valuesPayments],
+          parcels:[this.selectedBudget.parcel.map(p => `"${p}"`)],
+        discount:parseFloat(this.selectedBudget.discount) ? parseFloat(this.selectedBudget.discount) : 0,
+      date: {
+        formatted: moment(this.selectedBudget.date.formatted).format("YYYY-MM-DDTHH:mm:ss")}
         }
-    }`
-      )
+      })
+
       let productsTransactionIds = []
       let products = this.selectedBudget.exams.concat(this.selectedBudget.specialties)
       products = products.filter(p => p)
+      console.log('products: ', products)
       for (let product in products) {
+        console.log('product: ', products[product])
         let prodId = uuid.v4()
         products[product].prodId = prodId
         productsTransactionIds.push(Object.assign({},products[product]))
-        mutationBuilder.addMutation(`
-                CreateProductTransaction(
-                id: "${prodId}"
-                price:${products[product].price}){
-                    id
-                }`)
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/productTransaction/CreateProductTransaction.gql'),
+          variables:{
+            id: prodId,
+            price: parseFloat(products[product].price),
+          }
+        })
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/productTransaction/addTransactionsHasProductTransaction.gql'),
+          variables:{
+            idProductTransaction: prodId,
+            idTransaction: transactionId
+          }
+        })
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/productTransaction/addProductHasProductTransaction.gql'),
+          variables:{
+            idProductTransaction: prodId,
+            idProduct: products[product].id
+          }
+        })
+        products[product].clinic ? mutationBuilder.addMutation({
+          mutation: require('@/graphql/productTransaction/addClinicHasProductTransaction.gql'),
+          variables:{
+            idProductTransaction: prodId,
+            idClinic: products[product].clinic.id
+          }
+        }) : ''
         if(products[product].type === "exam"){
           let chargeID = uuid.v4()
           let CostProductClinic = await this.$apollo.mutate({
@@ -653,107 +640,46 @@ export default {
               idProduct: products[product].id
             }
           })
-          mutationBuilder.addMutation(`
-              CreateCharge(
-                  id:"${chargeID}"
-                  value:${-CostProductClinic.data.CostProductClinic[0].cost}
-                  date:
-          {
-            formatted: "${moment().format("YYYY-MM-DDTHH:mm:ss")}"
-          }
-              ){
-              id,value,date{formatted}
-              }
-          `)
-          mutationBuilder.addMutation(`
-            AddChargeWith_ProductTransaction(
-            from:{
-            id:"${chargeID}"
-        },
-        to:{
-            id:"${prodId}"
+          mutationBuilder.addMutation({
+            mutation: require ('@/graphql/charge/CreateCharge.gql'),
+            variables:{
+              id: chargeID,
+              value: -CostProductClinic.data.CostProductClinic[0].cost,
+              date: {formatted:moment().format("YYYY-MM-DDTHH:mm:ss") },
+              type: 'Clinic'
+            }
+          })
+          mutationBuilder.addMutation({
+            mutation: require('@/graphql/charge/AddRelationsProductTransactionHasCharge.gql'),
+            variables:{
+              idCharge: chargeID,
+              idProductTransaction: prodId
+            }
+          })
+          mutationBuilder.addMutation({
+            mutation: require('@/graphql/charge/AddRelationUnitHasCharge.gql'),
+            variables:{
+              idCharge: chargeID,
+              idUnit: this.selectedBudget.unit.id
+            }
+          })
         }
-    ){
-        from{id},
-        to{id}
-    } `)
-       mutationBuilder.addMutation(`
-         AddChargeWith_unit(
-            from:{
-            id:"${chargeID}"
-        },
-        to:{
-            id:"${this.selectedBudget.unit.id}"
-        }
-    ){
-        from{id},
-        to{id}
-    }
-       `)
-        }
-
-      }
-
-      let productTransactionLinkString = ''
-      for (let product in products) {
-        let productTransactionId = products[product].prodId
-        mutationBuilder.addMutation(`
-                AddProductTransactionWith_transaction(
-        from:{
-            id:"${productTransactionId}"
-        },
-        to:{
-            id:"${transactionId}"
-        }
-    ){
-        from{id},
-        to{id}
-    }`)
-        mutationBuilder.addMutation(`AddProductTransactionWith_product(
-        from:{
-            id:"${productTransactionId}"
-        },
-        to:{
-            id:"${products[product].id}"
-        }
-        ){
-        from{id},
-        to{id}
-    }`)
-        products[product].clinic ? mutationBuilder.addMutation(`AddProductTransactionWith_clinic(
-            from:{
-          id:"${productTransactionId}"
-        },
-        to:{
-          id:"${products[product].clinic.id}"
-        }
-      ){
-          from{id},
-          to{id}
-        }` ) : ''
       }
 
 
       if(this.idBudget !== undefined){
-        mutationBuilder.addMutation(`
-                AddBudgetWith_transaction(
-        from:{
-            id:"${this.idBudget}"
-        },
-        to:{
-            id:"${transactionId}"
-        }
-    ){
-        from{id},
-        to{id}
-    }`)
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/budget/addTransctionHasBudget.gql'),
+          variables:{
+            idBudget: this.idBudget,
+            idTransaction: transactionId
+          }
+        })
       }
-
-      let finalString = mutationBuilder.generateMutationRequest()
-
-      await this.$apollo.mutate({
-        mutation: gql`${finalString}`,
-      });
+      console.log('mutation: ', mutationBuilder.getMutationString())
+      let response = await this.$apollo.mutate({
+        mutation: mutationBuilder.generateMutationRequest(),
+      })
 
       this.verifyUnpaidConsultations(productsTransactionIds);
 

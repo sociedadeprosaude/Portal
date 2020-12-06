@@ -1,0 +1,13 @@
+mutation {
+    AddChargeWith_ProductTransaction(
+        from:{
+            id:$idCharge
+        },
+        to:{
+            id:$idProductTransaction
+        }
+    ){
+        from{id},
+        to{id}
+    }
+}

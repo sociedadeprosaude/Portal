@@ -1,0 +1,6 @@
+mutation($idConsultation:ID!, $status: String){
+ UpdateConsultation(id:consultationId ,status:$status){
+              id
+            }
+
+}

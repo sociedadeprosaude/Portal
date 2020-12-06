@@ -1,0 +1,14 @@
+mutation
+    {
+    CreateTransaction(
+    id: $id,
+     value:$value,
+     date:$date,
+     payment_methods: $payment_methods,
+     payments: $payments,
+     parcels: $parcels,
+     discount: $discount
+     ){
+        id, value, payment_methods, date{formatted}
+    }
+}

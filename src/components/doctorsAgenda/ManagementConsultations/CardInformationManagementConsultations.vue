@@ -225,34 +225,26 @@ export default {
         })
         let ChargeId = uuid.v4()
         let mutationBuilder = new MutationBuilder()
-        mutationBuilder.addMutation(`
-                  CreateCharge(
-                      id:"${ChargeId}"
-                      value:${-CostProductDoctor.data.CostProductDoctor[0].cost}
-                      date:
-                        {
-                          formatted: "${moment().format("YYYY-MM-DDTHH:mm:ss")}"
-                        }
-                            ){
-                            id,value,date{formatted}
-                            }
-                        `),
-            mutationBuilder.addMutation(`
-                          AddChargeWith_ProductTransaction(
-                          from:{
-                          id:"${ChargeId}"
-                      },
-                      to:{
-                          id:"${idProductTransaction}"
-                      }
-                  ){
-                      from{id},
-                      to{id}
-                  } `)
-        let finalString = mutationBuilder.generateMutationRequest()
-        await this.$apollo.mutate({
-          mutation: gql`${finalString}`,
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/charge/CreateCharge.gql'),
+          variables:{
+            id:ChargeId,
+            value:-CostProductDoctor.data.CostProductDoctor[0].cost,
+            date:{formatted: moment().format("YYYY-MM-DDTHH:mm:ss")},
+            type:'doctor'
+          }
         })
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/charge/AddRelationsProductTransactionHasCharge.gql'),
+          variables:{
+            idProductTransaction:idProductTransaction,
+            idCharge:ChargeId,
+          }
+        })
+        let response = await this.$apollo.mutate({
+          mutation: mutationBuilder.generateMutationRequest(),
+        })
+        console.log('response :', response)
         this.loadingCharge = false
         this.documentDialog = true;
       } else {
