@@ -79,7 +79,7 @@
         </v-card>
       </v-col>
       <v-col cols="6" class="all">
-        <v-card fill-height fluid class="one" color="#E5E5E5">
+        <v-card fill-height fluid class="one" color="#F9F0FF">
                 <v-row>
                   <v-col cols="12" class="text-center justify-center" justify-self="center" align-self="center">
                     <p class="next text-center justify-center">Próxima senha</p>

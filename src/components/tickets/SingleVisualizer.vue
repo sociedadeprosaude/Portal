@@ -119,7 +119,7 @@
         </v-card>
       </v-col>
       <v-col cols="6" class="all">
-        <v-card fill-height fluid class="one" color="#E5E5E5">
+        <v-card fill-height fluid class="one" color="#F9F0FF">
           <v-row>
             <v-col cols="4"></v-col>
             <v-col cols="8" justify-self="center" align-self="center">
