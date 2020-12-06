@@ -1,4 +1,4 @@
-<template>
+<template class="panel">
   <v-container>
     <v-row>
 
@@ -596,3 +596,16 @@ export default {
 };
 </script>
 
+<style scoped>
+.panel{
+  overflow-y:hidden;
+  overflow-x:hidden;}
+html{
+  overflow-y:hidden;
+  overflow-x:hidden;
+}
+body {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+</style>
