@@ -20,6 +20,7 @@ query($unit_name: String) {
                          price,
                          id,
                          with_product{
+                         id,
                             name,
                             type,
                           },

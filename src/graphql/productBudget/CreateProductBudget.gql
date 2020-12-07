@@ -1,6 +1,6 @@
 mutation (
     $id: ID!,
-    $price: Float,
+    $price: Float
      )
     {
     CreateProductBudget(

@@ -1,7 +1,7 @@
 mutation {
     AddProductTransactionWith_product(
         from:{
-            id:$idProductTransaction
+            id:$idTransactionProduct
         },
         to:{
             id:$idProduct

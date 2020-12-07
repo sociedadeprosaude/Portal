@@ -130,12 +130,22 @@
                 this.loading = true;
               this.$store.commit('clearShoppingCartItens');
                 for( let i in budget.products){
-                  if(budget.products[i].clinic.length){
+                  console.log('budget.product: ', budget.products[i])
+                  if(!budget.products[i].clinic[0]){
                     budget.products[i].type = budget.products[i].with_product[0].type
                     budget.products[i].name = budget.products[i].with_product[0].name
-                    budget.products[i].clinic = budget.products[i].clinic[0]
+                    budget.products[i].clinic = budget.products[i].clinic
                     budget.products[i].id = budget.products[i].with_product[0].id
-                    this.$store.commit('addShoppingCartItem', budget.products[i]) }
+                  }
+                else{
+                    if(budget.products[i].clinic[0].name.length){
+                      console.log('entrei')
+                      budget.products[i].type = budget.products[i].with_product[0].type
+                      budget.products[i].name = budget.products[i].with_product[0].name
+                      budget.products[i].clinic = budget.products[i].clinic[0]
+                      budget.products[i].id = budget.products[i].with_product[0].id
+                      this.$store.commit('addShoppingCartItem', budget.products[i]) }
+                  }
                 }
               this.$store.commit('setSelectedBudget',budget)
               this.$store.commit('setDiscount',budget.discount)

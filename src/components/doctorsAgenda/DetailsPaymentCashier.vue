@@ -455,6 +455,7 @@ export default {
       let products = this.selectedBudget.exams.concat(this.selectedBudget.specialties)
       products = products.filter(p => p)
       for (let product in products) {
+        console.log('Product: ', products[product])
         let prodId = uuid.v4()
         products[product].prodId = prodId
         productsBudgetIds.push(prodId)
@@ -476,7 +477,7 @@ export default {
           mutation: require('@/graphql/productBudget/addProductHasProductBudget.gql'),
           variables:{
             idProduct: products[product].id,
-            idProductBudget: prodId
+            idBudgetProduct: prodId
           }
         })
         products[product].clinic ? mutationBuilder.addMutation({
@@ -495,7 +496,7 @@ export default {
           }
         })
         mutationBuilder.addMutation({
-          mutation: require('@/graphql/budget/addUserHasBudget.gql'),
+          mutation: require('@/graphql/budget/addUnitHasBudget.gql'),
           variables:{
             idUnit: this.selectedBudget.unit.id,
             idBudget: budgetId
@@ -600,6 +601,7 @@ export default {
       console.log('products: ', products)
       for (let product in products) {
         console.log('product: ', products[product])
+
         let prodId = uuid.v4()
         products[product].prodId = prodId
         productsTransactionIds.push(Object.assign({},products[product]))
@@ -620,7 +622,7 @@ export default {
         mutationBuilder.addMutation({
           mutation: require('@/graphql/productTransaction/addProductHasProductTransaction.gql'),
           variables:{
-            idProductTransaction: prodId,
+            idTransactionProduct: prodId,
             idProduct: products[product].id
           }
         })
