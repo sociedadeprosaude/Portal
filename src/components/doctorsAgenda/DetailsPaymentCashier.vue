@@ -455,7 +455,6 @@ export default {
       let products = this.selectedBudget.exams.concat(this.selectedBudget.specialties)
       products = products.filter(p => p)
       for (let product in products) {
-        console.log('Product: ', products[product])
         let prodId = uuid.v4()
         products[product].prodId = prodId
         productsBudgetIds.push(prodId)
@@ -598,9 +597,7 @@ export default {
       let productsTransactionIds = []
       let products = this.selectedBudget.exams.concat(this.selectedBudget.specialties)
       products = products.filter(p => p)
-      console.log('products: ', products)
       for (let product in products) {
-        console.log('product: ', products[product])
 
         let prodId = uuid.v4()
         products[product].prodId = prodId
