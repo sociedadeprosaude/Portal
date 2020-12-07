@@ -1,4 +1,4 @@
-<template>
+<template class="panel">
   <RoomDashboard
     :saveAndReset="saveAndReset"
     :getActualTicket="getActualTicket"
@@ -795,5 +795,17 @@ export default {
 </script>
 
 <style scoped>
+.panel{
+  overflow-y:hidden;
+  overflow-x:hidden;
+}
+html{
+  overflow-y:hidden;
+  overflow-x:hidden;
+}
+body {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
 </style>
 
