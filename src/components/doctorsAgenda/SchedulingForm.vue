@@ -317,7 +317,7 @@ export default {
       mutationBuilder.addMutation({
         mutation: require('@/graphql/consultations/CreateConsultation.gql'),
         variables:{
-          id: consultationId,
+          idConsultation: consultationId,
           type:form.consultation.type,
           date:{formatted:form.consultation.date},
           payment_number:form.consultation.payment_number,
@@ -388,7 +388,7 @@ export default {
         mutation: mutationBuilder.generateMutationRequest(),
       })
       console.log('response :', response)
-      
+
       this.scheduleLoading = false;
       this.success = true;
 
@@ -399,7 +399,7 @@ export default {
         this.$apollo.queries.loadPatient.refresh()
       }
     },
-    
+
     close: function () {
       this.exam = undefined
       this.$emit('close-dialog')
