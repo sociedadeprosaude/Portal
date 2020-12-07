@@ -310,7 +310,6 @@ export default {
       };
 
       form.consultation.date = form.consultation.date.replace(" ", "T")
-      console.log(form.consultation.date)
 
       const consultationId = uuid.v4();
       let mutationBuilder = new MutationBuilder();
