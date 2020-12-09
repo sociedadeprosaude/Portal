@@ -54,10 +54,10 @@
                 <v-layout>
                     <v-flex xs6 class="text-left mt-12">
                         <v-layout column wrap class="primary--text">
-                            <span class="font-weight-bold">Instituto Pró Saúde do Amazonas</span>
-                            <span>Rua Prof. Felix Valois 39, Cidade Nova</span>
-                            <span>Manaus - AM</span>
-                            <span>CNPJ: 09.066.632/0001-22</span>
+                          <span class="font-weight-bold">Medikon</span>
+                          <span v-if="selectedUnit.has_address"> {{selectedUnit.has_address[0].street + ' ' + selectedUnit.has_address[0].number +  ',' +  selectedUnit.has_address[0].neighboor}}</span>
+                          <span>Manaus - AM</span>
+                          <span>CNPJ: 33.531.977/0001-94</span>
                         </v-layout>
                     </v-flex>
                     <v-flex xs6 class="primary" style="height: 2px; margin-top: 124px;"></v-flex>
