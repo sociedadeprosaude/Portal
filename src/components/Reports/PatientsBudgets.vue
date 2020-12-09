@@ -9,6 +9,9 @@
         >
         </v-select>
       </v-col>
+      <v-col cols="4">
+        <v-btn @click="ExportPatients(PatientsArray)">Exportar Pacientes</v-btn>
+      </v-col>
     </v-row>
     <v-row>
       <v-col>
@@ -20,9 +23,17 @@
       <v-col cols="12"  v-for="(budgetsDate, index) in Budgets" v-bind:key="index">
         <v-card>
         <v-card color="primary elevation-0">
-          <h3 class="text-center font-weight-bold ml-2 white--text">{{index |
-              dateFilter}} - {{daydate(index)}}</h3>
-          <h4 class="text-left white--text">N° de orçamentos: {{budgetsDate.NumBudgets}}</h4>
+          <v-row>
+            <v-col cols="3">
+              <h4 class="text-left white--text pl-1">N° de orçamentos: {{budgetsDate.NumBudgets}}</h4>
+            </v-col>
+            <v-col cols="6">
+              <h3 class="text-center font-weight-bold ml-2 white--text">{{index |
+                  dateFilter}} - {{daydate(index)}}</h3>            </v-col>
+            <v-col cols="3">
+              <v-btn  class="text-right" @click="PatientsFormatArray(budgetsDate)">Exportar Pacientes</v-btn>
+            </v-col>
+          </v-row>
           </v-card>
           <v-row row wrap class="mt-2">
             <v-col cols="12" >
@@ -130,12 +141,15 @@
 </template>
 
 <script>
-
+const { Parser } = require('json2csv');
+const fields= ['Nome' , 'Telefone' , 'Data' ] ;
+const opts = {  fields  } ;
 import moment from 'moment'
 export default {
   props: [
       "budgetsForDate",
-      "dates"
+      "dates",
+      "PatientsArray"
   ],
   data: vm => ({
     budgetSelected: '',
@@ -151,6 +165,32 @@ export default {
     ],
   }),
   methods:{
+    PatientsFormatArray(budgets){
+      let PatientsArray= []
+      console.log('budgets: ', budgets)
+      budgets.Budgets.map(e =>{
+        PatientsArray.push({
+          Nome: e.user[0]? e.user[0].name :'error',
+          Telefone: e.user[0]?e.user[0].telephones[0] :'error',
+          Data: moment(e.date.formatted,'YYYY-MM-DDTHH:mm:ss').format('DD/MM/YYYY')
+        })
+      })
+      this.ExportPatients(PatientsArray)
+    },
+    ExportPatients(PatientsArray){
+      console.log('patientsArray: ', PatientsArray)
+      const json2csvParser = new Parser({ fields});
+      const csv = json2csvParser.parse(PatientsArray);
+      console.log('csv: ', csv)
+
+      var pom = document.createElement('a');
+      var csvContent=csv;
+      var blob = new Blob([csvContent], { type: 'text/csv;charset=UTF-16LE;'  });
+      var url = URL.createObjectURL(blob);
+      pom.href = url;
+      pom.setAttribute('download', 'foo.csv');
+      pom.click();
+    },
     Products(budget){
       if(budget.id === this.budgetSelected.id){
         this.budgetSelected= {}

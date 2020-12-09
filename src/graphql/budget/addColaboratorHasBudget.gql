@@ -1,0 +1,13 @@
+mutation($idBudget:ID!, $idColaborator:ID!){
+    AddBudgetColaborator(
+        from:{
+            id:$idBudget
+        },
+        to:{
+            id:$idColaborator
+        }
+    ){
+        from{id},
+        to{id}
+    },
+}

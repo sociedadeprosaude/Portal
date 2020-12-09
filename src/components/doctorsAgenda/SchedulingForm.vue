@@ -314,94 +314,80 @@ export default {
 
       const consultationId = uuid.v4();
       let mutationBuilder = new MutationBuilder();
-      mutationBuilder.addMutation(
-        `CreateConsultation(id:"${consultationId}" type:"${form.consultation.type}", date:{formatted:"${form.consultation.date}"},payment_number:"${form.consultation.payment_number}",status:"${form.consultation.status}"){
-            id
-          }
-        `
-      )
-
-      mutationBuilder.addMutation(
-        `AddPatientWith_consultation(from:{id:"${form.user.id}"},to:{id:"${consultationId}"}){
-          from{id},to{id}
+      mutationBuilder.addMutation({
+        mutation: require('@/graphql/consultations/CreateConsultation.gql'),
+        variables:{
+          id: consultationId,
+          type:form.consultation.type,
+          date:{formatted:form.consultation.date},
+          payment_number:form.consultation.payment_number,
+          status:form.consultation.status
         }
-      `);
-
-      mutationBuilder.addMutation(
-        `AddConsultationCame_from(from:{id:"${consultationId}"},to:{id:"${form.consultation.id_schedule}"}){
-          from{id},to{id}
+      })
+      mutationBuilder.addMutation({
+        mutation: require('@/graphql/consultations/AddRelations.gql'),
+        variables:{
+          idPatient:form.user.id,
+          idConsultation:consultationId,
+          idSchedule:form.consultation.id_schedule,
+          idProduct:this.exam ? this.exam.id : form.consultation.product.id,
+          idClinic: form.consultation.clinic.id,
+          idDoctor: form.consultation.doctor.id
         }
-      `);
-
-      mutationBuilder.addMutation(
-        `AddConsultationHas_product(from:{id:"${consultationId}"},to:{id:"${this.exam ? this.exam.id : form.consultation.product.id}"}){
-          from{id},to{id}
-        }
-      `);
-
-      mutationBuilder.addMutation(
-        `AddConsultationOf_clinic(from:{id:"${consultationId}"},to:{id:"${form.consultation.clinic.id}"}){
-          from{id},to{id}
-        }
-      `);
-
-      mutationBuilder.addMutation(
-        `AddConsultationAttended_by(from:{id:"${consultationId}"},to:{id:"${form.consultation.doctor.id}"}){
-          from{id},to{id}
-        }
-      `);
+      })
 
       if(form.user.dependent){
-        mutationBuilder.addMutation(
-          `AddDependentWith_consultations(from:{id:"${form.user.dependent.id}"},to:{id:"${consultationId}"}){
-              from{id},to{id}
-            }
-        `);
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/consultations/AddRelationsWithDependent.gql'),
+          variables:{
+            idDependent:form.user.dependent.id,
+            idConsultation:consultationId,
+          }
+        })
       }
 
       if(form.consultation.type === "Retorno" && this.previousConsultation){
-        mutationBuilder.addMutation(
-          `AddConsultationRegress(from:{id:"${this.previousConsultation}"},to:{id:"${consultationId}"}){
-              from{id},to{id}
-            }
-        `);
-
-        mutationBuilder.addMutation(
-          `AddConsultationPrevious_consultation(from:{id:"${consultationId}"},to:{id:"${this.previousConsultation}"}){
-              from{id},to{id}
-            }
-        `);
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/consultations/AddRelationsAsRegress.gql'),
+          variables:{
+            idConsultation:consultationId,
+            idPreviousConsultation:this.previousConsultation,
+          }
+        })
       }
 
       if(form.productTransaction){
-        mutationBuilder.addMutation(
-          `AddProductTransactionWith_consultation(from:{id:"${form.productTransaction.id}"},to:{id:"${consultationId}"}){
-              from{id},to{id}
-            }
-        `);
-
-        mutationBuilder.addMutation(
-          `UpdateConsultation(id:"${consultationId}",status:"Pago"){
-              id
-            }
-        `);
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/consultations/AddRelationsProductTransaction.gql'),
+          variables:{
+            idConsultation:consultationId,
+            idProductTransaction:form.productTransaction.id,
+          }
+        })
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/consultations/UpdateConsultationStatus.gql'),
+          variables:{
+            idConsultation:consultationId,
+            status:"Pago",
+          }
+        })
       }
 
       const reescheduleConsultation = this.$route.params.q && this.$route.params.type === 'Remarcar'
 
       if(reescheduleConsultation){
-        mutationBuilder.addMutation(
-          `DeleteConsultation(id:"${this.previousConsultation}"){
-              id
-            }
-        `);
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/consultations/DeleteConsultation.gql'),
+          variables:{
+            idConsultation:this.previousConsultation,
+          }
+        })
       }
-      
-      let finalString = mutationBuilder.generateMutationRequest()
 
-      await this.$apollo.mutate({
-        mutation: gql`${finalString}`,
+      let response = await this.$apollo.mutate({
+        mutation: mutationBuilder.generateMutationRequest(),
       })
+      console.log('response :', response)
       
       this.scheduleLoading = false;
       this.success = true;

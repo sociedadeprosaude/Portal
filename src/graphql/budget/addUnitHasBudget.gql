@@ -1,0 +1,13 @@
+mutation($idBudget:ID!, $idUnit:ID!){
+    AddBudgetWith_unit(
+        from:{
+            id:$idBudget
+        },
+        to:{
+            id:$idUnit
+        }
+    ){
+        from{id},
+        to{id}
+    },
+}

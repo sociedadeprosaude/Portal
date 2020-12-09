@@ -1,0 +1,13 @@
+mutation($idProductBudget:ID!, $idProduct:ID!){
+    AddProductBudgetWith_product(
+        from:{
+            id:$idProductBudget
+        },
+        to:{
+            id:$idProduct
+        }
+    ){
+        from{id},
+        to{id}
+    },
+}

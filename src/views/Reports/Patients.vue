@@ -15,22 +15,13 @@
 
 <script>
 import Patients from "@/components/Reports/Patients";
-import moment from "moment";
-import axios from "axios";
 export default {
   components: { Patients },
   data: vm => ({
     PatientFixed: '',
     skipPatient: false,
   }),
-
-  mounted() {
-  },
-  methods: {
-
-  },
   computed: {
-
     Patients(){
       return this.PatientFixed
     },
@@ -39,7 +30,7 @@ export default {
     }
   },
   apollo: {
-    loadTransactions: {
+    loadPatients: {
       query: require("@/graphql/patients/GetPatients.gql"),
       update(data) {
         console.log('data: ', data.Patient)

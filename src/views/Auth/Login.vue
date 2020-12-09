@@ -97,7 +97,9 @@
                     let user = await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
 
                     this.skip = false
-                    this.$apollo.queries.findColaborator.refresh()
+                  console.log('user: ', user)
+
+                  this.$apollo.queries.findColaborator.refresh()
                 } catch (e) {
                     switch (e.code) {
                         case 'auth/user-not-found':

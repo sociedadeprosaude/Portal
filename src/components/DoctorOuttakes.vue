@@ -95,63 +95,52 @@
             this.loadingPayment= true
             let transactionId = uuid.v4()
             let mutationBuilder = new MutationBuilder()
-            mutationBuilder.addMutation(
-                `CreateTransaction(
-                     date:{formatted: "${moment().format("YYYY-MM-DDTHH:mm:ss")}"},
-                     id:"${transactionId}",
-                     value:${-parseFloat(charge.value)},
-                   ){
-                   id,date{formatted},value,
-                   }`
-            )
-            mutationBuilder.addMutation(`
-                   AddDoctorPayments(
-                  from:{
-                       id:"${this.doctor.id}"
-                     },
-
-                     to:{
-                       id:"${transactionId}"
-                     }
-                   ){
-                      from{id},
-                       to{id}
-                   }
-               `)
+            mutationBuilder.addMutation({
+              mutation: require('@/graphql/transaction/CreateTransactionPay.gql'),
+              variables:{
+                date:{formatted: `${moment().format("YYYY-MM-DDTHH:mm:ss")}`},
+                id:transactionId,
+                value:-parseFloat(charge.value),
+              }
+            })
+            mutationBuilder.addMutation({
+              mutation: require('@/graphql/doctors/AddPaymentsHasDoctor.gql'),
+              variables:{
+                idDoctor:this.doctor.id,
+                idTransaction:transactionId,
+              }
+            })
             console.log('transactionId: ', transactionId)
-              mutationBuilder.addMutation(`AddProductTransactionWith_transactionPay(
-
-         from:{
-                      id:"${charge.ProductTransaction[0].id}"
-                    },
-
-                    to:{
-                      id:"${transactionId}"
-                    }
-                  ){
-                     from{id},
-                      to{id}
-                  }`)
+            mutationBuilder.addMutation({
+              mutation: require('@/graphql/productTransaction/addTransactionsHasProductTransaction.gql'),
+              variables:{
+                idProductTransaction:charge.ProductTransaction[0].id,
+                idTransaction:transactionId,
+              }
+            })
               let costProduct = await this.$apollo.mutate({
                 mutation: require ('@/graphql/doctors/LoadCostProductDoctor.gql'),
                 variables:{idDoctor: this.doctor.id, idProduct: charge.ProductTransaction[0].Consultation.Product.id}
               })
               console.log('cost: ', costProduct.data.CostProductDoctor[0].cost)
-              mutationBuilder.addMutation(`UpdateProductTransaction(
-          id:"${charge.ProductTransaction[0].id}"
-          cost:${costProduct.data.CostProductDoctor[0].cost}
-        ){
-        id}`)
-            mutationBuilder.addMutation(`
-                   DeleteCharge(id:"${charge.id}"){
-                   id
-                   }
-                 `)
-
-            let finalString = mutationBuilder.generateMutationRequest()
-            await this.$apollo.mutate({
-              mutation: gql`${finalString}`,
+            mutationBuilder.addMutation({
+              mutation: require('@/graphql/productTransaction/UpdateProductTransaction.gql'),
+              variables:{
+                idProductTransaction:charge.ProductTransaction[0].id,
+                cost:costProduct.data.CostProductDoctor[0].cost,
+              }
             })
+            mutationBuilder.addMutation({
+              mutation: require('@/graphql/charge/DeleteCharge.gql'),
+              variables:{
+                id:charge.id,
+              }
+            })
+
+            let response = await this.$apollo.mutate({
+                  mutation: mutationBuilder.generateMutationRequest(),
+                })
+            console.log('response :', response)
             this.loadingPaymentConsultation= false
           },
         },

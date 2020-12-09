@@ -1,0 +1,13 @@
+mutation($idConsultation:ID!,$idPatient:ID!){
+    AddPatientWith_consultation(
+        from:{
+            id:$idPatient
+        },
+        to:{
+            id:$idConsultation
+        }
+    ){
+        from{id},
+        to{id}
+    }
+}

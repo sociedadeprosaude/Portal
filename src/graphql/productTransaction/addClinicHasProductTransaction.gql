@@ -1,0 +1,13 @@
+mutation {
+    AddProductTransactionWith_clinic(
+        from:{
+            id:$idProductTransaction
+        },
+        to:{
+            id:$idClinic
+        }
+    ){
+        from{id},
+        to{id}
+    },
+}
