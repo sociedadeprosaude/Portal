@@ -90,6 +90,7 @@ query($name:String){
                          price,
                          id,
                          with_product{
+                         id,
                             name,
                             type,
                           },

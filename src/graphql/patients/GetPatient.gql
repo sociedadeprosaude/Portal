@@ -41,6 +41,7 @@ query($id:ID!){
             price,
             id,
             with_product{
+            id,
                name,
                type,
              },
@@ -88,6 +89,7 @@ query($id:ID!){
                     price,
                     id,
                     with_product{
+                        id,
                        name,
                        type,
                      },

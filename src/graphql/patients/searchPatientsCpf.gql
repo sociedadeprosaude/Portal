@@ -73,6 +73,51 @@ query($cpf:String){
          telephone
        }
      },
+           budgets{
+                             date {
+                             formatted
+                             },
+                             id,_id,
+                            discount,
+                            value,
+                            payments,
+                            parcels,
+                            payment_methods,
+                            products: with_productBundget{
+                               price,
+                               id,
+                               with_product{
+                               id,
+                                  name,
+                                  type,
+                                },
+                               clinic: with_clinic{
+                                  id,
+                                  name,
+                                  logo,
+                                  cnpj,
+                                  telephone,
+                                  opening_hours,
+                                  has_address{
+                                          neighboor,
+                                          city,
+                                          complement,
+                                          street,
+                                          number,
+                                          complement,
+                                          state,
+                                          cep
+                                  }
+                               }
+                             },
+                             with_unit{
+                               id,
+                               name,
+                               logo,
+                               cnpj,
+                               telephone
+                             }
+           },
     consultations:with_consultation{
       id,
       type,

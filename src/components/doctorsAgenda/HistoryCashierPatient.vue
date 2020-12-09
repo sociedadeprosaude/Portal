@@ -130,12 +130,20 @@
                 this.loading = true;
               this.$store.commit('clearShoppingCartItens');
                 for( let i in budget.products){
-                  if(budget.products[i].clinic.length){
+                  if(!budget.products[i].clinic[0]){
                     budget.products[i].type = budget.products[i].with_product[0].type
                     budget.products[i].name = budget.products[i].with_product[0].name
-                    budget.products[i].clinic = budget.products[i].clinic[0]
+                    budget.products[i].clinic = budget.products[i].clinic
                     budget.products[i].id = budget.products[i].with_product[0].id
-                    this.$store.commit('addShoppingCartItem', budget.products[i]) }
+                  }
+                else{
+                    if(budget.products[i].clinic[0].name.length){
+                      budget.products[i].type = budget.products[i].with_product[0].type
+                      budget.products[i].name = budget.products[i].with_product[0].name
+                      budget.products[i].clinic = budget.products[i].clinic[0]
+                      budget.products[i].id = budget.products[i].with_product[0].id
+                      this.$store.commit('addShoppingCartItem', budget.products[i]) }
+                  }
                 }
               this.$store.commit('setSelectedBudget',budget)
               this.$store.commit('setDiscount',budget.discount)
@@ -184,9 +192,7 @@
                         idTransaction: intake.id
                     }
                 })
-                console.log('intake', intake)
                 for(let i in intake.products){
-                    console.log('intake.produts', intake.products[i])
                     await this.$apollo.mutate({
                         mutation: require('@/graphql/transaction/DeleteProductTransaction.gql'),
                         variables:{
@@ -202,7 +208,6 @@
                       })
                     }
                 }
-                console.log('entrei')
                 this.skipPatients = false
                 this.idUser= intake.user.id
                 this.$apollo.queries.loadPatient.refresh()
@@ -224,12 +229,10 @@
                 return this.$store.getters.selectedPatient;
             },
             intakes() {
-                console.log('this.patient', this.patient.intakes)
                 let intakes= Object.assign({}, this.patient.intakes)
                 return intakes;
             },
             budgets() {
-              console.log('this.patient', this.patient.budgets)
               let budgets= Object.assign({}, this.patient.budgets)
                 return budgets;
             }

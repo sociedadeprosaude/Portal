@@ -43,7 +43,7 @@ export default class GqlBuilder {
         `;
     }
     addMutation({mutation, variables, label}) {
-        let mutationString = mutation.loc.source.body.replaceAll('\n', '').replace(/(.*?){/, '').slice(0, -1)
+        let mutationString = mutation.loc.source.body.replaceAll('\n', '').replaceAll('\r', '').replace(/(.*?){/, '').slice(0, -1)
         for (let variable in variables) {
             mutationString = mutationString.replaceAll(
                 `$${variable}`,
