@@ -1,6 +1,6 @@
 query ($date_start: String, $date_end: String) {
    Transaction (filter: {
-    value_lt: 0,
+       value_lt: 0,
     date_gte: {formatted: $date_start},
     date_lte: {formatted: $date_end}}) {
         value,
