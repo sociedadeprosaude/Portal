@@ -1,6 +1,6 @@
 query($idPatient:ID!,$idProduct:ID!){
-  ProductTransaction(filter:{with_transaction:{with_user:{id:$idPatient}},with_product:{id:$idProduct}, with_consultation:null}){
-    id,
+  ProductTransaction(filter:{with_transactionPay:{with_user:{id:$idPatient}},with_product:{id:$idProduct}, with_consultation:null}){
+    id, _id,
     with_product{
       name
     }

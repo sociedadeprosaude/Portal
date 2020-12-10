@@ -126,11 +126,13 @@ query($name:String){
       type,
       status,
       date{formatted},
+            consultation_hour{formatted},
       payment_number,
       canceled_schedule,
       clinic:of_clinic{
         id,name,logo
       },
+
       product:has_product{
         id,name,type,price
       },
@@ -150,6 +152,9 @@ query($name:String){
         status,
         date{formatted},
         payment_number
+      },
+      productTransaction{
+      id, with_charge{id }
       },
     	patient{
         id,

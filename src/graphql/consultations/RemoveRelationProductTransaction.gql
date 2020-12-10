@@ -1,0 +1,12 @@
+mutation($idProductTransaction:ID!, $idConsultation:ID!){
+    RemoveProductTransactionWith_consultation(
+        from:{
+            id:$idProductTransaction
+        },
+        to:{
+            id:$idConsultation
+        }
+    ){
+        from{id}, to{id}
+    }
+}

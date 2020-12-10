@@ -1,6 +1,6 @@
 mutation($idConsultation:ID!, $status: String){
  UpdateConsultation(id:$idConsultation ,status:$status){
-              id
+              id, status
             }
 
 }

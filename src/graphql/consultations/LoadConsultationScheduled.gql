@@ -9,9 +9,12 @@ query( $date_start:_Neo4jDateTimeInput, $date_end: _Neo4jDateTimeInput, $special
   }){
        id,
        date{formatted},
+             consultation_hour{formatted},
        attended_by {
-             name
+             name, crm
        },
+       productTransaction{
+             id},
        status,
        has_product {
              name,

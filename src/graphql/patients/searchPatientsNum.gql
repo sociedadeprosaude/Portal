@@ -123,6 +123,7 @@ query($association_number:String ){
       type,
       status,
       date{formatted},
+            consultation_hour{formatted},
       payment_number,
       canceled_schedule,
       clinic:of_clinic{
@@ -134,9 +135,10 @@ query($association_number:String ){
       doctor:attended_by{
         id,name,crm
       },
-      productTransaction{
-        id
-      }
+
+       productTransaction{
+            id, with_charge{id }
+            },
       regress{
         id,
         type,
