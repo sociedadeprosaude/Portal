@@ -142,7 +142,7 @@
 
 <script>
 const { Parser } = require('json2csv');
-const fields= ['Nome' , 'Telefone' , 'Data' ] ;
+const fields= ['First Name' , 'Last Name' , 'Mobile Phone' ] ;
 const opts = {  fields  } ;
 import moment from 'moment'
 export default {
@@ -177,18 +177,25 @@ export default {
       })
       this.ExportPatients(PatientsArray)
     },
-    ExportPatients(PatientsArray){
-      console.log('patientsArray: ', PatientsArray)
+    ExportPatients(patientsArray){
       const json2csvParser = new Parser({ fields});
-      const csv = json2csvParser.parse(PatientsArray);
-      console.log('csv: ', csv)
+      console.log('aaa', patientsArray)
+      let formattedPatients = patientsArray.map(p => {
+        return {
+          'First Name': p.Nome.trim().split(' ')[0],
+          'Last Name': p.Nome.trim().split(' ').slice(1, p.Nome.split(' ').length).join(' '),
+          'Mobile Phone': p.Telefone.replaceAll(' ', '').replace('(', '').replace(')', '').replace('-', '')
+        }
+      })
+      formattedPatients = formattedPatients.filter(p => p['Last Name'].length > 0)
+      const csv = json2csvParser.parse(formattedPatients);
 
       var pom = document.createElement('a');
       var csvContent=csv;
       var blob = new Blob([csvContent], { type: 'text/csv;charset=UTF-16LE;'  });
       var url = URL.createObjectURL(blob);
       pom.href = url;
-      pom.setAttribute('download', 'foo.csv');
+      pom.setAttribute('download', 'pacientes.csv');
       pom.click();
     },
     Products(budget){

@@ -1,4 +1,4 @@
-query($idPatient:ID!,$idProduct:ID!){
+query FindProductTransaction($idPatient:ID!,$idProduct:ID!){
   ProductTransaction(filter:{with_transaction:{with_user:{id:$idPatient}},with_product:{id:$idProduct}, with_consultation:null}){
     id,
     with_product{

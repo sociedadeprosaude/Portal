@@ -1,7 +1,7 @@
 <template>
     <v-container class="ma-0 pa-0 align-start justify-center" fluid>
         <ApolloQuery :query="require('@/graphql/transaction/LoadBillsToPay.gql')"
-                     :variables="{ date_start: formattedDate(dateStart), date_end: formattedDate(dateEnd)}"
+                     :variables="{ date_start: formattedDate(dateStart), date_end: formattedDate(dateEnd), type: 'bill'}"
         >
             <template v-slot="{result: {data}}">
                 <v-row class="align-center justify-center">
