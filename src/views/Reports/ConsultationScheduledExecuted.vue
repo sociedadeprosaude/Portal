@@ -2,16 +2,46 @@
     <v-container>
         <v-card>
             <v-layout row wrap  class="justify-center pt-5">
-                <v-flex xs3>
-                  <v-text-field rounded solo filled dense color="background"
-                                placeholder="Data inicial"
-                                v-model="dateStart" v-mask="mask.date" append-outer-icon="event"/>
+                  <v-col cols="5">
+                      <v-menu v-model="dateMenuStart">
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                              v-model="formattedSelectedStartDate"
+                              hint="Data inicial"
+                              persistent-hint
+                              readonly
+                              v-bind="attrs"
+                              v-on="on"
+                              outlined
+                              dense
+                              color="primary"
+                          />
+                        </template>
+                        <v-date-picker v-model="selectedStartDate" locale="pt-br"/>
+                      </v-menu>
+                  </v-col>
+                  <v-col cols="2">
+                    <v-icon class="primary--text pb-5" large>event</v-icon>
+                  </v-col>
+                  <v-col cols="5">
+                    <v-menu v-model="dateMenuFinal">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                          v-model="formattedSelectedFinalDate"
+                          hint="Data final"
+                          persistent-hint
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                          outlined
+                          dense
+                          color="primary"
 
-                </v-flex>
-                <v-flex xs3 class="ml-2">
-                  <v-text-field rounded solo filled dense color="background" class="mr-4"
-                                v-model="dateEnd" v-mask="mask.date" placeholder="Data final"/>
-                </v-flex>
+                      />
+                    </template>
+                    <v-date-picker v-model="selectedFinalDate" locale="pt-br"/>
+                  </v-menu>
+                  </v-col>
                     <v-flex xs7>
                         <ApolloQuery
                                 :query="require('@/graphql/products/LoadProducts.gql')"
@@ -55,7 +85,7 @@
         </v-card>
 
         <ApolloQuery :query="require('@/graphql/consultations/LoadConsultationScheduled.gql')"
-                     :variables="{  date_start:{formatted:formattedDate(dateStart)}, date_end:{formatted:formattedDate(dateEnd)}, specialty: specialty.name}">
+                     :variables="{  date_start:{formatted:formattedDate(selectedStartDate + 'T00:00:00')}, date_end:{formatted:formattedDate(selectedFinalDate + 'T23:59:59')}, specialty: specialty.name}">
             <template slot-scope="{ result: { data } }">
                 <ConsultationScheduledExecuted v-if="data"
                                                :scheduled="data.Consultation.length"
@@ -83,7 +113,6 @@
 <script>
     import ConsultationScheduledExecuted from "@/components/Reports/ConsultationScheduledExecuted";
     import moment from "moment";
-    import {mask} from 'vue-the-mask'
 
     export default {
         // name: "ConsultationScheduledExecuted",
@@ -93,12 +122,13 @@
         props: ["report", "loading"],
         data() {
             return {
-              mask: {
-                date: '##/##/####',
-              },
                 specialty: "",
               dateStart: moment().subtract(1, 'month').format('DD/MM/YYYY'),
               dateEnd: moment().format('DD/MM/YYYY'),
+              dateMenuStart: false,
+              dateMenuFinal: false,
+              selectedStartDate: moment().format("YYYY-MM-DD"),
+              selectedFinalDate: moment().format("YYYY-MM-DD"),
                 now: moment().format("YYYY-MM-DD HH:mm:ss"),
                 total: 0,
                 reportOptions: [
@@ -135,7 +165,22 @@
             };
         },
         computed: {
-
+          formattedSelectedStartDate: {
+            get() {
+              return moment(this.selectedStartDate).format("DD/MM/YYYY")
+            },
+            set(val) {
+              this.selectedDate = val
+            }
+          },
+          formattedSelectedFinalDate: {
+            get() {
+              return moment(this.selectedFinalDate).format("DD/MM/YYYY")
+            },
+            set(val) {
+              this.selectedDate = val
+            }
+          },
             QuantityTotal() {
                 let quantidade = 0;
                 for (let doctor in this.report.doctors) {
@@ -175,7 +220,8 @@
         },
         methods: {
           formattedDate (date) {
-            return moment(date, 'DD/MM/YYYY').format('YYYY-MM-DDTHH:mm')
+            console.log('date: ', date)
+            return moment(date, 'YYYY-MM-DD').format('YYYY-MM-DDTHH:mm')
           },
             timeConsultation(data) {
                 const arrData= [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];

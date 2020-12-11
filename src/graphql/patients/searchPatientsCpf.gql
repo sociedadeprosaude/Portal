@@ -123,6 +123,7 @@ query($cpf:String){
       type,
       status,
       date{formatted},
+            consultation_hour{formatted},
       payment_number,
       canceled_schedule,
       clinic:of_clinic{
@@ -131,12 +132,13 @@ query($cpf:String){
       product:has_product{
         id,name,type,price
       },
+
       doctor:attended_by{
         id,name,crm
       },
-      productTransaction{
-        id
-      }
+     productTransaction{
+          id, with_charge{id }
+          },
       regress{
         id,
         type,

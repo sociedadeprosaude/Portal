@@ -5,6 +5,7 @@ query($idClinic:ID, $date:_Neo4jDateTimeInput){
       status,
       date{formatted},
       payment_number,
+            consultation_hour{formatted},
       clinic:of_clinic{
         id,name,logo
       },
@@ -14,6 +15,8 @@ query($idClinic:ID, $date:_Neo4jDateTimeInput){
       doctor:attended_by{
         id,name,crm
       },
+     productTransaction{
+           id},
       regress{
         id,
         type,

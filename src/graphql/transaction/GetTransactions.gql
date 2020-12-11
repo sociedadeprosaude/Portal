@@ -13,6 +13,9 @@ query GetTransactions($date_start: String, $unit_name: String, $date_final: Stri
     colaborator {
         name
     },
+    categories{
+    name
+    },
     cancelled_by{
         id,
         name,

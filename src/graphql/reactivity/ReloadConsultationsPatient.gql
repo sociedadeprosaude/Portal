@@ -75,6 +75,7 @@ query($idPatient:ID!){
       type,
       status,
       date{formatted},
+      consultation_hour{formatted},
       payment_number,
       canceled_schedule,
       clinic:of_clinic{

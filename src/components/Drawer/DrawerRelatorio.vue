@@ -104,6 +104,10 @@ export default {
           txt: "Pacientes",
           link: "Patients"
         },
+        {
+          txt: "Consultas do Médico",
+          link: "ConsultationsByDoctor"
+        },
       ],
     };
   },

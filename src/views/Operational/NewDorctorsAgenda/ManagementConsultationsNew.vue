@@ -66,30 +66,6 @@
                   </template>
                 </ApolloQuery>
               </v-flex>
-              <!-- <v-flex xs12 sm3>
-                  <v-menu
-                          ref="menu1"
-                          v-model="menu1"
-                          :close-on-content-click="false"
-                          transition="scale-transition"
-                          offset-y
-                          max-width="290px"
-                          min-width="290px"
-                  >
-                      <template v-slot:activator="{ on }">
-                          <v-text-field
-                                  outlined
-                                  v-model="computedDateFormatted"
-                                  placeholder="Data Inicial"
-                                  hint="Data Inicial"
-                                  v-on="on"
-                                  class="mx-3"
-                          />
-                      </template>
-                      <v-date-picker v-model="date" no-title @input="menu1 = false"
-                                     @change="getConsultationsDorctors()"/>
-                  </v-menu>
-              </v-flex> -->
               <v-flex xs12 sm5>
                 <v-select
                     v-model="clinic"
@@ -190,30 +166,7 @@
               </template>
             </ApolloQuery>
           </v-flex>
-          <!-- <v-flex xs12 sm3>
-              <v-menu
-                      ref="menu1"
-                      v-model="menu1"
-                      :close-on-content-click="false"
-                      transition="scale-transition"
-                      offset-y
-                      max-width="290px"
-                      min-width="290px"
-              >
-                  <template v-slot:activator="{ on }">
-                      <v-text-field
-                              outlined
-                              v-model="computedDateFormatted"
-                              placeholder="Data Inicial"
-                              hint="Data Inicial"
-                              v-on="on"
-                              class="mx-3"
-                      />
-                  </template>
-                  <v-date-picker v-model="date" no-title @input="menu1 = false"
-                                 @change="getConsultationsDorctors()"/>
-              </v-menu>
-          </v-flex> -->
+
           <v-flex xs12 sm5>
             <v-select
                 v-model="clinic"
