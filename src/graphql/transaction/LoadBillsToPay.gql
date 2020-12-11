@@ -3,7 +3,8 @@ query ($date_start: String, $date_end: String){
         date_gte: {formatted: $date_start},
         date_lte: {formatted: $date_end},
         value_not: null,
-        }) {
+        type_in:"bill"
+                }) {
             description,
             colaborator {
               name

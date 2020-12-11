@@ -49,7 +49,7 @@
                             </div>
                         </v-col>
                         <v-col md="8" xs="12">
-                            <v-card class="pa-2 pb-0 my-0 elevation-0 mb-5" v-for="(bill) in outtakesGroup"
+                            <v-card class="pa-2 pb-0 my-0 elevation-0 mb-5" v-for="(bill) in BreakArray(outtakesGroup)"
                                     :key="bill.id">
                                 <v-layout row wrap>
 
@@ -330,6 +330,10 @@
             }
         },
         methods: {
+            BreakArray(items){
+              console.log('items: ', items.splice(0,50))
+            return items.splice(0,50)
+            },
             Total(data) {
                 console.log('data', data)
             },
@@ -344,7 +348,8 @@
             },
             outtakesByDate(outtakes) {
                 let res = {};
-                for (let outtake in outtakes) {
+              console.log('outtakes; ', outtakes)
+              for (let outtake in outtakes) {
                     let targetDate = outtakes[outtake].date_to_pay;
                     if (!res[targetDate]) {
                         res[targetDate] = [];
