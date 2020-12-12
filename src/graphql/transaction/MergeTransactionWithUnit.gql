@@ -1,0 +1,10 @@
+mutation MergeTransactionWithUnit($transactionId:ID!, $unitId: ID!){
+    MergeTransactionWith_unit (from: {id: $transactionId} to: {id: $unitId}) {
+        from {
+            id
+        }
+        to {
+            id
+        }
+    }
+}

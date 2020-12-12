@@ -1,0 +1,10 @@
+mutation MergeTransactionCategories($transactionId:ID!, $categoryId: ID!){
+    MergeTransactionCategories (from: {id: $transactionId} to: {id: $categoryId}) {
+        from {
+            id
+        }
+        to {
+            id
+        }
+    }
+}

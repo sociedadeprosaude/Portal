@@ -48,10 +48,11 @@ export default class GqlBuilder {
             mutationString = mutationString.replaceAll(
                 `$${variable}`,
                 typeof variables[variable] === "object" ?
-                    variables[variable].formatted ? `{formatted: "${variables[variable].formatted}"}` :
-                        variables[variable].map(v => {
-                            return typeof v === "string" ? `"${v}"` : v
-                        }).toString()
+                  Array.isArray(variables[variable]) ?
+                    variables[variable].map(v => {
+                        return typeof v === "string" ? `"${v}"` : v
+                    }).toString() :
+                    this.formatObject(variables[variable])
                     : typeof variables[variable] === 'string' ? `"${variables[variable]}"` : variables[variable])
         }
         this.mutations.push({
@@ -71,5 +72,14 @@ export default class GqlBuilder {
     generateMutationRequest() {
         let stringMutation = this.getMutationString()
         return gql`${stringMutation}`
+    }
+
+    formatObject(obj) {
+        let objString = '{'
+        for (let key in obj) {
+            objString += key + ':' + (typeof obj[key] === "string" ? `"${obj[key]}"` : obj[key])
+        }
+        objString += '}'
+        return objString
     }
 }

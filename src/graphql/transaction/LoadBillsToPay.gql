@@ -5,24 +5,27 @@ query ($date_start: String, $date_end: String, $type: String!){
         date_lte: {formatted: $date_end},
         value_not: null,
         type_in:"bill"
-                }) {
-            description,
-            colaborator {
-              name
-            },
-            payment_methods,
-            value,
-            date_to_pay{formatted},
-            date{formatted},
-            id,
-            with_unit {
-              logo,
-              name
-            },
-            categories {
-              name
-            },
-            balance
-  }
+    }) {
+        description,
+        colaborator {
+            name
+            id
+        },
+        payment_methods,
+        value,
+        date_to_pay{formatted},
+        date{formatted},
+        id,
+        with_unit {
+            logo,
+            name,
+            id
+        },
+        categories {
+            name
+            id
+        },
+        balance
+    }
 
 }

@@ -1,0 +1,10 @@
+mutation MergeTransactionColaborator($transactionId:ID!, $colaboratorId: ID!){
+    MergeTransactionColaborator (from: {id: $transactionId} to: {id: $colaboratorId}) {
+        from {
+            id
+        }
+        to {
+            id
+        }
+    }
+}

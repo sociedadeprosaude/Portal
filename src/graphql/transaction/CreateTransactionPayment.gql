@@ -1,5 +1,4 @@
-mutation
-    {
+mutation {
     CreateTransaction(
     id: $id,
      value:$value,

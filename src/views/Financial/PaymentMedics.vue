@@ -177,9 +177,6 @@
             }
         },
         methods: {
-          mostrar(data){
-            console.log('data: ', data)
-          },
             OpenReceipt(item,doctor){
                 this.outtakesSelected= doctor.charges
                 this.doctorSelected = doctor
@@ -252,7 +249,6 @@
             async payDoctor(doctor){
                 //await this.$store.dispatch('PayDoctor', doctor)
                 //this.getInitialInfo()
-              console.log('doctor: ', doctor)
                this.loadingPayment= true
                let transactionId = uuid.v4()
                let mutationBuilder = new MutationBuilder()
@@ -271,7 +267,6 @@
                   idTransaction:transactionId,
                 }
               })
-              console.log('transactionId: ', transactionId)
                for (let charge in doctor.charges) {
                  mutationBuilder.addMutation({
                    mutation: require('@/graphql/productTransaction/addTransactionsHasProductTransaction.gql'),
@@ -284,7 +279,6 @@
                        mutation: require ('../../graphql/doctors/LoadCostProductDoctor.gql'),
                        variables:{idDoctor: doctor.id, idProduct: doctor.charges[charge].ProductTransaction[0].Consultation.Product.id}
                    })
-                   console.log('cost: ', costProduct.data.CostProductDoctor[0].cost)
                  mutationBuilder.addMutation({
                    mutation: require('@/graphql/productTransaction/UpdateProductTransaction.gql'),
                    variables:{
@@ -300,12 +294,10 @@
                  })
 
               }
-              let response = await this.$apollo.mutate({
+              await this.$apollo.mutate({
                 mutation: mutationBuilder.generateMutationRequest(),
               })
-              console.log('response :', response)
               this.loadingPayment= false
-              console.log('doctor: ', doctor)
             },
             async payAllDoctor(doctors){
               this.loadingPayment= true
