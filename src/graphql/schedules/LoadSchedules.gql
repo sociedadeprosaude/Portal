@@ -18,7 +18,8 @@ query{
     },
     doctor:exclusive_for{
       id,
-      name
+      name,
+      crm
     },
     observations,
     days:for_day{

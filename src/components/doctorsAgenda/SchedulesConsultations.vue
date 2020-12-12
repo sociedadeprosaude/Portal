@@ -281,7 +281,6 @@ export default {
         user: this.selectedPatient ? this.selectedPatient : this.query.patient,
         consultation: consultation
       };
-
       if (!this.query /* && !consultation.exam_type */) {
         this.thereIsPaymentNumber();
       }
@@ -295,7 +294,6 @@ export default {
       this.payment_numberFound = undefined;
       this.numberReceipt = "";
       this.status = "Aguardando pagamento";
-
       if(this.selectedForm.consultation.product.type === "SPECIALTY" && this.selectedForm.consultation.product.price == 0){
         this.status = "Pago";
         //payment_number
@@ -334,6 +332,8 @@ export default {
         update(data){
           this.skip = true;
           if(data.ProductTransaction.length > 0){
+            this.numberReceipt = data.ProductTransaction[0]._id
+            this.payment_numberFound = true
             this.status = "Pago"
             this.selectedForm.productTransaction = data.ProductTransaction[0]
           }

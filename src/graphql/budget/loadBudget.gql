@@ -16,7 +16,7 @@ query($ID:ID) {
                          price,
                          id,
                          with_product{
-                         di,
+                         id,
                             name,
                             type,
                           },

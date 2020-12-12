@@ -1,0 +1,6 @@
+mutation($idConsultation:ID!, $consultation_hour: _Neo4jDateTimeInput){
+ UpdateConsultation(id:$idConsultation ,consultation_hour:$consultation_hour){
+              id
+            }
+
+}

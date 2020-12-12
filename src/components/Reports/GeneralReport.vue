@@ -46,13 +46,15 @@
                 <v-row v-for="(productTransactions, index) in transactionByProduct.filter(p => i === 1 ? p.type === 'Product' : p.type === 'Bill')"
                        :key="index" >
 
-                  <v-col cols="4" class="pa-0 text-center">{{ productTransactions.name }}</v-col>
+                  <v-col cols="4" class="pa-0 text-center">{{ productTransactions.name}}</v-col>
 
                   <v-col cols="2" class="pa-0  text-center">{{ productTransactions.quantity }}</v-col>
 
                   <v-col cols="2" class="pa-0  text-center">{{ i === 1 ? productTransactions.cost: -productTransactions.cost | moneyFilter }}</v-col>
 
-                  <v-col cols="2" class="pa-0  text-center">{{ productTransactions.price | moneyFilter }}</v-col>
+                  <v-col v-if="i===1" cols="2" class="pa-0  text-center">{{  productTransactions.price | moneyFilter }}</v-col>
+
+                  <v-col v-else cols="2" class="pa-0  text-center">{{  productTransactions.categories }}</v-col>
 
                   <v-col v-if="(((productTransactions.price - productTransactions.cost)/productTransactions.cost)*100) >= 0"  cols="2" class="pa-0 text-center">
                     {{profitPercentage(productTransactions.price, productTransactions.cost)}}
@@ -193,15 +195,18 @@ export default {
               quantity: 0,
               cost: 0,
               type: 'Bill',
+              categories: transaction.categories
             }
           }
+          console.log('Bill: ', transaction)
           products[transaction.description] = {
             name: products[transaction.description].name,
             quantity: products[transaction.description].quantity + 1,
             cost: products[transaction.description].cost + transaction.value,
             type: products[transaction.description].type,
+            categories: transaction.categories
           }
-
+          console.log('transaction bill: ', products[transaction.description])
         }
       }
       return Object.values(products).sort((a, b) => {

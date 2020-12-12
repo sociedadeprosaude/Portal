@@ -49,8 +49,8 @@
             <v-btn
                 color="white"
                 rounded
-                :disabled="consultation.status === 'Cancelado'"
-                @click="deletedConsultation()"
+                :disabled="disabledDelete(consultation)"
+                @click="deletedConsultation(consultation)"
                 :loading="cancelLoading"
             >Cancelar</v-btn>
             <v-btn
@@ -150,154 +150,134 @@ export default {
     },
   },
   methods: {
-
-    async deletedConsultation() {
-      this.cancelLoading = true;
-
-      this.$apollo.mutate({
-        mutation: require('@/graphql/consultations/CancelConsultation.gql'),
-        variables: {
-          idConsultation: this.consultation.id,
-          idSchedule: this.consultation.came_from.id
-        },
-
-      }).then((data) => {
-        this.cancelLoading = false
-
-        if (this.consultation.type === "Retorno" && this.consultation.previous_consultation)
-          this.removeRelationAsRegress(this.consultation.id, this.consultation.previous_consultation.id)
-
-        if (this.consultation.status === "Pago") {
-          this.skip = false;
-          this.$apollo.queries.findProductTransaction.refresh()
+    disabledDelete(consultation){
+      if(consultation.status ){
+        if(consultation.status === 'Cancelado' || consultation.consultation_hour.formatted !== null){
+          return true
+        }else{
+          return false
         }
-
-        this.skipPatients = false;
-        this.$apollo.queries.loadPatient.refresh()
-
-      }).catch((error) => {
-        console.error(error)
-        this.cancelLoading = false
+      }
+      return true
+    },
+    async deletedConsultation(consultation) {
+      this.cancelLoading = true;
+      let mutationBuilder = new MutationBuilder()
+      mutationBuilder.addMutation({
+        mutation: require('@/graphql/consultations/UpdateConsultationStatus.gql'),
+        variables:{
+          idConsultation:consultation.id,
+          status: 'Cancelado'
+        }
       })
+      mutationBuilder.addMutation({
+        mutation: require('@/graphql/consultations/RemoveOnlyRelationCameFrom.gql'),
+        variables:{
+          idConsultation:consultation.id,
+          idSchedule: consultation.came_from.id
+        }
+      })
+      if (this.consultation.type === "Retorno" && consultation.previous_consultation) {
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/consultations/RemoveRelationsAsRegress.gql'),
+          variables: {
+            idConsultation: consultation.id,
+            idPreviousConsultation: consultation.previous_consultation.id
+          }
+        })
+      }
+      if(consultation.status === "Pago" && consultation.productTransaction !== null){
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/consultations/RemoveRelationProductTransaction.gql'),
+          variables: {
+            idConsultation: consultation.id,
+            idProductTransaction: consultation.productTransaction.id
+          }
+        })
+        if(this.consultation.productTransaction.with_charge){
+          mutationBuilder.addMutation({
+            mutation: require('@/graphql/charge/DeleteCharge.gql'),
+            variables: {
+              id: consultation.productTransaction.with_charge.id
+            }
+          })
+        }
+      }
+      let response = await this.$apollo.mutate({
+        mutation: mutationBuilder.generateMutationRequest(),
+      })
+
+      console.log('response :', response)
+      this.cancelLoading = false;
+      this.skipPatients = false;
+      this.$apollo.queries.loadPatient.refresh()
     },
 
-    removeRelationAsRegress(idConsultation, idPreviousConsultation) {
-      this.$apollo.mutate({
-        mutation: require('@/graphql/consultations/RemoveRelationsAsRegress.gql'),
-        variables: {
-          idConsultation: idConsultation,
-          idPreviousConsultation: idPreviousConsultation
-        },
-
-      });
-    },
 
     async setConsultationHour(consultation) {
       this.ConsultationSelect = consultation
       this.loadingCharge = true
       this.idDoctor = consultation.doctor.id
       this.idProduct = consultation.product.id
-      let idProductTransaction = await this.$apollo.mutate({
-        mutation: require('@/graphql/productTransaction/GetProductTransactionId.gql'),
-        variables: {
-          idConsultation: consultation.id
-        }
-      })
-      let Charge
-      if (idProductTransaction.data.ProductTransaction[0]) {
-        idProductTransaction = idProductTransaction.data.ProductTransaction[0].id
-
-        Charge = await this.$apollo.mutate({
-          mutation: require('@/graphql/charge/GetChargeProductTransactionId.gql'),
-          variables: {
-            idProductTransaction: idProductTransaction
-          }
-        })
-        Charge = Charge.data.Charge
+      if(consultation.consultation_hour.formatted){
+        this.loadingCharge = false
+        this.documentDialog = true;
       }
-      if (Charge && Charge.length === 0) {
-        let CostProductDoctor = await this.$apollo.mutate({
-          mutation: require('@/graphql/doctors/LoadCostProductDoctor.gql'),
-          variables: {
-            idDoctor: consultation.doctor.id,
-            idProduct: consultation.product.id
-          }
-        })
-        let ChargeId = uuid.v4()
+      else{
         let mutationBuilder = new MutationBuilder()
-        mutationBuilder.addMutation({
-          mutation: require('@/graphql/charge/CreateCharge.gql'),
-          variables:{
-            id:ChargeId,
-            value:-CostProductDoctor.data.CostProductDoctor[0].cost,
-            date:{formatted: moment().format("YYYY-MM-DDTHH:mm:ss")},
-            type:'doctor'
+        let consultation_hour = moment().format('YYYY-MM-DDTHH:mm:ss')
+        if(!consultation.consultation_hour.formatted){
+          mutationBuilder.addMutation({
+            mutation: require('@/graphql/consultations/UpdateConsultationHour.gql'),
+            variables:{
+              idConsultation:consultation.id,
+              consultation_hour: {formatted: consultation_hour}
+            }
+          })
+        }
+        if(consultation.productTransaction){
+          if (!consultation.productTransaction.with_charge) {
+            let CostProductDoctor = await this.$apollo.mutate({
+              mutation: require('@/graphql/doctors/LoadCostProductDoctor.gql'),
+              variables: {
+                idDoctor: consultation.doctor.id,
+                idProduct: consultation.product.id
+              }
+            })
+            let ChargeId = uuid.v4()
+            mutationBuilder.addMutation({
+              mutation: require('@/graphql/charge/CreateCharge.gql'),
+              variables: {
+                id: ChargeId,
+                value: -CostProductDoctor.data.CostProductDoctor[0].cost,
+                date: {formatted: moment().format("YYYY-MM-DDTHH:mm:ss")},
+                type: 'doctor'
+              }
+            })
+            mutationBuilder.addMutation({
+              mutation: require('@/graphql/charge/AddRelationsProductTransactionHasCharge.gql'),
+              variables: {
+                idProductTransaction: consultation.productTransaction.id,
+                idCharge: ChargeId,
+              }
+            })
           }
-        })
-        mutationBuilder.addMutation({
-          mutation: require('@/graphql/charge/AddRelationsProductTransactionHasCharge.gql'),
-          variables:{
-            idProductTransaction:idProductTransaction,
-            idCharge:ChargeId,
-          }
-        })
+        }
         let response = await this.$apollo.mutate({
           mutation: mutationBuilder.generateMutationRequest(),
         })
+        this.skipPatients = false;
+        this.$apollo.queries.loadPatient.refresh()
         console.log('response :', response)
         this.loadingCharge = false
         this.documentDialog = true;
-      } else {
-        this.loadingCharge = false
-        this.documentDialog = true;
       }
-      /*  let charge = await this.$apollo.mutate({
-         mutation: require ('@/graphql/charge/FindChargeDoctor'),
-         variables:{
-           consultationId: consultation.id,
-           type:'doctor'
-         }
-       })
-       console.log('charge: ', charge)
-       this.documentDialog = true;
-       this.ConsultationSelect = consultation
-       this.idDoctor = consultation.doctor.id
-       this.idProduct = consultation.product.id */
-      /* this.skipCost=false
-      this.$apollo.queries.loadCostProductDoctor.refresh() */
-      /* let consultation_hour = moment().format('YYYY-MM-DD HH:mm:ss');
-      if(!consultation.user)
-          consultation.user = this.selectedPatient
-      let data = {
-          consultation_hour: consultation_hour,
-          consultation: consultation,
-          id: consultation.id,
-      };
-      let specialty = await this.$store.dispatch('getDoctorSpecialty', consultation)
-      let outtake = {
-          intake_id: consultation.payment_number,
-          user: consultation.user,
-          unit: consultation.clinic,
-          doctor: consultation.doctor,
-          specialties: specialty,
-          paid: false,
-          realized:moment().format('YYYY-MM-DD'),
-          crm: consultation.doctor.crm
-      }
-
-      console.log('outtake: ', outtake)
-      await this.$store.dispatch('addSpecialtyOuttakes', outtake)
-      if(!consultation.consultation_hour)
-          await this.$store.dispatch('addConsultationHourInConsultation', data);
-      this.consultation.consultation_hour = consultation_hour; */
     },
     ConsultationRecept(consultation) {
-      //console.log('consultation: ', consultation)
       this.receptDialog = true;
     },
     ConsultationTicket(consultation){
       this.dialogTicket = true;
-      //console.log('bol:', this.dialogTicket)
     }
   },
 
