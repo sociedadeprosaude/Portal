@@ -376,6 +376,7 @@ export default {
           date: {formatted: `${moment().format("YYYY-MM-DDTHH:mm:ss")}`},
           id: transactionId,
           value: charge.value,
+          type: 'Bill',
           description: charge.description,
           payment_methods: charge.payment_methods,
           payments: [charge.value],
