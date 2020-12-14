@@ -7,10 +7,10 @@
         <v-row class="align-center justify-center">
           <v-col cols="12" xs="12" class="primary mt-n5">
             <v-card class="elevation-0 white--text mt-md-2 primary" style="border-radius: 0">
-              <v-card-title class="font-weight-bold align-lg-center justify-center" v-if="data">
+              <v-card-title class="font-weight-bold align-lg-center justify-center" v-if="data.Charge[0]">
                 {{ data.Charge[0].balance | moneyFilter }}
               </v-card-title>
-              <v-card-subtitle style="font-size: small" class="white--text font-italic" v-if="data">
+              <v-card-subtitle style="font-size: small" class="white--text font-italic" v-if="data.Charge[0]">
                 Saldo
               </v-card-subtitle>
 
