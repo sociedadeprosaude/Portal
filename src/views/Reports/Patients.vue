@@ -45,9 +45,6 @@ export default {
           }
         },
         update(data){
-        console.log('data: ', data.Patient)
-        console.log('data tamanho: ', data.Patient.length)
-        console.log('offset: ', this.offset)
           if(this.PatientFixed.length === 0){
             this.PatientFixed = data.Patient
           }
@@ -57,19 +54,14 @@ export default {
             }
           }
           if(this.PatientsLength <= this.PatientFixed.length){
-          console.log('chamei todos')
-          console.log('tamanho :', data.Patient.length)
-            console.log('patients: ', this.PatientFixed)
           this.skipPatient = true
           this.LoadPatients= true
         }
           if(this.PatientsLength > this.PatientFixed.length){
-            console.log('ainda não chamei todos')
             this.offset += this.first
             this.$apollo.queries.Patients.refresh();
           }
           else{
-            console.log('ainda não chamei todos')
             this.offset += this.first
             this.$apollo.queries.Patients.refresh();
           }
@@ -81,7 +73,6 @@ export default {
      loadPatientsLength: {
       query: require("@/graphql/patients/GetPatientsId.gql"),
       update(data) {
-        console.log('tamanho: ', data.Patient.length)
         this.PatientsLength= data.Patient.length
         this.skipPatient= false
         this.skipPatientLength = true

@@ -1,7 +1,7 @@
 <template>
     <v-container class="ma-0 pa-0" fluid>
         <ApolloQuery :query="require('@/graphql/transaction/LoadBillsPaid.gql')"
-                     :variables="{ date_start: formattedDate(dateStart), date_end: formattedDate(dateEnd)}"
+                     :variables="{ date_start: formattedDateStart(selectedStartDate), date_end: formattedDateEnd(selectedFinalDate)}"
         >
             <template v-slot="{result: {data}}">
                 <v-row class="align-center justify-center">
@@ -12,6 +12,54 @@
                             </v-card-title>
                             <v-card-subtitle style="font-size: small" class="white--text font-italic" v-if="data">Valor pago
                             </v-card-subtitle>
+
+                          <v-layout row wrap class="justify-center pt-5">
+                            <v-col >
+                              <v-menu v-model="dateMenuStart">
+                                <template v-slot:activator="{ on, attrs }">
+                                  <v-text-field
+                                      v-model="formattedSelectedStartDate"
+                                      hint="Data inicial"
+                                      persistent-hint
+                                      readonly
+                                      v-bind="attrs"
+                                      v-on="on"
+                                      outlined
+                                      dense
+                                      
+                                      rounded solo filled dense color="background"
+                                    placeholder="Data inicial"
+                                        append-outer-icon="event"
+                                  />
+                                </template>
+                                <v-date-picker v-model="selectedStartDate" locale="pt-br"/>
+                              </v-menu>
+                            </v-col>
+                            <v-icon class="primary--text pb-5" large>event</v-icon>
+                            <v-col>
+                              <v-menu v-model="dateMenuFinal">
+                                <template v-slot:activator="{ on, attrs }">
+                                  <v-text-field
+                                      v-model="formattedSelectedFinalDate"
+                                      hint="Data final"
+                                      persistent-hint
+                                      readonly
+                                      v-bind="attrs"
+                                      v-on="on"
+                                      outlined
+                                      dense
+                                      background-color="white"
+                                    
+                                      rounded solo filled dense color="background"
+                                        placeholder="Data final"
+                                       
+
+                                  />
+                                </template>
+                                <v-date-picker v-model="selectedFinalDate" locale="pt-br"/>
+                              </v-menu>
+                            </v-col>
+                          </v-layout>
                             <v-layout row wrap class="justify-center pt-5">
                                 <v-flex xs3>
                                     <v-text-field rounded solo filled dense color="background"
@@ -258,8 +306,13 @@
             mask: {
                 date: '##/##/####',
             },
-            dateStart: moment().subtract(1, 'month').format('DD/MM/YYYY'),
-            dateEnd: moment().format('DD/MM/YYYY'),
+          dateStart: moment().subtract(1, 'month').format('DD/MM/YYYY'),
+          dateEnd: moment().format('DD/MM/YYYY'),
+          dateMenuStart: false,
+          dateMenuFinal: false,
+          selectedStartDate: moment().format("YYYY-MM-DD"),
+          selectedFinalDate: moment().format("YYYY-MM-DD"),
+
             selectedMonth: "",
             loadingFilter: false,
             dialogInfoPaidBill: false,
@@ -272,7 +325,22 @@
             }
         },
         computed: {
-
+          formattedSelectedStartDate: {
+            get() {
+              return moment(this.selectedStartDate).format("DD/MM/YYYY")
+            },
+            set(val) {
+              this.selectedDate = val
+            }
+          },
+          formattedSelectedFinalDate: {
+            get() {
+              return moment(this.selectedFinalDate).format("DD/MM/YYYY")
+            },
+            set(val) {
+              this.selectedDate = val
+            }
+          },
             months() {
                 let now = moment();
                 let fiveMonthsAgo = now.add(-5, "M").clone();
@@ -294,9 +362,15 @@
             },
         },
         methods: {
-            formattedDate (date) {
-                return moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD')
-            },
+          formattedDateStart(date) {
+            date = date + '00:00:00'
+            return moment(date, 'YYYY-MM-DDHH:mm:ss').format('YYYY-MM-DDTHH:mm:ss')
+          },
+          formattedDateEnd(date) {
+            date = date + '23:59:59'
+            return moment(date, 'YYYY-MM-DDHH:mm:ss').format('YYYY-MM-DDTHH:mm:ss')
+          },
+
             totalValue (data) {
                 let total = 0;
                 for (let bill in data.Transaction){
