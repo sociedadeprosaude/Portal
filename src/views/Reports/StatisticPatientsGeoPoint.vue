@@ -171,7 +171,7 @@ export default {
   },
   apollo: {
     loadTransactions: {
-      query: require("@/graphql/patients/GetPatients.gql"),
+      query: require("@/graphql/patients/GetPatientsAddresses.gql"),
       update(data) {
         console.log('data: ', data.Patient)
         this.PatientFixed= data.Patient
