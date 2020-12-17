@@ -1,7 +1,7 @@
 <template>
   <v-container class="ma-0 pa-0 align-start justify-center" fluid>
     <ApolloQuery :query="require('@/graphql/transaction/LoadBillsToPay.gql')"
-                 :variables="{ date_start: formattedDate(dateStart), date_end: formattedDate(dateEnd), type: 'bill'}"
+                 :variables="{ date_start: formattedDateStart(formattedSelectedStartDate), date_end: formattedDateEnd(formattedSelectedFinalDate), type: 'bill'}"
     >
       <template v-slot="{result: {data}, query}">
         <v-row class="align-center justify-center">
@@ -15,16 +15,44 @@
               </v-card-subtitle>
 
               <v-layout row wrap class="justify-center pt-5">
-                <v-flex xs3>
-                  <v-text-field rounded solo filled dense color="background"
-                                placeholder="Data inicial"
-                                v-model="dateStart" v-mask="mask.date" append-outer-icon="event"/>
+                <v-col >
+                  <v-menu v-model="dateMenuStart">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                          v-model="formattedSelectedStartDate"
+                          hint="Data inicial"
+                          persistent-hint
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                          outlined
+                          dense
+                          color="primary"
+                      />
+                    </template>
+                    <v-date-picker v-model="selectedStartDate" locale="pt-br"/>
+                  </v-menu>
+                </v-col>
+                <v-icon class="primary--text pb-5" large>event</v-icon>
+                <v-col>
+                  <v-menu v-model="dateMenuFinal">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                          v-model="formattedSelectedFinalDate"
+                          hint="Data final"
+                          persistent-hint
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                          outlined
+                          dense
+                          color="primary"
 
-                </v-flex>
-                <v-flex xs3 class="ml-2">
-                  <v-text-field rounded solo filled dense color="background" class="mr-4"
-                                v-model="dateEnd" v-mask="mask.date" placeholder="Data final"/>
-                </v-flex>
+                      />
+                    </template>
+                    <v-date-picker v-model="selectedFinalDate" locale="pt-br"/>
+                  </v-menu>
+                </v-col>
               </v-layout>
 
             </v-card>
@@ -93,7 +121,7 @@
                              class="error mx-1" fab x-small>
                         <v-icon>delete</v-icon>
                       </v-btn>
-                      <v-btn v-show="user === 'admin' || user === 'caixa'"
+                      <v-btn
                              @click="payTransaction(bill, query)"
                              class="success mx-1" fab x-small placeholder="Complemento">
                         <v-icon>attach_money</v-icon>
@@ -237,6 +265,10 @@ export default {
       },
       dateStart: moment().subtract(1, 'month').format('DD/MM/YYYY'),
       dateEnd: moment().format('DD/MM/YYYY'),
+      dateMenuStart: false,
+      dateMenuFinal: false,
+      selectedStartDate: moment().format("YYYY-MM-DD"),
+      selectedFinalDate: moment().format("YYYY-MM-DD"),
       monthSelected: 'Outubro',
       isEditing: false,
       loading: false,
@@ -279,6 +311,22 @@ export default {
     };
   },
   computed: {
+    formattedSelectedStartDate: {
+      get() {
+        return moment(this.selectedStartDate).format("DD/MM/YYYY")
+      },
+      set(val) {
+        this.selectedDate = val
+      }
+    },
+    formattedSelectedFinalDate: {
+      get() {
+        return moment(this.selectedFinalDate).format("DD/MM/YYYY")
+      },
+      set(val) {
+        this.selectedDate = val
+      }
+    },
     years() {
       let years = [];
       let year = moment().format('YYYY');
@@ -334,8 +382,13 @@ export default {
     }
   },
   methods: {
-    formattedDate(date) {
-      return moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD')
+    formattedDateStart(date) {
+      date = date + '00:00:00'
+      return moment(date, 'DD/MM/YYYYHH:mm:ss').format('YYYY-MM-DDTHH:mm:ss')
+    },
+    formattedDateEnd(date) {
+      date = date + '23:59:59'
+      return moment(date, 'DD/MM/YYYYHH:mm:ss').format('YYYY-MM-DDTHH:mm:ss')
     },
 
     daydate(date) {
