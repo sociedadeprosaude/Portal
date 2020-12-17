@@ -30,7 +30,7 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-layout row wrap>
-                            <v-flex xs12>
+                            <v-flex xs12 class="mb-4 mt-n6">
                                 <v-progress-linear :indeterminate="true" v-if="loading"/>
                             </v-flex>
                             <v-flex xs6 class="text-left pl-1">

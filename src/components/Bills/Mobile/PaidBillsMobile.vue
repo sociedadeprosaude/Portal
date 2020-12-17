@@ -12,17 +12,17 @@
                             </v-card-title>
                             <v-card-subtitle style="font-size: small" class="white--text font-italic" v-if="data">Valor pago
                             </v-card-subtitle>
-
-
                             <v-layout row wrap class="justify-center pt-5">
                                 <v-flex xs3>
                                     <v-text-field rounded solo filled dense color="background"
                                                   placeholder="Data inicial"
+                                                  background-color="white"
                                                   v-model="dateStart" v-mask="mask.date" append-outer-icon="event"/>
 
                                 </v-flex>
                                 <v-flex xs3 class="ml-2">
                                     <v-text-field rounded solo filled dense color="background" class="mr-4"
+                                                  background-color="white"
                                                   v-model="dateEnd" v-mask="mask.date" placeholder="Data final"/>
                                 </v-flex>
                             </v-layout>
