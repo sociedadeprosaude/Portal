@@ -13,7 +13,10 @@
               </v-text-field>
             </v-col>
             <v-col>
-              <v-btn @click="ExportPatients(patients)">Exportar Pacientes</v-btn>
+              <v-btn @click="PatientsFormatArray(PatientsLocale)">Exportar 50 Primeiros</v-btn>
+            </v-col>
+            <v-col>
+              <v-btn @click="PatientsFormatArray(Patients)">Exportar Todos</v-btn>
             </v-col>
             <v-col cols="12" class="mb-0">
               <v-divider color="black"></v-divider>
@@ -82,21 +85,17 @@
 </template>
 
 <script>
-import PieChart from "@/components/Charts/PieChart";
-import MiniStatistic from "@/components/MiniStatistic";
+
 const { Parser } = require('json2csv');
-const fields= ['Nome' , 'Telefone' , 'Data' ] ;
+const fields= ['First Name' , 'Last Name' , 'Mobile Phone' ] ;
+const opts = {  fields  } ;
 import moment from 'moment'
 
 export default {
-  components: {
-    MiniStatistic,
-    PieChart
-  },
   props: [
     "Patients",
   ],
-  data: vm => ({
+  data: () => ({
     FilterName:'',
     shower: 50,
     PatientsLocale: []
@@ -105,38 +104,44 @@ export default {
     this.PatientFilter()
   },
   methods: {
-    PatientsFormatArray(budgets){
+    PatientsFormatArray(patients){
       let PatientsArray= []
-      console.log('budgets: ', budgets)
-      this.Patients.map(e =>{
+      console.log('patients: ', patients)
+      patients.map(e =>{
         PatientsArray.push({
           Nome: e.name? e.name :'error',
-          Telefone: e.telephones[0] ? e.telephones[0] :'error',
-          Data: moment(e.date.formatted,'YYYY-MM-DDTHH:mm:ss').format('DD/MM/YYYY')
+          Telefone: e.telephones[0] ? e.telephones[0] :'error'
         })
       })
       this.ExportPatients(PatientsArray)
     },
-    ExportPatients(PatientsArray){
-      console.log('patientsArray: ', PatientsArray)
+    ExportPatients(patientsArray){
       const json2csvParser = new Parser({ fields});
-      const csv = json2csvParser.parse(PatientsArray);
-      console.log('csv: ', csv)
+      console.log('aaa', patientsArray)
+      let formattedPatients = patientsArray.map(p => {
+        return {
+          'First Name': p.Nome.trim().split(' ')[0],
+          'Last Name': p.Nome.trim().split(' ').slice(1, p.Nome.split(' ').length).join(' '),
+          'Mobile Phone': p.Telefone.replaceAll(' ', '').replace('(', '').replace(')', '').replace('-', '')
+        }
+      })
+      formattedPatients = formattedPatients.filter(p => p['Last Name'].length > 0)
+      const csv = json2csvParser.parse(formattedPatients);
 
       var pom = document.createElement('a');
       var csvContent=csv;
       var blob = new Blob([csvContent], { type: 'text/csv;charset=UTF-16LE;'  });
       var url = URL.createObjectURL(blob);
       pom.href = url;
-      pom.setAttribute('download', 'foo.csv');
+      pom.setAttribute('download', 'pacientes.csv');
       pom.click();
     },
     PatientFilter() {
-      console.log('chamando')
+      if(this.FilterName.length > 0){
+        this.FilterName = this.FilterName.toUpperCase()
+      }
       if (this.Patients) {
-        console.log('filtro nome: ', this.FilterName)
         if(this.FilterName){
-          console.log('filtro nome: ', this.FilterName)
           this.PatientsLocale= this.Patients.filter(a => a.name.includes(this.FilterName)).slice(0, this.shower)
           return this.PatientsLocale
         }
