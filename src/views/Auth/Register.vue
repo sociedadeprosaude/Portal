@@ -119,8 +119,6 @@
 
             async createUser(){
                 try{
-                    //let resp = await firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-                
                     const newUser = await this.$apollo.mutate({
                         mutation: require('@/graphql/authentication/CreateUser.gql'),
                         variables:{

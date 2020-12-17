@@ -62,7 +62,6 @@
 </template>
 
 <script>
-    import firebase from 'firebase'
 
     export default {
         name: "Login",
@@ -81,9 +80,6 @@
         },
         mounted() {
           window.addEventListener('keydown', this.handleEnter)
-          /* if (firebase.auth().currentUser) {
-                this.$router.push('/')
-            } */
         },
         methods: {
           handleEnter(e) {
