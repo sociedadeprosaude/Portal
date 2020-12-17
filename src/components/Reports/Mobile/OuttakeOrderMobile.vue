@@ -384,9 +384,67 @@ export default {
 
         methods: {
 
-            formattedDate(date) {
-                return moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD')
-            },
+      let dateMoment = moment(date);
+      return this.semanaOptions[dateMoment.day()];
+    },
+    outtakesByDate(outtakes) {
+      let res = {};
+      for (let outtake in outtakes) {
+        let targetDate = outtakes[outtake].date_to_pay;
+        if (!res[targetDate]) {
+          res[targetDate] = [];
+        }
+        res[targetDate].push(outtakes[outtake]);
+      }
+      return res;
+    },
+    async editBillValue(bill) {
+      if (!this.isEditing) {
+        await this.$store.dispatch("editOuttakes", bill);
+        await this.$store.dispatch("getOuttakes");
+        this.loading = false;
+      }
+
+    },
+    distanceToToday(date) {
+      let now = moment();
+      return moment(date, "YYYY-MM-DD").diff(now, "days");
+    },
+    async payTransaction(charge, query) {
+      this.loading = true
+      let transactionId = uuid.v4()
+      let mutationBuilder = new MutationBuilder()
+      mutationBuilder.addMutation({
+        mutation: require('@/graphql/transaction/CreateTransactionBill.gql'),
+        variables: {
+          date: {formatted: `${moment().format("YYYY-MM-DDTHH:mm:ss")}`},
+          id: transactionId,
+          value: charge.value,
+          type: 'Bill',
+          description: charge.description,
+          payment_methods: charge.payment_methods,
+          dat_pay:{formatted:charge.date_to_pay.formatted}
+        }
+      })
+      console.log('charge: ', charge)
+      for (let category of charge.categories) {
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/transaction/MergeTransactionCategories.gql'),
+          variables: {
+            transactionId,
+            categoryId: category.id
+          }
+        })
+      }
+      for (let unit of charge.with_unit) {
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/transaction/MergeTransactionWithUnit.gql'),
+          variables: {
+            transactionId,
+            unitId: unit.id
+          }
+        })
+      }
 
         }
     };
