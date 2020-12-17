@@ -1,0 +1,7 @@
+query{
+  Patient{
+    addresses{
+    cep, city, neighboor, id
+    }
+  }
+}

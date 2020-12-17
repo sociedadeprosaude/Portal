@@ -1,7 +1,6 @@
-query{
-  Patient(orderBy:name_asc){
-  id,
-      name,
+query($offset:Int!, $first:Int!){
+  Patient(orderBy:name_asc, first:$first, offset:$offset){
+    name,
     attedanceHistory{date{formatted}},
     email,
     telephones,

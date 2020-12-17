@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid v-if="skipPatient && Patients">
+  <v-container fluid v-if="skipPatient && Patients && LoadPatients">
     <Patients
       :Patients="Patients"
     />
@@ -15,11 +15,17 @@
 
 <script>
 import Patients from "@/components/Reports/Patients";
+
 export default {
   components: { Patients },
-  data: vm => ({
-    PatientFixed: '',
-    skipPatient: false,
+  data: () => ({
+    PatientFixed: [],
+    offset:0,
+    first:15000,
+    skipPatient: true,
+    PatientsLength: 0,
+    skipPatientLength: false,
+    LoadPatients: false
   }),
   computed: {
     Patients(){
@@ -30,17 +36,60 @@ export default {
     }
   },
   apollo: {
-    loadPatients: {
+    Patients:{
       query: require("@/graphql/patients/GetPatients.gql"),
-      update(data) {
+      variables() {
+        return {
+          offset: this.offset,
+          first: this.first
+          }
+        },
+        update(data){
         console.log('data: ', data.Patient)
-        this.PatientFixed= data.Patient
-        this.skipPatient = true
+        console.log('data tamanho: ', data.Patient.length)
+        console.log('offset: ', this.offset)
+          if(this.PatientFixed.length === 0){
+            this.PatientFixed = data.Patient
+          }
+          else{
+            for(let i=0; i<data.Patient.length; i++){
+              this.PatientFixed.push(data.Patient[i])
+            }
+          }
+          if(this.PatientsLength <= this.PatientFixed.length){
+          console.log('chamei todos')
+          console.log('tamanho :', data.Patient.length)
+            console.log('patients: ', this.PatientFixed)
+          this.skipPatient = true
+          this.LoadPatients= true
+        }
+          if(this.PatientsLength > this.PatientFixed.length){
+            console.log('ainda não chamei todos')
+            this.offset += this.first
+            this.$apollo.queries.Patients.refresh();
+          }
+          else{
+            console.log('ainda não chamei todos')
+            this.offset += this.first
+            this.$apollo.queries.Patients.refresh();
+          }
       },
       skip() {
         return this.skipPatient
       }
     },
-  }
+     loadPatientsLength: {
+      query: require("@/graphql/patients/GetPatientsId.gql"),
+      update(data) {
+        console.log('tamanho: ', data.Patient.length)
+        this.PatientsLength= data.Patient.length
+        this.skipPatient= false
+        this.skipPatientLength = true
+      },
+      skip() {
+        return this.skipPatientLength
+      }
+    },
+  },
 };
 </script>
