@@ -1,17 +1,19 @@
 mutation (
+    $id: ID!,
     $value: Float,
     $payment_methods: [String],
     $date: _Neo4jDateTimeInput,
     $description: String,
-    $date_to_pay: _Neo4jDateTimeInput,
+    $dat_pay: _Neo4jDateTimeInput,
      )
     {
     CreateTransaction(
+        id: $id,
      value:$value,
      payment_methods:$payment_methods,
      date:$date,
      description:$description,
-     date_to_pay:$date_to_pay,
+     date_to_pay:$dat_pay,
      ){
         id, value, payment_methods, date{formatted}
     }

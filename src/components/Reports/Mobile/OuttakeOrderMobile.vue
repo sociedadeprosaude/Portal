@@ -424,7 +424,7 @@ export default {
       let transactionId = uuid.v4()
       let mutationBuilder = new MutationBuilder()
       mutationBuilder.addMutation({
-        mutation: require('@/graphql/transaction/CreateTransactionPayment.gql'),
+        mutation: require('@/graphql/transaction/CreateTransactionBill.gql'),
         variables: {
           date: {formatted: `${moment().format("YYYY-MM-DDTHH:mm:ss")}`},
           id: transactionId,
@@ -432,11 +432,10 @@ export default {
           type: 'Bill',
           description: charge.description,
           payment_methods: charge.payment_methods,
-          payments: [charge.value],
-          parcels: [`${1}`],
-          discount: 0.0
+          dat_pay:{formatted:charge.date_to_pay.formatted}
         }
       })
+      console.log('charge: ', charge)
       for (let category of charge.categories) {
         mutationBuilder.addMutation({
           mutation: require('@/graphql/transaction/MergeTransactionCategories.gql'),

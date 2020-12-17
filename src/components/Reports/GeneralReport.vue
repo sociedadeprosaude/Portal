@@ -54,7 +54,7 @@
 
                   <v-col v-if="i===1" cols="2" class="pa-0  text-center">{{  productTransactions.price | moneyFilter }}</v-col>
 
-                  <v-col v-else cols="2" class="pa-0  text-center">{{  productTransactions.categories }}</v-col>
+                  <v-col v-else cols="2" class="pa-0  text-center">{{  ShowerCategories(productTransactions.categories) }}</v-col>
 
                   <v-col v-if="(((productTransactions.price - productTransactions.cost)/productTransactions.cost)*100) >= 0"  cols="2" class="pa-0 text-center">
                     {{profitPercentage(productTransactions.price, productTransactions.cost)}}
@@ -224,23 +224,25 @@ export default {
       let taxaCredito = 0
       let taxaDebito = 0
       for (let transaction of this.transactions) {
-        for(let payment in transaction.payment_methods){
-          if(transaction.payment_methods[payment] === 'Dinheiro'){
-            money += transaction.payments[payment]
-          }
-          else if(transaction.payment_methods[payment] === 'Crédito'){
-            credito += transaction.payments[payment]
-            if(transaction.parcels[payment] === '1'){
-              taxaCredito += constants.PAYMENT_METHODS.credit.INITIAL_TAX
+        if(transaction.value > 0 ){
+          for(let payment in transaction.payment_methods){
+            if(transaction.payment_methods[payment] === 'Dinheiro'){
+              money += transaction.payments[payment]
             }
-            else{
-              let tax = parseInt(transaction.parcels[payment]) - 2
-              taxaCredito += constants.PAYMENT_METHODS.credit.PARCEL_TAX[tax]
+            else if(transaction.payment_methods[payment] === 'Crédito'){
+              credito += transaction.payments[payment]
+              if(transaction.parcels[payment] === '1'){
+                taxaCredito += constants.PAYMENT_METHODS.credit.INITIAL_TAX
+              }
+              else{
+                let tax = parseInt(transaction.parcels[payment]) - 2
+                taxaCredito += constants.PAYMENT_METHODS.credit.PARCEL_TAX[tax]
+              }
             }
-          }
-          else if(transaction.payment_methods[payment] === 'Débito'){
-            debito += transaction.payments[payment]
-            taxaDebito += constants.PAYMENT_METHODS.debit.INITIAL_TAX
+            else if(transaction.payment_methods[payment] === 'Débito'){
+              debito += transaction.payments[payment]
+              taxaDebito += constants.PAYMENT_METHODS.debit.INITIAL_TAX
+            }
           }
         }
       }
@@ -254,6 +256,13 @@ export default {
     }
   },
   methods: {
+    ShowerCategories(Categories){
+      let ShowerCategories = ''
+      Categories.map(e => {
+        ShowerCategories += ', '+ e.name
+      })
+      Return ShowerCategories
+    },
         getTotalSumOfProductTransactions(productTransactions) {
           return productTransactions.reduce((acc, transaction) => {
             return acc + transaction.quantity
