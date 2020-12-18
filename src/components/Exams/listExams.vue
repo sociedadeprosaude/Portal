@@ -2,8 +2,8 @@
     <v-container fluid>
         <v-layout row wrap>
             <div v-if="exams.length !== 0" style="width: 100%">
-                <v-flex sm12 v-for="(exam, i) in exams" :key="i" class="mb-5">
-                    <v-card v-if="name && exam.name.includes(name.toUpperCase())">
+                <v-flex sm12 v-for="(exam, i) in exams.filter((e)=> name && e.name.includes(name.toUpperCase()))" :key="i" class="mb-5">
+                    <v-card >
                         <v-flex xs12 sm12>
                             <v-card color="primary">
                                 <v-layout row wrap>
