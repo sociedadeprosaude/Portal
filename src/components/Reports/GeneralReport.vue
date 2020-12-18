@@ -278,6 +278,42 @@
                 payments.taxaDebito = taxaDebito
                 return payments
             }
+          }
+        }
+      }
+      let payments= {}
+      payments.money = money
+      payments.credito = credito
+      payments.debito = debito
+      payments.taxaCredito = taxaCredito
+      payments.taxaDebito = taxaDebito
+      return payments
+    }
+  },
+  methods: {
+    ShowerCategories(Categories){
+      let ShowerCategories = ''
+      Categories.map(e => {
+        ShowerCategories += ', '+ e.name
+      })
+      return ShowerCategories.substring(1,)
+    },
+        getTotalSumOfProductTransactions(productTransactions) {
+          return productTransactions.reduce((acc, transaction) => {
+            return acc + transaction.quantity
+          }, 0)
+        },
+        getTotalPriceOfProductTransactions(productTransactions,i) {
+          if(i === 1){
+            return productTransactions.reduce((acc, transaction) => {
+              return acc + transaction.price
+            }, 0)
+          }
+          else{
+            return productTransactions.reduce((acc, transaction) => {
+              return acc + transaction.cost
+            }, 0)
+          }
         },
         methods: {
             ShowerCategories(Categories) {

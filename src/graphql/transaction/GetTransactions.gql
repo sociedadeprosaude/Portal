@@ -3,6 +3,7 @@ query GetTransactions($date_start: String, $unit_name: String, $date_final: Stri
     date{
       formatted
     },
+    id,
     discount,
     value,
     paid,
