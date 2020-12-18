@@ -11,7 +11,7 @@
                                     class="mx-5"
                                     color="primary"
                                     v-model="searchSpecialty"
-                                    id="searchEspecialties"
+                                    append-icon="search"
                             />
                         </v-flex>
                         <v-flex sm4 class="text-right pr-3 mt-2">
@@ -23,7 +23,7 @@
                 </v-card>
                 <v-card>
                   <v-card-text>
-                    <ListSpecialties @reload="reload" :specialties="specialties"/>
+                    <ListSpecialties @reload="reload" :specialties="specialties" :name="searchSpecialty"/>
                   </v-card-text>
                 </v-card>
             </v-flex>

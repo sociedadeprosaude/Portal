@@ -22,7 +22,7 @@
                     />
                     <div v-if="search">
                       <div v-for="(exam,i) in products" :key="i">
-                        <div v-if="exam.name.includes(search.toUpperCase()) ">
+                        <div v-if="exam.name.includes(search.toUpperCase())">
                           <listExams @reload="reload" :exams="new Array(exam)" :loading="loading" @clear-search="search = ''"/>
                         </div>
                       </div>

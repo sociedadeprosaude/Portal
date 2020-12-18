@@ -11,7 +11,7 @@
                                     class="mx-5"
                                     color="primary"
                                     v-model="search"
-                                    id="search"
+                                    append-icon="search"
                             />
                         </v-flex>
                         <v-flex sm4 class="text-right pr-3 mt-2">
@@ -22,7 +22,7 @@
 
                 <v-card>
                     <v-card-text v-if="doctors.length !== 0">
-                        <ListDoctors @reload="reload" :doctors=doctors />
+                        <ListDoctors @reload="reload" :doctors=doctors :name="search" />
                     </v-card-text>
                 </v-card>
             </v-flex>
@@ -58,7 +58,7 @@
           },
         }
       },
-        methods: {
+      methods: {
           async reload(){
             console.log('create ?')
             setTimeout(() => {
@@ -71,5 +71,4 @@
             },
         }
     };
-
 </script>
