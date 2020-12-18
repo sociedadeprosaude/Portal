@@ -28,7 +28,7 @@
         <v-data-table
           :headers="headers"
           :search="search"
-          :items="intakesDividedByExam"
+          :items="ExamsFormatArray"
           :sort-by="['quantity']"
           :sort-desc="[true]"
           item-key="name"
@@ -40,8 +40,8 @@
       pageText:'{0}-{1} de {2}'
     }"
         >
-          <template v-slot:item.totalPrice="{ item }">R$ {{item.totalPrice.toFixed(2)}}</template>
-          <template v-slot:item.totalCost="{ item }">R$ {{item.totalCost.toFixed(2)}}</template>
+          <template v-slot:item.price="{ item }">R$ {{item.price.toFixed(2)}}</template>
+          <template v-slot:item.cost="{ item }">R$ {{item.cost.toFixed(2)}}</template>
           <template v-slot:item.profit="{ item }">R$ {{item.profit.toFixed(2)}}</template>
 
           <template v-slot:expanded-item="{ item }">
@@ -114,12 +114,9 @@ export default {
     "optionSelected",
     "headers",
     "subHeaders",
-    "dateBegin",
-    "dateEnd",
     "calcIntakeFromExam",
-    "intakesWithExam",
+    "ExamsFormatArray",
     "exams",
-    "intakesDividedByExam",
     "numSales",
     "totalPrice",
     "totalCost",

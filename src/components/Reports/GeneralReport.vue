@@ -261,7 +261,7 @@ export default {
       Categories.map(e => {
         ShowerCategories += ', '+ e.name
       })
-      Return ShowerCategories
+      return ShowerCategories.substring(1,)
     },
         getTotalSumOfProductTransactions(productTransactions) {
           return productTransactions.reduce((acc, transaction) => {
