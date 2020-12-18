@@ -5,48 +5,50 @@
                 <v-card-title class="font-weight-bold align-lg-center justify-center" v-if="data.Charge[0]">
                     {{ data.Charge[0].balance | moneyFilter }}
                 </v-card-title>
-                <v-card-subtitle style="font-size: small" class="white--text font-italic" v-if="data.Charge[0]">
+                <v-card-subtitle style="font-size: small" class="white--text font-italic"
+                                 v-if="data.Charge[0]">
                     Saldo
                 </v-card-subtitle>
 
                 <v-layout row wrap class="justify-center pt-5">
-                    <v-flex xs3>
-                        <v-menu
-                                ref="menu1"
-                                v-model="menu1"
-                                :close-on-content-click="false"
-                                transition="scale-transition"
-                                offset-y
-                                max-width="290px"
-                                min-width="290px"
-                        >
+                    <v-col>
+                        <v-menu v-model="dateMenuStart">
                             <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                        v-model="dateStart"
-                                        label="Date"
-                                        prepend-icon="mdi-calendar"
+                                        v-model="formattedSelectedStartDate"
+                                        hint="Data inicial"
+                                        persistent-hint
                                         readonly
                                         v-bind="attrs"
                                         v-on="on"
+                                        outlined
+                                        dense
+                                        color="primary"
                                 />
                             </template>
-                            <v-date-picker
-                                    v-model="date"
-                                    no-title
-                                    @input="menu1 = false"
-                            />
+                            <v-date-picker v-model="selectedStartDate" locale="pt-br"/>
                         </v-menu>
-                        <v-text-field rounded solo filled dense color="background"
-                                      placeholder="Data inicial"
-                                      background-color="white"
-                                      v-model="dateStart" append-outer-icon="event"/>
+                    </v-col>
+                    <v-icon class="primary--text pb-5" large>event</v-icon>
+                    <v-col>
+                        <v-menu v-model="dateMenuFinal">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                        v-model="formattedSelectedFinalDate"
+                                        hint="Data final"
+                                        persistent-hint
+                                        readonly
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        outlined
+                                        dense
+                                        color="primary"
 
-                    </v-flex>
-                    <v-flex xs3 class="ml-2">
-                        <v-text-field rounded solo filled dense color="background" class="mr-4"
-                                      background-color="white"
-                                      v-model="dateEnd" placeholder="Data final"/>
-                    </v-flex>
+                                />
+                            </template>
+                            <v-date-picker v-model="selectedFinalDate" locale="pt-br"/>
+                        </v-menu>
+                    </v-col>
                 </v-layout>
 
             </v-card>
@@ -56,12 +58,13 @@
 <script>
     export default {
         name: `HeaderOuttakeOrder`,
-        props: ['data', 'dateStart', 'dateEnd'],
+        props: ['data', 'dateStart', 'dateEnd', 'selectedStartDate','selectedFinalDate', 'formattedSelectedStartDate',
+        'formattedSelectedFinalDate'],
         data: vm => ({
             date: new Date().toISOString().substr(0, 10),
             dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
-            menu1: false,
-            menu2: false,
+            dateMenuStart: false,
+            dateMenuFinal: false,
         }),
 
         computed: {

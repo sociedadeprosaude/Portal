@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid class="fill-height align-start mt-n3  pa-0 background" >
+    <v-container fluid class="fill-height align-start mt-n3 pa-0 background" >
         <v-navigation-drawer
                 v-if="billsToolbar"
                 class="hidden-print-only primary"
@@ -28,7 +28,7 @@
                 class="hidden-print-only primary"
         >
 
-            <v-btn fab small text @click="billsToolbar = !billsToolbar" >
+            <v-btn fab small text @click="billsToolbar = !billsToolbar" class="hidden-md-and-up">
                 <v-icon color="white">menu</v-icon>
             </v-btn>
 
