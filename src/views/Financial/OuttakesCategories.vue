@@ -4,7 +4,7 @@
                 :query="require('@/graphql/category/LoadCategories.gql')"
         >
             <template slot-scope="{ result: { data, loading } }">
-                <v-progress-circular v-if="loading || !data" indeterminate size="500px" class="primary--text"/>
+                <v-progress-circular v-if="loading || !data" indeterminate x-large class="primary--text"/>
                 <v-data-table
                         v-else-if="data"
                         :headers="headers"

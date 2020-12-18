@@ -76,7 +76,7 @@
 <script>
     import {mask} from 'vue-the-mask'
     import moment from "moment";
-    import HeaderOuttakeOrder from "../../Bills/OuttakeOrder/HeaderOuttakeOrder"
+
     import BillsOuttakeOrder from "../../Bills/OuttakeOrder/BillsOuttakeOrder"
 
     export default {
@@ -84,7 +84,7 @@
             mask,
         },
         components: {
-            HeaderOuttakeOrder,
+
             BillsOuttakeOrder
         },
         data() {
@@ -252,7 +252,7 @@
                         dat_pay: {formatted: charge.date_to_pay.formatted}
                     }
                 })
-                console.log('charge: ', charge)
+
                 for (let category of charge.categories) {
                     mutationBuilder.addMutation({
                         mutation: require('@/graphql/transaction/MergeTransactionCategories.gql'),

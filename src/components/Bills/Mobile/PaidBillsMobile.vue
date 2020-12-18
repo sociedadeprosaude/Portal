@@ -14,66 +14,44 @@
                             </v-card-subtitle>
 
                           <v-layout row wrap class="justify-center pt-5">
-                            <v-col >
+                              <v-col sm="2" xs="12">
                               <v-menu v-model="dateMenuStart">
                                 <template v-slot:activator="{ on, attrs }">
                                   <v-text-field
-                                      v-model="formattedSelectedStartDate"
-                                      hint="Data inicial"
-                                      persistent-hint
-                                      readonly
-                                      v-bind="attrs"
-                                      v-on="on"
-                                      outlined
-                                      dense
-                                      
-                                      rounded solo filled dense color="background"
-                                    placeholder="Data inicial"
-                                        append-outer-icon="event"
+                                          v-model="formattedSelectedStartDate"
+                                          readonly
+                                          v-bind="attrs"
+                                          v-on="on"
+                                          outlined
+                                          dense
+                                          rounded
+                                          color="white"
+                                          background-color="white"
                                   />
                                 </template>
                                 <v-date-picker v-model="selectedStartDate" locale="pt-br"/>
                               </v-menu>
                             </v-col>
-                            <v-icon class="primary--text pb-5" large>event</v-icon>
-                            <v-col>
+                              <v-icon class="white--text pb-5 hidden-sm-and-down" large>event</v-icon>
+                              <v-col sm="2" xs="12">
                               <v-menu v-model="dateMenuFinal">
                                 <template v-slot:activator="{ on, attrs }">
                                   <v-text-field
-                                      v-model="formattedSelectedFinalDate"
-                                      hint="Data final"
-                                      persistent-hint
-                                      readonly
-                                      v-bind="attrs"
-                                      v-on="on"
-                                      outlined
-                                      dense
-                                      background-color="white"
-                                    
-                                      rounded solo filled dense color="background"
-                                        placeholder="Data final"
-                                       
-
+                                          v-model="formattedSelectedFinalDate"
+                                          readonly
+                                          v-bind="attrs"
+                                          v-on="on"
+                                          outlined
+                                          dense
+                                          rounded
+                                          color="primary"
+                                          background-color="white"
                                   />
                                 </template>
                                 <v-date-picker v-model="selectedFinalDate" locale="pt-br"/>
                               </v-menu>
                             </v-col>
                           </v-layout>
-                            <v-layout row wrap class="justify-center pt-5">
-                                <v-flex xs3>
-                                    <v-text-field rounded solo filled dense color="background"
-                                                  placeholder="Data inicial"
-                                                  background-color="white"
-                                                  v-model="dateStart" v-mask="mask.date" append-outer-icon="event"/>
-
-                                </v-flex>
-                                <v-flex xs3 class="ml-2">
-                                    <v-text-field rounded solo filled dense color="background" class="mr-4"
-                                                  background-color="white"
-                                                  v-model="dateEnd" v-mask="mask.date" placeholder="Data final"/>
-                                </v-flex>
-                            </v-layout>
                         </v-card>
                     </v-col>
                 </v-row>

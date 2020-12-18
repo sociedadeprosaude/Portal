@@ -7,7 +7,7 @@ import OuttakeOrderMobile from "../components/Reports/Mobile/OuttakeOrderMobile"
 export default [
 
     {
-        path: '/BillsMobile',
+        path: '/pagamento/financeiro',
         name: 'BillsMobile',
         component: BillsMobile,
         meta: {
