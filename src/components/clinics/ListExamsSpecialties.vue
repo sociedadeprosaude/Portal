@@ -38,6 +38,9 @@
                         <span class="font-italic">Não há <strong>exames</strong> cadastrados para esta clínica.</span>
                     </v-card-text>
                 </v-layout>
+              <v-layout v-if="!allExams" class="align-center justify-center" row wrap>
+                <v-progress-circular :size="300" :width="10" color="primary" indeterminate>CARREGANDO...</v-progress-circular>
+              </v-layout>
                 <v-flex xs12 class="mt-4 mb-3">
                     <v-card-title>
                         <span class="text-left primary--text font-weight-bold ml-2">Especialidades</span>
@@ -76,6 +79,9 @@
                         </v-card-text>
                     </v-layout>
                 </v-layout>
+              <v-layout v-if="!allSpecialties" class="align-center justify-center" row wrap>
+                <v-progress-circular :size="300" :width="10" color="primary" indeterminate>CARREGANDO...</v-progress-circular>
+              </v-layout>
             </v-card-text>
             <v-dialog v-model="addExamToClinic" width="500px" text hide-overlay>
                 <Exams @reload="reload" :clinic="clinic" @close-dialog="closeDialogs"/>
