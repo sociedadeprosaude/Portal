@@ -12,7 +12,7 @@
                     color="primary"
                     v-model="searchType"
                     :loading="loading"
-                    id="search"
+                    append-icon="search"
                   />
                 </v-flex>
                 <v-flex sm4 class="text-right pr-3 mt-2">
@@ -27,7 +27,7 @@
 
             <v-card>
               <v-card-text>
-                <listExamsTypes @reloadDelete="reloadDelete" :products="products" />
+                <listExamsTypes @reloadDelete="reloadDelete" :products="products" :name="searchType" />
               </v-card-text>
             </v-card>
           </v-flex>
