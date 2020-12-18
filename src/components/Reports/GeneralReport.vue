@@ -178,9 +178,7 @@
         props: [
             "transactions"
         ],
-        mounted() {
-            console.log('tra', this.transactions)
-        },
+     
         data() {
             return {
                 filter: 'with_product',
@@ -266,11 +264,11 @@
                             } else if (transaction.payment_methods[payment] === 'Débito') {
                                 debito += transaction.payments[payment]
                                 taxaDebito += constants.PAYMENT_METHODS.debit.INITIAL_TAX
-                            }
                         }
                     }
                 }
-                let payments = {}
+               
+                let payments= {}
                 payments.money = money
                 payments.credito = credito
                 payments.debito = debito
@@ -278,43 +276,8 @@
                 payments.taxaDebito = taxaDebito
                 return payments
             }
-          }
-        }
-      }
-      let payments= {}
-      payments.money = money
-      payments.credito = credito
-      payments.debito = debito
-      payments.taxaCredito = taxaCredito
-      payments.taxaDebito = taxaDebito
-      return payments
-    }
-  },
-  methods: {
-    ShowerCategories(Categories){
-      let ShowerCategories = ''
-      Categories.map(e => {
-        ShowerCategories += ', '+ e.name
-      })
-      return ShowerCategories.substring(1,)
-    },
-        getTotalSumOfProductTransactions(productTransactions) {
-          return productTransactions.reduce((acc, transaction) => {
-            return acc + transaction.quantity
-          }, 0)
         },
-        getTotalPriceOfProductTransactions(productTransactions,i) {
-          if(i === 1){
-            return productTransactions.reduce((acc, transaction) => {
-              return acc + transaction.price
-            }, 0)
-          }
-          else{
-            return productTransactions.reduce((acc, transaction) => {
-              return acc + transaction.cost
-            }, 0)
-          }
-        },
+
         methods: {
             ShowerCategories(Categories) {
                 let ShowerCategories = '';
@@ -323,6 +286,7 @@
                 });
                 return ShowerCategories
             },
+
             getTotalSumOfProductTransactions(productTransactions) {
                 return productTransactions.reduce((acc, transaction) => {
                     return acc + transaction.quantity
@@ -362,8 +326,9 @@
             }
 
 
-        }
-    };
+        },
+    }
+}
 </script>
 
 <style scoped>
