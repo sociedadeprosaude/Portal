@@ -54,7 +54,7 @@
         </v-layout>
 
         <v-dialog v-model="editingClinic" width="500px" text hide-overlay>
-            <EditClinic :clinic="clinic" @close-dialog="closeDialogs"/>
+            <EditClinic :clinic="clinic" @close-dialog="closeDialogs" @closeEdit="closeEdit"/>
         </v-dialog>
 
         <v-dialog v-if="clinic" v-model="deletingClinic" max-width="350px">
@@ -128,6 +128,9 @@
                 console.log('for edit:', this.clinic)
                 this.deletingClinic = true;
             },
+          closeEdit(){
+              this.editingClinic = false;
+          },
             closeDialogs() {
                 this.clinic = undefined;
                 this.editingClinic = false;
