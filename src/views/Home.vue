@@ -326,7 +326,9 @@ export default {
       window.open(url)
     },
     logout() {
-      this.$store.dispatch('logOut')
+      this.$store.dispatch('logOut');
+      localStorage.removeItem("token");
+      this.$router.replace('/login');
     },
     profile() {
       this.$router.push('/conta')
@@ -334,9 +336,7 @@ export default {
   },
   computed: {
     user() {
-      const user  = this.$store.getters.user
-      console.log(user)
-      return user
+      return this.$store.getters.user
     },
     userPermissions() {
       let holder = this.$store.getters.user.permissions;

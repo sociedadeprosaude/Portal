@@ -5,6 +5,7 @@ import Home from '@/views/Home'
 import Account from '@/views/Auth/Account'
 import Login from '@/views/Auth/Login'
 import Register from '@/views/Auth/Register'
+import ResetPassword from '@/views/Auth/ResetPassword'
 import Exams from "./views/Register/Exams";
 import Labor from "./views/Personal/Labor";
 import NewBundles from "./views/Register/Bundles";
@@ -68,6 +69,11 @@ let mainRoutes = [
     path: '/login',
     name: 'Login',
     component: Login,
+  },
+  {
+    path: '/reset-password',
+    name: 'ResetPassword',
+    component: ResetPassword,
   },
   {
     path: '/error-authentication',

@@ -1,0 +1,17 @@
+query CurrentColaborator{
+  current_user_colaborator{
+    id,
+    name,
+    cpf,
+    email,
+    group,
+    salary,
+    permissions,
+    birth_date{formatted},
+    clinic:work_in{
+      id,
+      name,
+      logo
+    }
+  }
+}

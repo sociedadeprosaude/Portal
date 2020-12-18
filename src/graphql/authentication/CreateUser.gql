@@ -1,5 +1,5 @@
-mutation($email:String!){
-    CreateUser(email:$email){
+mutation CreateUser ($email:String!, $password:String!){
+    CreateUser(email:$email, password:$password){
         id
     }
 }

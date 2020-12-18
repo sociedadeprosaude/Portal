@@ -60,6 +60,12 @@ if (token) {
   axios.defaults.headers.common['token'] = token
 }
 
+router.beforeEach((to, from, next) => {
+  if (to.name !== 'Login' && to.name !== 'Register' && to.name !== 'ResetPassword' && !store.getters.user) next({ name: 'Login' })
+  else if ((to.name === 'Login' || to.name === 'Register' || to.name === 'ResetPassword') && store.getters.user) next({ name: 'Home' })
+  else next()
+});
+
 Vue.filter('dateFilter', DateFilter);
 Vue.filter('moneyFilter', MoneyFilter);
 

@@ -62,27 +62,24 @@
 </template>
 
 <script>
-    import firebase from 'firebase'
 
     export default {
         name: "Login",
         data() {
             return {
-                email: '',
+                email: undefined,
                 show_password: false,
                 credentialError: false,
-                password: '',
+                password: undefined,
                 passwordError: false,
                 loading: false,
                 errorMessage: undefined,
+                skipSignIn:true,
                 skip:true
             }
         },
         mounted() {
           window.addEventListener('keydown', this.handleEnter)
-          if (firebase.auth().currentUser) {
-                this.$router.push('/')
-            }
         },
         methods: {
           handleEnter(e) {
@@ -94,42 +91,48 @@
 
                 try {
                     this.loading = true;
-                    let user = await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
-
-                    this.skip = false
-                  console.log('user: ', user)
-
-                  this.$apollo.queries.findColaborator.refresh()
+                    this.$apollo.queries.signIn.refresh()
+                    this.skipSignIn = false
                 } catch (e) {
-                    switch (e.code) {
-                        case 'auth/user-not-found':
-                            this.errorMessage = 'Usuário não cadastrado';
-                            break;
-                        case 'auth/wrong-password':
-                            this.errorMessage = 'Senha incorreta';
-                            break
-                    }
-                    setTimeout(() => {
-                        this.errorMessage = undefined
-                    }, 2000)
+                    console.log('Error na autenticação')
                 }
-                this.loading = false
             }
         },
         apollo:{
-            findColaborator:{
-                query: require("@/graphql/authentication/FindUser.gql"),
+            signIn:{
+                query: require("@/graphql/authentication/SignIn.gql"),
                 variables(){
                     return{
-                        email:this.email
+                        email:this.email,
+                        password: this.password
                     }
                 },
                 update(data){
+                    this.skipSignIn = true;
+                    this.skip = false;
+                    localStorage.setItem('token', data.signIn.token);
+                    this.$apollo.queries.currentColaborator.refresh();
+                },
+                error({graphQLErrors}){
+                   this.loading = false;
+                   this.errorMessage = graphQLErrors[0].message
+                },
+                skip(){
+                    return this.skipSignIn;
+                }
+            },
+            currentColaborator:{
+                query: require("@/graphql/authentication/currentColaborator.gql"),
+                update(data){
                     this.skip = true
-                    console.log(data.User[0])
-                    const user = data.User[0].is_colaborator? data.User[0].is_colaborator : data.User[0].is_doctor
-                    this.$store.dispatch('getUser', user);
-                    this.$router.go()
+                    const user = Object.assign({},data.current_user_colaborator)
+                    this.$store.dispatch('setCurrentUser', user);
+                    this.loading = false;
+                    this.$router.push('/');
+                },
+                error({graphQLErrors}){
+                   this.loading = false;
+                   this.errorMessage = graphQLErrors[0].message
                 },
                 skip(){
                     return this.skip

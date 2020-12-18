@@ -83,10 +83,10 @@
                 errorMessage: undefined,
                 registered: false,
                 loading: false,
-                asDoctor: false,
-                crm: undefined,
                 alert: false,
-                skip:true
+                skip:true,
+                skipSignIn:true,
+                skipCurrent: true
             };
         },
         methods: {
@@ -119,12 +119,11 @@
 
             async createUser(){
                 try{
-                    let resp = await firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-                
                     const newUser = await this.$apollo.mutate({
                         mutation: require('@/graphql/authentication/CreateUser.gql'),
                         variables:{
-                            email:this.email
+                            email:this.email,
+                            password: this.password
                         },
                     });
                     const userId = newUser.data.CreateUser.id
@@ -132,7 +131,7 @@
                     const newColaborator = await this.$apollo.mutate({
                         mutation: require('@/graphql/authentication/CreateColaborator.gql'),
                         variables:{
-                                email: resp.user.email,
+                                email: this.email,
                                 name: this.name,
                                 cpf: this.cpf.replace(/\./g, "").replace("-", ""),
                                 telephones: [this.telephone],
@@ -143,11 +142,10 @@
 
                     await this.setRelationUserColaborator(userId, colaboratorId)
 
-                    this.$router.push('/')
-
-                    this.loading = false
+                    this.$apollo.queries.signIn.refresh()
+                    this.skipSignIn = false
                 }catch(error){
-                    this.errorMessage = e.code;
+                    this.errorMessage = error;
                     this.loading = false
                 }
                 
@@ -164,7 +162,7 @@
         },
         apollo:{
             findUser:{
-                query: require("@/graphql/authentication/FindUser.gql"),
+                query: require("@/graphql/authentication/VerifyUserExistsbyEmail.gql"),
                 variables(){
                     return{
                         email:this.email
@@ -172,11 +170,10 @@
                 },
                 update(data){
                     this.skip = true
-                    console.log(data.User[0])
                     const user = data.User ? data.User[0] : undefined
                     
                     if(!user){
-                        this.createUser()
+                        this.createUser();
                     }else{
                         this.loading = false
                         this.alert = true
@@ -184,6 +181,45 @@
                 },
                 skip(){
                     return this.skip
+                }
+            },
+            signIn:{
+                query: require("@/graphql/authentication/SignIn.gql"),
+                variables(){
+                    return{
+                        email:this.email,
+                        password: this.password
+                    }
+                },
+                update(data){
+                    this.skipSignIn = true;
+                    this.skipCurrent = false;
+                    localStorage.setItem('token', data.signIn.token);
+                    this.$apollo.queries.currentColaborator.refresh();
+                },
+                error({graphQLErrors}){
+                   this.loading = false;
+                   this.errorMessage = graphQLErrors[0].message
+                },
+                skip(){
+                    return this.skipSignIn;
+                }
+            },
+            currentColaborator:{
+                query: require("@/graphql/authentication/currentColaborator.gql"),
+                update(data){
+                    this.skip = true
+                    const user = Object.assign({},data.current_user_colaborator)
+                    this.$store.dispatch('setCurrentUser', user);
+                    this.loading = false;
+                    this.$router.push('/');
+                },
+                error({graphQLErrors}){
+                   this.loading = false;
+                   this.errorMessage = graphQLErrors[0].message
+                },
+                skip(){
+                    return this.skipCurrent;
                 }
             }
         }

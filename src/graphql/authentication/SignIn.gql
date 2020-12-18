@@ -1,5 +1,5 @@
 query signIn($email: String, $password: String){
-  signIn(email:$email,password:$password){
+  signIn(email:$email,password:$password, type:"colaborator"){
     token,user_id
   }
 }
