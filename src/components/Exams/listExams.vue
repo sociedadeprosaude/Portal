@@ -1,15 +1,9 @@
 <template>
     <v-container fluid>
-        <v-layout v-if="exams" row nowrap>
-            <v-flex xs12 v-if="loading">
-                <v-progress-circular class="primary--text" indeterminate/>
-            </v-flex>
-            <v-flex xs12 v-if="exams.length === 0 && loading === false">
-                <p>Não há resultado para a pesquisa realizada</p>
-            </v-flex>
+        <v-layout row wrap>
             <div v-if="exams.length !== 0" style="width: 100%">
                 <v-flex sm12 v-for="(exam, i) in exams" :key="i" class="mb-5">
-                    <v-card>
+                    <v-card v-if="name && exam.name.includes(name.toUpperCase())">
                         <v-flex xs12 sm12>
                             <v-card color="primary">
                                 <v-layout row wrap>
@@ -75,7 +69,7 @@
     import createExam from "./CreateExam"
 
     export default {
-        props: ['exams', 'loading'],
+        props: ['exams', 'name'],
 
         components: {createExam},
 

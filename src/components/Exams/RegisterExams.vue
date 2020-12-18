@@ -1,35 +1,28 @@
 <template>
   <v-container fluid>
-    <v-layout row wrap>
+    <v-layout row wrap v-if="products">
       <v-flex sm12>
         <v-card class="pt-3">
           <v-layout row wrap>
             <v-flex sm8>
-<!--              <ApolloQuery
-                  :query="require('@/graphql/products/ReadProcucts.gql')"
-                  :variables="{ type:'EXAM', schedulable:false}"
-              >
-                <template slot-scope="{ result: { data } }">-->
-                  <v-flex xs12 sm12 class="mb-5">
-                    <v-text-field
-                        outlined
-                        placeholder="Exames"
-                        class="mx-5"
-                        color="primary"
-                        v-model="search"
-                        :loading="loading"
-                        id="search"
-                    />
-                    <div v-if="search">
-                      <div v-for="(exam,i) in products" :key="i">
-                        <div v-if="exam.name.includes(search.toUpperCase())">
-                          <listExams @reload="reload" :exams="new Array(exam)" :loading="loading" @clear-search="search = ''"/>
-                        </div>
-                      </div>
+              <v-flex xs12 sm12 class="mb-5">
+                <v-text-field
+                    outlined
+                    placeholder="Exames"
+                    class="mx-5"
+                    color="primary"
+                    v-model="search"
+                    append-icon="search"
+                />
+                <div>
+                  <div>
+                    <div>
+                      <listExams @reload="reload" :exams="products" :name="search"/>
                     </div>
-                  </v-flex>
-<!--                </template>
-              </ApolloQuery>-->
+                  </div>
+                </div>
+              </v-flex>
+
             </v-flex>
             <v-flex sm4 class="text-right pr-3 mt-2">
               <v-btn outlined class="primary--text" @click="newExam = true">cadastrar exame</v-btn>
@@ -37,17 +30,18 @@
           </v-layout>
         </v-card>
         <v-card>
-<!--          <v-card-text v-if="exams.length !== 0">
-            <listExams :exams="exams" :loading="loading" @clear-search="search = ''"/>
-          </v-card-text>-->
         </v-card>
       </v-flex>
       <v-dialog v-model="newExam">
         <createExam @reload="reload" :registed="registed" @close-dialog="newExam = false"/>
       </v-dialog>
     </v-layout>
+    <v-layout class="align-center justify-center" row wrap v-else>
+      <v-progress-circular :size="300" :width="10" color="primary" indeterminate>CARREGANDO...</v-progress-circular>
+    </v-layout>
   </v-container>
 </template>
+
 <script>
   import listExams from "./listExams";
   import createExam from "./CreateExam";
@@ -57,6 +51,7 @@ export default {
   props:['exams'],
   data: () => ({
     search: "",
+    name: undefined,
     loading: undefined,
     newExam: false,
     registed: false,
