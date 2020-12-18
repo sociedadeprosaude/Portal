@@ -3,8 +3,8 @@
         <v-layout row wrap>
             <v-flex style="width: 100%">
                 <v-expansion-panels focusable accordion>
-                    <v-expansion-panel v-for="(clinic, i) in clinics" :key="i" class="mt-3">
-                      <v-card v-if="name && clinic.name.includes(name.toUpperCase())">
+                    <v-expansion-panel v-for="(clinic, i) in clinics.filter((c)=> name ? c.name.includes(name.toUpperCase()) : true)" :key="i" class="mt-3">
+                      <v-card >
                         <v-expansion-panel-header class="text-left font-weight-bold pt-4 pb-3 pl-4 primary white--text">
                             {{clinic.name}}
                             <v-spacer/>
@@ -24,28 +24,6 @@
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                             <ListExamsSpecialties :clinic="clinic" style="width: 100%"/>
-                        </v-expansion-panel-content>
-                      </v-card>
-                      <v-card v-if="!name">
-                        <v-expansion-panel-header class="text-left font-weight-bold pt-4 pb-3 pl-4 primary white--text">
-                          {{clinic.name}}
-                          <v-spacer/>
-                          <v-flex xs1>
-                            <v-tooltip top color="primary">
-                              <template v-slot:activator="{ on }">
-                                <v-btn icon dark v-on="on" @click="editClinic(clinic)">
-                                  <v-icon color="white">edit</v-icon>
-                                </v-btn>
-                              </template>
-                              <span>Editar Clínica</span>
-                            </v-tooltip>
-                          </v-flex>
-                          <template v-slot:actions>
-                            <v-icon color="white">$expand</v-icon>
-                          </template>
-                        </v-expansion-panel-header>
-                        <v-expansion-panel-content>
-                          <ListExamsSpecialties :clinic="clinic" style="width: 100%"/>
                         </v-expansion-panel-content>
                       </v-card>
                     </v-expansion-panel>
