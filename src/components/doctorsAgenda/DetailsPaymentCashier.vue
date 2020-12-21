@@ -330,7 +330,6 @@ export default {
       let pagando = 0;
       if (tamanho === 1 && this.payment.paymentForm[0] !== '') {
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.payment.value[0] = parseFloat(this.total);
         pagando = parseFloat(this.payment.value[0]);
       } else {
         for (let i = 0; i < tamanho; i++) {
