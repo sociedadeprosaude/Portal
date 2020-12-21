@@ -1,0 +1,47 @@
+query($Id:ID!){
+    Transaction(id:$Id){
+    date{
+      formatted
+    },
+    id,
+    discount,
+    value,
+    paid,
+    payments,
+    parcels,
+    payment_methods,
+    description,
+    colaborator {
+        name
+    },
+    user:with_user{
+    name}
+    categories{
+    name
+    },
+    cancelled_by{
+        id,
+        name,
+        cpf
+        },
+    produts: with_productTransaction_relations{
+        price,
+        averageCost,
+        with_charge{
+        id
+        }
+        with_product{
+            name,
+            type, id
+        },
+        with_clinic{
+            name, id
+        }
+        with_consultation{
+                attended_by{
+                    id
+                }
+        }
+    }
+    }
+}

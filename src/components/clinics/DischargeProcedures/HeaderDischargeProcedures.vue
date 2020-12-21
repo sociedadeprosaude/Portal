@@ -39,6 +39,6 @@
             async SearchIntake(number){
                 this.$emit('SearchIntake',number)
             }
-        }
+        },
     };
 </script>

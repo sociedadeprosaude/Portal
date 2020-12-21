@@ -1,18 +1,27 @@
 <template>
     <v-container>
         <header-discharge-procedures @SearchIntake="SearchIntake($event)" ></header-discharge-procedures>
-        <template-discharge-procedures @SuccessUpdate="successUpdateExams = !successUpdateExams"
-                                       :successUpdateExams="successUpdateExams"
-                                       @CheckExams="SendCheckExams()"
-                                       @AddResultExam="AddResultExam($event)"
-                                       @removeFiles="removeFile($event)"
-                                       @dialogContestValue="dialogContestValue = $event"
-                                       :dialogContestValue="dialogContestValue"
-                                       @ContestValue=" FunctionContestValue($event)"
-                                       :loading="loading"
-                                       :outtake="outtake"
-                                       :user="user"
-        ></template-discharge-procedures>
+        <ApolloQuery
+          :query="require('@/graphql/transaction/GetTransactionId.gql')"
+          :variables="{Id:numberIntake}"
+        >
+          <template v-slot="{result: {data, loading, error}}">
+          <template-discharge-procedures
+              v-id="data"
+              @SuccessUpdate="successUpdateExams = !successUpdateExams"
+              :successUpdateExams="successUpdateExams"
+              @CheckExams="SendCheckExams($event)"
+              @AddResultExam="AddResultExam($event)"
+              @removeFiles="removeFile($event)"
+              @dialogContestValue="dialogContestValue = $event"
+              :dialogContestValue="dialogContestValue"
+              @ContestValue=" FunctionContestValue($event)"
+              :loading="loading"
+              :outtake="GetOuttake(data)"
+              :user="user"
+          ></template-discharge-procedures>
+          </template>
+        </ApolloQuery>
     </v-container>
 </template>
 
@@ -36,6 +45,10 @@
             };
         },
         methods: {
+          GetOuttake(data){
+            console.log('data: ', data)
+            return data.Transaction
+          },
             async AddResultExam(values){
                 if(!values.intake.result){
                     values.intake.result = []
@@ -66,21 +79,19 @@
                     path: "/outtakes/resultExams"
                 });
             },
-            async SendCheckExams(){
+            async SendCheckExams(outtake){
                 this.loading= true;
-                await this.$store.dispatch('updatingSpecificOuttake',{outtake: this.outtake.filter( (outtak) => outtak.root === true)[0], exams: this.outtake.filter( (outtak) => outtak.root === true)[0].exams, cnpj: this.user.cnpj})
                 this.loading= false;
-
-                this.successUpdateExams= true;
+                console.log('outtake: ', outtake)
+                /* this.successUpdateExams= true;
                 this.numberIntake = '';
                 for(let outtakes= 0; outtakes <  this.outtake.length; outtakes++ ){
                     this.outtake[outtakes].exams = {}
                 }
-                this.outtake[0].user ='';
+                this.outtake[0].user =''; */
             },
             async SearchIntake(number){
                 this.loading= true;
-                await this.$store.dispatch('getSpecificOuttake',{number:number, cnpj: this.user.cnpj})
                 this.numberIntake = number
                 this.loading= false;
             },
@@ -108,6 +119,6 @@
             contestvalue(){
                 return this.$store.getters.contestValue;
             }
-        }
+        },
     };
 </script>
