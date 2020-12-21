@@ -1,0 +1,17 @@
+query{
+    Room(orderBy:[name_asc], filter:{doctor_not:null}){
+        name,id,previos_ticket,current_ticket, next_ticket_normal, next_ticket_priority, show
+        room_has_tickets{
+            id,name,type,created_at{formatted},called_at{formatted},
+            consultation{
+                id,
+                patient{
+                    id,name
+                }
+            }
+        },
+        doctor{
+            id,name
+        },
+    },
+}
