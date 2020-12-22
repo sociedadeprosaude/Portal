@@ -151,7 +151,7 @@
           </v-flex>
           <v-flex xs4 class="text-center">
             <submit-button
-                :disabled="!patient || cartItems.length === 0 || this.paymentValues !== this.total || this.paymentNull === false"
+                :disabled="paymentDisabled"
                 text="Pagar" :loading="paymentLoading"
                 :success="paymentSuccess" color="primary" @click="pay()">
               Pagar
@@ -353,6 +353,8 @@ export default {
         return true
       }
     },
+    paymentDisabled() {
+      return !this.patient || this.cartItems.length === 0 || this.paymentNull === false    }
   },
   methods: {
     CloseReceipt() {
@@ -742,7 +744,7 @@ export default {
       for (const key in productTransactions) {
         const productTransaction = productTransactions[key];
         let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product && consultation.product.id === productTransaction.id && consultation.status === "Aguardando pagamento")
-        
+
         if (unpaidConsultation) {
           this.saveRelationProductTransaction(unpaidConsultation.id, productTransaction.prodId)
         }

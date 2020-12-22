@@ -9,7 +9,7 @@
                             <v-icon>cancel</v-icon>
                         </v-btn>
                     </div>
-                    
+
                     <v-container>
                         <v-layout row wrap class=" mx-3 align-center">
                             <v-flex xs6 class="text-center">
@@ -305,7 +305,7 @@
                                         </v-flex>
                                         <v-flex xs6 class="text-center">
                                             <submit-button
-                                                    :disabled="!patient || cartItems.length === 0 || this.paymentValues !== this.total || this.paymentNull === false"
+                                                    :disabled="paymentDisabled"
                                                     text="Pagar" :loading="paymentLoading"
                                                     :success="paymentSuccess" color="primary" @click="pay()">
                                                 Pagar
@@ -452,6 +452,16 @@
                     return true
                 }
             },
+          paymentDisabled() {
+              console.log({
+                'patient': this.patient,
+                cartItenslenght: this.cartItems.length,
+                paymentValue: this.paymentValues,
+                total: this.total,
+                paymentNull: this.paymentNull
+              })
+              return !this.patient || this.cartItems.length === 0 || this.paymentValues !== this.total || this.paymentNull === false
+          }
         },
         watch: {
             percentageDiscount: function () {
