@@ -209,6 +209,9 @@ export default {
     },
     async setDoctorToRoom(room, doctor) {
       this.loading = true;
+      if(room && room.doctor){
+        await this.removeDoctorRoom(room);
+      }
       const holder = await this.$apollo.mutate({
         mutation: require('@/graphql/rooms/LoadAllRooms.gql'),
         variables: {property: true},
@@ -223,9 +226,7 @@ export default {
         }
       }
       if(inside === true){
-        console.log('remove')
         await this.removeDoctorRoom(roomOld);
-        console.log('and set')
         await this.$apollo.mutate({
           mutation: require('@/graphql/rooms/AddRelationsRoomDoctor.gql'),
           variables: {
@@ -234,7 +235,6 @@ export default {
           },
         });
       } else {
-        console.log('just set')
         await this.$apollo.mutate({
           mutation: require('@/graphql/rooms/AddRelationsRoomDoctor.gql'),
           variables: {
