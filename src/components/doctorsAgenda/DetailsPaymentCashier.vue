@@ -193,11 +193,8 @@
 import SubmitButton from "../SubmitButton";
 import BudgetToPrint from "../../components/cashier/BudgetToPrint";
 import Receipt from "../cashier/Receipt";
-import gql from 'graphql-tag'
 import MutationBuilder from "../../classes/MutationBuilder"
 import {uuid} from 'vue-uuid'
-
-import functions from "../../utils/functions";
 
 let moment = require('moment');
 
@@ -211,8 +208,6 @@ export default {
   },
   data() {
     return {
-      xDown: undefined,
-      yDown: undefined,
       parcel: 1,
       loadingImp:false,
       parcels: ["1", "2", "3", "4", "5"],
@@ -231,11 +226,9 @@ export default {
       data: moment().format("YYYY-MM-DD HH:mm:ss"),
       parcelas: '1',
       skipPatients: true,
-      totalCusto: 0,
       percentageDiscount: 0,
       moneyDiscount: 0,
       FormasDePagamento: ["Dinheiro", "Crédito", "Débito"],
-      totalNovo: 0,
       budgetToPrint: undefined,
       budgetToPrintDialog: false,
       selectedIntake: undefined,
@@ -244,22 +237,11 @@ export default {
       alertMessage: {
         text: '',
         model: false
-      },
-      clinics: {}
+      }
     }
   },
   computed: {
 
-    doctors: {
-      get: function () {
-        let docArray = [];
-        docArray.push({
-          name: this.noDoctorKeyWord
-        });
-        docArray = docArray.concat(Object.values(this.$store.getters.doctors));
-        return docArray;
-      }
-    },
     selectedDoctor: {
       get() {
         return this.$store.getters.shoppingCartSelectedDoctor
@@ -267,9 +249,6 @@ export default {
       set(val) {
         this.$store.commit('setSelectedDoctor', val)
       }
-    },
-    loadingDoctors() {
-      return !this.$store.getters.doctorsLoaded
     },
 
     selectedUnit() {
@@ -330,7 +309,7 @@ export default {
       let pagando = 0;
       if (tamanho === 1 && this.payment.paymentForm[0] !== '') {
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        pagando = parseFloat(this.payment.value[0]);
+        pagando = parseFloat(this.total);
       } else {
         for (let i = 0; i < tamanho; i++) {
           if (this.payment.value[i] !== '') {
@@ -354,7 +333,7 @@ export default {
       }
     },
     paymentDisabled() {
-      return !this.patient || this.cartItems.length === 0 || this.paymentNull === false    }
+      return !this.patient || this.paymentValues !== this.total || this.cartItems.length === 0 || this.paymentNull === false    }
   },
   methods: {
     CloseReceipt() {
@@ -715,7 +694,7 @@ export default {
         },
 
       })
-          .then((dataa) => {
+          .then(() => {
             this.receipt(this.selectedBudget)
           }).catch((error) => {
             console.error('ligações da transaction nao funcionando: ', error)
