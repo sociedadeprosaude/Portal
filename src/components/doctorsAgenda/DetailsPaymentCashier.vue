@@ -144,7 +144,7 @@
             <v-btn outlined color="primary" @click="SelectNewPatient()">Novo</v-btn>
           </v-flex>
           <v-flex xs4 class="text-center">
-            <v-btn                 :disabled="cartItems.length === 0 || this.paymentValues !== this.total || this.paymentNull === false"
+            <v-btn                 :disabled="printBudgetAvailable"
                                    outlined :loading="loadingImp"
                    color="primary" @click="imprimir()">Imprimir
             </v-btn>
@@ -339,7 +339,16 @@ export default {
       }
     },
     paymentDisabled() {
-      return !this.patient || this.paymentValues !== this.total || this.cartItems.length === 0 || this.paymentNull === false    }
+      return !this.patient
+          // || this.paymentValues !== this.total
+          || this.cartItems.length === 0
+          || this.paymentNull === false
+    },
+    printBudgetAvailable() {
+      return this.cartItems.length === 0
+          // || this.paymentValues !== this.total
+          || this.paymentNull === false
+    }
   },
   methods: {
     CloseReceipt() {
