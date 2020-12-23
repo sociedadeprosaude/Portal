@@ -570,7 +570,7 @@ export default {
           parcels:[this.selectedBudget.parcel.map(p => `"${p}"`)],
         discount:parseFloat(this.selectedBudget.discount) ? parseFloat(this.selectedBudget.discount) : 0,
       date: {
-        formatted: moment(this.selectedBudget.date.formatted).format("YYYY-MM-DDTHH:mm:ss")}
+        formatted: moment().format("YYYY-MM-DDTHH:mm:ss")}
         }
       })
 
@@ -655,7 +655,6 @@ export default {
           }
         })
       }
-      console.log('mutation: ', mutationBuilder.getMutationString())
       let response = await this.$apollo.mutate({
         mutation: mutationBuilder.generateMutationRequest(),
       })
