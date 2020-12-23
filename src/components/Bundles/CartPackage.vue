@@ -101,17 +101,23 @@
                         <v-layout row wrap>
                             <v-flex>
                                 <v-layout wrap class="mt-3">
-                                    <v-flex xs6>
-                                        <v-text-field label="Desconto: %" outlined dense
-                                                      v-model="percentageDiscount">
-                                        </v-text-field>
-                                    </v-flex>
-                                    <v-flex xs5 class="ml-4">
-                                        <v-text-field
-                                                disabled outlined dense
-                                                label="Desconto: R$ " v-model="moneyDiscount">
-                                        </v-text-field>
-                                    </v-flex>
+                                  <v-flex xs5 class="ml-4">
+                                    <v-text-field
+                                        label="Desconto: R$ "
+                                        v-model="moneyDiscount"
+                                        dense
+                                        outlined
+                                    />
+                                  </v-flex>
+                                  <v-flex xs6>
+                                    <v-text-field
+                                        disabled
+                                        label="Desconto: %"
+                                        v-model="PercentageDiscount"
+                                        outlined
+                                        dense
+                                    />
+                                  </v-flex>
                                 </v-layout>
                             </v-flex>
                             <v-flex xs12>
@@ -238,6 +244,21 @@
             }
         },
         computed: {
+          PercentageDiscount(){
+            if(this.$store.getters.getDiscountBudget !== 0){
+              this.moneyDiscount = this.$store.getters.getDiscountBudget
+              this.percentageDiscount = ((100 * this.moneyDiscount)/this.subTotal)
+              this.$store.commit('setDiscount',0)
+            }
+            if(this.moneyDiscount.length === 0){
+              this.moneyDiscount = 0
+              this.percentageDiscount = 0
+            }
+            else{
+              this.percentageDiscount= ((100 * this.moneyDiscount) / this.subTotal)
+            }
+            return this.percentageDiscount.toFixed(2)
+          },
             listPackage() {
                 return Object.values(this.$store.getters.bundles);
             },
@@ -298,14 +319,12 @@
                 }
                 return total
             },
-            total() {
-                return (parseFloat(this.subTotal) - parseFloat(this.moneyDiscount)).toFixed(2)
-            },
-        },
-        watch: {
-            percentageDiscount: function () {
-                this.moneyDiscount = ((this.percentageDiscount * this.subTotal) / 100);
-            },
+          total() {
+            if(this.moneyDiscount.length === 0){
+              return (parseFloat(this.subTotal).toFixed(2))
+            }
+            return (parseFloat(this.subTotal) - parseFloat(this.moneyDiscount)).toFixed(2)
+          },
         },
         mounted() {
             this.$store.dispatch('loadBundle');
