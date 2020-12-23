@@ -316,6 +316,9 @@ export default {
           this.payment.value[0] = parseFloat(this.total)
           pagando = parseFloat(this.total);
         }
+        else if(this.payment.paymentForm[1] === undefined && this.payment.paymentForm[0]==='Crédito' && parseFloat(this.payment.value[0]) > 0.00){
+          pagando = parseFloat(this.total);
+        }
       } else {
         for (let i = 0; i < tamanho; i++) {
           if (this.payment.value[i] !== '') {
