@@ -531,6 +531,18 @@
                                 </submit-button>
 
                             </v-flex>
+                          <v-flex xs12>
+                            <v-alert
+                                v-model="foundAlert"
+                                outlined
+                                type="warning"
+                                dismissible
+                            >
+                                <div>
+                                  {{ this.alert }}
+                                </div>
+                            </v-alert>
+                          </v-flex>
                         </v-layout>
                     </v-card>
                 </v-expand-transition>
@@ -581,6 +593,8 @@
                 birthDate: undefined,
                 email: undefined,
                 sex: undefined,
+                foundAlert: false,
+                alert: '',
                 telephones: [''],
                 addresses: [],
                 dependents: [],
@@ -612,6 +626,7 @@
                 skipPatientsNum: true
 
 
+
         }),
         computed: {
             selectedPatient() {
@@ -621,7 +636,6 @@
                     this.cpf = user.cpf;
                     this.numAss = user._id
                 }
-                console.log('user: ', user)
                 return user
             },
             selectedDependent() {
@@ -714,14 +728,26 @@
                     dependents: this.dependents,
                 };
                 let finaly= parseInt(patient.addresses.length) + parseInt(patient.dependents.length)
-                
+              let searchUser = await this.$apollo.mutate({
+                mutation: require ('@/graphql/patients/searchPatientsCpf.gql'),
+                variables:{
+                  cpf: this.cpf.replace(/\./g, '').replace('-', '')
+                }
+              })
+              searchUser = searchUser.data.Patient[0]
+              if(searchUser){
+                this.foundAlert= true
+                this.alert = 'Usuário já existente'
+                this.loading = false;
+              }
+               else{
                 const responsePatient = await this.savePatient(patient)
                 await this.saveDependents(patient, responsePatient.id)
                 await this.saveAddress(patient,responsePatient.id)
-              this.$store.commit('setSelectedPatient', patient);
-
-              this.addPatient = !this.addPatient
+                this.$store.commit('setSelectedPatient', patient);
+                this.addPatient = !this.addPatient
                 this.loading = false;
+              }
             },
 
             async savePatient(patient){
@@ -739,7 +765,6 @@
                 if(this.selectedPatient){
                     nameMutation = "UpdatePatient";
                 }else{
-                    console.log(moment().format('YYYY-MM-DDTHH:mm'))
                     let created_at = moment().format('YYYY-MM-DDTHH:mm')
                     nameMutation = "CreatePatient";
                     variables.created_at = {formatted: created_at}
@@ -864,7 +889,10 @@
                     await this.selectUser(users[0]);
                 }
             },
-
+            clearAlert(){
+              this.foundAlert = !this.foundAlert
+              this.alert = ''
+            },
             selectDependent(dependent) {
                 this.$store.dispatch('setSelectedDependent', dependent);
                 this.dependentName = dependent.name;
@@ -873,7 +901,6 @@
             async selectUser(user) {
                 if (user) {
                     this.fillFormUser(user);
-                    console.log('SelectUSER')
                     this.$apollo.mutate({
                         mutation:require('@/graphql/patients/CreateAttendancePatient.gql'),
                         variables:{
@@ -896,7 +923,6 @@
                     this.$emit('removed');
                     localStorage.removeItem('patient');
                 }
-                console.log('user: ', user)
                 this.$store.commit('setSelectedPatient', user);
                 this.$store.commit('clearSelectedDependent');
                 this.foundUsers = undefined;
