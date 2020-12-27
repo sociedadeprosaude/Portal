@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueApollo from 'vue-apollo'
 import { createApolloClient, restartWebsockets } from 'vue-cli-plugin-apollo/graphql-client'
+import API_URL from './services/api';
 
 // Install the vue plugin
 Vue.use(VueApollo);
@@ -9,7 +10,7 @@ Vue.use(VueApollo);
 const AUTH_TOKEN = 'token';
 
 // Http endpoint
-const httpEndpoint = process.env.NODE_ENV === 'development' ?  'http://localhost:4001/graphql': 'https://grand-stack-backend.prodevs.vercel.app/graphql'
+const httpEndpoint = API_URL;
 
 // const httpEndpoint = process.env.VUE_APP_GRAPHQL_HTTP || 'http://localhost:4001/graphql'
 
