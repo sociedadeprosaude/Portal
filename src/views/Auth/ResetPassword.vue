@@ -12,7 +12,9 @@
                         <v-form ref="form" lazy-validation>
                             <v-text-field
                                 v-model="password"
-                                type="password"
+                                :append-icon="show_password ? 'visibility' : 'visibility_off'"
+                                :type="show_password ? 'text' : 'password'"
+                                @click:append="show_password = !show_password"
                                 :rules="rules"
                                 hint="Senha"
                                 persistent-hint
@@ -25,7 +27,9 @@
 
                             <v-text-field
                                 v-model="confirmPassword"
-                                type="password"
+                                :append-icon="show_password ? 'visibility' : 'visibility_off'"
+                                :type="show_password ? 'text' : 'password'"
+                                @click:append="show_password = !show_password"
                                 :rules="[confirmPasswordRules]"
                                 hint="Confirmar Senha"
                                 persistent-hint
@@ -79,6 +83,7 @@
                 rules: [v => !!v || "Preencha o campo"],
                 loading: false,
                 token:undefined,
+                show_password: false,
                 alert: false,
                 messageError: undefined,
                 successReset:false

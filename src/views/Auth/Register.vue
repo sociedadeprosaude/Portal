@@ -23,14 +23,23 @@
                                 <v-text-field outlined v-model="email" label="Email"/>
                             </v-flex>
                             <v-flex xs12>
-                                <v-text-field outlined v-model="password" label="Senha" type="password"/>
+                                <v-text-field
+                                    :append-icon="show_password ? 'visibility' : 'visibility_off'"
+                                    :type="show_password ? 'text' : 'password'"
+                                    @click:append="show_password = !show_password"
+                                    outlined
+                                    v-model="password"
+                                    label="Senha"
+                                />
                             </v-flex>
                             <v-flex xs12>
                                 <v-text-field
-                                        outlined
-                                        v-model="confirm_password"
-                                        label="Confirmação de senha"
-                                        type="password"
+                                    :append-icon="show_password ? 'visibility' : 'visibility_off'"
+                                    :type="show_password ? 'text' : 'password'"
+                                    @click:append="show_password = !show_password"
+                                    outlined
+                                    v-model="confirm_password"
+                                    label="Confirmação de senha"
                                 />
                             </v-flex>
                             <v-flex xs12>
@@ -77,6 +86,7 @@
                 email: "",
                 password: "",
                 confirm_password: "",
+                show_password: false,
                 telephone: "",
                 cpf: "",
                 name: "",

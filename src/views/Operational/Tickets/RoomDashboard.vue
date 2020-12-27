@@ -209,13 +209,40 @@ export default {
     },
     async setDoctorToRoom(room, doctor) {
       this.loading = true;
-      await this.$apollo.mutate({
-        mutation: require('@/graphql/rooms/AddRelationsRoomDoctor.gql'),
-        variables: {
-          idRoom: room.id,
-          idDoctor: doctor.id,
-        },
-      });
+      if(room && room.doctor){
+        await this.removeDoctorRoom(room);
+      }
+      const holder = await this.$apollo.mutate({
+        mutation: require('@/graphql/rooms/LoadAllRooms.gql'),
+        variables: {property: true},
+      })
+      let rooms = holder.data.Room
+      let inside = false
+      let roomOld;
+      for(let doc in rooms){
+        if(rooms[doc].doctor.id === doctor.id){
+          inside = true
+          roomOld = rooms[doc]
+        }
+      }
+      if(inside === true){
+        await this.removeDoctorRoom(roomOld);
+        await this.$apollo.mutate({
+          mutation: require('@/graphql/rooms/AddRelationsRoomDoctor.gql'),
+          variables: {
+            idRoom: room.id,
+            idDoctor: doctor.id,
+          },
+        });
+      } else {
+        await this.$apollo.mutate({
+          mutation: require('@/graphql/rooms/AddRelationsRoomDoctor.gql'),
+          variables: {
+            idRoom: room.id,
+            idDoctor: doctor.id,
+          },
+        });
+      }
       await this.$apollo.queries.LoadRoomsOfSector.refresh();
       this.doctorsListDialog.active = false
       this.loading = false;

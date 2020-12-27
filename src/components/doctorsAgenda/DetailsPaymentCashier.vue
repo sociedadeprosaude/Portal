@@ -144,14 +144,14 @@
             <v-btn outlined color="primary" @click="SelectNewPatient()">Novo</v-btn>
           </v-flex>
           <v-flex xs4 class="text-center">
-            <v-btn                 :disabled="cartItems.length === 0 || this.paymentValues !== this.total || this.paymentNull === false"
+            <v-btn                 :disabled="printBudgetAvailable"
                                    outlined :loading="loadingImp"
                    color="primary" @click="imprimir()">Imprimir
             </v-btn>
           </v-flex>
           <v-flex xs4 class="text-center">
             <submit-button
-                :disabled="!patient || cartItems.length === 0 || this.paymentValues !== this.total || this.paymentNull === false"
+                :disabled="paymentDisabled"
                 text="Pagar" :loading="paymentLoading"
                 :success="paymentSuccess" color="primary" @click="pay()">
               Pagar
@@ -193,11 +193,8 @@
 import SubmitButton from "../SubmitButton";
 import BudgetToPrint from "../../components/cashier/BudgetToPrint";
 import Receipt from "../cashier/Receipt";
-import gql from 'graphql-tag'
 import MutationBuilder from "../../classes/MutationBuilder"
 import {uuid} from 'vue-uuid'
-
-import functions from "../../utils/functions";
 
 let moment = require('moment');
 
@@ -211,8 +208,6 @@ export default {
   },
   data() {
     return {
-      xDown: undefined,
-      yDown: undefined,
       parcel: 1,
       loadingImp:false,
       parcels: ["1", "2", "3", "4", "5"],
@@ -231,11 +226,9 @@ export default {
       data: moment().format("YYYY-MM-DD HH:mm:ss"),
       parcelas: '1',
       skipPatients: true,
-      totalCusto: 0,
       percentageDiscount: 0,
       moneyDiscount: 0,
       FormasDePagamento: ["Dinheiro", "Crédito", "Débito"],
-      totalNovo: 0,
       budgetToPrint: undefined,
       budgetToPrintDialog: false,
       selectedIntake: undefined,
@@ -244,22 +237,11 @@ export default {
       alertMessage: {
         text: '',
         model: false
-      },
-      clinics: {}
+      }
     }
   },
   computed: {
 
-    doctors: {
-      get: function () {
-        let docArray = [];
-        docArray.push({
-          name: this.noDoctorKeyWord
-        });
-        docArray = docArray.concat(Object.values(this.$store.getters.doctors));
-        return docArray;
-      }
-    },
     selectedDoctor: {
       get() {
         return this.$store.getters.shoppingCartSelectedDoctor
@@ -267,9 +249,6 @@ export default {
       set(val) {
         this.$store.commit('setSelectedDoctor', val)
       }
-    },
-    loadingDoctors() {
-      return !this.$store.getters.doctorsLoaded
     },
 
     selectedUnit() {
@@ -329,9 +308,17 @@ export default {
       let tamanho = this.payment.paymentForm.length;
       let pagando = 0;
       if (tamanho === 1 && this.payment.paymentForm[0] !== '') {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.payment.value[0] = parseFloat(this.total);
-        pagando = parseFloat(this.payment.value[0]);
+        if(this.payment.paymentForm[1] === undefined && this.payment.paymentForm[0]==='Crédito'  && parseFloat(this.payment.value[0]) === 0.00){
+          this.payment.value[0] = parseFloat(this.total)
+          pagando = parseFloat(this.total);
+        }
+        else if(this.payment.paymentForm[1] === undefined && this.payment.paymentForm[0] !=='Crédito'){
+          this.payment.value[0] = parseFloat(this.total)
+          pagando = parseFloat(this.total);
+        }
+        else if(this.payment.paymentForm[1] === undefined && this.payment.paymentForm[0]==='Crédito' && parseFloat(this.payment.value[0]) > 0.00){
+          pagando = parseFloat(this.total);
+        }
       } else {
         for (let i = 0; i < tamanho; i++) {
           if (this.payment.value[i] !== '') {
@@ -354,6 +341,17 @@ export default {
         return true
       }
     },
+    paymentDisabled() {
+      return !this.patient
+          // || this.paymentValues !== this.total
+          || this.cartItems.length === 0
+          || this.paymentNull === false
+    },
+    printBudgetAvailable() {
+      return this.cartItems.length === 0
+          // || this.paymentValues !== this.total
+          || this.paymentNull === false
+    }
   },
   methods: {
     CloseReceipt() {
@@ -590,7 +588,7 @@ export default {
           parcels:[this.selectedBudget.parcel.map(p => `"${p}"`)],
         discount:parseFloat(this.selectedBudget.discount) ? parseFloat(this.selectedBudget.discount) : 0,
       date: {
-        formatted: moment(this.selectedBudget.date.formatted).format("YYYY-MM-DDTHH:mm:ss")}
+        formatted: moment().format("YYYY-MM-DDTHH:mm:ss")}
         }
       })
 
@@ -675,7 +673,6 @@ export default {
           }
         })
       }
-      console.log('mutation: ', mutationBuilder.getMutationString())
       let response = await this.$apollo.mutate({
         mutation: mutationBuilder.generateMutationRequest(),
       })
@@ -714,7 +711,7 @@ export default {
         },
 
       })
-          .then((dataa) => {
+          .then(() => {
             this.receipt(this.selectedBudget)
           }).catch((error) => {
             console.error('ligações da transaction nao funcionando: ', error)
@@ -743,7 +740,7 @@ export default {
       for (const key in productTransactions) {
         const productTransaction = productTransactions[key];
         let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product && consultation.product.id === productTransaction.id && consultation.status === "Aguardando pagamento")
-        
+
         if (unpaidConsultation) {
           this.saveRelationProductTransaction(unpaidConsultation.id, productTransaction.prodId)
         }
