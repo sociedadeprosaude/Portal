@@ -5,7 +5,7 @@ node_modules
 /dist
 
 /functions/serviceAccountKey.json
-/src/services/api.js
+src/services/api.js
 
 # local env files
 .env.local
