@@ -57,7 +57,7 @@
                 color="white"
                 rounded
                 :to="{ name: 'AgendamentoConsultas', params: { q: consultation, type:'Retorno'}}"
-                :disabled="consultation.status !== 'Pago' || consultation.regress"
+                :disabled="!consultation.consultation_hour.formatted || consultation.regress"
                 v-if="consultation.type !== 'Retorno' && consultation.product"
             >Retorno</v-btn>
             <v-btn
@@ -152,7 +152,7 @@ export default {
   methods: {
     disabledDelete(consultation){
       if(consultation.status ){
-        if(consultation.status === 'Cancelado' || consultation.consultation_hour.formatted !== null){
+        if(consultation.status === 'Cancelado' /* || consultation.consultation_hour.formatted !== null */){
           return true
         }else{
           return false
