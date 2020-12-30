@@ -1,9 +1,8 @@
 <template>
     <v-container class="ma-0 pa-0" fluid>
         <ApolloQuery :query="require('@/graphql/transaction/LoadBillsPaid.gql')"
-                     :variables="{ date_start: formattedDateStart(selectedStartDate), date_end: formattedDateEnd(selectedFinalDate)}"
+                     :variables="{ date_start: formattedDateStart(formattedSelectedStartDate), date_end: formattedDateEnd(formattedSelectedFinalDate)}"
         >
-            {{formattedDateStart(formattedSelectedStartDate)}}
             <template v-slot="{result: {data, loading}}">
                 <v-row class="align-center justify-center">
                     <v-col cols="12" xs="12" class="primary mt-n5">
@@ -56,14 +55,13 @@
                         </v-card>
                     </v-col>
                 </v-row>
-
                 <v-layout row wrap class="justify-center fill-height mt-4" v-if="!data || loading">
                     <v-progress-circular indeterminate color="primary" large :size="200"/>
                 </v-layout>
                 <v-container fluid class="ma-0 " v-if="data && data.length === 0">
                     <v-card elevation="10" class="pa-4">Não há contas pagas neste mês</v-card>
                 </v-container>
-                <div v-if="data">{{data}}</div>
+
                 <v-row v-if="data && data.length !== 0" class="align-center justify-center">
                     <v-col md="8" xs="12">
                         <v-card class="pa-2 pb-0 my-0 elevation-0 mb-5"
@@ -98,10 +96,12 @@
                                     <v-divider color="grey"/>
                                 </v-flex>
                                 <v-flex xs12 class="text-start">
-                                    <span style="font-size: small">Colaborador: </span><span
+                                    <span style="font-size: small">Colaborador: </span>
+                                    <span v-if="bill.colaborator[0]"
                                         style="font-weight: bold; font-size: small">
                                         {{bill.colaborator[0].name}}
                                     </span>
+                                    <span v-else style="font-weight: bold; font-size: small">Colaborator não identificado</span>
                                 </v-flex>
 
                                 <v-flex xs12 class="mt-3">
@@ -305,22 +305,22 @@
             }
         },
         computed: {
-          formattedSelectedStartDate: {
-            get() {
-              return moment(this.selectedStartDate).format("DD/MM/YYYY")
+            formattedSelectedStartDate: {
+                get() {
+                    return moment(this.selectedStartDate).format("DD/MM/YYYY")
+                },
+                set(val) {
+                    this.selectedDate = val
+                }
             },
-            set(val) {
-              this.selectedDate = val
-            }
-          },
-          formattedSelectedFinalDate: {
-            get() {
-              return moment(this.selectedFinalDate).format("DD/MM/YYYY")
+            formattedSelectedFinalDate: {
+                get() {
+                    return moment(this.selectedFinalDate).format("DD/MM/YYYY")
+                },
+                set(val) {
+                    this.selectedDate = val
+                }
             },
-            set(val) {
-              this.selectedDate = val
-            }
-          },
             months() {
                 let now = moment();
                 let fiveMonthsAgo = now.add(-5, "M").clone();

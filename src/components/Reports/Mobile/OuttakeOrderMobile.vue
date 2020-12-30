@@ -3,7 +3,7 @@
         <ApolloQuery :query="require('@/graphql/transaction/LoadBillsToPay.gql')"
                      :variables="{ date_start: formattedDateStart(formattedSelectedStartDate), date_end: formattedDateEnd(formattedSelectedFinalDate), type: 'bill'}"
         >
-            {{formattedDateStart(formattedSelectedStartDate)}}
+
             <template v-slot="{result: {data, loading}, query}">
                 <v-row class="align-center justify-center">
                     <v-col cols="12" xs="12" class="primary mt-n5">
@@ -208,11 +208,11 @@
             // },
             formattedDateStart(date) {
                 date = date + '00:00:00';
-                return moment(date, 'DD/MM/YYYYHH:mm:ss').format('YYYY-MM-DDTHH:mm:ss')
+                return moment(date, 'DD/MM/YYYYHH:mm:ss').format('YYYY-MM-DDTHH:mm:ssZ')
             },
             formattedDateEnd(date) {
                 date = date + '23:59:59';
-                return moment(date, 'DD/MM/YYYYHH:mm:ss').format('YYYY-MM-DDTHH:mm:ss')
+                return moment(date, 'DD/MM/YYYYHH:mm:ss').format('YYYY-MM-DDTHH:mm:ssZ')
             },
             outtakesByDate(outtakes) {
                 let res = {};
