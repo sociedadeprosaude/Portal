@@ -61,8 +61,8 @@ if (token) {
 }
 
 router.beforeEach((to, from, next) => {
-  if (to.name !== 'Login' && to.name !== 'Register' && to.name !== 'ResetPassword' && !store.getters.user) next({ name: 'Login' })
-  else if ((to.name === 'Login' || to.name === 'Register' || to.name === 'ResetPassword') && store.getters.user) next({ name: 'Home' })
+  if (to.name !== 'Login' && to.name !== 'Register' && to.name !== 'ResetPassword' && to.name !== 'ForgotPassword' && !store.getters.user) next({ name: 'Login' })
+  else if ((to.name === 'Login' || to.name === 'Register' || to.name === 'ResetPassword' || to.name === 'ForgotPassword') && store.getters.user) next({ name: 'Home' })
   else next()
 });
 

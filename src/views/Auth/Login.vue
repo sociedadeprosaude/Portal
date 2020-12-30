@@ -27,6 +27,10 @@
                                 :error="passwordError"
                                 prepend-icon="fingerprint">
                         </v-text-field>
+                        <v-row >
+                            <v-spacer></v-spacer>
+                            <v-btn class="subtitle-1" text to="/forgot-password" style="text-transform:none">Esqueci minha senha</v-btn>
+                        </v-row>
                     </v-card-text>
                     <v-card-actions>
                         <v-layout row wrap>
