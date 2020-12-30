@@ -95,38 +95,28 @@
         computed: {
             Transactions() {
                 let transactions = this.TransactionsFixed
-                console.log('data inicial mes: ', this.year + '-' + this.month + '-01')
-                console.log('transactions: ', transactions.filter(e => (e.date.formatted.substring(0, 11) >= (this.year + '-' + this.month + '-01')) && (e.date.formatted.substring(0, 11) <= (moment(this.year + '-' + this.month + '-01').add(1, 'months').format('YYYY-MM-DD')))))
                 return transactions.filter(e => (e.date.formatted.substring(0, 11) >= (this.year + '-' + this.month + '-01')) && (e.date.formatted.substring(0, 11) <= (moment(this.year + '-' + this.month + '-01').add(1, 'months').format('YYYY-MM-DD'))))
             },
             yearsNew() {
                 let years = []
                 let year = moment().format('YYYY')
-                console.log('year:', year)
                 for (let i = parseInt(this.lastYear); i <= parseInt(year); i++) {
-                    console.log('i:', i)
                     years.push(i.toString())
                 }
-                console.log('years: ', years)
                 return years
             },
             monthsNew() {
                 let months = []
                 let month = moment().format('MM')
-                console.log('month:', month)
-                console.log('lastMonth,', this.lastMonth)
                 if (this.lastYear === moment().format('YYYY')) {
                     for (let i = parseInt(this.lastMonth); i <= parseInt(month); i++) {
-                        console.log('i:', i)
                         months.push(i.toString())
                     }
                 } else {
                     for (let i = parseInt(this.lastMonth); i <= 12; i++) {
-                        console.log('i:', i)
                         months.push(i.toString())
                     }
                 }
-                console.log('months: ', months)
                 return months
             },
             selectedUnit() {

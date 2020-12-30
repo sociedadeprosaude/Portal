@@ -106,7 +106,6 @@ export default {
   methods: {
     PatientsFormatArray(patients){
       let PatientsArray= []
-      console.log('patients: ', patients)
       patients.map(e =>{
         PatientsArray.push({
           Nome: e.name? e.name :'error',
@@ -117,7 +116,6 @@ export default {
     },
     ExportPatients(patientsArray){
       const json2csvParser = new Parser({ fields});
-      console.log('aaa', patientsArray)
       let formattedPatients = patientsArray.map(p => {
         return {
           'First Name': p.Nome.trim().split(' ')[0],
@@ -168,13 +166,6 @@ export default {
         }
       }
       return  'Não Atendido'
-    },
-    print(item) {
-      console.log('item: ', item)
-      for (let ite in  item ){
-        console.log('1- ', item[ite])
-      }
-
     }
   }
 };

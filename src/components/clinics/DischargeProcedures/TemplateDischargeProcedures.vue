@@ -4,23 +4,23 @@
             <v-flex xs12>
                 <v-divider/>
             </v-flex>
-            <p v-if="outtake.length > 0" class="mt-3 font-italic font-weight-bold"> Paciente: {{outtake[0].user.name}}</p>
+            <p v-if="outtake.length > 0" class="mt-3 font-italic font-weight-bold"> Paciente: {{outtake[0].user[0].name}}</p>
             <v-flex xs12>
                 <v-divider/>
             </v-flex>
             <v-flex xs12 v-for="(outtak,indeex) in outtake" v-bind:key="indeex">
-                <v-card class="elevation-2 my-3" v-for="(intake,index) in outtak.exams" v-bind:key="index">
+                <v-card class="elevation-2 my-3" v-for="(intake,index) in outtak.produts" v-bind:key="index">
                     <v-layout row wrap>
                         <v-flex xs6 md3 class="align-center justify-center">
                             <p class="font-weight-black mt-5">
-                                {{intake.name}}
+                                {{intake.with_product.name}}
                             </p>
                         </v-flex>
                         <v-flex xs1 md1>
                             <v-divider class="primary" vertical/>
                         </v-flex>
                         <v-flex xs5 md1 class="text-center align-center justify-center">
-                            <p class="mt-5"> PREÇO: {{intake.cost}}</p>
+                            <p class="mt-5"> PREÇO: {{intake.averageCost}}</p>
                         </v-flex>
                         <v-flex class="hidden-sm-and-down" md1>
                             <v-divider class="primary" vertical/>
@@ -82,7 +82,7 @@
             <v-spacer/>
             <v-flex xs10 md11/>
             <v-flex xs2 md1>
-                <v-btn color="success" @click="SendCheckExams"> Enviar</v-btn>
+                <v-btn color="success" @click="SendCheckExams(outtake)"> Enviar</v-btn>
             </v-flex>
             <v-flex xs12 v-if="loading">
                 <v-progress-linear color="primary" indeterminate/>
@@ -158,8 +158,8 @@
                 }
                 this.$emit('AddResultExam',values)
             },
-            async SendCheckExams(){
-                this.$emit('CheckExams')
+            async SendCheckExams(outtake){
+                this.$emit('CheckExams', outtake)
             }
         }
     };
