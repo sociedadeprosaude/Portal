@@ -1,15 +1,15 @@
 query($dateStart:String, $dateEnd:String){
   	ProductTransaction
   	(filter:{AND: [{with_transaction:{date_gte:{formatted:$dateStart}}},{with_transaction:{date_lte:{formatted:$dateEnd}}},{with_product:{type:"EXAM"}}]}){
-      id, cost, price,averageCost
-      product:with_product{
-        name
-       }
-       transaction:with_transaction{
-            date{formatted}
-       }
-       clinic:with_clinic{
-       name
-       }
+          id, cost, price,averageCost
+          product:with_product{
+            name
+           }
+           transaction:with_transaction{
+                date{formatted}
+           }
+           clinic:with_clinic{
+           name
+           }
     }
 }

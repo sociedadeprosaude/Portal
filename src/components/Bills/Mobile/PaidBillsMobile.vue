@@ -3,7 +3,8 @@
         <ApolloQuery :query="require('@/graphql/transaction/LoadBillsPaid.gql')"
                      :variables="{ date_start: formattedDateStart(selectedStartDate), date_end: formattedDateEnd(selectedFinalDate)}"
         >
-            <template v-slot="{result: {data}}">
+            {{formattedDateStart(formattedSelectedStartDate)}}
+            <template v-slot="{result: {data, loading}}">
                 <v-row class="align-center justify-center">
                     <v-col cols="12" xs="12" class="primary mt-n5">
                         <v-card class="elevation-0 white--text mt-n2 mt-md-2 primary" style="border-radius: 0">
@@ -56,12 +57,13 @@
                     </v-col>
                 </v-row>
 
-                <v-layout row wrap class="justify-center fill-height mt-4" v-if="!data">
+                <v-layout row wrap class="justify-center fill-height mt-4" v-if="!data || loading">
                     <v-progress-circular indeterminate color="primary" large :size="200"/>
                 </v-layout>
                 <v-container fluid class="ma-0 " v-if="data && data.length === 0">
                     <v-card elevation="10" class="pa-4">Não há contas pagas neste mês</v-card>
                 </v-container>
+                <div v-if="data">{{data}}</div>
                 <v-row v-if="data && data.length !== 0" class="align-center justify-center">
                     <v-col md="8" xs="12">
                         <v-card class="pa-2 pb-0 my-0 elevation-0 mb-5"
@@ -341,12 +343,12 @@
         },
         methods: {
           formattedDateStart(date) {
-            date = date + '00:00:00'
-            return moment(date, 'YYYY-MM-DDHH:mm:ss').format('YYYY-MM-DDTHH:mm:ss')
+              date = date + '00:00:00';
+              return moment(date, 'DD/MM/YYYYHH:mm:ss').format('YYYY-MM-DDTHH:mm:ss')
           },
           formattedDateEnd(date) {
-            date = date + '23:59:59'
-            return moment(date, 'YYYY-MM-DDHH:mm:ss').format('YYYY-MM-DDTHH:mm:ss')
+              date = date + '23:59:59'
+              return moment(date, 'DD/MM/YYYYHH:mm:ss').format('YYYY-MM-DDTHH:mm:ss')
           },
 
             totalValue (data) {

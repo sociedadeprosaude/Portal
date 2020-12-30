@@ -3,6 +3,7 @@
         <ApolloQuery :query="require('@/graphql/transaction/LoadBillsToPay.gql')"
                      :variables="{ date_start: formattedDateStart(formattedSelectedStartDate), date_end: formattedDateEnd(formattedSelectedFinalDate), type: 'bill'}"
         >
+            {{formattedDateStart(formattedSelectedStartDate)}}
             <template v-slot="{result: {data, loading}, query}">
                 <v-row class="align-center justify-center">
                     <v-col cols="12" xs="12" class="primary mt-n5">

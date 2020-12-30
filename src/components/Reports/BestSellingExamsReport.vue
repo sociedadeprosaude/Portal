@@ -54,7 +54,7 @@
                                     class="subTable"
                                     dense
                                     single-expand
-                                    :headers="subHeaders"
+
                                     :items="item.intakes"
                                     item-key="intakeId"
                                     :footer-props="{
@@ -126,7 +126,6 @@
             "options",
             "optionSelected",
             "headers",
-            "subHeaders",
             "calcIntakeFromExam",
             "ExamsFormatArray",
             "exams",

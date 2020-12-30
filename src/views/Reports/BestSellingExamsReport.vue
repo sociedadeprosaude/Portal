@@ -2,7 +2,7 @@
     <v-container>
         <v-card>
             <v-row class="justify-center">
-                <v-col sm="4" xs="12">
+                <v-col sm="3" xs="12">
                     <v-menu v-model="dateMenuStart">
                         <template v-slot:activator="{ on, attrs }">
                             <v-text-field
@@ -21,7 +21,7 @@
                     </v-menu>
                 </v-col>
                 <v-icon class="primary--text pb-5" large>event</v-icon>
-                <v-col sm="4" xs="12">
+                <v-col sm="3" xs="12">
                     <v-menu v-model="dateMenuFinal">
                         <template v-slot:activator="{ on, attrs }">
                             <v-text-field
@@ -54,7 +54,7 @@
                         Erro ao carregar exames, verifique sua conexão
                       </strong>
                     </v-col>
-                    <v-col cols="12" v-else-if="data" class=" pa-0 ">
+                    <v-col cols="12" v-else-if="data" class=" pa-0 pr-4">
                         <BestSellingExamsReport
                                 :date="formattedSelectedStartDate"
                                 :date2="formattedSelectedFinalDate"
@@ -64,7 +64,6 @@
                                 :options="options"
                                 :optionSelected="optionSelected"
                                 :headers="headers"
-                                :subHeaders="subHeaders"
                                 :ExamsFormatArray="ExamsFormatArray(data)"
                                 :numSales="numSales"
                                 :totalPrice="totalPrice"
@@ -102,40 +101,29 @@
                 total: 0,
                 options: ["Exames", "Exames separados por clinica"],
                 optionSelected: 0,
-                ExamsFormatt: '',
+                ExamsFormatt: [],
                 headers: [
                     {
                         text: "Exame",
                         align: "start",
                         sortable: false,
-                        value: "Name"
+                        value: "name"
                     },
-                    {text: "Quantidade vendida", value: "NumSales", align: "center"},
+                    {text: "Quantidade vendida", value: "numSales", align: "center"},
                     {text: "Custo total", value: "cost", align: "center"},
                     {text: "Venda total", value: "price", align: "center"},
                     {text: "Lucro liquido", value: "profit"}
-                ],
-                subHeaders: [
-                    {
-                        text: "Codigo",
-                        align: "start",
-                        sortable: false,
-                        value: "idIntake"
-                    },
-                    {text: "Custo", value: "cost", align: "center"},
-                    {text: "Venda", value: "price", align: "center"},
-                    {text: "Clinica", value: "clinicName"}
-                ],
+                ]
             };
         },
         methods: {
             formattedDateStart(date) {
-                date = date + 'T00:00:00'
+                date = date + 'T00:00:00Z'
                 console.log('date inicio: ', date)
                 return moment(date, 'DD/MM/YYYYTHH:mm:ss').format('YYYY-MM-DDTHH:mm:ss')
             },
             formattedDateEnd(date) {
-                date = date + 'T23:59:59'
+                date = date + 'T23:59:59Z'
                 return moment(date, 'DD/MM/YYYYTHH:mm:ss').format('YYYY-MM-DDTHH:mm:ss')
             },
             ExamsFormatArray(data) {
@@ -143,14 +131,14 @@
                     let exams = []
                     data.ProductTransaction.map(e => {
                         if (exams[e.product.name]) {
-                            exams[e.product.name].NumSales += 1
+                            exams[e.product.name].numSales += 1
                             exams[e.product.name].price += e.price
                             exams[e.product.name].cost += e.averageCost
                             exams[e.product.name].profit = exams[e.product.name].price - exams[e.product.name].cost
                         } else {
                             exams[e.product.name] = {
-                                NumSales: 1,
-                                Name: e.product.name,
+                                numSales: 1,
+                                name: e.product.name,
                                 price: e.price,
                                 cost: e.averageCost,
                                 profit: e.price - e.averageCost
@@ -215,7 +203,7 @@
             }, */
             numSales() {
                 return this.ExamsFormatt.reduce(
-                    (total, e) => total + e.NumSales,
+                    (total, e) => total + e.numSales,
                     0
                 );
             },
