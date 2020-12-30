@@ -96,7 +96,7 @@
 
                     <v-row class="half">
                       <v-col class="passwordLast   text-center justify-center" cols="12">
-                        Senha {{ (type(ticket.current_ticket)) === 'normal' ? '' : 'P' }}
+                        Senha {{ (type(ticket.current_ticket)) === 'normal' ? '' : '' }}
                         {{ ticket.current_ticket ? ticket.current_ticket : '*' }}
                       </v-col>
                       <v-col>
