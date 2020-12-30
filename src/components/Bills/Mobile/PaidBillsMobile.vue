@@ -115,7 +115,10 @@
                                                 style="font-weight: bold; font-size: small">{{bill.date.formatted | dateFilter}}</span>
                                         </v-flex>
                                         <v-flex xs12 class="mt-2">
-                                            <span style="font-weight: bold; font-size: small; font-style: italic">{{bill.description}}</span>
+                                            <span v-if="bill.description"
+                                                  style="font-weight: bold; font-size: small; font-style: italic">{{ bill.description }}</span>
+                                            <span v-else
+                                                  style="font-weight: bold; font-size: small; font-style: italic">Sem descrição</span>
                                         </v-flex>
 
                                         <v-flex xs12 class="mt-1">
