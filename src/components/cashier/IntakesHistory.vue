@@ -1,6 +1,6 @@
 <template>
-  <v-app>
-    <v-card>
+  <v-container>
+    <v-row>
       <div class="hidden-sm-and-up" style="position:fixed; right:20px; top:25px; z-index:1">
         <v-btn class="my-0" x-large icon @click="$emit('closeHistoric')">
           <v-icon>cancel</v-icon>
@@ -25,28 +25,28 @@
                     <v-card @click="receipt(intake)" flat>
                       <v-layout row wrap>
                         <v-flex xs10 class="text-left ripple">
-                          <span class="my-sub-headline">{{intake.date | dateFilter}}</span>
+                          <span class="my-sub-headline">{{ intake.date | dateFilter }}</span>
                         </v-flex>
                         <v-flex xs2>
                           <v-progress-circular indeterminate v-if="loading" class="primary--text"></v-progress-circular>
                         </v-flex>
                         <v-flex xs12 class="text-left">
-                          <span class="my-sub-headline">{{intake.id}}</span>
+                          <span class="my-sub-headline">{{ intake.id }}</span>
                         </v-flex>
                         <v-flex xs12 class="text-left">
-                          <span>{{intake.payment_method}}</span>
+                          <span>{{ intake.payment_method }}</span>
                         </v-flex>
                         <v-flex xs12 class="text-left">
-                          <span class="my-sub-headline">R$ {{intake.total}}</span>
+                          <span class="my-sub-headline">R$ {{ intake.total }}</span>
                         </v-flex>
                       </v-layout>
                     </v-card>
                   </v-flex>
                   <v-flex xs2 v-if="!loading && intake.status !== intakeStatus.CANCELLED">
                     <v-btn
-                      @click="cancelBuy(intake)"
-                      text
-                      style="min-width: 0; width: 32px; height: 100%"
+                        @click="cancelBuy(intake)"
+                        text
+                        style="min-width: 0; width: 32px; height: 100%"
                     >
                       <v-icon class="secondary--text">delete</v-icon>
                     </v-btn>
@@ -62,22 +62,31 @@
           </div>
           <div v-show="option === 'budgets'">
             <v-flex xs12 v-for="budget in budgets" :key="budget.id">
-              <v-card ripple class="my-2 pa-2" @click="selectBudget(budget)">
+              <v-card flat ripple class="my-2 pa-2" @click="selectBudget(budget)">
                 <v-layout row wrap>
-                  <v-flex xs10 class="text-left">
-                    <span class="my-sub-headline">{{budget.date | dateFilter}}</span>
+                  <v-flex xs10><
+                    <v-flex xs10 class="text-left">
+                      <span class="my-sub-headline">{{ budget.date | dateFilter }}</span>
+                    </v-flex>
+                    <v-flex xs2>
+                      <v-progress-circular indeterminate v-if="loading" class="primary--text"></v-progress-circular>
+                    </v-flex>
+                    <v-flex xs12 class="text-left">
+                      <span class="my-sub-headline">{{ budget.id }}</span>
+                    </v-flex>
+                    <v-flex xs12 class="text-left">
+                      <span>{{ budget.payment_method }}</span>
+                    </v-flex>
+                    <v-flex xs12 class="text-left">
+                      <span class="my-sub-headline">R$ {{ budget.total }}</span>
+                    </v-flex>
                   </v-flex>
                   <v-flex xs2>
-                    <v-progress-circular indeterminate v-if="loading" class="primary--text"></v-progress-circular>
-                  </v-flex>
-                  <v-flex xs12 class="text-left">
-                    <span class="my-sub-headline">{{budget.id}}</span>
-                  </v-flex>
-                  <v-flex xs12 class="text-left">
-                    <span>{{budget.payment_method}}</span>
-                  </v-flex>
-                  <v-flex xs12 class="text-left">
-                    <span class="my-sub-headline">R$ {{budget.total}}</span>
+                    <v-layout column>
+                      <v-btn @click.stop="shareBudgetLink(budget)" icon class="primary">
+                        <v-icon>share</v-icon>
+                      </v-btn>
+                    </v-layout>
                   </v-flex>
                 </v-layout>
               </v-card>
@@ -85,38 +94,40 @@
           </div>
         </v-layout>
       </v-container>
-    </v-card>
-    <v-dialog
-      transition="dialog-bottom-transition"
-      fullscreen
-      v-model="receiptDialog"
-      v-if="selectedIntake"
-    >
-      <receipt @close="receiptDialog = false" :budget="selectedIntake"></receipt>
-    </v-dialog>
-    <v-dialog v-model="cancelBuyDialog" v-if="selectedIntake" max-width="500px">
-      <v-card class="pa-2">
-        <v-layout row wrap>
-          <v-flex xs12 class="text-left">
-            <span class="my-headline">Deseja cancelar o recibo {{selectedIntake.id}}?</span>
-          </v-flex>
-          <v-flex xs12>
-            <v-text-field type="password" v-model="managerPassword" label="Senha do gerente"></v-text-field>
-          </v-flex>
-          <v-flex xs12 class="text-right">
-            <span class="red--text mr-4" v-if="error">{{error}}</span>
-            <v-btn
-              @click="cancelBuy(selectedIntake)"
-              rounded
-              class="red white--text"
-              v-if="!loading"
-            >Cancelar compra</v-btn>
-            <v-progress-circular v-else class="primary--text" indeterminate></v-progress-circular>
-          </v-flex>
-        </v-layout>
       </v-card>
-    </v-dialog>
-  </v-app>
+      <v-dialog
+          transition="dialog-bottom-transition"
+          fullscreen
+          v-model="receiptDialog"
+          v-if="selectedIntake"
+      >
+        <receipt @close="receiptDialog = false" :budget="selectedIntake"></receipt>
+      </v-dialog>
+      <v-dialog v-model="cancelBuyDialog" v-if="selectedIntake" max-width="500px">
+        <v-card class="pa-2">
+          <v-layout row wrap>
+            <v-flex xs12 class="text-left">
+              <span class="my-headline">Deseja cancelar o recibo {{ selectedIntake.id }}?</span>
+            </v-flex>
+            <v-flex xs12>
+              <v-text-field type="password" v-model="managerPassword" label="Senha do gerente"></v-text-field>
+            </v-flex>
+            <v-flex xs12 class="text-right">
+              <span class="red--text mr-4" v-if="error">{{ error }}</span>
+              <v-btn
+                  @click="cancelBuy(selectedIntake)"
+                  rounded
+                  class="red white--text"
+                  v-if="!loading"
+              >Cancelar compra
+              </v-btn>
+              <v-progress-circular v-else class="primary--text" indeterminate></v-progress-circular>
+            </v-flex>
+          </v-layout>
+        </v-card>
+      </v-dialog>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -144,6 +155,10 @@ export default {
     };
   },
   methods: {
+    async shareBudgetLink(budget) {
+      await navigator.clipboard.writeText(`http://medikon.web.app/pagamento?orcamento=${budget.id}`)
+      window.alert('Endereço para pagamento copiado')
+    },
     async selectBudget(budget) {
       this.loading = true;
       budget = await this.$store.dispatch("getBudget", budget.id.toString());
@@ -163,11 +178,11 @@ export default {
       return now.valueOf() - date.valueOf();
     },
     async receipt(intake) {
-      console.log('intake: ',intake)
+      console.log('intake: ', intake)
       this.loading = true;
       this.selectedIntake = await this.$store.dispatch(
-        "getIntakeDetails",
-        intake
+          "getIntakeDetails",
+          intake
       );
       this.receiptDialog = true;
       this.loading = false;
@@ -189,8 +204,8 @@ export default {
       intake.user = this.patient;
       await this.$store.dispatch("cancelIntake", intake);
       this.patient.intakes = await this.$store.dispatch(
-        "getUserIntakes",
-        this.patient
+          "getUserIntakes",
+          this.patient
       );
       this.$store.commit("setSelectedPatient", this.patient);
       this.loading = false;
