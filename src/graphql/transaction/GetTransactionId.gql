@@ -19,17 +19,23 @@ query($Id:ID!){
     categories{
     name
     },
+    with_unit{
+    id
+    },
     cancelled_by{
         id,
         name,
         cpf
         },
     produts: with_productTransaction_relations{
-        price,
+        price, id,
         averageCost,
         with_charge{
         id
-        }
+        },
+        with_transaction{
+        id
+        },
         with_product{
             name,
             type, id

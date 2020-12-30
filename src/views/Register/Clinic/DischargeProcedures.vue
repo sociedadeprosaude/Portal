@@ -5,9 +5,9 @@
           :query="require('@/graphql/transaction/GetTransactionId.gql')"
           :variables="{Id:numberIntake}"
         >
-          <template v-slot="{result: {data, loading, error}}">
+          <template v-slot="{result: {data, loading, error, query}}">
           <template-discharge-procedures
-              v-id="data"
+              v-if="data"
               @SuccessUpdate="successUpdateExams = !successUpdateExams"
               :successUpdateExams="successUpdateExams"
               @CheckExams="SendCheckExams($event)"
@@ -29,6 +29,10 @@
     import {mask} from "vue-the-mask";
     import TemplateDischargeProcedures from '../../../components/clinics/DischargeProcedures/TemplateDischargeProcedures'
     import HeaderDischargeProcedures from '../../../components/clinics/DischargeProcedures/HeaderDischargeProcedures'
+    import gql from 'graphql-tag'
+    import MutationBuilder from "../../../classes/MutationBuilder"
+    import {uuid} from 'vue-uuid'
+    let moment = require('moment');
 
     export default {
         name: "DischargeProcedures",
@@ -46,7 +50,25 @@
         },
         methods: {
           GetOuttake(data){
+            for(let outtake= 0; outtake < data.Transaction.length; outtake++ ){
+              for(let exam=0; exam < data.Transaction[outtake].produts.length; exam++){
+                if(data.Transaction[outtake].produts[exam].with_charge){
+                  if(data.Transaction[outtake].produts[exam].with_charge.id){
+                    data.Transaction[outtake].produts[exam].realized = true
+                  }
+                }
+                else if(data.Transaction[outtake].produts[exam].with_transaction){
+                  if(data.Transaction[outtake].produts[exam].with_transaction.id){
+                    data.Transaction[outtake].produts[exam].realized = true
+                  }
+                }
+                else {
+                  data.Transaction[outtake].produts[exam].realized = false
+                }
+              }
+            }
             console.log('data: ', data)
+
             return data.Transaction
           },
             async AddResultExam(values){
@@ -79,10 +101,57 @@
                     path: "/outtakes/resultExams"
                 });
             },
-            async SendCheckExams(outtake){
+            async SendCheckExams(outtakes){
                 this.loading= true;
-                this.loading= false;
-                console.log('outtake: ', outtake)
+                let exams = []
+              let mutationBuilder = new MutationBuilder()
+                for(let outtake= 0; outtake < outtakes.length; outtake++ ){
+                    for(let exam=0; exam < outtakes[outtake].produts.length; exam++){
+                      if(outtakes[outtake].produts[exam].realized === true){
+                        if(!outtakes[outtake].produts[exam].with_charge && !outtakes[outtake].produts[exam].with_transaction){
+                          console.log('item realizado agora: ', outtakes[outtake].produts[exam])
+                          exams.push(outtakes[outtake].produts[exam])
+                          let chargeID = uuid.v4()
+                          let CostProductClinic = await this.$apollo.mutate({
+                            mutation: require ('@/graphql/clinics/LoadCostProductClinic.gql'),
+                            variables:{
+                              idClinic: outtakes[outtake].produts[exam].with_clinic.id,
+                              idProduct: outtakes[outtake].produts[exam].with_product.id
+                            }
+                          })
+                          mutationBuilder.addMutation({
+                            mutation: require ('@/graphql/charge/CreateCharge.gql'),
+                            variables:{
+                              id: chargeID,
+                              value: -CostProductClinic.data.CostProductClinic[0].cost,
+                              date: {formatted:moment().format("YYYY-MM-DDTHH:mm:ss") },
+                              type: 'Clinic'
+                            }
+                          })
+                          mutationBuilder.addMutation({
+                            mutation: require('@/graphql/charge/AddRelationsProductTransactionHasCharge.gql'),
+                            variables:{
+                              idCharge: chargeID,
+                              idProductTransaction: outtakes[outtake].produts[exam].id
+                            }
+                          })
+                          mutationBuilder.addMutation({
+                            mutation: require('@/graphql/charge/AddRelationUnitHasCharge.gql'),
+                            variables:{
+                              idCharge: chargeID,
+                              idUnit: outtakes[outtake].with_unit[0].id
+                            }
+                          })
+                        }
+                      }
+                    }
+                 }
+              let response = await this.$apollo.mutate({
+                mutation: mutationBuilder.generateMutationRequest(),
+              })
+              this.loading= false;
+              console.log('response :', response)
+              this.successUpdateExams= true;
                 /* this.successUpdateExams= true;
                 this.numberIntake = '';
                 for(let outtakes= 0; outtakes <  this.outtake.length; outtakes++ ){
