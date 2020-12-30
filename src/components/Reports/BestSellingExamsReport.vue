@@ -36,37 +36,12 @@
                         :sort-by="['quantity']"
                         :sort-desc="[true]"
                         item-key="name"
-                        show-expand
-                        single-expand
                         no-data-text="Sem exames no intervalo escolhido"
                         :footer-props="{
       itemsPerPageText:'Exames por página',
       pageText:'{0}-{1} de {2}'
     }"
                 >
-                    <template v-slot:item.price="{ item }">R$ {{item.price.toFixed(2)}}</template>
-                    <template v-slot:item.cost="{ item }">R$ {{item.cost.toFixed(2)}}</template>
-                    <template v-slot:item.profit="{ item }">R$ {{item.profit.toFixed(2)}}</template>
-
-                    <template v-slot:expanded-item="{ item }">
-                        <td :colspan="headers.length+1">
-                            <v-data-table
-                                    class="subTable"
-                                    dense
-                                    single-expand
-
-                                    :items="item.intakes"
-                                    item-key="intakeId"
-                                    :footer-props="{
-      itemsPerPageText:'Itens por página',
-      pageText:'{0}-{1} de {2}'
-    }"
-                            >
-                                <template v-slot:item.price="{ item }">R$ {{item.price.toFixed(2)}}</template>
-                                <template v-slot:item.cost="{ item }">R$ {{item.cost.toFixed(2)}}</template>
-                            </v-data-table>
-                        </td>
-                    </template>
                 </v-data-table>
             </div>
             <div v-else>

@@ -65,10 +65,10 @@
                                 :optionSelected="optionSelected"
                                 :headers="headers"
                                 :ExamsFormatArray="ExamsFormatArray(data)"
-                                :numSales="numSales"
-                                :totalPrice="totalPrice"
-                                :totalCost="totalCost"
-                                :totalProfit="totalProfit"
+                                :numSales="numSales(data)"
+                                :totalPrice="totalPrice(data)"
+                                :totalCost="totalCost(data)"
+                                :totalProfit="totalProfit(data)"
 
                                 @change-search="(value)=>search=value"
                                 @change-optionSelected="(value)=>optionSelected=value"
@@ -101,7 +101,6 @@
                 total: 0,
                 options: ["Exames", "Exames separados por clinica"],
                 optionSelected: 0,
-                ExamsFormatt: [],
                 headers: [
                     {
                         text: "Exame",
@@ -149,11 +148,44 @@
                     for (let i in exams) {
                         FormattedExams.push(exams[i])
                     }
-                    this.ExamsFormatt = FormattedExams
+
                     this.loadExams = true
                     return FormattedExams
                 }
             },
+            numSales(data) {
+                if (this.ExamsFormatArray(data)){
+                    return this.ExamsFormatArray(data).reduce(
+                        (total, e) => total + e.numSales,
+                        0
+                    );
+                } else return 0
+
+            },
+            totalPrice(data) {
+                if (this.ExamsFormatArray(data)) {
+                    return this.ExamsFormatArray(data).reduce(
+                        (total, e) => total + e.price,
+                        0
+                    );
+                } else return 0;
+            },
+            totalCost(data) {
+                if (this.ExamsFormatArray(data)) {
+                    return this.ExamsFormatArray(data).reduce(
+                        (total, e) => total + e.cost,
+                        0
+                    );
+                } else return 0
+            },
+            totalProfit(data) {
+                if (this.ExamsFormatArray(data)) {
+                    return this.ExamsFormatArray(data).reduce(
+                        (total, e) => total + e.profit,
+                        0
+                    );
+                } else return 0
+            }
         },
         computed: {
             formattedSelectedStartDate: {
@@ -201,30 +233,7 @@
               });
               return listIntakesGroupedByExam;
             }, */
-            numSales() {
-                return this.ExamsFormatt.reduce(
-                    (total, e) => total + e.numSales,
-                    0
-                );
-            },
-            totalPrice() {
-                return this.ExamsFormatt.reduce(
-                    (total, e) => total + e.price,
-                    0
-                );
-            },
-            totalCost() {
-                return this.ExamsFormatt.reduce(
-                    (total, e) => total + e.cost,
-                    0
-                );
-            },
-            totalProfit() {
-                return this.ExamsFormatt.reduce(
-                    (total, e) => total + e.profit,
-                    0
-                );
-            }
+
         }
     };
 </script>
