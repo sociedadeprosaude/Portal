@@ -105,8 +105,10 @@
                 query: require("@/graphql/authentication/currentColaborator.gql"),
                 update(data){
                     this.skip = true
-                    const user = Object.assign({},data.current_user_colaborator)
-                    this.$store.dispatch('setCurrentUser', user);
+                    let currentColaborator = Object.assign({},data.current_user_colaborator)
+                    currentColaborator.userId = this.user.userId
+                    this.$store.dispatch('setCurrentUser', currentColaborator);
+                    console.log(currentColaborator)
                     this.ready = true;
                 },
                 skip(){

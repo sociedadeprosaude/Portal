@@ -79,7 +79,8 @@
                 loading: false,
                 errorMessage: undefined,
                 skipSignIn:true,
-                skip:true
+                skip:true,
+                userId: undefined
             }
         },
         mounted() {
@@ -115,6 +116,7 @@
                     this.skipSignIn = true;
                     this.skip = false;
                     localStorage.setItem('token', data.signIn.token);
+                    this.userId = data.signIn.user_id
                     this.$apollo.queries.currentColaborator.refresh();
                 },
                 error({graphQLErrors}){
@@ -129,8 +131,9 @@
                 query: require("@/graphql/authentication/currentColaborator.gql"),
                 update(data){
                     this.skip = true
-                    const user = Object.assign({},data.current_user_colaborator)
-                    this.$store.dispatch('setCurrentUser', user);
+                    let currentColaborator = Object.assign({},data.current_user_colaborator)
+                    currentColaborator.userId = this.user.userId
+                    this.$store.dispatch('setCurrentUser', currentColaborator);
                     this.loading = false;
                     this.$router.push('/');
                 },
