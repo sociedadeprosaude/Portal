@@ -755,6 +755,7 @@
                 let variables = {
                         idPatient: this.selectedPatient && this.selectedPatient.id,
                         name: patient.name,
+                        email: patient.email,
                         birth_date: {formatted:patient.birth_date},
                         cpf: patient.cpf,
                         sex: patient.sex,

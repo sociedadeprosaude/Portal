@@ -3,8 +3,10 @@
         <ApolloQuery
                 :query="require('@/graphql/category/LoadCategories.gql')"
         >
-            <template slot-scope="{ result: { data } }">
+            <template slot-scope="{ result: { data, loading } }">
+                <v-progress-circular v-if="loading || !data" indeterminate x-large class="primary--text"/>
                 <v-data-table
+                        v-else-if="data"
                         :headers="headers"
                         :items="data ? data.Category : []"
                         item-text="name"
@@ -16,15 +18,15 @@
                     <template v-slot:top>
                         <v-flex xs12 class="text-right pa-2">
                             <v-layout row wrap>
-                                <v-text-field prepend-icon="search" v-model="search" outlined dense label="Pesquisa" class="mx-2"/>
+                                <v-text-field prepend-inner-icon="search" v-model="search" outlined dense label="Pesquisa" />
                                 <v-spacer/>
                                 <v-btn
                                         fab
-                                        small
+                                        x-small
                                         rounded
                                         color="primary"
                                         dark
-                                        class="mb-2 mx-2"
+                                        class=" mx-2"
                                         @click="dialogCreateCategory = true"
                                 >
                                     <v-icon>mdi-plus</v-icon>

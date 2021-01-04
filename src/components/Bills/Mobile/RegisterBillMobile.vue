@@ -30,11 +30,11 @@
                     <v-flex xs12 class="mt-n3">
                         <v-textarea clearable label="Descrição" v-model="description" outlined dense/>
                     </v-flex>
-                    <v-flex xs4 class="mt-n3">
+                    <v-flex xs12 class="mt-n3">
                         <v-currency-field label="Valor" prefix="R$" clearable v-model="value" outlined dense/>
                     </v-flex>
                     <v-spacer/>
-                    <v-flex xs7 class="mt-n3">
+                    <v-flex xs12 class="mt-n3">
                         <v-select label="Método de pagamento" v-model="paymentMethod" :items="paymentMethods" dense
                                   outlined/>
                     </v-flex>

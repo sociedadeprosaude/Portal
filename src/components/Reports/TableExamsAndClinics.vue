@@ -6,8 +6,6 @@
     :sort-by="['quantity']"
     :sort-desc="[true]"
     item-key="examName"
-    show-expand
-    single-expand
     :footer-props="{
       itemsPerPageText:'Exames por página',
       pageText:'{0}-{1} de {2}'
@@ -21,8 +19,7 @@
       <td :colspan="headers.length+1">
         <v-data-table
           class="subTable"
-          show-expand
-          single-expand
+
           :headers="subHeaders"
           :items="item.clinics"
           item-key="clinicName"
