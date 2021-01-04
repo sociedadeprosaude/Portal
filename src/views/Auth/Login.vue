@@ -132,7 +132,7 @@
                 update(data){
                     this.skip = true
                     let currentColaborator = Object.assign({},data.current_user_colaborator)
-                    currentColaborator.userId = this.user.userId
+                    currentColaborator.userId = this.userId
                     this.$store.dispatch('setCurrentUser', currentColaborator);
                     this.loading = false;
                     this.$router.push('/');
