@@ -58,6 +58,8 @@
                 <v-layout row wrap class="justify-center fill-height mt-4" v-if="!data || loading">
                     <v-progress-circular indeterminate color="primary" large :size="200"/>
                 </v-layout>
+
+
                 <v-container fluid class="ma-0 " v-if="data && data.length === 0">
                     <v-card elevation="10" class="pa-4">Não há contas pagas neste mês</v-card>
                 </v-container>
@@ -350,7 +352,7 @@
               return moment(date, 'DD/MM/YYYYHH:mm:ss').format('YYYY-MM-DDTHH:mm:ss')
           },
           formattedDateEnd(date) {
-              date = date + '23:59:59'
+              date = date + '23:59:59';
               return moment(date, 'DD/MM/YYYYHH:mm:ss').format('YYYY-MM-DDTHH:mm:ss')
           },
 

@@ -109,7 +109,7 @@
                         value: "name"
                     },
                     {text: "Quantidade vendida", value: "numSales", align: "center"},
-                    {text: "Custo total", value: "cost", align: "center"},
+                    {text: "Custo total", value: "cost",  align: "center"},
                     {text: "Venda total", value: "price", align: "center"},
                     {text: "Lucro liquido", value: "profit"}
                 ]
@@ -130,9 +130,9 @@
                     let exams = []
                     data.ProductTransaction.map(e => {
                         if (exams[e.product.name]) {
-                            exams[e.product.name].numSales += 1
-                            exams[e.product.name].price += e.price
-                            exams[e.product.name].cost += e.averageCost
+                            exams[e.product.name].numSales += 1;
+                            exams[e.product.name].price += e.price;
+                            exams[e.product.name].cost += e.averageCost;
                             exams[e.product.name].profit = exams[e.product.name].price - exams[e.product.name].cost
                         } else {
                             exams[e.product.name] = {
@@ -143,13 +143,13 @@
                                 profit: e.price - e.averageCost
                             }
                         }
-                    })
-                    let FormattedExams = []
+                    });
+                    let FormattedExams = [];
                     for (let i in exams) {
                         FormattedExams.push(exams[i])
                     }
 
-                    this.loadExams = true
+                    this.loadExams = true;
                     return FormattedExams
                 }
             },

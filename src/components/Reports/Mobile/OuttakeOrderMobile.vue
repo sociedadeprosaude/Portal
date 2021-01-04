@@ -188,6 +188,7 @@
                 }
                 return dates
             },
+
             totalPayable() {
 
                 let total = 0.00;
