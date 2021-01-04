@@ -108,7 +108,6 @@
                     let currentColaborator = Object.assign({},data.current_user_colaborator)
                     currentColaborator.userId = this.user.userId
                     this.$store.dispatch('setCurrentUser', currentColaborator);
-                    console.log(currentColaborator)
                     this.ready = true;
                 },
                 skip(){
