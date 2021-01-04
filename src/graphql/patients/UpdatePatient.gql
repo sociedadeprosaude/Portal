@@ -1,6 +1,7 @@
 mutation UpdatePatient(
     $idPatient: ID!,
     $name: String!,
+    $email: String!
     $birth_date: _Neo4jDateInput,
     $cpf: String!,
     $sex: String,
@@ -9,6 +10,7 @@ mutation UpdatePatient(
     ){
   UpdatePatient(
     id:$idPatient,
+    email: $email,
     name: $name,
     birth_date: $birth_date,
     cpf: $cpf,

@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid class="fill-height align-start mt-n3  pa-0 background" >
+    <v-container fluid class="fill-height align-start mt-n3 pa-0 background" >
         <v-navigation-drawer
                 v-if="billsToolbar"
                 class="hidden-print-only primary"
@@ -24,27 +24,28 @@
         <router-view class="ma-0 pa-0" />
         <v-bottom-navigation
                 fixed
+                style="position: fixed"
                 color="hidden-sm-and-up"
                 class="hidden-print-only primary"
         >
 
-            <v-btn fab small text @click="billsToolbar = !billsToolbar" >
+            <v-btn fab small text @click="billsToolbar = !billsToolbar" class="hidden-md-and-up">
                 <v-icon color="white">menu</v-icon>
             </v-btn>
 
-            <v-btn fab small @click="goRoute('/BillsMobile/categorias')" >
+            <v-btn fab small @click="goRoute('/pagamento/financeiro/categorias')" >
                 <v-icon color="white">playlist_add</v-icon>
             </v-btn>
 
-            <v-btn fab small  @click="goRoute('/BillsMobile/registro')">
+            <v-btn fab small  @click="goRoute('/pagamento/financeiro/registro')">
                 <v-icon color="white">add</v-icon>
             </v-btn>
 
-            <v-btn fab small @click="goRoute('/BillsMobile/pagos')">
+            <v-btn fab small @click="goRoute('/pagamento/financeiro/pagos')">
                 <v-icon color="white">playlist_add_check</v-icon>
             </v-btn>
 
-            <v-btn fab small @click="goRoute('/BillsMobile/pendentes')">
+            <v-btn fab small @click="goRoute('/pagamento/financeiro/pendentes')">
                 <v-icon color="white">attach_money</v-icon>
             </v-btn>
 
@@ -55,11 +56,10 @@
 <script>
     import {mask} from "vue-the-mask";
     import moment from "moment";
-    import OuttakeOrderMobile from "../../components/Reports/Mobile/OuttakeOrderMobile";
-    import RegisterBillMobile from "../../components/Bills/Mobile/RegisterBillMobile";
+
 
     export default {
-        components: {RegisterBillMobile, OuttakeOrderMobile},
+
         directives: {
             mask
         },
@@ -191,7 +191,7 @@
                 return this.semanaOptions[dateMoment.day()];
             },
             async initiate() {
-                this.goRoute('/BillsMobile/pendentes');
+                this.goRoute('/pagamento/financeiro/pendentes');
                 this.loading = true;
                 await this.$store.dispatch("getOuttakesCategories");
                 await this.$store.dispatch("getOuttakesPending", {

@@ -1,10 +1,10 @@
 query ($date_start: String, $date_end: String, $type: String!){
-    Charge (filter: {
+    Charge(filter: {
         type:$type,
         date_gte: {formatted: $date_start},
         date_lte: {formatted: $date_end},
         value_not: null,
-        type_in:"bill"
+        description_not: null
     }) {
         description,
         colaborator {
