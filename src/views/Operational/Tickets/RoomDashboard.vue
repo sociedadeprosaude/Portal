@@ -686,7 +686,7 @@ export default {
         await this.$apollo.mutate({
             mutation: require('@/graphql/tickets/AddTicketColaborator.gql'),
             variables: {
-              idColaborator: this.$store.getters.user.id,
+              idColaborator: this.$store.getters.user.userId,
               idTicket: priority[0].id,
             },
           });
@@ -740,7 +740,7 @@ export default {
           await this.$apollo.mutate({
             mutation: require('@/graphql/tickets/AddTicketColaborator.gql'),
             variables: {
-              idColaborator: this.$store.getters.user.id,
+              idColaborator: this.$store.getters.user.userId,
               idTicket: normal[0].id,
             },
           });
