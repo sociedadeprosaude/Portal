@@ -718,7 +718,7 @@
                 let patient = {
                     name: this.name.toUpperCase(),
                     cpf: this.cpf ? this.cpf.replace(/\./g, '').replace('-', '') : undefined,
-                    email: this.email,
+                    email: this.email? this.email : ' ',
                     rg: this.rg ? this.rg.replace(/\./g, '').replace('-', '').replace('.', '') : undefined,
                     association_number: this.numAss ? this.numAss.toString() : undefined,
                     birth_date: moment(this.birthDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
@@ -735,7 +735,8 @@
                 }
               })
               searchUser = searchUser.data.Patient[0]
-              if(searchUser){
+              console.log('selecetPatient: ', this.selectedPatient)
+              if(searchUser && !this.selectedPatient){
                 this.foundAlert= true
                 this.alert = 'Usuário já existente'
                 this.loading = false;
