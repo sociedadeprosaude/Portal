@@ -591,7 +591,7 @@
                 rg: undefined,
                 numAss: undefined,
                 birthDate: undefined,
-                email: undefined,
+                email: '',
                 sex: undefined,
                 foundAlert: false,
                 alert: '',
