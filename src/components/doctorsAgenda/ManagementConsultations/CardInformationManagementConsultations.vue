@@ -186,7 +186,7 @@ export default {
           }
         })
       }
-      if(consultation.status === "Pago" && consultation.productTransaction !== null){
+      if(consultation.status === "Pago" && consultation.productTransaction){
         mutationBuilder.addMutation({
           mutation: require('@/graphql/consultations/RemoveRelationProductTransaction.gql'),
           variables: {
