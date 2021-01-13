@@ -1,15 +1,15 @@
-mutation (
-    $idTransaction: ID!,
-    $idColaborator: ID!
-    ) {
-    AddTransactionCancelled_by(
-        from:{
-          id:$idTransaction
-        },
-        to:{
-          id:$idColaborator
-        }
-      ){
-        from{id},to{id}
-      }
+mutation IntakeCancel($idTransaction: ID!,$idColaborator: ID!, $cancellation_reason: String) {
+  UpdateTransaction(id:$idTransaction,cancellation_reason:$cancellation_reason){
+    id
+  },
+  AddTransactionCancelled_by(
+  	from:{
+    	id:$idTransaction
+    },
+    to:{
+    	id:$idColaborator
     }
+  ){
+  	from{id},to{id}
+  }
+}

@@ -90,6 +90,11 @@
                   outlined
                   placeholder="Senha do gerente"
               />
+              <v-textarea
+                  v-model="cancellation_reason"
+                  outlined
+                  placeholder="Razão do cancelamento"
+              />
             </v-flex>
             <span class="red--text" v-if="error">{{ error }}</span>
           </v-card-text>
@@ -135,6 +140,7 @@ export default {
       error: undefined,
       idUser: '',
       skipPatients: true,
+      cancellation_reason: ''
     };
   },
   methods: {
@@ -205,7 +211,8 @@ export default {
         mutation: require('@/graphql/transaction/IntakeCancel.gql'),
         variables: {
           idColaborator: this.$store.getters.user.id,
-          idTransaction: intake.id
+          idTransaction: intake.id,
+          cancellation_reason: this.cancellation_reason
         }
       })
       for (let i in intake.products) {
