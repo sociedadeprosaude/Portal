@@ -228,7 +228,7 @@ export default {
       skipPatients: true,
       percentageDiscount: 0,
       moneyDiscount: 0,
-      FormasDePagamento: ["Dinheiro", "Crédito", "Débito"],
+      FormasDePagamento: ["Dinheiro", "Crédito", "Débito", "Pix"],
       budgetToPrint: undefined,
       budgetToPrintDialog: false,
       selectedIntake: undefined,
