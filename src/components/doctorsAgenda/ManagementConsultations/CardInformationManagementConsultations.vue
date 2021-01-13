@@ -206,8 +206,6 @@ export default {
       let response = await this.$apollo.mutate({
         mutation: mutationBuilder.generateMutationRequest(),
       })
-
-      console.log('response :', response)
       this.cancelLoading = false;
       this.skipPatients = false;
       this.$apollo.queries.loadPatient.refresh()

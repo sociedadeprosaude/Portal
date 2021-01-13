@@ -1,5 +1,5 @@
 mutation($idTicket : ID! , $idColaborator : ID!){
-       AddTicketColaborator(
+       AddTicketUser(
         from:{
           id: $idTicket
         },
