@@ -77,7 +77,7 @@ let mainRoutes = [
     component: ForgotPassword,
   },
   {
-    path: '/reset-password',
+    path: '/redefinir-senha',
     name: 'ResetPassword',
     component: ResetPassword,
   },
