@@ -7,16 +7,19 @@
             <v-col cols="12" align="center">
               <strong>{{colaboratorIntakes[0].colaborator[0].name}}</strong>
             </v-col>
-            <v-col cols="3" class="pt-0 pl-8" style="font-size: 0.9em">
+            <v-col cols="2" class="pt-0 pl-8" style="font-size: 0.9em">
               <span>Cr: <strong>{{ getValuePaidByMethod('Crédito', colaboratorIntakes).toFixed(2) }}</strong></span>
             </v-col>
-            <v-col cols="3" class="pt-0" style="font-size: 0.9em">
+            <v-col cols="2" class="pt-0" style="font-size: 0.9em">
               <span>Db: <strong>{{ getValuePaidByMethod('Débito', colaboratorIntakes).toFixed(2) }}</strong></span>
             </v-col>
-            <v-col cols="3" class="pt-0" style="font-size: 0.9em">
+            <v-col cols="2" class="pt-0" style="font-size: 0.9em">
+              <span>Pix: <strong>{{ getValuePaidByMethod('Pix', colaboratorIntakes).toFixed(2) }}</strong></span>
+            </v-col>
+            <v-col cols="2" class="pt-0" style="font-size: 0.9em">
               <span>R$: <strong>{{ getValuePaidByMethod('Dinheiro', colaboratorIntakes).toFixed(2) }}</strong></span>
             </v-col>
-            <v-col cols="3" class="pt-0" style="font-size: 0.9em">
+            <v-col cols="2" class="pt-0" style="font-size: 0.9em">
               <span>Total: <strong>{{ getTotalPaid(colaboratorIntakes).toFixed(2) }}</strong></span>
             </v-col>
             <v-col v-if="index === 0" align="start" style="position: absolute; bottom: -20px" class="ml-4">
