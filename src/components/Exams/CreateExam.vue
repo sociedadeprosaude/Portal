@@ -107,9 +107,7 @@
             loading: false,
             success: false,
 
-            editedExam: {
-                id: '', name: '', rules: '', type: 'EXAM', price: 0, schedulable: false,
-            },
+
 
             rules: {
                 campoObrigatorio: [
@@ -128,6 +126,11 @@
                 this.editedExam.type = this.selectedExam.type;
             }
         },
+      computed:{
+          editedExam(){
+            return {id: this.selectedExam.id, name: this.selectedExam.name, price:this.selectedExam.price, rules: this.selectedExam.rules, type: this.selectedExam.type}
+          }
+      },
 
 /*      apollo: {
         LoadProcuctSpecific: {
