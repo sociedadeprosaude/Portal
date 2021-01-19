@@ -56,9 +56,11 @@ export default {
     getValuePaidByMethod(method, transactions) {
       let total = 0
       for (let transaction of transactions) {
-        let methodIndex = transaction.payment_methods.findIndex(m => m === method)
-        if (methodIndex < 0) continue
-        total += transaction.payments[methodIndex]
+        transaction.payment_methods.map((item, index) => {
+          if (item === method) {
+            total += transaction.payments[index]
+          }
+        })
       }
       return total
     },
