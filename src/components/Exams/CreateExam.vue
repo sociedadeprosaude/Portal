@@ -118,7 +118,7 @@
 
         mounted() {
             if(this.selectedExam){
-              console.log(this.selectedExam)
+              console.log('exame selected: ',this.selectedExam)
                 this.editedExam.id = this.selectedExam.id;
                 this.editedExam.name = this.selectedExam.name;
                 this.editedExam.price = this.selectedExam.price;
@@ -128,7 +128,12 @@
         },
       computed:{
           editedExam(){
-            return {id: this.selectedExam.id, name: this.selectedExam.name, price:this.selectedExam.price, rules: this.selectedExam.rules, type: this.selectedExam.type}
+            if(this.selectedExam){
+              return {id: this.selectedExam.id, name: this.selectedExam.name, price:this.selectedExam.price, rules: this.selectedExam.rules, type: this.selectedExam.type}
+            }
+            else{
+              return {id: '', name: '', price:'', rules: '', type: ''}
+            }
           }
       },
 
