@@ -132,7 +132,7 @@
               return {id: this.selectedExam.id, name: this.selectedExam.name, price:this.selectedExam.price, rules: this.selectedExam.rules, type: this.selectedExam.type}
             }
             else{
-              return {id: '', name: '', price:'', rules: '', type: ''}
+              return {id: '', name: '', price:'', rules: '', type: 'EXAM'}
             }
           }
       },
@@ -171,6 +171,9 @@
            async createProduct() {
              this.loading = true
              this.editedExam.name = this.editedExam.name.toUpperCase().replace(/\//g, "-")
+             if(!this.editedExam.schedulable){
+               this.editedExam.schedulable = false
+             }
              if ( this.editedExam.type === "EXAM") {
                await this.$apollo.mutate({
                  mutation: require('@/graphql/products/CreateProducts.gql'),
@@ -183,7 +186,7 @@
                  },
                });
              } else {
-               let other = this.editedExam.type
+               let other = this.editedExam
                this.editedExam.type = "EXAM"
                console.log('true', other)
                const dataProduct = await this.$apollo.mutate({
