@@ -5,7 +5,7 @@
                 <v-layout row wrap class="align-center mt-3 mr-2 ml-2">
                     <v-flex xs9>
                         <v-select
-                                v-if="!registerPackage"
+                                v-if="!registerPackage && !editName"
                                 v-model="searchData"
                                 :items="LocaleBundles ? LocaleBundles : []"
                                 item-text="name"
@@ -18,7 +18,7 @@
                                 solo
                                 dense
                         />
-                      <v-text-field v-else-if="editName" v-model="searchData.name"
+                      <v-text-field v-else-if="editName && !registerPackage" v-model="searchData.name"
                                     label="Nome do Pacote"
                                     outlined
                                     dense
@@ -33,7 +33,7 @@
                     </v-flex>
                   <v-flex xs1>
                     <v-btn x-small fab color="background" dark class="mb-7"
-                           @click="editName= !editName" v-if="registerPackage">
+                           @click="editName= !editName" v-if="!registerPackage && searchData">
                       <v-icon class="primary--text">edit</v-icon>
                     </v-btn>
                   </v-flex>
@@ -428,6 +428,7 @@
             },
             async validateRegister() {
                 this.loading= true
+              this.editName = false
                 const packageData = {
                     exams: this.exams,
                     consultations: this.consultations,
