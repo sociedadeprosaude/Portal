@@ -33,7 +33,7 @@
                     </v-flex>
                   <v-flex xs1>
                     <v-btn x-small fab color="background" dark class="mb-7"
-                           @click="clearCart()" v-if="registerPackage && searchData">
+                           @click="editName= !editName" v-if="registerPackage">
                       <v-icon class="primary--text">edit</v-icon>
                     </v-btn>
                   </v-flex>
