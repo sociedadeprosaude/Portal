@@ -3,7 +3,7 @@
         <v-layout row wrap>
             <v-flex class="hidden-print-only" xs12>
                 <v-layout row wrap class="align-center mt-3 mr-2 ml-2">
-                    <v-flex xs10>
+                    <v-flex xs9>
                         <v-select
                                 v-if="!registerPackage"
                                 v-model="searchData"
@@ -18,6 +18,12 @@
                                 solo
                                 dense
                         />
+                      <v-text-field v-else-if="editName" v-model="searchData.name"
+                                    label="Nome do Pacote"
+                                    outlined
+                                    dense
+                                    solo
+                      />
                         <v-text-field v-else v-model="newPackageName"
                                       label="Nome para o Pacote"
                                       outlined
@@ -25,7 +31,13 @@
                                       solo
                         />
                     </v-flex>
-                    <v-flex xs2>
+                  <v-flex xs1>
+                    <v-btn x-small fab color="background" dark class="mb-7"
+                           @click="clearCart()" v-if="registerPackage && searchData">
+                      <v-icon class="primary--text">edit</v-icon>
+                    </v-btn>
+                  </v-flex>
+                    <v-flex xs1>
                         <v-btn x-small fab color="background" dark class="mb-7"
                                @click="(registerPackage = !registerPackage, searchPackage = !searchPackage),clearCart()">
                             <v-icon v-if="!registerPackage" class="primary--text">add</v-icon>
@@ -240,7 +252,8 @@
                 Bundles: [],
                 loading:false,
                 LocaleBundles: [],
-                BundlesSkip: false
+                BundlesSkip: false,
+                editName: false,
             }
         },
         computed: {
