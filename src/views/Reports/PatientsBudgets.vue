@@ -73,12 +73,6 @@ export default {
     selectedFinalDate: moment().format("YYYY-MM-DD"),
     selectedUnit: undefined,
   }),
-
-  mounted() {
-  },
-  methods: {
-
-  },
   computed: {
     Budgets(){
       console.log('budgets: ', this.BudgetFixed.filter(e => !e.with_transaction))
@@ -159,7 +153,6 @@ export default {
         this.selectedDate = val
       }
     }
-
   },
   apollo: {
     loadTransactions: {
