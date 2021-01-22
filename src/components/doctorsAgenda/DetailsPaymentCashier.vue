@@ -285,7 +285,10 @@ export default {
       else{
         this.percentageDiscount= ((100 * this.moneyDiscount) / this.subTotal)
       }
-      return this.percentageDiscount
+      if(this.payment.paymentForm[1] === undefined && this.payment.paymentForm[0]==='Crédito') {
+        this.payment.value[0] = this.subTotal - this.moneyDiscount
+      }
+    return this.percentageDiscount
     },
     idBudget(){
       return this.$store.getters.getIdBudget
