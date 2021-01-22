@@ -1,14 +1,62 @@
 <template>
-  <v-container fluid v-if="skipBudgets">
-    <PatientsBudgets
-    :budgets="Budgets"
-    :budgetsForDate="BudgetsForDate"
-    :dates="dates"
-    :PatientsArray="PatientsArray"
-    >
-    </PatientsBudgets>
+  <v-container fluid>
+    <v-card>
+      <v-card-title class="justify-center">
+        <v-row>
+          <v-col cols="5">
+            <v-menu v-model="dateMenuStart">
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                    v-model="formattedSelectedStartDate"
+                    hint="Data inicial"
+                    persistent-hint
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    outlined
+                    dense
+                    color="primary"
+                />
+              </template>
+              <v-date-picker v-model="selectedStartDate" locale="pt-br"/>
+            </v-menu>
+          </v-col>
+          <v-col cols="2">
+              <v-icon class="primary--text pb-5" large>event</v-icon>
+          </v-col>
+          <v-col cols="5">
+            <v-menu v-model="dateMenuFinal">
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                    v-model="formattedSelectedFinalDate"
+                    hint="Data final"
+                    persistent-hint
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    outlined
+                    dense
+                    color="primary"
+                />
+              </template>
+              <v-date-picker v-model="selectedFinalDate" locale="pt-br"/>
+            </v-menu>
+          </v-col>
+        </v-row>
+      </v-card-title>
+    </v-card>
+    <v-card v-if="skipBudgets">
+      <PatientsBudgets
+          v-if="BudgetFixed"
+          :budgets="Budgets"
+          :budgetsForDate="BudgetsForDate"
+          :dates="dates"
+          :PatientsArray="PatientsArray"
+      >
+      </PatientsBudgets>
+    </v-card>
+    <v-progress-circular v-else indeterminate size="64"></v-progress-circular>
   </v-container>
-  <v-progress-circular v-else indeterminate size="64"></v-progress-circular>
 </template>
 
 <script>
@@ -19,6 +67,11 @@ export default {
   data: vm => ({
     BudgetFixed: '',
     skipBudgets: false,
+    dateMenuStart: false,
+    dateMenuFinal: false,
+    selectedStartDate: moment().format("YYYY-MM-DD"),
+    selectedFinalDate: moment().format("YYYY-MM-DD"),
+    selectedUnit: undefined,
   }),
 
   mounted() {
@@ -87,6 +140,24 @@ export default {
         dates.push( moment(i).format('DD/MM/YYYY'))
       }
       return dates
+    },
+    formattedSelectedStartDate: {
+      get() {
+        this.skipBudgets = false
+        return moment(this.selectedStartDate).format("DD/MM/YYYY")
+      },
+      set(val) {
+        this.selectedDate = val
+      }
+    },
+    formattedSelectedFinalDate: {
+      get() {
+        this.skipBudgets = false
+        return moment(this.selectedFinalDate).format("DD/MM/YYYY")
+      },
+      set(val) {
+        this.selectedDate = val
+      }
     }
 
   },
@@ -95,7 +166,8 @@ export default {
       query: require("@/graphql/budget/loadBudgetsPatient.gql"),
       variables() {
         return {
-          unit_name: this.selectedUnit.name
+          date_start: this.selectedStartDate + 'T00:00:00',
+          date_final: this.selectedFinalDate + 'T23:59:59'
         }
       },
       update(data) {
