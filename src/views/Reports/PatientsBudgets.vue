@@ -6,7 +6,6 @@
     :dates="dates"
     :PatientsArray="PatientsArray"
     >
-
     </PatientsBudgets>
   </v-container>
   <v-progress-circular v-else indeterminate size="64"></v-progress-circular>
