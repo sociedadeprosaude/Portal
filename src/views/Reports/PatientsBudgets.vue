@@ -107,18 +107,7 @@ export default {
       skip() {
         return this.skipBudgets
       }
-    },
-    loadPatients: {
-      query: require("@/graphql/patients/GetPatients.gql"),
-      update(data) {
-        console.log('data: ', data.Patient)
-        this.PatientFixed= data.Patient
-        this.skipPatient = true
-      },
-      skip() {
-        return this.skipBudgets
-      }
-    },
+    }
   }
 };
 </script>
