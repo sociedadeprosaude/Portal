@@ -308,7 +308,7 @@
                                                     :disabled="paymentDisabled"
                                                     text="Pagar" :loading="paymentLoading"
                                                     :success="paymentSuccess" color="primary" @click="pay()">
-                                                Pagarkkjk
+                                                Pagar
                                             </submit-button>
                                         </v-flex>
                                         <v-flex xs12 class="text-center mt-4">
