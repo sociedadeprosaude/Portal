@@ -1,6 +1,6 @@
 query($association_number:String ){
   Patient(first:15, _id:$association_number, orderBy:[_id_asc]){
-    id,  _id,
+    id, _id,
     name,
     cpf,
     sex,
@@ -26,10 +26,10 @@ query($association_number:String ){
       sex
     },
     intakes{
-       date {
+      date {
         formatted
-       },
-       id,
+      },
+      id, _id,
       discount,
       value,
       payments,
@@ -44,6 +44,9 @@ query($association_number:String ){
          with_product{
             name,
             type,
+          },
+          with_charge{
+                      id
           },
          id,
          clinic: with_clinic{
@@ -73,51 +76,51 @@ query($association_number:String ){
          telephone
        }
      },
-           budgets{
-                             date {
-                             formatted
-                             },
-                             id,_id,
-                            discount,
-                            value,
-                            payments,
-                            parcels,
-                            payment_methods,
-                            products: with_productBundget{
-                               price,
-                               id,
-                               with_product{
-                               id,
-                                  name,
-                                  type,
-                                },
-                               clinic: with_clinic{
-                                  id,
-                                  name,
-                                  logo,
-                                  cnpj,
-                                  telephone,
-                                  opening_hours,
-                                  has_address{
-                                          neighboor,
-                                          city,
-                                          complement,
-                                          street,
-                                          number,
-                                          complement,
-                                          state,
-                                          cep
-                                  }
-                               }
-                             },
-                             with_unit{
-                               id,
-                               name,
-                               logo,
-                               cnpj,
-                               telephone
-                             }
-           },
+     budgets{
+                       date {
+                       formatted
+                       },
+                       id,_id,
+                      discount,
+                      value,
+                      payments,
+                      parcels,
+                      payment_methods,
+                      products: with_productBundget{
+                         price,
+                         id,
+                         with_product{
+                         id,
+                            name,
+                            type,
+                          },
+                         clinic: with_clinic{
+                            id,
+                            name,
+                            logo,
+                            cnpj,
+                            telephone,
+                            opening_hours,
+                            has_address{
+                                    neighboor,
+                                    city,
+                                    complement,
+                                    street,
+                                    number,
+                                    complement,
+                                    state,
+                                    cep
+                            }
+                         }
+                       },
+                       with_unit{
+                         id,
+                         name,
+                         logo,
+                         cnpj,
+                         telephone
+                       }
+     },
     consultations:with_consultation{
       id,
       type,
@@ -129,16 +132,13 @@ query($association_number:String ){
       clinic:of_clinic{
         id,name,logo
       },
+
       product:has_product{
         id,name,type,price
       },
       doctor:attended_by{
         id,name,crm
       },
-
-       productTransaction{
-            id, with_charge{id }
-            },
       regress{
         id,
         type,
@@ -152,6 +152,9 @@ query($association_number:String ){
         status,
         date{formatted},
         payment_number
+      },
+      productTransaction{
+        id, with_charge{id }
       },
     	patient{
         id,

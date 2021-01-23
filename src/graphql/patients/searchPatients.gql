@@ -154,7 +154,7 @@ query($name:String){
         payment_number
       },
       productTransaction{
-      id, with_charge{id }
+        id, with_charge{id }
       },
     	patient{
         id,

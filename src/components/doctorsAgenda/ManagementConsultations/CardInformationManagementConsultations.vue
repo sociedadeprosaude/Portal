@@ -305,10 +305,10 @@ export default {
 
     loadPatient: {
       fetchPolicy: 'no-cache',
-      query: require("@/graphql/reactivity/ReloadConsultationsPatient.gql"),
+      query: require("@/graphql/patients/GetPatient.gql"),
       variables() {
         return {
-          idPatient: this.selectedPatient.id
+          id: this.selectedPatient.id
         }
       },
       update(data) {

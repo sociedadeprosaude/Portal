@@ -427,10 +427,10 @@ export default {
   apollo: {
     loadPatient: {
       fetchPolicy: 'no-cache',
-      query: require("@/graphql/reactivity/ReloadConsultationsPatient.gql"),
+      query: require("@/graphql/patients/GetPatient.gql"),
       variables(){
         return {
-          idPatient: this.createConsultationForm.user.id
+          id: this.createConsultationForm.user.id
         }
       },
       update(data) {
