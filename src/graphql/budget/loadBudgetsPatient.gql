@@ -1,5 +1,5 @@
-query($ID:ID) {
-    Budget(id:$ID){
+query($date_start: String, $date_final: String) {
+    Budget(filter:{AND: [{date_gte: {formatted: $date_start}}, {date_lte: {formatted: $date_final}}]}){
      date {
                        formatted
                        },

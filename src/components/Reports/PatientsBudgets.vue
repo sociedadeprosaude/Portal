@@ -134,7 +134,6 @@
             </v-col>
           </v-row>
         </v-card>
-
       </v-col>
     </v-row>
   </v-container>
@@ -189,7 +188,6 @@ export default {
       })
       formattedPatients = formattedPatients.filter(p => p['Last Name'].length > 0)
       const csv = json2csvParser.parse(formattedPatients);
-
       var pom = document.createElement('a');
       var csvContent=csv;
       var blob = new Blob([csvContent], { type: 'text/csv;charset=UTF-16LE;'  });
